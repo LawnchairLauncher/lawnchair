@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import ch.deletescape.lawnchair.FeedBridge;
 import com.android.launcher3.Alarm;
 import com.android.launcher3.LauncherModel;
 import com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.i;
@@ -59,8 +60,7 @@ public class SmartspaceController implements Handler.Callback {
 
     private Intent db() {
         return new Intent("com.google.android.apps.gsa.smartspace.SETTINGS")
-                .setPackage(LauncherClient.SMARTSPACE_BRIDGE_USE ?
-                        LauncherClient.BRIDGE_PACKAGE : "com.google.android.googlequicksearchbox")
+                .setPackage(FeedBridge.Companion.getInstance(mAppContext).resolveSmartspace())
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
@@ -74,8 +74,7 @@ public class SmartspaceController implements Handler.Callback {
         if (cs && !this.dQ.cS()) {
             this.df(null, SmartspaceController.Store.CURRENT);
             this.mAppContext.sendBroadcast(new Intent("com.google.android.apps.gsa.smartspace.EXPIRE_EVENT")
-                    .setPackage(LauncherClient.SMARTSPACE_BRIDGE_USE ?
-                            LauncherClient.BRIDGE_PACKAGE : "com.google.android.googlequicksearchbox")
+                    .setPackage(FeedBridge.Companion.getInstance(mAppContext).resolveSmartspace())
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         }
     }
@@ -89,8 +88,7 @@ public class SmartspaceController implements Handler.Callback {
 
     private void de() {
         this.mAppContext.sendBroadcast(new Intent("com.google.android.apps.gsa.smartspace.ENABLE_UPDATE")
-                .setPackage(LauncherClient.SMARTSPACE_BRIDGE_USE ?
-                        LauncherClient.BRIDGE_PACKAGE : "com.google.android.googlequicksearchbox")
+                .setPackage(FeedBridge.Companion.getInstance(mAppContext).resolveSmartspace())
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 

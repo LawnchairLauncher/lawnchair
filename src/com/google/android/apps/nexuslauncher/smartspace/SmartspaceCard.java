@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import ch.deletescape.lawnchair.FeedBridge;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -298,9 +299,7 @@ public class SmartspaceCard {
                 }
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setSourceBounds(launcher.getViewBounds(view));
-                if (LauncherClient.SMARTSPACE_BRIDGE_USE) {
-                    intent.setPackage(LauncherClient.BRIDGE_PACKAGE);
-                }
+                intent.setPackage(FeedBridge.Companion.getInstance(mContext).resolveSmartspace());
                 view.getContext().sendBroadcast(intent);
                 break;
             }

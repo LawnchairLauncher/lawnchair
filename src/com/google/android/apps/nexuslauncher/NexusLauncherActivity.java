@@ -4,6 +4,7 @@ import android.animation.AnimatorSet;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import ch.deletescape.lawnchair.FeedBridge;
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Launcher;
@@ -24,7 +25,7 @@ public class NexusLauncherActivity extends Launcher {
         super.onCreate(savedInstanceState);
 
         SharedPreferences prefs = Utilities.getPrefs(this);
-        if (!PixelBridge.isInstalled(this)) {
+        if (!FeedBridge.Companion.getInstance(this).isInstalled()) {
             prefs.edit().putBoolean(SettingsActivity.ENABLE_MINUS_ONE_PREF, false).apply();
         }
 

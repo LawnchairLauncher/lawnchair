@@ -20,11 +20,11 @@ package ch.deletescape.lawnchair.preferences
 import android.content.Context
 import android.support.v7.preference.ListPreference
 import android.util.AttributeSet
+import ch.deletescape.lawnchair.FeedBridge
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.smartspace.*
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.google.android.apps.nexuslauncher.PixelBridge
 
 class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
     : ListPreference(context, attrs), LawnchairPreferences.OnPreferenceChangeListener {
@@ -50,7 +50,7 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
         list.add(BlankDataProvider::class.java.name)
         if (Utilities.ATLEAST_NOUGAT)
             list.add(SmartspaceDataWidget::class.java.name)
-        if (PixelBridge.isBridgeInstalled(context))
+        if (FeedBridge.getInstance(context).resolveBridge()?.supportsSmartspace == true)
             list.add(SmartspacePixelBridge::class.java.name)
         list.add(OWMWeatherDataProvider::class.java.name)
         if (prefs.showDebugInfo)
@@ -63,7 +63,7 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
         list.add(BlankDataProvider::class.java.name)
         if (Utilities.ATLEAST_NOUGAT)
             list.add(SmartspaceDataWidget::class.java.name)
-        if (PixelBridge.isBridgeInstalled(context))
+        if (FeedBridge.getInstance(context).resolveBridge()?.supportsSmartspace == true)
             list.add(SmartspacePixelBridge::class.java.name)
         if (prefs.showDebugInfo)
             list.add(FakeDataProvider::class.java.name)

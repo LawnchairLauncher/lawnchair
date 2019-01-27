@@ -60,6 +60,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import ch.deletescape.lawnchair.FakeLauncherKt;
+import ch.deletescape.lawnchair.FeedBridge;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
@@ -85,7 +86,6 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
-import com.google.android.apps.nexuslauncher.PixelBridge;
 import com.google.android.apps.nexuslauncher.reflection.ReflectionClient;
 import java.io.IOException;
 import java.util.Objects;
@@ -565,7 +565,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
             if (getContent() == R.xml.lawnchair_desktop_preferences) {
                 SwitchPreference minusOne = (SwitchPreference) findPreference(ENABLE_MINUS_ONE_PREF);
-                if (minusOne != null && !PixelBridge.isInstalled(getActivity())) {
+                if (minusOne != null && !FeedBridge.Companion.getInstance(getActivity()).isInstalled()) {
                     minusOne.setChecked(false);
                 }
             }
@@ -640,7 +640,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     confirmationFragment.show(getFragmentManager(), preference.getKey());
                     break;
                 case ENABLE_MINUS_ONE_PREF:
-                    if (PixelBridge.isInstalled(getActivity())) {
+                    if (FeedBridge.Companion.getInstance(getActivity()).isInstalled()) {
                         return true;
                     }
                     FragmentManager fm = getFragmentManager();
