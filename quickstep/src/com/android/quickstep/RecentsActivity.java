@@ -18,9 +18,11 @@ package com.android.quickstep;
 import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
 import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
 
-import static com.android.launcher3.LauncherAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
-import static com.android.launcher3.LauncherAppTransitionManagerImpl.STATUS_BAR_TRANSITION_DURATION;
-import static com.android.launcher3.LauncherAppTransitionManagerImpl.STATUS_BAR_TRANSITION_PRE_DELAY;
+import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
+import static com.android.launcher3.QuickstepAppTransitionManagerImpl
+        .STATUS_BAR_TRANSITION_DURATION;
+import static com.android.launcher3.QuickstepAppTransitionManagerImpl
+        .STATUS_BAR_TRANSITION_PRE_DELAY;
 import static com.android.quickstep.TaskUtils.getRecentsWindowAnimator;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;

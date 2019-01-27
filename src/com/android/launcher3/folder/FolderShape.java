@@ -23,6 +23,9 @@ import android.animation.FloatArrayEvaluator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.content.res.XmlResourceParser;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -34,13 +37,29 @@ import android.graphics.RegionIterator;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.util.AttributeSet;
+import android.util.SparseArray;
+import android.util.TypedValue;
+import android.util.Xml;
 import android.view.ViewOutlineProvider;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.MainThreadExecutor;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
+import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.Themes;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import androidx.annotation.Nullable;
 
 /**
  * Abstract representation of the shape of a folder icon
@@ -53,15 +72,7 @@ public abstract class FolderShape {
         return sInstance;
     }
 
-    private static FolderShape[] getAllShapes() {
-        return new FolderShape[] {
-                new Circle(),
-                new RoundedSquare(8f / 50),  // Ratios based on path defined in config_icon_mask
-                new RoundedSquare(30f / 50),
-                new Square(),
-                new TearDrop(),
-                new Squircle()};
-    }
+    private SparseArray<TypedValue> mAttrs;
 
     public abstract void drawShape(Canvas canvas, float offsetX, float offsetY, float radius,
             Paint paint);
@@ -70,6 +81,11 @@ public abstract class FolderShape {
 
     public abstract Animator createRevealAnimator(Folder target, Rect startRect, Rect endRect,
             float endRadius, boolean isReversed);
+
+    @Nullable
+    public TypedValue getAttrValue(int attr) {
+        return mAttrs == null ? null : mAttrs.get(attr);
+    }
 
     /**
      * Abstract shape where the reveal animation is a derivative of a round rect animation
@@ -163,44 +179,22 @@ public abstract class FolderShape {
         }
     }
 
-    public static class Square extends SimpleRectShape {
-
-        @Override
-        public void drawShape(Canvas canvas, float offsetX, float offsetY, float radius,  Paint p) {
-            float cx = radius + offsetX;
-            float cy = radius + offsetY;
-            canvas.drawRect(cx - radius, cy - radius, cx + radius, cy + radius, p);
-        }
-
-        @Override
-        public void addShape(Path path, float offsetX, float offsetY, float radius) {
-            float cx = radius + offsetX;
-            float cy = radius + offsetY;
-            path.addRect(cx - radius, cy - radius, cx + radius, cy + radius, Path.Direction.CW);
-        }
-
-        @Override
-        protected float getStartRadius(Rect startRect) {
-            return 0;
-        }
-    }
-
     public static class RoundedSquare extends SimpleRectShape {
 
         /**
-         * Ratio of corner radius to half size. Based on the
+         * Ratio of corner radius to half size.
          */
-        private final float mRadiusFactor;
+        private final float mRadiusRatio;
 
-        public RoundedSquare(float radiusFactor) {
-            mRadiusFactor = radiusFactor;
+        public RoundedSquare(float radiusRatio) {
+            mRadiusRatio = radiusRatio;
         }
 
         @Override
         public void drawShape(Canvas canvas, float offsetX, float offsetY, float radius, Paint p) {
             float cx = radius + offsetX;
             float cy = radius + offsetY;
-            float cr = radius * mRadiusFactor;
+            float cr = radius * mRadiusRatio;
             canvas.drawRoundRect(cx - radius, cy - radius, cx + radius, cy + radius, cr, cr, p);
         }
 
@@ -208,14 +202,14 @@ public abstract class FolderShape {
         public void addShape(Path path, float offsetX, float offsetY, float radius) {
             float cx = radius + offsetX;
             float cy = radius + offsetY;
-            float cr = radius * mRadiusFactor;
+            float cr = radius * mRadiusRatio;
             path.addRoundRect(cx - radius, cy - radius, cx + radius, cy + radius, cr, cr,
                     Path.Direction.CW);
         }
 
         @Override
         protected float getStartRadius(Rect startRect) {
-            return (startRect.width() / 2f) * mRadiusFactor;
+            return (startRect.width() / 2f) * mRadiusRatio;
         }
     }
 
@@ -224,13 +218,16 @@ public abstract class FolderShape {
         /**
          * Radio of short radius to large radius, based on the shape options defined in the config.
          */
-        private static final float RADIUS_RATIO = 15f / 50;
-
+        private final float mRadiusRatio;
         private final float[] mTempRadii = new float[8];
+
+        public TearDrop(float radiusRatio) {
+            mRadiusRatio = radiusRatio;
+        }
 
         @Override
         public void addShape(Path p, float offsetX, float offsetY, float r1) {
-            float r2 = r1 * RADIUS_RATIO;
+            float r2 = r1 * mRadiusRatio;
             float cx = r1 + offsetX;
             float cy = r1 + offsetY;
 
@@ -249,7 +246,7 @@ public abstract class FolderShape {
         protected AnimatorUpdateListener newUpdateListener(Rect startRect, Rect endRect,
                 float endRadius, Path outPath) {
             float r1 = startRect.width() / 2f;
-            float r2 = r1 * RADIUS_RATIO;
+            float r2 = r1 * mRadiusRatio;
 
             float[] startValues = new float[] {
                     startRect.left, startRect.top, startRect.right, startRect.bottom, r1, r2};
@@ -273,13 +270,17 @@ public abstract class FolderShape {
         /**
          * Radio of radius to circle radius, based on the shape options defined in the config.
          */
-        private static final float RADIUS_RATIO = 10f / 50;
+        private final float mRadiusRatio;
+
+        public Squircle(float radiusRatio) {
+            mRadiusRatio = radiusRatio;
+        }
 
         @Override
         public void addShape(Path p, float offsetX, float offsetY, float r) {
             float cx = r + offsetX;
             float cy = r + offsetY;
-            float control = r - r * RADIUS_RATIO;
+            float control = r - r * mRadiusRatio;
 
             p.moveTo(cx, cy - r);
             addLeftCurve(cx, cy, r, control, p);
@@ -310,7 +311,7 @@ public abstract class FolderShape {
             float startCX = startRect.exactCenterX();
             float startCY = startRect.exactCenterY();
             float startR = startRect.width() / 2f;
-            float startControl = startR - startR * RADIUS_RATIO;
+            float startControl = startR - startR * mRadiusRatio;
             float startHShift = 0;
             float startVShift = 0;
 
@@ -351,17 +352,65 @@ public abstract class FolderShape {
     }
 
     /**
-     * Initializes the shape which is closest to closest to the {@link AdaptiveIconDrawable}
+     * Initializes the shape which is closest to the {@link AdaptiveIconDrawable}
      */
-    public static void init() {
+    public static void init(Context context) {
         if (!Utilities.ATLEAST_OREO) {
             return;
         }
-        new MainThreadExecutor().execute(FolderShape::pickShapeInBackground);
+        new MainThreadExecutor().execute(() -> pickShapeInBackground(context));
+    }
+
+    private static FolderShape getShapeDefinition(String type, float radius) {
+        switch (type) {
+            case "Circle":
+                return new Circle();
+            case "RoundedSquare":
+                return new RoundedSquare(radius);
+            case "TearDrop":
+                return new TearDrop(radius);
+            case "Squircle":
+                return new Squircle(radius);
+            default:
+                throw new IllegalArgumentException("Invalid shape type: " + type);
+        }
+    }
+
+    private static List<FolderShape> getAllShapes(Context context) {
+        ArrayList<FolderShape> result = new ArrayList<>();
+        try (XmlResourceParser parser = context.getResources().getXml(R.xml.folder_shapes)) {
+
+            // Find the root tag
+            int type;
+            while ((type = parser.next()) != XmlPullParser.END_TAG
+                    && type != XmlPullParser.END_DOCUMENT
+                    && !"shapes".equals(parser.getName()));
+
+            final int depth = parser.getDepth();
+            int[] radiusAttr = new int[] {R.attr.folderIconRadius};
+            IntArray keysToIgnore = new IntArray(0);
+
+            while (((type = parser.next()) != XmlPullParser.END_TAG ||
+                    parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
+
+                if (type == XmlPullParser.START_TAG) {
+                    AttributeSet attrs = Xml.asAttributeSet(parser);
+                    TypedArray a = context.obtainStyledAttributes(attrs, radiusAttr);
+                    FolderShape shape = getShapeDefinition(parser.getName(), a.getFloat(0, 1));
+                    a.recycle();
+
+                    shape.mAttrs = Themes.createValueMap(context, attrs, keysToIgnore);
+                    result.add(shape);
+                }
+            }
+        } catch (IOException | XmlPullParserException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
     }
 
     @TargetApi(Build.VERSION_CODES.O)
-    protected static void pickShapeInBackground() {
+    protected static void pickShapeInBackground(Context context) {
         // Pick any large size
         int size = 200;
 
@@ -379,7 +428,7 @@ public abstract class FolderShape {
         // Find the shape with minimum area of divergent region.
         int minArea = Integer.MAX_VALUE;
         FolderShape closestShape = null;
-        for (FolderShape shape : getAllShapes()) {
+        for (FolderShape shape : getAllShapes(context)) {
             shapePath.reset();
             shape.addShape(shapePath, 0, 0, size / 2f);
             shapeR.setPath(shapePath, full);

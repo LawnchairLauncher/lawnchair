@@ -12,6 +12,8 @@ import com.android.launcher3.Utilities;
 import java.lang.reflect.Method;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
+
 public class AlphabeticIndexCompat {
     private static final String TAG = "AlphabeticIndexCompat";
 
@@ -53,7 +55,7 @@ public class AlphabeticIndexCompat {
     /**
      * Computes the section name for an given string {@param s}.
      */
-    public String computeSectionName(CharSequence cs) {
+    public String computeSectionName(@NonNull CharSequence cs) {
         String s = Utilities.trim(cs);
         String sectionName = mBaseIndex.getBucketLabel(mBaseIndex.getBucketIndex(s));
         if (Utilities.trim(sectionName).isEmpty() && s.length() > 0) {
@@ -89,7 +91,7 @@ public class AlphabeticIndexCompat {
         /**
          * Returns the index of the bucket in which the given string should appear.
          */
-        protected int getBucketIndex(String s) {
+        protected int getBucketIndex(@NonNull String s) {
             if (s.isEmpty()) {
                 return UNKNOWN_BUCKET_INDEX;
             }

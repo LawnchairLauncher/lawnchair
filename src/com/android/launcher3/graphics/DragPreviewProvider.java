@@ -36,6 +36,7 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
+import com.android.launcher3.widget.PendingAppWidgetHostView;
 
 import java.nio.ByteBuffer;
 
@@ -131,9 +132,15 @@ public class DragPreviewProvider {
             width = (int) (mView.getWidth() * scale);
             height = (int) (mView.getHeight() * scale);
 
-            // Use software renderer for widgets as we know that they already work
-            return BitmapRenderer.createSoftwareBitmap(width + blurSizeOutline,
-                    height + blurSizeOutline, (c) -> drawDragView(c, scale));
+            if (mView instanceof PendingAppWidgetHostView) {
+                // Use hardware renderer as the icon for the pending app widget may be a hw bitmap
+                return BitmapRenderer.createHardwareBitmap(width + blurSizeOutline,
+                        height + blurSizeOutline, (c) -> drawDragView(c, scale));
+            } else {
+                // Use software renderer for widgets as we know that they already work
+                return BitmapRenderer.createSoftwareBitmap(width + blurSizeOutline,
+                        height + blurSizeOutline, (c) -> drawDragView(c, scale));
+            }
         }
 
         return BitmapRenderer.createHardwareBitmap(width + blurSizeOutline,

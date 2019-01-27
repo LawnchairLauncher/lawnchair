@@ -16,10 +16,8 @@
 
 package com.android.launcher3.uioverrides;
 
-import static android.view.View.VISIBLE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -36,18 +34,18 @@ import android.util.Base64;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppTransitionManagerImpl;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.QuickstepAppTransitionManagerImpl;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.TouchController;
+import com.android.launcher3.util.UiThreadHelper;
+import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
-import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
@@ -57,6 +55,9 @@ import java.util.ArrayList;
 import java.util.zip.Deflater;
 
 public class UiFactory {
+
+    private static final AsyncCommand SET_SHELF_HEIGHT_CMD = (visible, height) ->
+            WindowManagerWrapper.getInstance().setShelfHeight(visible != 0, height);
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
         boolean swipeUpEnabled = OverviewInteractionState.INSTANCE.get(launcher)
@@ -78,7 +79,11 @@ public class UiFactory {
                 && !launcher.getDeviceProfile().isVerticalBarLayout()) {
             list.add(new StatusBarTouchController(launcher));
         }
-        list.add(new LauncherTaskViewController(launcher));
+        TouchController taskSwipeController =
+                RecentsUiFactory.createTaskSwipeController(launcher);
+        if (taskSwipeController != null) {
+            list.add(taskSwipeController);
+        }
         return list.toArray(new TouchController[list.size()]);
     }
 
@@ -88,7 +93,8 @@ public class UiFactory {
 
     public static StateHandler[] getStateHandler(Launcher launcher) {
         return new StateHandler[] {launcher.getAllAppsController(), launcher.getWorkspace(),
-                new RecentsViewStateController(launcher), new BackButtonAlphaHandler(launcher)};
+                RecentsUiFactory.createRecentsViewStateController(launcher),
+                new BackButtonAlphaHandler(launcher)};
     }
 
     /**
@@ -108,8 +114,7 @@ public class UiFactory {
     }
 
     public static void resetOverview(Launcher launcher) {
-        RecentsView recents = launcher.getOverviewPanel();
-        recents.reset();
+        RecentsUiFactory.resetRecents(launcher);
     }
 
     public static void onCreate(Launcher launcher) {
@@ -175,15 +180,13 @@ public class UiFactory {
         LauncherState state = launcher.getStateManager().getState();
         if (!OverviewInteractionState.INSTANCE.get(launcher).swipeGestureInitializing()) {
             DeviceProfile profile = launcher.getDeviceProfile();
-            WindowManagerWrapper.getInstance().setShelfHeight(
-                    (state == NORMAL || state == OVERVIEW) && launcher.isUserActive()
-                            && !profile.isVerticalBarLayout(),
-                    profile.hotseatBarSizePx);
+            boolean visible = (state == NORMAL || state == OVERVIEW) && launcher.isUserActive()
+                    && !profile.isVerticalBarLayout();
+            UiThreadHelper.runAsyncCommand(launcher, SET_SHELF_HEIGHT_CMD,
+                    visible ? 1 : 0, profile.hotseatBarSizePx);
         }
 
-        if (state == NORMAL) {
-            launcher.<RecentsView>getOverviewPanel().setSwipeDownShouldLaunchApp(false);
-        }
+        RecentsUiFactory.onLauncherStateOrResumeChanged(launcher);
     }
 
     public static void onTrimMemory(Context context, int level) {
@@ -195,8 +198,8 @@ public class UiFactory {
 
     public static void useFadeOutAnimationForLauncherStart(Launcher launcher,
             CancellationSignal cancellationSignal) {
-        LauncherAppTransitionManagerImpl appTransitionManager =
-                (LauncherAppTransitionManagerImpl) launcher.getAppTransitionManager();
+        QuickstepAppTransitionManagerImpl appTransitionManager =
+                (QuickstepAppTransitionManagerImpl) launcher.getAppTransitionManager();
         appTransitionManager.setRemoteAnimationProvider((targets) -> {
 
             // On the first call clear the reference.
@@ -237,26 +240,6 @@ public class UiFactory {
     }
 
     public static void prepareToShowOverview(Launcher launcher) {
-        RecentsView overview = launcher.getOverviewPanel();
-        if (overview.getVisibility() != VISIBLE || overview.getContentAlpha() == 0) {
-            SCALE_PROPERTY.set(overview, 1.33f);
-        }
-    }
-
-    private static class LauncherTaskViewController extends TaskViewTouchController<Launcher> {
-
-        public LauncherTaskViewController(Launcher activity) {
-            super(activity);
-        }
-
-        @Override
-        protected boolean isRecentsInteractive() {
-            return mActivity.isInState(OVERVIEW);
-        }
-
-        @Override
-        protected void onUserControlledAnimationCreated(AnimatorPlaybackController animController) {
-            mActivity.getStateManager().setCurrentUserControlledAnimation(animController);
-        }
+        RecentsUiFactory.prepareToShowRecents(launcher);
     }
 }

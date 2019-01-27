@@ -16,6 +16,7 @@
 package com.android.quickstep.views;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 
 import android.graphics.Canvas;
@@ -39,24 +40,44 @@ import com.android.quickstep.WindowTransformSwipeHandler;
 public class LauncherLayoutListener extends AbstractFloatingView
         implements Insettable, LayoutListener {
 
+    public static LauncherLayoutListener resetAndGet(Launcher launcher) {
+        LauncherRecentsView lrv = launcher.getOverviewPanel();
+        LauncherLayoutListener listener = lrv.mLauncherLayoutListener;
+        if (listener.isOpen()) {
+            listener.close(false);
+        }
+        listener.setHandler(null);
+        return listener;
+    }
+
     private final Launcher mLauncher;
     private final Paint mPaint = new Paint();
     private WindowTransformSwipeHandler mHandler;
     private RectF mCurrentRect;
     private float mCornerRadius;
 
-    public LauncherLayoutListener(Launcher launcher) {
+    private boolean mWillNotDraw;
+
+    /**
+     * package private
+     */
+    LauncherLayoutListener(Launcher launcher) {
         super(launcher, null);
         mLauncher = launcher;
         mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+
+        mWillNotDraw = willNotDraw();
+        super.setWillNotDraw(false);
     }
 
     @Override
     public void update(boolean shouldFinish, boolean isLongSwipe, RectF currentRect,
-            float cornerRadius) {
-        if (shouldFinish) {
-            finish();
+                  float cornerRadius) {
+        if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            if (shouldFinish) {
+                finish();
+            }
             return;
         }
 
@@ -65,6 +86,12 @@ public class LauncherLayoutListener extends AbstractFloatingView
 
         setWillNotDraw(mCurrentRect == null || isLongSwipe);
         invalidate();
+    }
+
+    @Override
+    public void setWillNotDraw(boolean willNotDraw) {
+        // Prevent super call as that causes additional relayout.
+        mWillNotDraw = willNotDraw;
     }
 
     @Override
@@ -124,6 +151,8 @@ public class LauncherLayoutListener extends AbstractFloatingView
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawRoundRect(mCurrentRect, mCornerRadius, mCornerRadius, mPaint);
+        if (!mWillNotDraw) {
+            canvas.drawRoundRect(mCurrentRect, mCornerRadius, mCornerRadius, mPaint);
+        }
     }
 }

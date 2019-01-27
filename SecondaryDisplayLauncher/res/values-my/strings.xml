@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name" msgid="8116646702313548897">"အရန် ဖော်ပြမှု စတင်ခြင်းစနစ်"</string>
     <string name="couldnt_launch" msgid="7873588052226763866">"လုပ်ဆောင်ချက်ကို စတင်၍မရပါ"</string>
     <string name="add_app_shortcut" msgid="2756755330707509435">"အက်ပ်ဖြတ်လမ်းလင့်ခ်ထည့်ရန်"</string>
     <string name="set_wallpaper" msgid="6475195450505435904">"နောက်ခံ သတ်မှတ်ရန်"</string>

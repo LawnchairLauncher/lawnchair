@@ -38,18 +38,26 @@
     <com.android.quickstep.views.DigitalWellBeingToast
         android:id="@+id/digital_well_being_toast"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="48dp"
         android:importantForAccessibility="noHideDescendants"
-        android:background="#800000FF"
+        android:background="@drawable/bg_wellbeing_toast"
         android:layout_gravity="bottom"
-        android:visibility="gone"
-    >
+        android:gravity="center"
+        android:visibility="gone">
+        <ImageView
+            android:id="@+id/digital_well_being_hourglass"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
+        />
         <TextView
-            android:id="@+id/remaining_time"
+            android:id="@+id/digital_well_being_remaining_time"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_height="24dp"
+            android:fontFamily="sans-serif"
+            android:textSize="14sp"
             android:textColor="@android:color/white"
+            android:gravity="center_vertical"
         />
     </com.android.quickstep.views.DigitalWellBeingToast>
 </com.android.quickstep.views.TaskView>

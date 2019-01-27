@@ -104,7 +104,7 @@ public class TaplTests extends AbstractQuickStepTest {
 
         clearLauncherData();
 
-        mDevice.pressHome();
+        mLauncher.pressHome();
         waitForState("Launcher internal state didn't switch to Home", LauncherState.NORMAL);
         waitForResumed("Launcher internal state is still Background");
     }
@@ -424,7 +424,7 @@ public class TaplTests extends AbstractQuickStepTest {
         executeOnLauncher(launcher -> assertTrue("Flinging backward didn't scroll widgets",
                 getWidgetsScroll(launcher) < flingForwardY));
 
-        mDevice.pressHome();
+        mLauncher.pressHome();
         waitForLauncherCondition("Widgets were not closed",
                 launcher -> getWidgetsView(launcher) == null);
     }

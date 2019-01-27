@@ -97,11 +97,11 @@ public class RecentsAnimationWrapper {
     }
 
     /**
-     * @param onFinishComplete A callback that runs after the animation controller has finished
-     *                         on the background thread.
+     * @param onFinishComplete A callback that runs on the main thread after the animation
+     *                         controller has finished on the background thread.
      */
-    public void finish(boolean toHome, Runnable onFinishComplete) {
-        if (!toHome) {
+    public void finish(boolean toRecents, Runnable onFinishComplete) {
+        if (!toRecents) {
             mExecutorService.submit(() -> finishBg(false, onFinishComplete));
             return;
         }
@@ -119,16 +119,17 @@ public class RecentsAnimationWrapper {
         });
     }
 
-    protected void finishBg(boolean toHome, Runnable onFinishComplete) {
+    protected void finishBg(boolean toRecents, Runnable onFinishComplete) {
         RecentsAnimationControllerCompat controller = mController;
         mController = null;
-        TraceHelper.endSection("RecentsController", "Finish " + controller + ", toHome=" + toHome);
+        TraceHelper.endSection("RecentsController", "Finish " + controller
+                + ", toRecents=" + toRecents);
         if (controller != null) {
             controller.setInputConsumerEnabled(false);
-            controller.finish(toHome);
+            controller.finish(toRecents);
 
             if (onFinishComplete != null) {
-                onFinishComplete.run();
+                mMainThreadExecutor.execute(onFinishComplete);
             }
         }
     }

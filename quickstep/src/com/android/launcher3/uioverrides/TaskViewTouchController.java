@@ -18,6 +18,7 @@ package com.android.launcher3.uioverrides;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ACCESSIBLE;
 import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -49,7 +50,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
     private static final String TAG = "OverviewSwipeController";
 
     // Progress after which the transition is assumed to be a success in case user does not fling
-    private static final float SUCCESS_TRANSITION_PROGRESS = 0.5f;
+    public static final float SUCCESS_TRANSITION_PROGRESS = 0.5f;
 
     protected final T mActivity;
     private final SwipeDetector mDetector;
@@ -231,6 +232,12 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             mFlingBlockCheck.onEvent();
         }
         mCurrentAnimation.setPlayFraction(totalDisplacement * mProgressMultiplier);
+
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            if (mRecentsView.getCurrentPage() != 0 || isGoingUp) {
+                mRecentsView.redrawLiveTile(true);
+            }
+        }
         return true;
     }
 
@@ -267,6 +274,13 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         anim.setFloatValues(nextFrameProgress, goingToEnd ? 1f : 0f);
         anim.setDuration(animationDuration);
         anim.setInterpolator(scrollInterpolatorForVelocity(velocity));
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            anim.addUpdateListener(valueAnimator -> {
+                if (mRecentsView.getCurrentPage() != 0 || mCurrentAnimationIsGoingUp) {
+                    mRecentsView.redrawLiveTile(true);
+                }
+            });
+        }
         anim.start();
     }
 

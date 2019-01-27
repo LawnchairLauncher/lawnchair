@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -33,6 +34,8 @@ public class UiThreadHelper {
     private static Handler sHandler;
 
     private static final int MSG_HIDE_KEYBOARD = 1;
+    private static final int MSG_SET_ORIENTATION = 2;
+    private static final int MSG_RUN_COMMAND = 3;
 
     public static Looper getBackgroundLooper() {
         if (sHandlerThread == null) {
@@ -55,6 +58,15 @@ public class UiThreadHelper {
         Message.obtain(getHandler(context), MSG_HIDE_KEYBOARD, token).sendToTarget();
     }
 
+    public static void setOrientationAsync(Activity activity, int orientation) {
+        Message.obtain(getHandler(activity), MSG_SET_ORIENTATION, orientation, 0, activity)
+                .sendToTarget();
+    }
+
+    public static void runAsyncCommand(Context context, AsyncCommand command, int arg1, int arg2) {
+        Message.obtain(getHandler(context), MSG_RUN_COMMAND, arg1, arg2, command).sendToTarget();
+    }
+
     private static class UiCallbacks implements Handler.Callback {
 
         private final InputMethodManager mIMM;
@@ -69,8 +81,19 @@ public class UiThreadHelper {
                 case MSG_HIDE_KEYBOARD:
                     mIMM.hideSoftInputFromWindow((IBinder) message.obj, 0);
                     return true;
+                case MSG_SET_ORIENTATION:
+                    ((Activity) message.obj).setRequestedOrientation(message.arg1);
+                    return true;
+                case MSG_RUN_COMMAND:
+                    ((AsyncCommand) message.obj).execute(message.arg1, message.arg2);
+                    return true;
             }
             return false;
         }
+    }
+
+    public interface AsyncCommand {
+
+        void execute(int arg1, int arg2);
     }
 }

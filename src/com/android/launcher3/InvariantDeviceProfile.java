@@ -30,12 +30,16 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.SparseArray;
+import android.util.TypedValue;
 import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
 
 import com.android.launcher3.util.ConfigMonitor;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.Themes;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -44,6 +48,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 public class InvariantDeviceProfile {
@@ -91,6 +96,8 @@ public class InvariantDeviceProfile {
     public int fillResIconDpi;
     public float iconTextSize;
 
+    private SparseArray<TypedValue> mExtraAttrs;
+
     /**
      * Number of icons inside the hotseat area.
      */
@@ -122,6 +129,7 @@ public class InvariantDeviceProfile {
         numHotseatIcons = p.numHotseatIcons;
         defaultLayoutId = p.defaultLayoutId;
         demoModeLayoutId = p.demoModeLayoutId;
+        mExtraAttrs = p.mExtraAttrs;
     }
 
     @TargetApi(23)
@@ -129,6 +137,13 @@ public class InvariantDeviceProfile {
         initGrid(context, Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null));
         mConfigMonitor = new ConfigMonitor(context,
                 APPLY_CONFIG_AT_RUNTIME.get() ? this::onConfigChanged : this::killProcess);
+    }
+
+    public InvariantDeviceProfile(Context context, String gridName) {
+        String newName = initGrid(context, gridName);
+        if (newName == null || !newName.equals(gridName)) {
+            throw new IllegalArgumentException("Unknown grid name");
+        }
     }
 
     /**
@@ -142,7 +157,7 @@ public class InvariantDeviceProfile {
         return context.getResources().getString(CONFIG_ICON_MASK_RES_ID);
     }
 
-    private void initGrid(Context context, String gridName) {
+    private String initGrid(Context context, String gridName) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();
@@ -171,6 +186,8 @@ public class InvariantDeviceProfile {
         demoModeLayoutId = closestProfile.demoModeLayoutId;
         numFolderRows = closestProfile.numFolderRows;
         numFolderColumns = closestProfile.numFolderColumns;
+        mExtraAttrs = closestProfile.extraAttrs;
+
         if (!closestProfile.name.equals(gridName)) {
             Utilities.getPrefs(context).edit()
                     .putString(KEY_IDP_GRID_NAME, closestProfile.name).apply();
@@ -208,10 +225,20 @@ public class InvariantDeviceProfile {
         } else {
             defaultWallpaperSize = new Point(Math.max(smallSide * 2, largeSide), largeSide);
         }
+        return closestProfile.name;
+    }
+
+    @Nullable
+    public TypedValue getAttrValue(int attr) {
+        return mExtraAttrs == null ? null : mExtraAttrs.get(attr);
     }
 
     public void addOnChangeListener(OnIDPChangeListener listener) {
         mChangeListeners.add(listener);
+    }
+
+    public void removeOnChangeListener(OnIDPChangeListener listener) {
+        mChangeListeners.remove(listener);
     }
 
     private void killProcess(Context context) {
@@ -220,7 +247,6 @@ public class InvariantDeviceProfile {
     }
 
     public void verifyConfigChangedInBackground(final Context context) {
-
         String savedIconMaskPath = getDevicePrefs(context).getString(KEY_ICON_PATH_REF, "");
         // Good place to check if grid size changed in themepicker when launcher was dead.
         if (savedIconMaskPath.isEmpty()) {
@@ -231,6 +257,12 @@ public class InvariantDeviceProfile {
                     .apply();
             apply(context, CHANGE_FLAG_ICON_PARAMS);
         }
+    }
+
+    public void setCurrentGrid(Context context, String gridName) {
+        Context appContext = context.getApplicationContext();
+        Utilities.getPrefs(appContext).edit().putString(KEY_IDP_GRID_NAME, gridName).apply();
+        new MainThreadExecutor().execute(() -> onConfigChanged(appContext));
     }
 
     private void onConfigChanged(Context context) {
@@ -273,7 +305,8 @@ public class InvariantDeviceProfile {
             int type;
             while (((type = parser.next()) != XmlPullParser.END_TAG ||
                     parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
-                if ((type == XmlPullParser.START_TAG) && "grid-option".equals(parser.getName())) {
+                if ((type == XmlPullParser.START_TAG)
+                        && GridOption.TAG_NAME.equals(parser.getName())) {
 
                     GridOption gridOption = new GridOption(context, Xml.asAttributeSet(parser));
                     final int displayDepth = parser.getDepth();
@@ -422,11 +455,13 @@ public class InvariantDeviceProfile {
     }
 
 
-    private static final class GridOption {
+    public static final class GridOption {
 
-        private final String name;
-        private final int numRows;
-        private final int numColumns;
+        public static final String TAG_NAME = "grid-option";
+
+        public final String name;
+        public final int numRows;
+        public final int numColumns;
 
         private final int numFolderRows;
         private final int numFolderColumns;
@@ -436,7 +471,9 @@ public class InvariantDeviceProfile {
         private final int defaultLayoutId;
         private final int demoModeLayoutId;
 
-        GridOption(Context context, AttributeSet attrs) {
+        private final SparseArray<TypedValue> extraAttrs;
+
+        public GridOption(Context context, AttributeSet attrs) {
             TypedArray a = context.obtainStyledAttributes(
                     attrs, R.styleable.GridDisplayOption);
             name = a.getString(R.styleable.GridDisplayOption_name);
@@ -454,6 +491,9 @@ public class InvariantDeviceProfile {
             numFolderColumns = a.getInt(
                     R.styleable.GridDisplayOption_numFolderColumns, numColumns);
             a.recycle();
+
+            extraAttrs = Themes.createValueMap(context, attrs,
+                    IntArray.wrap(R.styleable.GridDisplayOption));
         }
     }
 

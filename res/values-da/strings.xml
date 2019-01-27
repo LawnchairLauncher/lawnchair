@@ -40,11 +40,11 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Der blev ikke fundet nogen apps, som matcher \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Søg efter flere apps"</string>
     <string name="label_application" msgid="8531721983832654978">"App"</string>
-    <string name="notifications_header" msgid="1404149926117359025">"Underretninger"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"Notifikationer"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Hold en genvej nede for at samle den op."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Tryk to gange, og hold en genvej nede for at samle den op eller bruge tilpassede handlinger."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Der er ikke mere plads på denne startskærm."</string>
-    <string name="hotseat_out_of_space" msgid="7448809638125333693">"Der er ikke mere plads i bakken Foretrukne"</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"Der er ikke mere plads i bakken Favoritter"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Liste med apps"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Liste over personlige apps"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Liste over apps til arbejdet"</string>
@@ -66,8 +66,8 @@
     <string name="folder_hint_text" msgid="6617836969016293992">"Unavngiven mappe"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> er deaktiveret"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
-      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, har <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> underretning</item>
-      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, har <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> underretninger</item>
+      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, har <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> notifikation</item>
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, har <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> notifikationer</item>
     </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Side %1$d ud af %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Startskærm %1$d ud af %2$d"</string>
@@ -84,13 +84,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Deaktiveret af din administrator"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Tillad rotation af startskærmen"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Når telefonen roteres"</string>
-    <string name="notification_dots_title" msgid="9062440428204120317">"Underretningscirkler"</string>
+    <string name="notification_dots_title" msgid="9062440428204120317">"Notifikationscirkler"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Til"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Fra"</string>
-    <string name="title_missing_notification_access" msgid="7503287056163941064">"Kræver adgang til underretninger"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"Hvis du vil se underretningscirkler, skal du aktivere appunderretninger for <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"Kræver adgang til notifikationer"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Hvis du vil se notifikationscirkler, skal du aktivere appnotifikationer for <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Skift indstillinger"</string>
-    <string name="notification_dots_service_title" msgid="4284221181793592871">"Vis underretningscirkler"</string>
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"Vis notifikationscirkler"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Føj ikon til startskærmen"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"For nye apps"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Ukendt"</string>
@@ -126,16 +126,16 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Reducer højden"</string>
     <string name="widget_resized" msgid="9130327887929620">"Størrelsen for widgetten er ændret til bredde <xliff:g id="NUMBER_0">%1$s</xliff:g> og højde <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Genveje"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Genveje og underretninger"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Genveje og notifikationer"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Afvis"</string>
-    <string name="notification_dismissed" msgid="6002233469409822874">"Underretningen blev afvist"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"Notifikationen blev afvist"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personlige"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Arbejde"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Arbejdsprofil"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Find arbejdsapps her"</string>
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Alle arbejdsapps har et badge og beskyttes af din organisation. Flyt apps til din startskærm, så du nemmere kan få adgang til dem."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Administreret af din organisation"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"Underretninger og apps er slået fra"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Notifikationer og apps er slået fra"</string>
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Luk"</string>
     <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Lukket"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Mislykket: <xliff:g id="WHAT">%1$s</xliff:g>"</string>

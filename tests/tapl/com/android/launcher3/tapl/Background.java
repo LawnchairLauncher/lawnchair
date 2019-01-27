@@ -64,7 +64,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
 
             mLauncher.swipe(
                     navBar.getVisibleBounds().centerX(), navBar.getVisibleBounds().centerY(),
-                    navBar.getVisibleBounds().centerX(), height - 300);
+                    navBar.getVisibleBounds().centerX(), height - 400);
         } else {
             mLauncher.getSystemUiObject("recent_apps").click();
         }
