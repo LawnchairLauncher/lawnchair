@@ -20,16 +20,13 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
-import com.android.launcher3.BuildConfig;
+import ch.deletescape.lawnchair.FeedBridge;
+import ch.deletescape.lawnchair.FeedBridge.BridgeInfo;
 import com.google.android.libraries.launcherclient.ILauncherOverlay;
 import com.google.android.libraries.launcherclient.ILauncherOverlayCallback;
 import java.lang.ref.WeakReference;
 
 public class LauncherClient {
-    public final static boolean BRIDGE_USE = !BuildConfig.DEBUG;
-    public final static boolean SMARTSPACE_BRIDGE_USE = true;
-    public final static String BRIDGE_PACKAGE = "com.google.android.apps.nexuslauncher";
-
     private static int apiVersion = -1;
 
     private ILauncherOverlay mOverlay;
@@ -382,9 +379,10 @@ public class LauncherClient {
     }
 
     static Intent getIntent(Context context, boolean proxy) {
+        BridgeInfo bridgeInfo = proxy ? FeedBridge.Companion.getInstance(context).resolveBridge() : null;
         String pkg = context.getPackageName();
         return new Intent("com.android.launcher3.WINDOW_OVERLAY")
-                .setPackage(proxy ? BRIDGE_PACKAGE : "com.google.android.googlequicksearchbox")
+                .setPackage(bridgeInfo != null ? bridgeInfo.getPackageName() : "com.google.android.googlequicksearchbox")
                 .setData(Uri.parse(new StringBuilder(pkg.length() + 18)
                             .append("app://")
                             .append(pkg)
