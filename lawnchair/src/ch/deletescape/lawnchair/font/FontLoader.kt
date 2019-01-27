@@ -15,18 +15,20 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.deletescape.lawnchair
+package ch.deletescape.lawnchair.font
 
 import android.content.Context
 import android.graphics.Typeface
 import android.support.v4.provider.FontRequest
 import android.support.v4.provider.FontsContractCompat
 import android.widget.TextView
+import ch.deletescape.lawnchair.runOnMainThread
+import ch.deletescape.lawnchair.uiWorkerHandler
 import com.android.launcher3.R
 import java.util.*
 import kotlin.collections.HashMap
 
-class FontLoader(context: Context) {
+class FontLoader(context: Context, fontName: String) {
 
     private var fontLoaded = false
     private var font: Typeface? = null
@@ -37,7 +39,7 @@ class FontLoader(context: Context) {
         val request = FontRequest(
                 "com.google.android.gms.fonts", // ProviderAuthority
                 "com.google.android.gms",  // ProviderPackage
-                "name=Google Sans",  // Query
+                "name=$fontName",  // Query
                 R.array.com_google_android_gms_fonts_certs)
 
         // retrieve font in the background
@@ -72,11 +74,11 @@ class FontLoader(context: Context) {
         waitingTasks.clear()
     }
 
-    fun loadGoogleSans(target: TextView, style: Int = Typeface.NORMAL) {
+    fun into(target: TextView, style: Int = Typeface.NORMAL) {
         if (!fontLoaded) {
-            waitingTasks[{ loadGoogleSans(target, style) }] = 0
+            waitingTasks[{ into(target, style) }] = 0
         } else {
-            target.typeface = fontStyles.getOrPut(style, { Typeface.create(font, style) })
+            target.typeface = fontStyles.getOrPut(style) { Typeface.create(font, style) }
         }
     }
 }

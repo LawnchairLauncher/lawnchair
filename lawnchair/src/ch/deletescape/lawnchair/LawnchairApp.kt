@@ -27,6 +27,8 @@ import android.os.Bundle
 import android.provider.Settings
 import android.support.annotation.Keep
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
+import ch.deletescape.lawnchair.font.FontLoader
+import ch.deletescape.lawnchair.font.FontLoaderManager
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
 import ch.deletescape.lawnchair.theme.ThemeManager
 import com.android.launcher3.Utilities
@@ -35,7 +37,7 @@ import com.android.quickstep.RecentsActivity
 class LawnchairApp : Application() {
 
     val activityHandler = ActivityHandler()
-    val fontLoader by lazy { FontLoader(this) }
+    val fontLoader by lazy { FontLoaderManager.getInstance(this).loadFont("Google Sans") }
     val smartspace by lazy { LawnchairSmartspaceController(this) }
     val bugReporter = LawnchairBugReporter(this, Thread.getDefaultUncaughtExceptionHandler())
     val recentsEnabled by lazy { checkRecentsComponent() }

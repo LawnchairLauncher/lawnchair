@@ -258,7 +258,7 @@ fun runOnThread(handler: Handler, r: () -> Unit) {
 
 @JvmOverloads
 fun TextView.setGoogleSans(style: Int = Typeface.NORMAL) {
-    context.lawnchairApp.fontLoader.loadGoogleSans(this, style)
+    context.lawnchairApp.fontLoader.into(this, style)
 }
 
 fun ViewGroup.getAllChilds() = ArrayList<View>().also { getAllChilds(it) }
