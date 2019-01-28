@@ -17,8 +17,14 @@ package com.android.launcher3.graphics;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
+import com.android.launcher3.Utilities;
+import java.util.HashSet;
+import java.util.Set;
+import kotlin.collections.ArraysKt;
 
 /**
  * Utility class for extracting colors from a bitmap.
@@ -154,6 +160,32 @@ public class ColorExtractor {
         }
         // Add back alpha channel
         return bestRGB | 0xFF << 24;
+    }
+
+    public static boolean isSingleColor(Drawable drawable, int color) {
+        final int testColor = posterize(color);
+        if (drawable instanceof ColorDrawable) {
+            return posterize(((ColorDrawable) drawable).getColor()) == testColor;
+        }
+        final Bitmap bitmap = Utilities.drawableToBitmap(drawable);
+        if (bitmap == null) {
+            return false;
+        }
+        final int height = bitmap.getHeight();
+        final int width = bitmap.getWidth();
+
+        int[] pixels = new int[height * width];
+        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+        Set<Integer> set = new HashSet<>(ArraysKt.asList(pixels));
+        Integer[] distinctPixels = new Integer[set.size()];
+        set.toArray(distinctPixels);
+
+        for (int pixel : distinctPixels) {
+            if (testColor != posterize(pixel)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static final int MAGIC_NUMBER = 25;

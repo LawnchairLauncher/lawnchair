@@ -122,7 +122,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         return if (icon is AdaptiveIconDrawable) {
             prefs.colorizedLegacyTreatment &&
                     prefs.enableWhiteOnlyTreatment &&
-                    (icon.background as? ColorDrawable)?.color == Color.WHITE
+                    ColorExtractor.isSingleColor(icon.background, Color.WHITE)
         } else true
 
     }
@@ -197,9 +197,12 @@ class DefaultPack(context: Context) : IconPack(context, "") {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun wrapToAdaptiveIcon(icon: Drawable): Drawable {
         return if (icon is AdaptiveIconDrawable) {
-            icon.apply {
-                (background as? ColorDrawable)?.color = extractColor(foreground)
-            }
+            if (icon.background is ColorDrawable)
+                icon.apply {
+                    (background as? ColorDrawable)?.color = extractColor(foreground)
+                }
+            else
+                AdaptiveIconDrawable(ColorDrawable(extractColor(icon.foreground)), icon.foreground)
         } else {
             val dr = (wrapperIcon as AdaptiveIconDrawable).apply {
                 mutate()
