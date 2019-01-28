@@ -45,10 +45,7 @@ open class HomeState(id: Int, containerType: Int, transitionDuration: Int, flags
             return if (prefs.dockHide) {
                 dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx
             } else {
-                (dp.hotseatCellHeightPx * prefs.dockRowsCount + if (prefs.dockSearchBar)
-                    dp.verticalDragHandleSizePx
-                else
-                    0).toFloat()
+                (dp.hotseatCellHeightPx * prefs.dockRowsCount + dp.verticalDragHandleSizePx).toFloat()
             }
         }
     }
