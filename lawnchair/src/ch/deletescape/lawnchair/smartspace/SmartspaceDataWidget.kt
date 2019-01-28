@@ -114,11 +114,13 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
         smartspaceWidgetHost.stopListening()
     }
 
-    fun updateData(weatherIcon: Bitmap?, temperature: String?, cardIcon: Bitmap?, title: TextView?, subtitle: TextView?) {
+    fun updateData(weatherIcon: Bitmap?, temperature: String?, cardIcon: Bitmap?, title: TextView?, subtitle: TextView?, subtitle2: TextView?) {
         val weather = parseWeatherData(weatherIcon, temperature)
         val card = if (cardIcon != null && title != null && subtitle != null) {
+            val ttl = title.text.toString() + if (subtitle2 != null) subtitle.text.toString() else ""
+            val sub = subtitle2 ?: subtitle
             LawnchairSmartspaceController.CardData(cardIcon,
-                    title.text.toString(), title.ellipsize, subtitle.text.toString(), subtitle.ellipsize)
+                    ttl, title.ellipsize, sub.text.toString(), sub.ellipsize)
         } else {
             null
         }
@@ -146,6 +148,7 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
             var cardIconView: ImageView? = null
             var title: TextView? = null
             var subtitle: TextView? = null
+            var subtitle2: TextView? = null
             if (texts.isEmpty()) return
             if (images.size >= 2) {
                 weatherIconView = images.last()
@@ -155,8 +158,9 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
                 cardIconView = images.first()
                 title = texts[0]
                 subtitle = texts[1]
+                subtitle2 = texts.getOrNull(2)
             }
-            updateData(extractBitmap(weatherIconView), temperature, extractBitmap(cardIconView), title, subtitle)
+            updateData(extractBitmap(weatherIconView), temperature, extractBitmap(cardIconView), title, subtitle, subtitle2)
         }
     }
 
@@ -180,7 +184,8 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
                 return provider
             } else {
                 runOnMainThread {
-                    val foreground = context.lawnchairApp.activityHandler.foregroundActivity ?: context
+                    val foreground = context.lawnchairApp.activityHandler.foregroundActivity
+                            ?: context
                     if (foreground is AppCompatActivity) {
                         AlertDialog.Builder(foreground)
                                 .setTitle(R.string.smartspace_provider_error)
@@ -199,7 +204,7 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
         fun parseWeatherData(weatherIcon: Bitmap?, temperature: String?): LawnchairSmartspaceController.WeatherData? {
             return if (weatherIcon != null && temperature != null) {
                 try {
-                    val value = temperature.substring(0, temperature.indexOfFirst { (it < '0' || it > '9') && it != '-'}).toInt()
+                    val value = temperature.substring(0, temperature.indexOfFirst { (it < '0' || it > '9') && it != '-' }).toInt()
                     LawnchairSmartspaceController.WeatherData(weatherIcon, Temperature(value, when {
                         temperature.contains("C") -> Temperature.Unit.Celsius
                         temperature.contains("F") -> Temperature.Unit.Fahrenheit
