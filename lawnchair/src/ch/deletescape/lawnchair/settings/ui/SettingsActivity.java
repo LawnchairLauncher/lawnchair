@@ -48,6 +48,8 @@ import android.support.v7.preference.PreferenceRecyclerViewAccessibilityDelegate
 import android.support.v7.preference.PreferenceScreen;
 import android.support.v7.preference.TwoStatePreference;
 import android.support.v7.preference.internal.AbstractMultiSelectListPreference;
+import android.support.v7.view.menu.BaseMenuPresenter;
+import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.Toolbar;
@@ -93,7 +95,7 @@ import kotlin.jvm.functions.Function1;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Settings activity for Launcher. Currently implements the following setting: Allow rotation
+ * Settings activity for Launcher.
  */
 public class SettingsActivity extends SettingsBaseActivity implements
         OnPreferenceStartFragmentCallback, OnBackStackChangedListener, OnClickListener {
@@ -101,20 +103,21 @@ public class SettingsActivity extends SettingsBaseActivity implements
     public static final String EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key";
 
     private static final String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";
-    /** Hidden field Settings.Secure.NOTIFICATION_BADGING */
+    /**
+     * Hidden field Settings.Secure.NOTIFICATION_BADGING
+     */
     public static final String NOTIFICATION_BADGING = "notification_badging";
-    /** Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS */
+    /**
+     * Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS
+     */
     private static final String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
-    public final static String ICON_PACK_PREF = "pref_icon_pack";
     public final static String SHOW_PREDICTIONS_PREF = "pref_show_predictions";
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
     public final static String FEED_THEME_PREF = "pref_feedTheme";
     public final static String SMARTSPACE_PREF = "pref_smartspace";
     private final static String BRIDGE_TAG = "tag_bridge";
 
-    private LawnchairPreferences sharedPrefs;
-    private int mAppBarHeight;
     private boolean isSubSettings;
 
     @Override
@@ -131,7 +134,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
         getDecorLayout().setUseLargeTitle(shouldUseLargeTitle());
         setContentView(showSearch ? R.layout.activity_settings_home : R.layout.activity_settings);
 
-        mAppBarHeight = getResources().getDimensionPixelSize(R.dimen.app_bar_elevation);
         if (savedInstanceState == null) {
             Fragment fragment = createLaunchFragment(content);
             // Display the fragment as the main content.
@@ -142,7 +144,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
         getSupportFragmentManager().addOnBackStackChangedListener(this);
 
-        sharedPrefs = Utilities.getLawnchairPrefs(this);
         updateUpButton();
 
         if (showSearch) {
@@ -173,6 +174,19 @@ public class SettingsActivity extends SettingsBaseActivity implements
             Toolbar toolbar = findViewById(R.id.search_action_bar);
             toolbar.getMenu().clear();
             toolbar.inflateMenu(R.menu.menu_restart_lawnchair);
+            ActionMenuView menuView = null;
+            int count = toolbar.getChildCount();
+            for (int i = 0; i < count; i++) {
+                View child = toolbar.getChildAt(i);
+                if (child instanceof ActionMenuView) {
+                    menuView = (ActionMenuView) child;
+                    break;
+                }
+            }
+            if (menuView != null) {
+                menuView.getOverflowIcon()
+                        .setTint(ColorEngine.Companion.getInstance(this).getAccent());
+            }
             if (!BuildConfig.APPLICATION_ID.equals(resolveDefaultHome())) {
                 toolbar.inflateMenu(R.menu.menu_change_default_home);
             }
@@ -195,7 +209,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
     private String resolveDefaultHome() {
         Intent homeIntent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_HOME);
-        ResolveInfo info = getPackageManager().resolveActivity(homeIntent, PackageManager.MATCH_DEFAULT_ONLY);
+        ResolveInfo info = getPackageManager()
+                .resolveActivity(homeIntent, PackageManager.MATCH_DEFAULT_ONLY);
         if (info != null && info.activityInfo != null) {
             return info.activityInfo.packageName;
         } else {
@@ -234,7 +249,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
     }
 
     @Override
-    public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference preference) {
+    public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller,
+            Preference preference) {
         Fragment fragment;
         if (preference instanceof SubPreference) {
             ((SubPreference) preference).start(this);
@@ -242,7 +258,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         } else if (preference instanceof ColorPickerPreference) {
             ((ColorPickerPreference) preference).showDialog(getSupportFragmentManager());
             return true;
-        }  else {
+        } else {
             fragment = Fragment.instantiate(this, preference.getFragment(), preference.getExtras());
         }
         if (fragment instanceof DialogFragment) {
@@ -250,7 +266,9 @@ public class SettingsActivity extends SettingsBaseActivity implements
         } else {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             setTitle(preference.getTitle());
-            transaction.setCustomAnimations(R.animator.fly_in, R.animator.fade_out, R.animator.fade_in, R.animator.fly_out);
+            transaction
+                    .setCustomAnimations(R.animator.fly_in, R.animator.fade_out, R.animator.fade_in,
+                            R.animator.fly_out);
             transaction.replace(R.id.content, fragment);
             transaction.addToBackStack("PreferenceFragment");
             transaction.commit();
@@ -263,7 +281,9 @@ public class SettingsActivity extends SettingsBaseActivity implements
     }
 
     private void updateUpButton(boolean enabled) {
-        if (getSupportActionBar() == null) return;
+        if (getSupportActionBar() == null) {
+            return;
+        }
         getSupportActionBar().setDisplayHomeAsUpEnabled(enabled);
     }
 
@@ -303,7 +323,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     }
 
                     @Override
-                    public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
+                    public void onItemRangeChanged(int positionStart, int itemCount,
+                            Object payload) {
                         onDataSetChanged();
                     }
 
@@ -342,7 +363,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         public RecyclerView onCreateRecyclerView(LayoutInflater inflater, ViewGroup parent,
-                                                 Bundle savedInstanceState) {
+                Bundle savedInstanceState) {
             SpringRecyclerView recyclerView = (SpringRecyclerView) inflater
                     .inflate(getRecyclerViewLayoutRes(), parent, false);
             recyclerView.setShouldTranslateSelf(false);
@@ -446,9 +467,12 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     continue;
                 }
 
-                if (!(preference instanceof ControlledPreference)) continue;
+                if (!(preference instanceof ControlledPreference)) {
+                    continue;
+                }
 
-                PreferenceController controller = ((ControlledPreference) preference).getController();
+                PreferenceController controller = ((ControlledPreference) preference)
+                        .getController();
                 if (controller != null) {
                     if (!controller.onPreferenceAdded(preference)) {
                         i--;
@@ -483,7 +507,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
         @Override
         public boolean onPreferenceTreeClick(Preference preference) {
-            if (preference.getKey() != null && "about".equals(preference.getKey())){
+            if (preference.getKey() != null && "about".equals(preference.getKey())) {
                 startActivity(new Intent(getActivity(), SettingsAboutActivity.class));
                 return true;
             }
@@ -526,8 +550,10 @@ public class SettingsActivity extends SettingsBaseActivity implements
                             (ButtonPreference) findPreference(ICON_BADGING_PREFERENCE_KEY);
                     // Listen to system notification badge settings while this UI is active.
                     mIconBadgingObserver = new IconBadgingObserver(
-                            iconBadgingPref, getActivity().getContentResolver(), getFragmentManager());
-                    mIconBadgingObserver.register(NOTIFICATION_BADGING, NOTIFICATION_ENABLED_LISTENERS);
+                            iconBadgingPref, getActivity().getContentResolver(),
+                            getFragmentManager());
+                    mIconBadgingObserver
+                            .register(NOTIFICATION_BADGING, NOTIFICATION_ENABLED_LISTENERS);
                 }
             } else if (getContent() == R.xml.lawnchair_theme_preferences) {
                 IconPackManager ipm = IconPackManager.Companion.getInstance(mContext);
@@ -570,8 +596,10 @@ public class SettingsActivity extends SettingsBaseActivity implements
             getActivity().setTitle(getArguments().getString(TITLE));
 
             if (getContent() == R.xml.lawnchair_desktop_preferences) {
-                SwitchSubPreference minusOne = (SwitchSubPreference) findPreference(ENABLE_MINUS_ONE_PREF);
-                if (minusOne != null && !FeedBridge.Companion.getInstance(getActivity()).isInstalled()) {
+                SwitchSubPreference minusOne = (SwitchSubPreference) findPreference(
+                        ENABLE_MINUS_ONE_PREF);
+                if (minusOne != null && !FeedBridge.Companion.getInstance(getActivity())
+                        .isInstalled()) {
                     minusOne.setChecked(false);
                 }
             }
@@ -595,9 +623,11 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 f = SingleDimensionGridSizeDialogFragmentCompat.Companion
                         .newInstance(preference.getKey());
             } else if (preference instanceof GesturePreference) {
-                f = SelectGestureHandlerFragment.Companion.newInstance((GesturePreference) preference);
+                f = SelectGestureHandlerFragment.Companion
+                        .newInstance((GesturePreference) preference);
             } else if (preference instanceof SearchProviderPreference) {
-                f = SelectSearchProviderFragment.Companion.newInstance((SearchProviderPreference) preference);
+                f = SelectSearchProviderFragment.Companion
+                        .newInstance((SearchProviderPreference) preference);
             } else if (preference instanceof ListPreference) {
                 Log.d("success", "onDisplayPreferenceDialog: yay");
                 f = ThemedListPreferenceDialogFragment.Companion.newInstance(preference.getKey());
@@ -671,28 +701,33 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 case "crashLauncher":
                     throw new RuntimeException("Triggered from developer options");
                 case "appInfo":
-                    ComponentName componentName = new ComponentName(getActivity(), LawnchairLauncher.class);
-                    LauncherAppsCompat.getInstance(getContext()).showAppDetailsForProfile(componentName, android.os.Process.myUserHandle());
+                    ComponentName componentName = new ComponentName(getActivity(),
+                            LawnchairLauncher.class);
+                    LauncherAppsCompat.getInstance(getContext())
+                            .showAppDetailsForProfile(componentName,
+                                    android.os.Process.myUserHandle());
                     break;
                 case "screenshot":
                     final Context context = getActivity();
-                    LawnchairLauncher.Companion.takeScreenshot(getActivity(), new Handler(), new Function1<Uri, Unit>() {
-                        @Override
-                        public Unit invoke(Uri uri) {
-                            try {
-                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
-                                ImageView imageView = new ImageView(context);
-                                imageView.setImageBitmap(bitmap);
-                                new AlertDialog.Builder(context)
-                                        .setTitle("Screenshot")
-                                        .setView(imageView)
-                                        .show();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            return null;
-                        }
-                    });
+                    LawnchairLauncher.Companion.takeScreenshot(getActivity(), new Handler(),
+                            new Function1<Uri, Unit>() {
+                                @Override
+                                public Unit invoke(Uri uri) {
+                                    try {
+                                        Bitmap bitmap = MediaStore.Images.Media
+                                                .getBitmap(context.getContentResolver(), uri);
+                                        ImageView imageView = new ImageView(context);
+                                        imageView.setImageBitmap(bitmap);
+                                        new AlertDialog.Builder(context)
+                                                .setTitle("Screenshot")
+                                                .setView(imageView)
+                                                .show();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    return null;
+                                }
+                            });
                     break;
             }
             return false;
@@ -703,10 +738,13 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
     }
 
-    public static class SuggestionConfirmationFragment extends DialogFragment implements DialogInterface.OnClickListener {
+    public static class SuggestionConfirmationFragment extends DialogFragment implements
+            DialogInterface.OnClickListener {
+
         public void onClick(final DialogInterface dialogInterface, final int n) {
             if (getTargetFragment() instanceof PreferenceFragmentCompat) {
-                Preference preference = ((PreferenceFragmentCompat) getTargetFragment()).findPreference(SHOW_PREDICTIONS_PREF);
+                Preference preference = ((PreferenceFragmentCompat) getTargetFragment())
+                        .findPreference(SHOW_PREDICTIONS_PREF);
                 if (preference instanceof TwoStatePreference) {
                     ((TwoStatePreference) preference).setChecked(false);
                 }
@@ -731,8 +769,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
     }
 
     /**
-     * Content observer which listens for system badging setting changes,
-     * and updates the launcher badging setting subtext accordingly.
+     * Content observer which listens for system badging setting changes, and updates the launcher
+     * badging setting subtext accordingly.
      */
     private static class IconBadgingObserver extends SettingsObserver.Secure
             implements Preference.OnPreferenceClickListener {
@@ -743,7 +781,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         private boolean serviceEnabled = true;
 
         public IconBadgingObserver(ButtonPreference badgingPref, ContentResolver resolver,
-                                   FragmentManager fragmentManager) {
+                FragmentManager fragmentManager) {
             super(resolver);
             mBadgingPref = badgingPref;
             mResolver = resolver;
@@ -768,7 +806,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 }
             }
             mBadgingPref.setWidgetFrameVisible(!serviceEnabled);
-            mBadgingPref.setOnPreferenceClickListener(serviceEnabled && Utilities.ATLEAST_OREO ? null : this);
+            mBadgingPref.setOnPreferenceClickListener(
+                    serviceEnabled && Utilities.ATLEAST_OREO ? null : this);
             mBadgingPref.setSummary(summary);
 
         }
@@ -776,13 +815,15 @@ public class SettingsActivity extends SettingsBaseActivity implements
         @Override
         public boolean onPreferenceClick(Preference preference) {
             if (!Utilities.ATLEAST_OREO && serviceEnabled) {
-                ComponentName cn = new ComponentName(preference.getContext(), NotificationListener.class);
+                ComponentName cn = new ComponentName(preference.getContext(),
+                        NotificationListener.class);
                 Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         .putExtra(":settings:fragment_args_key", cn.flattenToString());
                 preference.getContext().startActivity(intent);
             } else {
-                new SettingsActivity.NotificationAccessConfirmation().show(mFragmentManager, "notification_access");
+                new SettingsActivity.NotificationAccessConfirmation()
+                        .show(mFragmentManager, "notification_access");
             }
             return true;
         }
@@ -821,6 +862,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
     }
 
     public static class InstallFragment extends DialogFragment {
+
         @Override
         public Dialog onCreateDialog(final Bundle bundle) {
             return new AlertDialog.Builder(getActivity())
