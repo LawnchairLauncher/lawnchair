@@ -124,11 +124,6 @@ public class UiFactory {
         if (!launcher.getSharedPrefs().getBoolean(HOME_BOUNCE_SEEN, false)) {
             launcher.getStateManager().addStateListener(new LauncherStateManager.StateListener() {
                 @Override
-                public void onStateSetImmediately(LauncherState state) {
-                    onStateTransitionComplete(state);
-                }
-
-                @Override
                 public void onStateTransitionStart(LauncherState toState) {
                 }
 
@@ -150,11 +145,6 @@ public class UiFactory {
 
         if (!launcher.getSharedPrefs().getBoolean(SHELF_BOUNCE_SEEN, false)) {
             launcher.getStateManager().addStateListener(new LauncherStateManager.StateListener() {
-                @Override
-                public void onStateSetImmediately(LauncherState state) {
-                    onStateTransitionComplete(state);
-                }
-
                 @Override
                 public void onStateTransitionStart(LauncherState toState) {
                 }

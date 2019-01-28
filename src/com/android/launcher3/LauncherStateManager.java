@@ -233,9 +233,6 @@ public class LauncherStateManager {
                 handler.setState(state);
             }
 
-            for (int i = mListeners.size() - 1; i >= 0; i--) {
-                mListeners.get(i).onStateSetImmediately(state);
-            }
             onStateTransitionEnd(state);
 
             // Run any queued runnable
@@ -368,9 +365,6 @@ public class LauncherStateManager {
             public void onAnimationStart(Animator animation) {
                 // Change the internal state only when the transition actually starts
                 onStateTransitionStart(state);
-                for (int i = mListeners.size() - 1; i >= 0; i--) {
-                    mListeners.get(i).onStateTransitionStart(state);
-                }
             }
 
             @Override
@@ -380,9 +374,6 @@ public class LauncherStateManager {
                     onCompleteRunnable.run();
                 }
                 onStateTransitionEnd(state);
-                for (int i = mListeners.size() - 1; i >= 0; i--) {
-                    mListeners.get(i).onStateTransitionComplete(state);
-                }
             }
         });
         mConfig.setAnimation(animation, state);
@@ -402,6 +393,10 @@ public class LauncherStateManager {
             mLauncher.getWorkspace().setClipChildren(false);
         }
         UiFactory.onLauncherStateOrResumeChanged(mLauncher);
+
+        for (int i = mListeners.size() - 1; i >= 0; i--) {
+            mListeners.get(i).onStateTransitionStart(state);
+        }
     }
 
     private void onStateTransitionEnd(LauncherState state) {
@@ -420,6 +415,10 @@ public class LauncherStateManager {
         }
 
         UiFactory.onLauncherStateOrResumeChanged(mLauncher);
+
+        for (int i = mListeners.size() - 1; i >= 0; i--) {
+            mListeners.get(i).onStateTransitionComplete(state);
+        }
     }
 
     public void onWindowFocusChanged() {
@@ -597,11 +596,6 @@ public class LauncherStateManager {
     }
 
     public interface StateListener {
-
-        /**
-         * Called when the state is set without an animation.
-         */
-        void onStateSetImmediately(LauncherState state);
 
         void onStateTransitionStart(LauncherState toState);
         void onStateTransitionComplete(LauncherState finalState);
