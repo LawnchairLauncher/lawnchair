@@ -183,6 +183,7 @@ public class TouchInteractionService extends Service {
     private MainThreadExecutor mMainThreadExecutor;
     private ISystemUiProxy mISystemUiProxy;
     private OverviewCommandHelper mOverviewCommandHelper;
+    private OverviewComponentObserver mOverviewComponentObserver;
     private OverviewInteractionState mOverviewInteractionState;
     private OverviewCallbacks mOverviewCallbacks;
     private TaskOverlayFactory mTaskOverlayFactory;
@@ -198,7 +199,8 @@ public class TouchInteractionService extends Service {
         mAM = ActivityManagerWrapper.getInstance();
         mRecentsModel = RecentsModel.INSTANCE.get(this);
         mMainThreadExecutor = new MainThreadExecutor();
-        mOverviewCommandHelper = new OverviewCommandHelper(this);
+        mOverviewComponentObserver = new OverviewComponentObserver(this);
+        mOverviewCommandHelper = new OverviewCommandHelper(this, mOverviewComponentObserver);
         mMainThreadChoreographer = Choreographer.getInstance();
         mEventQueue = new MotionEventQueue(mMainThreadChoreographer, TouchConsumer.NO_OP);
         mOverviewInteractionState = OverviewInteractionState.INSTANCE.get(this);
@@ -218,7 +220,7 @@ public class TouchInteractionService extends Service {
     @Override
     public void onDestroy() {
         mInputConsumer.unregisterInputConsumer();
-        mOverviewCommandHelper.onDestroy();
+        mOverviewComponentObserver.onDestroy();
         sConnected = false;
         super.onDestroy();
     }
@@ -250,21 +252,22 @@ public class TouchInteractionService extends Service {
         if (runningTaskInfo == null && !forceToLauncher) {
             return TouchConsumer.NO_OP;
         } else if (forceToLauncher ||
-                mOverviewCommandHelper.getActivityControlHelper().isResumed()) {
+                mOverviewComponentObserver.getActivityControlHelper().isResumed()) {
             return OverviewTouchConsumer.newInstance(
-                    mOverviewCommandHelper.getActivityControlHelper(), false, mTouchInteractionLog);
+                    mOverviewComponentObserver.getActivityControlHelper(), false,
+                    mTouchInteractionLog);
         } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() &&
-                mOverviewCommandHelper.getActivityControlHelper().isInLiveTileMode()) {
+                mOverviewComponentObserver.getActivityControlHelper().isInLiveTileMode()) {
             return OverviewTouchConsumer.newInstance(
-                    mOverviewCommandHelper.getActivityControlHelper(), false, mTouchInteractionLog,
-                    false /* waitForWindowAvailable */);
+                    mOverviewComponentObserver.getActivityControlHelper(), false,
+                    mTouchInteractionLog, false /* waitForWindowAvailable */);
         } else {
             if (tracker == null) {
                 tracker = VelocityTracker.obtain();
             }
             return new OtherActivityTouchConsumer(this, runningTaskInfo, mRecentsModel,
-                    mOverviewCommandHelper.overviewIntent,
-                    mOverviewCommandHelper.getActivityControlHelper(), mMainThreadExecutor,
+                    mOverviewComponentObserver.getOverviewIntent(),
+                    mOverviewComponentObserver.getActivityControlHelper(), mMainThreadExecutor,
                     mBackgroundThreadChoreographer, downHitTarget, mOverviewCallbacks,
                     mTaskOverlayFactory, mInputConsumer, tracker, mTouchInteractionLog);
         }
