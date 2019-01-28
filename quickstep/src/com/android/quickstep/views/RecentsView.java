@@ -719,7 +719,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     }
 
-    protected abstract void startHome();
+    public abstract void startHome();
 
     public void reset() {
         setRunningTaskViewShowScreenshot(false);

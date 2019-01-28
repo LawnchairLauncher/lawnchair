@@ -364,8 +364,8 @@ public class ClipAnimationHelper {
 
     public static class TransformParams {
         float progress;
-        float offsetX;
-        float offsetScale;
+        public float offsetX;
+        public float offsetScale;
         @Nullable RectF currentRect;
         float targetAlpha;
         boolean forLiveTile;

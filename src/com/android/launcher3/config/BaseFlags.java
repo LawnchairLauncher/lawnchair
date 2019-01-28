@@ -106,7 +106,7 @@ abstract class BaseFlags {
 
     public static final ToggleableGlobalSettingsFlag SWIPE_HOME
             = new ToggleableGlobalSettingsFlag("SWIPE_HOME", false,
-            "[WIP] Swiping up on the nav bar goes home. Swipe and hold goes to recent apps.");
+            "Swiping up on the nav bar goes home. Swipe and hold goes to recent apps.");
 
     public static void initialize(Context context) {
         // Avoid the disk read for user builds

@@ -21,6 +21,7 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
+
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
@@ -47,8 +48,10 @@ import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
 import com.android.launcher3.MainThreadExecutor;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.RaceConditionTracker;
 import com.android.launcher3.util.TraceHelper;
+import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.AssistDataReceiver;
@@ -99,6 +102,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private Rect mStableInsets = new Rect();
 
     private VelocityTracker mVelocityTracker;
+    private MotionPauseDetector mMotionPauseDetector;
     private MotionEventQueue mEventQueue;
     private boolean mIsGoingToLauncher;
 
@@ -114,6 +118,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mRecentsModel = recentsModel;
         mHomeIntent = homeIntent;
         mVelocityTracker = velocityTracker;
+        mMotionPauseDetector = new MotionPauseDetector(base);
         mActivityControlHelper = activityControl;
         mMainThreadExecutor = mainThreadExecutor;
         mBackgroundThreadChoreographer = backgroundThreadChoreographer;
@@ -192,6 +197,10 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 if (mPassedInitialSlop && mInteractionHandler != null) {
                     // Move
                     dispatchMotion(ev, displacement - mStartDisplacement);
+
+                    if (FeatureFlags.SWIPE_HOME.get()) {
+                        mMotionPauseDetector.addPosition(displacement);
+                    }
                 }
                 break;
             }
@@ -250,6 +259,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mRecentsModel.getTasks(null);
         mInteractionHandler = handler;
         handler.setGestureEndCallback(mEventQueue::reset);
+        mMotionPauseDetector.setOnMotionPauseListener(handler::onMotionPauseChanged);
 
         CountDownLatch drawWaitLock = new CountDownLatch(1);
         handler.setLauncherOnDrawCallback(() -> {
@@ -336,7 +346,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         if (mInteractionHandler != null) {
             final WindowTransformSwipeHandler handler = mInteractionHandler;
             mInteractionHandler = null;
-            mIsGoingToLauncher = handler.mIsGoingToRecents;
+            mIsGoingToLauncher = handler.mIsGoingToRecents || handler.mIsGoingToHome;
             mMainThreadExecutor.execute(handler::reset);
         }
     }
@@ -414,6 +424,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
            mVelocityTracker.addMovement(ev);
            if (ev.getActionMasked() == ACTION_POINTER_UP) {
                mVelocityTracker.clear();
+               mMotionPauseDetector.clear();
            }
         }
     }
