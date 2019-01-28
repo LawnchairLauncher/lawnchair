@@ -397,8 +397,10 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             // touch slop
             startTouchTrackingForWindowAnimation(ev.getEventTime());
         }
-        mPassedInitialSlop = true;
-        mStartDisplacement = getDisplacement(ev);
+        if (!mPassedInitialSlop) {
+            mPassedInitialSlop = true;
+            mStartDisplacement = getDisplacement(ev);
+        }
         notifyGestureStarted();
     }
 
