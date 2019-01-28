@@ -39,6 +39,7 @@ import com.android.launcher3.util.Themes;
  */
 public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageIndicator,
         OnColorChangeListener {
+
     private static final int POSITION_PERSONAL = 0;
     private static final int POSITION_WORK = 1;
 
@@ -80,7 +81,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         mIsRtl = Utilities.isRtl(getResources());
 
         mTextColorTertiary = Themes.getAttrColor(getContext(), android.R.attr.textColorTertiary);
-        ColorEngine.Companion.getInstance(context)
+        ColorEngine.getInstance(context)
                 .addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT);
     }
 
@@ -133,7 +134,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         float y = getHeight() - mDividerPaint.getStrokeWidth();
         canvas.drawLine(getPaddingLeft(), y, getWidth() - getPaddingRight(), y, mDividerPaint);
         canvas.drawRect(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight,
-            mIndicatorRight, getHeight(), mSelectedIndicatorPaint);
+                mIndicatorRight, getHeight(), mSelectedIndicatorPaint);
     }
 
     public void highlightWorkTabIfNecessary() {
@@ -175,7 +176,8 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     }
 
     @Override
-    public void setMarkersCount(int numMarkers) { }
+    public void setMarkersCount(int numMarkers) {
+    }
 
     @Override
     public boolean hasOverlappingRendering() {

@@ -72,6 +72,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
 
     public interface BindViewCallback {
+
         void onBindView(ViewHolder holder);
     }
 
@@ -111,14 +112,14 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
         @Override
         public int getRowCountForAccessibility(RecyclerView.Recycler recycler,
-                                               RecyclerView.State state) {
+                RecyclerView.State state) {
             return super.getRowCountForAccessibility(recycler, state) -
                     getRowsNotForAccessibility(mApps.getAdapterItems().size() - 1);
         }
 
         @Override
         public void onInitializeAccessibilityNodeInfoForItem(RecyclerView.Recycler recycler,
-                                                             RecyclerView.State state, View host, AccessibilityNodeInfoCompat info) {
+                RecyclerView.State state, View host, AccessibilityNodeInfoCompat info) {
             super.onInitializeAccessibilityNodeInfoForItem(recycler, state, host, info);
 
             ViewGroup.LayoutParams lp = host.getLayoutParams();
@@ -137,8 +138,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         }
 
         /**
-         * Returns the number of rows before {@param adapterPosition}, including this position
-         * which should not be counted towards the collection info.
+         * Returns the number of rows before {@param adapterPosition}, including this position which
+         * should not be counted towards the collection info.
          */
         private int getRowsNotForAccessibility(int adapterPosition) {
             List<AdapterItem> items = mApps.getAdapterItems();
@@ -301,7 +302,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 TextView searchView = (TextView) holder.itemView;
                 if (mMarketSearchIntent != null) {
                     searchView.setVisibility(View.VISIBLE);
-                    int accent = ColorEngine.Companion.getInstance(searchView.getContext())
+                    int accent = ColorEngine.getInstance(searchView.getContext())
                             .getAccent();
                     searchView.setTextColor(accent);
                 } else {

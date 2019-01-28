@@ -64,9 +64,8 @@ public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter 
     /**
      * Tries to override initial expanded child count.
      * <p/>
-     * Initial expanded child count will be ignored if:
-     * 1. fragment contains request to highlight a particular row.
-     * 2. count value is invalid.
+     * Initial expanded child count will be ignored if: 1. fragment contains request to highlight a
+     * particular row. 2. count value is invalid.
      */
     public static void adjustInitialExpandedChildCount(SettingsActivity.BaseFragment host) {
         if (host == null) {
@@ -104,8 +103,9 @@ public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter 
                 outValue, true /* resolveRefs */);
         mNormalBackgroundRes = outValue.resourceId;
         context.getTheme().resolveAttribute(android.R.attr.windowBackground, outValue, true);
-        mInvisibleBackground = ColorUtils.setAlphaComponent(ContextCompat.getColor(context, outValue.resourceId), 0);
-        int accent = ColorEngine.Companion.getInstance(context).getAccent();
+        mInvisibleBackground = ColorUtils
+                .setAlphaComponent(ContextCompat.getColor(context, outValue.resourceId), 0);
+        int accent = ColorEngine.getInstance(context).getAccent();
         mHighlightColor = ColorUtils.setAlphaComponent(accent, (int) (255 * 0.26));
     }
 

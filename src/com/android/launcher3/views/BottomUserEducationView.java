@@ -106,7 +106,7 @@ public class BottomUserEducationView extends AbstractSlideInView implements Inse
     }
 
     private void applyColors() {
-        ColorEngine engine = ColorEngine.Companion.getInstance(getContext());
+        ColorEngine engine = ColorEngine.getInstance(getContext());
         int accent = engine.getAccent();
         int foreground = engine.getAccentForeground();
         setBackgroundColor(accent);

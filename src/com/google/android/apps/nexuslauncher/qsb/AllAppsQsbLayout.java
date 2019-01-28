@@ -34,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager, o,
         ColorEngine.OnColorChangeListener {
+
     private final k Ds;
     private final int Dt;
     private int mShadowAlpha;
@@ -97,7 +98,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        ColorEngine.Companion.getInstance(getContext())
+        ColorEngine.getInstance(getContext())
                 .addColorChangeListeners(this, Resolvers.ALLAPPS_QSB_BG);
         dN();
         Ds.a(this);
@@ -146,7 +147,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     protected void onDetachedFromWindow() {
-        ColorEngine.Companion.getInstance(getContext())
+        ColorEngine.getInstance(getContext())
                 .removeColorChangeListeners(this, Resolvers.ALLAPPS_QSB_BG);
         super.onDetachedFromWindow();
         Ds.b(this);
@@ -154,7 +155,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     protected final int aA(int i) {
         if (this.mActivity.getDeviceProfile().isVerticalBarLayout()) {
-            return (i - this.mAppsView.getActiveRecyclerView().getPaddingLeft()) - this.mAppsView.getActiveRecyclerView().getPaddingRight();
+            return (i - this.mAppsView.getActiveRecyclerView().getPaddingLeft()) - this.mAppsView
+                    .getActiveRecyclerView().getPaddingRight();
         }
         View view = this.mActivity.getHotseat().getLayout();
         return (i - view.getPaddingLeft()) - view.getPaddingRight();
@@ -204,7 +206,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     @Override
     public final void startSearch(String str, int i) {
-        SearchProviderController controller = SearchProviderController.Companion.getInstance(mActivity);
+        SearchProviderController controller = SearchProviderController.Companion
+                .getInstance(mActivity);
         SearchProvider provider = controller.getSearchProvider();
         if (shouldUseFallbackSearch(provider)) {
             searchFallback(str);
@@ -225,7 +228,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     private boolean shouldUseFallbackSearch() {
-        SearchProviderController controller = SearchProviderController.Companion.getInstance(mActivity);
+        SearchProviderController controller = SearchProviderController.Companion
+                .getInstance(mActivity);
         SearchProvider provider = controller.getSearchProvider();
         return shouldUseFallbackSearch(provider);
     }
@@ -254,12 +258,14 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     private void ensureFallbackView() {
         setOnClickListener(null);
-        mFallback = (FallbackAppsSearchView) this.mActivity.getLayoutInflater().inflate(R.layout.all_apps_google_search_fallback, this, false);
+        mFallback = (FallbackAppsSearchView) this.mActivity.getLayoutInflater()
+                .inflate(R.layout.all_apps_google_search_fallback, this, false);
         AllAppsContainerView allAppsContainerView = this.mAppsView;
         mFallback.DJ = this;
         mFallback.mApps = allAppsContainerView.getApps();
         mFallback.mAppsView = allAppsContainerView;
-        mFallback.DI.initialize(new SearchThread(mFallback.getContext()), mFallback, Launcher.getLauncher(mFallback.getContext()), mFallback);
+        mFallback.DI.initialize(new SearchThread(mFallback.getContext()), mFallback,
+                Launcher.getLauncher(mFallback.getContext()), mFallback);
         addView(this.mFallback);
         mFallback.setTextColor(mForegroundColor);
     }
@@ -283,13 +289,18 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     protected void onLayout(boolean z, int i, int i2, int i3, int i4) {
         super.onLayout(z, i, i2, i3, i4);
         View view = (View) getParent();
-        setTranslationX((float) ((view.getPaddingLeft() + ((((view.getWidth() - view.getPaddingLeft()) - view.getPaddingRight()) - (i3 - i)) / 2)) - i));
+        setTranslationX((float) ((view.getPaddingLeft() + (
+                (((view.getWidth() - view.getPaddingLeft()) - view.getPaddingRight()) - (i3 - i))
+                        / 2)) - i));
     }
 
     public void draw(Canvas canvas) {
         if (this.mShadowAlpha > 0) {
             if (this.Dv == null) {
-                this.Dv = c(getResources().getDimension(R.dimen.hotseat_qsb_scroll_shadow_blur_radius), getResources().getDimension(R.dimen.hotseat_qsb_scroll_key_shadow_offset), 0);
+                this.Dv = c(
+                        getResources().getDimension(R.dimen.hotseat_qsb_scroll_shadow_blur_radius),
+                        getResources().getDimension(R.dimen.hotseat_qsb_scroll_key_shadow_offset),
+                        0);
             }
             this.mShadowHelper.paint.setAlpha(this.mShadowAlpha);
             a(this.Dv, canvas);

@@ -185,7 +185,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
             }
             if (menuView != null) {
                 menuView.getOverflowIcon()
-                        .setTint(ColorEngine.Companion.getInstance(this).getAccent());
+                        .setTint(ColorEngine.getInstance(this).getAccent());
             }
             if (!BuildConfig.APPLICATION_ID.equals(resolveDefaultHome())) {
                 toolbar.inflateMenu(R.menu.menu_change_default_home);

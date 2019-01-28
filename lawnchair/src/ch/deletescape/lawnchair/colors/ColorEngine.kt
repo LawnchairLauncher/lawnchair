@@ -110,7 +110,10 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
         }
     }
 
-    companion object : SingletonHolder<ColorEngine, Context>(ensureOnMainThread(useApplicationContext(::ColorEngine)))
+    companion object : SingletonHolder<ColorEngine, Context>(ensureOnMainThread(useApplicationContext(::ColorEngine))) {
+        @JvmStatic
+        override fun getInstance(arg: Context) = super.getInstance(arg)
+    }
 
     interface OnColorChangeListener {
         fun onColorChange(resolver: String, color: Int, foregroundColor: Int)

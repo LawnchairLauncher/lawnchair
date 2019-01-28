@@ -108,7 +108,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         setContentView(R.layout.add_item_confirmation_activity);
         Button cancel = findViewById(R.id.cancel_action);
         Button add = findViewById(R.id.add_action);
-        int color = ColorEngine.Companion.getInstance(this).getAccent();
+        int color = ColorEngine.getInstance(this).getAccent();
         cancel.setTextColor(color);
         add.setTextColor(color);
         mWidgetCell = findViewById(R.id.widget_cell);
@@ -174,7 +174,8 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         view.startDragAndDrop(data, new DragShadowBuilder(view) {
 
             @Override
-            public void onDrawShadow(Canvas canvas) { }
+            public void onDrawShadow(Canvas canvas) {
+            }
 
             @Override
             public void onProvideShadowMetrics(Point outShadowSize, Point outShadowTouchPoint) {
@@ -261,7 +262,8 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     }
 
     private void acceptWidget(int widgetId) {
-        InstallShortcutReceiver.queueWidget(mRequest.getAppWidgetProviderInfo(this), widgetId, this);
+        InstallShortcutReceiver
+                .queueWidget(mRequest.getAppWidgetProviderInfo(this), widgetId, this);
         mWidgetOptions.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         mRequest.accept(mWidgetOptions);
         logCommand(Action.Command.CONFIRM);

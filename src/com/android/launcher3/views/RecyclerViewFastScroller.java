@@ -71,7 +71,9 @@ public class RecyclerViewFastScroller extends View implements ColorEngine.OnColo
     private final int mMaxWidth;
     private final int mThumbPadding;
 
-    /** Keeps the last known scrolling delta/velocity along y-axis. */
+    /**
+     * Keeps the last known scrolling delta/velocity along y-axis.
+     */
     private int mDy = 0;
     private final float mDeltaThreshold;
 
@@ -139,7 +141,8 @@ public class RecyclerViewFastScroller extends View implements ColorEngine.OnColo
         mDeltaThreshold = res.getDisplayMetrics().density * SCROLL_DELTA_THRESHOLD_DP;
 
         TypedArray ta =
-                context.obtainStyledAttributes(attrs, R.styleable.RecyclerViewFastScroller, defStyleAttr, 0);
+                context.obtainStyledAttributes(attrs, R.styleable.RecyclerViewFastScroller,
+                        defStyleAttr, 0);
         mCanThumbDetach = ta.getBoolean(R.styleable.RecyclerViewFastScroller_canThumbDetach, false);
         ta.recycle();
     }
@@ -205,8 +208,8 @@ public class RecyclerViewFastScroller extends View implements ColorEngine.OnColo
     }
 
     /**
-     * Handles the touch event and determines whether to show the fast scroller (or updates it if
-     * it is already showing).
+     * Handles the touch event and determines whether to show the fast scroller (or updates it if it
+     * is already showing).
      */
     public boolean handleTouchEvent(MotionEvent ev, Point offset) {
         int x = (int) ev.getX() - offset.x;
@@ -331,8 +334,8 @@ public class RecyclerViewFastScroller extends View implements ColorEngine.OnColo
     }
 
     /**
-     * Returns true if AllAppsTransitionController can handle vertical motion
-     * beginning at this point.
+     * Returns true if AllAppsTransitionController can handle vertical motion beginning at this
+     * point.
      */
     public boolean shouldBlockIntercept(int x, int y) {
         return isNearThumb(x, y);
@@ -365,7 +368,7 @@ public class RecyclerViewFastScroller extends View implements ColorEngine.OnColo
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        ColorEngine.Companion.getInstance(getContext())
+        ColorEngine.getInstance(getContext())
                 .addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT);
     }
 
@@ -380,7 +383,7 @@ public class RecyclerViewFastScroller extends View implements ColorEngine.OnColo
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        ColorEngine.Companion.getInstance(getContext())
+        ColorEngine.getInstance(getContext())
                 .removeColorChangeListeners(this, ColorEngine.Resolvers.ACCENT);
     }
 

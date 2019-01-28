@@ -50,7 +50,7 @@ public class WorkModeSwitch extends Switch {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        int accent = ColorEngine.Companion.getInstance(getContext()).getAccent();
+        int accent = ColorEngine.getInstance(getContext()).getAccent();
         LawnchairUtilsKt.applyColor(this, accent);
     }
 

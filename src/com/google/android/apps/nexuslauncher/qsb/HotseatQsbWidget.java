@@ -38,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         LawnchairPreferences.OnPreferenceChangeListener, ColorEngine.OnColorChangeListener {
+
     public static final String KEY_DOCK_COLORED_GOOGLE = "pref_dockColoredGoogle";
     public static final String KEY_DOCK_SEARCHBAR = "pref_dockSearchBar";
     public static final String KEY_DOCK_HIDE = "pref_hideHotseat";
@@ -75,11 +76,12 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     protected void onAttachedToWindow() {
         Utilities.getLawnchairPrefs(getContext())
                 .addOnPreferenceChangeListener(this, KEY_DOCK_COLORED_GOOGLE, KEY_DOCK_SEARCHBAR);
-        ColorEngine.Companion.getInstance(getContext())
+        ColorEngine.getInstance(getContext())
                 .addColorChangeListeners(this, Resolvers.HOTSEAT_QSB_BG);
         dW();
         super.onAttachedToWindow();
-        getContext().registerReceiver(this.DK, new IntentFilter("android.intent.action.WALLPAPER_CHANGED"));
+        getContext().registerReceiver(this.DK,
+                new IntentFilter("android.intent.action.WALLPAPER_CHANGED"));
         this.Ds.a((o) this);
         dH();
         setOnFocusChangeListener(this.mActivity.mFocusHandler);
@@ -90,7 +92,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         Utilities.getLawnchairPrefs(getContext())
                 .removeOnPreferenceChangeListener(this, KEY_DOCK_COLORED_GOOGLE,
                         KEY_DOCK_SEARCHBAR);
-        ColorEngine.Companion.getInstance(getContext())
+        ColorEngine.getInstance(getContext())
                 .removeColorChangeListeners(this, Resolvers.HOTSEAT_QSB_BG);
         getContext().unregisterReceiver(this.DK);
         this.Ds.b(this);
@@ -105,7 +107,8 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     }
 
     @Override
-    public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs, boolean force) {
+    public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs,
+            boolean force) {
         if (key.equals(KEY_DOCK_COLORED_GOOGLE)) {
             mIsGoogleColored = isGoogleColored();
             dM();
@@ -156,7 +159,9 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     }
 
     private void setColors() {
-        View.inflate(new ContextThemeWrapper(getContext(), mIsGoogleColored ? R.style.HotseatQsbTheme_Colored : R.style.HotseatQsbTheme), R.layout.qsb_hotseat_content, this);
+        View.inflate(new ContextThemeWrapper(getContext(),
+                        mIsGoogleColored ? R.style.HotseatQsbTheme_Colored : R.style.HotseatQsbTheme),
+                R.layout.qsb_hotseat_content, this);
         /*int colorRes;
         if (isDarkBar()) {
             colorRes = R.color.qsb_background_hotseat_dark;
@@ -172,7 +177,8 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
             return true;
         }
         WallpaperInfo wallpaperInfo = WallpaperManager.getInstance(getContext()).getWallpaperInfo();
-        return wallpaperInfo != null && wallpaperInfo.getComponent().flattenToString().equals(getContext().getString(R.string.default_live_wallpaper));
+        return wallpaperInfo != null && wallpaperInfo.getComponent().flattenToString()
+                .equals(getContext().getString(R.string.default_live_wallpaper));
     }
 
     protected final int aA(int i) {
@@ -181,7 +187,8 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     }
 
     private void doOnClick() {
-        SearchProviderController controller = SearchProviderController.Companion.getInstance(mActivity);
+        SearchProviderController controller = SearchProviderController.Companion
+                .getInstance(mActivity);
         if (controller.isGoogle()) {
             startGoogleSearch();
         } else {
@@ -199,9 +206,11 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
 
     private void startGoogleSearch() {
         final ConfigBuilder f = new ConfigBuilder(this, false);
-        if (!forceFallbackSearch() && mActivity.getGoogleNow().startSearch(f.build(), f.getExtras())) {
+        if (!forceFallbackSearch() && mActivity.getGoogleNow()
+                .startSearch(f.build(), f.getExtras())) {
             SharedPreferences devicePrefs = Utilities.getDevicePrefs(getContext());
-            devicePrefs.edit().putInt("key_hotseat_qsb_tap_count", devicePrefs.getInt("key_hotseat_qsb_tap_count", 0) + 1).apply();
+            devicePrefs.edit().putInt("key_hotseat_qsb_tap_count",
+                    devicePrefs.getInt("key_hotseat_qsb_tap_count", 0) + 1).apply();
             mActivity.playQsbAnimation();
         } else {
             getContext().sendOrderedBroadcast(getSearchIntent(), null,
@@ -209,7 +218,8 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
                         @Override
                         public void onReceive(Context context, Intent intent) {
                             if (getResultCode() == 0) {
-                                fallbackSearch("com.google.android.googlequicksearchbox.TEXT_ASSIST");
+                                fallbackSearch(
+                                        "com.google.android.googlequicksearchbox.TEXT_ASSIST");
                             } else {
                                 mActivity.playQsbAnimation();
                             }
@@ -226,7 +236,8 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     @Override
     protected void noGoogleAppSearch() {
         final Intent searchIntent = new Intent("com.google.android.apps.searchlite.WIDGET_ACTION")
-                .setComponent(ComponentName.unflattenFromString("com.google.android.apps.searchlite/.ui.SearchActivity"))
+                .setComponent(ComponentName.unflattenFromString(
+                        "com.google.android.apps.searchlite/.ui.SearchActivity"))
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .putExtra("showKeyboard", true)
                 .putExtra("contentType", 12);
@@ -236,13 +247,16 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
 
         if (pm.queryIntentActivities(searchIntent, 0).isEmpty()) {
             try {
-                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com")));
+                context.startActivity(
+                        new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com")));
                 mActivity.openQsb();
             } catch (ActivityNotFoundException ignored) {
                 try {
                     getContext().getPackageManager().getPackageInfo(GOOGLE_QSB, 0);
                     LauncherAppsCompat.getInstance(getContext())
-                            .showAppDetailsForProfile(new ComponentName(GOOGLE_QSB, ".SearchActivity"), Process.myUserHandle());
+                            .showAppDetailsForProfile(
+                                    new ComponentName(GOOGLE_QSB, ".SearchActivity"),
+                                    Process.myUserHandle());
                 } catch (PackageManager.NameNotFoundException ignored2) {
                 }
             }
@@ -310,7 +324,8 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     }
 
     static int c(Launcher launcher) {
-        return launcher.getDeviceProfile().getInsets().bottom + launcher.getResources().getDimensionPixelSize(R.dimen.hotseat_qsb_bottom_margin);
+        return launcher.getDeviceProfile().getInsets().bottom + launcher.getResources()
+                .getDimensionPixelSize(R.dimen.hotseat_qsb_bottom_margin);
     }
 
     @Nullable

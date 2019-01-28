@@ -30,7 +30,7 @@ import ch.deletescape.lawnchair.colors.ColorEngine;
 public class Themes {
 
     public static int getColorAccent(Context context) {
-        return ColorEngine.Companion.getInstance(context).getAccent();
+        return ColorEngine.getInstance(context).getAccent();
     }
 
     public static int getAttrColor(Context context, int attr) {
@@ -73,10 +73,7 @@ public class Themes {
 
     /**
      * Scales a color matrix such that, when applied to color R G B A, it produces R' G' B' A' where
-     * R' = r * R
-     * G' = g * G
-     * B' = b * B
-     * A' = a * A
+     * R' = r * R G' = g * G B' = b * B A' = a * A
      *
      * The matrix will, for instance, turn white into r g b a, and black will remain black.
      *
