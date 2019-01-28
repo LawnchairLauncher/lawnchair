@@ -135,6 +135,10 @@ public class MotionPauseDetector {
         mIsPaused = mHasEverBeenPaused = false;
     }
 
+    public boolean isPaused() {
+        return mIsPaused;
+    }
+
     public interface OnMotionPauseListener {
         void onMotionPauseChanged(boolean isPaused);
     }

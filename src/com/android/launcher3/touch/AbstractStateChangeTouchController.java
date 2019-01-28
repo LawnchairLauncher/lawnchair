@@ -46,7 +46,6 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -298,7 +297,7 @@ public abstract class AbstractStateChangeTouchController
      * When going between normal and overview states, see if we passed the overview threshold and
      * play the appropriate atomic animation if so.
      */
-    private void maybeUpdateAtomicAnim(LauncherState fromState, LauncherState toState,
+    protected void maybeUpdateAtomicAnim(LauncherState fromState, LauncherState toState,
             float progress) {
         if (!goingBetweenNormalAndOverview(fromState, toState)) {
             return;
@@ -435,7 +434,11 @@ public abstract class AbstractStateChangeTouchController
             mLauncher.getAppsView().addSpringFromFlingUpdateListener(anim, velocity);
         }
         anim.start();
-        mAtomicAnimAutoPlayInfo = new AutoPlayAtomicAnimationInfo(endProgress, anim.getDuration());
+        settleAtomicAnimation(endProgress, anim.getDuration());
+    }
+
+    protected void settleAtomicAnimation(float endProgress, long duration) {
+        mAtomicAnimAutoPlayInfo = new AutoPlayAtomicAnimationInfo(endProgress, duration);
         maybeAutoPlayAtomicComponentsAnim();
     }
 
