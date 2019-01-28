@@ -25,6 +25,7 @@ import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRE
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
@@ -82,7 +83,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         if (mCurrentAnimation != null) {
             if (mFinishFastOnSecondTouch) {
                 // TODO: Animate to finish instead.
-                mCurrentAnimation.getAnimationPlayer().end();
+                mCurrentAnimation.skipToEnd();
             }
 
             AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
@@ -241,7 +242,10 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     private void handleFirstSwipeToOverview(final ValueAnimator animator,
             final long expectedDuration, final LauncherState targetState, final float velocity,
             final boolean isFling) {
-        if (mFromState == NORMAL && mToState == OVERVIEW && targetState == OVERVIEW) {
+        if (QUICKSTEP_SPRINGS.get() && mFromState == OVERVIEW && mToState == ALL_APPS
+                && targetState == OVERVIEW) {
+            mFinishFastOnSecondTouch = true;
+        } else  if (mFromState == NORMAL && mToState == OVERVIEW && targetState == OVERVIEW) {
             mFinishFastOnSecondTouch = true;
             if (isFling && expectedDuration != 0) {
                 // Update all apps interpolator to add a bit of overshoot starting from currFraction

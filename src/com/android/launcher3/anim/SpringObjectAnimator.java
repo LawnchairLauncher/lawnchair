@@ -73,7 +73,9 @@ public class SpringObjectAnimator<T extends ProgressInterface> extends ValueAnim
         mListeners = new ArrayList<>();
         setFloatValues(values);
 
-        mObjectAnimator.addListener(new AnimatorListenerAdapter() {
+        // We use this listener and track mListeners so that we can sync the animator and spring
+        // listeners.
+        super.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
                 mAnimatorEnded = false;
@@ -94,7 +96,7 @@ public class SpringObjectAnimator<T extends ProgressInterface> extends ValueAnim
                 for (AnimatorListener l : mListeners) {
                     l.onAnimationCancel(animation);
                 }
-                mSpring.animateToFinalPosition(mObject.getProgress());
+                mSpring.cancel();
             }
         });
 
@@ -145,6 +147,10 @@ public class SpringObjectAnimator<T extends ProgressInterface> extends ValueAnim
         mListeners.add(listener);
     }
 
+    public ArrayList<AnimatorListener> getSuperListeners() {
+        return super.getListeners();
+    }
+
     @Override
     public ArrayList<AnimatorListener> getListeners() {
         return mListeners;
@@ -167,8 +173,8 @@ public class SpringObjectAnimator<T extends ProgressInterface> extends ValueAnim
 
     @Override
     public void cancel() {
-        mSpring.animateToFinalPosition(mObject.getProgress());
         mObjectAnimator.cancel();
+        mSpring.cancel();
     }
 
     @Override
