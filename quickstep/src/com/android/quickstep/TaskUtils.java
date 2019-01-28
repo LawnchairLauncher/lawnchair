@@ -66,13 +66,13 @@ public class TaskUtils {
         PackageManager packageManager = context.getPackageManager();
         UserHandle user = UserHandle.of(task.key.userId);
         ApplicationInfo applicationInfo = launcherAppsCompat.getApplicationInfo(
-            task.getTopComponent().getPackageName(), 0, user);
+                task.getTopComponent().getPackageName(), 0, user);
         if (applicationInfo == null) {
             Log.e(TAG, "Failed to get title for task " + task);
             return "";
         }
         return userManagerCompat.getBadgedLabelForUser(
-            applicationInfo.loadLabel(packageManager), user);
+                applicationInfo.loadLabel(packageManager), user);
     }
 
     public static ComponentKey getLaunchComponentKeyForTask(Task.TaskKey taskKey) {
@@ -88,7 +88,8 @@ public class TaskUtils {
      *
      * If this method returns a non-null TaskView, it will be used in composeRecentsLaunchAnimation.
      * Otherwise, we will assume we are using a normal app transition, but it's possible that the
-     * opening remote target (which we don't get until onAnimationStart) will resolve to a TaskView.
+     * opening remote target (which we don't get until onAnimationStart) will resolve to a
+     * TaskView.
      */
     public static TaskView findTaskViewToLaunch(
             BaseDraggingActivity activity, View v, RemoteAnimationTargetCompat[] targets) {
@@ -181,8 +182,10 @@ public class TaskUtils {
                         syncTransactionApplier);
                 if (!skipViewChanges) {
                     float scale = taskBounds.width() / mThumbnailRect.width();
-                    v.setScaleX(scale);
-                    v.setScaleY(scale);
+                    if (!Float.isNaN(scale)) {
+                        v.setScaleX(scale);
+                        v.setScaleY(scale);
+                    }
                     v.setTranslationX(taskBounds.centerX() - mThumbnailRect.centerX());
                     v.setTranslationY(taskBounds.centerY() - mThumbnailRect.centerY());
                     v.setAlpha(mViewAlpha.value);
