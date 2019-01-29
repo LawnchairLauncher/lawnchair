@@ -23,7 +23,7 @@ import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.MotionEvent.PointerProperties;
 
-import com.android.launcher3.Utilities.Consumer;
+import java.util.function.Consumer;
 
 /**
  * To minimize the size of the MotionEvent, historic events are not copied and passed via the

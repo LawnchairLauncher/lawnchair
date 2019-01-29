@@ -26,6 +26,8 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import com.android.launcher3.TestProtocol;
 import com.android.launcher3.Utilities;
 
+import java.util.function.Consumer;
+
 public class AccessibilityManagerCompat {
 
     public static boolean isAccessibilityEnabled(Context context) {
@@ -85,7 +87,7 @@ public class AccessibilityManagerCompat {
     }
 
     public static boolean processTestRequest(Context context, String eventTag, int action,
-            Bundle request, Utilities.Consumer<Bundle> responseFiller) {
+            Bundle request, Consumer<Bundle> responseFiller) {
         final AccessibilityManager accessibilityManager = getAccessibilityManagerForTest(context);
         if (accessibilityManager == null) return false;
 

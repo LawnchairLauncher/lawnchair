@@ -17,7 +17,7 @@ package com.android.quickstep;
 
 import android.util.SparseArray;
 
-import com.android.launcher3.Utilities.Consumer;
+import java.util.function.Consumer;
 
 /**
  * Utility class to help manage multiple callbacks based on different states.

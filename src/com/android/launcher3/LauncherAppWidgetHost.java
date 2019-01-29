@@ -26,7 +26,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.widget.Toast;
@@ -135,9 +134,6 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
      * @see #setResumed(boolean)
      */
     public void setListenIfResumed(boolean listenIfResumed) {
-        if (!Utilities.ATLEAST_NOUGAT_MR1) {
-            return;
-        }
         if (listenIfResumed == ((mFlags & FLAG_LISTEN_IF_RESUMED) != 0)) {
             return;
         }

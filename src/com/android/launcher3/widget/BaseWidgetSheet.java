@@ -161,7 +161,7 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
 
     private static View createColorScrim(Context context) {
         View view = new View(context);
-        if (Utilities.ATLEAST_NOUGAT) view.forceHasOverlappingRendering(false);
+        view.forceHasOverlappingRendering(false);
 
         WallpaperColorInfo colors = WallpaperColorInfo.getInstance(context);
         int alpha = context.getResources().getInteger(R.integer.extracted_color_gradient_alpha);

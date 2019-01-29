@@ -49,10 +49,8 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
@@ -75,7 +73,6 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
-import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.TraceHelper;
 
 import java.util.ArrayList;
@@ -85,6 +82,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
+import java.util.function.Supplier;
 
 /**
  * Runnable for the thread that loads the contents of the launcher:
@@ -271,8 +269,7 @@ public class LoaderTask implements Runnable {
             clearDb = true;
         }
 
-        if (!clearDb && GridSizeMigrationTask.ENABLED &&
-                !GridSizeMigrationTask.migrateGridIfNeeded(context)) {
+        if (!clearDb && !GridSizeMigrationTask.migrateGridIfNeeded(context)) {
             // Migration failed. Clear workspace.
             clearDb = true;
         }
@@ -497,7 +494,7 @@ public class LoaderTask implements Runnable {
                                     LauncherIcons li = LauncherIcons.obtain(context);
                                     // If the pinned deep shortcut is no longer published,
                                     // use the last saved icon instead of the default.
-                                    Provider<ItemInfoWithIcon> fallbackIconProvider = () ->
+                                    Supplier<ItemInfoWithIcon> fallbackIconProvider = () ->
                                             c.loadIcon(finalInfo, li) ? finalInfo : null;
                                     info.applyFrom(li.createShortcutIcon(pinnedShortcut,
                                             true /* badged */, fallbackIconProvider));

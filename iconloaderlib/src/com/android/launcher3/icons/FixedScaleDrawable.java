@@ -1,12 +1,10 @@
 package com.android.launcher3.icons;
 
-import android.annotation.TargetApi;
 import android.content.res.Resources;
 import android.content.res.Resources.Theme;
 import android.graphics.Canvas;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.DrawableWrapper;
-import android.os.Build;
 import android.util.AttributeSet;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -14,7 +12,6 @@ import org.xmlpull.v1.XmlPullParser;
 /**
  * Extension of {@link DrawableWrapper} which scales the child drawables by a fixed amount.
  */
-@TargetApi(Build.VERSION_CODES.N)
 public class FixedScaleDrawable extends DrawableWrapper {
 
     // TODO b/33553066 use the constant defined in MaskableIconDrawable

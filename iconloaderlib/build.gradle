@@ -16,7 +16,7 @@ android {
     publishNonDefault true
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 25
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"

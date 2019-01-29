@@ -29,9 +29,9 @@ import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.MainThreadExecutor;
-import com.android.launcher3.Utilities.Consumer;
+
+import java.util.function.Consumer;
 
 /**
  * {@link BroadcastReceiver} which watches configuration changes and
