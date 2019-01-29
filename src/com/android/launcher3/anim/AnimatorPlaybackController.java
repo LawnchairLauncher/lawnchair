@@ -80,6 +80,9 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
 
     private OnAnimationEndDispatcher mEndListener;
     private DynamicAnimation.OnAnimationEndListener mSpringEndListener;
+    // We need this variable to ensure the end listener is called immediately, otherwise we run into
+    // issues where the callback interferes with the states of the swipe detector.
+    private boolean mSkipToEnd = false;
 
     protected AnimatorPlaybackController(AnimatorSet anim, long duration,
             Runnable onCancelRunnable) {
@@ -232,7 +235,11 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
     }
 
     private void dispatchOnStartRecursively(Animator animator) {
-        for (AnimatorListener l : nonNullList(animator.getListeners())) {
+        List<AnimatorListener> listeners = animator instanceof SpringObjectAnimator
+                ? nonNullList(((SpringObjectAnimator) animator).getSuperListeners())
+                : nonNullList(animator.getListeners());
+
+        for (AnimatorListener l : listeners) {
             l.onAnimationStart(animator);
         }
 
@@ -278,6 +285,17 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
 
     public Runnable getOnCancelRunnable() {
         return mOnCancelRunnable;
+    }
+
+    public void skipToEnd() {
+        mSkipToEnd = true;
+        for (SpringAnimation spring : mSprings) {
+            if (spring.canSkipToEnd()) {
+                spring.skipToEnd();
+            }
+        }
+        mAnimationPlayer.end();
+        mSkipToEnd = false;
     }
 
     public static class AnimatorPlaybackControllerVL extends AnimatorPlaybackController {
@@ -343,19 +361,34 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
      */
     private class OnAnimationEndDispatcher extends AnimationSuccessListener {
 
+        boolean mAnimatorDone = false;
+        boolean mSpringsDone = false;
+        boolean mDispatched = false;
+
         @Override
         public void onAnimationStart(Animator animation) {
             mCancelled = false;
+            mDispatched = false;
         }
 
         @Override
         public void onAnimationSuccess(Animator animator) {
+            if (mSprings.isEmpty()) {
+                mSpringsDone = mAnimatorDone = true;
+            }
+            if (isAnySpringRunning()) {
+                mAnimatorDone = true;
+            } else {
+                mSpringsDone = true;
+            }
+
             // We wait for the spring (if any) to finish running before completing the end callback.
-            if (mSprings.isEmpty() || !isAnySpringRunning()) {
+            if (!mDispatched && (mSkipToEnd || (mAnimatorDone && mSpringsDone))) {
                 dispatchOnEndRecursively(mAnim);
                 if (mEndAction != null) {
                     mEndAction.run();
                 }
+                mDispatched = true;
             }
         }
 
