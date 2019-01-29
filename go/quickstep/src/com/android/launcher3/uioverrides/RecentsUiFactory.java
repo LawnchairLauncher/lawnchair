@@ -44,7 +44,7 @@ public abstract class RecentsUiFactory {
         list.add(launcher.getDragController());
 
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
-            list.add(new OverviewToAllAppsTouchController(launcher));
+            list.add(new LandscapeStatesTouchController(launcher));
             list.add(new LandscapeEdgeSwipeController(launcher));
         } else {
             boolean allowDragToOverview = OverviewInteractionState.INSTANCE.get(launcher)
