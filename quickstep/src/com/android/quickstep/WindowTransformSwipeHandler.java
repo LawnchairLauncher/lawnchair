@@ -70,6 +70,7 @@ import android.view.animation.Interpolator;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
@@ -624,23 +625,37 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     @WorkerThread
-    public void dispatchMotionEventToRecentsView(MotionEvent event) {
+    @SuppressWarnings("WrongThread")
+    public void dispatchMotionEventToRecentsView(MotionEvent event, @Nullable Float velocityX) {
         if (mRecentsView == null) {
             return;
         }
-        // Pass the motion events to RecentsView to allow scrolling during swipe up.
-        if (mDispatchedDownEvent) {
-            mRecentsView.dispatchTouchEvent(event);
+        if (Looper.myLooper() == mMainThreadHandler.getLooper()) {
+            dispatchMotionEventToRecentsViewUi(event, velocityX);
         } else {
+            MotionEvent ev = MotionEvent.obtain(event);
+            postAsyncCallback(mMainThreadHandler, () -> {
+                dispatchMotionEventToRecentsViewUi(ev, velocityX);
+                ev.recycle();
+            });
+        }
+    }
+
+    @UiThread
+    private void dispatchMotionEventToRecentsViewUi(MotionEvent event, @Nullable Float velocityX) {
+        // Pass the motion events to RecentsView to allow scrolling during swipe up.
+        if (!mDispatchedDownEvent) {
             // The first event we dispatch should be ACTION_DOWN.
             mDispatchedDownEvent = true;
             MotionEvent downEvent = MotionEvent.obtain(event);
             downEvent.setAction(MotionEvent.ACTION_DOWN);
             int flags = downEvent.getEdgeFlags();
             downEvent.setEdgeFlags(flags | TouchInteractionService.EDGE_NAV_BAR);
-            mRecentsView.dispatchTouchEvent(downEvent);
+            mRecentsView.simulateTouchEvent(downEvent, velocityX);
             downEvent.recycle();
         }
+
+        mRecentsView.simulateTouchEvent(event, velocityX);
     }
 
     @WorkerThread

@@ -1134,9 +1134,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 final int activePointerId = mActivePointerId;
                 final int pointerIndex = ev.findPointerIndex(activePointerId);
                 final float x = ev.getX(pointerIndex);
-                final VelocityTracker velocityTracker = mVelocityTracker;
-                velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
-                int velocityX = (int) velocityTracker.getXVelocity(activePointerId);
+                int velocityX = computeXVelocity();
                 final int deltaX = (int) (x - mDownMotionX);
                 final int pageWidth = getPageAt(mCurrentPage).getMeasuredWidth();
                 boolean isSignificantMove = Math.abs(deltaX) > pageWidth *
@@ -1238,6 +1236,12 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
 
         return true;
+    }
+
+    protected int computeXVelocity() {
+        final VelocityTracker velocityTracker = mVelocityTracker;
+        velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
+        return (int) velocityTracker.getXVelocity(mActivePointerId);
     }
 
     protected boolean shouldFlingForVelocity(int velocityX) {

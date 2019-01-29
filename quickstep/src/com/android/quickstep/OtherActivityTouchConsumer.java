@@ -67,6 +67,8 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import androidx.annotation.Nullable;
+
 /**
  * Touch consumer for handling events originating from an activity other than Launcher
  */
@@ -196,7 +198,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
                 if (mPassedInitialSlop && mInteractionHandler != null) {
                     // Move
-                    dispatchMotion(ev, displacement - mStartDisplacement);
+                    dispatchMotion(ev, displacement - mStartDisplacement, null);
 
                     if (FeatureFlags.SWIPE_HOME.get()) {
                         mMotionPauseDetector.addPosition(displacement);
@@ -217,11 +219,11 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         }
     }
 
-    private void dispatchMotion(MotionEvent ev, float displacement) {
+    private void dispatchMotion(MotionEvent ev, float displacement, @Nullable Float velocityX) {
         mInteractionHandler.updateDisplacement(displacement);
         boolean isLandscape = isNavBarOnLeft() || isNavBarOnRight();
         if (!isLandscape) {
-            mInteractionHandler.dispatchMotionEventToRecentsView(ev);
+            mInteractionHandler.dispatchMotionEventToRecentsView(ev, velocityX);
         }
     }
 
@@ -316,15 +318,16 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
      */
     private void finishTouchTracking(MotionEvent ev) {
         if (mPassedInitialSlop && mInteractionHandler != null) {
-            dispatchMotion(ev, getDisplacement(ev) - mStartDisplacement);
 
             mVelocityTracker.computeCurrentVelocity(1000,
                     ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
-
             float velocityX = mVelocityTracker.getXVelocity(mActivePointerId);
             float velocity = isNavBarOnRight() ? velocityX
                     : isNavBarOnLeft() ? -velocityX
                             : mVelocityTracker.getYVelocity(mActivePointerId);
+
+            dispatchMotion(ev, getDisplacement(ev) - mStartDisplacement, velocityX);
+
             mInteractionHandler.onGestureEnded(velocity, velocityX);
         } else {
             // Since we start touch tracking on DOWN, we may reach this state without actually
