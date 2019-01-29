@@ -151,7 +151,7 @@ public class ColorExtractor {
                 // Defensively avoid array bounds violations.
                 continue;
             }
-            int currentScore = rgbScoreHistogram.get(rgb);
+            int currentScore = rgbScoreHistogram.get(rgb) + 1;
             rgbScoreHistogram.append(rgb, currentScore);
             if (currentScore > highScore) {
                 highScore = currentScore;
