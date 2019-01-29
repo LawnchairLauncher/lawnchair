@@ -158,7 +158,9 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
                 cardIconView = images.first()
                 title = texts[0]
                 subtitle = texts[1]
-                subtitle2 = texts.getOrNull(2)
+                if (texts.size > 3) {
+                    subtitle2 = texts[2]
+                }
             }
             updateData(extractBitmap(weatherIconView), temperature, extractBitmap(cardIconView), title, subtitle, subtitle2)
         }
