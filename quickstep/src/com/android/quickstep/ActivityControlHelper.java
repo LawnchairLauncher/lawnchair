@@ -23,7 +23,8 @@ import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS_SPRING;
+import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_DAMPING_RATIO;
+import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_STIFFNESS;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
@@ -394,9 +395,9 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         }
 
         private Animator createShelfAnim(Launcher activity, float ... progressValues) {
-            Animator shiftAnim = new SpringObjectAnimator(activity.getAllAppsController(),
-                    ALL_APPS_PROGRESS_SPRING, "allAppsSpringFromACH",
-                    activity.getAllAppsController().getShiftRange(), progressValues);
+            Animator shiftAnim = new SpringObjectAnimator<>(activity.getAllAppsController(),
+                    "allAppsSpringFromACH", activity.getAllAppsController().getShiftRange(),
+                    SPRING_DAMPING_RATIO, SPRING_STIFFNESS, progressValues);
             shiftAnim.setInterpolator(LINEAR);
             return shiftAnim;
         }
