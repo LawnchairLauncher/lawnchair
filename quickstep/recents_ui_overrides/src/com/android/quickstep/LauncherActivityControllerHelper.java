@@ -371,7 +371,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
 
     @Nullable
     @UiThread
-    private Launcher getVisibleLaucher() {
+    private Launcher getVisibleLauncher() {
         Launcher launcher = getCreatedActivity();
         return (launcher != null) && launcher.isStarted() && launcher.hasWindowFocus() ?
                 launcher : null;
@@ -380,25 +380,25 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     @Nullable
     @Override
     public RecentsView getVisibleRecentsView() {
-        Launcher launcher = getVisibleLaucher();
+        Launcher launcher = getVisibleLauncher();
         return launcher != null && launcher.getStateManager().getState().overviewUi
                 ? launcher.getOverviewPanel() : null;
     }
 
     @Override
     public boolean switchToRecentsIfVisible(boolean fromRecentsButton) {
-        Launcher launcher = getVisibleLaucher();
-        if (launcher != null) {
-            if (fromRecentsButton) {
-                launcher.getUserEventDispatcher().logActionCommand(
-                        LauncherLogProto.Action.Command.RECENTS_BUTTON,
-                        getContainerType(),
-                        LauncherLogProto.ContainerType.TASKSWITCHER);
-            }
-            launcher.getStateManager().goToState(OVERVIEW);
-            return true;
+        Launcher launcher = getVisibleLauncher();
+        if (launcher == null) {
+            return false;
         }
-        return false;
+        if (fromRecentsButton) {
+            launcher.getUserEventDispatcher().logActionCommand(
+                    LauncherLogProto.Action.Command.RECENTS_BUTTON,
+                    getContainerType(),
+                    LauncherLogProto.ContainerType.TASKSWITCHER);
+        }
+        launcher.getStateManager().goToState(OVERVIEW);
+        return true;
     }
 
     @Override
@@ -436,7 +436,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
 
     @Override
     public int getContainerType() {
-        final Launcher launcher = getVisibleLaucher();
+        final Launcher launcher = getVisibleLauncher();
         return launcher != null ? launcher.getStateManager().getState().containerType
                 : LauncherLogProto.ContainerType.APP;
     }
