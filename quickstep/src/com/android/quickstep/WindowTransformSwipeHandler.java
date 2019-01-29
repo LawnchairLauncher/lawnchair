@@ -478,6 +478,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         SyncRtSurfaceTransactionApplierCompat.create(mRecentsView, (applier) -> {
             mSyncTransactionApplier = applier;
         });
+        mRecentsView.setEnableFreeScroll(false);
         mRecentsView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             if (!mBgLongSwipeMode && !mIsGoingToHome) {
                 updateFinalShift();
@@ -910,7 +911,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         Interpolator interpolator = DEACCEL;
         final int nextPage = mRecentsView != null ? mRecentsView.getNextPage() : -1;
         final int runningTaskIndex = mRecentsView != null ? mRecentsView.getRunningTaskIndex() : -1;
-        boolean goingToNewTask = mRecentsView != null && nextPage != runningTaskIndex;
+        boolean goingToNewTask = mRecentsView != null && nextPage != runningTaskIndex
+                && mRecentsView.getTaskViewAt(nextPage) != null;
         final boolean reachedOverviewThreshold = currentShift >= MIN_PROGRESS_FOR_OVERVIEW;
         if (!isFling) {
             if (SWIPE_HOME.get()) {
@@ -922,7 +924,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                     endTarget = currentShift < MIN_PROGRESS_FOR_OVERVIEW ? LAST_TASK : HOME;
                 }
             } else {
-                endTarget = reachedOverviewThreshold && mGestureStarted ? RECENTS : LAST_TASK;
+                endTarget = reachedOverviewThreshold && mGestureStarted
+                        ? RECENTS
+                        : goingToNewTask
+                                ? NEW_TASK
+                                : LAST_TASK;
             }
             endShift = endTarget.endShift;
             long expectedDuration = Math.abs(Math.round((endShift - currentShift)
@@ -932,7 +938,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             interpolator = endTarget == RECENTS ? OVERSHOOT_1_2 : DEACCEL;
         } else {
             if (SWIPE_HOME.get() && endVelocity < 0 && !mIsShelfPeeking) {
-                endTarget = HOME;
+                // If swiping at a diagonal, base end target on the faster velocity.
+                endTarget = goingToNewTask && Math.abs(velocityX) > Math.abs(endVelocity)
+                        ? NEW_TASK : HOME;
             } else if (endVelocity < 0 && (!goingToNewTask || reachedOverviewThreshold)) {
                 // If user scrolled to a new task, only go to recents if they already passed
                 // the overview threshold. Otherwise, we'll snap to the new task and launch it.
@@ -970,27 +978,21 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             duration = Math.max(MIN_OVERSHOOT_DURATION, duration);
         } else if (endTarget == RECENTS) {
             mRecentsAnimationWrapper.enableTouchProxy();
+            if (mRecentsView != null) {
+                duration = Math.max(duration, mRecentsView.getScroller().getDuration());
+            }
             if (SWIPE_HOME.get()) {
                 setShelfState(ShelfAnimState.OVERVIEW, interpolator, duration);
             }
         } else if (endTarget == NEW_TASK) {
-            // We aren't goingToRecents, and user scrolled/flung to a new task; snap to the closest
-            // task in that direction and launch it (in startNewTask()).
-            int taskToLaunch = runningTaskIndex + (nextPage > runningTaskIndex ? 1 : -1);
-            if (taskToLaunch >= mRecentsView.getTaskViewCount()) {
+            // Let RecentsView handle the scrolling to the task, which we launch in startNewTask().
+            if (mRecentsView != null) {
+                duration = Math.max(duration, mRecentsView.getScroller().getDuration());
+            }
+        } else if (endTarget == LAST_TASK) {
+            if (mRecentsView != null && nextPage != runningTaskIndex) {
                 // Scrolled to Clear all button, snap back to current task and resume it.
                 mRecentsView.snapToPage(runningTaskIndex, Math.toIntExact(duration));
-                goingToNewTask = false;
-            } else {
-                float distance = Math.abs(mRecentsView.getScrollForPage(taskToLaunch)
-                        - mRecentsView.getScrollX());
-                int durationX = (int) Math.abs(distance / velocityXPxPerMs);
-                if (durationX > MAX_SWIPE_DURATION) {
-                    durationX = Math.toIntExact(MAX_SWIPE_DURATION);
-                }
-                interpolator = Interpolators.scrollInterpolatorForVelocity(velocityXPxPerMs);
-                mRecentsView.snapToPage(taskToLaunch, durationX, interpolator);
-                duration = Math.max(duration, durationX);
             }
         }
         animateToProgress(startShift, endShift, duration, interpolator, endTarget, velocityPxPerMs);
@@ -1195,6 +1197,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mLayoutListener.finish();
         mActivityControlHelper.getAlphaProperty(mActivity).setValue(1);
 
+        mRecentsView.setEnableFreeScroll(true);
         mRecentsView.setRunningTaskIconScaledDown(false);
         mRecentsView.setOnScrollChangeListener(null);
         mQuickScrubController.cancelActiveQuickscrub();
