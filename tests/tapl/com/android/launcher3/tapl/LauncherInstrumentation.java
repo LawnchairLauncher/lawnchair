@@ -21,10 +21,13 @@ import static com.android.systemui.shared.system.SettingsCompat.SWIPE_UP_SETTING
 import android.app.ActivityManager;
 import android.app.Instrumentation;
 import android.app.UiAutomation;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.accessibility.AccessibilityEvent;
 
@@ -403,11 +406,6 @@ public final class LauncherInstrumentation {
         return mDevice;
     }
 
-    void longTap(int x, int y) {
-        mDevice.drag(x, y, x, y, 0);
-    }
-
-
     void swipe(int startX, int startY, int endX, int endY) {
         executeAndWaitForEvent(
                 () -> mDevice.swipe(startX, startY, endX, endY, 60),
@@ -418,5 +416,12 @@ public final class LauncherInstrumentation {
 
     void waitForIdle() {
         mDevice.waitForIdle();
+    }
+
+    void sendPointer(int action, Point point) {
+        final MotionEvent event = MotionEvent.obtain(SystemClock.uptimeMillis(),
+                SystemClock.uptimeMillis(), action, point.x, point.y, 0);
+        mInstrumentation.sendPointerSync(event);
+        event.recycle();
     }
 }
