@@ -67,14 +67,17 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
     private final PortraitOverviewStateTouchHelper mOverviewPortraitStateTouchHelper;
 
-    private InterpolatorWrapper mAllAppsInterpolatorWrapper = new InterpolatorWrapper();
+    private final InterpolatorWrapper mAllAppsInterpolatorWrapper = new InterpolatorWrapper();
+
+    private final boolean mAllowDragToOverview;
 
     // If true, we will finish the current animation instantly on second touch.
     private boolean mFinishFastOnSecondTouch;
 
-    public PortraitStatesTouchController(Launcher l) {
+    public PortraitStatesTouchController(Launcher l, boolean allowDragToOverview) {
         super(l, SwipeDetector.VERTICAL);
         mOverviewPortraitStateTouchHelper = new PortraitOverviewStateTouchHelper(l);
+        mAllowDragToOverview = allowDragToOverview;
     }
 
     @Override
@@ -128,7 +131,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         } else if (fromState == OVERVIEW) {
             return isDragTowardPositive ? ALL_APPS : NORMAL;
         } else if (fromState == NORMAL && isDragTowardPositive) {
-            return TouchInteractionService.isConnected() ? OVERVIEW : ALL_APPS;
+            return mAllowDragToOverview && TouchInteractionService.isConnected()
+                    ? OVERVIEW : ALL_APPS;
         }
         return fromState;
     }
