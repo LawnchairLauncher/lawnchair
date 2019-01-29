@@ -222,8 +222,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
     }
 
     private fun extractColor(drawable: Drawable): Int = if (prefs.colorizedLegacyTreatment) {
-        val color = ColorExtractor.findDominantColorByOccurrence(drawable.toBitmap())
-        IconPalette.getMutedColor(color, 0.5f)
+        ColorExtractor.generateBackgroundColor(drawable.toBitmap())
     } else {
         Color.WHITE
     }

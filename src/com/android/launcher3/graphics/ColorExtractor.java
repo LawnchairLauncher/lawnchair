@@ -19,6 +19,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v4.graphics.ColorUtils;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 import com.android.launcher3.Utilities;
@@ -125,11 +126,12 @@ public class ColorExtractor {
     private static final int NUMBER_OF_COLORS_GUESSTIMATION = 45;
 
     /**
-     * This picks a dominant color judging by how often it appears.
+     * This picks a dominant color judging by how often it appears and modifies it to provide
+     * sufficient contrast to the pbitmap.
      *
      * @param bitmap The bitmap to scan
      */
-    public static int findDominantColorByOccurrence(Bitmap bitmap) {
+    public static int generateBackgroundColor(Bitmap bitmap) {
         final int height = bitmap.getHeight();
         final int width = bitmap.getWidth();
 
@@ -158,8 +160,15 @@ public class ColorExtractor {
                 bestRGB = rgb;
             }
         }
-        // Add back alpha channel
-        return bestRGB | 0xFF << 24;
+        // Adjust color to reach suitable contrast
+        float ratio = Math
+                .min(Math.max(1f / (Math.max(rgbScoreHistogram.size() / 10f, 1) + .2f), .3f), .8f);
+        int argb = bestRGB | 0xff << 24;
+        float[] hsl = new float[3];
+        ColorUtils.colorToHSL(bestRGB, hsl);
+        int fill = hsl[2] > .5 ? 0xFFFFFFFF : 0xFF000000;
+        int background = ColorUtils.blendARGB(argb, fill, ratio);
+        return background | 0xff << 24;
     }
 
     public static boolean isSingleColor(Drawable drawable, int color) {
