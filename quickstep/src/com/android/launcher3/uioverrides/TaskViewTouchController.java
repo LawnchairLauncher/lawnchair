@@ -18,6 +18,7 @@ package com.android.launcher3.uioverrides;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ACCESSIBLE;
 import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
+import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 
 import android.animation.Animator;
@@ -280,6 +281,9 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
                     mRecentsView.redrawLiveTile(true);
                 }
             });
+        }
+        if (QUICKSTEP_SPRINGS.get()) {
+            mCurrentAnimation.dispatchOnStartWithVelocity(goingToEnd ? 1f : 0f, velocity);
         }
         anim.start();
     }

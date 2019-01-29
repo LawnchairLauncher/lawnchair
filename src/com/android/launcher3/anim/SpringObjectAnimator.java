@@ -55,17 +55,27 @@ public class SpringObjectAnimator<T extends ProgressInterface> extends ValueAnim
     private boolean mAnimatorEnded = false;
     private boolean mEnded = false;
 
-    private static final float SPRING_DAMPING_RATIO = 0.9f;
-    private static final float SPRING_STIFFNESS = 600f;
+    private static final FloatPropertyCompat<ProgressInterface> sFloatProperty =
+            new FloatPropertyCompat<ProgressInterface>("springObjectAnimator") {
+        @Override
+        public float getValue(ProgressInterface object) {
+            return object.getProgress();
+        }
 
-    public SpringObjectAnimator(T object, FloatPropertyCompat<T> floatProperty,
-            String name, float minimumVisibleChange, float... values) {
+        @Override
+        public void setValue(ProgressInterface object, float progress) {
+            object.setProgress(progress);
+        }
+    };
+
+    public SpringObjectAnimator(T object, String name, float minimumVisibleChange, float damping,
+            float stiffness, float... values) {
         mObject = object;
-        mSpring = new SpringAnimation(object, floatProperty);
+        mSpring = new SpringAnimation(object, sFloatProperty);
         mSpring.setMinimumVisibleChange(minimumVisibleChange);
         mSpring.setSpring(new SpringForce(0)
-                .setDampingRatio(SPRING_DAMPING_RATIO)
-                .setStiffness(SPRING_STIFFNESS));
+                .setDampingRatio(damping)
+                .setStiffness(stiffness));
         mSpring.setStartVelocity(0.01f);
         mProperty = new SpringProperty<T>(name, mSpring);
         mObjectAnimator = ObjectAnimator.ofFloat(object, mProperty, values);

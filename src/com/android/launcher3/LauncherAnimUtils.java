@@ -91,4 +91,24 @@ public class LauncherAnimUtils {
                     lp.height = height;
                 }
             };
+
+    public static class ViewProgressProperty implements ProgressInterface {
+        View mView;
+        Property<View, Float> mProperty;
+
+        public ViewProgressProperty(View view, Property<View, Float> property) {
+            mView = view;
+            mProperty = property;
+        }
+
+        @Override
+        public void setProgress(float progress) {
+            mProperty.set(mView, progress);
+        }
+
+        @Override
+        public float getProgress() {
+            return mProperty.get(mView);
+        }
+    }
 }

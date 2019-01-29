@@ -22,6 +22,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.uioverrides.TaskViewTouchController.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.quickstep.util.ClipAnimationHelper.TransformParams;
@@ -66,16 +67,19 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ListView;
 
 import androidx.annotation.Nullable;
+import androidx.dynamicanimation.animation.SpringForce;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.LauncherAnimUtils.ViewProgressProperty;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PropertyListBuilder;
+import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -112,6 +116,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         InvariantDeviceProfile.OnIDPChangeListener {
 
     private static final String TAG = RecentsView.class.getSimpleName();
+
+    public static final float SPRING_MIN_VISIBLE_CHANGE = 0.001f;
+    public static final float SPRING_DAMPING_RATIO = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY;
+    public static final float SPRING_STIFFNESS = SpringForce.STIFFNESS_LOW;
 
     public static final FloatProperty<RecentsView> CONTENT_ALPHA =
             new FloatProperty<RecentsView>("contentAlpha") {
@@ -941,8 +949,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     private void addDismissedTaskAnimations(View taskView, AnimatorSet anim, long duration) {
         addAnim(ObjectAnimator.ofFloat(taskView, ALPHA, 0), duration, ACCEL_2, anim);
-        addAnim(ObjectAnimator.ofFloat(taskView, TRANSLATION_Y, -taskView.getHeight()),
-                duration, LINEAR, anim);
+        if (QUICKSTEP_SPRINGS.get() && taskView instanceof TaskView)
+            addAnim(new SpringObjectAnimator<>(new ViewProgressProperty(taskView,
+                            View.TRANSLATION_Y), "taskViewTransY", SPRING_MIN_VISIBLE_CHANGE,
+                            SPRING_DAMPING_RATIO, SPRING_STIFFNESS, 0, -taskView.getHeight()),
+                    duration, LINEAR, anim);
+        else {
+            addAnim(ObjectAnimator.ofFloat(taskView, TRANSLATION_Y, -taskView.getHeight()),
+                    duration, LINEAR, anim);
+        }
     }
 
     private void removeTask(Task task, int index, PendingAnimation.OnEndListener onEndListener,
@@ -1012,8 +1027,16 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 }
                 int scrollDiff = newScroll[i] - oldScroll[i] + offset;
                 if (scrollDiff != 0) {
-                    addAnim(ObjectAnimator.ofFloat(child, TRANSLATION_X, scrollDiff),
-                            duration, ACCEL, anim);
+                    if (QUICKSTEP_SPRINGS.get() && child instanceof TaskView) {
+                        addAnim(new SpringObjectAnimator<>(
+                                new ViewProgressProperty(child, View.TRANSLATION_X),
+                                "taskViewTransX", SPRING_MIN_VISIBLE_CHANGE, SPRING_DAMPING_RATIO,
+                                SPRING_STIFFNESS, 0, scrollDiff), duration, ACCEL, anim);
+                    } else {
+                        addAnim(ObjectAnimator.ofFloat(child, TRANSLATION_X, scrollDiff), duration,
+                                ACCEL, anim);
+                    }
+
                     needsCurveUpdates = true;
                 }
             }
@@ -1094,7 +1117,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return pendingAnimation;
     }
 
-    private static void addAnim(ObjectAnimator anim, long duration,
+    private static void addAnim(Animator anim, long duration,
             TimeInterpolator interpolator, AnimatorSet set) {
         anim.setDuration(duration).setInterpolator(interpolator);
         set.play(anim);
