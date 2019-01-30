@@ -181,22 +181,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
-    public void testAllAppsFromHome() throws Exception {
-        // Test opening all apps
-        assertNotNull("switchToAllApps() returned null",
-                mLauncher.getWorkspace().switchToAllApps());
-
-        runAllAppsTest(this, mLauncher.getAllApps());
-
-        // Testing pressHome.
-        assertTrue("Launcher internal state is not All Apps", isInState(LauncherState.ALL_APPS));
-        assertNotNull("pressHome returned null", mLauncher.pressHome());
-        assertTrue("Launcher internal state is not Home", isInState(LauncherState.NORMAL));
-        assertNotNull("getHome returned null", mLauncher.getWorkspace());
-    }
-
-    @Test
-    @PortraitLandscape
     public void testWorkspaceSwitchToAllApps() {
         assertNotNull("switchToAllApps() returned null",
                 mLauncher.getWorkspace().switchToAllApps());
