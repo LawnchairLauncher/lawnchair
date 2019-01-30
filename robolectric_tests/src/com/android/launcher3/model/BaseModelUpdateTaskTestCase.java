@@ -25,11 +25,9 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherProvider;
-import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.TestLauncherProvider;
 
 import org.junit.Before;
@@ -45,6 +43,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.function.Supplier;
 
 import androidx.annotation.NonNull;
 
@@ -196,7 +195,7 @@ public class BaseModelUpdateTaskTestCase {
         @Override
         protected <T> CacheEntry cacheLocked(
                 @NonNull ComponentName componentName,
-                UserHandle user, @NonNull Provider<T> infoProvider,
+                UserHandle user, @NonNull Supplier<T> infoProvider,
                 @NonNull CachingLogic<T> cachingLogic,
                 boolean usePackageIcon, boolean useLowResIcon) {
             CacheEntry entry = mCache.get(new ComponentKey(componentName, user));
