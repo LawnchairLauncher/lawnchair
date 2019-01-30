@@ -60,6 +60,6 @@
     <string name="app_in_grayscale">App in grayscale</string>
 
     <!-- Annotation shown on an app card in Recents, telling that the app has a usage limit set by
-    the user, and a given time is left for it today [CHAR LIMIT=20] -->
+    the user, and a given time is left for it today [CHAR LIMIT=22] -->
     <string name="time_left_for_app"><xliff:g id="time" example="7 minutes">%1$s</xliff:g> left today</string>
 </resources>
