@@ -236,7 +236,7 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
 
     private void dispatchOnStartRecursively(Animator animator) {
         List<AnimatorListener> listeners = animator instanceof SpringObjectAnimator
-                ? nonNullList(((SpringObjectAnimator) animator).getSuperListeners())
+                ? nonNullList(((SpringObjectAnimator) animator).getObjectAnimatorListeners())
                 : nonNullList(animator.getListeners());
 
         for (AnimatorListener l : listeners) {

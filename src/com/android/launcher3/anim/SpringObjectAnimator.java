@@ -85,7 +85,7 @@ public class SpringObjectAnimator<T extends ProgressInterface> extends ValueAnim
 
         // We use this listener and track mListeners so that we can sync the animator and spring
         // listeners.
-        super.addListener(new AnimatorListenerAdapter() {
+        mObjectAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
                 mAnimatorEnded = false;
@@ -157,8 +157,8 @@ public class SpringObjectAnimator<T extends ProgressInterface> extends ValueAnim
         mListeners.add(listener);
     }
 
-    public ArrayList<AnimatorListener> getSuperListeners() {
-        return super.getListeners();
+    public ArrayList<AnimatorListener> getObjectAnimatorListeners() {
+        return mObjectAnimator.getListeners();
     }
 
     @Override
