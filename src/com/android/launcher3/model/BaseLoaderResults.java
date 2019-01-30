@@ -251,11 +251,6 @@ public abstract class BaseLoaderResults {
 
     protected void bindWorkspaceItems(final ArrayList<ItemInfo> workspaceItems,
             final Executor executor) {
-
-        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
-                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
-            Log.d("b/117332845", Log.getStackTraceString(new Throwable()));
-        }
         // Bind the workspace items
         int N = workspaceItems.size();
         for (int i = 0; i < N; i += ITEMS_CHUNK) {
