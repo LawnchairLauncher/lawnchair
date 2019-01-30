@@ -23,7 +23,7 @@ public class Wait {
                     return;
                 }
             } catch (Throwable t) {
-                // Ignore
+                throw new RuntimeException(t);
             }
             SystemClock.sleep(sleepMillis);
         }
@@ -34,7 +34,7 @@ public class Wait {
                 return;
             }
         } catch (Throwable t) {
-            // Ignore
+            throw new RuntimeException(t);
         }
         Assert.fail(message);
     }
