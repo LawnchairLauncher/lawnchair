@@ -31,8 +31,6 @@ import android.content.IntentFilter;
 import android.content.pm.ResolveInfo;
 import android.os.PatternMatcher;
 
-import com.android.quickstep.ActivityControlHelper.FallbackActivityControllerHelper;
-import com.android.quickstep.ActivityControlHelper.LauncherActivityControllerHelper;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 
 import java.util.ArrayList;
