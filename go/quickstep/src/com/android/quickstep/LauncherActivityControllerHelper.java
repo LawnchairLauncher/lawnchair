@@ -18,55 +18,23 @@ package com.android.quickstep;
 
 import static com.android.launcher3.LauncherState.OVERVIEW;
 
-import android.content.Context;
-import android.graphics.Rect;
-
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListener;
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.views.IconRecentsView;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
 /**
- * {@link ActivityControlHelper} for the in-launcher recents. As Go does not support most gestures
- * from app to overview/home, most of this class is stubbed out.
+ * {@link ActivityControlHelper} for the in-launcher recents.
  * TODO: Implement the app to overview animation functionality
  */
-public final class LauncherActivityControllerHelper implements ActivityControlHelper<Launcher>{
-
-    @Override
-    public void onTransitionCancelled(Launcher activity, boolean activityVisible) {
-        LauncherState startState = activity.getStateManager().getRestState();
-        activity.getStateManager().goToState(startState, activityVisible);
-    }
-
-    @Override
-    public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
-            Rect outRect) {
-        // TODO Implement outRect depending on where the task should animate to.
-        // Go does not support swipe up gesture.
-        return 0;
-    }
-
-    @Override
-    public void onSwipeUpComplete(Launcher activity) {
-        // Go does not support swipe up gesture.
-    }
-
-    @Override
-    public HomeAnimationFactory prepareHomeUI(Launcher activity) {
-        // Go does not support gestures from app to home.
-        return null;
-    }
+public final class LauncherActivityControllerHelper extends GoActivityControlHelper<Launcher> {
 
     @Override
     public AnimationFactory prepareRecentsUI(Launcher activity,
@@ -126,16 +94,6 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     }
 
     @Override
-    public Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTargetCompat target) {
-        return homeBounds;
-    }
-
-    @Override
-    public boolean shouldMinimizeSplitScreen() {
-        return true;
-    }
-
-    @Override
     public AlphaProperty getAlphaProperty(Launcher activity) {
         return activity.getDragLayer().getAlphaProperty(DragLayer.ALPHA_INDEX_SWIPE_UP);
     }
@@ -145,11 +103,5 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         final Launcher launcher = getVisibleLauncher();
         return launcher != null ? launcher.getStateManager().getState().containerType
                 : LauncherLogProto.ContainerType.APP;
-    }
-
-    @Override
-    public boolean isInLiveTileMode() {
-        // Go does not support live tiles.
-        return false;
     }
 }
