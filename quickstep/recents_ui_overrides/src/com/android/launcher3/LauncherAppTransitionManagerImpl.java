@@ -19,8 +19,8 @@ package com.android.launcher3;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.quickstep.TaskUtils.findTaskViewToLaunch;
-import static com.android.quickstep.TaskUtils.getRecentsWindowAnimator;
+import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
+import static com.android.quickstep.TaskViewUtils.getRecentsWindowAnimator;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

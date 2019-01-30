@@ -20,7 +20,7 @@ import static com.android.launcher3.QuickstepAppTransitionManagerImpl
         .STATUS_BAR_TRANSITION_DURATION;
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl
         .STATUS_BAR_TRANSITION_PRE_DELAY;
-import static com.android.quickstep.TaskUtils.getRecentsWindowAnimator;
+import static com.android.quickstep.TaskViewUtils.getRecentsWindowAnimator;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
