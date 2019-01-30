@@ -1585,7 +1585,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mClipAnimationHelper = clipAnimationHelper;
     }
 
-    public void finishRecentsAnimation(boolean toHome, Runnable onFinishComplete) {
+    public void finishRecentsAnimation(boolean toRecents, Runnable onFinishComplete) {
         if (mRecentsAnimationWrapper == null) {
             if (onFinishComplete != null) {
                 onFinishComplete.run();
@@ -1593,10 +1593,11 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             return;
         }
 
-        mRecentsAnimationWrapper.finish(toHome, onFinishComplete);
+        mRecentsAnimationWrapper.finish(toRecents, onFinishComplete);
     }
 
-    public void takeScreenshotAndFinishRecentsAnimation(boolean toHome, Runnable onFinishComplete) {
+    public void takeScreenshotAndFinishRecentsAnimation(boolean toRecents,
+            Runnable onFinishComplete) {
         if (mRecentsAnimationWrapper == null || getRunningTaskView() == null) {
             if (onFinishComplete != null) {
                 onFinishComplete.run();
@@ -1631,7 +1632,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                         }
 
                         detach();
-                        mRecentsAnimationWrapper.finish(toHome, () -> {
+                        mRecentsAnimationWrapper.finish(toRecents, () -> {
                             onFinishComplete.run();
                             mRunningTaskId = -1;
                         });
