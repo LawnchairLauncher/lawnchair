@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class TestUtil {
+    public static final String DUMMY_PACKAGE = "com.example.android.aardwolf";
+
     public static void installDummyApp() throws IOException {
         // Copy apk from resources to a local file and install from there.
         final Resources resources = getContext().getResources();
@@ -47,5 +49,10 @@ public class TestUtil {
         out.close();
 
         UiDevice.getInstance(getInstrumentation()).executeShellCommand("pm install " + apkFilename);
+    }
+
+    public static void uninstallDummyApp() throws IOException {
+        UiDevice.getInstance(getInstrumentation()).executeShellCommand(
+                "pm uninstall " + DUMMY_PACKAGE);
     }
 }
