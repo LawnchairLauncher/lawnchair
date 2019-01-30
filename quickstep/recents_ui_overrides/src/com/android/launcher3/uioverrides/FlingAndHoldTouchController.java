@@ -57,7 +57,7 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
 
     @Override
     public boolean onDrag(float displacement) {
-        mMotionPauseDetector.addPosition(displacement);
+        mMotionPauseDetector.addPosition(displacement, 0);
         return super.onDrag(displacement);
     }
 

@@ -83,6 +83,7 @@ import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
+import com.android.launcher3.util.OverScroller;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.ViewPool;
@@ -339,6 +340,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         updateEmptyMessage();
     }
 
+    public OverScroller getScroller() {
+        return mScroller;
+    }
+
     public boolean isRtl() {
         return mIsRtl;
     }
@@ -412,7 +417,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public TaskView getTaskView(int taskId) {
         for (int i = 0; i < getTaskViewCount(); i++) {
             TaskView tv = (TaskView) getChildAt(i);
-            if (tv.getTask().key != null && tv.getTask().key.id == taskId) {
+            if (tv.getTask() != null && tv.getTask().key != null && tv.getTask().key.id == taskId) {
                 return tv;
             }
         }

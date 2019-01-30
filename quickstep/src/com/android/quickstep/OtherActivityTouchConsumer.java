@@ -201,7 +201,11 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                     dispatchMotion(ev, displacement - mStartDisplacement, null);
 
                     if (FeatureFlags.SWIPE_HOME.get()) {
-                        mMotionPauseDetector.addPosition(displacement);
+                        boolean isLandscape = isNavBarOnLeft() || isNavBarOnRight();
+                        float orthogonalDisplacement = !isLandscape
+                                ? ev.getX() - mDownPos.x
+                                : ev.getY() - mDownPos.y;
+                        mMotionPauseDetector.addPosition(displacement, orthogonalDisplacement);
                     }
                 }
                 break;

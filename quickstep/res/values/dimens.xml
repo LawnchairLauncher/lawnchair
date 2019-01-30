@@ -39,6 +39,7 @@
     <dimen name="motion_pause_detector_speed_somewhat_fast">0.285dp</dimen>
     <dimen name="motion_pause_detector_speed_fast">0.5dp</dimen>
     <dimen name="motion_pause_detector_min_displacement">48dp</dimen>
+    <dimen name="motion_pause_detector_max_orthogonal_displacement">48dp</dimen>
 
     <!-- Launcher app transition -->
     <dimen name="content_trans_y">50dp</dimen>
