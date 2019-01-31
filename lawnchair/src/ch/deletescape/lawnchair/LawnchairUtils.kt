@@ -432,7 +432,7 @@ fun dpToPx(size: Float): Float {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, Resources.getSystem().displayMetrics)
 }
 
-fun Drawable.toBitmap(): Bitmap {
+fun Drawable.toBitmap(): Bitmap? {
     return Utilities.drawableToBitmap(this)
 }
 

@@ -51,6 +51,7 @@ import android.os.Process;
 import android.os.TransactionTooLargeException;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -711,6 +712,7 @@ public final class Utilities {
         }
     }
 
+    @Nullable
     public static Bitmap drawableToBitmap(Drawable drawable) {
         return Utilities.drawableToBitmap(drawable, true);
     }

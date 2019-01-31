@@ -55,13 +55,14 @@ class IconMask {
             if (Utilities.ATLEAST_OREO && drawable is AdaptiveIconDrawable) {
                 adaptiveBackground = drawable.background
             } else {
-                val b = drawable.toBitmap()
-                matrix.setScale(size.toFloat() / b.width, size.toFloat() / b.height)
-                canvas.drawBitmap(b, matrix, paint)
-                matrix.reset()
+                drawable.toBitmap()!!.let {
+                    matrix.setScale(size.toFloat() / it.width, size.toFloat() / it.height)
+                    canvas.drawBitmap(it, matrix, paint)
+                    matrix.reset()
+                }
             }
         }
-        var bb = baseIcon.toBitmap()
+        var bb = baseIcon.toBitmap()!!
         if (!bb.isMutable) bb = bb.copy(bb.config, true)
         if (iconMask != null) {
             val tmp = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
@@ -71,11 +72,12 @@ class IconMask {
             matrix.postTranslate((size / 2) * (1 - scale), (size / 2) * (1 - scale))
             canvas.drawBitmap(bb, matrix, paint)
             matrix.reset()
-            val b = iconMask!!.drawable.toBitmap()
-            paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
-            matrix.setScale(size.toFloat() / b.width, size.toFloat() / b.height)
-            canvas.drawBitmap(b, matrix, paint)
-            matrix.reset()
+            iconMask!!.drawable.toBitmap()?.let {
+                paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
+                matrix.setScale(size.toFloat() / it.width, size.toFloat() / it.height)
+                canvas.drawBitmap(it, matrix, paint)
+                matrix.reset()
+            }
             paint.reset()
             canvas.restoreToCount(saveCount)
             canvas.setBitmap(bitmap)
@@ -87,10 +89,11 @@ class IconMask {
             matrix.reset()
         }
         if (iconUpon != null) {
-            val b = iconUpon!!.drawable.toBitmap()
-            matrix.setScale(size.toFloat() / b.width, size.toFloat() / b.height)
-            canvas.drawBitmap(b, matrix, paint)
-            matrix.reset()
+            iconUpon!!.drawable.toBitmap()!!.let {
+                matrix.setScale(size.toFloat() / it.width, size.toFloat() / it.height)
+                canvas.drawBitmap(it, matrix, paint)
+                matrix.reset()
+            }
         }
         if (adaptiveBackground != null) {
             if (onlyMaskLegacy && baseIcon is AdaptiveIconDrawable) {

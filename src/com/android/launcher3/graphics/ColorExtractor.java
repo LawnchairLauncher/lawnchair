@@ -134,6 +134,9 @@ public class ColorExtractor {
      * @param bitmap The bitmap to scan
      */
     public static int generateBackgroundColor(Bitmap bitmap) {
+        if (bitmap == null) {
+            return Color.WHITE;
+        }
         final int height = bitmap.getHeight();
         final int width = bitmap.getWidth();
         final int size = height * width;
