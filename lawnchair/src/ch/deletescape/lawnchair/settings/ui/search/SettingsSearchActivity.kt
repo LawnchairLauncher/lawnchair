@@ -42,7 +42,6 @@ import ch.deletescape.lawnchair.settings.ui.SettingsActivity.EXTRA_FRAGMENT_ARG_
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity.SubSettingsFragment.*
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 
-
 class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextListener {
 
     private val searchIndex by lazy { SearchIndex(this) }
@@ -75,12 +74,12 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
         search_view.setOnQueryTextListener(this)
         search_view.requestFocus()
 
-        overridePendingTransition(R.anim.fade_in_short, R.anim.fade_out_short)
+        overridePendingTransition(R.anim.fade_in_short, R.anim.no_anim)
     }
 
     override fun finish() {
         super.finish()
-        overridePendingTransition(R.anim.fade_in_short, R.anim.fade_out_short)
+        overridePendingTransition(R.anim.no_anim, R.anim.fade_out_short)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
