@@ -51,7 +51,7 @@ public class LauncherRootView extends InsettableFrameLayout {
     protected boolean fitSystemWindows(Rect insets) {
         mConsumedInsets.setEmpty();
         boolean drawInsetBar = false;
-        if (mLauncher.isInMultiWindowModeCompat()
+        if (mLauncher.isInMultiWindowMode()
                 && (insets.left > 0 || insets.right > 0 || insets.bottom > 0)) {
             mConsumedInsets.left = insets.left;
             mConsumedInsets.right = insets.right;
@@ -59,8 +59,7 @@ public class LauncherRootView extends InsettableFrameLayout {
             insets = new Rect(0, insets.top, 0, 0);
             drawInsetBar = true;
         } else  if ((insets.right > 0 || insets.left > 0) &&
-                (!Utilities.ATLEAST_MARSHMALLOW ||
-                        getContext().getSystemService(ActivityManager.class).isLowRamDevice())) {
+                getContext().getSystemService(ActivityManager.class).isLowRamDevice()) {
             mConsumedInsets.left = insets.left;
             mConsumedInsets.right = insets.right;
             insets = new Rect(0, insets.top, 0, insets.bottom);

@@ -17,13 +17,16 @@
 package com.android.launcher3.config;
 
 import static androidx.core.util.Preconditions.checkNotNull;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
+
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Keep;
 import androidx.annotation.VisibleForTesting;
+
 import com.android.launcher3.Utilities;
 
 import java.util.ArrayList;
@@ -106,7 +109,7 @@ abstract class BaseFlags {
 
     public static final ToggleableGlobalSettingsFlag SWIPE_HOME
             = new ToggleableGlobalSettingsFlag("SWIPE_HOME", false,
-            "[WIP] Swiping up on the nav bar goes home. Swipe and hold goes to recent apps.");
+            "Swiping up on the nav bar goes home. Swipe and hold goes to recent apps.");
 
     public static void initialize(Context context) {
         // Avoid the disk read for user builds
@@ -249,11 +252,17 @@ abstract class BaseFlags {
 
         @Override
         void updateStorage(Context context, boolean value) {
+            if (contentResolver == null) {
+                return;
+            }
             Settings.Global.putInt(contentResolver, getKey(), value ? 1 : 0);
         }
 
         @Override
         boolean getFromStorage(Context context, boolean defaultValue) {
+            if (contentResolver == null) {
+                return defaultValue;
+            }
             return Settings.Global.getInt(contentResolver, getKey(), defaultValue ? 1 : 0) == 1;
         }
 

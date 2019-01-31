@@ -33,7 +33,7 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"ダブルタップ後に押し続けてウィジェットを選択するか、カスタム操作を使用してください。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$dx%2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"幅 %1$d、高さ %2$d"</string>
-    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"押し続けると、手動で追加できます"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"長押しすると、手動で追加できます"</string>
     <string name="place_automatically" msgid="8064208734425456485">"自動的に追加"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"アプリを検索"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"アプリを読み込んでいます…"</string>

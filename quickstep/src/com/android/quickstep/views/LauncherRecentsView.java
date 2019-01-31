@@ -92,7 +92,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     }
 
     @Override
-    protected void startHome() {
+    public void startHome() {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             takeScreenshotAndFinishRecentsAnimation(true,
                     () -> mActivity.getStateManager().goToState(NORMAL));
@@ -187,7 +187,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
 
     @Override
     public boolean shouldUseMultiWindowTaskSizeStrategy() {
-        return mActivity.isInMultiWindowModeCompat();
+        return mActivity.isInMultiWindowMode();
     }
 
     @Override

@@ -20,11 +20,11 @@ import android.os.Build;
 import android.view.Choreographer;
 import android.view.MotionEvent;
 
+import androidx.annotation.IntDef;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.function.Consumer;
-
-import androidx.annotation.IntDef;
 
 @TargetApi(Build.VERSION_CODES.O)
 @FunctionalInterface

@@ -77,7 +77,6 @@ import java.util.Set;
 /**
  * A container for shortcuts to deep links and notifications associated with an app.
  */
-@TargetApi(Build.VERSION_CODES.N)
 public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         DragController.DragListener, View.OnLongClickListener,
         View.OnTouchListener {

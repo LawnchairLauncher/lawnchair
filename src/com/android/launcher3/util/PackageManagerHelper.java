@@ -37,13 +37,11 @@ import android.widget.Toast;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 
 import java.net.URISyntaxException;
@@ -100,14 +98,7 @@ public class PackageManagerHelper {
      * {@link android.app.admin.DevicePolicyManager#isPackageSuspended}.
      */
     public static boolean isAppSuspended(ApplicationInfo info) {
-        // The value of FLAG_SUSPENDED was reused by a hidden constant
-        // ApplicationInfo.FLAG_PRIVILEGED prior to N, so only check for suspended flag on N
-        // or later.
-        if (Utilities.ATLEAST_NOUGAT) {
-            return (info.flags & ApplicationInfo.FLAG_SUSPENDED) != 0;
-        } else {
-            return false;
-        }
+        return (info.flags & ApplicationInfo.FLAG_SUSPENDED) != 0;
     }
 
     /**
@@ -134,11 +125,6 @@ public class PackageManagerHelper {
         if(mPm.checkPermission(target.activityInfo.permission, srcPackage) !=
                 PackageManager.PERMISSION_GRANTED) {
             return false;
-        }
-
-        if (!Utilities.ATLEAST_MARSHMALLOW) {
-            // These checks are sufficient for below M devices.
-            return true;
         }
 
         // On M and above also check AppOpsManager for compatibility mode permissions.

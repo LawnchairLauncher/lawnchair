@@ -20,7 +20,7 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.launcher3">
-    <uses-sdk android:targetSdkVersion="28" android:minSdkVersion="21"/>
+    <uses-sdk android:targetSdkVersion="28" android:minSdkVersion="25"/>
     <!--
     Manifest entries specific to Launcher3. This is merged with AndroidManifest-common.xml.
     Refer comments around specific entries on how to extend individual components.
@@ -63,7 +63,7 @@
             </intent-filter>
             <meta-data
                 android:name="com.android.launcher3.grid.control"
-                android:value="${packageName}.grid.control" />
+                android:value="${packageName}.grid_control" />
         </activity>
 
     </application>

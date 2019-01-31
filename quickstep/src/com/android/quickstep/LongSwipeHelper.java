@@ -19,6 +19,7 @@ import static com.android.launcher3.LauncherAnimUtils.MIN_PROGRESS_TO_ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.quickstep.WindowTransformSwipeHandler.MAX_SWIPE_DURATION;
 import static com.android.quickstep.WindowTransformSwipeHandler.MIN_OVERSHOOT_DURATION;
@@ -173,5 +174,9 @@ public class LongSwipeHelper {
                 0);
 
         callback.run();
+
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && toAllApps) {
+            rv.finishRecentsAnimation(true, null);
+        }
     }
 }

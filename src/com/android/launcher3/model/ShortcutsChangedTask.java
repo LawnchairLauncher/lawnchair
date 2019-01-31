@@ -29,7 +29,6 @@ import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
-import com.android.launcher3.util.Provider;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -97,7 +96,7 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
                     // keep the current icon instead of reverting to the default icon.
                     LauncherIcons li = LauncherIcons.obtain(context);
                     shortcutInfo.applyFrom(li.createShortcutIcon(fullDetails, true,
-                            Provider.of(shortcutInfo)));
+                            () -> shortcutInfo));
                     li.recycle();
                     updatedShortcutInfos.add(shortcutInfo);
                 }

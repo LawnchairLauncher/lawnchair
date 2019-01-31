@@ -216,11 +216,6 @@ public abstract class AbstractLauncherUiTest {
     }
 
     protected void resetLoaderState() {
-        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
-                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
-            android.util.Log.d("b/117332845",
-                    "START " + android.util.Log.getStackTraceString(new Throwable()));
-        }
         try {
             mMainThreadExecutor.execute(new Runnable() {
                 @Override
@@ -232,11 +227,6 @@ public abstract class AbstractLauncherUiTest {
             throw new IllegalArgumentException(t);
         }
         waitForModelLoaded();
-        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
-                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
-            android.util.Log.d("b/117332845",
-                    "FINISH " + android.util.Log.getStackTraceString(new Throwable()));
-        }
     }
 
     protected void waitForModelLoaded() {
@@ -357,5 +347,18 @@ public abstract class AbstractLauncherUiTest {
         });
         waitForLauncherCondition(
                 "Launcher still active", launcher -> launcher == null, DEFAULT_UI_TIMEOUT);
+    }
+
+    protected boolean isInBackground(Launcher launcher) {
+        return !launcher.hasBeenResumed();
+    }
+
+    protected boolean isInState(LauncherState state) {
+        if (!TestHelpers.isInLauncherProcess()) return true;
+        return getFromLauncher(launcher -> launcher.getStateManager().getState() == state);
+    }
+
+    protected int getAllAppsScroll(Launcher launcher) {
+        return launcher.getAppsView().getActiveRecyclerView().getCurrentScrollY();
     }
 }
