@@ -26,6 +26,8 @@ import com.android.launcher3.Utilities;
 import java.util.HashSet;
 import java.util.Set;
 import kotlin.collections.ArraysKt;
+import static java.lang.Math.min;
+import static java.lang.Math.max;
 
 /**
  * Utility class for extracting colors from a bitmap.
@@ -134,17 +136,20 @@ public class ColorExtractor {
     public static int generateBackgroundColor(Bitmap bitmap) {
         final int height = bitmap.getHeight();
         final int width = bitmap.getWidth();
+        final int size = height * width;
 
         SparseIntArray rgbScoreHistogram = new SparseIntArray(NUMBER_OF_COLORS_GUESSTIMATION);
-        final int[] pixels = new int[height * width];
+        final int[] pixels = new int[size];
         bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
 
-        int highScore = -1;
-        int bestRGB = -1;
+        int highScore = 0;
+        int bestRGB = 0;
+        int transparentScore = 0;
         for (int pixel : pixels) {
             int alpha = 0xFF & (pixel >> 24);
-            if (alpha < 0x80) {
+            if (alpha < 0xDD) {
                 // Drop mostly-transparent pixels.
+                transparentScore++;
                 continue;
             }
             // Reduce color complexity.
@@ -160,14 +165,31 @@ public class ColorExtractor {
                 bestRGB = rgb;
             }
         }
-        // Adjust color to reach suitable contrast
-        float ratio = Math
-                .min(Math.max(1f / (Math.max(rgbScoreHistogram.size() / 10f, 1) + .2f), .3f), .8f);
-        int argb = bestRGB | 0xff << 24;
-        float[] hsl = new float[3];
+
+        // Convert to HSL to get the lightness
+        final float[] hsl = new float[3];
         ColorUtils.colorToHSL(bestRGB, hsl);
-        int fill = hsl[2] > .5 ? 0xFFFFFFFF : 0xFF000000;
-        int background = ColorUtils.blendARGB(argb, fill, ratio);
+        float lightness = hsl[2];
+
+        // "single color"
+        boolean singleColor = rgbScoreHistogram.size() <= 2;
+        boolean light = lightness > .5;
+        // Apply dark background to mostly white icons
+        boolean veryLight = lightness > .75 && singleColor;
+        // Apply light background to mostly dark icons
+        boolean veryDark = lightness < .30 && singleColor;
+
+        // Adjust color to reach suitable contrast depending on the relationship between the colors
+        float ratio = min(max(1f - (highScore / (float) (size - transparentScore)), .2f), .8f);
+
+        if (singleColor) {
+            // Invert ratio for "single color" foreground
+            ratio = 1f - ratio;
+        }
+
+        // Vary color mix-in based on lightness and amount of colors
+        int fill = (light && !veryLight) ||  veryDark? 0xFFFFFFFF : 0xFF333333;
+        int background = ColorUtils.blendARGB(bestRGB | 0xff << 24, fill, ratio);
         return background | 0xff << 24;
     }
 
