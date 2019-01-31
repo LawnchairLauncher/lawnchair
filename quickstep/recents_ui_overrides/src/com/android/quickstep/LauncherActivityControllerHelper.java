@@ -272,7 +272,8 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
             Consumer<AnimatorPlaybackController> callback) {
         LauncherState endState = interactionType == INTERACTION_QUICK_SCRUB
                 ? FAST_OVERVIEW : OVERVIEW;
-        if (wasVisible) {
+        if (wasVisible && fromState != BACKGROUND_APP) {
+            // If a translucent app was launched fom launcher, animate launcher states.
             DeviceProfile dp = activity.getDeviceProfile();
             long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
             callback.accept(activity.getStateManager()
@@ -330,14 +331,17 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         }
 
         // Setup the clip animation helper source/target rects in the final transformed state
-        // of the recents view (a scale may be applied prior to this animation starting to
-        // line up the side pages during swipe up)
+        // of the recents view (a scale/translationY may be applied prior to this animation
+        // starting to line up the side pages during swipe up)
         float prevRvScale = recentsView.getScaleX();
+        float prevRvTransY = recentsView.getTranslationY();
         float targetRvScale = endState.getOverviewScaleAndTranslationYFactor(launcher)[0];
         SCALE_PROPERTY.set(recentsView, targetRvScale);
+        recentsView.setTranslationY(0);
         ClipAnimationHelper clipHelper = new ClipAnimationHelper(launcher);
         clipHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(), null);
         SCALE_PROPERTY.set(recentsView, prevRvScale);
+        recentsView.setTranslationY(prevRvTransY);
 
         if (!clipHelper.getSourceRect().isEmpty() && !clipHelper.getTargetRect().isEmpty()) {
             float fromScale = clipHelper.getSourceRect().width()
