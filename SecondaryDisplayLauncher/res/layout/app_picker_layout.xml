@@ -20,7 +20,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.circularreveal.cardview.CircularRevealCardView
+    <com.google.android.material.circularreveal.cardview.CircularRevealCardView
         android:id="@+id/FloatingSheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -35,9 +35,9 @@
             android:verticalSpacing="@dimen/app_list_horizontal_spacing"
             android:horizontalSpacing="@dimen/app_list_vertical_spacing"
             android:numColumns="auto_fit" />
-    </android.support.design.circularreveal.cardview.CircularRevealCardView>
+    </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/FloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
