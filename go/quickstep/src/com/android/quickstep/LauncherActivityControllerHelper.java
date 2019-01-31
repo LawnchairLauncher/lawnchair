@@ -44,18 +44,6 @@ import java.util.function.Consumer;
 public final class LauncherActivityControllerHelper implements ActivityControlHelper<Launcher>{
 
     @Override
-    public LayoutListener createLayoutListener(Launcher activity) {
-        // Go does not have draggable task snapshots.
-        return null;
-    }
-
-
-    @Override
-    public void executeOnWindowAvailable(Launcher activity, Runnable action) {
-        // Go does not support live tiles.
-    }
-
-    @Override
     public void onTransitionCancelled(Launcher activity, boolean activityVisible) {
         LauncherState startState = activity.getStateManager().getRestState();
         activity.getStateManager().goToState(startState, activityVisible);

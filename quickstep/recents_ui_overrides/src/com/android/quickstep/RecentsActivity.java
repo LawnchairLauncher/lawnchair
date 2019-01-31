@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 The Android Open Source Project
+ * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,11 @@
  */
 package com.android.quickstep;
 
-import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
-import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
-
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
-import static com.android.launcher3.QuickstepAppTransitionManagerImpl.STATUS_BAR_TRANSITION_DURATION;
-import static com.android.launcher3.QuickstepAppTransitionManagerImpl.STATUS_BAR_TRANSITION_PRE_DELAY;
+import static com.android.launcher3.QuickstepAppTransitionManagerImpl
+        .STATUS_BAR_TRANSITION_DURATION;
+import static com.android.launcher3.QuickstepAppTransitionManagerImpl
+        .STATUS_BAR_TRANSITION_PRE_DELAY;
 import static com.android.quickstep.TaskUtils.getRecentsWindowAnimator;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
@@ -29,23 +28,16 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.app.ActivityOptions;
-import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 
-import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAnimationRunner;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.uioverrides.UiFactory;
-import com.android.launcher3.util.SystemUiController;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsRootView;
@@ -56,46 +48,22 @@ import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
-
 /**
- * A simple activity to show the recently launched tasks
+ * A recents activity that shows the recently launched tasks as swipable task cards.
+ * See {@link com.android.quickstep.views.RecentsView}.
  */
-public class RecentsActivity extends BaseDraggingActivity {
+public final class RecentsActivity extends BaseRecentsActivity {
 
     private Handler mUiHandler = new Handler(Looper.getMainLooper());
     private RecentsRootView mRecentsRootView;
     private FallbackRecentsView mFallbackRecentsView;
 
-    private Configuration mOldConfig;
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        mOldConfig = new Configuration(getResources().getConfiguration());
-        initDeviceProfile();
-
+    protected void initViews() {
         setContentView(R.layout.fallback_recents_activity);
         mRecentsRootView = findViewById(R.id.drag_layer);
         mFallbackRecentsView = findViewById(R.id.overview_panel);
-
         mRecentsRootView.setup();
-
-        getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
-                Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
-        RecentsActivityTracker.onRecentsActivityCreate(this);
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        int diff = newConfig.diff(mOldConfig);
-        if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0) {
-            onHandleConfigChanged();
-        }
-        mOldConfig.setTo(newConfig);
-        super.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -110,16 +78,10 @@ public class RecentsActivity extends BaseDraggingActivity {
         }
     }
 
-    private void onHandleConfigChanged() {
-        mUserEventDispatcher = null;
-        initDeviceProfile();
-
-        AbstractFloatingView.closeOpenViews(this, true,
-                AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
-        dispatchDeviceProfileChanged();
-
+    @Override
+    protected void onHandleConfigChanged() {
+        super.onHandleConfigChanged();
         mRecentsRootView.setup();
-        reapplyUi();
     }
 
     @Override
@@ -127,15 +89,12 @@ public class RecentsActivity extends BaseDraggingActivity {
         mRecentsRootView.dispatchInsets();
     }
 
-    private void initDeviceProfile() {
+    @Override
+    protected DeviceProfile createDeviceProfile() {
         DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(this).getDeviceProfile(this);
-
-        // In case we are reusing IDP, create a copy so that we don't conflict with Launcher
-        // activity.
-        mDeviceProfile = (mRecentsRootView != null) && isInMultiWindowMode()
+        return (mRecentsRootView != null) && isInMultiWindowMode()
                 ? dp.getMultiWindowProfile(this, mRecentsRootView.getLastKnownSize())
-                : dp.copy(this);
-        onDeviceProfileInitiated();
+                : super.createDeviceProfile();
     }
 
     @Override
@@ -210,56 +169,5 @@ public class RecentsActivity extends BaseDraggingActivity {
         mFallbackRecentsView.setContentAlpha(1);
         super.onStart();
         mFallbackRecentsView.resetTaskVisuals();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        // Workaround for b/78520668, explicitly trim memory once UI is hidden
-        onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
-    }
-
-    @Override
-    public void onEnterAnimationComplete() {
-        super.onEnterAnimationComplete();
-        UiFactory.onEnterAnimationComplete(this);
-    }
-
-    @Override
-    public void onTrimMemory(int level) {
-        super.onTrimMemory(level);
-        UiFactory.onTrimMemory(this, level);
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        RecentsActivityTracker.onRecentsActivityNewIntent(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        RecentsActivityTracker.onRecentsActivityDestroy(this);
-    }
-
-    @Override
-    public void onBackPressed() {
-        // TODO: Launch the task we came from
-        startHome();
-    }
-
-    public void startHome() {
-        startActivity(new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_HOME)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-    }
-
-    @Override
-    public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
-        super.dump(prefix, fd, writer, args);
-        writer.println(prefix + "Misc:");
-        dumpMisc(writer);
     }
 }
