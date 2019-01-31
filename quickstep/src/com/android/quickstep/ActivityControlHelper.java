@@ -24,6 +24,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Handler;
+import android.view.View;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.NonNull;
@@ -87,7 +88,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     @UiThread
     @Nullable
-    RecentsView getVisibleRecentsView();
+    <T extends View> T getVisibleRecentsView();
 
     @UiThread
     boolean switchToRecentsIfVisible(boolean fromRecentsButton);
