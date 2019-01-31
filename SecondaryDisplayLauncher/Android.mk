@@ -21,7 +21,7 @@ LOCAL_USE_AAPT2 := true
 LOCAL_AAPT2_ONLY := true
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_STATIC_ANDROID_LIBRARIES := androidx.design_design
+LOCAL_STATIC_ANDROID_LIBRARIES := com.google.android.material_material
 
 LOCAL_STATIC_JAVA_LIBRARIES := LauncherPluginLib
 
