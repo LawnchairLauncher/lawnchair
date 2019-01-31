@@ -367,8 +367,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
             SpringRecyclerView recyclerView = (SpringRecyclerView) inflater
                     .inflate(getRecyclerViewLayoutRes(), parent, false);
             recyclerView.setShouldTranslateSelf(false);
-            recyclerView.setVerticalFadingEdgeEnabled(true);
-            recyclerView.setTopFadingEdgeEnabled(getTopFadingEdgeEnabled());
 
             recyclerView.setLayoutManager(onCreateLayoutManager());
             recyclerView.setAccessibilityDelegateCompat(
@@ -378,10 +376,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         abstract protected int getRecyclerViewLayoutRes();
-
-        protected boolean getTopFadingEdgeEnabled() {
-            return true;
-        }
 
         @Override
         public void setDivider(Drawable divider) {
@@ -518,11 +512,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
         protected int getRecyclerViewLayoutRes() {
             return BuildConfig.FEATURE_SETTINGS_SEARCH ? R.layout.preference_home_recyclerview
                     : R.layout.preference_spring_recyclerview;
-        }
-
-        @Override
-        protected boolean getTopFadingEdgeEnabled() {
-            return false;
         }
     }
 
@@ -734,7 +723,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         protected int getRecyclerViewLayoutRes() {
-            return R.layout.preference_spring_recyclerview;
+            return R.layout.preference_insettable_recyclerview;
         }
     }
 

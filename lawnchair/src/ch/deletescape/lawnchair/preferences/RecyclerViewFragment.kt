@@ -28,7 +28,7 @@ import com.android.launcher3.R
 abstract class RecyclerViewFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return LayoutInflater.from(container!!.context).inflate(R.layout.preference_spring_recyclerview, container, false)
+        return LayoutInflater.from(container!!.context).inflate(R.layout.preference_insettable_recyclerview, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

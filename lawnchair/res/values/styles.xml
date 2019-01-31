@@ -124,6 +124,13 @@
         <item name="android:colorControlNormal">@color/colorAccent</item>
     </style>
 
+    <style name="SettingsTheme.PreferenceTheme" parent="@style/PreferenceThemeOverlay.v14.Material">
+        <item name="preferenceFragmentCompatStyle">@style/SettingsTheme.PreferenceTheme.Fragment</item>
+    </style>
+    <style name="SettingsTheme.PreferenceTheme.Fragment" parent="@style/PreferenceFragment.Material">
+        <item name="android:layout">@layout/settings_fragment</item>
+    </style>
+
     <style name="SettingsTheme.Base" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@android:color/white</item>
         <item name="settingsBackground">@android:color/white</item>
@@ -131,7 +138,7 @@
         <item name="colorPrimaryDark">?android:windowBackground</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionBarTheme">@style/SettingsTheme.V2.ActionBar</item>
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <item name="preferenceTheme">@style/SettingsTheme.PreferenceTheme</item>
         <item name="android:colorEdgeEffect">?colorAccent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
@@ -167,7 +174,6 @@
         <item name="colorPrimaryDark">?android:windowBackground</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionBarTheme">@style/SettingsTheme.V2.Dark.ActionBar</item>
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="android:colorEdgeEffect">?colorAccent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>

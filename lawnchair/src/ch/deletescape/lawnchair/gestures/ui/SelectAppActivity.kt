@@ -31,7 +31,7 @@ class SelectAppActivity : SettingsBaseActivity(), AppsAdapterWithShortcuts.Callb
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.preference_spring_recyclerview)
+        setContentView(R.layout.preference_insettable_recyclerview)
 
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

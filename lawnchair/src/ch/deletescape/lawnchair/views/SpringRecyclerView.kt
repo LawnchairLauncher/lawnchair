@@ -28,10 +28,9 @@ import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.getColorAccent
 import ch.deletescape.lawnchair.getColorAttr
 
-
-open class SpringRecyclerView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : RecyclerView(context, attrs, defStyleAttr) {
-
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+open class SpringRecyclerView @JvmOverloads constructor(
+        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : RecyclerView(context, attrs, defStyleAttr) {
 
     private val springManager = SpringEdgeEffect.Manager(this)
     private val scrollBarColor by lazy {

@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<FrameLayout
+<ch.deletescape.lawnchair.views.SettingsSearchLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/search_panel"
@@ -21,7 +21,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <FrameLayout
+    <com.android.launcher3.InsettableFrameLayout
         android:id="@+id/layout_results"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -29,7 +29,7 @@
         android:orientation="vertical">
 
         <!-- Padding is included in the background -->
-        <ch.deletescape.lawnchair.views.SpringRecyclerView
+        <ch.deletescape.lawnchair.views.InsettableRecyclerView
             android:id="@+id/list_results"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
@@ -69,7 +69,7 @@
 
         </LinearLayout>
 
-    </FrameLayout>
+    </com.android.launcher3.InsettableFrameLayout>
 
     <FrameLayout
         android:id="@+id/search_bar_container"
@@ -101,4 +101,4 @@
         </android.support.v7.widget.CardView>
     </FrameLayout>
 
-</FrameLayout>
+</ch.deletescape.lawnchair.views.SettingsSearchLayout>

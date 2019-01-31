@@ -18,27 +18,31 @@
 package ch.deletescape.lawnchair.settings.ui
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.content.Context
-import android.graphics.Canvas
+import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.os.Environment
 import android.support.design.widget.Snackbar
+import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
-import android.widget.FrameLayout
 import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.getBooleanAttr
 import ch.deletescape.lawnchair.getColorAttr
 import ch.deletescape.lawnchair.getDimenAttr
 import ch.deletescape.lawnchair.isVisible
+import ch.deletescape.lawnchair.util.parents
+import com.android.launcher3.Insettable
+import com.android.launcher3.InsettableFrameLayout
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import java.io.File
 
 @SuppressLint("ViewConstructor")
-class DecorLayout(context: Context, private val window: Window) : FrameLayout(context),
+class DecorLayout(context: Context, private val window: Window) : InsettableFrameLayout(context, null),
         View.OnClickListener, BlurWallpaperProvider.Listener {
 
     private var tapCount = 0
@@ -77,23 +81,18 @@ class DecorLayout(context: Context, private val window: Window) : FrameLayout(co
             updateToolbar()
         }
 
+    private val contentTop get() = when {
+        hideToolbar -> 0
+        useLargeTitle -> context.resources.getDimensionPixelSize(R.dimen.large_title_height)
+        else -> context.getDimenAttr(R.attr.actionBarSize)
+    }
+
     private fun updateToolbar() {
         largeTitle.visibility = if (useLargeTitle && !hideToolbar) View.VISIBLE else View.GONE
         toolbar.visibility = if (!useLargeTitle && !hideToolbar) View.VISIBLE else View.GONE
-        updateContentTopMargin()
-    }
-
-    private fun updateContentTopMargin() {
-        val layoutParams = contentFrame.layoutParams as LayoutParams
-        layoutParams.topMargin = when {
-            hideToolbar -> 0
-            useLargeTitle -> context.resources.getDimensionPixelSize(R.dimen.large_title_height)
-            else -> context.getDimenAttr(R.attr.actionBarSize)
-        }
     }
 
     init {
-        fitsSystemWindows = false
         LayoutInflater.from(context).inflate(R.layout.decor_layout, this)
 
         contentFrame = findViewById(android.R.id.content)
@@ -101,8 +100,6 @@ class DecorLayout(context: Context, private val window: Window) : FrameLayout(co
         toolbar = findViewById(R.id.toolbar)
         largeTitle = findViewById(R.id.large_title)
         largeTitle.setOnClickListener(this)
-
-        updateContentTopMargin()
 
         onEnabledChanged()
 
@@ -113,7 +110,6 @@ class DecorLayout(context: Context, private val window: Window) : FrameLayout(co
 
     override fun onEnabledChanged() {
         val enabled = BlurWallpaperProvider.isEnabled
-        findViewById<View>(R.id.blur_tint).isVisible = enabled
         (background as? BlurDrawable)?.let {
             if (!enabled) {
                 it.stopListening()
@@ -165,5 +161,152 @@ class DecorLayout(context: Context, private val window: Window) : FrameLayout(co
 
         BlurWallpaperProvider.getInstance(context).removeListener(this)
         (background as BlurDrawable?)?.stopListening()
+    }
+
+    @TargetApi(23)
+    override fun fitSystemWindows(insets: Rect): Boolean {
+        setInsets(insets)
+        return true
+    }
+
+    class ContentFrameLayout(context: Context, attrs: AttributeSet?) : InsettableFrameLayout(context, attrs) {
+
+        private var decorLayout: DecorLayout? = null
+
+        private val contentPath = Path()
+        internal val dividerPath = Path()
+        internal val backScrimPath = Path()
+        internal val frontScrimPath = Path()
+
+        private val selfRect = RectF()
+        private val insetsRect = RectF()
+        private val contentRect = RectF()
+
+        private val dividerSize = Utilities.pxFromDp(1f, resources.displayMetrics).toFloat()
+
+        override fun onAttachedToWindow() {
+            super.onAttachedToWindow()
+            decorLayout = parents.first { it is DecorLayout } as DecorLayout
+        }
+
+        override fun setInsets(insets: Rect) {
+            decorLayout?.also {
+                setInsetsInternal(Rect(
+                        insets.left,
+                        insets.top + it.contentTop,
+                        insets.right,
+                        insets.bottom))
+            } ?: setInsetsInternal(insets)
+        }
+
+        override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+            super.onLayout(changed, left, top, right, bottom)
+            if (changed) {
+                selfRect.set(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat())
+                computeClip()
+            }
+        }
+
+        private fun setInsetsInternal(insets: Rect) {
+            super.setInsets(insets)
+            insetsRect.set(insets)
+            computeClip()
+        }
+
+        private fun computeClip() {
+            contentRect.set(
+                    selfRect.left + insetsRect.left,
+                    selfRect.top + insetsRect.top,
+                    selfRect.right - insetsRect.right,
+                    selfRect.bottom - insetsRect.bottom
+            )
+
+            dividerPath.reset()
+            when {
+                isNavBarToRightEdge() -> dividerPath.addRect(
+                        contentRect.right,
+                        selfRect.top,
+                        contentRect.right + dividerSize,
+                        selfRect.bottom,
+                        Path.Direction.CW)
+                isNavBarToLeftEdge() -> dividerPath.addRect(
+                        contentRect.left - dividerSize,
+                        selfRect.top,
+                        contentRect.left,
+                        selfRect.bottom,
+                        Path.Direction.CW)
+                else -> dividerPath.addRect(
+                        selfRect.left,
+                        contentRect.bottom,
+                        selfRect.right,
+                        contentRect.bottom + dividerSize,
+                        Path.Direction.CW)
+            }
+
+            contentPath.reset()
+            contentPath.addRect(contentRect, Path.Direction.CW)
+
+            frontScrimPath.reset()
+            frontScrimPath.addRect(selfRect, Path.Direction.CW)
+            frontScrimPath.op(contentPath, Path.Op.DIFFERENCE)
+            frontScrimPath.op(dividerPath, Path.Op.DIFFERENCE)
+
+            backScrimPath.reset()
+            backScrimPath.addRect(selfRect, Path.Direction.CW)
+            backScrimPath.op(frontScrimPath, Path.Op.DIFFERENCE)
+
+            invalidate()
+        }
+
+        private fun isNavBarToRightEdge(): Boolean {
+            return insetsRect.bottom == 0f && insetsRect.right > 0
+        }
+
+        private fun isNavBarToLeftEdge(): Boolean {
+            return insetsRect.bottom == 0f && insetsRect.left > 0
+        }
+    }
+
+    class BackScrimView(context: Context, attrs: AttributeSet?) : View(context, attrs), Insettable {
+
+        private val parent by lazy { parents.first { it is ContentFrameLayout } as ContentFrameLayout }
+
+        override fun onFinishInflate() {
+            super.onFinishInflate()
+            background = background.mutate().apply { alpha = 230 }
+        }
+
+        override fun draw(canvas: Canvas) {
+            val count = canvas.save()
+            canvas.clipPath(parent.backScrimPath)
+            super.draw(canvas)
+            canvas.restoreToCount(count)
+        }
+
+        override fun setInsets(insets: Rect?) {
+            // ignore this
+        }
+    }
+
+    class FrontScrimView(context: Context, attrs: AttributeSet?) : View(context, attrs), Insettable {
+
+        private val parent by lazy { parents.first { it is ContentFrameLayout } as ContentFrameLayout }
+
+        override fun onFinishInflate() {
+            super.onFinishInflate()
+            background = background.mutate().apply { alpha = 230 }
+        }
+
+        override fun draw(canvas: Canvas) {
+            val count = canvas.save()
+            canvas.clipPath(parent.frontScrimPath)
+            super.draw(canvas)
+            canvas.restoreToCount(count)
+            canvas.drawPath(parent.dividerPath, Paint().apply { color = 0x1f000000 })
+        }
+
+        override fun setInsets(insets: Rect?) {
+            // ignore this
+        }
     }
 }

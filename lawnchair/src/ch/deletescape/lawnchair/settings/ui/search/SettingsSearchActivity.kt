@@ -58,8 +58,6 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
 
         val listResults = list_results
         listResults.shouldTranslateSelf = false
-        listResults.isVerticalFadingEdgeEnabled = true
-        listResults.isTopFadingEdgeEnabled = false
         listResults.adapter = searchAdapter
         listResults.layoutManager = LinearLayoutManager(this)
         listResults.addOnScrollListener(object : RecyclerView.OnScrollListener() {
