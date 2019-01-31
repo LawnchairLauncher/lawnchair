@@ -120,7 +120,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     public static final float SPRING_MIN_VISIBLE_CHANGE = 0.001f;
     public static final float SPRING_DAMPING_RATIO = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY;
-    public static final float SPRING_STIFFNESS = SpringForce.STIFFNESS_LOW;
+    public static final float SPRING_STIFFNESS = SpringForce.STIFFNESS_MEDIUM;
 
     public static final FloatProperty<RecentsView> CONTENT_ALPHA =
             new FloatProperty<RecentsView>("contentAlpha") {
