@@ -169,11 +169,11 @@ public class TaskThumbnailView extends View {
         return mDimAlpha;
     }
 
-    public Rect getInsets() {
+    public Rect getInsets(Rect fallback) {
         if (mThumbnailData != null) {
             return mThumbnailData.insets;
         }
-        return new Rect();
+        return fallback;
     }
 
     public int getSysUiStatusNavFlags() {
