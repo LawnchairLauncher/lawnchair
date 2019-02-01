@@ -15,54 +15,31 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
-import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
-import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.systemui.shared.system.ActivityManagerWrapper
         .CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
-import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.SystemClock;
-import android.util.Log;
-import android.view.View;
 import android.view.ViewConfiguration;
 
-import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.MainThreadExecutor;
-import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
-import com.android.quickstep.ActivityControlHelper.AnimationFactory;
-import com.android.quickstep.util.ClipAnimationHelper;
-import com.android.quickstep.util.RemoteAnimationTargetSet;
-import com.android.quickstep.util.TransformedRect;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
-import com.android.systemui.shared.system.TransactionCompat;
 
 /**
  * Helper class to handle various atomic commands for switching between Overview.
  */
 @TargetApi(Build.VERSION_CODES.P)
 public class OverviewCommandHelper {
-
-    private static final long RECENTS_LAUNCH_DURATION = 250;
-
-    private static final String TAG = "OverviewCommandHelper";
 
     private final Context mContext;
     private final ActivityManagerWrapper mAM;
@@ -111,18 +88,17 @@ public class OverviewCommandHelper {
 
         protected final ActivityControlHelper<T> mHelper;
         private final long mCreateTime;
-        private final int mRunningTaskId;
+        private final AppToOverviewAnimationProvider<T> mAnimationProvider;
 
-        private ActivityInitListener mListener;
-        private T mActivity;
-        private RecentsView mRecentsView;
         private final long mToggleClickedTime = SystemClock.uptimeMillis();
         private boolean mUserEventLogged;
+        private ActivityInitListener mListener;
 
         public RecentsActivityCommand() {
             mHelper = mOverviewComponentObserver.getActivityControlHelper();
             mCreateTime = SystemClock.elapsedRealtime();
-            mRunningTaskId = RecentsModel.getRunningTaskId();
+            mAnimationProvider =
+                    new AppToOverviewAnimationProvider<>(mHelper, RecentsModel.getRunningTaskId());
 
             // Preload the plan
             mRecentsModel.getTasks(null);
@@ -133,16 +109,21 @@ public class OverviewCommandHelper {
             long elapsedTime = mCreateTime - mLastToggleTime;
             mLastToggleTime = mCreateTime;
 
-            if (!handleCommand(elapsedTime)) {
-                // Start overview
-                if (!mHelper.switchToRecentsIfVisible(true)) {
-                    mListener = mHelper.createActivityInitListener(this::onActivityReady);
-                    mListener.registerAndStartActivity(
-                            mOverviewComponentObserver.getOverviewIntent(),
-                            this::createWindowAnimation, mContext, mMainThreadExecutor.getHandler(),
-                            RECENTS_LAUNCH_DURATION);
-                }
+            if (handleCommand(elapsedTime)) {
+                // Command already handled.
+                return;
             }
+
+            if (mHelper.switchToRecentsIfVisible(true)) {
+                // If successfully switched, then return
+                return;
+            }
+
+            // Otherwise, start overview.
+            mListener = mHelper.createActivityInitListener(this::onActivityReady);
+            mListener.registerAndStartActivity(mOverviewComponentObserver.getOverviewIntent(),
+                    this::createWindowAnimation, mContext, mMainThreadExecutor.getHandler(),
+                    mAnimationProvider.getRecentsLaunchDuration());
         }
 
         protected boolean handleCommand(long elapsedTime) {
@@ -163,26 +144,14 @@ public class OverviewCommandHelper {
         }
 
         private boolean onActivityReady(T activity, Boolean wasVisible) {
-            activity.<RecentsView>getOverviewPanel().setCurrentTask(mRunningTaskId);
-            AbstractFloatingView.closeAllOpenViews(activity, wasVisible);
-            AnimationFactory factory = mHelper.prepareRecentsUI(activity, wasVisible,
-                    false /* animate activity */, (controller) -> {
-                        controller.dispatchOnStart();
-                        ValueAnimator anim = controller.getAnimationPlayer()
-                                .setDuration(RECENTS_LAUNCH_DURATION);
-                        anim.setInterpolator(FAST_OUT_SLOW_IN);
-                        anim.start();
-                });
-            factory.onRemoteAnimationReceived(null);
-            factory.createActivityController(RECENTS_LAUNCH_DURATION, INTERACTION_NORMAL);
-            mActivity = activity;
-            mRecentsView = mActivity.getOverviewPanel();
             if (!mUserEventLogged) {
-                activity.getUserEventDispatcher().logActionCommand(Action.Command.RECENTS_BUTTON,
-                        mHelper.getContainerType(), ContainerType.TASKSWITCHER);
+                activity.getUserEventDispatcher().logActionCommand(
+                        LauncherLogProto.Action.Command.RECENTS_BUTTON,
+                        mHelper.getContainerType(),
+                        LauncherLogProto.ContainerType.TASKSWITCHER);
                 mUserEventLogged = true;
             }
-            return false;
+            return mAnimationProvider.onActivityReady(activity, wasVisible);
         }
 
         private AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] targetCompats) {
@@ -191,80 +160,9 @@ public class OverviewCommandHelper {
                         (int) (SystemClock.uptimeMillis() - mToggleClickedTime));
             }
 
-            if (mListener != null) {
-                mListener.unregister();
-            }
-            if (mRecentsView != null) {
-                mRecentsView.setRunningTaskIconScaledDown(true);
-            }
-            AnimatorSet anim = new AnimatorSet();
-            anim.addListener(new AnimationSuccessListener() {
-                @Override
-                public void onAnimationSuccess(Animator animator) {
-                    if (mRecentsView != null) {
-                        mRecentsView.animateUpRunningTaskIconScale();
-                    }
-                }
-            });
-            if (mActivity == null) {
-                Log.e(TAG, "Animation created, before activity");
-                anim.play(ValueAnimator.ofInt(0, 1).setDuration(100));
-                return anim;
-            }
+            mListener.unregister();
 
-            RemoteAnimationTargetSet targetSet =
-                    new RemoteAnimationTargetSet(targetCompats, MODE_CLOSING);
-
-            // Use the top closing app to determine the insets for the animation
-            RemoteAnimationTargetCompat runningTaskTarget = targetSet.findTask(mRunningTaskId);
-            if (runningTaskTarget == null) {
-                Log.e(TAG, "No closing app");
-                anim.play(ValueAnimator.ofInt(0, 1).setDuration(100));
-                return anim;
-            }
-
-            final ClipAnimationHelper clipHelper = new ClipAnimationHelper(mActivity);
-
-            // At this point, the activity is already started and laid-out. Get the home-bounds
-            // relative to the screen using the rootView of the activity.
-            int loc[] = new int[2];
-            View rootView = mActivity.getRootView();
-            rootView.getLocationOnScreen(loc);
-            Rect homeBounds = new Rect(loc[0], loc[1],
-                    loc[0] + rootView.getWidth(), loc[1] + rootView.getHeight());
-            clipHelper.updateSource(homeBounds, runningTaskTarget);
-
-            TransformedRect targetRect = new TransformedRect();
-            mHelper.getSwipeUpDestinationAndLength(mActivity.getDeviceProfile(), mActivity,
-                    INTERACTION_NORMAL, targetRect);
-            clipHelper.updateTargetRect(targetRect);
-            clipHelper.prepareAnimation(false /* isOpening */);
-
-            ClipAnimationHelper.TransformParams params = new ClipAnimationHelper.TransformParams()
-                    .setSyncTransactionApplier(new SyncRtSurfaceTransactionApplierCompat(rootView));
-            ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
-            valueAnimator.setDuration(RECENTS_LAUNCH_DURATION);
-            valueAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
-            valueAnimator.addUpdateListener((v) -> {
-                params.setProgress((float) v.getAnimatedValue());
-                clipHelper.applyTransform(targetSet, params);
-            });
-
-            if (targetSet.isAnimatingHome()) {
-                // If we are animating home, fade in the opening targets
-                RemoteAnimationTargetSet openingSet =
-                        new RemoteAnimationTargetSet(targetCompats, MODE_OPENING);
-
-                TransactionCompat transaction = new TransactionCompat();
-                valueAnimator.addUpdateListener((v) -> {
-                    for (RemoteAnimationTargetCompat app : openingSet.apps) {
-                        transaction.setAlpha(app.leash, (float) v.getAnimatedValue());
-                    }
-                    transaction.apply();
-                });
-            }
-            anim.play(valueAnimator);
-            return anim;
+            return mAnimationProvider.createWindowAnimation(targetCompats);
         }
     }
 }
