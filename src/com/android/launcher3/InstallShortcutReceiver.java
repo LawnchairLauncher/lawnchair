@@ -57,6 +57,7 @@ import org.json.JSONStringer;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -172,7 +173,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             Log.d(TAG, "APPS_PENDING_INSTALL: " + strings
                     + ", removing packages: " + packageNames);
         }
-        if (Utilities.isEmpty(strings)) {
+        if (strings == null || ((Collection) strings).isEmpty()) {
             return;
         }
         Set<String> newStrings = new HashSet<>(strings);
@@ -268,7 +269,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         HashSet<ShortcutKey> result = new HashSet<>();
 
         Set<String> strings = Utilities.getPrefs(context).getStringSet(APPS_PENDING_INSTALL, null);
-        if (Utilities.isEmpty(strings)) {
+        if (strings == null || ((Collection) strings).isEmpty()) {
             return result;
         }
 

@@ -98,6 +98,7 @@ import com.android.launcher3.widget.PendingAppWidgetHostView;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -3059,7 +3060,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         });
     }
 
-    public void updateNotificationDots(final Set<PackageUserKey> updatedDots) {
+    public void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
         final PackageUserKey packageUserKey = new PackageUserKey(null, null);
         final IntSet folderIds = new IntSet();
         mapOverItems(MAP_RECURSE, new ItemOperator() {
@@ -3067,7 +3068,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             public boolean evaluate(ItemInfo info, View v) {
                 if (info instanceof ShortcutInfo && v instanceof BubbleTextView) {
                     if (!packageUserKey.updateFromItemInfo(info)
-                            || updatedDots.contains(packageUserKey)) {
+                            || updatedDots.test(packageUserKey)) {
                         ((BubbleTextView) v).applyDotState(info, true /* animate */);
                         folderIds.add(info.container);
                     }
