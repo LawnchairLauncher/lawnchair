@@ -182,4 +182,9 @@ public class ActionView extends BubbleTextView implements OnLongClickListener {
                 ((-point.y) + rect.top) + rect.height());
         return false;
     }
+
+    @Override
+    protected boolean isTextHidden() {
+        return false;
+    }
 }

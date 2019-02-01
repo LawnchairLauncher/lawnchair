@@ -170,16 +170,16 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         int defaultIconSize = grid.iconSizePx;
         if (display == DISPLAY_WORKSPACE) {
             mHideText = Utilities.getLawnchairPrefs(context).getHideAppLabels();
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.iconTextSizePx);
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
         } else if (display == DISPLAY_ALL_APPS) {
             mHideText = Utilities.getLawnchairPrefs(context).getHideAllAppsAppLabels();
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.allAppsIconTextSizePx);
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
         } else if (display == DISPLAY_FOLDER) {
             mHideText = Utilities.getLawnchairPrefs(context).getHideAppLabels();
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.folderChildTextSizePx);
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.folderChildTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
             defaultIconSize = grid.folderChildIconSizePx;
         }
@@ -259,7 +259,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mBadgeColor = IconPalette.getMutedColor(info.iconColor, 0.54f);
 
         setIcon(iconDrawable);
-        if (!mHideText)
+        if (!isTextHidden())
             setText(getTitle(info));
         if (info.contentDescription != null) {
             setContentDescription(info.isDisabled()
@@ -669,5 +669,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public int getIconSize() {
         return mIconSize;
+    }
+
+    protected boolean isTextHidden() {
+        return mHideText;
     }
 }
