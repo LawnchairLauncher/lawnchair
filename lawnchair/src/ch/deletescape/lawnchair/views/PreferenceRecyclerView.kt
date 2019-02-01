@@ -18,36 +18,26 @@
 package ch.deletescape.lawnchair.views
 
 import android.content.Context
-import android.graphics.Rect
 import android.util.AttributeSet
-import com.android.launcher3.Insettable
+import ch.deletescape.lawnchair.settings.ui.DecorLayout
 
-open class InsettableRecyclerView @JvmOverloads constructor(
+class PreferenceRecyclerView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : SpringRecyclerView(context, attrs, defStyleAttr), Insettable {
+) : InsettableRecyclerView(context, attrs, defStyleAttr) {
 
-    private var inflationDone = false
-
-    private val currentInsets = Rect()
-
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-        inflationDone = true
-    }
-
-    override fun setInsets(insets: Rect) {
-        super.setPadding(
-                paddingLeft + insets.left - currentInsets.left,
-                paddingTop + insets.top - currentInsets.top,
-                paddingRight + insets.right - currentInsets.right,
-                paddingBottom + insets.bottom - currentInsets.bottom)
-        currentInsets.set(insets)
-    }
-
-    override fun setPadding(left: Int, top: Int, right: Int, bottom: Int) {
-        if (!inflationDone) {
-            super.setPadding(left, top, right, bottom)
-            currentInsets.setEmpty()
+    private var elevationHelper: DecorLayout.ToolbarElevationHelper? = null
+        set(value) {
+            field?.destroy()
+            field = value
         }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        elevationHelper = DecorLayout.ToolbarElevationHelper(this)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        elevationHelper = null
     }
 }

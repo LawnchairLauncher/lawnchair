@@ -38,6 +38,14 @@
             app:titleTextColor="?colorAccent"
             android:theme="?actionBarTheme" />
 
+        <View
+            android:id="@+id/toolbar_shadow"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginTop="?actionBarSize"
+            android:background="@drawable/toolbar_dropshadow"
+            android:alpha="0" />
+
         <TextView
             android:id="@+id/large_title"
             android:layout_width="match_parent"

@@ -29,7 +29,7 @@
         android:orientation="vertical">
 
         <!-- Padding is included in the background -->
-        <ch.deletescape.lawnchair.views.InsettableRecyclerView
+        <ch.deletescape.lawnchair.views.PreferenceRecyclerView
             android:id="@+id/list_results"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"

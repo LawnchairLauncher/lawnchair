@@ -27,6 +27,7 @@ import android.support.design.widget.Snackbar
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewTreeObserver
 import android.view.Window
 import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
@@ -51,6 +52,18 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
     private val actionBarContainer: View
     private val toolbar: View
     private val largeTitle: View
+    private val toolbarShadow: View
+    internal var toolbarElevated = false
+        set(value) {
+            if (field != value) {
+                field = value
+                if (value) {
+                    toolbarShadow.animate().alpha(1f).setDuration(200).start()
+                } else {
+                    toolbarShadow.animate().alpha(0f).setDuration(200).start()
+                }
+            }
+        }
 
     private val shouldDrawBackground by lazy { context.getBooleanAttr(android.R.attr.windowShowWallpaper) }
     private val settingsBackground by lazy { context.getColorAttr(R.attr.settingsBackground) }
@@ -90,6 +103,7 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
     private fun updateToolbar() {
         largeTitle.visibility = if (useLargeTitle && !hideToolbar) View.VISIBLE else View.GONE
         toolbar.visibility = if (!useLargeTitle && !hideToolbar) View.VISIBLE else View.GONE
+        toolbarShadow.visibility = toolbar.visibility
     }
 
     init {
@@ -100,6 +114,7 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
         toolbar = findViewById(R.id.toolbar)
         largeTitle = findViewById(R.id.large_title)
         largeTitle.setOnClickListener(this)
+        toolbarShadow = findViewById(R.id.toolbar_shadow)
 
         onEnabledChanged()
 
@@ -307,6 +322,23 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
 
         override fun setInsets(insets: Rect?) {
             // ignore this
+        }
+    }
+
+    class ToolbarElevationHelper constructor(private val scrollingView: View) : ViewTreeObserver.OnScrollChangedListener {
+
+        private val decorLayout by lazy { scrollingView.parents.first { it is DecorLayout } as DecorLayout }
+
+        init {
+            scrollingView.viewTreeObserver.addOnScrollChangedListener(this)
+        }
+
+        override fun onScrollChanged() {
+            decorLayout.toolbarElevated = scrollingView.canScrollVertically(-1)
+        }
+
+        fun destroy() {
+            scrollingView.viewTreeObserver.removeOnScrollChangedListener(this)
         }
     }
 }
