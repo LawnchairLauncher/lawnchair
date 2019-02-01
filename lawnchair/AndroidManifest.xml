@@ -240,7 +240,8 @@
         </activity>
         <activity
             android:name="ch.deletescape.lawnchair.gestures.ui.RunHandlerActivity"
-            android:theme="@style/SettingsTheme.V2.Transparent">
+            android:theme="@style/SettingsTheme.V2.Transparent"
+            android:taskAffinity="${applicationId}.tasks.RUN_HANDLER">
             <intent-filter>
                 <action android:name="ch.deletescape.lawnchair.START_ACTION"/>
 

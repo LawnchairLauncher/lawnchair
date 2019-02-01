@@ -26,8 +26,6 @@ import android.support.v7.widget.RecyclerView
 import ch.deletescape.lawnchair.gestures.ui.HandlerListAdapter
 import ch.deletescape.lawnchair.gestures.ui.RunHandlerActivity
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
-import ch.deletescape.lawnchair.theme.ThemeManager
-import ch.deletescape.lawnchair.theme.ThemeOverride
 import com.android.launcher3.R
 import com.android.launcher3.graphics.LauncherIcons
 
@@ -40,7 +38,7 @@ class LawnchairShortcutActivity : SettingsBaseActivity() {
         if (intent.action != Intent.ACTION_CREATE_SHORTCUT) {
             finish()
         }
-        setContentView(R.layout.preference_spring_recyclerview)
+        setContentView(R.layout.preference_insettable_recyclerview)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val recyclerView = findViewById<RecyclerView>(R.id.list)
