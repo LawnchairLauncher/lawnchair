@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
-        android:key="pref_developerOptionsReallyEnabled"
-        android:title="@string/show_developer_options"
-        android:defaultValue="false"
-        android:persistent="true" />
-
     <Preference
         android:key="appInfo"
         android:title="@string/app_info_drop_target_label" />
@@ -58,6 +52,12 @@
         android:key="pref_useScaleAnim"
         android:title="Use scale animation for transitions"
         android:defaultValue="false"
+        android:persistent="true" />
+
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        android:key="pref_dismissTasksOnKill"
+        android:title="Dismiss tasks from app switcher when killed"
+        android:defaultValue="true"
         android:persistent="true" />
 
     <Preference

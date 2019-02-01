@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Looper
+import android.provider.Settings
 import android.text.TextUtils
 import android.util.TypedValue
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
@@ -167,7 +168,12 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val drawerTabs by lazy { DrawerTabs(this) }
 
     // Dev
-    var developerOptionsEnabled by BooleanPref("pref_developerOptionsReallyEnabled", false, doNothing)
+    var developerOptionsKey by StringPref("pref_developerOptionsKey", "", doNothing)
+    var developerOptionsEnabled
+        get() = developerOptionsKey == Settings.Secure.ANDROID_ID
+        set(value) {
+            developerOptionsKey = if (value) Settings.Secure.ANDROID_ID else ""
+        }
     val showDebugInfo by BooleanPref("pref_showDebugInfo", false, doNothing)
     val alwaysClearIconCache by BooleanPref("pref_alwaysClearIconCache", false, restart)
     val debugLegacyTreatment by BooleanPref("pref_debugLegacyTreatment", false, restart)
@@ -176,6 +182,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val backupScreenshot by BooleanPref("pref_backupScreenshot", false, doNothing)
     val useScaleAnim by BooleanPref("pref_useScaleAnim", false, doNothing)
     val useWindowToIcon by BooleanPref("pref_useWindowToIcon", true, doNothing)
+    val dismissTasksOnKill by BooleanPref("pref_dismissTasksOnKill", true, doNothing)
 
     // Search
     var searchProvider by StringPref("pref_globalSearchProvider", context.resources.getString(R.string.config_default_search_provider)) {

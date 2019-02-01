@@ -188,7 +188,6 @@
     <string name="about_bio_chris">Creative Mind, Influencer &amp; Content Creator. Social Media and PR Manager.</string>
     <string name="about_bio_msfjarvis">Core developer at halogenOS and application developer at substratum.</string>
 
-    <string name="show_developer_options">Enable developer options</string>
     <string name="debug_crash_launcher">Crash the launcher</string>
     <string name="gestures_pref_title">Gestures</string>
     <string name="gestures_pref_summary">Customize the home screen gestures</string>

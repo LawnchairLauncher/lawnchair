@@ -287,13 +287,15 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         }
 
         @Override
-        protected OnClickListener getOnClickListenerForTask(BaseDraggingActivity activity,
-                Task task, ItemInfo dummyInfo) {
+        public View.OnClickListener getOnClickListener(
+                BaseDraggingActivity activity, TaskView taskView) {
             if (Utilities.hasPermission(activity, "android.permission.FORCE_STOP_PACKAGES")) {
-                PackageManager pm = activity.getPackageManager();
-                DevicePolicyManager dpm = (DevicePolicyManager) activity
+                final PackageManager pm = activity.getPackageManager();
+                final DevicePolicyManager dpm = (DevicePolicyManager) activity
                         .getSystemService(Context.DEVICE_POLICY_SERVICE);
-                String packageName = task.key.getPackageName();
+                final RecentsView recentsView = activity.getOverviewPanel();
+                final Task task = taskView.getTask();
+                final String packageName = task.key.getPackageName();
                 int userId = task.key.userId;
                 // TODO: This workaround for dynamic labels hurts and I feel like it might actually
                 // be smarter to make a seperate shortcut for when the task is Lawnchair
@@ -315,8 +317,11 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                 }
                 return v -> {
                     try {
+                        final boolean dismissTasks = Utilities.getLawnchairPrefs(activity).getDismissTasksOnKill();
                         ActivityManager.getService().forceStopPackage(packageName, userId);
+                        if (dismissTasks) recentsView.removeIgnoreResetTask(taskView);
                         dismissTaskMenuView(activity);
+                        if (dismissTasks) recentsView.dismissTask(taskView, true, true);
                     } catch (RemoteException ignored) {
                     }
                 };
