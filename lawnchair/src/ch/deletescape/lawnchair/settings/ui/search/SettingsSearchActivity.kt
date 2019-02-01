@@ -37,6 +37,7 @@ import android.text.TextUtils
 import android.view.MenuItem
 import android.widget.Toast
 import ch.deletescape.lawnchair.LawnchairPreferences
+import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity.SubSettingsFragment.*
@@ -176,6 +177,12 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
                 // Valid even when result.icon is null.
                 // iconView.setImageDrawable(result.icon)
                 bindBreadcrumbView(entry)
+                if (itemView.context.lawnchairPrefs.showDebugInfo) {
+                    itemView.setOnLongClickListener {
+                        Toast.makeText(itemView.context, entry.key, Toast.LENGTH_LONG).show()
+                        true
+                    }
+                }
             }
 
             private fun bindBreadcrumbView(entry: SearchIndex.SettingsEntry) {
