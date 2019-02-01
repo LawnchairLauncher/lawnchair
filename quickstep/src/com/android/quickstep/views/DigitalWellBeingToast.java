@@ -16,6 +16,8 @@
 
 package com.android.quickstep.views;
 
+import static android.provider.Settings.ACTION_APP_USAGE_SETTINGS;
+
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -47,6 +49,8 @@ import java.time.Duration;
 import java.util.Locale;
 
 public final class DigitalWellBeingToast extends LinearLayout {
+    static final Intent OPEN_APP_USAGE_SETTINGS_TEMPLATE = new Intent(ACTION_APP_USAGE_SETTINGS);
+
     public interface InitializeCallback {
         void call(float saturation, String contentDescription);
     }
@@ -189,7 +193,7 @@ public final class DigitalWellBeingToast extends LinearLayout {
     }
 
     public void openAppUsageSettings() {
-        final Intent intent = new Intent(TaskView.SEE_TIME_IN_APP_TEMPLATE)
+        final Intent intent = new Intent(OPEN_APP_USAGE_SETTINGS_TEMPLATE)
                 .putExtra(Intent.EXTRA_PACKAGE_NAME,
                         mTask.getTopComponent().getPackageName()).addFlags(
                         Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
