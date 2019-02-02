@@ -21,6 +21,9 @@ import android.view.Choreographer;
 import android.view.MotionEvent;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.Nullable;
+
+import com.android.quickstep.OtherActivityTouchConsumer.RecentsAnimationState;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -71,6 +74,13 @@ public interface TouchConsumer extends Consumer<MotionEvent> {
 
     default boolean forceToLauncherConsumer() {
         return false;
+    }
+
+    /**
+     * When continuing a gesture, return the current non-null animation state that hasn't finished.
+     */
+    default @Nullable RecentsAnimationState getRecentsAnimationStateToReuse() {
+        return null;
     }
 
     default void onShowOverviewFromAltTab() {}
