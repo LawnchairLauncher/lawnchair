@@ -33,9 +33,6 @@ import com.android.quickstep.RecentsModel;
  */
 public class OverviewState extends LauncherState {
 
-    // TODO: Remove this when we refactor BackgroundAppState
-    protected static final Rect sTempRect = new Rect();
-
     private static final int STATE_FLAGS = FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED
             | FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_DISABLE_ACCESSIBILITY;
 

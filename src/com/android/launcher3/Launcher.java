@@ -146,6 +146,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import androidx.annotation.Nullable;
 
@@ -1118,7 +1119,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     };
 
-    public void updateNotificationDots(final Set<PackageUserKey> updatedDots) {
+    public void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
         mWorkspace.updateNotificationDots(updatedDots);
         mAppsView.getAppsStore().updateNotificationDots(updatedDots);
 

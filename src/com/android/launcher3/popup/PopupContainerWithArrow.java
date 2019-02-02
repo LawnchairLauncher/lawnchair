@@ -73,6 +73,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * A container for shortcuts to deep links and notifications associated with an app.
@@ -463,10 +464,10 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     /**
      * Updates the notification header if the original icon's dot updated.
      */
-    public void updateNotificationHeader(Set<PackageUserKey> updatedDots) {
+    public void updateNotificationHeader(Predicate<PackageUserKey> updatedDots) {
         ItemInfo itemInfo = (ItemInfo) mOriginalIcon.getTag();
         PackageUserKey packageUser = PackageUserKey.fromItemInfo(itemInfo);
-        if (updatedDots.contains(packageUser)) {
+        if (updatedDots.test(packageUser)) {
             updateNotificationHeader();
         }
     }

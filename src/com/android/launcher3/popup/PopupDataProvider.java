@@ -85,7 +85,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             }
         }
         if (dotShouldBeRefreshed) {
-            mLauncher.updateNotificationDots(Utilities.singletonHashSet(postedPackageUserKey));
+            mLauncher.updateNotificationDots(t -> postedPackageUserKey.equals(t));
         }
     }
 
@@ -97,7 +97,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             if (oldDotInfo.getNotificationKeys().size() == 0) {
                 mPackageUserToDotInfos.remove(removedPackageUserKey);
             }
-            mLauncher.updateNotificationDots(Utilities.singletonHashSet(removedPackageUserKey));
+            mLauncher.updateNotificationDots(t -> removedPackageUserKey.equals(t));
             trimNotifications(mPackageUserToDotInfos);
         }
     }
@@ -133,7 +133,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         }
 
         if (!updatedDots.isEmpty()) {
-            mLauncher.updateNotificationDots(updatedDots.keySet());
+            mLauncher.updateNotificationDots(updatedDots::containsKey);
         }
         trimNotifications(updatedDots);
     }

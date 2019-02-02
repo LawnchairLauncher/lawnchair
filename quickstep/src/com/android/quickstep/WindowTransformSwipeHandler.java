@@ -1164,11 +1164,18 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     @UiThread
     private void startNewTask() {
         // Launch the task user scrolled to (mRecentsView.getNextPage()).
-        mRecentsAnimationWrapper.finish(true /* toRecents */, () -> {
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            // We finish recents animation inside launchTask() when live tile is enabled.
             mRecentsView.getTaskViewAt(mRecentsView.getNextPage()).launchTask(false,
                     result -> setStateOnUiThread(STATE_HANDLER_INVALIDATED),
                     mMainThreadHandler);
-        });
+        } else {
+            mRecentsAnimationWrapper.finish(true /* toRecents */, () -> {
+                mRecentsView.getTaskViewAt(mRecentsView.getNextPage()).launchTask(false,
+                        result -> setStateOnUiThread(STATE_HANDLER_INVALIDATED),
+                        mMainThreadHandler);
+            });
+        }
         mTouchInteractionLog.finishRecentsAnimation(false);
         doLogGesture(NEW_TASK);
     }
