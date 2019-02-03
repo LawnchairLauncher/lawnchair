@@ -24,27 +24,39 @@ import android.view.View;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.TouchController;
+import com.android.quickstep.OverviewInteractionState;
+
+import java.util.ArrayList;
 
 /**
  * Provides recents-related {@link UiFactory} logic and classes.
  */
-public final class RecentsUiFactory {
+public abstract class RecentsUiFactory {
 
     // Scale recents takes before animating in
     private static final float RECENTS_PREPARE_SCALE = 1.33f;
 
-    private RecentsUiFactory() {}
+    public static TouchController[] createTouchControllers(Launcher launcher) {
+        ArrayList<TouchController> list = new ArrayList<>();
+        list.add(launcher.getDragController());
 
-    /**
-     * Creates and returns a touch controller for swiping recents tasks.
-     *
-     * @param launcher the launcher activity
-     * @return the touch controller for recents tasks
-     */
-    public static TouchController createTaskSwipeController(Launcher launcher) {
-        // We leave all input handling to the view itself.
-        return null;
+        if (launcher.getDeviceProfile().isVerticalBarLayout()) {
+            list.add(new LandscapeStatesTouchController(launcher));
+            list.add(new LandscapeEdgeSwipeController(launcher));
+        } else {
+            boolean allowDragToOverview = OverviewInteractionState.INSTANCE.get(launcher)
+                    .isSwipeUpGestureEnabled();
+            list.add(new PortraitStatesTouchController(launcher, allowDragToOverview));
+        }
+        if (FeatureFlags.PULL_DOWN_STATUS_BAR && Utilities.IS_DEBUG_DEVICE
+                && !launcher.getDeviceProfile().isMultiWindowMode
+                && !launcher.getDeviceProfile().isVerticalBarLayout()) {
+            list.add(new StatusBarTouchController(launcher));
+        }
+        return list.toArray(new TouchController[list.size()]);
     }
 
     /**
@@ -62,7 +74,7 @@ public final class RecentsUiFactory {
      *
      * @param launcher the launcher activity
      */
-    public static void prepareToShowRecents(Launcher launcher) {
+    public static void prepareToShowOverview(Launcher launcher) {
         View overview = launcher.getOverviewPanel();
         if (overview.getVisibility() != VISIBLE) {
             SCALE_PROPERTY.set(overview, RECENTS_PREPARE_SCALE);
@@ -74,7 +86,7 @@ public final class RecentsUiFactory {
      *
      * @param launcher the launcher activity
      */
-    public static void resetRecents(Launcher launcher) {}
+    public static void resetOverview(Launcher launcher) {}
 
     /**
      * Recents logic that triggers when launcher state changes or launcher activity stops/resumes.

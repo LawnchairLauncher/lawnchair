@@ -36,28 +36,19 @@ public class LauncherAppTransitionManager implements ResourceBasedOverride {
     }
 
     public ActivityOptions getActivityLaunchOptions(Launcher launcher, View v) {
-        if (Utilities.ATLEAST_MARSHMALLOW) {
-            int left = 0, top = 0;
-            int width = v.getMeasuredWidth(), height = v.getMeasuredHeight();
-            if (v instanceof BubbleTextView) {
-                // Launch from center of icon, not entire view
-                Drawable icon = ((BubbleTextView) v).getIcon();
-                if (icon != null) {
-                    Rect bounds = icon.getBounds();
-                    left = (width - bounds.width()) / 2;
-                    top = v.getPaddingTop();
-                    width = bounds.width();
-                    height = bounds.height();
-                }
+        int left = 0, top = 0;
+        int width = v.getMeasuredWidth(), height = v.getMeasuredHeight();
+        if (v instanceof BubbleTextView) {
+            // Launch from center of icon, not entire view
+            Drawable icon = ((BubbleTextView) v).getIcon();
+            if (icon != null) {
+                Rect bounds = icon.getBounds();
+                left = (width - bounds.width()) / 2;
+                top = v.getPaddingTop();
+                width = bounds.width();
+                height = bounds.height();
             }
-            return ActivityOptions.makeClipRevealAnimation(v, left, top, width, height);
-        } else if (Utilities.ATLEAST_LOLLIPOP_MR1) {
-            // On L devices, we use the device default slide-up transition.
-            // On L MR1 devices, we use a custom version of the slide-up transition which
-            // doesn't have the delay present in the device default.
-            return ActivityOptions.makeCustomAnimation(launcher, R.anim.task_open_enter,
-                    R.anim.no_anim);
         }
-        return null;
+        return ActivityOptions.makeClipRevealAnimation(v, left, top, width, height);
     }
 }

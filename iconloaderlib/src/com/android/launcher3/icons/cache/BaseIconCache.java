@@ -47,16 +47,15 @@ import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.SQLiteCacheHelper;
 
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import androidx.annotation.NonNull;
 
@@ -231,13 +230,8 @@ public abstract class BaseIconCache {
      * incorporates all the properties that can affect the cache like locale and system-version.
      */
     private void updateSystemState() {
-        final String locale;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            locale = mContext.getResources().getConfiguration().getLocales().toLanguageTags();
-        } else {
-            locale = Locale.getDefault().toString();
-        }
-
+        final String locale =
+                mContext.getResources().getConfiguration().getLocales().toLanguageTags();
         mSystemState = locale + "," + Build.VERSION.SDK_INT;
     }
 
@@ -309,7 +303,7 @@ public abstract class BaseIconCache {
      */
     protected <T> CacheEntry cacheLocked(
             @NonNull ComponentName componentName, @NonNull UserHandle user,
-            @NonNull Provider<T> infoProvider, @NonNull CachingLogic<T> cachingLogic,
+            @NonNull Supplier<T> infoProvider, @NonNull CachingLogic<T> cachingLogic,
             boolean usePackageIcon, boolean useLowResIcon) {
         return cacheLocked(componentName, user, infoProvider, cachingLogic, usePackageIcon,
                 useLowResIcon, true);
@@ -317,7 +311,7 @@ public abstract class BaseIconCache {
 
     protected <T> CacheEntry cacheLocked(
             @NonNull ComponentName componentName, @NonNull UserHandle user,
-            @NonNull Provider<T> infoProvider, @NonNull CachingLogic<T> cachingLogic,
+            @NonNull Supplier<T> infoProvider, @NonNull CachingLogic<T> cachingLogic,
             boolean usePackageIcon, boolean useLowResIcon, boolean addToMemCache) {
         assertWorkerThread();
         ComponentKey cacheKey = new ComponentKey(componentName, user);

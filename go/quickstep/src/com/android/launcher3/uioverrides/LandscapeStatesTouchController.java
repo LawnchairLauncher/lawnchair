@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 The Android Open Source Project
+ * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
 
 import android.view.MotionEvent;
 
@@ -25,18 +24,14 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.quickstep.TouchInteractionService;
-import com.android.quickstep.views.RecentsView;
 
 /**
- * Touch controller from going from OVERVIEW to ALL_APPS.
- *
- * This is used in landscape mode. It is also used in portrait mode for the fallback recents.
+ * Touch controller for landscape mode.
  */
-public class OverviewToAllAppsTouchController extends PortraitStatesTouchController {
+public final class LandscapeStatesTouchController extends PortraitStatesTouchController {
 
-    public OverviewToAllAppsTouchController(Launcher l) {
-        super(l);
+    public LandscapeStatesTouchController(Launcher l) {
+        super(l, true /* allowDragToOverview */);
     }
 
     @Override
@@ -53,9 +48,6 @@ public class OverviewToAllAppsTouchController extends PortraitStatesTouchControl
             return mLauncher.getAppsView().shouldContainerScroll(ev);
         } else if (mLauncher.isInState(NORMAL)) {
             return true;
-        } else if (mLauncher.isInState(OVERVIEW)) {
-            RecentsView rv = mLauncher.getOverviewPanel();
-            return ev.getY() > (rv.getBottom() - rv.getPaddingBottom());
         } else {
             return false;
         }
@@ -64,9 +56,7 @@ public class OverviewToAllAppsTouchController extends PortraitStatesTouchControl
     @Override
     protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
         if (fromState == ALL_APPS && !isDragTowardPositive) {
-            // Should swipe down go to OVERVIEW instead?
-            return TouchInteractionService.isConnected() ?
-                    mLauncher.getStateManager().getLastState() : NORMAL;
+            return NORMAL;
         } else if (isDragTowardPositive) {
             return ALL_APPS;
         }

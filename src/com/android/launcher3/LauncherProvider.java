@@ -189,7 +189,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     private void reloadLauncherIfExternal() {
-        if (Utilities.ATLEAST_MARSHMALLOW && Binder.getCallingPid() != Process.myPid()) {
+        if (Binder.getCallingPid() != Process.myPid()) {
             LauncherAppState app = LauncherAppState.getInstanceNoCreate();
             if (app != null) {
                 app.getModel().forceReload();
@@ -217,21 +217,7 @@ public class LauncherProvider extends ContentProvider {
 
         uri = ContentUris.withAppendedId(uri, rowId);
         notifyListeners();
-
-        if (Utilities.ATLEAST_MARSHMALLOW) {
-            reloadLauncherIfExternal();
-        } else {
-            // Deprecated behavior to support legacy devices which rely on provider callbacks.
-            LauncherAppState app = LauncherAppState.getInstanceNoCreate();
-            if (app != null && "true".equals(uri.getQueryParameter("isExternalAdd"))) {
-                app.getModel().forceReload();
-            }
-
-            String notify = uri.getQueryParameter("notify");
-            if (notify == null || "true".equals(notify)) {
-                getContext().getContentResolver().notifyChange(uri, null);
-            }
-        }
+        reloadLauncherIfExternal();
         return uri;
     }
 
@@ -301,7 +287,7 @@ public class LauncherProvider extends ContentProvider {
             throws OperationApplicationException {
         createDbIfNotExists();
         try (SQLiteTransaction t = new SQLiteTransaction(mOpenHelper.getWritableDatabase())) {
-            boolean isAddOrDelete = !Utilities.ATLEAST_MARSHMALLOW;
+            boolean isAddOrDelete = false;
 
             final int numOperations = operations.size();
             final ContentProviderResult[] results = new ContentProviderResult[numOperations];

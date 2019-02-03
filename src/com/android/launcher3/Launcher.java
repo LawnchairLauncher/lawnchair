@@ -74,8 +74,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
@@ -149,11 +147,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import androidx.annotation.Nullable;
+
 /**
  * Default launcher application.
  */
 public class Launcher extends BaseDraggingActivity implements LauncherExterns,
-        LauncherModel.Callbacks, LauncherProviderChangeListener, UserEventDelegate{
+        LauncherModel.Callbacks, LauncherProviderChangeListener, UserEventDelegate,
+        InvariantDeviceProfile.OnIDPChangeListener {
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
@@ -285,8 +286,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         LauncherAppState app = LauncherAppState.getInstance(this);
         mOldConfig = new Configuration(getResources().getConfiguration());
         mModel = app.setLauncher(this);
-        initDeviceProfile(app.getInvariantDeviceProfile());
-
+        InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
+        initDeviceProfile(idp);
+        idp.addOnChangeListener(this);
         mSharedPrefs = Utilities.getPrefs(this);
         mIconCache = app.getIconCache();
         mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);
@@ -406,10 +408,16 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
+    @Override
+    public void onIdpChanged(int changeFlags, InvariantDeviceProfile idp) {
+        initDeviceProfile(idp);
+        getRootView().dispatchInsets();
+    }
+
     private void initDeviceProfile(InvariantDeviceProfile idp) {
         // Load configuration-specific DeviceProfile
         mDeviceProfile = idp.getDeviceProfile(this);
-        if (isInMultiWindowModeCompat()) {
+        if (isInMultiWindowMode()) {
             Display display = getWindowManager().getDefaultDisplay();
             Point mwSize = new Point();
             display.getSize(mwSize);
@@ -1322,7 +1330,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         TextKeyListener.getInstance().release();
         clearPendingBinds();
-
+        LauncherAppState.getIDP(this).removeOnChangeListener(this);
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onDestroy();
         }
@@ -1383,11 +1391,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     private void setWorkspaceLoading(boolean value) {
-        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
-                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
-            android.util.Log.d("b/117332845", "setWorkspaceLoading " + value + " @ " +
-                    android.util.Log.getStackTraceString(new Throwable()));
-        }
         mWorkspaceLoading = value;
     }
 
@@ -2311,7 +2314,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.N)
     public void onProvideKeyboardShortcuts(
             List<KeyboardShortcutGroup> data, Menu menu, int deviceId) {
 

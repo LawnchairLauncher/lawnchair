@@ -21,32 +21,65 @@ import static android.view.View.VISIBLE;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.config.FeatureFlags.SWIPE_HOME;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.TouchController;
+import com.android.launcher3.util.UiThreadHelper;
+import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
+import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.shared.system.WindowManagerWrapper;
+
+import java.util.ArrayList;
 
 /**
  * Provides recents-related {@link UiFactory} logic and classes.
  */
-public final class RecentsUiFactory {
+public abstract class RecentsUiFactory {
+
+    private static final AsyncCommand SET_SHELF_HEIGHT_CMD = (visible, height) ->
+            WindowManagerWrapper.getInstance().setShelfHeight(visible != 0, height);
 
     // Scale recents takes before animating in
     private static final float RECENTS_PREPARE_SCALE = 1.33f;
 
-    private RecentsUiFactory() {}
+    public static TouchController[] createTouchControllers(Launcher launcher) {
+        boolean swipeUpEnabled = OverviewInteractionState.INSTANCE.get(launcher)
+                .isSwipeUpGestureEnabled();
+        boolean swipeUpToHome = swipeUpEnabled && SWIPE_HOME.get();
 
-    /**
-     * Creates and returns a touch controller for swiping recents tasks.
-     *
-     * @param launcher the launcher activity
-     * @return the touch controller for recents tasks
-     */
-    public static TouchController createTaskSwipeController(Launcher launcher) {
-        return new LauncherTaskViewController(launcher);
+
+        ArrayList<TouchController> list = new ArrayList<>();
+        list.add(launcher.getDragController());
+
+        if (swipeUpToHome) {
+            list.add(new FlingAndHoldTouchController(launcher));
+            list.add(new OverviewToAllAppsTouchController(launcher));
+        } else {
+            if (launcher.getDeviceProfile().isVerticalBarLayout()) {
+                list.add(new OverviewToAllAppsTouchController(launcher));
+                list.add(new LandscapeEdgeSwipeController(launcher));
+            } else {
+                list.add(new PortraitStatesTouchController(launcher,
+                        swipeUpEnabled /* allowDragToOverview */));
+            }
+        }
+
+        if (FeatureFlags.PULL_DOWN_STATUS_BAR && Utilities.IS_DEBUG_DEVICE
+                && !launcher.getDeviceProfile().isMultiWindowMode
+                && !launcher.getDeviceProfile().isVerticalBarLayout()) {
+            list.add(new StatusBarTouchController(launcher));
+        }
+
+        list.add(new LauncherTaskViewController(launcher));
+        return list.toArray(new TouchController[list.size()]);
     }
 
     /**
@@ -64,7 +97,7 @@ public final class RecentsUiFactory {
      *
      * @param launcher the launcher activity
      */
-    public static void prepareToShowRecents(Launcher launcher) {
+    public static void prepareToShowOverview(Launcher launcher) {
         RecentsView overview = launcher.getOverviewPanel();
         if (overview.getVisibility() != VISIBLE || overview.getContentAlpha() == 0) {
             SCALE_PROPERTY.set(overview, RECENTS_PREPARE_SCALE);
@@ -76,9 +109,8 @@ public final class RecentsUiFactory {
      *
      * @param launcher the launcher activity
      */
-    public static void resetRecents(Launcher launcher) {
-        RecentsView recents = launcher.getOverviewPanel();
-        recents.reset();
+    public static void resetOverview(Launcher launcher) {
+        launcher.<RecentsView>getOverviewPanel().reset();
     }
 
     /**
@@ -88,6 +120,14 @@ public final class RecentsUiFactory {
      */
     public static void onLauncherStateOrResumeChanged(Launcher launcher) {
         LauncherState state = launcher.getStateManager().getState();
+        if (!OverviewInteractionState.INSTANCE.get(launcher).swipeGestureInitializing()) {
+            DeviceProfile profile = launcher.getDeviceProfile();
+            boolean visible = (state == NORMAL || state == OVERVIEW) && launcher.isUserActive()
+                    && !profile.isVerticalBarLayout();
+            UiThreadHelper.runAsyncCommand(launcher, SET_SHELF_HEIGHT_CMD,
+                    visible ? 1 : 0, profile.hotseatBarSizePx);
+        }
+
         if (state == NORMAL) {
             launcher.<RecentsView>getOverviewPanel().setSwipeDownShouldLaunchApp(false);
         }

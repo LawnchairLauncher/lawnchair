@@ -28,4 +28,12 @@
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"अ‍ॅप वापर सेटिंग्ज"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"सर्व साफ करा"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"अलीकडील अॅप्स"</string>
+    <!-- no translation found for task_contents_description_with_remaining_time (4479688746574672685) -->
+    <skip />
+    <!-- no translation found for shorter_duration_less_than_one_minute (4722015666335015336) -->
+    <skip />
+    <!-- no translation found for app_in_grayscale (1108706002158384887) -->
+    <skip />
+    <!-- no translation found for time_left_for_app (3111996412933644358) -->
+    <skip />
 </resources>

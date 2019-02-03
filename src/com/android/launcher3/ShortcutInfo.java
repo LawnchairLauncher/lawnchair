@@ -16,11 +16,9 @@
 
 package com.android.launcher3;
 
-import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.text.TextUtils;
 
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -111,7 +109,6 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     /**
      * Creates a {@link ShortcutInfo} from a {@link ShortcutInfoCompat}.
      */
-    @TargetApi(Build.VERSION_CODES.N)
     public ShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
         user = shortcutInfo.getUserHandle();
         itemType = Favorites.ITEM_TYPE_DEEP_SHORTCUT;

@@ -34,11 +34,8 @@ import android.text.Selection;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
-import android.view.ActionMode;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
@@ -65,7 +62,6 @@ import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.config.FeatureFlags;
@@ -214,27 +210,6 @@ public class Folder extends AbstractFloatingView implements DragSource,
         mFolderName = findViewById(R.id.folder_name);
         mFolderName.setOnBackKeyListener(this);
         mFolderName.setOnFocusChangeListener(this);
-
-        if (!Utilities.ATLEAST_MARSHMALLOW) {
-            // We disable action mode in older OSes where floating selection menu is not yet
-            // available.
-            mFolderName.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
-                public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                    return false;
-                }
-
-                public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                    return false;
-                }
-
-                public void onDestroyActionMode(ActionMode mode) {
-                }
-
-                public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                    return false;
-                }
-            });
-        }
         mFolderName.setOnEditorActionListener(this);
         mFolderName.setSelectAllOnFocus(true);
         mFolderName.setInputType(mFolderName.getInputType()

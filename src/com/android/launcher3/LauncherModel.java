@@ -54,7 +54,6 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
-import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.widget.WidgetListRowEntry;
@@ -68,6 +67,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Executor;
+import java.util.function.Supplier;
 
 import androidx.annotation.Nullable;
 
@@ -208,11 +208,6 @@ public class LauncherModel extends BroadcastReceiver
 
     static void checkItemInfoLocked(
             final int itemId, final ItemInfo item, StackTraceElement[] stackTrace) {
-        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
-                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
-            android.util.Log.d("b/117332845",
-                    "Checking item: " + android.util.Log.getStackTraceString(new Throwable()));
-        }
         ItemInfo modelItem = sBgDataModel.itemsIdMap.get(itemId);
         if (modelItem != null && item != modelItem) {
             // check all the data is consistent
@@ -408,11 +403,6 @@ public class LauncherModel extends BroadcastReceiver
      * @return true if the page could be bound synchronously.
      */
     public boolean startLoader(int synchronousBindPage) {
-        if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
-                && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
-            android.util.Log.d("b/117332845",
-                    android.util.Log.getStackTraceString(new Throwable()));
-        }
         // Enable queue before starting loader. It will get disabled in Launcher#finishBindingItems
         InstallShortcutReceiver.enableInstallQueue(InstallShortcutReceiver.FLAG_LOADER_RUNNING);
         synchronized (mLock) {
@@ -512,11 +502,6 @@ public class LauncherModel extends BroadcastReceiver
             synchronized (mLock) {
                 // Everything loaded bind the data.
                 mModelLoaded = true;
-                if (com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
-                        && com.android.launcher3.Utilities.IS_DEBUG_DEVICE) {
-                    android.util.Log.d("b/117332845",
-                            android.util.Log.getStackTraceString(new Throwable()));
-                }
             }
         }
 
@@ -542,10 +527,8 @@ public class LauncherModel extends BroadcastReceiver
      * use partial updates similar to {@link UserManagerCompat}
      */
     public void refreshShortcutsIfRequired() {
-        if (Utilities.ATLEAST_NOUGAT_MR1) {
-            sWorker.removeCallbacks(mShortcutPermissionCheckRunnable);
-            sWorker.post(mShortcutPermissionCheckRunnable);
-        }
+        sWorker.removeCallbacks(mShortcutPermissionCheckRunnable);
+        sWorker.post(mShortcutPermissionCheckRunnable);
     }
 
     /**
@@ -611,7 +594,7 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Utility method to update a shortcut on the background thread.
      */
-    public void updateAndBindShortcutInfo(final Provider<ShortcutInfo> shortcutProvider) {
+    public void updateAndBindShortcutInfo(final Supplier<ShortcutInfo> shortcutProvider) {
         enqueueModelUpdateTask(new BaseModelUpdateTask() {
             @Override
             public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {

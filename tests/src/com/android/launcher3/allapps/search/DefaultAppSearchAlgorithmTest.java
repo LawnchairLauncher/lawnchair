@@ -20,14 +20,13 @@ import static org.junit.Assert.assertTrue;
 
 import android.content.ComponentName;
 
-import androidx.test.filters.SmallTest;
-import androidx.test.runner.AndroidJUnit4;
-
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.Utilities;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
 
 /**
  * Unit tests for {@link DefaultAppSearchAlgorithm}
@@ -78,9 +77,6 @@ public class DefaultAppSearchAlgorithmTest {
 
     @Test
     public void testMatchesVN() {
-        if (!Utilities.ATLEAST_NOUGAT) {
-            return;
-        }
         assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("다운로드"), "다", MATCHER));
         assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("드라이브"), "드", MATCHER));
         assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("다운로드 드라이브"), "ㄷ", MATCHER));

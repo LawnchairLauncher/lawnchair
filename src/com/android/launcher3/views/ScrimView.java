@@ -315,7 +315,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
 
         if (enabled) {
             stateManager.addStateListener(this);
-            onStateSetImmediately(mLauncher.getStateManager().getState());
+            handleStateChangedComplete(mLauncher.getStateManager().getState());
         } else {
             setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
         }
@@ -361,12 +361,11 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
 
     @Override
     public void onStateTransitionComplete(LauncherState finalState) {
-        onStateSetImmediately(finalState);
+        handleStateChangedComplete(finalState);
     }
 
-    @Override
-    public void onStateSetImmediately(LauncherState state) {
-        setImportantForAccessibility(state == ALL_APPS
+    private void handleStateChangedComplete(LauncherState finalState) {
+        setImportantForAccessibility(finalState == ALL_APPS
                 ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                 : IMPORTANT_FOR_ACCESSIBILITY_AUTO);
     }

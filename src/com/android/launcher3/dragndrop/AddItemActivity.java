@@ -57,12 +57,13 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.LooperExecutor;
-import com.android.launcher3.util.Provider;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetImageView;
+
+import java.util.function.Supplier;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class AddItemActivity extends BaseActivity implements OnLongClickListener, OnTouchListener {
@@ -220,7 +221,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         return true;
     }
 
-    private void applyWidgetItemAsync(final Provider<WidgetItem> itemProvider) {
+    private void applyWidgetItemAsync(final Supplier<WidgetItem> itemProvider) {
         new AsyncTask<Void, Void, WidgetItem>() {
             @Override
             protected WidgetItem doInBackground(Void... voids) {

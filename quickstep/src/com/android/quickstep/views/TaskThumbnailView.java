@@ -291,7 +291,7 @@ public class TaskThumbnailView extends View {
                 // Rotate the screenshot if not in multi-window mode
                 mIsRotated = FeatureFlags.OVERVIEW_USE_SCREENSHOT_ORIENTATION &&
                         configuration.orientation != mThumbnailData.orientation &&
-                        !mActivity.isInMultiWindowModeCompat() &&
+                        !mActivity.isInMultiWindowMode() &&
                         mThumbnailData.windowingMode == WINDOWING_MODE_FULLSCREEN;
                 // Scale the screenshot to always fit the width of the card.
                 thumbnailScale = mIsRotated

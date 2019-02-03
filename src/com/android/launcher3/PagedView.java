@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isObservedEventType;
+import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.launcher3.touch.OverScroll.OVERSCROLL_DAMP_FACTOR;
 
 import android.animation.LayoutTransition;
@@ -25,6 +26,7 @@ import android.animation.TimeInterpolator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -120,6 +122,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     protected int mActivePointerId = INVALID_POINTER;
 
     protected boolean mIsPageInTransition = false;
+
+    protected float mSpringOverScrollX;
 
     protected boolean mWasInOverscroll = false;
 
@@ -349,6 +353,11 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
         boolean isXBeforeFirstPage = mIsRtl ? (x > mMaxScrollX) : (x < 0);
         boolean isXAfterLastPage = mIsRtl ? (x < 0) : (x > mMaxScrollX);
+
+        if (!isXBeforeFirstPage && !isXAfterLastPage) {
+            mSpringOverScrollX = 0;
+        }
+
         if (isXBeforeFirstPage) {
             super.scrollTo(mIsRtl ? mMaxScrollX : 0, y);
             if (mAllowOverScroll) {
@@ -988,12 +997,35 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
     }
 
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        if (mScroller.isSpringing() && mSpringOverScrollX != 0) {
+            int saveCount = canvas.save();
+
+            canvas.translate(-mSpringOverScrollX, 0);
+            super.dispatchDraw(canvas);
+
+            canvas.restoreToCount(saveCount);
+        } else {
+            super.dispatchDraw(canvas);
+        }
+    }
+
     protected void dampedOverScroll(int amount) {
-        if (amount == 0) return;
+        mSpringOverScrollX = amount;
+        if (amount == 0) {
+            return;
+        }
 
         int overScrollAmount = OverScroll.dampedScroll(amount, getMeasuredWidth());
+        mSpringOverScrollX = overScrollAmount;
+        if (mScroller.isSpringing()) {
+            invalidate();
+            return;
+        }
+
         if (amount < 0) {
-            super.scrollTo(overScrollAmount, getScrollY());
+            super.scrollTo(amount, getScrollY());
         } else {
             super.scrollTo(mMaxScrollX + overScrollAmount, getScrollY());
         }
@@ -1001,6 +1033,12 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     protected void overScroll(int amount) {
+        mSpringOverScrollX = amount;
+        if (mScroller.isSpringing()) {
+            invalidate();
+            return;
+        }
+
         if (amount == 0) return;
 
         if (mFreeScroll && !mScroller.isFinished()) {
@@ -1015,7 +1053,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
 
-    protected void setEnableFreeScroll(boolean freeScroll) {
+    public void setEnableFreeScroll(boolean freeScroll) {
         boolean wasFreeScroll = mFreeScroll;
         mFreeScroll = freeScroll;
 
@@ -1096,9 +1134,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 final int activePointerId = mActivePointerId;
                 final int pointerIndex = ev.findPointerIndex(activePointerId);
                 final float x = ev.getX(pointerIndex);
-                final VelocityTracker velocityTracker = mVelocityTracker;
-                velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
-                int velocityX = (int) velocityTracker.getXVelocity(activePointerId);
+                int velocityX = computeXVelocity();
                 final int deltaX = (int) (x - mDownMotionX);
                 final int pageWidth = getPageAt(mCurrentPage).getMeasuredWidth();
                 boolean isSignificantMove = Math.abs(deltaX) > pageWidth *
@@ -1200,6 +1236,12 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
 
         return true;
+    }
+
+    protected int computeXVelocity() {
+        final VelocityTracker velocityTracker = mVelocityTracker;
+        velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
+        return (int) velocityTracker.getXVelocity(mActivePointerId);
     }
 
     protected boolean shouldFlingForVelocity(int velocityX) {
@@ -1372,7 +1414,12 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         // interpolator at zero, ie. 5. We use 4 to make it a little slower.
         duration = 4 * Math.round(1000 * Math.abs(distance / velocity));
 
-        return snapToPage(whichPage, delta, duration);
+        if (QUICKSTEP_SPRINGS.get()) {
+            return snapToPage(whichPage, delta, duration, false, null,
+                    velocity * Math.signum(newX - getUnboundedScrollX()), true);
+        } else {
+            return snapToPage(whichPage, delta, duration);
+        }
     }
 
     public boolean snapToPage(int whichPage) {
@@ -1397,15 +1444,15 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
         int newX = getScrollForPage(whichPage);
         final int delta = newX - getUnboundedScrollX();
-        return snapToPage(whichPage, delta, duration, immediate, interpolator);
+        return snapToPage(whichPage, delta, duration, immediate, interpolator, 0, false);
     }
 
     protected boolean snapToPage(int whichPage, int delta, int duration) {
-        return snapToPage(whichPage, delta, duration, false, null);
+        return snapToPage(whichPage, delta, duration, false, null, 0, false);
     }
 
     protected boolean snapToPage(int whichPage, int delta, int duration, boolean immediate,
-            TimeInterpolator interpolator) {
+            TimeInterpolator interpolator, float velocity, boolean spring) {
         if (mFirstLayout) {
             setCurrentPage(whichPage);
             return false;
@@ -1441,7 +1488,11 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             mScroller.setInterpolator(mDefaultInterpolator);
         }
 
-        mScroller.startScroll(getUnboundedScrollX(), delta, duration);
+        if (spring && QUICKSTEP_SPRINGS.get()) {
+            mScroller.startScrollSpring(getUnboundedScrollX(), delta, duration, velocity);
+        } else {
+            mScroller.startScroll(getUnboundedScrollX(), delta, duration);
+        }
 
         updatePageIndicator();
 

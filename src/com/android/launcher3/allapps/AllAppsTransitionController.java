@@ -47,6 +47,9 @@ import androidx.dynamicanimation.animation.FloatPropertyCompat;
 public class AllAppsTransitionController implements StateHandler, OnDeviceProfileChangeListener,
         ProgressInterface {
 
+    public static final float SPRING_DAMPING_RATIO = 0.9f;
+    public static final float SPRING_STIFFNESS = 600f;
+
     public static final Property<AllAppsTransitionController, Float> ALL_APPS_PROGRESS =
             new Property<AllAppsTransitionController, Float>(Float.class, "allAppsProgress") {
 
@@ -57,19 +60,6 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
 
         @Override
         public void set(AllAppsTransitionController controller, Float progress) {
-            controller.setProgress(progress);
-        }
-    };
-
-    public static final FloatPropertyCompat<AllAppsTransitionController> ALL_APPS_PROGRESS_SPRING
-            = new FloatPropertyCompat<AllAppsTransitionController>("allAppsProgressSpring") {
-        @Override
-        public float getValue(AllAppsTransitionController controller) {
-            return controller.mProgress;
-        }
-
-        @Override
-        public void setValue(AllAppsTransitionController controller, float progress) {
             controller.setProgress(progress);
         }
     };
@@ -191,8 +181,8 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         Interpolator interpolator = config.userControlled ? LINEAR : toState == OVERVIEW
                 ? builder.getInterpolator(ANIM_OVERVIEW_SCALE, FAST_OUT_SLOW_IN)
                 : FAST_OUT_SLOW_IN;
-        Animator anim = new SpringObjectAnimator<>(this, ALL_APPS_PROGRESS_SPRING,
-                "allAppsSpringFromAATC", 1f / mShiftRange, mProgress, targetProgress);
+        Animator anim = new SpringObjectAnimator<>(this, "allAppsSpringFromAATC", 1f / mShiftRange,
+                SPRING_DAMPING_RATIO, SPRING_STIFFNESS, mProgress, targetProgress);
         anim.setDuration(config.duration);
         anim.setInterpolator(builder.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
         anim.addListener(getProgressAnimatorListener());

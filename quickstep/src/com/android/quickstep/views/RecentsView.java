@@ -22,6 +22,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.uioverrides.TaskViewTouchController.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.quickstep.util.ClipAnimationHelper.TransformParams;
@@ -66,19 +67,23 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ListView;
 
 import androidx.annotation.Nullable;
+import androidx.dynamicanimation.animation.SpringForce;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.LauncherAnimUtils.ViewProgressProperty;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PropertyListBuilder;
+import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
+import com.android.launcher3.util.OverScroller;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.ViewPool;
@@ -112,6 +117,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         InvariantDeviceProfile.OnIDPChangeListener {
 
     private static final String TAG = RecentsView.class.getSimpleName();
+
+    public static final float SPRING_MIN_VISIBLE_CHANGE = 0.001f;
+    public static final float SPRING_DAMPING_RATIO = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY;
+    public static final float SPRING_STIFFNESS = SpringForce.STIFFNESS_MEDIUM;
 
     public static final FloatProperty<RecentsView> CONTENT_ALPHA =
             new FloatProperty<RecentsView>("contentAlpha") {
@@ -158,6 +167,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private final InvariantDeviceProfile mIdp;
 
     private final ViewPool<TaskView> mTaskViewPool;
+
+    @Nullable Float mSimulatedVelocityX = null;
 
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
@@ -329,6 +340,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         updateEmptyMessage();
     }
 
+    public OverScroller getScroller() {
+        return mScroller;
+    }
+
     public boolean isRtl() {
         return mIsRtl;
     }
@@ -402,7 +417,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public TaskView getTaskView(int taskId) {
         for (int i = 0; i < getTaskViewCount(); i++) {
             TaskView tv = (TaskView) getChildAt(i);
-            if (tv.getTask().key != null && tv.getTask().key.id == taskId) {
+            if (tv.getTask() != null && tv.getTask().key != null && tv.getTask().key.id == taskId) {
                 return tv;
             }
         }
@@ -719,7 +734,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     }
 
-    protected abstract void startHome();
+    public abstract void startHome();
 
     public void reset() {
         setRunningTaskViewShowScreenshot(false);
@@ -939,8 +954,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     private void addDismissedTaskAnimations(View taskView, AnimatorSet anim, long duration) {
         addAnim(ObjectAnimator.ofFloat(taskView, ALPHA, 0), duration, ACCEL_2, anim);
-        addAnim(ObjectAnimator.ofFloat(taskView, TRANSLATION_Y, -taskView.getHeight()),
-                duration, LINEAR, anim);
+        if (QUICKSTEP_SPRINGS.get() && taskView instanceof TaskView)
+            addAnim(new SpringObjectAnimator<>(new ViewProgressProperty(taskView,
+                            View.TRANSLATION_Y), "taskViewTransY", SPRING_MIN_VISIBLE_CHANGE,
+                            SPRING_DAMPING_RATIO, SPRING_STIFFNESS, 0, -taskView.getHeight()),
+                    duration, LINEAR, anim);
+        else {
+            addAnim(ObjectAnimator.ofFloat(taskView, TRANSLATION_Y, -taskView.getHeight()),
+                    duration, LINEAR, anim);
+        }
     }
 
     private void removeTask(Task task, int index, PendingAnimation.OnEndListener onEndListener,
@@ -1010,8 +1032,16 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 }
                 int scrollDiff = newScroll[i] - oldScroll[i] + offset;
                 if (scrollDiff != 0) {
-                    addAnim(ObjectAnimator.ofFloat(child, TRANSLATION_X, scrollDiff),
-                            duration, ACCEL, anim);
+                    if (QUICKSTEP_SPRINGS.get() && child instanceof TaskView) {
+                        addAnim(new SpringObjectAnimator<>(
+                                new ViewProgressProperty(child, View.TRANSLATION_X),
+                                "taskViewTransX", SPRING_MIN_VISIBLE_CHANGE, SPRING_DAMPING_RATIO,
+                                SPRING_STIFFNESS, 0, scrollDiff), duration, ACCEL, anim);
+                    } else {
+                        addAnim(ObjectAnimator.ofFloat(child, TRANSLATION_X, scrollDiff), duration,
+                                ACCEL, anim);
+                    }
+
                     needsCurveUpdates = true;
                 }
             }
@@ -1092,7 +1122,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return pendingAnimation;
     }
 
-    private static void addAnim(ObjectAnimator anim, long duration,
+    private static void addAnim(Animator anim, long duration,
             TimeInterpolator interpolator, AnimatorSet set) {
         anim.setDuration(duration).setInterpolator(interpolator);
         set.play(anim);
@@ -1555,7 +1585,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mClipAnimationHelper = clipAnimationHelper;
     }
 
-    public void finishRecentsAnimation(boolean toHome, Runnable onFinishComplete) {
+    public void finishRecentsAnimation(boolean toRecents, Runnable onFinishComplete) {
         if (mRecentsAnimationWrapper == null) {
             if (onFinishComplete != null) {
                 onFinishComplete.run();
@@ -1563,10 +1593,11 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             return;
         }
 
-        mRecentsAnimationWrapper.finish(toHome, onFinishComplete);
+        mRecentsAnimationWrapper.finish(toRecents, onFinishComplete);
     }
 
-    public void takeScreenshotAndFinishRecentsAnimation(boolean toHome, Runnable onFinishComplete) {
+    public void takeScreenshotAndFinishRecentsAnimation(boolean toRecents,
+            Runnable onFinishComplete) {
         if (mRecentsAnimationWrapper == null || getRunningTaskView() == null) {
             if (onFinishComplete != null) {
                 onFinishComplete.run();
@@ -1601,7 +1632,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                         }
 
                         detach();
-                        mRecentsAnimationWrapper.finish(toHome, () -> {
+                        mRecentsAnimationWrapper.finish(toRecents, () -> {
                             onFinishComplete.run();
                             mRunningTaskId = -1;
                         });
@@ -1609,5 +1640,19 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 }.attach();
             }
         }
+    }
+
+    public void simulateTouchEvent(MotionEvent event, @Nullable Float velocityX) {
+        mSimulatedVelocityX = velocityX;
+        dispatchTouchEvent(event);
+        mSimulatedVelocityX = null;
+    }
+
+    @Override
+    protected int computeXVelocity() {
+        if (mSimulatedVelocityX != null) {
+            return mSimulatedVelocityX.intValue();
+        }
+        return super.computeXVelocity();
     }
 }

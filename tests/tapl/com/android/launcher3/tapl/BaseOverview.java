@@ -17,6 +17,7 @@
 package com.android.launcher3.tapl;
 
 import androidx.annotation.NonNull;
+import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
@@ -28,6 +29,7 @@ import java.util.List;
  */
 public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     private static final int DEFAULT_FLING_SPEED = 15000;
+    private static final int FLINGS_FOR_DISMISS_LIMIT = 5;
 
     BaseOverview(LauncherInstrumentation launcher) {
         super(launcher);
@@ -47,6 +49,22 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         overview.fling(Direction.LEFT, DEFAULT_FLING_SPEED);
         mLauncher.waitForIdle();
         verifyActiveContainer();
+    }
+
+    /**
+     * Dismissed all tasks by scrolling to Clear-all button and pressing it.
+     */
+    public Workspace dismissAllTasks() {
+        final BySelector clearAllSelector = mLauncher.getLauncherObjectSelector("clear_all");
+        for (int i = 0;
+                i < FLINGS_FOR_DISMISS_LIMIT
+                        && verifyActiveContainer().findObject(clearAllSelector) == null;
+                ++i) {
+            flingForward();
+        }
+
+        mLauncher.getObjectInContainer(verifyActiveContainer(), clearAllSelector).click();
+        return new Workspace(mLauncher);
     }
 
     /**

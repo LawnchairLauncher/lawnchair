@@ -13,11 +13,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.protobuf'
 
 android {
-    compileSdkVersion COMPILE_SDK.toInteger()
+    compileSdkVersion COMPILE_SDK
     buildToolsVersion BUILD_TOOLS_VERSION
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 25
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
