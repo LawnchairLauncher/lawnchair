@@ -30,6 +30,7 @@ import com.android.quickstep.QuickStepOnOffRule.Mode;
 import com.android.quickstep.QuickStepOnOffRule.QuickstepOnOff;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -57,6 +58,7 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
     }
 
     @Test
+    @Ignore // Ignoring until gestural navigation event sequence settles
     @QuickstepOnOff(mode = Mode.ON)
     public void testPressHome() {
         runTest(enterEvt(Launcher.ON_CREATE_EVT),
@@ -71,6 +73,7 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
     }
 
     @Test
+    @Ignore // Ignoring until gestural navigation event sequence settles
     @QuickstepOnOff(mode = Mode.ON)
     public void testSwipeToOverview() {
         closeLauncherActivity();
