@@ -26,12 +26,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 
-public class RemoteActionShortcut extends SystemShortcut<Launcher> {
+public class RemoteActionShortcut extends SystemShortcut<BaseDraggingActivity> {
     private static final String TAG = "RemoteActionShortcut";
 
     private final RemoteAction mAction;
@@ -44,13 +44,13 @@ public class RemoteActionShortcut extends SystemShortcut<Launcher> {
 
     @Override
     public View.OnClickListener getOnClickListener(
-            final Launcher launcher, final ItemInfo itemInfo) {
+            final BaseDraggingActivity activity, final ItemInfo itemInfo) {
         return view -> {
-            AbstractFloatingView.closeAllOpenViews(launcher);
+            AbstractFloatingView.closeAllOpenViews(activity);
 
             try {
                 mAction.getActionIntent().send(
-                        launcher,
+                        activity,
                         0,
                         new Intent().putExtra(
                                 Intent.EXTRA_PACKAGE_NAME,
@@ -59,20 +59,20 @@ public class RemoteActionShortcut extends SystemShortcut<Launcher> {
                             if (resultData != null && !resultData.isEmpty()) {
                                 Log.e(TAG, "Remote action returned result: " + mAction.getTitle()
                                         + " : " + resultData);
-                                Toast.makeText(launcher, resultData, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(activity, resultData, Toast.LENGTH_SHORT).show();
                             }
                         },
                         new Handler(Looper.getMainLooper()));
             } catch (PendingIntent.CanceledException e) {
                 Log.e(TAG, "Remote action canceled: " + mAction.getTitle(), e);
-                Toast.makeText(launcher, launcher.getString(
+                Toast.makeText(activity, activity.getString(
                         R.string.remote_action_failed,
                         mAction.getTitle()),
                         Toast.LENGTH_SHORT)
                         .show();
             }
 
-            launcher.getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.Touch.TAP,
+            activity.getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.Touch.TAP,
                     LauncherLogProto.ControlType.REMOTE_ACTION_SHORTCUT, view);
         };
     }
