@@ -28,6 +28,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -279,5 +280,15 @@ public class TaskMenuView extends AbstractFloatingView {
         Rect fromRect = new Rect(0, 0, getWidth(), 0);
         Rect toRect = new Rect(0, 0, getWidth(), getHeight());
         return new RoundedRectRevealOutlineProvider(radius, radius, fromRect, toRect);
+    }
+
+    public View findMenuItemByText(String text) {
+        for (int i = mOptionLayout.getChildCount() - 1; i >= 0; --i) {
+            final ViewGroup menuOptionView = (ViewGroup) mOptionLayout.getChildAt(i);
+            if (text.equals(menuOptionView.<TextView>findViewById(R.id.text).getText())) {
+                return menuOptionView;
+            }
+        }
+        return null;
     }
 }
