@@ -23,7 +23,7 @@ import androidx.test.uiautomator.UiObject2;
  * All widgets container.
  */
 public final class Widgets extends LauncherInstrumentation.VisibleContainer {
-    private static final int FLING_SPEED = 12000;
+    private static final int FLING_SPEED = 6000;
 
     Widgets(LauncherInstrumentation launcher) {
         super(launcher);
