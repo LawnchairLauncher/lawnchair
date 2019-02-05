@@ -122,7 +122,8 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         return if (icon is AdaptiveIconDrawable) {
             prefs.colorizedLegacyTreatment &&
                     prefs.enableWhiteOnlyTreatment &&
-                    ColorExtractor.isSingleColor(icon.background, Color.WHITE)
+                    ColorExtractor.isSingleColor(icon.background, Color.WHITE) &&
+                    icon.foreground != null
         } else true
 
     }
