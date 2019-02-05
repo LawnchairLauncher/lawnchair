@@ -350,7 +350,7 @@ public final class LauncherInstrumentation {
         return new AllAppsFromOverview(this);
     }
 
-    private void waitUntilGone(String resId) {
+    void waitUntilGone(String resId) {
         assertTrue("Unexpected launcher object visible: " + resId,
                 mDevice.wait(Until.gone(getLauncherObjectSelector(resId)),
                         WAIT_TIME_MS));
