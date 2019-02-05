@@ -155,7 +155,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     @Override
-    protected void onWidgetsBound() {
+    public void onWidgetsBound() {
         mAdapter.setWidgets(mLauncher.getPopupDataProvider().getAllWidgets());
     }
 
