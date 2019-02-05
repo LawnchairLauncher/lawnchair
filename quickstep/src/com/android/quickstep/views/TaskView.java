@@ -132,9 +132,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 }
             };
 
-    static final Intent SEE_TIME_IN_APP_TEMPLATE =
-            new Intent("com.android.settings.action.TIME_SPENT_IN_APP");
-
     private final OnAttachStateChangeListener mTaskMenuStateListener =
             new OnAttachStateChangeListener() {
                 @Override

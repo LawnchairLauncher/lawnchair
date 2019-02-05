@@ -57,8 +57,6 @@ import com.android.launcher3.util.IntArray;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -514,44 +512,9 @@ public final class Utilities {
         }
     }
 
-    /**
-     * Returns true if {@param original} contains all entries defined in {@param updates} and
-     * have the same value.
-     * The comparison uses {@link Object#equals(Object)} to compare the values.
-     */
-    public static boolean containsAll(Bundle original, Bundle updates) {
-        for (String key : updates.keySet()) {
-            Object value1 = updates.get(key);
-            Object value2 = original.get(key);
-            if (value1 == null) {
-                if (value2 != null) {
-                    return false;
-                }
-            } else if (!value1.equals(value2)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /** Returns whether the collection is null or empty. */
-    public static boolean isEmpty(Collection c) {
-        return c == null || c.isEmpty();
-    }
-
     public static boolean isBinderSizeError(Exception e) {
         return e.getCause() instanceof TransactionTooLargeException
                 || e.getCause() instanceof DeadObjectException;
-    }
-
-    /**
-     * Returns a HashSet with a single element. We use this instead of Collections.singleton()
-     * because HashSet ensures all operations, such as remove, are supported.
-     */
-    public static <T> HashSet<T> singletonHashSet(T elem) {
-        HashSet<T> hashSet = new HashSet<>(1);
-        hashSet.add(elem);
-        return hashSet;
     }
 
     /**

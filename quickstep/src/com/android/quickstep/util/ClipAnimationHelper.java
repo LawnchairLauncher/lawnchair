@@ -32,7 +32,6 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.os.RemoteException;
 import android.view.animation.Interpolator;
-
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseDraggingActivity;
@@ -277,7 +276,8 @@ public class ClipAnimationHelper {
             updateStackBoundsToMultiWindowTaskSize(activity);
         } else {
             mSourceStackBounds.set(mHomeStackBounds);
-            mSourceInsets.set(ttv.getInsets());
+            Rect fallback = dl.getInsets();
+            mSourceInsets.set(ttv.getInsets(fallback));
         }
 
         TransformedRect targetRect = new TransformedRect();

@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.views;
 
-import static com.android.launcher3.BaseDraggingActivity.INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION;
 import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_OFFSET;
 
 import android.content.Context;
@@ -195,16 +194,12 @@ public class OptionsPopupView extends ArrowPopup
             return false;
         }
         Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .putExtra(EXTRA_WALLPAPER_OFFSET,
                         launcher.getWorkspace().getWallpaperOffsetForCenterPage());
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
         String pickerPackage = launcher.getString(R.string.wallpaper_picker_package);
         if (!TextUtils.isEmpty(pickerPackage)) {
             intent.setPackage(pickerPackage);
-        } else {
-            // If there is no target package, use the default intent chooser animation
-            intent.putExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION, true);
         }
         return launcher.startActivitySafely(v, intent, null);
     }
