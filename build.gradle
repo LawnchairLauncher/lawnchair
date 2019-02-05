@@ -2,11 +2,10 @@ buildscript {
     ext.kotlin_version = '1.3.11'
     repositories {
         google()
-        mavenCentral()
-        google()
+        jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0-alpha01'
+        classpath 'com.android.tools.build:gradle:3.5.0-alpha03'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.8'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
