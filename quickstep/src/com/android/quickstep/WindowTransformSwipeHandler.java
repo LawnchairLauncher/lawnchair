@@ -703,7 +703,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         }
 
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            if (mRecentsAnimationWrapper.getController() != null && mLayoutListener != null) {
+            if (mRecentsAnimationWrapper.getController() != null && mLayoutListener != null &&
+                    (mInteractionType == INTERACTION_NORMAL
+                            || !mQuickScrubController.hasFinishedTransitionToQuickScrub())) {
                 mLayoutListener.open();
                 mLayoutListener.update(mCurrentShift.value > 1, mLongSwipeMode,
                         mClipAnimationHelper.getCurrentRectWithInsets(),

@@ -216,7 +216,11 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
             int offsetY = (int) (mTaskHeight * taskView.getScaleY() * getScaleY()
                     - mTempRect.height());
             if (((mCurrentPage != 0) || mightNeedToRefill) && offsetX > 0) {
-                mTempRect.right += offsetX;
+                if (mTempRect.left - offsetX < 0) {
+                    mTempRect.left -= offsetX;
+                } else {
+                    mTempRect.right += offsetX;
+                }
             }
             if (mightNeedToRefill && offsetY > 0) {
                 mTempRect.top -= offsetY;

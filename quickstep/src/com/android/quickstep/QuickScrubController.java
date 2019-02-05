@@ -267,6 +267,10 @@ public class QuickScrubController implements OnAlarmListener {
         return mWaitingForTaskLaunch;
     }
 
+    public boolean hasFinishedTransitionToQuickScrub() {
+        return mFinishedTransitionToQuickScrub;
+    }
+
     /**
      * Attempts to go to normal overview or back to home, so UI doesn't prevent user interaction.
      */
