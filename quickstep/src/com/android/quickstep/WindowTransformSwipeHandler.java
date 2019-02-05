@@ -1102,9 +1102,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
                 if (QUICKSTEP_SPRINGS.get()) {
                     mLauncherTransitionController.dispatchOnStartWithVelocity(end, velocityPxPerMs);
-                } else {
-                    mLauncherTransitionController.getAnimationPlayer().start();
                 }
+                mLauncherTransitionController.getAnimationPlayer().start();
             }
         });
     }

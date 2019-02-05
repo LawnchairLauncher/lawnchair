@@ -149,9 +149,8 @@ public class LongSwipeHelper {
 
         if (QUICKSTEP_SPRINGS.get()) {
             mAnimator.dispatchOnStartWithVelocity(endProgress, velocityPxPerMs);
-        } else {
-            animator.start();
         }
+        animator.start();
     }
 
     private void onSwipeAnimationComplete(boolean toAllApps, boolean isFling, Runnable callback) {
