@@ -43,6 +43,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     public final boolean isLargeTablet;
     public final boolean isPhone;
     public final boolean transposeLayoutWithOrientation;
+    public boolean isTallDevice;
 
     // Device properties in current orientation
     public final boolean isLandscape;
@@ -263,7 +264,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
                 : res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
 
         float aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
-        boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
+        isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
 
         hotseatBarTopPaddingPx =
                 res.getDimensionPixelSize(dockSearchBar ?
