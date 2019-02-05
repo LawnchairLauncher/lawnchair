@@ -23,26 +23,40 @@ import android.widget.Toast
 import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.gestures.BlankGestureHandler
 import ch.deletescape.lawnchair.gestures.GestureController
+import ch.deletescape.lawnchair.gestures.GestureHandler
 import ch.deletescape.lawnchair.gestures.LawnchairShortcutActivity
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 
 class RunHandlerActivity : Activity() {
     private val fallback by lazy { BlankGestureHandler(this, null) }
+    private val launcher
+        get() = (LauncherAppState.getInstance(this).launcher as? LawnchairLauncher)
+    private val controller
+        get() = launcher?.gestureController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (intent.action == LawnchairShortcutActivity.START_ACTION) {
             val handlerString = intent.getStringExtra(LawnchairShortcutActivity.EXTRA_HANDLER)
             if (handlerString != null) {
-                val controller = (LauncherAppState.getInstance(this).launcher as? LawnchairLauncher)?.gestureController
-                if (controller != null) {
-                    GestureController.createGestureHandler(this.applicationContext, handlerString, fallback).onGestureTrigger(controller)
+                val handler = GestureController.createGestureHandler(this.applicationContext, handlerString, fallback)
+                if (handler.requiresForeground) {
+                    Utilities.goToHome(this) {
+                        triggerGesture(handler)
+                    }
                 } else {
-                    Toast.makeText(this.applicationContext, R.string.lawnchair_action_failed, Toast.LENGTH_LONG).show()
+                    triggerGesture(handler)
                 }
             }
         }
         finish()
+    }
+
+    private fun triggerGesture(handler: GestureHandler) = if (controller != null) {
+        handler.onGestureTrigger(controller!!)
+    } else {
+        Toast.makeText(this.applicationContext, R.string.lawnchair_action_failed, Toast.LENGTH_LONG).show()
     }
 }

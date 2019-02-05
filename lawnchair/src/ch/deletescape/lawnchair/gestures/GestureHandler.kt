@@ -27,6 +27,7 @@ import org.json.JSONObject
 abstract class GestureHandler(val context: Context, val config: JSONObject?) {
 
     abstract val displayName: String
+    open val requiresForeground: Boolean = false
     open val hasConfig = false
     open val configIntent: Intent? = null
     open val isAvailable: Boolean = true

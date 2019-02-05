@@ -81,6 +81,16 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
         }
     }
 
+    override fun finishBindingItems() {
+        super.finishBindingItems()
+        Utilities.onLauncherStart()
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Utilities.onLauncherStart()
+    }
+
     inline fun prepareDummyView(view: View, crossinline callback: (View) -> Unit) {
         prepareDummyView(view.left, view.top, view.right, view.bottom, callback)
     }

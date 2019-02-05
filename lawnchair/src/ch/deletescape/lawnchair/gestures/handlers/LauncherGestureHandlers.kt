@@ -17,6 +17,7 @@
 
 package ch.deletescape.lawnchair.gestures.handlers
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
@@ -46,6 +47,7 @@ open class OpenDrawerGestureHandler(context: Context, config: JSONObject?) : Ges
 
     override val displayName = context.getString(R.string.action_open_drawer)!!
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.mipmap.ic_allapps_adaptive) }
+    override val requiresForeground = true
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         controller.launcher.stateManager.goToState(LauncherState.ALL_APPS, true, getOnCompleteRunnable(controller))
@@ -63,6 +65,7 @@ class OpenWidgetsGestureHandler(context: Context, config: JSONObject?) : Gesture
 
     override val displayName = context.getString(R.string.action_open_widgets)!!
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_widget) }
+    override val requiresForeground = true
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         WidgetsFullSheet.show(controller.launcher, true)
@@ -87,6 +90,7 @@ class OpenOverviewGestureHandler(context: Context, config: JSONObject?) : Gestur
 
     override val displayName = context.getString(R.string.action_open_overview)!!
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_setting) }
+    override val requiresForeground = true
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         OptionsPopupView.showDefaultOptions(controller.launcher, controller.touchDownPoint.x, controller.touchDownPoint.y)
@@ -99,10 +103,14 @@ class StartGlobalSearchGestureHandler(context: Context, config: JSONObject?) : G
     private val searchProvider = SearchProviderController.getInstance(context).searchProvider
     override val displayName = context.getString(R.string.action_global_search)!!
     override val icon: Drawable = searchProvider.getIcon()
+    override val requiresForeground = true
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         searchProvider.startSearch {
             try {
+                if (context !is Activity) {
+                    it.flags = it.flags or Intent.FLAG_ACTIVITY_NEW_TASK
+                }
                 context.startActivity(it)
             } catch (e: Exception) {
                 Log.e(this::class.java.name, "Failed to start global search", e)

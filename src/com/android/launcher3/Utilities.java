@@ -90,6 +90,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -658,6 +659,31 @@ public final class Utilities {
     @NonNull
     public static LawnchairPreferences getLawnchairPrefs(Context context) {
         return LawnchairPreferences.Companion.getInstance(context);
+    }
+
+    private static List<Runnable> onStart = new ArrayList<>();
+
+    /**
+     * ATTENTION: Only ever call this from within LawnchairLauncher.kt
+     */
+    public /* private */ static void onLauncherStart() {
+        Log.d(TAG, "onLauncherStart: " + onStart.size());
+        for(Runnable r : onStart)
+            r.run();
+        onStart.clear();
+    }
+
+    /**
+     * Cues a runnable to be executed after binding all launcher elements the next time
+     */
+    public static void cueAfterNextStart(Runnable runnable) {
+        Log.d(TAG, "cueAfterNextStart: " + runnable);
+        onStart.add(runnable);
+    }
+
+    public static void goToHome(Context context, Runnable onStart) {
+        cueAfterNextStart(onStart);
+        goToHome(context);
     }
 
     public static void goToHome(Context context){
