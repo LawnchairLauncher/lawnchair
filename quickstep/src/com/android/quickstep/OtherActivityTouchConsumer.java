@@ -21,6 +21,7 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
+
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
@@ -35,10 +36,8 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
 import android.os.SystemClock;
 import android.util.SparseArray;
-import android.view.Choreographer;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -63,9 +62,6 @@ import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
 import androidx.annotation.Nullable;
 
 /**
@@ -74,7 +70,6 @@ import androidx.annotation.Nullable;
 @TargetApi(Build.VERSION_CODES.P)
 public class OtherActivityTouchConsumer extends ContextWrapper implements TouchConsumer {
 
-    private static final long LAUNCHER_DRAW_TIMEOUT_MS = 150;
     public static final String DOWN_EVT = "OtherActivityTouchConsumer.DOWN";
     private static final String UP_EVT = "OtherActivityTouchConsumer.UP";
 
@@ -84,11 +79,14 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private final Intent mHomeIntent;
     private final ActivityControlHelper mActivityControlHelper;
     private final MainThreadExecutor mMainThreadExecutor;
-    private final Choreographer mBackgroundThreadChoreographer;
     private final OverviewCallbacks mOverviewCallbacks;
     private final TaskOverlayFactory mTaskOverlayFactory;
     private final TouchInteractionLog mTouchInteractionLog;
     private final InputConsumerController mInputConsumer;
+
+    private final MotionEventQueue mEventQueue;
+    private final MotionPauseDetector mMotionPauseDetector;
+    private VelocityTracker mVelocityTracker;
 
     private final boolean mIsDeferredDownTarget;
     private final PointF mDownPos = new PointF();
@@ -103,29 +101,28 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private Rect mStableInsets = new Rect();
     private boolean mCanGestureBeContinued;
 
-    private VelocityTracker mVelocityTracker;
-    private MotionPauseDetector mMotionPauseDetector;
-    private MotionEventQueue mEventQueue;
     private boolean mIsGoingToLauncher;
     private RecentsAnimationState mRecentsAnimationState;
 
     public OtherActivityTouchConsumer(Context base, RunningTaskInfo runningTaskInfo,
             RecentsModel recentsModel, Intent homeIntent, ActivityControlHelper activityControl,
-            MainThreadExecutor mainThreadExecutor, Choreographer backgroundThreadChoreographer,
+            MainThreadExecutor mainThreadExecutor,
             @HitTarget int downHitTarget, OverviewCallbacks overviewCallbacks,
             TaskOverlayFactory taskOverlayFactory, InputConsumerController inputConsumer,
-            VelocityTracker velocityTracker, TouchInteractionLog touchInteractionLog,
+            TouchInteractionLog touchInteractionLog, MotionEventQueue eventQueue,
             @Nullable RecentsAnimationState recentsAnimationStateToReuse) {
         super(base);
 
         mRunningTask = runningTaskInfo;
         mRecentsModel = recentsModel;
         mHomeIntent = homeIntent;
-        mVelocityTracker = velocityTracker;
+
         mMotionPauseDetector = new MotionPauseDetector(base);
+        mEventQueue = eventQueue;
+        mVelocityTracker = VelocityTracker.obtain();
+
         mActivityControlHelper = activityControl;
         mMainThreadExecutor = mainThreadExecutor;
-        mBackgroundThreadChoreographer = backgroundThreadChoreographer;
         mIsDeferredDownTarget = activityControl.deferStartingActivity(downHitTarget);
         mOverviewCallbacks = overviewCallbacks;
         mTaskOverlayFactory = taskOverlayFactory;
@@ -145,6 +142,12 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         if (mVelocityTracker == null) {
             return;
         }
+        mVelocityTracker.addMovement(ev);
+        if (ev.getActionMasked() == ACTION_POINTER_UP) {
+            mVelocityTracker.clear();
+            mMotionPauseDetector.clear();
+        }
+
         mTouchInteractionLog.addMotionEvent(ev);
         switch (ev.getActionMasked()) {
             case ACTION_DOWN: {
@@ -275,56 +278,33 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mInteractionHandler = handler;
         handler.setGestureEndCallback(mEventQueue::reset);
         mMotionPauseDetector.setOnMotionPauseListener(handler::onMotionPauseChanged);
-
-        CountDownLatch drawWaitLock = new CountDownLatch(1);
-        handler.setLauncherOnDrawCallback(() -> {
-            drawWaitLock.countDown();
-            if (handler == mInteractionHandler) {
-                switchToMainChoreographer();
-            }
-        });
         handler.initWhenReady();
 
         TraceHelper.beginSection("RecentsController");
 
-        AssistDataReceiver assistDataReceiver = !mTaskOverlayFactory.needAssist() ? null :
-                new AssistDataReceiver() {
-                    @Override
-                    public void onHandleAssistData(Bundle bundle) {
-                        if (mInteractionHandler == null) {
-                            // Interaction is probably complete
-                            mRecentsModel.preloadAssistData(mRunningTask.id, bundle);
-                        } else if (handler == mInteractionHandler) {
-                            handler.onAssistDataReceived(bundle);
-                        }
-                    }
-                };
-
-        Runnable startActivity;
         if (reuseOldAnimState) {
-            startActivity = () -> {
-                handler.onRecentsAnimationStart(mRecentsAnimationState.mController,
-                        mRecentsAnimationState.mTargets, mRecentsAnimationState.mHomeContentInsets,
-                        mRecentsAnimationState.mMinimizedHomeBounds);
-            };
+            handler.onRecentsAnimationStart(mRecentsAnimationState.mController,
+                    mRecentsAnimationState.mTargets, mRecentsAnimationState.mHomeContentInsets,
+                    mRecentsAnimationState.mMinimizedHomeBounds);
         } else {
-            startActivity = () -> ActivityManagerWrapper.getInstance().startRecentsActivity(
-                    mHomeIntent, assistDataReceiver, mRecentsAnimationState, null, null);
+            AssistDataReceiver assistDataReceiver = !mTaskOverlayFactory.needAssist() ? null :
+                    new AssistDataReceiver() {
+                        @Override
+                        public void onHandleAssistData(Bundle bundle) {
+                            if (mInteractionHandler == null) {
+                                // Interaction is probably complete
+                                mRecentsModel.preloadAssistData(mRunningTask.id, bundle);
+                            } else if (handler == mInteractionHandler) {
+                                handler.onAssistDataReceived(bundle);
+                            }
+                        }
+                    };
+
+            BackgroundExecutor.get().submit(
+                    () -> ActivityManagerWrapper.getInstance().startRecentsActivity(
+                            mHomeIntent, assistDataReceiver, mRecentsAnimationState, null, null));
         }
 
-
-        if (Looper.myLooper() != Looper.getMainLooper()) {
-            startActivity.run();
-            try {
-                drawWaitLock.await(LAUNCHER_DRAW_TIMEOUT_MS, TimeUnit.MILLISECONDS);
-            } catch (Exception e) {
-                // We have waited long enough for launcher to draw
-            }
-        } else {
-            // We should almost always get touch-town on background thread. This is an edge case
-            // when the background Choreographer has not yet initialized.
-            BackgroundExecutor.get().submit(startActivity);
-        }
     }
 
     @Override
@@ -377,12 +357,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             mCanGestureBeContinued = endTarget != null && endTarget.canBeContinued;
             mMainThreadExecutor.execute(mCanGestureBeContinued ? handler::cancel : handler::reset);
         }
-    }
-
-    @Override
-    public Choreographer getIntrimChoreographer(MotionEventQueue queue) {
-        mEventQueue = queue;
-        return mBackgroundThreadChoreographer;
     }
 
     @Override
@@ -442,21 +416,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             displacement = mDownPos.x - eventX;
         }
         return displacement;
-    }
-
-    public void switchToMainChoreographer() {
-        mEventQueue.setInterimChoreographer(null);
-    }
-
-    @Override
-    public void preProcessMotionEvent(MotionEvent ev) {
-        if (mVelocityTracker != null) {
-           mVelocityTracker.addMovement(ev);
-           if (ev.getActionMasked() == ACTION_POINTER_UP) {
-               mVelocityTracker.clear();
-               mMotionPauseDetector.clear();
-           }
-        }
     }
 
     @Override

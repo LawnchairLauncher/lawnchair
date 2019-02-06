@@ -23,8 +23,7 @@ import static android.view.MotionEvent.ACTION_POINTER_INDEX_SHIFT;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.systemui.shared.system.ActivityManagerWrapper
-        .CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
+import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
 
 import android.annotation.TargetApi;
@@ -33,14 +32,12 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Build;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Choreographer;
 import android.view.MotionEvent;
-import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.BaseDraggingActivity;
@@ -52,7 +49,6 @@ import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.ChoreographerCompat;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
 
@@ -77,11 +73,6 @@ public class TouchInteractionService extends Service {
     public static final int EDGE_NAV_BAR = 1 << 8;
 
     private static final String TAG = "TouchInteractionService";
-
-    /**
-     * A background thread used for handling UI for another window.
-     */
-    private static HandlerThread sRemoteUiThread;
 
     private final IBinder mMyBinder = new IOverviewProxy.Stub() {
 
@@ -191,9 +182,6 @@ public class TouchInteractionService extends Service {
     private TouchInteractionLog mTouchInteractionLog;
     private InputConsumerController mInputConsumer;
 
-    private Choreographer mMainThreadChoreographer;
-    private Choreographer mBackgroundThreadChoreographer;
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -202,8 +190,7 @@ public class TouchInteractionService extends Service {
         mMainThreadExecutor = new MainThreadExecutor();
         mOverviewComponentObserver = new OverviewComponentObserver(this);
         mOverviewCommandHelper = new OverviewCommandHelper(this, mOverviewComponentObserver);
-        mMainThreadChoreographer = Choreographer.getInstance();
-        mEventQueue = new MotionEventQueue(mMainThreadChoreographer, TouchConsumer.NO_OP);
+        mEventQueue = new MotionEventQueue(Looper.myLooper(), Choreographer.getInstance());
         mOverviewInteractionState = OverviewInteractionState.INSTANCE.get(this);
         mOverviewCallbacks = OverviewCallbacks.get(this);
         mTaskOverlayFactory = TaskOverlayFactory.INSTANCE.get(this);
@@ -215,13 +202,13 @@ public class TouchInteractionService extends Service {
 
         // Temporarily disable model preload
         // new ModelPreload().start(this);
-        initBackgroundChoreographer();
     }
 
     @Override
     public void onDestroy() {
         mInputConsumer.unregisterInputConsumer();
         mOverviewComponentObserver.onDestroy();
+        mEventQueue.dispose();
         sConnected = false;
         super.onDestroy();
     }
@@ -236,20 +223,18 @@ public class TouchInteractionService extends Service {
         mEventQueue.reset();
         TouchConsumer oldConsumer = mEventQueue.getConsumer();
         if (oldConsumer.deferNextEventToMainThread()) {
-            mEventQueue = new MotionEventQueue(mMainThreadChoreographer,
-                    new DeferredTouchConsumer((v) -> getCurrentTouchConsumer(downHitTarget,
-                            oldConsumer.forceToLauncherConsumer(),
-                            oldConsumer.getRecentsAnimationStateToReuse(), v)));
-            mEventQueue.deferInit();
+            mEventQueue.switchConsumer(() -> getCurrentTouchConsumer(downHitTarget,
+                    oldConsumer.forceToLauncherConsumer(),
+                    oldConsumer.getRecentsAnimationStateToReuse()));
+
         } else {
-            mEventQueue = new MotionEventQueue(mMainThreadChoreographer,
-                    getCurrentTouchConsumer(downHitTarget, false, null, null));
+            TouchConsumer consumer = getCurrentTouchConsumer(downHitTarget, false, null);
+            mEventQueue.switchConsumer(() -> consumer);
         }
     }
 
     private TouchConsumer getCurrentTouchConsumer(@HitTarget int downHitTarget,
-            boolean forceToLauncher, RecentsAnimationState recentsAnimationStateToReuse,
-            VelocityTracker tracker) {
+            boolean forceToLauncher, RecentsAnimationState recentsAnimationStateToReuse) {
         RunningTaskInfo runningTaskInfo = mAM.getRunningTask(0);
 
         if (runningTaskInfo == null && !forceToLauncher) {
@@ -265,25 +250,13 @@ public class TouchInteractionService extends Service {
                     mOverviewComponentObserver.getActivityControlHelper(), false,
                     mTouchInteractionLog, false /* waitForWindowAvailable */);
         } else {
-            if (tracker == null) {
-                tracker = VelocityTracker.obtain();
-            }
             return new OtherActivityTouchConsumer(this, runningTaskInfo, mRecentsModel,
                     mOverviewComponentObserver.getOverviewIntent(),
                     mOverviewComponentObserver.getActivityControlHelper(), mMainThreadExecutor,
-                    mBackgroundThreadChoreographer, downHitTarget, mOverviewCallbacks,
-                    mTaskOverlayFactory, mInputConsumer, tracker, mTouchInteractionLog,
+                    downHitTarget, mOverviewCallbacks,
+                    mTaskOverlayFactory, mInputConsumer, mTouchInteractionLog, mEventQueue,
                     recentsAnimationStateToReuse);
         }
-    }
-
-    private void initBackgroundChoreographer() {
-        if (sRemoteUiThread == null) {
-            sRemoteUiThread = new HandlerThread("remote-ui");
-            sRemoteUiThread.start();
-        }
-        new Handler(sRemoteUiThread.getLooper()).post(() ->
-                mBackgroundThreadChoreographer = ChoreographerCompat.getSfInstance());
     }
 
     @Override
