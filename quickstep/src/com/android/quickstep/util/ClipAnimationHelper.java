@@ -390,7 +390,6 @@ public class ClipAnimationHelper {
         public TransformParams setCurrentRectAndTargetAlpha(RectF currentRect, float targetAlpha) {
             this.currentRect = currentRect;
             this.targetAlpha = targetAlpha;
-            this.progress = 1;
             return this;
         }
 
