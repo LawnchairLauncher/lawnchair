@@ -1001,8 +1001,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             if (SWIPE_HOME.get()) {
                 setShelfState(ShelfAnimState.OVERVIEW, interpolator, duration);
             }
-        } else if (endTarget == NEW_TASK) {
-            // Let RecentsView handle the scrolling to the task, which we launch in startNewTask().
+        } else if (endTarget == NEW_TASK || endTarget == LAST_TASK) {
+            // Let RecentsView handle the scrolling to the task, which we launch in startNewTask()
+            // or resumeLastTaskForQuickstep().
             if (mRecentsView != null) {
                 duration = Math.max(duration, mRecentsView.getScroller().getDuration());
             }
