@@ -222,7 +222,8 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
                 mTempRect.top -= offsetY;
             }
             mTempRectF.set(mTempRect);
-            mTransformParams.setCurrentRectAndTargetAlpha(mTempRectF, taskView.getAlpha())
+            mTransformParams.setProgress(1f)
+                    .setCurrentRectAndTargetAlpha(mTempRectF, taskView.getAlpha())
                     .setSyncTransactionApplier(mSyncTransactionApplier);
             if (mRecentsAnimationWrapper.targetSet != null) {
                 mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet,
