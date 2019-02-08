@@ -96,6 +96,11 @@ public class DeferredTouchConsumer implements TouchConsumer {
     }
 
     @Override
+    public OtherActivityTouchConsumer.RecentsAnimationState getRecentsAnimationStateToReuse() {
+        return mTarget.getRecentsAnimationStateToReuse();
+    }
+
+    @Override
     public boolean deferNextEventToMainThread() {
         // If our target is still null, defer the next target as well
         TouchConsumer target = mTarget;

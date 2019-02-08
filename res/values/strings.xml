@@ -177,6 +177,8 @@
     <string name="widget_button_text">Widgets</string>
     <!-- Text for wallpaper change button -->
     <string name="wallpaper_button_text">Wallpapers</string>
+    <!-- Text for wallpaper change button -->
+    <string name="styles_wallpaper_button_text">Styles &amp; wallpapers</string>
     <!-- Text for settings button -->
     <string name="settings_button_text">Home settings</string>
     <!-- Message shown when a feature is disabled by the administrator -->

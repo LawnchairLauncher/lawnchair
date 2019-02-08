@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
+
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -62,8 +64,12 @@ public class DeleteDropTarget extends ButtonDropTarget {
      */
     @Override
     public boolean supportsAccessibilityDrop(ItemInfo info, View view) {
-        return (info instanceof ShortcutInfo)
-                || (info instanceof LauncherAppWidgetInfo)
+        if (info instanceof ShortcutInfo) {
+            // Support the action unless the item is in a context menu.
+            return info.screenId >= 0;
+        }
+
+        return (info instanceof LauncherAppWidgetInfo)
                 || (info instanceof FolderInfo);
     }
 

@@ -206,6 +206,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mDigitalWellBeingToast = findViewById(R.id.digital_well_being_toast);
     }
 
+    public TaskMenuView getMenuView() {
+        return mMenuView;
+    }
+
     /**
      * Updates this task view to the given {@param task}.
      */
