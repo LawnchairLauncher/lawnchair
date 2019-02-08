@@ -402,7 +402,7 @@ public final class LauncherInstrumentation {
     }
 
     @NonNull
-    UiDevice getDevice() {
+    public UiDevice getDevice() {
         return mDevice;
     }
 
