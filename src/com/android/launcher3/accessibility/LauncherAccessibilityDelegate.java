@@ -127,9 +127,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         }
 
         // Do not add move actions for keyboard request as this uses virtual nodes.
-        if (!fromKeyboard && ((item instanceof ShortcutInfo)
-                || (item instanceof LauncherAppWidgetInfo)
-                || (item instanceof FolderInfo))) {
+        if (!fromKeyboard && itemSupportsAccessibleDrag(item)) {
             info.addAction(mActions.get(MOVE));
 
             if (item.container >= 0) {
@@ -144,6 +142,15 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         if ((item instanceof AppInfo) || (item instanceof PendingAddItemInfo)) {
             info.addAction(mActions.get(ADD_TO_WORKSPACE));
         }
+    }
+
+    private boolean itemSupportsAccessibleDrag(ItemInfo item) {
+        if (item instanceof ShortcutInfo) {
+            // Support the action unless the item is in a context menu.
+            return item.screenId >= 0;
+        }
+        return (item instanceof LauncherAppWidgetInfo)
+                || (item instanceof FolderInfo);
     }
 
     @Override
