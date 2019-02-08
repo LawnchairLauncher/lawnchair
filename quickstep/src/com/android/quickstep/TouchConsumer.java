@@ -17,7 +17,6 @@ package com.android.quickstep;
 
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.view.Choreographer;
 import android.view.MotionEvent;
 
 import androidx.annotation.IntDef;
@@ -55,18 +54,6 @@ public interface TouchConsumer extends Consumer<MotionEvent> {
     default void onQuickStep(MotionEvent ev) { }
 
     default void onCommand(int command) { }
-
-    /**
-     * Called on the binder thread to allow the consumer to process the motion event before it is
-     * posted on a handler thread.
-     */
-    default void preProcessMotionEvent(MotionEvent ev) { }
-
-    default Choreographer getIntrimChoreographer(MotionEventQueue queue) {
-        return null;
-    }
-
-    default void deferInit() { }
 
     default boolean deferNextEventToMainThread() {
         return false;

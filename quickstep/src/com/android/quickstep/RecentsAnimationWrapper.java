@@ -23,6 +23,7 @@ import android.view.MotionEvent;
 
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.util.LooperExecutor;
+import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
@@ -32,6 +33,8 @@ import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
+
+import androidx.annotation.UiThread;
 
 /**
  * Wrapper around RecentsAnimationController to help with some synchronization
@@ -67,8 +70,10 @@ public class RecentsAnimationWrapper {
         mTouchProxySupplier = touchProxySupplier;
     }
 
+    @UiThread
     public synchronized void setController(
             RecentsAnimationControllerCompat controller, RemoteAnimationTargetSet targetSet) {
+        Preconditions.assertUIThread();
         TraceHelper.partitionSection("RecentsController", "Set controller " + controller);
         this.mController = controller;
         this.targetSet = targetSet;
