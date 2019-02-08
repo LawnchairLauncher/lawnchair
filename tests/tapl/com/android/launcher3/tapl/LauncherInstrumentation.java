@@ -424,4 +424,8 @@ public final class LauncherInstrumentation {
         mInstrumentation.sendPointerSync(event);
         event.recycle();
     }
+
+    float getDisplayDensity() {
+        return mInstrumentation.getTargetContext().getResources().getDisplayMetrics().density;
+    }
 }
