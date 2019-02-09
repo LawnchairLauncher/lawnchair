@@ -612,14 +612,10 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 float transX0 = floatingViewBounds[0] - offsetX;
                 float transY0 = floatingViewBounds[1] - offsetY;
 
-                // Animate window corner radius from 100% to windowCornerRadius.
-                float windowCornerRadius = RecentsModel.INSTANCE.get(mLauncher)
-                        .getWindowCornerRadius();
                 float windowRadius = 0;
                 if (RecentsModel.INSTANCE.get(mLauncher).supportsRoundedCornersOnWindows()) {
-                    float circleRadius = iconWidth / 2f;
-                    windowRadius = Utilities.mapRange(easePercent, circleRadius,
-                            windowCornerRadius);
+                    windowRadius = RecentsModel.INSTANCE.get(mLauncher)
+                            .getWindowCornerRadius();
                 }
 
                 // Animate the window crop so that it starts off as a square, and then reveals
