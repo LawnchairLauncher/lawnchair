@@ -116,6 +116,7 @@ public final class Workspace extends Home {
         final Point dest = new Point(
                 mLauncher.getDevice().getDisplayWidth(), workspace.getVisibleBounds().centerY());
         app.getObject().drag(dest, ICON_DRAG_SPEED);
+        mLauncher.waitUntilGone("drop_target_bar");
         verifyActiveContainer();
     }
 
