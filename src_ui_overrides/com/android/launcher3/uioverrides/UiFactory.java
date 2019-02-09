@@ -48,6 +48,8 @@ public class UiFactory {
 
     public static void onStart(Launcher launcher) { }
 
+    public static void onEnterAnimationComplete(Context context) {}
+
     public static void onLauncherStateOrResumeChanged(Launcher launcher) { }
 
     public static void onTrimMemory(Launcher launcher, int level) { }
