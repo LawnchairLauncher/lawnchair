@@ -30,8 +30,7 @@ import android.view.MotionEvent;
 import com.android.systemui.shared.system.InputChannelCompat;
 import com.android.systemui.shared.system.InputChannelCompat.InputEventDispatcher;
 import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
-
-import java.util.function.Supplier;
+import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
 
 /**
  * Helper class for batching input events
@@ -49,29 +48,25 @@ public class MotionEventQueue {
             ACTION_VIRTUAL | (2 << ACTION_POINTER_INDEX_SHIFT);
     private static final int ACTION_QUICK_SCRUB_END =
             ACTION_VIRTUAL | (3 << ACTION_POINTER_INDEX_SHIFT);
-    private static final int ACTION_RESET =
+    private static final int ACTION_NEW_GESTURE =
             ACTION_VIRTUAL | (4 << ACTION_POINTER_INDEX_SHIFT);
     private static final int ACTION_SHOW_OVERVIEW_FROM_ALT_TAB =
             ACTION_VIRTUAL | (5 << ACTION_POINTER_INDEX_SHIFT);
     private static final int ACTION_QUICK_STEP =
             ACTION_VIRTUAL | (6 << ACTION_POINTER_INDEX_SHIFT);
-    private static final int ACTION_COMMAND =
-            ACTION_VIRTUAL | (7 << ACTION_POINTER_INDEX_SHIFT);
-    private static final int ACTION_SWITCH_CONSUMER =
-            ACTION_VIRTUAL | (8 << ACTION_POINTER_INDEX_SHIFT);
 
     private final InputEventDispatcher mDispatcher;
     private final InputEventReceiver mReceiver;
-
-    private final Object mConsumerParamsLock = new Object();
-    private Supplier[] mConsumerParams = new Supplier[2];
+    private final ConsumerFactory mConsumerFactory;
 
     private TouchConsumer mConsumer;
 
-    public MotionEventQueue(Looper looper, Choreographer choreographer) {
+    public MotionEventQueue(Looper looper, Choreographer choreographer,
+            ConsumerFactory consumerFactory) {
         Pair<InputEventDispatcher, InputEventReceiver> pair = InputChannelCompat.createPair(
                 "sysui-callbacks", looper, choreographer, this::onInputEvent);
 
+        mConsumerFactory = consumerFactory;
         mConsumer = TouchConsumer.NO_OP;
         mDispatcher = pair.first;
         mReceiver = pair.second;
@@ -93,25 +88,18 @@ public class MotionEventQueue {
                 case ACTION_QUICK_SCRUB_END:
                     mConsumer.onQuickScrubEnd();
                     break;
-                case ACTION_RESET:
-                    mConsumer.reset();
+                case ACTION_NEW_GESTURE: {
+                    boolean useSharedState = mConsumer.isActive();
+                    mConsumer.onConsumerAboutToBeSwitched();
+                    mConsumer = mConsumerFactory.newConsumer(event.getSource(), useSharedState);
                     break;
+                }
                 case ACTION_SHOW_OVERVIEW_FROM_ALT_TAB:
                     mConsumer.onShowOverviewFromAltTab();
                     mConsumer.onQuickScrubStart();
                     break;
                 case ACTION_QUICK_STEP:
                     mConsumer.onQuickStep(event);
-                    break;
-                case ACTION_COMMAND:
-                    mConsumer.onCommand(event.getSource());
-                    break;
-                case ACTION_SWITCH_CONSUMER:
-                    synchronized (mConsumerParamsLock) {
-                        int index = event.getSource();
-                        mConsumer = (TouchConsumer) mConsumerParams[index].get();
-                        mConsumerParams[index] = null;
-                    }
                     break;
                 default:
                     Log.e(TAG, "Invalid virtual event: " + event.getAction());
@@ -156,41 +144,26 @@ public class MotionEventQueue {
         queue(event);
     }
 
-    public void reset() {
-        queueVirtualAction(ACTION_RESET, 0);
+    public void onNewGesture(@HitTarget int downHitTarget) {
+        queueVirtualAction(ACTION_NEW_GESTURE, downHitTarget);
     }
 
-    public void onCommand(int command) {
-        queueVirtualAction(ACTION_COMMAND, command);
-    }
-
-    public void switchConsumer(Supplier<TouchConsumer> consumer) {
-        int index = -1;
-        synchronized (mConsumerParamsLock) {
-            // Find a null index
-            for (int i = 0; i < mConsumerParams.length; i++) {
-                if (mConsumerParams[i] == null) {
-                    index = i;
-                    break;
-                }
-            }
-            if (index < 0) {
-                index = mConsumerParams.length;
-                final Supplier[] newValues = new Supplier[index + 1];
-                System.arraycopy(mConsumerParams, 0, newValues, 0, index);
-                mConsumerParams = newValues;
-            }
-            mConsumerParams[index] = consumer;
+    /**
+     * To be called by the consumer when it's no longer active.
+     */
+    public void onConsumerInactive(TouchConsumer caller) {
+        if (mConsumer == caller) {
+            mConsumer = TouchConsumer.NO_OP;
         }
-        queueVirtualAction(ACTION_SWITCH_CONSUMER, index);
-    }
-
-    public TouchConsumer getConsumer() {
-        return mConsumer;
     }
 
     public void dispose() {
         mDispatcher.dispose();
         mReceiver.dispose();
+    }
+
+    public interface ConsumerFactory {
+
+        TouchConsumer newConsumer(@HitTarget int downHitTarget, boolean useSharedState);
     }
 }

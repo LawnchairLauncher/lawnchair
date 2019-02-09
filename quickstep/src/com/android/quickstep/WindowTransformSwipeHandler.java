@@ -34,6 +34,7 @@ import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_FROM_APP_ST
 import static com.android.quickstep.QuickScrubController.QUICK_SWITCH_FROM_APP_START_DURATION;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
+import static com.android.quickstep.TouchInteractionService.MAIN_THREAD_EXECUTOR;
 import static com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget.HOME;
 import static com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget.LAST_TASK;
 import static com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget.NEW_TASK;
@@ -97,6 +98,8 @@ import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.quickstep.TouchInteractionService.OverviewTouchConsumer;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
+import com.android.quickstep.util.SwipeAnimationTargetSet;
+import com.android.quickstep.util.SwipeAnimationTargetSet.SwipeAnimationListener;
 import com.android.quickstep.util.TransformedRect;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -113,7 +116,8 @@ import com.android.systemui.shared.system.WindowCallbacksCompat;
 import java.util.function.BiFunction;
 
 @TargetApi(Build.VERSION_CODES.O)
-public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
+public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
+        implements SwipeAnimationListener {
     private static final String TAG = WindowTransformSwipeHandler.class.getSimpleName();
 
     // Launcher UI related states
@@ -248,14 +252,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     // To avoid UI jump when gesture is started, we offset the animation by the threshold.
     private float mShiftAtGestureStart = 0;
 
-    private final Handler mMainThreadHandler = new Handler(Looper.getMainLooper());
+    private final Handler mMainThreadHandler = MAIN_THREAD_EXECUTOR.getHandler();
 
-    // An increasing identifier per single instance of OtherActivityTouchConsumer. Generally one
-    // instance of OtherActivityTouchConsumer will only have one swipe handle, but sometimes we can
-    // end up with multiple handlers if we get recents command in the middle of a swipe gesture.
-    // This is used to match the corresponding activity manager callbacks in
-    // OtherActivityTouchConsumer
-    public final int id;
     private final Context mContext;
     private final ActivityControlHelper<T> mActivityControlHelper;
     private final ActivityInitListener mActivityInitListener;
@@ -296,10 +294,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     private Bundle mAssistData;
 
-    WindowTransformSwipeHandler(int id, RunningTaskInfo runningTaskInfo, Context context,
+    WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context,
             long touchTimeMs, ActivityControlHelper<T> controller, boolean continuingLastGesture,
             InputConsumerController inputConsumer, TouchInteractionLog touchInteractionLog) {
-        this.id = id;
         mContext = context;
         mRunningTaskInfo = runningTaskInfo;
         mRunningTaskId = runningTaskInfo.id;
@@ -747,19 +744,18 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                         ? 0 : (progress - mShiftAtGestureStart) / (1 - mShiftAtGestureStart));
     }
 
-    @UiThread
-    public void onRecentsAnimationStart(RecentsAnimationControllerCompat controller,
-            RemoteAnimationTargetSet targets, Rect homeContentInsets, Rect minimizedHomeBounds) {
+    @Override
+    public void onRecentsAnimationStart(SwipeAnimationTargetSet targetSet) {
         DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(mContext).getDeviceProfile(mContext);
         final Rect overviewStackBounds;
-        RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(mRunningTaskId);
+        RemoteAnimationTargetCompat runningTaskTarget = targetSet.findTask(mRunningTaskId);
 
-        if (minimizedHomeBounds != null && runningTaskTarget != null) {
+        if (targetSet.minimizedHomeBounds != null && runningTaskTarget != null) {
             overviewStackBounds = mActivityControlHelper
-                    .getOverviewWindowBounds(minimizedHomeBounds, runningTaskTarget);
-            dp = dp.getMultiWindowProfile(mContext,
-                    new Point(minimizedHomeBounds.width(), minimizedHomeBounds.height()));
-            dp.updateInsets(homeContentInsets);
+                    .getOverviewWindowBounds(targetSet.minimizedHomeBounds, runningTaskTarget);
+            dp = dp.getMultiWindowProfile(mContext, new Point(
+                    targetSet.minimizedHomeBounds.width(), targetSet.minimizedHomeBounds.height()));
+            dp.updateInsets(targetSet.homeContentInsets);
         } else {
             if (mActivity != null) {
                 int loc[] = new int[2];
@@ -772,7 +768,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             }
             // If we are not in multi-window mode, home insets should be same as system insets.
             dp = dp.copy(mContext);
-            dp.updateInsets(homeContentInsets);
+            dp.updateInsets(targetSet.homeContentInsets);
         }
         dp.updateIsSeascape(mContext.getSystemService(WindowManager.class));
 
@@ -782,14 +778,14 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mClipAnimationHelper.prepareAnimation(false /* isOpening */);
         initTransitionEndpoints(dp);
 
-        mRecentsAnimationWrapper.setController(controller, targets);
-        mTouchInteractionLog.startRecentsAnimationCallback(targets.apps.length);
+        mRecentsAnimationWrapper.setController(targetSet.controller, targetSet);
+        mTouchInteractionLog.startRecentsAnimationCallback(targetSet.apps.length);
         setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
 
         mPassedOverviewThreshold = false;
     }
 
-    @UiThread
+    @Override
     public void onRecentsAnimationCanceled() {
         mRecentsAnimationWrapper.setController(null, null);
         mActivityInitListener.unregister();

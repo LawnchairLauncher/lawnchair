@@ -44,7 +44,6 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.quickstep.OtherActivityTouchConsumer.RecentsAnimationState;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
@@ -60,6 +59,8 @@ import java.io.PrintWriter;
  */
 @TargetApi(Build.VERSION_CODES.O)
 public class TouchInteractionService extends Service {
+
+    public static final MainThreadExecutor MAIN_THREAD_EXECUTOR = new MainThreadExecutor();
 
     private static final SparseArray<String> sMotionEventNames;
 
@@ -81,7 +82,7 @@ public class TouchInteractionService extends Service {
             mTouchInteractionLog.prepareForNewGesture();
 
             TraceHelper.beginSection("SysUiBinder");
-            setupTouchConsumer(downHitTarget);
+            mEventQueue.onNewGesture(downHitTarget);
             TraceHelper.partitionSection("SysUiBinder", "Down target " + downHitTarget);
         }
 
@@ -135,7 +136,7 @@ public class TouchInteractionService extends Service {
         @Override
         public void onOverviewShown(boolean triggeredFromAltTab) {
             if (triggeredFromAltTab) {
-                setupTouchConsumer(HIT_TARGET_NONE);
+                mEventQueue.onNewGesture(HIT_TARGET_NONE);
                 mEventQueue.onOverviewShownFromAltTab();
             } else {
                 mOverviewCommandHelper.onOverviewShown();
@@ -172,7 +173,6 @@ public class TouchInteractionService extends Service {
     private ActivityManagerWrapper mAM;
     private RecentsModel mRecentsModel;
     private MotionEventQueue mEventQueue;
-    private MainThreadExecutor mMainThreadExecutor;
     private ISystemUiProxy mISystemUiProxy;
     private OverviewCommandHelper mOverviewCommandHelper;
     private OverviewComponentObserver mOverviewComponentObserver;
@@ -181,20 +181,22 @@ public class TouchInteractionService extends Service {
     private TaskOverlayFactory mTaskOverlayFactory;
     private TouchInteractionLog mTouchInteractionLog;
     private InputConsumerController mInputConsumer;
+    private SwipeSharedState mSwipeSharedState;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mAM = ActivityManagerWrapper.getInstance();
         mRecentsModel = RecentsModel.INSTANCE.get(this);
-        mMainThreadExecutor = new MainThreadExecutor();
         mOverviewComponentObserver = new OverviewComponentObserver(this);
         mOverviewCommandHelper = new OverviewCommandHelper(this, mOverviewComponentObserver);
-        mEventQueue = new MotionEventQueue(Looper.myLooper(), Choreographer.getInstance());
+        mEventQueue = new MotionEventQueue(Looper.myLooper(), Choreographer.getInstance(),
+                this::newConsumer);
         mOverviewInteractionState = OverviewInteractionState.INSTANCE.get(this);
         mOverviewCallbacks = OverviewCallbacks.get(this);
         mTaskOverlayFactory = TaskOverlayFactory.INSTANCE.get(this);
         mTouchInteractionLog = new TouchInteractionLog();
+        mSwipeSharedState = new SwipeSharedState();
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
         mInputConsumer.registerInputConsumer();
 
@@ -219,27 +221,15 @@ public class TouchInteractionService extends Service {
         return mMyBinder;
     }
 
-    private void setupTouchConsumer(@HitTarget int downHitTarget) {
-        mEventQueue.reset();
-        TouchConsumer oldConsumer = mEventQueue.getConsumer();
-        if (oldConsumer.deferNextEventToMainThread()) {
-            mEventQueue.switchConsumer(() -> getCurrentTouchConsumer(downHitTarget,
-                    oldConsumer.forceToLauncherConsumer(),
-                    oldConsumer.getRecentsAnimationStateToReuse()));
-
-        } else {
-            TouchConsumer consumer = getCurrentTouchConsumer(downHitTarget, false, null);
-            mEventQueue.switchConsumer(() -> consumer);
-        }
-    }
-
-    private TouchConsumer getCurrentTouchConsumer(@HitTarget int downHitTarget,
-            boolean forceToLauncher, RecentsAnimationState recentsAnimationStateToReuse) {
+    private TouchConsumer newConsumer(@HitTarget int downHitTarget, boolean useSharedState) {
         RunningTaskInfo runningTaskInfo = mAM.getRunningTask(0);
+        if (!useSharedState) {
+            mSwipeSharedState.clearAllState();
+        }
 
-        if (runningTaskInfo == null && !forceToLauncher) {
+        if (runningTaskInfo == null && !mSwipeSharedState.goingToLauncher) {
             return TouchConsumer.NO_OP;
-        } else if (forceToLauncher ||
+        } else if (mSwipeSharedState.goingToLauncher ||
                 mOverviewComponentObserver.getActivityControlHelper().isResumed()) {
             return OverviewTouchConsumer.newInstance(
                     mOverviewComponentObserver.getActivityControlHelper(), false,
@@ -252,10 +242,10 @@ public class TouchInteractionService extends Service {
         } else {
             return new OtherActivityTouchConsumer(this, runningTaskInfo, mRecentsModel,
                     mOverviewComponentObserver.getOverviewIntent(),
-                    mOverviewComponentObserver.getActivityControlHelper(), mMainThreadExecutor,
+                    mOverviewComponentObserver.getActivityControlHelper(),
                     downHitTarget, mOverviewCallbacks,
                     mTaskOverlayFactory, mInputConsumer, mTouchInteractionLog, mEventQueue,
-                    recentsAnimationStateToReuse);
+                    mSwipeSharedState);
         }
     }
 
