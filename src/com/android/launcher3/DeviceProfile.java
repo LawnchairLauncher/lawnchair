@@ -199,7 +199,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
 
         Utilities.getLawnchairPrefs(context)
                 .addOnPreferenceChangeListener(this, "pref_fullWidthWidgets", "pref_dockSearchBar",
-                        "pref_twoRowDock", "pref_compactDock", "pref_allAppsPaddingScale");
+                        "pref_twoRowDock", "pref_compactDock", "pref_allAppsPaddingScale", "pref_dockScale");
     }
 
     public DeviceProfile copy(Context context) {
@@ -259,6 +259,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         boolean dockSearchBar = prefs.getDockSearchBar();
         boolean dockHidden = prefs.getDockHide();
         int dockRows = prefs.getDockRowsCount();
+        float dockScale = prefs.getDockScale();
 
         cellLayoutPaddingLeftRightPx = (!isVerticalBarLayout() && fullWidthWidgets) ? 0
                 : res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
@@ -299,8 +300,8 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
             // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
             // in portrait mode closer together by adding more height to the hotseat.
             // Note: This calculation was created after noticing a pattern in the design spec.
-            int extraSpace = getCellSizeOriginal().y - iconSizeOriginalPx
-                    - iconDrawablePaddingOriginalPx * 2 - verticalDragHandleSizePx;
+            int extraSpace = (int) ((getCellSizeOriginal().y - iconSizeOriginalPx
+                    - iconDrawablePaddingOriginalPx * 2 - verticalDragHandleSizePx) * dockScale);
             hotseatBarSizePx += extraSpace;
             if (prefs.getDockStyles().getDockGradient()) {
                 hotseatBarBottomPaddingPx += extraSpace;
@@ -318,6 +319,22 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
             verticalDragHandleSizePx = 0;
 
             updateAvailableDimensions(dm, res);
+        } else {
+            int qsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
+            verticalDragHandleSizePx *= dockScale;
+            int bottomPaddingNew = Math.max((int)(hotseatBarBottomPaddingPx * dockScale), dockSearchBar ? qsbHeight : 0);
+            if (prefs.getDockStyles().getDockGradient()) {
+                hotseatBarTopPaddingPx *= dockScale;
+                hotseatBarBottomPaddingPx = bottomPaddingNew;
+            } else {
+                int difference = hotseatBarBottomPaddingPx - bottomPaddingNew;
+                hotseatBarTopPaddingPx -= difference;
+                hotseatBarBottomPaddingPx = bottomPaddingNew;
+            }
+
+            // TODO: Fix icon cut off on smaller devices with lower values
+            int minHeight = hotseatCellHeightPx * dockRows + hotseatBarBottomPaddingPx + hotseatBarTopPaddingPx;
+            hotseatBarSizePx = Math.max(minHeight, (int) (hotseatBarSizePx * dockScale));
         }
 
         updateWorkspacePadding();

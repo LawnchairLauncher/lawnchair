@@ -48,6 +48,17 @@
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
             android:persistent="true" />
+
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_dockScale"
+            android:title="Dock scale"
+            android:dependency="pref_dockPreset"
+            app:minValue="0.75"
+            app:maxValue="1.25"
+            app:defaultSeekbarValue="1"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"
+            android:persistent="true" />
  
         <ch.deletescape.lawnchair.preferences.DockSwitchPreference
             android:key="enableArrow"

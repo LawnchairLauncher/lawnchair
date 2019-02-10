@@ -21,6 +21,7 @@ import ch.deletescape.lawnchair.lawnchairPrefs
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherState
 import com.android.launcher3.Utilities
+import kotlin.math.min
 
 open class HomeState(id: Int, containerType: Int, transitionDuration: Int, flags: Int) :
         LauncherState(id, containerType, transitionDuration, flags) {
@@ -45,12 +46,12 @@ open class HomeState(id: Int, containerType: Int, transitionDuration: Int, flags
             return if (prefs.dockHide) {
                 dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx
             } else {
-                (dp.hotseatCellHeightPx * prefs.dockRowsCount + dp.verticalDragHandleSizePx +
+                (dp.hotseatCellHeightPx * prefs.dockRowsCount + dp.hotseatBarTopPaddingPx)  * prefs.dockScale +
                         if (prefs.twoRowDock && dp.isTallDevice) {
-                            dp.verticalDragHandleSizePx
+                            dp.hotseatBarTopPaddingPx * prefs.dockScale
                         } else if (prefs.dockSearchBar) {
-                            dp.verticalDragHandleSizePx / 2
-                        } else 0).toFloat()
+                            (dp.verticalDragHandleSizePx / 2) * prefs.dockScale
+                        } else 0f
             }
         }
     }
