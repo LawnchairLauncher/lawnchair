@@ -43,6 +43,7 @@
         <item name="workspaceStatusBarScrim">@drawable/workspace_bg</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
         <item name="folderDotColor">?android:attr/colorPrimary</item>
+        <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
         <item name="loadingIconColor">#FFF</item>
 
         <item name="android:windowTranslucentStatus">false</item>
@@ -60,6 +61,8 @@
         <item name="workspaceKeyShadowColor">@android:color/transparent</item>
         <item name="isWorkspaceDarkText">true</item>
         <item name="workspaceStatusBarScrim">@null</item>
+        <item name="folderDotColor">#FF464646</item>
+        <item name="folderIconBorderColor">#FF80868B</item>
     </style>
 
     <style name="LauncherTheme.Dark" parent="@style/LauncherTheme">
@@ -77,6 +80,7 @@
         <item name="popupColorTertiary">#757575</item> <!-- Gray 600 -->
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
         <item name="folderDotColor">#FF464646</item>
+        <item name="folderIconBorderColor">#FF80868B</item>
         <item name="isMainColorDark">true</item>
         <item name="loadingIconColor">#000</item>
     </style>

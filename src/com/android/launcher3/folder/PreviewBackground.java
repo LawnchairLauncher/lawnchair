@@ -24,6 +24,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -63,6 +64,7 @@ public class PreviewBackground {
     float mScale = 1f;
     private float mColorMultiplier = 1f;
     private int mBgColor;
+    private int mStrokeColor;
     private int mDotColor;
     private float mStrokeWidth;
     private int mStrokeAlpha = MAX_BG_OPACITY;
@@ -125,8 +127,12 @@ public class PreviewBackground {
     public void setup(Context context, ActivityContext activity, View invalidateDelegate,
                       int availableSpaceX, int topPadding) {
         mInvalidateDelegate = invalidateDelegate;
-        mBgColor = Themes.getAttrColor(context, android.R.attr.colorPrimary);
-        mDotColor = Themes.getAttrColor(context, R.attr.folderDotColor);
+
+        TypedArray ta = context.getTheme().obtainStyledAttributes(R.styleable.FolderIconPreview);
+        mDotColor = ta.getColor(R.styleable.FolderIconPreview_folderDotColor, 0);
+        mStrokeColor = ta.getColor(R.styleable.FolderIconPreview_folderIconBorderColor, 0);
+        mBgColor = ta.getColor(R.styleable.FolderIconPreview_android_colorPrimary, 0);
+        ta.recycle();
 
         DeviceProfile grid = activity.getDeviceProfile();
         previewSize = grid.folderIconSizePx;
@@ -275,7 +281,7 @@ public class PreviewBackground {
     }
 
     public void drawBackgroundStroke(Canvas canvas) {
-        mPaint.setColor(setColorAlphaBound(mBgColor, mStrokeAlpha));
+        mPaint.setColor(setColorAlphaBound(mStrokeColor, mStrokeAlpha));
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(mStrokeWidth);
 

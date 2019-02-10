@@ -37,6 +37,7 @@
 
     <attr name="folderDotColor" format="color" />
     <attr name="folderIconRadius" format="float" />
+    <attr name="folderIconBorderColor" format="color" />
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">
@@ -50,6 +51,13 @@
             <enum name="shortcut_popup" value="4" />
         </attr>
         <attr name="centerVertically" format="boolean" />
+    </declare-styleable>
+
+    <!-- BubbleTextView specific attributes. -->
+    <declare-styleable name="FolderIconPreview">
+        <attr name="android:colorPrimary" />
+        <attr name="folderIconBorderColor" />
+        <attr name="folderDotColor" />
     </declare-styleable>
 
     <declare-styleable name="ShadowInfo">

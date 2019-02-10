@@ -92,6 +92,10 @@ abstract class BaseFlags {
             = new ToggleableGlobalSettingsFlag("QUICK_SWITCH", false,
             "Swiping right on the nav bar while in an app switches to the previous app");
 
+    public static final ToggleableGlobalSettingsFlag STYLE_WALLPAPER
+            = new ToggleableGlobalSettingsFlag("STYLE_WALLPAPER", false,
+            "Direct users to the new ThemePicker based WallpaperPicker");
+
     /**
      * Feature flag to handle define config changes dynamically instead of killing the process.
      */

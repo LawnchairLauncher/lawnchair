@@ -47,6 +47,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.quickstep.OtherActivityTouchConsumer.RecentsAnimationState;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
@@ -237,16 +238,18 @@ public class TouchInteractionService extends Service {
         if (oldConsumer.deferNextEventToMainThread()) {
             mEventQueue = new MotionEventQueue(mMainThreadChoreographer,
                     new DeferredTouchConsumer((v) -> getCurrentTouchConsumer(downHitTarget,
-                            oldConsumer.forceToLauncherConsumer(), v)));
+                            oldConsumer.forceToLauncherConsumer(),
+                            oldConsumer.getRecentsAnimationStateToReuse(), v)));
             mEventQueue.deferInit();
         } else {
-            mEventQueue = new MotionEventQueue(
-                    mMainThreadChoreographer, getCurrentTouchConsumer(downHitTarget, false, null));
+            mEventQueue = new MotionEventQueue(mMainThreadChoreographer,
+                    getCurrentTouchConsumer(downHitTarget, false, null, null));
         }
     }
 
-    private TouchConsumer getCurrentTouchConsumer(
-            @HitTarget int downHitTarget, boolean forceToLauncher, VelocityTracker tracker) {
+    private TouchConsumer getCurrentTouchConsumer(@HitTarget int downHitTarget,
+            boolean forceToLauncher, RecentsAnimationState recentsAnimationStateToReuse,
+            VelocityTracker tracker) {
         RunningTaskInfo runningTaskInfo = mAM.getRunningTask(0);
 
         if (runningTaskInfo == null && !forceToLauncher) {
@@ -269,7 +272,8 @@ public class TouchInteractionService extends Service {
                     mOverviewComponentObserver.getOverviewIntent(),
                     mOverviewComponentObserver.getActivityControlHelper(), mMainThreadExecutor,
                     mBackgroundThreadChoreographer, downHitTarget, mOverviewCallbacks,
-                    mTaskOverlayFactory, mInputConsumer, tracker, mTouchInteractionLog);
+                    mTaskOverlayFactory, mInputConsumer, tracker, mTouchInteractionLog,
+                    recentsAnimationStateToReuse);
         }
     }
 

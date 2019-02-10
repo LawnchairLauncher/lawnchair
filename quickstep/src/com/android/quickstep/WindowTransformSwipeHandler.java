@@ -197,19 +197,21 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     };
 
     enum GestureEndTarget {
-        HOME(1, STATE_SCALED_CONTROLLER_HOME, true, ContainerType.WORKSPACE),
+        HOME(1, STATE_SCALED_CONTROLLER_HOME, true, false, ContainerType.WORKSPACE),
 
         RECENTS(1, STATE_SCALED_CONTROLLER_RECENTS | STATE_CAPTURE_SCREENSHOT
-                | STATE_SCREENSHOT_VIEW_SHOWN, true, ContainerType.TASKSWITCHER),
+                | STATE_SCREENSHOT_VIEW_SHOWN, true, false, ContainerType.TASKSWITCHER),
 
-        NEW_TASK(0, STATE_START_NEW_TASK, false, ContainerType.APP),
+        NEW_TASK(0, STATE_START_NEW_TASK, false, true, ContainerType.APP),
 
-        LAST_TASK(0, STATE_SCALED_CONTROLLER_LAST_TASK, false, ContainerType.APP);
+        LAST_TASK(0, STATE_SCALED_CONTROLLER_LAST_TASK, false, false, ContainerType.APP);
 
-        GestureEndTarget(float endShift, int endState, boolean isLauncher, int containerType) {
+        GestureEndTarget(float endShift, int endState, boolean isLauncher, boolean canBeContinued,
+                int containerType) {
             this.endShift = endShift;
             this.endState = endState;
             this.isLauncher = isLauncher;
+            this.canBeContinued = canBeContinued;
             this.containerType = containerType;
         }
 
@@ -217,6 +219,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         public final float endShift;
         public final int endState;
         public final boolean isLauncher;
+        public final boolean canBeContinued;
         public final int containerType;
     }
 
@@ -235,8 +238,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private final ClipAnimationHelper.TransformParams mTransformParams;
 
     protected Runnable mGestureEndCallback;
-    protected boolean mIsGoingToRecents;
-    protected boolean mIsGoingToHome;
+    protected GestureEndTarget mGestureEndTarget;
     private boolean mIsShelfPeeking;
     private DeviceProfile mDp;
     private int mTransitionDragLength;
@@ -247,6 +249,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     // visible.
     private final AnimatedFloat mCurrentShift = new AnimatedFloat(this::updateFinalShift);
     private boolean mDispatchedDownEvent;
+    private boolean mContinuingLastGesture;
     // To avoid UI jump when gesture is started, we offset the animation by the threshold.
     private float mShiftAtGestureStart = 0;
 
@@ -302,7 +305,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private Bundle mAssistData;
 
     WindowTransformSwipeHandler(int id, RunningTaskInfo runningTaskInfo, Context context,
-            long touchTimeMs, ActivityControlHelper<T> controller,
+            long touchTimeMs, ActivityControlHelper<T> controller, boolean continuingLastGesture,
             InputConsumerController inputConsumer, TouchInteractionLog touchInteractionLog) {
         this.id = id;
         mContext = context;
@@ -312,6 +315,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         mActivityControlHelper = controller;
         mActivityInitListener = mActivityControlHelper
                 .createActivityInitListener(this::onActivityInit);
+        mContinuingLastGesture = continuingLastGesture;
         mTouchInteractionLog = touchInteractionLog;
         mRecentsAnimationWrapper = new RecentsAnimationWrapper(inputConsumer,
                 this::createNewTouchProxyHandler);
@@ -480,7 +484,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         });
         mRecentsView.setEnableFreeScroll(false);
         mRecentsView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            if (!mBgLongSwipeMode && !mIsGoingToHome) {
+            if (!mBgLongSwipeMode && mGestureEndTarget != HOME) {
                 updateFinalShift();
             }
         });
@@ -538,6 +542,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     private void setupRecentsViewUi() {
+        if (mContinuingLastGesture) {
+            return;
+        }
         mRecentsView.setEnableDrawingLiveTile(false);
         mRecentsView.showTask(mRunningTaskId);
         mRecentsView.setRunningTaskHidden(true);
@@ -767,16 +774,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                     HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
             }
         }
-        // Update insets of the adjacent tasks, as we might switch to them.
+        // Update insets of the non-running tasks, as we might switch to them.
         int runningTaskIndex = mRecentsView == null ? -1 : mRecentsView.getRunningTaskIndex();
         if (mInteractionType == INTERACTION_NORMAL && runningTaskIndex >= 0) {
-            TaskView nextTaskView = mRecentsView.getTaskViewAt(runningTaskIndex + 1);
-            TaskView prevTaskView = mRecentsView.getTaskViewAt(runningTaskIndex - 1);
-            if (nextTaskView != null) {
-                nextTaskView.setFullscreenProgress(1 - mCurrentShift.value);
-            }
-            if (prevTaskView != null) {
-                prevTaskView.setFullscreenProgress(1 - mCurrentShift.value);
+            for (int i = 0; i < mRecentsView.getTaskViewCount(); i++) {
+                if (i != runningTaskIndex) {
+                    mRecentsView.getTaskViewAt(i).setFullscreenProgress(1 - mCurrentShift.value);
+                }
             }
         }
 
@@ -788,7 +792,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     private void updateLauncherTransitionProgress() {
-        if (mIsGoingToHome) {
+        if (mGestureEndTarget == HOME) {
             return;
         }
         float progress = mCurrentShift.value;
@@ -909,10 +913,18 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         float endShift;
         final float startShift;
         Interpolator interpolator = DEACCEL;
-        final int nextPage = mRecentsView != null ? mRecentsView.getNextPage() : -1;
-        final int runningTaskIndex = mRecentsView != null ? mRecentsView.getRunningTaskIndex() : -1;
-        boolean goingToNewTask = mRecentsView != null && nextPage != runningTaskIndex
-                && mRecentsView.getTaskViewAt(nextPage) != null;
+        int nextPage = 0;
+        int taskToLaunch = 0;
+        final boolean goingToNewTask;
+        if (mRecentsView != null) {
+            nextPage = mRecentsView.getNextPage();
+            final int lastTaskIndex = mRecentsView.getTaskViewCount() - 1;
+            final int runningTaskIndex = mRecentsView.getRunningTaskIndex();
+            taskToLaunch = nextPage <= lastTaskIndex ? nextPage : lastTaskIndex;
+            goingToNewTask = mRecentsView != null && taskToLaunch != runningTaskIndex;
+        } else {
+            goingToNewTask = false;
+        }
         final boolean reachedOverviewThreshold = currentShift >= MIN_PROGRESS_FOR_OVERVIEW;
         if (!isFling) {
             if (SWIPE_HOME.get()) {
@@ -973,6 +985,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             }
         }
 
+        if (mRecentsView != null && !endTarget.isLauncher && taskToLaunch != nextPage) {
+            // Scrolled to Clear all button, snap back to last task and launch it.
+            mRecentsView.snapToPage(taskToLaunch, Math.toIntExact(duration), interpolator);
+        }
+
         if (endTarget == HOME) {
             setShelfState(ShelfAnimState.CANCEL, LINEAR, 0);
             duration = Math.max(MIN_OVERSHOOT_DURATION, duration);
@@ -984,15 +1001,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             if (SWIPE_HOME.get()) {
                 setShelfState(ShelfAnimState.OVERVIEW, interpolator, duration);
             }
-        } else if (endTarget == NEW_TASK) {
-            // Let RecentsView handle the scrolling to the task, which we launch in startNewTask().
+        } else if (endTarget == NEW_TASK || endTarget == LAST_TASK) {
+            // Let RecentsView handle the scrolling to the task, which we launch in startNewTask()
+            // or resumeLastTaskForQuickstep().
             if (mRecentsView != null) {
                 duration = Math.max(duration, mRecentsView.getScroller().getDuration());
-            }
-        } else if (endTarget == LAST_TASK) {
-            if (mRecentsView != null && nextPage != runningTaskIndex) {
-                // Scrolled to Clear all button, snap back to current task and resume it.
-                mRecentsView.snapToPage(runningTaskIndex, Math.toIntExact(duration));
             }
         }
         animateToProgress(startShift, endShift, duration, interpolator, endTarget, velocityPxPerMs);
@@ -1028,11 +1041,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     private void animateToProgressInternal(float start, float end, long duration,
             Interpolator interpolator, GestureEndTarget target, float velocityPxPerMs) {
-        mIsGoingToHome = target == HOME;
-        mIsGoingToRecents = target == RECENTS;
+        mGestureEndTarget = target;
         ActivityControlHelper.HomeAnimationFactory homeAnimFactory;
         Animator windowAnim;
-        if (mIsGoingToHome) {
+        if (mGestureEndTarget == HOME) {
             if (mActivity != null) {
                 homeAnimFactory = mActivityControlHelper.prepareHomeUI(mActivity);
             } else {
@@ -1071,7 +1083,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         long startMillis = SystemClock.uptimeMillis();
         // Always play the entire launcher animation when going home, since it is separate from
         // the animation that has been controlled thus far.
-        final float finalStart = mIsGoingToHome ? 0 : start;
+        final float finalStart = mGestureEndTarget == HOME ? 0 : start;
         executeOnUiThread(() -> {
             // Animate the launcher components at the same time as the window, always on UI thread.
             // Adjust start progress and duration in case we are on a different thread.
@@ -1102,9 +1114,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
                 if (QUICKSTEP_SPRINGS.get()) {
                     mLauncherTransitionController.dispatchOnStartWithVelocity(end, velocityPxPerMs);
-                } else {
-                    mLauncherTransitionController.getAnimationPlayer().start();
                 }
+                mLauncherTransitionController.getAnimationPlayer().start();
             }
         });
     }
@@ -1144,6 +1155,14 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             mTransformParams.setCurrentRectAndTargetAlpha(currentRect, alpha)
                     .setSyncTransactionApplier(syncTransactionApplier);
             mClipAnimationHelper.applyTransform(targetSet, mTransformParams);
+        });
+        anim.addListener(new AnimationSuccessListener() {
+            @Override
+            public void onAnimationSuccess(Animator animator) {
+                if (mRecentsView != null) {
+                    mRecentsView.post(mRecentsView::resetTaskVisuals);
+                }
+            }
         });
         return anim;
     }
@@ -1185,6 +1204,14 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             // Only invalidate the handler if we are not quick scrubbing, otherwise, it will be
             // invalidated after the quick scrub ends
             setStateOnUiThread(STATE_HANDLER_INVALIDATED);
+        }
+    }
+
+    public void cancel() {
+        mCurrentShift.cancelAnimation();
+        if (mLauncherTransitionController != null && mLauncherTransitionController
+                .getAnimationPlayer().isStarted()) {
+            mLauncherTransitionController.getAnimationPlayer().cancel();
         }
     }
 
