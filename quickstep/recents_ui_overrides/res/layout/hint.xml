@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2019 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<com.android.quickstep.hints.HintView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/chip_hint_height"
+    android:layout_gravity="center_horizontal|bottom"
+    android:paddingStart="@dimen/chip_hint_start_padding"
+    android:paddingEnd="@dimen/chip_hint_end_padding"
+    android:background="@drawable/chip_hint_background_light"
+    android:gravity="center"
+    android:layout_marginHorizontal="@dimen/chip_hint_horizontal_margin"
+    android:orientation="horizontal"
+    android:elevation="@dimen/chip_hint_elevation"
+    android:layoutDirection="ltr">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="@dimen/chip_icon_size"
+        android:layout_height="@dimen/chip_icon_size"
+        android:visibility="gone"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:contentDescription="@null"/>
+
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/chip_text_height"
+        android:paddingTop="@dimen/chip_text_top_padding"
+        android:paddingStart="@dimen/chip_text_start_padding"
+        android:fontFamily="google-sans-medium"
+        android:textAlignment="textStart"
+        android:singleLine="true"
+        android:textColor="@color/chip_hint_foreground_color"
+        android:textSize="@dimen/chip_text_size"
+        android:ellipsize="none"
+        android:includeFontPadding="true"/>
+
+
+</com.android.quickstep.hints.HintView>

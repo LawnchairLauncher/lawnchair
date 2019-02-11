@@ -257,7 +257,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     private RotationHelper mRotationHelper;
 
-
     private final Handler mHandler = new Handler();
     private final Runnable mHandleDeferredResume = this::handleDeferredResume;
 
@@ -756,6 +755,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStop();
         }
+
         getUserEventDispatcher().logActionCommand(Action.Command.STOP,
                 mStateManager.getState().containerType, -1);
 

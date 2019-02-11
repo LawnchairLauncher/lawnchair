@@ -21,6 +21,7 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.ALL_APPS_PROGRESS_OFF_SCREEN;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_HINTS_IN_OVERVIEW;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 
 import android.animation.AnimatorSet;
@@ -40,8 +41,10 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.OverviewInteractionState;
+import com.android.quickstep.hints.HintsContainer;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.ClipAnimationHelper.TransformParams;
 import com.android.quickstep.util.LayoutUtils;
@@ -74,6 +77,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     private float mTranslationYFactor;
 
     private final TransformParams mTransformParams = new TransformParams();
+    private HintsContainer mHintsContainer;
 
     public LauncherRecentsView(Context context) {
         this(context, null);
@@ -104,6 +108,13 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
         setTranslationYFactor(mTranslationYFactor);
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mHintsContainer = mActivity.findViewById(R.id.hints);
+        mHintsContainer.setPadding(0, 0, 0, mActivity.getDeviceProfile().chipHintBottomMarginPx);
+    }
+
     public void setTranslationYFactor(float translationFactor) {
         mTranslationYFactor = translationFactor;
         setTranslationY(computeTranslationYForFactor(mTranslationYFactor));
@@ -117,6 +128,12 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
 
     public float computeTranslationYForFactor(float translationYFactor) {
         return translationYFactor * (getPaddingBottom() - getPaddingTop());
+    }
+
+    public void setHintVisibility(float v) {
+        if (mHintsContainer != null && ENABLE_HINTS_IN_OVERVIEW.get()) {
+            mHintsContainer.setHintVisibility(v);
+        }
     }
 
     @Override
@@ -165,6 +182,37 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
                 mActivity.findViewById(R.id.scrim_view), ScrimView.DRAG_HANDLE_ALPHA, 0);
         dragHandleAnim.setInterpolator(Interpolators.ACCEL_2);
         anim.play(dragHandleAnim);
+
+        return anim;
+    }
+
+    @Override
+    public PendingAnimation createTaskLauncherAnimation(TaskView tv, long duration) {
+        PendingAnimation anim = super.createTaskLauncherAnimation(tv, duration);
+
+        if (ENABLE_HINTS_IN_OVERVIEW.get()) {
+            anim.anim.play(ObjectAnimator.ofFloat(
+                    mHintsContainer, HintsContainer.HINT_VISIBILITY, 0));
+        }
+
+        return anim;
+    }
+
+    @Override
+    public PendingAnimation createTaskDismissAnimation(TaskView taskView, boolean animateTaskView,
+            boolean shouldRemoveTask, long duration) {
+        PendingAnimation anim = super.createTaskDismissAnimation(taskView, animateTaskView,
+                shouldRemoveTask, duration);
+
+        if (ENABLE_HINTS_IN_OVERVIEW.get()) {
+            anim.anim.play(ObjectAnimator.ofFloat(
+                    mHintsContainer, HintsContainer.HINT_VISIBILITY, 0));
+            anim.addEndListener(onEndListener -> {
+                if (!onEndListener.isSuccess) {
+                    mHintsContainer.setHintVisibility(1);
+                }
+            });
+        }
 
         return anim;
     }

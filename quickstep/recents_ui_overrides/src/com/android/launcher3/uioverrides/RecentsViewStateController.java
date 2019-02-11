@@ -23,14 +23,14 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.util.FloatProperty;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
-
-import androidx.annotation.NonNull;
 
 /**
  * State handler for handling UI changes for {@link LauncherRecentsView}. In addition to managing
@@ -50,6 +50,9 @@ public final class RecentsViewStateController extends
         if (state.overviewUi) {
             mRecentsView.updateEmptyMessage();
             mRecentsView.resetTaskVisuals();
+            mRecentsView.setHintVisibility(1);
+        } else {
+            mRecentsView.setHintVisibility(0);
         }
     }
 
@@ -60,6 +63,7 @@ public final class RecentsViewStateController extends
 
         if (!toState.overviewUi) {
             builder.addOnFinishRunnable(mRecentsView::resetTaskVisuals);
+            mRecentsView.setHintVisibility(0);
         }
 
         if (toState.overviewUi) {
@@ -71,6 +75,7 @@ public final class RecentsViewStateController extends
             updateAnim.setDuration(config.duration);
             builder.play(updateAnim);
             mRecentsView.updateEmptyMessage();
+            builder.addOnFinishRunnable(() -> mRecentsView.setHintVisibility(1));
         }
     }
 
