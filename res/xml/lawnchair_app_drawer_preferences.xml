@@ -56,6 +56,14 @@
             android:key="pref_hideAllAppsAppLabels"
             android:title="@string/hide_all_apps_icon_labels_pref_title"
             android:defaultValue="false"
+            android:disableDependentsState="true"
+            android:persistent="true" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_iconLabelsInTwoLines"
+            android:title="@string/pref_mutliline_labels"
+            android:dependency="pref_hideAllAppsAppLabels"
+            android:defaultValue="false"
             android:persistent="true" />
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
     

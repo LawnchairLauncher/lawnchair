@@ -40,6 +40,7 @@ import android.view.ViewDebug;
 import android.widget.TextView;
 
 import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.gestures.BlankGestureHandler;
 import ch.deletescape.lawnchair.gestures.GestureController;
@@ -168,20 +169,30 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
         int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
         int defaultIconSize = grid.iconSizePx;
+        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
         if (display == DISPLAY_WORKSPACE) {
-            mHideText = Utilities.getLawnchairPrefs(context).getHideAppLabels();
+            mHideText = prefs.getHideAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
+            int lines = prefs.getHomeLabelRows();
+            setMaxLines(lines);
+            setSingleLine(lines == 1);
         } else if (display == DISPLAY_ALL_APPS) {
-            mHideText = Utilities.getLawnchairPrefs(context).getHideAllAppsAppLabels();
+            mHideText = prefs.getHideAllAppsAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
+            int lines = prefs.getDrawerLabelRows();
+            setMaxLines(lines);
+            setSingleLine(lines == 1);
         } else if (display == DISPLAY_FOLDER) {
-            mHideText = Utilities.getLawnchairPrefs(context).getHideAppLabels();
+            mHideText = prefs.getHideAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.folderChildTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
             defaultIconSize = grid.folderChildIconSizePx;
+            int lines = prefs.getHomeLabelRows();
+            setMaxLines(lines);
+            setSingleLine(lines == 1);
         }
         mCenterVertically = a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
 

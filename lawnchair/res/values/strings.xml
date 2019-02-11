@@ -56,6 +56,7 @@
     <string name="pref_drawer_padding">Padding</string>
     <string name="pref_drawer_columns">Number of columns in drawer</string>
     <string name="pref_prediction_count">Number of suggestions</string>
+    <string name="pref_mutliline_labels">Multiline labels</string>
 
     <!-- Actions -->
     <string name="lawnchair_actions">Actions</string>

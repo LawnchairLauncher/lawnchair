@@ -352,12 +352,14 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         iconDrawablePaddingPx = 0;
         cellHeightPx = iconSizePx;
 
+        int labelRows = Utilities.getLawnchairPrefs(mContext).getDrawerLabelRows();
+
         // In normal cases, All Apps cell height should equal the Workspace cell height.
         // Since we are removing labels from the Workspace, we need to manually compute the
         // All Apps cell height.
         int topBottomPadding = allAppsIconDrawablePaddingPx * (isVerticalBarLayout() ? 2 : 1);
         allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx
-                + Utilities.calculateTextHeight(allAppsIconTextSizePx)
+                + Utilities.calculateTextHeight(allAppsIconTextSizePx) * labelRows
                 + topBottomPadding * 2;
     }
 
@@ -377,6 +379,8 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     private void updateIconSize(float scale, Resources res, DisplayMetrics dm) {
         LawnchairPreferences prefs = Utilities.getLawnchairPrefs(mContext);
         boolean dockVisible = !prefs.getDockHide();
+        int labelRowCount = prefs.getHomeLabelRows();
+        int drawerLabelRowCount = prefs.getDrawerLabelRows();
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
         float invIconSizePx = isVerticalLayout ? inv.landscapeIconSize : inv.iconSize;
@@ -385,7 +389,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
         iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
 
-        int textHeight = Utilities.calculateTextHeight(iconTextSizePx);
+        int textHeight = Utilities.calculateTextHeight(iconTextSizePx) * labelRowCount;
         cellHeightPx = iconSizePx + iconDrawablePaddingPx + textHeight;
         int cellYPadding = (getCellSize().y - cellHeightPx) / 2;
         if (iconDrawablePaddingPx > cellYPadding && !isVerticalLayout
@@ -401,6 +405,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         // All apps
         float invAllAppsIconSizePx = isVerticalLayout ? inv.landscapeAllAppsIconSize : inv.allAppsIconSize;
         allAppsIconTextSizePx = iconTextSizePx;
+        textHeight = Utilities.calculateTextHeight(iconTextSizePx) * drawerLabelRowCount;
         allAppsIconSizePx = (int) (Utilities.pxFromDp(invAllAppsIconSizePx, dm) * scale);
         allAppsIconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
 

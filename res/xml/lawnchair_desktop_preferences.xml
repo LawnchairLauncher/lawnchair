@@ -31,6 +31,13 @@
             android:persistent="true"
             android:title="@string/hide_icon_labels_pref_title" />
 
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_homeIconLabelsInTwoLines"
+            android:title="@string/pref_mutliline_labels"
+            android:defaultValue="false"
+            android:dependency="pref_hideAppLabels"
+            android:persistent="true" />
+
         <ch.deletescape.lawnchair.preferences.SeekbarPreference
             android:key="pref_iconSize"
             android:persistent="true"
@@ -49,6 +56,7 @@
             android:summary="@string/auto_add_shortcuts_description"
             android:title="@string/auto_add_shortcuts_label"
             app:controllerClass=".AddIconToHomeController"/>
+
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory

@@ -110,6 +110,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
     val showTopShadow by BooleanPref("pref_showTopShadow", true, recreate) // TODO: update the scrim instead of doing this
     val autoAddInstalled by BooleanPref("pref_add_icon_to_home", true, doNothing)
+    private val homeMultilineLabel by BooleanPref("pref_homeIconLabelsInTwoLines", false, recreate)
+    val homeLabelRows get() = if(homeMultilineLabel) 2 else 1
 
     // Smartspace
     val enableSmartspace by BooleanPref("pref_smartspace", context.resources.getBoolean(R.bool.config_enable_smartspace))
@@ -159,6 +161,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val predictionGridSize by predictionGridSizeDelegate
     val drawerPaddingScale by FloatPref("pref_allAppsPaddingScale", 1.0f, recreate)
     val showPredictions by BooleanPref("pref_show_predictions", true, doNothing)
+    private val drawerMultilineLabel by BooleanPref("pref_iconLabelsInTwoLines", false, recreate)
+    val drawerLabelRows get() = if(drawerMultilineLabel) 2 else 1
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsReallyEnabled", false, doNothing)
