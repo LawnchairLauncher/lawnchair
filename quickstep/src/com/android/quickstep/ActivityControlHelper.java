@@ -22,8 +22,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Region;
 import android.os.Build;
 import android.os.Handler;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
 
@@ -102,6 +104,10 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
      *         {@code false} if it should deferred until some threshold is crossed.
      */
     boolean deferStartingActivity(int downHitTarget);
+
+    default boolean deferStartingActivity(Region activeNavBarRegion, MotionEvent ev) {
+        return true;
+    }
 
     boolean supportsLongSwipe(T activity);
 

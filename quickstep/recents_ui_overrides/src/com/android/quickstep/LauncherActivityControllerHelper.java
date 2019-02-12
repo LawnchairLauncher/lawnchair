@@ -39,6 +39,8 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Region;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
 
@@ -408,6 +410,11 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     @Override
     public boolean deferStartingActivity(int downHitTarget) {
         return downHitTarget == HIT_TARGET_BACK || downHitTarget == HIT_TARGET_ROTATION;
+    }
+
+    @Override
+    public boolean deferStartingActivity(Region activeNavBarRegion, MotionEvent ev) {
+        return activeNavBarRegion.contains((int) ev.getX(), (int) ev.getY());
     }
 
     @Override

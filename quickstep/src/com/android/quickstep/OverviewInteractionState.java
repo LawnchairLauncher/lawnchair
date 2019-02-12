@@ -152,7 +152,7 @@ public class OverviewInteractionState {
             return;
         }
 
-        int flags = 0;
+        int flags = FLAG_DISABLE_QUICK_SCRUB;
         if (!mSwipeUpEnabled) {
             flags = FLAG_DISABLE_SWIPE_UP | FLAG_DISABLE_QUICK_SCRUB | FLAG_SHOW_OVERVIEW_BUTTON;
         }

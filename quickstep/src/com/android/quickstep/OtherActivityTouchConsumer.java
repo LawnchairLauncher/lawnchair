@@ -43,9 +43,6 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
-
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RaceConditionTracker;
@@ -58,8 +55,12 @@ import com.android.systemui.shared.system.AssistDataReceiver;
 import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.NavigationBarCompat;
-import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
 import com.android.systemui.shared.system.WindowManagerWrapper;
+
+import java.util.function.Consumer;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 
 /**
  * Touch consumer for handling events originating from an activity other than Launcher
@@ -83,7 +84,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private final int mDisplayRotation;
     private final Rect mStableInsets = new Rect();
 
-    private final MotionEventQueue mEventQueue;
+    private final Consumer<OtherActivityTouchConsumer> mOnCompleteCallback;
     private final MotionPauseDetector mMotionPauseDetector;
     private VelocityTracker mVelocityTracker;
 
@@ -107,9 +108,10 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     public OtherActivityTouchConsumer(Context base, RunningTaskInfo runningTaskInfo,
             RecentsModel recentsModel, Intent homeIntent, ActivityControlHelper activityControl,
-            @HitTarget int downHitTarget, OverviewCallbacks overviewCallbacks,
+            boolean isDeferredDownTarget, OverviewCallbacks overviewCallbacks,
             TaskOverlayFactory taskOverlayFactory, InputConsumerController inputConsumer,
-            TouchInteractionLog touchInteractionLog, MotionEventQueue eventQueue,
+            TouchInteractionLog touchInteractionLog,
+            Consumer<OtherActivityTouchConsumer> onCompleteCallback,
             SwipeSharedState swipeSharedState) {
         super(base);
 
@@ -118,11 +120,11 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mHomeIntent = homeIntent;
 
         mMotionPauseDetector = new MotionPauseDetector(base);
-        mEventQueue = eventQueue;
+        mOnCompleteCallback = onCompleteCallback;
         mVelocityTracker = VelocityTracker.obtain();
 
         mActivityControlHelper = activityControl;
-        mIsDeferredDownTarget = activityControl.deferStartingActivity(downHitTarget);
+        mIsDeferredDownTarget = isDeferredDownTarget;
         mOverviewCallbacks = overviewCallbacks;
         mTaskOverlayFactory = taskOverlayFactory;
         mTouchInteractionLog = touchInteractionLog;
@@ -381,7 +383,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         Preconditions.assertUIThread();
         removeListener();
         mInteractionHandler = null;
-        mEventQueue.onConsumerInactive(this);
+        mOnCompleteCallback.accept(this);
     }
 
     private void removeListener() {
