@@ -266,6 +266,16 @@ public final class LauncherInstrumentation {
                 event -> true,
                 "Pressing Home didn't produce any events");
         mDevice.waitForIdle();
+
+        // Temporarily press home twice as the first click sometimes gets ignored  (b/124239413)
+        executeAndWaitForEvent(
+                () -> {
+                    log("LauncherInstrumentation.pressHome before clicking");
+                    getSystemUiObject("home").click();
+                },
+                event -> true,
+                "Pressing Home didn't produce any events");
+        mDevice.waitForIdle();
         return getWorkspace();
     }
 
