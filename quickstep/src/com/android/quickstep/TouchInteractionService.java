@@ -31,7 +31,9 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.PointF;
+import android.graphics.Region;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
@@ -77,7 +79,10 @@ public class TouchInteractionService extends Service {
 
     private final IBinder mMyBinder = new IOverviewProxy.Stub() {
 
-        @Override
+        public void onActiveNavBarRegionChanges(Region region) { }
+
+        public void onInitialize(Bundle params) { }
+
         public void onPreMotionEvent(@HitTarget int downHitTarget) {
             mTouchInteractionLog.prepareForNewGesture();
 
@@ -86,7 +91,6 @@ public class TouchInteractionService extends Service {
             TraceHelper.partitionSection("SysUiBinder", "Down target " + downHitTarget);
         }
 
-        @Override
         public void onMotionEvent(MotionEvent ev) {
             mEventQueue.queue(ev);
 
@@ -103,26 +107,22 @@ public class TouchInteractionService extends Service {
             }
         }
 
-        @Override
         public void onBind(ISystemUiProxy iSystemUiProxy) {
             mISystemUiProxy = iSystemUiProxy;
             mRecentsModel.setSystemUiProxy(mISystemUiProxy);
             mOverviewInteractionState.setSystemUiProxy(mISystemUiProxy);
         }
 
-        @Override
         public void onQuickScrubStart() {
             mEventQueue.onQuickScrubStart();
             mOverviewInteractionState.setSwipeGestureInitializing(false);
             TraceHelper.partitionSection("SysUiBinder", "onQuickScrubStart");
         }
 
-        @Override
         public void onQuickScrubProgress(float progress) {
             mEventQueue.onQuickScrubProgress(progress);
         }
 
-        @Override
         public void onQuickScrubEnd() {
             mEventQueue.onQuickScrubEnd();
             TraceHelper.endSection("SysUiBinder", "onQuickScrubEnd");
@@ -151,7 +151,6 @@ public class TouchInteractionService extends Service {
             }
         }
 
-        @Override
         public void onQuickStep(MotionEvent motionEvent) {
             mEventQueue.onQuickStep(motionEvent);
             mOverviewInteractionState.setSwipeGestureInitializing(false);
