@@ -294,6 +294,9 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         private void playScaleDownAnim(AnimatorSet anim, Launcher launcher) {
             RecentsView recentsView = launcher.getOverviewPanel();
             TaskView v = recentsView.getTaskViewAt(recentsView.getCurrentPage());
+            if (v == null) {
+                return;
+            }
             ClipAnimationHelper clipHelper = new ClipAnimationHelper();
             clipHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(), null);
             if (!clipHelper.getSourceRect().isEmpty() && !clipHelper.getTargetRect().isEmpty()) {
