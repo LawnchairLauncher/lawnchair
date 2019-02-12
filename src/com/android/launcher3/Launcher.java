@@ -145,7 +145,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Predicate;
 
 import androidx.annotation.Nullable;
@@ -1122,11 +1121,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
         mWorkspace.updateNotificationDots(updatedDots);
         mAppsView.getAppsStore().updateNotificationDots(updatedDots);
-
-        PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(Launcher.this);
-        if (popup != null) {
-            popup.updateNotificationHeader(updatedDots);
-        }
     }
 
     @Override
@@ -2247,10 +2241,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     public void bindAllWidgets(final ArrayList<WidgetListRowEntry> allWidgets) {
         mPopupDataProvider.setAllWidgets(allWidgets);
-        AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
-        if (topView != null) {
-            topView.onWidgetsBound();
-        }
     }
 
     /**

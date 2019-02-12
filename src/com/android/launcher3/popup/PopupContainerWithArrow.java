@@ -61,6 +61,7 @@ import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationItemView;
 import com.android.launcher3.notification.NotificationKeyData;
+import com.android.launcher3.popup.PopupDataProvider.PopupDataChangeListener;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
@@ -72,7 +73,6 @@ import com.android.launcher3.views.BaseDragLayer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -80,7 +80,7 @@ import java.util.function.Predicate;
  */
 public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         DragController.DragListener, View.OnLongClickListener,
-        View.OnTouchListener {
+        View.OnTouchListener, PopupDataChangeListener {
 
     private final List<DeepShortcutView> mShortcuts = new ArrayList<>();
     private final PointF mInterceptTouchDown = new PointF();
@@ -112,6 +112,18 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
 
     public LauncherAccessibilityDelegate getAccessibilityDelegate() {
         return mAccessibilityDelegate;
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mLauncher.getPopupDataProvider().setChangeListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mLauncher.getPopupDataProvider().setChangeListener(null);
     }
 
     @Override
@@ -352,7 +364,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     }
 
     @Override
-    protected void onWidgetsBound() {
+    public void onWidgetsBound() {
         ItemInfo itemInfo = (ItemInfo) mOriginalIcon.getTag();
         SystemShortcut widgetInfo = new SystemShortcut.Widgets();
         View.OnClickListener onClickListener = widgetInfo.getOnClickListener(mLauncher, itemInfo);
@@ -464,7 +476,8 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     /**
      * Updates the notification header if the original icon's dot updated.
      */
-    public void updateNotificationHeader(Predicate<PackageUserKey> updatedDots) {
+    @Override
+    public void onNotificationDotsUpdated(Predicate<PackageUserKey> updatedDots) {
         ItemInfo itemInfo = (ItemInfo) mOriginalIcon.getTag();
         PackageUserKey packageUser = PackageUserKey.fromItemInfo(itemInfo);
         if (updatedDots.test(packageUser)) {
@@ -481,6 +494,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         }
     }
 
+    @Override
     public void trimNotifications(Map<PackageUserKey, DotInfo> updatedDots) {
         if (mNotificationItemView == null) {
             return;
