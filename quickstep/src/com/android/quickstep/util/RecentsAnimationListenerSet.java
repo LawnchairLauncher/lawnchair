@@ -58,7 +58,7 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
         SwipeAnimationTargetSet targetSet = new SwipeAnimationTargetSet(controller, targets,
                 homeContentInsets, minimizedHomeBounds);
         Utilities.postAsyncCallback(MAIN_THREAD_EXECUTOR.getHandler(), () -> {
-            for (SwipeAnimationListener listener : mListeners) {
+            for (SwipeAnimationListener listener : getListeners()) {
                 listener.onRecentsAnimationStart(targetSet);
             }
         });
@@ -67,9 +67,13 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
     @Override
     public final void onAnimationCanceled() {
         Utilities.postAsyncCallback(MAIN_THREAD_EXECUTOR.getHandler(), () -> {
-            for (SwipeAnimationListener listener : mListeners) {
+            for (SwipeAnimationListener listener : getListeners()) {
                 listener.onRecentsAnimationCanceled();
             }
         });
+    }
+
+    private SwipeAnimationListener[] getListeners() {
+        return mListeners.toArray(new SwipeAnimationListener[mListeners.size()]);
     }
 }
