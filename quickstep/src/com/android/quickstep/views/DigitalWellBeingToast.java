@@ -78,6 +78,12 @@ public final class DigitalWellBeingToast extends LinearLayout {
 
     public void initialize(Task task, InitializeCallback callback) {
         mTask = task;
+
+        if (task.key.userId != UserHandle.myUserId()) {
+            callback.call(1, task.titleDescription);
+            return;
+        }
+
         Utilities.THREAD_POOL_EXECUTOR.execute(() -> {
             long appUsageLimitTimeMs = -1;
             long appRemainingTimeMs = -1;
