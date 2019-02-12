@@ -263,7 +263,9 @@ public class BaseIconFactory implements AutoCloseable {
      */
     public Bitmap createIconBitmap(Drawable icon, float scale, int size) {
         Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
-
+        if (icon == null) {
+            return bitmap;
+        }
         mCanvas.setBitmap(bitmap);
         mOldBounds.set(icon.getBounds());
 

@@ -17,13 +17,9 @@ package com.android.quickstep;
 
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.view.Choreographer;
 import android.view.MotionEvent;
 
 import androidx.annotation.IntDef;
-import androidx.annotation.Nullable;
-
-import com.android.quickstep.OtherActivityTouchConsumer.RecentsAnimationState;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -44,8 +40,6 @@ public interface TouchConsumer extends Consumer<MotionEvent> {
     int INTERACTION_NORMAL = 0;
     int INTERACTION_QUICK_SCRUB = 1;
 
-    default void reset() { }
-
     default void onQuickScrubStart() { }
 
     default void onQuickScrubEnd() { }
@@ -54,34 +48,14 @@ public interface TouchConsumer extends Consumer<MotionEvent> {
 
     default void onQuickStep(MotionEvent ev) { }
 
-    default void onCommand(int command) { }
-
-    /**
-     * Called on the binder thread to allow the consumer to process the motion event before it is
-     * posted on a handler thread.
-     */
-    default void preProcessMotionEvent(MotionEvent ev) { }
-
-    default Choreographer getIntrimChoreographer(MotionEventQueue queue) {
-        return null;
-    }
-
-    default void deferInit() { }
-
-    default boolean deferNextEventToMainThread() {
-        return false;
-    }
-
-    default boolean forceToLauncherConsumer() {
-        return false;
-    }
-
-    /**
-     * When continuing a gesture, return the current non-null animation state that hasn't finished.
-     */
-    default @Nullable RecentsAnimationState getRecentsAnimationStateToReuse() {
-        return null;
-    }
-
     default void onShowOverviewFromAltTab() {}
+
+    default boolean isActive() {
+        return false;
+    }
+
+    /**
+     * Called by the event queue when the consumer is about to be switched to a new consumer.
+     */
+    default void onConsumerAboutToBeSwitched() { }
 }

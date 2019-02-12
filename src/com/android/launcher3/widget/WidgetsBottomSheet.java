@@ -76,7 +76,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
     }
 
     @Override
-    protected void onWidgetsBound() {
+    public void onWidgetsBound() {
         List<WidgetItem> widgets = mLauncher.getPopupDataProvider().getWidgetsForPackageUser(
                 new PackageUserKey(
                         mOriginalItemInfo.getTargetComponent().getPackageName(),

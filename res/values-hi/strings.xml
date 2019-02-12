@@ -80,6 +80,8 @@
     <string name="folder_name_format" msgid="6629239338071103179">"फ़ोल्डर: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"शॉर्टकट"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"वॉलपेपर"</string>
+    <!-- no translation found for styles_wallpaper_button_text (4342122323125579619) -->
+    <skip />
     <string name="settings_button_text" msgid="8873672322605444408">"होम पेज की सेटिंग"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपके एडमिन ने बंद किया हुआ है"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"होमस्क्रीन घुमाने की अनुमति दें"</string>
