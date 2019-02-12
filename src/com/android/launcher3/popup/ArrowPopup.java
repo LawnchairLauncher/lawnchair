@@ -384,6 +384,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         openAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
+                setAlpha(1f);
                 announceAccessibilityChanges();
                 mOpenCloseAnimator = null;
             }
