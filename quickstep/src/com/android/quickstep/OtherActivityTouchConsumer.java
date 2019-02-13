@@ -80,21 +80,30 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private final InputConsumerController mInputConsumer;
     private final SwipeSharedState mSwipeSharedState;
 
+    private final int mDisplayRotation;
+    private final Rect mStableInsets = new Rect();
+
     private final MotionEventQueue mEventQueue;
     private final MotionPauseDetector mMotionPauseDetector;
     private VelocityTracker mVelocityTracker;
+
+    private WindowTransformSwipeHandler mInteractionHandler;
 
     private final boolean mIsDeferredDownTarget;
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
     private int mActivePointerId = INVALID_POINTER_ID;
-    private boolean mPassedInitialSlop;
-    // Used for non-deferred gestures to determine when to start dragging
-    private int mQuickStepDragSlop;
+
+    private final float mDragSlop;
+    private final float mTouchSlop;
+
+    // Slop used to check when we start moving window.
+    private boolean mPassedDragSlop;
+    // Slop used to determine when we say that the gesture has started.
+    private boolean mPassedTouchSlop;
+
+    // TODO: Start displacement should have both x and y
     private float mStartDisplacement;
-    private WindowTransformSwipeHandler mInteractionHandler;
-    private int mDisplayRotation;
-    private Rect mStableInsets = new Rect();
 
     public OtherActivityTouchConsumer(Context base, RunningTaskInfo runningTaskInfo,
             RecentsModel recentsModel, Intent homeIntent, ActivityControlHelper activityControl,
@@ -120,6 +129,15 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mTouchInteractionLog.setTouchConsumer(this);
         mInputConsumer = inputConsumer;
         mSwipeSharedState = swipeSharedState;
+
+        Display display = getSystemService(WindowManager.class).getDefaultDisplay();
+        mDisplayRotation = display.getRotation();
+        WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
+
+        mDragSlop = NavigationBarCompat.getQuickStepDragSlopPx();
+        mTouchSlop = NavigationBarCompat.getQuickStepTouchSlopPx();
+        // If active listener isn't null, we are continuing the previous gesture.
+        mPassedTouchSlop = mPassedDragSlop = mSwipeSharedState.getActiveListener() != null;
     }
 
     @Override
@@ -146,9 +164,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 mActivePointerId = ev.getPointerId(0);
                 mDownPos.set(ev.getX(), ev.getY());
                 mLastPos.set(mDownPos);
-                // If active listener isn't null, we are continuing the previous gesture.
-                mPassedInitialSlop = mSwipeSharedState.getActiveListener() != null;
-                mQuickStepDragSlop = NavigationBarCompat.getQuickStepDragSlopPx();
 
                 // Start the window animation on down to give more time for launcher to draw if the
                 // user didn't start the gesture over the back button
@@ -156,9 +171,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                     startTouchTrackingForWindowAnimation(ev.getEventTime());
                 }
 
-                Display display = getSystemService(WindowManager.class).getDefaultDisplay();
-                mDisplayRotation = display.getRotation();
-                WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
                 RaceConditionTracker.onEvent(DOWN_EVT, EXIT);
                 break;
             }
@@ -182,18 +194,38 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 }
                 mLastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex));
                 float displacement = getDisplacement(ev);
-                if (!mPassedInitialSlop) {
+
+                if (!mPassedDragSlop) {
                     if (!mIsDeferredDownTarget) {
                         // Normal gesture, ensure we pass the drag slop before we start tracking
                         // the gesture
-                        if (Math.abs(displacement) > mQuickStepDragSlop) {
-                            mPassedInitialSlop = true;
+                        if (Math.abs(displacement) > mDragSlop) {
+                            mPassedDragSlop = true;
                             mStartDisplacement = displacement;
                         }
                     }
                 }
 
-                if (mPassedInitialSlop && mInteractionHandler != null) {
+                if (!mPassedTouchSlop) {
+                    if (Math.hypot(mLastPos.x - mDownPos.x, mLastPos.y - mDownPos.y) >=
+                            mTouchSlop) {
+                        mPassedTouchSlop = true;
+
+                        mTouchInteractionLog.startQuickStep();
+                        if (mIsDeferredDownTarget) {
+                            // Deferred gesture, start the animation and gesture tracking once
+                            // we pass the actual touch slop
+                            startTouchTrackingForWindowAnimation(ev.getEventTime());
+                        }
+                        if (!mPassedDragSlop) {
+                            mPassedDragSlop = true;
+                            mStartDisplacement = displacement;
+                        }
+                        notifyGestureStarted();
+                    }
+                }
+
+                if (mPassedDragSlop && mInteractionHandler != null) {
                     // Move
                     dispatchMotion(ev, displacement - mStartDisplacement, null);
 
@@ -298,7 +330,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
      * the animation can still be running.
      */
     private void finishTouchTracking(MotionEvent ev) {
-        if (mPassedInitialSlop && mInteractionHandler != null) {
+        if (mPassedDragSlop && mInteractionHandler != null) {
 
             mVelocityTracker.computeCurrentVelocity(1000,
                     ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
@@ -360,11 +392,11 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     @Override
     public void onQuickScrubStart() {
-        if (!mPassedInitialSlop && mIsDeferredDownTarget && mInteractionHandler == null) {
+        if (!mPassedDragSlop && mIsDeferredDownTarget && mInteractionHandler == null) {
             // If we deferred starting the window animation on touch down, then
             // start tracking now
             startTouchTrackingForWindowAnimation(SystemClock.uptimeMillis());
-            mPassedInitialSlop = true;
+            mPassedDragSlop = true;
         }
 
         mTouchInteractionLog.startQuickScrub();
@@ -388,21 +420,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         if (mInteractionHandler != null) {
             mInteractionHandler.onQuickScrubProgress(progress);
         }
-    }
-
-    @Override
-    public void onQuickStep(MotionEvent ev) {
-        mTouchInteractionLog.startQuickStep();
-        if (mIsDeferredDownTarget) {
-            // Deferred gesture, start the animation and gesture tracking once we pass the actual
-            // touch slop
-            startTouchTrackingForWindowAnimation(ev.getEventTime());
-        }
-        if (!mPassedInitialSlop) {
-            mPassedInitialSlop = true;
-            mStartDisplacement = getDisplacement(ev);
-        }
-        notifyGestureStarted();
     }
 
     private float getDisplacement(MotionEvent ev) {

@@ -46,8 +46,6 @@ public interface TouchConsumer extends Consumer<MotionEvent> {
 
     default void onQuickScrubProgress(float progress) { }
 
-    default void onQuickStep(MotionEvent ev) { }
-
     default void onShowOverviewFromAltTab() {}
 
     default boolean isActive() {

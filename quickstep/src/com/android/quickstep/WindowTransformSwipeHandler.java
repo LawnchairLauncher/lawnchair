@@ -95,7 +95,6 @@ import com.android.quickstep.ActivityControlHelper.AnimationFactory;
 import com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState;
 import com.android.quickstep.ActivityControlHelper.LayoutListener;
 import com.android.quickstep.TouchConsumer.InteractionType;
-import com.android.quickstep.TouchInteractionService.OverviewTouchConsumer;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet;

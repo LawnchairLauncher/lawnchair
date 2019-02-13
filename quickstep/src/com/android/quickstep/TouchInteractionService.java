@@ -17,20 +17,15 @@ package com.android.quickstep;
 
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
-import static android.view.MotionEvent.ACTION_MOVE;
-import static android.view.MotionEvent.ACTION_POINTER_DOWN;
-import static android.view.MotionEvent.ACTION_POINTER_INDEX_SHIFT;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
 import android.content.Intent;
-import android.graphics.PointF;
 import android.graphics.Region;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,13 +35,9 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.Choreographer;
 import android.view.MotionEvent;
-import android.view.ViewConfiguration;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.util.TraceHelper;
-import com.android.launcher3.views.BaseDragLayer;
-import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -95,12 +86,6 @@ public class TouchInteractionService extends Service {
             mEventQueue.queue(ev);
 
             int action = ev.getActionMasked();
-            if (action == ACTION_DOWN) {
-                mOverviewInteractionState.setSwipeGestureInitializing(true);
-            } else if (action == ACTION_UP || action == ACTION_CANCEL) {
-                mOverviewInteractionState.setSwipeGestureInitializing(false);
-            }
-
             String name = sMotionEventNames.get(action);
             if (name != null){
                 TraceHelper.partitionSection("SysUiBinder", name);
@@ -115,7 +100,6 @@ public class TouchInteractionService extends Service {
 
         public void onQuickScrubStart() {
             mEventQueue.onQuickScrubStart();
-            mOverviewInteractionState.setSwipeGestureInitializing(false);
             TraceHelper.partitionSection("SysUiBinder", "onQuickScrubStart");
         }
 
@@ -151,11 +135,7 @@ public class TouchInteractionService extends Service {
             }
         }
 
-        public void onQuickStep(MotionEvent motionEvent) {
-            mEventQueue.onQuickStep(motionEvent);
-            mOverviewInteractionState.setSwipeGestureInitializing(false);
-            TraceHelper.endSection("SysUiBinder", "onQuickStep");
-        }
+        public void onQuickStep(MotionEvent motionEvent) { }
 
         @Override
         public void onTip(int actionType, int viewType) {
@@ -251,213 +231,5 @@ public class TouchInteractionService extends Service {
     @Override
     protected void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
         mTouchInteractionLog.dump(pw);
-    }
-
-    public static class OverviewTouchConsumer<T extends BaseDraggingActivity>
-            implements TouchConsumer {
-
-        private final ActivityControlHelper<T> mActivityHelper;
-        private final T mActivity;
-        private final BaseDragLayer mTarget;
-        private final int[] mLocationOnScreen = new int[2];
-        private final PointF mDownPos = new PointF();
-        private final int mTouchSlop;
-        private final QuickScrubController mQuickScrubController;
-        private final TouchInteractionLog mTouchInteractionLog;
-
-        private final boolean mStartingInActivityBounds;
-
-        private boolean mTrackingStarted = false;
-        private boolean mInvalidated = false;
-
-        private float mLastProgress = 0;
-        private boolean mStartPending = false;
-        private boolean mEndPending = false;
-        private boolean mWaitForWindowAvailable;
-
-        OverviewTouchConsumer(ActivityControlHelper<T> activityHelper, T activity,
-                boolean startingInActivityBounds, TouchInteractionLog touchInteractionLog,
-                boolean waitForWindowAvailable) {
-            mActivityHelper = activityHelper;
-            mActivity = activity;
-            mTarget = activity.getDragLayer();
-            mTouchSlop = ViewConfiguration.get(mActivity).getScaledTouchSlop();
-            mStartingInActivityBounds = startingInActivityBounds;
-
-            mQuickScrubController = mActivity.<RecentsView>getOverviewPanel()
-                    .getQuickScrubController();
-            mTouchInteractionLog = touchInteractionLog;
-            mTouchInteractionLog.setTouchConsumer(this);
-
-            mWaitForWindowAvailable = waitForWindowAvailable;
-        }
-
-        @Override
-        public void accept(MotionEvent ev) {
-            if (mInvalidated) {
-                return;
-            }
-            mTouchInteractionLog.addMotionEvent(ev);
-            int action = ev.getActionMasked();
-            if (action == ACTION_DOWN) {
-                if (mStartingInActivityBounds) {
-                    startTouchTracking(ev, false /* updateLocationOffset */);
-                    return;
-                }
-                mTrackingStarted = false;
-                mDownPos.set(ev.getX(), ev.getY());
-            } else if (!mTrackingStarted) {
-                switch (action) {
-                    case ACTION_CANCEL:
-                    case ACTION_UP:
-                        startTouchTracking(ev, true /* updateLocationOffset */);
-                        break;
-                    case ACTION_MOVE: {
-                        float displacement = mActivity.getDeviceProfile().isLandscape ?
-                                ev.getX() - mDownPos.x : ev.getY() - mDownPos.y;
-                        if (Math.abs(displacement) >= mTouchSlop) {
-                            // Start tracking only when mTouchSlop is crossed.
-                            startTouchTracking(ev, true /* updateLocationOffset */);
-                        }
-                    }
-                }
-            }
-
-            if (mTrackingStarted) {
-                sendEvent(ev);
-            }
-
-            if (action == ACTION_UP || action == ACTION_CANCEL) {
-                mInvalidated = true;
-            }
-        }
-
-        private void startTouchTracking(MotionEvent ev, boolean updateLocationOffset) {
-            if (updateLocationOffset) {
-                mTarget.getLocationOnScreen(mLocationOnScreen);
-            }
-
-            // Send down touch event
-            MotionEvent down = MotionEvent.obtainNoHistory(ev);
-            down.setAction(ACTION_DOWN);
-            sendEvent(down);
-
-            mTrackingStarted = true;
-            // Send pointer down for remaining pointers.
-            int pointerCount = ev.getPointerCount();
-            for (int i = 1; i < pointerCount; i++) {
-                down.setAction(ACTION_POINTER_DOWN | (i << ACTION_POINTER_INDEX_SHIFT));
-                sendEvent(down);
-            }
-
-            down.recycle();
-        }
-
-        private void sendEvent(MotionEvent ev) {
-            if (!mTarget.verifyTouchDispatch(this, ev)) {
-                mInvalidated = true;
-                return;
-            }
-            int flags = ev.getEdgeFlags();
-            ev.setEdgeFlags(flags | TouchInteractionService.EDGE_NAV_BAR);
-            ev.offsetLocation(-mLocationOnScreen[0], -mLocationOnScreen[1]);
-            if (!mTrackingStarted) {
-                mTarget.onInterceptTouchEvent(ev);
-            }
-            mTarget.onTouchEvent(ev);
-            ev.offsetLocation(mLocationOnScreen[0], mLocationOnScreen[1]);
-            ev.setEdgeFlags(flags);
-        }
-
-        @Override
-        public void onQuickStep(MotionEvent ev) {
-            if (mInvalidated) {
-                return;
-            }
-            OverviewCallbacks.get(mActivity).closeAllWindows();
-            ActivityManagerWrapper.getInstance()
-                    .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-            mTouchInteractionLog.startQuickStep();
-        }
-
-        @Override
-        public void onQuickScrubStart() {
-            if (mInvalidated) {
-                return;
-            }
-            mTouchInteractionLog.startQuickScrub();
-            if (!mQuickScrubController.prepareQuickScrub(TAG)) {
-                mInvalidated = true;
-                mTouchInteractionLog.endQuickScrub("onQuickScrubStart");
-                return;
-            }
-            OverviewCallbacks.get(mActivity).closeAllWindows();
-            ActivityManagerWrapper.getInstance()
-                    .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-
-            mStartPending = true;
-            Runnable action = () -> {
-                if (!mQuickScrubController.prepareQuickScrub(TAG)) {
-                    mInvalidated = true;
-                    mTouchInteractionLog.endQuickScrub("onQuickScrubStart");
-                    return;
-                }
-                mActivityHelper.onQuickInteractionStart(mActivity, null, true,
-                        mTouchInteractionLog);
-                mQuickScrubController.onQuickScrubProgress(mLastProgress);
-                mStartPending = false;
-
-                if (mEndPending) {
-                    mQuickScrubController.onQuickScrubEnd();
-                    mEndPending = false;
-                }
-            };
-
-            if (mWaitForWindowAvailable) {
-                mActivityHelper.executeOnWindowAvailable(mActivity, action);
-            } else {
-                action.run();
-            }
-        }
-
-        @Override
-        public void onQuickScrubEnd() {
-            mTouchInteractionLog.endQuickScrub("onQuickScrubEnd");
-            if (mInvalidated) {
-                return;
-            }
-            if (mStartPending) {
-                mEndPending = true;
-            } else {
-                mQuickScrubController.onQuickScrubEnd();
-            }
-        }
-
-        @Override
-        public void onQuickScrubProgress(float progress) {
-            mTouchInteractionLog.setQuickScrubProgress(progress);
-            mLastProgress = progress;
-            if (mInvalidated || mStartPending) {
-                return;
-            }
-            mQuickScrubController.onQuickScrubProgress(progress);
-        }
-
-        public static TouchConsumer newInstance(ActivityControlHelper activityHelper,
-                boolean startingInActivityBounds, TouchInteractionLog touchInteractionLog) {
-            return newInstance(activityHelper, startingInActivityBounds, touchInteractionLog,
-                    true /* waitForWindowAvailable */);
-        }
-
-        public static TouchConsumer newInstance(ActivityControlHelper activityHelper,
-                boolean startingInActivityBounds, TouchInteractionLog touchInteractionLog,
-                boolean waitForWindowAvailable) {
-            BaseDraggingActivity activity = activityHelper.getCreatedActivity();
-            if (activity == null) {
-                return TouchConsumer.NO_OP;
-            }
-            return new OverviewTouchConsumer(activityHelper, activity, startingInActivityBounds,
-                    touchInteractionLog, waitForWindowAvailable);
-        }
     }
 }
