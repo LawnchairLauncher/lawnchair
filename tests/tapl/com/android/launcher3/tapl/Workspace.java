@@ -96,7 +96,13 @@ public final class Workspace extends Home {
     public void ensureWorkspaceIsScrollable() {
         final UiObject2 workspace = verifyActiveContainer();
         if (!isWorkspaceScrollable(workspace)) {
-            dragIconToNextScreen(getHotseatAppIcon("Messages"), workspace);
+            dragIconToWorkspace(
+                    mLauncher,
+                    getHotseatAppIcon("Messages"),
+                    new Point(mLauncher.getDevice().getDisplayWidth(),
+                            workspace.getVisibleBounds().centerY()),
+                    ICON_DRAG_SPEED);
+            verifyActiveContainer();
         }
         assertTrue("Home screen workspace didn't become scrollable",
                 isWorkspaceScrollable(workspace));
@@ -112,12 +118,10 @@ public final class Workspace extends Home {
                 mHotseat, AppIcon.getAppIconSelector(appName, mLauncher)));
     }
 
-    private void dragIconToNextScreen(AppIcon app, UiObject2 workspace) {
-        final Point dest = new Point(
-                mLauncher.getDevice().getDisplayWidth(), workspace.getVisibleBounds().centerY());
-        app.getObject().drag(dest, ICON_DRAG_SPEED);
-        mLauncher.waitUntilGone("drop_target_bar");
-        verifyActiveContainer();
+    static void dragIconToWorkspace(LauncherInstrumentation launcher, Launchable launchable,
+            Point dest, int icon_drag_speed) {
+        launchable.getObject().drag(dest, icon_drag_speed);
+        launcher.waitUntilGone("drop_target_bar");
     }
 
     /**
