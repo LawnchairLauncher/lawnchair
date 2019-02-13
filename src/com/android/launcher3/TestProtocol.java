@@ -22,6 +22,7 @@ package com.android.launcher3;
 public final class TestProtocol {
     public static final String GET_SCROLL_MESSAGE = "TAPL_GET_SCROLL";
     public static final String SCROLL_Y_FIELD = "scrollY";
+    public static final String STATE_FIELD = "state";
     public static final String SWITCHED_TO_STATE_MESSAGE = "TAPL_SWITCHED_TO_STATE";
     public static final String RESPONSE_MESSAGE_POSTFIX = "_RESPONSE";
 }

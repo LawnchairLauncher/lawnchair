@@ -50,21 +50,22 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
     @NonNull
     public BaseOverview switchToOverview() {
         verifyActiveContainer();
-        goToOverviewUnchecked();
+        goToOverviewUnchecked(LauncherInstrumentation.BACKGROUND_APP_STATE_ORDINAL);
         assertTrue("Overview not visible", mLauncher.getDevice().wait(
                 Until.hasObject(By.pkg(getOverviewPackageName())), WAIT_TIME_MS));
         return new BaseOverview(mLauncher);
     }
 
 
-    protected void goToOverviewUnchecked() {
+    protected void goToOverviewUnchecked(int expectedState) {
         if (mLauncher.isSwipeUpEnabled()) {
             final int height = mLauncher.getDevice().getDisplayHeight();
             final UiObject2 navBar = mLauncher.getSystemUiObject("navigation_bar_frame");
 
             mLauncher.swipe(
                     navBar.getVisibleBounds().centerX(), navBar.getVisibleBounds().centerY(),
-                    navBar.getVisibleBounds().centerX(), height - 400);
+                    navBar.getVisibleBounds().centerX(), height - 400,
+                    expectedState);
         } else {
             mLauncher.getSystemUiObject("recent_apps").click();
         }

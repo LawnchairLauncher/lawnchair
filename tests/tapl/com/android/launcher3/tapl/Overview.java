@@ -51,7 +51,8 @@ public final class Overview extends BaseOverview {
         final UiObject2 navBar = mLauncher.getSystemUiObject("navigation_bar_frame");
         final Point start = navBar.getVisibleCenter();
         LauncherInstrumentation.log("Overview.switchToAllApps before swipe");
-        mLauncher.swipe(start.x, start.y, start.x, 0);
+        mLauncher.swipe(
+                start.x, start.y, start.x, 0, LauncherInstrumentation.APPS_LIST_STATE_ORDINAL);
 
         return new AllAppsFromOverview(mLauncher);
     }

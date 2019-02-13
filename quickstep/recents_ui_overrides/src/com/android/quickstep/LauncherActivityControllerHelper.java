@@ -210,8 +210,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
             // Optimization, hide the all apps view to prevent layout while initializing
             activity.getAppsView().getContentView().setVisibility(View.GONE);
 
-            AccessibilityManagerCompat.sendEventToTest(
-                    activity, TestProtocol.SWITCHED_TO_STATE_MESSAGE);
+            AccessibilityManagerCompat.sendStateEventToTest(activity, fromState.ordinal);
         } else {
             fromState = startState;
         }

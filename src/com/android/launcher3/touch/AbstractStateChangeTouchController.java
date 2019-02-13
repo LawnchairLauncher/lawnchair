@@ -522,8 +522,7 @@ public abstract class AbstractStateChangeTouchController
             }
             mLauncher.getStateManager().goToState(targetState, false /* animated */);
 
-            AccessibilityManagerCompat.sendEventToTest(
-                    mLauncher, TestProtocol.SWITCHED_TO_STATE_MESSAGE);
+            AccessibilityManagerCompat.sendStateEventToTest(mLauncher, targetState.ordinal);
         }
     }
 

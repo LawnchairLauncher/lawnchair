@@ -55,7 +55,8 @@ public final class Workspace extends Home {
                 start.x,
                 start.y,
                 start.x,
-                endY
+                endY,
+                LauncherInstrumentation.APPS_LIST_STATE_ORDINAL
         );
 
         return new AllApps(mLauncher);
