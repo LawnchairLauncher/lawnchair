@@ -43,6 +43,9 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RaceConditionTracker;
@@ -57,9 +60,6 @@ import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.NavigationBarCompat;
 import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
 import com.android.systemui.shared.system.WindowManagerWrapper;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
 
 /**
  * Touch consumer for handling events originating from an activity other than Launcher
@@ -323,6 +323,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         }
         mVelocityTracker.recycle();
         mVelocityTracker = null;
+        mMotionPauseDetector.clear();
     }
 
     @Override
