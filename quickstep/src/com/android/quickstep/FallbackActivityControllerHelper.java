@@ -15,40 +15,32 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Handler;
-import android.os.Looper;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
-import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
-import com.android.quickstep.util.TransformedRect;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
-import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * {@link ActivityControlHelper} for recents when the default launcher is different than the
@@ -59,32 +51,9 @@ public final class FallbackActivityControllerHelper implements
         ActivityControlHelper<RecentsActivity> {
 
     private final ComponentName mHomeComponent;
-    private final Handler mUiHandler = new Handler(Looper.getMainLooper());
 
     public FallbackActivityControllerHelper(ComponentName homeComponent) {
         mHomeComponent = homeComponent;
-    }
-
-    @Override
-    public void onQuickInteractionStart(RecentsActivity activity, RunningTaskInfo taskInfo,
-            boolean activityVisible, TouchInteractionLog touchInteractionLog) {
-        QuickScrubController controller = activity.<RecentsView>getOverviewPanel()
-                .getQuickScrubController();
-
-        // TODO: match user is as well
-        boolean startingFromHome = !activityVisible &&
-                (taskInfo == null || Objects.equals(taskInfo.topActivity, mHomeComponent));
-        controller.onQuickScrubStart(startingFromHome, this, touchInteractionLog);
-        if (activityVisible) {
-            mUiHandler.postDelayed(controller::onFinishedTransitionToQuickScrub,
-                    OVERVIEW_TRANSITION_MS);
-        }
-    }
-
-    @Override
-    public float getTranslationYForQuickScrub(TransformedRect targetRect, DeviceProfile dp,
-            Context context) {
-        return 0;
     }
 
     @Override
@@ -98,15 +67,14 @@ public final class FallbackActivityControllerHelper implements
     }
 
     @Override
-    public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
-            @InteractionType int interactionType, TransformedRect outRect) {
-        LayoutUtils.calculateFallbackTaskSize(context, dp, outRect.rect);
+    public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
+        LayoutUtils.calculateFallbackTaskSize(context, dp, outRect);
         if (dp.isVerticalBarLayout()) {
             Rect targetInsets = dp.getInsets();
             int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
             return dp.hotseatBarSizePx + hotseatInset;
         } else {
-            return dp.heightPx - outRect.rect.bottom;
+            return dp.heightPx - outRect.bottom;
         }
     }
 
@@ -148,7 +116,7 @@ public final class FallbackActivityControllerHelper implements
     public AnimationFactory prepareRecentsUI(RecentsActivity activity, boolean activityVisible,
             boolean animateActivity, Consumer<AnimatorPlaybackController> callback) {
         if (activityVisible) {
-            return (transitionLength, interactionType) -> { };
+            return (transitionLength) -> { };
         }
 
         RecentsView rv = activity.getOverviewPanel();
@@ -165,12 +133,11 @@ public final class FallbackActivityControllerHelper implements
                     rv.setContentAlpha(1);
                 }
                 createActivityController(getSwipeUpDestinationAndLength(
-                        activity.getDeviceProfile(), activity, INTERACTION_NORMAL,
-                        new TransformedRect()), INTERACTION_NORMAL);
+                        activity.getDeviceProfile(), activity, new Rect()));
             }
 
             @Override
-            public void createActivityController(long transitionLength, int interactionType) {
+            public void createActivityController(long transitionLength) {
                 if (!isAnimatingToRecents) {
                     return;
                 }
@@ -229,12 +196,6 @@ public final class FallbackActivityControllerHelper implements
     @Override
     public boolean switchToRecentsIfVisible(boolean fromRecentsButton) {
         return false;
-    }
-
-    @Override
-    public boolean deferStartingActivity(int downHitTarget) {
-        // Always defer starting the activity when using fallback
-        return true;
     }
 
     @Override

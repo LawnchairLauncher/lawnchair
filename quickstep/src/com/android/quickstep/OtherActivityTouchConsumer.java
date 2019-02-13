@@ -24,6 +24,7 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
+import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.annotation.TargetApi;
@@ -35,7 +36,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -77,7 +77,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private final ActivityControlHelper mActivityControlHelper;
     private final OverviewCallbacks mOverviewCallbacks;
     private final TaskOverlayFactory mTaskOverlayFactory;
-    private final TouchInteractionLog mTouchInteractionLog;
     private final InputConsumerController mInputConsumer;
     private final SwipeSharedState mSwipeSharedState;
 
@@ -110,7 +109,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             RecentsModel recentsModel, Intent homeIntent, ActivityControlHelper activityControl,
             boolean isDeferredDownTarget, OverviewCallbacks overviewCallbacks,
             TaskOverlayFactory taskOverlayFactory, InputConsumerController inputConsumer,
-            TouchInteractionLog touchInteractionLog,
             Consumer<OtherActivityTouchConsumer> onCompleteCallback,
             SwipeSharedState swipeSharedState) {
         super(base);
@@ -127,8 +125,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mIsDeferredDownTarget = isDeferredDownTarget;
         mOverviewCallbacks = overviewCallbacks;
         mTaskOverlayFactory = taskOverlayFactory;
-        mTouchInteractionLog = touchInteractionLog;
-        mTouchInteractionLog.setTouchConsumer(this);
         mInputConsumer = inputConsumer;
         mSwipeSharedState = swipeSharedState;
 
@@ -143,11 +139,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     }
 
     @Override
-    public void onShowOverviewFromAltTab() {
-        startTouchTrackingForWindowAnimation(SystemClock.uptimeMillis());
-    }
-
-    @Override
     public void accept(MotionEvent ev) {
         if (mVelocityTracker == null) {
             return;
@@ -158,7 +149,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             mMotionPauseDetector.clear();
         }
 
-        mTouchInteractionLog.addMotionEvent(ev);
         switch (ev.getActionMasked()) {
             case ACTION_DOWN: {
                 RaceConditionTracker.onEvent(DOWN_EVT, ENTER);
@@ -213,7 +203,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                             mTouchSlop) {
                         mPassedTouchSlop = true;
 
-                        mTouchInteractionLog.startQuickStep();
+                        TOUCH_INTERACTION_LOG.startQuickStep();
                         if (mIsDeferredDownTarget) {
                             // Deferred gesture, start the animation and gesture tracking once
                             // we pass the actual touch slop
@@ -284,12 +274,12 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     }
 
     private void startTouchTrackingForWindowAnimation(long touchTimeMs) {
-        mTouchInteractionLog.startRecentsAnimation();
+        TOUCH_INTERACTION_LOG.startRecentsAnimation();
 
         RecentsAnimationListenerSet listenerSet = mSwipeSharedState.getActiveListener();
         final WindowTransformSwipeHandler handler = new WindowTransformSwipeHandler(
                 mRunningTask, this, touchTimeMs, mActivityControlHelper,
-                listenerSet != null, mInputConsumer, mTouchInteractionLog);
+                listenerSet != null, mInputConsumer);
 
         // Preload the plan
         mRecentsModel.getTasks(null);
@@ -390,38 +380,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         RecentsAnimationListenerSet listenerSet = mSwipeSharedState.getActiveListener();
         if (listenerSet != null) {
             listenerSet.removeListener(mInteractionHandler);
-        }
-    }
-
-    @Override
-    public void onQuickScrubStart() {
-        if (!mPassedDragSlop && mIsDeferredDownTarget && mInteractionHandler == null) {
-            // If we deferred starting the window animation on touch down, then
-            // start tracking now
-            startTouchTrackingForWindowAnimation(SystemClock.uptimeMillis());
-            mPassedDragSlop = true;
-        }
-
-        mTouchInteractionLog.startQuickScrub();
-        if (mInteractionHandler != null) {
-            mInteractionHandler.onQuickScrubStart();
-        }
-        notifyGestureStarted();
-    }
-
-    @Override
-    public void onQuickScrubEnd() {
-        mTouchInteractionLog.endQuickScrub("onQuickScrubEnd");
-        if (mInteractionHandler != null) {
-            mInteractionHandler.onQuickScrubEnd();
-        }
-    }
-
-    @Override
-    public void onQuickScrubProgress(float progress) {
-        mTouchInteractionLog.setQuickScrubProgress(progress);
-        if (mInteractionHandler != null) {
-            mInteractionHandler.onQuickScrubProgress(progress);
         }
     }
 

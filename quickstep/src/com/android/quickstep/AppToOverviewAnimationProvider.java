@@ -17,7 +17,6 @@ package com.android.quickstep;
 
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
-import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
@@ -34,7 +33,6 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
-import com.android.quickstep.util.TransformedRect;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
@@ -82,7 +80,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
                     anim.start();
                 });
         factory.onRemoteAnimationReceived(null);
-        factory.createActivityController(RECENTS_LAUNCH_DURATION, INTERACTION_NORMAL);
+        factory.createActivityController(RECENTS_LAUNCH_DURATION);
         mActivity = activity;
         mRecentsView = mActivity.getOverviewPanel();
         return false;
@@ -136,9 +134,8 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
                 loc[0] + rootView.getWidth(), loc[1] + rootView.getHeight());
         clipHelper.updateSource(homeBounds, runningTaskTarget);
 
-        TransformedRect targetRect = new TransformedRect();
-        mHelper.getSwipeUpDestinationAndLength(mActivity.getDeviceProfile(), mActivity,
-                INTERACTION_NORMAL, targetRect);
+        Rect targetRect = new Rect();
+        mHelper.getSwipeUpDestinationAndLength(mActivity.getDeviceProfile(), mActivity, targetRect);
         clipHelper.updateTargetRect(targetRect);
         clipHelper.prepareAnimation(false /* isOpening */);
 

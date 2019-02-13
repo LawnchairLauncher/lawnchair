@@ -15,10 +15,6 @@
  */
 package com.android.launcher3.uioverrides;
 
-import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
-import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_START_INTERPOLATOR;
-import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_TRANSLATION_Y_FACTOR;
 import static com.android.quickstep.views.LauncherRecentsView.TRANSLATION_Y_FACTOR;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 
@@ -26,17 +22,15 @@ import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.util.FloatProperty;
-import android.view.animation.Interpolator;
-
-import androidx.annotation.NonNull;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.anim.Interpolators;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
+
+import androidx.annotation.NonNull;
 
 /**
  * State handler for handling UI changes for {@link LauncherRecentsView}. In addition to managing
@@ -78,16 +72,6 @@ public final class RecentsViewStateController extends
             builder.play(updateAnim);
             mRecentsView.updateEmptyMessage();
         }
-    }
-
-    @Override
-    Interpolator getScaleAndTransYInterpolator(@NonNull LauncherState toState,
-            @NonNull AnimatorSetBuilder builder) {
-        if (mLauncher.getStateManager().getState() == OVERVIEW && toState == FAST_OVERVIEW) {
-            return Interpolators.clampToProgress(QUICK_SCRUB_START_INTERPOLATOR, 0,
-                    QUICK_SCRUB_TRANSLATION_Y_FACTOR);
-        }
-        return super.getScaleAndTransYInterpolator(toState, builder);
     }
 
     @Override

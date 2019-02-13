@@ -27,7 +27,6 @@ import android.view.animation.Interpolator;
 import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.uioverrides.AllAppsState;
 import com.android.launcher3.uioverrides.BackgroundAppState;
-import com.android.launcher3.uioverrides.FastOverviewState;
 import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
@@ -87,9 +86,8 @@ public class LauncherState {
      */
     public static final LauncherState SPRING_LOADED = new SpringLoadedState(1);
     public static final LauncherState OVERVIEW = new OverviewState(2);
-    public static final LauncherState FAST_OVERVIEW = new FastOverviewState(3);
-    public static final LauncherState ALL_APPS = new AllAppsState(4);
-    public static final LauncherState BACKGROUND_APP = new BackgroundAppState(5);
+    public static final LauncherState ALL_APPS = new AllAppsState(3);
+    public static final LauncherState BACKGROUND_APP = new BackgroundAppState(4);
 
     public final int ordinal;
 
@@ -187,6 +185,7 @@ public class LauncherState {
      *   translationY factor where 0 is top aligned and 0.5 is centered vertically
      */
     public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
+        // TODO: Simplify to use a constant value instead of a factor.
         return new float[] {1.1f, 0f};
     }
 

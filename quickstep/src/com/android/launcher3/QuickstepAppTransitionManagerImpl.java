@@ -112,7 +112,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     private static final int APP_LAUNCH_ALPHA_DURATION = 50;
 
     public static final int RECENTS_LAUNCH_DURATION = 336;
-    public static final int RECENTS_QUICKSCRUB_LAUNCH_DURATION = 300;
     private static final int LAUNCHER_RESUME_START_DELAY = 100;
     private static final int CLOSING_TRANSITION_DURATION_MS = 250;
 
@@ -181,10 +180,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     public ActivityOptions getActivityLaunchOptions(Launcher launcher, View v) {
         if (hasControlRemoteAppTransitionPermission()) {
             boolean fromRecents = isLaunchingFromRecents(v, null /* targets */);
-            if (fromRecents && isQuickSwitchInProgress()) {
-                return getQuickSwitchActivityOptions();
-            }
-
             RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(mHandler,
                     true /* startAtFrontOfQueue */) {
 
@@ -236,20 +231,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
      */
     protected abstract boolean isLaunchingFromRecents(@NonNull View v,
             @Nullable RemoteAnimationTargetCompat[] targets);
-
-    /**
-     * Whether a quick scrub is in progress.
-     *
-     * @return true if in progress
-     */
-    protected abstract boolean isQuickSwitchInProgress();
-
-    /**
-     * Get activity options for a quick switch launch that include the launch animation.
-     *
-     * @return the activity options for a quick switch recents launch
-     */
-    protected abstract ActivityOptions getQuickSwitchActivityOptions();
 
     /**
      * Composes the animations for a launch from the recents list.

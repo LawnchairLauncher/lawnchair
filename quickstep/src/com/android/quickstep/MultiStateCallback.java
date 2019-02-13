@@ -15,8 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.quickstep.WindowTransformSwipeHandler.STATES;
-
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -29,10 +27,16 @@ import java.util.function.Consumer;
 public class MultiStateCallback {
 
     private static final String TAG = "MultiStateCallback";
-    private static final boolean DEBUG_STATES = false;
+    public static final boolean DEBUG_STATES = false;
 
     private final SparseArray<Runnable> mCallbacks = new SparseArray<>();
     private final SparseArray<Consumer<Boolean>> mStateChangeHandlers = new SparseArray<>();
+
+    private final String[] mStateNames;
+
+    public MultiStateCallback(String[] stateNames) {
+        mStateNames = DEBUG_STATES ? stateNames : null;
+    }
 
     private int mState = 0;
 
@@ -113,12 +117,12 @@ public class MultiStateCallback {
         int state = getState();
         StringJoiner currentStateStr = new StringJoiner(", ", "[", "]");
         String stateFlagStr = "Unknown-" + stateFlag;
-        for (int i = 0; i < STATES.length; i++) {
+        for (int i = 0; i < mStateNames.length; i++) {
             if ((state & (i << i)) != 0) {
-                currentStateStr.add(STATES[i]);
+                currentStateStr.add(mStateNames[i]);
             }
             if (stateFlag == (1 << i)) {
-                stateFlagStr = STATES[i] + " (" + stateFlag + ")";
+                stateFlagStr = mStateNames[i] + " (" + stateFlag + ")";
             }
         }
         Log.d(TAG, "[" + System.identityHashCode(this) + "] Adding " + stateFlagStr + " to "

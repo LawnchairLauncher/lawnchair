@@ -15,10 +15,11 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
+
 import android.os.RemoteException;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.allapps.AllAppsTransitionController;
-import com.android.quickstep.QuickScrubController;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
@@ -33,7 +34,7 @@ public class BackgroundAppState extends OverviewState {
             FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_DISABLE_ACCESSIBILITY;
 
     public BackgroundAppState(int id) {
-        super(id, QuickScrubController.QUICK_SCRUB_FROM_HOME_START_DURATION, STATE_FLAGS);
+        super(id, OVERVIEW_TRANSITION_MS, STATE_FLAGS);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class BackgroundAppState extends OverviewState {
 
     @Override
     public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
-        // Initialize the recents view scale to what it would be when starting swipe up/quickscrub
+        // Initialize the recents view scale to what it would be when starting swipe up
         RecentsView recentsView = launcher.getOverviewPanel();
         recentsView.getTaskSize(sTempRect);
         int appWidth = launcher.getDragLayer().getWidth();

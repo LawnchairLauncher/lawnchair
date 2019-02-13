@@ -15,9 +15,7 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_TRANSLATION_Y_FACTOR;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
@@ -26,19 +24,15 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.RemoteException;
-import android.view.animation.Interpolator;
-import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.views.RecentsView;
@@ -52,6 +46,8 @@ import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.function.BiFunction;
+
+import androidx.annotation.Nullable;
 
 /**
  * Utility class to handle window clip animation
@@ -67,8 +63,6 @@ public class ClipAnimationHelper {
     private final RectF mSourceRect = new RectF();
     // The bounds of the task view in launcher window coordinates
     private final RectF mTargetRect = new RectF();
-    // Set when the final window destination is changed, such as offsetting for quick scrub
-    private final PointF mTargetOffset = new PointF();
     // The insets to be used for clipping the app window, which can be larger than mSourceInsets
     // if the aspect ratio of the target is smaller than the aspect ratio of the source rect. In
     // app window coordinates.
@@ -95,11 +89,6 @@ public class ClipAnimationHelper {
 
     // Corner radius currently applied to transformed window.
     private float mCurrentCornerRadius;
-    private float mTargetScale = 1f;
-    private float mOffsetScale = 1f;
-    private Interpolator mInterpolator = LINEAR;
-    // We translate y slightly faster than the rest of the animation for quick scrub.
-    private Interpolator mOffsetYInterpolator = LINEAR;
 
     // Whether to boost the opening animation target layers, or the closing
     private int mBoostModeTargetLayers = -1;
@@ -130,13 +119,11 @@ public class ClipAnimationHelper {
         updateSourceStack(target);
     }
 
-    public void updateTargetRect(TransformedRect targetRect) {
-        mOffsetScale = targetRect.scale;
+    public void updateTargetRect(Rect targetRect) {
         mSourceRect.set(mSourceInsets.left, mSourceInsets.top,
                 mSourceStackBounds.width() - mSourceInsets.right,
                 mSourceStackBounds.height() - mSourceInsets.bottom);
-        mTargetRect.set(targetRect.rect);
-        Utilities.scaleRectFAboutCenter(mTargetRect, targetRect.scale);
+        mTargetRect.set(targetRect);
         mTargetRect.offset(mHomeStackBounds.left - mSourceStackBounds.left,
                 mHomeStackBounds.top - mSourceStackBounds.top);
 
@@ -165,17 +152,10 @@ public class ClipAnimationHelper {
         if (params.currentRect == null) {
             RectF currentRect;
             mTmpRectF.set(mTargetRect);
-            Utilities.scaleRectFAboutCenter(mTmpRectF, mTargetScale * params.offsetScale);
-            float offsetYProgress = mOffsetYInterpolator.getInterpolation(params.progress);
-            float progress = mInterpolator.getInterpolation(params.progress);
+            Utilities.scaleRectFAboutCenter(mTmpRectF, params.offsetScale);
+            float progress = params.progress;
             currentRect = mRectFEvaluator.evaluate(progress, mSourceRect, mTmpRectF);
             currentRect.offset(params.offsetX, 0);
-
-            synchronized (mTargetOffset) {
-                // Stay lined up with the center of the target, since it moves for quick scrub.
-                currentRect.offset(mTargetOffset.x * mOffsetScale * progress,
-                        mTargetOffset.y  * offsetYProgress);
-            }
 
             final RectF sourceWindowClipInsets = params.forLiveTile
                     ? mSourceWindowClipInsetsForLiveTile : mSourceWindowClipInsets;
@@ -246,16 +226,6 @@ public class ClipAnimationHelper {
         mTaskAlphaCallback = callback;
     }
 
-    public void offsetTarget(float scale, float offsetX, float offsetY, Interpolator interpolator) {
-        synchronized (mTargetOffset) {
-            mTargetOffset.set(offsetX, offsetY);
-        }
-        mTargetScale = scale;
-        mInterpolator = interpolator;
-        mOffsetYInterpolator = Interpolators.clampToProgress(mInterpolator, 0,
-                QUICK_SCRUB_TRANSLATION_Y_FACTOR);
-    }
-
     public void fromTaskThumbnailView(TaskThumbnailView ttv, RecentsView rv) {
         fromTaskThumbnailView(ttv, rv, null);
     }
@@ -280,8 +250,8 @@ public class ClipAnimationHelper {
             mSourceInsets.set(ttv.getInsets(fallback));
         }
 
-        TransformedRect targetRect = new TransformedRect();
-        dl.getDescendantRectRelativeToSelf(ttv, targetRect.rect);
+        Rect targetRect = new Rect();
+        dl.getDescendantRectRelativeToSelf(ttv, targetRect);
         updateTargetRect(targetRect);
 
         if (target == null) {

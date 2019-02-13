@@ -31,6 +31,7 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -71,6 +72,10 @@ public class OverviewCommandHelper {
         mMainThreadExecutor.execute(new ShowRecentsCommand());
     }
 
+    public void onOverviewHidden() {
+        mMainThreadExecutor.execute(new HideRecentsCommand());
+    }
+
     public void onTip(int actionType, int viewType) {
         mMainThreadExecutor.execute(() ->
                 UserEventDispatcher.newInstance(mContext).logActionTip(actionType, viewType));
@@ -80,7 +85,26 @@ public class OverviewCommandHelper {
 
         @Override
         protected boolean handleCommand(long elapsedTime) {
+            // TODO: Go to the next page if started from alt-tab.
             return mHelper.getVisibleRecentsView() != null;
+        }
+    }
+
+    private class HideRecentsCommand extends RecentsActivityCommand {
+
+        @Override
+        protected boolean handleCommand(long elapsedTime) {
+            RecentsView recents = (RecentsView) mHelper.getVisibleRecentsView();
+            if (recents == null) {
+                return false;
+            }
+            int currentPage = recents.getNextPage();
+            if (currentPage >= 0 && currentPage < recents.getTaskViewCount()) {
+                ((TaskView) recents.getPageAt(currentPage)).launchTask(true);
+            } else {
+                recents.startHome();
+            }
+            return true;
         }
     }
 
