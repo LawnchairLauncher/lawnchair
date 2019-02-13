@@ -52,8 +52,6 @@ public class MotionEventQueue {
             ACTION_VIRTUAL | (4 << ACTION_POINTER_INDEX_SHIFT);
     private static final int ACTION_SHOW_OVERVIEW_FROM_ALT_TAB =
             ACTION_VIRTUAL | (5 << ACTION_POINTER_INDEX_SHIFT);
-    private static final int ACTION_QUICK_STEP =
-            ACTION_VIRTUAL | (6 << ACTION_POINTER_INDEX_SHIFT);
 
     private final InputEventDispatcher mDispatcher;
     private final InputEventReceiver mReceiver;
@@ -98,9 +96,6 @@ public class MotionEventQueue {
                     mConsumer.onShowOverviewFromAltTab();
                     mConsumer.onQuickScrubStart();
                     break;
-                case ACTION_QUICK_STEP:
-                    mConsumer.onQuickStep(event);
-                    break;
                 default:
                     Log.e(TAG, "Invalid virtual event: " + event.getAction());
             }
@@ -137,11 +132,6 @@ public class MotionEventQueue {
 
     public void onQuickScrubEnd() {
         queueVirtualAction(ACTION_QUICK_SCRUB_END, 0);
-    }
-
-    public void onQuickStep(MotionEvent event) {
-        event.setAction(ACTION_QUICK_STEP);
-        queue(event);
     }
 
     public void onNewGesture(@HitTarget int downHitTarget) {
