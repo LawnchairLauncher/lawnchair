@@ -91,5 +91,6 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
         } else {
             super.onDragEnd(velocity, fling);
         }
+        mMotionPauseDetector.clear();
     }
 }

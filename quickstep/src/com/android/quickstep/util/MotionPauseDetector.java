@@ -20,6 +20,7 @@ import android.content.res.Resources;
 import android.os.SystemClock;
 import android.view.MotionEvent;
 
+import com.android.launcher3.Alarm;
 import com.android.launcher3.R;
 
 /**
@@ -32,11 +33,15 @@ public class MotionPauseDetector {
     // The bigger this number, the easier it is to trigger the first pause.
     private static final float RAPID_DECELERATION_FACTOR = 0.6f;
 
+    /** If no motion is added for this amount of time, assume the motion has paused. */
+    private static final long FORCE_PAUSE_TIMEOUT = 300;
+
     private final float mSpeedVerySlow;
     private final float mSpeedSomewhatFast;
     private final float mSpeedFast;
     private final float mMinDisplacementForPause;
     private final float mMaxOrthogonalDisplacementForPause;
+    private final Alarm mForcePauseTimeout;
 
     private Long mPreviousTime = null;
     private Float mPreviousPosition = null;
@@ -59,6 +64,8 @@ public class MotionPauseDetector {
         mMinDisplacementForPause = res.getDimension(R.dimen.motion_pause_detector_min_displacement);
         mMaxOrthogonalDisplacementForPause = res.getDimension(
                 R.dimen.motion_pause_detector_max_orthogonal_displacement);
+        mForcePauseTimeout = new Alarm();
+        mForcePauseTimeout.setOnAlarmListener(alarm -> updatePaused(true /* isPaused */));
     }
 
     /**
@@ -70,6 +77,7 @@ public class MotionPauseDetector {
         if (mOnMotionPauseListener != null) {
             mOnMotionPauseListener.onMotionPauseChanged(mIsPaused);
         }
+        mForcePauseTimeout.setAlarm(FORCE_PAUSE_TIMEOUT);
     }
 
     /**
@@ -100,6 +108,7 @@ public class MotionPauseDetector {
         }
         mPreviousTime = time;
         mPreviousPosition = position;
+        mForcePauseTimeout.setAlarm(FORCE_PAUSE_TIMEOUT);
     }
 
     private void checkMotionPaused(float velocity, float prevVelocity,
@@ -129,6 +138,10 @@ public class MotionPauseDetector {
         boolean passedMaxOrthogonalDisplacement =
                 totalDisplacement.orthogonal >= mMaxOrthogonalDisplacementForPause;
         isPaused &= passedMinDisplacement && !passedMaxOrthogonalDisplacement;
+        updatePaused(isPaused);
+    }
+
+    private void updatePaused(boolean isPaused) {
         if (mIsPaused != isPaused) {
             mIsPaused = isPaused;
             if (mIsPaused) {
@@ -149,6 +162,7 @@ public class MotionPauseDetector {
         mTotalDisplacement.set(0, 0);
         setOnMotionPauseListener(null);
         mIsPaused = mHasEverBeenPaused = false;
+        mForcePauseTimeout.cancelAlarm();
     }
 
     public boolean isPaused() {
