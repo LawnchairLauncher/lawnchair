@@ -74,8 +74,11 @@ class Launchable {
      */
     public Workspace dragToWorkspace() {
         final UiDevice device = mLauncher.getDevice();
-        mObject.drag(new Point(
-                device.getDisplayWidth() / 2, device.getDisplayHeight() / 2), DRAG_SPEED);
+        Workspace.dragIconToWorkspace(
+                mLauncher,
+                this,
+                new Point(device.getDisplayWidth() / 2, device.getDisplayHeight() / 2),
+                DRAG_SPEED);
         return new Workspace(mLauncher);
     }
 }
