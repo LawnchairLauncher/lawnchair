@@ -34,6 +34,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -47,7 +48,8 @@ import com.android.launcher3.views.BaseDragLayer;
  * Base class for various widgets popup
  */
 abstract class BaseWidgetSheet extends AbstractSlideInView
-        implements OnClickListener, OnLongClickListener, DragSource {
+        implements OnClickListener, OnLongClickListener, DragSource,
+        PopupDataProvider.PopupDataChangeListener {
 
 
     /* Touch handling related member variables. */
@@ -58,6 +60,18 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
     public BaseWidgetSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mColorScrim = createColorScrim(context);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mLauncher.getPopupDataProvider().setChangeListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mLauncher.getPopupDataProvider().setChangeListener(null);
     }
 
     @Override

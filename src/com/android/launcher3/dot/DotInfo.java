@@ -18,7 +18,6 @@ package com.android.launcher3.dot;
 
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationKeyData;
-import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,25 +29,17 @@ public class DotInfo {
 
     public static final int MAX_COUNT = 999;
 
-    /** Used to link this DotInfo to icons on the workspace and all apps */
-    private PackageUserKey mPackageUserKey;
-
     /**
      * The keys of the notifications that this dot represents. These keys can later be
      * used to retrieve {@link NotificationInfo}'s.
      */
-    private List<NotificationKeyData> mNotificationKeys;
+    private final List<NotificationKeyData> mNotificationKeys = new ArrayList<>();
 
     /**
      * The current sum of the counts in {@link #mNotificationKeys},
      * updated whenever a key is added or removed.
      */
     private int mTotalCount;
-
-    public DotInfo(PackageUserKey packageUserKey) {
-        mPackageUserKey = packageUserKey;
-        mNotificationKeys = new ArrayList<>();
-    }
 
     /**
      * Returns whether the notification was added or its count changed.

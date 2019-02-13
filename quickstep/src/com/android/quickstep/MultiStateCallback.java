@@ -15,14 +15,21 @@
  */
 package com.android.quickstep;
 
+import static com.android.quickstep.WindowTransformSwipeHandler.STATES;
+
+import android.util.Log;
 import android.util.SparseArray;
 
+import java.util.StringJoiner;
 import java.util.function.Consumer;
 
 /**
  * Utility class to help manage multiple callbacks based on different states.
  */
 public class MultiStateCallback {
+
+    private static final String TAG = "MultiStateCallback";
+    private static final boolean DEBUG_STATES = false;
 
     private final SparseArray<Runnable> mCallbacks = new SparseArray<>();
     private final SparseArray<Consumer<Boolean>> mStateChangeHandlers = new SparseArray<>();
@@ -97,4 +104,25 @@ public class MultiStateCallback {
     public boolean hasStates(int stateMask) {
         return (mState & stateMask) == stateMask;
     }
+
+    private void debugNewState(int stateFlag) {
+        if (!DEBUG_STATES) {
+            return;
+        }
+
+        int state = getState();
+        StringJoiner currentStateStr = new StringJoiner(", ", "[", "]");
+        String stateFlagStr = "Unknown-" + stateFlag;
+        for (int i = 0; i < STATES.length; i++) {
+            if ((state & (i << i)) != 0) {
+                currentStateStr.add(STATES[i]);
+            }
+            if (stateFlag == (1 << i)) {
+                stateFlagStr = STATES[i] + " (" + stateFlag + ")";
+            }
+        }
+        Log.d(TAG, "[" + System.identityHashCode(this) + "] Adding " + stateFlagStr + " to "
+                + currentStateStr);
+    }
+
 }

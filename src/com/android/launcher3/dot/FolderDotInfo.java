@@ -30,10 +30,6 @@ public class FolderDotInfo extends DotInfo {
 
     private int mNumNotifications;
 
-    public FolderDotInfo() {
-        super(null);
-    }
-
     public void addDotInfo(DotInfo dotToAdd) {
         if (dotToAdd == null) {
             return;

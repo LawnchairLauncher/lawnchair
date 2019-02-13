@@ -133,9 +133,6 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
         return mIsOpen;
     }
 
-    protected void onWidgetsBound() {
-    }
-
     protected abstract boolean isOfType(@FloatingViewType int type);
 
     /** @return Whether the back is consumed. If false, Launcher will handle the back as well. */

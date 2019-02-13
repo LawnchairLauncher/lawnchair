@@ -22,7 +22,6 @@ import android.util.Log;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.notification.NotificationKeyData;
@@ -38,6 +37,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import androidx.annotation.NonNull;
 
@@ -58,8 +58,15 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     /** Maps packages to their Widgets */
     private ArrayList<WidgetListRowEntry> mAllWidgets = new ArrayList<>();
 
+    private PopupDataChangeListener mChangeListener = PopupDataChangeListener.INSTANCE;
+
     public PopupDataProvider(Launcher launcher) {
         mLauncher = launcher;
+    }
+
+    private void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
+        mLauncher.updateNotificationDots(updatedDots);
+        mChangeListener.onNotificationDotsUpdated(updatedDots);
     }
 
     @Override
@@ -69,7 +76,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         boolean dotShouldBeRefreshed;
         if (dotInfo == null) {
             if (!shouldBeFilteredOut) {
-                DotInfo newDotInfo = new DotInfo(postedPackageUserKey);
+                DotInfo newDotInfo = new DotInfo();
                 newDotInfo.addOrUpdateNotificationKey(notificationKey);
                 mPackageUserToDotInfos.put(postedPackageUserKey, newDotInfo);
                 dotShouldBeRefreshed = true;
@@ -85,7 +92,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             }
         }
         if (dotShouldBeRefreshed) {
-            mLauncher.updateNotificationDots(t -> postedPackageUserKey.equals(t));
+            updateNotificationDots(t -> postedPackageUserKey.equals(t));
         }
     }
 
@@ -97,7 +104,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             if (oldDotInfo.getNotificationKeys().size() == 0) {
                 mPackageUserToDotInfos.remove(removedPackageUserKey);
             }
-            mLauncher.updateNotificationDots(t -> removedPackageUserKey.equals(t));
+            updateNotificationDots(t -> removedPackageUserKey.equals(t));
             trimNotifications(mPackageUserToDotInfos);
         }
     }
@@ -112,7 +119,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             PackageUserKey packageUserKey = PackageUserKey.fromNotification(notification);
             DotInfo dotInfo = mPackageUserToDotInfos.get(packageUserKey);
             if (dotInfo == null) {
-                dotInfo = new DotInfo(packageUserKey);
+                dotInfo = new DotInfo();
                 mPackageUserToDotInfos.put(packageUserKey, dotInfo);
             }
             dotInfo.addOrUpdateNotificationKey(NotificationKeyData.fromNotification(notification));
@@ -133,16 +140,13 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         }
 
         if (!updatedDots.isEmpty()) {
-            mLauncher.updateNotificationDots(updatedDots::containsKey);
+            updateNotificationDots(updatedDots::containsKey);
         }
         trimNotifications(updatedDots);
     }
 
     private void trimNotifications(Map<PackageUserKey, DotInfo> updatedDots) {
-        PopupContainerWithArrow openContainer = PopupContainerWithArrow.getOpen(mLauncher);
-        if (openContainer != null) {
-            openContainer.trimNotifications(updatedDots);
-        }
+        mChangeListener.trimNotifications(updatedDots);
     }
 
     public void setDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMapCopy) {
@@ -194,6 +198,11 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
 
     public void setAllWidgets(ArrayList<WidgetListRowEntry> allWidgets) {
         mAllWidgets = allWidgets;
+        mChangeListener.onWidgetsBound();
+    }
+
+    public void setChangeListener(PopupDataChangeListener listener) {
+        mChangeListener = listener == null ? PopupDataChangeListener.INSTANCE : listener;
     }
 
     public ArrayList<WidgetListRowEntry> getAllWidgets() {
@@ -215,5 +224,16 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             }
         }
         return null;
+    }
+
+    public interface PopupDataChangeListener {
+
+        PopupDataChangeListener INSTANCE = new PopupDataChangeListener() { };
+
+        default void onNotificationDotsUpdated(Predicate<PackageUserKey> updatedDots) { }
+
+        default void trimNotifications(Map<PackageUserKey, DotInfo> updatedDots) { }
+
+        default void onWidgetsBound() { }
     }
 }

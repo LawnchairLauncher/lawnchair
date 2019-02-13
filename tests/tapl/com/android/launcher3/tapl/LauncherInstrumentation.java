@@ -266,6 +266,16 @@ public final class LauncherInstrumentation {
                 event -> true,
                 "Pressing Home didn't produce any events");
         mDevice.waitForIdle();
+
+        // Temporarily press home twice as the first click sometimes gets ignored  (b/124239413)
+        executeAndWaitForEvent(
+                () -> {
+                    log("LauncherInstrumentation.pressHome before clicking");
+                    getSystemUiObject("home").click();
+                },
+                event -> true,
+                "Pressing Home didn't produce any events");
+        mDevice.waitForIdle();
         return getWorkspace();
     }
 
@@ -350,7 +360,7 @@ public final class LauncherInstrumentation {
         return new AllAppsFromOverview(this);
     }
 
-    private void waitUntilGone(String resId) {
+    void waitUntilGone(String resId) {
         assertTrue("Unexpected launcher object visible: " + resId,
                 mDevice.wait(Until.gone(getLauncherObjectSelector(resId)),
                         WAIT_TIME_MS));
@@ -423,5 +433,9 @@ public final class LauncherInstrumentation {
                 SystemClock.uptimeMillis(), action, point.x, point.y, 0);
         mInstrumentation.sendPointerSync(event);
         event.recycle();
+    }
+
+    float getDisplayDensity() {
+        return mInstrumentation.getTargetContext().getResources().getDisplayMetrics().density;
     }
 }

@@ -30,6 +30,7 @@ import androidx.test.uiautomator.UiObject2;
  * Operations on the workspace screen.
  */
 public final class Workspace extends Home {
+    private static final float FLING_SPEED = 3500.0F;
     private final UiObject2 mHotseat;
     private final int ICON_DRAG_SPEED = 2000;
 
@@ -115,6 +116,7 @@ public final class Workspace extends Home {
         final Point dest = new Point(
                 mLauncher.getDevice().getDisplayWidth(), workspace.getVisibleBounds().centerY());
         app.getObject().drag(dest, ICON_DRAG_SPEED);
+        mLauncher.waitUntilGone("drop_target_bar");
         verifyActiveContainer();
     }
 
@@ -124,7 +126,7 @@ public final class Workspace extends Home {
      */
     public void flingForward() {
         final UiObject2 workspace = verifyActiveContainer();
-        workspace.fling(Direction.RIGHT);
+        workspace.fling(Direction.RIGHT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
         mLauncher.waitForIdle();
         verifyActiveContainer();
     }
@@ -135,7 +137,7 @@ public final class Workspace extends Home {
      */
     public void flingBackward() {
         final UiObject2 workspace = verifyActiveContainer();
-        workspace.fling(Direction.LEFT);
+        workspace.fling(Direction.LEFT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
         mLauncher.waitForIdle();
         verifyActiveContainer();
     }

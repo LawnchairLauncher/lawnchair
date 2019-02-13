@@ -1,4 +1,14 @@
+# Use this reviewer by default.
+# gnl-eng@google.com (Googlers only)
+
+# People who can approve changes for submission
 adamcohen@google.com
 hyunyoungs@google.com
 sunnygoyal@google.com
 winsonc@google.com
+
+# Source of truth of this directory is actually in launcher team's
+# unbundled branch ub-launcher3-[release variant] (e.g., master, edmonton).
+# Pls try to wait for one of the owner's review if you have to force
+# submit (e.g., for large refactor, breakage, etc) as we may want to
+# cherry pick the change to our active developmental branch.
