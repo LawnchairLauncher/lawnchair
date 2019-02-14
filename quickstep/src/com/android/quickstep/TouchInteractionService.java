@@ -86,7 +86,7 @@ public class TouchInteractionService extends Service {
 
         @Override
         public void onOverviewShown(boolean triggeredFromAltTab) {
-            mOverviewCommandHelper.onOverviewShown();
+            mOverviewCommandHelper.onOverviewShown(triggeredFromAltTab);
         }
 
         @Override

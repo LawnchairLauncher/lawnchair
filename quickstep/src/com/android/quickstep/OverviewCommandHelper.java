@@ -18,6 +18,8 @@ package com.android.quickstep;
 import static com.android.systemui.shared.system.ActivityManagerWrapper
         .CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -68,8 +70,8 @@ public class OverviewCommandHelper {
         mMainThreadExecutor.execute(new RecentsActivityCommand<>());
     }
 
-    public void onOverviewShown() {
-        mMainThreadExecutor.execute(new ShowRecentsCommand());
+    public void onOverviewShown(boolean triggeredFromAltTab) {
+        mMainThreadExecutor.execute(new ShowRecentsCommand(triggeredFromAltTab));
     }
 
     public void onOverviewHidden() {
@@ -83,10 +85,39 @@ public class OverviewCommandHelper {
 
     private class ShowRecentsCommand extends RecentsActivityCommand {
 
+        private final boolean mTriggeredFromAltTab;
+
+        ShowRecentsCommand(boolean triggeredFromAltTab) {
+            mTriggeredFromAltTab = triggeredFromAltTab;
+        }
+
         @Override
         protected boolean handleCommand(long elapsedTime) {
             // TODO: Go to the next page if started from alt-tab.
             return mHelper.getVisibleRecentsView() != null;
+        }
+
+        @Override
+        protected void onTransitionComplete() {
+            if (mTriggeredFromAltTab) {
+                RecentsView rv = (RecentsView) mHelper.getVisibleRecentsView();
+                if (rv == null) {
+                    return;
+                }
+
+                // Ensure that recents view has focus so that it receives the followup key inputs
+                TaskView taskView = rv.getNextTaskView();
+                if (taskView == null) {
+                    if (rv.getTaskViewCount() > 0) {
+                        taskView = (TaskView) rv.getPageAt(0);
+                        taskView.requestFocus();
+                    } else {
+                        rv.requestFocus();
+                    }
+                } else {
+                    taskView.requestFocus();
+                }
+            }
         }
     }
 
@@ -138,7 +169,7 @@ public class OverviewCommandHelper {
                 return;
             }
 
-            if (mHelper.switchToRecentsIfVisible(true)) {
+            if (mHelper.switchToRecentsIfVisible(this::onTransitionComplete)) {
                 // If successfully switched, then return
                 return;
             }
@@ -186,7 +217,16 @@ public class OverviewCommandHelper {
 
             mListener.unregister();
 
-            return mAnimationProvider.createWindowAnimation(targetCompats);
+            AnimatorSet animatorSet = mAnimationProvider.createWindowAnimation(targetCompats);
+            animatorSet.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    onTransitionComplete();
+                }
+            });
+            return animatorSet;
         }
+
+        protected void onTransitionComplete() { }
     }
 }
