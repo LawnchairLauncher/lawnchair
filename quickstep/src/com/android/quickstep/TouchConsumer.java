@@ -19,10 +19,6 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.view.MotionEvent;
 
-import androidx.annotation.IntDef;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.function.Consumer;
 
 @TargetApi(Build.VERSION_CODES.O)
@@ -30,23 +26,6 @@ import java.util.function.Consumer;
 public interface TouchConsumer extends Consumer<MotionEvent> {
 
     TouchConsumer NO_OP = (ev) -> {};
-
-    @IntDef(flag = true, value = {
-            INTERACTION_NORMAL,
-            INTERACTION_QUICK_SCRUB
-    })
-    @Retention(RetentionPolicy.SOURCE)
-    @interface InteractionType {}
-    int INTERACTION_NORMAL = 0;
-    int INTERACTION_QUICK_SCRUB = 1;
-
-    default void onQuickScrubStart() { }
-
-    default void onQuickScrubEnd() { }
-
-    default void onQuickScrubProgress(float progress) { }
-
-    default void onShowOverviewFromAltTab() {}
 
     default boolean isActive() {
         return false;

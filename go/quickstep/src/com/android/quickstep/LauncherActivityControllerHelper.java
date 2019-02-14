@@ -18,7 +18,6 @@ package com.android.quickstep;
 
 import static com.android.launcher3.LauncherState.OVERVIEW;
 
-import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Rect;
 
@@ -31,7 +30,6 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
-import com.android.quickstep.util.TransformedRect;
 import com.android.quickstep.views.IconRecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -51,18 +49,6 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         return null;
     }
 
-    @Override
-    public void onQuickInteractionStart(Launcher activity, ActivityManager.RunningTaskInfo taskInfo,
-            boolean activityVisible, TouchInteractionLog touchInteractionLog) {
-        // Go does not have quick interactions.
-    }
-
-    @Override
-    public float getTranslationYForQuickScrub(TransformedRect targetRect, DeviceProfile dp,
-            Context context) {
-        // Go does not have quick scrub.
-        return 0;
-    }
 
     @Override
     public void executeOnWindowAvailable(Launcher activity, Runnable action) {
@@ -77,7 +63,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
 
     @Override
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
-            int interactionType, TransformedRect outRect) {
+            Rect outRect) {
         // TODO Implement outRect depending on where the task should animate to.
         // Go does not support swipe up gesture.
         return 0;
@@ -101,8 +87,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         //TODO: Implement this based off where the recents view needs to be for app => recents anim.
         return new AnimationFactory() {
             @Override
-            public void createActivityController(long transitionLength,
-                    @TouchConsumer.InteractionType int interactionType) {}
+            public void createActivityController(long transitionLength) {}
 
             @Override
             public void onTransitionCancelled() {}
@@ -160,12 +145,6 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
 
     @Override
     public boolean shouldMinimizeSplitScreen() {
-        return true;
-    }
-
-    @Override
-    public boolean deferStartingActivity(int downHitTarget) {
-        // Go only supports back to overview so we always defer starting activity.
         return true;
     }
 

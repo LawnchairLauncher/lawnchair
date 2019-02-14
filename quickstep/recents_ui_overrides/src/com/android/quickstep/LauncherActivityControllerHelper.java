@@ -19,23 +19,16 @@ import static android.view.View.TRANSLATION_Y;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
-import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_DAMPING_RATIO;
 import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_STIFFNESS;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
-import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
-import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
-import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
-import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_ROTATION;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -44,16 +37,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
-
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.R;
 import com.android.launcher3.TestProtocol;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -61,13 +49,10 @@ import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.uioverrides.FastOverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
-import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.LayoutUtils;
-import com.android.quickstep.util.TransformedRect;
 import com.android.quickstep.views.LauncherLayoutListener;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -75,6 +60,10 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 
 /**
  * {@link ActivityControlHelper} for the in-launcher recents.
@@ -87,59 +76,13 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     }
 
     @Override
-    public void onQuickInteractionStart(Launcher activity, RunningTaskInfo taskInfo,
-            boolean activityVisible, TouchInteractionLog touchInteractionLog) {
-        LauncherState fromState = activity.getStateManager().getState();
-        QuickScrubController controller = activity.<RecentsView>getOverviewPanel()
-                .getQuickScrubController();
-        boolean isQuickSwitch = controller.isQuickSwitch();
-        boolean animate = activityVisible;
-        if (isQuickSwitch && fromState == FAST_OVERVIEW && !animate) {
-            // We can already be in FAST_OVERVIEW if createActivityController() was called
-            // before us. This could happen, for instance, when launcher is slow to load when
-            // starting quick switch, causing us to call onQuickScrubStart() on the background
-            // thread. In this case, we also hadn't set isQuickSwitch = true before setting
-            // FAST_OVERVIEW, so we need to reapply FAST_OVERVIEW to take that into account.
-            activity.getStateManager().reapplyState();
-        } else {
-            activity.getStateManager().goToState(FAST_OVERVIEW, animate);
-        }
-
-        controller.onQuickScrubStart(activityVisible && !fromState.overviewUi, this,
-                touchInteractionLog);
-
-        if (!activityVisible) {
-            // For the duration of the gesture, lock the screen orientation to ensure that we
-            // do not rotate mid-quickscrub
-            activity.getRotationHelper().setStateHandlerRequest(REQUEST_LOCK);
-        }
-    }
-
-    @Override
-    public float getTranslationYForQuickScrub(TransformedRect targetRect, DeviceProfile dp,
-            Context context) {
-        // The padding calculations are exactly same as that of RecentsView.setInsets
-        int topMargin = context.getResources()
-                .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
-        int paddingTop = targetRect.rect.top - topMargin - dp.getInsets().top;
-        int paddingBottom = dp.heightPx - dp.getInsets().bottom - targetRect.rect.bottom;
-
-        return FastOverviewState.OVERVIEW_TRANSLATION_FACTOR * (paddingBottom - paddingTop);
-    }
-
-    @Override
     public void executeOnWindowAvailable(Launcher activity, Runnable action) {
         activity.getWorkspace().runOnOverlayHidden(action);
     }
 
     @Override
-    public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
-            @InteractionType int interactionType, TransformedRect outRect) {
-        LayoutUtils.calculateLauncherTaskSize(context, dp, outRect.rect);
-        if (interactionType == INTERACTION_QUICK_SCRUB) {
-            outRect.scale = FastOverviewState.getOverviewScale(dp, outRect.rect, context,
-                    FeatureFlags.QUICK_SWITCH.get());
-        }
+    public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
+        LayoutUtils.calculateLauncherTaskSize(context, dp, outRect);
         if (dp.isVerticalBarLayout()) {
             Rect targetInsets = dp.getInsets();
             int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
@@ -221,10 +164,9 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
             private ShelfAnimState mShelfState;
 
             @Override
-            public void createActivityController(long transitionLength,
-                    @InteractionType int interactionType) {
+            public void createActivityController(long transitionLength) {
                 createActivityControllerInternal(activity, activityVisible, fromState,
-                        transitionLength, interactionType, callback);
+                        transitionLength, callback);
             }
 
             @Override
@@ -270,10 +212,8 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
 
     private void createActivityControllerInternal(Launcher activity, boolean wasVisible,
             LauncherState fromState, long transitionLength,
-            @InteractionType int interactionType,
             Consumer<AnimatorPlaybackController> callback) {
-        LauncherState endState = interactionType == INTERACTION_QUICK_SCRUB
-                ? FAST_OVERVIEW : OVERVIEW;
+        LauncherState endState = OVERVIEW;
         if (wasVisible && fromState != BACKGROUND_APP) {
             // If a translucent app was launched fom launcher, animate launcher states.
             DeviceProfile dp = activity.getDeviceProfile();
@@ -295,10 +235,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                     endState.getVerticalProgress(activity));
             anim.play(shiftAnim);
         }
-
-        if (interactionType == INTERACTION_NORMAL) {
-            playScaleDownAnim(anim, activity, endState);
-        }
+        playScaleDownAnim(anim, activity, endState);
 
         anim.setDuration(transitionLength * 2);
         activity.getStateManager().setCurrentAnimation(anim);
@@ -405,11 +342,6 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         }
         launcher.getStateManager().goToState(OVERVIEW);
         return true;
-    }
-
-    @Override
-    public boolean deferStartingActivity(int downHitTarget) {
-        return downHitTarget == HIT_TARGET_BACK || downHitTarget == HIT_TARGET_ROTATION;
     }
 
     @Override

@@ -412,10 +412,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     public void resetVisualProperties() {
         resetViewTransforms();
-        if (!getRecentsView().getQuickScrubController().isQuickSwitch()) {
-            // Reset full screen progress unless we are doing back to back quick switch.
-            setFullscreenProgress(0);
-        }
+        setFullscreenProgress(0);
     }
 
     @Override

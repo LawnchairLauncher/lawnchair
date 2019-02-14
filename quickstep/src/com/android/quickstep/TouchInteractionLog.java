@@ -23,7 +23,7 @@ import java.util.Calendar;
 import java.util.LinkedList;
 
 /**
- * Keeps track of debugging logs for a particular quickstep/scrub gesture.
+ * Keeps track of debugging logs for a particular quickstep gesture.
  */
 public class TouchInteractionLog {
 
@@ -54,18 +54,6 @@ public class TouchInteractionLog {
         getCurrentLog().add("qstStart");
     }
 
-    public void startQuickScrub() {
-        getCurrentLog().add("qsStart");
-    }
-
-    public void setQuickScrubProgress(float progress) {
-        getCurrentLog().add("qsP=" + progress);
-    }
-
-    public void endQuickScrub(String reason) {
-        getCurrentLog().add("qsEnd=" + reason);
-    }
-
     public void startRecentsAnimation() {
         getCurrentLog().add("raStart");
     }
@@ -80,14 +68,6 @@ public class TouchInteractionLog {
 
     public void finishRecentsAnimation(boolean toHome) {
         getCurrentLog().add("raFinish=" + toHome);
-    }
-
-    public void launchTaskStart() {
-        getCurrentLog().add("launchStart");
-    }
-
-    public void launchTaskEnd(boolean result) {
-        getCurrentLog().add("launchEnd=" + result);
     }
 
     public void dump(PrintWriter pw) {

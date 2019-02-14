@@ -22,6 +22,7 @@ import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_INDEX_SHIFT;
 import static android.view.MotionEvent.ACTION_UP;
 
+import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.graphics.PointF;
@@ -30,7 +31,6 @@ import android.view.ViewConfiguration;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 /**
@@ -39,42 +39,22 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 public class OverviewTouchConsumer<T extends BaseDraggingActivity>
         implements TouchConsumer {
 
-    private static final String TAG = "OverviewTouchConsumer";
-
-    private final ActivityControlHelper<T> mActivityHelper;
     private final T mActivity;
     private final BaseDragLayer mTarget;
     private final int[] mLocationOnScreen = new int[2];
     private final PointF mDownPos = new PointF();
     private final int mTouchSlop;
-    private final QuickScrubController mQuickScrubController;
-    private final TouchInteractionLog mTouchInteractionLog;
 
     private final boolean mStartingInActivityBounds;
 
     private boolean mTrackingStarted = false;
     private boolean mInvalidated = false;
 
-    private float mLastProgress = 0;
-    private boolean mStartPending = false;
-    private boolean mEndPending = false;
-    private boolean mWaitForWindowAvailable;
-
-    OverviewTouchConsumer(ActivityControlHelper<T> activityHelper, T activity,
-            boolean startingInActivityBounds, TouchInteractionLog touchInteractionLog,
-            boolean waitForWindowAvailable) {
-        mActivityHelper = activityHelper;
+    OverviewTouchConsumer(T activity, boolean startingInActivityBounds) {
         mActivity = activity;
         mTarget = activity.getDragLayer();
         mTouchSlop = ViewConfiguration.get(mActivity).getScaledTouchSlop();
         mStartingInActivityBounds = startingInActivityBounds;
-
-        mQuickScrubController = mActivity.<RecentsView>getOverviewPanel()
-                .getQuickScrubController();
-        mTouchInteractionLog = touchInteractionLog;
-        mTouchInteractionLog.setTouchConsumer(this);
-
-        mWaitForWindowAvailable = waitForWindowAvailable;
     }
 
     @Override
@@ -82,7 +62,6 @@ public class OverviewTouchConsumer<T extends BaseDraggingActivity>
         if (mInvalidated) {
             return;
         }
-        mTouchInteractionLog.addMotionEvent(ev);
         int action = ev.getActionMasked();
         if (action == ACTION_DOWN) {
             if (mStartingInActivityBounds) {
@@ -145,7 +124,7 @@ public class OverviewTouchConsumer<T extends BaseDraggingActivity>
             OverviewCallbacks.get(mActivity).closeAllWindows();
             ActivityManagerWrapper.getInstance()
                     .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-            mTouchInteractionLog.startQuickStep();
+            TOUCH_INTERACTION_LOG.startQuickStep();
         }
     }
 
@@ -165,83 +144,12 @@ public class OverviewTouchConsumer<T extends BaseDraggingActivity>
         ev.setEdgeFlags(flags);
     }
 
-    @Override
-    public void onQuickScrubStart() {
-        if (mInvalidated) {
-            return;
-        }
-        mTouchInteractionLog.startQuickScrub();
-        if (!mQuickScrubController.prepareQuickScrub(TAG)) {
-            mInvalidated = true;
-            mTouchInteractionLog.endQuickScrub("onQuickScrubStart");
-            return;
-        }
-        OverviewCallbacks.get(mActivity).closeAllWindows();
-        ActivityManagerWrapper.getInstance()
-                .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-
-        mStartPending = true;
-        Runnable action = () -> {
-            if (!mQuickScrubController.prepareQuickScrub(TAG)) {
-                mInvalidated = true;
-                mTouchInteractionLog.endQuickScrub("onQuickScrubStart");
-                return;
-            }
-            mActivityHelper.onQuickInteractionStart(mActivity, null, true,
-                    mTouchInteractionLog);
-            mQuickScrubController.onQuickScrubProgress(mLastProgress);
-            mStartPending = false;
-
-            if (mEndPending) {
-                mQuickScrubController.onQuickScrubEnd();
-                mEndPending = false;
-            }
-        };
-
-        if (mWaitForWindowAvailable) {
-            mActivityHelper.executeOnWindowAvailable(mActivity, action);
-        } else {
-            action.run();
-        }
-    }
-
-    @Override
-    public void onQuickScrubEnd() {
-        mTouchInteractionLog.endQuickScrub("onQuickScrubEnd");
-        if (mInvalidated) {
-            return;
-        }
-        if (mStartPending) {
-            mEndPending = true;
-        } else {
-            mQuickScrubController.onQuickScrubEnd();
-        }
-    }
-
-    @Override
-    public void onQuickScrubProgress(float progress) {
-        mTouchInteractionLog.setQuickScrubProgress(progress);
-        mLastProgress = progress;
-        if (mInvalidated || mStartPending) {
-            return;
-        }
-        mQuickScrubController.onQuickScrubProgress(progress);
-    }
-
     public static TouchConsumer newInstance(ActivityControlHelper activityHelper,
-            boolean startingInActivityBounds, TouchInteractionLog touchInteractionLog) {
-        return newInstance(activityHelper, startingInActivityBounds, touchInteractionLog,
-                true /* waitForWindowAvailable */);
-    }
-
-    public static TouchConsumer newInstance(ActivityControlHelper activityHelper,
-            boolean startingInActivityBounds, TouchInteractionLog touchInteractionLog,
-            boolean waitForWindowAvailable) {
+            boolean startingInActivityBounds) {
         BaseDraggingActivity activity = activityHelper.getCreatedActivity();
         if (activity == null) {
             return TouchConsumer.NO_OP;
         }
-        return new OverviewTouchConsumer(activityHelper, activity, startingInActivityBounds,
-                touchInteractionLog, waitForWindowAvailable);
+        return new OverviewTouchConsumer(activity, startingInActivityBounds);
     }
 }

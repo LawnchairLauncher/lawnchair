@@ -88,7 +88,6 @@ import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.ViewPool;
 import com.android.quickstep.OverviewCallbacks;
-import com.android.quickstep.QuickScrubController;
 import com.android.quickstep.RecentsAnimationWrapper;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskThumbnailCache;
@@ -152,7 +151,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private static final float[] sTempFloatArray = new float[3];
 
     protected final T mActivity;
-    private final QuickScrubController mQuickScrubController;
     private final float mFastFlingVelocity;
     private final RecentsModel mModel;
     private final int mTaskTopMargin;
@@ -214,9 +212,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             if (!mHandleTaskStackChanges) {
                 return;
             }
-
-            // Notify the quick scrub controller that a particular task has been removed
-            mQuickScrubController.onTaskRemoved(taskId);
 
             BackgroundExecutor.get().submit(() -> {
                 TaskView taskView = getTaskView(taskId);
@@ -310,7 +305,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mFastFlingVelocity = getResources()
                 .getDimensionPixelSize(R.dimen.recents_fast_fling_velocity);
         mActivity = (T) BaseActivity.fromContext(context);
-        mQuickScrubController = new QuickScrubController(mActivity, this);
         mModel = RecentsModel.INSTANCE.get(context);
         mIdp = InvariantDeviceProfile.INSTANCE.get(context);
 
@@ -550,10 +544,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             mIgnoreResetTaskId = -1;
         }
         resetTaskVisuals();
-
-        if (oldChildCount != getChildCount()) {
-            mQuickScrubController.snapToNextTaskIfAvailable();
-        }
         onTaskStackUpdated();
     }
 
@@ -605,7 +595,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mTaskWidth = mTempRect.width();
         mTaskHeight = mTempRect.height();
 
-        // Keep this logic in sync with ActivityControlHelper.getTranslationYForQuickScrub.
         mTempRect.top -= mTaskTopMargin;
         setPadding(mTempRect.left - mInsets.left, mTempRect.top - mInsets.top,
                 dp.widthPx - mInsets.right - mTempRect.right,
@@ -852,10 +841,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 runningTaskView.launchTask(true /* animate */);
             }
         }
-    }
-
-    public QuickScrubController getQuickScrubController() {
-        return mQuickScrubController;
     }
 
     public void setRunningTaskIconScaledDown(boolean isScaledDown) {

@@ -17,7 +17,6 @@ package com.android.quickstep;
 
 import android.animation.Animator;
 import android.annotation.TargetApi;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -29,23 +28,20 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
-
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
-import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
-import com.android.quickstep.util.TransformedRect;
-import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 
 /**
  * Utility class which abstracts out the logical differences between Launcher and RecentsActivity.
@@ -55,21 +51,11 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     LayoutListener createLayoutListener(T activity);
 
-    /**
-     * Updates the UI to indicate quick interaction.
-     */
-    void onQuickInteractionStart(T activity, @Nullable RunningTaskInfo taskInfo,
-            boolean activityVisible, TouchInteractionLog touchInteractionLog);
-
-    float getTranslationYForQuickScrub(TransformedRect targetRect, DeviceProfile dp,
-            Context context);
-
     void executeOnWindowAvailable(T activity, Runnable action);
 
     void onTransitionCancelled(T activity, boolean activityVisible);
 
-    int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
-            @InteractionType int interactionType, TransformedRect outRect);
+    int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect);
 
     void onSwipeUpComplete(T activity);
 
@@ -98,12 +84,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
     Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTargetCompat target);
 
     boolean shouldMinimizeSplitScreen();
-
-    /**
-     * @return {@code true} if recents activity should be started immediately on touchDown,
-     *         {@code false} if it should deferred until some threshold is crossed.
-     */
-    boolean deferStartingActivity(int downHitTarget);
 
     default boolean deferStartingActivity(Region activeNavBarRegion, MotionEvent ev) {
         return true;
@@ -161,7 +141,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         default void onRemoteAnimationReceived(RemoteAnimationTargetSet targets) { }
 
-        void createActivityController(long transitionLength, @InteractionType int interactionType);
+        void createActivityController(long transitionLength);
 
         default void onTransitionCancelled() { }
 

@@ -61,33 +61,16 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
     }
 
     @Override
-    protected boolean isQuickSwitchInProgress() {
-        return mRecentsView.getQuickScrubController().isQuickSwitch();
-    }
-
-    @Override
-    protected ActivityOptions getQuickSwitchActivityOptions() {
-        return ActivityOptions.makeCustomAnimation(mLauncher, R.anim.no_anim,
-                R.anim.no_anim);
-    }
-
-    @Override
     protected void composeRecentsLaunchAnimator(@NonNull AnimatorSet anim, @NonNull View v,
             @NonNull RemoteAnimationTargetCompat[] targets, boolean launcherClosing) {
         RecentsView recentsView = mLauncher.getOverviewPanel();
         boolean skipLauncherChanges = !launcherClosing;
-        boolean isLaunchingFromQuickscrub =
-                recentsView.getQuickScrubController().isWaitingForTaskLaunch();
 
         TaskView taskView = findTaskViewToLaunch(mLauncher, v, targets);
 
-        int duration = isLaunchingFromQuickscrub
-                ? RECENTS_QUICKSCRUB_LAUNCH_DURATION
-                : RECENTS_LAUNCH_DURATION;
-
         ClipAnimationHelper helper = new ClipAnimationHelper(mLauncher);
         anim.play(getRecentsWindowAnimator(taskView, skipLauncherChanges, targets, helper)
-                .setDuration(duration));
+                .setDuration(RECENTS_LAUNCH_DURATION));
 
         Animator childStateAnimation = null;
         // Found a visible recents task that matches the opening app, lets launch the app from there
@@ -96,7 +79,7 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
         if (launcherClosing) {
             launcherAnim = recentsView.createAdjacentPageAnimForTaskLaunch(taskView, helper);
             launcherAnim.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
-            launcherAnim.setDuration(duration);
+            launcherAnim.setDuration(RECENTS_LAUNCH_DURATION);
 
             // Make sure recents gets fixed up by resetting task alphas and scales, etc.
             windowAnimEndListener = new AnimatorListenerAdapter() {
@@ -108,10 +91,11 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
             };
         } else {
             AnimatorPlaybackController controller =
-                    mLauncher.getStateManager().createAnimationToNewWorkspace(NORMAL, duration);
+                    mLauncher.getStateManager().createAnimationToNewWorkspace(NORMAL,
+                            RECENTS_LAUNCH_DURATION);
             controller.dispatchOnStart();
             childStateAnimation = controller.getTarget();
-            launcherAnim = controller.getAnimationPlayer().setDuration(duration);
+            launcherAnim = controller.getAnimationPlayer().setDuration(RECENTS_LAUNCH_DURATION);
             windowAnimEndListener = new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {

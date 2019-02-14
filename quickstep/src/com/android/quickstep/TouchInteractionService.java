@@ -15,12 +15,9 @@
  */
 package com.android.quickstep;
 
-import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
-import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_INPUT_CHANNEL;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
 
@@ -34,20 +31,19 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
-import android.util.SparseArray;
+import android.util.Pair;
 import android.view.Choreographer;
 import android.view.InputEvent;
 import android.view.MotionEvent;
 
 import com.android.launcher3.MainThreadExecutor;
-import com.android.launcher3.util.TraceHelper;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputChannelCompat;
+import com.android.systemui.shared.system.InputChannelCompat.InputEventDispatcher;
 import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputConsumerController;
-import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -59,15 +55,7 @@ import java.io.PrintWriter;
 public class TouchInteractionService extends Service {
 
     public static final MainThreadExecutor MAIN_THREAD_EXECUTOR = new MainThreadExecutor();
-
-    private static final SparseArray<String> sMotionEventNames;
-
-    static {
-        sMotionEventNames = new SparseArray<>(3);
-        sMotionEventNames.put(ACTION_DOWN, "ACTION_DOWN");
-        sMotionEventNames.put(ACTION_UP, "ACTION_UP");
-        sMotionEventNames.put(ACTION_CANCEL, "ACTION_CANCEL");
-    }
+    public static final TouchInteractionLog TOUCH_INTERACTION_LOG = new TouchInteractionLog();
 
     public static final int EDGE_NAV_BAR = 1 << 8;
 
@@ -85,71 +73,10 @@ public class TouchInteractionService extends Service {
             mRecentsModel.setSystemUiProxy(mISystemUiProxy);
             mOverviewInteractionState.setSystemUiProxy(mISystemUiProxy);
 
-            if (mInputEventReceiver != null) {
-                mInputEventReceiver.dispose();
-            }
+            disposeEventHandlers();
             mInputEventReceiver = InputChannelCompat.fromBundle(bundle, KEY_EXTRA_INPUT_CHANNEL,
                     Looper.getMainLooper(), mMainChoreographer,
                     TouchInteractionService.this::onInputEvent);
-        }
-
-        public void onPreMotionEvent(@HitTarget int downHitTarget) {
-            // If ev are using the new dispatching system, skip the old logic
-            if (mInputEventReceiver != null) {
-                return;
-            }
-            mTouchInteractionLog.prepareForNewGesture();
-
-            TraceHelper.beginSection("SysUiBinder");
-            mEventQueue.onNewGesture(downHitTarget);
-            TraceHelper.partitionSection("SysUiBinder", "Down target " + downHitTarget);
-        }
-
-        public void onMotionEvent(MotionEvent ev) {
-            // If ev are using the new dispatching system, skip the old logic
-            if (mInputEventReceiver != null) {
-                ev.recycle();
-                return;
-            }
-            mEventQueue.queue(ev);
-
-            int action = ev.getActionMasked();
-            String name = sMotionEventNames.get(action);
-            if (name != null){
-                TraceHelper.partitionSection("SysUiBinder", name);
-            }
-        }
-
-        public void onBind(ISystemUiProxy iSystemUiProxy) {
-            mISystemUiProxy = iSystemUiProxy;
-            mRecentsModel.setSystemUiProxy(mISystemUiProxy);
-            mOverviewInteractionState.setSystemUiProxy(mISystemUiProxy);
-        }
-
-        public void onQuickScrubStart() {
-            // If ev are using the new dispatching system, skip the old logic
-            if (mInputEventReceiver != null) {
-                return;
-            }
-            mEventQueue.onQuickScrubStart();
-            TraceHelper.partitionSection("SysUiBinder", "onQuickScrubStart");
-        }
-
-        public void onQuickScrubProgress(float progress) {
-            // If ev are using the new dispatching system, skip the old logic
-            if (mInputEventReceiver != null) {
-                return;
-            }
-            mEventQueue.onQuickScrubProgress(progress);
-        }
-
-        public void onQuickScrubEnd() {
-            // If ev are using the new dispatching system, skip the old logic
-            if (mInputEventReceiver != null) {
-                return;
-            }
-            mEventQueue.onQuickScrubEnd();
-            TraceHelper.endSection("SysUiBinder", "onQuickScrubEnd");
         }
 
         @Override
@@ -159,36 +86,54 @@ public class TouchInteractionService extends Service {
 
         @Override
         public void onOverviewShown(boolean triggeredFromAltTab) {
-            // If ev are using the new dispatching system, skip the old logic
-            if (mInputEventReceiver != null) {
-                mOverviewCommandHelper.onOverviewShown();
-                return;
-            }
-            if (triggeredFromAltTab) {
-                mEventQueue.onNewGesture(HIT_TARGET_NONE);
-                mEventQueue.onOverviewShownFromAltTab();
-            } else {
-                mOverviewCommandHelper.onOverviewShown();
-            }
+            mOverviewCommandHelper.onOverviewShown();
         }
 
         @Override
         public void onOverviewHidden(boolean triggeredFromAltTab, boolean triggeredFromHomeKey) {
-            // If ev are using the new dispatching system, skip the old logic
-            if (mInputEventReceiver != null) {
-                return;
-            }
             if (triggeredFromAltTab && !triggeredFromHomeKey) {
-                // onOverviewShownFromAltTab initiates quick scrub. Ending it here.
-                mEventQueue.onQuickScrubEnd();
+                // onOverviewShownFromAltTab hides the overview and ends at the target app
+                mOverviewCommandHelper.onOverviewHidden();
             }
         }
-
-        public void onQuickStep(MotionEvent motionEvent) { }
 
         @Override
         public void onTip(int actionType, int viewType) {
             mOverviewCommandHelper.onTip(actionType, viewType);
+        }
+
+        /** Deprecated methods **/
+        public void onQuickStep(MotionEvent motionEvent) { }
+
+        public void onQuickScrubEnd() { }
+
+        public void onQuickScrubProgress(float progress) { }
+
+        public void onQuickScrubStart() { }
+
+        public void onPreMotionEvent(int downHitTarget) { }
+
+        public void onMotionEvent(MotionEvent ev) {
+            if (mDeprecatedDispatcher == null) {
+                ev.recycle();
+            } else {
+                mDeprecatedDispatcher.dispatch(ev);
+            }
+        }
+
+        public void onBind(ISystemUiProxy iSystemUiProxy) {
+            mISystemUiProxy = iSystemUiProxy;
+            mRecentsModel.setSystemUiProxy(mISystemUiProxy);
+            mOverviewInteractionState.setSystemUiProxy(mISystemUiProxy);
+
+            // On Bind is received before onInitialize which will dispose these handlers
+            disposeEventHandlers();
+            Pair<InputEventDispatcher, InputEventReceiver> pair = InputChannelCompat.createPair(
+                    "sysui-callbacks", Looper.getMainLooper(), mMainChoreographer,
+                    TouchInteractionService.this::onInputEvent);
+            mDeprecatedDispatcher = pair.first;
+            mInputEventReceiver = pair.second;
+
         }
     };
 
@@ -200,21 +145,22 @@ public class TouchInteractionService extends Service {
 
     private ActivityManagerWrapper mAM;
     private RecentsModel mRecentsModel;
-    private MotionEventQueue mEventQueue;
     private ISystemUiProxy mISystemUiProxy;
     private OverviewCommandHelper mOverviewCommandHelper;
     private OverviewComponentObserver mOverviewComponentObserver;
     private OverviewInteractionState mOverviewInteractionState;
     private OverviewCallbacks mOverviewCallbacks;
     private TaskOverlayFactory mTaskOverlayFactory;
-    private TouchInteractionLog mTouchInteractionLog;
     private InputConsumerController mInputConsumer;
     private SwipeSharedState mSwipeSharedState;
 
     private TouchConsumer mConsumer = TouchConsumer.NO_OP;
     private Choreographer mMainChoreographer;
+
     private InputEventReceiver mInputEventReceiver;
     private Region mActiveNavBarRegion = new Region();
+
+    private InputEventDispatcher mDeprecatedDispatcher;
 
     @Override
     public void onCreate() {
@@ -225,12 +171,9 @@ public class TouchInteractionService extends Service {
         mMainChoreographer = Choreographer.getInstance();
 
         mOverviewCommandHelper = new OverviewCommandHelper(this, mOverviewComponentObserver);
-        mEventQueue = new MotionEventQueue(Looper.myLooper(), Choreographer.getInstance(),
-                this::newConsumer);
         mOverviewInteractionState = OverviewInteractionState.INSTANCE.get(this);
         mOverviewCallbacks = OverviewCallbacks.get(this);
         mTaskOverlayFactory = TaskOverlayFactory.INSTANCE.get(this);
-        mTouchInteractionLog = new TouchInteractionLog();
         mSwipeSharedState = new SwipeSharedState();
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
         mInputConsumer.registerInputConsumer();
@@ -245,12 +188,20 @@ public class TouchInteractionService extends Service {
     public void onDestroy() {
         mInputConsumer.unregisterInputConsumer();
         mOverviewComponentObserver.onDestroy();
-        mEventQueue.dispose();
-        if (mInputEventReceiver != null) {
-            mInputEventReceiver.dispose();
-        }
+        disposeEventHandlers();
         sConnected = false;
         super.onDestroy();
+    }
+
+    private void disposeEventHandlers() {
+        if (mInputEventReceiver != null) {
+            mInputEventReceiver.dispose();
+            mInputEventReceiver = null;
+        }
+        if (mDeprecatedDispatcher != null) {
+            mDeprecatedDispatcher.dispose();
+            mDeprecatedDispatcher = null;
+        }
     }
 
     @Override
@@ -266,43 +217,15 @@ public class TouchInteractionService extends Service {
         }
         MotionEvent event = (MotionEvent) ev;
         if (event.getAction() == ACTION_DOWN) {
-            mTouchInteractionLog.prepareForNewGesture();
+            TOUCH_INTERACTION_LOG.prepareForNewGesture();
             boolean useSharedState = mConsumer.isActive();
             mConsumer.onConsumerAboutToBeSwitched();
             mConsumer = newConsumer(useSharedState, event);
+            TOUCH_INTERACTION_LOG.setTouchConsumer(mConsumer);
         }
+        TOUCH_INTERACTION_LOG.addMotionEvent(event);
 
         mConsumer.accept(event);
-    }
-
-    private TouchConsumer newConsumer(@HitTarget int downHitTarget, boolean useSharedState) {
-        RunningTaskInfo runningTaskInfo = mAM.getRunningTask(0);
-        if (!useSharedState) {
-            mSwipeSharedState.clearAllState();
-        }
-
-        if (runningTaskInfo == null && !mSwipeSharedState.goingToLauncher) {
-            return TouchConsumer.NO_OP;
-        } else if (mSwipeSharedState.goingToLauncher ||
-                mOverviewComponentObserver.getActivityControlHelper().isResumed()) {
-            return OverviewTouchConsumer.newInstance(
-                    mOverviewComponentObserver.getActivityControlHelper(), false,
-                    mTouchInteractionLog);
-        } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() &&
-                mOverviewComponentObserver.getActivityControlHelper().isInLiveTileMode()) {
-            return OverviewTouchConsumer.newInstance(
-                    mOverviewComponentObserver.getActivityControlHelper(), false,
-                    mTouchInteractionLog, false /* waitForWindowAvailable */);
-        } else {
-            ActivityControlHelper activityControl =
-                    mOverviewComponentObserver.getActivityControlHelper();
-            return new OtherActivityTouchConsumer(this, runningTaskInfo, mRecentsModel,
-                    mOverviewComponentObserver.getOverviewIntent(),
-                    mOverviewComponentObserver.getActivityControlHelper(),
-                    activityControl.deferStartingActivity(downHitTarget), mOverviewCallbacks,
-                    mTaskOverlayFactory, mInputConsumer, mTouchInteractionLog,
-                    mEventQueue::onConsumerInactive, mSwipeSharedState);
-        }
     }
 
     private TouchConsumer newConsumer(boolean useSharedState, MotionEvent event) {
@@ -316,13 +239,11 @@ public class TouchInteractionService extends Service {
         } else if (mSwipeSharedState.goingToLauncher ||
                 mOverviewComponentObserver.getActivityControlHelper().isResumed()) {
             return OverviewTouchConsumer.newInstance(
-                    mOverviewComponentObserver.getActivityControlHelper(), false,
-                    mTouchInteractionLog);
+                    mOverviewComponentObserver.getActivityControlHelper(), false);
         } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() &&
                 mOverviewComponentObserver.getActivityControlHelper().isInLiveTileMode()) {
             return OverviewTouchConsumer.newInstance(
-                    mOverviewComponentObserver.getActivityControlHelper(), false,
-                    mTouchInteractionLog, false /* waitForWindowAvailable */);
+                    mOverviewComponentObserver.getActivityControlHelper(), false);
         } else {
             ActivityControlHelper activityControl =
                     mOverviewComponentObserver.getActivityControlHelper();
@@ -331,7 +252,7 @@ public class TouchInteractionService extends Service {
                     mOverviewComponentObserver.getOverviewIntent(),
                     mOverviewComponentObserver.getActivityControlHelper(),
                     shouldDefer, mOverviewCallbacks,
-                    mTaskOverlayFactory, mInputConsumer, mTouchInteractionLog,
+                    mTaskOverlayFactory, mInputConsumer,
                     this::onConsumerInactive, mSwipeSharedState);
         }
     }
@@ -347,6 +268,6 @@ public class TouchInteractionService extends Service {
 
     @Override
     protected void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
-        mTouchInteractionLog.dump(pw);
+        TOUCH_INTERACTION_LOG.dump(pw);
     }
 }
