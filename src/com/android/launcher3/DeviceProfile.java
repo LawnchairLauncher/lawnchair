@@ -26,11 +26,14 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.view.Surface;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconNormalizer;
+
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 
 public class DeviceProfile {
 
@@ -572,6 +575,33 @@ public class DeviceProfile {
                 // ??
                 return 0;
         }
+    }
+
+    /**
+     * Gets an item's location on the home screen. This is useful if the home screen
+     * is animating, otherwise use {@link View#getLocationOnScreen(int[])}.
+     *
+     * TODO(b/123900446): Handle landscape mode
+     * @param pageDiff The page difference relative to the current page.
+     */
+    public void getItemLocation(int cellX, int cellY, int spanX, int spanY, int container,
+            int pageDiff, Rect outBounds) {
+        outBounds.setEmpty();
+        outBounds.left = mInsets.left
+                + workspacePadding.left + cellLayoutPaddingLeftRightPx + (cellX * getCellSize().x);
+        outBounds.top = mInsets.top;
+        if (container == CONTAINER_HOTSEAT) {
+            outBounds.top += workspacePadding.top
+                    + (inv.numRows * getCellSize().y)
+                    + verticalDragHandleSizePx
+                    - verticalDragHandleOverlapWorkspace;
+            outBounds.bottom = outBounds.top + hotseatBarSizePx - hotseatBarBottomPaddingPx;
+        } else {
+            outBounds.top += workspacePadding.top + (cellY * getCellSize().y);
+            outBounds.bottom = outBounds.top + (getCellSize().y * spanY);
+            outBounds.left += (pageDiff) * availableWidthPx;
+        }
+        outBounds.right = outBounds.left + (getCellSize().x * spanX);
     }
 
     private static Context getContext(Context c, int orientation) {

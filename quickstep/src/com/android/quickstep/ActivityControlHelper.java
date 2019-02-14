@@ -151,6 +151,11 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     interface HomeAnimationFactory {
 
+        /** Return the floating view that will animate in sync with the closing window. */
+        default @Nullable View getFloatingView() {
+            return null;
+        }
+
         @NonNull RectF getWindowTargetRect();
 
         @NonNull Animator createActivityAnimationToHome();
