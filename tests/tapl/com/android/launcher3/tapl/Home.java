@@ -47,7 +47,7 @@ public abstract class Home extends Background {
     @Override
     public Overview switchToOverview() {
         verifyActiveContainer();
-        goToOverviewUnchecked();
+        goToOverviewUnchecked(LauncherInstrumentation.OVERVIEW_STATE_ORDINAL);
         return new Overview(mLauncher);
     }
 }

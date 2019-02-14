@@ -54,6 +54,9 @@ import java.util.concurrent.TimeoutException;
 public final class LauncherInstrumentation {
 
     private static final String TAG = "Tapl";
+    static final int OVERVIEW_STATE_ORDINAL = 2;
+    static final int APPS_LIST_STATE_ORDINAL = 4;
+    static final int BACKGROUND_APP_STATE_ORDINAL = 5;
 
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
@@ -154,7 +157,7 @@ public final class LauncherInstrumentation {
         fail(message + ". " + "Actual: " + actual);
     }
 
-    static public void assertEquals(String message, int expected, int actual) {
+    static private void assertEquals(String message, int expected, int actual) {
         if (expected != actual) {
             fail(message + " expected: " + expected + " but was: " + actual);
         }
@@ -416,12 +419,14 @@ public final class LauncherInstrumentation {
         return mDevice;
     }
 
-    void swipe(int startX, int startY, int endX, int endY) {
-        executeAndWaitForEvent(
+    void swipe(int startX, int startY, int endX, int endY, int expectedState) {
+        final Bundle parcel = (Bundle) executeAndWaitForEvent(
                 () -> mDevice.swipe(startX, startY, endX, endY, 60),
                 event -> TestProtocol.SWITCHED_TO_STATE_MESSAGE.equals(event.getClassName()),
                 "Swipe failed to receive an event for the swipe end: " + startX + ", " + startY
                         + ", " + endX + ", " + endY);
+        assertEquals("Swipe switched launcher to a wrong state",
+                expectedState, parcel.getInt(TestProtocol.STATE_FIELD));
     }
 
     void waitForIdle() {
