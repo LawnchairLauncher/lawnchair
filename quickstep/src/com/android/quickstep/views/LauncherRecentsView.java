@@ -16,8 +16,10 @@
 package com.android.quickstep.views;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_QUICKSTEP_PREVIEW;
+import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.ALL_APPS_PROGRESS_OFF_SCREEN;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
@@ -111,7 +113,10 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
         mTranslationYFactor = translationFactor;
         setTranslationY(computeTranslationYForFactor(mTranslationYFactor));
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            redrawLiveTile(false);
+            LauncherState state = mActivity.getStateManager().getState();
+            if (state == OVERVIEW || state == ALL_APPS) {
+                redrawLiveTile(false);
+            }
         }
     }
 
