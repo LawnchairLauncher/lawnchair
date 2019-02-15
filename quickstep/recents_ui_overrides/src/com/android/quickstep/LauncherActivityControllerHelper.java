@@ -29,6 +29,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -51,6 +52,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
+import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.LauncherLayoutListener;
@@ -108,17 +110,41 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     @NonNull
     @Override
     public HomeAnimationFactory prepareHomeUI(Launcher activity) {
-        DeviceProfile dp = activity.getDeviceProfile();
+        final DeviceProfile dp = activity.getDeviceProfile();
+        final RecentsView recentsView = activity.getOverviewPanel();
+        final ComponentName component = recentsView.getRunningTaskView().getTask().key
+                .sourceComponent;
+
+        final View workspaceView = activity.getWorkspace().getFirstMatchForAppClose(component);
+        final FloatingIconView floatingView = workspaceView == null ? null
+                : new FloatingIconView(activity);
+        final Rect iconLocation = new Rect();
+        if (floatingView != null) {
+            floatingView.matchPositionOf(activity, workspaceView, true /* hideOriginal */,
+                    iconLocation);
+        }
 
         return new HomeAnimationFactory() {
+            @Nullable
+            @Override
+            public View getFloatingView() {
+                return floatingView;
+            }
+
             @NonNull
             @Override
             public RectF getWindowTargetRect() {
-                int halfIconSize = dp.iconSizePx / 2;
-                float targetCenterX = dp.availableWidthPx / 2;
-                float targetCenterY = dp.availableHeightPx - dp.hotseatBarSizePx;
-                return new RectF(targetCenterX - halfIconSize, targetCenterY - halfIconSize,
-                        targetCenterX + halfIconSize, targetCenterY + halfIconSize);
+                final int halfIconSize = dp.iconSizePx / 2;
+                final float targetCenterX = dp.availableWidthPx / 2f;
+                final float targetCenterY = dp.availableHeightPx - dp.hotseatBarSizePx;
+
+                if (workspaceView != null) {
+                    return new RectF(iconLocation);
+                } else {
+                    // Fallback to animate to center of screen.
+                    return new RectF(targetCenterX - halfIconSize, targetCenterY - halfIconSize,
+                            targetCenterX + halfIconSize, targetCenterY + halfIconSize);
+                }
             }
 
             @NonNull

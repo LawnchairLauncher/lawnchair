@@ -82,9 +82,11 @@ import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.RaceConditionTracker;
 import com.android.launcher3.util.TraceHelper;
+import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.ActivityControlHelper.AnimationFactory;
 import com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState;
+import com.android.quickstep.ActivityControlHelper.HomeAnimationFactory;
 import com.android.quickstep.ActivityControlHelper.LayoutListener;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
@@ -924,13 +926,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private void animateToProgressInternal(float start, float end, long duration,
             Interpolator interpolator, GestureEndTarget target, float velocityPxPerMs) {
         mGestureEndTarget = target;
-        ActivityControlHelper.HomeAnimationFactory homeAnimFactory;
+        HomeAnimationFactory homeAnimFactory;
         Animator windowAnim;
         if (mGestureEndTarget == HOME) {
             if (mActivity != null) {
                 homeAnimFactory = mActivityControlHelper.prepareHomeUI(mActivity);
             } else {
-                homeAnimFactory = new ActivityControlHelper.HomeAnimationFactory() {
+                homeAnimFactory = new HomeAnimationFactory() {
                     @NonNull
                     @Override
                     public RectF getWindowTargetRect() {
@@ -948,7 +950,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 mStateCallback.addChangeHandler(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
                         isPresent -> mRecentsView.startHome());
             }
-            windowAnim = createWindowAnimationToHome(start, homeAnimFactory.getWindowTargetRect());
+            windowAnim = createWindowAnimationToHome(start, homeAnimFactory);
             mLauncherTransitionController = null;
         } else {
             windowAnim = mCurrentShift.animateToValue(start, end);
@@ -998,20 +1000,25 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     /**
      * Creates an Animator that transforms the current app window into the home app.
      * @param startProgress The progress of {@link #mCurrentShift} to start the window from.
-     * @param endTarget Where to animate the window towards.
+     * @param homeAnimationFactory The home animation factory.
      */
-    private Animator createWindowAnimationToHome(float startProgress, RectF endTarget) {
+    private Animator createWindowAnimationToHome(float startProgress,
+            HomeAnimationFactory homeAnimationFactory) {
         final RemoteAnimationTargetSet targetSet = mRecentsAnimationWrapper.targetSet;
         RectF startRect = new RectF(mClipAnimationHelper.applyTransform(targetSet,
                 mTransformParams.setProgress(startProgress)));
         RectF originalTarget = new RectF(mClipAnimationHelper.getTargetRect());
-        final RectF finalTarget = endTarget;
+        final RectF finalTarget = homeAnimationFactory.getWindowTargetRect();
 
         final RectFEvaluator rectFEvaluator = new RectFEvaluator();
         final RectF targetRect = new RectF();
         final RectF currentRect = new RectF();
 
+        final View floatingView = homeAnimationFactory.getFloatingView();
         ValueAnimator anim = ValueAnimator.ofFloat(0, 1);
+        if (floatingView instanceof FloatingIconView) {
+            anim.addListener((FloatingIconView) floatingView);
+        }
         anim.addUpdateListener(animation -> {
             float progress = animation.getAnimatedFraction();
             float interpolatedProgress = Interpolators.ACCEL_2.getInterpolation(progress);
@@ -1026,6 +1033,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             mTransformParams.setCurrentRectAndTargetAlpha(currentRect, alpha)
                     .setSyncTransactionApplier(mSyncTransactionApplier);
             mClipAnimationHelper.applyTransform(targetSet, mTransformParams);
+
+            if (floatingView instanceof FloatingIconView) {
+                ((FloatingIconView) floatingView).update(currentRect, 1f - alpha);
+            }
         });
         anim.addListener(new AnimationSuccessListener() {
             @Override
