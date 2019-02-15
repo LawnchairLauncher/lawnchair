@@ -39,6 +39,7 @@ import com.android.launcher3.tapl.AllApps;
 import com.android.launcher3.tapl.AppIcon;
 import com.android.launcher3.tapl.AppIconMenu;
 import com.android.launcher3.tapl.AppIconMenuItem;
+import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.views.OptionsPopupView;
@@ -300,6 +301,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     public void testLaunchMenuItem() throws Exception {
+        if (!TestHelpers.isInLauncherProcess()) return;
         final LauncherActivityInfo testApp = getSettingsApp();
 
         final AppIconMenu menu = mLauncher.
@@ -338,6 +340,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     public void testDragShortcut() throws Throwable {
+        if (!TestHelpers.isInLauncherProcess()) return;
         LauncherActivityInfo testApp = getSettingsApp();
 
         // 1. Open all apps and wait for load complete.
