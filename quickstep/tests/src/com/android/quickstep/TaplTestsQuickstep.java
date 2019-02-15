@@ -55,12 +55,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-
-        clearLauncherData();
-
-        mLauncher.pressHome();
-        waitForState("Launcher internal state didn't switch to Home", LauncherState.NORMAL);
-        waitForResumed("Launcher internal state is still Background");
+        TaplTestsLauncher3.initialize(this);
     }
 
     private void startTestApps() throws Exception {

@@ -104,13 +104,15 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        initialize(this);
+    }
 
-        clearLauncherData();
-
-        mDevice.pressHome();
-        waitForLauncherCondition("Launcher didn't start", launcher -> launcher != null);
-        waitForState("Launcher internal state didn't switch to Home", LauncherState.NORMAL);
-        waitForResumed("Launcher internal state is still Background");
+    public static void initialize(AbstractLauncherUiTest test) throws Exception {
+        test.clearLauncherData();
+        test.mDevice.pressHome();
+        test.waitForLauncherCondition("Launcher didn't start", launcher -> launcher != null);
+        test.waitForState("Launcher internal state didn't switch to Home", LauncherState.NORMAL);
+        test.waitForResumed("Launcher internal state is still Background");
     }
 
     // Please don't add negative test cases for methods that fail only after a long wait.
