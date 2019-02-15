@@ -425,8 +425,8 @@ public final class LauncherInstrumentation {
                 event -> TestProtocol.SWITCHED_TO_STATE_MESSAGE.equals(event.getClassName()),
                 "Swipe failed to receive an event for the swipe end: " + startX + ", " + startY
                         + ", " + endX + ", " + endY);
-        assertEquals("Swipe switched launcher to a wrong state",
-                expectedState, parcel.getInt(TestProtocol.STATE_FIELD));
+//        assertEquals("Swipe switched launcher to a wrong state",
+//                expectedState, parcel.getInt(TestProtocol.STATE_FIELD));
     }
 
     void waitForIdle() {
