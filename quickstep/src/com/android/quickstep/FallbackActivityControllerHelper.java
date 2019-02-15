@@ -194,7 +194,7 @@ public final class FallbackActivityControllerHelper implements
     }
 
     @Override
-    public boolean switchToRecentsIfVisible(boolean fromRecentsButton) {
+    public boolean switchToRecentsIfVisible(Runnable onCompleteCallback) {
         return false;
     }
 

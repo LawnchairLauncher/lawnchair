@@ -123,18 +123,17 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     }
 
     @Override
-    public boolean switchToRecentsIfVisible(boolean fromRecentsButton) {
+    public boolean switchToRecentsIfVisible(Runnable onCompleteCallback) {
         Launcher launcher = getVisibleLauncher();
         if (launcher == null) {
             return false;
         }
-        if (fromRecentsButton) {
-            launcher.getUserEventDispatcher().logActionCommand(
-                    LauncherLogProto.Action.Command.RECENTS_BUTTON,
-                    getContainerType(),
-                    LauncherLogProto.ContainerType.TASKSWITCHER);
-        }
-        launcher.getStateManager().goToState(OVERVIEW);
+        launcher.getUserEventDispatcher().logActionCommand(
+                LauncherLogProto.Action.Command.RECENTS_BUTTON,
+                getContainerType(),
+                LauncherLogProto.ContainerType.TASKSWITCHER);
+        launcher.getStateManager().goToState(OVERVIEW,
+                launcher.getStateManager().shouldAnimateStateChange(), onCompleteCallback);
         return true;
     }
 

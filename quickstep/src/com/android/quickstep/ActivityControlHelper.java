@@ -79,7 +79,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
     <T extends View> T getVisibleRecentsView();
 
     @UiThread
-    boolean switchToRecentsIfVisible(boolean fromRecentsButton);
+    boolean switchToRecentsIfVisible(Runnable onCompleteCallback);
 
     Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTargetCompat target);
 
