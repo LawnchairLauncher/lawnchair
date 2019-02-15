@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.TestProtocol.ALL_APPS_STATE_ORDINAL;
+
 import static junit.framework.TestCase.assertTrue;
 
 import android.graphics.Point;
@@ -56,7 +58,7 @@ public final class Workspace extends Home {
                 start.y,
                 start.x,
                 endY,
-                LauncherInstrumentation.APPS_LIST_STATE_ORDINAL
+                ALL_APPS_STATE_ORDINAL
         );
 
         return new AllApps(mLauncher);

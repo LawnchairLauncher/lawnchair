@@ -16,6 +16,7 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
 import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 
@@ -50,7 +51,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
     @NonNull
     public BaseOverview switchToOverview() {
         verifyActiveContainer();
-        goToOverviewUnchecked(LauncherInstrumentation.BACKGROUND_APP_STATE_ORDINAL);
+        goToOverviewUnchecked(BACKGROUND_APP_STATE_ORDINAL);
         assertTrue("Overview not visible", mLauncher.getDevice().wait(
                 Until.hasObject(By.pkg(getOverviewPackageName())), WAIT_TIME_MS));
         return new BaseOverview(mLauncher);

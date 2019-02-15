@@ -19,6 +19,10 @@ import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
+import static com.android.launcher3.TestProtocol.ALL_APPS_STATE_ORDINAL;
+import static com.android.launcher3.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
+import static com.android.launcher3.TestProtocol.OVERVIEW_STATE_ORDINAL;
+import static com.android.launcher3.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 
@@ -84,10 +88,12 @@ public class LauncherState {
     /**
      * Various Launcher states arranged in the increasing order of UI layers
      */
-    public static final LauncherState SPRING_LOADED = new SpringLoadedState(1);
-    public static final LauncherState OVERVIEW = new OverviewState(2);
-    public static final LauncherState ALL_APPS = new AllAppsState(3);
-    public static final LauncherState BACKGROUND_APP = new BackgroundAppState(4);
+    public static final LauncherState SPRING_LOADED = new SpringLoadedState(
+            SPRING_LOADED_STATE_ORDINAL);
+    public static final LauncherState OVERVIEW = new OverviewState(OVERVIEW_STATE_ORDINAL);
+    public static final LauncherState ALL_APPS = new AllAppsState(ALL_APPS_STATE_ORDINAL);
+    public static final LauncherState BACKGROUND_APP = new BackgroundAppState(
+            BACKGROUND_APP_STATE_ORDINAL);
 
     public final int ordinal;
 
