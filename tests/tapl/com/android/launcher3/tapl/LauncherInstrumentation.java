@@ -104,13 +104,13 @@ public final class LauncherInstrumentation {
     public LauncherInstrumentation(Instrumentation instrumentation) {
         mInstrumentation = instrumentation;
         mDevice = UiDevice.getInstance(instrumentation);
-        final boolean swipeUpEnabledDefault =
-                !SwipeUpSetting.isSwipeUpSettingAvailable() ||
-                        SwipeUpSetting.isSwipeUpEnabledDefaultValue();
-        mSwipeUpEnabled = Settings.Secure.getInt(
-                instrumentation.getTargetContext().getContentResolver(),
-                SWIPE_UP_SETTING_NAME,
-                swipeUpEnabledDefault ? 1 : 0) == 1;
+        final boolean swipeUpEnabledDefaultValue = SwipeUpSetting.isSwipeUpEnabledDefaultValue();
+        mSwipeUpEnabled = SwipeUpSetting.isSwipeUpSettingAvailable() ?
+                Settings.Secure.getInt(
+                        instrumentation.getTargetContext().getContentResolver(),
+                        SWIPE_UP_SETTING_NAME,
+                        swipeUpEnabledDefaultValue ? 1 : 0) == 1 :
+                swipeUpEnabledDefaultValue;
 
         // Launcher should run in test harness so that custom accessibility protocol between
         // Launcher and TAPL is enabled. In-process tests enable this protocol with a direct call
