@@ -21,6 +21,7 @@ import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CH
 
 import static com.android.launcher3.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
+import static com.android.launcher3.TestProtocol.NORMAL_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
@@ -81,7 +82,8 @@ public class LauncherState {
     /**
      * TODO: Create a separate class for NORMAL state.
      */
-    public static final LauncherState NORMAL = new LauncherState(0, ContainerType.WORKSPACE, 0,
+    public static final LauncherState NORMAL = new LauncherState(NORMAL_STATE_ORDINAL,
+            ContainerType.WORKSPACE, 0,
             FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HIDE_BACK_BUTTON |
             FLAG_HAS_SYS_UI_SCRIM);
 
