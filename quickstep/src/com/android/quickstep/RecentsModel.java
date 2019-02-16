@@ -15,8 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
-
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
@@ -28,6 +26,7 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.util.Log;
 import android.util.SparseArray;
+
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
@@ -35,10 +34,13 @@ import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.TaskStackChangeListener;
+
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
 import androidx.annotation.WorkerThread;
+
+import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 
 /**
  * Singleton class to load and manage recents model.
@@ -88,6 +90,14 @@ public class RecentsModel extends TaskStackChangeListener {
 
     public TaskThumbnailCache getThumbnailCache() {
         return mThumbnailCache;
+    }
+
+    public void startStabilizationSession() {
+        mTaskList.startStabilizationSession();
+    }
+
+    public void endStabilizationSession() {
+        mTaskList.endStabilizationSession();
     }
 
     /**

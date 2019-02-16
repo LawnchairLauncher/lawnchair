@@ -200,11 +200,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             this.containerType = containerType;
         }
 
-        // 0 is app, 1 is overview
+        /** 0 is app, 1 is overview */
         public final float endShift;
+        /** The state to apply when we reach this final target */
         public final int endState;
+        /** Whether the target is in the launcher activity */
         public final boolean isLauncher;
+        /** Whether the user can start a new gesture while this one is finishing */
         public final boolean canBeContinued;
+        /** Used to log where the user ended up after the gesture ends */
         public final int containerType;
     }
 
@@ -926,6 +930,17 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private void animateToProgressInternal(float start, float end, long duration,
             Interpolator interpolator, GestureEndTarget target, float velocityPxPerMs) {
         mGestureEndTarget = target;
+
+        if (mGestureEndTarget.canBeContinued) {
+            // Because we might continue this gesture, e.g. for consecutive quick switch, we need to
+            // stabilize the task list so that tasks don't rearrange in the middle of the gesture.
+            RecentsModel.INSTANCE.get(mContext).startStabilizationSession();
+        } else if (mGestureEndTarget.isLauncher) {
+            // Otherwise, if we're going to home or overview,
+            // we reset the tasks to a consistent start state.
+            RecentsModel.INSTANCE.get(mContext).endStabilizationSession();
+        }
+
         HomeAnimationFactory homeAnimFactory;
         Animator windowAnim;
         if (mGestureEndTarget == HOME) {
