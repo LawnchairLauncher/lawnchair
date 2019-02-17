@@ -95,6 +95,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         public View.OnClickListener getOnClickListener(
                 BaseDraggingActivity activity, ItemInfo itemInfo) {
             return (view) -> {
+                dismissTaskMenuView(activity);
                 Rect sourceBounds = activity.getViewBounds(view);
                 Bundle opts = activity.getActivityLaunchOptionsAsBundle(view);
                 new PackageManagerHelper(activity).startDetailsActivityForInfo(
@@ -136,5 +137,10 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
                 AbstractFloatingView.closeAllOpenViews(activity);
             };
         }
+    }
+
+    protected static void dismissTaskMenuView(BaseDraggingActivity activity) {
+        AbstractFloatingView.closeOpenViews(activity, true,
+            AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
     }
 }

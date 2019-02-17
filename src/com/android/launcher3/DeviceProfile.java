@@ -62,6 +62,9 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
 
     private static final float TALL_DEVICE_ASPECT_RATIO_THRESHOLD = 2.0f;
 
+    // To evenly space the icons, increase the left/right margins for tablets in portrait mode.
+    private static final int PORTRAIT_TABLET_LEFT_RIGHT_PADDING_MULTIPLIER = 4;
+
     // Workspace
     public final int desiredWorkspaceLeftRightMarginPx;
     public int cellLayoutPaddingLeftRightPx;
@@ -181,6 +184,10 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         desiredWorkspaceLeftRightMarginPx = isVerticalBarLayout() ? 0 : edgeMarginPx;
+        int cellLayoutPaddingLeftRightMultiplier = !isVerticalBarLayout() && isTablet
+                ? PORTRAIT_TABLET_LEFT_RIGHT_PADDING_MULTIPLIER : 1;
+        cellLayoutPaddingLeftRightPx = cellLayoutPaddingLeftRightMultiplier *
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
         cellLayoutBottomPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_bottom_padding);
         verticalDragHandleOverlapWorkspace =

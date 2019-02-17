@@ -52,6 +52,11 @@ public class QsbWidgetHostView extends AppWidgetHostView {
         return mPreviousOrientation != orientation;
     }
 
+    @Override
+    public void setPadding(int left, int top, int right, int bottom) {
+        // Prevent the base class from applying the default widget padding.
+        super.setPadding(0, 0, 0, 0);
+    }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {

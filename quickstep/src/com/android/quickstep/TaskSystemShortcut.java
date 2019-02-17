@@ -28,20 +28,16 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.support.annotation.RequiresApi;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
-
 import android.view.View.OnClickListener;
 import ch.deletescape.lawnchair.HiddenApiCompat;
-import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.DeviceProfile;
@@ -63,7 +59,6 @@ import com.android.systemui.shared.recents.view.RecentsTransition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -396,10 +391,5 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
             Log.d(TAG, "Popup window launch bounds=" + bounds);
             return bounds;
         }
-    }
-
-    private static void dismissTaskMenuView(BaseDraggingActivity activity) {
-        AbstractFloatingView.closeOpenViews(activity, true,
-                AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
     }
 }
