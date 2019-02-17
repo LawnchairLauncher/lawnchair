@@ -22,6 +22,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Handler
+import android.os.HandlerThread
 import android.support.annotation.Keep
 import android.text.TextUtils
 import android.util.Log
@@ -33,7 +35,7 @@ import com.android.launcher3.Launcher
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.PackageManagerHelper
 import java.util.concurrent.Semaphore
-import kotlin.math.roundToInt
+import java.util.concurrent.TimeUnit
 
 class LawnchairSmartspaceController(val context: Context) {
 
@@ -183,6 +185,51 @@ class LawnchairSmartspaceController(val context: Context) {
             if (currentData != null) {
                 updateData(currentData?.weather, currentData?.card)
             }
+        }
+    }
+
+    abstract class PeriodicDataProvider(controller: LawnchairSmartspaceController) : DataProvider(controller) {
+
+        private val handlerThread = HandlerThread(this::class.java.simpleName).apply { if (!isAlive) start() }
+        private val handler = Handler(handlerThread.looper)
+        private val update = ::periodicUpdate
+
+        open val timeout = TimeUnit.MINUTES.toMillis(30)
+
+        override fun performSetup() {
+            super.performSetup()
+            handler.post(update)
+        }
+
+        private fun periodicUpdate() {
+            try {
+                updateData()
+            } catch (e: Exception) {
+                Log.d("PeriodicDataProvider", "failed to update data", e)
+            }
+            handler.postDelayed(update, timeout)
+        }
+
+        override fun onDestroy() {
+            super.onDestroy()
+            handlerThread.quit()
+        }
+
+        protected fun updateNow() {
+            handler.removeCallbacks(update)
+            handler.post(update)
+        }
+
+        open fun updateData() {
+            updateData(queryWeatherData(), queryCardData())
+        }
+
+        open fun queryWeatherData(): WeatherData? {
+            return null
+        }
+
+        open fun queryCardData() : CardData? {
+            return null
         }
     }
 

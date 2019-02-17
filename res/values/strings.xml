@@ -555,6 +555,7 @@
     <string name="weather_provider_disabled">Disabled</string>
     <string name="weather_provider_widget">Google app widget</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
+    <string name="weather_provider_pe">PixelExperience</string>
     <string name="pref_smartspace_widget_provider">Weather provider</string>
     <string name="pref_smartspace_event_provider">Event provider</string>
     <string name="title_all_apps_search">Show search bar</string>

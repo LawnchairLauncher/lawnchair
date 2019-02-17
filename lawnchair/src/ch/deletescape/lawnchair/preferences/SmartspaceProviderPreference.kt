@@ -53,6 +53,8 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
         if (FeedBridge.getInstance(context).resolveBridge()?.supportsSmartspace == true)
             list.add(SmartspacePixelBridge::class.java.name)
         list.add(OWMWeatherDataProvider::class.java.name)
+        if (PEWeatherDataProvider.isAvailable(context))
+            list.add(PEWeatherDataProvider::class.java.name)
         if (prefs.showDebugInfo)
             list.add(FakeDataProvider::class.java.name)
         return list
@@ -111,6 +113,7 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
                 Pair(SmartspaceDataWidget::class.java.name, R.string.weather_provider_widget),
                 Pair(SmartspacePixelBridge::class.java.name, R.string.smartspace_provider_bridge),
                 Pair(OWMWeatherDataProvider::class.java.name, R.string.weather_provider_owm),
+                Pair(PEWeatherDataProvider::class.java.name, R.string.weather_provider_pe),
                 Pair(FakeDataProvider::class.java.name, R.string.weather_provider_testing))
     }
 }
