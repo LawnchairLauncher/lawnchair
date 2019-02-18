@@ -15,7 +15,6 @@
  */
 package com.android.quickstep.views;
 
-import static com.android.launcher3.AbstractFloatingView.TYPE_QUICKSTEP_PREVIEW;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -36,8 +35,6 @@ import android.util.FloatProperty;
 import android.view.View;
 import android.view.ViewDebug;
 
-import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -77,7 +74,6 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     private float mTranslationYFactor;
 
     private final TransformParams mTransformParams = new TransformParams();
-    final LauncherLayoutListener mLauncherLayoutListener;
 
     public LauncherRecentsView(Context context) {
         this(context, null);
@@ -90,7 +86,6 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     public LauncherRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setContentAlpha(0);
-        mLauncherLayoutListener = new LauncherLayoutListener(BaseActivity.fromContext(context));
     }
 
     @Override
@@ -205,12 +200,8 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
 
     @Override
     public void redrawLiveTile(boolean mightNeedToRefill) {
-        AbstractFloatingView layoutListener = AbstractFloatingView.getTopOpenViewWithType(
-                mActivity, TYPE_QUICKSTEP_PREVIEW);
-        if (layoutListener != null && layoutListener.isOpen()) {
-            return;
-        }
-        if (mRecentsAnimationWrapper == null || mClipAnimationHelper == null) {
+        if (!mEnableDrawingLiveTile || mRecentsAnimationWrapper == null
+                || mClipAnimationHelper == null) {
             return;
         }
         TaskView taskView = getRunningTaskView();

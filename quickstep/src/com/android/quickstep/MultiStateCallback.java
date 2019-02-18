@@ -44,6 +44,11 @@ public class MultiStateCallback {
      * Adds the provided state flags to the global state and executes any callbacks as a result.
      */
     public void setState(int stateFlag) {
+        if (DEBUG_STATES) {
+            Log.d(TAG, "[" + System.identityHashCode(this) + "] Adding "
+                    + convertToFlagNames(stateFlag) + " to " + convertToFlagNames(mState));
+        }
+
         int oldState = mState;
         mState = mState | stateFlag;
 
@@ -68,6 +73,11 @@ public class MultiStateCallback {
      * as a result.
      */
     public void clearState(int stateFlag) {
+        if (DEBUG_STATES) {
+            Log.d(TAG, "[" + System.identityHashCode(this) + "] Removing "
+                    + convertToFlagNames(stateFlag) + " from " + convertToFlagNames(mState));
+        }
+
         int oldState = mState;
         mState = mState & ~stateFlag;
         notifyStateChangeHandlers(oldState);
@@ -109,24 +119,14 @@ public class MultiStateCallback {
         return (mState & stateMask) == stateMask;
     }
 
-    private void debugNewState(int stateFlag) {
-        if (!DEBUG_STATES) {
-            return;
-        }
-
-        int state = getState();
-        StringJoiner currentStateStr = new StringJoiner(", ", "[", "]");
-        String stateFlagStr = "Unknown-" + stateFlag;
+    private String convertToFlagNames(int flags) {
+        StringJoiner joiner = new StringJoiner(", ", "[", " (" + flags + ")]");
         for (int i = 0; i < mStateNames.length; i++) {
-            if ((state & (i << i)) != 0) {
-                currentStateStr.add(mStateNames[i]);
-            }
-            if (stateFlag == (1 << i)) {
-                stateFlagStr = mStateNames[i] + " (" + stateFlag + ")";
+            if ((flags & (1 << i)) != 0) {
+                joiner.add(mStateNames[i]);
             }
         }
-        Log.d(TAG, "[" + System.identityHashCode(this) + "] Adding " + stateFlagStr + " to "
-                + currentStateStr);
+        return joiner.toString();
     }
 
 }
