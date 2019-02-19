@@ -43,6 +43,9 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RaceConditionTracker;
@@ -58,9 +61,6 @@ import com.android.systemui.shared.system.NavigationBarCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.function.Consumer;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
 
 /**
  * Touch consumer for handling events originating from an activity other than Launcher
@@ -177,6 +177,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                     mLastPos.set(ev.getX(newPointerIdx), ev.getY(newPointerIdx));
                     mActivePointerId = ev.getPointerId(newPointerIdx);
                 }
+                dispatchMotion(ev, null, null);
                 break;
             }
             case ACTION_MOVE: {
@@ -244,8 +245,11 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         }
     }
 
-    private void dispatchMotion(MotionEvent ev, float displacement, @Nullable Float velocityX) {
-        mInteractionHandler.updateDisplacement(displacement);
+    private void dispatchMotion(MotionEvent ev, @Nullable Float displacement,
+            @Nullable Float velocityX) {
+        if (displacement != null) {
+            mInteractionHandler.updateDisplacement(displacement);
+        }
         boolean isLandscape = isNavBarOnLeft() || isNavBarOnRight();
         if (!isLandscape) {
             mInteractionHandler.dispatchMotionEventToRecentsView(ev, velocityX);
