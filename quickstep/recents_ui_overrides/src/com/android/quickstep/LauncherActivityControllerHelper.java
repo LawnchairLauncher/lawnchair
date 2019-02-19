@@ -104,13 +104,11 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                 .sourceComponent;
 
         final View workspaceView = activity.getWorkspace().getFirstMatchForAppClose(component);
-        final FloatingIconView floatingView = workspaceView == null ? null
-                : new FloatingIconView(activity);
         final Rect iconLocation = new Rect();
-        if (floatingView != null) {
-            floatingView.matchPositionOf(activity, workspaceView, true /* hideOriginal */,
-                    iconLocation);
-        }
+        final FloatingIconView floatingView = workspaceView == null ? null
+                : FloatingIconView.getFloatingIconView(activity, workspaceView,
+                true /* hideOriginal */, false /* useDrawableAsIs */,
+                activity.getDeviceProfile().getAspectRatioWithInsets(), iconLocation, null);
 
         return new HomeAnimationFactory() {
             @Nullable

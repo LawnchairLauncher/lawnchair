@@ -972,27 +972,36 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         final RectF currentRect = new RectF();
 
         final View floatingView = homeAnimationFactory.getFloatingView();
+        final boolean isFloatingIconView = floatingView instanceof FloatingIconView;
+
         ValueAnimator anim = ValueAnimator.ofFloat(0, 1);
-        if (floatingView instanceof FloatingIconView) {
+        if (isFloatingIconView) {
             anim.addListener((FloatingIconView) floatingView);
         }
+
+        // We want the window alpha to be 0 once this threshold is met, so that the
+        // FolderIconView can be seen morphing into the icon shape.
+        final float windowAlphaThreshold = isFloatingIconView ? 0.75f : 1f;
         anim.addUpdateListener(animation -> {
             float progress = animation.getAnimatedFraction();
-            float interpolatedProgress = Interpolators.ACCEL_2.getInterpolation(progress);
+            float interpolatedProgress = Interpolators.ACCEL_1_5.getInterpolation(progress);
             // Initially go towards original target (task view in recents),
             // but accelerate towards the final target.
             // TODO: This is technically not correct. Instead, motion should continue at
             // the released velocity but accelerate towards the target.
             targetRect.set(rectFEvaluator.evaluate(interpolatedProgress,
                     originalTarget, finalTarget));
-            currentRect.set(rectFEvaluator.evaluate(progress, startRect, targetRect));
-            float alpha = 1 - interpolatedProgress;
-            mTransformParams.setCurrentRectAndTargetAlpha(currentRect, alpha)
+            currentRect.set(rectFEvaluator.evaluate(interpolatedProgress, startRect, targetRect));
+
+            float iconAlpha = Utilities.mapToRange(interpolatedProgress, 0,
+                    windowAlphaThreshold, 0f, 1f, Interpolators.LINEAR);
+            mTransformParams.setCurrentRectAndTargetAlpha(currentRect, 1f - iconAlpha)
                     .setSyncTransactionApplier(mSyncTransactionApplier);
             mClipAnimationHelper.applyTransform(targetSet, mTransformParams);
 
-            if (floatingView instanceof FloatingIconView) {
-                ((FloatingIconView) floatingView).update(currentRect, 1f - alpha);
+            if (isFloatingIconView) {
+                ((FloatingIconView) floatingView).update(currentRect, iconAlpha, progress,
+                        windowAlphaThreshold);
             }
         });
         anim.addListener(new AnimationSuccessListener() {

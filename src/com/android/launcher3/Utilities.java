@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -37,6 +38,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
@@ -55,14 +57,24 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
+import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutView;
+import com.android.launcher3.shortcuts.ShortcutInfoCompat;
+import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -556,6 +568,7 @@ public final class Utilities {
     public static void getLocationBoundsForView(Launcher launcher, View v, Rect outRect) {
         final DragLayer dragLayer = launcher.getDragLayer();
         final boolean isBubbleTextView = v instanceof BubbleTextView;
+        final boolean isFolderIcon = v instanceof FolderIcon;
         final Rect rect = new Rect();
 
         final boolean fromDeepShortcutView = v.getParent() instanceof DeepShortcutView;
@@ -563,15 +576,14 @@ public final class Utilities {
             // Deep shortcut views have their icon drawn in a separate view.
             DeepShortcutView view = (DeepShortcutView) v.getParent();
             dragLayer.getDescendantRectRelativeToSelf(view.getIconView(), rect);
-        } else if (isBubbleTextView && v.getTag() instanceof ItemInfo
+        } else if ((isBubbleTextView || isFolderIcon) && v.getTag() instanceof ItemInfo
                 && (((ItemInfo) v.getTag()).container == CONTAINER_DESKTOP
                 || ((ItemInfo) v.getTag()).container == CONTAINER_HOTSEAT)) {
-            BubbleTextView btv = (BubbleTextView) v;
-            CellLayout pageViewIsOn = ((CellLayout) btv.getParent().getParent());
+            CellLayout pageViewIsOn = ((CellLayout) v.getParent().getParent());
             int pageNum = launcher.getWorkspace().indexOfChild(pageViewIsOn);
 
             DeviceProfile dp = launcher.getDeviceProfile();
-            ItemInfo info = ((ItemInfo) btv.getTag());
+            ItemInfo info = ((ItemInfo) v.getTag());
             dp.getItemLocation(info.cellX, info.cellY, info.spanX, info.spanY,
                     info.container, pageNum - launcher.getCurrentWorkspaceScreen(), rect);
         } else {
@@ -595,6 +607,51 @@ public final class Utilities {
     public static void unregisterReceiverSafely(Context context, BroadcastReceiver receiver) {
         try {
             context.unregisterReceiver(receiver);
-        } catch (IllegalArgumentException e) { }
+        } catch (IllegalArgumentException e) {}
+    }
+
+    /**
+     * Returns the full drawable for {@param info}.
+     * @param outObj this is set to the internal data associated with {@param info},
+     *               eg {@link LauncherActivityInfo} or {@link ShortcutInfoCompat}.
+     */
+    public static Drawable getFullDrawable(Launcher launcher, ItemInfo info, int width, int height,
+            Object[] outObj) {
+        LauncherAppState appState = LauncherAppState.getInstance(launcher);
+        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+            LauncherActivityInfo activityInfo = LauncherAppsCompat.getInstance(launcher)
+                    .resolveActivity(info.getIntent(), info.user);
+            outObj[0] = activityInfo;
+            return (activityInfo != null) ? appState.getIconCache()
+                    .getFullResIcon(activityInfo, false) : null;
+        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+            if (info instanceof PendingAddShortcutInfo) {
+                ShortcutConfigActivityInfo activityInfo =
+                        ((PendingAddShortcutInfo) info).activityInfo;
+                outObj[0] = activityInfo;
+                return activityInfo.getFullResIcon(appState.getIconCache());
+            }
+            ShortcutKey key = ShortcutKey.fromItemInfo(info);
+            DeepShortcutManager sm = DeepShortcutManager.getInstance(launcher);
+            List<ShortcutInfoCompat> si = sm.queryForFullDetails(
+                    key.componentName.getPackageName(), Arrays.asList(key.getId()), key.user);
+            if (si.isEmpty()) {
+                return null;
+            } else {
+                outObj[0] = si.get(0);
+                return sm.getShortcutIconDrawable(si.get(0),
+                        appState.getInvariantDeviceProfile().fillResIconDpi);
+            }
+        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+            FolderAdaptiveIcon icon = FolderAdaptiveIcon.createFolderAdaptiveIcon(
+                    launcher, info.id, new Point(width, height));
+            if (icon == null) {
+                return null;
+            }
+            outObj[0] = icon;
+            return icon;
+        } else {
+            return null;
+        }
     }
 }

@@ -403,9 +403,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     private void playIconAnimators(AnimatorSet appOpenAnimator, View v, Rect windowTargetBounds,
             boolean toggleVisibility) {
         final boolean isBubbleTextView = v instanceof BubbleTextView;
-        if (mFloatingView == null) {
-            mFloatingView = new FloatingIconView(mLauncher);
-        } else {
+        if (mFloatingView != null) {
             mFloatingView.setTranslationX(0);
             mFloatingView.setTranslationY(0);
             mFloatingView.setScaleX(1);
@@ -414,7 +412,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             mFloatingView.setBackground(null);
         }
         Rect rect = new Rect();
-        mFloatingView.matchPositionOf(mLauncher, v, toggleVisibility, rect);
+        mFloatingView = FloatingIconView.getFloatingIconView(mLauncher, v, toggleVisibility,
+                true /* useDrawableAsIs */, -1 /* aspectRatio */, rect, mFloatingView);
 
         int viewLocationStart = mIsRtl ? windowTargetBounds.width() - rect.right : rect.left;
         LayoutParams lp = (LayoutParams) mFloatingView.getLayoutParams();
