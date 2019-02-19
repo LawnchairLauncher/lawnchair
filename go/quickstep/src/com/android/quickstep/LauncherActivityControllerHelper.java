@@ -44,18 +44,6 @@ import java.util.function.Consumer;
 public final class LauncherActivityControllerHelper implements ActivityControlHelper<Launcher>{
 
     @Override
-    public LayoutListener createLayoutListener(Launcher activity) {
-        // Go does not have draggable task snapshots.
-        return null;
-    }
-
-
-    @Override
-    public void executeOnWindowAvailable(Launcher activity, Runnable action) {
-        // Go does not support live tiles.
-    }
-
-    @Override
     public void onTransitionCancelled(Launcher activity, boolean activityVisible) {
         LauncherState startState = activity.getStateManager().getRestState();
         activity.getStateManager().goToState(startState, activityVisible);
@@ -148,20 +136,8 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     }
 
     @Override
-    public boolean supportsLongSwipe(Launcher activity) {
-        // Go does not support long swipe from the app.
-        return false;
-    }
-
-    @Override
     public AlphaProperty getAlphaProperty(Launcher activity) {
         return activity.getDragLayer().getAlphaProperty(DragLayer.ALPHA_INDEX_SWIPE_UP);
-    }
-
-    @Override
-    public LongSwipeHelper getLongSwipeController(Launcher activity, int runningTaskId) {
-        // Go does not support long swipe from the app.
-        return null;
     }
 
     @Override
