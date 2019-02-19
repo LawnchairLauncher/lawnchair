@@ -52,14 +52,10 @@ public class RecentsModel extends TaskStackChangeListener {
     public static final MainThreadInitializedObject<RecentsModel> INSTANCE =
             new MainThreadInitializedObject<>(c -> new RecentsModel(c));
 
-    private final SparseArray<Bundle> mCachedAssistData = new SparseArray<>(1);
-    private final ArrayList<AssistDataListener> mAssistDataListeners = new ArrayList<>();
-
     private final Context mContext;
     private final MainThreadExecutor mMainThreadExecutor;
 
     private ISystemUiProxy mSystemUiProxy;
-    private boolean mClearAssistCacheOnStackChange = true;
 
     private final RecentTasksList mTaskList;
     private final TaskIconCache mIconCache;
@@ -162,16 +158,6 @@ public class RecentsModel extends TaskStackChangeListener {
         });
     }
 
-    @Override
-    public void onTaskStackChanged() {
-        Preconditions.assertUIThread();
-        if (mClearAssistCacheOnStackChange) {
-            mCachedAssistData.clear();
-        } else {
-            mClearAssistCacheOnStackChange = true;
-        }
-    }
-
     public void setSystemUiProxy(ISystemUiProxy systemUiProxy) {
         mSystemUiProxy = systemUiProxy;
     }
@@ -242,45 +228,5 @@ public class RecentsModel extends TaskStackChangeListener {
                     "Failed to notify SysUI of overview shown from " + (fromHome ? "home" : "app")
                             + ": ", e);
         }
-    }
-
-    public void resetAssistCache() {
-        mCachedAssistData.clear();
-    }
-
-    @WorkerThread
-    public void preloadAssistData(int taskId, Bundle data) {
-        mMainThreadExecutor.execute(() -> {
-            mCachedAssistData.put(taskId, data);
-            // We expect a stack change callback after the assist data is set. So ignore the
-            // very next stack change callback.
-            mClearAssistCacheOnStackChange = false;
-
-            int count = mAssistDataListeners.size();
-            for (int i = 0; i < count; i++) {
-                mAssistDataListeners.get(i).onAssistDataReceived(taskId);
-            }
-        });
-    }
-
-    public Bundle getAssistData(int taskId) {
-        Preconditions.assertUIThread();
-        return mCachedAssistData.get(taskId);
-    }
-
-    public void addAssistDataListener(AssistDataListener listener) {
-        mAssistDataListeners.add(listener);
-    }
-
-    public void removeAssistDataListener(AssistDataListener listener) {
-        mAssistDataListeners.remove(listener);
-    }
-
-    /**
-     * Callback for receiving assist data
-     */
-    public interface AssistDataListener {
-
-        void onAssistDataReceived(int taskId);
     }
 }
