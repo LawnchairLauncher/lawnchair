@@ -28,6 +28,7 @@ import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.Set;
+import java.util.function.Consumer;
 
 import androidx.annotation.UiThread;
 
@@ -38,6 +39,14 @@ import androidx.annotation.UiThread;
 public class RecentsAnimationListenerSet implements RecentsAnimationListener {
 
     private final Set<SwipeAnimationListener> mListeners = new ArraySet<>();
+    private final boolean mShouldMinimizeSplitScreen;
+    private final Consumer<SwipeAnimationTargetSet> mOnFinishListener;
+
+    public RecentsAnimationListenerSet(boolean shouldMinimizeSplitScreen,
+            Consumer<SwipeAnimationTargetSet> onFinishListener) {
+        mShouldMinimizeSplitScreen = shouldMinimizeSplitScreen;
+        mOnFinishListener = onFinishListener;
+    }
 
     @UiThread
     public void addListener(SwipeAnimationListener listener) {
@@ -56,7 +65,8 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
             RemoteAnimationTargetCompat[] targets, Rect homeContentInsets,
             Rect minimizedHomeBounds) {
         SwipeAnimationTargetSet targetSet = new SwipeAnimationTargetSet(controller, targets,
-                homeContentInsets, minimizedHomeBounds);
+                homeContentInsets, minimizedHomeBounds, mShouldMinimizeSplitScreen,
+                mOnFinishListener);
         Utilities.postAsyncCallback(MAIN_THREAD_EXECUTOR.getHandler(), () -> {
             for (SwipeAnimationListener listener : getListeners()) {
                 listener.onRecentsAnimationStart(targetSet);

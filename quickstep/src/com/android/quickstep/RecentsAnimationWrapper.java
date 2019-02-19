@@ -21,17 +21,11 @@ import static android.view.MotionEvent.ACTION_UP;
 
 import android.view.MotionEvent;
 
-import com.android.launcher3.MainThreadExecutor;
-import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.Preconditions;
-import com.android.launcher3.util.TraceHelper;
-import com.android.launcher3.util.UiThreadHelper;
-import com.android.quickstep.util.RemoteAnimationTargetSet;
+import com.android.quickstep.util.SwipeAnimationTargetSet;
 import com.android.systemui.shared.system.InputConsumerController;
-import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 
 import androidx.annotation.UiThread;
@@ -45,17 +39,10 @@ public class RecentsAnimationWrapper {
     // than the state callbacks as these run on the current worker thread.
     private final ArrayList<Runnable> mCallbacks = new ArrayList<>();
 
-    public RemoteAnimationTargetSet targetSet;
+    public SwipeAnimationTargetSet targetSet;
 
-    private RecentsAnimationControllerCompat mController;
-    private boolean mInputConsumerEnabled = false;
-    private boolean mBehindSystemBars = true;
-    private boolean mSplitScreenMinimized = false;
+    private boolean mWindowThresholdCrossed = false;
 
-    private final ExecutorService mExecutorService =
-            new LooperExecutor(UiThreadHelper.getBackgroundLooper());
-
-    private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
     private final InputConsumerController mInputConsumer;
     private final Supplier<TouchConsumer> mTouchProxySupplier;
 
@@ -71,19 +58,14 @@ public class RecentsAnimationWrapper {
     }
 
     @UiThread
-    public synchronized void setController(
-            RecentsAnimationControllerCompat controller, RemoteAnimationTargetSet targetSet) {
+    public synchronized void setController(SwipeAnimationTargetSet targetSet) {
         Preconditions.assertUIThread();
-        TraceHelper.partitionSection("RecentsController", "Set controller " + controller);
-        this.mController = controller;
         this.targetSet = targetSet;
 
-        if (controller == null) {
+        if (targetSet == null) {
             return;
         }
-        if (mInputConsumerEnabled) {
-            enableInputConsumer();
-        }
+        targetSet.setWindowThresholdCrossed(mWindowThresholdCrossed);
 
         if (!mCallbacks.isEmpty()) {
             for (Runnable action : new ArrayList<>(mCallbacks)) {
@@ -105,13 +87,12 @@ public class RecentsAnimationWrapper {
      * @param onFinishComplete A callback that runs on the main thread after the animation
      *                         controller has finished on the background thread.
      */
+    @UiThread
     public void finish(boolean toRecents, Runnable onFinishComplete) {
+        Preconditions.assertUIThread();
         if (!toRecents) {
-            mExecutorService.submit(() -> finishBg(false, onFinishComplete));
-            return;
-        }
-
-        mMainThreadExecutor.execute(() -> {
+            finishAndClear(false, onFinishComplete);
+        } else {
             if (mTouchInProgress) {
                 mFinishPending = true;
                 // Execute the callback
@@ -119,45 +100,39 @@ public class RecentsAnimationWrapper {
                     onFinishComplete.run();
                 }
             } else {
-                mExecutorService.submit(() -> finishBg(true, onFinishComplete));
+                finishAndClear(true, onFinishComplete);
             }
-        });
+        }
     }
 
-    protected void finishBg(boolean toRecents, Runnable onFinishComplete) {
-        RecentsAnimationControllerCompat controller = mController;
-        mController = null;
-        TraceHelper.endSection("RecentsController", "Finish " + controller
-                + ", toRecents=" + toRecents);
+    private void finishAndClear(boolean toRecents, Runnable onFinishComplete) {
+        SwipeAnimationTargetSet controller = targetSet;
+        targetSet = null;
         if (controller != null) {
-            controller.setInputConsumerEnabled(false);
-            controller.finish(toRecents);
-
-            if (onFinishComplete != null) {
-                mMainThreadExecutor.execute(onFinishComplete);
-            }
+            controller.finishController(toRecents, onFinishComplete);
         }
     }
 
     public void enableInputConsumer() {
-        mInputConsumerEnabled = true;
-        if (mInputConsumerEnabled) {
-            mExecutorService.submit(() -> {
-                RecentsAnimationControllerCompat controller = mController;
-                TraceHelper.partitionSection("RecentsController",
-                        "Enabling consumer on " + controller);
-                if (controller != null) {
-                    controller.setInputConsumerEnabled(true);
-                }
-            });
+        if (targetSet != null) {
+            targetSet.enableInputConsumer();
+        }
+    }
+
+    /**
+     * Indicates that the gesture has crossed the window boundary threshold and system UI can be
+     * update the represent the window behind
+     */
+    public void setWindowThresholdCrossed(boolean windowThresholdCrossed) {
+        if (mWindowThresholdCrossed != windowThresholdCrossed) {
+            mWindowThresholdCrossed = windowThresholdCrossed;
+            if (targetSet != null) {
+                targetSet.setWindowThresholdCrossed(windowThresholdCrossed);
+            }
         }
     }
 
     public void enableTouchProxy() {
-        mMainThreadExecutor.execute(this::enableTouchProxyUi);
-    }
-
-    private void enableTouchProxyUi() {
         mInputConsumer.setTouchListener(this::onInputConsumerTouch);
     }
 
@@ -171,7 +146,7 @@ public class RecentsAnimationWrapper {
             mTouchInProgress = false;
             if (mFinishPending) {
                 mFinishPending = false;
-                mExecutorService.submit(() -> finishBg(true, null));
+                finishAndClear(true /* toRecents */, null);
             }
         }
         if (mTouchConsumer != null) {
@@ -181,54 +156,7 @@ public class RecentsAnimationWrapper {
         return true;
     }
 
-    public void setAnimationTargetsBehindSystemBars(boolean behindSystemBars) {
-        if (mBehindSystemBars == behindSystemBars) {
-            return;
-        }
-        mBehindSystemBars = behindSystemBars;
-        mExecutorService.submit(() -> {
-            RecentsAnimationControllerCompat controller = mController;
-            TraceHelper.partitionSection("RecentsController",
-                    "Setting behind system bars on " + controller);
-            if (controller != null) {
-                controller.setAnimationTargetsBehindSystemBars(behindSystemBars);
-            }
-        });
-    }
-
-    /**
-     * NOTE: As a workaround for conflicting animations (Launcher animating the task leash, and
-     * SystemUI resizing the docked stack, which resizes the task), we currently only set the
-     * minimized mode, and not the inverse.
-     * TODO: Synchronize the minimize animation with the launcher animation
-     */
-    public void setSplitScreenMinimizedForTransaction(boolean minimized) {
-        if (mSplitScreenMinimized || !minimized) {
-            return;
-        }
-        mSplitScreenMinimized = minimized;
-        mExecutorService.submit(() -> {
-            RecentsAnimationControllerCompat controller = mController;
-            TraceHelper.partitionSection("RecentsController",
-                    "Setting minimize dock on " + controller);
-            if (controller != null) {
-                controller.setSplitScreenMinimized(minimized);
-            }
-        });
-    }
-
-    public void hideCurrentInputMethod() {
-        mExecutorService.submit(() -> {
-            RecentsAnimationControllerCompat controller = mController;
-            TraceHelper.partitionSection("RecentsController",
-                    "Hiding currentinput method on " + controller);
-            if (controller != null) {
-                controller.hideCurrentInputMethod();
-            }
-        });
-    }
-
-    public RecentsAnimationControllerCompat getController() {
-        return mController;
+    public SwipeAnimationTargetSet getController() {
+        return targetSet;
     }
 }
