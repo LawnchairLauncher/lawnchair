@@ -36,7 +36,6 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewOverlay;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
@@ -44,8 +43,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.R;
-import com.android.launcher3.TestProtocol;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.SpringObjectAnimator;
@@ -373,19 +370,6 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     @Override
     public boolean shouldMinimizeSplitScreen() {
         return true;
-    }
-
-    @Override
-    public boolean supportsLongSwipe(Launcher activity) {
-        return !activity.getDeviceProfile().isVerticalBarLayout();
-    }
-
-    @Override
-    public LongSwipeHelper getLongSwipeController(Launcher activity, int runningTaskId) {
-        if (activity.getDeviceProfile().isVerticalBarLayout()) {
-            return null;
-        }
-        return new LongSwipeHelper(activity, runningTaskId);
     }
 
     @Override

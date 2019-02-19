@@ -85,14 +85,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         return true;
     }
 
-    boolean supportsLongSwipe(T activity);
-
     AlphaProperty getAlphaProperty(T activity);
-
-    /**
-     * Must return a non-null controller is supportsLongSwipe was true.
-     */
-    LongSwipeHelper getLongSwipeController(T activity, int runningTaskId);
 
     /**
      * Used for containerType in {@link com.android.launcher3.logging.UserEventDispatcher}

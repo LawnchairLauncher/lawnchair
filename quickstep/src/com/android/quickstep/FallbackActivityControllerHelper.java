@@ -186,16 +186,6 @@ public final class FallbackActivityControllerHelper implements
     }
 
     @Override
-    public boolean supportsLongSwipe(RecentsActivity activity) {
-        return false;
-    }
-
-    @Override
-    public LongSwipeHelper getLongSwipeController(RecentsActivity activity, int runningTaskId) {
-        return null;
-    }
-
-    @Override
     public AlphaProperty getAlphaProperty(RecentsActivity activity) {
         return activity.getDragLayer().getAlphaProperty(0);
     }
