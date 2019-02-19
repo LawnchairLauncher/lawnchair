@@ -49,10 +49,6 @@ import androidx.annotation.UiThread;
 @TargetApi(Build.VERSION_CODES.P)
 public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
-    LayoutListener createLayoutListener(T activity);
-
-    void executeOnWindowAvailable(T activity, Runnable action);
-
     void onTransitionCancelled(T activity, boolean activityVisible);
 
     int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect);
@@ -104,18 +100,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
     int getContainerType();
 
     boolean isInLiveTileMode();
-
-    interface LayoutListener {
-
-        void open();
-
-        void setHandler(WindowTransformSwipeHandler handler);
-
-        void finish();
-
-        void update(boolean shouldFinish, boolean isLongSwipe, RectF currentRect,
-                float cornerRadius);
-    }
 
     interface ActivityInitListener {
 

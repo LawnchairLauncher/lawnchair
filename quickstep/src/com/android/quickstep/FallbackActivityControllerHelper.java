@@ -57,11 +57,6 @@ public final class FallbackActivityControllerHelper implements
     }
 
     @Override
-    public void executeOnWindowAvailable(RecentsActivity activity, Runnable action) {
-        action.run();
-    }
-
-    @Override
     public void onTransitionCancelled(RecentsActivity activity, boolean activityVisible) {
         // TODO:
     }
@@ -148,26 +143,6 @@ public final class FallbackActivityControllerHelper implements
                 animatorSet.play(anim);
                 callback.accept(AnimatorPlaybackController.wrap(animatorSet, transitionLength));
             }
-        };
-    }
-
-    @Override
-    public LayoutListener createLayoutListener(RecentsActivity activity) {
-        // We do not change anything as part of layout changes in fallback activity. Return a
-        // default layout listener.
-        return new LayoutListener() {
-            @Override
-            public void open() { }
-
-            @Override
-            public void setHandler(WindowTransformSwipeHandler handler) { }
-
-            @Override
-            public void finish() { }
-
-            @Override
-            public void update(boolean shouldFinish, boolean isLongSwipe, RectF currentRect,
-                    float cornerRadius) { }
         };
     }
 

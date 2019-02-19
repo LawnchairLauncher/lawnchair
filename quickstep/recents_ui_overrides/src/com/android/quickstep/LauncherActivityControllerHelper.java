@@ -36,6 +36,7 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewOverlay;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
@@ -43,6 +44,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.R;
 import com.android.launcher3.TestProtocol;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -55,7 +57,6 @@ import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.LayoutUtils;
-import com.android.quickstep.views.LauncherLayoutListener;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -71,16 +72,6 @@ import androidx.annotation.UiThread;
  * {@link ActivityControlHelper} for the in-launcher recents.
  */
 public final class LauncherActivityControllerHelper implements ActivityControlHelper<Launcher> {
-
-    @Override
-    public LayoutListener createLayoutListener(Launcher activity) {
-        return LauncherLayoutListener.resetAndGet(activity);
-    }
-
-    @Override
-    public void executeOnWindowAvailable(Launcher activity, Runnable action) {
-        activity.getWorkspace().runOnOverlayHidden(action);
-    }
 
     @Override
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {

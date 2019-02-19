@@ -60,7 +60,9 @@ import android.os.SystemClock;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnApplyWindowInsetsListener;
 import android.view.ViewTreeObserver.OnDrawListener;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.view.animation.Interpolator;
 
@@ -87,11 +89,11 @@ import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.ActivityControlHelper.AnimationFactory;
 import com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState;
 import com.android.quickstep.ActivityControlHelper.HomeAnimationFactory;
-import com.android.quickstep.ActivityControlHelper.LayoutListener;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet.SwipeAnimationListener;
+import com.android.quickstep.views.LiveTileOverlay;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -111,10 +113,10 @@ import androidx.annotation.UiThread;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
-        implements SwipeAnimationListener {
+        implements SwipeAnimationListener, OnApplyWindowInsetsListener {
     private static final String TAG = WindowTransformSwipeHandler.class.getSimpleName();
 
-    private static final String[] STATE_NAMES = DEBUG_STATES ? new String[19] : null;
+    private static final String[] STATE_NAMES = DEBUG_STATES ? new String[20] : null;
 
     private static int getFlagForIndex(int index, String name) {
         if (DEBUG_STATES) {
@@ -166,6 +168,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             getFlagForIndex(17, "STATE_CURRENT_TASK_FINISHED");
     private static final int STATE_ASSIST_DATA_RECEIVED =
             getFlagForIndex(18, "STATE_ASSIST_DATA_RECEIVED");
+
+    private static final int STATE_LONG_SWIPE_ACTIVE =
+            getFlagForIndex(19, "LONG_SWIPE_ACTIVE");
 
     private static final int LAUNCHER_UI_STATES =
             STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_ACTIVITY_MULTIPLIER_COMPLETE
@@ -252,10 +257,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private AnimatorPlaybackController mLauncherTransitionController;
 
     private T mActivity;
-    private LayoutListener mLayoutListener;
     private RecentsView mRecentsView;
     private SyncRtSurfaceTransactionApplierCompat mSyncTransactionApplier;
     private AnimationFactory mAnimationFactory = (t) -> { };
+    private LiveTileOverlay mLiveTileOverlay = new LiveTileOverlay();
 
     private boolean mWasLauncherAlreadyVisible;
 
@@ -360,6 +365,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
         mStateCallback.addCallback(LONG_SWIPE_ENTER_STATE, this::checkLongSwipeCanEnter);
         mStateCallback.addCallback(LONG_SWIPE_START_STATE, this::checkLongSwipeCanStart);
+        mStateCallback.addChangeHandler(STATE_LONG_SWIPE_ACTIVE, this::onLongSwipeActiveChanged);
 
         if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             mStateCallback.addChangeHandler(STATE_APP_CONTROLLER_RECEIVED | STATE_LAUNCHER_PRESENT
@@ -410,7 +416,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             int oldState = mStateCallback.getState() & ~LAUNCHER_UI_STATES;
             initStateCallbacks();
             mStateCallback.setState(oldState);
-            mLayoutListener.setHandler(null);
         }
         mWasLauncherAlreadyVisible = alreadyOnHome;
         mActivity = activity;
@@ -423,10 +428,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         }
 
         mRecentsView = activity.getOverviewPanel();
-        SyncRtSurfaceTransactionApplierCompat.create(mRecentsView, (applier) -> {
-            mSyncTransactionApplier = applier;
-        });
+        SyncRtSurfaceTransactionApplierCompat.create(mRecentsView,
+                applier ->  mSyncTransactionApplier = applier );
         mRecentsView.setEnableFreeScroll(false);
+
         mRecentsView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             if (!mLongSwipeMode && mGestureEndTarget != HOME) {
                 updateFinalShift();
@@ -434,7 +439,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         });
         mRecentsView.setRecentsAnimationWrapper(mRecentsAnimationWrapper);
         mRecentsView.setClipAnimationHelper(mClipAnimationHelper);
-        mLayoutListener = mActivityControlHelper.createLayoutListener(mActivity);
+        mActivity.getRootView().getOverlay().add(mLiveTileOverlay);
 
         mStateCallback.setState(STATE_LAUNCHER_PRESENT);
         if (alreadyOnHome) {
@@ -480,7 +485,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         }
 
         setupRecentsViewUi();
-        mLayoutListener.open();
+        activity.getRootView().setOnApplyWindowInsetsListener(this);
         mStateCallback.setState(STATE_LAUNCHER_STARTED);
     }
 
@@ -522,7 +527,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void initializeLauncherAnimationController() {
-        mLayoutListener.setHandler(this);
         buildAnimationController();
 
         if (LatencyTrackerCompat.isEnabled(mContext)) {
@@ -570,13 +574,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             mCurrentShift.updateValue(1);
 
             if (!mLongSwipeMode && !FeatureFlags.SWIPE_HOME.get()) {
-                onLongSwipeEnabled();
+                setStateOnUiThread(STATE_LONG_SWIPE_ACTIVE);
             }
             mLongSwipeDisplacement = displacement - mTransitionDragLength;
             onLongSwipeDisplacementUpdated();
         } else {
             if (mLongSwipeMode) {
-                onLongSwipeDisabled();
+                mStateCallback.clearState(STATE_LONG_SWIPE_ACTIVE);
             }
             float translation = Math.max(displacement, 0);
             float shift = mTransitionDragLength == 0 ? 0 : translation / mTransitionDragLength;
@@ -598,12 +602,16 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         }
     }
 
-    /**
-     * Called by {@link #mLayoutListener} when launcher layout changes
-     */
-    public void buildAnimationController() {
+    private void buildAnimationController() {
         initTransitionEndpoints(mActivity.getDeviceProfile());
         mAnimationFactory.createActivityController(mTransitionDragLength);
+    }
+
+    @Override
+    public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
+        WindowInsets result = view.onApplyWindowInsets(windowInsets);
+        buildAnimationController();
+        return result;
     }
 
     private void onAnimatorPlaybackControllerCreated(AnimatorPlaybackController anim) {
@@ -640,10 +648,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         }
 
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            if (mRecentsAnimationWrapper.getController() != null && mLayoutListener != null) {
-                mLayoutListener.open();
-                mLayoutListener.update(mCurrentShift.value > 1, mLongSwipeMode,
-                        mClipAnimationHelper.getCurrentRectWithInsets(),
+            if (mRecentsAnimationWrapper.getController() != null) {
+                mLiveTileOverlay.update(mClipAnimationHelper.getCurrentRectWithInsets(),
                         mClipAnimationHelper.getCurrentCornerRadius());
             }
         }
@@ -1106,12 +1112,16 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private void invalidateHandlerWithLauncher() {
         mLauncherTransitionController = null;
-        mLayoutListener.finish();
         mActivityControlHelper.getAlphaProperty(mActivity).setValue(1);
 
         mRecentsView.setEnableFreeScroll(true);
         mRecentsView.setRunningTaskIconScaledDown(false);
         mRecentsView.setOnScrollChangeListener(null);
+        mRecentsView.setRunningTaskHidden(false);
+        mRecentsView.setEnableDrawingLiveTile(true);
+
+        mActivity.getRootView().setOnApplyWindowInsetsListener(null);
+        mActivity.getRootView().getOverlay().remove(mLiveTileOverlay);
     }
 
     private void notifyTransitionCancelled() {
@@ -1224,22 +1234,27 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     // Handling long swipe
-    private void onLongSwipeEnabled() {
-        mLongSwipeMode = true;
-        checkLongSwipeCanEnter();
-        checkLongSwipeCanStart();
-    }
+    private void onLongSwipeActiveChanged(boolean isActive) {
+        mLongSwipeMode = isActive;
 
-    private void onLongSwipeDisabled() {
-        mLongSwipeMode = false;
-        mStateCallback.clearState(STATE_SCREENSHOT_VIEW_SHOWN);
+        if (mLongSwipeMode) {
+            checkLongSwipeCanEnter();
+            checkLongSwipeCanStart();
+        } else {
+            mStateCallback.clearState(STATE_SCREENSHOT_VIEW_SHOWN);
 
-        if (mLongSwipeController != null) {
-            mLongSwipeController.destroy();
-            setTargetAlphaProvider((t, a1) -> a1);
+            if (mLongSwipeController != null) {
+                mLongSwipeController.destroy();
+                setTargetAlphaProvider((t, a1) -> a1);
 
-            // Rebuild animations
-            buildAnimationController();
+                // Rebuild animations
+                buildAnimationController();
+            }
+        }
+        mLiveTileOverlay.setDrawEnabled(!mLongSwipeMode);
+        if (mRecentsView != null) {
+            mRecentsView.setRunningTaskHidden(!isActive);
+            mRecentsView.setEnableDrawingLiveTile(isActive);
         }
     }
 
