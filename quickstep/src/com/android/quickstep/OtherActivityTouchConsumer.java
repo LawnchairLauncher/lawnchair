@@ -24,6 +24,7 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
+import static com.android.quickstep.TouchInteractionService.EDGE_NAV_BAR;
 import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
@@ -35,7 +36,6 @@ import android.content.Intent;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
-import android.os.Bundle;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -43,7 +43,6 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.config.FeatureFlags;
@@ -51,10 +50,10 @@ import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RaceConditionTracker;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget;
+import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.RecentsAnimationListenerSet;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.AssistDataReceiver;
 import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.NavigationBarCompat;
@@ -71,6 +70,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     public static final String DOWN_EVT = "OtherActivityTouchConsumer.DOWN";
     private static final String UP_EVT = "OtherActivityTouchConsumer.UP";
 
+    private final CachedEventDispatcher mRecentsViewDispatcher = new CachedEventDispatcher();
     private final RunningTaskInfo mRunningTask;
     private final RecentsModel mRecentsModel;
     private final Intent mHomeIntent;
@@ -143,6 +143,19 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         if (mVelocityTracker == null) {
             return;
         }
+
+        // Proxy events to recents view
+        if (!isNavBarOnLeft() && !isNavBarOnRight()) {
+            if (mPassedDragSlop && mInteractionHandler != null
+                    && !mRecentsViewDispatcher.hasConsumer()) {
+                mRecentsViewDispatcher.setConsumer(mInteractionHandler.getRecentsViewDispatcher());
+            }
+            int edgeFlags = ev.getEdgeFlags();
+            ev.setEdgeFlags(edgeFlags | EDGE_NAV_BAR);
+            mRecentsViewDispatcher.dispatchEvent(ev);
+            ev.setEdgeFlags(edgeFlags);
+        }
+
         mVelocityTracker.addMovement(ev);
         if (ev.getActionMasked() == ACTION_POINTER_UP) {
             mVelocityTracker.clear();
@@ -177,7 +190,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                     mLastPos.set(ev.getX(newPointerIdx), ev.getY(newPointerIdx));
                     mActivePointerId = ev.getPointerId(newPointerIdx);
                 }
-                dispatchMotion(ev, null, null);
                 break;
             }
             case ACTION_MOVE: {
@@ -220,7 +232,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
                 if (mPassedDragSlop && mInteractionHandler != null) {
                     // Move
-                    dispatchMotion(ev, displacement - mStartDisplacement, null);
+                    mInteractionHandler.updateDisplacement(displacement - mStartDisplacement);
 
                     if (FeatureFlags.SWIPE_HOME.get()) {
                         boolean isLandscape = isNavBarOnLeft() || isNavBarOnRight();
@@ -242,17 +254,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 RaceConditionTracker.onEvent(UP_EVT, EXIT);
                 break;
             }
-        }
-    }
-
-    private void dispatchMotion(MotionEvent ev, @Nullable Float displacement,
-            @Nullable Float velocityX) {
-        if (displacement != null) {
-            mInteractionHandler.updateDisplacement(displacement);
-        }
-        boolean isLandscape = isNavBarOnLeft() || isNavBarOnRight();
-        if (!isLandscape) {
-            mInteractionHandler.dispatchMotionEventToRecentsView(ev, velocityX);
         }
     }
 
@@ -319,8 +320,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                     : isNavBarOnLeft() ? -velocityX
                             : mVelocityTracker.getYVelocity(mActivePointerId);
 
-            dispatchMotion(ev, getDisplacement(ev) - mStartDisplacement, velocityX);
-
+            mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
             mInteractionHandler.onGestureEnded(velocity, velocityX);
         } else {
             // Since we start touch tracking on DOWN, we may reach this state without actually
