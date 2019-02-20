@@ -18,8 +18,6 @@ package com.android.quickstep;
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
-import static android.view.MotionEvent.ACTION_POINTER_DOWN;
-import static android.view.MotionEvent.ACTION_POINTER_INDEX_SHIFT;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
@@ -31,6 +29,7 @@ import android.view.ViewConfiguration;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 /**
@@ -39,6 +38,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 public class OverviewTouchConsumer<T extends BaseDraggingActivity>
         implements TouchConsumer {
 
+    private final CachedEventDispatcher mCachedEventDispatcher = new CachedEventDispatcher();
     private final T mActivity;
     private final BaseDragLayer mTarget;
     private final int[] mLocationOnScreen = new int[2];
@@ -62,6 +62,7 @@ public class OverviewTouchConsumer<T extends BaseDraggingActivity>
         if (mInvalidated) {
             return;
         }
+        mCachedEventDispatcher.dispatchEvent(ev);
         int action = ev.getActionMasked();
         if (action == ACTION_DOWN) {
             if (mStartingInActivityBounds) {
@@ -90,12 +91,13 @@ public class OverviewTouchConsumer<T extends BaseDraggingActivity>
             }
         }
 
-        if (mTrackingStarted) {
-            sendEvent(ev);
-        }
-
         if (action == ACTION_UP || action == ACTION_CANCEL) {
             mInvalidated = true;
+
+            // Set an empty consumer to that all the cached events are cleared
+            if (!mCachedEventDispatcher.hasConsumer()) {
+                mCachedEventDispatcher.setConsumer(NO_OP);
+            }
         }
     }
 
@@ -105,38 +107,27 @@ public class OverviewTouchConsumer<T extends BaseDraggingActivity>
             mTarget.getLocationOnScreen(mLocationOnScreen);
         }
 
-        // Send down touch event
-        MotionEvent down = MotionEvent.obtainNoHistory(ev);
-        down.setAction(ACTION_DOWN);
-        sendEvent(down);
-
-        mTrackingStarted = true;
-        // Send pointer down for remaining pointers.
-        int pointerCount = ev.getPointerCount();
-        for (int i = 1; i < pointerCount; i++) {
-            down.setAction(ACTION_POINTER_DOWN | (i << ACTION_POINTER_INDEX_SHIFT));
-            sendEvent(down);
-        }
-
-        down.recycle();
-
         if (closeActiveWindows) {
             OverviewCallbacks.get(mActivity).closeAllWindows();
             ActivityManagerWrapper.getInstance()
                     .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
             TOUCH_INTERACTION_LOG.startQuickStep();
         }
+
+        mTrackingStarted = true;
+        mCachedEventDispatcher.setConsumer(this::sendEvent);
+
     }
 
     private void sendEvent(MotionEvent ev) {
-        if (!mTarget.verifyTouchDispatch(this, ev)) {
+        if (mInvalidated || !mTarget.verifyTouchDispatch(this, ev)) {
             mInvalidated = true;
             return;
         }
         int flags = ev.getEdgeFlags();
         ev.setEdgeFlags(flags | TouchInteractionService.EDGE_NAV_BAR);
         ev.offsetLocation(-mLocationOnScreen[0], -mLocationOnScreen[1]);
-        if (!mTrackingStarted) {
+        if (ev.getAction() == ACTION_DOWN) {
             mTarget.onInterceptTouchEvent(ev);
         }
         mTarget.onTouchEvent(ev);
