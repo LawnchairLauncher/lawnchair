@@ -53,11 +53,11 @@ public class SwipeAnimationTargetSet extends RemoteAnimationTargetSet {
         this.mOnFinishListener = onFinishListener;
     }
 
-    public void finishController(boolean toRecents, Runnable callback) {
+    public void finishController(boolean toRecents, Runnable callback, boolean sendUserLeaveHint) {
         mOnFinishListener.accept(this);
         BACKGROUND_EXECUTOR.execute(() -> {
             controller.setInputConsumerEnabled(false);
-            controller.finish(toRecents);
+            controller.finish(toRecents, sendUserLeaveHint);
 
             if (callback != null) {
                 MAIN_THREAD_EXECUTOR.execute(callback);
