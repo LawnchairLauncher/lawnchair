@@ -31,8 +31,6 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.AnyThread;
-
 /**
  * Factory class to create and add an overlays on the TaskView
  */
@@ -50,11 +48,6 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
     public static final MainThreadInitializedObject<TaskOverlayFactory> INSTANCE =
             new MainThreadInitializedObject<>(c -> Overrides.getObject(TaskOverlayFactory.class,
                     c, R.string.task_overlay_factory_class));
-
-    @AnyThread
-    public boolean needAssist() {
-        return false;
-    }
 
     public TaskOverlay createOverlay(View thumbnailView) {
         return new TaskOverlay();

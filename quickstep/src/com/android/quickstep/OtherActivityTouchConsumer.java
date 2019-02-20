@@ -296,26 +296,12 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             listenerSet.addListener(handler);
             mSwipeSharedState.applyActiveRecentsAnimationState(handler);
         } else {
-            AssistDataReceiver assistDataReceiver = !mTaskOverlayFactory.needAssist() ? null :
-                    new AssistDataReceiver() {
-                        @Override
-                        public void onHandleAssistData(Bundle bundle) {
-                            if (mInteractionHandler == null) {
-                                // Interaction is probably complete
-                                mRecentsModel.preloadAssistData(mRunningTask.id, bundle);
-                            } else if (handler == mInteractionHandler) {
-                                handler.onAssistDataReceived(bundle);
-                            }
-                        }
-                    };
-
             RecentsAnimationListenerSet newListenerSet =
                     mSwipeSharedState.newRecentsAnimationListenerSet();
             newListenerSet.addListener(handler);
             BackgroundExecutor.get().submit(
                     () -> ActivityManagerWrapper.getInstance().startRecentsActivity(
-                            mHomeIntent, assistDataReceiver, newListenerSet,
-                            null, null));
+                            mHomeIntent, null, newListenerSet, null, null));
         }
     }
 

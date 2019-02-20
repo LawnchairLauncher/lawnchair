@@ -53,7 +53,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -164,8 +163,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             getFlagForIndex(16, "STATE_START_NEW_TASK");
     private static final int STATE_CURRENT_TASK_FINISHED =
             getFlagForIndex(17, "STATE_CURRENT_TASK_FINISHED");
-    private static final int STATE_ASSIST_DATA_RECEIVED =
-            getFlagForIndex(18, "STATE_ASSIST_DATA_RECEIVED");
 
     private static final int LAUNCHER_UI_STATES =
             STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_ACTIVITY_MULTIPLIER_COMPLETE
@@ -264,8 +261,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private final long mTouchTimeMs;
     private long mLauncherFrameDrawnTime;
 
-    private Bundle mAssistData;
-
     WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context,
             long touchTimeMs, ActivityControlHelper<T> controller, boolean continuingLastGesture,
             InputConsumerController inputConsumer) {
@@ -337,11 +332,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                         | STATE_CURRENT_TASK_FINISHED | STATE_GESTURE_COMPLETED
                         | STATE_GESTURE_STARTED,
                 this::setupLauncherUiAfterSwipeUpAnimation);
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_APP_CONTROLLER_RECEIVED
-                        | STATE_ACTIVITY_MULTIPLIER_COMPLETE | STATE_SCALED_CONTROLLER_RECENTS
-                        | STATE_CURRENT_TASK_FINISHED | STATE_GESTURE_COMPLETED
-                        | STATE_GESTURE_STARTED | STATE_ASSIST_DATA_RECEIVED,
-                this::preloadAssistData);
 
         mStateCallback.addCallback(STATE_HANDLER_INVALIDATED, this::invalidateHandler);
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
@@ -1206,15 +1196,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             BiFunction<RemoteAnimationTargetCompat, Float, Float> provider) {
         mClipAnimationHelper.setTaskAlphaCallback(provider);
         updateFinalShift();
-    }
-
-    public void onAssistDataReceived(Bundle assistData) {
-        mAssistData = assistData;
-        setStateOnUiThread(STATE_ASSIST_DATA_RECEIVED);
-    }
-
-    private void preloadAssistData() {
-        RecentsModel.INSTANCE.get(mContext).preloadAssistData(mRunningTaskId, mAssistData);
     }
 
     public static float getHiddenTargetAlpha(RemoteAnimationTargetCompat app, Float expectedAlpha) {
