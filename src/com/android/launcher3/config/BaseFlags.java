@@ -88,10 +88,6 @@ abstract class BaseFlags {
     // trying to make them fit the orientation the device is in.
     public static final boolean OVERVIEW_USE_SCREENSHOT_ORIENTATION = true;
 
-    public static final ToggleableGlobalSettingsFlag QUICK_SWITCH
-            = new ToggleableGlobalSettingsFlag("QUICK_SWITCH", false,
-            "Swiping right on the nav bar while in an app switches to the previous app");
-
     public static final ToggleableGlobalSettingsFlag STYLE_WALLPAPER
             = new ToggleableGlobalSettingsFlag("STYLE_WALLPAPER", false,
             "Direct users to the new ThemePicker based WallpaperPicker");
@@ -101,10 +97,6 @@ abstract class BaseFlags {
      */
     public static final TogglableFlag APPLY_CONFIG_AT_RUNTIME = new TogglableFlag(
             "APPLY_CONFIG_AT_RUNTIME", true, "Apply display changes dynamically");
-
-    public static final ToggleableGlobalSettingsFlag ENABLE_TASK_STABILIZER
-            = new ToggleableGlobalSettingsFlag("ENABLE_TASK_STABILIZER", false,
-            "Stable task list across fast task switches");
 
     public static final TogglableFlag QUICKSTEP_SPRINGS = new TogglableFlag("QUICKSTEP_SPRINGS",
             false, "Enable springs for quickstep animations");
