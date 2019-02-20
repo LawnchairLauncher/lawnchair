@@ -166,8 +166,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     private final ViewPool<TaskView> mTaskViewPool;
 
-    @Nullable Float mSimulatedVelocityX = null;
-
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
      */
@@ -1625,19 +1623,5 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 }.attach();
             }
         }
-    }
-
-    public void simulateTouchEvent(MotionEvent event, @Nullable Float velocityX) {
-        mSimulatedVelocityX = velocityX;
-        dispatchTouchEvent(event);
-        mSimulatedVelocityX = null;
-    }
-
-    @Override
-    protected int computeXVelocity() {
-        if (mSimulatedVelocityX != null) {
-            return mSimulatedVelocityX.intValue();
-        }
-        return super.computeXVelocity();
     }
 }

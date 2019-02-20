@@ -56,6 +56,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
@@ -103,9 +104,9 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.WindowCallbacksCompat;
 
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 @TargetApi(Build.VERSION_CODES.O)
@@ -522,24 +523,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         return TaskView.getCurveScaleForInterpolation(interpolation);
     }
 
-    @UiThread
-    public void dispatchMotionEventToRecentsView(MotionEvent event, @Nullable Float velocityX) {
-        if (mRecentsView == null) {
-            return;
-        }
-        // Pass the motion events to RecentsView to allow scrolling during swipe up.
-        if (!mDispatchedDownEvent) {
-            // The first event we dispatch should be ACTION_DOWN.
-            mDispatchedDownEvent = true;
-            MotionEvent downEvent = MotionEvent.obtain(event);
-            downEvent.setAction(MotionEvent.ACTION_DOWN);
-            int flags = downEvent.getEdgeFlags();
-            downEvent.setEdgeFlags(flags | TouchInteractionService.EDGE_NAV_BAR);
-            mRecentsView.simulateTouchEvent(downEvent, velocityX);
-            downEvent.recycle();
-        }
-
-        mRecentsView.simulateTouchEvent(event, velocityX);
+    public Consumer<MotionEvent> getRecentsViewDispatcher() {
+        return mRecentsView != null ? mRecentsView::dispatchTouchEvent : null;
     }
 
     @UiThread
