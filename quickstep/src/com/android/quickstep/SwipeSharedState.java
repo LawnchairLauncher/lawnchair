@@ -15,6 +15,9 @@
  */
 package com.android.quickstep;
 
+import android.util.Log;
+
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.util.RecentsAnimationListenerSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
@@ -25,23 +28,35 @@ import com.android.quickstep.util.SwipeAnimationTargetSet.SwipeAnimationListener
  */
 public class SwipeSharedState implements SwipeAnimationListener {
 
+    private final OverviewComponentObserver mOverviewComponentObserver;
+
     private RecentsAnimationListenerSet mRecentsAnimationListener;
     private SwipeAnimationTargetSet mLastAnimationTarget;
+
     private boolean mLastAnimationCancelled = false;
+    private boolean mLastAnimationRunning = false;
 
     public boolean canGestureBeContinued;
     public boolean goingToLauncher;
 
+    public SwipeSharedState(OverviewComponentObserver overviewComponentObserver) {
+        mOverviewComponentObserver = overviewComponentObserver;
+    }
+
     @Override
     public final void onRecentsAnimationStart(SwipeAnimationTargetSet targetSet) {
         mLastAnimationTarget = targetSet;
+
         mLastAnimationCancelled = false;
+        mLastAnimationRunning = true;
     }
 
     @Override
     public final void onRecentsAnimationCanceled() {
         mLastAnimationTarget = null;
+
         mLastAnimationCancelled = true;
+        mLastAnimationRunning = false;
     }
 
     private void clearListenerState() {
@@ -51,12 +66,31 @@ public class SwipeSharedState implements SwipeAnimationListener {
         mRecentsAnimationListener = null;
         mLastAnimationTarget = null;
         mLastAnimationCancelled = false;
+        mLastAnimationRunning = false;
+    }
+
+    private void onSwipeAnimationFinished(SwipeAnimationTargetSet targetSet) {
+        if (mLastAnimationTarget == targetSet) {
+            mLastAnimationRunning = false;
+        }
     }
 
     public RecentsAnimationListenerSet newRecentsAnimationListenerSet() {
         Preconditions.assertUIThread();
+
+        if (mLastAnimationRunning) {
+            String msg = "New animation started before completing old animation";
+            if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                throw new IllegalArgumentException(msg);
+            } else {
+                Log.e("SwipeSharedState", msg, new Exception());
+            }
+        }
+
         clearListenerState();
-        mRecentsAnimationListener = new RecentsAnimationListenerSet();
+        mRecentsAnimationListener = new RecentsAnimationListenerSet(mOverviewComponentObserver
+                .getActivityControlHelper().shouldMinimizeSplitScreen(),
+                this::onSwipeAnimationFinished);
         mRecentsAnimationListener.addListener(this);
         return mRecentsAnimationListener;
     }

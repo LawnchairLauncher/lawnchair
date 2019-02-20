@@ -37,6 +37,8 @@ import android.view.InputEvent;
 import android.view.MotionEvent;
 
 import com.android.launcher3.MainThreadExecutor;
+import com.android.launcher3.util.LooperExecutor;
+import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -55,6 +57,9 @@ import java.io.PrintWriter;
 public class TouchInteractionService extends Service {
 
     public static final MainThreadExecutor MAIN_THREAD_EXECUTOR = new MainThreadExecutor();
+    public static final LooperExecutor BACKGROUND_EXECUTOR =
+            new LooperExecutor(UiThreadHelper.getBackgroundLooper());
+
     public static final TouchInteractionLog TOUCH_INTERACTION_LOG = new TouchInteractionLog();
 
     public static final int EDGE_NAV_BAR = 1 << 8;
@@ -174,7 +179,7 @@ public class TouchInteractionService extends Service {
         mOverviewInteractionState = OverviewInteractionState.INSTANCE.get(this);
         mOverviewCallbacks = OverviewCallbacks.get(this);
         mTaskOverlayFactory = TaskOverlayFactory.INSTANCE.get(this);
-        mSwipeSharedState = new SwipeSharedState();
+        mSwipeSharedState = new SwipeSharedState(mOverviewComponentObserver);
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
         mInputConsumer.registerInputConsumer();
 
@@ -249,10 +254,8 @@ public class TouchInteractionService extends Service {
                     mOverviewComponentObserver.getActivityControlHelper();
             boolean shouldDefer = activityControl.deferStartingActivity(mActiveNavBarRegion, event);
             return new OtherActivityTouchConsumer(this, runningTaskInfo, mRecentsModel,
-                    mOverviewComponentObserver.getOverviewIntent(),
-                    mOverviewComponentObserver.getActivityControlHelper(),
-                    shouldDefer, mOverviewCallbacks,
-                    mTaskOverlayFactory, mInputConsumer,
+                    mOverviewComponentObserver.getOverviewIntent(), activityControl,
+                    shouldDefer, mOverviewCallbacks, mTaskOverlayFactory, mInputConsumer,
                     this::onConsumerInactive, mSwipeSharedState);
         }
     }

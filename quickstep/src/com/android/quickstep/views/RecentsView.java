@@ -93,13 +93,13 @@ import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.util.ClipAnimationHelper;
+import com.android.quickstep.util.SwipeAnimationTargetSet;
 import com.android.quickstep.util.TaskViewDrawable;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.PackageManagerWrapper;
-import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.WindowCallbacksCompat;
@@ -1590,7 +1590,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             return;
         }
 
-        RecentsAnimationControllerCompat controller = mRecentsAnimationWrapper.getController();
+        SwipeAnimationTargetSet controller = mRecentsAnimationWrapper.getController();
         if (controller != null) {
             // Update the screenshot of the task
             ThumbnailData taskSnapshot = controller.screenshotTask(mRunningTaskId);

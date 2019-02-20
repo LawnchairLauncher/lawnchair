@@ -99,7 +99,6 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.recents.utilities.RectFEvaluator;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
-import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.WindowCallbacksCompat;
@@ -115,7 +114,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         implements SwipeAnimationListener, OnApplyWindowInsetsListener {
     private static final String TAG = WindowTransformSwipeHandler.class.getSimpleName();
 
-    private static final String[] STATE_NAMES = DEBUG_STATES ? new String[20] : null;
+    private static final String[] STATE_NAMES = DEBUG_STATES ? new String[19] : null;
 
     private static int getFlagForIndex(int index, String name) {
         if (DEBUG_STATES) {
@@ -350,6 +349,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED
                 | STATE_SCALED_CONTROLLER_LAST_TASK,
                 this::notifyTransitionCancelled);
+
+        mStateCallback.addCallback(STATE_APP_CONTROLLER_RECEIVED | STATE_GESTURE_STARTED,
+                mRecentsAnimationWrapper::enableInputConsumer);
 
         if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             mStateCallback.addChangeHandler(STATE_APP_CONTROLLER_RECEIVED | STATE_LAUNCHER_PRESENT
@@ -599,7 +601,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private void updateFinalShift() {
         float shift = mCurrentShift.value;
 
-        RecentsAnimationControllerCompat controller = mRecentsAnimationWrapper.getController();
+        SwipeAnimationTargetSet controller = mRecentsAnimationWrapper.getController();
         if (controller != null) {
             float offsetX = 0;
             if (mRecentsView != null) {
@@ -614,12 +616,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                     .setSyncTransactionApplier(mSyncTransactionApplier);
             mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet,
                     mTransformParams);
-
-            boolean passedThreshold = shift > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD;
-            mRecentsAnimationWrapper.setAnimationTargetsBehindSystemBars(!passedThreshold);
-            if (mActivityControlHelper.shouldMinimizeSplitScreen()) {
-                mRecentsAnimationWrapper.setSplitScreenMinimizedForTransaction(passedThreshold);
-            }
+            mRecentsAnimationWrapper.setWindowThresholdCrossed(
+                    shift > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD);
         }
 
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
@@ -698,7 +696,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         mClipAnimationHelper.prepareAnimation(false /* isOpening */);
         initTransitionEndpoints(dp);
 
-        mRecentsAnimationWrapper.setController(targetSet.controller, targetSet);
+        mRecentsAnimationWrapper.setController(targetSet);
         TOUCH_INTERACTION_LOG.startRecentsAnimationCallback(targetSet.apps.length);
         setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
 
@@ -707,7 +705,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     @Override
     public void onRecentsAnimationCanceled() {
-        mRecentsAnimationWrapper.setController(null, null);
+        mRecentsAnimationWrapper.setController(null);
         mActivityInitListener.unregister();
         setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);
         TOUCH_INTERACTION_LOG.cancelRecentsAnimation();
@@ -719,8 +717,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         mShiftAtGestureStart = mCurrentShift.value;
         setStateOnUiThread(STATE_GESTURE_STARTED);
         mGestureStarted = true;
-        mRecentsAnimationWrapper.hideCurrentInputMethod();
-        mRecentsAnimationWrapper.enableInputConsumer();
     }
 
     /**
@@ -1122,7 +1118,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
         } else {
             boolean finishTransitionPosted = false;
-            RecentsAnimationControllerCompat controller = mRecentsAnimationWrapper.getController();
+            SwipeAnimationTargetSet controller = mRecentsAnimationWrapper.getController();
             if (controller != null) {
                 // Update the screenshot of the task
                 if (mTaskSnapshot == null) {

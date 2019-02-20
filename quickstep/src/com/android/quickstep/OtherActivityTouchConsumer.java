@@ -292,8 +292,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mMotionPauseDetector.setOnMotionPauseListener(handler::onMotionPauseChanged);
         handler.initWhenReady();
 
-        TraceHelper.beginSection("RecentsController");
-
         if (listenerSet != null) {
             listenerSet.addListener(handler);
             mSwipeSharedState.applyActiveRecentsAnimationState(handler);
