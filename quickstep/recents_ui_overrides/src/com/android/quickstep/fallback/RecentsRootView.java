@@ -30,13 +30,14 @@ import com.android.quickstep.RecentsActivity;
 
 public class RecentsRootView extends BaseDragLayer<RecentsActivity> {
 
+    private static final int MIN_SIZE = 10;
     private final RecentsActivity mActivity;
 
-    private final Point mLastKnownSize = new Point(10, 10);
+    private final Point mLastKnownSize = new Point(MIN_SIZE, MIN_SIZE);
 
     public RecentsRootView(Context context, AttributeSet attrs) {
         super(context, attrs, 1 /* alphaChannelCount */);
-        mActivity = (RecentsActivity) BaseActivity.fromContext(context);
+        mActivity = BaseActivity.fromContext(context);
         setSystemUiVisibility(SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | SYSTEM_UI_FLAG_LAYOUT_STABLE);
@@ -53,8 +54,8 @@ public class RecentsRootView extends BaseDragLayer<RecentsActivity> {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // Check size changes before the actual measure, to avoid multiple measure calls.
-        int width = MeasureSpec.getSize(widthMeasureSpec);
-        int height = MeasureSpec.getSize(heightMeasureSpec);
+        int width = Math.max(MIN_SIZE, MeasureSpec.getSize(widthMeasureSpec));
+        int height = Math.max(MIN_SIZE, MeasureSpec.getSize(heightMeasureSpec));
         if (mLastKnownSize.x != width || mLastKnownSize.y != height) {
             mLastKnownSize.set(width, height);
             mActivity.onRootViewSizeChanged();
