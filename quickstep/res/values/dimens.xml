@@ -65,4 +65,8 @@
     <dimen name="shelf_surface_radius">16dp</dimen>
     <!-- same as vertical_drag_handle_size -->
     <dimen name="shelf_surface_offset">24dp</dimen>
+
+    <!-- Assistant Gestures -->
+    <dimen name="gestures_assistant_width">70dp</dimen>
+    <dimen name="gestures_assistant_threshold">200dp</dimen>
 </resources>

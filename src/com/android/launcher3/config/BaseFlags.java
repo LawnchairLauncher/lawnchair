@@ -112,6 +112,10 @@ abstract class BaseFlags {
             "ENABLE_HINTS_IN_OVERVIEW", false,
             "Show chip hints and gleams on the overview screen");
 
+    public static final TogglableFlag ENABLE_ASSISTANT_GESTURE = new TogglableFlag(
+            "ENABLE_ASSISTANT_GESTURE", false,
+            "Enable swipe up from the bottom right corner to start assistant");
+
     public static void initialize(Context context) {
         // Avoid the disk read for user builds
         if (Utilities.IS_DEBUG_DEVICE) {
