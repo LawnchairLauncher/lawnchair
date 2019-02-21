@@ -80,8 +80,7 @@
     <string name="folder_name_format" msgid="6629239338071103179">"ଫୋଲ୍ଡର: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"ୱିଜେଟ୍‌"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ୱାଲପେପର୍‌"</string>
-    <!-- no translation found for styles_wallpaper_button_text (4342122323125579619) -->
-    <skip />
+    <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"ଶୈଳୀ ଏବଂ ୱାଲ୍‍‍ପେପର୍"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ହୋମ୍‌ ସେଟିଙ୍ଗ"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ଆପଣଙ୍କ ଆଡମିନଙ୍କ ଦ୍ୱାରା ଅକ୍ଷମ କରାଯାଇଛି"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"ହୋମ୍‌ ସ୍କ୍ରୀନ୍ ବୁଲାଇବା ଅନୁମତି ଦିଅନ୍ତୁ"</string>
