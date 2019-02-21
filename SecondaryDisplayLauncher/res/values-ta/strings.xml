@@ -20,6 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="couldnt_launch" msgid="7873588052226763866">"நடவடிக்கையைத் துவக்க இயலவில்லை"</string>
-    <string name="add_app_shortcut" msgid="2756755330707509435">"ஆப்ஸ் குறுக்குவழியைச் சேர்"</string>
+    <string name="add_app_shortcut" msgid="2756755330707509435">"ஆப்ஸ் ஷார்ட்கட்டைச் சேர்"</string>
     <string name="set_wallpaper" msgid="6475195450505435904">"வால்பேப்பரை அமை"</string>
 </resources>

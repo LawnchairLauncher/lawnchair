@@ -26,7 +26,7 @@
     <string name="activity_not_available" msgid="7456344436509528827">"பயன்பாடு இல்லை"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"இறக்கிய பயன்பாடு பாதுகாப்பு முறையில் முடக்கப்பட்டது"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"பாதுகாப்புப் பயன்முறையில் விட்ஜெட்கள் முடக்கப்பட்டுள்ளன"</string>
-    <string name="shortcut_not_available" msgid="2536503539825726397">"குறுக்குவழி இல்லை"</string>
+    <string name="shortcut_not_available" msgid="2536503539825726397">"ஷார்ட்கட் இல்லை"</string>
     <string name="home_screen" msgid="806512411299847073">"முகப்புத் திரை"</string>
     <string name="custom_actions" msgid="3747508247759093328">"தனிப்பயன் செயல்கள்"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"விட்ஜெட்டைத் தேர்வுசெய்ய தொட்டுப் பிடிக்கவும்."</string>
@@ -80,8 +80,7 @@
     <string name="folder_name_format" msgid="6629239338071103179">"கோப்புறை: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"ஷார்ட்கட்ஸ்"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"வால்பேப்பர்கள்"</string>
-    <!-- no translation found for styles_wallpaper_button_text (4342122323125579619) -->
-    <skip />
+    <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"ஸ்டைல்கள் &amp; வால்பேப்பர்கள்"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"முகப்பு அமைப்புகள்"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"உங்கள் நிர்வாகி முடக்கியுள்ளார்"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"முகப்புத் திரை சுழற்சியை அனுமதி"</string>
@@ -127,13 +126,13 @@
     <string name="action_decrease_width" msgid="1374549771083094654">"அகலத்தைக் குறை"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"உயரத்தைக் குறை"</string>
     <string name="widget_resized" msgid="9130327887929620">"அகலம் <xliff:g id="NUMBER_0">%1$s</xliff:g> மற்றும் உயரம் <xliff:g id="NUMBER_1">%2$s</xliff:g>க்கு விட்ஜெட் அளவு மாற்றப்பட்டது"</string>
-    <string name="action_deep_shortcut" msgid="2864038805849372848">"குறுக்குவழிகள்"</string>
+    <string name="action_deep_shortcut" msgid="2864038805849372848">"ஷார்ட்கட்கள்"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"ஷார்ட்கட்கள் மற்றும் அறிவிப்புகள்"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"நிராகரி"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"அறிவிப்பு நிராகரிக்கப்பட்டது"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"தனிப்பட்டவை"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"பணி"</string>
-    <string name="work_profile_toggle_label" msgid="3081029915775481146">"பணி விவரம்"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"பணிக் கணக்கு"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"பணி ஆப்ஸை இங்கு காணலாம்"</string>
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"ஒவ்வொரு பணிப் பயன்பாடும் ஒரு பேட்ஜைக் கொண்டிருக்கும். இவை, ஆப்ஸ் உங்கள் நிறுவனத்தால் பாதுகாப்பாக வைக்கப்பட்டுள்ளன என்பதைக் குறிக்கின்றன. இந்த ஆப்ஸை எளிதாக அணுக, முகப்புத் திரைக்கு நகர்த்திக்கொள்ளவும்."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"உங்கள் நிறுவனம் நிர்வகிக்கிறது"</string>

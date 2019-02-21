@@ -80,8 +80,7 @@
     <string name="folder_name_format" msgid="6629239338071103179">"폴더: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"위젯"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"배경화면"</string>
-    <!-- no translation found for styles_wallpaper_button_text (4342122323125579619) -->
-    <skip />
+    <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"스타일 및 배경화면"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"홈 설정"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"관리자가 사용 중지함"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"홈 화면 회전 허용"</string>
