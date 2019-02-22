@@ -159,7 +159,7 @@ public class TouchInteractionService extends Service {
     private InputConsumerController mInputConsumer;
     private SwipeSharedState mSwipeSharedState;
 
-    private TouchConsumer mConsumer = TouchConsumer.NO_OP;
+    private InputConsumer mConsumer = InputConsumer.NO_OP;
     private Choreographer mMainChoreographer;
 
     private InputEventReceiver mInputEventReceiver;
@@ -226,34 +226,34 @@ public class TouchInteractionService extends Service {
             boolean useSharedState = mConsumer.isActive();
             mConsumer.onConsumerAboutToBeSwitched();
             mConsumer = newConsumer(useSharedState, event);
-            TOUCH_INTERACTION_LOG.setTouchConsumer(mConsumer);
+            TOUCH_INTERACTION_LOG.setInputConsumer(mConsumer);
         }
         TOUCH_INTERACTION_LOG.addMotionEvent(event);
 
-        mConsumer.accept(event);
+        mConsumer.onMotionEvent(event);
     }
 
-    private TouchConsumer newConsumer(boolean useSharedState, MotionEvent event) {
+    private InputConsumer newConsumer(boolean useSharedState, MotionEvent event) {
         RunningTaskInfo runningTaskInfo = mAM.getRunningTask(0);
         if (!useSharedState) {
             mSwipeSharedState.clearAllState();
         }
 
         if (runningTaskInfo == null && !mSwipeSharedState.goingToLauncher) {
-            return TouchConsumer.NO_OP;
+            return InputConsumer.NO_OP;
         } else if (mSwipeSharedState.goingToLauncher ||
                 mOverviewComponentObserver.getActivityControlHelper().isResumed()) {
-            return OverviewTouchConsumer.newInstance(
+            return OverviewInputConsumer.newInstance(
                     mOverviewComponentObserver.getActivityControlHelper(), false);
         } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() &&
                 mOverviewComponentObserver.getActivityControlHelper().isInLiveTileMode()) {
-            return OverviewTouchConsumer.newInstance(
+            return OverviewInputConsumer.newInstance(
                     mOverviewComponentObserver.getActivityControlHelper(), false);
         } else {
             ActivityControlHelper activityControl =
                     mOverviewComponentObserver.getActivityControlHelper();
             boolean shouldDefer = activityControl.deferStartingActivity(mActiveNavBarRegion, event);
-            return new OtherActivityTouchConsumer(this, runningTaskInfo, mRecentsModel,
+            return new OtherActivityInputConsumer(this, runningTaskInfo, mRecentsModel,
                     mOverviewComponentObserver.getOverviewIntent(), activityControl,
                     shouldDefer, mOverviewCallbacks, mTaskOverlayFactory, mInputConsumer,
                     this::onConsumerInactive, mSwipeSharedState);
@@ -263,9 +263,9 @@ public class TouchInteractionService extends Service {
     /**
      * To be called by the consumer when it's no longer active.
      */
-    private void onConsumerInactive(TouchConsumer caller) {
+    private void onConsumerInactive(InputConsumer caller) {
         if (mConsumer == caller) {
-            mConsumer = TouchConsumer.NO_OP;
+            mConsumer = InputConsumer.NO_OP;
         }
     }
 

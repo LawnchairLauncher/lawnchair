@@ -42,7 +42,7 @@ public class TouchInteractionLog {
         getCurrentLog().add("[" + mDateFormat.format(mCalendar.getTime()) + "]");
     }
 
-    public void setTouchConsumer(TouchConsumer consumer) {
+    public void setInputConsumer(InputConsumer consumer) {
         getCurrentLog().add("tc=" + consumer.getClass().getSimpleName());
     }
 

@@ -64,13 +64,13 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 import java.util.function.Consumer;
 
 /**
- * Touch consumer for handling events originating from an activity other than Launcher
+ * Input consumer for handling events originating from an activity other than Launcher
  */
 @TargetApi(Build.VERSION_CODES.P)
-public class OtherActivityTouchConsumer extends ContextWrapper implements TouchConsumer {
+public class OtherActivityInputConsumer extends ContextWrapper implements InputConsumer {
 
-    public static final String DOWN_EVT = "OtherActivityTouchConsumer.DOWN";
-    private static final String UP_EVT = "OtherActivityTouchConsumer.UP";
+    public static final String DOWN_EVT = "OtherActivityInputConsumer.DOWN";
+    private static final String UP_EVT = "OtherActivityInputConsumer.UP";
 
     private final CachedEventDispatcher mRecentsViewDispatcher = new CachedEventDispatcher();
     private final RunningTaskInfo mRunningTask;
@@ -85,7 +85,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private final int mDisplayRotation;
     private final Rect mStableInsets = new Rect();
 
-    private final Consumer<OtherActivityTouchConsumer> mOnCompleteCallback;
+    private final Consumer<OtherActivityInputConsumer> mOnCompleteCallback;
     private final MotionPauseDetector mMotionPauseDetector;
     private VelocityTracker mVelocityTracker;
 
@@ -113,11 +113,11 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 true /* restoreHomeStackPosition */);
     };
 
-    public OtherActivityTouchConsumer(Context base, RunningTaskInfo runningTaskInfo,
+    public OtherActivityInputConsumer(Context base, RunningTaskInfo runningTaskInfo,
             RecentsModel recentsModel, Intent homeIntent, ActivityControlHelper activityControl,
             boolean isDeferredDownTarget, OverviewCallbacks overviewCallbacks,
             TaskOverlayFactory taskOverlayFactory, InputConsumerController inputConsumer,
-            Consumer<OtherActivityTouchConsumer> onCompleteCallback,
+            Consumer<OtherActivityInputConsumer> onCompleteCallback,
             SwipeSharedState swipeSharedState) {
         super(base);
 
@@ -148,7 +148,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     }
 
     @Override
-    public void accept(MotionEvent ev) {
+    public void onMotionEvent(MotionEvent ev) {
         if (mVelocityTracker == null) {
             return;
         }
