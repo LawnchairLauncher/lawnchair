@@ -56,7 +56,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
@@ -274,7 +273,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 .createActivityInitListener(this::onActivityInit);
         mContinuingLastGesture = continuingLastGesture;
         mRecentsAnimationWrapper = new RecentsAnimationWrapper(inputConsumer,
-                this::createNewTouchProxyHandler);
+                this::createNewInputProxyHandler);
         mClipAnimationHelper = new ClipAnimationHelper(context);
         mTransformParams = new ClipAnimationHelper.TransformParams();
 
@@ -719,7 +718,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     @UiThread
-    private TouchConsumer createNewTouchProxyHandler() {
+    private InputConsumer createNewInputProxyHandler() {
         mCurrentShift.finishAnimation();
         if (mLauncherTransitionController != null) {
             mLauncherTransitionController.getAnimationPlayer().end();
@@ -729,7 +728,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             setTargetAlphaProvider(WindowTransformSwipeHandler::getHiddenTargetAlpha);
         }
 
-        return OverviewTouchConsumer.newInstance(mActivityControlHelper, true);
+        return OverviewInputConsumer.newInstance(mActivityControlHelper, true);
     }
 
     @UiThread
@@ -823,7 +822,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             setShelfState(ShelfAnimState.CANCEL, LINEAR, 0);
             duration = Math.max(MIN_OVERSHOOT_DURATION, duration);
         } else if (endTarget == RECENTS) {
-            mRecentsAnimationWrapper.enableTouchProxy();
+            mRecentsAnimationWrapper.enableInputProxy();
             if (mRecentsView != null) {
                 duration = Math.max(duration, mRecentsView.getScroller().getDuration());
             }
