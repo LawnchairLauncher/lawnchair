@@ -80,6 +80,7 @@ public final class DigitalWellBeingToast extends LinearLayout {
         mTask = task;
 
         if (task.key.userId != UserHandle.myUserId()) {
+            setVisibility(GONE);
             callback.call(1, task.titleDescription);
             return;
         }
