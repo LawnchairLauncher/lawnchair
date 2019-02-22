@@ -16,8 +16,12 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+
 import android.app.ActivityManager;
 import android.app.WallpaperManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -66,9 +70,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
-import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -589,5 +590,11 @@ public final class Utilities {
         viewLocationTop += rect.top;
         outRect.set(viewLocationLeft, viewLocationTop, viewLocationLeft + rect.width(),
                 viewLocationTop + rect.height());
+    }
+
+    public static void unregisterReceiverSafely(Context context, BroadcastReceiver receiver) {
+        try {
+            context.unregisterReceiver(receiver);
+        } catch (IllegalArgumentException e) { }
     }
 }

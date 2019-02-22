@@ -23,13 +23,18 @@ import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYS
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
+import android.app.KeyguardManager;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Region;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.Process;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Choreographer;
@@ -37,6 +42,8 @@ import android.view.InputEvent;
 import android.view.MotionEvent;
 
 import com.android.launcher3.MainThreadExecutor;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.IOverviewProxy;
@@ -49,6 +56,8 @@ import com.android.systemui.shared.system.InputConsumerController;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Service connected by system-UI for handling touch interaction.
@@ -75,8 +84,10 @@ public class TouchInteractionService extends Service {
         public void onInitialize(Bundle bundle) {
             mISystemUiProxy = ISystemUiProxy.Stub
                     .asInterface(bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
-            mRecentsModel.setSystemUiProxy(mISystemUiProxy);
-            mOverviewInteractionState.setSystemUiProxy(mISystemUiProxy);
+            runWhenUserUnlocked(() -> {
+                mRecentsModel.setSystemUiProxy(mISystemUiProxy);
+                mOverviewInteractionState.setSystemUiProxy(mISystemUiProxy);
+            });
 
             disposeEventHandlers();
             mInputEventReceiver = InputChannelCompat.fromBundle(bundle, KEY_EXTRA_INPUT_CHANNEL,
@@ -128,8 +139,10 @@ public class TouchInteractionService extends Service {
 
         public void onBind(ISystemUiProxy iSystemUiProxy) {
             mISystemUiProxy = iSystemUiProxy;
-            mRecentsModel.setSystemUiProxy(mISystemUiProxy);
-            mOverviewInteractionState.setSystemUiProxy(mISystemUiProxy);
+            runWhenUserUnlocked(() -> {
+                mRecentsModel.setSystemUiProxy(mISystemUiProxy);
+                mOverviewInteractionState.setSystemUiProxy(mISystemUiProxy);
+            });
 
             // On Bind is received before onInitialize which will dispose these handlers
             disposeEventHandlers();
@@ -138,7 +151,6 @@ public class TouchInteractionService extends Service {
                     TouchInteractionService.this::onInputEvent);
             mDeprecatedDispatcher = pair.first;
             mInputEventReceiver = pair.second;
-
         }
     };
 
@@ -148,6 +160,7 @@ public class TouchInteractionService extends Service {
         return sConnected;
     }
 
+    private KeyguardManager mKM;
     private ActivityManagerWrapper mAM;
     private RecentsModel mRecentsModel;
     private ISystemUiProxy mISystemUiProxy;
@@ -158,6 +171,17 @@ public class TouchInteractionService extends Service {
     private TaskOverlayFactory mTaskOverlayFactory;
     private InputConsumerController mInputConsumer;
     private SwipeSharedState mSwipeSharedState;
+
+    private boolean mIsUserUnlocked;
+    private List<Runnable> mOnUserUnlockedCallbacks;
+    private BroadcastReceiver mUserUnlockedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Intent.ACTION_USER_UNLOCKED.equals(intent.getAction())) {
+                initWhenUserUnlocked();
+            }
+        }
+    };
 
     private InputConsumer mConsumer = InputConsumer.NO_OP;
     private Choreographer mMainChoreographer;
@@ -170,10 +194,29 @@ public class TouchInteractionService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // Initialize anything here that is needed in direct boot mode.
+        // Everything else should be initialized in initWhenUserUnlocked() below.
+        mKM = getSystemService(KeyguardManager.class);
+        mMainChoreographer = Choreographer.getInstance();
+        mOnUserUnlockedCallbacks = new ArrayList<>();
+
+        if (UserManagerCompat.getInstance(this).isUserUnlocked(Process.myUserHandle())) {
+            initWhenUserUnlocked();
+        } else {
+            mIsUserUnlocked = false;
+            registerReceiver(mUserUnlockedReceiver, new IntentFilter(Intent.ACTION_USER_UNLOCKED));
+        }
+
+        sConnected = true;
+    }
+
+    private void initWhenUserUnlocked() {
+        mIsUserUnlocked = true;
+
         mAM = ActivityManagerWrapper.getInstance();
         mRecentsModel = RecentsModel.INSTANCE.get(this);
         mOverviewComponentObserver = new OverviewComponentObserver(this);
-        mMainChoreographer = Choreographer.getInstance();
 
         mOverviewCommandHelper = new OverviewCommandHelper(this, mOverviewComponentObserver);
         mOverviewInteractionState = OverviewInteractionState.INSTANCE.get(this);
@@ -183,18 +226,34 @@ public class TouchInteractionService extends Service {
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
         mInputConsumer.registerInputConsumer();
 
-        sConnected = true;
+        for (Runnable callback : mOnUserUnlockedCallbacks) {
+            callback.run();
+        }
+        mOnUserUnlockedCallbacks.clear();
 
         // Temporarily disable model preload
         // new ModelPreload().start(this);
+
+        Utilities.unregisterReceiverSafely(this, mUserUnlockedReceiver);
+    }
+
+    private void runWhenUserUnlocked(Runnable callback) {
+        if (mIsUserUnlocked) {
+            callback.run();
+        } else {
+            mOnUserUnlockedCallbacks.add(callback);
+        }
     }
 
     @Override
     public void onDestroy() {
-        mInputConsumer.unregisterInputConsumer();
-        mOverviewComponentObserver.onDestroy();
+        if (mIsUserUnlocked) {
+            mInputConsumer.unregisterInputConsumer();
+            mOverviewComponentObserver.onDestroy();
+        }
         disposeEventHandlers();
         sConnected = false;
+        Utilities.unregisterReceiverSafely(this, mUserUnlockedReceiver);
         super.onDestroy();
     }
 
@@ -234,6 +293,13 @@ public class TouchInteractionService extends Service {
     }
 
     private InputConsumer newConsumer(boolean useSharedState, MotionEvent event) {
+        // TODO: this makes a binder call every touch down. we should move to a listener pattern.
+        if (mKM.isDeviceLocked()) {
+            // This handles apps launched in direct boot mode (e.g. dialer) as well as apps launched
+            // while device is locked even after exiting direct boot mode (e.g. camera).
+            return new DeviceLockedInputConsumer(this);
+        }
+
         RunningTaskInfo runningTaskInfo = mAM.getRunningTask(0);
         if (!useSharedState) {
             mSwipeSharedState.clearAllState();
