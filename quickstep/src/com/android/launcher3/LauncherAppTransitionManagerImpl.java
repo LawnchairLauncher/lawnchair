@@ -145,6 +145,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
     private RemoteAnimationProvider mRemoteAnimationProvider;
 
+    private Rect mIconBounds;
+
     private final AnimatorListenerAdapter mForceInvisibleListener = new AnimatorListenerAdapter() {
         @Override
         public void onAnimationStart(Animator animation) {
@@ -344,7 +346,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
      * @param isAppOpening True when this is called when an app is opening.
      *                     False when this is called when an app is closing.
      */
-    private Pair<AnimatorSet, Runnable> getLauncherContentAnimator(boolean isAppOpening) {
+    protected Pair<AnimatorSet, Runnable> getLauncherContentAnimator(boolean isAppOpening) {
         AnimatorSet launcherAnimator = new AnimatorSet();
         Runnable endListener;
 
@@ -776,6 +778,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                     return;
                 }
 
+                setIconBounds(null);
+
                 if (mLauncher.hasSomeInvisibleFlag(PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION)) {
                     mLauncher.addForceInvisibleFlag(INVISIBLE_BY_PENDING_FLAGS);
                     mLauncher.getStateManager().moveToRestState();
@@ -861,7 +865,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     /**
      * Creates an animator that modifies Launcher as a result from {@link #getWallpaperOpenRunner}.
      */
-    private void createLauncherResumeAnimation(AnimatorSet anim) {
+    protected void createLauncherResumeAnimation(AnimatorSet anim) {
         if (mLauncher.isInState(LauncherState.ALL_APPS)) {
             Pair<AnimatorSet, Runnable> contentAnimator =
                     getLauncherContentAnimator(false /* isAppOpening */);
@@ -917,7 +921,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         }
     }
 
-    private void resetContentView() {
+    protected void resetContentView() {
         mLauncher.getWorkspace().getPageIndicator().skipAnimationsToEnd();
         mDragLayerAlpha.setValue(1f);
         mDragLayer.setLayerType(View.LAYER_TYPE_NONE, null);
@@ -939,5 +943,29 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
     public void setUseScaleAnim(boolean useScaleAnim) {
         mUseScaleAnim = useScaleAnim;
+    }
+
+    public DragLayer getDragLayer() {
+        return mDragLayer;
+    }
+
+    public void setIconBounds(Rect bounds) {
+        mIconBounds = bounds;
+    }
+
+    public Rect getIconBounds() {
+        return mIconBounds;
+    }
+
+    public Rect getTargetBounds(RemoteAnimationTargetCompat target) {
+        if (mIconBounds != null) {
+            return mIconBounds;
+        } else {
+            return target.sourceContainerBounds;
+        }
+    }
+
+    public AlphaProperty getDragLayerAlpha() {
+        return mDragLayerAlpha;
     }
 }
