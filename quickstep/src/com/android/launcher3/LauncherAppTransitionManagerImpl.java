@@ -369,12 +369,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             final float startAlpha = appsView.getAlpha();
             final float startY = appsView.getTranslationY();
             appsView.setAlpha(alphas[0]);
-            if (mUseScaleAnim) {
-                appsView.setScaleX(scale[0]);
-                appsView.setScaleY(scale[0]);
-            } else {
-                appsView.setTranslationY(trans[0]);
-            }
+            appsView.setTranslationY(trans[0]);
 
             ObjectAnimator alpha = ObjectAnimator.ofFloat(appsView, View.ALPHA, alphas);
             alpha.setDuration(217);
@@ -388,17 +383,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             });
             launcherAnimator.play(alpha);
 
-            if (mUseScaleAnim) {
-                ObjectAnimator scaleAnim = ObjectAnimator.ofFloat(appsView, Utilities.VIEW_SCALE, scale);
-                scaleAnim.setInterpolator(AGGRESSIVE_EASE);
-                scaleAnim.setDuration(350);
-                launcherAnimator.play(scaleAnim);
-            } else {
-                ObjectAnimator transY = ObjectAnimator.ofFloat(appsView, View.TRANSLATION_Y, trans);
-                transY.setInterpolator(AGGRESSIVE_EASE);
-                transY.setDuration(350);
-                launcherAnimator.play(transY);
-            }
+            ObjectAnimator transY = ObjectAnimator.ofFloat(appsView, View.TRANSLATION_Y, trans);
+            transY.setInterpolator(AGGRESSIVE_EASE);
+            transY.setDuration(350);
+            launcherAnimator.play(transY);
 
             endListener = () -> {
                 appsView.setAlpha(startAlpha);
@@ -435,20 +423,11 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             alpha.setInterpolator(LINEAR);
             launcherAnimator.play(alpha);
 
-            if (mUseScaleAnim) {
-                mDragLayer.setScaleX(scale[0]);
-                mDragLayer.setScaleY(scale[0]);
-                ObjectAnimator scaleAnim = ObjectAnimator.ofFloat(mDragLayer, Utilities.VIEW_SCALE, scale);
-                scaleAnim.setInterpolator(AGGRESSIVE_EASE);
-                scaleAnim.setDuration(350);
-                launcherAnimator.play(scaleAnim);
-            } else {
-                mDragLayer.setTranslationY(trans[0]);
-                ObjectAnimator transY = ObjectAnimator.ofFloat(mDragLayer, View.TRANSLATION_Y, trans);
-                transY.setInterpolator(AGGRESSIVE_EASE);
-                transY.setDuration(350);
-                launcherAnimator.play(transY);
-            }
+            mDragLayer.setTranslationY(trans[0]);
+            ObjectAnimator transY = ObjectAnimator.ofFloat(mDragLayer, View.TRANSLATION_Y, trans);
+            transY.setInterpolator(AGGRESSIVE_EASE);
+            transY.setDuration(350);
+            launcherAnimator.play(transY);
 
             LawnchairBackgroundView background = LawnchairLauncher.getLauncher(mLauncher).getBackground();
             background.getBlurAlphas().getProperty(LawnchairBackgroundView.ALPHA_INDEX_TRANSITIONS).setValue(blurAlphas[0]);
@@ -825,11 +804,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 new SyncRtSurfaceTransactionApplier(mDragLayer);
         Matrix matrix = new Matrix();
         ValueAnimator closingAnimator = ValueAnimator.ofFloat(0, 1);
-        int duration = mUseScaleAnim ? CLOSING_TRANSITION_SCALE_DURATION_MS : CLOSING_TRANSITION_DURATION_MS;
+        int duration = CLOSING_TRANSITION_DURATION_MS;
         closingAnimator.setDuration(duration);
         closingAnimator.addUpdateListener(new MultiValueUpdateListener() {
             FloatProp mDy = new FloatProp(0, mClosingWindowTransY, 0, duration, DEACCEL_1_7);
-            FloatProp mScale = new FloatProp(1f, mUseScaleAnim ? 0f : 1f, 0, duration, DEACCEL_1_7);
             FloatProp mAlpha = new FloatProp(1f, 0f, 25, 125, LINEAR);
 
             @Override
@@ -839,12 +817,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                     RemoteAnimationTargetCompat target = targets[i];
                     float alpha;
                     if (target.mode == MODE_CLOSING) {
-                        matrix.setScale(mScale.value, mScale.value,
-                                target.sourceContainerBounds.centerX(),
-                                target.sourceContainerBounds.centerY());
-                        if (!mUseScaleAnim) {
-                            matrix.postTranslate(0, mDy.value);
-                        }
+                        matrix.postTranslate(0, mDy.value);
                         matrix.postTranslate(target.position.x, target.position.y);
                         alpha = mAlpha.value;
                     } else {
@@ -880,16 +853,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         } else {
             AnimatorSet workspaceAnimator = new AnimatorSet();
 
-            if (mUseScaleAnim) {
-                mDragLayer.setScaleX(mContentScale);
-                mDragLayer.setScaleY(mContentScale);
-                workspaceAnimator.play(ObjectAnimator.ofFloat(mDragLayer, Utilities.VIEW_SCALE,
-                        mContentScale, 1));
-            } else {
-                mDragLayer.setTranslationY(-mWorkspaceTransY);
-                workspaceAnimator.play(ObjectAnimator.ofFloat(mDragLayer, View.TRANSLATION_Y,
-                        -mWorkspaceTransY, 0));
-            }
+            mDragLayer.setTranslationY(-mWorkspaceTransY);
+            workspaceAnimator.play(ObjectAnimator.ofFloat(mDragLayer, View.TRANSLATION_Y,
+                    -mWorkspaceTransY, 0));
 
             mDragLayerAlpha.setValue(0);
             workspaceAnimator.play(ObjectAnimator.ofFloat(

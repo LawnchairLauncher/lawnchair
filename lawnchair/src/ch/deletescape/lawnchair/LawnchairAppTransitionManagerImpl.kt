@@ -75,7 +75,7 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
                 if (it.mode == MODE_CLOSING) {
                     loadTask(it.taskId)?.let { task ->
                         val component = TaskUtils.getLaunchComponentKeyForTask(task.key)
-                        findIconForComponent(component)?.let { v ->
+                        findIconForComponent(component, useScaleAnim)?.let { v ->
                             iconBounds = getViewBounds(v)
                             val anim = AnimatorSet()
 
@@ -90,7 +90,13 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
             }
             iconBounds = null
         }
-        return super.getClosingWindowAnimators(targets)
+        if (useScaleAnim) {
+            val anim = AnimatorSet()
+            anim.play(getOpeningWindowAnimators(null, targets, null, true))
+            return anim
+        } else {
+            return super.getClosingWindowAnimators(targets)
+        }
     }
 
     override fun playIconAnimators(appOpenAnimator: AnimatorSet, v: View, windowTargetBounds: Rect, reversed: Boolean) {
@@ -246,7 +252,7 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
         return Pair(launcherAnimator, endListener)
     }
 
-    override fun getOpeningWindowAnimators(v: View, targets: Array<out RemoteAnimationTargetCompat>, windowTargetBounds: Rect, isExit: Boolean): ValueAnimator {
+    override fun getOpeningWindowAnimators(v: View?, targets: Array<out RemoteAnimationTargetCompat>, windowTargetBounds: Rect?, isExit: Boolean): ValueAnimator {
         if (!useScaleAnim) {
             return super.getOpeningWindowAnimators(v, targets, windowTargetBounds, isExit)
         }
@@ -376,24 +382,36 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
         return bounds
     }
 
-    private fun findIconForComponent(component: ComponentKey): View? {
+    private fun findIconForComponent(component: ComponentKey, allowFolder: Boolean): View? {
         return when {
-            launcher.isInState(NORMAL) -> findWorkspaceIconForComponent(component)
+            launcher.isInState(NORMAL) -> findWorkspaceIconForComponent(component, allowFolder)
             launcher.isInState(ALL_APPS) -> findAllAppsIconForComponent(component)
             else -> null
         }
     }
 
-    private fun findWorkspaceIconForComponent(component: ComponentKey): View? {
+    private fun findWorkspaceIconForComponent(component: ComponentKey, allowFolder: Boolean = false): View? {
         return findInContainers(Workspace.ItemOperator { info, _ ->
-            info?.targetComponent?.packageName == component.componentName.packageName && info?.user == component.user
+            matchesComponent(info, component, allowFolder)
         }, launcher.workspace.currentContainer, launcher.hotseat.layout.shortcutsAndWidgets)
     }
 
     private fun findAllAppsIconForComponent(component: ComponentKey): View? {
         return findInViews(Workspace.ItemOperator { info, _ ->
-            info?.targetComponent?.packageName == component.componentName.packageName && info?.user == component.user
+            matchesComponent(info, component, false)
         }, launcher.allAppsController.appsView.activeRecyclerView)
+    }
+
+    private fun matchesComponent(info: ItemInfo?, component: ComponentKey, allowFolder: Boolean): Boolean {
+        if (info == null) {
+            return false
+        }
+
+        if (info is FolderInfo && allowFolder) {
+            return info.contents.any { matchesComponent(it, component, allowFolder) }
+        }
+
+        return info.targetComponent?.packageName == component.componentName.packageName && info.user == component.user
     }
 
     companion object {
