@@ -306,13 +306,14 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
                     val targetCrop = target.sourceContainerBounds
                     val alpha: Float
                     if (target.mode == targetMode) {
-                        matrix.setScale(scale.value, scale.value,
+                        alpha = this.alpha.value
+                        matrix.setTranslate(target.position.x.toFloat(), target.position.y.toFloat())
+                        matrix.postScale(scale.value, scale.value,
                                 getTargetBounds(target).exactCenterX(),
                                 getTargetBounds(target).exactCenterY())
-                        alpha = this.alpha.value
                     } else {
-                        matrix.setTranslate(target.position.x.toFloat(), target.position.y.toFloat())
                         alpha = 1f
+                        matrix.setTranslate(target.position.x.toFloat(), target.position.y.toFloat())
                     }
 
                     params[i] = SyncRtSurfaceTransactionApplier.SurfaceParams(target.leash, alpha,
