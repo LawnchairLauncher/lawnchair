@@ -46,6 +46,7 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier
+import com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader
 
 @Keep
 @TargetApi(Build.VERSION_CODES.O)
@@ -109,7 +110,6 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
 
     private fun resetPivot() {
         if (iconBounds != null) {
-            Log.d(TAG, "setting pivot to ${iconBounds.exactCenterX()}, ${iconBounds.exactCenterY()}")
             dragLayer.pivotX = iconBounds.exactCenterX()
             dragLayer.pivotY = iconBounds.exactCenterY()
         } else {
@@ -182,13 +182,7 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
             return super.getLauncherContentAnimator(isAppOpening)
         }
 
-        if (iconBounds != null) {
-            Log.d(TAG, "setting pivot to ${iconBounds.exactCenterX()}, ${iconBounds.exactCenterY()}")
-            dragLayer.pivotX = iconBounds.exactCenterX()
-            dragLayer.pivotY = iconBounds.exactCenterY()
-        } else {
-            resetPivot()
-        }
+        resetPivot()
 
         val launcherAnimator = AnimatorSet()
 
@@ -398,9 +392,11 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
     }
 
     private fun findAllAppsIconForComponent(component: ComponentKey): View? {
+        val appsView = launcher.allAppsController.appsView
+        val predictions = (appsView.floatingHeaderView as PredictionsFloatingHeader).predictionRowView
         return findInViews(Workspace.ItemOperator { info, _ ->
             matchesComponent(info, component, false)
-        }, launcher.allAppsController.appsView.activeRecyclerView)
+        }, appsView.activeRecyclerView, predictions)
     }
 
     private fun matchesComponent(info: ItemInfo?, component: ComponentKey, allowFolder: Boolean): Boolean {
