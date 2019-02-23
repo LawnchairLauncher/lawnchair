@@ -174,6 +174,7 @@ public class UiFactory {
     }
 
     public static void onEnterAnimationComplete(Context context) {
+        if (!Utilities.isRecentsEnabled()) return;
         // After the transition to home, enable the high-res thumbnail loader if it wasn't enabled
         // as a part of quickstep/scrub, so that high-res thumbnails can load the next time we
         // enter overview
