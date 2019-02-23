@@ -19,11 +19,23 @@ package ch.deletescape.lawnchair.settings.ui.controllers
 
 import android.content.Context
 import android.support.annotation.Keep
+import android.support.v7.preference.Preference
+import android.widget.Toast
+import ch.deletescape.lawnchair.lawnchairApp
 import ch.deletescape.lawnchair.settings.ui.PreferenceController
+import com.android.launcher3.R
 import com.android.quickstep.TouchInteractionService
 
 @Keep
 class LawnstepController(context: Context) : PreferenceController(context) {
 
-    override val isVisible = TouchInteractionService.isConnected()
+    override val isVisible = context.lawnchairApp.recentsEnabled
+    override val onClick = Preference.OnPreferenceClickListener {
+        if (!TouchInteractionService.isConnected()) {
+            Toast.makeText(context, R.string.recents_not_connected, Toast.LENGTH_LONG).show()
+            true
+        } else {
+            false
+        }
+    }
 }

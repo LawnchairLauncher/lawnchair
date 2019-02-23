@@ -24,6 +24,7 @@ open class PreferenceController(val context: Context) {
 
     open val title: String? = null
     open val summary: String? = null
+    open val onClick: Preference.OnPreferenceClickListener? = null
     open val isVisible = true
 
     open fun onPreferenceAdded(preference: Preference): Boolean {
@@ -33,6 +34,7 @@ open class PreferenceController(val context: Context) {
         }
         title?.let { preference.title = it }
         summary?.let { preference.summary = it }
+        onClick?.let { preference.onPreferenceClickListener = it }
         return true
     }
 

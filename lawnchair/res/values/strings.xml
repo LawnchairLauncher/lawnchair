@@ -115,4 +115,5 @@
     <string name="blur_wallpaper_failed">Error while obtaining wallpaper to blur</string>
     <string name="feed_theme_pref_title">Background color</string>
     <string name="feed_theme_follow_launcher">Follow launcher theme</string>
+    <string name="recents_not_connected">Recents service not connected</string>
 </resources>
