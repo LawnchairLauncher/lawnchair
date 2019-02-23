@@ -50,11 +50,7 @@ import androidx.annotation.Nullable;
 public final class FallbackActivityControllerHelper implements
         ActivityControlHelper<RecentsActivity> {
 
-    private final ComponentName mHomeComponent;
-
-    public FallbackActivityControllerHelper(ComponentName homeComponent) {
-        mHomeComponent = homeComponent;
-    }
+    public FallbackActivityControllerHelper() { }
 
     @Override
     public void onTransitionCancelled(RecentsActivity activity, boolean activityVisible) {
