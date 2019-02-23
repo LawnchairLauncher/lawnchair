@@ -312,8 +312,8 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         Builder builder = new Builder(i);
         builder.shadowBlur = f;
         builder.keyShadowDistance = f2;
-        if (Do) {
-            builder.ambientShadowAlpha = (int) (2.8E-45f * builder.ambientShadowAlpha);
+        if (Do && this instanceof HotseatQsbWidget) {
+            builder.ambientShadowAlpha = 2 * builder.ambientShadowAlpha;
         }
         builder.keyShadowAlpha = builder.ambientShadowAlpha;
         Bitmap pill = builder.createPill(i2, dC);
