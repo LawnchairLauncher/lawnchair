@@ -42,6 +42,10 @@
         <attr name="controllerClass" format="string" />
     </declare-styleable>
 
+    <declare-styleable name="AdvancedPreferencesGroup">
+        <attr name="topic" format="string" />
+    </declare-styleable>
+
     <!-- Custom -->
     <attr name="bottomSheetNavBarColor" format="color" />
     <attr name="useLightSystemBars" format="boolean" />
