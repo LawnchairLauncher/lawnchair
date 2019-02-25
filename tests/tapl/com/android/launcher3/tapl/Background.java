@@ -62,7 +62,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
             final int height = mLauncher.getDevice().getDisplayHeight();
             final UiObject2 navBar = mLauncher.getSystemUiObject("navigation_bar_frame");
 
-            int swipeLength = Math.round(100 * mLauncher.getDisplayDensity());
+            int swipeLength = Math.round(getSwipeLength() * mLauncher.getDisplayDensity());
             mLauncher.swipe(
                     navBar.getVisibleBounds().centerX(), navBar.getVisibleBounds().centerY(),
                     navBar.getVisibleBounds().centerX(), height - swipeLength,
@@ -70,5 +70,9 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
         } else {
             mLauncher.getSystemUiObject("recent_apps").click();
         }
+    }
+
+    protected int getSwipeLength() {
+        return 200;
     }
 }
