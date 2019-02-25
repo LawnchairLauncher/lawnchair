@@ -57,15 +57,15 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
         return new BaseOverview(mLauncher);
     }
 
-
     protected void goToOverviewUnchecked(int expectedState) {
         if (mLauncher.isSwipeUpEnabled()) {
             final int height = mLauncher.getDevice().getDisplayHeight();
             final UiObject2 navBar = mLauncher.getSystemUiObject("navigation_bar_frame");
 
+            int swipeLength = Math.round(100 * mLauncher.getDisplayDensity());
             mLauncher.swipe(
                     navBar.getVisibleBounds().centerX(), navBar.getVisibleBounds().centerY(),
-                    navBar.getVisibleBounds().centerX(), height - 400,
+                    navBar.getVisibleBounds().centerX(), height - swipeLength,
                     expectedState);
         } else {
             mLauncher.getSystemUiObject("recent_apps").click();
