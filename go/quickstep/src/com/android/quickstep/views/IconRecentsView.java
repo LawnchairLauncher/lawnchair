@@ -21,8 +21,14 @@ import android.util.FloatProperty;
 import android.view.ViewDebug;
 import android.widget.FrameLayout;
 
+import com.android.quickstep.TaskAdapter;
+import com.android.systemui.shared.recents.model.Task;
+
+import java.util.ArrayList;
+
 /**
- * Root view for the icon recents view.
+ * Root view for the icon recents view. Acts as the main interface to the rest of the Launcher code
+ * base.
  */
 public final class IconRecentsView extends FrameLayout {
 
@@ -58,10 +64,22 @@ public final class IconRecentsView extends FrameLayout {
      * is top aligned and 0.5 is centered vertically.
      */
     @ViewDebug.ExportedProperty(category = "launcher")
+
+    // TODO: Write a recents task list observer that creates/updates tasks and signals task adapter.
+    private static final ArrayList<Task> DUMMY_TASK_LIST = new ArrayList<>();
+
     private float mTranslationYFactor;
+    private TaskAdapter mTaskAdapter;
 
     public IconRecentsView(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        mTaskAdapter = new TaskAdapter(DUMMY_TASK_LIST);
+        // TODO: Hook task adapter up to recycler view.
     }
 
     public void setTranslationYFactor(float translationFactor) {
