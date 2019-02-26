@@ -18,13 +18,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center">
-    <!-- TODO(114136250): Remove this temporary placeholder view for Go recents -->
-    <TextView
+    android:orientation="vertical">
+    <androidx.recyclerview.widget.RecyclerView
         xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/recent_task_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="Stub!"
-        android:textSize="40sp"/>
+        android:scrollbars="none"/>
 </com.android.quickstep.views.IconRecentsView>

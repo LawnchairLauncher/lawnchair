@@ -15,12 +15,19 @@
  */
 package com.android.quickstep.views;
 
+import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.view.ViewDebug;
 import android.widget.FrameLayout;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.launcher3.R;
+import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskAdapter;
 import com.android.systemui.shared.recents.model.Task;
 
@@ -72,19 +79,25 @@ public final class IconRecentsView extends FrameLayout {
 
     // TODO: Write a recents task list observer that creates/updates tasks and signals task adapter.
     private static final ArrayList<Task> DUMMY_TASK_LIST = new ArrayList<>();
+    private final Context mContext;
 
     private float mTranslationYFactor;
     private TaskAdapter mTaskAdapter;
+    private RecyclerView mTaskRecyclerView;
 
     public IconRecentsView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         mTaskAdapter = new TaskAdapter(DUMMY_TASK_LIST);
-        // TODO: Hook task adapter up to recycler view.
+        mTaskRecyclerView = findViewById(R.id.recent_task_recycler_view);
+        mTaskRecyclerView.setAdapter(mTaskAdapter);
+        mTaskRecyclerView.setLayoutManager(
+                new LinearLayoutManager(mContext, VERTICAL, true /* reverseLayout */));
     }
 
     public void setTranslationYFactor(float translationFactor) {
