@@ -29,7 +29,6 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.app.ActivityOptions;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Outline;
 import android.graphics.drawable.Drawable;
@@ -215,6 +214,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
      * Updates this task view to the given {@param task}.
      */
     public void bind(Task task) {
+        cancelPendingLoadTasks();
         mTask = task;
         mSnapshotView.bind(task);
     }
@@ -305,15 +305,15 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         if (mTask == null) {
             return;
         }
+        cancelPendingLoadTasks();
         if (visible) {
             // These calls are no-ops if the data is already loaded, try and load the high
             // resolution thumbnail if the state permits
             RecentsModel model = RecentsModel.INSTANCE.get(getContext());
             TaskThumbnailCache thumbnailCache = model.getThumbnailCache();
             TaskIconCache iconCache = model.getIconCache();
-            mThumbnailLoadRequest = thumbnailCache.updateThumbnailInBackground(mTask,
-                    !thumbnailCache.getHighResLoadingState().isEnabled() /* reducedResolution */,
-                    (task) -> mSnapshotView.setThumbnail(task, task.thumbnail));
+            mThumbnailLoadRequest = thumbnailCache.updateThumbnailInBackground(
+                    mTask, thumbnail -> mSnapshotView.setThumbnail(mTask, thumbnail));
             mIconLoadRequest = iconCache.updateIconInBackground(mTask,
                     (task) -> {
                         setIcon(task.icon);
@@ -325,14 +325,19 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                                 });
                     });
         } else {
-            if (mThumbnailLoadRequest != null) {
-                mThumbnailLoadRequest.cancel();
-            }
-            if (mIconLoadRequest != null) {
-                mIconLoadRequest.cancel();
-            }
             mSnapshotView.setThumbnail(null, null);
             setIcon(null);
+        }
+    }
+
+    private void cancelPendingLoadTasks() {
+        if (mThumbnailLoadRequest != null) {
+            mThumbnailLoadRequest.cancel();
+            mThumbnailLoadRequest = null;
+        }
+        if (mIconLoadRequest != null) {
+            mIconLoadRequest.cancel();
+            mIconLoadRequest = null;
         }
     }
 
