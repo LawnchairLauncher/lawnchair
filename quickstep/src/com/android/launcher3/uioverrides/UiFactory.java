@@ -125,8 +125,8 @@ public class UiFactory extends RecentsUiFactory {
 
     public static void onEnterAnimationComplete(Context context) {
         // After the transition to home, enable the high-res thumbnail loader if it wasn't enabled
-        // as a part of quickstep/scrub, so that high-res thumbnails can load the next time we
-        // enter overview
+        // as a part of quickstep, so that high-res thumbnails can load the next time we enter
+        // overview
         RecentsModel.INSTANCE.get(context).getThumbnailCache()
                 .getHighResLoadingState().setVisible(true);
     }

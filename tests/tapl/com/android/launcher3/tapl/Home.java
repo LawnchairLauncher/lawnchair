@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.TestProtocol.OVERVIEW_STATE_ORDINAL;
+
 import androidx.annotation.NonNull;
 
 /**
@@ -47,7 +49,7 @@ public abstract class Home extends Background {
     @Override
     public Overview switchToOverview() {
         verifyActiveContainer();
-        goToOverviewUnchecked();
+        goToOverviewUnchecked(OVERVIEW_STATE_ORDINAL);
         return new Overview(mLauncher);
     }
 }

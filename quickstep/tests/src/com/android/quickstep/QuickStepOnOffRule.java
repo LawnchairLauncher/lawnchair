@@ -90,11 +90,16 @@ public class QuickStepOnOffRule implements TestRule {
                     base.evaluate();
                 }
 
-                private void overrideSwipeUpEnabled(Boolean swipeUpEnabledOverride) {
+                private void overrideSwipeUpEnabled(Boolean swipeUpEnabledOverride)
+                        throws Throwable {
                     mLauncher.overrideSwipeUpEnabled(swipeUpEnabledOverride);
                     mMainThreadExecutor.execute(() -> OverviewInteractionState.INSTANCE.get(
                             InstrumentationRegistry.getInstrumentation().getTargetContext()).
                             notifySwipeUpSettingChanged(mLauncher.isSwipeUpEnabled()));
+                    // TODO(b/124236673): avoid using sleep().
+                    mLauncher.getDevice().waitForIdle();
+                    Thread.sleep(2000);
+                    mLauncher.getDevice().waitForIdle();
                 }
             };
         } else {

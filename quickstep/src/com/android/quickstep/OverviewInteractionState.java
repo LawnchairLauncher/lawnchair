@@ -64,8 +64,6 @@ public class OverviewInteractionState {
     private final Handler mUiHandler;
     private final Handler mBgHandler;
 
-    private boolean mSwipeGestureInitializing = false;
-
     // These are updated on the background thread
     private ISystemUiProxy mISystemUiProxy;
     private boolean mSwipeUpEnabled = true;
@@ -154,7 +152,7 @@ public class OverviewInteractionState {
             return;
         }
 
-        int flags = 0;
+        int flags = FLAG_DISABLE_QUICK_SCRUB;
         if (!mSwipeUpEnabled) {
             flags = FLAG_DISABLE_SWIPE_UP | FLAG_DISABLE_QUICK_SCRUB | FLAG_SHOW_OVERVIEW_BUTTON;
         }
@@ -175,15 +173,6 @@ public class OverviewInteractionState {
         } catch (RemoteException e) {
             Log.w(TAG, "Unable to update overview back button alpha", e);
         }
-    }
-
-    @WorkerThread
-    public void setSwipeGestureInitializing(boolean swipeGestureInitializing) {
-        mSwipeGestureInitializing = swipeGestureInitializing;
-    }
-
-    public boolean swipeGestureInitializing() {
-        return mSwipeGestureInitializing;
     }
 
     public void notifySwipeUpSettingChanged(boolean swipeUpEnabled) {

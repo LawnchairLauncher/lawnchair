@@ -34,6 +34,7 @@ import android.annotation.SuppressLint;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -97,6 +98,7 @@ import com.android.launcher3.widget.PendingAppWidgetHostView;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -2889,6 +2891,88 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         return layouts;
     }
 
+    /**
+     * Returns a list of all the CellLayouts on the Homescreen, starting with
+     * {@param startPage}, then going outward alternating between pages prior to the startPage,
+     * and then the pages after the startPage.
+     * ie. if there are 5 pages [0, 1, 2, 3, 4] and startPage is 1, we return [1, 0, 2, 3, 4].
+     */
+    private CellLayout[] getWorkspaceCellLayouts(int startPage) {
+        int screenCount = getChildCount();
+        final CellLayout[] layouts = new CellLayout[screenCount];
+        int screen = 0;
+
+        layouts[screen] = (CellLayout) getChildAt(startPage);
+        screen++;
+
+        for (int i = 1; screen < screenCount; ++i) {
+            CellLayout prevPage = (CellLayout) getChildAt(startPage - i);
+            CellLayout nextPage = (CellLayout) getChildAt(startPage + i);
+
+            if (prevPage != null) {
+                layouts[screen] = prevPage;
+                screen++;
+            }
+            if (nextPage != null) {
+                layouts[screen] = nextPage;
+                screen++;
+            }
+        }
+        return layouts;
+    }
+
+    /**
+     * Similar to {@link #getFirstMatch} but optimized to finding a suitable view for the app close
+     * animation.
+     *
+     * @param component The component of the task being dismissed.
+     */
+    public View getFirstMatchForAppClose(ComponentName component) {
+        final int curPage = getCurrentPage();
+        final CellLayout currentPage = (CellLayout) getPageAt(curPage);
+        final Workspace.ItemOperator isItemComponent = (info, view) ->
+                info != null && Objects.equals(info.getTargetComponent(), component);
+        final Workspace.ItemOperator isItemInFolder = (info, view) -> {
+            if (info instanceof FolderInfo) {
+                FolderInfo folderInfo = (FolderInfo) info;
+                for (ShortcutInfo shortcutInfo : folderInfo.contents) {
+                    if (Objects.equals(shortcutInfo.getTargetComponent(), component)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+
+        CellLayout[] hotseatAndCurrentPage = new CellLayout[] { getHotseat(), currentPage };
+        // First we look if the app itself is in the hotseat or on the current workspace page.
+        View icon = getFirstMatch(hotseatAndCurrentPage, isItemComponent);
+        if (icon != null) {
+            return icon;
+        }
+        // Then we look if the app is in a folder on the hotseat or current workspace page.
+        icon = getFirstMatch(hotseatAndCurrentPage, isItemInFolder);
+        if (icon != null) {
+            return icon;
+        }
+        // Continue searching for the app or for a folder with the app on other pages of the
+        // workspace. We skip the current page, since we already searched above.
+        CellLayout[] allPages = getWorkspaceCellLayouts(curPage);
+        CellLayout[] page = new CellLayout[1];
+        for (int i = 1; i < allPages.length; ++i) {
+            page[0] = allPages[i];
+            icon = getFirstMatch(page, isItemComponent);
+            if (icon != null) {
+                return icon;
+            }
+            icon = getFirstMatch(page, isItemInFolder);
+            if (icon != null) {
+                return icon;
+            }
+        }
+        return null;
+    }
+
     public View getHomescreenIconByItemId(final int id) {
         return getFirstMatch((info, v) -> info != null && info.id == id);
     }
@@ -2911,6 +2995,23 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 return false;
             }
         });
+        return value[0];
+    }
+
+    private View getFirstMatch(CellLayout[] cellLayouts, final ItemOperator operator) {
+        final View[] value = new View[1];
+        for (CellLayout cellLayout : cellLayouts) {
+            mapOverCellLayout(MAP_NO_RECURSE, cellLayout, (info, v) -> {
+                if (operator.evaluate(info, v)) {
+                    value[0] = v;
+                    return true;
+                }
+                return false;
+            });
+            if (value[0] != null) {
+                break;
+            }
+        }
         return value[0];
     }
 
@@ -2992,31 +3093,38 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      */
     public void mapOverItems(boolean recurse, ItemOperator op) {
         for (CellLayout layout : getWorkspaceAndHotseatCellLayouts()) {
-            ShortcutAndWidgetContainer container = layout.getShortcutsAndWidgets();
-            // map over all the shortcuts on the workspace
-            final int itemCount = container.getChildCount();
-            for (int itemIdx = 0; itemIdx < itemCount; itemIdx++) {
-                View item = container.getChildAt(itemIdx);
-                ItemInfo info = (ItemInfo) item.getTag();
-                if (recurse && info instanceof FolderInfo && item instanceof FolderIcon) {
-                    FolderIcon folder = (FolderIcon) item;
-                    ArrayList<View> folderChildren = folder.getFolder().getItemsInReadingOrder();
-                    // map over all the children in the folder
-                    final int childCount = folderChildren.size();
-                    for (int childIdx = 0; childIdx < childCount; childIdx++) {
-                        View child = folderChildren.get(childIdx);
-                        info = (ItemInfo) child.getTag();
-                        if (op.evaluate(info, child)) {
-                            return;
-                        }
+            if (mapOverCellLayout(recurse, layout, op)) {
+                return;
+            }
+        }
+    }
+
+    private boolean mapOverCellLayout(boolean recurse, CellLayout layout, ItemOperator op) {
+        ShortcutAndWidgetContainer container = layout.getShortcutsAndWidgets();
+        // map over all the shortcuts on the workspace
+        final int itemCount = container.getChildCount();
+        for (int itemIdx = 0; itemIdx < itemCount; itemIdx++) {
+            View item = container.getChildAt(itemIdx);
+            ItemInfo info = (ItemInfo) item.getTag();
+            if (recurse && info instanceof FolderInfo && item instanceof FolderIcon) {
+                FolderIcon folder = (FolderIcon) item;
+                ArrayList<View> folderChildren = folder.getFolder().getItemsInReadingOrder();
+                // map over all the children in the folder
+                final int childCount = folderChildren.size();
+                for (int childIdx = 0; childIdx < childCount; childIdx++) {
+                    View child = folderChildren.get(childIdx);
+                    info = (ItemInfo) child.getTag();
+                    if (op.evaluate(info, child)) {
+                        return true;
                     }
-                } else {
-                    if (op.evaluate(info, item)) {
-                        return;
-                    }
+                }
+            } else {
+                if (op.evaluate(info, item)) {
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     void updateShortcuts(ArrayList<ShortcutInfo> shortcuts) {

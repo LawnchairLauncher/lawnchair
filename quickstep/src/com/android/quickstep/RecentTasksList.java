@@ -73,6 +73,14 @@ public class RecentTasksList extends TaskStackChangeListener {
         });
     }
 
+    public void startStabilizationSession() {
+        mStabilizer.startStabilizationSession();
+    }
+
+    public void endStabilizationSession() {
+        mStabilizer.endStabilizationSession();
+    }
+
     /**
      * Asynchronously fetches the list of recent tasks, reusing cached list if available.
      *

@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.TestProtocol.OVERVIEW_STATE_ORDINAL;
+
 import android.graphics.Point;
 
 import androidx.annotation.NonNull;
@@ -45,7 +47,7 @@ public final class AllAppsFromOverview extends AllApps {
         final Point start = qsb.getVisibleCenter();
         final int endY = (int) (mLauncher.getDevice().getDisplayHeight() * 0.6);
         LauncherInstrumentation.log("AllAppsFromOverview.switchBackToOverview before swipe");
-        mLauncher.swipe(start.x, start.y, start.x, endY);
+        mLauncher.swipe(start.x, start.y, start.x, endY, OVERVIEW_STATE_ORDINAL);
 
         return new Overview(mLauncher);
     }

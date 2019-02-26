@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Intent;
+import android.content.pm.LauncherActivityInfo;
 import android.util.Log;
 
 import androidx.test.filters.LargeTest;
@@ -33,8 +34,12 @@ import androidx.test.uiautomator.UiDevice;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.tapl.AllApps;
 import com.android.launcher3.tapl.AppIcon;
+import com.android.launcher3.tapl.AppIconMenu;
+import com.android.launcher3.tapl.AppIconMenuItem;
+import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.views.OptionsPopupView;
@@ -100,12 +105,19 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        initialize(this);
+    }
 
-        clearLauncherData();
-
-        mLauncher.pressHome();
-        waitForState("Launcher internal state didn't switch to Home", LauncherState.NORMAL);
-        waitForResumed("Launcher internal state is still Background");
+    public static void initialize(AbstractLauncherUiTest test) throws Exception {
+        test.clearLauncherData();
+        if (TestHelpers.isInLauncherProcess()) {
+            test.mActivityMonitor.returnToHome();
+        } else {
+            test.mDevice.pressHome();
+        }
+        test.waitForLauncherCondition("Launcher didn't start", launcher -> launcher != null);
+        test.waitForState("Launcher internal state didn't switch to Home", LauncherState.NORMAL);
+        test.waitForResumed("Launcher internal state is still Background");
     }
 
     // Please don't add negative test cases for methods that fail only after a long wait.
@@ -283,5 +295,75 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     private int getWidgetsScroll(Launcher launcher) {
         return getWidgetsView(launcher).getCurrentScrollY();
+    }
+
+    private boolean isOptionsPopupVisible(Launcher launcher) {
+        final ArrowPopup popup = OptionsPopupView.getOptionsPopup(launcher);
+        return popup != null && popup.isShown();
+    }
+
+    @Test
+    @PortraitLandscape
+    public void testLaunchMenuItem() throws Exception {
+        if (!TestHelpers.isInLauncherProcess()) return;
+        final LauncherActivityInfo testApp = getSettingsApp();
+
+        final AppIconMenu menu = mLauncher.
+                getWorkspace().
+                switchToAllApps().
+                getAppIcon(testApp.getLabel().toString()).
+                openMenu();
+
+        executeOnLauncher(
+                launcher -> assertTrue("Launcher internal state didn't switch to Showing Menu",
+                        isOptionsPopupVisible(launcher)));
+
+        final AppIconMenuItem menuItem = menu.getMenuItem(1);
+        final String itemName = menuItem.getText();
+
+        menuItem.launch(testApp.getComponentName().getPackageName(), itemName);
+    }
+
+    @Test
+    @PortraitLandscape
+    public void testDragAppIcon() throws Throwable {
+        LauncherActivityInfo settingsApp = getSettingsApp();
+
+        final String appName = settingsApp.getLabel().toString();
+        // 1. Open all apps and wait for load complete.
+        // 2. Drag icon to homescreen.
+        // 3. Verify that the icon works on homescreen.
+        mLauncher.getWorkspace().
+                switchToAllApps().
+                getAppIcon(appName).
+                dragToWorkspace().
+                getWorkspaceAppIcon(appName).
+                launch(settingsApp.getComponentName().getPackageName());
+    }
+
+    @Test
+    @PortraitLandscape
+    public void testDragShortcut() throws Throwable {
+        if (!TestHelpers.isInLauncherProcess()) return;
+        LauncherActivityInfo testApp = getSettingsApp();
+
+        // 1. Open all apps and wait for load complete.
+        // 2. Find the app and long press it to show shortcuts.
+        // 3. Press icon center until shortcuts appear
+        final AppIconMenuItem menuItem = mLauncher.
+                getWorkspace().
+                switchToAllApps().
+                getAppIcon(testApp.getLabel().toString()).
+                openMenu().
+                getMenuItem(0);
+        final String shortcutName = menuItem.getText();
+
+        // 4. Drag the first shortcut to the home screen.
+        // 5. Verify that the shortcut works on home screen
+        //    (the app opens and has the same text as the shortcut).
+        menuItem.
+                dragToWorkspace().
+                getWorkspaceAppIcon(shortcutName).
+                launch(testApp.getComponentName().getPackageName(), shortcutName);
     }
 }

@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.TestProtocol.ALL_APPS_STATE_ORDINAL;
+
 import static junit.framework.TestCase.assertTrue;
 
 import android.graphics.Point;
@@ -55,7 +57,8 @@ public final class Workspace extends Home {
                 start.x,
                 start.y,
                 start.x,
-                endY
+                endY,
+                ALL_APPS_STATE_ORDINAL
         );
 
         return new AllApps(mLauncher);
@@ -96,7 +99,13 @@ public final class Workspace extends Home {
     public void ensureWorkspaceIsScrollable() {
         final UiObject2 workspace = verifyActiveContainer();
         if (!isWorkspaceScrollable(workspace)) {
-            dragIconToNextScreen(getHotseatAppIcon("Messages"), workspace);
+            dragIconToWorkspace(
+                    mLauncher,
+                    getHotseatAppIcon("Messages"),
+                    new Point(mLauncher.getDevice().getDisplayWidth(),
+                            workspace.getVisibleBounds().centerY()),
+                    ICON_DRAG_SPEED);
+            verifyActiveContainer();
         }
         assertTrue("Home screen workspace didn't become scrollable",
                 isWorkspaceScrollable(workspace));
@@ -112,12 +121,10 @@ public final class Workspace extends Home {
                 mHotseat, AppIcon.getAppIconSelector(appName, mLauncher)));
     }
 
-    private void dragIconToNextScreen(AppIcon app, UiObject2 workspace) {
-        final Point dest = new Point(
-                mLauncher.getDevice().getDisplayWidth(), workspace.getVisibleBounds().centerY());
-        app.getObject().drag(dest, ICON_DRAG_SPEED);
-        mLauncher.waitUntilGone("drop_target_bar");
-        verifyActiveContainer();
+    static void dragIconToWorkspace(LauncherInstrumentation launcher, Launchable launchable,
+            Point dest, int icon_drag_speed) {
+        launchable.getObject().drag(dest, icon_drag_speed);
+        launcher.waitUntilGone("drop_target_bar");
     }
 
     /**
@@ -152,5 +159,10 @@ public final class Workspace extends Home {
         verifyActiveContainer();
         mLauncher.getDevice().pressKeyCode(KeyEvent.KEYCODE_W, KeyEvent.META_CTRL_ON);
         return new Widgets(mLauncher);
+    }
+
+    @Override
+    protected int getSwipeLength() {
+        return 100;
     }
 }

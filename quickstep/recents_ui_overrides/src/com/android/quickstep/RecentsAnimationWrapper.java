@@ -1,0 +1,162 @@
+/*
+ * Copyright (C) 2018 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.android.quickstep;
+
+import static android.view.MotionEvent.ACTION_CANCEL;
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_UP;
+
+import android.view.MotionEvent;
+
+import com.android.launcher3.util.Preconditions;
+import com.android.quickstep.util.SwipeAnimationTargetSet;
+import com.android.systemui.shared.system.InputConsumerController;
+
+import java.util.ArrayList;
+import java.util.function.Supplier;
+
+import androidx.annotation.UiThread;
+
+/**
+ * Wrapper around RecentsAnimationController to help with some synchronization
+ */
+public class RecentsAnimationWrapper {
+
+    // A list of callbacks to run when we receive the recents animation target. There are different
+    // than the state callbacks as these run on the current worker thread.
+    private final ArrayList<Runnable> mCallbacks = new ArrayList<>();
+
+    public SwipeAnimationTargetSet targetSet;
+
+    private boolean mWindowThresholdCrossed = false;
+
+    private final InputConsumerController mInputConsumer;
+    private final Supplier<TouchConsumer> mTouchProxySupplier;
+
+    private TouchConsumer mTouchConsumer;
+    private boolean mTouchInProgress;
+
+    private boolean mFinishPending;
+
+    public RecentsAnimationWrapper(InputConsumerController inputConsumer,
+            Supplier<TouchConsumer> touchProxySupplier) {
+        mInputConsumer = inputConsumer;
+        mTouchProxySupplier = touchProxySupplier;
+    }
+
+    @UiThread
+    public synchronized void setController(SwipeAnimationTargetSet targetSet) {
+        Preconditions.assertUIThread();
+        this.targetSet = targetSet;
+
+        if (targetSet == null) {
+            return;
+        }
+        targetSet.setWindowThresholdCrossed(mWindowThresholdCrossed);
+
+        if (!mCallbacks.isEmpty()) {
+            for (Runnable action : new ArrayList<>(mCallbacks)) {
+                action.run();
+            }
+            mCallbacks.clear();
+        }
+    }
+
+    public synchronized void runOnInit(Runnable action) {
+        if (targetSet == null) {
+            mCallbacks.add(action);
+        } else {
+            action.run();
+        }
+    }
+
+    /**
+     * @param onFinishComplete A callback that runs on the main thread after the animation
+     *                         controller has finished on the background thread.
+     */
+    @UiThread
+    public void finish(boolean toRecents, Runnable onFinishComplete) {
+        Preconditions.assertUIThread();
+        if (!toRecents) {
+            finishAndClear(false, onFinishComplete);
+        } else {
+            if (mTouchInProgress) {
+                mFinishPending = true;
+                // Execute the callback
+                if (onFinishComplete != null) {
+                    onFinishComplete.run();
+                }
+            } else {
+                finishAndClear(true, onFinishComplete);
+            }
+        }
+    }
+
+    private void finishAndClear(boolean toRecents, Runnable onFinishComplete) {
+        SwipeAnimationTargetSet controller = targetSet;
+        targetSet = null;
+        if (controller != null) {
+            controller.finishController(toRecents, onFinishComplete);
+        }
+    }
+
+    public void enableInputConsumer() {
+        if (targetSet != null) {
+            targetSet.enableInputConsumer();
+        }
+    }
+
+    /**
+     * Indicates that the gesture has crossed the window boundary threshold and system UI can be
+     * update the represent the window behind
+     */
+    public void setWindowThresholdCrossed(boolean windowThresholdCrossed) {
+        if (mWindowThresholdCrossed != windowThresholdCrossed) {
+            mWindowThresholdCrossed = windowThresholdCrossed;
+            if (targetSet != null) {
+                targetSet.setWindowThresholdCrossed(windowThresholdCrossed);
+            }
+        }
+    }
+
+    public void enableTouchProxy() {
+        mInputConsumer.setTouchListener(this::onInputConsumerTouch);
+    }
+
+    private boolean onInputConsumerTouch(MotionEvent ev) {
+        int action = ev.getAction();
+        if (action == ACTION_DOWN) {
+            mTouchInProgress = true;
+            mTouchConsumer = mTouchProxySupplier.get();
+        } else if (action == ACTION_CANCEL || action == ACTION_UP) {
+            // Finish any pending actions
+            mTouchInProgress = false;
+            if (mFinishPending) {
+                mFinishPending = false;
+                finishAndClear(true /* toRecents */, null);
+            }
+        }
+        if (mTouchConsumer != null) {
+            mTouchConsumer.accept(ev);
+        }
+
+        return true;
+    }
+
+    public SwipeAnimationTargetSet getController() {
+        return targetSet;
+    }
+}

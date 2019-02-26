@@ -120,13 +120,11 @@ public abstract class RecentsUiFactory {
      */
     public static void onLauncherStateOrResumeChanged(Launcher launcher) {
         LauncherState state = launcher.getStateManager().getState();
-        if (!OverviewInteractionState.INSTANCE.get(launcher).swipeGestureInitializing()) {
-            DeviceProfile profile = launcher.getDeviceProfile();
-            boolean visible = (state == NORMAL || state == OVERVIEW) && launcher.isUserActive()
-                    && !profile.isVerticalBarLayout();
-            UiThreadHelper.runAsyncCommand(launcher, SET_SHELF_HEIGHT_CMD,
-                    visible ? 1 : 0, profile.hotseatBarSizePx);
-        }
+        DeviceProfile profile = launcher.getDeviceProfile();
+        boolean visible = (state == NORMAL || state == OVERVIEW) && launcher.isUserActive()
+                && !profile.isVerticalBarLayout();
+        UiThreadHelper.runAsyncCommand(launcher, SET_SHELF_HEIGHT_CMD,
+                visible ? 1 : 0, profile.hotseatBarSizePx);
 
         if (state == NORMAL) {
             launcher.<RecentsView>getOverviewPanel().setSwipeDownShouldLaunchApp(false);

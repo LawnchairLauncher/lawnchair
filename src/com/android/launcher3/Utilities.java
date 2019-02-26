@@ -52,6 +52,8 @@ import android.view.View;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.util.IntArray;
 
 import java.io.Closeable;
@@ -64,6 +66,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -540,5 +545,49 @@ public final class Utilities {
      */
     public static String getPointString(int x, int y) {
         return String.format(Locale.ENGLISH, "%d,%d", x, y);
+    }
+
+    /**
+     * Returns the location bounds of a view.
+     * - For DeepShortcutView, we return the bounds of the icon view.
+     * - For BubbleTextView, we return the icon bounds.
+     */
+    public static void getLocationBoundsForView(Launcher launcher, View v, Rect outRect) {
+        final DragLayer dragLayer = launcher.getDragLayer();
+        final boolean isBubbleTextView = v instanceof BubbleTextView;
+        final Rect rect = new Rect();
+
+        final boolean fromDeepShortcutView = v.getParent() instanceof DeepShortcutView;
+        if (fromDeepShortcutView) {
+            // Deep shortcut views have their icon drawn in a separate view.
+            DeepShortcutView view = (DeepShortcutView) v.getParent();
+            dragLayer.getDescendantRectRelativeToSelf(view.getIconView(), rect);
+        } else if (isBubbleTextView && v.getTag() instanceof ItemInfo
+                && (((ItemInfo) v.getTag()).container == CONTAINER_DESKTOP
+                || ((ItemInfo) v.getTag()).container == CONTAINER_HOTSEAT)) {
+            BubbleTextView btv = (BubbleTextView) v;
+            CellLayout pageViewIsOn = ((CellLayout) btv.getParent().getParent());
+            int pageNum = launcher.getWorkspace().indexOfChild(pageViewIsOn);
+
+            DeviceProfile dp = launcher.getDeviceProfile();
+            ItemInfo info = ((ItemInfo) btv.getTag());
+            dp.getItemLocation(info.cellX, info.cellY, info.spanX, info.spanY,
+                    info.container, pageNum - launcher.getCurrentWorkspaceScreen(), rect);
+        } else {
+            dragLayer.getDescendantRectRelativeToSelf(v, rect);
+        }
+        int viewLocationLeft = rect.left;
+        int viewLocationTop = rect.top;
+
+        if (isBubbleTextView && !fromDeepShortcutView) {
+            BubbleTextView btv = (BubbleTextView) v;
+            btv.getIconBounds(rect);
+        } else {
+            rect.set(0, 0, rect.width(), rect.height());
+        }
+        viewLocationLeft += rect.left;
+        viewLocationTop += rect.top;
+        outRect.set(viewLocationLeft, viewLocationTop, viewLocationLeft + rect.width(),
+                viewLocationTop + rect.height());
     }
 }

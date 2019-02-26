@@ -50,11 +50,6 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public void onStateDisabled(Launcher launcher) {
-        RecentsModel.INSTANCE.get(launcher).resetAssistCache();
-    }
-
-    @Override
     public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {
         return new PageAlphaProvider(DEACCEL_2) {
             @Override

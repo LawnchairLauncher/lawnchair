@@ -26,7 +26,6 @@ public class FlagOverrideSampleTest {
     @Test
     public void withFlagOn() {
         assertTrue(FeatureFlags.EXAMPLE_FLAG.get());
-        assertFalse(FeatureFlags.QUICK_SWITCH.get());
         assertFalse(FeatureFlags.STYLE_WALLPAPER.get());
     }
 

@@ -29,18 +29,6 @@ public final class GoLauncherAppTransitionManagerImpl extends QuickstepAppTransi
     }
 
     @Override
-    protected boolean isQuickSwitchInProgress() {
-        // Go does not support quick scrub.
-        return false;
-    }
-
-    @Override
-    protected ActivityOptions getQuickSwitchActivityOptions() {
-        // Go does not support quick scrub.
-        return null;
-    }
-
-    @Override
     protected void composeRecentsLaunchAnimator(AnimatorSet anim, View v,
             RemoteAnimationTargetCompat[] targets, boolean launcherClosing) {
         //TODO: Implement this based off IconRecentsView
