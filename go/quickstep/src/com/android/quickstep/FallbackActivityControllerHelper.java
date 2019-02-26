@@ -20,7 +20,6 @@ import static com.android.quickstep.views.IconRecentsView.CONTENT_ALPHA;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.content.ComponentName;
 import android.graphics.Rect;
 
 import androidx.annotation.Nullable;
@@ -30,7 +29,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.IconRecentsView;
-import com.android.quickstep.views.RecentsView;
 
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -43,7 +41,7 @@ import java.util.function.Consumer;
 public final class FallbackActivityControllerHelper extends
         GoActivityControlHelper<RecentsActivity> {
 
-    public FallbackActivityControllerHelper(ComponentName homeComponent) { }
+    public FallbackActivityControllerHelper() { }
 
     @Override
     public AnimationFactory prepareRecentsUI(RecentsActivity activity, boolean activityVisible,
@@ -98,7 +96,7 @@ public final class FallbackActivityControllerHelper extends
 
     @Nullable
     @Override
-    public RecentsView getVisibleRecentsView() {
+    public IconRecentsView getVisibleRecentsView() {
         RecentsActivity activity = getCreatedActivity();
         if (activity != null && activity.hasWindowFocus()) {
             return activity.getOverviewPanel();
