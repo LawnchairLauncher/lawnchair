@@ -160,4 +160,9 @@ public final class Workspace extends Home {
         mLauncher.getDevice().pressKeyCode(KeyEvent.KEYCODE_W, KeyEvent.META_CTRL_ON);
         return new Widgets(mLauncher);
     }
+
+    @Override
+    protected int getSwipeLength() {
+        return 100;
+    }
 }
