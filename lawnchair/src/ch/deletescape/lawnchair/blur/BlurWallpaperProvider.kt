@@ -29,9 +29,6 @@ import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.hoko.blur.HokoBlur
-import com.hoko.blur.task.AsyncBlurTask
-import java.util.concurrent.Future
 
 class BlurWallpaperProvider(val context: Context) {
 
@@ -75,23 +72,25 @@ class BlurWallpaperProvider(val context: Context) {
 
     private val mUpdateRunnable = Runnable { updateWallpaper() }
 
-    private var blurFuture: Future<Any>? = null
+    private val wallpaperFilter = BlurWallpaperFilter(context)
+    private var applyTask: WallpaperFilter.ApplyTask? = null
+
+    private var updatePending = false
 
     init {
         isEnabled = getEnabledStatus()
 
-        updateBlurRadius()
+        wallpaperFilter.applyPrefs(prefs)
         updateAsync()
     }
 
     private fun getEnabledStatus() = mWallpaperManager.wallpaperInfo == null && prefs.enableBlur
 
-    private fun updateBlurRadius() {
-        blurRadius = prefs.blurRadius.toInt() / DOWNSAMPLE_FACTOR
-        blurRadius = Math.max(1, Math.min(blurRadius, 25))
-    }
-
     private fun updateWallpaper() {
+        if (applyTask != null) {
+            updatePending = true
+            return
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !context.hasStoragePermission){
             prefs.enableBlur = false
             return
@@ -110,7 +109,7 @@ class BlurWallpaperProvider(val context: Context) {
             return
         }
 
-        updateBlurRadius()
+        wallpaperFilter.applyPrefs(prefs)
 
         var wallpaper = try {
             Utilities.drawableToBitmap(mWallpaperManager.drawable, true) as Bitmap
@@ -136,36 +135,29 @@ class BlurWallpaperProvider(val context: Context) {
         placeholder = createPlaceholder(wallpaper.width, wallpaper.height)
         wallpaper = applyVibrancy(wallpaper)
         Log.d("BWP", "starting blur")
-        blurFuture?.cancel(true)
-        blurFuture = HokoBlur.with(context)
-                .scheme(HokoBlur.SCHEME_OPENGL)
-                .mode(HokoBlur.MODE_STACK)
-                .radius(blurRadius)
-                .sampleFactor(DOWNSAMPLE_FACTOR.toFloat())
-                .forceCopy(false)
-                .needUpscale(true)
-                .processor()
-                .asyncBlur(wallpaper, object : AsyncBlurTask.Callback {
-                    override fun onBlurSuccess(bitmap: Bitmap) {
-                        this@BlurWallpaperProvider.wallpaper = bitmap
-                        Log.d("BWP", "blur done")
-                        blurFuture = null
-                        runOnMainThread(::notifyWallpaperChanged)
-                        wallpaper.recycle()
-                    }
 
-                    override fun onBlurFailed(error: Throwable?) {
-                        if (error is OutOfMemoryError) {
-                            prefs.enableBlur = false
-                            runOnMainThread {
-                                Toast.makeText(context, R.string.blur_oom, Toast.LENGTH_LONG).show()
-                                notifyWallpaperChanged()
-                            }
-                        }
-                        blurFuture = null
-                        wallpaper.recycle()
+        applyTask = wallpaperFilter.apply(wallpaper).setCallback { result, error ->
+            if (error == null) {
+                this@BlurWallpaperProvider.wallpaper = result
+                Log.d("BWP", "blur done")
+                runOnMainThread(::notifyWallpaperChanged)
+                wallpaper.recycle()
+            } else {
+                if (error is OutOfMemoryError) {
+                    prefs.enableBlur = false
+                    runOnMainThread {
+                        Toast.makeText(context, R.string.blur_oom, Toast.LENGTH_LONG).show()
+                        notifyWallpaperChanged()
                     }
-                })
+                }
+                wallpaper.recycle()
+            }
+            applyTask = null
+            if (updatePending) {
+                updatePending = false
+                updateWallpaper()
+            }
+        }
     }
 
     private fun notifyWallpaperChanged() {
