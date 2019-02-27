@@ -51,6 +51,11 @@ public final class IconRecentsView extends FrameLayout {
                 @Override
                 public void setValue(IconRecentsView view, float v) {
                     ALPHA.set(view, v);
+                    if (view.getVisibility() != VISIBLE && v > 0) {
+                        view.setVisibility(VISIBLE);
+                    } else if (view.getVisibility() != GONE && v == 0){
+                        view.setVisibility(GONE);
+                    }
                 }
 
                 @Override
