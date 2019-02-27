@@ -19,7 +19,7 @@ package ch.deletescape.lawnchair.settings.ui.search
 
 import android.content.Context
 
-import android.support.v7.preference.PreferenceCategory
+import android.support.v7.preference.PreferenceGroup
 import ch.deletescape.lawnchair.get
 import ch.deletescape.lawnchair.settings.ui.PreferenceController
 import ch.deletescape.lawnchair.settings.ui.SubPreference
@@ -95,7 +95,7 @@ class SearchIndex(private val context: Context) {
                     }
                     skip(parser)
                 }
-                cls != null && PreferenceCategory::class.java.isAssignableFrom(cls) -> {
+                cls != null && PreferenceGroup::class.java.isAssignableFrom(cls) -> {
                     val title = parseString(parser[nsAndroid, attrTitle])
                     if (parent != null) {
                         indexSection(parser, SettingsCategory(parent.title, title!!,
