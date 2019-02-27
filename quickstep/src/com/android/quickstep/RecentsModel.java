@@ -15,8 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
-
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
@@ -28,6 +26,7 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.util.Log;
 import android.util.SparseArray;
+
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
@@ -35,10 +34,13 @@ import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.TaskStackChangeListener;
+
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
 import androidx.annotation.WorkerThread;
+
+import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 
 /**
  * Singleton class to load and manage recents model.
@@ -52,14 +54,10 @@ public class RecentsModel extends TaskStackChangeListener {
     public static final MainThreadInitializedObject<RecentsModel> INSTANCE =
             new MainThreadInitializedObject<>(c -> new RecentsModel(c));
 
-    private final SparseArray<Bundle> mCachedAssistData = new SparseArray<>(1);
-    private final ArrayList<AssistDataListener> mAssistDataListeners = new ArrayList<>();
-
     private final Context mContext;
     private final MainThreadExecutor mMainThreadExecutor;
 
     private ISystemUiProxy mSystemUiProxy;
-    private boolean mClearAssistCacheOnStackChange = true;
 
     private final RecentTasksList mTaskList;
     private final TaskIconCache mIconCache;
@@ -88,6 +86,14 @@ public class RecentsModel extends TaskStackChangeListener {
 
     public TaskThumbnailCache getThumbnailCache() {
         return mThumbnailCache;
+    }
+
+    public void startStabilizationSession() {
+        mTaskList.startStabilizationSession();
+    }
+
+    public void endStabilizationSession() {
+        mTaskList.endStabilizationSession();
     }
 
     /**
@@ -162,16 +168,6 @@ public class RecentsModel extends TaskStackChangeListener {
         });
     }
 
-    @Override
-    public void onTaskStackChanged() {
-        Preconditions.assertUIThread();
-        if (mClearAssistCacheOnStackChange) {
-            mCachedAssistData.clear();
-        } else {
-            mClearAssistCacheOnStackChange = true;
-        }
-    }
-
     public void setSystemUiProxy(ISystemUiProxy systemUiProxy) {
         mSystemUiProxy = systemUiProxy;
     }
@@ -242,45 +238,5 @@ public class RecentsModel extends TaskStackChangeListener {
                     "Failed to notify SysUI of overview shown from " + (fromHome ? "home" : "app")
                             + ": ", e);
         }
-    }
-
-    public void resetAssistCache() {
-        mCachedAssistData.clear();
-    }
-
-    @WorkerThread
-    public void preloadAssistData(int taskId, Bundle data) {
-        mMainThreadExecutor.execute(() -> {
-            mCachedAssistData.put(taskId, data);
-            // We expect a stack change callback after the assist data is set. So ignore the
-            // very next stack change callback.
-            mClearAssistCacheOnStackChange = false;
-
-            int count = mAssistDataListeners.size();
-            for (int i = 0; i < count; i++) {
-                mAssistDataListeners.get(i).onAssistDataReceived(taskId);
-            }
-        });
-    }
-
-    public Bundle getAssistData(int taskId) {
-        Preconditions.assertUIThread();
-        return mCachedAssistData.get(taskId);
-    }
-
-    public void addAssistDataListener(AssistDataListener listener) {
-        mAssistDataListeners.add(listener);
-    }
-
-    public void removeAssistDataListener(AssistDataListener listener) {
-        mAssistDataListeners.remove(listener);
-    }
-
-    /**
-     * Callback for receiving assist data
-     */
-    public interface AssistDataListener {
-
-        void onAssistDataReceived(int taskId);
     }
 }

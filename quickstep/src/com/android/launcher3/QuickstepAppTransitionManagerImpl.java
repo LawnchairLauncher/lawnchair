@@ -59,10 +59,10 @@ import com.android.launcher3.InsettableFrameLayout.LayoutParams;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
+import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
@@ -112,7 +112,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     private static final int APP_LAUNCH_ALPHA_DURATION = 50;
 
     public static final int RECENTS_LAUNCH_DURATION = 336;
-    public static final int RECENTS_QUICKSCRUB_LAUNCH_DURATION = 300;
     private static final int LAUNCHER_RESUME_START_DELAY = 100;
     private static final int CLOSING_TRANSITION_DURATION_MS = 250;
 
@@ -135,7 +134,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     private final float mClosingWindowTransY;
 
     private DeviceProfile mDeviceProfile;
-    private View mFloatingView;
+    private FloatingIconView mFloatingView;
 
     private RemoteAnimationProvider mRemoteAnimationProvider;
 
@@ -181,10 +180,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     public ActivityOptions getActivityLaunchOptions(Launcher launcher, View v) {
         if (hasControlRemoteAppTransitionPermission()) {
             boolean fromRecents = isLaunchingFromRecents(v, null /* targets */);
-            if (fromRecents && isQuickSwitchInProgress()) {
-                return getQuickSwitchActivityOptions();
-            }
-
             RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(mHandler,
                     true /* startAtFrontOfQueue */) {
 
@@ -236,20 +231,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
      */
     protected abstract boolean isLaunchingFromRecents(@NonNull View v,
             @Nullable RemoteAnimationTargetCompat[] targets);
-
-    /**
-     * Whether a quick scrub is in progress.
-     *
-     * @return true if in progress
-     */
-    protected abstract boolean isQuickSwitchInProgress();
-
-    /**
-     * Get activity options for a quick switch launch that include the launch animation.
-     *
-     * @return the activity options for a quick switch recents launch
-     */
-    protected abstract ActivityOptions getQuickSwitchActivityOptions();
 
     /**
      * Composes the animations for a launch from the recents list.
@@ -423,7 +404,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             boolean toggleVisibility) {
         final boolean isBubbleTextView = v instanceof BubbleTextView;
         if (mFloatingView == null) {
-            mFloatingView = new View(mLauncher);
+            mFloatingView = new FloatingIconView(mLauncher);
         } else {
             mFloatingView.setTranslationX(0);
             mFloatingView.setTranslationY(0);
@@ -432,57 +413,14 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             mFloatingView.setAlpha(1);
             mFloatingView.setBackground(null);
         }
-        if (isBubbleTextView && v.getTag() instanceof ItemInfoWithIcon ) {
-            // Create a copy of the app icon
-            mFloatingView.setBackground(DrawableFactory.INSTANCE.get(mLauncher)
-                    .newIcon(v.getContext(), (ItemInfoWithIcon) v.getTag()));
-        }
-
-        // Position the floating view exactly on top of the original
         Rect rect = new Rect();
-        final boolean fromDeepShortcutView = v.getParent() instanceof DeepShortcutView;
-        if (fromDeepShortcutView) {
-            // Deep shortcut views have their icon drawn in a separate view.
-            DeepShortcutView view = (DeepShortcutView) v.getParent();
-            mDragLayer.getDescendantRectRelativeToSelf(view.getIconView(), rect);
-        } else {
-            mDragLayer.getDescendantRectRelativeToSelf(v, rect);
-        }
-        int viewLocationLeft = rect.left;
-        int viewLocationTop = rect.top;
+        mFloatingView.matchPositionOf(mLauncher, v, toggleVisibility, rect);
 
-        float startScale = 1f;
-        if (isBubbleTextView && !fromDeepShortcutView) {
-            BubbleTextView btv = (BubbleTextView) v;
-            btv.getIconBounds(rect);
-            Drawable dr = btv.getIcon();
-            if (dr instanceof FastBitmapDrawable) {
-                startScale = ((FastBitmapDrawable) dr).getAnimatedScale();
-            }
-        } else {
-            rect.set(0, 0, rect.width(), rect.height());
-        }
-        viewLocationLeft += rect.left;
-        viewLocationTop += rect.top;
-        int viewLocationStart = mIsRtl
-                ? windowTargetBounds.width() - rect.right
-                : viewLocationLeft;
-        LayoutParams lp = new LayoutParams(rect.width(), rect.height());
-        lp.ignoreInsets = true;
-        lp.leftMargin = viewLocationStart;
-        lp.topMargin = viewLocationTop;
+        int viewLocationStart = mIsRtl ? windowTargetBounds.width() - rect.right : rect.left;
+        LayoutParams lp = (LayoutParams) mFloatingView.getLayoutParams();
+        // Special RTL logic is needed to handle the window target bounds.
+        lp.leftMargin = mIsRtl ? windowTargetBounds.width() - rect.right : rect.left;
         mFloatingView.setLayoutParams(lp);
-
-        // Set the properties here already to make sure they'are available when running the first
-        // animation frame.
-        mFloatingView.layout(viewLocationLeft, viewLocationTop,
-                viewLocationLeft + rect.width(), viewLocationTop + rect.height());
-
-        // Swap the two views in place.
-        ((ViewGroup) mDragLayer.getParent()).getOverlay().add(mFloatingView);
-        if (toggleVisibility) {
-            v.setVisibility(View.INVISIBLE);
-        }
 
         int[] dragLayerBounds = new int[2];
         mDragLayer.getLocationOnScreen(dragLayerBounds);
@@ -494,8 +432,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         float xPosition = mIsRtl
                 ? windowTargetBounds.width() - lp.getMarginStart() - rect.width()
                 : lp.getMarginStart();
-        float dX = centerX - xPosition - (lp.width / 2);
-        float dY = centerY - lp.topMargin - (lp.height / 2);
+        float dX = centerX - xPosition - (lp.width / 2f);
+        float dY = centerY - lp.topMargin - (lp.height / 2f);
 
         ObjectAnimator x = ObjectAnimator.ofFloat(mFloatingView, View.TRANSLATION_X, 0f, dX);
         ObjectAnimator y = ObjectAnimator.ofFloat(mFloatingView, View.TRANSLATION_Y, 0f, dY);
@@ -521,6 +459,14 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         float maxScaleX = windowTargetBounds.width() / (float) rect.width();
         float maxScaleY = windowTargetBounds.height() / (float) rect.height();
         float scale = Math.max(maxScaleX, maxScaleY);
+        float startScale = 1f;
+        if (isBubbleTextView && !(v.getParent() instanceof DeepShortcutView)) {
+            Drawable dr = ((BubbleTextView) v).getIcon();
+            if (dr instanceof FastBitmapDrawable) {
+                startScale = ((FastBitmapDrawable) dr).getAnimatedScale();
+            }
+        }
+
         ObjectAnimator scaleAnim = ObjectAnimator
                 .ofFloat(mFloatingView, SCALE_PROPERTY, startScale, scale);
         scaleAnim.setDuration(APP_LAUNCH_DURATION)
@@ -540,6 +486,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         alpha.setInterpolator(LINEAR);
         appOpenAnimator.play(alpha);
 
+        appOpenAnimator.addListener(mFloatingView);
         appOpenAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {

@@ -15,13 +15,10 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_TASK_STABILIZER;
-
 import android.app.ActivityManager.RecentTaskInfo;
 import android.content.ComponentName;
 import android.os.Process;
 import android.os.SystemClock;
-import android.util.Log;
 
 import com.android.launcher3.util.IntArray;
 import com.android.systemui.shared.recents.model.Task;
@@ -33,98 +30,77 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Keeps the task list stable during quick switch gestures. So if you swipe right to switch from app
+ * A to B, you can then swipe right again to get to app C or left to get back to A.
+ */
 public class TaskListStabilizer {
 
     private static final long TASK_CACHE_TIMEOUT_MS = 5000;
-
-    private static final int INVALID_TASK_ID = -1;
 
     private final TaskStackChangeListener mTaskStackListener = new TaskStackChangeListener() {
 
         @Override
         public void onTaskCreated(int taskId, ComponentName componentName) {
-            onTaskCreatedInternal(taskId);
-        }
-
-        @Override
-        public void onTaskMovedToFront(int taskId) {
-            onTaskMovedToFrontInternal(taskId);
+            endStabilizationSession();
         }
 
         @Override
         public void onTaskRemoved(int taskId) {
-            onTaskRemovedInternal(taskId);
+            endStabilizationSession();
         }
     };
 
-    // Task ids ordered based on recency, 0th index is the latest task
-    private final IntArray mOrderedTaskIds;
+    // Task ids ordered based on recency, 0th index is the least recent task
+    private final IntArray mSystemOrder;
+    private final IntArray mStabilizedOrder;
 
     // Wrapper objects used for sorting tasks
     private final ArrayList<TaskWrapper> mTaskWrappers = new ArrayList<>();
 
-    // Information about recent task re-order which has not been applied yet
-    private int mScheduledMoveTaskId = INVALID_TASK_ID;
-    private long mScheduledMoveTime = 0;
+    private boolean mInStabilizationSession;
+    private long mSessionStartTime;
 
     public TaskListStabilizer() {
-        if (ENABLE_TASK_STABILIZER.get()) {
-            // Initialize the task ids map
-            List<RecentTaskInfo> rawTasks = ActivityManagerWrapper.getInstance().getRecentTasks(
-                    Integer.MAX_VALUE, Process.myUserHandle().getIdentifier());
-            mOrderedTaskIds = new IntArray(rawTasks.size());
-            for (RecentTaskInfo info : rawTasks) {
-                mOrderedTaskIds.add(new TaskKey(info).id);
-            }
-
-            ActivityManagerWrapper.getInstance().registerTaskStackListener(mTaskStackListener);
-        } else {
-            mOrderedTaskIds = null;
+        // Initialize the task ids map
+        List<RecentTaskInfo> rawTasks = ActivityManagerWrapper.getInstance().getRecentTasks(
+                Integer.MAX_VALUE, Process.myUserHandle().getIdentifier());
+        mSystemOrder = new IntArray(rawTasks.size());
+        for (RecentTaskInfo info : rawTasks) {
+            mSystemOrder.add(new TaskKey(info).id);
         }
+        // We will lazily copy the task id's from mSystemOrder when a stabilization session starts.
+        mStabilizedOrder = new IntArray(rawTasks.size());
+
+        ActivityManagerWrapper.getInstance().registerTaskStackListener(mTaskStackListener);
     }
 
-    private synchronized void onTaskCreatedInternal(int taskId) {
-        applyScheduledMoveUnchecked();
-        mOrderedTaskIds.add(taskId);
-    }
-
-    private synchronized void onTaskRemovedInternal(int taskId) {
-        applyScheduledMoveUnchecked();
-        mOrderedTaskIds.removeValue(taskId);
-    }
-
-    private void applyScheduledMoveUnchecked() {
-        if (mScheduledMoveTaskId != INVALID_TASK_ID) {
-            // Mode the scheduled task to front
-            mOrderedTaskIds.removeValue(mScheduledMoveTaskId);
-            mOrderedTaskIds.add(mScheduledMoveTaskId);
-            mScheduledMoveTaskId = INVALID_TASK_ID;
+    public synchronized void startStabilizationSession() {
+        if (!mInStabilizationSession) {
+            mStabilizedOrder.clear();
+            mStabilizedOrder.addAll(mSystemOrder);
         }
+        mInStabilizationSession = true;
+        mSessionStartTime = SystemClock.uptimeMillis();
     }
 
-    /**
-     * Checks if the scheduled move has timed out and moves the task to front accordingly.
-     */
-    private void applyScheduledMoveIfTime() {
-        if (mScheduledMoveTaskId != INVALID_TASK_ID
-                && (SystemClock.uptimeMillis() - mScheduledMoveTime) > TASK_CACHE_TIMEOUT_MS) {
-            applyScheduledMoveUnchecked();
-        }
+    public synchronized void endStabilizationSession() {
+        mInStabilizationSession = false;
     }
-
-    private synchronized void onTaskMovedToFrontInternal(int taskId) {
-        applyScheduledMoveIfTime();
-        mScheduledMoveTaskId = taskId;
-        mScheduledMoveTime = SystemClock.uptimeMillis();
-    }
-
 
     public synchronized ArrayList<Task> reorder(ArrayList<Task> tasks) {
-        if (!ENABLE_TASK_STABILIZER.get()) {
-            return tasks;
+        mSystemOrder.clear();
+        for (Task task : tasks) {
+            mSystemOrder.add(task.key.id);
         }
 
-        applyScheduledMoveIfTime();
+        if ((SystemClock.uptimeMillis() - mSessionStartTime) > TASK_CACHE_TIMEOUT_MS) {
+            endStabilizationSession();
+        }
+
+        if (!mInStabilizationSession) {
+            return tasks;
+        }
 
         // Ensure that we have enough wrappers
         int taskCount = tasks.size();
@@ -139,7 +115,7 @@ public class TaskListStabilizer {
         for (int i = 0; i < taskCount; i++){
             TaskWrapper wrapper = listToSort.get(i);
             wrapper.task = tasks.get(i);
-            wrapper.index = mOrderedTaskIds.indexOf(wrapper.task.key.id);
+            wrapper.index = mStabilizedOrder.indexOf(wrapper.task.key.id);
 
             // Ensure that missing tasks are put in the front, in the order they appear in the
             // original list

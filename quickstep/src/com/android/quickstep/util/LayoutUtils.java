@@ -43,6 +43,8 @@ public class LayoutUtils {
         float extraSpace;
         if (dp.isVerticalBarLayout()) {
             extraSpace = 0;
+        } else if (FeatureFlags.ENABLE_HINTS_IN_OVERVIEW.get()){
+            extraSpace = dp.hotseatBarSizePx + dp.verticalDragHandleSizePx + dp.chipHintHeightPx;
         } else {
             extraSpace = dp.hotseatBarSizePx + dp.verticalDragHandleSizePx;
         }

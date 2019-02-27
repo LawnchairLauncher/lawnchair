@@ -16,6 +16,7 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
 import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 
@@ -50,23 +51,28 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
     @NonNull
     public BaseOverview switchToOverview() {
         verifyActiveContainer();
-        goToOverviewUnchecked();
+        goToOverviewUnchecked(BACKGROUND_APP_STATE_ORDINAL);
         assertTrue("Overview not visible", mLauncher.getDevice().wait(
                 Until.hasObject(By.pkg(getOverviewPackageName())), WAIT_TIME_MS));
         return new BaseOverview(mLauncher);
     }
 
-
-    protected void goToOverviewUnchecked() {
+    protected void goToOverviewUnchecked(int expectedState) {
         if (mLauncher.isSwipeUpEnabled()) {
             final int height = mLauncher.getDevice().getDisplayHeight();
             final UiObject2 navBar = mLauncher.getSystemUiObject("navigation_bar_frame");
 
+            int swipeLength = Math.round(getSwipeLength() * mLauncher.getDisplayDensity());
             mLauncher.swipe(
                     navBar.getVisibleBounds().centerX(), navBar.getVisibleBounds().centerY(),
-                    navBar.getVisibleBounds().centerX(), height - 400);
+                    navBar.getVisibleBounds().centerX(), height - swipeLength,
+                    expectedState);
         } else {
             mLauncher.getSystemUiObject("recent_apps").click();
         }
+    }
+
+    protected int getSwipeLength() {
+        return 200;
     }
 }

@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.uioverrides;
 
-import static com.android.launcher3.AbstractFloatingView.TYPE_QUICKSTEP_PREVIEW;
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
@@ -76,18 +75,13 @@ public class OverviewState extends LauncherState {
     public void onStateEnabled(Launcher launcher) {
         RecentsView rv = launcher.getOverviewPanel();
         rv.setOverviewStateEnabled(true);
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            AbstractFloatingView.closeAllOpenViews(launcher);
-        } else {
-            AbstractFloatingView.closeAllOpenViewsExcept(launcher, TYPE_QUICKSTEP_PREVIEW);
-        }
+        AbstractFloatingView.closeAllOpenViews(launcher);
     }
 
     @Override
     public void onStateDisabled(Launcher launcher) {
         RecentsView rv = launcher.getOverviewPanel();
         rv.setOverviewStateEnabled(false);
-        RecentsModel.INSTANCE.get(launcher).resetAssistCache();
     }
 
     @Override

@@ -82,8 +82,7 @@
     <string name="folder_name_format" msgid="6629239338071103179">"Mapa: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Pripomočki"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Ozadja"</string>
-    <!-- no translation found for styles_wallpaper_button_text (4342122323125579619) -->
-    <skip />
+    <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Slogi in ozadja"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Nastavitve začetnega zaslona"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Onemogočil skrbnik."</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Omogočanje sukanja začetnega zaslona"</string>

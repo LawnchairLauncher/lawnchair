@@ -147,10 +147,17 @@ public class LauncherStateManager {
     }
 
     /**
+     * Returns true if the state changes should be animated.
+     */
+    public boolean shouldAnimateStateChange() {
+        return !mLauncher.isForceInvisible() && mLauncher.isStarted();
+    }
+
+    /**
      * @see #goToState(LauncherState, boolean, Runnable)
      */
     public void goToState(LauncherState state) {
-        goToState(state, !mLauncher.isForceInvisible() && mLauncher.isStarted() /* animated */);
+        goToState(state, shouldAnimateStateChange());
     }
 
     /**

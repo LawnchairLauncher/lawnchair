@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.TestProtocol.ALL_APPS_STATE_ORDINAL;
+
 import android.graphics.Point;
 
 import com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
@@ -51,7 +53,7 @@ public final class Overview extends BaseOverview {
         final UiObject2 navBar = mLauncher.getSystemUiObject("navigation_bar_frame");
         final Point start = navBar.getVisibleCenter();
         LauncherInstrumentation.log("Overview.switchToAllApps before swipe");
-        mLauncher.swipe(start.x, start.y, start.x, 0);
+        mLauncher.swipe(start.x, start.y, start.x, 0, ALL_APPS_STATE_ORDINAL);
 
         return new AllAppsFromOverview(mLauncher);
     }

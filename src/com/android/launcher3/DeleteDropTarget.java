@@ -91,6 +91,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
             mText = getResources().getString(canRemove(item)
                     ? R.string.remove_drop_target_label
                     : android.R.string.cancel);
+            setContentDescription(mText);
             requestLayout();
         }
     }

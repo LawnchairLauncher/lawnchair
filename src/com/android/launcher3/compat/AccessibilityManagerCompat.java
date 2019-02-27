@@ -52,11 +52,14 @@ public class AccessibilityManagerCompat {
         return (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
     }
 
-    public static void sendEventToTest(Context context, String eventTag) {
+    public static void sendStateEventToTest(Context context, int stateOrdinal) {
         final AccessibilityManager accessibilityManager = getAccessibilityManagerForTest(context);
         if (accessibilityManager == null) return;
 
-        sendEventToTest(accessibilityManager, eventTag, null);
+        final Bundle parcel = new Bundle();
+        parcel.putInt(TestProtocol.STATE_FIELD, stateOrdinal);
+
+        sendEventToTest(accessibilityManager, TestProtocol.SWITCHED_TO_STATE_MESSAGE, parcel);
     }
 
     private static void sendEventToTest(

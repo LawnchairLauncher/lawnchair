@@ -104,13 +104,13 @@ public final class LauncherInstrumentation {
     public LauncherInstrumentation(Instrumentation instrumentation) {
         mInstrumentation = instrumentation;
         mDevice = UiDevice.getInstance(instrumentation);
-        final boolean swipeUpEnabledDefault =
-                !SwipeUpSetting.isSwipeUpSettingAvailable() ||
-                        SwipeUpSetting.isSwipeUpEnabledDefaultValue();
-        mSwipeUpEnabled = Settings.Secure.getInt(
-                instrumentation.getTargetContext().getContentResolver(),
-                SWIPE_UP_SETTING_NAME,
-                swipeUpEnabledDefault ? 1 : 0) == 1;
+        final boolean swipeUpEnabledDefaultValue = SwipeUpSetting.isSwipeUpEnabledDefaultValue();
+        mSwipeUpEnabled = SwipeUpSetting.isSwipeUpSettingAvailable() ?
+                Settings.Secure.getInt(
+                        instrumentation.getTargetContext().getContentResolver(),
+                        SWIPE_UP_SETTING_NAME,
+                        swipeUpEnabledDefaultValue ? 1 : 0) == 1 :
+                swipeUpEnabledDefaultValue;
 
         // Launcher should run in test harness so that custom accessibility protocol between
         // Launcher and TAPL is enabled. In-process tests enable this protocol with a direct call
@@ -154,7 +154,7 @@ public final class LauncherInstrumentation {
         fail(message + ". " + "Actual: " + actual);
     }
 
-    static public void assertEquals(String message, int expected, int actual) {
+    static private void assertEquals(String message, int expected, int actual) {
         if (expected != actual) {
             fail(message + " expected: " + expected + " but was: " + actual);
         }
@@ -412,16 +412,18 @@ public final class LauncherInstrumentation {
     }
 
     @NonNull
-    UiDevice getDevice() {
+    public UiDevice getDevice() {
         return mDevice;
     }
 
-    void swipe(int startX, int startY, int endX, int endY) {
-        executeAndWaitForEvent(
+    void swipe(int startX, int startY, int endX, int endY, int expectedState) {
+        final Bundle parcel = (Bundle) executeAndWaitForEvent(
                 () -> mDevice.swipe(startX, startY, endX, endY, 60),
                 event -> TestProtocol.SWITCHED_TO_STATE_MESSAGE.equals(event.getClassName()),
                 "Swipe failed to receive an event for the swipe end: " + startX + ", " + startY
                         + ", " + endX + ", " + endY);
+        assertEquals("Swipe switched launcher to a wrong state",
+                expectedState, parcel.getInt(TestProtocol.STATE_FIELD));
     }
 
     void waitForIdle() {
