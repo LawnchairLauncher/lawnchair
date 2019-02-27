@@ -60,6 +60,7 @@ public class RecentTasksList extends TaskStackChangeListener {
         mBgThreadExecutor = BackgroundExecutor.get();
         mKeyguardManager = new KeyguardManagerCompat(context);
         mChangeId = 1;
+        ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
     }
 
     /**
@@ -97,6 +98,7 @@ public class RecentTasksList extends TaskStackChangeListener {
         if (mLastLoadedId == mChangeId && (!mLastLoadHadKeysOnly || loadKeysOnly)) {
             // The list is up to date, callback with the same list
             mMainThreadExecutor.execute(resultCallback);
+            return requestLoadId;
         }
 
         // Kick off task loading in the background
