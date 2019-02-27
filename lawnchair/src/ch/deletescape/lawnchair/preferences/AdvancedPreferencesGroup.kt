@@ -26,6 +26,7 @@ import android.support.v7.preference.PreferenceGroup
 import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
 import android.widget.ImageView
+import ch.deletescape.lawnchair.isVisible
 import com.android.launcher3.R
 
 @Keep
@@ -48,7 +49,7 @@ class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleA
     private val caretDrawable = CaretDrawable(context).apply { caretProgress = CaretDrawable.PROGRESS_CARET_POINTING_DOWN }
     private var caretView: ImageView? = null
     private val preferences = mutableSetOf<Preference>()
-    private var expanded = false
+    var expanded = false
         set(value) {
             field = value
             updateUi()
@@ -66,9 +67,10 @@ class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleA
             field?.start()
         }
 
-    override fun onBindViewHolder(holder: PreferenceViewHolder?) {
+    override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        caretView = holder?.findViewById(R.id.caretImageView) as? ImageView
+        holder.findViewById(android.R.id.summary).isVisible = !expanded
+        caretView = holder.findViewById(R.id.caretImageView) as? ImageView
         caretView?.setImageDrawable(caretDrawable)
         caretDrawable.caretProgress = if (caretPointingUp) CaretDrawable.PROGRESS_CARET_POINTING_UP else CaretDrawable.PROGRESS_CARET_POINTING_DOWN
     }
@@ -109,6 +111,7 @@ class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleA
         } else {
             super.removeAll()
         }
+        notifyChanged()
         updateSummary()
     }
 

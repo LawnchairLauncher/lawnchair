@@ -40,8 +40,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignEnd="@+id/label"
-        android:layout_alignParentEnd="true"
-        android:background="?attr/selectableItemBackground" >
+        android:layout_alignParentEnd="true">
 
         <ImageView
             android:id="@+id/caretImageView"
