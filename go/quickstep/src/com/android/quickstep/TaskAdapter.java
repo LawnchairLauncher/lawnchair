@@ -33,10 +33,10 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
 
     private static final int MAX_TASKS_TO_DISPLAY = 6;
     private static final String TAG = "TaskAdapter";
-    private final ArrayList<Task> mTaskList;
+    private final TaskListLoader mLoader;
 
-    public TaskAdapter(@NonNull ArrayList<Task> taskList) {
-        mTaskList = taskList;
+    public TaskAdapter(@NonNull TaskListLoader loader) {
+        mLoader = loader;
     }
 
     @Override
@@ -48,11 +48,16 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
 
     @Override
     public void onBindViewHolder(TaskHolder holder, int position) {
-        holder.bindTask(mTaskList.get(position));
+        ArrayList<Task> tasks = mLoader.getCurrentTaskList();
+        if (position >= tasks.size()) {
+            // Task list has updated.
+            return;
+        }
+        holder.bindTask(tasks.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return Math.min(mTaskList.size(), MAX_TASKS_TO_DISPLAY);
+        return Math.min(mLoader.getCurrentTaskList().size(), MAX_TASKS_TO_DISPLAY);
     }
 }
