@@ -63,11 +63,11 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
     public void testPressHome() {
         runTest(enterEvt(Launcher.ON_CREATE_EVT),
                 exitEvt(Launcher.ON_CREATE_EVT),
-                enterEvt(OtherActivityTouchConsumer.DOWN_EVT),
-                exitEvt(OtherActivityTouchConsumer.DOWN_EVT));
+                enterEvt(OtherActivityInputConsumer.DOWN_EVT),
+                exitEvt(OtherActivityInputConsumer.DOWN_EVT));
 
-        runTest(enterEvt(OtherActivityTouchConsumer.DOWN_EVT),
-                exitEvt(OtherActivityTouchConsumer.DOWN_EVT),
+        runTest(enterEvt(OtherActivityInputConsumer.DOWN_EVT),
+                exitEvt(OtherActivityInputConsumer.DOWN_EVT),
                 enterEvt(Launcher.ON_CREATE_EVT),
                 exitEvt(Launcher.ON_CREATE_EVT));
     }

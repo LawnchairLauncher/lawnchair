@@ -17,15 +17,13 @@ package com.android.quickstep;
 
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.view.InputEvent;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-import java.util.function.Consumer;
-
 @TargetApi(Build.VERSION_CODES.O)
-@FunctionalInterface
-public interface TouchConsumer extends Consumer<MotionEvent> {
-
-    TouchConsumer NO_OP = (ev) -> {};
+public interface InputConsumer {
+    InputConsumer NO_OP = new InputConsumer() { };
 
     default boolean isActive() {
         return false;
@@ -35,4 +33,16 @@ public interface TouchConsumer extends Consumer<MotionEvent> {
      * Called by the event queue when the consumer is about to be switched to a new consumer.
      */
     default void onConsumerAboutToBeSwitched() { }
+
+    default void onMotionEvent(MotionEvent ev) { }
+
+    default void onKeyEvent(KeyEvent ev) { }
+
+    default void onInputEvent(InputEvent ev) {
+        if (ev instanceof MotionEvent) {
+            onMotionEvent((MotionEvent) ev);
+        } else {
+            onKeyEvent((KeyEvent) ev);
+        }
+    }
 }

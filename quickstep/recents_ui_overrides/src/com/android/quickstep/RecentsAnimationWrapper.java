@@ -19,6 +19,8 @@ import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
+import android.view.InputEvent;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.android.launcher3.util.Preconditions;
@@ -43,18 +45,18 @@ public class RecentsAnimationWrapper {
 
     private boolean mWindowThresholdCrossed = false;
 
-    private final InputConsumerController mInputConsumer;
-    private final Supplier<TouchConsumer> mTouchProxySupplier;
+    private final InputConsumerController mInputConsumerController;
+    private final Supplier<InputConsumer> mInputProxySupplier;
 
-    private TouchConsumer mTouchConsumer;
+    private InputConsumer mInputConsumer;
     private boolean mTouchInProgress;
 
     private boolean mFinishPending;
 
-    public RecentsAnimationWrapper(InputConsumerController inputConsumer,
-            Supplier<TouchConsumer> touchProxySupplier) {
-        mInputConsumer = inputConsumer;
-        mTouchProxySupplier = touchProxySupplier;
+    public RecentsAnimationWrapper(InputConsumerController inputConsumerController,
+            Supplier<InputConsumer> inputProxySupplier) {
+        mInputConsumerController = inputConsumerController;
+        mInputProxySupplier = inputProxySupplier;
     }
 
     @UiThread
@@ -132,15 +134,30 @@ public class RecentsAnimationWrapper {
         }
     }
 
-    public void enableTouchProxy() {
-        mInputConsumer.setTouchListener(this::onInputConsumerTouch);
+    public void enableInputProxy() {
+        mInputConsumerController.setInputListener(this::onInputConsumerEvent);
     }
 
-    private boolean onInputConsumerTouch(MotionEvent ev) {
+    private boolean onInputConsumerEvent(InputEvent ev) {
+        if (ev instanceof MotionEvent) {
+            onInputConsumerMotionEvent((MotionEvent) ev);
+        } else if (ev instanceof KeyEvent) {
+            if (mInputConsumer == null) {
+                mInputConsumer = mInputProxySupplier.get();
+            }
+            mInputConsumer.onKeyEvent((KeyEvent) ev);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean onInputConsumerMotionEvent(MotionEvent ev) {
         int action = ev.getAction();
         if (action == ACTION_DOWN) {
             mTouchInProgress = true;
-            mTouchConsumer = mTouchProxySupplier.get();
+            if (mInputConsumer == null) {
+                mInputConsumer = mInputProxySupplier.get();
+            }
         } else if (action == ACTION_CANCEL || action == ACTION_UP) {
             // Finish any pending actions
             mTouchInProgress = false;
@@ -149,8 +166,8 @@ public class RecentsAnimationWrapper {
                 finishAndClear(true /* toRecents */, null);
             }
         }
-        if (mTouchConsumer != null) {
-            mTouchConsumer.accept(ev);
+        if (mInputConsumer != null) {
+            mInputConsumer.onMotionEvent(ev);
         }
 
         return true;

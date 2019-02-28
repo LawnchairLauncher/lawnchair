@@ -20,10 +20,12 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_UP;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.graphics.PointF;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
@@ -33,10 +35,10 @@ import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 /**
- * Touch consumer for handling touch on the recents/Launcher activity.
+ * Input consumer for handling touch on the recents/Launcher activity.
  */
-public class OverviewTouchConsumer<T extends BaseDraggingActivity>
-        implements TouchConsumer {
+public class OverviewInputConsumer<T extends BaseDraggingActivity>
+        implements InputConsumer {
 
     private final CachedEventDispatcher mCachedEventDispatcher = new CachedEventDispatcher();
     private final T mActivity;
@@ -50,7 +52,7 @@ public class OverviewTouchConsumer<T extends BaseDraggingActivity>
     private boolean mTrackingStarted = false;
     private boolean mInvalidated = false;
 
-    OverviewTouchConsumer(T activity, boolean startingInActivityBounds) {
+    OverviewInputConsumer(T activity, boolean startingInActivityBounds) {
         mActivity = activity;
         mTarget = activity.getDragLayer();
         mTouchSlop = ViewConfiguration.get(mActivity).getScaledTouchSlop();
@@ -58,7 +60,7 @@ public class OverviewTouchConsumer<T extends BaseDraggingActivity>
     }
 
     @Override
-    public void accept(MotionEvent ev) {
+    public void onMotionEvent(MotionEvent ev) {
         if (mInvalidated) {
             return;
         }
@@ -96,8 +98,15 @@ public class OverviewTouchConsumer<T extends BaseDraggingActivity>
 
             // Set an empty consumer to that all the cached events are cleared
             if (!mCachedEventDispatcher.hasConsumer()) {
-                mCachedEventDispatcher.setConsumer(NO_OP);
+                mCachedEventDispatcher.setConsumer(motionEvent -> { });
             }
+        }
+    }
+
+    @Override
+    public void onKeyEvent(KeyEvent ev) {
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            mActivity.dispatchKeyEvent(ev);
         }
     }
 
@@ -135,12 +144,12 @@ public class OverviewTouchConsumer<T extends BaseDraggingActivity>
         ev.setEdgeFlags(flags);
     }
 
-    public static TouchConsumer newInstance(ActivityControlHelper activityHelper,
+    public static InputConsumer newInstance(ActivityControlHelper activityHelper,
             boolean startingInActivityBounds) {
         BaseDraggingActivity activity = activityHelper.getCreatedActivity();
         if (activity == null) {
-            return TouchConsumer.NO_OP;
+            return InputConsumer.NO_OP;
         }
-        return new OverviewTouchConsumer(activity, startingInActivityBounds);
+        return new OverviewInputConsumer(activity, startingInActivityBounds);
     }
 }
