@@ -35,7 +35,8 @@ import java.util.ArrayList;
  * Provides recents-related {@link UiFactory} logic and classes.
  */
 public abstract class RecentsUiFactory {
-
+    
+    public static final boolean GO_LOW_RAM_RECENTS_ENABLED = true;
     // Scale recents takes before animating in
     private static final float RECENTS_PREPARE_SCALE = 1.33f;
 

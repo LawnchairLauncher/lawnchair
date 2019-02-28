@@ -44,6 +44,7 @@ import java.util.ArrayList;
  */
 public abstract class RecentsUiFactory {
 
+    public static final boolean GO_LOW_RAM_RECENTS_ENABLED = false;
     private static final AsyncCommand SET_SHELF_HEIGHT_CMD = (visible, height) ->
             WindowManagerWrapper.getInstance().setShelfHeight(visible != 0, height);
 

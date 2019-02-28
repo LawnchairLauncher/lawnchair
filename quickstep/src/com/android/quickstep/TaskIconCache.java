@@ -15,6 +15,8 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.uioverrides.RecentsUiFactory.GO_LOW_RAM_RECENTS_ENABLED;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -24,14 +26,17 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.LruCache;
 import android.view.accessibility.AccessibilityManager;
+
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.cache.HandlerRunnable;
+import com.android.launcher3.uioverrides.RecentsUiFactory;
 import com.android.launcher3.util.Preconditions;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.TaskKeyLruCache;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+
 import java.util.function.Consumer;
 
 /**
@@ -125,8 +130,9 @@ public class TaskIconCache {
             return label;
         }
 
-        // Skip loading content descriptions if accessibility is not enabled
-        if (!mAccessibilityManager.isEnabled()) {
+        // Skip loading content descriptions if accessibility is disabled unless low RAM recents
+        // is enabled.
+        if (!GO_LOW_RAM_RECENTS_ENABLED && !mAccessibilityManager.isEnabled()) {
             return "";
         }
 
