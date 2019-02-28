@@ -126,7 +126,7 @@
 
     <style name="WidgetContainerTheme.Dark" />
 
-    <style name="FastScrollerPopup" >
+    <style name="FastScrollerPopup" parent="@android:style/TextAppearance.DeviceDefault">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:minWidth">@dimen/fastscroll_popup_width</item>
         <item name="android:layout_height">@dimen/fastscroll_popup_height</item>
@@ -142,7 +142,7 @@
     </style>
 
     <!-- Base theme for BubbleTextView and sub classes -->
-    <style name="BaseIcon">
+    <style name="BaseIcon" parent="@android:style/TextAppearance.DeviceDefault">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_gravity">center</item>
@@ -150,7 +150,6 @@
         <item name="android:gravity">center_horizontal</item>
         <item name="android:lines">1</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
-        <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="android:defaultFocusHighlightEnabled">false</item>
 
         <!-- No shadows in the base theme -->
@@ -158,7 +157,7 @@
     </style>
 
     <!-- Icon displayed on the worksapce -->
-    <style name="BaseIcon.Workspace">
+    <style name="BaseIcon.Workspace" >
         <item name="android:shadowRadius">2.0</item>
         <item name="android:shadowColor">?attr/workspaceShadowColor</item>
         <item name="ambientShadowColor">?attr/workspaceAmbientShadowColor</item>
@@ -190,9 +189,7 @@
 
     <style name="DropTargetButton" parent="DropTargetButtonBase" />
 
-    <style name="TextTitle">
-        <item name="android:fontFamily">sans-serif</item>
-    </style>
+    <style name="TextTitle" parent="@android:style/TextAppearance.DeviceDefault" />
 
     <style name="AllAppsEmptySearchBackground">
         <item name="android:colorPrimary">#E0E0E0</item>
