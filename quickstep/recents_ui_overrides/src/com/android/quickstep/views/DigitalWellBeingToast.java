@@ -50,6 +50,7 @@ import java.util.Locale;
 
 public final class DigitalWellBeingToast extends LinearLayout {
     static final Intent OPEN_APP_USAGE_SETTINGS_TEMPLATE = new Intent(ACTION_APP_USAGE_SETTINGS);
+    static final int MINUTE_MS = 60000;
 
     public interface InitializeCallback {
         void call(float saturation, String contentDescription);
@@ -185,7 +186,11 @@ public final class DigitalWellBeingToast extends LinearLayout {
                 /* forceFormatWidth= */ false);
     }
 
-    private String getShorterReadableDuration(Duration duration) {
+    private String getRoundedUpToMinuteReadableDuration(long remainingTime) {
+        final Duration duration = Duration.ofMillis(
+                remainingTime > MINUTE_MS ?
+                        (remainingTime + MINUTE_MS - 1) / MINUTE_MS * MINUTE_MS :
+                        remainingTime);
         return getReadableDuration(
                 duration, FormatWidth.NARROW, R.string.shorter_duration_less_than_one_minute);
     }
@@ -196,7 +201,7 @@ public final class DigitalWellBeingToast extends LinearLayout {
                 resources.getString(R.string.app_in_grayscale) :
                 resources.getString(
                         R.string.time_left_for_app,
-                        getShorterReadableDuration(Duration.ofMillis(remainingTime)));
+                        getRoundedUpToMinuteReadableDuration(remainingTime));
     }
 
     public void openAppUsageSettings() {
