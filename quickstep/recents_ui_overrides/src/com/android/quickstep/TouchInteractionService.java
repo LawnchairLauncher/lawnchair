@@ -44,6 +44,7 @@ import android.view.MotionEvent;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.IOverviewProxy;
@@ -307,6 +308,10 @@ public class TouchInteractionService extends Service {
 
         if (runningTaskInfo == null && !mSwipeSharedState.goingToLauncher) {
             return InputConsumer.NO_OP;
+        } else if (mOverviewInteractionState.isSwipeUpGestureEnabled()
+                && FeatureFlags.ENABLE_ASSISTANT_GESTURE.get()
+                && AssistantTouchConsumer.withinTouchRegion(this, event.getX())) {
+            return new AssistantTouchConsumer(this, mRecentsModel.getSystemUiProxy());
         } else if (mSwipeSharedState.goingToLauncher ||
                 mOverviewComponentObserver.getActivityControlHelper().isResumed()) {
             return OverviewInputConsumer.newInstance(
