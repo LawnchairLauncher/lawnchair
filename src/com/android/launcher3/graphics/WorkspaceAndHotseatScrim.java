@@ -16,9 +16,16 @@
 
 package com.android.launcher3.graphics;
 
+import static android.content.Intent.ACTION_SCREEN_OFF;
+import static android.content.Intent.ACTION_USER_PRESENT;
+
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.animation.ObjectAnimator;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -88,6 +95,20 @@ public class WorkspaceAndHotseatScrim implements
                     scrim.reapplySysUiAlpha();
                 }
             };
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if (ACTION_SCREEN_OFF.equals(action)) {
+                mAnimateScrimOnNextDraw = true;
+            } else if (ACTION_USER_PRESENT.equals(action)) {
+                // ACTION_USER_PRESENT is sent after onStart/onResume. This covers the case where
+                // the user unlocked and the Launcher is not in the foreground.
+                mAnimateScrimOnNextDraw = false;
+            }
+        }
+    };
 
     private static final int DARK_SCRIM_COLOR = 0x55000000;
     private static final int MAX_HOTSEAT_SCRIM_ALPHA = 100;
@@ -204,11 +225,20 @@ public class WorkspaceAndHotseatScrim implements
     public void onViewAttachedToWindow(View view) {
         mWallpaperColorInfo.addOnChangeListener(this);
         onExtractedColorsChanged(mWallpaperColorInfo);
+
+        if (mTopScrim != null) {
+            IntentFilter filter = new IntentFilter(ACTION_SCREEN_OFF);
+            filter.addAction(ACTION_USER_PRESENT); // When the device wakes up + keyguard is gone
+            mRoot.getContext().registerReceiver(mReceiver, filter);
+        }
     }
 
     @Override
     public void onViewDetachedFromWindow(View view) {
         mWallpaperColorInfo.removeOnChangeListener(this);
+        if (mTopScrim != null) {
+            mRoot.getContext().unregisterReceiver(mReceiver);
+        }
     }
 
     @Override
