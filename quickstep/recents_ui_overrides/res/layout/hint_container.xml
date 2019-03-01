@@ -14,9 +14,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.quickstep.hints.HintsContainer
+<com.android.quickstep.hints.ChipsContainer
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="@dimen/chip_hint_height"
+    android:layout_gravity="bottom"
     android:gravity="center_horizontal"
     android:orientation="horizontal"/>
