@@ -19,14 +19,12 @@ package com.android.launcher3.uioverrides;
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 
-import android.graphics.Rect;
-
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.quickstep.RecentsModel;
+import com.android.quickstep.views.IconRecentsView;
 
 /**
  * Definition for overview state
@@ -47,6 +45,12 @@ public class OverviewState extends LauncherState {
     @Override
     public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
         return new float[] {1f, 0f};
+    }
+
+    @Override
+    public void onStateEnabled(Launcher launcher) {
+        IconRecentsView recentsView = launcher.getOverviewPanel();
+        recentsView.onBeginTransitionToOverview();
     }
 
     @Override

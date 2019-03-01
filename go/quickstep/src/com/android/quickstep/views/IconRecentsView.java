@@ -27,11 +27,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.R;
-import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskAdapter;
-import com.android.systemui.shared.recents.model.Task;
-
-import java.util.ArrayList;
+import com.android.quickstep.TaskListLoader;
 
 /**
  * Root view for the icon recents view. Acts as the main interface to the rest of the Launcher code
@@ -77,13 +74,12 @@ public final class IconRecentsView extends FrameLayout {
      */
     @ViewDebug.ExportedProperty(category = "launcher")
 
-    // TODO: Write a recents task list observer that creates/updates tasks and signals task adapter.
-    private static final ArrayList<Task> DUMMY_TASK_LIST = new ArrayList<>();
     private final Context mContext;
 
     private float mTranslationYFactor;
     private TaskAdapter mTaskAdapter;
     private RecyclerView mTaskRecyclerView;
+    private TaskListLoader mTaskLoader;
 
     public IconRecentsView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -93,11 +89,28 @@ public final class IconRecentsView extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mTaskAdapter = new TaskAdapter(DUMMY_TASK_LIST);
+        mTaskLoader = new TaskListLoader(mContext);
+        mTaskAdapter = new TaskAdapter(mTaskLoader);
         mTaskRecyclerView = findViewById(R.id.recent_task_recycler_view);
         mTaskRecyclerView.setAdapter(mTaskAdapter);
         mTaskRecyclerView.setLayoutManager(
                 new LinearLayoutManager(mContext, VERTICAL, true /* reverseLayout */));
+    }
+
+    /**
+     * Logic for when we know we are going to overview/recents and will be putting up the recents
+     * view. This should be used to prepare recents (e.g. load any task data, etc.) before it
+     * becomes visible.
+     *
+     * TODO: Hook this up for fallback recents activity as well
+     */
+    public void onBeginTransitionToOverview() {
+        // Load any task changes
+        mTaskLoader.loadTaskList(tasks -> {
+            // TODO: Put up some loading UI while task content is loading. May have to do something
+            // smarter when animating from app to overview.
+            mTaskAdapter.notifyDataSetChanged();
+        });
     }
 
     public void setTranslationYFactor(float translationFactor) {
