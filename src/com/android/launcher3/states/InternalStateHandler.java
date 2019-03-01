@@ -36,7 +36,6 @@ import java.lang.ref.WeakReference;
 public abstract class InternalStateHandler extends Binder {
 
     public static final String EXTRA_STATE_HANDLER = "launcher.state_handler";
-    public static final String EXTRA_FROM_HOME_KEY = "android.intent.extra.FROM_HOME_KEY";
 
     private static final Scheduler sScheduler = new Scheduler();
 
@@ -77,10 +76,6 @@ public abstract class InternalStateHandler extends Binder {
             Launcher launcher, Intent intent, boolean alreadyOnHome, boolean explicitIntent) {
         boolean result = false;
         if (intent != null && intent.getExtras() != null) {
-            // If we know that this the intent comes from pressing Home, defer to the default
-            // processing.
-            if (intent.hasExtra(EXTRA_FROM_HOME_KEY)) return false;
-
             IBinder stateBinder = intent.getExtras().getBinder(EXTRA_STATE_HANDLER);
             if (stateBinder instanceof InternalStateHandler) {
                 InternalStateHandler handler = (InternalStateHandler) stateBinder;
