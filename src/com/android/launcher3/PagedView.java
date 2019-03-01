@@ -1027,7 +1027,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (overScrollAmount < 0) {
             super.scrollTo(overScrollAmount, getScrollY());
         } else {
-            super.scrollTo(mMaxScrollX + overScrollAmount, getScrollY());
+            int x = Math.max(0, Math.min(getScrollX(), mMaxScrollX));
+            super.scrollTo(x + overScrollAmount, getScrollY());
         }
         invalidate();
     }
