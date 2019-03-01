@@ -615,11 +615,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                     WindowManagerWrapper.ACTIVITY_TYPE_STANDARD,
                     new RemoteAnimationAdapterCompat(getWallpaperOpenRunner(false /* fromUnlock */),
                             CLOSING_TRANSITION_DURATION_MS, 0 /* statusBarTransitionDelay */));
-
-            definition.addRemoteAnimation(
-                    WindowManagerWrapper.TRANSIT_KEYGUARD_GOING_AWAY_ON_WALLPAPER,
-                    new RemoteAnimationAdapterCompat(getWallpaperOpenRunner(true /* fromUnlock */),
-                            CLOSING_TRANSITION_DURATION_MS, 0 /* statusBarTransitionDelay */));
             new ActivityCompat(mLauncher).registerRemoteAnimations(definition);
         }
     }
