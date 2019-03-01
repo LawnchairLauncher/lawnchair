@@ -773,7 +773,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         setCurrentTask(runningTaskId);
     }
 
-    public TaskView getRunningTaskView() {
+    public @Nullable TaskView getRunningTaskView() {
         return getTaskView(mRunningTaskId);
     }
 
