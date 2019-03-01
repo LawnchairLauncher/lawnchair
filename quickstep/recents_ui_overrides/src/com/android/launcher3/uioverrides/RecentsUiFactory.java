@@ -62,7 +62,6 @@ public abstract class RecentsUiFactory {
 
         if (swipeUpToHome) {
             list.add(new FlingAndHoldTouchController(launcher));
-            list.add(new OverviewToAllAppsTouchController(launcher));
         } else {
             if (launcher.getDeviceProfile().isVerticalBarLayout()) {
                 list.add(new OverviewToAllAppsTouchController(launcher));
