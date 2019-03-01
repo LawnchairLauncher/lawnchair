@@ -319,6 +319,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             }
         }
         restoreState(savedInstanceState);
+        mStateManager.reapplyState();
 
         // We only load the page synchronously if the user rotates (or triggers a
         // configuration change) while launcher is in the foreground
