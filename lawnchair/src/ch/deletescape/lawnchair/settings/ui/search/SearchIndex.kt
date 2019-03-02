@@ -43,6 +43,7 @@ class SearchIndex(private val context: Context) {
     private val attrControllerClass = "controllerClass"
     private val attrSearchTitle = "searchTitle"
     private val attrDefaultValue = "defaultValue"
+    private val attrTopic = "topic"
 
     val entries = ArrayList<SettingsEntry>()
     val addedKeys = HashSet<String>()
@@ -97,6 +98,7 @@ class SearchIndex(private val context: Context) {
                 }
                 cls != null && PreferenceGroup::class.java.isAssignableFrom(cls) -> {
                     val title = parseString(parser[nsAndroid, attrTitle])
+                            ?: parseString(parser[nsApp, attrTopic])
                     if (parent != null) {
                         indexSection(parser, SettingsCategory(parent.title, title!!,
                                 parent, parent.contentRes, parent.hasPreview))
