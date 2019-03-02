@@ -248,6 +248,22 @@ public class LauncherStateManager {
             return;
         }
 
+        if (delay > 0) {
+            // Create the animation after the delay as some properties can change between preparing
+            // the animation and running the animation.
+            int startChangeId = mConfig.mChangeId;
+            mUiHandler.postDelayed(() -> {
+                if (mConfig.mChangeId == startChangeId) {
+                    goToStateAnimated(state, fromState, onCompleteRunnable);
+                }
+            }, delay);
+        } else {
+            goToStateAnimated(state, fromState, onCompleteRunnable);
+        }
+    }
+
+    private void goToStateAnimated(LauncherState state, LauncherState fromState,
+            Runnable onCompleteRunnable) {
         // Since state NORMAL can be reached from multiple states, just assume that the
         // transition plays in reverse and use the same duration as previous state.
         mConfig.duration = state == NORMAL ? fromState.transitionDuration : state.transitionDuration;
@@ -256,12 +272,7 @@ public class LauncherStateManager {
         prepareForAtomicAnimation(fromState, state, builder);
         AnimatorSet animation = createAnimationToNewWorkspaceInternal(
                 state, builder, onCompleteRunnable);
-        Runnable runnable = new StartAnimRunnable(animation);
-        if (delay > 0) {
-            mUiHandler.postDelayed(runnable, delay);
-        } else {
-            mUiHandler.post(runnable);
-        }
+        mUiHandler.post(new StartAnimRunnable(animation));
     }
 
     /**
@@ -533,6 +544,8 @@ public class LauncherStateManager {
 
         private AnimatorSet mCurrentAnimation;
         private LauncherState mTargetState;
+        // Id to keep track of config changes, to tie an animation with the corresponding request
+        private int mChangeId = 0;
 
         /**
          * Cancels the current animation and resets config variables.
@@ -554,6 +567,7 @@ public class LauncherStateManager {
 
             mCurrentAnimation = null;
             playbackController = null;
+            mChangeId ++;
         }
 
         public PropertySetter getPropertySetter(AnimatorSetBuilder builder) {

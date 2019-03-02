@@ -44,6 +44,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.Parcelable;
 import android.os.UserHandle;
 import android.util.AttributeSet;
@@ -520,6 +521,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         removeAllViews();
         mScreenOrder.clear();
         mWorkspaceScreens.clear();
+
+        // Remove any deferred refresh callbacks
+        mLauncher.mHandler.removeCallbacksAndMessages(DeferredWidgetRefresh.class);
 
         // Ensure that the first page is always present
         bindAndInitFirstWorkspaceScreen(qsb);
@@ -3348,13 +3352,15 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             LauncherAppWidgetHost host) {
             mInfos = infos;
             mHost = host;
-            mHandler = new Handler();
+            mHandler = mLauncher.mHandler;
             mRefreshPending = true;
 
             mHost.addProviderChangeListener(this);
             // Force refresh after 10 seconds, if we don't get the provider changed event.
             // This could happen when the provider is no longer available in the app.
-            mHandler.postDelayed(this, 10000);
+            Message msg = Message.obtain(mHandler, this);
+            msg.obj = DeferredWidgetRefresh.class;
+            mHandler.sendMessageDelayed(msg, 10000);
         }
 
         @Override
