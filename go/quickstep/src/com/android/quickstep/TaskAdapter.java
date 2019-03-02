@@ -15,16 +15,17 @@
  */
 package com.android.quickstep;
 
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
+import com.android.launcher3.R;
+import com.android.quickstep.views.TaskItemView;
 import com.android.systemui.shared.recents.model.Task;
 
 import java.util.ArrayList;
-
 /**
  * Recycler view adapter that dynamically inflates and binds {@link TaskHolder} instances with the
  * appropriate {@link Task} from the recents task list.
@@ -42,8 +43,9 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
     @Override
     public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // TODO: Swap in an actual task view here (view w/ icon, label, etc.)
-        TextView stubView = new TextView(parent.getContext());
-        return new TaskHolder(stubView);
+        TaskItemView itemView = (TaskItemView) LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.task_item_view, parent, false);
+        return new TaskHolder(itemView);
     }
 
     @Override
