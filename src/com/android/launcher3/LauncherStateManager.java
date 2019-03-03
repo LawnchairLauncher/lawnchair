@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import static android.view.View.VISIBLE;
-
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
@@ -298,6 +297,8 @@ public class LauncherStateManager {
             if (!isWorkspaceVisible) {
                 workspace.setScaleX(0.92f);
                 workspace.setScaleY(0.92f);
+                workspace.getHotseat().setScaleX(0.92f);
+                workspace.getHotseat().setScaleY(0.92f);
             }
         }
     }

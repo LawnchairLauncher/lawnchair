@@ -188,6 +188,13 @@ public class LauncherState {
     }
 
     /**
+     * @return Whether we should scale the hotseat as if it were part of the workspace.
+     */
+    public boolean scaleHotseatWithWorkspace() {
+        return true;
+    }
+
+    /**
      * Returns 2 floats designating how to transition overview:
      *   scale for the current and adjacent pages
      *   translationY factor where 0 is top aligned and 0.5 is centered vertically
