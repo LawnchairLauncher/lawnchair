@@ -73,8 +73,8 @@ public class SpringLoadedState extends LauncherState {
     }
 
     @Override
-    public boolean scaleHotseatWithWorkspace() {
-        return false;
+    public float[] getHotseatScaleAndTranslation(Launcher launcher) {
+        return new float[] {1, 0, 0};
     }
 
     @Override
