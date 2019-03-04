@@ -19,6 +19,9 @@ package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.os.Handler
+import android.os.HandlerThread
+import android.os.SystemClock
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
@@ -43,6 +46,9 @@ open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: 
     private var multiplier: Int = 0
     private var format: String? = null
     protected var steps: Int = 100
+
+    private val handlerThread = HandlerThread("debounce").apply { start() }
+    private val persistHandler = Handler(handlerThread.looper)
 
     open val allowResetToDefault = true
 
@@ -114,7 +120,9 @@ open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: 
         current = Math.round(current * 100f) / 100f //round to .00 places
         updateSummary()
 
-        persistFloat(current)
+        // debounce
+        persistHandler.removeCallbacksAndMessages(TOKEN)
+        persistHandler.postAtTime({ persistFloat(current) }, TOKEN, SystemClock.uptimeMillis() + 100)
     }
 
     protected open fun updateSummary() {
@@ -136,5 +144,9 @@ open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: 
     override fun onMenuItemClick(item: MenuItem): Boolean {
         setValue(defaultValue)
         return true
+    }
+
+    companion object {
+        const val TOKEN = "tokenaf"
     }
 }
