@@ -23,7 +23,6 @@ import android.content.Context
 import android.support.annotation.Keep
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceGroup
-import android.support.v7.preference.PreferenceManager
 import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
 import android.view.View
@@ -33,11 +32,14 @@ import ch.deletescape.lawnchair.settings.ui.ControlledPreference
 import com.android.launcher3.R
 
 @Keep
-class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int): PreferenceGroup(context, attrs, defStyleAttr, defStyleRes), ValueAnimator.AnimatorUpdateListener, ControlledPreference {
+class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int): PreferenceGroup(context, attrs, defStyleAttr, defStyleRes),
+        ValueAnimator.AnimatorUpdateListener,
+        ControlledPreference {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
     private val hasSummary: Boolean
+    private var bound: Boolean = false
 
     private val delegate = ControlledPreference.Delegate(context)
 
@@ -61,8 +63,10 @@ class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleA
     private val preferences = mutableSetOf<Preference>()
     var expanded = false
         set(value) {
-            field = value
-            updateUi()
+            if (value != field) {
+                field = value
+                updateUi()
+            }
         }
     private var caretPointingUp = expanded
         set(value) {
@@ -76,6 +80,8 @@ class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleA
             field?.addUpdateListener(this)
             field?.start()
         }
+
+    fun contains(key: String?) = preferences.any { it.key == key }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         if (preferences.isEmpty()) {

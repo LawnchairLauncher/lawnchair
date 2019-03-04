@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
+import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceGroup;
 import android.support.v7.preference.PreferenceGroupAdapter;
 import android.support.v7.preference.PreferenceScreen;
@@ -37,7 +38,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import ch.deletescape.lawnchair.colors.ColorEngine;
-import ch.deletescape.lawnchair.colors.ColorEngine.ColorResolver;
+import ch.deletescape.lawnchair.preferences.AdvancedPreferencesGroup;
 import com.android.launcher3.R;
 
 public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter {
@@ -131,11 +132,21 @@ public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter 
         if (mHighlightRequested || recyclerView == null || TextUtils.isEmpty(mHighlightKey)) {
             return;
         }
-        root.postDelayed(() -> {
-            final int position = getPreferenceAdapterPosition(mHighlightKey);
-            if (position < 0) {
-                return;
+        int count = getItemCount();
+        for (int i = 0; i < count; i++) {
+            Preference pref = getItem(i);
+            if (pref instanceof AdvancedPreferencesGroup) {
+                AdvancedPreferencesGroup apg = (AdvancedPreferencesGroup) pref;
+                if (apg.contains(mHighlightKey)) {
+                    apg.setExpanded(true);
+                }
             }
+        }
+        final int position = getPreferenceAdapterPosition(mHighlightKey);
+        if (position < 0) {
+            return;
+        }
+        root.postDelayed(() -> {
             mHighlightRequested = true;
             recyclerView.smoothScrollToPosition(position);
             mHighlightPosition = position;
