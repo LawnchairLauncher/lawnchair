@@ -73,6 +73,11 @@ public class SpringLoadedState extends LauncherState {
     }
 
     @Override
+    public boolean scaleHotseatWithWorkspace() {
+        return false;
+    }
+
+    @Override
     public void onStateEnabled(Launcher launcher) {
         Workspace ws = launcher.getWorkspace();
         ws.showPageIndicatorAtCurrentScroll();
