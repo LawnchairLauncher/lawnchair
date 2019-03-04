@@ -23,21 +23,29 @@ import android.content.Context
 import android.support.annotation.Keep
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceGroup
+import android.support.v7.preference.PreferenceManager
 import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import ch.deletescape.lawnchair.isVisible
+import ch.deletescape.lawnchair.settings.ui.ControlledPreference
 import com.android.launcher3.R
 
 @Keep
-class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int): PreferenceGroup(context, attrs, defStyleAttr, defStyleRes), ValueAnimator.AnimatorUpdateListener {
+class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int): PreferenceGroup(context, attrs, defStyleAttr, defStyleRes), ValueAnimator.AnimatorUpdateListener, ControlledPreference {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
     private val hasSummary: Boolean
 
+    private val delegate = ControlledPreference.Delegate(context)
+
+    override val controller get() = delegate.controller
+
     init {
+        delegate.parseAttributes(attrs)
+
         layoutResource = R.layout.preference_expandable
 
         val ta = context.obtainStyledAttributes(attrs, R.styleable.AdvancedPreferencesGroup)
@@ -70,6 +78,10 @@ class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleA
         }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
+        if (preferences.isEmpty()) {
+            parent?.removePreference(this)
+            return
+        }
         super.onBindViewHolder(holder)
         summaryView = holder.findViewById(android.R.id.summary)
         summaryView?.isVisible = !expanded
@@ -85,6 +97,9 @@ class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleA
     }
 
     override fun addPreference(preference: Preference): Boolean {
+        if (preference is ControlledPreference && preference.controller?.isVisible == false) {
+            return false
+        }
         preferences.add(preference)
         updateSummary()
         return !expanded || super.addPreference(preference)

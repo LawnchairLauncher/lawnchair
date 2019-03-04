@@ -456,22 +456,21 @@ public class SettingsActivity extends SettingsBaseActivity implements
             for (int i = 0; i < group.getPreferenceCount(); i++) {
                 Preference preference = group.getPreference(i);
 
-                if (preference instanceof PreferenceGroup) {
-                    onPreferencesAdded((PreferenceGroup) preference);
-                    continue;
-                }
-
-                if (!(preference instanceof ControlledPreference)) {
-                    continue;
-                }
-
-                PreferenceController controller = ((ControlledPreference) preference)
-                        .getController();
-                if (controller != null) {
-                    if (!controller.onPreferenceAdded(preference)) {
-                        i--;
+                if (preference instanceof ControlledPreference) {
+                    PreferenceController controller = ((ControlledPreference) preference)
+                            .getController();
+                    if (controller != null) {
+                        if (!controller.onPreferenceAdded(preference)) {
+                            i--;
+                            continue;
+                        }
                     }
                 }
+
+                if (preference instanceof PreferenceGroup) {
+                    onPreferencesAdded((PreferenceGroup) preference);
+                }
+
             }
         }
     }
