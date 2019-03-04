@@ -25,6 +25,7 @@ import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceGroup
 import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
+import android.view.View
 import android.widget.ImageView
 import ch.deletescape.lawnchair.isVisible
 import com.android.launcher3.R
@@ -48,6 +49,7 @@ class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleA
     }
     private val caretDrawable = CaretDrawable(context).apply { caretProgress = CaretDrawable.PROGRESS_CARET_POINTING_DOWN }
     private var caretView: ImageView? = null
+    private var summaryView: View? = null
     private val preferences = mutableSetOf<Preference>()
     var expanded = false
         set(value) {
@@ -69,7 +71,8 @@ class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleA
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        holder.findViewById(android.R.id.summary).isVisible = !expanded
+        summaryView = holder.findViewById(android.R.id.summary)
+        summaryView?.isVisible = !expanded
         caretView = holder.findViewById(R.id.caretImageView) as? ImageView
         caretView?.setImageDrawable(caretDrawable)
         caretDrawable.caretProgress = if (caretPointingUp) CaretDrawable.PROGRESS_CARET_POINTING_UP else CaretDrawable.PROGRESS_CARET_POINTING_DOWN
@@ -111,6 +114,7 @@ class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleA
         } else {
             super.removeAll()
         }
+        summaryView?.isVisible = !expanded
         notifyChanged()
         updateSummary()
     }
@@ -118,8 +122,6 @@ class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleA
     private fun updateSummary() {
         summary = if (hasSummary) {
             summary
-        } else if (expanded) {
-            " "
         } else {
             var first = true
             var str = ""
