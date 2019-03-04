@@ -16,6 +16,7 @@
 package com.android.quickstep.views;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
@@ -31,6 +32,7 @@ public final class TaskItemView extends LinearLayout {
 
     private TextView mLabelView;
     private ImageView mIconView;
+    private ImageView mThumbnailView;
 
     public TaskItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -40,7 +42,8 @@ public final class TaskItemView extends LinearLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mLabelView = findViewById(R.id.task_label);
-        mIconView = findViewById(R.id.task_icon_and_thumbnail);
+        mThumbnailView = findViewById(R.id.task_thumbnail);
+        mIconView = findViewById(R.id.task_icon);
     }
 
     /**
@@ -58,7 +61,19 @@ public final class TaskItemView extends LinearLayout {
      * @param icon task icon
      */
     public void setIcon(Drawable icon) {
+        // TODO: Scale the icon up based off the padding on the side
+        // The icon proper is actually smaller than the drawable and has "padding" on the side for
+        // the purpose of drawing the shadow, allowing the icon to pop up, so we need to scale the
+        // view if we want the icon to be flush with the bottom of the thumbnail.
         mIconView.setImageDrawable(icon);
-        // TODO: Add in combination drawable for icon + thumbnail
+    }
+
+    /**
+     * Set the task thumbnail for the task.
+     *
+     * @param thumbnail task thumbnail for the task
+     */
+    public void setThumbnail(Bitmap thumbnail) {
+        mThumbnailView.setImageBitmap(thumbnail);
     }
 }
