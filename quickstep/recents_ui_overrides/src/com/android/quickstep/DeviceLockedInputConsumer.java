@@ -31,6 +31,11 @@ public class DeviceLockedInputConsumer implements InputConsumer {
     }
 
     @Override
+    public int getType() {
+        return TYPE_DEVICE_LOCKED;
+    }
+
+    @Override
     public void onMotionEvent(MotionEvent ev) {
         // For now, just start the home intent so user is prompted to unlock the device.
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {

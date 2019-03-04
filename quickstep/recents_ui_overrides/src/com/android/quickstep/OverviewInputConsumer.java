@@ -60,6 +60,11 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
     }
 
     @Override
+    public int getType() {
+        return TYPE_OVERVIEW;
+    }
+
+    @Override
     public void onMotionEvent(MotionEvent ev) {
         if (mInvalidated) {
             return;
@@ -120,7 +125,7 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
             OverviewCallbacks.get(mActivity).closeAllWindows();
             ActivityManagerWrapper.getInstance()
                     .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-            TOUCH_INTERACTION_LOG.startQuickStep();
+            TOUCH_INTERACTION_LOG.addLog("startQuickstep");
         }
 
         mTrackingStarted = true;

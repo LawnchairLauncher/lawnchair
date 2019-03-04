@@ -148,6 +148,11 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     @Override
+    public int getType() {
+        return TYPE_OTHER_ACTIVITY;
+    }
+
+    @Override
     public void onMotionEvent(MotionEvent ev) {
         if (mVelocityTracker == null) {
             return;
@@ -225,7 +230,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                             mTouchSlop) {
                         mPassedTouchSlop = true;
 
-                        TOUCH_INTERACTION_LOG.startQuickStep();
+                        TOUCH_INTERACTION_LOG.addLog("startQuickstep");
                         if (mIsDeferredDownTarget) {
                             // Deferred gesture, start the animation and gesture tracking once
                             // we pass the actual touch slop
@@ -288,7 +293,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private void startTouchTrackingForWindowAnimation(long touchTimeMs) {
-        TOUCH_INTERACTION_LOG.startRecentsAnimation();
+        TOUCH_INTERACTION_LOG.addLog("startRecentsAnimation");
 
         RecentsAnimationListenerSet listenerSet = mSwipeSharedState.getActiveListener();
         final WindowTransformSwipeHandler handler = new WindowTransformSwipeHandler(
