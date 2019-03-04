@@ -202,6 +202,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
 
     data class Meta(val name: String, val contents: Int, val timestamp: String) {
 
+        val localizedTimestamp = SimpleDateFormat.getDateTimeInstance().format(timestampFormat.parse(timestamp))
         var preview: Pair<Bitmap?, Bitmap?>? = null
 
         override fun toString(): String {
@@ -256,6 +257,8 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
         val EXTRA_MIME_TYPES = arrayOf(MIME_TYPE, "application/x-zip", "application/octet-stream")
 
         const val WALLPAPER_FILE_NAME = "wallpaper.png"
+
+        val timestampFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US)
 
         fun getFolder(): File {
             val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Lawnchair/backup")
@@ -366,8 +369,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
         )
 
         private fun getTimestamp(): String {
-            val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US)
-            return simpleDateFormat.format(Date())
+            return timestampFormat.format(Date())
         }
     }
 }

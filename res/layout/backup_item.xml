@@ -53,14 +53,30 @@
                     android:layout_height="wrap_content"
                     tools:ignore="RtlSymmetry" />
 
-                <TextView
-                    android:id="@android:id/title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    tools:text="Backup item" />
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@android:id/title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_gravity="start"
+                        android:layout_weight="1"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        tools:text="Backup item" />
+
+                    <TextView
+                        android:id="@android:id/summary"
+                        android:layout_height="0dp"
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_weight="1"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                        tools:text="Oct 11, 2018 17:18:43" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>

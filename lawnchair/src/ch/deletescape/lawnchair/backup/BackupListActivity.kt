@@ -142,6 +142,8 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
         divider.visibility = visibility
         bottomSheetView.findViewById<TextView>(android.R.id.title).text =
                 adapter[position].meta?.name ?: getString(R.string.backup_invalid)
+        bottomSheetView.findViewById<TextView>(android.R.id.summary).text =
+                adapter[position].meta?.localizedTimestamp ?: getString(R.string.backup_invalid)
         bottomSheet.show()
     }
 

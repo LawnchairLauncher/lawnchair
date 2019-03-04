@@ -23,6 +23,7 @@ import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.lawnchairApp
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
+import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.uioverrides.WallpaperColorInfo
 
@@ -42,7 +43,7 @@ import com.android.launcher3.uioverrides.WallpaperColorInfo
  * limitations under the License.
  */
 
-class ThemeManager(context: Context) : WallpaperColorInfo.OnChangeListener {
+class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener {
 
     private val app = context.lawnchairApp
     private val wallpaperColorInfo = WallpaperColorInfo.getInstance(context)!!
@@ -59,6 +60,12 @@ class ThemeManager(context: Context) : WallpaperColorInfo.OnChangeListener {
 
     val isDark get() = themeFlags and THEME_DARK != 0
     val supportsDarkText get() = themeFlags and THEME_DARK_TEXT != 0
+    val displayName: String get() {
+        val values = context.resources.getIntArray(R.array.themeValues)
+        val strings = context.resources.getStringArray(R.array.themes)
+        val index = values.indexOf(themeFlags)
+        return strings.getOrNull(index) ?: context.resources.getString(R.string.theme_auto)
+    }
 
     init {
         wallpaperColorInfo.addOnChangeListener(this)

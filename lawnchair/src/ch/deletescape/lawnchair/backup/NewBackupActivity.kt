@@ -37,8 +37,10 @@ import android.support.v7.widget.AppCompatEditText
 import android.view.View
 import android.widget.*
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.lawnchairApp
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
+import ch.deletescape.lawnchair.theme.ThemeManager
 import com.android.launcher3.R
 import java.io.File
 import java.text.SimpleDateFormat
@@ -81,7 +83,9 @@ class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnColorChangeListe
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        backupName.setText(getTimestamp())
+        val packName = IconPackManager.getInstance(this).packList.currentPack().displayName
+        val themeName = ThemeManager.getInstance(this).displayName
+        backupName.setText("$packName, $themeName")
 
         startButton.setOnClickListener {
             onStartBackup()
@@ -102,7 +106,7 @@ class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnColorChangeListe
         } else {
             val error = validateOptions()
             if (error == 0) {
-                val fileName = "${backupName.text}.${LawnchairBackup.EXTENSION}"
+                val fileName = "${backupName.text}_${getTimestamp()}.${LawnchairBackup.EXTENSION}"
                 if (backupLocationDevice.isChecked) {
                     backupUri = Uri.fromFile(File(LawnchairBackup.getFolder(), fileName))
                     startBackup()
@@ -134,7 +138,7 @@ class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnColorChangeListe
     }
 
     fun getTimestamp(): String {
-        val simpleDateFormat = SimpleDateFormat.getDateTimeInstance()
+        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US)
         return simpleDateFormat.format(Date())
     }
 

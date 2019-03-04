@@ -118,7 +118,7 @@ class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader
         backupMetaLoader.callback = null
         if (backup.meta != null) {
             backupName.setText(backup.meta?.name)
-            backupTimestamp.setText(backup.meta?.timestamp)
+            backupTimestamp.setText(backup.meta?.localizedTimestamp)
             val contents = backup.meta!!.contents
             val includeHomescreen = contents and LawnchairBackup.INCLUDE_HOMESCREEN != 0
             backupHomescreen.isEnabled = includeHomescreen

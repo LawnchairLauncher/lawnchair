@@ -123,6 +123,7 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
         private val wallpaper = itemView.findViewById<ImageView>(R.id.wallpaper)
         private val preview = itemView.findViewById<ImageView>(R.id.preview)
         private val title = itemView.findViewById<TextView>(android.R.id.title)
+        private val summary = itemView.findViewById<TextView>(android.R.id.summary)
 
         private val backupItem = itemView.findViewById<View>(R.id.backup_item)
 
@@ -137,6 +138,7 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
                 previewContainer.isVisible = true
                 backupItem.isEnabled = true
                 title.text = metaLoader.meta?.name ?: context.getString(R.string.backup_invalid)
+                summary.text = metaLoader.meta?.localizedTimestamp ?: context.getString(R.string.backup_invalid)
                 metaLoader.meta?.preview?.apply {
                     previewContainer.isVisible = true
                     preview.setImageBitmap(first)
@@ -146,6 +148,7 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
                 previewContainer.isVisible = false
                 backupItem.isEnabled = false
                 title.text = context.getString(R.string.backup_loading)
+                summary.text = context.getString(R.string.backup_loading)
                 metaLoader.callback = object : LawnchairBackup.MetaLoader.Callback {
                     override fun onMetaLoaded() {
                         notifyItemChanged(backupMetaLoaderList.indexOf(metaLoader) + 1)
