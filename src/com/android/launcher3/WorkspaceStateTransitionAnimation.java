@@ -72,6 +72,7 @@ public class WorkspaceStateTransitionAnimation {
     private void setWorkspaceProperty(LauncherState state, PropertySetter propertySetter,
             AnimatorSetBuilder builder, AnimationConfig config) {
         float[] scaleAndTranslation = state.getWorkspaceScaleAndTranslation(mLauncher);
+        float[] hotseatScaleAndTranslation = state.getHotseatScaleAndTranslation(mLauncher);
         mNewScale = scaleAndTranslation[0];
         PageAlphaProvider pageAlphaProvider = state.getWorkspacePageAlphaProvider(mLauncher);
         final int childCount = mWorkspace.getChildCount();
@@ -89,16 +90,16 @@ public class WorkspaceStateTransitionAnimation {
             Interpolator scaleInterpolator = builder.getInterpolator(ANIM_WORKSPACE_SCALE, ZOOM_OUT);
             propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale, scaleInterpolator);
 
-            if (state.scaleHotseatWithWorkspace()) {
-                DragLayer dragLayer = mLauncher.getDragLayer();
-                int[] workspacePivot = new int[]{(int) mWorkspace.getPivotX(),
-                        (int) mWorkspace.getPivotY()};
-                dragLayer.getDescendantCoordRelativeToSelf(mWorkspace, workspacePivot);
-                dragLayer.mapCoordInSelfToDescendant(hotseat, workspacePivot);
-                hotseat.setPivotX(workspacePivot[0]);
-                hotseat.setPivotY(workspacePivot[1]);
-                propertySetter.setFloat(hotseat, SCALE_PROPERTY, mNewScale, scaleInterpolator);
-            }
+            // Set the hotseat's pivot point to match the workspace's, so that it scales together.
+            DragLayer dragLayer = mLauncher.getDragLayer();
+            int[] workspacePivot = new int[]{(int) mWorkspace.getPivotX(),
+                    (int) mWorkspace.getPivotY()};
+            dragLayer.getDescendantCoordRelativeToSelf(mWorkspace, workspacePivot);
+            dragLayer.mapCoordInSelfToDescendant(hotseat, workspacePivot);
+            hotseat.setPivotX(workspacePivot[0]);
+            hotseat.setPivotY(workspacePivot[1]);
+            float hotseatScale = hotseatScaleAndTranslation[0];
+            propertySetter.setFloat(hotseat, SCALE_PROPERTY, hotseatScale, scaleInterpolator);
 
             float hotseatIconsAlpha = (elements & HOTSEAT_ICONS) != 0 ? 1 : 0;
             propertySetter.setViewAlpha(hotseat, hotseatIconsAlpha, fadeInterpolator);
@@ -116,12 +117,11 @@ public class WorkspaceStateTransitionAnimation {
                 scaleAndTranslation[1], translationInterpolator);
         propertySetter.setFloat(mWorkspace, View.TRANSLATION_Y,
                 scaleAndTranslation[2], translationInterpolator);
-        if (state.scaleHotseatWithWorkspace()) {
-            propertySetter.setFloat(hotseat, View.TRANSLATION_Y,
-                    scaleAndTranslation[2], translationInterpolator);
-            propertySetter.setFloat(mWorkspace.getPageIndicator(), View.TRANSLATION_Y,
-                    scaleAndTranslation[2], translationInterpolator);
-        }
+
+        propertySetter.setFloat(hotseat, View.TRANSLATION_Y,
+                hotseatScaleAndTranslation[2], translationInterpolator);
+        propertySetter.setFloat(mWorkspace.getPageIndicator(), View.TRANSLATION_Y,
+                hotseatScaleAndTranslation[2], translationInterpolator);
 
         // Set scrim
         WorkspaceAndHotseatScrim scrim = mLauncher.getDragLayer().getScrim();
