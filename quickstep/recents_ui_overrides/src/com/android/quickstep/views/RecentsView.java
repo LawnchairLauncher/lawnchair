@@ -278,6 +278,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private final int mEmptyMessagePadding;
     private boolean mShowEmptyMessage;
     private Layout mEmptyTextLayout;
+    private LiveTileOverlay mLiveTileOverlay;
 
     private BaseActivity.MultiWindowModeChangedListener mMultiWindowModeChangedListener =
             (inMultiWindowMode) -> {
@@ -855,10 +856,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public void animateUpRunningTaskIconScale() {
+        animateUpRunningTaskIconScale(0);
+    }
+
+    public void animateUpRunningTaskIconScale(float startProgress) {
         mRunningTaskIconScaledDown = false;
         TaskView firstTask = getRunningTaskView();
         if (firstTask != null) {
             firstTask.animateIconScaleAndDimIntoView();
+            firstTask.setIconScaleAnimStartProgress(startProgress);
         }
     }
 
@@ -1565,6 +1571,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     public void setClipAnimationHelper(ClipAnimationHelper clipAnimationHelper) {
         mClipAnimationHelper = clipAnimationHelper;
+    }
+
+    public void setLiveTileOverlay(LiveTileOverlay liveTileOverlay) {
+        mLiveTileOverlay = liveTileOverlay;
+    }
+
+    public void updateLiveTileIcon(Drawable icon) {
+        mLiveTileOverlay.setIcon(icon);
     }
 
     public void finishRecentsAnimation(boolean toRecents, Runnable onFinishComplete) {
