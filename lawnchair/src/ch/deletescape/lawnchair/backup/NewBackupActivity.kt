@@ -186,6 +186,7 @@ class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnColorChangeListe
                 startButton.apply {
                     DrawableCompat.setTint(background, color)
                     DrawableCompat.setTint(drawable, foregroundColor)
+                    backgroundTintList = tintList
                 }
                 backupName.apply {
                     highlightColor = color

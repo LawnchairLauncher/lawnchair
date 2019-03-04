@@ -246,6 +246,7 @@ class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader
                 startButton.apply {
                     DrawableCompat.setTint(background, color)
                     DrawableCompat.setTint(drawable, foregroundColor)
+                    backgroundTintList = tintList
                 }
                 backupName.apply {
                     highlightColor = color
