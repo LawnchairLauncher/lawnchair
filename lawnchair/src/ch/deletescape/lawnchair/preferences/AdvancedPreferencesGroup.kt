@@ -44,7 +44,7 @@ class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleA
         val topic = ta.getString(R.styleable.AdvancedPreferencesGroup_topic) ?: "Bug"
         ta.recycle()
 
-        title = context.getString(R.string.advanced_settings,topic)
+        title = if(title.isNullOrEmpty()) context.getString(R.string.advanced_settings, topic) else title
         hasSummary = !summary.isNullOrEmpty()
     }
     private val caretDrawable = CaretDrawable(context).apply { caretProgress = CaretDrawable.PROGRESS_CARET_POINTING_DOWN }
