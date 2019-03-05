@@ -93,8 +93,6 @@ public final class LauncherInstrumentation {
     private static WeakReference<VisibleContainer> sActiveContainer = new WeakReference<>(null);
 
     private final UiDevice mDevice;
-    private final boolean mSwipeUpEnabled;
-    private Boolean mSwipeUpEnabledOverride = null;
     private final Instrumentation mInstrumentation;
     private int mExpectedRotation = Surface.ROTATION_0;
 
@@ -104,13 +102,6 @@ public final class LauncherInstrumentation {
     public LauncherInstrumentation(Instrumentation instrumentation) {
         mInstrumentation = instrumentation;
         mDevice = UiDevice.getInstance(instrumentation);
-        final boolean swipeUpEnabledDefaultValue = SwipeUpSetting.isSwipeUpEnabledDefaultValue();
-        mSwipeUpEnabled = SwipeUpSetting.isSwipeUpSettingAvailable() ?
-                Settings.Secure.getInt(
-                        instrumentation.getTargetContext().getContentResolver(),
-                        SWIPE_UP_SETTING_NAME,
-                        swipeUpEnabledDefaultValue ? 1 : 0) == 1 :
-                swipeUpEnabledDefaultValue;
 
         // Launcher should run in test harness so that custom accessibility protocol between
         // Launcher and TAPL is enabled. In-process tests enable this protocol with a direct call
@@ -119,17 +110,18 @@ public final class LauncherInstrumentation {
                 TestHelpers.isInLauncherProcess() || ActivityManager.isRunningInTestHarness());
     }
 
-    // Used only by TaplTests.
-    public void overrideSwipeUpEnabled(Boolean swipeUpEnabledOverride) {
-        mSwipeUpEnabledOverride = swipeUpEnabledOverride;
-    }
-
     void setActiveContainer(VisibleContainer container) {
         sActiveContainer = new WeakReference<>(container);
     }
 
     public boolean isSwipeUpEnabled() {
-        return mSwipeUpEnabledOverride != null ? mSwipeUpEnabledOverride : mSwipeUpEnabled;
+        final boolean swipeUpEnabledDefaultValue = SwipeUpSetting.isSwipeUpEnabledDefaultValue();
+        return SwipeUpSetting.isSwipeUpSettingAvailable() ?
+                Settings.Secure.getInt(
+                        mInstrumentation.getTargetContext().getContentResolver(),
+                        SWIPE_UP_SETTING_NAME,
+                        swipeUpEnabledDefaultValue ? 1 : 0) == 1 :
+                swipeUpEnabledDefaultValue;
     }
 
     static void log(String message) {
