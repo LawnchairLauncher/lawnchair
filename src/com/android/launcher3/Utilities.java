@@ -593,8 +593,9 @@ public final class Utilities {
         int viewLocationTop = rect.top;
 
         if (isBubbleTextView && !fromDeepShortcutView) {
-            BubbleTextView btv = (BubbleTextView) v;
-            btv.getIconBounds(rect);
+            ((BubbleTextView) v).getIconBounds(rect);
+        } else if (isFolderIcon) {
+            ((FolderIcon) v).getPreviewBounds(rect);
         } else {
             rect.set(0, 0, rect.width(), rect.height());
         }
