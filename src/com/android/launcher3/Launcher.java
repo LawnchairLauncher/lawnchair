@@ -257,7 +257,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     private RotationHelper mRotationHelper;
 
-    private final Handler mHandler = new Handler();
+    final Handler mHandler = new Handler();
     private final Runnable mHandleDeferredResume = this::handleDeferredResume;
 
     @Override
@@ -1748,6 +1748,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         setWorkspaceLoading(true);
 
         // Clear the workspace because it's going to be rebound
+        mDragController.cancelDrag();
+
         mWorkspace.clearDropTargets();
         mWorkspace.removeAllWorkspaceScreens();
         mAppWidgetHost.clearViews();
