@@ -43,7 +43,9 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.FolderShape;
+import com.android.launcher3.graphics.ShiftedBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
 
 import androidx.annotation.Nullable;
@@ -56,6 +58,8 @@ import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANI
  */
 
 public class FloatingIconView extends View implements Animator.AnimatorListener, ClipPathView {
+
+    private static final Rect sTmpRect = new Rect();
 
     private Runnable mStartRunnable;
     private Runnable mEndRunnable;
@@ -181,7 +185,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
     }
 
     @WorkerThread
-    private void getIcon(Launcher launcher, ItemInfo info, boolean useDrawableAsIs,
+    private void getIcon(Launcher launcher, View v, ItemInfo info, boolean useDrawableAsIs,
             float aspectRatio) {
         final LayoutParams lp = (LayoutParams) getLayoutParams();
         mDrawable = Utilities.getFullDrawable(launcher, info, lp.width, lp.height, new Object[1]);
@@ -205,6 +209,12 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
 
             int offset = getOffsetForAdaptiveIconBounds();
             mFinalDrawableBounds.set(offset, offset, lp.width - offset, mOriginalHeight - offset);
+            if (mForeground instanceof ShiftedBitmapDrawable && v instanceof FolderIcon) {
+                ShiftedBitmapDrawable sbd = (ShiftedBitmapDrawable) mForeground;
+                ((FolderIcon) v).getPreviewBounds(sTmpRect);
+                sbd.setShiftX(sbd.getShiftX() - sTmpRect.left);
+                sbd.setShiftY(sbd.getShiftY() - sTmpRect.top);
+            }
             mForeground.setBounds(mFinalDrawableBounds);
             mBackground.setBounds(mFinalDrawableBounds);
 
@@ -323,8 +333,8 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         // Must be called after matchPositionOf so that we know what size to load.
         if (originalView.getTag() instanceof ItemInfo) {
             new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(() -> {
-                view.getIcon(launcher, (ItemInfo) originalView.getTag(), useDrawableAsIs,
-                        aspectRatio);
+                view.getIcon(launcher, originalView, (ItemInfo) originalView.getTag(),
+                        useDrawableAsIs, aspectRatio);
             });
         }
 
