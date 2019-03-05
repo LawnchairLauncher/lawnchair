@@ -98,9 +98,8 @@ class SearchIndex(private val context: Context) {
                 }
                 cls != null && PreferenceGroup::class.java.isAssignableFrom(cls) -> {
                     val title = parseString(parser[nsAndroid, attrTitle])
-                            ?: parseString(parser[nsApp, attrTopic])
                     if (parent != null) {
-                        indexSection(parser, SettingsCategory(parent.title, title!!,
+                        indexSection(parser, SettingsCategory(parent.title, title,
                                 parent, parent.contentRes, parent.hasPreview))
                     } else {
                         indexSection(parser, null)
@@ -171,22 +170,21 @@ class SearchIndex(private val context: Context) {
         }
     }
 
-    inner class SettingsCategory(title: String, categoryTitle: String,
+    inner class SettingsCategory(title: String, categoryTitle: String?,
                                  parent: SettingsScreen?, contentRes: Int,
                                  hasPreview: Boolean)
         : SettingsScreen(title, categoryTitle, parent, contentRes, hasPreview)
 
-    open inner class SettingsScreen(val title: String, val categoryTitle: String,
+    open inner class SettingsScreen(val title: String, private val categoryTitle: String?,
                                     val parent: SettingsScreen?,
                                     val contentRes: Int, val hasPreview: Boolean) {
 
         val breadcrumbs: String
-            get() {
-                return if (parent == null) {
-                    categoryTitle
-                } else {
-                    context.getString(R.string.search_breadcrumb_connector, parent.breadcrumbs, categoryTitle)
-                }
+            get() = when {
+                parent == null -> categoryTitle ?: ""
+                categoryTitle != null -> context.getString(R.string.search_breadcrumb_connector,
+                        parent.breadcrumbs, categoryTitle)
+                else -> parent.breadcrumbs
             }
     }
 
