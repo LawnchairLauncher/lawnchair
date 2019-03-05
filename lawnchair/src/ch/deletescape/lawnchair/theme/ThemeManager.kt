@@ -22,6 +22,7 @@ import android.content.res.Configuration
 import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.lawnchairApp
 import ch.deletescape.lawnchair.useApplicationContext
+import ch.deletescape.lawnchair.usingNightMode
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -50,7 +51,7 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener {
     private val listeners = HashSet<ThemeOverride>()
     private val prefs = Utilities.getLawnchairPrefs(context)
     private var themeFlags = 0
-    private var usingNightMode: Boolean? = null
+    private var usingNightMode = context.resources.configuration.usingNightMode
         set(value) {
             if (value != field) {
                 field = value
@@ -69,7 +70,6 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener {
 
     init {
         wallpaperColorInfo.addOnChangeListener(this)
-        updateNightMode(context.lawnchairApp.resources.configuration)
     }
 
     fun addOverride(themeOverride: ThemeOverride) {
@@ -106,10 +106,12 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener {
             else
                 usingNightMode == true
         }
-        themeFlags = 0
-        if (supportsDarkText) themeFlags = themeFlags or THEME_DARK_TEXT
-        if (isDark) themeFlags = themeFlags or THEME_DARK
-        if (isBlack) themeFlags = themeFlags or THEME_USE_BLACK
+        var newFlags = 0
+        if (supportsDarkText) newFlags = newFlags or THEME_DARK_TEXT
+        if (isDark) newFlags = newFlags or THEME_DARK
+        if (isBlack) newFlags = newFlags or THEME_USE_BLACK
+        if (newFlags == themeFlags) return
+        themeFlags = newFlags
         reloadActivities()
         synchronized(listeners) {
             removeDeadListeners()
@@ -128,8 +130,7 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener {
     }
 
     fun updateNightMode(newConfig: Configuration) {
-        val nightMode = newConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        usingNightMode = nightMode == Configuration.UI_MODE_NIGHT_YES
+        usingNightMode = newConfig.usingNightMode
     }
 
     interface ThemeableActivity {

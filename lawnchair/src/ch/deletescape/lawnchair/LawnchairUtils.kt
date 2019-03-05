@@ -23,6 +23,7 @@ import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.*
 import android.graphics.drawable.Drawable
@@ -539,3 +540,5 @@ inline fun PreferenceGroup.forEachIndexed(action: (i: Int, pref: Preference) -> 
 operator fun XmlPullParser.get(index: Int): String? = getAttributeValue(index)
 operator fun XmlPullParser.get(namespace: String?, key: String): String? = getAttributeValue(namespace, key)
 operator fun XmlPullParser.get(key: String): String? = this[null, key]
+
+val Configuration.usingNightMode get() = uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
