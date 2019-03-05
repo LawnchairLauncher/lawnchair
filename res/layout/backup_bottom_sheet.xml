@@ -70,7 +70,6 @@
         android:drawableStart="@drawable/ic_list_remove"
         android:gravity="center_vertical"
         android:padding="16dp"
-        android:text="@string/backup_remove_from_recents"
-        android:visibility="gone" />
+        android:text="@string/backup_delete" />
 
 </LinearLayout>

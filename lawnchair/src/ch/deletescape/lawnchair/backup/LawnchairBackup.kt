@@ -157,6 +157,10 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
         }
     }
 
+    fun delete(): Boolean {
+        return context.contentResolver.delete(uri, null, null) != 0
+    }
+
     class MetaLoader(val backup: LawnchairBackup) {
 
         var callback: Callback? = null

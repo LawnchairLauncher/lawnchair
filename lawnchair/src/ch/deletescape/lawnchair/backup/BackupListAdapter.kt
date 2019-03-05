@@ -25,6 +25,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.isVisible
 import com.android.launcher3.R
@@ -51,9 +52,13 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
     }
 
     fun removeItem(position: Int) {
-        backupList.removeAt(position)
-        backupMetaLoaderList.removeAt(position)
-        notifyItemRemoved(position + 1)
+        if (backupList[position].delete()) {
+            backupList.removeAt(position)
+            backupMetaLoaderList.removeAt(position)
+            notifyItemRemoved(position + 1)
+        } else {
+            Toast.makeText(context, R.string.backup_delete_failed, Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun toUriList(): List<Uri> {
