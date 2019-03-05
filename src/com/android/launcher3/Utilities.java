@@ -616,14 +616,14 @@ public final class Utilities {
      *               eg {@link LauncherActivityInfo} or {@link ShortcutInfoCompat}.
      */
     public static Drawable getFullDrawable(Launcher launcher, ItemInfo info, int width, int height,
-            Object[] outObj) {
+            boolean flattenDrawable, Object[] outObj) {
         LauncherAppState appState = LauncherAppState.getInstance(launcher);
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
             LauncherActivityInfo activityInfo = LauncherAppsCompat.getInstance(launcher)
                     .resolveActivity(info.getIntent(), info.user);
             outObj[0] = activityInfo;
             return (activityInfo != null) ? appState.getIconCache()
-                    .getFullResIcon(activityInfo, false) : null;
+                    .getFullResIcon(activityInfo, flattenDrawable) : null;
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             if (info instanceof PendingAddShortcutInfo) {
                 ShortcutConfigActivityInfo activityInfo =

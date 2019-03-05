@@ -184,7 +184,8 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
     private void getIcon(Launcher launcher, ItemInfo info, boolean useDrawableAsIs,
             float aspectRatio) {
         final LayoutParams lp = (LayoutParams) getLayoutParams();
-        mDrawable = Utilities.getFullDrawable(launcher, info, lp.width, lp.height, new Object[1]);
+        mDrawable = Utilities.getFullDrawable(launcher, info, lp.width, lp.height, useDrawableAsIs,
+                new Object[1]);
 
         if (ADAPTIVE_ICON_WINDOW_ANIM.get() && !useDrawableAsIs
                 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
