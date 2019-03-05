@@ -78,6 +78,11 @@ public class AssistantTouchConsumer implements InputConsumer {
     }
 
     @Override
+    public int getType() {
+        return TYPE_ASSISTANT;
+    }
+
+    @Override
     public void onMotionEvent(MotionEvent ev) {
         // TODO add logging
         switch (ev.getActionMasked()) {

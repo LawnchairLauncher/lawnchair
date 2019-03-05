@@ -45,6 +45,7 @@ import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.logging.EventLogArray;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.IOverviewProxy;
@@ -70,7 +71,8 @@ public class TouchInteractionService extends Service {
     public static final LooperExecutor BACKGROUND_EXECUTOR =
             new LooperExecutor(UiThreadHelper.getBackgroundLooper());
 
-    public static final TouchInteractionLog TOUCH_INTERACTION_LOG = new TouchInteractionLog();
+    public static final EventLogArray TOUCH_INTERACTION_LOG =
+            new EventLogArray("touch_interaction_log", 40);
 
     public static final int EDGE_NAV_BAR = 1 << 8;
 
@@ -281,15 +283,13 @@ public class TouchInteractionService extends Service {
             return;
         }
         MotionEvent event = (MotionEvent) ev;
+        TOUCH_INTERACTION_LOG.addLog("onMotionEvent", event.getActionMasked());
         if (event.getAction() == ACTION_DOWN) {
-            TOUCH_INTERACTION_LOG.prepareForNewGesture();
             boolean useSharedState = mConsumer.isActive();
             mConsumer.onConsumerAboutToBeSwitched();
             mConsumer = newConsumer(useSharedState, event);
-            TOUCH_INTERACTION_LOG.setInputConsumer(mConsumer);
+            TOUCH_INTERACTION_LOG.addLog("setInputConsumer", mConsumer.getType());
         }
-        TOUCH_INTERACTION_LOG.addMotionEvent(event);
-
         mConsumer.onMotionEvent(event);
     }
 
@@ -342,6 +342,6 @@ public class TouchInteractionService extends Service {
 
     @Override
     protected void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
-        TOUCH_INTERACTION_LOG.dump(pw);
+        TOUCH_INTERACTION_LOG.dump("", pw);
     }
 }

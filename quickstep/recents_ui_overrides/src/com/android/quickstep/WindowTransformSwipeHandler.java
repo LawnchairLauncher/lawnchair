@@ -671,7 +671,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         initTransitionEndpoints(dp);
 
         mRecentsAnimationWrapper.setController(targetSet);
-        TOUCH_INTERACTION_LOG.startRecentsAnimationCallback(targetSet.apps.length);
+        TOUCH_INTERACTION_LOG.addLog("startRecentsAnimationCallback", targetSet.apps.length);
         setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
 
         mPassedOverviewThreshold = false;
@@ -682,7 +682,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         mRecentsAnimationWrapper.setController(null);
         mActivityInitListener.unregister();
         setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);
-        TOUCH_INTERACTION_LOG.cancelRecentsAnimation();
+        TOUCH_INTERACTION_LOG.addLog("cancelRecentsAnimation");
     }
 
     @UiThread
@@ -1025,7 +1025,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     @UiThread
     private void resumeLastTask() {
         mRecentsAnimationWrapper.finish(false /* toRecents */, null);
-        TOUCH_INTERACTION_LOG.finishRecentsAnimation(false);
+        TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", false);
     }
 
     @UiThread
@@ -1043,7 +1043,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                         mMainThreadHandler);
             });
         }
-        TOUCH_INTERACTION_LOG.finishRecentsAnimation(false);
+        TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", false);
         doLogGesture(NEW_TASK);
     }
 
@@ -1152,7 +1152,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                         () -> setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
             }
         }
-        TOUCH_INTERACTION_LOG.finishRecentsAnimation(true);
+        TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", true);
     }
 
     private void finishCurrentTransitionToHome() {
@@ -1160,7 +1160,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             mRecentsAnimationWrapper.finish(true /* toRecents */,
                     () -> setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
         }
-        TOUCH_INTERACTION_LOG.finishRecentsAnimation(true);
+        TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", true);
         doLogGesture(HOME);
     }
 
