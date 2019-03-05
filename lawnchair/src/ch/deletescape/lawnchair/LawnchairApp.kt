@@ -51,6 +51,7 @@ class LawnchairApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        ThemeManager.getInstance(this)
         BlurWallpaperProvider.getInstance(this)
     }
 

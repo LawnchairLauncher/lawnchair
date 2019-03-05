@@ -69,6 +69,7 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener {
     }
 
     init {
+        onExtractedColorsChanged(null)
         wallpaperColorInfo.addOnChangeListener(this)
     }
 
