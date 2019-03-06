@@ -144,10 +144,9 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
 
             @NonNull
             @Override
-            public Animator createActivityAnimationToHome() {
+            public AnimatorPlaybackController createActivityAnimationToHome() {
                 long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
-                return activity.getStateManager().createAnimationToNewWorkspace(
-                        NORMAL, accuracy).getTarget();
+                return activity.getStateManager().createAnimationToNewWorkspace(NORMAL, accuracy);
             }
         };
     }

@@ -21,7 +21,6 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
-
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
 import static com.android.quickstep.TouchInteractionService.EDGE_NAV_BAR;
@@ -45,8 +44,6 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
-import androidx.annotation.UiThread;
-
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RaceConditionTracker;
@@ -62,6 +59,8 @@ import com.android.systemui.shared.system.NavigationBarCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.function.Consumer;
+
+import androidx.annotation.UiThread;
 
 /**
  * Input consumer for handling events originating from an activity other than Launcher
@@ -331,12 +330,13 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             mVelocityTracker.computeCurrentVelocity(1000,
                     ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
             float velocityX = mVelocityTracker.getXVelocity(mActivePointerId);
+            float velocityY = mVelocityTracker.getYVelocity(mActivePointerId);
             float velocity = isNavBarOnRight() ? velocityX
                     : isNavBarOnLeft() ? -velocityX
-                            : mVelocityTracker.getYVelocity(mActivePointerId);
+                            : velocityY;
 
             mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
-            mInteractionHandler.onGestureEnded(velocity, velocityX);
+            mInteractionHandler.onGestureEnded(velocity, new PointF(velocityX, velocityY));
         } else {
             // Since we start touch tracking on DOWN, we may reach this state without actually
             // starting the gesture. In that case, just cleanup immediately.

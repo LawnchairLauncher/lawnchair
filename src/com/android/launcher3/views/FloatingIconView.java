@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.views;
 
+import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
@@ -54,8 +56,6 @@ import com.android.launcher3.shortcuts.DeepShortcutView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
-
-import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
 
 /**
  * A view that is created to look like another view with the purpose of creating fluid animations.
@@ -143,9 +143,6 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
             setBackgroundDrawableBounds(bgScale);
 
             mRevealAnimator.setCurrentFraction(shapeRevealProgress);
-            if (Float.compare(shapeRevealProgress, 1f) >= 0f) {
-                mRevealAnimator.end();
-            }
         }
         invalidate();
         invalidateOutline();
@@ -160,6 +157,9 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
 
     @Override
     public void onAnimationEnd(Animator animator) {
+        if (mRevealAnimator != null) {
+            mRevealAnimator.end();
+        }
         if (mEndRunnable != null) {
             mEndRunnable.run();
         }
