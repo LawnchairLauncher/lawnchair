@@ -89,6 +89,7 @@ public class TouchInteractionService extends Service {
                     .asInterface(bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
             runWhenUserUnlocked(() -> {
                 mRecentsModel.setSystemUiProxy(mISystemUiProxy);
+                mRecentsModel.onInitializeSystemUI(bundle);
                 mOverviewInteractionState.setSystemUiProxy(mISystemUiProxy);
             });
 

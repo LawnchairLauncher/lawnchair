@@ -52,6 +52,7 @@ public class TouchInteractionService extends Service {
             ISystemUiProxy iSystemUiProxy = ISystemUiProxy.Stub
                     .asInterface(bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
             mRecentsModel.setSystemUiProxy(iSystemUiProxy);
+            mRecentsModel.onInitializeSystemUI(bundle);
         }
 
         @Override
