@@ -77,6 +77,11 @@ public class TouchInteractionService extends Service {
             mOverviewCommandHelper.onTip(actionType, viewType);
         }
 
+        @Override
+        public void onAssistantAvailable(boolean available) {
+            // TODO handle assistant
+        }
+
         /** Deprecated methods **/
         public void onQuickStep(MotionEvent motionEvent) { }
 
