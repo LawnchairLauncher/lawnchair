@@ -29,7 +29,7 @@ import com.android.launcher3.TestProtocol;
 public class AllApps extends LauncherInstrumentation.VisibleContainer {
     private static final int MAX_SCROLL_ATTEMPTS = 40;
     private static final int MIN_INTERACT_SIZE = 100;
-    private static final int FLING_SPEED = 12000;
+    private static final int FLING_SPEED = 3000;
 
     private final int mHeight;
 
@@ -120,7 +120,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         final UiObject2 allAppsContainer = verifyActiveContainer();
         // Start the gesture in the center to avoid starting at elements near the top.
         allAppsContainer.setGestureMargins(0, 0, 0, mHeight / 2);
-        allAppsContainer.fling(Direction.DOWN, FLING_SPEED);
+        allAppsContainer.fling(Direction.DOWN, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
         verifyActiveContainer();
     }
 
@@ -131,7 +131,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         final UiObject2 allAppsContainer = verifyActiveContainer();
         // Start the gesture in the center, for symmetry with forward.
         allAppsContainer.setGestureMargins(0, mHeight / 2, 0, 0);
-        allAppsContainer.fling(Direction.UP, FLING_SPEED);
+        allAppsContainer.fling(Direction.UP, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
         verifyActiveContainer();
     }
 }
