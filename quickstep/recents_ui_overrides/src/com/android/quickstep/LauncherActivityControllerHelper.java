@@ -100,17 +100,19 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     public HomeAnimationFactory prepareHomeUI(Launcher activity) {
         final DeviceProfile dp = activity.getDeviceProfile();
         final RecentsView recentsView = activity.getOverviewPanel();
-        final ComponentName component = recentsView.getRunningTaskView().getTask().key
-                .sourceComponent;
-
-        final View workspaceView = activity.getWorkspace().getFirstMatchForAppClose(component);
-        final FloatingIconView floatingView = workspaceView == null ? null
-                : new FloatingIconView(activity);
-        final Rect iconLocation = new Rect();
-        if (floatingView != null) {
-            floatingView.matchPositionOf(activity, workspaceView, true /* hideOriginal */,
-                    iconLocation);
+        final TaskView runningTaskView = recentsView.getRunningTaskView();
+        final View workspaceView;
+        if (runningTaskView != null) {
+            ComponentName component = runningTaskView.getTask().key.sourceComponent;
+            workspaceView = activity.getWorkspace().getFirstMatchForAppClose(component);
+        } else {
+            workspaceView = null;
         }
+        final Rect iconLocation = new Rect();
+        final FloatingIconView floatingView = workspaceView == null ? null
+                : FloatingIconView.getFloatingIconView(activity, workspaceView,
+                true /* hideOriginal */, false /* useDrawableAsIs */,
+                activity.getDeviceProfile().getAspectRatioWithInsets(), iconLocation, null);
 
         return new HomeAnimationFactory() {
             @Nullable

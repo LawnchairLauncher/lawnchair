@@ -185,6 +185,7 @@ public class ClipAnimationHelper {
                     if (mSupportsRoundedCornersOnWindows) {
                         cornerRadius = Utilities.mapRange(params.progress, mWindowCornerRadius,
                                 mTaskCornerRadius);
+                        mCurrentCornerRadius = cornerRadius;
                     }
                 }
                 alpha = mTaskAlphaCallback.apply(app, params.targetAlpha);

@@ -23,7 +23,16 @@ import android.view.MotionEvent;
 
 @TargetApi(Build.VERSION_CODES.O)
 public interface InputConsumer {
-    InputConsumer NO_OP = new InputConsumer() { };
+
+    int TYPE_NO_OP = 0;
+    int TYPE_OVERVIEW = 1;
+    int TYPE_OTHER_ACTIVITY = 2;
+    int TYPE_ASSISTANT = 3;
+    int TYPE_DEVICE_LOCKED = 4;
+
+    InputConsumer NO_OP = () -> TYPE_NO_OP;
+
+    int getType();
 
     default boolean isActive() {
         return false;

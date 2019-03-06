@@ -15,32 +15,28 @@
  */
 package com.android.quickstep;
 
+import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
+
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.HandlerThread;
 import android.os.Process;
 import android.os.RemoteException;
 import android.util.Log;
-import android.util.SparseArray;
 
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.util.MainThreadInitializedObject;
-import com.android.launcher3.util.Preconditions;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
-
-import androidx.annotation.WorkerThread;
-
-import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 
 /**
  * Singleton class to load and manage recents model.
@@ -54,8 +50,8 @@ public class RecentsModel extends TaskStackChangeListener {
     public static final MainThreadInitializedObject<RecentsModel> INSTANCE =
             new MainThreadInitializedObject<>(c -> new RecentsModel(c));
 
+    private final List<TaskThumbnailChangeListener> mThumbnailChangeListeners = new ArrayList<>();
     private final Context mContext;
-    private final MainThreadExecutor mMainThreadExecutor;
 
     private ISystemUiProxy mSystemUiProxy;
 
@@ -68,9 +64,6 @@ public class RecentsModel extends TaskStackChangeListener {
 
     private RecentsModel(Context context) {
         mContext = context;
-
-        mMainThreadExecutor = new MainThreadExecutor();
-
         HandlerThread loaderThread = new HandlerThread("TaskThumbnailIconCache",
                 Process.THREAD_PRIORITY_BACKGROUND);
         loaderThread.start();
@@ -168,6 +161,18 @@ public class RecentsModel extends TaskStackChangeListener {
         });
     }
 
+    @Override
+    public void onTaskSnapshotChanged(int taskId, ThumbnailData snapshot) {
+        mThumbnailCache.updateTaskSnapShot(taskId, snapshot);
+
+        for (int i = mThumbnailChangeListeners.size() - 1; i >= 0; i--) {
+            Task task = mThumbnailChangeListeners.get(i).onTaskThumbnailChanged(taskId, snapshot);
+            if (task != null) {
+                task.thumbnail = snapshot;
+            }
+        }
+    }
+
     public void setSystemUiProxy(ISystemUiProxy systemUiProxy) {
         mSystemUiProxy = systemUiProxy;
     }
@@ -238,5 +243,18 @@ public class RecentsModel extends TaskStackChangeListener {
                     "Failed to notify SysUI of overview shown from " + (fromHome ? "home" : "app")
                             + ": ", e);
         }
+    }
+
+    public void addThumbnailChangeListener(TaskThumbnailChangeListener listener) {
+        mThumbnailChangeListeners.add(listener);
+    }
+
+    public void removeThumbnailChangeListener(TaskThumbnailChangeListener listener) {
+        mThumbnailChangeListeners.remove(listener);
+    }
+
+    public interface TaskThumbnailChangeListener {
+
+        Task onTaskThumbnailChanged(int taskId, ThumbnailData thumbnailData);
     }
 }

@@ -39,6 +39,7 @@ import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.util.Xml;
+import android.view.View;
 import android.view.ViewOutlineProvider;
 
 import com.android.launcher3.R;
@@ -46,6 +47,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.views.ClipPathView;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -74,8 +76,8 @@ public abstract class FolderShape {
 
     public abstract void addShape(Path path, float offsetX, float offsetY, float radius);
 
-    public abstract Animator createRevealAnimator(Folder target, Rect startRect, Rect endRect,
-            float endRadius, boolean isReversed);
+    public abstract <T extends View & ClipPathView> Animator createRevealAnimator(T target,
+            Rect startRect, Rect endRect, float endRadius, boolean isReversed);
 
     @Nullable
     public TypedValue getAttrValue(int attr) {
@@ -88,8 +90,8 @@ public abstract class FolderShape {
     private static abstract class SimpleRectShape extends FolderShape {
 
         @Override
-        public final Animator createRevealAnimator(Folder target, Rect startRect, Rect endRect,
-                float endRadius, boolean isReversed) {
+        public final <T extends View & ClipPathView> Animator createRevealAnimator(T target,
+                Rect startRect, Rect endRect, float endRadius, boolean isReversed) {
             return new RoundedRectRevealOutlineProvider(
                     getStartRadius(startRect), endRadius, startRect, endRect) {
                 @Override
@@ -121,8 +123,8 @@ public abstract class FolderShape {
                 Rect startRect, Rect endRect, float endRadius, Path outPath);
 
         @Override
-        public final Animator createRevealAnimator(Folder target, Rect startRect, Rect endRect,
-                float endRadius, boolean isReversed) {
+        public final <T extends View & ClipPathView> Animator createRevealAnimator(T target,
+                Rect startRect, Rect endRect, float endRadius, boolean isReversed) {
             Path path = new Path();
             AnimatorUpdateListener listener =
                     newUpdateListener(startRect, endRect, endRadius, path);

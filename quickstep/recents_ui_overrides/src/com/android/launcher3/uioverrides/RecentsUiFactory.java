@@ -44,6 +44,7 @@ import java.util.ArrayList;
  */
 public abstract class RecentsUiFactory {
 
+    public static final boolean GO_LOW_RAM_RECENTS_ENABLED = false;
     private static final AsyncCommand SET_SHELF_HEIGHT_CMD = (visible, height) ->
             WindowManagerWrapper.getInstance().setShelfHeight(visible != 0, height);
 
@@ -61,7 +62,6 @@ public abstract class RecentsUiFactory {
 
         if (swipeUpToHome) {
             list.add(new FlingAndHoldTouchController(launcher));
-            list.add(new OverviewToAllAppsTouchController(launcher));
         } else {
             if (launcher.getDeviceProfile().isVerticalBarLayout()) {
                 list.add(new OverviewToAllAppsTouchController(launcher));

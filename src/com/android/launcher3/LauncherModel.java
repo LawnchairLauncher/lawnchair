@@ -34,6 +34,7 @@ import android.util.Pair;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
@@ -210,20 +211,20 @@ public class LauncherModel extends BroadcastReceiver
             final int itemId, final ItemInfo item, StackTraceElement[] stackTrace) {
         ItemInfo modelItem = sBgDataModel.itemsIdMap.get(itemId);
         if (modelItem != null && item != modelItem) {
-            // check all the data is consistent
-            if (modelItem instanceof ShortcutInfo && item instanceof ShortcutInfo) {
-                ShortcutInfo modelShortcut = (ShortcutInfo) modelItem;
-                ShortcutInfo shortcut = (ShortcutInfo) item;
-                if (modelShortcut.title.toString().equals(shortcut.title.toString()) &&
-                        modelShortcut.intent.filterEquals(shortcut.intent) &&
-                        modelShortcut.id == shortcut.id &&
-                        modelShortcut.itemType == shortcut.itemType &&
-                        modelShortcut.container == shortcut.container &&
-                        modelShortcut.screenId == shortcut.screenId &&
-                        modelShortcut.cellX == shortcut.cellX &&
-                        modelShortcut.cellY == shortcut.cellY &&
-                        modelShortcut.spanX == shortcut.spanX &&
-                        modelShortcut.spanY == shortcut.spanY) {
+            // If it is a release build on a release device, check all the data is consistent as
+            // we don't want to crash non-dev users.
+            if (!Utilities.IS_DEBUG_DEVICE && !FeatureFlags.IS_DOGFOOD_BUILD &&
+                    modelItem instanceof ShortcutInfo && item instanceof ShortcutInfo) {
+                if (modelItem.title.toString().equals(item.title.toString()) &&
+                        modelItem.getIntent().filterEquals(item.getIntent()) &&
+                        modelItem.id == item.id &&
+                        modelItem.itemType == item.itemType &&
+                        modelItem.container == item.container &&
+                        modelItem.screenId == item.screenId &&
+                        modelItem.cellX == item.cellX &&
+                        modelItem.cellY == item.cellY &&
+                        modelItem.spanX == item.spanX &&
+                        modelItem.spanY == item.spanY) {
                     // For all intents and purposes, this is the same object
                     return;
                 }

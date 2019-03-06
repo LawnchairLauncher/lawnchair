@@ -36,6 +36,7 @@ import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
+import com.android.launcher3.graphics.ShiftedBitmapDrawable;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.util.Preconditions;
 
@@ -132,40 +133,5 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
                 margin - previewShiftX, margin - previewShiftY);
 
         return new FolderAdaptiveIcon(new ColorDrawable(bg.getBgColor()), foreground, badge, mask);
-    }
-
-    /**
-     * A simple drawable which draws a bitmap at a fixed position irrespective of the bounds
-     */
-    private static class ShiftedBitmapDrawable extends Drawable {
-
-        private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
-        private final Bitmap mBitmap;
-        private final float mShiftX;
-        private final float mShiftY;
-
-        ShiftedBitmapDrawable(Bitmap bitmap, float shiftX, float shiftY) {
-            mBitmap = bitmap;
-            mShiftX = shiftX;
-            mShiftY = shiftY;
-        }
-
-        @Override
-        public void draw(Canvas canvas) {
-            canvas.drawBitmap(mBitmap, mShiftX, mShiftY, mPaint);
-        }
-
-        @Override
-        public void setAlpha(int i) { }
-
-        @Override
-        public void setColorFilter(ColorFilter colorFilter) {
-            mPaint.setColorFilter(colorFilter);
-        }
-
-        @Override
-        public int getOpacity() {
-            return PixelFormat.TRANSLUCENT;
-        }
     }
 }

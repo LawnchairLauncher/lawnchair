@@ -26,6 +26,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.util.Preconditions;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.recents.model.TaskKeyLruCache;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -38,7 +39,7 @@ public class TaskThumbnailCache {
     private final MainThreadExecutor mMainThreadExecutor;
 
     private final int mCacheSize;
-    private final TaskKeyLruCache<ThumbnailData> mCache;
+    private final ThumbnailCache mCache;
     private final HighResLoadingState mHighResLoadingState;
 
     public static class HighResLoadingState {
@@ -98,7 +99,7 @@ public class TaskThumbnailCache {
 
         Resources res = context.getResources();
         mCacheSize = res.getInteger(R.integer.recentsThumbnailCacheSize);
-        mCache = new TaskKeyLruCache<>(mCacheSize);
+        mCache = new ThumbnailCache(mCacheSize);
     }
 
     /**
@@ -106,13 +107,20 @@ public class TaskThumbnailCache {
      */
     public void updateThumbnailInCache(Task task) {
         Preconditions.assertUIThread();
-
         // Fetch the thumbnail for this task and put it in the cache
-        updateThumbnailInBackground(task, true /* reducedResolution */, (t) -> {
-            mCache.put(task.key, t.thumbnail);
-        });
+        if (task.thumbnail == null) {
+            updateThumbnailInBackground(task.key, true /* reducedResolution */,
+                    t -> task.thumbnail = t);
+        }
     }
 
+    /**
+     * Synchronously updates the thumbnail in the cache if it is already there.
+     */
+    public void updateTaskSnapShot(int taskId, ThumbnailData thumbnail) {
+        Preconditions.assertUIThread();
+        mCache.updateIfAlreadyInCache(taskId, thumbnail);
+    }
 
     /**
      * Asynchronously fetches the icon and other task data for the given {@param task}.
@@ -120,22 +128,33 @@ public class TaskThumbnailCache {
      * @param callback The callback to receive the task after its data has been populated.
      * @return A cancelable handle to the request
      */
-    public ThumbnailLoadRequest updateThumbnailInBackground(Task task, boolean reducedResolution,
-            Consumer<Task> callback) {
+    public ThumbnailLoadRequest updateThumbnailInBackground(
+            Task task, Consumer<ThumbnailData> callback) {
         Preconditions.assertUIThread();
 
+        boolean reducedResolution = !mHighResLoadingState.isEnabled();
         if (task.thumbnail != null && (!task.thumbnail.reducedResolution || reducedResolution)) {
             // Nothing to load, the thumbnail is already high-resolution or matches what the
             // request, so just callback
-            callback.accept(task);
+            callback.accept(task.thumbnail);
             return null;
         }
 
-        ThumbnailData cachedThumbnail = mCache.getAndInvalidateIfModified(task.key);
+
+        return updateThumbnailInBackground(task.key, !mHighResLoadingState.isEnabled(), t -> {
+            task.thumbnail = t;
+            callback.accept(t);
+        });
+    }
+
+    private ThumbnailLoadRequest updateThumbnailInBackground(TaskKey key, boolean reducedResolution,
+            Consumer<ThumbnailData> callback) {
+        Preconditions.assertUIThread();
+
+        ThumbnailData cachedThumbnail = mCache.getAndInvalidateIfModified(key);
         if (cachedThumbnail != null && (!cachedThumbnail.reducedResolution || reducedResolution)) {
             // Already cached, lets use that thumbnail
-            task.thumbnail = cachedThumbnail;
-            callback.accept(task);
+            callback.accept(cachedThumbnail);
             return null;
         }
 
@@ -144,14 +163,14 @@ public class TaskThumbnailCache {
             @Override
             public void run() {
                 ThumbnailData thumbnail = ActivityManagerWrapper.getInstance().getTaskThumbnail(
-                        task.key.id, reducedResolution);
+                        key.id, reducedResolution);
                 if (isCanceled()) {
                     // We don't call back to the provided callback in this case
                     return;
                 }
                 mMainThreadExecutor.execute(() -> {
-                    task.thumbnail = thumbnail;
-                    callback.accept(task);
+                    mCache.put(key, thumbnail);
+                    callback.accept(thumbnail);
                     onEnd();
                 });
             }
@@ -194,6 +213,23 @@ public class TaskThumbnailCache {
         ThumbnailLoadRequest(Handler handler, boolean reducedResolution) {
             super(handler, null);
             this.reducedResolution = reducedResolution;
+        }
+    }
+
+    private static class ThumbnailCache extends TaskKeyLruCache<ThumbnailData> {
+
+        public ThumbnailCache(int cacheSize) {
+            super(cacheSize);
+        }
+
+        /**
+         * Updates the cache entry if it is already present in the cache
+         */
+        public void updateIfAlreadyInCache(int taskId, ThumbnailData thumbnailData) {
+            ThumbnailData oldData = getCacheEntry(taskId);
+            if (oldData != null) {
+                putCacheEntry(taskId, thumbnailData);
+            }
         }
     }
 }

@@ -187,6 +187,11 @@ public class LauncherState {
         return new float[] {1, 0, 0};
     }
 
+    public float[] getHotseatScaleAndTranslation(Launcher launcher) {
+        // For most states, treat the hotseat as if it were part of the workspace.
+        return getWorkspaceScaleAndTranslation(launcher);
+    }
+
     /**
      * Returns 2 floats designating how to transition overview:
      *   scale for the current and adjacent pages

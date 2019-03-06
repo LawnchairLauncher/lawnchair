@@ -36,6 +36,8 @@ import android.content.Intent;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -105,6 +107,12 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     // TODO: Start displacement should have both x and y
     private float mStartDisplacement;
 
+    private Handler mMainThreadHandler;
+    private Runnable mCancelRecentsAnimationRunnable = () -> {
+        ActivityManagerWrapper.getInstance().cancelRecentsAnimation(
+                true /* restoreHomeStackPosition */);
+    };
+
     public OtherActivityInputConsumer(Context base, RunningTaskInfo runningTaskInfo,
             RecentsModel recentsModel, Intent homeIntent, ActivityControlHelper activityControl,
             boolean isDeferredDownTarget, OverviewCallbacks overviewCallbacks,
@@ -113,6 +121,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             SwipeSharedState swipeSharedState) {
         super(base);
 
+        mMainThreadHandler = new Handler(Looper.getMainLooper());
         mRunningTask = runningTaskInfo;
         mRecentsModel = recentsModel;
         mHomeIntent = homeIntent;
@@ -136,6 +145,11 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mTouchSlop = NavigationBarCompat.getQuickStepTouchSlopPx();
         // If active listener isn't null, we are continuing the previous gesture.
         mPassedTouchSlop = mPassedDragSlop = mSwipeSharedState.getActiveListener() != null;
+    }
+
+    @Override
+    public int getType() {
+        return TYPE_OTHER_ACTIVITY;
     }
 
     @Override
@@ -216,7 +230,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                             mTouchSlop) {
                         mPassedTouchSlop = true;
 
-                        TOUCH_INTERACTION_LOG.startQuickStep();
+                        TOUCH_INTERACTION_LOG.addLog("startQuickstep");
                         if (mIsDeferredDownTarget) {
                             // Deferred gesture, start the animation and gesture tracking once
                             // we pass the actual touch slop
@@ -279,7 +293,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private void startTouchTrackingForWindowAnimation(long touchTimeMs) {
-        TOUCH_INTERACTION_LOG.startRecentsAnimation();
+        TOUCH_INTERACTION_LOG.addLog("startRecentsAnimation");
 
         RecentsAnimationListenerSet listenerSet = mSwipeSharedState.getActiveListener();
         final WindowTransformSwipeHandler handler = new WindowTransformSwipeHandler(
@@ -328,10 +342,12 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             onConsumerAboutToBeSwitched();
             onInteractionGestureFinished();
 
-            // Also clean up in case the system has handled the UP and canceled the animation before
-            // we had a chance to start the recents animation. In such a case, we will not receive
-            ActivityManagerWrapper.getInstance().cancelRecentsAnimation(
-                    true /* restoreHomeStackPosition */);
+            // Cancel the recents animation if SysUI happens to handle UP before we have a chance
+            // to start the recents animation. In addition, workaround for b/126336729 by delaying
+            // the cancel of the animation for a period, in case SysUI is slow to handle UP and we
+            // handle DOWN & UP and move the home stack before SysUI can start the activity
+            mMainThreadHandler.removeCallbacks(mCancelRecentsAnimationRunnable);
+            mMainThreadHandler.postDelayed(mCancelRecentsAnimationRunnable, 100);
         }
         mVelocityTracker.recycle();
         mVelocityTracker = null;
@@ -341,6 +357,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     @Override
     public void onConsumerAboutToBeSwitched() {
         Preconditions.assertUIThread();
+        mMainThreadHandler.removeCallbacks(mCancelRecentsAnimationRunnable);
         if (mInteractionHandler != null) {
             // The consumer is being switched while we are active. Set up the shared state to be
             // used by the next animation

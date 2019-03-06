@@ -29,7 +29,7 @@
         android:ellipsize="end"
         android:textSize="@dimen/snackbar_max_text_size"
         android:textColor="?android:attr/textColorPrimary"
-        android:theme="@style/TextTitle"/>
+        style="@style/TextTitle"/>
     <TextView
         android:id="@+id/action"
         android:layout_height="@dimen/snackbar_content_height"
@@ -42,6 +42,6 @@
         android:textStyle="bold"
         android:textSize="@dimen/snackbar_max_text_size"
         android:textColor="?android:attr/colorAccent"
-        android:theme="@style/TextTitle"
+        style="@style/TextTitle"
         android:capitalize="sentences"/>
 </merge>

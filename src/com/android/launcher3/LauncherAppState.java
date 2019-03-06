@@ -19,12 +19,14 @@ package com.android.launcher3;
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
 import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
 
+import android.app.KeyguardManager;
 import android.content.ComponentName;
 import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
+import android.os.Process;
 import android.util.Log;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -66,6 +68,9 @@ public class LauncherAppState {
     }
 
     private LauncherAppState(Context context) {
+        if (!UserManagerCompat.getInstance(context).isUserUnlocked(Process.myUserHandle())) {
+            throw new RuntimeException("LauncherAppState should not start in direct boot mode");
+        }
         if (getLocalProvider(context) == null) {
             throw new RuntimeException(
                     "Initializing LauncherAppState in the absence of LauncherProvider");
