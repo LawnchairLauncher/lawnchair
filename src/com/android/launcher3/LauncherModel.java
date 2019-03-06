@@ -34,7 +34,6 @@ import android.util.Pair;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
@@ -205,57 +204,6 @@ public class LauncherModel extends BroadcastReceiver
     public ModelWriter getWriter(boolean hasVerticalHotseat, boolean verifyChanges) {
         return new ModelWriter(mApp.getContext(), this, sBgDataModel,
                 hasVerticalHotseat, verifyChanges);
-    }
-
-    static void checkItemInfoLocked(
-            final int itemId, final ItemInfo item, StackTraceElement[] stackTrace) {
-        ItemInfo modelItem = sBgDataModel.itemsIdMap.get(itemId);
-        if (modelItem != null && item != modelItem) {
-            // If it is a release build on a release device, check all the data is consistent as
-            // we don't want to crash non-dev users.
-            if (!Utilities.IS_DEBUG_DEVICE && !FeatureFlags.IS_DOGFOOD_BUILD &&
-                    modelItem instanceof ShortcutInfo && item instanceof ShortcutInfo) {
-                if (modelItem.title.toString().equals(item.title.toString()) &&
-                        modelItem.getIntent().filterEquals(item.getIntent()) &&
-                        modelItem.id == item.id &&
-                        modelItem.itemType == item.itemType &&
-                        modelItem.container == item.container &&
-                        modelItem.screenId == item.screenId &&
-                        modelItem.cellX == item.cellX &&
-                        modelItem.cellY == item.cellY &&
-                        modelItem.spanX == item.spanX &&
-                        modelItem.spanY == item.spanY) {
-                    // For all intents and purposes, this is the same object
-                    return;
-                }
-            }
-
-            // the modelItem needs to match up perfectly with item if our model is
-            // to be consistent with the database-- for now, just require
-            // modelItem == item or the equality check above
-            String msg = "item: " + ((item != null) ? item.toString() : "null") +
-                    "modelItem: " +
-                    ((modelItem != null) ? modelItem.toString() : "null") +
-                    "Error: ItemInfo passed to checkItemInfo doesn't match original";
-            RuntimeException e = new RuntimeException(msg);
-            if (stackTrace != null) {
-                e.setStackTrace(stackTrace);
-            }
-            throw e;
-        }
-    }
-
-    static void checkItemInfo(final ItemInfo item) {
-        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-        final int itemId = item.id;
-        Runnable r = new Runnable() {
-            public void run() {
-                synchronized (sBgDataModel) {
-                    checkItemInfoLocked(itemId, item, stackTrace);
-                }
-            }
-        };
-        runOnWorkerThread(r);
     }
 
     /**
