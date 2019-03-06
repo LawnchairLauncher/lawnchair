@@ -13,54 +13,19 @@
 // limitations under the License.
 
 java_library_static {
-    name: "launcher-log-proto-nano",
-    proto: {
-        type: "nano",
-	output_params: [
-	    "store_unknown_fields=true",
-	    "enum_style=java",
-	],
-	local_include_dirs: [
-	    "protos",
-	    "proto_overrides",
-	],
-    },
-    srcs: [
-        "protos/**/*.proto",
-        "proto_overrides/**/*.proto",
-    ],
-}
-
-android_library{
     name: "launcher-aosp-tapl",
     static_libs: [
         "androidx.annotation_annotation",
-        "androidx.dynamicanimation_dynamicanimation",
-        "androidx.recyclerview_recyclerview",
-        "androidx.preference_preference",
         "androidx.test.runner",
         "androidx.test.rules",
         "androidx.test.uiautomator_uiautomator",
-        "iconloader_base",
-        "launcher-log-proto-nano",
-        "launcherprotosnano",
         "SystemUISharedLib",
     ],
     srcs: [
         "tests/tapl/**/*.java",
-        "quickstep/src/**/*.java",
-        "quickstep/recents_ui_overrides/src/**/*.java",
-        "src/**/*.java",
-        "src_build_config/**/*.java",
-        "src_flags/**/*.java",
-        "src_plugins/**/*.java",
-        "src_shortcuts_overrides/**/*.java",
-    ],
-    dxflags: ["--multi-dex"],
-    resource_dirs: [
-        "res",
-        "quickstep/res",
-        "quickstep/recents_ui_overrides/res",
+        "quickstep/src/com/android/quickstep/SwipeUpSetting.java",
+        "src/com/android/launcher3/util/SecureSettingsObserver.java",
+        "src/com/android/launcher3/TestProtocol.java",
     ],
     platform_apis: true,
 }
