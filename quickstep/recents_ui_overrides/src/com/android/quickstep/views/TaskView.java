@@ -19,6 +19,7 @@ package com.android.quickstep.views;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import static com.android.launcher3.BaseActivity.fromContext;
+import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
@@ -91,7 +92,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     public static final long SCALE_ICON_DURATION = 120;
     private static final long DIM_ANIM_DURATION = 700;
-    private static final long TASK_LAUNCH_ANIM_DURATION = 200;
 
     public static final Property<TaskView, Float> ZOOM_SCALE =
             new FloatProperty<TaskView>("zoomScale") {
@@ -237,10 +237,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     public AnimatorPlaybackController createLaunchAnimationForRunningTask() {
         final PendingAnimation pendingAnimation =
-                getRecentsView().createTaskLauncherAnimation(this, TASK_LAUNCH_ANIM_DURATION);
-        pendingAnimation.anim.setInterpolator(Interpolators.ZOOM_IN);
+                getRecentsView().createTaskLauncherAnimation(this, RECENTS_LAUNCH_DURATION);
+        pendingAnimation.anim.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
         AnimatorPlaybackController currentAnimation = AnimatorPlaybackController
-                .wrap(pendingAnimation.anim, TASK_LAUNCH_ANIM_DURATION, null);
+                .wrap(pendingAnimation.anim, RECENTS_LAUNCH_DURATION, null);
         currentAnimation.setEndAction(() -> {
             pendingAnimation.finish(true, Touch.SWIPE);
             launchTask(false);
