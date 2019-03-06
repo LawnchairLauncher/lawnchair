@@ -23,7 +23,7 @@ import androidx.test.uiautomator.UiObject2;
  * All widgets container.
  */
 public final class Widgets extends LauncherInstrumentation.VisibleContainer {
-    private static final int FLING_SPEED = 6000;
+    private static final int FLING_SPEED = 1500;
 
     Widgets(LauncherInstrumentation launcher) {
         super(launcher);
@@ -36,7 +36,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
     public void flingForward() {
         final UiObject2 widgetsContainer = verifyActiveContainer();
         widgetsContainer.setGestureMargin(100);
-        widgetsContainer.fling(Direction.DOWN, FLING_SPEED);
+        widgetsContainer.fling(Direction.DOWN, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
         verifyActiveContainer();
     }
 
@@ -46,7 +46,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
     public void flingBackward() {
         final UiObject2 widgetsContainer = verifyActiveContainer();
         widgetsContainer.setGestureMargin(100);
-        widgetsContainer.fling(Direction.UP, FLING_SPEED);
+        widgetsContainer.fling(Direction.UP, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
         mLauncher.waitForIdle();
         verifyActiveContainer();
     }

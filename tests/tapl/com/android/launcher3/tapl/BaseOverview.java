@@ -28,7 +28,7 @@ import java.util.List;
  * Common overview pane for both Launcher and fallback recents
  */
 public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
-    private static final int DEFAULT_FLING_SPEED = 15000;
+    private static final int FLING_SPEED = 1500;
     private static final int FLINGS_FOR_DISMISS_LIMIT = 5;
 
     BaseOverview(LauncherInstrumentation launcher) {
@@ -46,7 +46,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     public void flingForward() {
         final UiObject2 overview = verifyActiveContainer();
         LauncherInstrumentation.log("Overview.flingForward before fling");
-        overview.fling(Direction.LEFT, DEFAULT_FLING_SPEED);
+        overview.fling(Direction.LEFT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
         mLauncher.waitForIdle();
         verifyActiveContainer();
     }
@@ -73,7 +73,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     public void flingBackward() {
         final UiObject2 overview = verifyActiveContainer();
         LauncherInstrumentation.log("Overview.flingBackward before fling");
-        overview.fling(Direction.RIGHT, DEFAULT_FLING_SPEED);
+        overview.fling(Direction.RIGHT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
         mLauncher.waitForIdle();
         verifyActiveContainer();
     }
