@@ -18,31 +18,16 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="@dimen/dashboard_tile_image_size"
     android:height="@dimen/dashboard_tile_image_size"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:viewportWidth="32"
+    android:viewportHeight="32">
   <path
-      android:pathData="M12,12m-12,0a12,12 0,1 1,24 0a12,12 0,1 1,-24 0"
-      android:strokeAlpha="0.2"
-      android:fillColor="#1774F5"
-      android:fillAlpha="0.2"/>
+      android:pathData="M16,16m-16,0a16,16 0,1 1,32 0a16,16 0,1 1,-32 0"
+      android:strokeAlpha="0.18"
+      android:fillColor="#6B17F5"
+      android:fillAlpha="0.18"/>
   <path
-      android:pathData="M6,7C6,6.4477 6.4477,6 7,6H10V10H6V7Z"
+      android:pathData="M14,11C14,12.6569 12.6569,14 11,14C9.3432,14 8,12.6569 8,11C8,9.3432 9.3432,8 11,8C12.6569,8 14,9.3432 14,11ZM24,11C24,12.6569 22.6569,14 21,14C19.3431,14 18,12.6569 18,11C18,9.3432 19.3431,8 21,8C22.6569,8 24,9.3432 24,11ZM24,21C24,22.6569 22.6569,24 21,24C19.3431,24 18,22.6569 18,21C18,19.3431 19.3431,18 21,18C22.6569,18 24,19.3431 24,21ZM14,21C14,22.6569 12.6569,24 11,24C9.3432,24 8,22.6569 8,21C8,19.3431 9.3432,18 11,18C12.6569,18 14,19.3431 14,21Z"
       android:strokeWidth="2"
       android:fillColor="#00000000"
-      android:strokeColor="#1774F5"/>
-  <path
-      android:pathData="M14,6H17C17.5523,6 18,6.4477 18,7V10H14V6Z"
-      android:strokeWidth="2"
-      android:fillColor="#00000000"
-      android:strokeColor="#1774F5"/>
-  <path
-      android:pathData="M14,14H18V17C18,17.5523 17.5523,18 17,18H14V14Z"
-      android:strokeWidth="2"
-      android:fillColor="#00000000"
-      android:strokeColor="#1774F5"/>
-  <path
-      android:pathData="M6,14H10V18H7C6.4477,18 6,17.5523 6,17V14Z"
-      android:strokeWidth="2"
-      android:fillColor="#00000000"
-      android:strokeColor="#1774F5"/>
+      android:strokeColor="#6B17F5"/>
 </vector>

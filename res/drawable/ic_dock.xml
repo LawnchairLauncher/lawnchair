@@ -18,18 +18,20 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="@dimen/dashboard_tile_image_size"
     android:height="@dimen/dashboard_tile_image_size"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:viewportWidth="32"
+    android:viewportHeight="32">
   <path
-      android:pathData="M12,12m-12,0a12,12 0,1 1,24 0a12,12 0,1 1,-24 0"
-      android:strokeAlpha="0.2"
-      android:fillColor="#1774F5"
-      android:fillAlpha="0.2"/>
+      android:pathData="M16,16m-16,0a16,16 0,1 1,32 0a16,16 0,1 1,-32 0"
+      android:strokeAlpha="0.18"
+      android:fillColor="#6B17F5"
+      android:fillAlpha="0.18"/>
   <path
-      android:pathData="M7,14h10v2h-10z"
-      android:fillColor="#1774F5"/>
+      android:pathData="M9.636,15.864L16,9.5L22.364,15.864"
+      android:strokeWidth="2"
+      android:fillColor="#00000000"
+      android:strokeColor="#6B17F5"
+      android:strokeLineCap="round"/>
   <path
-      android:pathData="M6.9411,12H8.5589L11.2929,9.266C11.6834,8.8755 12.3166,8.8755 12.7071,9.266L15.4411,12H17.0589L17.0589,10.7893L14.1213,7.8518C12.9498,6.6802 11.0503,6.6802 9.8787,7.8518L6.9411,10.7893V12Z"
-      android:fillColor="#1774F5"
-      android:fillType="evenOdd"/>
+      android:pathData="M11,20L21,20A1,1 0,0 1,22 21L22,21A1,1 0,0 1,21 22L11,22A1,1 0,0 1,10 21L10,21A1,1 0,0 1,11 20z"
+      android:fillColor="#6B17F5"/>
 </vector>

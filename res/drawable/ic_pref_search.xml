@@ -18,20 +18,15 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="@dimen/dashboard_tile_image_size"
     android:height="@dimen/dashboard_tile_image_size"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:viewportWidth="32"
+    android:viewportHeight="32">
   <path
-      android:pathData="M12,12m-12,0a12,12 0,1 1,24 0a12,12 0,1 1,-24 0"
-      android:strokeAlpha="0.2"
-      android:fillColor="#1774F5"
-      android:fillAlpha="0.2"/>
+      android:pathData="M16,16m-16,0a16,16 0,1 1,32 0a16,16 0,1 1,-32 0"
+      android:strokeAlpha="0.18"
+      android:fillColor="#6B17F5"
+      android:fillAlpha="0.18"/>
   <path
-      android:pathData="M11,11m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0"
-      android:strokeWidth="2"
-      android:fillColor="#00000000"
-      android:strokeColor="#1774F5"/>
-  <path
-      android:pathData="M14.4718,13.0576L18,16.5858V18H16.5858L13.0576,14.4718L14.4718,13.0576Z"
-      android:fillColor="#1774F5"
+      android:pathData="M18.4142,11.3431C20.3668,13.2958 20.3668,16.4616 18.4142,18.4142C16.4616,20.3668 13.2958,20.3668 11.3431,18.4142C9.3905,16.4616 9.3905,13.2958 11.3431,11.3431C13.2958,9.3905 16.4616,9.3905 18.4142,11.3431ZM20.4854,19.0712C22.541,16.3294 22.322,12.4225 19.8284,9.9289C17.0948,7.1953 12.6626,7.1953 9.9289,9.9289C7.1953,12.6626 7.1953,17.0948 9.9289,19.8284C12.4225,22.322 16.3294,22.541 19.0712,20.4854L22.6569,24.0711C23.0474,24.4616 23.6805,24.4616 24.0711,24.0711C24.4616,23.6805 24.4616,23.0474 24.0711,22.6569L20.4854,19.0712Z"
+      android:fillColor="#6B17F5"
       android:fillType="evenOdd"/>
 </vector>
