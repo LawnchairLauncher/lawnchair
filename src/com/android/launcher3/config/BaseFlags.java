@@ -102,7 +102,7 @@ abstract class BaseFlags {
             false, "Enable springs for quickstep animations");
 
     public static final TogglableFlag ADAPTIVE_ICON_WINDOW_ANIM = new TogglableFlag(
-            "ADAPTIVE_ICON_WINDOW_ANIM", false,
+            "ADAPTIVE_ICON_WINDOW_ANIM", true,
             "Use adaptive icons for window animations.");
 
     public static final TogglableFlag ENABLE_QUICKSTEP_LIVE_TILE = new TogglableFlag(

@@ -29,11 +29,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
+import android.os.UserHandle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -102,9 +102,10 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         final RecentsView recentsView = activity.getOverviewPanel();
         final TaskView runningTaskView = recentsView.getRunningTaskView();
         final View workspaceView;
-        if (runningTaskView != null) {
-            ComponentName component = runningTaskView.getTask().key.sourceComponent;
-            workspaceView = activity.getWorkspace().getFirstMatchForAppClose(component);
+        if (runningTaskView != null && runningTaskView.getTask().key.getComponent() != null) {
+            workspaceView = activity.getWorkspace().getFirstMatchForAppClose(
+                    runningTaskView.getTask().key.getComponent().getPackageName(),
+                    UserHandle.of(runningTaskView.getTask().key.userId));
         } else {
             workspaceView = null;
         }
