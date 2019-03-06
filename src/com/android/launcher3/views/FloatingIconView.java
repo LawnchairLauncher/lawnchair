@@ -35,6 +35,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.InsettableFrameLayout.LayoutParams;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -81,7 +82,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
 
     private final Rect mFinalDrawableBounds = new Rect();
     private final Rect mBgDrawableBounds = new Rect();
-    private final float mBgDrawableStartScale = 5f; // Magic number that can be tuned later.
+    private float mBgDrawableStartScale = 1f;
 
     private FloatingIconView(Context context) {
         super(context);
@@ -188,12 +189,19 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
     private void getIcon(Launcher launcher, View v, ItemInfo info, boolean useDrawableAsIs,
             float aspectRatio) {
         final LayoutParams lp = (LayoutParams) getLayoutParams();
-        mDrawable = Utilities.getFullDrawable(launcher, info, lp.width, lp.height, useDrawableAsIs,
-                new Object[1]);
 
-        if (ADAPTIVE_ICON_WINDOW_ANIM.get() && !useDrawableAsIs
-                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-                && mDrawable instanceof AdaptiveIconDrawable) {
+        boolean supportsAdaptiveIcons = ADAPTIVE_ICON_WINDOW_ANIM.get() && !useDrawableAsIs
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+        if (!supportsAdaptiveIcons && v instanceof BubbleTextView) {
+            // Similar to DragView, we simply use the BubbleTextView icon here.
+            mDrawable = ((BubbleTextView) v).getIcon();
+        }
+        if (mDrawable == null) {
+            mDrawable = Utilities.getFullDrawable(launcher, info, lp.width, lp.height,
+                    useDrawableAsIs, new Object[1]);
+        }
+
+        if (supportsAdaptiveIcons && mDrawable instanceof AdaptiveIconDrawable) {
             mIsAdaptiveIcon = true;
 
             AdaptiveIconDrawable adaptiveIcon = (AdaptiveIconDrawable) mDrawable;
@@ -227,8 +235,9 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
                 lp.height = (int) Math.max(lp.height, lp.width * aspectRatio);
                 layout(lp.leftMargin, lp.topMargin, lp.leftMargin + lp.width, lp.topMargin
                         + lp.height);
-                setBackgroundDrawableBounds(mBgDrawableStartScale);
             }
+            mBgDrawableStartScale = (float) lp.height / mOriginalHeight;
+            setBackgroundDrawableBounds(mBgDrawableStartScale);
 
             // Set up outline
             mOutline.set(0, 0, lp.width, lp.height);
@@ -252,6 +261,9 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
     private void setBackgroundDrawableBounds(float scale) {
         mBgDrawableBounds.set(mFinalDrawableBounds);
         Utilities.scaleRectAboutCenter(mBgDrawableBounds, scale);
+        // Since the drawable is at the top of the view, we need to offset to keep it centered.
+        mBgDrawableBounds.offsetTo(mBgDrawableBounds.left,
+                (int) (mFinalDrawableBounds.top * scale));
         mBackground.setBounds(mBgDrawableBounds);
     }
 
