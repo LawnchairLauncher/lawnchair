@@ -30,4 +30,7 @@ public final class TestProtocol {
     public static final int OVERVIEW_STATE_ORDINAL = 2;
     public static final int ALL_APPS_STATE_ORDINAL = 3;
     public static final int BACKGROUND_APP_STATE_ORDINAL = 4;
+
+    public static final String IS_TEST_INFO_ENABLED = "is-test-info-enabled";
+    public static final String TEST_INFO_RESPONSE_FIELD = "response";
 }
