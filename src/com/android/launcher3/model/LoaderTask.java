@@ -366,13 +366,13 @@ public class LoaderTask implements Runnable {
                             ComponentName cn = intent.getComponent();
                             targetPkg = cn == null ? intent.getPackage() : cn.getPackageName();
 
-                            if (!Process.myUserHandle().equals(c.user)) {
+                            if (allUsers.indexOfValue(c.user) < 0) {
                                 if (c.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
-                                    c.markDeleted("Legacy shortcuts are only allowed for default user");
+                                    c.markDeleted("Legacy shortcuts are only allowed for current users");
                                     continue;
                                 } else if (c.restoreFlag != 0) {
                                     // Don't restore items for other profiles.
-                                    c.markDeleted("Restore from managed profile not supported");
+                                    c.markDeleted("Restore from other profiles not supported");
                                     continue;
                                 }
                             }

@@ -41,11 +41,27 @@ public class RestoreDbTaskTest {
         // Verify item add
         assertEquals(5, getCount(db, "select * from favorites where profileId = 42"));
 
-        new RestoreDbTask().migrateProfileId(db, 33);
+        new RestoreDbTask().migrateProfileId(db, 42, 33);
 
         // verify data migrated
         assertEquals(0, getCount(db, "select * from favorites where profileId = 42"));
         assertEquals(5, getCount(db, "select * from favorites where profileId = 33"));
+    }
+
+    @Test
+    public void testChangeDefaultColumn() throws Exception {
+        SQLiteDatabase db = new MyDatabaseHelper(42).getWritableDatabase();
+        // Add some dummy data
+        for (int i = 0; i < 5; i++) {
+            ContentValues values = new ContentValues();
+            values.put(Favorites._ID, i);
+            values.put(Favorites.TITLE, "item " + i);
+            db.insert(Favorites.TABLE_NAME, null, values);
+        }
+        // Verify item add
+        assertEquals(5, getCount(db, "select * from favorites where profileId = 42"));
+
+        new RestoreDbTask().changeDefaultColumn(db, 33);
 
         // Verify default value changed
         ContentValues values = new ContentValues();
