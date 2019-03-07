@@ -40,7 +40,6 @@ public class MotionPauseDetector {
     private final float mSpeedSomewhatFast;
     private final float mSpeedFast;
     private final float mMinDisplacementForPause;
-    private final float mMaxOrthogonalDisplacementForPause;
     private final Alarm mForcePauseTimeout;
 
     private Long mPreviousTime = null;
@@ -62,8 +61,6 @@ public class MotionPauseDetector {
         mSpeedSomewhatFast = res.getDimension(R.dimen.motion_pause_detector_speed_somewhat_fast);
         mSpeedFast = res.getDimension(R.dimen.motion_pause_detector_speed_fast);
         mMinDisplacementForPause = res.getDimension(R.dimen.motion_pause_detector_min_displacement);
-        mMaxOrthogonalDisplacementForPause = res.getDimension(
-                R.dimen.motion_pause_detector_max_orthogonal_displacement);
         mForcePauseTimeout = new Alarm();
         mForcePauseTimeout.setOnAlarmListener(alarm -> updatePaused(true /* isPaused */));
     }
@@ -77,7 +74,6 @@ public class MotionPauseDetector {
         if (mOnMotionPauseListener != null) {
             mOnMotionPauseListener.onMotionPauseChanged(mIsPaused);
         }
-        mForcePauseTimeout.setAlarm(FORCE_PAUSE_TIMEOUT);
     }
 
     /**
@@ -94,6 +90,7 @@ public class MotionPauseDetector {
         if (mFirstOrthogonalPosition == null) {
             mFirstOrthogonalPosition = orthogonalPosition;
         }
+        mForcePauseTimeout.setAlarm(FORCE_PAUSE_TIMEOUT);
         long time = SystemClock.uptimeMillis();
         if (mPreviousTime != null && mPreviousPosition != null) {
             long changeInTime = Math.max(1, time - mPreviousTime);
@@ -108,7 +105,6 @@ public class MotionPauseDetector {
         }
         mPreviousTime = time;
         mPreviousPosition = position;
-        mForcePauseTimeout.setAlarm(FORCE_PAUSE_TIMEOUT);
     }
 
     private void checkMotionPaused(float velocity, float prevVelocity,
@@ -135,9 +131,11 @@ public class MotionPauseDetector {
             }
         }
         boolean passedMinDisplacement = totalDisplacement.primary >= mMinDisplacementForPause;
-        boolean passedMaxOrthogonalDisplacement =
-                totalDisplacement.orthogonal >= mMaxOrthogonalDisplacementForPause;
-        isPaused &= passedMinDisplacement && !passedMaxOrthogonalDisplacement;
+        boolean isDisplacementOrthogonal = totalDisplacement.orthogonal > totalDisplacement.primary;
+        if (!passedMinDisplacement || isDisplacementOrthogonal) {
+            mForcePauseTimeout.cancelAlarm();
+            isPaused = false;
+        }
         updatePaused(isPaused);
     }
 

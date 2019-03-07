@@ -38,6 +38,15 @@
             android:theme="@style/HomeScreenElementTheme"
             launcher:pageIndicator="@+id/page_indicator" />
 
+        <!-- DO NOT CHANGE THE ID -->
+        <com.android.launcher3.Hotseat
+            android:id="@+id/hotseat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:theme="@style/HomeScreenElementTheme"
+            android:importantForAccessibility="no"
+            launcher:containerType="hotseat" />
+
         <include
             android:id="@+id/overview_panel"
             layout="@layout/overview_panel"
@@ -70,15 +79,6 @@
             layout="@layout/all_apps"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
-        <!-- DO NOT CHANGE THE ID -->
-        <com.android.launcher3.Hotseat
-            android:id="@+id/hotseat"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:theme="@style/HomeScreenElementTheme"
-            android:importantForAccessibility="no"
-            launcher:containerType="hotseat" />
 
     </com.android.launcher3.dragndrop.DragLayer>
 

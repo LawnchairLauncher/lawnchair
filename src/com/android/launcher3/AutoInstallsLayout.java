@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.content.res.XmlResourceParser;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -33,9 +32,11 @@ import android.os.Bundle;
 import android.os.Process;
 import android.text.TextUtils;
 import android.util.ArrayMap;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
 import android.util.Patterns;
+import android.util.Xml;
 
 import com.android.launcher3.LauncherProvider.SqlArguments;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -149,9 +150,6 @@ public class AutoInstallsLayout {
     private static final String HOTSEAT_CONTAINER_NAME =
             Favorites.containerToString(Favorites.CONTAINER_HOTSEAT);
 
-    private static final String ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE =
-            "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
-
     @Thunk final Context mContext;
     @Thunk final AppWidgetHost mAppWidgetHost;
     protected final LayoutParserCallback mCallback;
@@ -207,7 +205,7 @@ public class AutoInstallsLayout {
      */
     protected int parseLayout(int layoutId, IntArray screenIds)
             throws XmlPullParserException, IOException {
-        XmlResourceParser parser = mSourceRes.getXml(layoutId);
+        XmlPullParser parser = mSourceRes.getXml(layoutId);
         beginDocument(parser, mRootTag);
         final int depth = parser.getDepth();
         int type;
@@ -228,7 +226,7 @@ public class AutoInstallsLayout {
      * Parses container and screenId attribute from the current tag, and puts it in the out.
      * @param out array of size 2.
      */
-    protected void parseContainerAndScreen(XmlResourceParser parser, int[] out) {
+    protected void parseContainerAndScreen(XmlPullParser parser, int[] out) {
         if (HOTSEAT_CONTAINER_NAME.equals(getAttributeValue(parser, ATTR_CONTAINER))) {
             out[0] = Favorites.CONTAINER_HOTSEAT;
             // Hack: hotseat items are stored using screen ids
@@ -243,7 +241,7 @@ public class AutoInstallsLayout {
      * Parses the current node and returns the number of elements added.
      */
     protected int parseAndAddNode(
-            XmlResourceParser parser, ArrayMap<String, TagParser> tagParserMap, IntArray screenIds)
+            XmlPullParser parser, ArrayMap<String, TagParser> tagParserMap, IntArray screenIds)
         throws XmlPullParserException, IOException {
 
         if (TAG_INCLUDE.equals(parser.getName())) {
@@ -324,7 +322,7 @@ public class AutoInstallsLayout {
          * Parses the tag and adds to the db
          * @return the id of the row added or -1;
          */
-        int parseAndAdd(XmlResourceParser parser)
+        int parseAndAdd(XmlPullParser parser)
                 throws XmlPullParserException, IOException;
     }
 
@@ -334,7 +332,7 @@ public class AutoInstallsLayout {
     protected class AppShortcutParser implements TagParser {
 
         @Override
-        public int parseAndAdd(XmlResourceParser parser) {
+        public int parseAndAdd(XmlPullParser parser) {
             final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
             final String className = getAttributeValue(parser, ATTR_CLASS_NAME);
 
@@ -371,7 +369,7 @@ public class AutoInstallsLayout {
         /**
          * Helper method to allow extending the parser capabilities
          */
-        protected int invalidPackageOrClass(XmlResourceParser parser) {
+        protected int invalidPackageOrClass(XmlPullParser parser) {
             Log.w(TAG, "Skipping invalid <favorite> with no component");
             return -1;
         }
@@ -383,7 +381,7 @@ public class AutoInstallsLayout {
     protected class AutoInstallParser implements TagParser {
 
         @Override
-        public int parseAndAdd(XmlResourceParser parser) {
+        public int parseAndAdd(XmlPullParser parser) {
             final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
             final String className = getAttributeValue(parser, ATTR_CLASS_NAME);
             if (TextUtils.isEmpty(packageName) || TextUtils.isEmpty(className)) {
@@ -414,7 +412,7 @@ public class AutoInstallsLayout {
         }
 
         @Override
-        public int parseAndAdd(XmlResourceParser parser) {
+        public int parseAndAdd(XmlPullParser parser) {
             final int titleResId = getAttributeResourceValue(parser, ATTR_TITLE, 0);
             final int iconId = getAttributeResourceValue(parser, ATTR_ICON, 0);
 
@@ -449,7 +447,7 @@ public class AutoInstallsLayout {
                     intent, Favorites.ITEM_TYPE_SHORTCUT);
         }
 
-        protected Intent parseIntent(XmlResourceParser parser) {
+        protected Intent parseIntent(XmlPullParser parser) {
             final String url = getAttributeValue(parser, ATTR_URL);
             if (TextUtils.isEmpty(url) || !Patterns.WEB_URL.matcher(url).matches()) {
                 if (LOGD) Log.d(TAG, "Ignoring shortcut, invalid url: " + url);
@@ -470,7 +468,7 @@ public class AutoInstallsLayout {
     protected class PendingWidgetParser implements TagParser {
 
         @Override
-        public int parseAndAdd(XmlResourceParser parser)
+        public int parseAndAdd(XmlPullParser parser)
                 throws XmlPullParserException, IOException {
             final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
             final String className = getAttributeValue(parser, ATTR_CLASS_NAME);
@@ -541,7 +539,7 @@ public class AutoInstallsLayout {
         }
 
         @Override
-        public int parseAndAdd(XmlResourceParser parser)
+        public int parseAndAdd(XmlPullParser parser)
                 throws XmlPullParserException, IOException {
             final String title;
             final int titleResId = getAttributeResourceValue(parser, ATTR_TITLE, 0);
@@ -649,7 +647,7 @@ public class AutoInstallsLayout {
      * Return attribute value, attempting launcher-specific namespace first
      * before falling back to anonymous attribute.
      */
-    protected static String getAttributeValue(XmlResourceParser parser, String attribute) {
+    protected static String getAttributeValue(XmlPullParser parser, String attribute) {
         String value = parser.getAttributeValue(
                 "http://schemas.android.com/apk/res-auto/com.android.launcher3", attribute);
         if (value == null) {
@@ -662,13 +660,14 @@ public class AutoInstallsLayout {
      * Return attribute resource value, attempting launcher-specific namespace
      * first before falling back to anonymous attribute.
      */
-    protected static int getAttributeResourceValue(XmlResourceParser parser, String attribute,
+    protected static int getAttributeResourceValue(XmlPullParser parser, String attribute,
             int defaultValue) {
-        int value = parser.getAttributeResourceValue(
+        AttributeSet attrs = Xml.asAttributeSet(parser);
+        int value = attrs.getAttributeResourceValue(
                 "http://schemas.android.com/apk/res-auto/com.android.launcher3", attribute,
                 defaultValue);
         if (value == defaultValue) {
-            value = parser.getAttributeResourceValue(null, attribute, defaultValue);
+            value = attrs.getAttributeResourceValue(null, attribute, defaultValue);
         }
         return value;
     }

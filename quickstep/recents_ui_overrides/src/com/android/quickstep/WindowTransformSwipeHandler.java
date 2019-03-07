@@ -671,7 +671,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         initTransitionEndpoints(dp);
 
         mRecentsAnimationWrapper.setController(targetSet);
-        TOUCH_INTERACTION_LOG.startRecentsAnimationCallback(targetSet.apps.length);
+        TOUCH_INTERACTION_LOG.addLog("startRecentsAnimationCallback", targetSet.apps.length);
         setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
 
         mPassedOverviewThreshold = false;
@@ -682,7 +682,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         mRecentsAnimationWrapper.setController(null);
         mActivityInitListener.unregister();
         setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);
-        TOUCH_INTERACTION_LOG.cancelRecentsAnimation();
+        TOUCH_INTERACTION_LOG.addLog("cancelRecentsAnimation");
     }
 
     @UiThread
@@ -972,27 +972,36 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         final RectF currentRect = new RectF();
 
         final View floatingView = homeAnimationFactory.getFloatingView();
+        final boolean isFloatingIconView = floatingView instanceof FloatingIconView;
+
         ValueAnimator anim = ValueAnimator.ofFloat(0, 1);
-        if (floatingView instanceof FloatingIconView) {
+        if (isFloatingIconView) {
             anim.addListener((FloatingIconView) floatingView);
         }
+
+        // We want the window alpha to be 0 once this threshold is met, so that the
+        // FolderIconView can be seen morphing into the icon shape.
+        final float windowAlphaThreshold = isFloatingIconView ? 0.75f : 1f;
         anim.addUpdateListener(animation -> {
             float progress = animation.getAnimatedFraction();
-            float interpolatedProgress = Interpolators.ACCEL_2.getInterpolation(progress);
+            float interpolatedProgress = Interpolators.ACCEL_1_5.getInterpolation(progress);
             // Initially go towards original target (task view in recents),
             // but accelerate towards the final target.
             // TODO: This is technically not correct. Instead, motion should continue at
             // the released velocity but accelerate towards the target.
             targetRect.set(rectFEvaluator.evaluate(interpolatedProgress,
                     originalTarget, finalTarget));
-            currentRect.set(rectFEvaluator.evaluate(progress, startRect, targetRect));
-            float alpha = 1 - interpolatedProgress;
-            mTransformParams.setCurrentRectAndTargetAlpha(currentRect, alpha)
+            currentRect.set(rectFEvaluator.evaluate(interpolatedProgress, startRect, targetRect));
+
+            float iconAlpha = Utilities.mapToRange(interpolatedProgress, 0,
+                    windowAlphaThreshold, 0f, 1f, Interpolators.LINEAR);
+            mTransformParams.setCurrentRectAndTargetAlpha(currentRect, 1f - iconAlpha)
                     .setSyncTransactionApplier(mSyncTransactionApplier);
             mClipAnimationHelper.applyTransform(targetSet, mTransformParams);
 
-            if (floatingView instanceof FloatingIconView) {
-                ((FloatingIconView) floatingView).update(currentRect, 1f - alpha);
+            if (isFloatingIconView) {
+                ((FloatingIconView) floatingView).update(currentRect, iconAlpha, progress,
+                        windowAlphaThreshold);
             }
         });
         anim.addListener(new AnimationSuccessListener() {
@@ -1016,7 +1025,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     @UiThread
     private void resumeLastTask() {
         mRecentsAnimationWrapper.finish(false /* toRecents */, null);
-        TOUCH_INTERACTION_LOG.finishRecentsAnimation(false);
+        TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", false);
     }
 
     @UiThread
@@ -1034,7 +1043,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                         mMainThreadHandler);
             });
         }
-        TOUCH_INTERACTION_LOG.finishRecentsAnimation(false);
+        TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", false);
         doLogGesture(NEW_TASK);
     }
 
@@ -1143,7 +1152,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                         () -> setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
             }
         }
-        TOUCH_INTERACTION_LOG.finishRecentsAnimation(true);
+        TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", true);
     }
 
     private void finishCurrentTransitionToHome() {
@@ -1151,7 +1160,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             mRecentsAnimationWrapper.finish(true /* toRecents */,
                     () -> setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
         }
-        TOUCH_INTERACTION_LOG.finishRecentsAnimation(true);
+        TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", true);
         doLogGesture(HOME);
     }
 

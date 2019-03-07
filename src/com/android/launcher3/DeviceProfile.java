@@ -611,6 +611,12 @@ public class DeviceProfile {
         outBounds.right = outBounds.left + (getCellSize().x * spanX);
     }
 
+    public float getAspectRatioWithInsets() {
+        int w = widthPx - mInsets.left - mInsets.right;
+        int h = heightPx - mInsets.top - mInsets.bottom;
+        return ((float) Math.max(w, h)) / Math.min(w, h);
+    }
+
     private static Context getContext(Context c, int orientation) {
         Configuration context = new Configuration(c.getResources().getConfiguration());
         context.orientation = orientation;

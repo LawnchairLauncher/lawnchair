@@ -15,14 +15,24 @@
  */
 package com.android.quickstep.views;
 
+import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.view.ViewDebug;
 import android.widget.FrameLayout;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.launcher3.R;
+import com.android.quickstep.TaskAdapter;
+import com.android.quickstep.TaskListLoader;
+
 /**
- * Root view for the icon recents view.
+ * Root view for the icon recents view. Acts as the main interface to the rest of the Launcher code
+ * base.
  */
 public final class IconRecentsView extends FrameLayout {
 
@@ -45,6 +55,11 @@ public final class IconRecentsView extends FrameLayout {
                 @Override
                 public void setValue(IconRecentsView view, float v) {
                     ALPHA.set(view, v);
+                    if (view.getVisibility() != VISIBLE && v > 0) {
+                        view.setVisibility(VISIBLE);
+                    } else if (view.getVisibility() != GONE && v == 0){
+                        view.setVisibility(GONE);
+                    }
                 }
 
                 @Override
@@ -58,10 +73,44 @@ public final class IconRecentsView extends FrameLayout {
      * is top aligned and 0.5 is centered vertically.
      */
     @ViewDebug.ExportedProperty(category = "launcher")
+
+    private final Context mContext;
+
     private float mTranslationYFactor;
+    private TaskAdapter mTaskAdapter;
+    private RecyclerView mTaskRecyclerView;
+    private TaskListLoader mTaskLoader;
 
     public IconRecentsView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        mTaskLoader = new TaskListLoader(mContext);
+        mTaskAdapter = new TaskAdapter(mTaskLoader);
+        mTaskRecyclerView = findViewById(R.id.recent_task_recycler_view);
+        mTaskRecyclerView.setAdapter(mTaskAdapter);
+        mTaskRecyclerView.setLayoutManager(
+                new LinearLayoutManager(mContext, VERTICAL, true /* reverseLayout */));
+    }
+
+    /**
+     * Logic for when we know we are going to overview/recents and will be putting up the recents
+     * view. This should be used to prepare recents (e.g. load any task data, etc.) before it
+     * becomes visible.
+     *
+     * TODO: Hook this up for fallback recents activity as well
+     */
+    public void onBeginTransitionToOverview() {
+        // Load any task changes
+        mTaskLoader.loadTaskList(tasks -> {
+            // TODO: Put up some loading UI while task content is loading. May have to do something
+            // smarter when animating from app to overview.
+            mTaskAdapter.notifyDataSetChanged();
+        });
     }
 
     public void setTranslationYFactor(float translationFactor) {

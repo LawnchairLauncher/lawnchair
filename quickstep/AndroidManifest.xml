@@ -38,7 +38,8 @@
 
         <service
             android:name="com.android.quickstep.TouchInteractionService"
-            android:permission="android.permission.STATUS_BAR_SERVICE" >
+            android:permission="android.permission.STATUS_BAR_SERVICE"
+            android:directBootAware="true" >
             <intent-filter>
                 <action android:name="android.intent.action.QUICKSTEP_SERVICE" />
             </intent-filter>

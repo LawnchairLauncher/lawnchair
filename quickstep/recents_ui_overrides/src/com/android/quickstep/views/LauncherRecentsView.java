@@ -42,9 +42,10 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.util.PendingAnimation;
+import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.OverviewInteractionState;
-import com.android.quickstep.hints.HintsContainer;
+import com.android.quickstep.hints.ChipsContainer;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.ClipAnimationHelper.TransformParams;
 import com.android.quickstep.util.LayoutUtils;
@@ -77,7 +78,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     private float mTranslationYFactor;
 
     private final TransformParams mTransformParams = new TransformParams();
-    private HintsContainer mHintsContainer;
+    private ChipsContainer mChipsContainer;
 
     public LauncherRecentsView(Context context) {
         this(context, null);
@@ -111,8 +112,9 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mHintsContainer = mActivity.findViewById(R.id.hints);
-        mHintsContainer.setPadding(0, 0, 0, mActivity.getDeviceProfile().chipHintBottomMarginPx);
+        mChipsContainer = mActivity.findViewById(R.id.hints);
+        BaseDragLayer.LayoutParams params = (BaseDragLayer.LayoutParams) mChipsContainer.getLayoutParams();
+        params.bottomMargin = mActivity.getDeviceProfile().chipHintBottomMarginPx;
     }
 
     public void setTranslationYFactor(float translationFactor) {
@@ -131,9 +133,13 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     }
 
     public void setHintVisibility(float v) {
-        if (mHintsContainer != null && ENABLE_HINTS_IN_OVERVIEW.get()) {
-            mHintsContainer.setHintVisibility(v);
+        if (mChipsContainer != null && ENABLE_HINTS_IN_OVERVIEW.get()) {
+            mChipsContainer.setHintVisibility(v);
         }
+    }
+
+    public ChipsContainer getChipsContainer() {
+        return mChipsContainer;
     }
 
     @Override
@@ -192,7 +198,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
 
         if (ENABLE_HINTS_IN_OVERVIEW.get()) {
             anim.anim.play(ObjectAnimator.ofFloat(
-                    mHintsContainer, HintsContainer.HINT_VISIBILITY, 0));
+                    mChipsContainer, ChipsContainer.HINT_VISIBILITY, 0));
         }
 
         return anim;
@@ -206,10 +212,10 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
 
         if (ENABLE_HINTS_IN_OVERVIEW.get()) {
             anim.anim.play(ObjectAnimator.ofFloat(
-                    mHintsContainer, HintsContainer.HINT_VISIBILITY, 0));
+                    mChipsContainer, ChipsContainer.HINT_VISIBILITY, 0));
             anim.addEndListener(onEndListener -> {
                 if (!onEndListener.isSuccess) {
-                    mHintsContainer.setHintVisibility(1);
+                    mChipsContainer.setHintVisibility(1);
                 }
             });
         }
