@@ -18,11 +18,15 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
+import android.content.pm.LauncherActivityInfo
 import android.content.res.ColorStateList
 import android.view.View
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.comparing
+import ch.deletescape.lawnchair.then
 import com.android.launcher3.AppFilter
 import com.android.launcher3.util.ComponentKey
+import java.util.Comparator
 import kotlin.reflect.KMutableProperty0
 
 abstract class SelectableAppsAdapter(context: Context, private val callback: Callback? = null, filter: AppFilter? = null)
@@ -31,12 +35,14 @@ abstract class SelectableAppsAdapter(context: Context, private val callback: Cal
     private val selections = HashSet<ComponentKey>()
     private val accentTintList = ColorStateList.valueOf(ColorEngine.getInstance(context).accent)
 
+    override val comparator = comparing<App, Int> { if (isSelected(it.key)) 0 else 1 }
+            .then { it.info.label.toString().toLowerCase() }
+
     init {
         callback?.onSelectionsChanged(0)
     }
 
     override fun onAppsListLoaded() {
-        selections.addAll(getInitialSelections())
         super.onAppsListLoaded()
         callback?.onSelectionsChanged(selections.size)
     }
@@ -75,6 +81,11 @@ abstract class SelectableAppsAdapter(context: Context, private val callback: Cal
         setSelections(selections)
         callback?.onSelectionsChanged(0)
         notifyDataSetChanged()
+    }
+
+    override fun loadAppsList() {
+        selections.addAll(getInitialSelections())
+        super.loadAppsList()
     }
 
     abstract fun getInitialSelections(): Set<ComponentKey>

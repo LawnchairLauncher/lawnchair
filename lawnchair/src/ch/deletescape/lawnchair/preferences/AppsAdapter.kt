@@ -29,6 +29,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
+import ch.deletescape.lawnchair.comparing
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
@@ -47,6 +48,8 @@ open class AppsAdapter(
     val apps = ArrayList<App>()
 
     val handler = Handler()
+
+    open val comparator = defaultComparator
 
     init {
         Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(::loadAppsList)
@@ -75,8 +78,8 @@ open class AppsAdapter(
 
     protected open fun loadAppsList() {
         apps.addAll(getAppsList(context)
-                .sortedBy { it.label.toString().toLowerCase() }
-                .map { App(context, it) })
+                .map { App(context, it) }
+                .sortedWith(comparator))
         handler.postAtFrontOfQueue(::onAppsListLoaded)
     }
 
@@ -146,5 +149,9 @@ open class AppsAdapter(
     interface Callback {
 
         fun onAppSelected(app: App)
+    }
+
+    companion object {
+        val defaultComparator = comparing<App, String> { it.info.label.toString().toLowerCase() }
     }
 }

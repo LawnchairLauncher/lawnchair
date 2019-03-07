@@ -64,6 +64,7 @@ import com.google.android.apps.nexuslauncher.CustomAppPredictor
 import com.google.android.apps.nexuslauncher.CustomIconUtils
 import org.xmlpull.v1.XmlPullParser
 import java.lang.reflect.Field
+import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import kotlin.math.ceil
@@ -542,3 +543,14 @@ operator fun XmlPullParser.get(namespace: String?, key: String): String? = getAt
 operator fun XmlPullParser.get(key: String): String? = this[null, key]
 
 val Configuration.usingNightMode get() = uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+
+fun <T, U : Comparable<U>> comparing(extractKey: (T) -> U): Comparator<T> {
+    return Comparator { o1, o2 -> extractKey(o1).compareTo(extractKey(o2)) }
+}
+
+fun <T, U : Comparable<U>> Comparator<T>.then(extractKey: (T) -> U): Comparator<T> {
+    return kotlin.Comparator { o1, o2 ->
+        val res = compare(o1, o2)
+        if (res != 0) res else extractKey(o1).compareTo(extractKey(o2))
+    }
+}
