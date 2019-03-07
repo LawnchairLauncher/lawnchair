@@ -16,12 +16,15 @@
 package com.android.quickstep;
 
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
+import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SUPPORTS_WINDOW_CORNERS;
+import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_WINDOW_CORNER_RADIUS;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.HandlerThread;
 import android.os.Process;
 import android.os.RemoteException;
@@ -59,8 +62,8 @@ public class RecentsModel extends TaskStackChangeListener {
     private final TaskIconCache mIconCache;
     private final TaskThumbnailCache mThumbnailCache;
 
-    private float mWindowCornerRadius = -1;
-    private Boolean mSupportsRoundedCornersOnWindows;
+    private float mWindowCornerRadius = 0;
+    private boolean mSupportsRoundedCornersOnWindows;
 
     private RecentsModel(Context context) {
         mContext = context;
@@ -71,6 +74,12 @@ public class RecentsModel extends TaskStackChangeListener {
         mIconCache = new TaskIconCache(context, loaderThread.getLooper());
         mThumbnailCache = new TaskThumbnailCache(context, loaderThread.getLooper());
         ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
+    }
+
+    public void onInitializeSystemUI(Bundle params) {
+        mWindowCornerRadius = params.getFloat(KEY_EXTRA_WINDOW_CORNER_RADIUS, 0);
+        mSupportsRoundedCornersOnWindows =
+                params.getBoolean(KEY_EXTRA_SUPPORTS_WINDOW_CORNERS, false);
     }
 
     public TaskIconCache getIconCache() {
@@ -182,42 +191,10 @@ public class RecentsModel extends TaskStackChangeListener {
     }
 
     public float getWindowCornerRadius() {
-        // The window corner radius is expressed in pixels and won't change if the
-        // display density changes. It's safe to cache the value.
-        if (mWindowCornerRadius == -1) {
-            if (mSystemUiProxy != null) {
-                try {
-                    mWindowCornerRadius = mSystemUiProxy.getWindowCornerRadius();
-                } catch (RemoteException e) {
-                    Log.w(TAG, "Connection to ISystemUIProxy was lost, ignoring window corner "
-                            + "radius");
-                    return 0;
-                }
-            } else {
-                Log.w(TAG, "ISystemUIProxy is null, ignoring window corner radius");
-                return 0;
-            }
-        }
         return mWindowCornerRadius;
     }
 
     public boolean supportsRoundedCornersOnWindows() {
-        if (mSupportsRoundedCornersOnWindows == null) {
-            if (mSystemUiProxy != null) {
-                try {
-                    mSupportsRoundedCornersOnWindows =
-                            mSystemUiProxy.supportsRoundedCornersOnWindows();
-                } catch (RemoteException e) {
-                    Log.w(TAG, "Connection to ISystemUIProxy was lost, ignoring window corner "
-                            + "radius");
-                    return false;
-                }
-            } else {
-                Log.w(TAG, "ISystemUIProxy is null, ignoring window corner radius");
-                return false;
-            }
-        }
-
         return mSupportsRoundedCornersOnWindows;
     }
 

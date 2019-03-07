@@ -89,6 +89,7 @@ public class TouchInteractionService extends Service {
                     .asInterface(bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
             runWhenUserUnlocked(() -> {
                 mRecentsModel.setSystemUiProxy(mISystemUiProxy);
+                mRecentsModel.onInitializeSystemUI(bundle);
                 mOverviewInteractionState.setSystemUiProxy(mISystemUiProxy);
             });
 
@@ -119,6 +120,11 @@ public class TouchInteractionService extends Service {
         @Override
         public void onTip(int actionType, int viewType) {
             mOverviewCommandHelper.onTip(actionType, viewType);
+        }
+
+        @Override
+        public void onAssistantAvailable(boolean available) {
+            mAssistantAvailable = available;
         }
 
         /** Deprecated methods **/
@@ -174,6 +180,7 @@ public class TouchInteractionService extends Service {
     private TaskOverlayFactory mTaskOverlayFactory;
     private InputConsumerController mInputConsumer;
     private SwipeSharedState mSwipeSharedState;
+    private boolean mAssistantAvailable;
 
     private boolean mIsUserUnlocked;
     private List<Runnable> mOnUserUnlockedCallbacks;
@@ -308,7 +315,7 @@ public class TouchInteractionService extends Service {
 
         if (runningTaskInfo == null && !mSwipeSharedState.goingToLauncher) {
             return InputConsumer.NO_OP;
-        } else if (mOverviewInteractionState.isSwipeUpGestureEnabled()
+        } else if (mAssistantAvailable && mOverviewInteractionState.isSwipeUpGestureEnabled()
                 && FeatureFlags.ENABLE_ASSISTANT_GESTURE.get()
                 && AssistantTouchConsumer.withinTouchRegion(this, event.getX())) {
             return new AssistantTouchConsumer(this, mRecentsModel.getSystemUiProxy());
