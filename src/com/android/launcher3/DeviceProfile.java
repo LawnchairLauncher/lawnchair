@@ -326,7 +326,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
             verticalDragHandleSizePx = 0;
 
             updateAvailableDimensions(dm, res);
-        } else {
+        } else if (!isVerticalBarLayout()) {
             int qsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
             verticalDragHandleSizePx *= dockScale;
             int bottomPaddingNew = Math.max((int)(hotseatBarBottomPaddingPx * dockScale), dockSearchBar ? qsbHeight : 0);
