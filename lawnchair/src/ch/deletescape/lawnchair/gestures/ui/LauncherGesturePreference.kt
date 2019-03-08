@@ -17,24 +17,17 @@
 
 package ch.deletescape.lawnchair.gestures.ui
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
-import android.content.res.TypedArray
-import android.preference.DialogPreference
-import android.support.v7.view.ContextThemeWrapper
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.view.View
 import ch.deletescape.lawnchair.gestures.BlankGestureHandler
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
-import ch.deletescape.lawnchair.theme.ThemeOverride
-import com.android.launcher3.R
+import ch.deletescape.lawnchair.preferences.RecyclerViewPreference
 
-class LauncherGesturePreference(context: Context, attrs: AttributeSet?) : DialogPreference(context, attrs) {
+class LauncherGesturePreference(context: Context, attrs: AttributeSet?) : RecyclerViewPreference(context, attrs) {
 
     var value: String? = null
         set(value) {
@@ -42,8 +35,6 @@ class LauncherGesturePreference(context: Context, attrs: AttributeSet?) : Dialog
             notifyChanged()
         }
     var defaultValue = BlankGestureHandler::class.java.name
-    val themeRes = ThemeOverride(ThemeOverride.LauncherDialog(), null).getTheme(context)
-    val themedContext = ContextThemeWrapper(context, themeRes)
     lateinit var onSelectHandler: (GestureHandler) -> Unit
 
     private val blankGestureHandler = BlankGestureHandler(context, null)
@@ -59,25 +50,18 @@ class LauncherGesturePreference(context: Context, attrs: AttributeSet?) : Dialog
         }
     }
 
-    override fun getDialogLayoutResource() = R.layout.dialog_preference_recyclerview
-
     override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
         super.onPrepareDialogBuilder(builder)
 
         builder.setPositiveButton(null, null)
     }
 
-    @SuppressLint("InflateParams")
-    override fun onCreateDialogView(): View {
-        val view = LayoutInflater.from(themedContext).inflate(R.layout.dialog_preference_recyclerview, null)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.list)
+    override fun onBindRecyclerView(recyclerView: RecyclerView) {
         recyclerView.adapter = HandlerListAdapter(themedContext, false, getClassName(), onSelectHandler)
         recyclerView.layoutManager = LinearLayoutManager(themedContext)
-        return view
     }
 
     fun getClassName(): String {
         return GestureController.getClassName(value ?: defaultValue)
     }
-
 }

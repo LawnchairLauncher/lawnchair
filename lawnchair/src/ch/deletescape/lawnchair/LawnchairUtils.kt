@@ -47,6 +47,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Interpolator
+import android.widget.CheckedTextView
 import android.widget.Switch
 import android.widget.TextView
 import ch.deletescape.lawnchair.colors.ColorEngine
@@ -553,4 +554,19 @@ fun <T, U : Comparable<U>> Comparator<T>.then(extractKey: (T) -> U): Comparator<
         val res = compare(o1, o2)
         if (res != 0) res else extractKey(o1).compareTo(extractKey(o2))
     }
+}
+
+fun <E> MutableSet<E>.addOrRemove(obj: E, exists: Boolean): Boolean {
+    if (contains(obj) != exists) {
+        if (exists) add(obj)
+        else remove(obj)
+        return true
+    }
+    return false
+}
+
+fun CheckedTextView.applyAccent() {
+    val tintList = ColorStateList.valueOf(ColorEngine.getInstance(context).accent)
+    compoundDrawableTintList = tintList
+    backgroundTintList = tintList
 }

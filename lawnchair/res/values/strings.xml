@@ -434,4 +434,6 @@
     <string name="rename_tab">Rename tab</string>
     <string name="delete_tab">Delete tab</string>
     <string name="default_tab_name">New tab</string>
+    <string name="show_in_tabs">Show in tabs</string>
+    <string name="tabs_none_selected">None</string>
 </resources>

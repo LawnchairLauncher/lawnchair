@@ -23,6 +23,10 @@
         android:defaultValue="false"
         android:persistent="false"/>
 
+    <ch.deletescape.lawnchair.preferences.MultiSelectTabPreference
+        android:key="pref_show_in_tabs"
+        android:title="@string/show_in_tabs"/>
+
     <ch.deletescape.lawnchair.gestures.ui.LauncherGesturePreference
         android:key="pref_swipe_up_gesture"
         android:title="@string/gesture_swipe_up"/>

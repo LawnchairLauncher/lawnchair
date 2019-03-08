@@ -24,6 +24,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckedTextView
+import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
@@ -48,9 +49,7 @@ class HandlerListAdapter(private val context: Context, isSwipeUp: Boolean, priva
 
         val text = itemView.findViewById<CheckedTextView>(android.R.id.text1)!!.apply {
             setOnClickListener(this@Holder)
-            val tintList = ColorStateList.valueOf(ColorEngine.getInstance(context).accent)
-            compoundDrawableTintList = tintList
-            backgroundTintList = tintList
+            applyAccent()
         }
 
         override fun onClick(v: View) {

@@ -27,10 +27,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -43,8 +42,8 @@ import ch.deletescape.lawnchair.gestures.BlankGestureHandler;
 import ch.deletescape.lawnchair.gestures.GestureHandler;
 import ch.deletescape.lawnchair.gestures.ui.LauncherGesturePreference;
 import ch.deletescape.lawnchair.override.CustomInfoProvider;
+import ch.deletescape.lawnchair.preferences.MultiSelectTabPreference;
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
@@ -160,6 +159,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         private SwitchPreference mPrefHide;
         private SwitchPreference mPrefHidePredictions;
         private LauncherGesturePreference mSwipeUpPref;
+        private MultiSelectTabPreference mTabsPref;
         private LawnchairPreferences prefs;
 
         private ComponentKey mKey;
@@ -191,8 +191,11 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
             Context context = getActivity();
             boolean isApp = itemInfo instanceof AppInfo || itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+
+            PreferenceScreen screen = getPreferenceScreen();
             prefs = Utilities.getLawnchairPrefs(getActivity());
-            mSwipeUpPref = (LauncherGesturePreference) getPreferenceScreen().findPreference("pref_swipe_up_gesture");
+            mSwipeUpPref = (LauncherGesturePreference) screen.findPreference("pref_swipe_up_gesture");
+            mTabsPref = (MultiSelectTabPreference) screen.findPreference("pref_show_in_tabs");
             mKey = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
             mPrefHide = (SwitchPreference) findPreference(PREF_HIDE);
 
@@ -200,7 +203,14 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 mPrefHide.setChecked(CustomAppFilter.isHiddenApp(context, mKey));
                 mPrefHide.setOnPreferenceChangeListener(this);
             } else {
-                getPreferenceScreen().removePreference(mPrefHide);
+                screen.removePreference(mPrefHide);
+            }
+
+            if (!isApp || prefs.getDrawerTabs().getTabs().isEmpty()) {
+                screen.removePreference(mTabsPref);
+            } else {
+                mTabsPref.setComponentKey(mKey);
+                mTabsPref.loadSummary();
             }
 
             if (mProvider != null && mProvider.supportsSwipeUp()) {
@@ -290,6 +300,10 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
                 CustomInfoProvider provider = CustomInfoProvider.Companion.forItem(getActivity(), itemInfo);
                 provider.setSwipeUpAction(itemInfo, stringValue);
+            }
+
+            if (mTabsPref.getEdited()) {
+                prefs.getDrawerTabs().saveToJson();
             }
         }
 
