@@ -391,7 +391,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mTabsController.bindButtons(findViewById(R.id.tabs), mViewPager);
 
         }
-        if (pos == AdapterHolder.WORK) {
+        if (mAH[pos].isWork) {
             BottomUserEducationView.showIfNeeded(mLauncher);
         }
     }
@@ -525,6 +525,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         public AllAppsRecyclerView recyclerView;
         boolean verticalFadingEdge;
 
+        private boolean isWork;
+
         AdapterHolder(boolean isWork) {
             appsList = new AlphabeticalAppsList(mLauncher, mAllAppsStore, isWork);
             adapter = new AllAppsGridAdapter(mLauncher, appsList);
@@ -562,7 +564,12 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
 
         public void setIsWork(boolean isWork) {
+            this.isWork = isWork;
             appsList.setIsWork(isWork);
+        }
+
+        public boolean isWork() {
+            return isWork;
         }
     }
 }
