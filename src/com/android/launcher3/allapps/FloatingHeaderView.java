@@ -87,7 +87,7 @@ public class FloatingHeaderView extends LinearLayout implements
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mTabLayout = findViewById(R.id.tabs);
+        mTabLayout = findViewById(R.id.tabs_scroller);
     }
 
     public void setup(AllAppsContainerView.AdapterHolder[] mAH, boolean tabsHidden) {

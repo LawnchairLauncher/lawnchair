@@ -25,6 +25,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import ch.deletescape.lawnchair.colors.ColorEngine;
@@ -109,13 +110,22 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     }
 
     private void updateIndicatorPosition() {
+        float scaled = mScrollOffset * (getChildCount() - 1);
         int left = -1, right = -1;
-        final View leftTab = getLeftTab();
-        final View rightTab = getRightTab();
+        int leftIndex = (int) Math.floor(scaled);
+        float leftFraction = scaled - leftIndex;
+        float rightFraction = 1 - leftFraction;
+        View leftTab = getChildAt(leftIndex);
+        View rightTab = getChildAt(leftIndex + 1);
         if (leftTab != null && rightTab != null) {
-            int width = rightTab.getRight() - leftTab.getRight();
-            left = (int) (leftTab.getLeft() + width * mScrollOffset);
+            left = (int) (leftTab.getLeft() + leftTab.getWidth() * leftFraction);
+            right = (int) (rightTab.getRight() - (rightTab.getWidth() * rightFraction));
+        } else if (leftTab != null) {
+            left = (int) (leftTab.getLeft() + leftTab.getWidth() * leftFraction);
             right = left + leftTab.getWidth();
+        } else if (rightTab != null) {
+            right = (int) (rightTab.getRight() - (rightTab.getWidth() * rightFraction));
+            left = right - rightTab.getWidth();
         }
         setIndicatorPosition(left, right);
     }
@@ -133,7 +143,18 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
             mIndicatorLeft = left;
             mIndicatorRight = right;
             invalidate();
+            centerInScrollView();
         }
+    }
+
+    private void centerInScrollView() {
+        HorizontalScrollView scrollView = (HorizontalScrollView) getParent();
+        int padding = getLeft();
+        int center = (mIndicatorLeft + mIndicatorRight) / 2 + padding;
+        int scroll = center - (scrollView.getWidth() / 2);
+        int maxAmount = getWidth() - scrollView.getWidth() + padding + padding;
+        int boundedScroll = Utilities.boundToRange(scroll, 0, maxAmount);
+        scrollView.scrollTo(boundedScroll, 0);
     }
 
     @Override
@@ -199,6 +220,31 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
             mAccent = color;
             mSelectedIndicatorPaint.setColor(color);
             updateTabTextColor(mSelectedPosition);
+        }
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            lp.width = LayoutParams.WRAP_CONTENT;
+            lp.weight = 0;
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int used = 0;
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            used += child.getMeasuredWidth();
+        }
+        if (used < getMeasuredWidth()) {
+            for (int i = 0; i < getChildCount(); i++) {
+                View child = getChildAt(i);
+                LayoutParams lp = (LayoutParams) child.getLayoutParams();
+                lp.width = 0;
+                lp.weight = 1;
+            }
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
     }
 

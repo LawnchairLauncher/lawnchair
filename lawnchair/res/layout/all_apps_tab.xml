@@ -27,4 +27,5 @@
     android:textAllCaps="true"
     android:textColor="@color/all_apps_tab_text"
     android:textSize="14sp"
+    android:padding="8dp"
     tools:text="@string/all_apps_personal_tab"/>

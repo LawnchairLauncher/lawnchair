@@ -37,11 +37,20 @@
         android:paddingTop="5dp"
         android:paddingBottom="5dp" />
 
-    <com.android.launcher3.allapps.PersonalWorkSlidingTabStrip
-        android:id="@+id/tabs"
+    <HorizontalScrollView
+        android:id="@+id/tabs_scroller"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/all_apps_header_tab_height"
-        android:layout_marginLeft="@dimen/all_apps_tabs_side_padding"
-        android:layout_marginRight="@dimen/all_apps_tabs_side_padding"
-        android:orientation="horizontal" />
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/all_apps_tabs_side_padding"
+        android:paddingRight="@dimen/all_apps_tabs_side_padding"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <com.android.launcher3.allapps.PersonalWorkSlidingTabStrip
+            android:id="@+id/tabs"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/all_apps_header_tab_height"
+            android:orientation="horizontal" />
+    </HorizontalScrollView>
 </com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader>
