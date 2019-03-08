@@ -23,13 +23,12 @@ import android.os.Process
 import ch.deletescape.lawnchair.lawnchairPrefs
 import com.android.launcher3.ItemInfo
 import com.android.launcher3.R
-import com.android.launcher3.ShortcutInfo
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.ItemInfoMatcher
 
 class AllAppsTabs(private val context: Context) : Iterable<AllAppsTabs.Tab> {
 
-    val customTabs = ArrayList<Tab>()
+    private val customTabs = ArrayList<Tab>()
     val customCount get() = customTabs.size
     val tabs = ArrayList<Tab>()
     val count get() = tabs.size
@@ -42,7 +41,7 @@ class AllAppsTabs(private val context: Context) : Iterable<AllAppsTabs.Tab> {
             }
         }
 
-    val addedApps = ArrayList<ComponentKey>()
+    private val addedApps = ArrayList<ComponentKey>()
 
     init {
         loadCustomTabs()
@@ -63,14 +62,15 @@ class AllAppsTabs(private val context: Context) : Iterable<AllAppsTabs.Tab> {
     private fun loadCustomTabs() {
         addedApps.clear()
         customTabs.clear()
-        context.lawnchairPrefs.drawerTabs.getFolderInfos().forEach {
-            it.contents.mapTo(addedApps) { app -> ComponentKey(app.targetComponent, app.user) }
-            customTabs.add(Tab(it.title.toString(), createFolderMatcher(it.contents)))
+        context.lawnchairPrefs.drawerTabs.getTabs().forEach {
+            if (it.hideFromAllApps) {
+                addedApps.addAll(it.contents)
+            }
+            customTabs.add(Tab(it.title, createTabMatcher(it.contents)))
         }
     }
 
-    private fun createFolderMatcher(contents: List<ShortcutInfo>): ItemInfoMatcher {
-        val components = contents.map { ComponentKey(it.targetComponent, it.user) }
+    private fun createTabMatcher(components: Set<ComponentKey>): ItemInfoMatcher {
         return object : ItemInfoMatcher() {
             override fun matches(info: ItemInfo, cn: ComponentName?): Boolean {
                 return components.contains(ComponentKey(info.targetComponent, info.user))

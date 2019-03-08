@@ -17,111 +17,55 @@
 
 package ch.deletescape.lawnchair.settings
 
-import android.content.ComponentName
-import android.content.Context
-import android.content.pm.LauncherActivityInfo
-import android.os.Process
-import android.os.UserHandle
-import ch.deletescape.lawnchair.LawnchairAppFilter
 import ch.deletescape.lawnchair.LawnchairPreferences
-import com.android.launcher3.*
-import com.android.launcher3.compat.LauncherAppsCompat
+import com.android.launcher3.util.ComponentKey
 import org.json.JSONArray
 import org.json.JSONObject
 
-class DrawerTabs(private val prefs: LawnchairPreferences) {
+class DrawerTabs(prefs: LawnchairPreferences) {
 
     private var tabsDataJson by prefs.StringPref("pref_drawerTabs", "[]", prefs.recreate)
+    private val tabs = ArrayList<Tab>()
 
-    private val appMap = HashMap<ComponentName, LauncherActivityInfo>()
-    private val tabs = ArrayList<FolderInfo>()
-    private var tabsBuilt = false
+    private val context = prefs.context
 
-    private val iconCache by lazy { LauncherAppState.getInstance(prefs.context).iconCache }
-
-    val filteredApps = HashSet<ComponentName>()
-
-    private val sortComparator = { it: ShortcutInfo -> it.title.toString().toLowerCase() }
-
-    private fun buildTabList() {
-        appMap.clear()
-        tabs.clear()
-        filteredApps.clear()
-
-        LauncherAppsCompat.getInstance(prefs.context)
-                .getActivityList(null, Process.myUserHandle()).forEach { app ->
-            appMap[app.componentName] = app
-        }
-
+    init {
         val arr = JSONArray(tabsDataJson)
         (0 until arr.length())
                 .map { arr.getJSONObject(it) }
                 .mapTo(tabs) {
-                    FolderInfo().apply {
-                        title = if (it.has(KEY_TITLE)) {
-                            it.getString(KEY_TITLE)
-                        } else {
-                            ""
-                        }
-                        container = ItemInfo.NO_ID.toLong()
-                        if (it.has(KEY_ITEMS)) {
-                            val items = it.getJSONArray(KEY_ITEMS)
-                            for (i in (0 until items.length())) {
-                                val componentName = ComponentName.unflattenFromString(items.getString(i))
-                                add(createInfo(componentName), false)
-                                filteredApps.add(componentName)
-                            }
-                            contents.sortBy(sortComparator)
+                    val title = if (it.has(KEY_TITLE)) it.getString(KEY_TITLE) else ""
+                    val hideFromAllApps = if (it.has(KEY_HIDE_FROM_ALL_APPS))
+                        it.getBoolean(KEY_HIDE_FROM_ALL_APPS) else true
+                    val contents = mutableSetOf<ComponentKey>()
+                    if (it.has(KEY_ITEMS)) {
+                        val rawItems = it.getJSONArray(KEY_ITEMS)
+                        for (i in (0 until rawItems.length())) {
+                            contents.add(ComponentKey(context, rawItems.getString(i)))
                         }
                     }
+                    Tab(title, hideFromAllApps, contents)
                 }
-
-        tabsBuilt = true
     }
 
-    fun createInfo(componentName: ComponentName) = ShortcutInfo(AppInfo(
-            prefs.context,
-            appMap[componentName],
-            Process.myUserHandle()
-    ).apply { iconCache.getTitleAndIcon(this, false) })
-
-    fun addItem(folderInfo: FolderInfo, item: ShortcutInfo) {
-        folderInfo.add(item, false)
-        folderInfo.contents.sortBy(sortComparator)
-        saveToJson()
-    }
-
-    fun getFolder(position: Int) = tabs[position]
-
-    fun getTabs(): List<FolderInfo> {
-        if (!tabsBuilt)
-            buildTabList()
+    fun getTabs(): List<Tab> {
         return tabs
     }
 
-    fun setTabs(tabs: List<FolderInfo>) {
+    fun setTabs(tabs: List<Tab>) {
         this.tabs.clear()
         this.tabs.addAll(tabs)
     }
 
-    fun removeTab(position: Int) {
-        tabs.removeAt(position)
-        saveToJson()
-    }
-
-    fun addBlankTab() {
-        tabs.add(FolderInfo().apply { title = "" })
-        saveToJson()
-    }
-
     fun saveToJson() {
         val arr = JSONArray()
-        tabs.forEach {
+        tabs.forEach {tab ->
             val items = JSONArray()
-            it.contents.forEach { items.put(it.targetComponent.flattenToShortString()) }
+            tab.contents.forEach { items.put(it.toString()) }
 
             val obj = JSONObject()
-            obj.put(KEY_TITLE, it.title)
+            obj.put(KEY_TITLE, tab.title)
+            obj.put(KEY_HIDE_FROM_ALL_APPS, tab.hideFromAllApps)
             obj.put(KEY_ITEMS, items)
 
             arr.put(obj)
@@ -129,24 +73,14 @@ class DrawerTabs(private val prefs: LawnchairPreferences) {
         tabsDataJson = arr.toString()
     }
 
-    fun getFolderInfos(): ArrayList<FolderInfo> {
-        if (!tabsBuilt)
-            buildTabList()
-        return ArrayList(tabs)
-    }
-
     companion object {
 
         const val KEY_TITLE = "title"
         const val KEY_ITEMS = "items"
+        const val KEY_HIDE_FROM_ALL_APPS = "hideFromAllApps"
     }
 
-    open class TabAppFilter(context: Context) : LawnchairAppFilter(context) {
-
-        private val filteredApps = Utilities.getLawnchairPrefs(context).drawerTabs.filteredApps
-
-        override fun shouldShowApp(componentName: ComponentName?, user: UserHandle?): Boolean {
-            return !filteredApps.contains(componentName) && super.shouldShowApp(componentName, user)
-        }
-    }
+    class Tab(var title: String,
+              var hideFromAllApps: Boolean = true,
+              val contents: MutableSet<ComponentKey> = mutableSetOf())
 }

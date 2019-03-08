@@ -25,14 +25,14 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.*
 import android.widget.TextView
 import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.settings.DrawerTabs
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
-import com.android.launcher3.FolderInfo
 import com.android.launcher3.R
 
 class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<DrawerTabsAdapter.Holder>() {
 
     private val drawerTabs = context.lawnchairPrefs.drawerTabs
-    private val tabs = ArrayList<FolderInfo>()
+    private val tabs = ArrayList<DrawerTabs.Tab>()
 
     val itemTouchHelper = ItemTouchHelper(TouchHelperCallback())
 
@@ -49,7 +49,7 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
     }
 
     fun addTab(title: String) {
-        tabs.add(FolderInfo().also { it.title = title })
+        tabs.add(DrawerTabs.Tab(title))
         notifyItemInserted(tabs.size - 1)
         saved = false
     }
@@ -90,7 +90,7 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
             }
         }
 
-        fun bind(info: FolderInfo) {
+        fun bind(info: DrawerTabs.Tab) {
             title.text = info.title
             itemView.setOnClickListener {
                 SettingsActivity.startFragment(context, DrawerTabEditFragment::class.java.name,
@@ -111,7 +111,7 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
                             .setTitle(R.string.rename_tab)
                             .setView(view)
                             .setPositiveButton(android.R.string.ok) { _, _ ->
-                                tabs[position].title = title.text
+                                tabs[position].title = title.text.toString()
                                 notifyItemChanged(position)
                             }
                             .show()

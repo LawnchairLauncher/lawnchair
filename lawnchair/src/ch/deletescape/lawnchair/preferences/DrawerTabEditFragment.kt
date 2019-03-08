@@ -17,12 +17,10 @@
 
 package ch.deletescape.lawnchair.preferences
 
-import android.content.Intent
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import ch.deletescape.lawnchair.LawnchairAppFilter
 import ch.deletescape.lawnchair.lawnchairPrefs
-import com.android.launcher3.ShortcutInfo
 import com.android.launcher3.util.ComponentKey
 
 class DrawerTabEditFragment : RecyclerViewFragment(), SelectableAppsAdapter.Callback {
@@ -45,18 +43,14 @@ class DrawerTabEditFragment : RecyclerViewFragment(), SelectableAppsAdapter.Call
     }
 
     private fun loadContents(): Set<String> {
-        return tab.contents.map {
-            ComponentKey(it.targetComponent, it.user).toString()
-        }.toSet()
+        return tab.contents.map { it.toString() }.toSet()
     }
 
     override fun onPause() {
         super.onPause()
 
-        tab.contents = ArrayList(tabContents.map {
-            val key = ComponentKey(activity!!, it)
-            ShortcutInfo("", Intent.makeMainActivity(key.componentName), key.user)
-        })
+        tab.contents.clear()
+        tabContents.mapTo(tab.contents) { ComponentKey(activity!!, it ) }
         drawerTabs.saveToJson()
     }
 
