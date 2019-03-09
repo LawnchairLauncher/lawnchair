@@ -15,10 +15,9 @@
  */
 package com.android.quickstep;
 
-import android.widget.TextView;
-
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import com.android.quickstep.views.TaskItemView;
 import com.android.systemui.shared.recents.model.Task;
 
 /**
@@ -27,22 +26,21 @@ import com.android.systemui.shared.recents.model.Task;
  */
 final class TaskHolder extends ViewHolder {
 
-    // TODO: Implement the actual task view to be held.
-    // For now, we just use a simple text view.
-    private final TextView mStubView;
+    private final TaskItemView mTaskItemView;
 
-    public TaskHolder(TextView stubView) {
-        super(stubView);
-        mStubView = stubView;
+    public TaskHolder(TaskItemView itemView) {
+        super(itemView);
+        mTaskItemView = itemView;
     }
 
     /**
      * Bind task content to the view. This includes the task icon and title as well as binding
      * input handlers such as which task to launch/remove.
      *
-     * @param task the task to bind to the view this
+     * @param task the task to bind to the view
      */
     public void bindTask(Task task) {
-        mStubView.setText("Stub task view: " + task.titleDescription);
+        mTaskItemView.setLabel(task.titleDescription);
+        mTaskItemView.setIcon(task.icon);
     }
 }
