@@ -18,6 +18,7 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
     private var cache: SearchProvider? = null
     private var cached: String = ""
 
+    private val themeOverride = ThemeOverride(ThemeOverride.Launcher(), ThemeListener())
     private var themeRes: Int = 0
 
     private val listeners = HashSet<OnProviderChangeListener>()
@@ -25,7 +26,7 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
     val isGoogle get() = searchProvider is GoogleSearchProvider
 
     init {
-        ThemeManager.getInstance(context).addOverride(ThemeOverride(ThemeOverride.Launcher(), ThemeListener()))
+        ThemeManager.getInstance(context).addOverride(themeOverride)
         ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
@@ -83,7 +84,8 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
 
         override fun reloadTheme() {
             cache = null
-            notifyProviderChanged()
+            applyTheme(themeOverride.getTheme(context))
+            onSearchProviderChanged()
         }
     }
 

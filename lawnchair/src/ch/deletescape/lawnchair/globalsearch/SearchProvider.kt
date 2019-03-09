@@ -3,6 +3,7 @@ package ch.deletescape.lawnchair.globalsearch
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.util.Log
 import com.android.launcher3.R
 import com.android.launcher3.graphics.ShadowDrawable
 
@@ -26,7 +27,8 @@ abstract class SearchProvider(protected val context: Context) {
     }
 
     protected fun wrapInShadowDrawable(d: Drawable): Drawable {
-        return ShadowDrawable.wrap(context, d, R.color.qsb_icon_shadow_color, 4f, R.color.qsb_dark_icon_tint)
+        return ShadowDrawable.wrap(context, d, R.color.qsb_icon_shadow_color,
+                4f, R.color.qsb_dark_icon_tint).apply { applyTheme(context.theme) }
     }
 
     fun getIcon(colored: Boolean) = if (colored) getIcon() else getShadowIcon()
