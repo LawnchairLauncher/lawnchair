@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.android.quickstep.views.TaskItemView;
@@ -27,6 +28,7 @@ import com.android.systemui.shared.recents.model.Task;
 final class TaskHolder extends ViewHolder {
 
     private final TaskItemView mTaskItemView;
+    private Task mTask;
 
     public TaskHolder(TaskItemView itemView) {
         super(itemView);
@@ -40,7 +42,17 @@ final class TaskHolder extends ViewHolder {
      * @param task the task to bind to the view
      */
     public void bindTask(Task task) {
+        mTask = task;
         mTaskItemView.setLabel(task.titleDescription);
         mTaskItemView.setIcon(task.icon);
+    }
+
+    /**
+     * Gets the task currently bound to this view
+     *
+     * @return the current task
+     */
+    public @NonNull Task getTask() {
+        return mTask;
     }
 }
