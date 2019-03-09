@@ -42,7 +42,6 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     public static final String KEY_DOCK_COLORED_GOOGLE = "pref_dockColoredGoogle";
     public static final String KEY_DOCK_SEARCHBAR = "pref_dockSearchBar";
     public static final String KEY_DOCK_HIDE = "pref_hideHotseat";
-    private final BroadcastReceiver DK;
     private boolean mIsGoogleColored;
     private final k Ds;
 
@@ -63,12 +62,6 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
 
     public HotseatQsbWidget(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
-        this.DK = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                setColors();
-            }
-        };
         this.Ds = k.getInstance(context);
         setOnClickListener(this);
     }
@@ -80,8 +73,6 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
                 .addColorChangeListeners(this, Resolvers.HOTSEAT_QSB_BG);
         dW();
         super.onAttachedToWindow();
-        getContext().registerReceiver(this.DK,
-                new IntentFilter("android.intent.action.WALLPAPER_CHANGED"));
         this.Ds.a((o) this);
         dH();
         setOnFocusChangeListener(this.mActivity.mFocusHandler);
@@ -94,7 +85,6 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
                         KEY_DOCK_SEARCHBAR);
         ColorEngine.getInstance(getContext())
                 .removeColorChangeListeners(this, Resolvers.HOTSEAT_QSB_BG);
-        getContext().unregisterReceiver(this.DK);
         this.Ds.b(this);
     }
 
