@@ -877,6 +877,10 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
     }
 
+    public static void startFragment(Context context, String fragment) {
+        startFragment(context, fragment, null);
+    }
+
     public static void startFragment(Context context, String fragment, @Nullable Bundle args) {
         Intent intent = new Intent(context, SettingsActivity.class);
         intent.putExtra(EXTRA_FRAGMENT, fragment);

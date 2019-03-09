@@ -31,6 +31,7 @@ import ch.deletescape.lawnchair.addOrRemove
 import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.DrawerTabs
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 
@@ -60,6 +61,9 @@ class MultiSelectTabPreference(context: Context, attrs: AttributeSet?) : Recycle
             }
             selections.clear()
             loadSummary()
+        }
+        builder.setNeutralButton(R.string.tabs_manage) { _, _ ->
+            SettingsActivity.startFragment(context, DrawerTabsFragment::class.java.name)
         }
         builder.setOnDismissListener {
             selections.clear()

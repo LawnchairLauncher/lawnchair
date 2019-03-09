@@ -436,4 +436,5 @@
     <string name="default_tab_name">New tab</string>
     <string name="show_in_tabs">Show in tabs</string>
     <string name="tabs_none_selected">None</string>
+    <string name="tabs_manage">Manage…</string>
 </resources>
