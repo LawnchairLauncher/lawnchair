@@ -309,7 +309,7 @@
     </string>
 
     <!-- Lawnstep -->
-    <string name="quickstep_pref_title">Lawnstep</string>
+    <string name="quickstep_pref_title">Recents</string>
     <string name="quickstep_pref_summary">Customize the recent apps screen</string>
     <string name="swipe_up_to_switch_apps_title">Swipe up to switch apps</string>
     <string name="swipe_left_to_go_back_title">Swipe left to go back</string>
