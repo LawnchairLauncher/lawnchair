@@ -24,6 +24,7 @@ import static com.android.systemui.shared.system.SettingsCompat.SWIPE_UP_SETTING
 import static org.junit.Assert.assertTrue;
 
 import android.provider.Settings;
+import android.util.Log;
 
 import androidx.test.InstrumentationRegistry;
 
@@ -45,6 +46,8 @@ import java.util.concurrent.Executor;
  * The test should be annotated with @QuickstepOnOff.
  */
 public class QuickStepOnOffRule implements TestRule {
+
+    static final String TAG = "QuickStepOnOffRule";
 
     public enum Mode {
         ON, OFF, BOTH
@@ -73,32 +76,32 @@ public class QuickStepOnOffRule implements TestRule {
             return new Statement() {
                 @Override
                 public void evaluate() throws Throwable {
-                    try {
-                        if (SwipeUpSetting.isSwipeUpSettingAvailable()) {
+                    if (SwipeUpSetting.isSwipeUpSettingAvailable()) {
+                        try {
                             if (mode == ON || mode == BOTH) {
                                 evaluateWithQuickstepOn();
                             }
                             if (mode == OFF || mode == BOTH) {
                                 evaluateWithQuickstepOff();
                             }
-                        } else {
-                            // Execute without changing the setting, if the requested mode is
-                            // compatible.
-                            final boolean swipeUpEnabledDefaultValue =
-                                    SwipeUpSetting.isSwipeUpEnabledDefaultValue();
-                            if (mode == BOTH ||
-                                    mode == ON && swipeUpEnabledDefaultValue ||
-                                    mode == OFF && !swipeUpEnabledDefaultValue) {
-                                evaluateWithoutChangingSetting(base);
-                            }
+                        } finally {
+                            setSwipeUpSetting(null);
                         }
-                    } finally {
-                        setSwipeUpSetting(null);
-
+                    } else {
+                        // Execute without changing the setting, if the requested mode is
+                        // compatible.
+                        final boolean swipeUpEnabledDefaultValue =
+                                SwipeUpSetting.isSwipeUpEnabledDefaultValue();
+                        if (mode == BOTH ||
+                                mode == ON && swipeUpEnabledDefaultValue ||
+                                mode == OFF && !swipeUpEnabledDefaultValue) {
+                            evaluateWithoutChangingSetting(base);
+                        }
                     }
                 }
 
                 public void setSwipeUpSetting(String value) {
+                    Log.d(TAG, "setSwipeUpSetting: " + value);
                     assertTrue("Couldn't change Quickstep mode",
                             Settings.Secure.putString(
                                     InstrumentationRegistry.getInstrumentation().getTargetContext().

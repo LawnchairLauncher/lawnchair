@@ -52,6 +52,7 @@ public class TouchInteractionService extends Service {
             ISystemUiProxy iSystemUiProxy = ISystemUiProxy.Stub
                     .asInterface(bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
             mRecentsModel.setSystemUiProxy(iSystemUiProxy);
+            mRecentsModel.onInitializeSystemUI(bundle);
         }
 
         @Override
@@ -75,6 +76,11 @@ public class TouchInteractionService extends Service {
         @Override
         public void onTip(int actionType, int viewType) {
             mOverviewCommandHelper.onTip(actionType, viewType);
+        }
+
+        @Override
+        public void onAssistantAvailable(boolean available) {
+            // TODO handle assistant
         }
 
         /** Deprecated methods **/
