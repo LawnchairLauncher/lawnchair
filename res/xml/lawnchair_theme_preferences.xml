@@ -8,7 +8,7 @@
 
         <ch.deletescape.lawnchair.settings.ui.IconPackPreference
             android:defaultValue="@string/config_default_icon_pack"
-            android:key="pref_icon_pack"
+            android:key="pref_icon_packs"
             android:persistent="true"
             android:title="@string/pref_icon_packs" />
 

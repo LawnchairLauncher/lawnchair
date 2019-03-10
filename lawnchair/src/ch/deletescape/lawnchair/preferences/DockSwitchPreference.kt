@@ -18,19 +18,22 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
+import android.support.annotation.Keep
 import android.support.v14.preference.SwitchPreference
 import android.util.AttributeSet
+import android.view.View
+import android.widget.Switch
 import com.android.launcher3.Utilities
 import kotlin.reflect.KMutableProperty1
 
-class DockSwitchPreference(context: Context, attrs: AttributeSet?) : StyledSwitchPreferenceCompat(context, attrs) {
+class DockSwitchPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : StyledSwitchPreferenceCompat(context, attrs) {
 
     private val prefs = Utilities.getLawnchairPrefs(context)
     private val currentStyle get() = prefs.dockStyles.currentStyle
-    private val inverted = key == "enableGradient"
+    private val inverted get() = key == "enableGradient"
 
     @Suppress("UNCHECKED_CAST")
-    private val property = DockStyle.properties[key] as KMutableProperty1<DockStyle, Boolean>
+    private val property get() = DockStyle.properties[key] as? KMutableProperty1<DockStyle, Boolean>
 
     private val onChangeListener = { isChecked = getPersistedBoolean(false) }
 
@@ -53,12 +56,25 @@ class DockSwitchPreference(context: Context, attrs: AttributeSet?) : StyledSwitc
     }
 
     override fun getPersistedBoolean(defaultReturnValue: Boolean): Boolean {
-        if (inverted) return !property.get(currentStyle)
-        return property.get(currentStyle)
+        if (inverted) return property?.get(currentStyle) != true
+        return property?.get(currentStyle) == true
     }
 
     override fun persistBoolean(value: Boolean): Boolean {
-        property.set(currentStyle, if (inverted) !value else value)
-        return true
+        property?.set(currentStyle, if (inverted) !value else value)
+        return property != null
+    }
+
+    override fun getSlice(context: Context, key: String): View {
+        this.key = key
+        return (super.getSlice(context, key) as Switch).apply {
+            prefs.dockStyles.addListener {
+                isChecked = getPersistedBoolean(false)
+            }
+            isChecked = getPersistedBoolean(false)
+            setOnCheckedChangeListener { _, isChecked ->
+                persistBoolean(isChecked)
+            }
+        }
     }
 }

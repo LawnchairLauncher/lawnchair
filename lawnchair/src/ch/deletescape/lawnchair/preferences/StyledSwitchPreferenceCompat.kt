@@ -24,16 +24,20 @@ import android.support.v4.graphics.ColorUtils
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.preference.AndroidResources
 import android.support.v7.preference.PreferenceViewHolder
+import android.support.v7.widget.SwitchCompat
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Switch
+import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.applyColor
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.ControlledPreference
+import ch.deletescape.lawnchair.settings.ui.search.SearchIndex
 import com.android.launcher3.util.Themes
 
-open class StyledSwitchPreferenceCompat(context: Context, attrs: AttributeSet?) :
-        SwitchPreference(context, attrs), ColorEngine.OnColorChangeListener, ControlledPreference {
+open class StyledSwitchPreferenceCompat @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+        SwitchPreference(context, attrs), ColorEngine.OnColorChangeListener, ControlledPreference, SearchIndex.Slice {
 
     private var checkableView: View? = null
 
@@ -60,5 +64,22 @@ open class StyledSwitchPreferenceCompat(context: Context, attrs: AttributeSet?) 
     override fun onDetached() {
         super.onDetached()
         ColorEngine.getInstance(context).removeColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
+    }
+
+    override fun getSlice(context: Context, key: String): View {
+        val color = ColorEngine.getInstance(context).accent
+        val prefs = context.lawnchairPrefs
+        var pref by prefs.BooleanPref(key)
+        return Switch(context).apply {
+            applyColor(color)
+            prefs.addOnPreferenceChangeListener(key, object : LawnchairPreferences.OnPreferenceChangeListener {
+                override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
+                    isChecked = pref
+                }
+            })
+            setOnCheckedChangeListener { _, isChecked ->
+                pref = isChecked
+            }
+        }
     }
 }

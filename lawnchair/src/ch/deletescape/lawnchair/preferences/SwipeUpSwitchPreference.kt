@@ -5,10 +5,12 @@ import android.content.pm.PackageManager
 import android.provider.Settings
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
+import android.view.View
+import android.widget.Switch
 import com.android.quickstep.OverviewInteractionState
 import com.android.systemui.shared.system.SettingsCompat
 
-class SwipeUpSwitchPreference(context: Context, attrs: AttributeSet?) : StyledSwitchPreferenceCompat(context, attrs) {
+class SwipeUpSwitchPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : StyledSwitchPreferenceCompat(context, attrs) {
 
     private val securePrefName = SettingsCompat.SWIPE_UP_SETTING_NAME
     private val secureOverrideMode = OverviewInteractionState.isSwipeUpSettingsAvailable()
@@ -43,5 +45,15 @@ class SwipeUpSwitchPreference(context: Context, attrs: AttributeSet?) : StyledSw
             }
         }
         return super.persistBoolean(value)
+    }
+
+    override fun getSlice(context: Context, key: String): View {
+        this.key = key
+        return (super.getSlice(context, key) as Switch).apply {
+            isChecked = getPersistedBoolean(true)
+            setOnCheckedChangeListener { _, isChecked ->
+                persistBoolean(isChecked)
+            }
+        }
     }
 }

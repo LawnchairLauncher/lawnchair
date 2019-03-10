@@ -18,18 +18,23 @@
 package ch.deletescape.lawnchair.settings.ui
 
 import android.content.Context
-import android.support.v7.preference.DialogPreference
+import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.support.v7.preference.Preference
 import android.util.AttributeSet
+import android.view.View
+import android.widget.ImageView
 import ch.deletescape.lawnchair.LawnchairPreferences
-import ch.deletescape.lawnchair.getIcon
 import ch.deletescape.lawnchair.iconpack.DefaultPack
 import ch.deletescape.lawnchair.iconpack.IconPackManager
+import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.preferences.IconPackFragment
+import ch.deletescape.lawnchair.settings.ui.search.SearchIndex
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
-class IconPackPreference(context: Context, attrs: AttributeSet?) : Preference(context, attrs), LawnchairPreferences.OnPreferenceChangeListener {
+class IconPackPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : Preference(context, attrs),
+        LawnchairPreferences.OnPreferenceChangeListener, SearchIndex.Slice {
     private val packList by lazy { IconPackManager.getInstance(context).packList }
 
     init {
@@ -40,13 +45,13 @@ class IconPackPreference(context: Context, attrs: AttributeSet?) : Preference(co
     override fun onAttached() {
         super.onAttached()
 
-        Utilities.getLawnchairPrefs(context).addOnPreferenceChangeListener("pref_icon_packs", this)
+        context.lawnchairPrefs.addOnPreferenceChangeListener(key, this)
     }
 
     override fun onDetached() {
         super.onDetached()
 
-        Utilities.getLawnchairPrefs(context).removeOnPreferenceChangeListener("pref_icon_packs", this)
+       context.lawnchairPrefs.removeOnPreferenceChangeListener(key, this)
     }
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
@@ -62,5 +67,19 @@ class IconPackPreference(context: Context, attrs: AttributeSet?) : Preference(co
                     .joinToString(", ") { it.displayName }
         }
         icon = packList.currentPack().displayIcon
+    }
+
+    override fun getSlice(context: Context, key: String): View {
+        return (View.inflate(context, R.layout.preview_icon, null) as ImageView).apply {
+            IconPackManager.getInstance(context).addListener {
+                setImageDrawable(packList.currentPack().displayIcon)
+            }
+            setOnClickListener {
+                context.startActivity(Intent()
+                        .setClass(context, SettingsActivity::class.java)
+                        .putExtra(SettingsActivity.EXTRA_FRAGMENT, fragment)
+                )
+            }
+        }
     }
 }

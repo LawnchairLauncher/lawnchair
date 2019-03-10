@@ -35,11 +35,5 @@
             android:ellipsize="end" />
     </RelativeLayout>
 
-    <com.android.internal.widget.PreferenceImageView
-        android:id="@android:id/icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxWidth="48dp"
-        android:scaleType="fitCenter"
-        android:maxHeight="48dp" />
+    <include layout="@layout/preview_icon" />
 </LinearLayout>

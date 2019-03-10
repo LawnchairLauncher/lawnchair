@@ -28,18 +28,13 @@ import android.content.pm.ResolveInfo
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Handler
-import android.os.UserHandle
 import android.text.TextUtils
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.override.AppInfoProvider
 import ch.deletescape.lawnchair.override.CustomInfoProvider
 import ch.deletescape.lawnchair.reloadIcons
 import com.android.launcher3.*
-import com.android.launcher3.compat.LauncherAppsCompat
-import com.android.launcher3.compat.UserManagerCompat
-import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
-import com.android.launcher3.util.LooperExecutor
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -57,6 +52,8 @@ class IconPackManager(private val context: Context) {
         }
 
     val packList = IconPackList(context, this)
+
+    private val listeners: MutableSet<() -> Unit> = mutableSetOf()
 
     init {
         context.registerReceiver(object : BroadcastReceiver() {
@@ -156,8 +153,20 @@ class IconPackManager(private val context: Context) {
         return packs
     }
 
+    fun addListener(listener: () -> Unit) {
+        listeners.add(listener)
+        listener.invoke()
+    }
+
+    fun removeListener(listener: () -> Unit) {
+        listeners.remove (listener)
+    }
+
     fun onPacksUpdated() {
         reloadIcons(context)
+        if (!listeners.isNullOrEmpty()) {
+            listeners.forEach { it.invoke() }
+        }
     }
 
     data class CustomIconEntry(val packPackageName: String, val icon: String? = null) {
@@ -188,6 +197,10 @@ class IconPackManager(private val context: Context) {
         companion object {
             fun fromResolveInfo(info: ResolveInfo, pm: PackageManager) = IconPackInfo(info.activityInfo.packageName, info.loadIcon(pm), info.loadLabel(pm))
         }
+    }
+
+    interface OnPackChangeListener {
+        fun onPackChanged()
     }
 
     companion object {

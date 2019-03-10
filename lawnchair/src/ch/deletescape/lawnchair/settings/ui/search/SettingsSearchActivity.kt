@@ -26,17 +26,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
-import android.widget.SearchView
-import android.widget.TextView
 import ch.deletescape.lawnchair.isVisible
 import com.android.launcher3.R
 import kotlinx.android.synthetic.main.activity_settings_search.*
 import android.support.v7.util.DiffUtil
 import android.text.TextUtils
 import android.view.MenuItem
-import android.widget.Toast
+import android.widget.*
 import ch.deletescape.lawnchair.LawnchairPreferences
+import ch.deletescape.lawnchair.isChild
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY
@@ -164,15 +162,34 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
             protected val summaryView = itemView.findViewById(android.R.id.summary) as TextView
             protected val iconView = itemView.findViewById(android.R.id.icon) as ImageView
             protected val breadcrumbView = itemView.findViewById(R.id.breadcrumb) as TextView
+            protected val sliceView = itemView.findViewById(R.id.slice_square) as LinearLayout
+            protected val horizontalSliceView = itemView.findViewById(R.id.slice_horizontal) as LinearLayout
 
             open fun onBind(activity: SettingsSearchActivity, entry: SearchIndex.SettingsEntry) {
                 titleView.text = entry.title
                 if (TextUtils.isEmpty(entry.summary) || entry.summary == "%s") {
-                    summaryView.visibility = View.GONE
+                    summaryView.isVisible = false
                 } else {
                     summaryView.text = entry.summary
-                    summaryView.visibility = View.VISIBLE
+                    summaryView.isVisible = true
                 }
+                val slice = entry.getSlice(activity)
+                if (slice != null && !entry.sliceIsHorizontal) {
+                    (slice.parent as? ViewGroup)?.removeView(slice)
+                    sliceView.removeAllViews()
+                    sliceView.addView(slice)
+                } else {
+                    sliceView.isVisible = false
+                }
+
+                if (slice != null && entry.sliceIsHorizontal) {
+                    (slice.parent as? ViewGroup)?.removeView(slice)
+                    horizontalSliceView.removeAllViews()
+                    horizontalSliceView.addView(slice)
+                } else {
+                    horizontalSliceView.isVisible = false
+                }
+
                 // TODO: implement displaying icons
                 // Valid even when result.icon is null.
                 // iconView.setImageDrawable(result.icon)

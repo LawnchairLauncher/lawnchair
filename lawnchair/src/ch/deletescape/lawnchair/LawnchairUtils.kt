@@ -570,3 +570,5 @@ fun CheckedTextView.applyAccent() {
     compoundDrawableTintList = tintList
     backgroundTintList = tintList
 }
+
+fun ViewGroup.isChild(view: View): Boolean = indexOfChild(view) != -1

@@ -20,6 +20,8 @@ package ch.deletescape.lawnchair.settings.ui.search
 import android.content.Context
 
 import android.support.v7.preference.PreferenceGroup
+import android.util.Log
+import android.view.View
 import ch.deletescape.lawnchair.get
 import ch.deletescape.lawnchair.settings.ui.PreferenceController
 import ch.deletescape.lawnchair.settings.ui.SubPreference
@@ -30,20 +32,23 @@ import org.xmlpull.v1.XmlPullParser
 
 class SearchIndex(private val context: Context) {
 
-    private val TAG = "SearchIndex"
+    companion object {
+        private const val TAG = "SearchIndex"
 
-    private val nsAndroid = "http://schemas.android.com/apk/res/android"
-    private val nsApp = "http://schemas.android.com/apk/res-auto"
+        private const val nsAndroid = "http://schemas.android.com/apk/res/android"
+        private const val nsApp = "http://schemas.android.com/apk/res-auto"
 
-    private val attrKey = "key"
-    private val attrTitle = "title"
-    private val attrSummary = "summary"
-    private val attrContent = "content"
-    private val attrHasPreview = "hasPreview"
-    private val attrControllerClass = "controllerClass"
-    private val attrSearchTitle = "searchTitle"
-    private val attrDefaultValue = "defaultValue"
-    private val attrTopic = "topic"
+        private const val attrKey = "key"
+        private const val attrTitle = "title"
+        private const val attrSummary = "summary"
+        private const val attrContent = "content"
+        private const val attrHasPreview = "hasPreview"
+        private const val attrControllerClass = "controllerClass"
+        private const val attrSearchTitle = "searchTitle"
+        private const val attrDefaultValue = "defaultValue"
+
+        private val sliceCache: MutableMap<String, View?> = mutableMapOf()
+    }
 
     val entries = ArrayList<SettingsEntry>()
     val addedKeys = HashSet<String>()
@@ -113,7 +118,7 @@ class SearchIndex(private val context: Context) {
                         val summary = getSummary(parser, controller)
                         if (parent != null && key != null && title != null) {
                             if (addedKeys.add(key)) {
-                                entries.add(SettingsEntry(key, title, summary, parent))
+                                entries.add(SettingsEntry(key, title, summary, parent, if (cls != null && Slice::class.java.isAssignableFrom(cls)) cls as? Class<Slice>? else null))
                             }
                         }
                     }
@@ -188,7 +193,7 @@ class SearchIndex(private val context: Context) {
             }
     }
 
-    inner class SettingsEntry(val key: String, val title: String, val summary: String?, val parent: SettingsScreen?) {
+    inner class SettingsEntry(val key: String, val title: String, val summary: String?, val parent: SettingsScreen?, private val sliceProvider: Class<Slice>? = null) {
 
         val breadcrumbs get() = parent?.breadcrumbs ?: ""
 
@@ -197,5 +202,44 @@ class SearchIndex(private val context: Context) {
             id += breadcrumbs.hashCode()
             return id
         }
+
+        private var instance: Slice? = null
+        private var loaded = false
+        private fun getSliceProvider(): Slice? {
+            if (!loaded) {
+                instance = try {
+                    sliceProvider?.getConstructor(Context::class.java)?.newInstance(context)
+                } catch (t: Throwable) {
+                    Log.e("Slices", "Failed to create instance. Key: $key Class: $sliceProvider", t)
+                    null
+                }
+                loaded = true
+            }
+            return instance
+        }
+
+        val sliceIsHorizontal by lazy { getSliceProvider()?.isHorizontalSlice() == true }
+
+        fun getSlice(context: Context): View? {
+            return sliceCache.getOrPut(key) {
+                try {
+                    getSliceProvider()?.getSlice(context, key)
+                } catch (t: Throwable) {
+                    Log.e("Slices", "Failed to get slice. Key: $key Class: $sliceProvider", t)
+                    null
+                }
+            }
+        }
+    }
+
+    /**
+     * Implementing classes **NEED** the following constructor:
+     * constructor(context: Context)
+     */
+    interface Slice {
+        // Adds the slice to a larger horizontal space instead of the usual small square
+        // TODO: Use this to implement the very complex seekbar preferences. This will require somehow getting attrs
+        fun isHorizontalSlice(): Boolean = false
+        fun getSlice(context: Context, key: String): View
     }
 }
