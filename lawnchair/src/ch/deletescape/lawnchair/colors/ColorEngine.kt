@@ -42,9 +42,11 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
     val accentForeground get() = accentResolver.computeForegroundColor()
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
-        val resolver by getOrCreateResolver(key)
-        resolver.startListening()
-        onColorChanged(key, getOrCreateResolver(key).onGetValue())
+        if (!force) {
+            val resolver by getOrCreateResolver(key)
+            resolver.startListening()
+            onColorChanged(key, getOrCreateResolver(key).onGetValue())
+        }
     }
 
     private fun onColorChanged(key: String, colorResolver: ColorResolver) {
@@ -55,10 +57,10 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
         if (keys.isEmpty()) {
             throw RuntimeException("At least one key is required")
         }
-        prefs.addOnPreferenceChangeListener(this, *keys)
         for (key in keys) {
             if (colorListeners[key] == null) {
                 colorListeners[key] = HashSet()
+                prefs.addOnPreferenceChangeListener(this, key)
             }
             colorListeners[key]?.add(listener)
             val resolver by getOrCreateResolver(key)
