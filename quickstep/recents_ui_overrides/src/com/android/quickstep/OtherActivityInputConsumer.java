@@ -230,7 +230,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                             mTouchSlop) {
                         mPassedTouchSlop = true;
 
-                        TOUCH_INTERACTION_LOG.addLog("startQuickstep");
                         if (mIsDeferredDownTarget) {
                             // Deferred gesture, start the animation and gesture tracking once
                             // we pass the actual touch slop
@@ -272,6 +271,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private void notifyGestureStarted() {
+        TOUCH_INTERACTION_LOG.addLog("startQuickstep");
         if (mInteractionHandler == null) {
             return;
         }
@@ -310,6 +310,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         if (listenerSet != null) {
             listenerSet.addListener(handler);
             mSwipeSharedState.applyActiveRecentsAnimationState(handler);
+            notifyGestureStarted();
         } else {
             RecentsAnimationListenerSet newListenerSet =
                     mSwipeSharedState.newRecentsAnimationListenerSet();
