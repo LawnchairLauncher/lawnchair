@@ -415,6 +415,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         });
         mRecentsView.setRecentsAnimationWrapper(mRecentsAnimationWrapper);
         mRecentsView.setClipAnimationHelper(mClipAnimationHelper);
+        mRecentsView.setLiveTileOverlay(mLiveTileOverlay);
         mActivity.getRootView().getOverlay().add(mLiveTileOverlay);
 
         mStateCallback.setState(STATE_LAUNCHER_PRESENT);
@@ -822,6 +823,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             setShelfState(ShelfAnimState.CANCEL, LINEAR, 0);
             duration = Math.max(MIN_OVERSHOOT_DURATION, duration);
         } else if (endTarget == RECENTS) {
+            mLiveTileOverlay.startIconAnimation();
             mRecentsAnimationWrapper.enableInputProxy();
             if (mRecentsView != null) {
                 duration = Math.max(duration, mRecentsView.getScroller().getDuration());
@@ -1172,7 +1174,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         mActivityControlHelper.onSwipeUpComplete(mActivity);
 
         // Animate the first icon.
-        mRecentsView.animateUpRunningTaskIconScale();
+        mRecentsView.animateUpRunningTaskIconScale(mLiveTileOverlay.cancelIconAnimation());
         mRecentsView.setSwipeDownShouldLaunchApp(true);
 
         RecentsModel.INSTANCE.get(mContext).onOverviewShown(false, TAG);
