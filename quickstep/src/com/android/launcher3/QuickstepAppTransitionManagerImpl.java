@@ -559,7 +559,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 float transY0 = floatingViewBounds[1] - offsetY;
 
                 float windowRadius = 0;
-                if (RecentsModel.INSTANCE.get(mLauncher).supportsRoundedCornersOnWindows()) {
+                if (!mDeviceProfile.isMultiWindowMode &&
+                        RecentsModel.INSTANCE.get(mLauncher).supportsRoundedCornersOnWindows()) {
                     windowRadius = RecentsModel.INSTANCE.get(mLauncher)
                             .getWindowCornerRadius();
                 }
@@ -700,7 +701,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 new SyncRtSurfaceTransactionApplierCompat(mDragLayer);
         ValueAnimator unlockAnimator = ValueAnimator.ofFloat(0, 1);
         unlockAnimator.setDuration(CLOSING_TRANSITION_DURATION_MS);
-        float cornerRadius = RecentsModel.INSTANCE.get(mLauncher).getWindowCornerRadius();
+        float cornerRadius = mDeviceProfile.isMultiWindowMode ? 0 :
+                RecentsModel.INSTANCE.get(mLauncher).getWindowCornerRadius();
         unlockAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -726,7 +728,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         Matrix matrix = new Matrix();
         ValueAnimator closingAnimator = ValueAnimator.ofFloat(0, 1);
         int duration = CLOSING_TRANSITION_DURATION_MS;
-        float windowCornerRadius = RecentsModel.INSTANCE.get(mLauncher).getWindowCornerRadius();
+        float windowCornerRadius = mDeviceProfile.isMultiWindowMode ? 0 :
+                RecentsModel.INSTANCE.get(mLauncher).getWindowCornerRadius();
         closingAnimator.setDuration(duration);
         closingAnimator.addUpdateListener(new MultiValueUpdateListener() {
             FloatProp mDy = new FloatProp(0, mClosingWindowTransY, 0, duration, DEACCEL_1_7);
