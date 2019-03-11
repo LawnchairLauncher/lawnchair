@@ -49,8 +49,6 @@ open class HomeState(id: Int, containerType: Int, transitionDuration: Int, flags
                 (dp.hotseatCellHeightPx * prefs.dockRowsCount + dp.hotseatBarTopPaddingPx)  * prefs.dockScale +
                         if (prefs.twoRowDock && dp.isTallDevice) {
                             dp.hotseatBarTopPaddingPx * prefs.dockScale
-                        } else if (prefs.dockSearchBar) {
-                            (dp.verticalDragHandleSizePx / 2) * prefs.dockScale
                         } else 0f
             }
         }
