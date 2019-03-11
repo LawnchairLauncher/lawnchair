@@ -378,14 +378,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
 
         if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0) {
-            mUserEventDispatcher = null;
-            initDeviceProfile(mDeviceProfile.inv);
-            dispatchDeviceProfileChanged();
-            reapplyUi();
-            mDragLayer.recreateControllers();
-
-            // TODO: We can probably avoid rebind when only screen size changed.
-            rebindModel();
+            onIdpChanged(mDeviceProfile.inv);
         }
 
         mOldConfig.setTo(newConfig);
@@ -410,8 +403,19 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public void onIdpChanged(int changeFlags, InvariantDeviceProfile idp) {
+        onIdpChanged(idp);
+    }
+
+    private void onIdpChanged(InvariantDeviceProfile idp) {
+        mUserEventDispatcher = null;
+
         initDeviceProfile(idp);
-        getRootView().dispatchInsets();
+        dispatchDeviceProfileChanged();
+        reapplyUi();
+        mDragLayer.recreateControllers();
+
+        // TODO: We can probably avoid rebind when only screen size changed.
+        rebindModel();
     }
 
     private void initDeviceProfile(InvariantDeviceProfile idp) {

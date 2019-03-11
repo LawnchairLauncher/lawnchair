@@ -37,6 +37,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -112,19 +113,18 @@ public class ModelWriter {
         ItemInfo modelItem = mBgDataModel.itemsIdMap.get(itemId);
         if (modelItem != null && item != modelItem) {
             // check all the data is consistent
-            if (modelItem instanceof ShortcutInfo && item instanceof ShortcutInfo) {
-                ShortcutInfo modelShortcut = (ShortcutInfo) modelItem;
-                ShortcutInfo shortcut = (ShortcutInfo) item;
-                if (modelShortcut.title.toString().equals(shortcut.title.toString()) &&
-                        modelShortcut.intent.filterEquals(shortcut.intent) &&
-                        modelShortcut.id == shortcut.id &&
-                        modelShortcut.itemType == shortcut.itemType &&
-                        modelShortcut.container == shortcut.container &&
-                        modelShortcut.screenId == shortcut.screenId &&
-                        modelShortcut.cellX == shortcut.cellX &&
-                        modelShortcut.cellY == shortcut.cellY &&
-                        modelShortcut.spanX == shortcut.spanX &&
-                        modelShortcut.spanY == shortcut.spanY) {
+            if (!Utilities.IS_DEBUG_DEVICE && !FeatureFlags.IS_DOGFOOD_BUILD &&
+                    modelItem instanceof ShortcutInfo && item instanceof ShortcutInfo) {
+                if (modelItem.title.toString().equals(item.title.toString()) &&
+                        modelItem.getIntent().filterEquals(item.getIntent()) &&
+                        modelItem.id == item.id &&
+                        modelItem.itemType == item.itemType &&
+                        modelItem.container == item.container &&
+                        modelItem.screenId == item.screenId &&
+                        modelItem.cellX == item.cellX &&
+                        modelItem.cellY == item.cellY &&
+                        modelItem.spanX == item.spanX &&
+                        modelItem.spanY == item.spanY) {
                     // For all intents and purposes, this is the same object
                     return;
                 }
@@ -310,7 +310,7 @@ public class ModelWriter {
     /**
      * Delete operations tracked using {@link #enqueueDeleteRunnable} will only be called
      * if {@link #commitDelete} is called. Note that one of {@link #commitDelete()} or
-     * {@link #abortDelete()} MUST be called after this method, or else all delete
+     * {@link #abortDelete} MUST be called after this method, or else all delete
      * operations will remain uncommitted indefinitely.
      */
     public void prepareToUndoDelete() {
@@ -325,7 +325,7 @@ public class ModelWriter {
 
     /**
      * If {@link #prepareToUndoDelete} has been called, we store the Runnable to be run when
-     * {@link #commitDelete()} is called (or abandoned if {@link #abortDelete()} is called).
+     * {@link #commitDelete()} is called (or abandoned if {@link #abortDelete} is called).
      * Otherwise, we run the Runnable immediately.
      */
     private void enqueueDeleteRunnable(Runnable r) {

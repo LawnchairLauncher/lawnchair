@@ -61,6 +61,8 @@ public abstract class BaseLoaderResults {
 
     protected final WeakReference<Callbacks> mCallbacks;
 
+    private int mMyBindingId;
+
     public BaseLoaderResults(LauncherAppState app, BgDataModel dataModel,
             AllAppsList allAppsList, int pageToBindFirst, WeakReference<Callbacks> callbacks) {
         mUiExecutor = new MainThreadExecutor();
@@ -94,6 +96,7 @@ public abstract class BaseLoaderResults {
             appWidgets.addAll(mBgDataModel.appWidgets);
             orderedScreenIds.addAll(mBgDataModel.collectWorkspaceScreens());
             mBgDataModel.lastBindId++;
+            mMyBindingId = mBgDataModel.lastBindId;
         }
 
         final int currentScreen;
@@ -285,6 +288,10 @@ public abstract class BaseLoaderResults {
 
     protected void executeCallbacksTask(CallbackTask task, Executor executor) {
         executor.execute(() -> {
+            if (mMyBindingId != mBgDataModel.lastBindId) {
+                Log.d(TAG, "Too many consecutive reloads, skipping obsolete data-bind");
+                return;
+            }
             Callbacks callbacks = mCallbacks.get();
             if (callbacks != null) {
                 task.execute(callbacks);
