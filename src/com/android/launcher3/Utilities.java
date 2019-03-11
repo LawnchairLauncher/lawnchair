@@ -125,6 +125,9 @@ public final class Utilities {
 
     public static boolean HIDDEN_APIS_ALLOWED = true;
 
+    public static final boolean ATLEAST_Q = Build.VERSION.CODENAME.length() == 1 &&
+            Build.VERSION.CODENAME.charAt(0) >= 'Q' && Build.VERSION.CODENAME.charAt(0) <= 'Z';
+
     public static final boolean ATLEAST_P =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
 
