@@ -17,7 +17,6 @@
 package com.android.launcher3.tapl;
 
 import static com.android.launcher3.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
-import static com.android.systemui.shared.system.SettingsCompat.SWIPE_UP_SETTING_NAME;
 
 import android.app.ActivityManager;
 import android.app.Instrumentation;
@@ -30,7 +29,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.SystemClock;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.MotionEvent;
@@ -48,7 +46,7 @@ import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.TestProtocol;
-import com.android.quickstep.SwipeUpSetting;
+import com.android.systemui.shared.system.QuickStepContract;
 
 import org.junit.Assert;
 
@@ -175,13 +173,7 @@ public final class LauncherInstrumentation {
     }
 
     private boolean isSwipeUpEnabled() {
-        final boolean swipeUpEnabledDefaultValue = SwipeUpSetting.isSwipeUpEnabledDefaultValue();
-        return SwipeUpSetting.isSwipeUpSettingAvailable() ?
-                Settings.Secure.getInt(
-                        mInstrumentation.getTargetContext().getContentResolver(),
-                        SWIPE_UP_SETTING_NAME,
-                        swipeUpEnabledDefaultValue ? 1 : 0) == 1 :
-                swipeUpEnabledDefaultValue;
+        return !QuickStepContract.isLegacyMode(mInstrumentation.getTargetContext());
     }
 
     static void log(String message) {

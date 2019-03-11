@@ -180,7 +180,7 @@ abstract class BaseFlags {
             currentValue = getFromStorage(context, defaultValue);
         }
 
-        void updateStorage(Context context, boolean value) {
+        public void updateStorage(Context context, boolean value) {
             SharedPreferences.Editor editor = context.getSharedPreferences(FLAGS_PREF_NAME,
                     Context.MODE_PRIVATE).edit();
             if (value == defaultValue) {
@@ -272,7 +272,7 @@ abstract class BaseFlags {
         }
 
         @Override
-        void updateStorage(Context context, boolean value) {
+        public void updateStorage(Context context, boolean value) {
             if (contentResolver == null) {
                 return;
             }
