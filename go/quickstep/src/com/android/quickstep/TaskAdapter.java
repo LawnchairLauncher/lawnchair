@@ -35,17 +35,23 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
     private static final int MAX_TASKS_TO_DISPLAY = 6;
     private static final String TAG = "TaskAdapter";
     private final TaskListLoader mLoader;
+    private TaskInputController mInputController;
 
     public TaskAdapter(@NonNull TaskListLoader loader) {
         mLoader = loader;
     }
 
+    public void setInputController(TaskInputController inputController) {
+        mInputController = inputController;
+    }
+
     @Override
     public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // TODO: Swap in an actual task view here (view w/ icon, label, etc.)
         TaskItemView itemView = (TaskItemView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.task_item_view, parent, false);
-        return new TaskHolder(itemView);
+        TaskHolder holder = new TaskHolder(itemView);
+        itemView.setOnClickListener(view -> mInputController.onTaskClicked(holder));
+        return holder;
     }
 
     @Override

@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.R;
 import com.android.quickstep.TaskAdapter;
+import com.android.quickstep.TaskInputController;
 import com.android.quickstep.TaskListLoader;
 
 /**
@@ -79,6 +80,7 @@ public final class IconRecentsView extends FrameLayout {
     private float mTranslationYFactor;
     private TaskAdapter mTaskAdapter;
     private RecyclerView mTaskRecyclerView;
+    private TaskInputController mTaskInputController;
     private TaskListLoader mTaskLoader;
 
     public IconRecentsView(Context context, AttributeSet attrs) {
@@ -91,6 +93,8 @@ public final class IconRecentsView extends FrameLayout {
         super.onFinishInflate();
         mTaskLoader = new TaskListLoader(mContext);
         mTaskAdapter = new TaskAdapter(mTaskLoader);
+        mTaskInputController = new TaskInputController(mTaskAdapter);
+        mTaskAdapter.setInputController(mTaskInputController);
         mTaskRecyclerView = findViewById(R.id.recent_task_recycler_view);
         mTaskRecyclerView.setAdapter(mTaskAdapter);
         mTaskRecyclerView.setLayoutManager(
