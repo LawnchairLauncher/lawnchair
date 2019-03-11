@@ -34,6 +34,7 @@ import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
+import android.widget.ImageView;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.InsettableFrameLayout.LayoutParams;
@@ -48,6 +49,7 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.FolderShape;
 import com.android.launcher3.graphics.ShiftedBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.popup.SystemShortcut;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
@@ -195,6 +197,9 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         if (!supportsAdaptiveIcons && v instanceof BubbleTextView) {
             // Similar to DragView, we simply use the BubbleTextView icon here.
             mDrawable = ((BubbleTextView) v).getIcon();
+        }
+        if (v instanceof ImageView && info instanceof SystemShortcut) {
+            mDrawable = ((ImageView) v).getDrawable();
         }
         if (mDrawable == null) {
             mDrawable = Utilities.getFullDrawable(launcher, info, lp.width, lp.height,
