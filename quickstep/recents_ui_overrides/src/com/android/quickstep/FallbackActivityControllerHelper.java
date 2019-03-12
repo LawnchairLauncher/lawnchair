@@ -182,11 +182,6 @@ public final class FallbackActivityControllerHelper implements
     }
 
     @Override
-    public AlphaProperty getAlphaProperty(RecentsActivity activity) {
-        return activity.getDragLayer().getAlphaProperty(0);
-    }
-
-    @Override
     public int getContainerType() {
         return LauncherLogProto.ContainerType.SIDELOADED_LAUNCHER;
     }

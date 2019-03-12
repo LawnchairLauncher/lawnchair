@@ -18,6 +18,8 @@ package com.android.quickstep;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.android.launcher3.config.FeatureFlags;
+
 import java.util.StringJoiner;
 import java.util.function.Consumer;
 
@@ -101,6 +103,9 @@ public class MultiStateCallback {
      * The callback is only run once.
      */
     public void addCallback(int stateMask, Runnable callback) {
+        if (FeatureFlags.IS_DOGFOOD_BUILD && mCallbacks.get(stateMask) != null) {
+            throw new IllegalStateException("Multiple callbacks on same state");
+        }
         mCallbacks.put(stateMask, callback);
     }
 

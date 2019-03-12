@@ -40,7 +40,6 @@ import static com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
@@ -78,8 +77,6 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import com.android.launcher3.util.MultiValueAlpha;
-import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.RaceConditionTracker;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.views.FloatingIconView;
@@ -113,7 +110,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         implements SwipeAnimationListener, OnApplyWindowInsetsListener {
     private static final String TAG = WindowTransformSwipeHandler.class.getSimpleName();
 
-    private static final String[] STATE_NAMES = DEBUG_STATES ? new String[19] : null;
+    private static final String[] STATE_NAMES = DEBUG_STATES ? new String[16] : null;
 
     private static int getFlagForIndex(int index, String name) {
         if (DEBUG_STATES) {
@@ -126,47 +123,44 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private static final int STATE_LAUNCHER_PRESENT = getFlagForIndex(0, "STATE_LAUNCHER_PRESENT");
     private static final int STATE_LAUNCHER_STARTED = getFlagForIndex(1, "STATE_LAUNCHER_STARTED");
     private static final int STATE_LAUNCHER_DRAWN = getFlagForIndex(2, "STATE_LAUNCHER_DRAWN");
-    private static final int STATE_ACTIVITY_MULTIPLIER_COMPLETE =
-            getFlagForIndex(3, "STATE_ACTIVITY_MULTIPLIER_COMPLETE");
 
     // Internal initialization states
     private static final int STATE_APP_CONTROLLER_RECEIVED =
-            getFlagForIndex(4, "STATE_APP_CONTROLLER_RECEIVED");
+            getFlagForIndex(3, "STATE_APP_CONTROLLER_RECEIVED");
 
     // Interaction finish states
     private static final int STATE_SCALED_CONTROLLER_HOME =
-            getFlagForIndex(5, "STATE_SCALED_CONTROLLER_HOME");
+            getFlagForIndex(4, "STATE_SCALED_CONTROLLER_HOME");
     private static final int STATE_SCALED_CONTROLLER_RECENTS =
-            getFlagForIndex(6, "STATE_SCALED_CONTROLLER_RECENTS");
+            getFlagForIndex(5, "STATE_SCALED_CONTROLLER_RECENTS");
     private static final int STATE_SCALED_CONTROLLER_LAST_TASK =
-            getFlagForIndex(7, "STATE_SCALED_CONTROLLER_LAST_TASK");
+            getFlagForIndex(6, "STATE_SCALED_CONTROLLER_LAST_TASK");
 
     private static final int STATE_HANDLER_INVALIDATED =
-            getFlagForIndex(8, "STATE_HANDLER_INVALIDATED");
+            getFlagForIndex(7, "STATE_HANDLER_INVALIDATED");
     private static final int STATE_GESTURE_STARTED =
-            getFlagForIndex(9, "STATE_GESTURE_STARTED");
+            getFlagForIndex(8, "STATE_GESTURE_STARTED");
     private static final int STATE_GESTURE_CANCELLED =
-            getFlagForIndex(10, "STATE_GESTURE_CANCELLED");
+            getFlagForIndex(9, "STATE_GESTURE_CANCELLED");
     private static final int STATE_GESTURE_COMPLETED =
-            getFlagForIndex(11, "STATE_GESTURE_COMPLETED");
+            getFlagForIndex(10, "STATE_GESTURE_COMPLETED");
 
     private static final int STATE_CAPTURE_SCREENSHOT =
-            getFlagForIndex(12, "STATE_CAPTURE_SCREENSHOT");
+            getFlagForIndex(11, "STATE_CAPTURE_SCREENSHOT");
     private static final int STATE_SCREENSHOT_CAPTURED =
-            getFlagForIndex(13, "STATE_SCREENSHOT_CAPTURED");
+            getFlagForIndex(12, "STATE_SCREENSHOT_CAPTURED");
     private static final int STATE_SCREENSHOT_VIEW_SHOWN =
-            getFlagForIndex(14, "STATE_SCREENSHOT_VIEW_SHOWN");
+            getFlagForIndex(13, "STATE_SCREENSHOT_VIEW_SHOWN");
 
     private static final int STATE_RESUME_LAST_TASK =
-            getFlagForIndex(15, "STATE_RESUME_LAST_TASK");
+            getFlagForIndex(14, "STATE_RESUME_LAST_TASK");
     private static final int STATE_START_NEW_TASK =
-            getFlagForIndex(16, "STATE_START_NEW_TASK");
+            getFlagForIndex(15, "STATE_START_NEW_TASK");
     private static final int STATE_CURRENT_TASK_FINISHED =
-            getFlagForIndex(17, "STATE_CURRENT_TASK_FINISHED");
+            getFlagForIndex(16, "STATE_CURRENT_TASK_FINISHED");
 
     private static final int LAUNCHER_UI_STATES =
-            STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_ACTIVITY_MULTIPLIER_COMPLETE
-            | STATE_LAUNCHER_STARTED;
+            STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_LAUNCHER_STARTED;
 
     // For debugging, keep in sync with above states
 
@@ -226,7 +220,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     // 1 => preview snapShot is completely aligned with the recents view and hotseat is completely
     // visible.
     private final AnimatedFloat mCurrentShift = new AnimatedFloat(this::updateFinalShift);
-    private boolean mDispatchedDownEvent;
     private boolean mContinuingLastGesture;
     // To avoid UI jump when gesture is started, we offset the animation by the threshold.
     private float mShiftAtGestureStart = 0;
@@ -238,7 +231,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private final ActivityInitListener mActivityInitListener;
 
     private final int mRunningTaskId;
-    private final RunningTaskInfo mRunningTaskInfo;
     private ThumbnailData mTaskSnapshot;
 
     private MultiStateCallback mStateCallback;
@@ -265,7 +257,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             long touchTimeMs, ActivityControlHelper<T> controller, boolean continuingLastGesture,
             InputConsumerController inputConsumer) {
         mContext = context;
-        mRunningTaskInfo = runningTaskInfo;
         mRunningTaskId = runningTaskInfo.id;
         mTouchTimeMs = touchTimeMs;
         mActivityControlHelper = controller;
@@ -312,8 +303,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 this::startNewTask);
 
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_APP_CONTROLLER_RECEIVED
-                        | STATE_ACTIVITY_MULTIPLIER_COMPLETE
-                        | STATE_CAPTURE_SCREENSHOT,
+                        | STATE_LAUNCHER_DRAWN | STATE_CAPTURE_SCREENSHOT,
                 this::switchToScreenshot);
 
         mStateCallback.addCallback(STATE_SCREENSHOT_CAPTURED | STATE_GESTURE_COMPLETED
@@ -322,13 +312,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_GESTURE_COMPLETED
                         | STATE_SCALED_CONTROLLER_HOME | STATE_APP_CONTROLLER_RECEIVED
-                        | STATE_ACTIVITY_MULTIPLIER_COMPLETE,
+                        | STATE_LAUNCHER_DRAWN,
                 this::finishCurrentTransitionToHome);
         mStateCallback.addCallback(STATE_SCALED_CONTROLLER_HOME | STATE_CURRENT_TASK_FINISHED,
                 this::reset);
 
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_APP_CONTROLLER_RECEIVED
-                        | STATE_ACTIVITY_MULTIPLIER_COMPLETE | STATE_SCALED_CONTROLLER_RECENTS
+                        | STATE_LAUNCHER_DRAWN | STATE_SCALED_CONTROLLER_RECENTS
                         | STATE_CURRENT_TASK_FINISHED | STATE_GESTURE_COMPLETED
                         | STATE_GESTURE_STARTED,
                 this::setupLauncherUiAfterSwipeUpAnimation);
@@ -440,11 +430,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         AbstractFloatingView.closeAllOpenViews(activity, mWasLauncherAlreadyVisible);
 
         if (mWasLauncherAlreadyVisible) {
-            mStateCallback.setState(STATE_ACTIVITY_MULTIPLIER_COMPLETE | STATE_LAUNCHER_DRAWN);
+            mStateCallback.setState(STATE_LAUNCHER_DRAWN);
         } else {
             TraceHelper.beginSection("WTS-init");
             View dragLayer = activity.getDragLayer();
-            mActivityControlHelper.getAlphaProperty(activity).setValue(0);
             dragLayer.getViewTreeObserver().addOnDrawListener(new OnDrawListener() {
 
                 @Override
@@ -477,25 +466,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void launcherFrameDrawn() {
-        AlphaProperty property = mActivityControlHelper.getAlphaProperty(mActivity);
-        if (property.getValue() < 1) {
-            if (mGestureStarted) {
-                final MultiStateCallback callback = mStateCallback;
-                ObjectAnimator animator = ObjectAnimator.ofFloat(
-                        property, MultiValueAlpha.VALUE, 1);
-                animator.setDuration(getFadeInDuration()).addListener(
-                        new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                callback.setState(STATE_ACTIVITY_MULTIPLIER_COMPLETE);
-                            }
-                        });
-                animator.start();
-            } else {
-                property.setValue(1);
-                mStateCallback.setState(STATE_ACTIVITY_MULTIPLIER_COMPLETE);
-            }
-        }
         mLauncherFrameDrawnTime = SystemClock.uptimeMillis();
     }
 
@@ -1074,7 +1044,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private void invalidateHandlerWithLauncher() {
         mLauncherTransitionController = null;
-        mActivityControlHelper.getAlphaProperty(mActivity).setValue(1);
 
         mRecentsView.setEnableFreeScroll(true);
         mRecentsView.setRunningTaskIconScaledDown(false);

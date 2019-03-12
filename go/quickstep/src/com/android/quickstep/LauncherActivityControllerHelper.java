@@ -22,9 +22,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.views.IconRecentsView;
 
 import java.util.function.BiPredicate;
@@ -91,11 +89,6 @@ public final class LauncherActivityControllerHelper extends GoActivityControlHel
         launcher.getStateManager().goToState(OVERVIEW,
                 launcher.getStateManager().shouldAnimateStateChange(), onCompleteCallback);
         return true;
-    }
-
-    @Override
-    public AlphaProperty getAlphaProperty(Launcher activity) {
-        return activity.getDragLayer().getAlphaProperty(DragLayer.ALPHA_INDEX_SWIPE_UP);
     }
 
     @Override
