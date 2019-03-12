@@ -24,6 +24,7 @@ import com.android.systemui.shared.recents.model.Task;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -45,13 +46,13 @@ public final class TaskListLoader {
 
     /**
      * Returns the current task list as of the last completed load (see
-     * {@link #loadTaskList}). This list of tasks is guaranteed to always have all its task
-     * content loaded.
+     * {@link #loadTaskList}) as a read-only list. This list of tasks is guaranteed to always have
+     * all its task content loaded.
      *
      * @return the current list of tasks w/ all content loaded
      */
-    public ArrayList<Task> getCurrentTaskList() {
-        return mTaskList;
+    public List<Task> getCurrentTaskList() {
+        return Collections.unmodifiableList(mTaskList);
     }
 
     /**
@@ -82,6 +83,13 @@ public final class TaskListLoader {
                 }
             });
         });
+    }
+
+    /**
+     * Removes the task from the current task list.
+     */
+    void removeTask(Task task) {
+        mTaskList.remove(task);
     }
 
     /**

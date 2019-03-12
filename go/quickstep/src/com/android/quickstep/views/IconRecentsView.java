@@ -23,6 +23,7 @@ import android.util.FloatProperty;
 import android.view.ViewDebug;
 import android.widget.FrameLayout;
 
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,6 +31,7 @@ import com.android.launcher3.R;
 import com.android.quickstep.TaskAdapter;
 import com.android.quickstep.TaskInputController;
 import com.android.quickstep.TaskListLoader;
+import com.android.quickstep.TaskSwipeCallback;
 
 /**
  * Root view for the icon recents view. Acts as the main interface to the rest of the Launcher code
@@ -76,29 +78,35 @@ public final class IconRecentsView extends FrameLayout {
     @ViewDebug.ExportedProperty(category = "launcher")
 
     private final Context mContext;
+    private final TaskListLoader mTaskLoader;
+    private final TaskAdapter mTaskAdapter;
+    private final TaskInputController mTaskInputController;
 
     private float mTranslationYFactor;
-    private TaskAdapter mTaskAdapter;
     private RecyclerView mTaskRecyclerView;
-    private TaskInputController mTaskInputController;
-    private TaskListLoader mTaskLoader;
+
 
     public IconRecentsView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
+        mTaskLoader = new TaskListLoader(mContext);
+        mTaskAdapter = new TaskAdapter(mTaskLoader);
+        mTaskInputController = new TaskInputController(mTaskLoader, mTaskAdapter);
+        mTaskAdapter.setInputController(mTaskInputController);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mTaskLoader = new TaskListLoader(mContext);
-        mTaskAdapter = new TaskAdapter(mTaskLoader);
-        mTaskInputController = new TaskInputController(mTaskAdapter);
-        mTaskAdapter.setInputController(mTaskInputController);
-        mTaskRecyclerView = findViewById(R.id.recent_task_recycler_view);
-        mTaskRecyclerView.setAdapter(mTaskAdapter);
-        mTaskRecyclerView.setLayoutManager(
-                new LinearLayoutManager(mContext, VERTICAL, true /* reverseLayout */));
+        if (mTaskRecyclerView == null) {
+            mTaskRecyclerView = findViewById(R.id.recent_task_recycler_view);
+            mTaskRecyclerView.setAdapter(mTaskAdapter);
+            mTaskRecyclerView.setLayoutManager(
+                    new LinearLayoutManager(mContext, VERTICAL, true /* reverseLayout */));
+            ItemTouchHelper helper = new ItemTouchHelper(
+                    new TaskSwipeCallback(mTaskInputController));
+            helper.attachToRecyclerView(mTaskRecyclerView);
+        }
     }
 
     /**

@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 /**
@@ -22,9 +23,11 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
  */
 public final class TaskInputController {
 
-    TaskAdapter mAdapter;
+    private final TaskListLoader mLoader;
+    private final TaskAdapter mAdapter;
 
-    public TaskInputController(TaskAdapter adapter) {
+    public TaskInputController(TaskListLoader loader,TaskAdapter adapter) {
+        mLoader = loader;
         mAdapter = adapter;
     }
 
@@ -39,7 +42,14 @@ public final class TaskInputController {
                 null /* options */, null /* resultCallback */, null /* resultCallbackHandler */);
     }
 
-    // TODO: Implement swipe to delete and notify adapter that data has updated
+    public void onTaskSwiped(TaskHolder viewHolder) {
+        int position = viewHolder.getAdapterPosition();
+        Task task = viewHolder.getTask();
+        ActivityManagerWrapper.getInstance().removeTask(task.key.id);
+        mLoader.removeTask(task);
+        mAdapter.notifyItemRemoved(position);
+    }
 
     // TODO: Implement "Clear all" and notify adapter that data has updated
+
 }
