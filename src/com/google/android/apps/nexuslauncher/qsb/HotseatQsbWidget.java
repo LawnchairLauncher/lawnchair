@@ -9,8 +9,10 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -30,6 +32,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.Themes;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
@@ -263,7 +266,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
 
     protected void onLayout(boolean z, int i, int i2, int i3, int i4) {
         super.onLayout(z, i, i2, i3, i4);
-        setTranslationY((float) (-getBottomMargin(this.mActivity)));
+        setTranslationY((float) (-c(this.mActivity)));
     }
 
     public void setInsets(Rect rect) {
@@ -310,11 +313,9 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         doOnClick();
     }
 
-    static int getBottomMargin(Launcher launcher) {
-        int qsbHeight = launcher.getResources().getDimensionPixelSize(R.dimen.qsb_widget_height);
-        int qsbPadding = launcher.getResources().getDimensionPixelSize(R.dimen.hotseat_qsb_bottom_margin);
-        DeviceProfile dp = launcher.getDeviceProfile();
-        return dp.getInsets().bottom + (dp.hotseatBarBottomPaddingPx - qsbHeight) / 2;
+    static int c(Launcher launcher) {
+        return launcher.getDeviceProfile().getInsets().bottom + launcher.getResources()
+                .getDimensionPixelSize(R.dimen.hotseat_qsb_bottom_margin);
     }
 
     @Nullable

@@ -8,6 +8,8 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.graphics.ColorUtils;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -26,6 +28,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.SearchUiManager;
+import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.google.android.apps.nexuslauncher.search.SearchThread;
 import org.jetbrains.annotations.NotNull;
 
@@ -77,7 +80,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         if (mActivity.getDeviceProfile().isVerticalBarLayout()) {
             mActivity.getAllAppsController().setScrollRangeDelta(0);
         } else {
-            float range = HotseatQsbWidget.getBottomMargin(mActivity) + ((mlp.height + mlp.topMargin) + Dy);
+            float range = HotseatQsbWidget.c(mActivity) + ((mlp.height + mlp.topMargin) + Dy);
             LawnchairPreferences prefs = LawnchairPreferences.Companion.getInstance(getContext());
             if (!prefs.getDockSearchBar()) {
                 range -= mlp.height;
