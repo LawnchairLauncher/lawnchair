@@ -25,7 +25,8 @@ import com.android.launcher3.R;
 import com.android.quickstep.views.TaskItemView;
 import com.android.systemui.shared.recents.model.Task;
 
-import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Recycler view adapter that dynamically inflates and binds {@link TaskHolder} instances with the
  * appropriate {@link Task} from the recents task list.
@@ -56,7 +57,7 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
 
     @Override
     public void onBindViewHolder(TaskHolder holder, int position) {
-        ArrayList<Task> tasks = mLoader.getCurrentTaskList();
+        List<Task> tasks = mLoader.getCurrentTaskList();
         if (position >= tasks.size()) {
             // Task list has updated.
             return;
