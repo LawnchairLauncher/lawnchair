@@ -310,7 +310,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
             int extraSpace = (int) ((getCellSizeOriginal().y - iconSizeOriginalPx
                     - iconDrawablePaddingOriginalPx * 2 - verticalDragHandleSizePx) * dockScale);
             hotseatBarSizePx += extraSpace;
-            if (prefs.getDockStyles().getDockGradient()) {
+            if (prefs.getDockGradientStyle()) {
                 hotseatBarBottomPaddingPx += extraSpace;
             } else {
                 hotseatBarBottomPaddingPx += extraSpace / 2;
@@ -330,7 +330,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
             int qsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
             verticalDragHandleSizePx *= dockScale;
             int bottomPaddingNew = Math.max((int)(hotseatBarBottomPaddingPx * dockScale), dockSearchBar ? qsbHeight : 0);
-            if (prefs.getDockStyles().getDockGradient()) {
+            if (prefs.getDockGradientStyle()) {
                 hotseatBarTopPaddingPx *= dockScale;
                 hotseatBarBottomPaddingPx = bottomPaddingNew;
             } else {
