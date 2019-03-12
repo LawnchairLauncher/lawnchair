@@ -326,6 +326,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                                 (saturation, contentDescription) -> {
                                     setContentDescription(contentDescription);
                                     mSnapshotView.setSaturation(saturation);
+                                    if (mDigitalWellBeingToast.getVisibility() == VISIBLE) {
+                                        getRecentsView().onDigitalWellbeingToastShown();
+                                    }
                                 });
                     });
         } else {
