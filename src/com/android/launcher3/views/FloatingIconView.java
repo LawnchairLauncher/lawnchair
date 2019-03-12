@@ -67,7 +67,6 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
     private Runnable mStartRunnable;
     private Runnable mEndRunnable;
 
-    private Drawable mDrawable;
     private int mOriginalHeight;
     private final int mBlurSizeOutline;
 
@@ -191,73 +190,79 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
     private void getIcon(Launcher launcher, View v, ItemInfo info, boolean useDrawableAsIs,
             float aspectRatio) {
         final LayoutParams lp = (LayoutParams) getLayoutParams();
-
+        Drawable drawable = null;
         boolean supportsAdaptiveIcons = ADAPTIVE_ICON_WINDOW_ANIM.get() && !useDrawableAsIs
                 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
         if (!supportsAdaptiveIcons && v instanceof BubbleTextView) {
             // Similar to DragView, we simply use the BubbleTextView icon here.
-            mDrawable = ((BubbleTextView) v).getIcon();
+            drawable = ((BubbleTextView) v).getIcon();
         }
         if (v instanceof ImageView && info instanceof SystemShortcut) {
-            mDrawable = ((ImageView) v).getDrawable();
+            drawable = ((ImageView) v).getDrawable();
         }
-        if (mDrawable == null) {
-            mDrawable = Utilities.getFullDrawable(launcher, info, lp.width, lp.height,
+        if (drawable == null) {
+            drawable = Utilities.getFullDrawable(launcher, info, lp.width, lp.height,
                     useDrawableAsIs, new Object[1]);
         }
 
-        if (supportsAdaptiveIcons && mDrawable instanceof AdaptiveIconDrawable) {
-            mIsAdaptiveIcon = true;
-
-            AdaptiveIconDrawable adaptiveIcon = (AdaptiveIconDrawable) mDrawable;
-            Drawable background = adaptiveIcon.getBackground();
-            if (background == null) {
-                background = new ColorDrawable(Color.TRANSPARENT);
-            }
-            mBackground = background;
-            Drawable foreground = adaptiveIcon.getForeground();
-            if (foreground == null) {
-                foreground = new ColorDrawable(Color.TRANSPARENT);
-            }
-            mForeground = foreground;
-
-            int offset = getOffsetForAdaptiveIconBounds();
-            mFinalDrawableBounds.set(offset, offset, lp.width - offset, mOriginalHeight - offset);
-            if (mForeground instanceof ShiftedBitmapDrawable && v instanceof FolderIcon) {
-                ShiftedBitmapDrawable sbd = (ShiftedBitmapDrawable) mForeground;
-                ((FolderIcon) v).getPreviewBounds(sTmpRect);
-                sbd.setShiftX(sbd.getShiftX() - sTmpRect.left);
-                sbd.setShiftY(sbd.getShiftY() - sTmpRect.top);
-            }
-            mForeground.setBounds(mFinalDrawableBounds);
-            mBackground.setBounds(mFinalDrawableBounds);
-
-            int blurMargin = mBlurSizeOutline / 2;
-            mStartRevealRect.set(blurMargin, blurMargin , lp.width - blurMargin,
-                    mOriginalHeight - blurMargin);
-
-            if (aspectRatio > 0) {
-                lp.height = (int) Math.max(lp.height, lp.width * aspectRatio);
-                layout(lp.leftMargin, lp.topMargin, lp.leftMargin + lp.width, lp.topMargin
-                        + lp.height);
-            }
-            mBgDrawableStartScale = (float) lp.height / mOriginalHeight;
-            setBackgroundDrawableBounds(mBgDrawableStartScale);
-
-            // Set up outline
-            mOutline.set(0, 0, lp.width, lp.height);
-            setOutlineProvider(new ViewOutlineProvider() {
-                @Override
-                public void getOutline(View view, Outline outline) {
-                    outline.setRoundRect(mOutline, mTaskCornerRadius);
-                }
-            });
-            setClipToOutline(true);
-        } else {
-            setBackground(mDrawable);
-        }
+        Drawable finalDrawable = drawable == null ? null
+                : drawable.getConstantState().newDrawable();
+        boolean isAdaptiveIcon = supportsAdaptiveIcons
+                && finalDrawable instanceof AdaptiveIconDrawable;
+        int iconOffset = getOffsetForIconBounds(finalDrawable);
 
         new Handler(Looper.getMainLooper()).post(() -> {
+            if (isAdaptiveIcon) {
+                mIsAdaptiveIcon = true;
+
+                AdaptiveIconDrawable adaptiveIcon = (AdaptiveIconDrawable) finalDrawable;
+                Drawable background = adaptiveIcon.getBackground();
+                if (background == null) {
+                    background = new ColorDrawable(Color.TRANSPARENT);
+                }
+                mBackground = background;
+                Drawable foreground = adaptiveIcon.getForeground();
+                if (foreground == null) {
+                    foreground = new ColorDrawable(Color.TRANSPARENT);
+                }
+                mForeground = foreground;
+
+                mFinalDrawableBounds.set(iconOffset, iconOffset, lp.width -
+                        iconOffset, mOriginalHeight - iconOffset);
+                if (mForeground instanceof ShiftedBitmapDrawable && v instanceof FolderIcon) {
+                    ShiftedBitmapDrawable sbd = (ShiftedBitmapDrawable) mForeground;
+                    ((FolderIcon) v).getPreviewBounds(sTmpRect);
+                    sbd.setShiftX(sbd.getShiftX() - sTmpRect.left);
+                    sbd.setShiftY(sbd.getShiftY() - sTmpRect.top);
+                }
+                mForeground.setBounds(mFinalDrawableBounds);
+                mBackground.setBounds(mFinalDrawableBounds);
+
+                int blurMargin = mBlurSizeOutline / 2;
+                mStartRevealRect.set(blurMargin, blurMargin , lp.width - blurMargin,
+                        mOriginalHeight - blurMargin);
+
+                if (aspectRatio > 0) {
+                    lp.height = (int) Math.max(lp.height, lp.width * aspectRatio);
+                    layout(lp.leftMargin, lp.topMargin, lp.leftMargin + lp.width, lp.topMargin
+                            + lp.height);
+                }
+                mBgDrawableStartScale = (float) lp.height / mOriginalHeight;
+                setBackgroundDrawableBounds(mBgDrawableStartScale);
+
+                // Set up outline
+                mOutline.set(0, 0, lp.width, lp.height);
+                setOutlineProvider(new ViewOutlineProvider() {
+                    @Override
+                    public void getOutline(View view, Outline outline) {
+                        outline.setRoundRect(mOutline, mTaskCornerRadius);
+                    }
+                });
+                setClipToOutline(true);
+            } else {
+                setBackground(finalDrawable);
+            }
+
             invalidate();
             invalidateOutline();
         });
@@ -272,9 +277,10 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         mBackground.setBounds(mBgDrawableBounds);
     }
 
-    private int getOffsetForAdaptiveIconBounds() {
+    @WorkerThread
+    private int getOffsetForIconBounds(Drawable drawable) {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O ||
-                !(mDrawable instanceof AdaptiveIconDrawable)) {
+                !(drawable instanceof AdaptiveIconDrawable)) {
             return 0;
         }
 
@@ -283,7 +289,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         bounds.inset(mBlurSizeOutline / 2, mBlurSizeOutline / 2);
 
         try (LauncherIcons li = LauncherIcons.obtain(Launcher.fromContext(getContext()))) {
-            Utilities.scaleRectAboutCenter(bounds, li.getNormalizer().getScale(mDrawable, null));
+            Utilities.scaleRectAboutCenter(bounds, li.getNormalizer().getScale(drawable, null));
         }
 
         bounds.inset(
