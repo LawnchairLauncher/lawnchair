@@ -266,7 +266,6 @@
     <dimen name="select_dialog_padding_start_material">20dp</dimen>
     <dimen name="select_dialog_padding_material">24dp</dimen>
     <dimen name="select_dialog_drawable_padding_start_material">20dp</dimen>
-    <dimen name="hotseat_qsb_bottom_margin">2dp</dimen>
 
 <!-- Pixel 1 -->
     <dimen name="qsb_overlap_margin">-50dp</dimen>

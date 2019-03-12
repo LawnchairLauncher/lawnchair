@@ -9,7 +9,6 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -32,7 +31,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.util.PackageManagerHelper;
-import com.android.launcher3.util.Themes;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
@@ -266,7 +264,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
 
     protected void onLayout(boolean z, int i, int i2, int i3, int i4) {
         super.onLayout(z, i, i2, i3, i4);
-        setTranslationY((float) (-c(this.mActivity)));
+        setTranslationY((float) (-getBottomMargin(this.mActivity)));
     }
 
     public void setInsets(Rect rect) {
@@ -313,9 +311,18 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         doOnClick();
     }
 
-    static int c(Launcher launcher) {
-        return launcher.getDeviceProfile().getInsets().bottom + launcher.getResources()
-                .getDimensionPixelSize(R.dimen.hotseat_qsb_bottom_margin);
+    static int getBottomMargin(Launcher launcher) {
+        Resources resources = launcher.getResources();
+        DeviceProfile profile = launcher.getDeviceProfile();
+        Rect rect = profile.getInsets();
+        Rect hotseatLayoutPadding = profile.getHotseatLayoutPadding();
+        float f = (((float) (((profile.hotseatBarSizePx + rect.bottom) - hotseatLayoutPadding.top)
+                - hotseatLayoutPadding.bottom)) + (((float) profile.iconSizePx) * 0.92f)) / 2.0f;
+        float f2 = ((float) rect.bottom) * 0.67f;
+        return Math.round(f2 + (
+                ((((((float) (profile.hotseatBarSizePx + rect.bottom)) - f2) - f) - resources
+                        .getDimension(R.dimen.qsb_widget_height))
+                        - ((float) profile.verticalDragHandleSizePx)) / 2.0f));
     }
 
     @Nullable
