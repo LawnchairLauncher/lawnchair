@@ -313,16 +313,24 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
 
     static int getBottomMargin(Launcher launcher) {
         Resources resources = launcher.getResources();
+        int minBottom = launcher.getDeviceProfile().getInsets().bottom + launcher.getResources()
+                .getDimensionPixelSize(R.dimen.hotseat_qsb_bottom_margin);
+
         DeviceProfile profile = launcher.getDeviceProfile();
         Rect rect = profile.getInsets();
         Rect hotseatLayoutPadding = profile.getHotseatLayoutPadding();
-        float f = (((float) (((profile.hotseatBarSizePx + rect.bottom) - hotseatLayoutPadding.top)
-                - hotseatLayoutPadding.bottom)) + (((float) profile.iconSizePx) * 0.92f)) / 2.0f;
+
+        int hotseatTop = profile.hotseatBarSizePx + rect.bottom;
+        int hotseatIconsTop = hotseatTop - hotseatLayoutPadding.top;
+
+        float f = ((hotseatIconsTop - hotseatLayoutPadding.bottom) + (profile.iconSizePx * 0.92f)) / 2.0f;
         float f2 = ((float) rect.bottom) * 0.67f;
-        return Math.round(f2 + (
-                ((((((float) (profile.hotseatBarSizePx + rect.bottom)) - f2) - f) - resources
+        int bottomMargin = Math.round(f2 + (
+                ((((((float) hotseatTop) - f2) - f) - resources
                         .getDimension(R.dimen.qsb_widget_height))
                         - ((float) profile.verticalDragHandleSizePx)) / 2.0f));
+
+        return Math.max(minBottom, bottomMargin);
     }
 
     @Nullable
