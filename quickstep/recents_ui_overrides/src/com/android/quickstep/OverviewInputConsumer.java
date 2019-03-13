@@ -30,6 +30,7 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -139,7 +140,7 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
             return;
         }
         int flags = ev.getEdgeFlags();
-        ev.setEdgeFlags(flags | TouchInteractionService.EDGE_NAV_BAR);
+        ev.setEdgeFlags(flags | Utilities.EDGE_NAV_BAR);
         ev.offsetLocation(-mLocationOnScreen[0], -mLocationOnScreen[1]);
         if (ev.getAction() == ACTION_DOWN) {
             mTarget.onInterceptTouchEvent(ev);
