@@ -394,11 +394,6 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     }
 
     @Override
-    public AlphaProperty getAlphaProperty(Launcher activity) {
-        return activity.getDragLayer().getAlphaProperty(DragLayer.ALPHA_INDEX_SWIPE_UP);
-    }
-
-    @Override
     public int getContainerType() {
         final Launcher launcher = getVisibleLauncher();
         return launcher != null ? launcher.getStateManager().getState().containerType
