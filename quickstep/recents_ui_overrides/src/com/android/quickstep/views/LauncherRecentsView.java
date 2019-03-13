@@ -74,12 +74,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
 
     @Override
     public void startHome() {
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            takeScreenshotAndFinishRecentsAnimation(true,
-                    () -> mActivity.getStateManager().goToState(NORMAL));
-        } else {
-            mActivity.getStateManager().goToState(NORMAL);
-        }
+        mActivity.getStateManager().goToState(NORMAL);
     }
 
     @Override
