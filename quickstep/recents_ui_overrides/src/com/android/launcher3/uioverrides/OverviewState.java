@@ -18,6 +18,7 @@ package com.android.launcher3.uioverrides;
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 
 import android.graphics.Rect;
@@ -30,8 +31,8 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.DiscoveryBounce;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import com.android.quickstep.RecentsModel;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
@@ -139,6 +140,8 @@ public class OverviewState extends LauncherState {
     public void onBackPressed(Launcher launcher) {
         TaskView taskView = launcher.<RecentsView>getOverviewPanel().getRunningTaskView();
         if (taskView != null) {
+            launcher.getUserEventDispatcher().logActionCommand(Action.Command.BACK,
+                    newContainerTarget(ContainerType.OVERVIEW));
             taskView.launchTask(true);
         } else {
             super.onBackPressed(launcher);
