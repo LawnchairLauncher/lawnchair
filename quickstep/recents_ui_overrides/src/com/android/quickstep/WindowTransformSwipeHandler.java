@@ -1170,6 +1170,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             mLauncherTransitionController = null;
         }
         mActivityControlHelper.onSwipeUpComplete(mActivity);
+        mRecentsAnimationWrapper.setCancelWithDeferredScreenshot(true);
 
         // Animate the first icon.
         mRecentsView.animateUpRunningTaskIconScale();

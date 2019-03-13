@@ -38,9 +38,16 @@ import androidx.annotation.UiThread;
  */
 public class RecentsAnimationListenerSet implements RecentsAnimationListener {
 
+    // The actual app surface is replaced by a screenshot upon recents animation cancelation when
+    // deferredWithScreenshot is true. Launcher takes the responsibility to clean up this screenshot
+    // after app transition is finished. This delay is introduced to cover the app transition
+    // period of time.
+    private final int TRANSITION_DELAY = 100;
+
     private final Set<SwipeAnimationListener> mListeners = new ArraySet<>();
     private final boolean mShouldMinimizeSplitScreen;
     private final Consumer<SwipeAnimationTargetSet> mOnFinishListener;
+    private RecentsAnimationControllerCompat mController;
 
     public RecentsAnimationListenerSet(boolean shouldMinimizeSplitScreen,
             Consumer<SwipeAnimationTargetSet> onFinishListener) {
@@ -64,6 +71,7 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
     public final void onAnimationStart(RecentsAnimationControllerCompat controller,
             RemoteAnimationTargetCompat[] targets, Rect homeContentInsets,
             Rect minimizedHomeBounds) {
+        mController = controller;
         SwipeAnimationTargetSet targetSet = new SwipeAnimationTargetSet(controller, targets,
                 homeContentInsets, minimizedHomeBounds, mShouldMinimizeSplitScreen,
                 mOnFinishListener);
@@ -75,12 +83,17 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
     }
 
     @Override
-    public final void onAnimationCanceled() {
+    public final void onAnimationCanceled(boolean deferredWithScreenshot) {
         Utilities.postAsyncCallback(MAIN_THREAD_EXECUTOR.getHandler(), () -> {
             for (SwipeAnimationListener listener : getListeners()) {
                 listener.onRecentsAnimationCanceled();
             }
         });
+        // TODO: handle the transition better instead of simply using a transition delay.
+        if (deferredWithScreenshot) {
+            MAIN_THREAD_EXECUTOR.getHandler().postDelayed(() -> mController.cleanupScreenshot(),
+                    TRANSITION_DELAY);
+        }
     }
 
     private SwipeAnimationListener[] getListeners() {
