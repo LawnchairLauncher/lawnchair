@@ -1578,7 +1578,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public void updateLiveTileIcon(Drawable icon) {
-        mLiveTileOverlay.setIcon(icon);
+        if (mLiveTileOverlay != null) {
+            mLiveTileOverlay.setIcon(icon);
+        }
     }
 
     public void finishRecentsAnimation(boolean toRecents, Runnable onFinishComplete) {
