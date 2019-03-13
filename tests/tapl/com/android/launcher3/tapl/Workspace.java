@@ -28,6 +28,8 @@ import androidx.annotation.Nullable;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
+import com.android.launcher3.TestProtocol;
+
 /**
  * Operations on the workspace screen.
  */
@@ -162,7 +164,12 @@ public final class Workspace extends Home {
     }
 
     @Override
-    protected int getSwipeLength() {
-        return 100;
+    protected String getSwipeHeightRequestName() {
+        return TestProtocol.REQUEST_HOME_TO_OVERVIEW_SWIPE_HEIGHT;
+    }
+
+    @Override
+    protected int getSwipeStartY() {
+        return mLauncher.waitForLauncherObject("hotseat").getVisibleBounds().top;
     }
 }

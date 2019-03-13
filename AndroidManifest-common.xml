@@ -152,14 +152,6 @@
             android:writePermission="${packageName}.permission.WRITE_SETTINGS"
             android:readPermission="${packageName}.permission.READ_SETTINGS" />
 
-        <provider
-            android:name="com.android.launcher3.TestInformationProvider"
-            android:authorities="${packageName}.TestInfo"
-            android:readPermission="android.permission.WRITE_SECURE_SETTINGS"
-            android:writePermission="android.permission.WRITE_SECURE_SETTINGS"
-            android:exported="true">
-        </provider>
-
         <!--
         The content provider for exposing various launcher grid options.
         TODO: Enable when all apps columns are correct

@@ -26,6 +26,7 @@ import android.view.View;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
@@ -132,7 +133,10 @@ public class OverviewState extends LauncherState {
     }
 
     public static float getDefaultSwipeHeight(Launcher launcher) {
-        DeviceProfile dp = launcher.getDeviceProfile();
+        return getDefaultSwipeHeight(launcher.getDeviceProfile());
+    }
+
+    public static float getDefaultSwipeHeight(DeviceProfile dp) {
         return dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx;
     }
 
