@@ -21,15 +21,15 @@
     android:orientation="horizontal">
     <FrameLayout
         android:id="@+id/task_icon_and_thumbnail"
-        android:layout_width="@dimen/task_item_height"
-        android:layout_height="@dimen/task_item_height"
+        android:layout_width="@dimen/task_thumbnail_and_icon_view_size"
+        android:layout_height="@dimen/task_thumbnail_and_icon_view_size"
         android:layout_gravity="center_vertical"
         android:layout_marginHorizontal="8dp"
         android:layout_marginVertical="@dimen/task_item_half_vert_margin">
         <ImageView
             android:id="@+id/task_thumbnail"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/task_thumbnail_width"
+            android:layout_height="@dimen/task_thumbnail_height"
             android:layout_gravity="top|start"/>
         <ImageView
             android:id="@+id/task_icon"

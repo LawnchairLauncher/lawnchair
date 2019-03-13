@@ -27,6 +27,7 @@ import android.view.ViewDebug;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -153,6 +154,20 @@ public final class IconRecentsView extends FrameLayout {
             // smarter when animating from app to overview.
             mTaskAdapter.notifyDataSetChanged();
         });
+    }
+
+    /**
+     * Get the thumbnail view associated with a task for the purposes of animation.
+     *
+     * @param taskId task id of thumbnail view to get
+     * @return the thumbnail view for the task if attached, null otherwise
+     */
+    public @Nullable View getThumbnailViewForTask(int taskId) {
+        TaskItemView view = mTaskAdapter.getTaskItemView(taskId);
+        if (view == null) {
+            return null;
+        }
+        return view.getThumbnailView();
     }
 
     public void setTranslationYFactor(float translationFactor) {
