@@ -571,9 +571,11 @@ public final class Utilities {
         final boolean isFolderIcon = v instanceof FolderIcon;
         final Rect rect = new Rect();
 
+        // Deep shortcut views have their icon drawn in a separate view.
         final boolean fromDeepShortcutView = v.getParent() instanceof DeepShortcutView;
-        if (fromDeepShortcutView) {
-            // Deep shortcut views have their icon drawn in a separate view.
+        if (v instanceof DeepShortcutView) {
+            dragLayer.getDescendantRectRelativeToSelf(((DeepShortcutView) v).getIconView(), rect);
+        } else if (fromDeepShortcutView) {
             DeepShortcutView view = (DeepShortcutView) v.getParent();
             dragLayer.getDescendantRectRelativeToSelf(view.getIconView(), rect);
         } else if ((isBubbleTextView || isFolderIcon) && v.getTag() instanceof ItemInfo

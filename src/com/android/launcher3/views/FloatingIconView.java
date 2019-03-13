@@ -50,6 +50,7 @@ import com.android.launcher3.folder.FolderShape;
 import com.android.launcher3.graphics.ShiftedBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.shortcuts.DeepShortcutView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
@@ -197,8 +198,14 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
             // Similar to DragView, we simply use the BubbleTextView icon here.
             drawable = ((BubbleTextView) v).getIcon();
         }
-        if (v instanceof ImageView && info instanceof SystemShortcut) {
-            drawable = ((ImageView) v).getDrawable();
+        if (info instanceof SystemShortcut) {
+            if (v instanceof ImageView) {
+                drawable = ((ImageView) v).getDrawable();
+            } else if (v instanceof DeepShortcutView) {
+                drawable = ((DeepShortcutView) v).getIconView().getBackground();
+            } else {
+                drawable = v.getBackground();
+            }
         }
         if (drawable == null) {
             drawable = Utilities.getFullDrawable(launcher, info, lp.width, lp.height,
