@@ -45,6 +45,7 @@ final class TaskHolder extends ViewHolder {
         mTask = task;
         mTaskItemView.setLabel(task.titleDescription);
         mTaskItemView.setIcon(task.icon);
+        mTaskItemView.setThumbnail(task.thumbnail.thumbnail);
     }
 
     /**
