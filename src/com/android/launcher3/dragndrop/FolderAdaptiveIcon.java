@@ -19,11 +19,8 @@ package com.android.launcher3.dragndrop;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.ColorFilter;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -49,11 +46,15 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
 
     private final Drawable mBadge;
     private final Path mMask;
+    private final ConstantState mConstantState;
 
     private FolderAdaptiveIcon(Drawable bg, Drawable fg, Drawable badge, Path mask) {
         super(bg, fg);
         mBadge = badge;
         mMask = mask;
+
+        mConstantState = new MyConstantState(bg.getConstantState(), fg.getConstantState(),
+                badge.getConstantState(), mask);
     }
 
     @Override
@@ -133,5 +134,36 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
                 margin - previewShiftX, margin - previewShiftY);
 
         return new FolderAdaptiveIcon(new ColorDrawable(bg.getBgColor()), foreground, badge, mask);
+    }
+
+    @Override
+    public ConstantState getConstantState() {
+        return mConstantState;
+    }
+
+    private static class MyConstantState extends ConstantState {
+        private final ConstantState mBg;
+        private final ConstantState mFg;
+        private final ConstantState mBadge;
+        private final Path mMask;
+
+        MyConstantState(ConstantState bg, ConstantState fg, ConstantState badge, Path mask) {
+            mBg = bg;
+            mFg = fg;
+            mBadge = badge;
+            mMask = mask;
+        }
+
+        @Override
+        public Drawable newDrawable() {
+            return new FolderAdaptiveIcon(mBg.newDrawable(), mFg.newDrawable(),
+                    mBadge.newDrawable(), mMask);
+        }
+
+        @Override
+        public int getChangingConfigurations() {
+            return mBg.getChangingConfigurations() & mFg.getChangingConfigurations()
+                    & mBadge.getChangingConfigurations();
+        }
     }
 }

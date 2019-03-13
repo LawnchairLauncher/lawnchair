@@ -32,10 +32,14 @@ public class ShiftedBitmapDrawable extends Drawable {
     private float mShiftX;
     private float mShiftY;
 
+    private final ConstantState mConstantState;
+
     public ShiftedBitmapDrawable(Bitmap bitmap, float shiftX, float shiftY) {
         mBitmap = bitmap;
         mShiftX = shiftX;
         mShiftY = shiftY;
+
+        mConstantState = new MyConstantState(mBitmap, mShiftX, mShiftY);
     }
 
     public float getShiftX() {
@@ -70,5 +74,32 @@ public class ShiftedBitmapDrawable extends Drawable {
     @Override
     public int getOpacity() {
         return PixelFormat.TRANSLUCENT;
+    }
+
+    @Override
+    public ConstantState getConstantState() {
+        return mConstantState;
+    }
+
+    private static class MyConstantState extends ConstantState {
+        private final Bitmap mBitmap;
+        private float mShiftX;
+        private float mShiftY;
+
+        MyConstantState(Bitmap bitmap, float shiftX, float shiftY) {
+            mBitmap = bitmap;
+            mShiftX = shiftX;
+            mShiftY = shiftY;
+        }
+
+        @Override
+        public Drawable newDrawable() {
+            return new ShiftedBitmapDrawable(mBitmap, mShiftX, mShiftY);
+        }
+
+        @Override
+        public int getChangingConfigurations() {
+            return 0;
+        }
     }
 }
