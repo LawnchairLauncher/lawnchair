@@ -17,15 +17,19 @@ package com.android.quickstep.views;
 
 import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
+import android.view.View;
 import android.view.ViewDebug;
 import android.widget.FrameLayout;
 
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 
 import com.android.launcher3.R;
 import com.android.quickstep.TaskAdapter;
@@ -70,6 +74,7 @@ public final class IconRecentsView extends FrameLayout {
                     return ALPHA.get(view);
                 }
             };
+    private static final long CROSSFADE_DURATION = 300;
 
     /**
      * A ratio representing the view's relative placement within its padded space. For example, 0
@@ -84,7 +89,7 @@ public final class IconRecentsView extends FrameLayout {
 
     private float mTranslationYFactor;
     private RecyclerView mTaskRecyclerView;
-
+    private View mEmptyView;
 
     public IconRecentsView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -106,6 +111,19 @@ public final class IconRecentsView extends FrameLayout {
             ItemTouchHelper helper = new ItemTouchHelper(
                     new TaskSwipeCallback(mTaskInputController));
             helper.attachToRecyclerView(mTaskRecyclerView);
+
+            mEmptyView = findViewById(R.id.recent_task_empty_view);
+            mTaskAdapter.registerAdapterDataObserver(new AdapterDataObserver() {
+                @Override
+                public void onChanged() {
+                    updateContentViewVisibility();
+                }
+
+                @Override
+                public void onItemRangeRemoved(int positionStart, int itemCount) {
+                    updateContentViewVisibility();
+                }
+            });
         }
     }
 
@@ -132,5 +150,45 @@ public final class IconRecentsView extends FrameLayout {
 
     private float computeTranslationYForFactor(float translationYFactor) {
         return translationYFactor * (getPaddingBottom() - getPaddingTop());
+    }
+
+    /**
+     * Update the content view so that the appropriate view is shown based off the current list
+     * of tasks.
+     */
+    private void updateContentViewVisibility() {
+        int taskListSize = mTaskLoader.getCurrentTaskList().size();
+        if (mEmptyView.getVisibility() != VISIBLE && taskListSize == 0) {
+            crossfadeViews(mEmptyView, mTaskRecyclerView);
+            // TODO: Go to home.
+        }
+        if (mTaskRecyclerView.getVisibility() != VISIBLE && taskListSize > 0) {
+            crossfadeViews(mTaskRecyclerView, mEmptyView);
+        }
+    }
+
+    /**
+     * Animate views so that one view fades in while the other fades out.
+     *
+     * @param fadeInView view that should fade in
+     * @param fadeOutView view that should fade out
+     */
+    private void crossfadeViews(View fadeInView, View fadeOutView) {
+        fadeInView.setVisibility(VISIBLE);
+        fadeInView.setAlpha(0f);
+        fadeInView.animate()
+                .alpha(1f)
+                .setDuration(CROSSFADE_DURATION)
+                .setListener(null);
+
+        fadeOutView.animate()
+                .alpha(0f)
+                .setDuration(CROSSFADE_DURATION)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        fadeOutView.setVisibility(GONE);
+                    }
+                });
     }
 }

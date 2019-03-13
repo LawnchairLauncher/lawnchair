@@ -24,5 +24,15 @@
         android:id="@+id/recent_task_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none"/>
+        android:scrollbars="none"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/recent_task_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/recents_empty_message"
+        android:textColor="@android:color/white"
+        android:textSize="25sp"
+        android:visibility="gone"/>
 </com.android.quickstep.views.IconRecentsView>
