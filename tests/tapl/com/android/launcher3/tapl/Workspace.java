@@ -136,6 +136,8 @@ public final class Workspace extends Home {
      */
     public void flingForward() {
         final UiObject2 workspace = verifyActiveContainer();
+        final int margin = (int) (50 * mLauncher.getDisplayDensity()) + 1;
+        workspace.setGestureMargins(0, 0, margin, 0);
         workspace.fling(Direction.RIGHT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
         mLauncher.waitForIdle();
         verifyActiveContainer();
@@ -147,6 +149,8 @@ public final class Workspace extends Home {
      */
     public void flingBackward() {
         final UiObject2 workspace = verifyActiveContainer();
+        final int margin = (int) (50 * mLauncher.getDisplayDensity()) + 1;
+        workspace.setGestureMargins(margin, 0, 0, 0);
         workspace.fling(Direction.LEFT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
         mLauncher.waitForIdle();
         verifyActiveContainer();
