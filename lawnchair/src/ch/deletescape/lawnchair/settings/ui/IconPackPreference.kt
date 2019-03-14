@@ -20,6 +20,7 @@ package ch.deletescape.lawnchair.settings.ui
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.os.Bundle
 import android.support.v7.preference.Preference
 import android.util.AttributeSet
 import android.view.View
@@ -78,6 +79,9 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
                 context.startActivity(Intent()
                         .setClass(context, SettingsActivity::class.java)
                         .putExtra(SettingsActivity.EXTRA_FRAGMENT, fragment)
+                        .putExtra(SettingsActivity.EXTRA_FRAGMENT_ARGS, Bundle().apply {
+                            putString(SettingsActivity.SubSettingsFragment.TITLE, context.getString(R.string.pref_icon_pack))
+                        })
                 )
             }
         }
