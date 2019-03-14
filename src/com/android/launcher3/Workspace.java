@@ -3084,6 +3084,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     private boolean mapOverCellLayout(boolean recurse, CellLayout layout, ItemOperator op) {
+        // TODO(b/128460496) Potential race condition where layout is not yet loaded
+        if (layout == null) {
+            return false;
+        }
         ShortcutAndWidgetContainer container = layout.getShortcutsAndWidgets();
         // map over all the shortcuts on the workspace
         final int itemCount = container.getChildCount();
