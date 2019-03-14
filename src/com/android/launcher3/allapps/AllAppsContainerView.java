@@ -221,10 +221,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     public AllAppsRecyclerView getActiveRecyclerView() {
-        if (!mUsingTabs || mViewPager.getNextPage() == 0) {
+        if (!mUsingTabs) {
             return mAH[AdapterHolder.MAIN].recyclerView;
         } else {
-            return mAH[AdapterHolder.WORK].recyclerView;
+            return mAH[mViewPager.getNextPage()].recyclerView;
         }
     }
 
