@@ -200,6 +200,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         onChangeCallback?.launcher?.background?.onEnabledChanged()
     }
 
+    // Integrations
+    var syncIconPackWithSesame by BooleanPref("pref_sesame_sync_icon_pack", true)
+
     // Misc
     var autoLaunchRoot by BooleanPref("internal_auto_launch_root")
 

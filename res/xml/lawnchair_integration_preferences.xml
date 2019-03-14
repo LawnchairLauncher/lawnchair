@@ -45,6 +45,13 @@
             android:summaryOn="@string/sesame_search_upsell_on"
             android:summaryOff="@string/sesame_search_upsell_off"/>
 
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:dependency="sesame_integration"
+            android:defaultValue="true"
+            android:key="pref_sesame_sync_icon_pack"
+            android:summary="@string/pref_sesame_sync_icon_pack_summary"
+            android:title="@string/pref_sesame_sync_icon_pack" />
+
         <ch.deletescape.lawnchair.sesame.preferences.SesameVersionPreference
             android:key="sesame_version"
             android:title="@string/sesame_version" />

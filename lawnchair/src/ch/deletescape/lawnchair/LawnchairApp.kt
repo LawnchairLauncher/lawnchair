@@ -29,6 +29,7 @@ import android.support.annotation.Keep
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.font.FontLoader
 import ch.deletescape.lawnchair.font.FontLoaderManager
+import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
 import ch.deletescape.lawnchair.theme.ThemeManager
 import com.android.launcher3.BuildConfig
@@ -60,7 +61,15 @@ class LawnchairApp : Application() {
         if (BuildConfig.FEATURE_QUINOA) {
             SesameFrontend.init(this, object: SesameInitOnComplete {
                 override fun onConnect() {
-                    SesameFrontend.setIntegrationDialog(this@LawnchairApp, R.layout.dialog_sesame_integration, android.R.id.button2, android.R.id.button1)
+                    val thiz = this@LawnchairApp
+                    SesameFrontend.setIntegrationDialog(thiz, R.layout.dialog_sesame_integration, android.R.id.button2, android.R.id.button1)
+                    val ipm = IconPackManager.getInstance(thiz)
+                    ipm.addListener {
+                        if (thiz.lawnchairPrefs.syncIconPackWithSesame) {
+                            val pkg = ipm.packList.currentPack().packPackageName
+                            SesameFrontend.setIconPack(thiz, if (pkg == "") null else pkg)
+                        }
+                    }
                 }
 
                 override fun onDisconnect() {
