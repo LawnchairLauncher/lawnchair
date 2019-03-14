@@ -29,7 +29,6 @@ import android.graphics.Rect;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.GestureDetector;
 import android.view.View.OnTouchListener;
 import android.view.ViewConfiguration;
 
@@ -46,7 +45,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 /**
  * Helper class to handle touch on empty space in workspace and show options popup on long press
  */
-public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListener implements OnTouchListener {
+public class WorkspaceTouchListener implements OnTouchListener, Runnable {
 
     /**
      * STATE_PENDING_PARENT_INFORM is the state between longPress performed & the next motionEvent.
@@ -67,21 +66,16 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
     private int mLongPressState = STATE_CANCELLED;
 
-    private final GestureDetector mGestureDetector;
-
     public WorkspaceTouchListener(Launcher launcher, Workspace workspace) {
         mLauncher = launcher;
         mWorkspace = workspace;
         // Use twice the touch slop as we are looking for long press which is more
         // likely to cause movement.
         mTouchSlop = 2 * ViewConfiguration.get(launcher).getScaledTouchSlop();
-        mGestureDetector = new GestureDetector(workspace.getContext(), this);
     }
 
     @Override
     public boolean onTouch(View view, MotionEvent ev) {
-        mGestureDetector.onTouchEvent(ev);
-
         int action = ev.getActionMasked();
         if (action == ACTION_DOWN) {
             // Check if we can handle long press.
@@ -103,6 +97,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
             if (handleLongPress) {
                 mLongPressState = STATE_REQUESTED;
                 mTouchDownPoint.set(ev.getX(), ev.getY());
+                mWorkspace.postDelayed(this, getLongPressTimeout());
             }
 
             mWorkspace.onTouchEvent(ev);
@@ -160,11 +155,12 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
     }
 
     private void cancelLongPress() {
+        mWorkspace.removeCallbacks(this);
         mLongPressState = STATE_CANCELLED;
     }
 
     @Override
-    public void onLongPress(MotionEvent event) {
+    public void run() {
         if (mLongPressState == STATE_REQUESTED) {
             if (canHandleLongPress()) {
                 mLongPressState = STATE_PENDING_PARENT_INFORM;
