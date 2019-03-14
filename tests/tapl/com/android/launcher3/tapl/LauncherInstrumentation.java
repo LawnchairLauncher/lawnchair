@@ -18,10 +18,11 @@ package com.android.launcher3.tapl;
 
 import static com.android.systemui.shared.system.SettingsCompat.SWIPE_UP_SETTING_NAME;
 
-import android.app.ActivityManager;
 import android.app.Instrumentation;
 import android.app.UiAutomation;
+import android.content.ContentResolver;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.SystemClock;
@@ -43,6 +44,7 @@ import com.android.quickstep.SwipeUpSetting;
 
 import org.junit.Assert;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -95,6 +97,7 @@ public final class LauncherInstrumentation {
     private final UiDevice mDevice;
     private final Instrumentation mInstrumentation;
     private int mExpectedRotation = Surface.ROTATION_0;
+    private final Uri mTestProviderUri;
 
     /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
@@ -103,11 +106,34 @@ public final class LauncherInstrumentation {
         mInstrumentation = instrumentation;
         mDevice = UiDevice.getInstance(instrumentation);
 
-        // Launcher should run in test harness so that custom accessibility protocol between
-        // Launcher and TAPL is enabled. In-process tests enable this protocol with a direct call
-        // into Launcher.
-        assertTrue("Device must run in a test harness",
-                TestHelpers.isInLauncherProcess() || ActivityManager.isRunningInTestHarness());
+        final String testPackage = mInstrumentation.getContext().getPackageName();
+        final String targetPackage = mInstrumentation.getTargetContext().getPackageName();
+
+        // Launcher package. As during inproc tests the tested launcher may not be selected as the
+        // current launcher, choosing target package for inproc. For out-of-proc, use the installed
+        // launcher package.
+        final String authorityPackage = testPackage.equals(targetPackage) ?
+                getLauncherPackageName() :
+                targetPackage;
+
+        mTestProviderUri = new Uri.Builder()
+                .scheme(ContentResolver.SCHEME_CONTENT)
+                .authority(authorityPackage + ".TestInfo")
+                .build();
+
+        try {
+            mDevice.executeShellCommand("pm grant " + testPackage +
+                    " android.permission.WRITE_SECURE_SETTINGS");
+        } catch (IOException e) {
+            fail(e.toString());
+        }
+
+        // Launcher should run in test harness so that custom test protocols between Launcher and
+        // TAPL are enabled. In-process tests enable this protocol with a direct call into Launcher.
+        final Bundle response = mInstrumentation.getContext().getContentResolver().call(
+                mTestProviderUri, TestProtocol.IS_TEST_INFO_ENABLED, null, null);
+        assertTrue("Launcher is not running in test harness",
+                response.getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, false));
     }
 
     void setActiveContainer(VisibleContainer container) {
