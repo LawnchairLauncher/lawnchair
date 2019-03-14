@@ -26,12 +26,14 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 
 import com.android.launcher3.R;
+import com.android.quickstep.RecentsToActivityHelper;
 import com.android.quickstep.TaskAdapter;
 import com.android.quickstep.TaskInputController;
 import com.android.quickstep.TaskListLoader;
@@ -87,6 +89,7 @@ public final class IconRecentsView extends FrameLayout {
     private final TaskAdapter mTaskAdapter;
     private final TaskInputController mTaskInputController;
 
+    private RecentsToActivityHelper mActivityHelper;
     private float mTranslationYFactor;
     private RecyclerView mTaskRecyclerView;
     private View mEmptyView;
@@ -128,6 +131,15 @@ public final class IconRecentsView extends FrameLayout {
     }
 
     /**
+     * Set activity helper for the view to callback to.
+     *
+     * @param helper the activity helper
+     */
+    public void setRecentsToActivityHelper(@NonNull RecentsToActivityHelper helper) {
+        mActivityHelper = helper;
+    }
+
+    /**
      * Logic for when we know we are going to overview/recents and will be putting up the recents
      * view. This should be used to prepare recents (e.g. load any task data, etc.) before it
      * becomes visible.
@@ -160,7 +172,7 @@ public final class IconRecentsView extends FrameLayout {
         int taskListSize = mTaskLoader.getCurrentTaskList().size();
         if (mEmptyView.getVisibility() != VISIBLE && taskListSize == 0) {
             crossfadeViews(mEmptyView, mTaskRecyclerView);
-            // TODO: Go to home.
+            mActivityHelper.leaveRecents();
         }
         if (mTaskRecyclerView.getVisibility() != VISIBLE && taskListSize > 0) {
             crossfadeViews(mTaskRecyclerView, mEmptyView);

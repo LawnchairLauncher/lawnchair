@@ -23,6 +23,7 @@ import android.util.FloatProperty;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherRecentsToActivityHelper;
 import com.android.quickstep.views.IconRecentsView;
 
 /**
@@ -33,6 +34,8 @@ public final class RecentsViewStateController extends
 
     public RecentsViewStateController(@NonNull Launcher launcher) {
         super(launcher);
+        launcher.<IconRecentsView>getOverviewPanel().setRecentsToActivityHelper(
+                new LauncherRecentsToActivityHelper(launcher));
     }
 
     @Override
