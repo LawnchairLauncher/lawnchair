@@ -50,4 +50,6 @@
     <attr name="bottomSheetNavBarColor" format="color" />
     <attr name="useLightSystemBars" format="boolean" />
     <attr name="settingsBackground" format="color" />
+    <attr name="qsbEdgeRadius" format="dimension" />
+    <attr name="folderIconRadius" format="float" />
 </resources>

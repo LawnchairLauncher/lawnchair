@@ -27,14 +27,13 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.graphics.ColorUtils;
 import android.util.Property;
 import android.view.View;
 import android.view.animation.AnimationUtils;
-
+import ch.deletescape.lawnchair.folder.FolderShape;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Launcher;
@@ -43,10 +42,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PropertyResetListener;
-import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.Themes;
-
 import java.util.List;
 
 /**
@@ -189,14 +186,7 @@ public class FolderAnimationManager {
         play(a, getAnimator(mFolder, SCALE_PROPERTY, initialScale, finalScale));
         play(a, getAnimator(mFolderBackground, "color", initialColor, finalColor));
         play(a, mFolderIcon.mFolderName.createTextAlphaAnimator(!mIsOpening));
-        RoundedRectRevealOutlineProvider outlineProvider = new RoundedRectRevealOutlineProvider(
-                initialRadius, finalRadius, startRect, endRect) {
-            @Override
-            public boolean shouldRemoveElevationDuringAnimation() {
-                return true;
-            }
-        };
-        play(a, outlineProvider.createRevealAnimator(mFolder, !mIsOpening));
+        play(a, FolderShape.sInstance.createRevealAnimator(mFolder, startRect, endRect, finalRadius, !mIsOpening));
 
         // Animate the elevation midway so that the shadow is not noticeable in the background.
         int midDuration = mDuration / 2;

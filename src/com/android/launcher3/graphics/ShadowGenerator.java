@@ -126,7 +126,11 @@ public class ShadowGenerator {
         }
 
         public Bitmap createPill(int width, int height) {
-            radius = height / 2f;
+            return createPill(width, height, height / 2f);
+        }
+
+        public Bitmap createPill(int width, int height, float radius) {
+            this.radius = radius;
 
             int centerX = Math.round(width / 2f + shadowBlur);
             int centerY = Math.round(radius + shadowBlur + keyShadowDistance);
