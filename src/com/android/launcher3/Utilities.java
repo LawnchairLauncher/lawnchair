@@ -848,6 +848,11 @@ public final class Utilities {
                 .isEmpty(getSystemProperty("ro.hydrogen.version", ""));
     }
 
+    public static Boolean isMiui(){
+        return !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.code", "")) ||
+                !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.name", ""));
+    }
+
     public static void openURLinBrowser(Context context, String url) {
         openURLinBrowser(context, url, null, null);
     }
