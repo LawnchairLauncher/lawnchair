@@ -17,35 +17,6 @@
 LOCAL_PATH := $(call my-dir)
 
 #
-# Prebuilt Java Libraries
-#
-include $(CLEAR_VARS)
-LOCAL_MODULE := libSharedSystemUI
-LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_CLASS := JAVA_LIBRARIES
-LOCAL_SRC_FILES := quickstep/libs/sysui_shared.jar
-LOCAL_UNINSTALLABLE_MODULE := true
-LOCAL_SDK_VERSION := current
-include $(BUILD_PREBUILT)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := libPluginCore
-LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_CLASS := JAVA_LIBRARIES
-LOCAL_SRC_FILES := libs/plugin_core.jar
-LOCAL_UNINSTALLABLE_MODULE := true
-LOCAL_SDK_VERSION := current
-include $(BUILD_PREBUILT)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := libLauncherProtos
-LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_CLASS := JAVA_LIBRARIES
-LOCAL_SRC_FILES := libs/launcher_protos.jar
-LOCAL_UNINSTALLABLE_MODULE := true
-LOCAL_SDK_VERSION := current
-include $(BUILD_PREBUILT)
-#
 # Build rule for plugin lib (needed to write a plugin).
 #
 include $(CLEAR_VARS)
