@@ -17,9 +17,12 @@
 
 package ch.deletescape.lawnchair.settings
 
+import android.content.Context
 import ch.deletescape.lawnchair.LawnchairPreferences
+import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 
 class DrawerTabs(prefs: LawnchairPreferences) {
@@ -30,22 +33,66 @@ class DrawerTabs(prefs: LawnchairPreferences) {
     private val context = prefs.context
 
     init {
-        val arr = JSONArray(tabsDataJson)
+        loadTabs()
+    }
+
+    private fun loadTabsArray(): JSONArray {
+        try {
+            return JSONArray(tabsDataJson)
+        } catch (ignored: JSONException) {
+        }
+
+        try {
+            val obj = JSONObject(tabsDataJson)
+            val version = if (obj.has(KEY_VERSION)) obj.getInt(KEY_VERSION) else 0
+            if (version > currentVersion) return JSONArray()
+            return obj.getJSONArray(KEY_TABS)
+        } catch (ignored: JSONException) {
+        }
+
+        return JSONArray()
+    }
+
+    private fun loadTabs() {
+        tabs.clear()
+        var personalAdded = false
+        var workAdded = false
+        val arr = loadTabsArray()
         (0 until arr.length())
                 .map { arr.getJSONObject(it) }
-                .mapTo(tabs) {
-                    val title = if (it.has(KEY_TITLE)) it.getString(KEY_TITLE) else ""
-                    val hideFromAllApps = if (it.has(KEY_HIDE_FROM_ALL_APPS))
-                        it.getBoolean(KEY_HIDE_FROM_ALL_APPS) else true
-                    val contents = mutableSetOf<ComponentKey>()
-                    if (it.has(KEY_ITEMS)) {
-                        val rawItems = it.getJSONArray(KEY_ITEMS)
-                        for (i in (0 until rawItems.length())) {
-                            contents.add(ComponentKey(context, rawItems.getString(i)))
+                .mapNotNullTo(tabs) { tab ->
+                    val type = if (tab.has(KEY_TYPE)) tab.getInt(KEY_TYPE) else TYPE_CUSTOM
+                    when (type) {
+                        TYPE_CUSTOM -> {
+                            val title = if (tab.has(KEY_TITLE)) tab.getString(KEY_TITLE) else ""
+                            val hideFromAllApps = if (tab.has(KEY_HIDE_FROM_ALL_APPS))
+                                tab.getBoolean(KEY_HIDE_FROM_ALL_APPS) else true
+                            val contents = mutableSetOf<ComponentKey>()
+                            if (tab.has(KEY_ITEMS)) {
+                                val rawItems = tab.getJSONArray(KEY_ITEMS)
+                                for (i in (0 until rawItems.length())) {
+                                    contents.add(ComponentKey(context, rawItems.getString(i)))
+                                }
+                            }
+                            CustomTab(title, hideFromAllApps, contents)
                         }
+                        TYPE_PERSONAL -> {
+                            personalAdded = true
+                            PersonalTab(context)
+                        }
+                        TYPE_WORK -> {
+                            workAdded = true
+                            WorkTab(context)
+                        }
+                        else -> null
                     }
-                    Tab(title, hideFromAllApps, contents)
                 }
+        if (!personalAdded) {
+            tabs.add(0, PersonalTab(context))
+        }
+        if (!workAdded) {
+            tabs.add(WorkTab(context))
+        }
     }
 
     fun getTabs(): List<Tab> {
@@ -59,28 +106,66 @@ class DrawerTabs(prefs: LawnchairPreferences) {
 
     fun saveToJson() {
         val arr = JSONArray()
+        var workAdded = false
         tabs.forEach {tab ->
-            val items = JSONArray()
-            tab.contents.forEach { items.put(it.toString()) }
-
-            val obj = JSONObject()
-            obj.put(KEY_TITLE, tab.title)
-            obj.put(KEY_HIDE_FROM_ALL_APPS, tab.hideFromAllApps)
-            obj.put(KEY_ITEMS, items)
-
-            arr.put(obj)
+            arr.put(JSONObject().also { tab.saveToJson(it) })
+            if (tab is WorkTab) {
+                workAdded = true
+            }
         }
-        tabsDataJson = arr.toString()
+        if (!workAdded) {
+            tabs.add(WorkTab(context))
+        }
+
+        val obj = JSONObject()
+        obj.put(KEY_VERSION, currentVersion)
+        obj.put(KEY_TABS, arr)
+        tabsDataJson = obj.toString()
     }
 
     companion object {
 
+        const val currentVersion = 1
+
+        const val KEY_VERSION = "version"
+        const val KEY_TABS = "tabs"
+
+        const val KEY_TYPE = "type"
         const val KEY_TITLE = "title"
         const val KEY_ITEMS = "items"
         const val KEY_HIDE_FROM_ALL_APPS = "hideFromAllApps"
+
+        const val TYPE_PERSONAL = 0
+        const val TYPE_WORK = 1
+        const val TYPE_CUSTOM = 2
     }
 
-    class Tab(var title: String,
-              var hideFromAllApps: Boolean = true,
-              val contents: MutableSet<ComponentKey> = mutableSetOf())
+    open class Tab(var title: String, private val type: Int) {
+
+        open fun saveToJson(obj: JSONObject) {
+            obj.put(KEY_TYPE, type)
+        }
+    }
+
+    class CustomTab(title: String, var hideFromAllApps: Boolean = true,
+                    val contents: MutableSet<ComponentKey> = mutableSetOf()) : Tab(title, TYPE_CUSTOM) {
+
+        override fun saveToJson(obj: JSONObject) {
+            val items = JSONArray()
+            contents.forEach { items.put(it.toString()) }
+
+            obj.put(KEY_TITLE, title)
+            obj.put(KEY_HIDE_FROM_ALL_APPS, hideFromAllApps)
+            obj.put(KEY_ITEMS, items)
+        }
+    }
+
+    class PersonalTab(context: Context) : Tab(context.getString(R.string.all_apps_personal_tab), TYPE_PERSONAL) {
+
+        fun loadTitle(context: Context, hasWorkApps: Boolean): String {
+            return context.getString(if (hasWorkApps) R.string.all_apps_personal_tab else R.string.all_apps_label)
+        }
+    }
+
+    class WorkTab(context: Context) : Tab(context.getString(R.string.all_apps_work_tab), TYPE_WORK)
 }

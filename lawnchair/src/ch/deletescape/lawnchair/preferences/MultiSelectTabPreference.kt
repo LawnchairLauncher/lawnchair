@@ -38,8 +38,8 @@ import com.android.launcher3.util.ComponentKey
 class MultiSelectTabPreference(context: Context, attrs: AttributeSet?) : RecyclerViewPreference(context, attrs) {
 
     lateinit var componentKey: ComponentKey
-    private val selections = mutableMapOf<DrawerTabs.Tab, Boolean>()
-    private val tabs = context.lawnchairPrefs.drawerTabs.getTabs()
+    private val selections = mutableMapOf<DrawerTabs.CustomTab, Boolean>()
+    private val tabs = context.lawnchairPrefs.drawerTabs.getTabs().mapNotNull { it as? DrawerTabs.CustomTab }
     var edited = false
         private set(value) {
             field = value
@@ -115,7 +115,7 @@ class MultiSelectTabPreference(context: Context, attrs: AttributeSet?) : Recycle
                 itemView.setOnClickListener(this)
             }
 
-            fun bind(tab: DrawerTabs.Tab) {
+            fun bind(tab: DrawerTabs.CustomTab) {
                 textView.text = tab.title
                 checked = selections[tab] == true
             }

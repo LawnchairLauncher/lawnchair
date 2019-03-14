@@ -28,6 +28,7 @@ import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.DrawerTabs
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import com.android.launcher3.R
+import com.android.launcher3.compat.UserManagerCompat
 
 class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<DrawerTabsAdapter.Holder>() {
 
@@ -37,6 +38,8 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
     val itemTouchHelper = ItemTouchHelper(TouchHelperCallback())
 
     private var saved = true
+
+    private val hasWorkApps = UserManagerCompat.getInstance(context).userProfiles.size > 1
 
     override fun getItemCount() = tabs.size
 
@@ -49,14 +52,18 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
     }
 
     fun addTab(title: String) {
-        tabs.add(DrawerTabs.Tab(title))
+        tabs.add(DrawerTabs.CustomTab(title))
         notifyItemInserted(tabs.size - 1)
         saved = false
     }
 
     fun reloadTabs() {
         tabs.clear()
-        tabs.addAll(drawerTabs.getTabs())
+        if (hasWorkApps) {
+            tabs.addAll(drawerTabs.getTabs())
+        } else {
+            tabs.addAll(drawerTabs.getTabs().filter { it !is DrawerTabs.WorkTab })
+        }
         notifyDataSetChanged()
     }
 
@@ -91,12 +98,17 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
         }
 
         fun bind(info: DrawerTabs.Tab) {
-            title.text = info.title
-            itemView.setOnClickListener {
-                SettingsActivity.startFragment(context, DrawerTabEditFragment::class.java.name,
-                        Bundle().apply {
-                            putInt(DrawerTabEditFragment.EXTRA_INDEX, adapterPosition)
-                        })
+            title.text = if (info is DrawerTabs.PersonalTab)
+                info.loadTitle(context, hasWorkApps) else info.title
+            if (info is DrawerTabs.CustomTab) {
+                itemView.setOnClickListener {
+                    SettingsActivity.startFragment(context, DrawerTabEditFragment::class.java.name,
+                            Bundle().apply {
+                                putInt(DrawerTabEditFragment.EXTRA_INDEX, adapterPosition)
+                            })
+                }
+            } else {
+                itemView.setOnClickListener(null)
             }
         }
 
@@ -126,6 +138,7 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
         }
 
         override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
+            if (tabs[adapterPosition] !is DrawerTabs.CustomTab) return
             menu.add(0, ITEM_RENAME, 0, R.string.rename_tab)
             menu.add(0, ITEM_DELETE, 0, R.string.delete_tab)
             for (i in (0 until menu.size())) {

@@ -113,7 +113,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         Selection.setSelection(mSearchQueryBuilder, 0);
 
         AllAppsTabs allAppsTabs = new AllAppsTabs(context);
-        mAH = new AdapterHolder[allAppsTabs.getCustomCount() + 2];
+        mAH = new AdapterHolder[allAppsTabs.getCount() + 1];
         mTabsController = new AllAppsTabsController(allAppsTabs, this, mAH);
 
         mNavBarScrimPaint = new Paint();
