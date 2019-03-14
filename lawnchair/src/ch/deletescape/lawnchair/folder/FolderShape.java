@@ -284,17 +284,6 @@ public abstract class FolderShape {
     }
 
     public static void init(Context context) {
-        if (!Utilities.ATLEAST_OREO) {
-            return;
-        }
-        Region v1 = new Region(0, 0, 200, 200);
-        Region v4 = new Region();
-        AdaptiveIconDrawable tmp = new AdaptiveIconDrawable(new ColorDrawable(Color.BLACK), new ColorDrawable(Color.BLACK));
-        tmp.setBounds(0, 0, 200, 200);
-        v4.setPath(tmp.getIconMask(), v1);
-        Path v5 = new Path();
-        Region v6 = new Region();
-        Rect v7 = new Rect();
         ArrayList<FolderShape> shapes = new ArrayList<>();
         try {
             XmlPullParser parser = context.getResources().getXml(R.xml.folder_shapes);
@@ -329,6 +318,20 @@ public abstract class FolderShape {
         } catch (XmlPullParserException | IOException e) {
             Log.d(TAG, "error parsing xml", e);
         }
+
+        if (!Utilities.ATLEAST_OREO) {
+            sInstance = shapes.get(0);
+            return;
+        }
+
+        Region v1 = new Region(0, 0, 200, 200);
+        Region v4 = new Region();
+        AdaptiveIconDrawable tmp = new AdaptiveIconDrawable(new ColorDrawable(Color.BLACK), new ColorDrawable(Color.BLACK));
+        tmp.setBounds(0, 0, 200, 200);
+        v4.setPath(tmp.getIconMask(), v1);
+        Path v5 = new Path();
+        Region v6 = new Region();
+        Rect v7 = new Rect();
 
         int smallest = Integer.MAX_VALUE;
         for (FolderShape shape : shapes) {
