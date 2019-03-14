@@ -478,14 +478,14 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             saveCount = canvas.saveLayer(0, 0, getWidth(), getHeight(), null);
         } else {
             saveCount = canvas.save();
+            canvas.clipPath(mBackground.getClipPath());
         }
 
-        canvas.clipPath(mBackground.getClipPath());
         mPreviewItemManager.draw(canvas);
 
-//        if (canvas.isHardwareAccelerated()) {
-//            mBackground.clipCanvasHardware(canvas);
-//        }
+        if (canvas.isHardwareAccelerated()) {
+            mBackground.clipCanvasHardware(canvas);
+        }
         canvas.restoreToCount(saveCount);
 
         if (!mBackground.drawingDelegated()) {
