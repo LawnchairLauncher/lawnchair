@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textAppearance="@style/SettingsTheme.PreferenceTheme.Preference.Title"
             android:ellipsize="marquee"
             tools:text="@string/pref_sesame_show_shortcuts" />
         <TextView

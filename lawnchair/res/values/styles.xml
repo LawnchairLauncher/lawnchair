@@ -126,9 +126,17 @@
 
     <style name="SettingsTheme.PreferenceTheme" parent="@style/PreferenceThemeOverlay.v14.Material">
         <item name="preferenceFragmentCompatStyle">@style/SettingsTheme.PreferenceTheme.Fragment</item>
+        <item name="preferenceCategoryStyle">@style/SettingsTheme.PreferenceTheme.Category</item>
+        <item name="android:textAppearanceListItem">@style/SettingsTheme.PreferenceTheme.Preference.Title</item>
     </style>
     <style name="SettingsTheme.PreferenceTheme.Fragment" parent="@style/PreferenceFragment.Material">
         <item name="android:layout">@layout/settings_fragment</item>
+    </style>
+    <style name="SettingsTheme.PreferenceTheme.Category" parent="@style/Preference.Category.Material">
+        <item name="android:layout">@layout/settings_category_material</item>
+    </style>
+    <style name="SettingsTheme.PreferenceTheme.Preference.Title" parent="@style/TextAppearance.AppCompat.Subhead">
+        <item name="fontFamily">@font/google_sans</item>
     </style>
 
     <style name="SettingsTheme.Base" parent="@style/Theme.AppCompat.Light.NoActionBar">
