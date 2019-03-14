@@ -18,6 +18,7 @@ package com.android.quickstep;
 import android.content.Context;
 
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import com.android.launcher3.MainProcessInitializer;
 import com.android.launcher3.Utilities;
 import com.android.systemui.shared.system.ThreadedRendererCompat;
@@ -35,7 +36,9 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
         try {
             ThreadedRendererCompat.setContextPriority(ThreadedRendererCompat.EGL_CONTEXT_PRIORITY_HIGH_IMG);
         } catch (Throwable t) {
-            Utilities.HIDDEN_APIS_ALLOWED = !Utilities.ATLEAST_P;
+            if (Utilities.ATLEAST_P && Utilities.HIDDEN_APIS_ALLOWED) {
+                Log.e("QuickstepProcessInit", "Hidden APIs allowed but can't invoke setContextPriority", t);
+            }
         }
     }
 }

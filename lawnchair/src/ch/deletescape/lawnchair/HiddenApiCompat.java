@@ -27,9 +27,20 @@ import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.view.ThreadedRenderer;
 
 @RequiresApi(Build.VERSION_CODES.P)
 public class HiddenApiCompat {
+
+    public static boolean tryAccess() {
+        // TODO: is there a better way?
+        try {
+            ThreadedRenderer.class.getMethod("setContextPriority", int.class);
+            return true;
+        } catch (NoSuchMethodException e) {
+            return false;
+        }
+    }
 
     public static boolean supportsMultiWindow(Context context) {
         return ActivityManager.supportsMultiWindow(context);

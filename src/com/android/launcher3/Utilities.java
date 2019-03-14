@@ -76,6 +76,7 @@ import android.view.animation.Interpolator;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
+import ch.deletescape.lawnchair.HiddenApiCompat;
 import ch.deletescape.lawnchair.LawnchairApp;
 import ch.deletescape.lawnchair.LawnchairAppKt;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -123,8 +124,6 @@ public final class Utilities {
     private static final Matrix sMatrix = new Matrix();
     private static final Matrix sInverseMatrix = new Matrix();
 
-    public static boolean HIDDEN_APIS_ALLOWED = true;
-
     public static final boolean ATLEAST_Q = Build.VERSION.CODENAME.length() == 1 &&
             Build.VERSION.CODENAME.charAt(0) >= 'Q' && Build.VERSION.CODENAME.charAt(0) <= 'Z';
 
@@ -148,6 +147,8 @@ public final class Utilities {
 
     public static final boolean ATLEAST_LOLLIPOP_MR1 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1;
+
+    public static boolean HIDDEN_APIS_ALLOWED = !ATLEAST_P || HiddenApiCompat.tryAccess();
 
     public static final int SINGLE_FRAME_MS = 16;
 
