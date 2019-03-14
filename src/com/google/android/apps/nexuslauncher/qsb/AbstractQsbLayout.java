@@ -35,6 +35,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.folder.FolderShape;
 import ch.deletescape.lawnchair.globalsearch.SearchProvider;
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
 import com.android.launcher3.DeviceProfile;
@@ -316,7 +317,13 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
             builder.ambientShadowAlpha = 2 * builder.ambientShadowAlpha;
         }
         builder.keyShadowAlpha = builder.ambientShadowAlpha;
-        Bitmap pill = builder.createPill(i2, dC);
+        Bitmap pill;
+        TypedValue edgeRadius = FolderShape.sInstance.mAttrs.get(R.attr.qsbEdgeRadius);
+        if (edgeRadius != null) {
+            pill = builder.createPill(i2, dC, edgeRadius.getDimension(getResources().getDisplayMetrics()));
+        } else {
+            pill = builder.createPill(i2, dC);
+        }
         if (Utilities.ATLEAST_OREO) {
             return pill.copy(Config.HARDWARE, false);
         }
