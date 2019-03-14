@@ -162,8 +162,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private static final int LAUNCHER_UI_STATES =
             STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_LAUNCHER_STARTED;
 
-    // For debugging, keep in sync with above states
-
     enum GestureEndTarget {
         HOME(1, STATE_SCALED_CONTROLLER_HOME, true, false, ContainerType.WORKSPACE),
 
@@ -172,7 +170,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
         NEW_TASK(0, STATE_START_NEW_TASK, false, true, ContainerType.APP),
 
-        LAST_TASK(0, STATE_SCALED_CONTROLLER_LAST_TASK, false, false, ContainerType.APP);
+        LAST_TASK(0, STATE_SCALED_CONTROLLER_LAST_TASK, false, true, ContainerType.APP);
 
         GestureEndTarget(float endShift, int endState, boolean isLauncher, boolean canBeContinued,
                 int containerType) {
@@ -234,6 +232,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private ThumbnailData mTaskSnapshot;
 
     private MultiStateCallback mStateCallback;
+    // Used to control launcher components throughout the swipe gesture.
     private AnimatorPlaybackController mLauncherTransitionController;
 
     private T mActivity;
@@ -274,19 +273,14 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private void initStateCallbacks() {
         mStateCallback = new MultiStateCallback(STATE_NAMES);
 
-        // Re-setup the recents UI when gesture starts, as the state could have been changed during
-        // that time by a previous window transition.
-        mStateCallback.addCallback(STATE_LAUNCHER_STARTED | STATE_GESTURE_STARTED,
-                this::setupRecentsViewUi);
+        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_GESTURE_STARTED,
+                this::onLauncherPresentAndGestureStarted);
 
         mStateCallback.addCallback(STATE_LAUNCHER_DRAWN | STATE_GESTURE_STARTED,
                 this::initializeLauncherAnimationController);
 
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN,
                 this::launcherFrameDrawn);
-
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_GESTURE_STARTED,
-                this::notifyGestureStartedAsync);
 
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_STARTED
                         | STATE_GESTURE_CANCELLED,
@@ -414,6 +408,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         } else {
             activity.setOnStartCallback(this::onLauncherStart);
         }
+
+        setupRecentsViewUi();
         return true;
     }
 
@@ -425,8 +421,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             return;
         }
 
-        mAnimationFactory = mActivityControlHelper.prepareRecentsUI(mActivity,
-                mWasLauncherAlreadyVisible, true, this::onAnimatorPlaybackControllerCreated);
+        // If we've already ended the gesture and are going home, don't prepare recents UI,
+        // as that will set the state as BACKGROUND_APP, overriding the animation to NORMAL.
+        if (mGestureEndTarget != HOME) {
+            mAnimationFactory = mActivityControlHelper.prepareRecentsUI(mActivity,
+                    mWasLauncherAlreadyVisible, true, this::onAnimatorPlaybackControllerCreated);
+        }
         AbstractFloatingView.closeAllOpenViews(activity, mWasLauncherAlreadyVisible);
 
         if (mWasLauncherAlreadyVisible) {
@@ -450,9 +450,16 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             });
         }
 
-        setupRecentsViewUi();
         activity.getRootView().setOnApplyWindowInsetsListener(this);
         mStateCallback.setState(STATE_LAUNCHER_STARTED);
+    }
+
+    private void onLauncherPresentAndGestureStarted() {
+        // Re-setup the recents UI when gesture starts, as the state could have been changed during
+        // that time by a previous window transition.
+        setupRecentsViewUi();
+
+        notifyGestureStartedAsync();
     }
 
     private void setupRecentsViewUi() {
@@ -723,7 +730,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             final int lastTaskIndex = mRecentsView.getTaskViewCount() - 1;
             final int runningTaskIndex = mRecentsView.getRunningTaskIndex();
             taskToLaunch = nextPage <= lastTaskIndex ? nextPage : lastTaskIndex;
-            goingToNewTask = mRecentsView != null && taskToLaunch != runningTaskIndex;
+            goingToNewTask = runningTaskIndex >= 0 && taskToLaunch != runningTaskIndex;
         } else {
             goingToNewTask = false;
         }
@@ -859,8 +866,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             RecentsModel.INSTANCE.get(mContext).endStabilizationSession();
         }
 
-        HomeAnimationFactory homeAnimFactory;
         if (mGestureEndTarget == HOME) {
+            HomeAnimationFactory homeAnimFactory;
             if (mActivity != null) {
                 homeAnimFactory = mActivityControlHelper.prepareHomeUI(mActivity);
             } else {
@@ -901,7 +908,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 }
             });
             windowAnim.start();
-            homeAnimFactory = null;
         }
         // Always play the entire launcher animation when going home, since it is separate from
         // the animation that has been controlled thus far.
@@ -951,6 +957,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         }
 
         AnimatorPlaybackController homeAnim = homeAnimationFactory.createActivityAnimationToHome();
+
         // We want the window alpha to be 0 once this threshold is met, so that the
         // FolderIconView can be seen morphing into the icon shape.
         final float windowAlphaThreshold = isFloatingIconView ? 0.75f : 1f;
@@ -1006,18 +1013,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         // Launch the task user scrolled to (mRecentsView.getNextPage()).
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             // We finish recents animation inside launchTask() when live tile is enabled.
-            mRecentsView.getTaskViewAt(mRecentsView.getNextPage()).launchTask(false,
-                    result -> setStateOnUiThread(STATE_HANDLER_INVALIDATED),
-                    mMainThreadHandler);
+            mRecentsView.getTaskViewAt(mRecentsView.getNextPage()).launchTask(false);
         } else {
             mRecentsAnimationWrapper.finish(true /* toRecents */, () -> {
-                mRecentsView.getTaskViewAt(mRecentsView.getNextPage()).launchTask(false,
-                        result -> setStateOnUiThread(STATE_HANDLER_INVALIDATED),
-                        mMainThreadHandler);
+                mRecentsView.getTaskViewAt(mRecentsView.getNextPage()).launchTask(false);
             });
         }
         TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", false);
         doLogGesture(NEW_TASK);
+        reset();
     }
 
     public void reset() {

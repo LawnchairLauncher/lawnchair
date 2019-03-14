@@ -130,7 +130,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mVelocityTracker = VelocityTracker.obtain();
 
         mActivityControlHelper = activityControl;
-        mIsDeferredDownTarget = isDeferredDownTarget;
+        boolean continuingPreviousGesture = swipeSharedState.getActiveListener() != null;
+        mIsDeferredDownTarget = !continuingPreviousGesture && isDeferredDownTarget;
         mOverviewCallbacks = overviewCallbacks;
         mTaskOverlayFactory = taskOverlayFactory;
         mInputConsumer = inputConsumer;
@@ -142,8 +143,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
         mDragSlop = NavigationBarCompat.getQuickStepDragSlopPx();
         mTouchSlop = NavigationBarCompat.getQuickStepTouchSlopPx();
-        // If active listener isn't null, we are continuing the previous gesture.
-        mPassedTouchSlop = mPassedDragSlop = mSwipeSharedState.getActiveListener() != null;
+        mPassedTouchSlop = mPassedDragSlop = continuingPreviousGesture;
     }
 
     @Override
