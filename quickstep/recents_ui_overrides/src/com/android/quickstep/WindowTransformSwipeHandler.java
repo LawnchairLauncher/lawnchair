@@ -110,7 +110,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         implements SwipeAnimationListener, OnApplyWindowInsetsListener {
     private static final String TAG = WindowTransformSwipeHandler.class.getSimpleName();
 
-    private static final String[] STATE_NAMES = DEBUG_STATES ? new String[16] : null;
+    private static final String[] STATE_NAMES = DEBUG_STATES ? new String[17] : null;
 
     private static int getFlagForIndex(int index, String name) {
         if (DEBUG_STATES) {
