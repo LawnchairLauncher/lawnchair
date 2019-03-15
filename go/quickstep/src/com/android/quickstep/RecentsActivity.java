@@ -36,6 +36,7 @@ public final class RecentsActivity extends BaseRecentsActivity {
         setContentView(R.layout.fallback_recents_activity);
         mRecentsRootView = findViewById(R.id.drag_layer);
         mIconRecentsView = findViewById(R.id.overview_panel);
+        mIconRecentsView.setRecentsToActivityHelper(new FallbackRecentsToActivityHelper(this));
     }
 
     @Override
