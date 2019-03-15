@@ -18,9 +18,11 @@ package com.android.launcher3.tapl;
 
 import static com.android.systemui.shared.system.SettingsCompat.SWIPE_UP_SETTING_NAME;
 
+import android.app.ActivityManager;
 import android.app.Instrumentation;
 import android.app.UiAutomation;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
@@ -106,7 +108,13 @@ public final class LauncherInstrumentation {
         mInstrumentation = instrumentation;
         mDevice = UiDevice.getInstance(instrumentation);
 
-        final String testPackage = mInstrumentation.getContext().getPackageName();
+        // Launcher should run in test harness so that custom accessibility protocol between
+        // Launcher and TAPL is enabled. In-process tests enable this protocol with a direct call
+        // into Launcher.
+        assertTrue("Device must run in a test harness",
+                TestHelpers.isInLauncherProcess() || ActivityManager.isRunningInTestHarness());
+
+        final String testPackage = getContext().getPackageName();
         final String targetPackage = mInstrumentation.getTargetContext().getPackageName();
 
         // Launcher package. As during inproc tests the tested launcher may not be selected as the
@@ -127,13 +135,14 @@ public final class LauncherInstrumentation {
         } catch (IOException e) {
             fail(e.toString());
         }
+    }
 
-        // Launcher should run in test harness so that custom test protocols between Launcher and
-        // TAPL are enabled. In-process tests enable this protocol with a direct call into Launcher.
-        final Bundle response = mInstrumentation.getContext().getContentResolver().call(
-                mTestProviderUri, TestProtocol.IS_TEST_INFO_ENABLED, null, null);
-        assertTrue("Launcher is not running in test harness",
-                response.getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, false));
+    Context getContext() {
+        return mInstrumentation.getContext();
+    }
+
+    Bundle getTestInfo(String request) {
+        return getContext().getContentResolver().call(mTestProviderUri, request, null, null);
     }
 
     void setActiveContainer(VisibleContainer container) {

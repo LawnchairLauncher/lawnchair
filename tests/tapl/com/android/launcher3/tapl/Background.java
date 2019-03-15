@@ -22,10 +22,13 @@ import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 
 import static org.junit.Assert.assertTrue;
 
+import android.view.ViewConfiguration;
+
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
+
+import com.android.launcher3.TestProtocol;
 
 /**
  * Indicates the base state with a UI other than Overview running as foreground. It can also
@@ -59,20 +62,24 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
 
     protected void goToOverviewUnchecked(int expectedState) {
         if (mLauncher.isSwipeUpEnabled()) {
-            final int height = mLauncher.getDevice().getDisplayHeight();
-            final UiObject2 navBar = mLauncher.getSystemUiObject("navigation_bar_frame");
+            final int centerX = mLauncher.getDevice().getDisplayWidth() / 2;
+            final int startY = getSwipeStartY();
+            final int swipeHeight = mLauncher.getTestInfo(
+                    getSwipeHeightRequestName()).
+                    getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+            final int slop = ViewConfiguration.get(mLauncher.getContext()).getScaledTouchSlop();
 
-            int swipeLength = Math.round(getSwipeLength() * mLauncher.getDisplayDensity());
-            mLauncher.swipe(
-                    navBar.getVisibleBounds().centerX(), navBar.getVisibleBounds().centerY(),
-                    navBar.getVisibleBounds().centerX(), height - swipeLength,
-                    expectedState);
+            mLauncher.swipe(centerX, startY, centerX, startY - swipeHeight - slop, expectedState);
         } else {
             mLauncher.getSystemUiObject("recent_apps").click();
         }
     }
 
-    protected int getSwipeLength() {
-        return 200;
+    protected String getSwipeHeightRequestName() {
+        return TestProtocol.REQUEST_BACKGROUND_TO_OVERVIEW_SWIPE_HEIGHT;
+    }
+
+    protected int getSwipeStartY() {
+        return mLauncher.getSystemUiObject("home").getVisibleBounds().centerY();
     }
 }

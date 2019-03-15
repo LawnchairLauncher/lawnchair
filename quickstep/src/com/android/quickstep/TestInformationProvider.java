@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.quickstep;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.TestProtocol;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.uioverrides.OverviewState;
+import com.android.quickstep.util.LayoutUtils;
 
 public class TestInformationProvider extends ContentProvider {
     @Override
@@ -55,10 +63,26 @@ public class TestInformationProvider extends ContentProvider {
 
     @Override
     public Bundle call(String method, String arg, Bundle extras) {
-        if (TestProtocol.IS_TEST_INFO_ENABLED.equals(method)) {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
             final Bundle response = new Bundle();
-            response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                    Utilities.IS_RUNNING_IN_TEST_HARNESS);
+            final Context context = getContext();
+            final DeviceProfile deviceProfile = InvariantDeviceProfile.INSTANCE.
+                    get(context).getDeviceProfile(context);
+
+            switch (method) {
+                case TestProtocol.REQUEST_HOME_TO_OVERVIEW_SWIPE_HEIGHT: {
+                    final float swipeHeight =
+                            OverviewState.getDefaultSwipeHeight(deviceProfile);
+                    response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, (int) swipeHeight);
+                    break;
+                }
+                case TestProtocol.REQUEST_BACKGROUND_TO_OVERVIEW_SWIPE_HEIGHT: {
+                    final float swipeHeight =
+                            LayoutUtils.getShelfTrackingDistance(context, deviceProfile);
+                    response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, (int) swipeHeight);
+                    break;
+                }
+            }
             return response;
         }
         return null;
