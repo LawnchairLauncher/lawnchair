@@ -74,8 +74,6 @@ public class TouchInteractionService extends Service {
     public static final EventLogArray TOUCH_INTERACTION_LOG =
             new EventLogArray("touch_interaction_log", 40);
 
-    public static final int EDGE_NAV_BAR = 1 << 8;
-
     private static final String TAG = "TouchInteractionService";
 
     private final IBinder mMyBinder = new IOverviewProxy.Stub() {

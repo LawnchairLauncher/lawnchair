@@ -27,7 +27,7 @@ import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.launcher3.uioverrides.TaskViewTouchController.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
-import static com.android.quickstep.TouchInteractionService.EDGE_NAV_BAR;
+import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.quickstep.util.ClipAnimationHelper.TransformParams;
 
 import android.animation.Animator;
