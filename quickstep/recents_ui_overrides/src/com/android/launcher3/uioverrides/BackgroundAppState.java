@@ -52,7 +52,7 @@ public class BackgroundAppState extends OverviewState {
     }
 
     @Override
-    public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
+    public float[] getOverviewScaleAndTranslationY(Launcher launcher) {
         // Initialize the recents view scale to what it would be when starting swipe up
         RecentsView recentsView = launcher.getOverviewPanel();
         recentsView.getTaskSize(sTempRect);
