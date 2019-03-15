@@ -68,9 +68,8 @@ abstract class BaseFlags {
     // When enabled the promise icon is visible in all apps while installation an app.
     public static final boolean LAUNCHER3_PROMISE_APPS_IN_ALL_APPS = false;
 
-    public static final TogglableFlag QSB_ON_FIRST_SCREEN = new TogglableFlag("QSB_ON_FIRST_SCREEN",
-            true,
-            "Enable moving the QSB on the 0th screen of the workspace");
+    // Enable moving the QSB on the 0th screen of the workspace
+    public static final boolean QSB_ON_FIRST_SCREEN = true;
 
     public static final TogglableFlag EXAMPLE_FLAG = new TogglableFlag("EXAMPLE_FLAG", true,
             "An example flag that doesn't do anything. Useful for testing");
