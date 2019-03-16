@@ -48,6 +48,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Interpolator
 import android.widget.CheckedTextView
+import android.widget.ImageView
 import android.widget.Switch
 import android.widget.TextView
 import ch.deletescape.lawnchair.colors.ColorEngine
@@ -572,3 +573,9 @@ fun CheckedTextView.applyAccent() {
 }
 
 fun ViewGroup.isChild(view: View): Boolean = indexOfChild(view) != -1
+
+fun ImageView.tintDrawable(color: Int) {
+    val drawable = drawable.mutate()
+    drawable.setTint(color)
+    setImageDrawable(drawable)
+}

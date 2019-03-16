@@ -144,11 +144,25 @@
     </style>
 
     <style name="SettingsTheme.BottomSheetDialog.Light" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:colorPrimary">@android:color/white</item>
+        <item name="android:colorPrimaryDark">@android:color/white</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
         <item name="bottomSheetStyle">@style/SettingsTheme.BottomSheet</item>
     </style>
 
     <style name="SettingsTheme.BottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:colorPrimary">@color/settings_background_dark</item>
+        <item name="android:colorPrimaryDark">@color/settings_background_dark</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
         <item name="bottomSheetStyle">@style/SettingsTheme.BottomSheet</item>
+    </style>
+
+    <style name="SettingsTheme.Widget.Button" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:fontFamily">@font/google_sans_medium</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textAllCaps">false</item>
     </style>
 
     <style name="SettingsTheme.Base" parent="@style/Theme.AppCompat.Light.NoActionBar">

@@ -27,10 +27,12 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.*
 import android.widget.TextView
+import ch.deletescape.lawnchair.LawnchairPreferences
+import ch.deletescape.lawnchair.lawnchairPrefs
 import com.android.launcher3.R
 
 @Keep
-class DrawerTabsFragment : RecyclerViewFragment() {
+class DrawerTabsFragment : RecyclerViewFragment(), LawnchairPreferences.OnPreferenceChangeListener {
 
     private var adapter: DrawerTabsAdapter? = null
 
@@ -53,13 +55,18 @@ class DrawerTabsFragment : RecyclerViewFragment() {
     override fun onResume() {
         super.onResume()
 
-        adapter!!.reloadTabs()
+        context!!.lawnchairPrefs.addOnPreferenceChangeListener("pref_drawerTabs", this)
     }
 
     override fun onPause() {
         super.onPause()
 
+        context!!.lawnchairPrefs.removeOnPreferenceChangeListener("pref_drawerTabs", this)
         adapter?.saveChanges()
+    }
+
+    override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
+        adapter!!.reloadTabs()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -70,16 +77,9 @@ class DrawerTabsFragment : RecyclerViewFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_add -> {
-                val context = activity as Context
-                val view = LayoutInflater.from(context).inflate(R.layout.tab_title_input, null)
-                val title = view.findViewById(android.R.id.edit) as TextView
-                AlertDialog.Builder(context)
-                        .setTitle(R.string.add_new_tab)
-                        .setView(view)
-                        .setPositiveButton(android.R.string.ok) { _, _ ->
-                            adapter!!.addTab(title.text.toString())
-                        }
-                        .show()
+                DrawerTabEditBottomSheet.newTab(activity!!) {
+                    adapter!!.addTab(it)
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)

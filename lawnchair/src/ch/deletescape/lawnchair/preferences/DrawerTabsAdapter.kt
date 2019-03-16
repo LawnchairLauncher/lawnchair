@@ -24,9 +24,11 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.*
 import android.widget.TextView
+import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.DrawerTabs
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
+import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheetDialog
 import com.android.launcher3.R
 import com.android.launcher3.compat.UserManagerCompat
 
@@ -51,8 +53,9 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
         holder.bind(tabs[position])
     }
 
-    fun addTab(title: String) {
-        tabs.add(DrawerTabs.CustomTab(title))
+    fun addTab(config: DrawerTabEditBottomSheet.TabConfig) {
+        val tab = DrawerTabs.CustomTab(config.title, config.hideFromMain, config.contents)
+        tabs.add(tab)
         notifyItemInserted(tabs.size - 1)
         saved = false
     }
@@ -82,67 +85,47 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
         return true
     }
 
-    inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
+    inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
-        private val title: TextView = itemView.findViewById(android.R.id.title)
-        private val dragHandle: View = itemView.findViewById(R.id.drag_handle)
+        private val title: TextView = itemView.findViewById(R.id.title)
+        private val summary: TextView = itemView.findViewById(R.id.summary)
+        private val edit: View = itemView.findViewById(R.id.edit)
+        private val delete: View = itemView.findViewById(R.id.delete)
 
         init {
-            itemView.setOnCreateContextMenuListener(this)
-            dragHandle.setOnTouchListener { _, event ->
+            itemView.findViewById<View>(R.id.drag_handle).setOnTouchListener { _, event ->
                 if (event.actionMasked == MotionEvent.ACTION_DOWN) {
                     itemTouchHelper.startDrag(this)
                 }
                 false
             }
+            edit.setOnClickListener(this)
+            delete.setOnClickListener(this)
         }
 
         fun bind(info: DrawerTabs.Tab) {
             title.text = if (info is DrawerTabs.PersonalTab)
                 info.loadTitle(context, hasWorkApps) else info.title
+            summary.isVisible = info is DrawerTabs.CustomTab
+            edit.isVisible = info is DrawerTabs.CustomTab
+            delete.isVisible = info is DrawerTabs.CustomTab
             if (info is DrawerTabs.CustomTab) {
-                itemView.setOnClickListener {
-                    SettingsActivity.startFragment(context, DrawerTabEditFragment::class.java.name,
-                            Bundle().apply {
-                                putInt(DrawerTabEditFragment.EXTRA_INDEX, adapterPosition)
-                            })
-                }
-            } else {
-                itemView.setOnClickListener(null)
+                val size = info.contents.size
+                summary.text = context.resources.getQuantityString(R.plurals.tab_apps_count, size, size)
             }
         }
 
-        override fun onMenuItemClick(item: MenuItem): Boolean {
-            val position = adapterPosition
-            when (item.itemId) {
-                ITEM_RENAME -> {
-                    val view = LayoutInflater.from(context).inflate(R.layout.tab_title_input, null)
-                    val title = view.findViewById(android.R.id.edit) as TextView
-                    title.text = tabs[position].title
-                    AlertDialog.Builder(context)
-                            .setTitle(R.string.rename_tab)
-                            .setView(view)
-                            .setPositiveButton(android.R.string.ok) { _, _ ->
-                                tabs[position].title = title.text.toString()
-                                notifyItemChanged(position)
-                            }
-                            .show()
+        override fun onClick(v: View) {
+            when (v.id) {
+                R.id.edit -> {
+                    val tab = tabs[adapterPosition] as? DrawerTabs.CustomTab ?: return
+                    DrawerTabEditBottomSheet.edit(context, tab)
                 }
-                ITEM_DELETE -> {
-                    tabs.removeAt(position)
-                    notifyItemRemoved(position)
+                R.id.delete -> {
+                    tabs.removeAt(adapterPosition)
+                    notifyItemRemoved(adapterPosition)
+                    saved = false
                 }
-            }
-            saved = false
-            return true
-        }
-
-        override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
-            if (tabs[adapterPosition] !is DrawerTabs.CustomTab) return
-            menu.add(0, ITEM_RENAME, 0, R.string.rename_tab)
-            menu.add(0, ITEM_DELETE, 0, R.string.delete_tab)
-            for (i in (0 until menu.size())) {
-                menu.getItem(i).setOnMenuItemClickListener(this)
             }
         }
     }

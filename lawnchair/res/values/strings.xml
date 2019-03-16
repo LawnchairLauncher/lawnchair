@@ -437,4 +437,13 @@
     <string name="tabs_none_selected">None</string>
     <string name="tabs_manage">Manage…</string>
     <string name="undo">Undo</string>
+    <plurals name="tab_apps_count">
+        <item quantity="one">%1$d app</item>
+        <item quantity="other">%1$d apps</item>
+    </plurals>
+    <string name="selected_count">%1$d selected</string>
+    <string name="tab_manage_apps">Manage apps</string>
+    <string name="tab_name">Name</string>
+    <string name="tab_bottom_sheet_save">Save</string>
+    <string name="tab_hide_from_main">Hide from all apps</string>
 </resources>
