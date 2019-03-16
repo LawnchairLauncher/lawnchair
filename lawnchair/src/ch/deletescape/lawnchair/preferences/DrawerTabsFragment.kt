@@ -17,18 +17,18 @@
 
 package ch.deletescape.lawnchair.preferences
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.support.annotation.Keep
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
-import android.view.*
-import android.widget.TextView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
 import ch.deletescape.lawnchair.LawnchairPreferences
+import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.tintDrawable
 import com.android.launcher3.R
 
 @Keep
@@ -40,6 +40,23 @@ class DrawerTabsFragment : RecyclerViewFragment(), LawnchairPreferences.OnPrefer
         super.onCreate(savedInstanceState)
 
         setHasOptionsMenu(true)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return LayoutInflater.from(container!!.context).inflate(R.layout.fragment_drawer_tabs, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById<ImageView>(R.id.btn_add).apply {
+            tintDrawable(ColorEngine.getInstance(context).accent)
+            setOnClickListener {
+                DrawerTabEditBottomSheet.newTab(activity!!) {
+                    adapter!!.addTab(it)
+                }
+            }
+        }
     }
 
     override fun onRecyclerViewCreated(recyclerView: RecyclerView) {
@@ -67,22 +84,5 @@ class DrawerTabsFragment : RecyclerViewFragment(), LawnchairPreferences.OnPrefer
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
         adapter!!.reloadTabs()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_drawer_folders, menu)
-    }
-
-    @SuppressLint("InflateParams")
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_add -> {
-                DrawerTabEditBottomSheet.newTab(activity!!) {
-                    adapter!!.addTab(it)
-                }
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 }
