@@ -27,6 +27,7 @@ import android.util.SparseIntArray;
 import android.view.MotionEvent;
 import android.view.View;
 
+import ch.deletescape.lawnchair.colors.ColorEngine.ColorResolver;
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
@@ -420,5 +421,14 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     @Override
     public boolean hasOverlappingRendering() {
         return false;
+    }
+
+    @Override
+    public void onColorChange(String resolver, int color, int foregroundColor) {
+
+    }
+
+    public void setScrollbarColor(ColorResolver colorResolver) {
+        mScrollbar.setColor(colorResolver.resolveColor(), colorResolver.computeForegroundColor());
     }
 }

@@ -37,7 +37,8 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
     private val resolverMap = mutableMapOf<String, LawnchairPreferences.StringBasedPref<ColorResolver>>()
     private val resolverCache = mutableMapOf<String, ColorResolver>()
 
-    private var accentResolver by getOrCreateResolver(Resolvers.ACCENT)
+    private var _accentResolver by getOrCreateResolver(Resolvers.ACCENT)
+    val accentResolver get() = _accentResolver
     val accent get() = accentResolver.resolveColor()
     val accentForeground get() = accentResolver.computeForegroundColor()
 
@@ -84,10 +85,7 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
             prefs.StringBasedPref(key, defaultValue, prefs.doNothing, { string -> createColorResolver(key, string) },
                     ColorResolver::toString, ColorResolver::onDestroy)
 
-    fun createColorResolver(key: String, string: String): ColorResolver {
-        val cacheKey = "$key@$string"
-        // Prevent having to expensively use reflection every time
-        if (resolverCache.containsKey(cacheKey)) return resolverCache[cacheKey]!!
+    fun createColorResolverNullable(key: String, string: String): ColorResolver? {
         var resolver: ColorResolver? = null
         try {
             val parts = string.split("|")
@@ -101,6 +99,14 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
         } catch (e: ClassNotFoundException) {
         } catch (e: InstantiationException) {
         }
+        return resolver
+    }
+
+    fun createColorResolver(key: String, string: String): ColorResolver {
+        val cacheKey = "$key@$string"
+        // Prevent having to expensively use reflection every time
+        if (resolverCache.containsKey(cacheKey)) return resolverCache[cacheKey]!!
+        val resolver = createColorResolverNullable(key, string)
         return (resolver ?: Resolvers.getDefaultResolver(key, context, this)).also {
             resolverCache[cacheKey] = it
         }

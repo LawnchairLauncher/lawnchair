@@ -69,7 +69,7 @@ class ColorPickerDialog : DialogFragment() {
         val colorMode = ColorMode.fromName(savedInstanceState?.getString(ARG_COLOR_MODE)
                 ?: arguments!!.getString(ARG_COLOR_MODE, ColorMode.RGB.name))
 
-        tabbedPickerView = TabbedPickerView(context, key, initialColor, colorMode, resolvers, ::dismiss)
+        tabbedPickerView = TabbedPickerView.fromPrefs(context, key, initialColor, colorMode, resolvers, ::dismiss)
         return AlertDialog.Builder(context).setView(tabbedPickerView).create().apply {
             setOnShowListener {
                 val width: Int; val height: Int

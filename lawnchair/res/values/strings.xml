@@ -446,4 +446,5 @@
     <string name="tab_name">Name</string>
     <string name="tab_bottom_sheet_save">Save</string>
     <string name="tab_hide_from_main">Hide from all apps</string>
+    <string name="tab_color">Tab color</string>
 </resources>

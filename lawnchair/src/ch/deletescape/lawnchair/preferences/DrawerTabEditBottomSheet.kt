@@ -17,15 +17,19 @@
 
 package ch.deletescape.lawnchair.preferences
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Typeface
 import android.view.View
+import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Switch
 import android.widget.TextView
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.colors.preferences.TabbedPickerView
 import ch.deletescape.lawnchair.settings.DrawerTabs
 import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheetDialog
 import ch.deletescape.lawnchair.views.BaseBottomSheet
@@ -33,6 +37,10 @@ import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
+import me.priyesh.chroma.ColorMode
+import me.priyesh.chroma.orientation
+import me.priyesh.chroma.percentOf
+import me.priyesh.chroma.screenDimensions
 import java.lang.ClassCastException
 
 class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
@@ -41,6 +49,7 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
     private val tabName by lazy { findViewById<TextView>(R.id.name) }
     private val appsCount by lazy { findViewById<TextView>(R.id.apps_count) }
     private val hideSwitch by lazy { findViewById<Switch>(R.id.hide_switch) }
+    private val tabColor by lazy { findViewById<ImageView>(R.id.color_ring_icon) }
 
     init {
         View.inflate(context, R.layout.drawer_tab_edit_bottom_sheet, this)
@@ -56,9 +65,11 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
         }
 
         findViewById<TextView>(R.id.hide_title).setGoogleSans()
+        findViewById<TextView>(R.id.tab_color_title).setGoogleSans()
         findViewById<TextView>(R.id.manage_apps_title).setGoogleSans()
 
         findViewById<View>(R.id.hide_toggle).setOnClickListener(this)
+        findViewById<View>(R.id.tab_color).setOnClickListener(this)
         findViewById<View>(R.id.manage_apps).setOnClickListener(this)
         findViewById<TextView>(R.id.save).apply {
             setGoogleSans(Typeface.BOLD)
@@ -81,11 +92,13 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
     private fun updateSummary() {
         val count = config.contents.size
         appsCount.text = resources.getQuantityString(R.plurals.tab_apps_count, count, count)
+        tabColor.tintDrawable(config.colorResolver.resolveColor())
     }
 
     override fun onClick(v: View) {
         when (v.id) {
             R.id.hide_toggle -> toggleHideFromMain()
+            R.id.tab_color -> openColorDialog()
             R.id.manage_apps -> openAppsSelector()
             R.id.save -> {
                 config.title = tabName.text.toString()
@@ -118,13 +131,45 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
         }
     }
 
+    private fun openColorDialog() {
+        val dialog = AlertDialog.Builder(context).create()
+        val current = config.colorResolver
+        val resolvers = resources.getStringArray(R.array.resolver_tabs)
+        with(dialog) {
+            val tabbedPickerView = TabbedPickerView(context, "tabs", current.resolveColor(),
+                    ColorMode.RGB, resolvers, current.isCustom, {
+                config.colorResolver = it
+                updateSummary()
+            }, dialog::dismiss)
+            setView(tabbedPickerView)
+            setOnShowListener {
+                val width: Int; val height: Int
+                if (orientation(context) == Configuration.ORIENTATION_LANDSCAPE) {
+                    height = WindowManager.LayoutParams.WRAP_CONTENT
+                    width = 80 percentOf screenDimensions(context).widthPixels
+                } else {
+                    height = WindowManager.LayoutParams.WRAP_CONTENT
+                    width = resources.getDimensionPixelSize(R.dimen.chroma_dialog_width)
+                }
+                window.setLayout(width, height)
+
+                // for some reason it won't respect the windowBackground attribute in the theme
+                window.setBackgroundDrawable(context.getDrawable(R.drawable.dialog_material_background))
+            }
+        }
+        dialog.show()
+    }
+
     data class TabConfig(
             var title: String = "",
             var hideFromMain: Boolean = true,
             val contents: MutableSet<ComponentKey> = mutableSetOf(),
+            var colorResolver: ColorEngine.ColorResolver,
             val drawerTab: DrawerTabs.Tab? = null) {
-        constructor(tab: DrawerTabs.CustomTab) : this(tab.title, tab.hideFromAllApps, HashSet(tab.contents), tab)
-        constructor(config: TabConfig) : this(config.title, config.hideFromMain, HashSet(config.contents), config.drawerTab)
+        constructor(tab: DrawerTabs.CustomTab) :
+                this(tab.title, tab.hideFromAllApps, HashSet(tab.contents), tab.colorResolver, tab)
+        constructor(config: TabConfig) :
+                this(config.title, config.hideFromMain, HashSet(config.contents), config.colorResolver, config.drawerTab)
     }
 
     companion object {
@@ -152,7 +197,8 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
         }
 
         fun newTab(context: Context, callback: (TabConfig) -> Unit) {
-            val config = TabConfig(context.getString(R.string.default_tab_name), true, mutableSetOf())
+            val config = TabConfig(context.getString(R.string.default_tab_name), true, mutableSetOf(),
+                    context.lawnchairPrefs.drawerTabs.defaultColorResolver)
             show(context, config) {
                 callback(config)
             }
@@ -164,6 +210,7 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
             show(context, config) {
                 if (oldConfig != config) {
                     tab.title = config.title
+                    tab.colorResolver = config.colorResolver
                     tab.hideFromAllApps = config.hideFromMain
                     tab.contents.clear()
                     tab.contents.addAll(config.contents)
@@ -183,6 +230,7 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
             show(launcher, config, {
                 if (oldConfig != config) {
                     tab.title = config.title
+                    tab.colorResolver = config.colorResolver
                     tab.hideFromAllApps = config.hideFromMain
                     tab.contents.clear()
                     tab.contents.addAll(config.contents)

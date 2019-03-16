@@ -23,6 +23,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import ch.deletescape.lawnchair.colors.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
 
@@ -33,7 +35,7 @@ import com.android.launcher3.views.RecyclerViewFastScroller;
  *   <li> Enable fast scroller.
  * </ul>
  */
-public abstract class BaseRecyclerView extends RecyclerView  {
+public abstract class BaseRecyclerView extends RecyclerView implements OnColorChangeListener {
 
     protected RecyclerViewFastScroller mScrollbar;
 
@@ -53,6 +55,22 @@ public abstract class BaseRecyclerView extends RecyclerView  {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         bindFastScrollbar();
+        ColorEngine.getInstance(getContext())
+                .addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT);
+    }
+
+    @Override
+    public void onColorChange(String resolver, int color, int foregroundColor) {
+        if (resolver.equals(ColorEngine.Resolvers.ACCENT)) {
+            mScrollbar.setColor(color, foregroundColor);
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        ColorEngine.getInstance(getContext())
+                .removeColorChangeListeners(this, ColorEngine.Resolvers.ACCENT);
     }
 
     public void bindFastScrollbar() {

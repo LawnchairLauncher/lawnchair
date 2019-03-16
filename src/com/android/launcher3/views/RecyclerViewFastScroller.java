@@ -44,7 +44,7 @@ import ch.deletescape.lawnchair.colors.ColorEngine;
 /**
  * The track and scrollbar that shows when you scroll the list.
  */
-public class RecyclerViewFastScroller extends View implements ColorEngine.OnColorChangeListener {
+public class RecyclerViewFastScroller extends View {
 
     private static final int SCROLL_DELTA_THRESHOLD_DP = 4;
     private static final Rect sTempRect = new Rect();
@@ -365,26 +365,9 @@ public class RecyclerViewFastScroller extends View implements ColorEngine.OnColo
         mPopupView.setTranslationY(top);
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        ColorEngine.getInstance(getContext())
-                .addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT);
-    }
-
-    @Override
-    public void onColorChange(String resolver, int color, int foregroundColor) {
-        if (resolver.equals(ColorEngine.Resolvers.ACCENT)) {
-            mThumbPaint.setColor(color);
-            mPopupView.setTextColor(foregroundColor);
-        }
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        ColorEngine.getInstance(getContext())
-                .removeColorChangeListeners(this, ColorEngine.Resolvers.ACCENT);
+    public void setColor(int color, int foregroundColor) {
+        mThumbPaint.setColor(color);
+        mPopupView.setTextColor(foregroundColor);
     }
 
     public boolean isHitInParent(float x, float y, Point outOffset) {

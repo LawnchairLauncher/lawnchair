@@ -54,7 +54,7 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
     }
 
     fun addTab(config: DrawerTabEditBottomSheet.TabConfig) {
-        val tab = DrawerTabs.CustomTab(config.title, config.hideFromMain, config.contents)
+        val tab = DrawerTabs.CustomTab(config.title, config.hideFromMain, config.contents, config.colorResolver)
         tabs.add(tab)
         notifyItemInserted(tabs.size - 1)
         saved = false

@@ -22,17 +22,23 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import ch.deletescape.lawnchair.ViewPagerAdapter
 import ch.deletescape.lawnchair.colors.*
+import ch.deletescape.lawnchair.setGoogleSans
 import com.android.launcher3.R
 import kotlinx.android.synthetic.main.tabbed_color_picker.view.*
 import me.priyesh.chroma.*
 
 @SuppressLint("ViewConstructor")
-class TabbedPickerView(context: Context, val key: String, initialColor: Int, val colorMode: ColorMode, val resolvers: Array<String>, private val dismiss: () -> Unit)
+class TabbedPickerView(context: Context, val key: String, initialColor: Int,
+                       val colorMode: ColorMode, val resolvers: Array<String>,
+                       isCustom: Boolean,
+                       private val setResolver: (ColorEngine.ColorResolver) -> Unit,
+                       private val dismiss: () -> Unit)
     : RelativeLayout(context, null) {
 
     private val engine = ColorEngine.getInstance(context)
@@ -44,7 +50,6 @@ class TabbedPickerView(context: Context, val key: String, initialColor: Int, val
     private val minItemWidthLandscape = context.resources.getDimensionPixelSize(R.dimen.color_preview_width)
     private val chromaViewHeight = context.resources.getDimensionPixelSize(R.dimen.chroma_view_height)
     private val viewHeightLandscape = context.resources.getDimensionPixelSize(R.dimen.chroma_dialog_height)
-    private var resolver by ColorEngine.getInstance(context).getOrCreateResolver(key)
 
     val chromaView = ChromaView(initialColor, colorMode, context).apply {
         val applyColor = { color: Int ->
@@ -53,10 +58,10 @@ class TabbedPickerView(context: Context, val key: String, initialColor: Int, val
             val red = Color.red(color)
             val green = Color.green(color)
             val blue = Color.blue(color)
-            resolver = if (colorMode == ColorMode.RGB)
+            setResolver(if (colorMode == ColorMode.RGB)
                 RGBColorResolver(ColorEngine.ColorResolver.Config(key, engine, args = listOf("$red", "$green", "$blue")))
             else
-                ARGBColorResolver(ColorEngine.ColorResolver.Config(key, engine, args = listOf("$alpha", "$red", "$green", "$blue")))
+                ARGBColorResolver(ColorEngine.ColorResolver.Config(key, engine, args = listOf("$alpha", "$red", "$green", "$blue"))))
             dismiss()
         }
         enableButtonBar(object : ChromaView.ButtonBarListener {
@@ -65,6 +70,8 @@ class TabbedPickerView(context: Context, val key: String, initialColor: Int, val
                 applyColor(color)
             }
         })
+        findViewById<TextView>(R.id.positive_button).setGoogleSans(Typeface.BOLD)
+        findViewById<TextView>(R.id.negative_button).setGoogleSans(Typeface.BOLD)
         enablePreviewClick(object : ChromaView.PreviewClickListener {
             override fun onClick(color: Int) {
                 applyColor(color)
@@ -89,7 +96,7 @@ class TabbedPickerView(context: Context, val key: String, initialColor: Int, val
         val color = engine.accent
         tabLayout.tabRippleColor = ColorStateList.valueOf(color)
         tabLayout.setSelectedTabIndicatorColor(color)
-        if (resolver.isCustom) {
+        if (isCustom) {
             viewPager.currentItem = 1
         }
     }
@@ -105,11 +112,21 @@ class TabbedPickerView(context: Context, val key: String, initialColor: Int, val
                 val preview = LayoutInflater.from(context).inflate(R.layout.color_preview, null) as ColorPreviewView
                 preview.colorResolver = it
                 preview.setOnClickListener { _ ->
-                    resolver = it
+                    setResolver(it)
                     dismiss()
                 }
                 addView(preview)
             }
+        }
+    }
+
+    companion object {
+
+        fun fromPrefs(context: Context, key: String, initialColor: Int, colorMode: ColorMode,
+                      resolvers: Array<String>, dismiss: () -> Unit): TabbedPickerView {
+            var resolver by ColorEngine.getInstance(context).getOrCreateResolver(key)
+            return TabbedPickerView(context, key, initialColor, colorMode, resolvers,
+                    resolver.isCustom, { resolver = it }, dismiss)
         }
     }
 }

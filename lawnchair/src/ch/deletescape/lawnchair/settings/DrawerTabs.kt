@@ -19,6 +19,8 @@ package ch.deletescape.lawnchair.settings
 
 import android.content.Context
 import ch.deletescape.lawnchair.LawnchairPreferences
+import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.colors.LawnchairAccentResolver
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 import org.json.JSONArray
@@ -27,10 +29,13 @@ import org.json.JSONObject
 
 class DrawerTabs(prefs: LawnchairPreferences) {
 
+    private val context = prefs.context
+
     private var tabsDataJson by prefs.StringPref("pref_drawerTabs", "[]", prefs.recreate)
     private val tabs = ArrayList<Tab>()
-
-    private val context = prefs.context
+    private val colorEngine = ColorEngine.getInstance(context)
+    val defaultColorResolver = LawnchairAccentResolver(
+            ColorEngine.ColorResolver.Config("tabs", colorEngine))
 
     init {
         loadTabs()
@@ -62,6 +67,8 @@ class DrawerTabs(prefs: LawnchairPreferences) {
                 .map { arr.getJSONObject(it) }
                 .mapNotNullTo(tabs) { tab ->
                     val type = if (tab.has(KEY_TYPE)) tab.getInt(KEY_TYPE) else TYPE_CUSTOM
+                    val colorResolver = createColorResolver(if (tab.has(KEY_COLOR))
+                        tab.getString(KEY_COLOR) else null)
                     when (type) {
                         TYPE_CUSTOM -> {
                             val title = if (tab.has(KEY_TITLE)) tab.getString(KEY_TITLE) else ""
@@ -74,25 +81,30 @@ class DrawerTabs(prefs: LawnchairPreferences) {
                                     contents.add(ComponentKey(context, rawItems.getString(i)))
                                 }
                             }
-                            CustomTab(title, hideFromAllApps, contents)
+                            CustomTab(title, hideFromAllApps, contents, colorResolver)
                         }
                         TYPE_PERSONAL -> {
                             personalAdded = true
-                            PersonalTab(context)
+                            PersonalTab(context, colorResolver)
                         }
                         TYPE_WORK -> {
                             workAdded = true
-                            WorkTab(context)
+                            WorkTab(context, colorResolver)
                         }
                         else -> null
                     }
                 }
         if (!personalAdded) {
-            tabs.add(0, PersonalTab(context))
+            tabs.add(0, PersonalTab(context, defaultColorResolver))
         }
         if (!workAdded) {
-            tabs.add(WorkTab(context))
+            tabs.add(WorkTab(context, defaultColorResolver))
         }
+    }
+
+    private fun createColorResolver(resolver: String?): ColorEngine.ColorResolver {
+        return colorEngine.createColorResolverNullable("tab", resolver ?: "")
+                ?: defaultColorResolver
     }
 
     fun getTabs(): List<Tab> {
@@ -114,7 +126,7 @@ class DrawerTabs(prefs: LawnchairPreferences) {
             }
         }
         if (!workAdded) {
-            tabs.add(WorkTab(context))
+            tabs.add(WorkTab(context, defaultColorResolver))
         }
 
         val obj = JSONObject()
@@ -131,6 +143,7 @@ class DrawerTabs(prefs: LawnchairPreferences) {
         const val KEY_TABS = "tabs"
 
         const val KEY_TYPE = "type"
+        const val KEY_COLOR = "color"
         const val KEY_TITLE = "title"
         const val KEY_ITEMS = "items"
         const val KEY_HIDE_FROM_ALL_APPS = "hideFromAllApps"
@@ -140,17 +153,24 @@ class DrawerTabs(prefs: LawnchairPreferences) {
         const val TYPE_CUSTOM = 2
     }
 
-    open class Tab(var title: String, private val type: Int) {
+    open class Tab(var title: String, private val type: Int,
+                   var colorResolver: ColorEngine.ColorResolver) {
 
         open fun saveToJson(obj: JSONObject) {
             obj.put(KEY_TYPE, type)
+            if (colorResolver !is LawnchairAccentResolver) {
+                obj.put(KEY_COLOR, colorResolver.toString())
+            }
         }
     }
 
     class CustomTab(title: String, var hideFromAllApps: Boolean = true,
-                    val contents: MutableSet<ComponentKey> = mutableSetOf()) : Tab(title, TYPE_CUSTOM) {
+                    val contents: MutableSet<ComponentKey> = mutableSetOf(),
+                    colorResolver: ColorEngine.ColorResolver) : Tab(title, TYPE_CUSTOM, colorResolver) {
 
         override fun saveToJson(obj: JSONObject) {
+            super.saveToJson(obj)
+
             val items = JSONArray()
             contents.forEach { items.put(it.toString()) }
 
@@ -160,12 +180,14 @@ class DrawerTabs(prefs: LawnchairPreferences) {
         }
     }
 
-    class PersonalTab(context: Context) : Tab(context.getString(R.string.all_apps_personal_tab), TYPE_PERSONAL) {
+    class PersonalTab(context: Context, colorResolver: ColorEngine.ColorResolver)
+        : Tab(context.getString(R.string.all_apps_personal_tab), TYPE_PERSONAL, colorResolver) {
 
         fun loadTitle(context: Context, hasWorkApps: Boolean): String {
             return context.getString(if (hasWorkApps) R.string.all_apps_personal_tab else R.string.all_apps_label)
         }
     }
 
-    class WorkTab(context: Context) : Tab(context.getString(R.string.all_apps_work_tab), TYPE_WORK)
+    class WorkTab(context: Context, colorResolver: ColorEngine.ColorResolver)
+        : Tab(context.getString(R.string.all_apps_work_tab), TYPE_WORK, colorResolver)
 }

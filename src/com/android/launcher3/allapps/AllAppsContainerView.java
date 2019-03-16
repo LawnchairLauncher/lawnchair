@@ -387,6 +387,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         reset(true /* animate */);
         if (mAH[pos].recyclerView != null) {
             mAH[pos].recyclerView.bindFastScrollbar();
+            mAH[pos].recyclerView.setScrollbarColor(mTabsController.getTabs().get(pos)
+                    .getDrawerTab().getColorResolver());
 
             mTabsController.bindButtons(findViewById(R.id.tabs), mViewPager);
 

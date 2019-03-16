@@ -16,16 +16,12 @@
   ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<ch.deletescape.lawnchair.views.ColoredButton
+<shape
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="0dp"
-    android:layout_height="match_parent"
-    android:layout_weight="1"
-    android:background="?android:attr/selectableItemBackground"
-    android:fontFamily="sans-serif-medium"
-    android:textAllCaps="true"
-    android:textColor="@color/all_apps_tab_text"
-    android:textSize="14sp"
-    android:padding="8dp"
-    tools:text="@string/all_apps_personal_tab"/>
+    android:shape="ring"
+    android:innerRadius="7.2dp"
+    android:thickness="3dp"
+    android:useLevel="false">
+
+    <solid android:color="?android:colorAccent" />
+</shape>

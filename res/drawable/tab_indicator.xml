@@ -26,6 +26,6 @@
             android:topRightRadius="2dp"
             android:bottomLeftRadius="0dp"
             android:bottomRightRadius="0dp"/>
-        <solid android:color="?colorPrimary" />
+        <solid android:color="@color/colorAccent" />
     </shape>
 </inset>

@@ -15,9 +15,11 @@
  */
 package com.android.launcher3.allapps;
 
+import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,6 +37,7 @@ import ch.deletescape.lawnchair.allapps.AllAppsTabs.Tab;
 import ch.deletescape.lawnchair.preferences.DrawerTabEditBottomSheet;
 import ch.deletescape.lawnchair.settings.DrawerTabs;
 import ch.deletescape.lawnchair.settings.DrawerTabs.CustomTab;
+import ch.deletescape.lawnchair.views.ColoredButton;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -69,6 +72,8 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     private int mTextColorTertiary;
     private int mAccent;
 
+    private ArgbEvaluator mArgbEvaluator = new ArgbEvaluator();
+
     public PersonalWorkSlidingTabStrip(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setOrientation(HORIZONTAL);
@@ -100,8 +105,8 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     private void updateTabTextColor(int pos) {
         mSelectedPosition = pos;
         for (int i = 0; i < getChildCount(); i++) {
-            Button tab = (Button) getChildAt(i);
-            tab.setTextColor(pos == i ? mAccent : mTextColorTertiary);
+            ColoredButton tab = (ColoredButton) getChildAt(i);
+            tab.setTextColor(pos == i ? tab.getColor() : mTextColorTertiary);
         }
     }
 
@@ -118,17 +123,27 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         int leftIndex = (int) Math.floor(scaled);
         float leftFraction = scaled - leftIndex;
         float rightFraction = 1 - leftFraction;
-        View leftTab = getChildAt(leftIndex);
-        View rightTab = getChildAt(leftIndex + 1);
+        ColoredButton leftTab = (ColoredButton) getChildAt(leftIndex);
+        ColoredButton rightTab = (ColoredButton) getChildAt(leftIndex + 1);
         if (leftTab != null && rightTab != null) {
             left = (int) (leftTab.getLeft() + leftTab.getWidth() * leftFraction);
             right = (int) (rightTab.getRight() - (rightTab.getWidth() * rightFraction));
+            int leftColor = leftTab.getColor();
+            int rightColor = rightTab.getColor();
+            if (leftColor == rightColor) {
+                mSelectedIndicatorPaint.setColor(leftColor);
+            } else {
+                mSelectedIndicatorPaint.setColor(
+                        (Integer) mArgbEvaluator.evaluate(leftFraction, leftColor, rightColor));
+            }
         } else if (leftTab != null) {
             left = (int) (leftTab.getLeft() + leftTab.getWidth() * leftFraction);
             right = left + leftTab.getWidth();
+            mSelectedIndicatorPaint.setColor(leftTab.getColor());
         } else if (rightTab != null) {
             right = (int) (rightTab.getRight() - (rightTab.getWidth() * rightFraction));
             left = right - rightTab.getWidth();
+            mSelectedIndicatorPaint.setColor(rightTab.getColor());
         }
         setIndicatorPosition(left, right);
     }
@@ -221,7 +236,6 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     public void onColorChange(String resolver, int color, int foregroundColor) {
         if (resolver.equals(ColorEngine.Resolvers.ACCENT)) {
             mAccent = color;
-            mSelectedIndicatorPaint.setColor(color);
             updateTabTextColor(mSelectedPosition);
         }
     }
@@ -263,7 +277,8 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         }
         for (int i = 0; i < tabs.getCount(); i++) {
             Tab tab = tabs.get(i);
-            Button button = (Button) getChildAt(i);
+            ColoredButton button = (ColoredButton) getChildAt(i);
+            button.setColorResolver(tab.getDrawerTab().getColorResolver());
             button.setText(tab.getName());
             button.setOnLongClickListener(v -> {
                 DrawerTabs.Tab drawerTab = tab.getDrawerTab();
