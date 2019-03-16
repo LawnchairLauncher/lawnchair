@@ -1,13 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_history_menu_bottom"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:windowBackground"
     android:orientation="vertical"
-    android:paddingTop="28dp"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    android:paddingTop="28dp">
 
     <TextView
         android:id="@android:id/title"

@@ -22,7 +22,6 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -30,8 +29,8 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
-import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
+import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheetDialog
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
@@ -39,19 +38,8 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
 
     private val permissionRequestReadExternalStorage = 0
 
-    private val bottomSheet by lazy { BottomSheetDialog(this) }
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.recyclerView) }
     private val adapter by lazy { BackupListAdapter(this) }
-
-    private val restoreBackup by lazy { bottomSheetView.findViewById<View>(R.id.action_restore_backup) }
-    private val shareBackup by lazy { bottomSheetView.findViewById<View>(R.id.action_share_backup) }
-    private val removeBackup by lazy { bottomSheetView.findViewById<View>(R.id.action_remove_backup_from_list) }
-    private val divider by lazy { bottomSheetView.findViewById<View>(R.id.divider) }
-
-    private val bottomSheetView by lazy {
-        layoutInflater.inflate(R.layout.backup_bottom_sheet,
-                findViewById(android.R.id.content), false)
-    }
 
     private var currentPosition = 0
 
@@ -61,19 +49,6 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        restoreBackup.setOnClickListener {
-            bottomSheet.dismiss()
-            openRestore(currentPosition)
-        }
-        shareBackup.setOnClickListener {
-            bottomSheet.dismiss()
-            shareBackup(currentPosition)
-        }
-        removeBackup.setOnClickListener {
-            bottomSheet.dismiss()
-            removeItem(currentPosition)
-        }
-        bottomSheet.setContentView(bottomSheetView)
 
         adapter.callbacks = this
         loadLocalBackups()
@@ -137,13 +112,36 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
     override fun openEdit(position: Int) {
         currentPosition = position
         val visibility = if (adapter[position].meta != null) View.VISIBLE else View.GONE
-        restoreBackup.visibility = visibility
-        shareBackup.visibility = visibility
-        divider.visibility = visibility
+
+        val bottomSheetView = layoutInflater.inflate(R.layout.backup_bottom_sheet,
+                findViewById(android.R.id.content), false)
         bottomSheetView.findViewById<TextView>(android.R.id.title).text =
                 adapter[position].meta?.name ?: getString(R.string.backup_invalid)
         bottomSheetView.findViewById<TextView>(android.R.id.summary).text =
                 adapter[position].meta?.localizedTimestamp ?: getString(R.string.backup_invalid)
+
+        val restoreBackup = bottomSheetView.findViewById<View>(R.id.action_restore_backup)
+        val shareBackup = bottomSheetView.findViewById<View>(R.id.action_share_backup)
+        val removeBackup = bottomSheetView.findViewById<View>(R.id.action_remove_backup_from_list)
+        val divider = bottomSheetView.findViewById<View>(R.id.divider)
+        restoreBackup.visibility = visibility
+        shareBackup.visibility = visibility
+        divider.visibility = visibility
+
+        val bottomSheet = SettingsBottomSheetDialog(this)
+        restoreBackup.setOnClickListener {
+            bottomSheet.dismiss()
+            openRestore(currentPosition)
+        }
+        shareBackup.setOnClickListener {
+            bottomSheet.dismiss()
+            shareBackup(currentPosition)
+        }
+        removeBackup.setOnClickListener {
+            bottomSheet.dismiss()
+            removeItem(currentPosition)
+        }
+        bottomSheet.setContentView(bottomSheetView)
         bottomSheet.show()
     }
 

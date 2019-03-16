@@ -139,6 +139,18 @@
         <item name="fontFamily">@font/google_sans</item>
     </style>
 
+    <style name="SettingsTheme.BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/top_round_rect_primary</item>
+    </style>
+
+    <style name="SettingsTheme.BottomSheetDialog.Light" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/SettingsTheme.BottomSheet</item>
+    </style>
+
+    <style name="SettingsTheme.BottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/SettingsTheme.BottomSheet</item>
+    </style>
+
     <style name="SettingsTheme.Base" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@android:color/white</item>
         <item name="settingsBackground">@android:color/white</item>
@@ -154,6 +166,7 @@
         <item name="useLightSystemBars">true</item>
         <item name="alertDialogTheme">@style/SettingsTheme.V2.Dialog</item>
         <item name="buttonStyle">@style/SettingsTheme.V2.Button</item>
+        <item name="bottomSheetDialogTheme">@style/SettingsTheme.BottomSheetDialog.Light</item>
     </style>
     <style name="SettingsTheme.V2" parent="@style/SettingsTheme.Base">
         <item name="android:statusBarColor">@color/lollipopStatusBar</item>
@@ -189,6 +202,7 @@
         <item name="alertDialogTheme">@style/SettingsTheme.V2.Dark.Dialog</item>
         <item name="buttonStyle">@style/SettingsTheme.V2.Button</item>
         <item name="settingsBackground">@color/settings_background_dark</item>
+        <item name="bottomSheetDialogTheme">@style/SettingsTheme.BottomSheetDialog</item>
     </style>
     <style name="SettingsTheme.V2.Dark.ActionBar" parent="SettingsTheme.V2.Dark">
         <item name="titleTextAppearance">@style/SettingsTheme.V2.ActionBar.Title</item>
