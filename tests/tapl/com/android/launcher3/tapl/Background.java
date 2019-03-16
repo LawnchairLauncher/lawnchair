@@ -71,7 +71,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
 
             mLauncher.swipe(centerX, startY, centerX, startY - swipeHeight - slop, expectedState);
         } else {
-            mLauncher.getSystemUiObject("recent_apps").click();
+            mLauncher.waitForSystemUiObject("recent_apps").click();
         }
     }
 
@@ -80,6 +80,6 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
     }
 
     protected int getSwipeStartY() {
-        return mLauncher.getSystemUiObject("home").getVisibleBounds().centerY();
+        return mLauncher.waitForSystemUiObject("home").getVisibleBounds().centerY();
     }
 }

@@ -50,7 +50,7 @@ public final class Overview extends BaseOverview {
         verifyActiveContainer();
 
         // Swipe from navbar to the top.
-        final UiObject2 navBar = mLauncher.getSystemUiObject("navigation_bar_frame");
+        final UiObject2 navBar = mLauncher.waitForSystemUiObject("navigation_bar_frame");
         final Point start = navBar.getVisibleCenter();
         LauncherInstrumentation.log("Overview.switchToAllApps before swipe");
         mLauncher.swipe(start.x, start.y, start.x, 0, ALL_APPS_STATE_ORDINAL);

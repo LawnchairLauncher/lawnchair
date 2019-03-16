@@ -288,7 +288,7 @@ public final class LauncherInstrumentation {
         executeAndWaitForEvent(
                 () -> {
                     log("LauncherInstrumentation.pressHome before clicking");
-                    getSystemUiObject("home").click();
+                    waitForSystemUiObject("home").click();
                 },
                 event -> true,
                 "Pressing Home didn't produce any events");
@@ -298,7 +298,7 @@ public final class LauncherInstrumentation {
         executeAndWaitForEvent(
                 () -> {
                     log("LauncherInstrumentation.pressHome before clicking");
-                    getSystemUiObject("home").click();
+                    waitForSystemUiObject("home").click();
                 },
                 event -> true,
                 "Pressing Home didn't produce any events");
@@ -394,8 +394,9 @@ public final class LauncherInstrumentation {
     }
 
     @NonNull
-    UiObject2 getSystemUiObject(String resId) {
-        final UiObject2 object = mDevice.findObject(By.res(SYSTEMUI_PACKAGE, resId));
+    UiObject2 waitForSystemUiObject(String resId) {
+        final UiObject2 object = mDevice.wait(
+                Until.findObject(By.res(SYSTEMUI_PACKAGE, resId)), WAIT_TIME_MS);
         assertNotNull("Can't find a systemui object with id: " + resId, object);
         return object;
     }
