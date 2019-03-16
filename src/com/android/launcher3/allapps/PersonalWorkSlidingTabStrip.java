@@ -32,6 +32,9 @@ import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
 import ch.deletescape.lawnchair.allapps.AllAppsTabs;
 import ch.deletescape.lawnchair.allapps.AllAppsTabs.Tab;
+import ch.deletescape.lawnchair.preferences.DrawerTabEditBottomSheet;
+import ch.deletescape.lawnchair.settings.DrawerTabs;
+import ch.deletescape.lawnchair.settings.DrawerTabs.CustomTab;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -260,7 +263,17 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         }
         for (int i = 0; i < tabs.getCount(); i++) {
             Tab tab = tabs.get(i);
-            ((Button) getChildAt(i)).setText(tab.getName());
+            Button button = (Button) getChildAt(i);
+            button.setText(tab.getName());
+            button.setOnLongClickListener(v -> {
+                DrawerTabs.Tab drawerTab = tab.getDrawerTab();
+                if (drawerTab instanceof CustomTab) {
+                    DrawerTabEditBottomSheet.Companion
+                            .edit(Launcher.getLauncher(getContext()), (CustomTab) drawerTab);
+                    return true;
+                }
+                return false;
+            });
         }
     }
 }

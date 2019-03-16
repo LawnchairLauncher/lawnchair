@@ -30,7 +30,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="56dp"
         android:layout_marginEnd="16dp"
-        android:fontFamily="@font/google_sans"
         android:text="@string/tab_name"
         android:textColor="?android:colorAccent"/>
 
@@ -41,7 +40,6 @@
         android:layout_marginStart="52dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:fontFamily="@font/google_sans"
         android:singleLine="true"
         style="@style/TextAppearance.AppCompat.Title"
         tools:text="Favorites"/>
@@ -75,9 +73,9 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/hide_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/google_sans"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceListItem"
                 android:ellipsize="marquee"
@@ -124,10 +122,10 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/manage_apps_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:fontFamily="@font/google_sans"
                 android:textAppearance="?android:attr/textAppearanceListItem"
                 android:ellipsize="marquee"
                 android:text="@string/tab_manage_apps" />

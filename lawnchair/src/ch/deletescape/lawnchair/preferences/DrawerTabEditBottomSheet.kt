@@ -18,19 +18,22 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
+import android.graphics.Typeface
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Switch
 import android.widget.TextView
-import ch.deletescape.lawnchair.applyColor
+import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.colors.ColorEngine
-import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.DrawerTabs
 import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheetDialog
-import ch.deletescape.lawnchair.tintDrawable
+import ch.deletescape.lawnchair.views.BaseBottomSheet
+import com.android.launcher3.AbstractFloatingView
+import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
+import java.lang.ClassCastException
 
 class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
                                private val callback: (Boolean) -> Unit) : FrameLayout(context), View.OnClickListener {
@@ -41,20 +44,31 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
 
     init {
         View.inflate(context, R.layout.drawer_tab_edit_bottom_sheet, this)
+        tabName.setGoogleSans()
         tabName.text = config.title
         hideSwitch.isChecked = config.hideFromMain
 
         val accent = ColorEngine.getInstance(context).accent
 
-        findViewById<TextView>(R.id.name_label).setTextColor(accent)
+        findViewById<TextView>(R.id.name_label).apply {
+            setGoogleSans()
+            setTextColor(accent)
+        }
+
+        findViewById<TextView>(R.id.hide_title).setGoogleSans()
+        findViewById<TextView>(R.id.manage_apps_title).setGoogleSans()
 
         findViewById<View>(R.id.hide_toggle).setOnClickListener(this)
         findViewById<View>(R.id.manage_apps).setOnClickListener(this)
         findViewById<TextView>(R.id.save).apply {
-            setOnClickListener(this@DrawerTabEditBottomSheet)
+            setGoogleSans(Typeface.BOLD)
             setTextColor(accent)
+            setOnClickListener(this@DrawerTabEditBottomSheet)
         }
-        findViewById<View>(R.id.cancel).setOnClickListener(this)
+        findViewById<TextView>(R.id.cancel).apply {
+            setGoogleSans(Typeface.BOLD)
+            setOnClickListener(this@DrawerTabEditBottomSheet)
+        }
 
         findViewById<ImageView>(R.id.hide_icon).tintDrawable(accent)
         findViewById<ImageView>(R.id.manage_apps_icon).tintDrawable(accent)
@@ -87,20 +101,30 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
     }
 
     private fun openAppsSelector() {
-        SelectableAppsActivity.start(context, config.contents) {
-            val newSelections = it ?: return@start
-            config.contents.clear()
-            config.contents.addAll(newSelections)
-            updateSummary()
+        SelectableAppsActivity.start(context, config.contents) { newSelections ->
+            if (newSelections != null) {
+                config.contents.clear()
+                config.contents.addAll(newSelections)
+                updateSummary()
+            }
+            try {
+                val launcher = Launcher.getLauncher(context)
+                val tab = config.drawerTab as? DrawerTabs.CustomTab ?: return@start
+                AbstractFloatingView.closeAllOpenViews(launcher, false)
+                edit(launcher, TabConfig(tab), config, tab, false)
+            } catch (ignored: ClassCastException) {
+
+            }
         }
     }
 
     data class TabConfig(
             var title: String = "",
             var hideFromMain: Boolean = true,
-            val contents: MutableSet<ComponentKey> = mutableSetOf()) {
-        constructor(tab: DrawerTabs.CustomTab) : this(tab.title, tab.hideFromAllApps, HashSet(tab.contents))
-        constructor(config: TabConfig) : this(config.title, config.hideFromMain, HashSet(config.contents))
+            val contents: MutableSet<ComponentKey> = mutableSetOf(),
+            val drawerTab: DrawerTabs.Tab? = null) {
+        constructor(tab: DrawerTabs.CustomTab) : this(tab.title, tab.hideFromAllApps, HashSet(tab.contents), tab)
+        constructor(config: TabConfig) : this(config.title, config.hideFromMain, HashSet(config.contents), config.drawerTab)
     }
 
     companion object {
@@ -115,6 +139,16 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
                 })
                 show()
             }
+        }
+
+        fun show(launcher: Launcher, config: TabConfig, callback: () -> Unit, animate: Boolean = true) {
+            val sheet = BaseBottomSheet.inflate(launcher)
+            sheet.show(DrawerTabEditBottomSheet(launcher, config) {
+                if (it) {
+                    callback()
+                }
+                sheet.close(true)
+            }, animate)
         }
 
         fun newTab(context: Context, callback: (TabConfig) -> Unit) {
@@ -136,6 +170,25 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
                     context.lawnchairPrefs.drawerTabs.saveToJson()
                 }
             }
+        }
+
+        fun edit(launcher: Launcher, tab: DrawerTabs.CustomTab) {
+            val oldConfig = TabConfig(tab)
+            val config = TabConfig(oldConfig)
+            edit(launcher, oldConfig, config, tab)
+        }
+
+        fun edit(launcher: Launcher, oldConfig: TabConfig, config: TabConfig,
+                 tab: DrawerTabs.CustomTab, animate: Boolean = true) {
+            show(launcher, config, {
+                if (oldConfig != config) {
+                    tab.title = config.title
+                    tab.hideFromAllApps = config.hideFromMain
+                    tab.contents.clear()
+                    tab.contents.addAll(config.contents)
+                    launcher.lawnchairPrefs.drawerTabs.saveToJson()
+                }
+            }, animate)
         }
     }
 }
