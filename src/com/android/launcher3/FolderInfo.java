@@ -16,14 +16,39 @@
 
 package com.android.launcher3;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Process;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.view.View.MeasureSpec;
+import android.widget.FrameLayout;
+import android.widget.FrameLayout.LayoutParams;
+import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.iconpack.IconPack;
+import ch.deletescape.lawnchair.iconpack.IconPackManager;
+import ch.deletescape.lawnchair.iconpack.IconPackManager.CustomIconEntry;
+import ch.deletescape.lawnchair.override.CustomInfoProvider;
+import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
+import com.android.launcher3.folder.Folder;
+import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.model.ModelWriter;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
 
 import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.concurrent.ExecutionException;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -165,5 +190,46 @@ public class FolderInfo extends ItemInfo {
     public void setSwipeUpAction(@NonNull Context context, @Nullable String action) {
         swipeUpAction = action;
         ModelWriter.modifyItemInDatabase(context, this, null, swipeUpAction, null, null, false, true);
+    }
+
+    public ComponentKey toComponentKey() {
+        return new ComponentKey(new ComponentName("ch.deletescape.lawnchair.folder", String.valueOf(id)), Process.myUserHandle());
+    }
+
+    public Drawable getIcon(Context context) {
+        Launcher launcher = LawnchairLauncher.getLauncher(context);
+        Drawable icn = getIconInternal(launcher);
+        if (icn != null)  {
+            return icn;
+        }
+        return getFolderIcon(launcher);
+    }
+
+    public Drawable getFolderIcon(Launcher launcher) {
+        int iconSize = launcher.mDeviceProfile.iconSizePx;
+        FrameLayout dummy = new FrameLayout(launcher, null);
+        FolderIcon icon = FolderIcon.fromXml(R.layout.folder_icon, launcher, dummy, this);
+        final Bitmap b = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        c.translate(iconSize / 2f, 0);
+        // TODO: make folder icons more visible in front of the bottom sheet
+        //c.drawColor(Color.RED);
+        icon.draw(c);
+        return new BitmapDrawable(launcher.getResources(), b);
+    }
+
+    public boolean hasCustomIcon(Context context) {
+        Launcher launcher = LawnchairLauncher.getLauncher(context);
+        return getIconInternal(launcher) != null;
+    }
+
+    private Drawable getIconInternal(Launcher launcher) {
+        CustomInfoProvider<FolderInfo> infoProvider = CustomInfoProvider.Companion.forItem(launcher, this);
+        CustomIconEntry entry = infoProvider == null ? null : infoProvider.getIcon(this);
+        if (entry != null && entry.getIcon() != null) {
+            IconPack pack = IconPackManager.Companion.getInstance(launcher).getIconPack(entry.getPackPackageName(), false, true);
+            return pack.getIcon(entry.getIcon(), launcher.mDeviceProfile.inv.fillResIconDpi);
+        }
+        return null;
     }
 }

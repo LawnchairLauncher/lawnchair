@@ -193,6 +193,10 @@ public class PreviewBackground {
         invalidate();
     }
 
+    public void setStartOpacity(float opacity) {
+        mColorMultiplier = opacity;
+    }
+
     public int getBgColor() {
         int alpha = (int) Math.min(MAX_BG_OPACITY, BG_OPACITY * mColorMultiplier);
         return ColorUtils.setAlphaComponent(mBgColor, alpha);

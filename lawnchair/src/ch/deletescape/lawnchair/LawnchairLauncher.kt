@@ -182,10 +182,11 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
         }
     }
 
-    fun startEditIcon(itemInfo: ItemInfoWithIcon) {
+    fun startEditIcon(itemInfo: ItemInfo, infoProvider: CustomInfoProvider<ItemInfo>) {
         val component: ComponentKey? = when (itemInfo) {
             is AppInfo -> itemInfo.toComponentKey()
             is ShortcutInfo -> itemInfo.targetComponent?.let { ComponentKey(it, itemInfo.user) }
+            is FolderInfo -> itemInfo.toComponentKey()
             else -> null
         }
         currentEditIcon = when (itemInfo) {
@@ -194,7 +195,6 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
             else -> null
         }
         currentEditInfo = itemInfo
-        val infoProvider = CustomInfoProvider.forItem<ItemInfo>(this, itemInfo) ?: return
         val intent = EditIconActivity.newIntent(this, infoProvider.getTitle(itemInfo), component)
         val flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
         BlankActivity.startActivityForResult(this, intent, CODE_EDIT_ICON,

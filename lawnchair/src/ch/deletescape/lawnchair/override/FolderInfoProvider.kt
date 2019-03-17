@@ -20,12 +20,15 @@ package ch.deletescape.lawnchair.override
 import android.content.Context
 import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.iconpack.IconPackManager
+import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.FolderInfo
 import com.android.launcher3.R
 
 class FolderInfoProvider(context: Context) : CustomInfoProvider<FolderInfo>(context) {
+
+    private val prefs = context.lawnchairPrefs
 
     override fun getTitle(info: FolderInfo): String {
         return info.title.toString()
@@ -44,16 +47,16 @@ class FolderInfoProvider(context: Context) : CustomInfoProvider<FolderInfo>(cont
     }
 
     override fun setIcon(info: FolderInfo, entry: IconPackManager.CustomIconEntry?) {
-        TODO("not implemented")
+        prefs.customAppIcon[info.toComponentKey()] = entry
     }
 
     override fun getIcon(info: FolderInfo): IconPackManager.CustomIconEntry? {
-        TODO("not implemented")
+        return prefs.customAppIcon[info.toComponentKey()]
     }
 
     override fun supportsSwipeUp() = true
 
-    override fun supportsIcon() = false
+    override fun supportsIcon() = true
 
     override fun setSwipeUpAction(info: FolderInfo, action: String?) {
         info.setSwipeUpAction(context, action)

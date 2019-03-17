@@ -168,6 +168,19 @@ public class LauncherAnimUtils {
                 }
             };
 
+    public static final Property<View, Float> ALPHA_PROPERTY =
+            new Property<View, Float>(Float.class, "alpha") {
+                @Override
+                public Float get(View view) {
+                    return view.getAlpha();
+                }
+
+                @Override
+                public void set(View view, Float alpha) {
+                    view.setAlpha(alpha);
+                }
+            };
+
     /** Increase the duration if we prevented the fling, as we are going against a high velocity. */
     public static int blockedFlingDurationFactor(float velocity) {
         return (int) Utilities.boundToRange(Math.abs(velocity) / 2, 2f, 6f);

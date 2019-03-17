@@ -47,6 +47,7 @@ import android.view.View;
 import ch.deletescape.lawnchair.iconpack.IconPackManager;
 import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider;
 import com.android.launcher3.*;
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
@@ -215,6 +216,10 @@ public class DragView extends View {
                 if (dr instanceof AdaptiveIconDrawable) {
                     int w = mBitmap.getWidth();
                     int h = mBitmap.getHeight();
+                    if (info.itemType == Favorites.ITEM_TYPE_FOLDER && !(dr instanceof FolderAdaptiveIcon)){
+                        // TODO: Find a proper fix for folder drag and drop with custom adaptive icon
+                        h = w;
+                    }
                     int blurMargin = (int) mLauncher.getResources()
                             .getDimension(R.dimen.blur_size_medium_outline) / 2;
 
@@ -348,6 +353,10 @@ public class DragView extends View {
                 return sm.getShortcutIconDrawable(si.get(0), iconDpi);
             }
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+            FolderInfo fInfo = info instanceof FolderInfo ? (FolderInfo) info : null;
+            if (fInfo != null && fInfo.hasCustomIcon(getContext())) {
+                return fInfo.getIcon(getContext());
+            }
             FolderAdaptiveIcon icon =  FolderAdaptiveIcon.createFolderAdaptiveIcon(
                     mLauncher, info.id, new Point(mBitmap.getWidth(), mBitmap.getHeight()));
             if (icon == null) {
@@ -387,7 +396,7 @@ public class DragView extends View {
             return new InsetDrawable(new FastBitmapDrawable(badge),
                     insetFraction, insetFraction, 0, 0);
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
-            return ((FolderAdaptiveIcon) obj).getBadge();
+            return obj instanceof FolderAdaptiveIcon ? ((FolderAdaptiveIcon) obj).getBadge() : new FixedSizeEmptyDrawable(iconSize);
         } else {
             return mLauncher.getPackageManager()
                     .getUserBadgedIcon(new FixedSizeEmptyDrawable(iconSize), info.user);

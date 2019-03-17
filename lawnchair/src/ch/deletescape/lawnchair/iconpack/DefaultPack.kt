@@ -84,6 +84,23 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
     override fun getEntryForComponent(key: ComponentKey) = appMap[key]
 
+    override fun getIcon(name: String, iconDpi: Int): Drawable? {
+        ensureInitialLoadComplete()
+
+        val key = ComponentKey(context, name)
+        val info = key.getLauncherActivityInfo(context) ?: return null
+        val component = key.componentName
+        val originalIcon = info.getIcon(iconDpi).apply { mutate() }
+        var roundIcon: Drawable? = null
+        getRoundIcon(component, iconDpi)?.let {
+            roundIcon = it.apply { mutate() }
+        }
+        if (Utilities.ATLEAST_OREO && shouldWrapToAdaptive(originalIcon)) {
+            return wrapToAdaptiveIcon(roundIcon ?: originalIcon)
+        }
+        return roundIcon
+    }
+
     override fun getIcon(launcherActivityInfo: LauncherActivityInfo,
                          iconDpi: Int, flattenDrawable: Boolean, customIconEntry: IconPackManager.CustomIconEntry?,
                          basePacks: Iterator<IconPack>, iconProvider: LawnchairIconProvider?): Drawable {

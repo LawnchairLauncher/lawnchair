@@ -44,6 +44,7 @@ import ch.deletescape.lawnchair.gestures.ui.LauncherGesturePreference;
 import ch.deletescape.lawnchair.override.CustomInfoProvider;
 import ch.deletescape.lawnchair.preferences.MultiSelectTabPreference;
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
@@ -84,16 +85,19 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         ((PrefsFragment) mFragmentManager.findFragmentById(R.id.sheet_prefs)).loadForApp(itemInfo,
                 this::setForceOpen, this::unsetForceOpen, this::reopen);
 
-        if (itemInfo instanceof ItemInfoWithIcon) {
+        if (itemInfo instanceof ItemInfoWithIcon || mInfoProvider.supportsIcon()) {
             ImageView icon = findViewById(R.id.icon);
             if (itemInfo instanceof ShortcutInfo && ((ShortcutInfo) itemInfo).customIcon != null) {
                 icon.setImageBitmap(((ShortcutInfo) itemInfo).customIcon);
-            } else {
+            } else if (itemInfo instanceof  ItemInfoWithIcon) {
                 icon.setImageBitmap(((ItemInfoWithIcon) itemInfo).iconBitmap);
+            } else if (itemInfo instanceof FolderInfo) {
+                //icon.setImageDrawable(mLauncher.getDrawable(R.drawable.ic_lawnstep));
+                icon.setImageDrawable(((FolderInfo) itemInfo).getIcon(mLauncher));
             }
             if (mInfoProvider != null) {
-                icon.setOnClickListener(
-                        v -> LawnchairLauncher.Companion.getLauncher(getContext()).startEditIcon((ItemInfoWithIcon) mItemInfo));
+                LawnchairLauncher launcher = LawnchairLauncher.Companion.getLauncher(getContext());
+                icon.setOnClickListener(v -> launcher.startEditIcon(mItemInfo, mInfoProvider));
             }
         }
         if (mInfoProvider != null) {

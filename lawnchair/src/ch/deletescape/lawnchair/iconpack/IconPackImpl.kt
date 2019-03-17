@@ -219,6 +219,24 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
     override fun getEntryForComponent(key: ComponentKey) = packComponents[key.componentName]
 
+    override fun getIcon(name: String, iconDpi: Int): Drawable? {
+        val drawableId = getDrawableId(name)
+        if (drawableId != 0) {
+            try {
+                var drawable = packResources.getDrawable(drawableId)
+                if (Utilities.ATLEAST_OREO && packClocks.containsKey(drawableId)) {
+                    drawable = CustomClock.getClock(context, drawable, packClocks[drawableId], iconDpi)
+                } else if (packDynamicDrawables.containsKey(drawableId)) {
+                    drawable = DynamicDrawable.getIcon(context, drawable, packDynamicDrawables[drawableId]!!, iconDpi)
+                }
+                return drawable.mutate()
+            } catch (e: Resources.NotFoundException) {
+                Log.e(TAG, "Can't get drawable for name $name ($drawableId)", e)
+            }
+        }
+        return null
+    }
+
     override fun getIcon(launcherActivityInfo: LauncherActivityInfo, iconDpi: Int,
                          flattenDrawable: Boolean, customIconEntry: IconPackManager.CustomIconEntry?,
                          basePacks: Iterator<IconPack>, iconProvider: LawnchairIconProvider?): Drawable {

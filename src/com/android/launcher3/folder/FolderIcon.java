@@ -23,6 +23,7 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -119,6 +120,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private GestureHandler mSwipeUpHandler;
 
+    public boolean isCustomIcon = false;
+    private Drawable customIcon = null;
+
     private static final Property<FolderIcon, Float> BADGE_SCALE_PROPERTY
             = new Property<FolderIcon, Float>(Float.TYPE, "badgeScale") {
         @Override
@@ -189,6 +193,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
         icon.setOnFocusChangeListener(launcher.mFocusHandler);
         icon.applySwipeUpAction(folderInfo);
+        if (folderInfo.hasCustomIcon(launcher)) {
+            icon.isCustomIcon = true;
+            icon.customIcon = folderInfo.getIcon(launcher);
+            icon.mBackground.setStartOpacity(0f);
+        }
         return icon;
     }
 
@@ -461,12 +470,22 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
 
-        if (!mBackgroundIsVisible) return;
+        if (mBackgroundIsVisible) {
+            mPreviewItemManager.recomputePreviewDrawingParams();
 
-        mPreviewItemManager.recomputePreviewDrawingParams();
+            if (!mBackground.drawingDelegated()) {
+                mBackground.drawBackground(canvas);
+            }
+        } else if (!isCustomIcon) return;
 
-        if (!mBackground.drawingDelegated()) {
-            mBackground.drawBackground(canvas);
+        if (isCustomIcon) {
+            int offsetX = mBackground.getOffsetX();
+            int offsetY = mBackground.getOffsetY();
+            int previewSize = (int) (mBackground.previewSize * mBackground.mScale);
+            mTempBounds.set(offsetX, offsetY, offsetX + previewSize, offsetY + previewSize);
+            customIcon.setBounds(mTempBounds);
+            customIcon.draw(canvas);
+            return;
         }
 
         if (mFolder == null) return;

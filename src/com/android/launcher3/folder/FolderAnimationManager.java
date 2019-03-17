@@ -17,6 +17,7 @@
 package com.android.launcher3.folder;
 
 import static com.android.launcher3.BubbleTextView.TEXT_ALPHA_PROPERTY;
+import static com.android.launcher3.LauncherAnimUtils.ALPHA_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 
@@ -280,6 +281,14 @@ public class FolderAnimationManager {
             scaleAnimator.setInterpolator(previewItemInterpolator);
             play(animatorSet, scaleAnimator);
 
+            Animator alphaAnimator = null;
+
+            if (!mIsOpening && mFolderIcon.isCustomIcon) {
+                alphaAnimator = getAnimator(btv, ALPHA_PROPERTY, btv.getAlpha(), 0f);
+                alphaAnimator.setInterpolator(previewItemInterpolator);
+                play(animatorSet, alphaAnimator);
+            }
+
             if (mFolder.getItemCount() > MAX_NUM_ITEMS_IN_PREVIEW) {
                 // These delays allows the preview items to move as part of the Folder's motion,
                 // and its only necessary for large folders because of differing interpolators.
@@ -292,6 +301,9 @@ public class FolderAnimationManager {
                 translationX.setDuration(translationX.getDuration() - delay);
                 translationY.setDuration(translationY.getDuration() - delay);
                 scaleAnimator.setDuration(scaleAnimator.getDuration() - delay);
+                if (alphaAnimator != null) {
+                    alphaAnimator.setDuration(alphaAnimator.getDuration() -delay);
+                }
             }
 
             animatorSet.addListener(new AnimatorListenerAdapter() {
