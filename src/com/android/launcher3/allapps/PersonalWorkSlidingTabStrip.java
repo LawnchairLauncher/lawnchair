@@ -19,21 +19,18 @@ import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-
-import ch.deletescape.lawnchair.colors.ColorEngine;
-import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
 import ch.deletescape.lawnchair.allapps.AllAppsTabs;
 import ch.deletescape.lawnchair.allapps.AllAppsTabs.Tab;
+import ch.deletescape.lawnchair.colors.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
 import ch.deletescape.lawnchair.preferences.DrawerTabEditBottomSheet;
 import ch.deletescape.lawnchair.settings.DrawerTabs;
 import ch.deletescape.lawnchair.settings.DrawerTabs.CustomTab;
@@ -279,6 +276,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
             Tab tab = tabs.get(i);
             ColoredButton button = (ColoredButton) getChildAt(i);
             button.setColorResolver(tab.getDrawerTab().getColorResolver());
+            button.reset();
             button.setText(tab.getName());
             button.setOnLongClickListener(v -> {
                 DrawerTabs.Tab drawerTab = tab.getDrawerTab();
@@ -290,5 +288,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
                 return false;
             });
         }
+        updateIndicatorPosition();
+        invalidate();
     }
 }

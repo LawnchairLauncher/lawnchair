@@ -24,36 +24,42 @@ import com.android.launcher3.allapps.AllAppsContainerView
 import com.android.launcher3.allapps.AllAppsPagedView
 import com.android.launcher3.allapps.AllAppsStore
 
-class AllAppsTabsController(val tabs: AllAppsTabs, container: AllAppsContainerView,
-        private val adapterHolders: Array<AllAppsContainerView.AdapterHolder>) {
+typealias AdapterHolders = Array<AllAppsContainerView.AdapterHolder>
+
+class AllAppsTabsController(val tabs: AllAppsTabs, private val container: AllAppsContainerView) {
 
     val tabsCount get() = tabs.count
     val shouldShowTabs get() = tabsCount > 1
 
-    init {
-        for (i in (0 until adapterHolders.size)) {
-            adapterHolders[i] = container.createHolder(false)
+    fun createHolders(oldHolders: AdapterHolders?): AdapterHolders {
+        if (oldHolders != null && oldHolders.size >= tabsCount) {
+            return oldHolders
         }
+        return AdapterHolders(tabsCount) { container.createHolder(false) }
     }
 
-    fun registerIconContainers(allAppsStore: AllAppsStore) {
-        adapterHolders.forEach { allAppsStore.registerIconContainer(it.recyclerView) }
+    fun reloadTabs() {
+        tabs.reloadTabs()
     }
 
-    fun unregisterIconContainers(allAppsStore: AllAppsStore) {
-        adapterHolders.forEach { allAppsStore.unregisterIconContainer(it.recyclerView) }
+    fun registerIconContainers(allAppsStore: AllAppsStore, holders: AdapterHolders) {
+        holders.forEach { allAppsStore.registerIconContainer(it.recyclerView) }
     }
 
-    fun setup(pagedView: AllAppsPagedView) {
+    fun unregisterIconContainers(allAppsStore: AllAppsStore, holders: AdapterHolders) {
+        holders.forEach { allAppsStore.unregisterIconContainer(it.recyclerView) }
+    }
+
+    fun setup(pagedView: AllAppsPagedView, holders: AdapterHolders) {
         tabs.forEachIndexed { index, tab ->
-            adapterHolders[index].setIsWork(tab.isWork)
-            adapterHolders[index].setup(pagedView.getChildAt(index), tab.matcher)
+            holders[index].setIsWork(tab.isWork)
+            holders[index].setup(pagedView.getChildAt(index), tab.matcher)
         }
     }
 
-    fun setup(view: View) {
-        adapterHolders.forEach { it.recyclerView = null }
-        adapterHolders[0].setup(view, null)
+    fun setup(view: View, holders: AdapterHolders) {
+        holders.forEach { it.recyclerView = null }
+        holders[0].setup(view, null)
     }
 
     fun bindButtons(buttonsContainer: ViewGroup, pagedView: AllAppsPagedView) {

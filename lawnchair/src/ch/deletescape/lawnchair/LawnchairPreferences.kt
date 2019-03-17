@@ -222,6 +222,13 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         override fun unflattenValue(value: String) = Uri.parse(value)
     }
 
+    inline fun withChangeCallback(
+            crossinline callback: (LawnchairPreferencesChangeCallback) -> Unit): () -> Unit {
+        return { getOnChangeCallback()?.let { callback(it) } }
+    }
+
+    fun getOnChangeCallback() = onChangeCallback
+
     private fun recreate() {
         onChangeCallback?.recreate()
     }

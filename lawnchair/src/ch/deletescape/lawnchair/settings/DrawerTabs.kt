@@ -31,7 +31,9 @@ class DrawerTabs(prefs: LawnchairPreferences) {
 
     private val context = prefs.context
 
-    private var tabsDataJson by prefs.StringPref("pref_drawerTabs", "[]", prefs.recreate)
+    private var tabsDataJson by prefs.StringPref("pref_drawerTabs", "[]", prefs.withChangeCallback {
+        it.launcher.allAppsController.appsView.reloadTabs()
+    })
     private val tabs = ArrayList<Tab>()
     private val colorEngine = ColorEngine.getInstance(context)
     val defaultColorResolver = LawnchairAccentResolver(

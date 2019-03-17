@@ -72,7 +72,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private static final float FLING_ANIMATION_THRESHOLD = 0.55f;
 
     private final Launcher mLauncher;
-    private final AdapterHolder[] mAH;
+    private AdapterHolder[] mAH;
     private final ItemInfoMatcher mPersonalMatcher = ItemInfoMatcher.ofUser(Process.myUserHandle());
     private final ItemInfoMatcher mWorkMatcher = ItemInfoMatcher.not(mPersonalMatcher);
     private final AllAppsStore mAllAppsStore = new AllAppsStore();
@@ -113,8 +113,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         Selection.setSelection(mSearchQueryBuilder, 0);
 
         AllAppsTabs allAppsTabs = new AllAppsTabs(context);
-        mAH = new AdapterHolder[allAppsTabs.getCount() + 1];
-        mTabsController = new AllAppsTabsController(allAppsTabs, this, mAH);
+        mTabsController = new AllAppsTabsController(allAppsTabs, this);
+        createHolders();
 
         mNavBarScrimPaint = new Paint();
         mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
@@ -124,6 +124,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         addSpringView(R.id.all_apps_header);
         addSpringView(R.id.apps_list_view);
         addSpringView(R.id.all_apps_tabs_view_pager);
+    }
+
+    private void createHolders() {
+        mAH = mTabsController.createHolders(mAH);
     }
 
     public AllAppsStore getAppsStore() {
@@ -331,6 +335,11 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         return mSpringViews.get(getSearchView().getId()) ? 0 : mHeader.getTop();
     }
 
+    public void reloadTabs() {
+        mTabsController.reloadTabs();
+        rebindAdapters(mTabsController.getTabsCount() > 1, true);
+    }
+
     private void rebindAdapters(boolean showTabs) {
         rebindAdapters(showTabs, false /* force */);
     }
@@ -339,21 +348,26 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         if (showTabs == mUsingTabs && !force) {
             return;
         }
+        int currentTab = mViewPager != null ? mViewPager.getNextPage() : 0;
+        mTabsController.unregisterIconContainers(mAllAppsStore, mAH);
+
+        createHolders();
         replaceRVContainer(showTabs);
         mUsingTabs = showTabs;
 
-        mTabsController.unregisterIconContainers(mAllAppsStore);
-
         if (mUsingTabs) {
-            mTabsController.setup(mViewPager);
+            mTabsController.setup(mViewPager, mAH);
             ((PersonalWorkSlidingTabStrip) findViewById(R.id.tabs)).inflateButtons(mTabsController.getTabs());
             onTabChanged(mViewPager.getNextPage());
         } else {
-            mTabsController.setup((View) findViewById(R.id.apps_list_view));
+            mTabsController.setup((View) findViewById(R.id.apps_list_view), mAH);
         }
         setupHeader();
 
-        mTabsController.registerIconContainers(mAllAppsStore);
+        mTabsController.registerIconContainers(mAllAppsStore, mAH);
+        if (mViewPager != null) {
+            mViewPager.snapToPage(Math.min(mTabsController.getTabsCount() - 1, currentTab), 0);
+        }
     }
 
     private void replaceRVContainer(boolean showTabs) {

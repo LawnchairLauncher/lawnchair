@@ -46,7 +46,8 @@ class AllAppsTabs(private val context: Context) : Iterable<AllAppsTabs.Tab> {
         reloadTabs()
     }
 
-    private fun reloadTabs() {
+    fun reloadTabs() {
+        addedApps.clear()
         tabs.clear()
         context.lawnchairPrefs.drawerTabs.getTabs().mapNotNullTo(tabs) {
             when {
