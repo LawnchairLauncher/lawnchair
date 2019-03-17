@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.graphics.drawable.Drawable
 import com.android.launcher3.ItemInfo
+import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.google.android.apps.nexuslauncher.DynamicIconProvider
 
 class LawnchairIconProvider(context: Context) : DynamicIconProvider(context) {
@@ -33,6 +34,10 @@ class LawnchairIconProvider(context: Context) : DynamicIconProvider(context) {
 
     fun getIcon(launcherActivityInfo: LauncherActivityInfo, itemInfo: ItemInfo, iconDpi: Int, flattenDrawable: Boolean): Drawable {
         return iconPackManager.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, itemInfo, this)
+    }
+
+    fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable {
+        return iconPackManager.getIcon(shortcutInfo, iconDpi)
     }
 
     fun getDynamicIcon(launcherActivityInfo: LauncherActivityInfo?, iconDpi: Int, flattenDrawable: Boolean): Drawable {

@@ -37,6 +37,7 @@ import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
+import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
 import com.google.android.apps.nexuslauncher.CustomIconUtils
 import com.google.android.apps.nexuslauncher.clock.CustomClock
@@ -256,6 +257,18 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
         return basePacks.next().getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null,
                 basePacks, iconProvider)
+    }
+
+    override fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int,
+                         basePacks: Iterator<IconPack>): Drawable {
+        ensureInitialLoadComplete()
+
+        if (prefs.iconPackMasking && packMask.hasMask) {
+            val baseIcon = defaultPack.getIcon(shortcutInfo, iconDpi, basePacks)
+            return packMask.getIcon(context, baseIcon)
+        }
+
+        return basePacks.next().getIcon(shortcutInfo, iconDpi, basePacks)
     }
 
     override fun newIcon(icon: Bitmap, itemInfo: ItemInfo, customIconEntry: IconPackManager.CustomIconEntry?,

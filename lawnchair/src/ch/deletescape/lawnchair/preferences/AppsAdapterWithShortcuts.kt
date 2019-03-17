@@ -36,6 +36,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider
 import ch.deletescape.lawnchair.isVisible
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
@@ -50,9 +51,16 @@ open class AppsAdapterWithShortcuts(
         private val filter: AppFilter? = null)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val TYPE_LOADING = 0
-    private val TYPE_APP = 1
-    private val TYPE_SHORTCUT = 2
+
+    companion object {
+        private const val TYPE_LOADING = 0
+        private const val TYPE_APP = 1
+        private const val TYPE_SHORTCUT = 2
+
+        private val iconDpi = LauncherAppState.getInstanceNoCreate().invariantDeviceProfile.fillResIconDpi
+
+        private var iconProvider: IconProvider? = null
+    }
 
     var items = ArrayList<Item>().apply { add(LoadingItem()) }
     val apps = ArrayList<AppItem>()
@@ -60,6 +68,9 @@ open class AppsAdapterWithShortcuts(
     val shortcutManager = DeepShortcutManager.getInstance(context)
 
     init {
+        if (iconProvider == null) {
+            iconProvider = IconProvider.newInstance(context)
+        }
         Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(::loadAppsList)
     }
 
@@ -170,7 +181,12 @@ open class AppsAdapterWithShortcuts(
     inner class ShortcutItem(val info: ShortcutInfoCompat) : Item {
 
         val label = if (!TextUtils.isEmpty(info.longLabel)) info.longLabel else info.shortLabel
-        val iconDrawable = shortcutManager.getShortcutIconDrawable(info, DisplayMetrics.DENSITY_XXHIGH)
+        // TODO: debug why wrong icons are loaded from the provider at times
+        val iconDrawable = if (iconProvider is LawnchairIconProvider && false) {
+                (iconProvider as LawnchairIconProvider).getIcon(info, iconDpi)
+            } else {
+                shortcutManager.getShortcutIconDrawable(info, DisplayMetrics.DENSITY_XXHIGH)
+            }
     }
 
     class LoadingItem : Item

@@ -37,6 +37,7 @@ import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.graphics.*
 import com.android.launcher3.shortcuts.DeepShortcutManager
+import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
 import com.google.android.apps.nexuslauncher.DynamicIconProvider
 import com.google.android.apps.nexuslauncher.clock.DynamicClock
@@ -111,6 +112,16 @@ class DefaultPack(context: Context) : IconPack(context, "") {
             if (roundIcon != null) return roundIcon as Drawable
         }
         return iconProvider?.getDynamicIcon(info, iconDpi, flattenDrawable) ?: originalIcon
+    }
+
+    override fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int, basePacks: Iterator<IconPack>): Drawable {
+        ensureInitialLoadComplete()
+
+        val drawable = DeepShortcutManager.getInstance(context).getShortcutIconDrawable(shortcutInfo, iconDpi)
+        if (Utilities.ATLEAST_OREO && shouldWrapToAdaptive(drawable)) {
+            return wrapToAdaptiveIcon(drawable)
+        }
+        return drawable
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

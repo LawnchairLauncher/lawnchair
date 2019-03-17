@@ -45,6 +45,7 @@ import android.support.animation.SpringForce;
 import android.view.View;
 
 import ch.deletescape.lawnchair.iconpack.IconPackManager;
+import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider;
 import com.android.launcher3.*;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -113,6 +114,8 @@ public class DragView extends View {
     private Drawable mBadge;
     private ColorMatrixColorFilter mBaseFilter;
 
+    private final IconProvider iconProvider;
+
     /**
      * Construct the drag view.
      * <p>
@@ -129,6 +132,8 @@ public class DragView extends View {
         mLauncher = launcher;
         mDragLayer = launcher.getDragLayer();
         mDragController = launcher.getDragController();
+
+        iconProvider = IconProvider.newInstance(launcher);
 
         final float scale = (bitmap.getWidth() + finalScaleDps) / bitmap.getWidth();
 
@@ -336,8 +341,11 @@ public class DragView extends View {
                 return null;
             } else {
                 outObj[0] = si.get(0);
-                return sm.getShortcutIconDrawable(si.get(0),
-                        appState.getInvariantDeviceProfile().fillResIconDpi);
+                int iconDpi = appState.getInvariantDeviceProfile().fillResIconDpi;
+                if (iconProvider instanceof LawnchairIconProvider) {
+                    return ((LawnchairIconProvider) iconProvider).getIcon(si.get(0), iconDpi);
+                }
+                return sm.getShortcutIconDrawable(si.get(0), iconDpi);
             }
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
             FolderAdaptiveIcon icon =  FolderAdaptiveIcon.createFolderAdaptiveIcon(

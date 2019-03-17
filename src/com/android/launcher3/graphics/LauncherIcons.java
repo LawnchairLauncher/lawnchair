@@ -30,6 +30,7 @@ import android.os.UserHandle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import ch.deletescape.lawnchair.NonAdaptiveIconDrawable;
+import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider;
 import com.android.launcher3.*;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
@@ -99,12 +100,16 @@ public class LauncherIcons implements AutoCloseable {
     private Drawable mWrapperIcon;
     private int mWrapperBackgroundColor = DEFAULT_WRAPPER_BACKGROUND;
 
+    private IconProvider iconProvider;
+
     // sometimes we store linked lists of these things
     private LauncherIcons next;
 
     private LauncherIcons(Context context) {
         mContext = context.getApplicationContext();
         mPm = mContext.getPackageManager();
+
+        iconProvider = IconProvider.newInstance(context);
 
         InvariantDeviceProfile idp = LauncherAppState.getIDP(mContext);
         mFillResIconDpi = idp.fillResIconDpi;
@@ -351,8 +356,13 @@ public class LauncherIcons implements AutoCloseable {
 
     public BitmapInfo createShortcutIcon(ShortcutInfoCompat shortcutInfo,
             boolean badged, @Nullable Provider<Bitmap> fallbackIconProvider) {
-        Drawable unbadgedDrawable = DeepShortcutManager.getInstance(mContext)
-                .getShortcutIconDrawable(shortcutInfo, mFillResIconDpi);
+        Drawable unbadgedDrawable;
+        if (iconProvider instanceof LawnchairIconProvider) {
+            unbadgedDrawable = ((LawnchairIconProvider) iconProvider).getIcon(shortcutInfo, mFillResIconDpi);
+        } else {
+            unbadgedDrawable = DeepShortcutManager.getInstance(mContext)
+                    .getShortcutIconDrawable(shortcutInfo, mFillResIconDpi);
+        }
         IconCache cache = LauncherAppState.getInstance(mContext).getIconCache();
 
         final Bitmap unbadgedBitmap;

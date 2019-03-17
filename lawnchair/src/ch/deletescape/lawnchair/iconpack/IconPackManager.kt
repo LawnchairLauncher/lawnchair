@@ -34,6 +34,7 @@ import ch.deletescape.lawnchair.override.AppInfoProvider
 import ch.deletescape.lawnchair.override.CustomInfoProvider
 import ch.deletescape.lawnchair.reloadIcons
 import com.android.launcher3.*
+import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
 import java.util.*
 import kotlin.collections.HashMap
@@ -109,6 +110,16 @@ class IconPackManager(private val context: Context) {
                 defaultPack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null,
                         iterator, iconProvider)
             }
+        }
+    }
+
+    fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable {
+        val iterator = packList.iterator()
+        return if (iterator.hasNext()) {
+            iterator.next().getIcon(shortcutInfo, iconDpi, packList.iterator())
+        } else {
+            // This should technically never be the case, but apparently it is
+            defaultPack.getIcon(shortcutInfo, iconDpi, packList.iterator())
         }
     }
 
