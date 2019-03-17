@@ -39,6 +39,7 @@ abstract class SelectableAppsAdapter(context: Context, private val callback: Cal
             .then { it.info.label.toString().toLowerCase() }
 
     init {
+        postLoadApps()
         callback?.onSelectionsChanged(0)
     }
 

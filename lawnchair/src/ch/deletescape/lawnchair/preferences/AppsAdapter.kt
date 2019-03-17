@@ -51,7 +51,7 @@ open class AppsAdapter(
 
     open val comparator = defaultComparator
 
-    init {
+    fun postLoadApps() {
         Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(::loadAppsList)
     }
 
