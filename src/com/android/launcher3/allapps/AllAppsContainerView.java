@@ -38,6 +38,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.allapps.AllAppsTabs;
 import ch.deletescape.lawnchair.allapps.AllAppsTabsController;
 import com.android.launcher3.AppInfo;
@@ -361,6 +362,11 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             onTabChanged(mViewPager.getNextPage());
         } else {
             mTabsController.setup((View) findViewById(R.id.apps_list_view), mAH);
+            AllAppsRecyclerView recyclerView = mAH[AdapterHolder.MAIN].recyclerView;
+            if (recyclerView != null) {
+                LawnchairUtilsKt.runOnAttached(recyclerView, () -> recyclerView.setScrollbarColor(
+                        mTabsController.getTabs().get(0).getDrawerTab().getColorResolver()));
+            }
         }
         setupHeader();
 

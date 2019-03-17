@@ -579,3 +579,22 @@ fun ImageView.tintDrawable(color: Int) {
     drawable.setTint(color)
     setImageDrawable(drawable)
 }
+
+fun View.runOnAttached(runnable: Runnable) {
+    if (isAttachedToWindow) {
+        runnable.run()
+    } else {
+        addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+
+            override fun onViewAttachedToWindow(v: View?) {
+                runnable.run()
+                removeOnAttachStateChangeListener(this)
+            }
+
+            override fun onViewDetachedFromWindow(v: View?) {
+                removeOnAttachStateChangeListener(this)
+            }
+        })
+
+    }
+}
