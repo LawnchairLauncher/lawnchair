@@ -23,12 +23,15 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.*
+import android.widget.ImageView
 import android.widget.TextView
+import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.DrawerTabs
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheetDialog
+import ch.deletescape.lawnchair.tintDrawable
 import com.android.launcher3.R
 import com.android.launcher3.compat.UserManagerCompat
 
@@ -36,6 +39,7 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
 
     private val drawerTabs = context.lawnchairPrefs.drawerTabs
     private val tabs = ArrayList<DrawerTabs.Tab>()
+    private val accent = ColorEngine.getInstance(context).accent
 
     val itemTouchHelper = ItemTouchHelper(TouchHelperCallback())
 
@@ -85,11 +89,11 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
         return true
     }
 
-    inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val title: TextView = itemView.findViewById(R.id.title)
         private val summary: TextView = itemView.findViewById(R.id.summary)
-        private val edit: View = itemView.findViewById(R.id.edit)
+        private val edit: ImageView = itemView.findViewById(R.id.edit)
         private val delete: View = itemView.findViewById(R.id.delete)
 
         init {
@@ -99,8 +103,9 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
                 }
                 false
             }
-            edit.setOnClickListener(this)
-            delete.setOnClickListener(this)
+            itemView.setOnClickListener { startEdit() }
+            edit.setOnClickListener { startEdit()}
+            delete.setOnClickListener { delete() }
         }
 
         fun bind(info: DrawerTabs.Tab) {
@@ -108,6 +113,7 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
                 info.loadTitle(context, hasWorkApps) else info.title
             summary.isVisible = info is DrawerTabs.CustomTab
             edit.isVisible = info is DrawerTabs.CustomTab
+            edit.tintDrawable(accent)
             delete.isVisible = info is DrawerTabs.CustomTab
             if (info is DrawerTabs.CustomTab) {
                 val size = info.contents.size
@@ -115,18 +121,15 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
             }
         }
 
-        override fun onClick(v: View) {
-            when (v.id) {
-                R.id.edit -> {
-                    val tab = tabs[adapterPosition] as? DrawerTabs.CustomTab ?: return
-                    DrawerTabEditBottomSheet.edit(context, tab)
-                }
-                R.id.delete -> {
-                    tabs.removeAt(adapterPosition)
-                    notifyItemRemoved(adapterPosition)
-                    saved = false
-                }
-            }
+        private fun startEdit() {
+            val tab = tabs[adapterPosition] as? DrawerTabs.CustomTab ?: return
+            DrawerTabEditBottomSheet.edit(context, tab)
+        }
+
+        private fun delete() {
+            tabs.removeAt(adapterPosition)
+            notifyItemRemoved(adapterPosition)
+            saved = false
         }
     }
 
