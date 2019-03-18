@@ -155,9 +155,6 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
             onCloseComplete();
             return;
         }
-        if (!mIsOpen || mOpenCloseAnimator.isRunning()) {
-            return;
-        }
         mOpenCloseAnimator.setValues(
                 PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_CLOSED));
         mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
