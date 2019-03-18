@@ -30,6 +30,7 @@ import android.widget.ImageView
 import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.settings.ui.ControlledPreference
 import com.android.launcher3.R
+import java.lang.IllegalStateException
 
 @Keep
 class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int): PreferenceGroup(context, attrs, defStyleAttr, defStyleRes),
@@ -84,7 +85,13 @@ class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleA
     fun contains(key: String?) = preferences.any { it.key == key }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
-        if (preferences.isEmpty()) {
+        if (preferences.size <= 1) {
+            // Expand and remove ourselves if there is only one preference contained inside
+            for (pref in preferences) {
+                // hack to ensure proper positioning of the preference
+                super.addPreference(pref)
+                parent?.addPreference(pref)
+            }
             parent?.removePreference(this)
             return
         }
@@ -129,7 +136,7 @@ class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleA
 
     private fun updateUi() {
         if (expanded) {
-            for(pref in preferences) {
+            for (pref in preferences) {
                 super.addPreference(pref)
             }
         } else {
