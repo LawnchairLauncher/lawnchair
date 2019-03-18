@@ -18,8 +18,10 @@ package com.android.launcher3.views;
 import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_FLAVOR;
 import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_OFFSET;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextUtils;
@@ -150,7 +152,7 @@ public class OptionsPopupView extends ArrowPopup
         RectF target = new RectF(x - halfSize, y - halfSize, x + halfSize, y + halfSize);
 
         ArrayList<OptionItem> options = new ArrayList<>();
-        int res = FeatureFlags.STYLE_WALLPAPER.get() ?
+        int res = FeatureFlags.STYLE_WALLPAPER.get() && existsStyleWallpapers(launcher) ?
                 R.string.styles_wallpaper_button_text : R.string.wallpaper_button_text;
         options.add(new OptionItem(res, R.drawable.ic_wallpaper,
                 ControlType.WALLPAPER_BUTTON, OptionsPopupView::startWallpaperPicker));
@@ -162,6 +164,14 @@ public class OptionsPopupView extends ArrowPopup
                 ControlType.SETTINGS_BUTTON, OptionsPopupView::startSettings));
 
         show(launcher, target, options);
+    }
+
+    private static boolean existsStyleWallpapers(Launcher launcher) {
+        Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER);
+        intent.setComponent(new ComponentName(launcher.getString(R.string.wallpaper_picker_package),
+                "com.android.customization.picker.CustomizationPickerActivity"));
+        ResolveInfo ri = launcher.getPackageManager().resolveActivity(intent, 0);
+        return ri != null;
     }
 
     public static boolean onWidgetsClicked(View view) {
