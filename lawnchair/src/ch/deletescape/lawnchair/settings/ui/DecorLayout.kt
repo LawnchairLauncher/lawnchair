@@ -178,12 +178,6 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
         (background as BlurDrawable?)?.stopListening()
     }
 
-    @TargetApi(23)
-    override fun fitSystemWindows(insets: Rect): Boolean {
-        setInsets(insets)
-        return true
-    }
-
     class ContentFrameLayout(context: Context, attrs: AttributeSet?) : InsettableFrameLayout(context, attrs) {
 
         private var decorLayout: DecorLayout? = null

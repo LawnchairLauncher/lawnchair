@@ -170,6 +170,17 @@ inline fun ViewGroup.forEachChild(action: (View) -> Unit) {
     forEachChildIndexed { view, _ -> action(view) }
 }
 
+inline fun ViewGroup.forEachChildReversedIndexed(action: (View, Int) -> Unit) {
+    val count = childCount
+    for (i in (0 until count).reversed()) {
+        action(getChildAt(i), i)
+    }
+}
+
+inline fun ViewGroup.forEachChildReversed(action: (View) -> Unit) {
+    forEachChildReversedIndexed { view, _ -> action(view) }
+}
+
 fun ComponentKey.getLauncherActivityInfo(context: Context): LauncherActivityInfo? {
     return LauncherAppsCompat.getInstance(context).getActivityList(componentName.packageName, user)
             .firstOrNull { it.componentName == componentName }

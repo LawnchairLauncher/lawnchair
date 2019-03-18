@@ -30,6 +30,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
+import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheet
 import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheetDialog
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -128,21 +129,20 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
         shareBackup.visibility = visibility
         divider.visibility = visibility
 
-        val bottomSheet = SettingsBottomSheetDialog(this)
+        val bottomSheet = SettingsBottomSheet.inflate(this)
         restoreBackup.setOnClickListener {
-            bottomSheet.dismiss()
+            bottomSheet.close(true)
             openRestore(currentPosition)
         }
         shareBackup.setOnClickListener {
-            bottomSheet.dismiss()
+            bottomSheet.close(true)
             shareBackup(currentPosition)
         }
         removeBackup.setOnClickListener {
-            bottomSheet.dismiss()
+            bottomSheet.close(true)
             removeItem(currentPosition)
         }
-        bottomSheet.setContentView(bottomSheetView)
-        bottomSheet.show()
+        bottomSheet.show(bottomSheetView, true)
     }
 
     private fun removeItem(position: Int) {

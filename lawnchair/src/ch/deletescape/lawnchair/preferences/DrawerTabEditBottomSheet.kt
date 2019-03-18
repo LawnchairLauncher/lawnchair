@@ -17,6 +17,7 @@
 
 package ch.deletescape.lawnchair.preferences
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.res.Configuration
@@ -31,6 +32,7 @@ import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.colors.preferences.TabbedPickerView
 import ch.deletescape.lawnchair.settings.DrawerTabs
+import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheet
 import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheetDialog
 import ch.deletescape.lawnchair.views.BaseBottomSheet
 import com.android.launcher3.AbstractFloatingView
@@ -175,15 +177,13 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
     companion object {
 
         fun show(context: Context, config: TabConfig, callback: () -> Unit) {
-            SettingsBottomSheetDialog(context).apply {
-                setContentView(DrawerTabEditBottomSheet(context, config) {
-                    if (it) {
-                        callback()
-                    }
-                    dismiss()
-                })
-                show()
-            }
+            val sheet = SettingsBottomSheet.inflate(context)
+            sheet.show(DrawerTabEditBottomSheet(context, config) {
+                if (it) {
+                    callback()
+                }
+                sheet.close(true)
+            }, true)
         }
 
         fun show(launcher: Launcher, config: TabConfig, callback: () -> Unit, animate: Boolean = true) {
