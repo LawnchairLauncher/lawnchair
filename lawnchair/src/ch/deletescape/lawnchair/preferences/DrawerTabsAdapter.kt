@@ -109,6 +109,7 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
         }
 
         fun bind(info: DrawerTabs.Tab) {
+            itemView.isClickable = info is DrawerTabs.CustomTab
             title.text = if (info is DrawerTabs.PersonalTab)
                 info.loadTitle(context, hasWorkApps) else info.title
             summary.isVisible = info is DrawerTabs.CustomTab
