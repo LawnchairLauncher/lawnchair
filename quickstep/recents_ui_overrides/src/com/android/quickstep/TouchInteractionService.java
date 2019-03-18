@@ -311,29 +311,34 @@ public class TouchInteractionService extends Service {
             mSwipeSharedState.clearAllState();
         }
 
+        final ActivityControlHelper activityControl =
+                mOverviewComponentObserver.getActivityControlHelper();
         if (runningTaskInfo == null && !mSwipeSharedState.goingToLauncher) {
             return InputConsumer.NO_OP;
         } else if (mAssistantAvailable && mOverviewInteractionState.isSwipeUpGestureEnabled()
                 && FeatureFlags.ENABLE_ASSISTANT_GESTURE.get()
-                && AssistantTouchConsumer.withinTouchRegion(this, event.getX())) {
-            return new AssistantTouchConsumer(this, mRecentsModel.getSystemUiProxy());
-        } else if (mSwipeSharedState.goingToLauncher ||
-                mOverviewComponentObserver.getActivityControlHelper().isResumed()) {
-            return OverviewInputConsumer.newInstance(
-                    mOverviewComponentObserver.getActivityControlHelper(), false);
+                && AssistantTouchConsumer.withinTouchRegion(this, event)) {
+            return new AssistantTouchConsumer(this, mISystemUiProxy, !activityControl.isResumed()
+                            ? createOtherActivityInputConsumer(event, runningTaskInfo) : null);
+        } else if (mSwipeSharedState.goingToLauncher || activityControl.isResumed()) {
+            return OverviewInputConsumer.newInstance(activityControl, false);
         } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() &&
-                mOverviewComponentObserver.getActivityControlHelper().isInLiveTileMode()) {
-            return OverviewInputConsumer.newInstance(
-                    mOverviewComponentObserver.getActivityControlHelper(), false);
+                activityControl.isInLiveTileMode()) {
+            return OverviewInputConsumer.newInstance(activityControl, false);
         } else {
-            ActivityControlHelper activityControl =
-                    mOverviewComponentObserver.getActivityControlHelper();
-            boolean shouldDefer = activityControl.deferStartingActivity(mActiveNavBarRegion, event);
-            return new OtherActivityInputConsumer(this, runningTaskInfo, mRecentsModel,
-                    mOverviewComponentObserver.getOverviewIntent(), activityControl,
-                    shouldDefer, mOverviewCallbacks, mTaskOverlayFactory, mInputConsumer,
-                    this::onConsumerInactive, mSwipeSharedState);
+            return createOtherActivityInputConsumer(event, runningTaskInfo);
         }
+    }
+
+    private OtherActivityInputConsumer createOtherActivityInputConsumer(MotionEvent event,
+            RunningTaskInfo runningTaskInfo) {
+        final ActivityControlHelper activityControl =
+                mOverviewComponentObserver.getActivityControlHelper();
+        boolean shouldDefer = activityControl.deferStartingActivity(mActiveNavBarRegion, event);
+        return new OtherActivityInputConsumer(this, runningTaskInfo, mRecentsModel,
+                mOverviewComponentObserver.getOverviewIntent(), activityControl,
+                shouldDefer, mOverviewCallbacks, mTaskOverlayFactory, mInputConsumer,
+                this::onConsumerInactive, mSwipeSharedState);
     }
 
     /**

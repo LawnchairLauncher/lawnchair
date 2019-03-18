@@ -66,6 +66,6 @@
     <dimen name="shelf_surface_offset">24dp</dimen>
 
     <!-- Assistant Gestures -->
-    <dimen name="gestures_assistant_width">70dp</dimen>
-    <dimen name="gestures_assistant_threshold">200dp</dimen>
+    <dimen name="gestures_assistant_size">28dp</dimen>
+    <dimen name="gestures_assistant_drag_threshold">70dp</dimen>
 </resources>
