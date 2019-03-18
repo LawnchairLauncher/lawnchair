@@ -93,6 +93,13 @@ public final class TaskListLoader {
     }
 
     /**
+     * Clears the current task list.
+     */
+    void clearAllTasks() {
+        mTaskList.clear();
+    }
+
+    /**
      * Loads task content for a list of tasks, including the label, icon, and thumbnail. For content
      * that isn't cached, load the content asynchronously in the background.
      *
