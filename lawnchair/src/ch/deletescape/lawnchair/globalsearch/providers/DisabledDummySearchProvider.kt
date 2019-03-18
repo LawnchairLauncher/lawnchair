@@ -21,11 +21,12 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import ch.deletescape.lawnchair.globalsearch.SearchProvider
+import com.android.launcher3.R
 
 
 class DisabledDummySearchProvider(context: Context) : SearchProvider(context) {
     override val name: String
-        get() = ""
+        get() = context.getString(R.string.special_greeting)
     override val supportsVoiceSearch = false
     override val supportsAssistant = false
     override val supportsFeed = false

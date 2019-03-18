@@ -144,6 +144,9 @@
     <string name="dock_gradient">Use gradient dock</string>
     <string name="dock_fill">Fill when collapsed</string>
 
+    <!-- Let's greet the queen of reverse engineering -->
+    <string name="special_greeting" translatable="false">Hi Jane. Lot\'s of love from the Lawnchair team.</string>
+
     <!-- Categories -->
     <string name="pref_category_icons">Icons</string>
     <string name="pref_category_aag">At a glance</string>
