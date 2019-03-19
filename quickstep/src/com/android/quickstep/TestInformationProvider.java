@@ -25,6 +25,9 @@ import android.os.Bundle;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.TestProtocol;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.OverviewState;
@@ -80,6 +83,21 @@ public class TestInformationProvider extends ContentProvider {
                     final float swipeHeight =
                             LayoutUtils.getShelfTrackingDistance(context, deviceProfile);
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, (int) swipeHeight);
+                    break;
+                }
+                case TestProtocol.REQUEST_ALL_APPS_TO_OVERVIEW_SWIPE_HEIGHT: {
+                    final LauncherAppState launcherAppState =
+                            LauncherAppState.getInstanceNoCreate();
+                    if (launcherAppState == null) return null;
+
+                    final Launcher launcher = (Launcher) launcherAppState.getModel().getCallback();
+                    if (launcher == null) return null;
+
+                    final float progress = LauncherState.OVERVIEW.getVerticalProgress(launcher)
+                            - LauncherState.ALL_APPS.getVerticalProgress(launcher);
+                    final float distance =
+                            launcher.getAllAppsController().getShiftRange() * progress;
+                    response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, (int) distance);
                     break;
                 }
             }

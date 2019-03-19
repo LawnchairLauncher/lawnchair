@@ -22,8 +22,6 @@ import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 
 import static org.junit.Assert.assertTrue;
 
-import android.view.ViewConfiguration;
-
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.Until;
@@ -67,9 +65,11 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
             final int swipeHeight = mLauncher.getTestInfo(
                     getSwipeHeightRequestName()).
                     getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
-            final int slop = ViewConfiguration.get(mLauncher.getContext()).getScaledTouchSlop();
 
-            mLauncher.swipe(centerX, startY, centerX, startY - swipeHeight - slop, expectedState);
+            mLauncher.swipe(
+                    centerX, startY, centerX,
+                    startY - swipeHeight - mLauncher.getTouchSlop(),
+                    expectedState);
         } else {
             mLauncher.waitForSystemUiObject("recent_apps").click();
         }

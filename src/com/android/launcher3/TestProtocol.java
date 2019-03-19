@@ -36,4 +36,6 @@ public final class TestProtocol {
             "home-to-overview-swipe-height";
     public static final String REQUEST_BACKGROUND_TO_OVERVIEW_SWIPE_HEIGHT =
             "background-to-overview-swipe-height";
+    public static final String REQUEST_ALL_APPS_TO_OVERVIEW_SWIPE_HEIGHT =
+            "all-apps-to-overview-swipe-height";
 }

@@ -32,6 +32,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Surface;
+import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.NonNull;
@@ -467,5 +468,9 @@ public final class LauncherInstrumentation {
 
     float getDisplayDensity() {
         return mInstrumentation.getTargetContext().getResources().getDisplayMetrics().density;
+    }
+
+    int getTouchSlop() {
+        return ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 }
