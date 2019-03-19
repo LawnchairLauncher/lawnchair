@@ -33,10 +33,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.ResultReceiver
 import android.support.v4.app.ActivityCompat
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.FrameLayout
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.iconpack.EditIconActivity
@@ -63,6 +63,10 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
     protected open val isScreenshotMode = false
     private var prefCallback = LawnchairPreferencesChangeCallback(this)
     private var paused = false
+
+    private val customLayoutInflater by lazy {
+        LawnchairLayoutInflater(super.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater, this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !Utilities.hasStoragePermission(this)) {
@@ -223,6 +227,13 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
     override fun onRotationChanged() {
         super.onRotationChanged()
         BlurWallpaperProvider.getInstance(this).updateAsync()
+    }
+
+    override fun getSystemService(name: String): Any {
+        if (name == Context.LAYOUT_INFLATER_SERVICE) {
+            return customLayoutInflater
+        }
+        return super.getSystemService(name)
     }
 
     fun shouldRecreate() = !sRestart

@@ -52,4 +52,28 @@
     <attr name="settingsBackground" format="color" />
     <attr name="qsbEdgeRadius" format="dimension" />
     <attr name="folderIconRadius" format="float" />
+
+    <declare-styleable name="CustomFont">
+        <attr name="android:textAppearance"/>
+        <attr name="customFontType" format="enum">
+            <enum name="title" value="0" />
+            <enum name="preferenceTitle" value="1" />
+            <enum name="button" value="2" />
+            <enum name="categoryTitle" value="3" />
+            <enum name="dialogTitle" value="4" />
+            <enum name="settingsTab" value="5" />
+            <enum name="text" value="6" />
+            <enum name="settingsTileTitle" value="7" />
+            <enum name="smartspaceText" value="8" />
+            <enum name="baseIcon" value="9" />
+            <enum name="workspaceIcon" value="10" />
+            <enum name="allAppsIcon" value="11" />
+            <enum name="folderIcon" value="12" />
+            <enum name="actionView" value="13" />
+            <enum name="deepShortcut" value="14" />
+            <enum name="systemShortcut" value="15" />
+            <enum name="taskOption" value="16" />
+            <enum name="drawerTab" value="17" />
+        </attr>
+    </declare-styleable>
 </resources>

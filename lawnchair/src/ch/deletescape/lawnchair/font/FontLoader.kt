@@ -17,68 +17,35 @@
 
 package ch.deletescape.lawnchair.font
 
-import android.content.Context
 import android.graphics.Typeface
-import android.support.v4.provider.FontRequest
-import android.support.v4.provider.FontsContractCompat
 import android.widget.TextView
 import ch.deletescape.lawnchair.runOnMainThread
-import ch.deletescape.lawnchair.uiWorkerHandler
-import com.android.launcher3.R
-import java.util.*
-import kotlin.collections.HashMap
 
-class FontLoader(context: Context, fontName: String) {
+class FontLoader(font: FontCache.Font) : FontCache.Font.LoadCallback {
 
     private var fontLoaded = false
-    private var font: Typeface? = null
-    private var fontStyles = HashMap<Int, Typeface>()
-    private var waitingTasks = WeakHashMap<() -> Unit, Int>()
+    private var face: Typeface? = null
+    private var waitingTasks = HashMap<TextView, Typeface>()
 
     init {
-        val request = FontRequest(
-                "com.google.android.gms.fonts", // ProviderAuthority
-                "com.google.android.gms",  // ProviderPackage
-                "name=$fontName",  // Query
-                R.array.com_google_android_gms_fonts_certs)
-
-        // retrieve font in the background
-        FontsContractCompat.requestFont(context, request, object : FontsContractCompat.FontRequestCallback() {
-            override fun onTypefaceRetrieved(typeface: Typeface) {
-                super.onTypefaceRetrieved(typeface)
-
-                onTypefaceLoaded(typeface)
-                runOnMainThread { onTypefaceLoaded(typeface) }
-            }
-
-            override fun onTypefaceRequestFailed(reason: Int) {
-                super.onTypefaceRequestFailed(reason)
-
-                runOnMainThread { onRequestFailed() }
-            }
-        }, uiWorkerHandler)
+        font.load(this)
     }
 
-    @Synchronized
-    fun onTypefaceLoaded(typeface: Typeface) {
+    override fun onFontLoaded(typeface: Typeface?) {
         runOnMainThread {
             fontLoaded = true
-            font = typeface
-            waitingTasks.keys.forEach { it() }
+            face = typeface
+            waitingTasks.entries.forEach { into(it.key, it.value) }
             waitingTasks.clear()
         }
     }
 
-    @Synchronized
-    fun onRequestFailed() {
-        waitingTasks.clear()
-    }
-
-    fun into(target: TextView, style: Int = Typeface.NORMAL) {
+    fun into(target: TextView, fallback: Typeface) {
         if (!fontLoaded) {
-            waitingTasks[{ into(target, style) }] = 0
+            target.typeface = fallback
+            waitingTasks[target] = fallback
         } else {
-            target.typeface = fontStyles.getOrPut(style) { Typeface.create(font, style) }
+            target.typeface = face ?: fallback
         }
     }
 }

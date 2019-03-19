@@ -22,13 +22,13 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import ch.deletescape.lawnchair.ViewPagerAdapter
 import ch.deletescape.lawnchair.colors.*
-import ch.deletescape.lawnchair.setGoogleSans
+import ch.deletescape.lawnchair.font.CustomFontManager
+import ch.deletescape.lawnchair.setCustomFont
 import com.android.launcher3.R
 import kotlinx.android.synthetic.main.tabbed_color_picker.view.*
 import me.priyesh.chroma.*
@@ -70,8 +70,8 @@ class TabbedPickerView(context: Context, val key: String, initialColor: Int,
                 applyColor(color)
             }
         })
-        findViewById<TextView>(R.id.positive_button).setGoogleSans(Typeface.BOLD)
-        findViewById<TextView>(R.id.negative_button).setGoogleSans(Typeface.BOLD)
+        findViewById<TextView>(R.id.positive_button).setCustomFont(CustomFontManager.FONT_BUTTON)
+        findViewById<TextView>(R.id.negative_button).setCustomFont(CustomFontManager.FONT_BUTTON)
         enablePreviewClick(object : ChromaView.PreviewClickListener {
             override fun onClick(color: Int) {
                 applyColor(color)

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
         android:key="appInfo"
@@ -9,6 +10,14 @@
         android:key="kill"
         android:title="@string/restart_lawnchair_pref_title"
         android:summary="@string/restart_lawnchair_pref_summary" />
+
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:title="Fonts"
+        app:content="@xml/lawnchair_fonts_preference" />
+
+    <Preference
+        android:title="UI font"
+        android:fragment="ch.deletescape.lawnchair.preferences.CustomFontFragment" />
 
     <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
         android:key="pref_showDebugInfo"

@@ -36,7 +36,6 @@ import android.support.v4.graphics.ColorUtils
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.view.PagerAdapter
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceGroup
 import android.util.AttributeSet
@@ -51,6 +50,7 @@ import android.widget.ImageView
 import android.widget.Switch
 import android.widget.TextView
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.font.CustomFontManager
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
@@ -63,11 +63,13 @@ import com.android.launcher3.views.OptionsPopupView
 import com.android.systemui.shared.recents.model.TaskStack
 import com.google.android.apps.nexuslauncher.CustomAppPredictor
 import com.google.android.apps.nexuslauncher.CustomIconUtils
+import org.json.JSONArray
 import org.xmlpull.v1.XmlPullParser
 import java.lang.reflect.Field
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
+import kotlin.collections.ArrayList
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 import kotlin.reflect.KMutableProperty0
@@ -271,9 +273,8 @@ fun runOnThread(handler: Handler, r: () -> Unit) {
     }
 }
 
-@JvmOverloads
-fun TextView.setGoogleSans(style: Int = Typeface.NORMAL) {
-    context.lawnchairApp.fontLoader.into(this, style)
+fun TextView.setCustomFont(type: Int) {
+    CustomFontManager.getInstance(context).setCustomFont(this, type)
 }
 
 fun ViewGroup.getAllChilds() = ArrayList<View>().also { getAllChilds(it) }
@@ -289,30 +290,13 @@ fun ViewGroup.getAllChilds(list: MutableList<View>) {
     }
 }
 
-fun AppCompatActivity.hookGoogleSansDialogTitle() {
-    layoutInflater.factory2 = object : LayoutInflater.Factory2 {
-        override fun onCreateView(parent: View?, name: String, context: Context, attrs: AttributeSet): View? {
-            if (name == "android.support.v7.widget.DialogTitle") {
-                return (Class.forName(name).getConstructor(Context::class.java, AttributeSet::class.java)
-                        .newInstance(context, attrs) as TextView).apply { setGoogleSans(Typeface.BOLD) }
-            }
-            return delegate.createView(parent, name, context, attrs)
-        }
-
-        override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
-            return onCreateView(null, name, context, attrs)
-        }
-
-    }
-}
-
 fun Activity.hookGoogleSansDialogTitle() {
     val activity = this
     layoutInflater.factory2 = object : LayoutInflater.Factory2 {
         override fun onCreateView(parent: View?, name: String, context: Context, attrs: AttributeSet): View? {
             if (name == "com.android.internal.widget.DialogTitle") {
                 return (Class.forName(name).getConstructor(Context::class.java, AttributeSet::class.java)
-                        .newInstance(context, attrs) as TextView).apply { setGoogleSans(Typeface.BOLD) }
+                        .newInstance(context, attrs) as TextView).apply { setCustomFont(CustomFontManager.FONT_DIALOG_TITLE) }
             }
             return activity.onCreateView(parent, name, context, attrs)
         }
@@ -463,7 +447,7 @@ fun android.app.AlertDialog.applyAccent() {
             getButton(AlertDialog.BUTTON_POSITIVE))
     buttons.forEach {
         it.setTextColor(color)
-        it.setGoogleSans(Typeface.BOLD)
+        it.setCustomFont(CustomFontManager.FONT_DIALOG_TITLE)
     }
 }
 
@@ -605,4 +589,19 @@ fun View.runOnAttached(runnable: Runnable) {
         })
 
     }
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <T>JSONArray.toArrayList(): ArrayList<T> {
+    val arrayList = ArrayList<T>()
+    for (i in (0 until length())) {
+        arrayList.add(get(i) as T)
+    }
+    return arrayList
+}
+
+fun Collection<String>.toJsonStringArray(): JSONArray {
+    val array = JSONArray()
+    forEach { array.put(it) }
+    return array
 }

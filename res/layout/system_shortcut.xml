@@ -31,7 +31,7 @@
         android:paddingEnd="@dimen/popup_padding_end"
         android:textSize="14sp"
         android:textColor="?android:attr/textColorPrimary"
-        android:fontFamily="sans-serif"
+        launcher:customFontType="systemShortcut"
         launcher:iconDisplay="shortcut_popup"
         launcher:layoutHorizontal="true"
         android:focusable="false" />

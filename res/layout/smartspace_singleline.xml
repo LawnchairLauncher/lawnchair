@@ -35,7 +35,6 @@
         android:layout_weight="1.0"
         android:background="@drawable/bg_smartspace"
         android:clickable="true"
-        android:fontFamily="@font/google_sans"
         android:gravity="center"
         android:maxLines="1"
         android:paddingLeft="10dp"
@@ -46,7 +45,8 @@
         launcher:ambientShadowColor="?workspaceAmbientShadowColor"
         launcher:keyShadowBlur="2dp"
         launcher:keyShadowColor="?workspaceKeyShadowColor"
-        launcher:keyShadowOffset="0.5dip" />
+        launcher:keyShadowOffset="0.5dip"
+        launcher:customFontType="smartspaceText" />
 
     <View
         android:id="@+id/title_sep"
@@ -86,13 +86,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:drawablePadding="6dp"
-            android:fontFamily="@font/google_sans"
             android:textColor="?workspaceTextColor"
             android:textSize="@dimen/smartspace_title_size"
             launcher:ambientShadowBlur="3dp"
             launcher:ambientShadowColor="?workspaceAmbientShadowColor"
             launcher:keyShadowBlur="2dp"
             launcher:keyShadowColor="?workspaceKeyShadowColor"
-            launcher:keyShadowOffset="0.5dip" />
+            launcher:keyShadowOffset="0.5dip"
+            launcher:customFontType="smartspaceText" />
     </LinearLayout>
 </LinearLayout>

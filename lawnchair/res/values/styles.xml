@@ -70,7 +70,7 @@
     </style>
 
     <style name="TextTitle">
-        <item name="android:fontFamily">@font/google_sans</item>
+        <item name="customFontType">title</item>
     </style>
 
     <!-- Weather widget -->
@@ -136,7 +136,7 @@
         <item name="android:layout">@layout/settings_category_material</item>
     </style>
     <style name="SettingsTheme.PreferenceTheme.Preference.Title" parent="@style/TextAppearance.AppCompat.Subhead">
-        <item name="fontFamily">@font/google_sans</item>
+        <item name="customFontType">preferenceTitle</item>
     </style>
 
     <style name="SettingsTheme.BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
@@ -160,8 +160,7 @@
     </style>
 
     <style name="SettingsTheme.Widget.Button" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:fontFamily">@font/google_sans_medium</item>
-        <item name="android:textStyle">normal</item>
+        <item name="customFontType">button</item>
         <item name="android:textAllCaps">false</item>
     </style>
 
@@ -187,14 +186,13 @@
         <item name="android:statusBarColor">@color/lollipopStatusBar</item>
     </style>
     <style name="SettingsTheme.V2.ActionBar.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="fontFamily">@font/google_sans</item>
+        <item name="customFontType">title</item>
     </style>
     <style name="SettingsTheme.V2.ActionBar" parent="SettingsTheme.V2">
         <item name="titleTextAppearance">@style/SettingsTheme.V2.ActionBar.Title</item>
     </style>
     <style name="SettingsTheme.V2.Button" parent="Widget.AppCompat.Button">
-        <item name="android:fontFamily">@font/google_sans</item>
-        <item name="android:textStyle">bold</item>
+        <item name="customFontType">button</item>
         <item name="android:textAllCaps">false</item>
     </style>
     <style name="SettingsTheme.V2.Dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
@@ -297,9 +295,8 @@
     </style>
 
     <style name="TextAppearance.Settings.Tab" parent="@style/TextAppearance.MaterialComponents.Tab">
-        <item name="android:fontFamily">@font/google_sans</item>
+        <item name="customFontType">settingsTab</item>
         <item name="android:textColor">@color/tab_text</item>
-        <item name="android:textStyle">bold</item>
         <item name="textAllCaps">false</item>
     </style>
 
@@ -321,7 +318,7 @@
     </style>
 
     <style name="TextAppearance.Settings.SearchBar" parent="@android:style/TextAppearance.Material.Widget.Toolbar.Subtitle">
-        <item name="android:fontFamily">@font/google_sans</item>
+        <item name="customFontType">title</item>
         <item name="android:gravity">start</item>
         <item name="android:textSize">@dimen/search_bar_text_size</item>
     </style>
@@ -338,6 +335,6 @@
 
     <style name="TextAppearance.Small" parent="@android:style/TextAppearance.Material.Small" />
     <style name="TextAppearance.TileTitle" parent="@android:style/TextAppearance.Material.Subhead">
-        <item name="android:fontFamily">@font/google_sans_medium</item>
+        <item name="customFontType">settingsTileTitle</item>
     </style>
 </resources>

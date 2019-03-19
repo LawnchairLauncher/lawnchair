@@ -104,7 +104,6 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             mEditTitle.setHint(mInfoProvider.getDefaultTitle(mItemInfo));
             mEditTitle.setText(mPreviousTitle);
             mEditTitle.setVisibility(VISIBLE);
-            LawnchairUtilsKt.setGoogleSans(mEditTitle);
             title.setVisibility(View.GONE);
         }
     }

@@ -18,14 +18,14 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
-import android.graphics.Typeface
 import android.preference.DialogPreference
 import android.support.v7.view.ContextThemeWrapper
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
-import ch.deletescape.lawnchair.setGoogleSans
+import ch.deletescape.lawnchair.font.CustomFontManager
+import ch.deletescape.lawnchair.setCustomFont
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import com.android.launcher3.R
 
@@ -44,9 +44,9 @@ abstract class RecyclerViewPreference(context: Context, attrs: AttributeSet?) : 
 
         view.post {
             val window = dialog.window ?: return@post
-            window.findViewById<TextView>(android.R.id.button1)?.setGoogleSans(Typeface.BOLD)
-            window.findViewById<TextView>(android.R.id.button2)?.setGoogleSans(Typeface.BOLD)
-            window.findViewById<TextView>(android.R.id.button3)?.setGoogleSans(Typeface.BOLD)
+            window.findViewById<TextView>(android.R.id.button1)?.setCustomFont(CustomFontManager.FONT_DIALOG_TITLE)
+            window.findViewById<TextView>(android.R.id.button2)?.setCustomFont(CustomFontManager.FONT_DIALOG_TITLE)
+            window.findViewById<TextView>(android.R.id.button3)?.setCustomFont(CustomFontManager.FONT_DIALOG_TITLE)
         }
     }
 

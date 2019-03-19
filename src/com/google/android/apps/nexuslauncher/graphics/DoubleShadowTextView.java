@@ -2,11 +2,12 @@ package com.google.android.apps.nexuslauncher.graphics;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
+import android.widget.TextView;
+import ch.deletescape.lawnchair.font.CustomFontManager;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
 
-public class DoubleShadowTextView extends AppCompatTextView {
+public class DoubleShadowTextView extends TextView {
     private final DoubleShadowBubbleTextView.ShadowInfo mShadowInfo;
 
     public DoubleShadowTextView(Context context) {
@@ -21,6 +22,7 @@ public class DoubleShadowTextView extends AppCompatTextView {
         super(context, attrs, defStyleAttr);
         mShadowInfo = new DoubleShadowBubbleTextView.ShadowInfo(context, attrs, defStyleAttr);
         setShadowLayer(Math.max(mShadowInfo.keyShadowBlur + mShadowInfo.keyShadowOffset, mShadowInfo.ambientShadowBlur), 0f, 0f, mShadowInfo.keyShadowColor);
+        CustomFontManager.Companion.getInstance(context).loadCustomFont(this, attrs);
     }
 
     protected void onDraw(Canvas canvas) {

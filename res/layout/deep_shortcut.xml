@@ -33,7 +33,7 @@
         android:drawablePadding="@dimen/deep_shortcut_drawable_padding"
         android:textSize="14sp"
         android:textColor="?android:attr/textColorPrimary"
-        android:fontFamily="sans-serif"
+        launcher:customFontType="deepShortcut"
         launcher:layoutHorizontal="true"
         launcher:iconDisplay="shortcut_popup"
         launcher:iconSizeOverride="@dimen/deep_shortcut_icon_size" />

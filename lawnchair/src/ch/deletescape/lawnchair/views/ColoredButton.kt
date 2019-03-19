@@ -21,6 +21,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.Button
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.font.CustomFontManager
 
 class ColoredButton(context: Context, attrs: AttributeSet) : Button(context, attrs) {
 
@@ -38,6 +39,10 @@ class ColoredButton(context: Context, attrs: AttributeSet) : Button(context, att
             }
             return field
         }
+
+    init {
+        CustomFontManager.getInstance(context).loadCustomFont(this, attrs)
+    }
 
     fun reset() {
         resolved = false

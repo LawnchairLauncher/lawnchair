@@ -20,7 +20,6 @@
         android:layout_marginEnd="16dp"
         android:layout_gravity="center_vertical"
         android:ellipsize="end"
-        android:fontFamily="@font/google_sans"
         android:maxLines="1"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="18sp"
@@ -28,6 +27,7 @@
         app:layout_constraintEnd_toStartOf="@+id/delete"
         app:layout_constraintStart_toEndOf="@+id/drag_handle"
         app:layout_constraintTop_toTopOf="parent"
+        app:customFontType="preferenceTitle"
         tools:text="Tab 1"/>
 
     <ImageView

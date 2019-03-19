@@ -471,4 +471,15 @@
     <string name="sesame_shortcut_disabled">Sesame shortcuts aren\'t available without integration.</string>
     <string name="pref_sesame_sync_icon_pack">Sync icon pack with Sesame</string>
     <string name="pref_sesame_sync_icon_pack_summary">Apply your Lawnchair icon pack to Sesame</string>
+    <string name="font_reset">Reset</string>
+    <string name="font_variant_italic">Italic</string>
+    <string name="font_weight_thin">Thin</string>
+    <string name="font_weight_extra_light">ExtraLight</string>
+    <string name="font_weight_light">Light</string>
+    <string name="font_weight_regular">Regular</string>
+    <string name="font_weight_medium">Medium</string>
+    <string name="font_weight_semi_bold">SemiBold</string>
+    <string name="font_weight_bold">Bold</string>
+    <string name="font_weight_extra_bold">ExtraBold</string>
+    <string name="font_weight_extra_black">Black</string>
 </resources>

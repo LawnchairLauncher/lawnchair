@@ -16,6 +16,7 @@
 
 <com.google.android.apps.nexuslauncher.CustomBottomSheet
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -54,7 +55,8 @@
         android:singleLine="true"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="24sp"
-        android:layout_marginBottom="32dp"/>
+        android:layout_marginBottom="32dp"
+        app:customFontType="title"/>
 
     <fragment
         android:id="@+id/sheet_prefs"

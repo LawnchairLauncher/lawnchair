@@ -55,31 +55,21 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
 
     init {
         View.inflate(context, R.layout.drawer_tab_edit_bottom_sheet, this)
-        tabName.setGoogleSans()
         tabName.text = config.title
         hideSwitch.isChecked = config.hideFromMain
 
         val accent = ColorEngine.getInstance(context).accent
 
-        findViewById<TextView>(R.id.name_label).apply {
-            setGoogleSans()
-            setTextColor(accent)
-        }
-
-        findViewById<TextView>(R.id.hide_title).setGoogleSans()
-        findViewById<TextView>(R.id.tab_color_title).setGoogleSans()
-        findViewById<TextView>(R.id.manage_apps_title).setGoogleSans()
+        findViewById<TextView>(R.id.name_label).setTextColor(accent)
 
         findViewById<View>(R.id.hide_toggle).setOnClickListener(this)
         findViewById<View>(R.id.tab_color).setOnClickListener(this)
         findViewById<View>(R.id.manage_apps).setOnClickListener(this)
         findViewById<TextView>(R.id.save).apply {
-            setGoogleSans(Typeface.BOLD)
             setTextColor(accent)
             setOnClickListener(this@DrawerTabEditBottomSheet)
         }
         findViewById<TextView>(R.id.cancel).apply {
-            setGoogleSans(Typeface.BOLD)
             setOnClickListener(this@DrawerTabEditBottomSheet)
         }
 

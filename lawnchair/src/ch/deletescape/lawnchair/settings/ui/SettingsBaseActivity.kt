@@ -28,6 +28,7 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ch.deletescape.lawnchair.LawnchairLayoutInflater
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.getBooleanAttr
 import ch.deletescape.lawnchair.hookGoogleSansDialogTitle
@@ -46,8 +47,12 @@ open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnColorChange
     private var currentTheme = 0
     private var paused = false
 
+    private val customLayoutInflater by lazy {
+        LawnchairLayoutInflater(super.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater, this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        hookGoogleSansDialogTitle()
+        (layoutInflater as LawnchairLayoutInflater).installFactory(delegate)
         themeOverride = ThemeOverride(themeSet, this)
         themeOverride.applyTheme(this)
         currentTheme = themeOverride.getTheme(this)
@@ -152,6 +157,13 @@ open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnColorChange
             startActivity(createRelaunchIntent(), ActivityOptions.makeCustomAnimation(
                     this, android.R.anim.fade_in, android.R.anim.fade_out).toBundle())
         }
+    }
+
+    override fun getSystemService(name: String): Any {
+        if (name == Context.LAYOUT_INFLATER_SERVICE) {
+            return customLayoutInflater
+        }
+        return super.getSystemService(name)
     }
 
     companion object {

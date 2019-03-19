@@ -18,11 +18,11 @@
 package ch.deletescape.lawnchair.sesame.views
 
 import android.content.Context
-import android.graphics.Typeface
 import android.util.AttributeSet
 import android.widget.Button
 import ch.deletescape.lawnchair.colors.ColorEngine
-import ch.deletescape.lawnchair.setGoogleSans
+import ch.deletescape.lawnchair.font.CustomFontManager
+import ch.deletescape.lawnchair.setCustomFont
 
 /**
  * Simple button class to use in externally displayed layouts where we can't programmatically change the design otherwise
@@ -32,6 +32,6 @@ class LCButton(context: Context, attrs: AttributeSet) : Button(context, attrs, a
     init {
         val color = ColorEngine.getInstance(context).accent
         setTextColor(color)
-        setGoogleSans(Typeface.BOLD)
+        setCustomFont(CustomFontManager.FONT_BUTTON)
     }
 }

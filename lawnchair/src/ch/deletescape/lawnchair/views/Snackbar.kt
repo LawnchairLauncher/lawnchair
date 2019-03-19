@@ -18,14 +18,12 @@
 package ch.deletescape.lawnchair.views
 
 import android.content.Context
-import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import ch.deletescape.lawnchair.colors.ColorEngine
-import ch.deletescape.lawnchair.setGoogleSans
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
@@ -126,9 +124,7 @@ class Snackbar(context: Context, attributeSet: AttributeSet?) : AbstractFloating
                 }
             }
             textView.text = string
-            textView.setGoogleSans()
             textView2.text = string2
-            textView2.setGoogleSans(Typeface.BOLD)
             textView2.setTextColor(ColorEngine.getInstance(launcher).accent)
             textView2.setOnClickListener {
                 runnable2?.run()

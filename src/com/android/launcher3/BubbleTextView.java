@@ -42,6 +42,7 @@ import android.widget.TextView;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
+import ch.deletescape.lawnchair.font.CustomFontManager;
 import ch.deletescape.lawnchair.gestures.BlankGestureHandler;
 import ch.deletescape.lawnchair.gestures.GestureController;
 import ch.deletescape.lawnchair.gestures.GestureHandler;
@@ -170,6 +171,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
         int defaultIconSize = grid.iconSizePx;
         LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
+        CustomFontManager customFontManager = CustomFontManager.Companion.getInstance(context);
         if (display == DISPLAY_WORKSPACE) {
             mHideText = prefs.getHideAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.iconTextSizePx);
@@ -177,6 +179,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             int lines = prefs.getHomeLabelRows();
             setMaxLines(lines);
             setSingleLine(lines == 1);
+            customFontManager.loadCustomFont(this, attrs);
         } else if (display == DISPLAY_ALL_APPS) {
             mHideText = prefs.getHideAllAppsAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.allAppsIconTextSizePx);
@@ -185,6 +188,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             int lines = prefs.getDrawerLabelRows();
             setMaxLines(lines);
             setSingleLine(lines == 1);
+            customFontManager.setCustomFont(this, CustomFontManager.FONT_ALL_APPS_ICON);
         } else if (display == DISPLAY_FOLDER) {
             mHideText = prefs.getHideAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.folderChildTextSizePx);
@@ -193,6 +197,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             int lines = prefs.getHomeLabelRows();
             setMaxLines(lines);
             setSingleLine(lines == 1);
+            customFontManager.setCustomFont(this, CustomFontManager.FONT_FOLDER_ICON);
         }
         mCenterVertically = a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
 

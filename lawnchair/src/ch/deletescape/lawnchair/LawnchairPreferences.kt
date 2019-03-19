@@ -183,6 +183,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val useScaleAnim by BooleanPref("pref_useScaleAnim", false, doNothing)
     val useWindowToIcon by BooleanPref("pref_useWindowToIcon", true, doNothing)
     val dismissTasksOnKill by BooleanPref("pref_dismissTasksOnKill", true, doNothing)
+    var customFontName by StringPref("pref_customFontName", "Google Sans", doNothing)
 
     // Search
     var searchProvider by StringPref("pref_globalSearchProvider", context.resources.getString(R.string.config_default_search_provider)) {
@@ -444,6 +445,15 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         }
     }
 
+    open inner class NullableStringPref(key: String, defaultValue: String? = null, onChange: () -> Unit = doNothing) :
+            PrefDelegate<String?>(key, defaultValue, onChange) {
+        override fun onGetValue(): String? = sharedPrefs.getString(getKey(), defaultValue)
+
+        override fun onSetValue(value: String?) {
+            edit { putString(getKey(), value) }
+        }
+    }
+
     open inner class StringSetPref(key: String, defaultValue: Set<String>, onChange: () -> Unit = doNothing) :
             PrefDelegate<Set<String>>(key, defaultValue, onChange) {
         override fun onGetValue(): Set<String> = sharedPrefs.getStringSet(getKey(), defaultValue)
@@ -558,7 +568,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         endBulkEdit()
     }
 
-    abstract inner class PrefDelegate<T : Any>(val key: String, val defaultValue: T, private val onChange: () -> Unit) {
+    abstract inner class PrefDelegate<T : Any?>(val key: String, val defaultValue: T, private val onChange: () -> Unit) {
 
         private var cached = false
         protected var value: T = defaultValue

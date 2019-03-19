@@ -8,5 +8,6 @@
     android:gravity="start|center"
     android:background="@drawable/bg_action_view"
     android:textDirection="locale"
+    launcher:customFontType="actionView"
     launcher:iconSizeOverride="36.0dip"
     launcher:layoutHorizontal="true" style="@style/BaseIcon" />

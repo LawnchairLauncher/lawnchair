@@ -21,6 +21,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="28dp"
     android:orientation="vertical">
 
@@ -31,7 +32,8 @@
         android:layout_marginStart="56dp"
         android:layout_marginEnd="16dp"
         android:text="@string/tab_name"
-        android:textColor="?android:colorAccent"/>
+        android:textColor="?android:colorAccent"
+        app:customFontType="preferenceTitle"/>
 
     <EditText
         android:id="@+id/name"
@@ -42,7 +44,8 @@
         android:layout_marginBottom="16dp"
         android:singleLine="true"
         style="@style/TextAppearance.AppCompat.Title"
-        tools:text="Favorites"/>
+        tools:text="Favorites"
+        app:customFontType="title"/>
 
     <LinearLayout
         android:id="@+id/hide_toggle"
@@ -79,7 +82,8 @@
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceListItem"
                 android:ellipsize="marquee"
-                android:text="@string/tab_hide_from_main" />
+                android:text="@string/tab_hide_from_main"
+                app:customFontType="preferenceTitle"/>
         </LinearLayout>
 
         <Switch
@@ -128,7 +132,8 @@
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceListItem"
                 android:ellipsize="marquee"
-                android:text="@string/tab_color" />
+                android:text="@string/tab_color"
+                app:customFontType="preferenceTitle" />
         </LinearLayout>
     </LinearLayout>
 
@@ -167,7 +172,8 @@
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceListItem"
                 android:ellipsize="marquee"
-                android:text="@string/tab_manage_apps" />
+                android:text="@string/tab_manage_apps"
+                app:customFontType="preferenceTitle" />
 
             <TextView
                 android:id="@+id/apps_count"
