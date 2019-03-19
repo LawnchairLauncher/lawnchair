@@ -17,12 +17,15 @@ package com.android.quickstep.views;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
 
@@ -31,12 +34,16 @@ import com.android.launcher3.R;
  */
 public final class TaskItemView extends LinearLayout {
 
+    private static final String DEFAULT_LABEL = "...";
+    private final Drawable mDefaultIcon;
     private TextView mLabelView;
     private ImageView mIconView;
     private ImageView mThumbnailView;
 
     public TaskItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mDefaultIcon = context.getResources().getDrawable(
+                android.R.drawable.sym_def_app_icon, context.getTheme());
     }
 
     @Override
@@ -48,33 +55,56 @@ public final class TaskItemView extends LinearLayout {
     }
 
     /**
-     * Set the label for the task item.
+     * Resets task item view to default values.
+     */
+    public void resetTaskItemView() {
+        setLabel(DEFAULT_LABEL);
+        setIcon(null);
+        setThumbnail(null);
+    }
+
+    /**
+     * Set the label for the task item. Sets to a default label if null.
      *
      * @param label task label
      */
-    public void setLabel(String label) {
+    public void setLabel(@Nullable String label) {
+        if (label == null) {
+            mLabelView.setText(DEFAULT_LABEL);
+            return;
+        }
         mLabelView.setText(label);
     }
 
     /**
-     * Set the icon for the task item.
+     * Set the icon for the task item. Sets to a default icon if null.
      *
      * @param icon task icon
      */
-    public void setIcon(Drawable icon) {
+    public void setIcon(@Nullable Drawable icon) {
         // TODO: Scale the icon up based off the padding on the side
         // The icon proper is actually smaller than the drawable and has "padding" on the side for
         // the purpose of drawing the shadow, allowing the icon to pop up, so we need to scale the
         // view if we want the icon to be flush with the bottom of the thumbnail.
+        if (icon == null) {
+            mIconView.setImageDrawable(mDefaultIcon);
+            return;
+        }
         mIconView.setImageDrawable(icon);
     }
 
     /**
-     * Set the task thumbnail for the task.
+     * Set the task thumbnail for the task. Sets to a default thumbnail if null.
      *
      * @param thumbnail task thumbnail for the task
      */
-    public void setThumbnail(Bitmap thumbnail) {
+    public void setThumbnail(@Nullable Bitmap thumbnail) {
+        if (thumbnail == null) {
+            mThumbnailView.setImageBitmap(null);
+            mThumbnailView.setBackgroundColor(Color.GRAY);
+            return;
+        }
+        mThumbnailView.setBackgroundColor(Color.TRANSPARENT);
         mThumbnailView.setImageBitmap(thumbnail);
     }
 
