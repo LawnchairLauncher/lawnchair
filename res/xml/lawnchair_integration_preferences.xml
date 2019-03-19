@@ -75,7 +75,8 @@
             android:persistent="true"
             android:summary="%s"
             android:title="@string/feed_theme_pref_title"
-            android:dependency="pref_enable_minus_one"/>
+            android:dependency="pref_enable_minus_one"
+            app:controllerClass=".GFeedBackgroundController"/>
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
 </android.support.v7.preference.PreferenceScreen>

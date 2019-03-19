@@ -31,7 +31,6 @@ class MinusOneController(context: Context) : PreferenceController(context) {
     override val title get() = getDisplayGoogleTitle()
 
     private fun getDisplayGoogleTitle(): String {
-        Log.d("MinusOne", "getDisplayGoogleTitle")
         var charSequence: CharSequence? = null
         try {
             val resourcesForApplication = context.packageManager.getResourcesForApplication("com.google.android.googlequicksearchbox")
