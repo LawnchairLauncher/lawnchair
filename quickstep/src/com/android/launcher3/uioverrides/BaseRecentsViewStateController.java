@@ -19,6 +19,7 @@ package com.android.launcher3.uioverrides;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.FLAG_DONT_ANIMATE_OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
@@ -64,6 +65,9 @@ public abstract class BaseRecentsViewStateController<T extends View>
             @NonNull AnimatorSetBuilder builder, @NonNull AnimationConfig config) {
         if (!config.playAtomicComponent()) {
             // The entire recents animation is played atomically.
+            return;
+        }
+        if (builder.hasFlag(FLAG_DONT_ANIMATE_OVERVIEW)) {
             return;
         }
         setStateWithAnimationInternal(toState, builder, config);

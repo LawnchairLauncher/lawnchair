@@ -373,7 +373,6 @@ public class LauncherStateManager {
             AnimatorSetBuilder builder, final Runnable onCompleteRunnable) {
 
         for (StateHandler handler : getStateHandlers()) {
-            builder.startTag(handler);
             handler.setStateWithAnimation(state, builder, mConfig);
         }
 
