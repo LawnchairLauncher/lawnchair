@@ -32,8 +32,9 @@ public class AnimatorSetBuilder {
     public static final int ANIM_WORKSPACE_SCALE = 1;
     public static final int ANIM_WORKSPACE_FADE = 2;
     public static final int ANIM_OVERVIEW_SCALE = 3;
-    public static final int ANIM_OVERVIEW_FADE = 4;
-    public static final int ANIM_ALL_APPS_FADE = 5;
+    public static final int ANIM_OVERVIEW_TRANSLATE = 4;
+    public static final int ANIM_OVERVIEW_FADE = 5;
+    public static final int ANIM_ALL_APPS_FADE = 6;
 
     public static final int FLAG_DONT_ANIMATE_OVERVIEW = 1 << 0;
 

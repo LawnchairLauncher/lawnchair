@@ -43,8 +43,8 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public float[] getOverviewScaleAndTranslationY(Launcher launcher) {
-        return new float[] {1f, 0f};
+    public ScaleAndTranslation getOverviewScaleAndTranslation(Launcher launcher) {
+        return new ScaleAndTranslation(1f, 0f, 0f);
     }
 
     @Override
