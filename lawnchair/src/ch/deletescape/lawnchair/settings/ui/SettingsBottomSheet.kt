@@ -108,7 +108,8 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
         mSwipeDetector.onTouchEvent(ev)
         if (ev.action == MotionEvent.ACTION_UP && mSwipeDetector.isIdleState) {
             // If we got ACTION_UP without ever starting swipe, close the panel.
-            if (!activity.dragLayer.isEventOverView(content, ev)) {
+            val isOpening = isOpen && openCloseAnimator.isRunning
+            if (isOpening && !activity.dragLayer.isEventOverView(content, ev)) {
                 close(true)
             }
         }
@@ -167,6 +168,9 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
             openCloseAnimator.cancel()
             translationShift = TRANSLATION_SHIFT_CLOSED
             onCloseComplete()
+            return
+        }
+        if (!isOpen || openCloseAnimator.isRunning) {
             return
         }
         openCloseAnimator.setValues(
