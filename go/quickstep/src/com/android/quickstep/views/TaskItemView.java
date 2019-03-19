@@ -19,6 +19,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -75,5 +76,9 @@ public final class TaskItemView extends LinearLayout {
      */
     public void setThumbnail(Bitmap thumbnail) {
         mThumbnailView.setImageBitmap(thumbnail);
+    }
+
+    public View getThumbnailView() {
+        return mThumbnailView;
     }
 }
