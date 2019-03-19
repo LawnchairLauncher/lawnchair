@@ -110,7 +110,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         implements SwipeAnimationListener, OnApplyWindowInsetsListener {
     private static final String TAG = WindowTransformSwipeHandler.class.getSimpleName();
 
-    private static final String[] STATE_NAMES = DEBUG_STATES ? new String[17] : null;
+    private static final String[] STATE_NAMES = DEBUG_STATES ? new String[16] : null;
 
     private static int getFlagForIndex(int index, String name) {
         if (DEBUG_STATES) {
@@ -133,31 +133,29 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             getFlagForIndex(4, "STATE_SCALED_CONTROLLER_HOME");
     private static final int STATE_SCALED_CONTROLLER_RECENTS =
             getFlagForIndex(5, "STATE_SCALED_CONTROLLER_RECENTS");
-    private static final int STATE_SCALED_CONTROLLER_LAST_TASK =
-            getFlagForIndex(6, "STATE_SCALED_CONTROLLER_LAST_TASK");
 
     private static final int STATE_HANDLER_INVALIDATED =
-            getFlagForIndex(7, "STATE_HANDLER_INVALIDATED");
+            getFlagForIndex(6, "STATE_HANDLER_INVALIDATED");
     private static final int STATE_GESTURE_STARTED =
-            getFlagForIndex(8, "STATE_GESTURE_STARTED");
+            getFlagForIndex(7, "STATE_GESTURE_STARTED");
     private static final int STATE_GESTURE_CANCELLED =
-            getFlagForIndex(9, "STATE_GESTURE_CANCELLED");
+            getFlagForIndex(8, "STATE_GESTURE_CANCELLED");
     private static final int STATE_GESTURE_COMPLETED =
-            getFlagForIndex(10, "STATE_GESTURE_COMPLETED");
+            getFlagForIndex(9, "STATE_GESTURE_COMPLETED");
 
     private static final int STATE_CAPTURE_SCREENSHOT =
-            getFlagForIndex(11, "STATE_CAPTURE_SCREENSHOT");
+            getFlagForIndex(10, "STATE_CAPTURE_SCREENSHOT");
     private static final int STATE_SCREENSHOT_CAPTURED =
-            getFlagForIndex(12, "STATE_SCREENSHOT_CAPTURED");
+            getFlagForIndex(11, "STATE_SCREENSHOT_CAPTURED");
     private static final int STATE_SCREENSHOT_VIEW_SHOWN =
-            getFlagForIndex(13, "STATE_SCREENSHOT_VIEW_SHOWN");
+            getFlagForIndex(12, "STATE_SCREENSHOT_VIEW_SHOWN");
 
     private static final int STATE_RESUME_LAST_TASK =
-            getFlagForIndex(14, "STATE_RESUME_LAST_TASK");
+            getFlagForIndex(13, "STATE_RESUME_LAST_TASK");
     private static final int STATE_START_NEW_TASK =
-            getFlagForIndex(15, "STATE_START_NEW_TASK");
+            getFlagForIndex(14, "STATE_START_NEW_TASK");
     private static final int STATE_CURRENT_TASK_FINISHED =
-            getFlagForIndex(16, "STATE_CURRENT_TASK_FINISHED");
+            getFlagForIndex(15, "STATE_CURRENT_TASK_FINISHED");
 
     private static final int LAUNCHER_UI_STATES =
             STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_LAUNCHER_STARTED;
@@ -170,7 +168,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
         NEW_TASK(0, STATE_START_NEW_TASK, false, true, ContainerType.APP),
 
-        LAST_TASK(0, STATE_SCALED_CONTROLLER_LAST_TASK, false, true, ContainerType.APP);
+        LAST_TASK(0, STATE_RESUME_LAST_TASK, false, true, ContainerType.APP);
 
         GestureEndTarget(float endShift, int endState, boolean isLauncher, boolean canBeContinued,
                 int containerType) {
@@ -289,8 +287,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         mStateCallback.addCallback(STATE_LAUNCHER_STARTED | STATE_APP_CONTROLLER_RECEIVED,
                 this::sendRemoteAnimationsToAnimationFactory);
 
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_SCALED_CONTROLLER_LAST_TASK,
-                this::resumeLastTaskForQuickstep);
         mStateCallback.addCallback(STATE_RESUME_LAST_TASK | STATE_APP_CONTROLLER_RECEIVED,
                 this::resumeLastTask);
         mStateCallback.addCallback(STATE_START_NEW_TASK | STATE_APP_CONTROLLER_RECEIVED,
@@ -320,8 +316,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         mStateCallback.addCallback(STATE_HANDLER_INVALIDATED, this::invalidateHandler);
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
                 this::invalidateHandlerWithLauncher);
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED
-                | STATE_SCALED_CONTROLLER_LAST_TASK,
+        mStateCallback.addCallback(STATE_HANDLER_INVALIDATED | STATE_RESUME_LAST_TASK,
                 this::notifyTransitionCancelled);
 
         mStateCallback.addCallback(STATE_APP_CONTROLLER_RECEIVED | STATE_GESTURE_STARTED,
@@ -814,7 +809,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             }
         } else if (endTarget == NEW_TASK || endTarget == LAST_TASK) {
             // Let RecentsView handle the scrolling to the task, which we launch in startNewTask()
-            // or resumeLastTaskForQuickstep().
+            // or resumeLastTask().
             if (mRecentsView != null) {
                 duration = Math.max(duration, mRecentsView.getScroller().getDuration());
             }
@@ -996,16 +991,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     @UiThread
-    private void resumeLastTaskForQuickstep() {
-        setStateOnUiThread(STATE_RESUME_LAST_TASK);
-        doLogGesture(LAST_TASK);
-        reset();
-    }
-
-    @UiThread
     private void resumeLastTask() {
         mRecentsAnimationWrapper.finish(false /* toRecents */, null);
         TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", false);
+        doLogGesture(LAST_TASK);
+        reset();
     }
 
     @UiThread
