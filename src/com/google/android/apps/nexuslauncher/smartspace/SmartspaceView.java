@@ -3,6 +3,7 @@ package com.google.android.apps.nexuslauncher.smartspace;
 import android.animation.ValueAnimator;
 import android.content.*;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -17,6 +18,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +33,8 @@ import com.android.launcher3.*;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.graphics.ShadowGenerator;
 import com.android.launcher3.util.Themes;
-import com.android.launcher3.views.OptionsPopupView;
 import com.google.android.apps.nexuslauncher.DynamicIconProvider;
+import com.google.android.apps.nexuslauncher.graphics.DoubleShadowTextView;
 import com.google.android.apps.nexuslauncher.graphics.IcuDateTextView;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,7 +46,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     private TextView mTitleText;
     private ViewGroup mTitleWeatherContent;
     private ImageView mTitleWeatherIcon;
-    private TextView mTitleWeatherText;
+    private DoubleShadowTextView mTitleWeatherText;
     private final ColorStateList dH;
     private final int mSmartspaceBackgroundRes;
     private IcuDateTextView mClockView;
@@ -69,6 +71,15 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     private LawnchairPreferences mPrefs;
 
     private ShadowGenerator mShadowGenerator;
+
+    private int mTitleSize;
+    private int mTitleMinSize;
+    private int mHorizontalPadding;
+    private int mSeparatorWidth;
+    private int mWeatherIconSize;
+
+    private Paint mTextPaint = new Paint();
+    private Rect mTextBounds = new Rect();
 
     public SmartspaceView(final Context context, AttributeSet set) {
         super(context, set);
@@ -108,7 +119,52 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         dB.setTextSize((float) getResources().getDimensionPixelSize(R.dimen.smartspace_title_size));
         mEnableShadow = !Themes.getAttrBoolean(context, R.attr.isWorkspaceDarkText);
 
+        Resources res = getResources();
+        mTitleSize = res.getDimensionPixelSize(R.dimen.smartspace_title_size);
+        mTitleMinSize = res.getDimensionPixelSize(R.dimen.smartspace_title_min_size);
+        mHorizontalPadding = res.getDimensionPixelSize(R.dimen.smartspace_horizontal_padding);
+        mSeparatorWidth = res.getDimensionPixelSize(R.dimen.smartspace_title_sep_width);
+        mWeatherIconSize = res.getDimensionPixelSize(R.dimen.smartspace_title_weather_icon_size);
+
         setClipChildren(false);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int size = MeasureSpec.getSize(widthMeasureSpec) - mHorizontalPadding;
+        if (!mDoubleLine && mClockView != null && mTitleWeatherText != null && mTitleWeatherText.getVisibility() == View.VISIBLE) {
+            int textSize = mTitleSize;
+            String title = mClockView.getText().toString() + mTitleWeatherText.getText().toString();
+            mTextPaint.set(mClockView.getPaint());
+            while (true) {
+                mTextPaint.setTextSize(textSize);
+                mTextPaint.getTextBounds(title, 0, title.length(), mTextBounds);
+                int padding = getPaddingRight() + getPaddingLeft()
+                        + mClockView.getPaddingLeft() + mClockView.getPaddingRight()
+                        + mTitleWeatherText.getPaddingLeft() + mTitleWeatherText.getPaddingRight();
+                if (padding + mSeparatorWidth + mWeatherIconSize + mTextBounds.width() <= size) {
+                    break;
+                }
+                int newSize = textSize - 2;
+                if (newSize < mTitleMinSize) {
+                    break;
+                }
+                textSize = newSize;
+            }
+            setTitleSize(textSize);
+        } else {
+            setTitleSize(mTitleSize);
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    public final void setTitleSize(int size) {
+        if (mClockView != null && ((int) mClockView.getTextSize()) != size) {
+            mClockView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        }
+        if (mTitleWeatherText != null && ((int) mTitleWeatherText.getTextSize()) != size) {
+            mTitleWeatherText.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        }
     }
 
     @Override

@@ -98,7 +98,7 @@
 
             <View
                 android:id="@+id/subtitle_sep"
-                android:layout_width="1dp"
+                android:layout_width="@dimen/smartspace_title_sep_width"
                 android:layout_height="fill_parent"
                 android:layout_marginBottom="4dp"
                 android:layout_marginRight="6dp"

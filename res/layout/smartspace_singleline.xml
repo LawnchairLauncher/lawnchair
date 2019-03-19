@@ -50,7 +50,7 @@
 
     <View
         android:id="@+id/title_sep"
-        android:layout_width="1dp"
+        android:layout_width="@dimen/smartspace_title_sep_width"
         android:layout_height="20dp"
         android:layout_gravity="center_vertical"
         android:background="?workspaceTextColor"
@@ -73,8 +73,8 @@
 
         <ImageView
             android:id="@+id/title_weather_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/smartspace_title_weather_icon_size"
+            android:layout_height="@dimen/smartspace_title_weather_icon_size"
             android:layout_gravity="center"
             android:layout_marginRight="4dp"
             android:scaleType="fitXY" />

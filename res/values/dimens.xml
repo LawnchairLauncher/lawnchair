@@ -247,7 +247,10 @@
 
 <!-- Pixel -->
     <dimen name="smartspace_title_size">24dp</dimen>
+    <dimen name="smartspace_title_min_size">14dp</dimen>
     <dimen name="smartspace_horizontal_padding">56dp</dimen>
+    <dimen name="smartspace_title_sep_width">1dp</dimen>
+    <dimen name="smartspace_title_weather_icon_size">24dp</dimen>
     <dimen name="qsb_shadow_margin">6dp</dimen>
     <dimen name="qsb_widget_height">56dp</dimen>
     <dimen name="qsb_hotseat_bottom_margin">-4dp</dimen>
