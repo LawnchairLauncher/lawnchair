@@ -45,7 +45,8 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
 
     private var saved = true
 
-    private val hasWorkApps = UserManagerCompat.getInstance(context).userProfiles.size > 1
+    private val hasWorkApps = context.lawnchairPrefs.separateWorkApps
+            && UserManagerCompat.getInstance(context).userProfiles.size > 1
 
     override fun getItemCount() = tabs.size
 
