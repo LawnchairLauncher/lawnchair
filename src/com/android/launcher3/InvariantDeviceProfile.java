@@ -20,7 +20,10 @@ import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
 import static com.android.launcher3.Utilities.getDevicePrefs;
 
 import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -114,6 +117,7 @@ public class InvariantDeviceProfile {
 
     private final ArrayList<OnIDPChangeListener> mChangeListeners = new ArrayList<>();
     private ConfigMonitor mConfigMonitor;
+    private OverlayMonitor mOverlayMonitor;
 
     @VisibleForTesting
     public InvariantDeviceProfile() {}
@@ -131,6 +135,7 @@ public class InvariantDeviceProfile {
         defaultLayoutId = p.defaultLayoutId;
         demoModeLayoutId = p.demoModeLayoutId;
         mExtraAttrs = p.mExtraAttrs;
+        mOverlayMonitor = p.mOverlayMonitor;
     }
 
     @TargetApi(23)
@@ -138,8 +143,12 @@ public class InvariantDeviceProfile {
         initGrid(context, Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null));
         mConfigMonitor = new ConfigMonitor(context,
                 APPLY_CONFIG_AT_RUNTIME.get() ? this::onConfigChanged : this::killProcess);
+        mOverlayMonitor = new OverlayMonitor(context);
     }
 
+    /**
+     * This constructor should NOT have any monitors by design.
+     */
     public InvariantDeviceProfile(Context context, String gridName) {
         String newName = initGrid(context, gridName);
         if (newName == null || !newName.equals(gridName)) {
@@ -553,6 +562,22 @@ public class InvariantDeviceProfile {
             landscapeIconSize += p.landscapeIconSize;
             iconTextSize += p.iconTextSize;
             return this;
+        }
+    }
+
+    private class OverlayMonitor extends BroadcastReceiver {
+
+        private final String ACTION_OVERLAY_CHANGED = "android.intent.action.OVERLAY_CHANGED";
+
+        OverlayMonitor(Context context) {
+            IntentFilter filter = new IntentFilter(ACTION_OVERLAY_CHANGED);
+            filter.addDataScheme("package");
+            context.registerReceiver(this, filter);
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            onConfigChanged(context);
         }
     }
 }
