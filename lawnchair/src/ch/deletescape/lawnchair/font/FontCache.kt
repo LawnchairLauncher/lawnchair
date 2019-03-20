@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.font
 
 import android.content.Context
+import android.content.res.AssetManager
 import android.graphics.Typeface
 import android.support.annotation.Keep
 import android.support.v4.provider.FontRequest
@@ -152,6 +153,23 @@ class FontCache(private val context: Context) {
                 val style = obj.getInt(KEY_STYLE)
                 return SystemFont(family, style)
             }
+        }
+    }
+
+    class AssetFont(
+            assets: AssetManager,
+            private val name: String) : TypefaceFont(Typeface.createFromAsset(assets, "$name.ttf")) {
+
+        private val hashCode = "AssetFont|$name".hashCode()
+
+        override val displayName = name
+
+        override fun equals(other: Any?): Boolean {
+            return other is AssetFont && name == other.name
+        }
+
+        override fun hashCode(): Int {
+            return hashCode
         }
     }
 
