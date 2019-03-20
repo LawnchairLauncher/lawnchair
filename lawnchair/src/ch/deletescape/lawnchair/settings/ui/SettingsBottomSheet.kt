@@ -32,6 +32,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import ch.deletescape.lawnchair.getColorAttr
 import com.android.launcher3.*
 import com.android.launcher3.anim.Interpolators
 import com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity
@@ -76,7 +77,7 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
     }
 
     private fun createScrim(): ColorScrim {
-        val color = ColorUtils.setAlphaComponent(Color.BLACK, 153)
+        val color = ColorUtils.setAlphaComponent(context.getColorAttr(R.attr.bottomSheetScrimColor), 153)
         return ColorScrim(this, color, Interpolators.LINEAR).apply { attach() }
     }
 
