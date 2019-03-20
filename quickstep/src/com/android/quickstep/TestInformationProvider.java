@@ -71,6 +71,9 @@ public class TestInformationProvider extends ContentProvider {
             final Context context = getContext();
             final DeviceProfile deviceProfile = InvariantDeviceProfile.INSTANCE.
                     get(context).getDeviceProfile(context);
+            final LauncherAppState launcherAppState = LauncherAppState.getInstanceNoCreate();
+            final Launcher launcher = launcherAppState != null ?
+                    (Launcher) launcherAppState.getModel().getCallback() : null;
 
             switch (method) {
                 case TestProtocol.REQUEST_HOME_TO_OVERVIEW_SWIPE_HEIGHT: {
@@ -79,21 +82,29 @@ public class TestInformationProvider extends ContentProvider {
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, (int) swipeHeight);
                     break;
                 }
+
                 case TestProtocol.REQUEST_BACKGROUND_TO_OVERVIEW_SWIPE_HEIGHT: {
                     final float swipeHeight =
                             LayoutUtils.getShelfTrackingDistance(context, deviceProfile);
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, (int) swipeHeight);
                     break;
                 }
-                case TestProtocol.REQUEST_ALL_APPS_TO_OVERVIEW_SWIPE_HEIGHT: {
-                    final LauncherAppState launcherAppState =
-                            LauncherAppState.getInstanceNoCreate();
-                    if (launcherAppState == null) return null;
 
-                    final Launcher launcher = (Launcher) launcherAppState.getModel().getCallback();
+                case TestProtocol.REQUEST_ALL_APPS_TO_OVERVIEW_SWIPE_HEIGHT: {
                     if (launcher == null) return null;
 
                     final float progress = LauncherState.OVERVIEW.getVerticalProgress(launcher)
+                            - LauncherState.ALL_APPS.getVerticalProgress(launcher);
+                    final float distance =
+                            launcher.getAllAppsController().getShiftRange() * progress;
+                    response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, (int) distance);
+                    break;
+                }
+
+                case TestProtocol.REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT: {
+                    if (launcher == null) return null;
+
+                    final float progress = LauncherState.NORMAL.getVerticalProgress(launcher)
                             - LauncherState.ALL_APPS.getVerticalProgress(launcher);
                     final float distance =
                             launcher.getAllAppsController().getShiftRange() * progress;
