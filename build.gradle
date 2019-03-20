@@ -45,7 +45,7 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         def isPublicBuild = System.getenv("CI_BUILD") == "true" && System.getenv("DRONE_BRANCH") == "alpha"
-        buildConfigField "boolean", "FEATURE_QUINOA", "${!isPublicBuild}"
+        buildConfigField "boolean", "FEATURE_QUINOA", "true"
         buildConfigField "boolean", "FEATURE_SETTINGS_SEARCH", "true"
 
         ndk {
