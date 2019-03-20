@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.anim;
 
+import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -31,8 +33,6 @@ import androidx.dynamicanimation.animation.DynamicAnimation.OnAnimationEndListen
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
-
-import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 
 /**
  * This animator allows for an object's property to be be controlled by an {@link ObjectAnimator} or
@@ -51,9 +51,9 @@ public class SpringObjectAnimator<T extends ProgressInterface> extends ValueAnim
     private SpringProperty<T> mProperty;
 
     private ArrayList<AnimatorListener> mListeners;
-    private boolean mSpringEnded = false;
-    private boolean mAnimatorEnded = false;
-    private boolean mEnded = false;
+    private boolean mSpringEnded = true;
+    private boolean mAnimatorEnded = true;
+    private boolean mEnded = true;
 
     private static final FloatPropertyCompat<ProgressInterface> sFloatProperty =
             new FloatPropertyCompat<ProgressInterface>("springObjectAnimator") {
