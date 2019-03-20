@@ -51,15 +51,16 @@ public final class Workspace extends Home {
     @NonNull
     public AllApps switchToAllApps() {
         verifyActiveContainer();
-        // Swipe from the hotseat to near the top, e.g. 10% of the screen.
         final UiObject2 hotseat = mHotseat;
         final Point start = hotseat.getVisibleCenter();
-        final int endY = (int) (mLauncher.getDevice().getDisplayHeight() * 0.1f);
+        final int swipeHeight = mLauncher.getTestInfo(
+                TestProtocol.REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT).
+                getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
         mLauncher.swipe(
                 start.x,
                 start.y,
                 start.x,
-                endY,
+                start.y - swipeHeight - mLauncher.getTouchSlop(),
                 ALL_APPS_STATE_ORDINAL
         );
 

@@ -38,4 +38,6 @@ public final class TestProtocol {
             "background-to-overview-swipe-height";
     public static final String REQUEST_ALL_APPS_TO_OVERVIEW_SWIPE_HEIGHT =
             "all-apps-to-overview-swipe-height";
+    public static final String REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT =
+            "home-to-all-apps-swipe-height";
 }
