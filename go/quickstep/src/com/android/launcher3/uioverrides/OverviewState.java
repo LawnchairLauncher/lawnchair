@@ -91,4 +91,13 @@ public class OverviewState extends LauncherState {
     public static float getDefaultSwipeHeight(DeviceProfile dp) {
         return dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx;
     }
+
+
+    public static OverviewState newBackgroundState(int id) {
+        return new OverviewState(id);
+    }
+
+    public static OverviewState newPeekState(int id) {
+        return new OverviewState(id);
+    }
 }

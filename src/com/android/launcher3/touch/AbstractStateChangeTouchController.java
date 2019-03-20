@@ -20,7 +20,7 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
-import static com.android.launcher3.LauncherStateManager.ATOMIC_COMPONENT;
+import static com.android.launcher3.LauncherStateManager.ATOMIC_OVERVIEW_SCALE_COMPONENT;
 import static com.android.launcher3.LauncherStateManager.NON_ATOMIC_COMPONENT;
 import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
@@ -38,9 +38,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationComponents;
-import com.android.launcher3.LauncherStateManager.AnimationConfig;
-import com.android.launcher3.LauncherStateManager.StateHandler;
-import com.android.launcher3.TestProtocol;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -68,7 +65,7 @@ public abstract class AbstractStateChangeTouchController
      * Play an atomic recents animation when the progress from NORMAL to OVERVIEW reaches this.
      */
     public static final float ATOMIC_OVERVIEW_ANIM_THRESHOLD = 0.5f;
-    protected static final long ATOMIC_DURATION = 200;
+    protected final long ATOMIC_DURATION = getAtomicDuration();
 
     protected final Launcher mLauncher;
     protected final SwipeDetector mDetector;
@@ -108,6 +105,10 @@ public abstract class AbstractStateChangeTouchController
     public AbstractStateChangeTouchController(Launcher l, SwipeDetector.Direction dir) {
         mLauncher = l;
         mDetector = new SwipeDetector(l, this, dir);
+    }
+
+    protected long getAtomicDuration() {
+        return 200;
     }
 
     protected abstract boolean canInterceptTouch(MotionEvent ev);
@@ -214,7 +215,7 @@ public abstract class AbstractStateChangeTouchController
         }
 
         if (mAtomicComponentsController != null) {
-            animComponents &= ~ATOMIC_COMPONENT;
+            animComponents &= ~ATOMIC_OVERVIEW_SCALE_COMPONENT;
         }
         mProgressMultiplier = initCurrentAnimation(animComponents);
         mCurrentAnimation.dispatchOnStart();
@@ -297,7 +298,7 @@ public abstract class AbstractStateChangeTouchController
      * When going between normal and overview states, see if we passed the overview threshold and
      * play the appropriate atomic animation if so.
      */
-    protected void maybeUpdateAtomicAnim(LauncherState fromState, LauncherState toState,
+    private void maybeUpdateAtomicAnim(LauncherState fromState, LauncherState toState,
             float progress) {
         if (!goingBetweenNormalAndOverview(fromState, toState)) {
             return;
@@ -347,14 +348,8 @@ public abstract class AbstractStateChangeTouchController
     private AnimatorSet createAtomicAnimForState(LauncherState fromState, LauncherState targetState,
             long duration) {
         AnimatorSetBuilder builder = getAnimatorSetBuilderForStates(fromState, targetState);
-        mLauncher.getStateManager().prepareForAtomicAnimation(fromState, targetState, builder);
-        AnimationConfig config = new AnimationConfig();
-        config.animComponents = ATOMIC_COMPONENT;
-        config.duration = duration;
-        for (StateHandler handler : mLauncher.getStateManager().getStateHandlers()) {
-            handler.setStateWithAnimation(targetState, builder, config);
-        }
-        return builder.build();
+        return mLauncher.getStateManager().createAtomicAnimation(fromState, targetState, builder,
+                ATOMIC_OVERVIEW_SCALE_COMPONENT, duration);
     }
 
     protected AnimatorSetBuilder getAnimatorSetBuilderForStates(LauncherState fromState,
@@ -434,11 +429,7 @@ public abstract class AbstractStateChangeTouchController
             mLauncher.getAppsView().addSpringFromFlingUpdateListener(anim, velocity);
         }
         anim.start();
-        settleAtomicAnimation(endProgress, anim.getDuration());
-    }
-
-    protected void settleAtomicAnimation(float endProgress, long duration) {
-        mAtomicAnimAutoPlayInfo = new AutoPlayAtomicAnimationInfo(endProgress, duration);
+        mAtomicAnimAutoPlayInfo = new AutoPlayAtomicAnimationInfo(endProgress, anim.getDuration());
         maybeAutoPlayAtomicComponentsAnim();
     }
 

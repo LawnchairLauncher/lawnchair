@@ -86,7 +86,7 @@ public class WorkspaceStateTransitionAnimation {
         int elements = state.getVisibleElements(mLauncher);
         Interpolator fadeInterpolator = builder.getInterpolator(ANIM_WORKSPACE_FADE,
                 pageAlphaProvider.interpolator);
-        boolean playAtomicComponent = config.playAtomicComponent();
+        boolean playAtomicComponent = config.playAtomicOverviewScaleComponent();
         Hotseat hotseat = mWorkspace.getHotseat();
         if (playAtomicComponent) {
             Interpolator scaleInterpolator = builder.getInterpolator(ANIM_WORKSPACE_SCALE, ZOOM_OUT);
@@ -147,7 +147,7 @@ public class WorkspaceStateTransitionAnimation {
             propertySetter.setInt(cl.getScrimBackground(),
                     DRAWABLE_ALPHA, drawableAlpha, ZOOM_OUT);
         }
-        if (config.playAtomicComponent()) {
+        if (config.playAtomicOverviewScaleComponent()) {
             Interpolator fadeInterpolator = builder.getInterpolator(ANIM_WORKSPACE_FADE,
                     pageAlphaProvider.interpolator);
             propertySetter.setFloat(cl.getShortcutsAndWidgets(), View.ALPHA,

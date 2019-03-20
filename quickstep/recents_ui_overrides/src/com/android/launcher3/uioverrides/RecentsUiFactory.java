@@ -17,7 +17,6 @@
 package com.android.launcher3.uioverrides;
 
 import static android.view.View.VISIBLE;
-
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -98,6 +97,10 @@ public abstract class RecentsUiFactory {
      * @param launcher the launcher activity
      */
     public static void prepareToShowOverview(Launcher launcher) {
+        if (FeatureFlags.SWIPE_HOME.get()) {
+            // Overview lives on the side, so doesn't scale in from above.
+            return;
+        }
         RecentsView overview = launcher.getOverviewPanel();
         if (overview.getVisibility() != VISIBLE || overview.getContentAlpha() == 0) {
             SCALE_PROPERTY.set(overview, RECENTS_PREPARE_SCALE);

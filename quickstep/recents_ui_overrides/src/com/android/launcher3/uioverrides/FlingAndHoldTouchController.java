@@ -18,11 +18,18 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.LauncherStateManager.NON_ATOMIC_COMPONENT;
+import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
+import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
+import static com.android.launcher3.LauncherStateManager.ATOMIC_OVERVIEW_PEEK_COMPONENT;
+import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 
-import android.animation.ValueAnimator;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.view.HapticFeedbackConstants;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.quickstep.util.MotionPauseDetector;
@@ -33,11 +40,20 @@ import com.android.quickstep.views.RecentsView;
  */
 public class FlingAndHoldTouchController extends PortraitStatesTouchController {
 
+    private static final long PEEK_ANIM_DURATION = 100;
+
     private final MotionPauseDetector mMotionPauseDetector;
+
+    private AnimatorSet mPeekAnim;
 
     public FlingAndHoldTouchController(Launcher l) {
         super(l, false /* allowDragToOverview */);
         mMotionPauseDetector = new MotionPauseDetector(l);
+    }
+
+    @Override
+    protected long getAtomicDuration() {
+        return 300;
     }
 
     @Override
@@ -50,7 +66,23 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
             mMotionPauseDetector.setOnMotionPauseListener(isPaused -> {
                 RecentsView recentsView = mLauncher.getOverviewPanel();
                 recentsView.setOverviewStateEnabled(isPaused);
-                maybeUpdateAtomicAnim(NORMAL, OVERVIEW, isPaused ? 1 : 0);
+                if (mPeekAnim != null) {
+                    mPeekAnim.cancel();
+                }
+                LauncherState fromState = isPaused ? NORMAL : OVERVIEW_PEEK;
+                LauncherState toState = isPaused ? OVERVIEW_PEEK : NORMAL;
+                mPeekAnim = mLauncher.getStateManager().createAtomicAnimation(fromState, toState,
+                        new AnimatorSetBuilder(), ATOMIC_OVERVIEW_PEEK_COMPONENT,
+                        PEEK_ANIM_DURATION);
+                mPeekAnim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mPeekAnim = null;
+                    }
+                });
+                mPeekAnim.start();
+                recentsView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
             });
         }
     }
@@ -72,30 +104,21 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
     @Override
     public void onDragEnd(float velocity, boolean fling) {
         if (mMotionPauseDetector.isPaused() && handlingOverviewAnim()) {
-            float range = getShiftRange();
-            long maxAccuracy = (long) (2 * range);
+            if (mPeekAnim != null) {
+                mPeekAnim.cancel();
+            }
 
-            // Let the state manager know that the animation didn't go to the target state,
-            // but don't cancel ourselves (we already clean up when the animation completes).
-            Runnable onCancel = mCurrentAnimation.getOnCancelRunnable();
-            mCurrentAnimation.setOnCancelRunnable(null);
-            mCurrentAnimation.dispatchOnCancel();
-            mCurrentAnimation = mLauncher.getStateManager()
-                    .createAnimationToNewWorkspace(OVERVIEW, new AnimatorSetBuilder(), maxAccuracy,
-                            onCancel, NON_ATOMIC_COMPONENT);
-
-            final int logAction = fling ? Touch.FLING : Touch.SWIPE;
-            mCurrentAnimation.setEndAction(() -> onSwipeInteractionCompleted(OVERVIEW, logAction));
-
-
-            ValueAnimator anim = mCurrentAnimation.getAnimationPlayer();
-            maybeUpdateAtomicAnim(NORMAL, OVERVIEW, 1f);
-            mCurrentAnimation.dispatchOnStartWithVelocity(1, velocity);
-
-            // TODO: Find a better duration
-            anim.setDuration(100);
-            anim.start();
-            settleAtomicAnimation(1f, anim.getDuration());
+            AnimatorSetBuilder builder = new AnimatorSetBuilder();
+            builder.setInterpolator(AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS, OVERSHOOT_1_2);
+            AnimatorSet overviewAnim = mLauncher.getStateManager().createAtomicAnimation(
+                    NORMAL, OVERVIEW, builder, ANIM_ALL, ATOMIC_DURATION);
+            overviewAnim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    onSwipeInteractionCompleted(OVERVIEW, Touch.SWIPE);
+                }
+            });
+            overviewAnim.start();
         } else {
             super.onDragEnd(velocity, fling);
         }

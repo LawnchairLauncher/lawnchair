@@ -28,8 +28,9 @@ public final class TestProtocol {
     public static final int NORMAL_STATE_ORDINAL = 0;
     public static final int SPRING_LOADED_STATE_ORDINAL = 1;
     public static final int OVERVIEW_STATE_ORDINAL = 2;
-    public static final int ALL_APPS_STATE_ORDINAL = 3;
-    public static final int BACKGROUND_APP_STATE_ORDINAL = 4;
+    public static final int OVERVIEW_PEEK_STATE_ORDINAL = 3;
+    public static final int ALL_APPS_STATE_ORDINAL = 4;
+    public static final int BACKGROUND_APP_STATE_ORDINAL = 5;
 
     public static final String TEST_INFO_RESPONSE_FIELD = "response";
     public static final String REQUEST_HOME_TO_OVERVIEW_SWIPE_HEIGHT =

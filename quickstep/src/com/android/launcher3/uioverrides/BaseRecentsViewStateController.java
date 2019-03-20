@@ -71,7 +71,9 @@ public abstract class BaseRecentsViewStateController<T extends View>
     @Override
     public final void setStateWithAnimation(@NonNull final LauncherState toState,
             @NonNull AnimatorSetBuilder builder, @NonNull AnimationConfig config) {
-        if (!config.playAtomicComponent()) {
+        boolean playAtomicOverviewComponent = config.playAtomicOverviewScaleComponent()
+                || config.playAtomicOverviewPeekComponent();
+        if (!playAtomicOverviewComponent) {
             // The entire recents animation is played atomically.
             return;
         }
