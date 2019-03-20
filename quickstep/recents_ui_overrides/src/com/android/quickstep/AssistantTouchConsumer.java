@@ -160,6 +160,7 @@ public class AssistantTouchConsumer implements InputConsumer {
                                 MotionEvent event = MotionEvent.obtain(ev);
                                 event.setAction(MotionEvent.ACTION_CANCEL);
                                 mConsumerDelegate.onMotionEvent(event);
+                                event.recycle();
                             }
                         } else {
                             mState = STATE_DELEGATE_ACTIVE;
