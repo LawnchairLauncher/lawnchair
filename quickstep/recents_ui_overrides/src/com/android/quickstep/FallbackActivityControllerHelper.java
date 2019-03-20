@@ -21,7 +21,6 @@ import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -90,7 +89,7 @@ public final class FallbackActivityControllerHelper implements
 
             @NonNull
             @Override
-            public Animator createActivityAnimationToHome() {
+            public AnimatorPlaybackController createActivityAnimationToHome() {
                 Animator anim = ObjectAnimator.ofFloat(recentsView, CONTENT_ALPHA, 0);
                 anim.addListener(new AnimationSuccessListener() {
                     @Override
@@ -98,7 +97,10 @@ public final class FallbackActivityControllerHelper implements
                         recentsView.startHome();
                     }
                 });
-                return anim;
+                AnimatorSet animatorSet = new AnimatorSet();
+                animatorSet.play(anim);
+                long accuracy = 2 * Math.max(recentsView.getWidth(), recentsView.getHeight());
+                return AnimatorPlaybackController.wrap(animatorSet, accuracy);
             }
         };
     }

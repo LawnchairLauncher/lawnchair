@@ -15,7 +15,6 @@
  */
 package com.android.quickstep;
 
-import android.animation.Animator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -132,6 +131,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @NonNull RectF getWindowTargetRect();
 
-        @NonNull Animator createActivityAnimationToHome();
+        @NonNull AnimatorPlaybackController createActivityAnimationToHome();
     }
 }
