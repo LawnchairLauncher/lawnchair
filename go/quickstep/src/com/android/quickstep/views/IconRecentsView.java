@@ -46,20 +46,6 @@ import com.android.quickstep.TaskSwipeCallback;
  */
 public final class IconRecentsView extends FrameLayout {
 
-    public static final FloatProperty<IconRecentsView> TRANSLATION_Y_FACTOR =
-            new FloatProperty<IconRecentsView>("translationYFactor") {
-
-                @Override
-                public void setValue(IconRecentsView view, float v) {
-                    view.setTranslationYFactor(v);
-                }
-
-                @Override
-                public Float get(IconRecentsView view) {
-                    return view.mTranslationYFactor;
-                }
-            };
-
     public static final FloatProperty<IconRecentsView> CONTENT_ALPHA =
             new FloatProperty<IconRecentsView>("contentAlpha") {
                 @Override
@@ -91,7 +77,6 @@ public final class IconRecentsView extends FrameLayout {
     private final TaskInputController mTaskInputController;
 
     private RecentsToActivityHelper mActivityHelper;
-    private float mTranslationYFactor;
     private RecyclerView mTaskRecyclerView;
     private View mEmptyView;
 
@@ -168,15 +153,6 @@ public final class IconRecentsView extends FrameLayout {
             return null;
         }
         return view.getThumbnailView();
-    }
-
-    public void setTranslationYFactor(float translationFactor) {
-        mTranslationYFactor = translationFactor;
-        setTranslationY(computeTranslationYForFactor(mTranslationYFactor));
-    }
-
-    private float computeTranslationYForFactor(float translationYFactor) {
-        return translationYFactor * (getPaddingBottom() - getPaddingTop());
     }
 
     /**

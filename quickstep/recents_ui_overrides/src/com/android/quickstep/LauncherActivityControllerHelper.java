@@ -56,9 +56,7 @@ import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.LayoutUtils;
@@ -308,7 +306,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         // starting to line up the side pages during swipe up)
         float prevRvScale = recentsView.getScaleX();
         float prevRvTransY = recentsView.getTranslationY();
-        float targetRvScale = endState.getOverviewScaleAndTranslationYFactor(launcher)[0];
+        float targetRvScale = endState.getOverviewScaleAndTranslationY(launcher)[0];
         SCALE_PROPERTY.set(recentsView, targetRvScale);
         recentsView.setTranslationY(0);
         ClipAnimationHelper clipHelper = new ClipAnimationHelper(launcher);

@@ -78,8 +78,9 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
-        return new float[] {0.9f, -0.2f};
+    public float[] getOverviewScaleAndTranslationY(Launcher launcher) {
+        float slightParallax = -launcher.getDeviceProfile().allAppsCellHeightPx * 0.3f;
+        return new float[] {0.9f, slightParallax};
     }
 
     @Override
