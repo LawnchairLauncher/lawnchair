@@ -198,7 +198,7 @@ public final class DigitalWellBeingToast extends LinearLayout {
             final ActivityOptions options = ActivityOptions.makeScaleUpAnimation(
                     this, 0, 0,
                     getWidth(), getHeight());
-            launcher.startActivityForResult(intent, 0, options.toBundle());
+            launcher.startActivity(intent, options.toBundle());
             launcher.getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.Touch.TAP,
                     LauncherLogProto.ControlType.APP_USAGE_SETTINGS, this);
         } catch (ActivityNotFoundException e) {
