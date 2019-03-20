@@ -139,6 +139,7 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
         super.onResume()
 
         restartIfPending()
+        lawnchairPrefs.checkFools()
 
         paused = false
     }

@@ -184,6 +184,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val useWindowToIcon by BooleanPref("pref_useWindowToIcon", true, doNothing)
     val dismissTasksOnKill by BooleanPref("pref_dismissTasksOnKill", true, doNothing)
     var customFontName by StringPref("pref_customFontName", "Google Sans", doNothing)
+    var forceEnableFools by BooleanPref("pref_forceEnableFools", false, restart)
 
     // Search
     var searchProvider by StringPref("pref_globalSearchProvider", context.resources.getString(R.string.config_default_search_provider)) {
@@ -206,6 +207,24 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     // Misc
     var autoLaunchRoot by BooleanPref("internal_auto_launch_root")
+    var noFools by BooleanPref("pref_noFools2019", false) { Utilities.restartLauncher(context) }
+    val enableFools get() = forceEnableFools || is1stApril()
+    val showFools get() = !noFools && enableFools
+
+    private val was1stApril = is1stApril()
+
+    fun checkFools() {
+        if (was1stApril != is1stApril()) {
+            restart()
+        }
+    }
+
+    private fun is1stApril(): Boolean {
+        val now = GregorianCalendar.getInstance()
+        val date = now.get(Calendar.DAY_OF_MONTH)
+        val month = now.get(Calendar.MONTH)
+        return date == 1 && month == Calendar.APRIL
+    }
 
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     var hiddenPredictionAppSet by StringSetPref("pref_hidden_prediction_set", Collections.emptySet(), doNothing)

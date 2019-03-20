@@ -188,6 +188,12 @@ public class SettingsActivity extends SettingsBaseActivity implements
         if (shouldShowSearch()) {
             Toolbar toolbar = findViewById(R.id.search_action_bar);
             toolbar.getMenu().clear();
+            LawnchairPreferences prefs = Utilities.getLawnchairPrefs(this);
+            if (prefs.getEnableFools()) {
+                toolbar.inflateMenu(R.menu.menu_toggle_fools);
+                MenuItem foolsItem = toolbar.getMenu().findItem(R.id.action_toggle_fools);
+                foolsItem.setTitle(prefs.getNoFools() ? "AFD / OFF" : "AFD / ON");
+            }
             toolbar.inflateMenu(R.menu.menu_restart_lawnchair);
             ActionMenuView menuView = null;
             int count = toolbar.getChildCount();
@@ -207,6 +213,10 @@ public class SettingsActivity extends SettingsBaseActivity implements
             }
             toolbar.setOnMenuItemClickListener(menuItem -> {
                 switch (menuItem.getItemId()) {
+                    case R.id.action_toggle_fools:
+                        prefs.beginBlockingEdit();
+                        prefs.setNoFools(!prefs.getNoFools());
+                        prefs.endBlockingEdit();
                     case R.id.action_change_default_home:
                         FakeLauncherKt.changeDefaultHome(this);
                         break;
