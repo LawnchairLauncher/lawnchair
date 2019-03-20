@@ -22,10 +22,11 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 import android.support.annotation.AnyThread;
 import android.support.annotation.IntDef;
-
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-
+import com.android.launcher3.Utilities;
+import com.android.launcher3.uioverrides.OverviewState;
 import java.lang.annotation.Retention;
 
 public class LayoutUtils {
@@ -42,7 +43,15 @@ public class LayoutUtils {
         if (dp.isVerticalBarLayout()) {
             extraSpace = 0;
         } else {
-            extraSpace = dp.hotseatBarSizePx  + dp.verticalDragHandleSizePx;
+            LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
+            if (prefs.getShowPredictions()) {
+                Resources res = context.getResources();
+                int qsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
+                extraSpace = OverviewState.getDefaultSwipeHeight(dp)
+                        + qsbHeight + dp.verticalDragHandleSizePx;
+            } else {
+                extraSpace = dp.hotseatBarSizePx + dp.verticalDragHandleSizePx;
+            }
         }
         calculateTaskSize(context, dp, extraSpace, MULTI_WINDOW_STRATEGY_HALF_SCREEN, outRect);
     }
