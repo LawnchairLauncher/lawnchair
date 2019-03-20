@@ -15,6 +15,10 @@
  */
 package com.android.quickstep;
 
+import android.app.ActivityOptions;
+import android.view.View;
+
+import com.android.quickstep.views.TaskItemView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
@@ -37,9 +41,16 @@ public final class TaskInputController {
      * @param viewHolder the task view holder that has been tapped
      */
     public void onTaskClicked(TaskHolder viewHolder) {
-        // TODO: Add app launch animation as part of the launch options here.
+        TaskItemView itemView = (TaskItemView) (viewHolder.itemView);
+        View v = itemView.getThumbnailView();
+        int left = 0;
+        int top = 0;
+        int width = v.getMeasuredWidth();
+        int height = v.getMeasuredHeight();
+
+        ActivityOptions opts = ActivityOptions.makeClipRevealAnimation(v, left, top, width, height);
         ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(viewHolder.getTask().key,
-                null /* options */, null /* resultCallback */, null /* resultCallbackHandler */);
+                opts, null /* resultCallback */, null /* resultCallbackHandler */);
     }
 
     public void onTaskSwiped(TaskHolder viewHolder) {

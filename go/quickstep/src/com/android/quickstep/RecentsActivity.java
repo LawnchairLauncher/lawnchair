@@ -61,7 +61,7 @@ public final class RecentsActivity extends BaseRecentsActivity {
 
     @Override
     public ActivityOptions getActivityLaunchOptions(View v) {
-        //TODO: Hook into recents launch animation
+        // Stubbed. Recents launch animation will come from the recents view itself.
         return null;
     }
 
