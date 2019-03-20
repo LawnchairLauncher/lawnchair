@@ -164,6 +164,16 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
+    <style name="SettingsTheme.Widget.OutlinedButton" parent="SettingsTheme.Widget.Button">
+        <item name="android:background">@drawable/btn_outlined_material</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="SettingsTheme.Widget.OutlinedButton.Colored" parent="SettingsTheme.Widget.Button">
+        <item name="android:background">@drawable/btn_outlined_colored_material</item>
+        <item name="android:textColor">?android:colorAccent</item>
+    </style>
+
     <style name="SettingsTheme.Base" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@android:color/white</item>
         <item name="settingsBackground">@android:color/white</item>

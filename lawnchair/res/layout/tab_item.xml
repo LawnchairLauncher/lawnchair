@@ -72,7 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:tint="@color/uninstall_target_hover_tint"
+        android:tint="?android:attr/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/edit"
         app:layout_constraintTop_toTopOf="parent"

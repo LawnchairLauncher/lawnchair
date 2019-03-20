@@ -17,23 +17,19 @@
 
 package ch.deletescape.lawnchair.preferences
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.res.Configuration
-import android.graphics.Typeface
 import android.view.View
 import android.view.WindowManager
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.Switch
-import android.widget.TextView
-import ch.deletescape.lawnchair.*
+import android.widget.*
+import ch.deletescape.lawnchair.applyColor
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.colors.preferences.TabbedPickerView
+import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.DrawerTabs
 import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheet
-import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheetDialog
+import ch.deletescape.lawnchair.tintDrawable
 import ch.deletescape.lawnchair.views.BaseBottomSheet
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.Launcher
@@ -43,7 +39,6 @@ import me.priyesh.chroma.ColorMode
 import me.priyesh.chroma.orientation
 import me.priyesh.chroma.percentOf
 import me.priyesh.chroma.screenDimensions
-import java.lang.ClassCastException
 
 class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
                                private val callback: (Boolean) -> Unit) : FrameLayout(context), View.OnClickListener {
@@ -65,7 +60,8 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
         findViewById<View>(R.id.hide_toggle).setOnClickListener(this)
         findViewById<View>(R.id.tab_color).setOnClickListener(this)
         findViewById<View>(R.id.manage_apps).setOnClickListener(this)
-        findViewById<TextView>(R.id.save).apply {
+        findViewById<Button>(R.id.save).apply {
+            applyColor(accent)
             setTextColor(accent)
             setOnClickListener(this@DrawerTabEditBottomSheet)
         }

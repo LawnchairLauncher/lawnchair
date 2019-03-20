@@ -95,7 +95,7 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
         private val title: TextView = itemView.findViewById(R.id.title)
         private val summary: TextView = itemView.findViewById(R.id.summary)
         private val edit: ImageView = itemView.findViewById(R.id.edit)
-        private val delete: View = itemView.findViewById(R.id.delete)
+        private val delete: ImageView = itemView.findViewById(R.id.delete)
 
         init {
             itemView.findViewById<View>(R.id.drag_handle).setOnTouchListener { _, event ->
@@ -117,6 +117,7 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
             edit.isVisible = info is DrawerTabs.CustomTab
             edit.tintDrawable(accent)
             delete.isVisible = info is DrawerTabs.CustomTab
+            delete.tintDrawable(accent)
             if (info is DrawerTabs.CustomTab) {
                 val size = info.contents.size
                 summary.text = context.resources.getQuantityString(R.plurals.tab_apps_count, size, size)

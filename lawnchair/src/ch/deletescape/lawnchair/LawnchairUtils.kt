@@ -17,7 +17,6 @@
 
 package ch.deletescape.lawnchair
 
-import android.R
 import android.app.Activity
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
@@ -27,6 +26,7 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.*
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.RippleDrawable
 import android.os.Handler
 import android.os.Looper
 import android.support.animation.FloatPropertyCompat
@@ -45,10 +45,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Interpolator
-import android.widget.CheckedTextView
-import android.widget.ImageView
-import android.widget.Switch
-import android.widget.TextView
+import android.widget.*
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.font.CustomFontManager
 import com.android.launcher3.*
@@ -502,16 +499,16 @@ fun Switch.applyColor(color: Int) {
     val switchThumbNormal = context.resources.getColor(android.support.v7.preference.R.color.switch_thumb_normal_material_light)
     val switchThumbDisabled = context.resources.getColor(android.support.v7.appcompat.R.color.switch_thumb_disabled_material_light)
     val thstateList = ColorStateList(arrayOf(
-            intArrayOf(-R.attr.state_enabled),
-            intArrayOf(R.attr.state_checked),
+            intArrayOf(-android.R.attr.state_enabled),
+            intArrayOf(android.R.attr.state_checked),
             intArrayOf()),
             intArrayOf(
                     switchThumbDisabled,
                     color,
                     switchThumbNormal))
     val trstateList = ColorStateList(arrayOf(
-            intArrayOf(-R.attr.state_enabled),
-            intArrayOf(R.attr.state_checked),
+            intArrayOf(-android.R.attr.state_enabled),
+            intArrayOf(android.R.attr.state_checked),
             intArrayOf()),
             intArrayOf(
                     ColorUtils.setAlphaComponent(colorForeground, alphaDisabled),
@@ -519,6 +516,12 @@ fun Switch.applyColor(color: Int) {
                     colorForeground))
     DrawableCompat.setTintList(thumbDrawable, thstateList)
     DrawableCompat.setTintList(trackDrawable, trstateList)
+}
+
+fun Button.applyColor(color: Int) {
+    val rippleColor = ColorStateList.valueOf(ColorUtils.setAlphaComponent(color, 31))
+    (background as RippleDrawable).setColor(rippleColor)
+    DrawableCompat.setTint(background, color)
 }
 
 inline fun <T> Iterable<T>.safeForEach(action: (T) -> Unit) {

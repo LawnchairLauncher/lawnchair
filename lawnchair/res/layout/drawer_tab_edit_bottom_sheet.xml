@@ -207,13 +207,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@android:string/cancel"
-            style="@style/SettingsTheme.Widget.Button"/>
+            style="@style/SettingsTheme.Widget.OutlinedButton"/>
 
         <Button
             android:id="@+id/save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tab_bottom_sheet_save"
-            style="@style/SettingsTheme.Widget.Button"/>
+            style="@style/SettingsTheme.Widget.OutlinedButton.Colored"/>
     </LinearLayout>
 </LinearLayout>
