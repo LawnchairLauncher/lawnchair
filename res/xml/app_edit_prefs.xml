@@ -39,13 +39,14 @@
         android:defaultValue="false"
         android:persistent="false" /> -->
 
-    <PreferenceCategory
+    <ch.deletescape.lawnchair.preferences.LauncherStyledPreferenceCategory
         android:key="debug"
-        android:title="@string/debug_pref_title">
+        android:title="@string/debug_pref_title"
+        android:layout="@layout/settings_category_material">
 
         <Preference
             android:key="componentName"
             android:title="@string/debug_component_name" />
-    </PreferenceCategory>
+    </ch.deletescape.lawnchair.preferences.LauncherStyledPreferenceCategory>
 
 </PreferenceScreen>

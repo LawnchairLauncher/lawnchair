@@ -26,6 +26,7 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:colorEdgeEffect">#FF757575</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <item name="android:textAppearanceListItem">@style/SettingsTheme.PreferenceTheme.Preference.Title</item>
     </style>
 
     <style name="BaseLauncherThemeWithCustomAttrs" parent="@style/BaseLauncherTheme">
