@@ -24,7 +24,10 @@ LOCAL_USE_AAPT2 := true
 LOCAL_AAPT2_ONLY := true
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_STATIC_JAVA_LIBRARIES := libPluginCore
+ifneq (,$(wildcard frameworks/base))
+else
+    LOCAL_STATIC_JAVA_LIBRARIES:= libPluginCore
+endif
 
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src_plugins)
@@ -197,6 +200,7 @@ LOCAL_PACKAGE_NAME := Launcher3QuickStep
 LOCAL_PRIVILEGED_MODULE := true
 LOCAL_PRODUCT_MODULE := true
 LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3
+LOCAL_REQUIRED_MODULES := privapp_whitelist_com.android.launcher3
 
 LOCAL_RESOURCE_DIR := \
     $(LOCAL_PATH)/quickstep/res \

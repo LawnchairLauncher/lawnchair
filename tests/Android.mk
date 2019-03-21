@@ -23,8 +23,12 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
 	androidx.annotation_annotation \
 	androidx.test.runner \
 	androidx.test.rules \
-	androidx.test.uiautomator_uiautomator \
-	libSharedSystemUI
+	androidx.test.uiautomator_uiautomator
+
+ifneq (,$(wildcard frameworks/base))
+else
+    LOCAL_STATIC_JAVA_LIBRARIES += libSharedSystemUI
+endif
 
 LOCAL_SRC_FILES := $(call all-java-files-under, tapl) \
   ../quickstep/src/com/android/quickstep/SwipeUpSetting.java \
