@@ -2,7 +2,6 @@ package ch.deletescape.lawnchair.globalsearch
 
 import android.content.Context
 import android.support.v7.view.ContextThemeWrapper
-import android.util.Log
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.globalsearch.providers.*
@@ -119,6 +118,7 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
                 BingSearchProvider(context),
                 BaiduSearchProvider(context),
                 YandexSearchProvider(context),
+                QwantSearchProvider(context),
                 SearchLiteSearchProvider(context),
                 CoolSearchSearchProvider(context)
         ).filter { it.isAvailable }
@@ -133,6 +133,7 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
                 FirefoxSearchProvider(context),
                 DuckDuckGoSearchProvider(context),
                 YandexSearchProvider(context),
+                QwantSearchProvider(context),
                 BingSearchProvider(context),
                 CoolSearchSearchProvider(context),
                 SearchLiteSearchProvider(context),

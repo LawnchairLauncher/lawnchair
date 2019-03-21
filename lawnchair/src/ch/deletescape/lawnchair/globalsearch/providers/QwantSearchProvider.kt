@@ -26,25 +26,17 @@ import com.android.launcher3.R
 import com.android.launcher3.util.PackageManagerHelper
 
 @Keep
-open class FirefoxSearchProvider(context: Context) : SearchProvider(context) {
+class QwantSearchProvider(context: Context) : FirefoxSearchProvider(context) {
 
 
-    override val name = context.getString(R.string.search_provider_firefox)!!
-    override val supportsVoiceSearch = false
-    override val supportsAssistant = false
-    override val supportsFeed = true
+    override val name = context.getString(R.string.search_provider_qwant)!!
 
-    override val isAvailable: Boolean
-        get() = getPackage(context) != null
+    override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_qwant)!!
+    override fun getPackage(context: Context) = listOf(
+            "com.qwant.liberty"
+        ).firstOrNull { PackageManagerHelper.isAppEnabled(context.packageManager, it, 0) }
 
-    override fun startSearch(callback: (intent: Intent) -> Unit) = callback(Intent(Intent.ACTION_ASSIST).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).setPackage(getPackage(context)))
-    override fun startFeed(callback: (intent: Intent) -> Unit) = callback(Intent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).setPackage(getPackage(context)))
-
-    override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_firefox)!!
-
-    open fun getPackage(context: Context) = listOf(
-            "org.mozilla.firefox",
-            "org.mozilla.firefox_beta",
-            "org.mozilla.fennec_aurora"
-    ).firstOrNull { PackageManagerHelper.isAppEnabled(context.packageManager, it, 0) }
+    companion object {
+        const val PACKAGE = "com.qwant.liberty"
+    }
 }
