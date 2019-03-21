@@ -208,7 +208,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun wrapToAdaptiveIcon(icon: Drawable): Drawable {
-        return if (icon is AdaptiveIconDrawable) {
+        return if (icon is AdaptiveIconDrawable && icon.foreground != null) {
             if (icon.background is ColorDrawable)
                 icon.apply {
                     (background as? ColorDrawable)?.color = extractColor(foreground)
