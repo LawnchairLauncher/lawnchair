@@ -110,7 +110,7 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
         if (ev.action == MotionEvent.ACTION_UP && mSwipeDetector.isIdleState) {
             // If we got ACTION_UP without ever starting swipe, close the panel.
             val isOpening = isOpen && openCloseAnimator.isRunning
-            if (isOpening && !activity.dragLayer.isEventOverView(content, ev)) {
+            if (!isOpening && !activity.dragLayer.isEventOverView(content, ev)) {
                 close(true)
             }
         }
