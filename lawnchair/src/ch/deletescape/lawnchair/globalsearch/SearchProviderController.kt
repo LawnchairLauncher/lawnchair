@@ -2,6 +2,7 @@ package ch.deletescape.lawnchair.globalsearch
 
 import android.content.Context
 import android.support.v7.view.ContextThemeWrapper
+import android.util.Log
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.globalsearch.providers.*
@@ -28,6 +29,7 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
     init {
         ThemeManager.getInstance(context).addOverride(themeOverride)
         ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
+        val sc = searchProvider
     }
 
     fun addOnProviderChangeListener(listener: OnProviderChangeListener) {
@@ -59,8 +61,15 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
                     if (prov.isAvailable) {
                         cache = prov
                     }
-                } catch (ignored: Exception) { }
-                if (cache == null) cache = GoogleSearchProvider(context)
+                } catch (ignored: Exception) {}
+                if (cache == null) cache = (try {
+                    getDefault(context)
+                } catch (e: Exception) {
+                    AppSearchSearchProvider(context)
+                }).also {
+                    // Save the fallback, we end up in an almost endless loop of reflections otherwise.
+                    prefs.searchProvider = it::class.java.name
+                }
                 cached = cache!!::class.java.name
                 notifyProviderChanged()
             }
@@ -112,5 +121,20 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
                 SearchLiteSearchProvider(context),
                 CoolSearchSearchProvider(context)
         ).filter { it.isAvailable }
+
+        @JvmStatic
+        fun getDefault(context: Context) = listOf(
+                GoogleSearchProvider(context),
+                GoogleGoSearchProvider(context),
+                BaiduSearchProvider(context),
+                SFinderSearchProvider(context),
+                SesameSearchProvider(context),
+                DuckDuckGoSearchProvider(context),
+                YandexSearchProvider(context),
+                BingSearchProvider(context),
+                CoolSearchSearchProvider(context),
+                SearchLiteSearchProvider(context),
+                AppSearchSearchProvider(context)
+        ).first { it.isAvailable }
     }
 }

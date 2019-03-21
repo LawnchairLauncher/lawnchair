@@ -33,8 +33,6 @@
     <bool name="config_hide_statusbar">false</bool>
     <!-- Wether smartspace (at a glance) should be enabled per default -->
     <bool name="config_enable_smartspace">true</bool>
-    <!-- Which search provider to use per default -->
-    <string name="config_default_search_provider" translatable="false">ch.deletescape.lawnchair.globalsearch.providers.GoogleSearchProvider</string>
     <!-- Which color resolver to use per default; Possible values:
     ch.deletescape.lawnchair.colors.SystemAccentResolver
     ch.deletescape.lawnchair.colors.PixelAccentResolver

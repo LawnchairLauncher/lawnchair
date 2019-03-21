@@ -187,7 +187,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     var forceEnableFools by BooleanPref("pref_forceEnableFools", false, restart)
 
     // Search
-    var searchProvider by StringPref("pref_globalSearchProvider", context.resources.getString(R.string.config_default_search_provider)) {
+    var searchProvider by StringPref("pref_globalSearchProvider", SearchProviderController.getDefault(context)::class.java.name) {
         SearchProviderController.getInstance(context).onSearchProviderChanged()
     }
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, doNothing)
