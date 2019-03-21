@@ -452,23 +452,9 @@ fun BgDataModel.workspaceContains(packageName: String): Boolean {
     return this.workspaceItems.any { it.targetComponent?.packageName == packageName }
 }
 
-fun findInContainers(op: Workspace.ItemOperator, vararg containers: ShortcutAndWidgetContainer): View? {
-    containers.forEach { container ->
-        // map over all the shortcuts on the page
-        val itemCount = container.childCount
-        for (itemIdx in 0 until itemCount) {
-            val item = container.getChildAt(itemIdx)
-            val info = item.tag as ItemInfo?
-            if (op.evaluate(info, item)) {
-                return item
-            }
-        }
-    }
-    return null
-}
-
 fun findInViews(op: Workspace.ItemOperator, vararg views: ViewGroup): View? {
     views.forEach { view ->
+        if (view.width == 0 || view.height == 0) return@forEach
         view.forEachChild { item ->
             val info = item.tag as ItemInfo?
             if (op.evaluate(info, item)) {

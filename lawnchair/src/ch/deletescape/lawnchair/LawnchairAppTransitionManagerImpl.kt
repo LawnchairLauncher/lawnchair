@@ -386,7 +386,7 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
     }
 
     private fun findWorkspaceIconForComponent(component: ComponentKey, allowFolder: Boolean = false): View? {
-        return findInContainers(Workspace.ItemOperator { info, _ ->
+        return findInViews(Workspace.ItemOperator { info, _ ->
             matchesComponent(info, component, allowFolder)
         }, launcher.workspace.currentContainer, launcher.hotseat.layout.shortcutsAndWidgets)
     }
