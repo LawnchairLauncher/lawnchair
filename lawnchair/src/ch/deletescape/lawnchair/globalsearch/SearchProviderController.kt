@@ -113,9 +113,10 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
                 } else {
                     DisabledDummySearchProvider(context)
                 },
+                GoogleGoSearchProvider(context),
+                FirefoxSearchProvider(context),
                 DuckDuckGoSearchProvider(context),
                 BingSearchProvider(context),
-                GoogleGoSearchProvider(context),
                 BaiduSearchProvider(context),
                 YandexSearchProvider(context),
                 SearchLiteSearchProvider(context),
@@ -129,6 +130,7 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
                 BaiduSearchProvider(context),
                 SFinderSearchProvider(context),
                 SesameSearchProvider(context),
+                FirefoxSearchProvider(context),
                 DuckDuckGoSearchProvider(context),
                 YandexSearchProvider(context),
                 BingSearchProvider(context),

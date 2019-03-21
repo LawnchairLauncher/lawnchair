@@ -541,5 +541,7 @@
     <string name="font_weight_extra_black">Black</string>
     
     <!--Marker K-->
+
+    <string name="search_provider_firefox">Firefox</string>
     
 </resources>
