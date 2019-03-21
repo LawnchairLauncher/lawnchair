@@ -39,14 +39,14 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
     private static final String TAG = "TaskAdapter";
     private final TaskListLoader mLoader;
     private final ArrayMap<Integer, TaskItemView> mTaskIdToViewMap = new ArrayMap<>();
-    private TaskInputController mInputController;
+    private TaskActionController mTaskActionController;
 
     public TaskAdapter(@NonNull TaskListLoader loader) {
         mLoader = loader;
     }
 
-    public void setInputController(TaskInputController inputController) {
-        mInputController = inputController;
+    public void setActionController(TaskActionController taskActionController) {
+        mTaskActionController = taskActionController;
     }
 
     /**
@@ -64,7 +64,7 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
         TaskItemView itemView = (TaskItemView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.task_item_view, parent, false);
         TaskHolder holder = new TaskHolder(itemView);
-        itemView.setOnClickListener(view -> mInputController.onTaskClicked(holder));
+        itemView.setOnClickListener(view -> mTaskActionController.launchTask(holder));
         return holder;
     }
 

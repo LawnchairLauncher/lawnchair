@@ -36,7 +36,7 @@ import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import com.android.launcher3.R;
 import com.android.quickstep.RecentsToActivityHelper;
 import com.android.quickstep.TaskAdapter;
-import com.android.quickstep.TaskInputController;
+import com.android.quickstep.TaskActionController;
 import com.android.quickstep.TaskListLoader;
 import com.android.quickstep.TaskSwipeCallback;
 
@@ -74,7 +74,7 @@ public final class IconRecentsView extends FrameLayout {
     private final Context mContext;
     private final TaskListLoader mTaskLoader;
     private final TaskAdapter mTaskAdapter;
-    private final TaskInputController mTaskInputController;
+    private final TaskActionController mTaskActionController;
 
     private RecentsToActivityHelper mActivityHelper;
     private RecyclerView mTaskRecyclerView;
@@ -86,8 +86,8 @@ public final class IconRecentsView extends FrameLayout {
         mContext = context;
         mTaskLoader = new TaskListLoader(mContext);
         mTaskAdapter = new TaskAdapter(mTaskLoader);
-        mTaskInputController = new TaskInputController(mTaskLoader, mTaskAdapter);
-        mTaskAdapter.setInputController(mTaskInputController);
+        mTaskActionController = new TaskActionController(mTaskLoader, mTaskAdapter);
+        mTaskAdapter.setActionController(mTaskActionController);
     }
 
     @Override
@@ -99,7 +99,7 @@ public final class IconRecentsView extends FrameLayout {
             mTaskRecyclerView.setLayoutManager(
                     new LinearLayoutManager(mContext, VERTICAL, true /* reverseLayout */));
             ItemTouchHelper helper = new ItemTouchHelper(
-                    new TaskSwipeCallback(mTaskInputController));
+                    new TaskSwipeCallback(mTaskActionController));
             helper.attachToRecyclerView(mTaskRecyclerView);
 
             mEmptyView = findViewById(R.id.recent_task_empty_view);
@@ -117,7 +117,7 @@ public final class IconRecentsView extends FrameLayout {
             });
 
             View clearAllView = findViewById(R.id.clear_all_button);
-            clearAllView.setOnClickListener(mTaskInputController::onClearAllClicked);
+            clearAllView.setOnClickListener(v -> mTaskActionController.clearAllTasks());
         }
     }
 

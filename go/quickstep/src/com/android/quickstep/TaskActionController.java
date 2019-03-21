@@ -23,24 +23,25 @@ import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 /**
- * Controller responsible for task logic that occurs on various input to the recents view.
+ * Controller that provides logic for task-related commands on recents and updating the model/view
+ * as appropriate.
  */
-public final class TaskInputController {
+public final class TaskActionController {
 
     private final TaskListLoader mLoader;
     private final TaskAdapter mAdapter;
 
-    public TaskInputController(TaskListLoader loader,TaskAdapter adapter) {
+    public TaskActionController(TaskListLoader loader, TaskAdapter adapter) {
         mLoader = loader;
         mAdapter = adapter;
     }
 
     /**
-     * Logic that occurs when a task view is tapped. Launches the respective task.
+     * Launch the task associated with the task holder, animating into the app.
      *
-     * @param viewHolder the task view holder that has been tapped
+     * @param viewHolder the task view holder to launch
      */
-    public void onTaskClicked(TaskHolder viewHolder) {
+    public void launchTask(TaskHolder viewHolder) {
         TaskItemView itemView = (TaskItemView) (viewHolder.itemView);
         View v = itemView.getThumbnailView();
         int left = 0;
@@ -53,7 +54,12 @@ public final class TaskInputController {
                 opts, null /* resultCallback */, null /* resultCallbackHandler */);
     }
 
-    public void onTaskSwiped(TaskHolder viewHolder) {
+    /**
+     * Removes the task holder and the task, updating the model and the view.
+     *
+     * @param viewHolder the task view holder to remove
+     */
+    public void removeTask(TaskHolder viewHolder) {
         int position = viewHolder.getAdapterPosition();
         Task task = viewHolder.getTask();
         ActivityManagerWrapper.getInstance().removeTask(task.key.id);
@@ -62,9 +68,9 @@ public final class TaskInputController {
     }
 
     /**
-     * Logic that occurs when clear all is triggered.
+     * Clears all tasks and updates the model and view.
      */
-    public void onClearAllClicked(View view) {
+    public void clearAllTasks() {
         // TODO: Play an animation so transition is more natural.
         int count = mAdapter.getItemCount();
         ActivityManagerWrapper.getInstance().removeAllRecentTasks();

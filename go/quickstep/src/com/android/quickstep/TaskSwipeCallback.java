@@ -26,11 +26,11 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
  */
 public final class TaskSwipeCallback extends ItemTouchHelper.SimpleCallback {
 
-    private final TaskInputController mTaskInputController;
+    private final TaskActionController mTaskActionController;
 
-    public TaskSwipeCallback(TaskInputController inputController) {
+    public TaskSwipeCallback(TaskActionController taskActionController) {
         super(0 /* dragDirs */, RIGHT);
-        mTaskInputController = inputController;
+        mTaskActionController = taskActionController;
     }
 
     @Override
@@ -42,7 +42,7 @@ public final class TaskSwipeCallback extends ItemTouchHelper.SimpleCallback {
     @Override
     public void onSwiped(ViewHolder viewHolder, int direction) {
         if (direction == RIGHT) {
-            mTaskInputController.onTaskSwiped((TaskHolder) viewHolder);
+            mTaskActionController.removeTask((TaskHolder) viewHolder);
         }
     }
 }
