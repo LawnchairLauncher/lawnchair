@@ -31,6 +31,7 @@ class LCButton(context: Context, attrs: AttributeSet) : Button(context, attrs, a
 
     init {
         val color = ColorEngine.getInstance(context).accent
+        isAllCaps = false
         setTextColor(color)
         setCustomFont(CustomFontManager.FONT_BUTTON)
     }
