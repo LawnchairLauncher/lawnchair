@@ -280,6 +280,7 @@
     <dimen name="qsb_key_shadow_offset">1dp</dimen>
     <dimen name="qsb_connector_gradient_end_padding">20dp</dimen>
     <dimen name="qsb_min_width_with_mic">124dp</dimen>
+    <dimen name="qsb_min_width_portrait">96dp</dimen>
     <dimen name="smartspace_preview_height">100dp</dimen>
     <dimen name="smartspace_preview_widget_margin">24dp</dimen>
     <dimen name="color_preview_height">60dp</dimen>

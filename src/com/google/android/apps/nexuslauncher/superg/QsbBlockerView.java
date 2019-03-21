@@ -1,7 +1,5 @@
 package com.google.android.apps.nexuslauncher.superg;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -17,7 +15,12 @@ import android.widget.TextView;
 import ch.deletescape.lawnchair.LawnchairAppKt;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController;
-import com.android.launcher3.*;
+import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.OnStateChangeListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspacePreferencesShortcut;
@@ -66,7 +69,12 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
             int size;
             if (launcher != null) {
                 DeviceProfile deviceProfile = launcher.getDeviceProfile();
-                size = ((MeasureSpec.getSize(widthMeasureSpec) / deviceProfile.inv.numColumns) - deviceProfile.iconSizePx) / 2;
+                if (launcher.useVerticalBarLayout()) {
+                    size = ((MeasureSpec.getSize(widthMeasureSpec) / deviceProfile.inv.numColumns)
+                            - deviceProfile.iconSizePx) / 2;
+                } else {
+                    size = 0;
+                }
             } else {
                 size = getResources().getDimensionPixelSize(R.dimen.smartspace_preview_widget_margin);
             }
@@ -80,13 +88,6 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-
-        Launcher launcher = LawnchairUtilsKt.getLauncherOrNull(getContext());
-        if (launcher != null) {
-            Workspace w = Launcher.getLauncher(getContext()).getWorkspace();
-            w.setOnStateChangeListener(this);
-            prepareStateChange(null);
-        }
 
         if (mController != null)
             mController.addListener(this);
@@ -102,12 +103,7 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
 
     @Override
     public void prepareStateChange(AnimatorSetBuilder builder) {
-        int i = Launcher.getLauncher(getContext()).isInState(LauncherState.SPRING_LOADED) ? 60 : 0;
-        if (builder == null) {
-            QSB_BLOCKER_VIEW_ALPHA.set(this, i);
-        } else {
-            builder.play(ObjectAnimator.ofInt(this, QSB_BLOCKER_VIEW_ALPHA, i));
-        }
+
     }
 
     @Override

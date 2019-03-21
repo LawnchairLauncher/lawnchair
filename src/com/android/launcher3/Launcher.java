@@ -980,10 +980,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mFocusHandler = mDragLayer.getFocusIndicatorHelper();
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
         if (Utilities.getLawnchairPrefs(this).getUsePillQsb()) {
-            mQsbContainer = mDragLayer.findViewById(mDeviceProfile.isVerticalBarLayout()
-                    ? R.id.workspace_blocked_row : R.id.qsb_container);
-        } else if (!mDeviceProfile.isVerticalBarLayout()) {
-            mDragLayer.removeView(mDragLayer.findViewById(R.id.qsb_container));
+            mQsbContainer = mDragLayer.findViewById(R.id.workspace_blocked_row);
         }
         mWorkspace.initParentViews(mDragLayer);
         mOverviewPanel = findViewById(R.id.overview_panel);

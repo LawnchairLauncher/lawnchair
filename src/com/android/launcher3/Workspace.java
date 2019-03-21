@@ -487,8 +487,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     private int getEmbeddedQsbId() {
         if (mPillQsb) {
-            return mLauncher.getDeviceProfile().isVerticalBarLayout()
-                    ? R.id.qsb_container : R.id.workspace_blocked_row;
+            return R.id.qsb_container;
         } else {
             return R.id.search_container_workspace;
         }
@@ -496,8 +495,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     private int getEmbeddedQsbLayout() {
         if (mPillQsb) {
-            return mLauncher.getDeviceProfile().isVerticalBarLayout()
-                    ? R.layout.qsb_container : R.layout.qsb_blocker_view;
+            return R.layout.qsb_container;
         } else {
             return R.layout.search_container_workspace;
         }

@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.media.Image;
 import android.net.Uri;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.util.AttributeSet;
@@ -19,16 +18,13 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-
+import ch.deletescape.lawnchair.globalsearch.SearchProvider;
+import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-
-import ch.deletescape.lawnchair.globalsearch.SearchProvider;
-import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
-
 
 public abstract class BaseGContainerView extends FrameLayout implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TEXT_ASSIST = "com.google.android.googlequicksearchbox.TEXT_ASSIST";
@@ -85,11 +81,6 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
         if (mConnectorView != null) {
             removeView(mConnectorView);
             mConnectorView = null;
-        }
-
-        if (!mLauncher.useVerticalBarLayout()) {
-            mConnectorView = (QsbConnector) mLauncher.getLayoutInflater().inflate(R.layout.qsb_connector, this, false);
-            addView(mConnectorView, 0);
         }
     }
 

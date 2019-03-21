@@ -48,9 +48,10 @@
             android:theme="@style/HomeScreenElementTheme"
             launcher:pageIndicator="@+id/page_indicator" />
 
-        <include
-            layout="@layout/v1_qsb_container"
-            android:id="@+id/qsb_container" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:id="@+id/workspace_blocked_row" />
 
         <include
             android:id="@+id/overview_panel"
