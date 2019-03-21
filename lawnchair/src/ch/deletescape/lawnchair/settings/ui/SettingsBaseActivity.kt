@@ -31,9 +31,9 @@ import android.view.ViewGroup
 import ch.deletescape.lawnchair.LawnchairLayoutInflater
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.getBooleanAttr
-import ch.deletescape.lawnchair.hookGoogleSansDialogTitle
 import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
+import com.android.launcher3.InsettableFrameLayout
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
@@ -58,7 +58,8 @@ open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnColorChange
         currentTheme = themeOverride.getTheme(this)
 
         super.onCreate(savedInstanceState ?: intent.getBundleExtra("state"))
-        dragLayer.addView(decorLayout)
+        dragLayer.addView(decorLayout, InsettableFrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
         super.setContentView(dragLayer)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
