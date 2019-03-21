@@ -197,6 +197,7 @@ public class ColorExtractor {
     }
 
     public static boolean isSingleColor(Drawable drawable, int color) {
+        if (drawable == null) return true;
         final int testColor = posterize(color);
         if (drawable instanceof ColorDrawable) {
             return posterize(((ColorDrawable) drawable).getColor()) == testColor;
