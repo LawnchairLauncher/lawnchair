@@ -67,7 +67,6 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     private boolean mIsRtl;
 
     private int mTextColorTertiary;
-    private int mAccent;
 
     private ArgbEvaluator mArgbEvaluator = new ArgbEvaluator();
 
@@ -104,6 +103,13 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         for (int i = 0; i < getChildCount(); i++) {
             ColoredButton tab = (ColoredButton) getChildAt(i);
             tab.setTextColor(pos == i ? tab.getColor() : mTextColorTertiary);
+        }
+    }
+
+    private void resetTabTextColor() {
+        for (int i = 0; i < getChildCount(); i++) {
+            ColoredButton tab = (ColoredButton) getChildAt(i);
+            tab.reset();
         }
     }
 
@@ -231,10 +237,10 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
 
     @Override
     public void onColorChange(String resolver, int color, int foregroundColor) {
-        if (resolver.equals(ColorEngine.Resolvers.ACCENT)) {
-            mAccent = color;
-            updateTabTextColor(mSelectedPosition);
-        }
+        resetTabTextColor();
+        updateTabTextColor(mSelectedPosition);
+        updateIndicatorPosition();
+        invalidate();
     }
 
     @Override

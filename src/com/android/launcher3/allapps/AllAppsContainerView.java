@@ -41,7 +41,11 @@ import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.allapps.AllAppsTabs;
 import ch.deletescape.lawnchair.allapps.AllAppsTabsController;
+import ch.deletescape.lawnchair.colors.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
+import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.DragSource;
@@ -61,12 +65,13 @@ import com.android.launcher3.views.BottomUserEducationView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
 import com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The all apps view container.
  */
 public class AllAppsContainerView extends SpringRelativeLayout implements DragSource,
-        Insettable, OnDeviceProfileChangeListener {
+        Insettable, OnDeviceProfileChangeListener, OnColorChangeListener {
 
     private static final float FLING_VELOCITY_MULTIPLIER = 135f;
     // Starts the springs after at least 55% of the animation has passed.
@@ -495,6 +500,25 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         if (mUsingTabs) {
             ((PersonalWorkSlidingTabStrip) findViewById(R.id.tabs)).highlightWorkTabIfNecessary();
         }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        ColorEngine.getInstance(getContext()).addColorChangeListeners(this, Resolvers.ACCENT);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        ColorEngine.getInstance(getContext()).removeColorChangeListeners(this, Resolvers.ACCENT);
+    }
+
+    @Override
+    public void onColorChange(@NotNull String resolver, int color, int foregroundColor) {
+        AllAppsRecyclerView recyclerView = getActiveRecyclerView();
+        LawnchairUtilsKt.runOnAttached(recyclerView, () -> recyclerView.setScrollbarColor(
+                mTabsController.getTabs().get(0).getDrawerTab().getColorResolver()));
     }
 
     /**
