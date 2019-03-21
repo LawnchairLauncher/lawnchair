@@ -79,6 +79,7 @@ public final class IconRecentsView extends FrameLayout {
     private RecentsToActivityHelper mActivityHelper;
     private RecyclerView mTaskRecyclerView;
     private View mEmptyView;
+    private View mContentView;
 
     public IconRecentsView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -102,6 +103,7 @@ public final class IconRecentsView extends FrameLayout {
             helper.attachToRecyclerView(mTaskRecyclerView);
 
             mEmptyView = findViewById(R.id.recent_task_empty_view);
+            mContentView = findViewById(R.id.recent_task_content_view);
             mTaskAdapter.registerAdapterDataObserver(new AdapterDataObserver() {
                 @Override
                 public void onChanged() {
@@ -113,6 +115,9 @@ public final class IconRecentsView extends FrameLayout {
                     updateContentViewVisibility();
                 }
             });
+
+            View clearAllView = findViewById(R.id.clear_all_button);
+            clearAllView.setOnClickListener(mTaskInputController::onClearAllClicked);
         }
     }
 
@@ -162,11 +167,11 @@ public final class IconRecentsView extends FrameLayout {
     private void updateContentViewVisibility() {
         int taskListSize = mTaskLoader.getCurrentTaskList().size();
         if (mEmptyView.getVisibility() != VISIBLE && taskListSize == 0) {
-            crossfadeViews(mEmptyView, mTaskRecyclerView);
+            crossfadeViews(mEmptyView, mContentView);
             mActivityHelper.leaveRecents();
         }
-        if (mTaskRecyclerView.getVisibility() != VISIBLE && taskListSize > 0) {
-            crossfadeViews(mTaskRecyclerView, mEmptyView);
+        if (mContentView.getVisibility() != VISIBLE && taskListSize > 0) {
+            crossfadeViews(mContentView, mEmptyView);
         }
     }
 

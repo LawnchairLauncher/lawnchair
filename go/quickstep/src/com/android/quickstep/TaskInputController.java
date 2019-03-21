@@ -61,6 +61,14 @@ public final class TaskInputController {
         mAdapter.notifyItemRemoved(position);
     }
 
-    // TODO: Implement "Clear all" and notify adapter that data has updated
-
+    /**
+     * Logic that occurs when clear all is triggered.
+     */
+    public void onClearAllClicked(View view) {
+        // TODO: Play an animation so transition is more natural.
+        int count = mAdapter.getItemCount();
+        ActivityManagerWrapper.getInstance().removeAllRecentTasks();
+        mLoader.clearAllTasks();
+        mAdapter.notifyItemRangeRemoved(0 /* positionStart */, count);
+    }
 }
