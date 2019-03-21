@@ -312,7 +312,7 @@ fun openPopupMenu(view: View, rect: RectF?, vararg items: OptionsPopupView.Optio
 
 fun Context.getLauncherOrNull(): Launcher? {
     return try {
-        LawnchairLauncher.getLauncher(this)
+        Launcher.getLauncher(this)
     } catch (e: ClassCastException) {
         null
     }
