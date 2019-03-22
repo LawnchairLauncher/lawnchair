@@ -71,7 +71,6 @@ public final class TaskActionController {
      * Clears all tasks and updates the model and view.
      */
     public void clearAllTasks() {
-        // TODO: Play an animation so transition is more natural.
         int count = mAdapter.getItemCount();
         ActivityManagerWrapper.getInstance().removeAllRecentTasks();
         mLoader.clearAllTasks();
