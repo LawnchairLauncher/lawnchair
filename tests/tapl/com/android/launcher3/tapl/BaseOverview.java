@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     private static final int FLING_SPEED = 1500;
-    private static final int FLINGS_FOR_DISMISS_LIMIT = 5;
+    private static final int FLINGS_FOR_DISMISS_LIMIT = 40;
 
     BaseOverview(LauncherInstrumentation launcher) {
         super(launcher);
@@ -58,7 +58,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         final BySelector clearAllSelector = mLauncher.getLauncherObjectSelector("clear_all");
         for (int i = 0;
                 i < FLINGS_FOR_DISMISS_LIMIT
-                        && verifyActiveContainer().findObject(clearAllSelector) == null;
+                        && !verifyActiveContainer().hasObject(clearAllSelector);
                 ++i) {
             flingForward();
         }
