@@ -31,8 +31,8 @@ import android.view.animation.Interpolator;
 
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.states.SpringLoadedState;
-import com.android.launcher3.uioverrides.AllAppsState;
-import com.android.launcher3.uioverrides.OverviewState;
+import com.android.launcher3.uioverrides.states.AllAppsState;
+import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;

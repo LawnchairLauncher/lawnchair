@@ -30,7 +30,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.TestProtocol;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.uioverrides.OverviewState;
+import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.quickstep.util.LayoutUtils;
 
 public class TestInformationProvider extends ContentProvider {
