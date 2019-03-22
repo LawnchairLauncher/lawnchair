@@ -34,6 +34,7 @@ import androidx.annotation.NonNull;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
+import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.IconRecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
@@ -99,6 +100,10 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
             anim.play(ValueAnimator.ofInt(0, 1).setDuration(getRecentsLaunchDuration()));
             return anim;
         }
+
+        RemoteAnimationTargetSet targetSet =
+                new RemoteAnimationTargetSet(targetCompats, MODE_CLOSING);
+        mRecentsView.setTransitionedFromApp(!targetSet.isAnimatingHome());
 
         RemoteAnimationTargetCompat recentsTarget = null;
         RemoteAnimationTargetCompat closingAppTarget = null;

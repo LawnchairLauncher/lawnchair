@@ -25,7 +25,7 @@ import com.android.systemui.shared.recents.model.Task;
  * A recycler view holder that holds the task view and binds {@link Task} content (app title, icon,
  * etc.) to the view.
  */
-final class TaskHolder extends ViewHolder {
+public final class TaskHolder extends ViewHolder {
 
     private final TaskItemView mTaskItemView;
     private Task mTask;

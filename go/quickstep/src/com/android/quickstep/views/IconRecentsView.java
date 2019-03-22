@@ -35,8 +35,9 @@ import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 
 import com.android.launcher3.R;
 import com.android.quickstep.RecentsToActivityHelper;
-import com.android.quickstep.TaskAdapter;
 import com.android.quickstep.TaskActionController;
+import com.android.quickstep.TaskAdapter;
+import com.android.quickstep.TaskHolder;
 import com.android.quickstep.TaskListLoader;
 import com.android.quickstep.TaskSwipeCallback;
 
@@ -80,6 +81,7 @@ public final class IconRecentsView extends FrameLayout {
     private RecyclerView mTaskRecyclerView;
     private View mEmptyView;
     private View mContentView;
+    private boolean mTransitionedFromApp;
 
     public IconRecentsView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -144,6 +146,38 @@ public final class IconRecentsView extends FrameLayout {
             // smarter when animating from app to overview.
             mTaskAdapter.notifyDataSetChanged();
         });
+    }
+
+    /**
+     * Set whether we transitioned to recents from the most recent app.
+     *
+     * @param transitionedFromApp true if transitioned from the most recent app, false otherwise
+     */
+    public void setTransitionedFromApp(boolean transitionedFromApp) {
+        mTransitionedFromApp = transitionedFromApp;
+    }
+
+    /**
+     * Handles input from the overview button. Launch the most recent task unless we just came from
+     * the app. In that case, we launch the next most recent.
+     */
+    public void handleOverviewCommand() {
+        int childCount = mTaskRecyclerView.getChildCount();
+        if (childCount == 0) {
+            // Do nothing
+            return;
+        }
+        TaskHolder taskToLaunch;
+        if (mTransitionedFromApp && childCount > 1) {
+            // Launch the next most recent app
+            TaskItemView itemView = (TaskItemView) mTaskRecyclerView.getChildAt(1);
+            taskToLaunch = (TaskHolder) mTaskRecyclerView.getChildViewHolder(itemView);
+        } else {
+            // Launch the most recent app
+            TaskItemView itemView = (TaskItemView) mTaskRecyclerView.getChildAt(0);
+            taskToLaunch = (TaskHolder) mTaskRecyclerView.getChildViewHolder(itemView);
+        }
+        mTaskActionController.launchTask(taskToLaunch);
     }
 
     /**
