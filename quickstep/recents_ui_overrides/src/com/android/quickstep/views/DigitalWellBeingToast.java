@@ -24,7 +24,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.AppUsageLimit;
-import android.content.res.Resources;
 import android.icu.text.MeasureFormat;
 import android.icu.text.MeasureFormat.FormatWidth;
 import android.icu.util.Measure;
@@ -54,7 +53,7 @@ public final class DigitalWellBeingToast extends LinearLayout {
     private final LauncherApps mLauncherApps;
 
     public interface InitializeCallback {
-        void call(float saturation, String contentDescription);
+        void call(String contentDescription);
     }
 
     private static final String TAG = DigitalWellBeingToast.class.getSimpleName();
@@ -84,7 +83,7 @@ public final class DigitalWellBeingToast extends LinearLayout {
 
         if (task.key.userId != UserHandle.myUserId()) {
             setVisibility(GONE);
-            callback.call(1, task.titleDescription);
+            callback.call(task.titleDescription);
             return;
         }
 
@@ -99,7 +98,7 @@ public final class DigitalWellBeingToast extends LinearLayout {
                     usageLimit != null ? usageLimit.getUsageRemaining() : -1;
 
             post(() -> {
-                if (appUsageLimitTimeMs < 0) {
+                if (appUsageLimitTimeMs < 0 || appRemainingTimeMs < 0) {
                     setVisibility(GONE);
                 } else {
                     setVisibility(VISIBLE);
@@ -108,10 +107,8 @@ public final class DigitalWellBeingToast extends LinearLayout {
                             R.drawable.hourglass_top : R.drawable.hourglass_bottom);
                 }
 
-                callback.call(
-                        appUsageLimitTimeMs >= 0 && appRemainingTimeMs <= 0 ? 0 : 1,
-                        getContentDescriptionForTask(
-                                task, appUsageLimitTimeMs, appRemainingTimeMs));
+                callback.call(getContentDescriptionForTask(
+                        task, appUsageLimitTimeMs, appRemainingTimeMs));
             });
         });
     }
@@ -180,12 +177,9 @@ public final class DigitalWellBeingToast extends LinearLayout {
     }
 
     private String getText(long remainingTime) {
-        final Resources resources = getResources();
-        return (remainingTime <= 0) ?
-                resources.getString(R.string.app_in_grayscale) :
-                resources.getString(
-                        R.string.time_left_for_app,
-                        getRoundedUpToMinuteReadableDuration(remainingTime));
+        return getResources().getString(
+                R.string.time_left_for_app,
+                getRoundedUpToMinuteReadableDuration(remainingTime));
     }
 
     public void openAppUsageSettings() {
@@ -209,7 +203,7 @@ public final class DigitalWellBeingToast extends LinearLayout {
 
     private String getContentDescriptionForTask(
             Task task, long appUsageLimitTimeMs, long appRemainingTimeMs) {
-        return appUsageLimitTimeMs >= 0 ?
+        return appUsageLimitTimeMs >= 0 && appRemainingTimeMs >= 0 ?
                 getResources().getString(
                         R.string.task_contents_description_with_remaining_time,
                         task.titleDescription,

@@ -323,9 +323,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                         }
                         mDigitalWellBeingToast.initialize(
                                 mTask,
-                                (saturation, contentDescription) -> {
+                                contentDescription -> {
                                     setContentDescription(contentDescription);
-                                    mSnapshotView.setSaturation(saturation);
                                     if (mDigitalWellBeingToast.getVisibility() == VISIBLE) {
                                         getRecentsView().onDigitalWellbeingToastShown();
                                     }
