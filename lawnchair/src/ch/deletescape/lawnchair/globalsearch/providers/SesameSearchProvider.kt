@@ -23,7 +23,7 @@ class SesameSearchProvider(context: Context) : SearchProvider(context) {
 
     override fun startSearch(callback: (intent: Intent) -> Unit) = callback(Intent("ninja.sesame.app.action.OPEN_SEARCH").setPackage(Sesame.PACKAGE))
 
-    override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_sesame)!!.mutate().apply {
+    override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_sesame_large)!!.mutate().apply {
              setTint(ColorEngine.getInstance(context).accent)
          }
 
