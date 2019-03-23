@@ -25,6 +25,7 @@ import android.graphics.Point;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.DisplayManager.DisplayListener;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
@@ -77,7 +78,7 @@ public class ConfigMonitor extends BroadcastReceiver implements DisplayListener 
 
     public void register() {
         mContext.registerReceiver(this, new IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED));
-        mContext.getSystemService(DisplayManager.class)
+        ContextCompat.getSystemService(mContext, DisplayManager.class)
                 .registerDisplayListener(this, new Handler(UiThreadHelper.getBackgroundLooper()));
     }
 
@@ -112,11 +113,11 @@ public class ConfigMonitor extends BroadcastReceiver implements DisplayListener 
     private void killProcess() {
         Log.d(TAG, "restarting launcher");
         mContext.unregisterReceiver(this);
-        mContext.getSystemService(DisplayManager.class).unregisterDisplayListener(this);
+        ContextCompat.getSystemService(mContext, DisplayManager.class).unregisterDisplayListener(this);
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     private Display getDefaultDisplay(Context context) {
-        return context.getSystemService(WindowManager.class).getDefaultDisplay();
+        return ContextCompat.getSystemService(context, WindowManager.class).getDefaultDisplay();
     }
 }
