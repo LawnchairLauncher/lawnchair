@@ -125,7 +125,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun shouldWrapToAdaptive(icon: Drawable): Boolean {
+    fun shouldWrapToAdaptive(icon: Drawable?): Boolean {
         val ipm = IconPackManager.getInstance(context)
         if (!prefs.enableLegacyTreatment || (prefs.iconPackMasking && ipm.maskSupported())) {
             return false
