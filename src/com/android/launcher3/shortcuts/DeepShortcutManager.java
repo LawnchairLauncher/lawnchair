@@ -244,8 +244,7 @@ public class DeepShortcutManager {
     private List<ShortcutInfoCompat> query(int flags, String packageName,
             ComponentName activity, List<String> shortcutIds, UserHandle user) {
         List<ShortcutInfoCompat> shortcutInfoCompats = new ArrayList<>();
-        Sesame sesame = Sesame.Companion.getInstance(mContext);
-        if (sesame.isAvailable() && sesame.getShowShortcuts()) {
+        if (Sesame.isAvailable(mContext) && Sesame.getShowShortcuts()) {
             List<SesameShortcut> shortcuts = SesameFrontend
                     .getRecentAppShortcuts(packageName, false, PopupPopulator.MAX_SHORTCUTS);
             for (SesameShortcut shortcut : shortcuts) {
@@ -279,7 +278,7 @@ public class DeepShortcutManager {
                 shortcutInfoCompats.add(new ShortcutInfoCompat(shortcutInfo));
             }
         } else {
-            if (!sesame.isAvailable() && sesame.getShowShortcuts()) {
+            if (!Sesame.isAvailable(mContext) && Sesame.getShowShortcuts()) {
                 shortcutInfoCompats.addAll(DeepShortcutManagerBackport
                         .getForPackage(mContext, mLauncherApps, activity, packageName));
             }

@@ -179,8 +179,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             return Collections.EMPTY_LIST;
         }
         List<String> ids = new ArrayList<>();
-        Sesame sesame = Sesame.Companion.getInstance(mLauncher);
-        if (sesame.isAvailable() && sesame.getShowShortcuts()) {
+        if (Sesame.isAvailable(mLauncher) && Sesame.getShowShortcuts()) {
             List<SesameShortcut> shortcuts = SesameFrontend
                     .getRecentAppShortcuts(component.getPackageName(), false, PopupPopulator.MAX_SHORTCUTS);
             for (SesameShortcut shortcut : shortcuts) {

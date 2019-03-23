@@ -536,8 +536,7 @@ public class LoaderTask implements Runnable {
                                         Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                                 }
 
-                                if(!Sesame.Companion.getInstance(context).isAvailable()
-                                        && intent.getBooleanExtra(Sesame.EXTRA_TAG, false)) {
+                                if(!Sesame.isAvailable(context) && intent.getBooleanExtra(Sesame.EXTRA_TAG, false)) {
                                     disabledState  |= ShortcutInfo.FLAG_DISABLED_BY_SESAME;
                                 }
                             }

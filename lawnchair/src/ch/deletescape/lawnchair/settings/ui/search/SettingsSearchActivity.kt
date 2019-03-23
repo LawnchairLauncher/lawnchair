@@ -250,8 +250,7 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
     }
 
     companion object {
-        val prefs by lazy { LawnchairPreferences.getInstanceNoCreate() }
-
+        val prefs = LawnchairPreferences.getInstanceNoCreate()
         @Suppress("DIVISION_BY_ZERO")
         val debugCommands = mapOf<String, (SettingsSearchActivity) -> Unit>(
                 Pair("!!restart", { _ -> prefs.restart() }),

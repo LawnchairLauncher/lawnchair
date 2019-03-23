@@ -32,7 +32,7 @@ class SesameSettings : SystemShortcut<Launcher>(R.drawable.ic_sesame, R.string.s
     override fun getOnClickListener(launcher: Launcher, itemInfo: ItemInfo): View.OnClickListener? {
         if (itemInfo.itemType != ITEM_TYPE_APPLICATION) return null
         val packageName = itemInfo.targetComponent?.packageName ?: itemInfo.intent.`package` ?: itemInfo.intent.component?.packageName ?: return null
-        if (!Sesame.getInstance(launcher).isAvailable()) return null
+        if (!Sesame.isAvailable(launcher)) return null
         val intent = SesameFrontend.createAppConfigIntent(packageName) ?: return null
 
         return View.OnClickListener {

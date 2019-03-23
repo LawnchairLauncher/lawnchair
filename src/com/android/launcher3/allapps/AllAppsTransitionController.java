@@ -165,7 +165,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
 
     private float getShiftApps(float progress, boolean inverted) {
         float normalShift = progress * mShiftRange;
-        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(mLauncher);
+        LawnchairPreferences prefs = LawnchairPreferences.Companion.getInstanceNoCreate();
         if (prefs.getAllAppsSearch() != prefs.getDockSearchBar()) {
             float overviewProgress = OVERVIEW.getVerticalProgress(mLauncher);
             float overviewShift = getQsbHeight();
@@ -266,7 +266,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         PropertySetter setter = config == null ? NO_ANIM_PROPERTY_SETTER
                 : config.getPropertySetter(builder);
         int visibleElements = toState.getVisibleElements(mLauncher);
-        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(mLauncher);
+        LawnchairPreferences prefs = LawnchairPreferences.Companion.getInstanceNoCreate();
         boolean hasHeader = (visibleElements & ALL_APPS_HEADER) != 0 && prefs.getAllAppsSearch();
         boolean hasHeaderExtra = (visibleElements & ALL_APPS_HEADER_EXTRA) != 0;
         boolean hasContent = (visibleElements & ALL_APPS_CONTENT) != 0;
