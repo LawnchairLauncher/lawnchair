@@ -174,12 +174,16 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
                 mEndFlatColorAlpha = Color.alpha(mEndFlatColor)
             }
             key_dock_opacity -> {
-                mMidAlpha = prefs.dockOpacity.takeIf { it >= 0 } ?: Themes.getAttrInteger(context, R.attr.allAppsInterimScrimAlpha)
+                mMidAlpha = midAlpha
             }
             key_dock_arrow -> {
                 updateDragHandleVisibility()
             }
         }
+    }
+
+    override fun getMidAlpha(): Int {
+        return prefs.dockOpacity.takeIf { it >= 0 } ?: super.getMidAlpha()
     }
 
     override fun onDetachedFromWindow() {

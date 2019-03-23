@@ -110,8 +110,7 @@ public class ShelfScrimView extends ScrimView {
             mShiftRange = mLauncher.getAllAppsController().getShiftRange();
 
             mMidProgress = getMidProgress();
-            mMidAlpha = mMidProgress >= 1 ? 0
-                    : Themes.getAttrInteger(getContext(), R.attr.allAppsInterimScrimAlpha);
+            mMidAlpha = mMidProgress >= 1 ? 0 : getMidAlpha();
 
             mTopOffset = dp.getInsets().top - mShelfOffset;
             mShelfTopAtThreshold = mShiftRange * SCRIM_CATCHUP_THRESHOLD + mTopOffset;
@@ -119,6 +118,10 @@ public class ShelfScrimView extends ScrimView {
         }
         updateDragHandleAlpha();
         invalidate();
+    }
+
+    protected int getMidAlpha() {
+        return Themes.getAttrInteger(getContext(), R.attr.allAppsInterimScrimAlpha);
     }
 
     @Override
