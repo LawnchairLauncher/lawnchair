@@ -8,14 +8,13 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
     <path
-        android:name="path"
-        android:pathData="M 6.875 9.835 L 6.875 22 L 10.559 22 C 14.047 22 16.875 19.277 16.875 15.918 L 16.875 9.835 L 10.559 9.835 L 10.559 8.098 L 6.875 8.098 L 6.875 9.835 Z"
+        android:name="path_2"
+        android:pathData="M 7 22 L 7 8 L 9 8 L 9 20 L 11 20 C 13 20 15 18 15 16 L 15 8 L 17 8 L 17 16 C 17 19 14 22 11 22 L 7 22 Z"
         android:fillColor="#000000"
-        android:fillAlpha="0.6"
         android:strokeWidth="1"/>
     <path
-        android:name="path_1"
-        android:pathData="M 6.875 8.098 C 6.875 4.73 9.703 2 13.191 2 L 16.875 2 L 16.875 14.195 L 13.191 14.195 C 9.703 14.195 6.875 11.465 6.875 8.098 Z"
+        android:name="path_3"
+        android:pathData="M 7 8.098 C 7 4.73 9.828 2 13.316 2 L 17 2 L 17 14.195 L 13.316 14.195 C 9.828 14.195 7 11.465 7 8.098 Z"
         android:fillColor="#000000"
         android:strokeWidth="1"/>
 </vector>
