@@ -20,13 +20,14 @@ import android.app.ActivityOptions;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.view.View;
-
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
@@ -67,18 +68,28 @@ public class NotificationInfo implements View.OnClickListener {
         text = notification.extras.getCharSequence(Notification.EXTRA_TEXT);
 
         if (Utilities.ATLEAST_OREO) mBadgeIcon = notification.getBadgeIconType();
+        else mBadgeIcon = Utilities.ATLEAST_MARSHMALLOW ? 2 : 1;
         // Load the icon. Since it is backed by ashmem, we won't copy the entire bitmap
         // into our process as long as we don't touch it and it exists in systemui.
         Icon icon = mBadgeIcon == Notification.BADGE_ICON_SMALL ? null : notification.getLargeIcon();
+        Resources res = LawnchairUtilsKt.resourcesForApplication(context, statusBarNotification.getPackageName());
         if (icon == null) {
             // Use the small icon.
-            icon = notification.getSmallIcon();
-            mIconDrawable = icon == null ? null : icon.loadDrawable(context);
+            if (Utilities.ATLEAST_MARSHMALLOW) {
+                icon = notification.getSmallIcon();
+                mIconDrawable = icon == null ? null : icon.loadDrawable(context);
+            } else {
+                mIconDrawable = res.getDrawable(notification.icon);
+            }
             mIconColor = statusBarNotification.getNotification().color;
             mIsIconLarge = false;
         } else {
             // Use the large icon.
-            mIconDrawable = icon.loadDrawable(context);
+            if (Utilities.ATLEAST_MARSHMALLOW) {
+                mIconDrawable = icon.loadDrawable(context);
+            } else {
+                mIconDrawable = new BitmapDrawable(res, notification.largeIcon);
+            }
             mIsIconLarge = true;
         }
         if (mIconDrawable == null) {

@@ -594,3 +594,11 @@ fun Collection<String>.toJsonStringArray(): JSONArray {
     forEach { array.put(it) }
     return array
 }
+
+fun Context.resourcesForApplication(packageName: String): Resources? {
+    return try {
+        packageManager.getResourcesForApplication(packageName)
+    } catch (e: PackageManager.NameNotFoundException) {
+        null
+    }
+}

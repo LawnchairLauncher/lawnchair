@@ -37,6 +37,7 @@ import android.widget.TextView;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.touch.SwipeDetector;
@@ -117,7 +118,7 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
     public void applyNotificationInfo(NotificationInfo mainNotification, boolean animate) {
         mNotificationInfo = mainNotification;
         NotificationListener listener = NotificationListener.getInstanceIfConnected();
-        if (listener != null) {
+        if (listener != null && Utilities.ATLEAST_MARSHMALLOW) {
             listener.setNotificationsShown(new String[] {mNotificationInfo.notificationKey});
         }
         CharSequence title = mNotificationInfo.title;
