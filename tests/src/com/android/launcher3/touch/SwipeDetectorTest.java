@@ -15,9 +15,12 @@
  */
 package com.android.launcher3.touch;
 
-import androidx.test.InstrumentationRegistry;
-import androidx.test.filters.SmallTest;
-import androidx.test.runner.AndroidJUnit4;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyFloat;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+
 import android.util.Log;
 import android.view.ViewConfiguration;
 
@@ -29,11 +32,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyFloat;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -63,7 +64,7 @@ public class SwipeDetectorTest {
         doReturn(orgConfig.getScaledMaximumFlingVelocity()).when(mMockConfig)
                 .getScaledMaximumFlingVelocity();
 
-        mDetector = new SwipeDetector(mMockConfig, mMockListener, SwipeDetector.VERTICAL);
+        mDetector = new SwipeDetector(mMockConfig, mMockListener, SwipeDetector.VERTICAL, false);
         mDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_BOTH, false);
         mTouchSlop = orgConfig.getScaledTouchSlop();
         doReturn(mTouchSlop).when(mMockConfig).getScaledTouchSlop();
@@ -72,7 +73,19 @@ public class SwipeDetectorTest {
     }
 
     @Test
-    public void testDragStart_vertical() {
+    public void testDragStart_verticalPositive() {
+        mDetector = new SwipeDetector(mMockConfig, mMockListener, SwipeDetector.VERTICAL, false);
+        mDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_POSITIVE, false);
+        mGenerator.put(0, 100, 100);
+        mGenerator.move(0, 100, 100 - mTouchSlop);
+        // TODO: actually calculate the following parameters and do exact value checks.
+        verify(mMockListener).onDragStart(anyBoolean());
+    }
+
+    @Test
+    public void testDragStart_verticalNegative() {
+        mDetector = new SwipeDetector(mMockConfig, mMockListener, SwipeDetector.VERTICAL, false);
+        mDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_NEGATIVE, false);
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100, 100 + mTouchSlop);
         // TODO: actually calculate the following parameters and do exact value checks.
@@ -88,9 +101,42 @@ public class SwipeDetectorTest {
     }
 
     @Test
-    public void testDragStart_horizontal() {
-        mDetector = new SwipeDetector(mMockConfig, mMockListener, SwipeDetector.HORIZONTAL);
-        mDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_BOTH, false);
+    public void testDragStart_horizontalPositive() {
+        mDetector = new SwipeDetector(mMockConfig, mMockListener, SwipeDetector.HORIZONTAL, false);
+        mDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_POSITIVE, false);
+
+        mGenerator.put(0, 100, 100);
+        mGenerator.move(0, 100 + mTouchSlop, 100);
+        // TODO: actually calculate the following parameters and do exact value checks.
+        verify(mMockListener).onDragStart(anyBoolean());
+    }
+
+    @Test
+    public void testDragStart_horizontalNegative() {
+        mDetector = new SwipeDetector(mMockConfig, mMockListener, SwipeDetector.HORIZONTAL, false);
+        mDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_NEGATIVE, false);
+
+        mGenerator.put(0, 100, 100);
+        mGenerator.move(0, 100 - mTouchSlop, 100);
+        // TODO: actually calculate the following parameters and do exact value checks.
+        verify(mMockListener).onDragStart(anyBoolean());
+    }
+
+    @Test
+    public void testDragStart_horizontalRtlPositive() {
+        mDetector = new SwipeDetector(mMockConfig, mMockListener, SwipeDetector.HORIZONTAL, true);
+        mDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_POSITIVE, false);
+
+        mGenerator.put(0, 100, 100);
+        mGenerator.move(0, 100 - mTouchSlop, 100);
+        // TODO: actually calculate the following parameters and do exact value checks.
+        verify(mMockListener).onDragStart(anyBoolean());
+    }
+
+    @Test
+    public void testDragStart_horizontalRtlNegative() {
+        mDetector = new SwipeDetector(mMockConfig, mMockListener, SwipeDetector.HORIZONTAL, true);
+        mDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_NEGATIVE, false);
 
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100 + mTouchSlop, 100);

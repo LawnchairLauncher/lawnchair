@@ -69,6 +69,7 @@ public abstract class AbstractStateChangeTouchController
 
     protected final Launcher mLauncher;
     protected final SwipeDetector mDetector;
+    protected final SwipeDetector.Direction mSwipeDirection;
 
     private boolean mNoIntercept;
     protected int mStartContainerType;
@@ -105,6 +106,7 @@ public abstract class AbstractStateChangeTouchController
     public AbstractStateChangeTouchController(Launcher l, SwipeDetector.Direction dir) {
         mLauncher = l;
         mDetector = new SwipeDetector(l, this, dir);
+        mSwipeDirection = dir;
     }
 
     protected long getAtomicDuration() {
@@ -262,7 +264,8 @@ public abstract class AbstractStateChangeTouchController
         float deltaProgress = mProgressMultiplier * (displacement - mDisplacementShift);
         float progress = deltaProgress + mStartProgress;
         updateProgress(progress);
-        boolean isDragTowardPositive = (displacement - mDisplacementShift) < 0;
+        boolean isDragTowardPositive = mSwipeDirection.isPositive(
+                displacement - mDisplacementShift);
         if (progress <= 0) {
             if (reinitCurrentAnimation(false, isDragTowardPositive)) {
                 mDisplacementShift = displacement;
