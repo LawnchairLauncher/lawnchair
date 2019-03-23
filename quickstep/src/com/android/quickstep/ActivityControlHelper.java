@@ -15,7 +15,6 @@
  */
 package com.android.quickstep;
 
-import android.animation.Animator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -31,7 +30,6 @@ import android.view.animation.Interpolator;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -85,8 +83,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         return true;
     }
 
-    AlphaProperty getAlphaProperty(T activity);
-
     /**
      * Used for containerType in {@link com.android.launcher3.logging.UserEventDispatcher}
      */
@@ -135,6 +131,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         @NonNull RectF getWindowTargetRect();
 
-        @NonNull Animator createActivityAnimationToHome();
+        @NonNull AnimatorPlaybackController createActivityAnimationToHome();
     }
 }

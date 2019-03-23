@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     private static final int FLING_SPEED = 1500;
-    private static final int FLINGS_FOR_DISMISS_LIMIT = 5;
+    private static final int FLINGS_FOR_DISMISS_LIMIT = 40;
 
     BaseOverview(LauncherInstrumentation launcher) {
         super(launcher);
@@ -44,8 +44,10 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      * Flings forward (left) and waits the fling's end.
      */
     public void flingForward() {
-        final UiObject2 overview = verifyActiveContainer();
         LauncherInstrumentation.log("Overview.flingForward before fling");
+        final UiObject2 overview = verifyActiveContainer();
+        final int margin = (int) (50 * mLauncher.getDisplayDensity()) + 1;
+        overview.setGestureMargins(margin, 0, 0, 0);
         overview.fling(Direction.LEFT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
         mLauncher.waitForIdle();
         verifyActiveContainer();
@@ -58,7 +60,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         final BySelector clearAllSelector = mLauncher.getLauncherObjectSelector("clear_all");
         for (int i = 0;
                 i < FLINGS_FOR_DISMISS_LIMIT
-                        && verifyActiveContainer().findObject(clearAllSelector) == null;
+                        && !verifyActiveContainer().hasObject(clearAllSelector);
                 ++i) {
             flingForward();
         }
@@ -71,8 +73,10 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      * Flings backward (right) and waits the fling's end.
      */
     public void flingBackward() {
-        final UiObject2 overview = verifyActiveContainer();
         LauncherInstrumentation.log("Overview.flingBackward before fling");
+        final UiObject2 overview = verifyActiveContainer();
+        final int margin = (int) (50 * mLauncher.getDisplayDensity()) + 1;
+        overview.setGestureMargins(0, 0, margin, 0);
         overview.fling(Direction.RIGHT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
         mLauncher.waitForIdle();
         verifyActiveContainer();

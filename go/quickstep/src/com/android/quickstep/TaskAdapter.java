@@ -15,15 +15,19 @@
  */
 package com.android.quickstep;
 
+import android.util.ArrayMap;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
+import com.android.launcher3.R;
+import com.android.quickstep.views.TaskItemView;
 import com.android.systemui.shared.recents.model.Task;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Recycler view adapter that dynamically inflates and binds {@link TaskHolder} instances with the
@@ -34,26 +38,55 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
     private static final int MAX_TASKS_TO_DISPLAY = 6;
     private static final String TAG = "TaskAdapter";
     private final TaskListLoader mLoader;
+    private final ArrayMap<Integer, TaskItemView> mTaskIdToViewMap = new ArrayMap<>();
+    private TaskActionController mTaskActionController;
 
     public TaskAdapter(@NonNull TaskListLoader loader) {
         mLoader = loader;
     }
 
+    public void setActionController(TaskActionController taskActionController) {
+        mTaskActionController = taskActionController;
+    }
+
+    /**
+     * Get task item view for a given task id if it's attached to the view.
+     *
+     * @param taskId task id to search for
+     * @return corresponding task item view if it's attached, null otherwise
+     */
+    public @Nullable TaskItemView getTaskItemView(int taskId) {
+        return mTaskIdToViewMap.get(taskId);
+    }
+
     @Override
     public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // TODO: Swap in an actual task view here (view w/ icon, label, etc.)
-        TextView stubView = new TextView(parent.getContext());
-        return new TaskHolder(stubView);
+        TaskItemView itemView = (TaskItemView) LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.task_item_view, parent, false);
+        TaskHolder holder = new TaskHolder(itemView);
+        itemView.setOnClickListener(view -> mTaskActionController.launchTask(holder));
+        return holder;
     }
 
     @Override
     public void onBindViewHolder(TaskHolder holder, int position) {
-        ArrayList<Task> tasks = mLoader.getCurrentTaskList();
+        List<Task> tasks = mLoader.getCurrentTaskList();
         if (position >= tasks.size()) {
             // Task list has updated.
             return;
         }
         holder.bindTask(tasks.get(position));
+
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull TaskHolder holder) {
+        mTaskIdToViewMap.put(holder.getTask().key.id, (TaskItemView) holder.itemView);
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull TaskHolder holder) {
+        mTaskIdToViewMap.remove(holder.getTask().key.id);
     }
 
     @Override

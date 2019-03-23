@@ -23,13 +23,17 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
 	androidx.annotation_annotation \
 	androidx.test.runner \
 	androidx.test.rules \
-	androidx.test.uiautomator_uiautomator \
-	libSharedSystemUI
+	androidx.test.uiautomator_uiautomator
 
-LOCAL_SRC_FILES := $(call all-java-files-under, tapl) \
-  ../quickstep/src/com/android/quickstep/SwipeUpSetting.java \
-  ../src/com/android/launcher3/util/SecureSettingsObserver.java \
-  ../src/com/android/launcher3/TestProtocol.java \
+ifneq (,$(wildcard frameworks/base))
+else
+    LOCAL_STATIC_JAVA_LIBRARIES += libSharedSystemUI
+
+    LOCAL_SRC_FILES := $(call all-java-files-under, tapl) \
+        ../quickstep/src/com/android/quickstep/SwipeUpSetting.java \
+        ../src/com/android/launcher3/util/SecureSettingsObserver.java \
+        ../src/com/android/launcher3/TestProtocol.java
+endif
 
 LOCAL_SDK_VERSION := current
 LOCAL_MODULE := ub-launcher-aosp-tapl

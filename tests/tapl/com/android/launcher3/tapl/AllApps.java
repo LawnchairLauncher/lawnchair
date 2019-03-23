@@ -44,6 +44,13 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         return LauncherInstrumentation.ContainerType.ALL_APPS;
     }
 
+    private boolean hasClickableIcon(UiObject2 allAppsContainer, BySelector appIconSelector) {
+        final UiObject2 icon = allAppsContainer.findObject(appIconSelector);
+        if (icon == null) return false;
+        final UiObject2 navBar = mLauncher.waitForSystemUiObject("navigation_bar_frame");
+        return icon.getVisibleBounds().bottom < navBar.getVisibleBounds().top;
+    }
+
     /**
      * Finds an icon. Fails if the icon doesn't exist. Scrolls the app list when needed to make
      * sure the icon is visible.
@@ -55,10 +62,10 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
     public AppIcon getAppIcon(String appName) {
         final UiObject2 allAppsContainer = verifyActiveContainer();
         final BySelector appIconSelector = AppIcon.getAppIconSelector(appName, mLauncher);
-        if (!allAppsContainer.hasObject(appIconSelector)) {
+        if (!hasClickableIcon(allAppsContainer, appIconSelector)) {
             scrollBackToBeginning();
             int attempts = 0;
-            while (!allAppsContainer.hasObject(appIconSelector) &&
+            while (!hasClickableIcon(allAppsContainer, appIconSelector) &&
                     allAppsContainer.scroll(Direction.DOWN, 0.8f)) {
                 LauncherInstrumentation.assertTrue(
                         "Exceeded max scroll attempts: " + MAX_SCROLL_ATTEMPTS,

@@ -26,7 +26,6 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.IconRecentsView;
 
@@ -107,11 +106,6 @@ public final class FallbackActivityControllerHelper extends
     @Override
     public boolean switchToRecentsIfVisible(Runnable onCompleteCallback) {
         return false;
-    }
-
-    @Override
-    public AlphaProperty getAlphaProperty(RecentsActivity activity) {
-        return activity.getDragLayer().getAlphaProperty(0);
     }
 
     @Override

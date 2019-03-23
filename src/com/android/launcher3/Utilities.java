@@ -54,6 +54,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
 
@@ -113,6 +114,11 @@ public final class Utilities {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
 
     public static final int SINGLE_FRAME_MS = 16;
+
+    /**
+     * Set on a motion event dispatched from the nav bar. See {@link MotionEvent#setEdgeFlags(int)}.
+     */
+    public static final int EDGE_NAV_BAR = 1 << 8;
 
     /**
      * Indicates if the device has a debug build. Should only be used to store additional info or
@@ -571,9 +577,11 @@ public final class Utilities {
         final boolean isFolderIcon = v instanceof FolderIcon;
         final Rect rect = new Rect();
 
+        // Deep shortcut views have their icon drawn in a separate view.
         final boolean fromDeepShortcutView = v.getParent() instanceof DeepShortcutView;
-        if (fromDeepShortcutView) {
-            // Deep shortcut views have their icon drawn in a separate view.
+        if (v instanceof DeepShortcutView) {
+            dragLayer.getDescendantRectRelativeToSelf(((DeepShortcutView) v).getIconView(), rect);
+        } else if (fromDeepShortcutView) {
             DeepShortcutView view = (DeepShortcutView) v.getParent();
             dragLayer.getDescendantRectRelativeToSelf(view.getIconView(), rect);
         } else if ((isBubbleTextView || isFolderIcon) && v.getTag() instanceof ItemInfo

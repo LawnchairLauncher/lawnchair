@@ -31,7 +31,8 @@ public final class GoLauncherAppTransitionManagerImpl extends QuickstepAppTransi
     @Override
     protected void composeRecentsLaunchAnimator(AnimatorSet anim, View v,
             RemoteAnimationTargetCompat[] targets, boolean launcherClosing) {
-        //TODO: Implement this based off IconRecentsView
+        // Stubbed. Recents launch animation will come from the recents view itself and will not
+        // use remote animations.
     }
 
     @Override

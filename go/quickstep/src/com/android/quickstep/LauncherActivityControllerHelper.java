@@ -21,10 +21,9 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListener;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.views.IconRecentsView;
 
 import java.util.function.BiPredicate;
@@ -40,10 +39,14 @@ public final class LauncherActivityControllerHelper extends GoActivityControlHel
     public AnimationFactory prepareRecentsUI(Launcher activity,
             boolean activityVisible, boolean animateActivity,
             Consumer<AnimatorPlaybackController> callback) {
+        LauncherState fromState = activity.getStateManager().getState();
         //TODO: Implement this based off where the recents view needs to be for app => recents anim.
         return new AnimationFactory() {
             @Override
-            public void createActivityController(long transitionLength) {}
+            public void createActivityController(long transitionLength) {
+                callback.accept(activity.getStateManager().createAnimationToNewWorkspace(
+                        fromState, OVERVIEW, transitionLength));
+            }
 
             @Override
             public void onTransitionCancelled() {}
@@ -91,11 +94,6 @@ public final class LauncherActivityControllerHelper extends GoActivityControlHel
         launcher.getStateManager().goToState(OVERVIEW,
                 launcher.getStateManager().shouldAnimateStateChange(), onCompleteCallback);
         return true;
-    }
-
-    @Override
-    public AlphaProperty getAlphaProperty(Launcher activity) {
-        return activity.getDragLayer().getAlphaProperty(DragLayer.ALPHA_INDEX_SWIPE_UP);
     }
 
     @Override

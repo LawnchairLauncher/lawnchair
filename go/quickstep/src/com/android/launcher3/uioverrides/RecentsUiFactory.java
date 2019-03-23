@@ -28,6 +28,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.OverviewInteractionState;
+import com.android.quickstep.views.IconRecentsView;
 
 import java.util.ArrayList;
 
@@ -35,7 +36,7 @@ import java.util.ArrayList;
  * Provides recents-related {@link UiFactory} logic and classes.
  */
 public abstract class RecentsUiFactory {
-    
+
     public static final boolean GO_LOW_RAM_RECENTS_ENABLED = true;
     // Scale recents takes before animating in
     private static final float RECENTS_PREPARE_SCALE = 1.33f;
@@ -87,7 +88,10 @@ public abstract class RecentsUiFactory {
      *
      * @param launcher the launcher activity
      */
-    public static void resetOverview(Launcher launcher) {}
+    public static void resetOverview(Launcher launcher) {
+        IconRecentsView recentsView = launcher.getOverviewPanel();
+        recentsView.setTransitionedFromApp(false);
+    }
 
     /**
      * Recents logic that triggers when launcher state changes or launcher activity stops/resumes.
