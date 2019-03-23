@@ -48,7 +48,7 @@ public class ShelfScrimView extends ScrimView {
 
     // If the progress is more than this, shelf follows the finger, otherwise it moves faster to
     // cover the whole screen
-    private static final float SCRIM_CATCHUP_THRESHOLD = 0.2f;
+    protected static final float SCRIM_CATCHUP_THRESHOLD = 0.2f;
 
     // In transposed layout, we simply draw a flat color.
     private boolean mDrawingFlatColor;

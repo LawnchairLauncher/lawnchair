@@ -18,11 +18,9 @@
 package ch.deletescape.lawnchair.views
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import android.graphics.drawable.Drawable
+import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.ColorUtils
 import android.util.AttributeSet
 import android.view.View
@@ -98,6 +96,12 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private val enableShadow get() = prefs.dockShadow && !useFlatColor
 
     private var searchBlurDrawable: BlurDrawable? = null
+
+    private val isDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark)
+    private val statusBarPaint = Paint().apply {
+        color = ContextCompat.getColor(mLauncher, R.color.lollipopStatusBar)
+    }
+    private val insets = Rect()
 
     private fun createBlurDrawable(): BlurDrawable? {
         blurDrawable?.let { if (isAttachedToWindow) it.stopListening() }
@@ -186,6 +190,23 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         BlurWallpaperProvider.getInstance(context).removeListener(this)
         blurDrawable?.stopListening()
         searchBlurDrawable?.stopListening()
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+
+        if (!Utilities.ATLEAST_MARSHMALLOW && !isDarkTheme) {
+            val scrimProgress = Utilities.boundToRange(Utilities.mapToRange(mProgress,
+                    0f, SCRIM_CATCHUP_THRESHOLD, 0f, 1f, Interpolators.LINEAR), 0f, 1f)
+            statusBarPaint.alpha = ((1 - scrimProgress) * 97).toInt()
+            canvas.drawRect(0f, 0f, width.toFloat(), insets.top.toFloat(), statusBarPaint)
+        }
+    }
+
+    override fun setInsets(insets: Rect) {
+        super.setInsets(insets)
+        this.insets.set(insets)
+        invalidate()
     }
 
     override fun onDrawFlatColor(canvas: Canvas) {
