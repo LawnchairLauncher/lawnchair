@@ -59,10 +59,10 @@ class Launchable {
     private Background launch(String errorMessage, BySelector selector) {
         LauncherInstrumentation.log("Launchable.launch before click " +
                 mObject.getVisibleCenter());
-        LauncherInstrumentation.assertTrue(
+        mLauncher.assertTrue(
                 "Launching an app didn't open a new window: " + mObject.getText(),
                 mObject.clickAndWait(Until.newWindow(), LauncherInstrumentation.WAIT_TIME_MS));
-        LauncherInstrumentation.assertTrue(
+        mLauncher.assertTrue(
                 "App didn't start: " + errorMessage,
                 mLauncher.getDevice().wait(Until.hasObject(selector),
                         LauncherInstrumentation.WAIT_TIME_MS));
@@ -79,6 +79,9 @@ class Launchable {
                 this,
                 new Point(device.getDisplayWidth() / 2, device.getDisplayHeight() / 2),
                 DRAG_SPEED);
-        return new Workspace(mLauncher);
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "dragged launchable to workspace")) {
+            return new Workspace(mLauncher);
+        }
     }
 }

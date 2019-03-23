@@ -42,20 +42,24 @@ public final class AllAppsFromOverview extends AllApps {
      */
     @NonNull
     public Overview switchBackToOverview() {
-        final UiObject2 allAppsContainer = verifyActiveContainer();
-        // Swipe from the search box to the bottom.
-        final UiObject2 qsb = mLauncher.waitForObjectInContainer(
-                allAppsContainer, "search_container_all_apps");
-        final Point start = qsb.getVisibleCenter();
-        final int swipeHeight = mLauncher.getTestInfo(
-                TestProtocol.REQUEST_ALL_APPS_TO_OVERVIEW_SWIPE_HEIGHT).
-                getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to switch back from all apps to overview")) {
+            final UiObject2 allAppsContainer = verifyActiveContainer();
+            // Swipe from the search box to the bottom.
+            final UiObject2 qsb = mLauncher.waitForObjectInContainer(
+                    allAppsContainer, "search_container_all_apps");
+            final Point start = qsb.getVisibleCenter();
+            final int swipeHeight = mLauncher.getTestInfo(
+                    TestProtocol.REQUEST_ALL_APPS_TO_OVERVIEW_SWIPE_HEIGHT).
+                    getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
 
-        final int endY = start.y + swipeHeight + mLauncher.getTouchSlop();
-        LauncherInstrumentation.log("AllAppsFromOverview.switchBackToOverview before swipe");
-        mLauncher.swipe(start.x, start.y, start.x, endY, OVERVIEW_STATE_ORDINAL);
+            final int endY = start.y + swipeHeight + mLauncher.getTouchSlop();
+            LauncherInstrumentation.log("AllAppsFromOverview.switchBackToOverview before swipe");
+            mLauncher.swipe(start.x, start.y, start.x, endY, OVERVIEW_STATE_ORDINAL);
 
-        return new Overview(mLauncher);
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("swiped down")) {
+                return new Overview(mLauncher);
+            }
+        }
     }
-
 }
