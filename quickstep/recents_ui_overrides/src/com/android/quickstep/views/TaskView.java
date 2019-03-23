@@ -259,11 +259,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             Handler resultCallbackHandler) {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             if (isRunningTask()) {
-                getRecentsView().finishRecentsAnimation(false,
+                getRecentsView().finishRecentsAnimation(false /* toRecents */,
                         () -> resultCallbackHandler.post(() -> resultCallback.accept(true)));
             } else {
-                getRecentsView().takeScreenshotAndFinishRecentsAnimation(true,
-                        () -> launchTaskInternal(animate, resultCallback, resultCallbackHandler));
+                launchTaskInternal(animate, resultCallback, resultCallbackHandler);
             }
         } else {
             launchTaskInternal(animate, resultCallback, resultCallbackHandler);

@@ -94,7 +94,6 @@ import com.android.quickstep.RecentsModel.TaskThumbnailChangeListener;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.util.ClipAnimationHelper;
-import com.android.quickstep.util.SwipeAnimationTargetSet;
 import com.android.quickstep.util.TaskViewDrawable;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -103,7 +102,6 @@ import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
-import com.android.systemui.shared.system.WindowCallbacksCompat;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -1576,51 +1574,5 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
 
         mRecentsAnimationWrapper.finish(toRecents, onFinishComplete);
-    }
-
-    public void takeScreenshotAndFinishRecentsAnimation(boolean toRecents,
-            Runnable onFinishComplete) {
-        if (mRecentsAnimationWrapper == null || getRunningTaskView() == null) {
-            if (onFinishComplete != null) {
-                onFinishComplete.run();
-            }
-            return;
-        }
-
-        SwipeAnimationTargetSet controller = mRecentsAnimationWrapper.getController();
-        if (controller != null) {
-            // Update the screenshot of the task
-            ThumbnailData taskSnapshot = controller.screenshotTask(mRunningTaskId);
-            TaskView taskView = updateThumbnail(mRunningTaskId, taskSnapshot);
-            if (taskView != null) {
-                taskView.setShowScreenshot(true);
-                // Defer finishing the animation until the next launcher frame with the
-                // new thumbnail
-                new WindowCallbacksCompat(taskView) {
-
-                    // The number of frames to defer until we actually finish the animation
-                    private int mDeferFrameCount = 2;
-
-                    @Override
-                    public void onPostDraw(Canvas canvas) {
-                        if (mDeferFrameCount > 0) {
-                            mDeferFrameCount--;
-                            // Workaround, detach and reattach to invalidate the root node for
-                            // another draw
-                            detach();
-                            attach();
-                            taskView.invalidate();
-                            return;
-                        }
-
-                        detach();
-                        mRecentsAnimationWrapper.finish(toRecents, () -> {
-                            onFinishComplete.run();
-                            mRunningTaskId = -1;
-                        });
-                    }
-                }.attach();
-            }
-        }
     }
 }

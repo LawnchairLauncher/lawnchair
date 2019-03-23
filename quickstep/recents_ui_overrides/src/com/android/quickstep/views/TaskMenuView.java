@@ -208,13 +208,7 @@ public class TaskMenuView extends AbstractFloatingView {
                 R.layout.task_view_menu_option, this, false);
         menuOption.setIconAndLabelFor(
                 menuOptionView.findViewById(R.id.icon), menuOptionView.findViewById(R.id.text));
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            menuOptionView.setOnClickListener(
-                    view -> mTaskView.getRecentsView().takeScreenshotAndFinishRecentsAnimation(true,
-                            () -> onClickListener.onClick(view)));
-        } else {
-            menuOptionView.setOnClickListener(onClickListener);
-        }
+        menuOptionView.setOnClickListener(onClickListener);
         mOptionLayout.addView(menuOptionView);
     }
 
