@@ -89,6 +89,7 @@ public final class IconRecentsView extends FrameLayout {
     private RecyclerView mTaskRecyclerView;
     private View mEmptyView;
     private View mContentView;
+    private View mClearAllView;
     private boolean mTransitionedFromApp;
 
     public IconRecentsView(Context context, AttributeSet attrs) {
@@ -125,10 +126,20 @@ public final class IconRecentsView extends FrameLayout {
                     updateContentViewVisibility();
                 }
             });
-
-            View clearAllView = findViewById(R.id.clear_all_button);
-            clearAllView.setOnClickListener(v -> animateClearAllTasks());
+            mClearAllView = findViewById(R.id.clear_all_button);
+            mClearAllView.setOnClickListener(v -> animateClearAllTasks());
         }
+    }
+
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        TaskItemView[] itemViews = getTaskViews();
+        for (TaskItemView itemView : itemViews) {
+            itemView.setEnabled(enabled);
+        }
+        mClearAllView.setEnabled(enabled);
     }
 
     /**
@@ -206,6 +217,7 @@ public final class IconRecentsView extends FrameLayout {
      * Clear all tasks and animate out.
      */
     private void animateClearAllTasks() {
+        setEnabled(false);
         TaskItemView[] itemViews = getTaskViews();
 
         AnimatorSet clearAnim = new AnimatorSet();
@@ -251,6 +263,7 @@ public final class IconRecentsView extends FrameLayout {
                     itemView.setTranslationX(0);
                     itemView.setAlpha(1.0f);
                 }
+                setEnabled(true);
                 mContentView.setVisibility(GONE);
                 mTaskActionController.clearAllTasks();
             }
