@@ -61,7 +61,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         this.Dt = getResources().getDimensionPixelSize(R.dimen.qsb_margin_top_adjusting);
         this.Dy = getResources().getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset);
         setClipToPadding(false);
-        prefs = LawnchairPreferences.Companion.getInstanceNoCreate();
+        prefs = Utilities.getLawnchairPrefs(context);
     }
 
     protected void onFinishInflate() {

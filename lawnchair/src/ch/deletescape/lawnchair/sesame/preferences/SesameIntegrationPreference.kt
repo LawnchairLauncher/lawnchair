@@ -31,7 +31,7 @@ import com.android.launcher3.util.PackageManagerHelper
 import ninja.sesame.lib.bridge.v1.SesameFrontend
 
 class SesameIntegrationPreference(context: Context, attrs: AttributeSet?): StyledSwitchPreferenceCompat(context, attrs), ResumablePreference {
-    private val isInstalled: Boolean by lazy { Sesame.isInstalled(context) }
+    private val isInstalled: Boolean by lazy { Sesame.getInstance(context).isInstalled() }
 
     init {
         isPersistent = false // !important

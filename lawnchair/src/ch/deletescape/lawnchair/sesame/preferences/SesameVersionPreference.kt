@@ -30,7 +30,7 @@ class SesameVersionPreference(context: Context?, attrs: AttributeSet?) : Prefere
 
     override fun onClick() {
         super.onClick()
-        if (Sesame.isAvailable(context)) {
+        if (Sesame.getInstance(context).isAvailable()) {
             context.startActivity(SesameFrontend.createConfigIntegrationIntent())
         }
     }

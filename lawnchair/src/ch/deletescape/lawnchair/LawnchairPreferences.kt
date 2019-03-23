@@ -191,6 +191,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         SearchProviderController.getInstance(context).onSearchProviderChanged()
     }
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, doNothing)
+    val showSesameShortcut by BooleanPref("pref_sesame_show_shortcuts", true)
 
     // Quickstep
     val swipeUpToSwitchApps by BooleanPref("pref_swipe_up_to_switch_apps_enabled", true, doNothing)
