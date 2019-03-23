@@ -98,7 +98,7 @@
     <string name="icon_shape_override_label_location" msgid="3841607380657692863">"na ekranie głównym"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Użyj ustawienia domyślnego"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Kwadrat"</string>
-    <string name="icon_shape_squircle" msgid="5658049910802669495">"Zaokrąglony kwadrat"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"Obły kwadrat"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Okrąg"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Łza"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"Zmieniam kształt ikon"</string>
