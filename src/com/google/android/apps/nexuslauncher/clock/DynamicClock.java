@@ -9,6 +9,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.MainThreadExecutor;
@@ -28,7 +29,12 @@ public class DynamicClock extends BroadcastReceiver
     private final Context mContext;
     
     public DynamicClock(Context context) {
-        mUpdaters = Collections.newSetFromMap(new WeakHashMap<AutoUpdateClock, Boolean>());
+        if (LauncherAppState.getInstanceNoCreate() == null) {
+            RuntimeException e =  new RuntimeException("Initializing DynamicClock before LauncherAppState");
+            Log.e("DynamicClock", "Error while initializing DynamicClock", e);
+            throw e;
+        }
+        mUpdaters = Collections.newSetFromMap(new WeakHashMap<>());
         mLayers = new ClockLayers();
         mContext = context;
         final Handler handler = new Handler(LauncherModel.getWorkerLooper());
@@ -37,12 +43,7 @@ public class DynamicClock extends BroadcastReceiver
                     Intent.ACTION_PACKAGE_ADDED,
                     Intent.ACTION_PACKAGE_CHANGED),
                 null, handler);
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                updateMainThread();
-            }
-        });
+        handler.post(this::updateMainThread);
 
         mContext.registerReceiver(new BroadcastReceiver() {
             @Override

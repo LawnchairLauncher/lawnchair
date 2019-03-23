@@ -50,7 +50,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
     private val prefs by lazy { Utilities.getLawnchairPrefs(context) }
     private val wrapperIcon: Drawable by lazy { context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper)!!.mutate() }
     private val normalizer: IconNormalizer by lazy { LauncherIcons.obtain(context).normalizer }
-    private val dynamicClockDrawer = DynamicClock(context)
+    val dynamicClockDrawer by lazy { DynamicClock(context) }
     private val appMap = HashMap<ComponentKey, Entry>().apply {
         val launcherApps = LauncherAppsCompat.getInstance(context)
         UserManagerCompat.getInstance(context).userProfiles.forEach { user ->

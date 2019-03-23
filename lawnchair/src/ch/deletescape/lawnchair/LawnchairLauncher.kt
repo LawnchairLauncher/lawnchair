@@ -73,6 +73,8 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
             Utilities.requestStoragePermission(this)
         }
 
+        IconPackManager.getInstance(this).defaultPack.dynamicClockDrawer
+
         super.onCreate(savedInstanceState)
 
         hookGoogleSansDialogTitle()
