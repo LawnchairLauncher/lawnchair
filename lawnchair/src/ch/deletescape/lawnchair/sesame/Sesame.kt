@@ -21,7 +21,6 @@ import android.content.Context
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.globalsearch.providers.SesameSearchProvider
 import com.android.launcher3.BuildConfig
-import com.android.launcher3.util.PackageManagerHelper
 import ninja.sesame.lib.bridge.v1.SesameFrontend
 
 object Sesame {
@@ -34,12 +33,8 @@ object Sesame {
 
     @JvmStatic
     fun isAvailable(context: Context) = BuildConfig.FEATURE_QUINOA &&
-                                        isInstalled(context) &&
                                         SesameFrontend.isConnected() &&
                                         SesameFrontend.getIntegrationState(context)
-    @JvmStatic
-    fun isInstalled(context: Context) = PackageManagerHelper.isAppEnabled(context.packageManager, Sesame.PACKAGE, 0)
-
     @JvmStatic
     var showShortcuts by LawnchairPreferences.getInstanceNoCreate().BooleanPref("pref_sesame_show_shortcuts", true)
 }

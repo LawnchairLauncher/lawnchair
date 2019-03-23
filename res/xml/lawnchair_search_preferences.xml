@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ch.deletescape.lawnchair.globalsearch.ui.SearchProviderPreference
+        android:defaultValue="@string/config_default_search_provider"
         android:key="pref_globalSearchProvider"
         android:title="@string/pref_global_search_provider" />
 

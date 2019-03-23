@@ -28,7 +28,6 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
     init {
         ThemeManager.getInstance(context).addOverride(themeOverride)
         ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
-        val sc = searchProvider
     }
 
     fun addOnProviderChangeListener(listener: OnProviderChangeListener) {
@@ -60,15 +59,8 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
                     if (prov.isAvailable) {
                         cache = prov
                     }
-                } catch (ignored: Exception) {}
-                if (cache == null) cache = (try {
-                    getDefault(context)
-                } catch (e: Exception) {
-                    AppSearchSearchProvider(context)
-                }).also {
-                    // Save the fallback, we end up in an almost endless loop of reflections otherwise.
-                    prefs.searchProvider = it::class.java.name
-                }
+                } catch (ignored: Exception) { }
+                if (cache == null) cache = GoogleSearchProvider(context)
                 cached = cache!!::class.java.name
                 notifyProviderChanged()
             }
@@ -122,22 +114,5 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
                 SearchLiteSearchProvider(context),
                 CoolSearchSearchProvider(context)
         ).filter { it.isAvailable }
-
-        @JvmStatic
-        fun getDefault(context: Context) = listOf(
-                GoogleSearchProvider(context),
-                GoogleGoSearchProvider(context),
-                BaiduSearchProvider(context),
-                SFinderSearchProvider(context),
-                SesameSearchProvider(context),
-                FirefoxSearchProvider(context),
-                DuckDuckGoSearchProvider(context),
-                YandexSearchProvider(context),
-                QwantSearchProvider(context),
-                BingSearchProvider(context),
-                CoolSearchSearchProvider(context),
-                SearchLiteSearchProvider(context),
-                AppSearchSearchProvider(context)
-        ).first { it.isAvailable }
     }
 }

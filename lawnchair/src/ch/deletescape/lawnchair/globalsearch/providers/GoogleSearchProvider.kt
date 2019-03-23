@@ -6,7 +6,6 @@ import android.support.annotation.Keep
 import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.globalsearch.SearchProvider
 import com.android.launcher3.R
-import com.android.launcher3.util.PackageManagerHelper
 
 @Keep
 class GoogleSearchProvider(context: Context) : SearchProvider(context) {
@@ -20,8 +19,6 @@ class GoogleSearchProvider(context: Context) : SearchProvider(context) {
                 .setPackage(PACKAGE).addFlags(268435456)
     override val isBroadcast: Boolean
         get() = true
-    override val isAvailable: Boolean
-        get() = PackageManagerHelper.isAppEnabled(context.packageManager, PACKAGE, 0)
 
 
     override fun startSearch(callback: (intent: Intent) -> Unit) = callback(Intent().setClassName(PACKAGE, "$PACKAGE.SearchActivity"))

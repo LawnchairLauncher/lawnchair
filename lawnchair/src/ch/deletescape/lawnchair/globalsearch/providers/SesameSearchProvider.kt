@@ -19,7 +19,7 @@ class SesameSearchProvider(context: Context) : SearchProvider(context) {
     override val settingsIntent = Intent(Sesame.ACTION_OPEN_SETTINGS).setPackage(Sesame.PACKAGE)
 
     override val isAvailable: Boolean
-        get() = Sesame.isInstalled(context)
+        get() = PackageManagerHelper.isAppEnabled(context.packageManager, Sesame.PACKAGE, 0)
 
     override fun startSearch(callback: (intent: Intent) -> Unit) = callback(Intent("ninja.sesame.app.action.OPEN_SEARCH").setPackage(Sesame.PACKAGE))
 

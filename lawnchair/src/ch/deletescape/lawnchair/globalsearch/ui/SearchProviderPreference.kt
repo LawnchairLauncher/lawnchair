@@ -43,7 +43,7 @@ class SearchProviderPreference(context: Context, attrs: AttributeSet?) : DialogP
     }
 
     override fun onGetDefaultValue(a: TypedArray, index: Int): String? {
-        defaultValue = SearchProviderController.getDefault(context)::class.java.name
+        defaultValue = a.getString(index)
         return defaultValue
     }
 
