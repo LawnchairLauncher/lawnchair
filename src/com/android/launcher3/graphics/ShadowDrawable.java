@@ -30,6 +30,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
@@ -158,9 +159,9 @@ public class ShadowDrawable extends Drawable {
             float elevationDps, int darkTintColorRes) {
         ShadowDrawable sd = new ShadowDrawable();
         sd.setChild(d);
-        sd.mState.mShadowColor = context.getColor(shadowColorRes);
+        sd.mState.mShadowColor = ContextCompat.getColor(context, shadowColorRes);
         sd.mState.mShadowSize = (int) LawnchairUtilsKt.dpToPx(elevationDps);
-        sd.mState.mDarkTintColor = context.getColor(darkTintColorRes);
+        sd.mState.mDarkTintColor = ContextCompat.getColor(context, darkTintColorRes);
         sd.mState.mIntrinsicHeight = d.getIntrinsicHeight() + 2 * sd.mState.mShadowSize;
         sd.mState.mIntrinsicWidth = d.getIntrinsicWidth() + 2 * sd.mState.mShadowSize;
         sd.mState.mChangingConfigurations = d.getChangingConfigurations();
