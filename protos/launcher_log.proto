@@ -122,6 +122,7 @@ enum TipType {
   SWIPE_UP_TEXT = 2;
   QUICK_SCRUB_TEXT = 3;
   PREDICTION_TEXT = 4;
+  DWB_TOAST = 5;
 }
 
 // Used to define the action component of the LauncherEvent.

@@ -22,13 +22,14 @@ import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.launcher3.uioverrides.TaskViewTouchController.SUCCESS_TRANSITION_PROGRESS;
-import static com.android.quickstep.util.ClipAnimationHelper.TransformParams;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
-import static com.android.quickstep.TouchInteractionService.EDGE_NAV_BAR;
+import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
+import static com.android.quickstep.util.ClipAnimationHelper.TransformParams;
+
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
@@ -81,6 +82,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.OverScroller;
@@ -99,6 +101,7 @@ import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.BackgroundExecutor;
+import com.android.systemui.shared.system.LauncherEventUtil;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
@@ -164,6 +167,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private final InvariantDeviceProfile mIdp;
 
     private final ViewPool<TaskView> mTaskViewPool;
+
+    private boolean mDwbToastShown;
 
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
@@ -276,6 +281,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private final int mEmptyMessagePadding;
     private boolean mShowEmptyMessage;
     private Layout mEmptyTextLayout;
+    private LiveTileOverlay mLiveTileOverlay;
 
     private BaseActivity.MultiWindowModeChangedListener mMultiWindowModeChangedListener =
             (inMultiWindowMode) -> {
@@ -424,6 +430,16 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public void setOverviewStateEnabled(boolean enabled) {
         mOverviewStateEnabled = enabled;
         updateTaskStackListenerState();
+        if (!enabled) mDwbToastShown = false;
+    }
+
+    public void onDigitalWellbeingToastShown() {
+        if (!mDwbToastShown) {
+            mDwbToastShown = true;
+            mActivity.getUserEventDispatcher().logActionTip(
+                    LauncherEventUtil.VISIBLE,
+                    LauncherLogProto.TipType.DWB_TOAST);
+        }
     }
 
     @Override
@@ -853,10 +869,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public void animateUpRunningTaskIconScale() {
+        animateUpRunningTaskIconScale(0);
+    }
+
+    public void animateUpRunningTaskIconScale(float startProgress) {
         mRunningTaskIconScaledDown = false;
         TaskView firstTask = getRunningTaskView();
         if (firstTask != null) {
             firstTask.animateIconScaleAndDimIntoView();
+            firstTask.setIconScaleAnimStartProgress(startProgress);
         }
     }
 
@@ -1563,6 +1584,16 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     public void setClipAnimationHelper(ClipAnimationHelper clipAnimationHelper) {
         mClipAnimationHelper = clipAnimationHelper;
+    }
+
+    public void setLiveTileOverlay(LiveTileOverlay liveTileOverlay) {
+        mLiveTileOverlay = liveTileOverlay;
+    }
+
+    public void updateLiveTileIcon(Drawable icon) {
+        if (mLiveTileOverlay != null) {
+            mLiveTileOverlay.setIcon(icon);
+        }
     }
 
     public void finishRecentsAnimation(boolean toRecents, Runnable onFinishComplete) {

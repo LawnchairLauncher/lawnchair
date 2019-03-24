@@ -155,7 +155,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private float mZoomScale;
     private float mFullscreenProgress;
 
-    private Animator mIconAndDimAnimator;
+    private ObjectAnimator mIconAndDimAnimator;
+    private float mIconScaleAnimStartProgress = 0;
     private float mFocusTransitionProgress = 1;
 
     private boolean mShowScreenshot;
@@ -315,11 +316,16 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mIconLoadRequest = iconCache.updateIconInBackground(mTask,
                     (task) -> {
                         setIcon(task.icon);
+                        if (isRunningTask()) {
+                            getRecentsView().updateLiveTileIcon(task.icon);
+                        }
                         mDigitalWellBeingToast.initialize(
                                 mTask,
-                                (saturation, contentDescription) -> {
+                                contentDescription -> {
                                     setContentDescription(contentDescription);
-                                    mSnapshotView.setSaturation(saturation);
+                                    if (mDigitalWellBeingToast.getVisibility() == VISIBLE) {
+                                        getRecentsView().onDigitalWellbeingToastShown();
+                                    }
                                 });
                     });
         } else {
@@ -378,11 +384,16 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mIconView.setScaleY(scale);
     }
 
+    public void setIconScaleAnimStartProgress(float startProgress) {
+        mIconScaleAnimStartProgress = startProgress;
+    }
+
     public void animateIconScaleAndDimIntoView() {
         if (mIconAndDimAnimator != null) {
             mIconAndDimAnimator.cancel();
         }
         mIconAndDimAnimator = ObjectAnimator.ofFloat(this, FOCUS_TRANSITION, 1);
+        mIconAndDimAnimator.setCurrentFraction(mIconScaleAnimStartProgress);
         mIconAndDimAnimator.setDuration(DIM_ANIM_DURATION).setInterpolator(LINEAR);
         mIconAndDimAnimator.addListener(new AnimatorListenerAdapter() {
             @Override

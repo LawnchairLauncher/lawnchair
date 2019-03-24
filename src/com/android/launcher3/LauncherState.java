@@ -192,13 +192,7 @@ public class LauncherState {
         return getWorkspaceScaleAndTranslation(launcher);
     }
 
-    /**
-     * Returns 2 floats designating how to transition overview:
-     *   scale for the current and adjacent pages
-     *   translationY factor where 0 is top aligned and 0.5 is centered vertically
-     */
-    public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
-        // TODO: Simplify to use a constant value instead of a factor.
+    public float[] getOverviewScaleAndTranslationY(Launcher launcher) {
         return new float[] {1.1f, 0f};
     }
 

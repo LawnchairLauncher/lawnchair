@@ -262,7 +262,7 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
             }
 
             // Add first page QSB
-            if (FeatureFlags.QSB_ON_FIRST_SCREEN.get()) {
+            if (FeatureFlags.QSB_ON_FIRST_SCREEN) {
                 View qsb = mHomeElementInflater.inflate(
                         R.layout.search_container_workspace, mWorkspace, false);
                 CellLayout.LayoutParams lp =

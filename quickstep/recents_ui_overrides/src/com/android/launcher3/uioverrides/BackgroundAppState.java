@@ -20,6 +20,7 @@ import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import android.os.RemoteException;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.allapps.AllAppsTransitionController;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
@@ -51,7 +52,7 @@ public class BackgroundAppState extends OverviewState {
     }
 
     @Override
-    public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
+    public float[] getOverviewScaleAndTranslationY(Launcher launcher) {
         // Initialize the recents view scale to what it would be when starting swipe up
         RecentsView recentsView = launcher.getOverviewPanel();
         recentsView.getTaskSize(sTempRect);
@@ -71,5 +72,14 @@ public class BackgroundAppState extends OverviewState {
         }
         float scale = (float) appWidth / sTempRect.width();
         return new float[] { scale, 0f };
+    }
+
+    @Override
+    public int getVisibleElements(Launcher launcher) {
+        if (FeatureFlags.SWIPE_HOME.get()) {
+            return super.getVisibleElements(launcher);
+        }
+        // Hide shelf content (e.g. QSB) because we fade it in when swiping up.
+        return ALL_APPS_HEADER_EXTRA;
     }
 }

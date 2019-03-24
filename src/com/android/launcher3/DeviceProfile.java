@@ -133,6 +133,7 @@ public class DeviceProfile {
     private final Rect mInsets = new Rect();
     public final Rect workspacePadding = new Rect();
     private final Rect mHotseatPadding = new Rect();
+    // When true, nav bar is on the left side of the screen.
     private boolean mIsSeascape;
 
     // Notification dots
@@ -587,28 +588,40 @@ public class DeviceProfile {
     /**
      * Gets an item's location on the home screen. This is useful if the home screen
      * is animating, otherwise use {@link View#getLocationOnScreen(int[])}.
-     *
-     * TODO(b/123900446): Handle landscape mode
      * @param pageDiff The page difference relative to the current page.
      */
     public void getItemLocation(int cellX, int cellY, int spanX, int spanY, int container,
             int pageDiff, Rect outBounds) {
         outBounds.setEmpty();
-        outBounds.left = mInsets.left
-                + workspacePadding.left + cellLayoutPaddingLeftRightPx + (cellX * getCellSize().x);
-        outBounds.top = mInsets.top;
         if (container == CONTAINER_HOTSEAT) {
-            outBounds.top += workspacePadding.top
-                    + (inv.numRows * getCellSize().y)
-                    + verticalDragHandleSizePx
-                    - verticalDragHandleOverlapWorkspace;
-            outBounds.bottom = outBounds.top + hotseatBarSizePx - hotseatBarBottomPaddingPx;
+            final int actualHotseatCellHeight;
+            if (isVerticalBarLayout()) {
+                actualHotseatCellHeight = availableHeightPx / inv.numRows;
+                if (mIsSeascape) {
+                    outBounds.left = mHotseatPadding.left;
+                } else {
+                    outBounds.left = availableWidthPx - hotseatBarSizePx + mHotseatPadding.left;
+                }
+                outBounds.right = outBounds.left + iconSizePx;
+                outBounds.top = mHotseatPadding.top
+                        + actualHotseatCellHeight * (inv.numRows - cellX - 1);
+                outBounds.bottom = outBounds.top + actualHotseatCellHeight;
+            } else {
+                actualHotseatCellHeight = hotseatBarSizePx - hotseatBarBottomPaddingPx
+                        - hotseatBarTopPaddingPx;
+                outBounds.left = mInsets.left + workspacePadding.left + cellLayoutPaddingLeftRightPx
+                        + (cellX * getCellSize().x);
+                outBounds.right = outBounds.left + getCellSize().x;
+                outBounds.top = mInsets.top + availableHeightPx - hotseatBarSizePx;
+                outBounds.bottom = outBounds.top + actualHotseatCellHeight;
+            }
         } else {
-            outBounds.top += workspacePadding.top + (cellY * getCellSize().y);
+            outBounds.left = mInsets.left + workspacePadding.left + cellLayoutPaddingLeftRightPx
+                    + (cellX * getCellSize().x) + (pageDiff * availableWidthPx);
+            outBounds.right = outBounds.left + (getCellSize().x * spanX);
+            outBounds.top = mInsets.top + workspacePadding.top + (cellY * getCellSize().y);
             outBounds.bottom = outBounds.top + (getCellSize().y * spanY);
-            outBounds.left += (pageDiff) * availableWidthPx;
         }
-        outBounds.right = outBounds.left + (getCellSize().x * spanX);
     }
 
     public float getAspectRatioWithInsets() {

@@ -321,6 +321,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
 
         FolderIconPreviewVerifier verifier = new FolderIconPreviewVerifier(
                 Launcher.getLauncher(getContext()).getDeviceProfile().inv);
+        verifier.setFolderInfo(mFolder.getInfo());
         rank = 0;
         for (int i = 0; i < itemCount; i++) {
             View v = list.size() > i ? list.get(i) : null;

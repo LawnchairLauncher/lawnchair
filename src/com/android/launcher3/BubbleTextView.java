@@ -276,14 +276,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     @Override
-    public void setTag(Object tag) {
-        if (tag != null) {
-            LauncherModel.checkItemInfo((ItemInfo) tag);
-        }
-        super.setTag(tag);
-    }
-
-    @Override
     public void refreshDrawableState() {
         if (!mIgnorePressedStateChange) {
             super.refreshDrawableState();

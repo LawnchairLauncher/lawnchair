@@ -37,6 +37,9 @@ import org.junit.runner.RunWith;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
+
+    static final int STRESS_REPEAT_COUNT = 10;
+
     @Override
     @Before
     public void setUp() throws Exception {
@@ -78,5 +81,29 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
     public void testSwipeToOverview() {
         closeLauncherActivity();
         mLauncher.getBackground().switchToOverview();
+    }
+
+    @Test
+    @QuickstepOnOff
+    public void testStressPressHome() {
+        for (int i = 0; i < STRESS_REPEAT_COUNT; ++i) {
+            // Destroy Launcher activity.
+            closeLauncherActivity();
+
+            // The test action.
+            mLauncher.pressHome();
+        }
+    }
+
+    @Test
+    @QuickstepOnOff
+    public void testStressSwipeToOverview() {
+        for (int i = 0; i < STRESS_REPEAT_COUNT; ++i) {
+            // Destroy Launcher activity.
+            closeLauncherActivity();
+
+            // The test action.
+            mLauncher.getBackground().switchToOverview();
+        }
     }
 }

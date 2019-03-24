@@ -20,6 +20,7 @@ import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
 
 import android.annotation.TargetApi;
+import android.app.backup.BackupManager;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -150,7 +151,7 @@ public class LauncherProvider extends ContentProvider {
             mOpenHelper = new DatabaseHelper(getContext(), mListenerHandler);
 
             if (RestoreDbTask.isPending(getContext())) {
-                if (!RestoreDbTask.performRestore(mOpenHelper)) {
+                if (!RestoreDbTask.performRestore(mOpenHelper, new BackupManager(getContext()))) {
                     mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
                 }
                 // Set is pending to false irrespective of the result, so that it doesn't get
@@ -542,6 +543,7 @@ public class LauncherProvider extends ContentProvider {
      * The class is subclassed in tests to create an in-memory db.
      */
     public static class DatabaseHelper extends NoLocaleSQLiteHelper implements LayoutParserCallback {
+        private final BackupManager mBackupManager;
         private final Handler mWidgetHostResetHandler;
         private final Context mContext;
         private int mMaxItemId = -1;
@@ -571,6 +573,7 @@ public class LauncherProvider extends ContentProvider {
             super(context, tableName, SCHEMA_VERSION);
             mContext = context;
             mWidgetHostResetHandler = widgetHostResetHandler;
+            mBackupManager = new BackupManager(mContext);
         }
 
         protected void initIds() {
@@ -620,9 +623,12 @@ public class LauncherProvider extends ContentProvider {
             Utilities.getPrefs(mContext).edit().putBoolean(EMPTY_DATABASE_CREATED, true).commit();
         }
 
+        public long getSerialNumberForUser(UserHandle user) {
+            return UserManagerCompat.getInstance(mContext).getSerialNumberForUser(user);
+        }
+
         public long getDefaultUserSerial() {
-            return UserManagerCompat.getInstance(mContext).getSerialNumberForUser(
-                    Process.myUserHandle());
+            return getSerialNumberForUser(Process.myUserHandle());
         }
 
         private void addFavoritesTable(SQLiteDatabase db, boolean optional) {
@@ -723,7 +729,7 @@ public class LauncherProvider extends ContentProvider {
                     convertShortcutsToLauncherActivities(db);
                 case 26:
                     // QSB was moved to the grid. Clear the first row on screen 0.
-                    if (FeatureFlags.QSB_ON_FIRST_SCREEN.get() &&
+                    if (FeatureFlags.QSB_ON_FIRST_SCREEN &&
                             !LauncherDbUtils.prepareScreenZeroToHostQsb(mContext, db)) {
                         break;
                     }

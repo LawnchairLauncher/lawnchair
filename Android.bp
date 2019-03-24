@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-java_library_static {
+android_library {
     name: "launcher-aosp-tapl",
     static_libs: [
         "androidx.annotation_annotation",
@@ -27,5 +27,6 @@ java_library_static {
         "src/com/android/launcher3/util/SecureSettingsObserver.java",
         "src/com/android/launcher3/TestProtocol.java",
     ],
+    manifest: "tests/tapl/AndroidManifest.xml",
     platform_apis: true,
 }

@@ -21,10 +21,9 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
-
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
-import static com.android.quickstep.TouchInteractionService.EDGE_NAV_BAR;
+import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
@@ -45,8 +44,6 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
-import androidx.annotation.UiThread;
-
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RaceConditionTracker;
@@ -62,6 +59,8 @@ import com.android.systemui.shared.system.NavigationBarCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.function.Consumer;
+
+import androidx.annotation.UiThread;
 
 /**
  * Input consumer for handling events originating from an activity other than Launcher
@@ -131,7 +130,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mVelocityTracker = VelocityTracker.obtain();
 
         mActivityControlHelper = activityControl;
-        mIsDeferredDownTarget = isDeferredDownTarget;
+        boolean continuingPreviousGesture = swipeSharedState.getActiveListener() != null;
+        mIsDeferredDownTarget = !continuingPreviousGesture && isDeferredDownTarget;
         mOverviewCallbacks = overviewCallbacks;
         mTaskOverlayFactory = taskOverlayFactory;
         mInputConsumer = inputConsumer;
@@ -143,8 +143,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
         mDragSlop = NavigationBarCompat.getQuickStepDragSlopPx();
         mTouchSlop = NavigationBarCompat.getQuickStepTouchSlopPx();
-        // If active listener isn't null, we are continuing the previous gesture.
-        mPassedTouchSlop = mPassedDragSlop = mSwipeSharedState.getActiveListener() != null;
+        mPassedTouchSlop = mPassedDragSlop = continuingPreviousGesture;
     }
 
     @Override
@@ -230,7 +229,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                             mTouchSlop) {
                         mPassedTouchSlop = true;
 
-                        TOUCH_INTERACTION_LOG.addLog("startQuickstep");
                         if (mIsDeferredDownTarget) {
                             // Deferred gesture, start the animation and gesture tracking once
                             // we pass the actual touch slop
@@ -272,6 +270,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private void notifyGestureStarted() {
+        TOUCH_INTERACTION_LOG.addLog("startQuickstep");
         if (mInteractionHandler == null) {
             return;
         }
@@ -310,6 +309,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         if (listenerSet != null) {
             listenerSet.addListener(handler);
             mSwipeSharedState.applyActiveRecentsAnimationState(handler);
+            notifyGestureStarted();
         } else {
             RecentsAnimationListenerSet newListenerSet =
                     mSwipeSharedState.newRecentsAnimationListenerSet();
@@ -330,12 +330,13 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             mVelocityTracker.computeCurrentVelocity(1000,
                     ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
             float velocityX = mVelocityTracker.getXVelocity(mActivePointerId);
+            float velocityY = mVelocityTracker.getYVelocity(mActivePointerId);
             float velocity = isNavBarOnRight() ? velocityX
                     : isNavBarOnLeft() ? -velocityX
-                            : mVelocityTracker.getYVelocity(mActivePointerId);
+                            : velocityY;
 
             mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
-            mInteractionHandler.onGestureEnded(velocity, velocityX);
+            mInteractionHandler.onGestureEnded(velocity, new PointF(velocityX, velocityY));
         } else {
             // Since we start touch tracking on DOWN, we may reach this state without actually
             // starting the gesture. In that case, just cleanup immediately.

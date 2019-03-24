@@ -253,8 +253,7 @@ public class GridSizeMigrationTask {
      */
     protected void migrateScreen(int screenId) {
         // If we are migrating the first screen, do not touch the first row.
-        int startY =
-                (FeatureFlags.QSB_ON_FIRST_SCREEN.get() && screenId == Workspace.FIRST_SCREEN_ID)
+        int startY = (FeatureFlags.QSB_ON_FIRST_SCREEN && screenId == Workspace.FIRST_SCREEN_ID)
                 ? 1 : 0;
 
         ArrayList<DbEntry> items = loadWorkspaceEntries(screenId);

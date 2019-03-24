@@ -28,6 +28,8 @@ import androidx.annotation.Nullable;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
+import com.android.launcher3.TestProtocol;
+
 /**
  * Operations on the workspace screen.
  */
@@ -49,15 +51,16 @@ public final class Workspace extends Home {
     @NonNull
     public AllApps switchToAllApps() {
         verifyActiveContainer();
-        // Swipe from the hotseat to near the top, e.g. 10% of the screen.
         final UiObject2 hotseat = mHotseat;
         final Point start = hotseat.getVisibleCenter();
-        final int endY = (int) (mLauncher.getDevice().getDisplayHeight() * 0.1f);
+        final int swipeHeight = mLauncher.getTestInfo(
+                TestProtocol.REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT).
+                getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
         mLauncher.swipe(
                 start.x,
                 start.y,
                 start.x,
-                endY,
+                start.y - swipeHeight - mLauncher.getTouchSlop(),
                 ALL_APPS_STATE_ORDINAL
         );
 
@@ -133,6 +136,8 @@ public final class Workspace extends Home {
      */
     public void flingForward() {
         final UiObject2 workspace = verifyActiveContainer();
+        final int margin = (int) (50 * mLauncher.getDisplayDensity()) + 1;
+        workspace.setGestureMargins(0, 0, margin, 0);
         workspace.fling(Direction.RIGHT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
         mLauncher.waitForIdle();
         verifyActiveContainer();
@@ -144,6 +149,8 @@ public final class Workspace extends Home {
      */
     public void flingBackward() {
         final UiObject2 workspace = verifyActiveContainer();
+        final int margin = (int) (50 * mLauncher.getDisplayDensity()) + 1;
+        workspace.setGestureMargins(margin, 0, 0, 0);
         workspace.fling(Direction.LEFT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
         mLauncher.waitForIdle();
         verifyActiveContainer();
@@ -162,7 +169,12 @@ public final class Workspace extends Home {
     }
 
     @Override
-    protected int getSwipeLength() {
-        return 100;
+    protected String getSwipeHeightRequestName() {
+        return TestProtocol.REQUEST_HOME_TO_OVERVIEW_SWIPE_HEIGHT;
+    }
+
+    @Override
+    protected int getSwipeStartY() {
+        return mLauncher.waitForLauncherObject("hotseat").getVisibleBounds().top;
     }
 }
