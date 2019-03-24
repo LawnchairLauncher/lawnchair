@@ -229,6 +229,10 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         return (mSearchResults != null) && mFilteredApps.isEmpty();
     }
 
+    public List<AppInfo> getFilteredApps() {
+        return mFilteredApps;
+    }
+
     /**
      * Sets the sorted list of filtered components.
      */

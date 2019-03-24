@@ -22,6 +22,7 @@ import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static com.android.launcher3.graphics.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.text.Selection;
 import android.text.Spannable;
@@ -180,6 +181,16 @@ public class AppsSearchContainerLayout extends ExtendedEditText
             notifyResultChanged();
             mAppsView.setLastSearchQuery(query);
         }
+    }
+
+    @Override
+    public boolean onSubmitSearch() {
+        if (mApps.hasNoFilteredResults()) {
+            return false;
+        }
+        Intent i = mApps.getFilteredApps().get(0).getIntent();
+        getContext().startActivity(i);
+        return true;
     }
 
     @Override

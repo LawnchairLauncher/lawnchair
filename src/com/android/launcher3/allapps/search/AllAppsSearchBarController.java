@@ -116,6 +116,11 @@ public class AllAppsSearchBarController
                     .hideSoftInputFromWindow(v.getWindowToken(), 0);
             return false;
         }
+
+        if (mCb.onSubmitSearch()) {
+            return true;
+        }
+
         return mLauncher.startActivitySafely(v,
                 PackageManagerHelper.getMarketSearchIntent(mLauncher, query), null);
     }
@@ -177,6 +182,12 @@ public class AllAppsSearchBarController
          * Called when the search results should be cleared.
          */
         void clearSearchResult();
+
+        /**
+         * Called when the user presses enter/search on their keyboard
+         * @return whether the event was handled
+         */
+        boolean onSubmitSearch();
     }
 
 }

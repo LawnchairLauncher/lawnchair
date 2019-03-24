@@ -1,6 +1,7 @@
 package com.google.android.apps.nexuslauncher.qsb;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.AttributeSet;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
@@ -64,6 +65,16 @@ public class FallbackAppsSearchView extends ExtendedEditText implements OnUpdate
             mAppsView.onClearSearchResult();
             DJ.mDoNotRemoveFallback = false;
         }
+    }
+
+    @Override
+    public boolean onSubmitSearch() {
+        if (mApps.hasNoFilteredResults()) {
+            return false;
+        }
+        Intent i = mApps.getFilteredApps().get(0).getIntent();
+        getContext().startActivity(i);
+        return true;
     }
 
     public void onAppsUpdated() {
