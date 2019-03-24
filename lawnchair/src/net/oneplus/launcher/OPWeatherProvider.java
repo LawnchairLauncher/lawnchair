@@ -70,35 +70,37 @@ public class OPWeatherProvider {
     }
 
     private enum WEATHER_TYPE {
-        SUNNY(1001, R.drawable.weather_01),
-        SUNNY_INTERVALS(1002, R.drawable.weather_01),
-        CLOUDY(1003, R.drawable.weather_02),
-        OVERCAST(1004, R.drawable.weather_03),
-        DRIZZLE(1005, R.drawable.weather_10),
-        RAIN(1006, R.drawable.weather_10),
-        SHOWER(1007, R.drawable.weather_09),
-        DOWNPOUR(1008, R.drawable.weather_09),
-        RAINSTORM(1009, R.drawable.weather_09),
-        SLEET(1010, R.drawable.weather_13),
-        FLURRY(1011, R.drawable.weather_13),
-        SNOW(1012, R.drawable.weather_13),
-        SNOWSTORM(1013, R.drawable.weather_13),
+        SUNNY(1001, R.drawable.weather_01, R.drawable.weather_01n),
+        SUNNY_INTERVALS(1002, R.drawable.weather_01, R.drawable.weather_01n),
+        CLOUDY(1003, R.drawable.weather_02, R.drawable.weather_02n),
+        OVERCAST(1004, R.drawable.weather_03, R.drawable.weather_03n),
+        DRIZZLE(1005, R.drawable.weather_10, R.drawable.weather_10n),
+        RAIN(1006, R.drawable.weather_10, R.drawable.weather_10n),
+        SHOWER(1007, R.drawable.weather_09, R.drawable.weather_09),
+        DOWNPOUR(1008, R.drawable.weather_09, R.drawable.weather_09),
+        RAINSTORM(1009, R.drawable.weather_09, R.drawable.weather_09),
+        SLEET(1010, R.drawable.weather_13, R.drawable.weather_13),
+        FLURRY(1011, R.drawable.weather_13, R.drawable.weather_13),
+        SNOW(1012, R.drawable.weather_13, R.drawable.weather_13),
+        SNOWSTORM(1013, R.drawable.weather_13, R.drawable.weather_13),
         // TODO: get proper hail icon
-        HAIL(1014, R.drawable.weather_10),
-        THUNDERSHOWER(1015, R.drawable.weather_11),
+        HAIL(1014, R.drawable.weather_10, R.drawable.weather_10),
+        THUNDERSHOWER(1015, R.drawable.weather_11, R.drawable.weather_11),
         // TODO: get proper icons for some more extreme conditions
-        SANDSTORM(1016, R.drawable.weather_50),
-        FOG(1017, R.drawable.weather_50),
-        HURRICANE(1018, R.drawable.weather_11),
-        HAZE(1019, R.drawable.weather_50),
-        NONE(9999, R.drawable.weather_none_available);
+        SANDSTORM(1016, R.drawable.weather_50, R.drawable.weather_50),
+        FOG(1017, R.drawable.weather_50, R.drawable.weather_50),
+        HURRICANE(1018, R.drawable.weather_11, R.drawable.weather_11),
+        HAZE(1019, R.drawable.weather_50, R.drawable.weather_50),
+        NONE(9999, R.drawable.weather_none_available, R.drawable.weather_none_available);
 
         int iconId;
+        int nightId;
         int weatherCode;
 
-        WEATHER_TYPE(@IntRange(from = 1000, to = 9999) int i, @DrawableRes int i2) {
+        WEATHER_TYPE(@IntRange(from = 1000, to = 9999) int i, @DrawableRes int i2, @DrawableRes int night) {
             weatherCode = i;
             iconId = i2;
+            nightId = night;
         }
 
         public static WEATHER_TYPE getWeather(int i) {
@@ -219,6 +221,11 @@ public class OPWeatherProvider {
     @DrawableRes
     public static int getWeatherIconResourceId(int i) {
         return WEATHER_TYPE.getWeather(i).iconId;
+    }
+
+    @DrawableRes
+    public static int getNightWeatherIconResourceId(int i) {
+        return WEATHER_TYPE.getWeather(i).nightId;
     }
 
     @DrawableRes

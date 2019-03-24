@@ -16,20 +16,29 @@
  */
 package ch.deletescape.lawnchair.smartspace
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.location.Criteria
+import android.location.LocationManager
+import android.location.LocationProvider
+import android.provider.CalendarContract
 import android.support.annotation.Keep
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import ch.deletescape.lawnchair.util.Temperature
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.PackageManagerHelper
+import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator
+import com.luckycatlabs.sunrisesunset.dto.Location
 import net.oneplus.launcher.OPWeatherProvider
 import java.lang.RuntimeException
+import java.time.Instant
+import java.util.*
 
 @Keep
 class OnePlusWeatherDataProvider(controller: LawnchairSmartspaceController) :
@@ -37,6 +46,11 @@ class OnePlusWeatherDataProvider(controller: LawnchairSmartspaceController) :
 
     private val context = controller.context
     private val provider by lazy { OPWeatherProvider(context) }
+    private val locationAccess = Utilities.hasPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) ||
+            Utilities.hasPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+    private val locationManager: LocationManager? = if (locationAccess) {
+        context.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+    } else null
 
     init {
         if (!OnePlusWeatherDataProvider.isAvailable(context)) {
@@ -59,7 +73,21 @@ class OnePlusWeatherDataProvider(controller: LawnchairSmartspaceController) :
     }
 
     private fun getConditionIcon(data: OPWeatherProvider.WeatherData):Bitmap {
-        return BitmapFactory.decodeResource(context.resources, OPWeatherProvider.getWeatherIconResourceId(data.weatherCode))
+        val c = Calendar.getInstance().apply { timeInMillis = data.timestamp }
+        val isDay = (if (locationAccess) {
+            val locationProvider = locationManager?.getBestProvider(Criteria(), true)
+            val location = locationManager?.getLastKnownLocation(locationProvider)
+            if (location != null) {
+                val calc = SunriseSunsetCalculator(Location(location.latitude, location.longitude), c.timeZone)
+                calc.getOfficialSunriseCalendarForDate(c).before(c) && calc.getOfficialSunsetCalendarForDate(c).after(c)
+            } else null
+        } else null)?: c.get(Calendar.HOUR_OF_DAY) in 6..20
+        val resId = if (isDay) {
+            OPWeatherProvider.getWeatherIconResourceId(data.weatherCode)
+        } else {
+            OPWeatherProvider.getNightWeatherIconResourceId(data.weatherCode)
+        }
+        return BitmapFactory.decodeResource(context.resources, resId)
     }
 
     private fun getTemperatureUnit(data: OPWeatherProvider.WeatherData): Temperature.Unit {
