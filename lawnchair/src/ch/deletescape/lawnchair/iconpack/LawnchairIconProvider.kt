@@ -26,7 +26,7 @@ import com.google.android.apps.nexuslauncher.DynamicIconProvider
 
 class LawnchairIconProvider(context: Context) : DynamicIconProvider(context) {
 
-    private val iconPackManager = IconPackManager.getInstance(context)
+    private val iconPackManager by lazy { IconPackManager.getInstance(context) }
 
     override fun getIcon(launcherActivityInfo: LauncherActivityInfo, iconDpi: Int, flattenDrawable: Boolean): Drawable {
         return iconPackManager.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null, this)
