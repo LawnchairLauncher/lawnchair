@@ -26,15 +26,12 @@ import ch.deletescape.lawnchair.gestures.GestureController
 class DoubleTapGesture(controller: GestureController) : Gesture(controller) {
 
     private val handler by controller.createHandlerPref("pref_gesture_double_tap")
-    override val isEnabled = handler !is BlankGestureHandler
+    override val isEnabled = true
 
     private val detector = GestureDetector(controller.launcher, object : GestureDetector.SimpleOnGestureListener() {
-        override fun onDoubleTapEvent(e: MotionEvent): Boolean {
-            if (e.actionMasked == MotionEvent.ACTION_UP) {
+        override fun onDoubleTap(e: MotionEvent): Boolean {
                 handler.onGestureTrigger(controller)
                 return true
-            }
-            return false
         }
     })
 
