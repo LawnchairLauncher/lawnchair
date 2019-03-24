@@ -544,5 +544,6 @@
 	
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
+    <string name="weather_provider_oneplus_weather">OnePlus Weather</string>
 
 </resources>

@@ -120,7 +120,9 @@ class LawnchairSmartspaceController(val context: Context) {
     fun openWeather(v: View) {
         if (weatherData == null) return
         val launcher = Launcher.getLauncher(v.context)
-        if (PackageManagerHelper.isAppEnabled(launcher.packageManager, "com.google.android.googlequicksearchbox", 0)) {
+        if (weatherData!!.forecastIntent != null) {
+            launcher.startActivitySafely(v, weatherData!!.forecastIntent, null)
+        } else if (PackageManagerHelper.isAppEnabled(launcher.packageManager, "com.google.android.googlequicksearchbox", 0)) {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse("dynact://velour/weather/ProxyActivity")
             intent.component = ComponentName("com.google.android.googlequicksearchbox",
@@ -242,7 +244,8 @@ class LawnchairSmartspaceController(val context: Context) {
 
     data class WeatherData(val icon: Bitmap,
                            private val temperature: Temperature,
-                           val forecastUrl: String = "https://www.google.com/search?q=weather") {
+                           val forecastUrl: String? = "https://www.google.com/search?q=weather",
+                           val forecastIntent: Intent? = null) {
 
         fun getTitle(unit: Temperature.Unit): String {
             return "${temperature.inUnit(unit)} ${unit.suffix}"
