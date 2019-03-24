@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ch.deletescape.lawnchair.colors.preferences.ColorPreviewView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,4 +10,5 @@
     android:gravity="start|bottom"
     android:padding="16dp"
     android:textSize="16sp"
+    app:customFontType="preferenceTitle"
     tools:text="@string/color_system_accent"/>

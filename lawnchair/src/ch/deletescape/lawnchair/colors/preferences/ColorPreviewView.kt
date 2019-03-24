@@ -19,12 +19,18 @@ package ch.deletescape.lawnchair.colors.preferences
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
 import android.widget.TextView
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.font.CustomFontManager
 
 @SuppressLint("ViewConstructor")
-class ColorPreviewView(context: Context, attrs: AttributeSet) : TextView(context, attrs) {
+class ColorPreviewView(context: Context, attrs: AttributeSet) : AppCompatTextView(context, attrs) {
+
+    init {
+        CustomFontManager.getInstance(context).loadCustomFont(this, attrs)
+    }
 
     var colorResolver: ColorEngine.ColorResolver? = null
         set(value) {

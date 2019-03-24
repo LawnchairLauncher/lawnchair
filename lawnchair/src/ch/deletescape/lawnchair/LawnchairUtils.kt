@@ -31,6 +31,7 @@ import android.os.Handler
 import android.os.Looper
 import android.support.animation.FloatPropertyCompat
 import android.support.annotation.ColorInt
+import android.support.design.widget.TabLayout
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.ColorUtils
 import android.support.v4.graphics.drawable.DrawableCompat
@@ -430,10 +431,21 @@ fun Drawable.toBitmap(): Bitmap? {
 }
 
 fun AlertDialog.applyAccent() {
+    val fontManager = CustomFontManager.getInstance(context)
     val color = ColorEngine.getInstance(context).accent
-    getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(color)
-    getButton(AlertDialog.BUTTON_NEUTRAL)?.setTextColor(color)
-    getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(color)
+
+    getButton(AlertDialog.BUTTON_NEGATIVE)?.apply {
+        fontManager.setCustomFont(this, CustomFontManager.FONT_BUTTON)
+        setTextColor(color)
+    }
+    getButton(AlertDialog.BUTTON_NEUTRAL)?.apply {
+        fontManager.setCustomFont(this, CustomFontManager.FONT_BUTTON)
+        setTextColor(color)
+    }
+    getButton(AlertDialog.BUTTON_POSITIVE)?.apply {
+        fontManager.setCustomFont(this, CustomFontManager.FONT_BUTTON)
+        setTextColor(color)
+    }
 }
 
 fun android.app.AlertDialog.applyAccent() {
@@ -600,5 +612,15 @@ fun Context.resourcesForApplication(packageName: String): Resources? {
         packageManager.getResourcesForApplication(packageName)
     } catch (e: PackageManager.NameNotFoundException) {
         null
+    }
+}
+
+fun ViewGroup.setCustomFont(type: Int) {
+    forEachChild {
+        if (it is ViewGroup) {
+            it.setCustomFont(type)
+        } else if (it is TextView) {
+            it.setCustomFont(type)
+        }
     }
 }

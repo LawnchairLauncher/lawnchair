@@ -96,6 +96,7 @@ class TabbedPickerView(context: Context, val key: String, initialColor: Int,
         val color = engine.accent
         tabLayout.tabRippleColor = ColorStateList.valueOf(color)
         tabLayout.setSelectedTabIndicatorColor(color)
+        tabLayout.setCustomFont(CustomFontManager.FONT_BUTTON)
         if (isCustom) {
             viewPager.currentItem = 1
         }
