@@ -38,11 +38,21 @@
         <item>@string/units_metric</item>
         <item>@string/units_imperial</item>
         <item>@string/units_kelvin</item>
+        <item>@string/units_rakine</item>
+        <item>@string/units_delisle</item>
+        <item>@string/units_newton</item>
+        <item>@string/units_reaumur</item>
+        <item>@string/units_romer</item>
     </string-array>
     <string-array name="unitsValues">
         <item>metric</item>
         <item>imperial</item>
         <item>kelvin</item>
+        <item>rakine</item>
+        <item>delisle</item>
+        <item>newton</item>
+        <item>reaumur</item>
+        <item>romer</item>
     </string-array>
 
     <string-array name="feedThemes">
