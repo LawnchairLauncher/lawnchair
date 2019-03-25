@@ -18,6 +18,7 @@ package com.android.launcher3.uioverrides.states;
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.logging.LoggerUtils.getTargetStr;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 
@@ -52,7 +53,11 @@ public class OverviewState extends LauncherState {
     }
 
     protected OverviewState(int id, int transitionDuration, int stateFlags) {
-        super(id, ContainerType.TASKSWITCHER, transitionDuration, stateFlags);
+        this(id, ContainerType.TASKSWITCHER, transitionDuration, stateFlags);
+    }
+
+    protected OverviewState(int id, int logContainer, int transitionDuration, int stateFlags) {
+        super(id, logContainer, transitionDuration, stateFlags);
     }
 
     @Override
@@ -92,6 +97,7 @@ public class OverviewState extends LauncherState {
         DiscoveryBounce.showForOverviewIfNeeded(launcher);
     }
 
+    @Override
     public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {
         return new PageAlphaProvider(DEACCEL_2) {
             @Override
@@ -158,5 +164,9 @@ public class OverviewState extends LauncherState {
 
     public static OverviewState newPeekState(int id) {
         return new OverviewPeekState(id);
+    }
+
+    public static OverviewState newSwitchState(int id) {
+        return new QuickSwitchState(id);
     }
 }

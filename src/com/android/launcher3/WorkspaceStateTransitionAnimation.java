@@ -21,6 +21,7 @@ import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_SCALE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_TRANSLATE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.ZOOM_OUT;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
@@ -114,7 +115,9 @@ public class WorkspaceStateTransitionAnimation {
             return;
         }
 
-        Interpolator translationInterpolator = !playAtomicComponent ? LINEAR : ZOOM_OUT;
+        Interpolator translationInterpolator = !playAtomicComponent
+                ? LINEAR
+                : builder.getInterpolator(ANIM_WORKSPACE_TRANSLATE, ZOOM_OUT);
         propertySetter.setFloat(mWorkspace, View.TRANSLATION_X,
                 scaleAndTranslation.translationX, translationInterpolator);
         propertySetter.setFloat(mWorkspace, View.TRANSLATION_Y,

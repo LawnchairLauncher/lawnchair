@@ -19,7 +19,6 @@ import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_UP;
-
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
@@ -46,7 +45,7 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
     private final BaseDragLayer mTarget;
     private final int[] mLocationOnScreen = new int[2];
     private final PointF mDownPos = new PointF();
-    private final int mTouchSlop;
+    private final int mTouchSlopSquared;
 
     private final boolean mStartingInActivityBounds;
 
@@ -56,7 +55,8 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
     OverviewInputConsumer(T activity, boolean startingInActivityBounds) {
         mActivity = activity;
         mTarget = activity.getDragLayer();
-        mTouchSlop = ViewConfiguration.get(mActivity).getScaledTouchSlop();
+        int touchSlop = ViewConfiguration.get(mActivity).getScaledTouchSlop();
+        mTouchSlopSquared = touchSlop * touchSlop;
         mStartingInActivityBounds = startingInActivityBounds;
     }
 
@@ -88,10 +88,11 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
                             false /* closeActiveWindows */);
                     break;
                 case ACTION_MOVE: {
-                    float displacement = mActivity.getDeviceProfile().isLandscape ?
-                            ev.getX() - mDownPos.x : ev.getY() - mDownPos.y;
-                    if (Math.abs(displacement) >= mTouchSlop) {
-                        // Start tracking only when mTouchSlop is crossed.
+                    float x = ev.getX() - mDownPos.x;
+                    float y = ev.getY() - mDownPos.y;
+                    double hypotSquared = x * x + y * y;
+                    if (hypotSquared >= mTouchSlopSquared) {
+                        // Start tracking only when touch slop is crossed.
                         startTouchTracking(ev, true /* updateLocationOffset */,
                                 true /* closeActiveWindows */);
                     }

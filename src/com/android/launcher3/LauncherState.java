@@ -23,6 +23,7 @@ import static com.android.launcher3.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.NORMAL_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.OVERVIEW_PEEK_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.OVERVIEW_STATE_ORDINAL;
+import static com.android.launcher3.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
@@ -31,9 +32,9 @@ import android.view.animation.Interpolator;
 
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.states.SpringLoadedState;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.uioverrides.states.AllAppsState;
 import com.android.launcher3.uioverrides.states.OverviewState;
-import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
@@ -77,7 +78,7 @@ public class LauncherState {
                 }
             };
 
-    private static final LauncherState[] sAllStates = new LauncherState[6];
+    private static final LauncherState[] sAllStates = new LauncherState[7];
 
     /**
      * TODO: Create a separate class for NORMAL state.
@@ -97,6 +98,8 @@ public class LauncherState {
     public static final LauncherState OVERVIEW = new OverviewState(OVERVIEW_STATE_ORDINAL);
     public static final LauncherState OVERVIEW_PEEK =
             OverviewState.newPeekState(OVERVIEW_PEEK_STATE_ORDINAL);
+    public static final LauncherState QUICK_SWITCH =
+            OverviewState.newSwitchState(QUICK_SWITCH_STATE_ORDINAL);
     public static final LauncherState BACKGROUND_APP =
             OverviewState.newBackgroundState(BACKGROUND_APP_STATE_ORDINAL);
 
