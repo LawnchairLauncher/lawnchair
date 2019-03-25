@@ -39,6 +39,8 @@ import net.oneplus.launcher.OPWeatherProvider
 import java.lang.RuntimeException
 import java.time.Instant
 import java.util.*
+import java.util.Calendar.HOUR_OF_DAY
+import java.util.concurrent.TimeUnit
 
 @Keep
 class OnePlusWeatherDataProvider(controller: LawnchairSmartspaceController) :
@@ -73,15 +75,20 @@ class OnePlusWeatherDataProvider(controller: LawnchairSmartspaceController) :
     }
 
     private fun getConditionIcon(data: OPWeatherProvider.WeatherData):Bitmap {
-        val c = Calendar.getInstance().apply { timeInMillis = data.timestamp }
-        val isDay = (if (locationAccess) {
+        // let's never again forget that unix timestamps is seconds, not millis
+        val c = Calendar.getInstance().apply { timeInMillis = TimeUnit.SECONDS.toMillis(data.timestamp) }
+        var isDay = c.get(HOUR_OF_DAY) in 6 until 20
+        if (locationAccess) {
             val locationProvider = locationManager?.getBestProvider(Criteria(), true)
             val location = locationManager?.getLastKnownLocation(locationProvider)
             if (location != null) {
                 val calc = SunriseSunsetCalculator(Location(location.latitude, location.longitude), c.timeZone)
-                calc.getOfficialSunriseCalendarForDate(c).before(c) && calc.getOfficialSunsetCalendarForDate(c).after(c)
-            } else null
-        } else null)?: c.get(Calendar.HOUR_OF_DAY) in 6..20
+                val sunrise = calc.getOfficialSunriseCalendarForDate(c)
+                val sunset = calc.getOfficialSunsetCalendarForDate(c)
+                isDay = sunrise.before(c) && sunset.after(c)
+            }
+        }
+
         val resId = if (isDay) {
             OPWeatherProvider.getWeatherIconResourceId(data.weatherCode)
         } else {
