@@ -23,6 +23,7 @@ import android.app.Instrumentation;
 import android.app.UiAutomation;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
@@ -160,7 +161,15 @@ public final class LauncherInstrumentation {
     }
 
     private boolean isSwipeUpEnabled() {
-        return !QuickStepContract.isLegacyMode(mInstrumentation.getTargetContext());
+        final Context baseContext = mInstrumentation.getTargetContext();
+        try {
+            // Workaround, use constructed context because both the instrumentation context and the
+            // app context are not constructed with resources that take overlays into account
+            Context ctx = baseContext.createPackageContext(getLauncherPackageName(), 0);
+            return !QuickStepContract.isLegacyMode(ctx);
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 
     static void log(String message) {
