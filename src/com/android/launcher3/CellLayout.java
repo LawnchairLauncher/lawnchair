@@ -47,6 +47,7 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 
 import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
@@ -63,6 +64,7 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
+import com.android.launcher3.widget.WidgetCell;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -159,7 +161,6 @@ public class CellLayout extends ViewGroup {
     public static final int MODE_ON_DROP_EXTERNAL = 3;
     public static final int MODE_ACCEPT_DROP = 4;
     private static final boolean DESTRUCTIVE_REORDER = false;
-    private static final boolean DEBUG_VISUALIZE_OCCUPIED = false;
 
     private static final float REORDER_PREVIEW_MAGNITUDE = 0.12f;
     private static final int REORDER_ANIMATION_DURATION = 150;
@@ -179,6 +180,8 @@ public class CellLayout extends ViewGroup {
     private DragAndDropAccessibilityDelegate mTouchHelper;
     private boolean mUseTouchHelper = false;
 
+    private final LawnchairPreferences mPrefs;
+
     public CellLayout(Context context) {
         this(context, null);
     }
@@ -197,7 +200,10 @@ public class CellLayout extends ViewGroup {
         // the user where a dragged item will land when dropped.
         setWillNotDraw(false);
         setClipToPadding(false);
+        setClipChildren(false);
         mLauncher = Launcher.getLauncher(context);
+
+        mPrefs = Utilities.getLawnchairPrefs(context);
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
 
@@ -436,7 +442,7 @@ public class CellLayout extends ViewGroup {
             }
         }
 
-        if (DEBUG_VISUALIZE_OCCUPIED) {
+        if (mPrefs.getVisualizeOccupied()) {
             int[] pt = new int[2];
             ColorDrawable cd = new ColorDrawable(Color.RED);
             cd.setBounds(0, 0,  mCellWidth, mCellHeight);
@@ -1703,6 +1709,11 @@ public class CellLayout extends ViewGroup {
         if (cellX < 0 || cellY < 0) return false;
 
         mIntersectingViews.clear();
+        if (mPrefs.getAllowOverlap()) {
+            // let's pretend no intersections exist
+            solution.intersectingViews = new ArrayList<>(mIntersectingViews);
+            return true;
+        }
         mOccupiedRect.set(cellX, cellY, cellX + spanX, cellY + spanY);
 
         // Mark the desired location of the view currently being dragged.
@@ -2235,7 +2246,7 @@ public class CellLayout extends ViewGroup {
             }
             mShortcutsAndWidgets.requestLayout();
         }
-        return swapSolution.isSolution;
+        return swapSolution != null && swapSolution.isSolution;
     }
 
     int[] performReorder(int pixelX, int pixelY, int minSpanX, int minSpanY, int spanX, int spanY,
@@ -2523,7 +2534,7 @@ public class CellLayout extends ViewGroup {
 
     public boolean isOccupied(int x, int y) {
         if (x < mCountX && y < mCountY) {
-            return mOccupied.cells[x][y];
+            return mOccupied.cells[x][y] && !mPrefs.getAllowOverlap();
         } else {
             throw new RuntimeException("Position exceeds the bound of this CellLayout");
         }
@@ -2749,6 +2760,6 @@ public class CellLayout extends ViewGroup {
     }
 
     public boolean isRegionVacant(int x, int y, int spanX, int spanY) {
-        return mOccupied.isRegionVacant(x, y, spanX, spanY);
+        return mOccupied.isRegionVacant(x, y, spanX, spanY) || mPrefs.getAllowOverlap();
     }
 }

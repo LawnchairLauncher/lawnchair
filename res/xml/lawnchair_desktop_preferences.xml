@@ -10,6 +10,12 @@
             android:key="pref_desktop_grid_size"
             android:title="@string/grid_size" />
 
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_allowOverlap"
+            android:title="@string/overlap_placement"
+            android:summary="@string/overlap_placement_summary" />
+
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory

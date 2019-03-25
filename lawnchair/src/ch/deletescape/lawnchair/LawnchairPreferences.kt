@@ -114,6 +114,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val autoAddInstalled by BooleanPref("pref_add_icon_to_home", true, doNothing)
     private val homeMultilineLabel by BooleanPref("pref_homeIconLabelsInTwoLines", false, recreate)
     val homeLabelRows get() = if(homeMultilineLabel) 2 else 1
+    val allowOverlap by BooleanPref("pref_allowOverlap", false, reloadAll)
 
     // Smartspace
     val enableSmartspace by BooleanPref("pref_smartspace", context.resources.getBoolean(R.bool.config_enable_smartspace))
@@ -185,6 +186,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val dismissTasksOnKill by BooleanPref("pref_dismissTasksOnKill", true, doNothing)
     var customFontName by StringPref("pref_customFontName", "Google Sans", doNothing)
     var forceEnableFools by BooleanPref("pref_forceEnableFools", false, restart)
+    val visualizeOccupied by BooleanPref("pref_debugVisualizeOccupied")
 
     // Search
     var searchProvider by StringPref("pref_globalSearchProvider", context.resources.getString(R.string.config_default_search_provider)) {

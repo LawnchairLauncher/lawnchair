@@ -25,10 +25,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
+import org.jetbrains.annotations.NotNull;
 
-public class ShortcutAndWidgetContainer extends ViewGroup {
+public class ShortcutAndWidgetContainer extends ViewGroup implements LawnchairPreferences.OnPreferenceChangeListener {
     static final String TAG = "ShortcutAndWidgetContainer";
 
     // These are temporary variables to prevent having to allocate a new object just to
@@ -46,11 +48,33 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     private Launcher mLauncher;
     private boolean mInvertIfRtl = false;
 
+    private LawnchairPreferences mPrefs;
+
     public ShortcutAndWidgetContainer(Context context, @ContainerType int containerType) {
         super(context);
         mLauncher = Launcher.getLauncher(context);
         mWallpaperManager = WallpaperManager.getInstance(context);
         mContainerType = containerType;
+        mPrefs = Utilities.getLawnchairPrefs(context);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mPrefs.addOnPreferenceChangeListener("pref_allowOverlap", this);
+    }
+
+    @Override
+    public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs, boolean force) {
+        setClipChildren(!prefs.getAllowOverlap());
+        setClipToPadding(!prefs.getAllowOverlap());
+        setClipToOutline(!prefs.getAllowOverlap());
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mPrefs.removeOnPreferenceChangeListener("pref_allowOverlap", this);
     }
 
     public void setCellDimensions(int cellWidth, int cellHeight, int countX, int countY) {

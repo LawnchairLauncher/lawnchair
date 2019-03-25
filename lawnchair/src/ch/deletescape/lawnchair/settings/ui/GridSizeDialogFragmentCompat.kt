@@ -53,9 +53,9 @@ class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), ColorEngi
         numColumnsPicker = view.findViewById(R.id.columnsPicker)
 
         numRowsPicker.minValue = 3
-        numRowsPicker.maxValue = 9
+        numRowsPicker.maxValue = 20
         numColumnsPicker.minValue = 3
-        numColumnsPicker.maxValue = 9
+        numColumnsPicker.maxValue = 20
 
         numRowsPicker.value = numRows
         numColumnsPicker.value = numColumns

@@ -75,6 +75,12 @@
         android:defaultValue="true"
         android:persistent="true" />
 
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        android:key="pref_debugVisualizeOccupied"
+        android:title="Visualize Occupied"
+        android:summary="Highlight occupied grid cells"
+        android:defaultValue="false" />
+
     <Preference
         android:key="addSettingsShortcut"
         android:title="@string/add_settings_shortcut_title" />
