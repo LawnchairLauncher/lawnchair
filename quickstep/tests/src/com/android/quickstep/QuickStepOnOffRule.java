@@ -16,25 +16,29 @@
 
 package com.android.quickstep;
 
+import static androidx.test.InstrumentationRegistry.getInstrumentation;
+
 import static com.android.quickstep.QuickStepOnOffRule.Mode.BOTH;
 import static com.android.quickstep.QuickStepOnOffRule.Mode.OFF;
 import static com.android.quickstep.QuickStepOnOffRule.Mode.ON;
-import static com.android.systemui.shared.system.SettingsCompat.SWIPE_UP_SETTING_NAME;
+import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_2BUTTON_OVERLAY;
+import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_3BUTTON_OVERLAY;
+import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_GESTURAL_OVERLAY;
 
-import static org.junit.Assert.assertTrue;
-
-import android.provider.Settings;
+import android.content.Context;
 import android.util.Log;
 
-import androidx.test.InstrumentationRegistry;
+import androidx.test.uiautomator.UiDevice;
 
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
+import com.android.systemui.shared.system.QuickStepContract;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
+import java.io.IOException;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -76,38 +80,22 @@ public class QuickStepOnOffRule implements TestRule {
             return new Statement() {
                 @Override
                 public void evaluate() throws Throwable {
-                    if (SwipeUpSetting.isSwipeUpSettingAvailable()) {
-                        try {
-                            if (mode == ON || mode == BOTH) {
-                                evaluateWithQuickstepOn();
-                            }
-                            if (mode == OFF || mode == BOTH) {
-                                evaluateWithQuickstepOff();
-                            }
-                        } finally {
-                            setSwipeUpSetting(null);
+                    final Context context = getInstrumentation().getContext();
+                    final String prevOverlayPkg = QuickStepContract.isGesturalMode(context)
+                            ? NAV_BAR_MODE_GESTURAL_OVERLAY
+                            : QuickStepContract.isSwipeUpMode(context)
+                                    ? NAV_BAR_MODE_2BUTTON_OVERLAY
+                                    : NAV_BAR_MODE_3BUTTON_OVERLAY;
+                    try {
+                        if (mode == ON || mode == BOTH) {
+                            evaluateWithQuickstepOn();
                         }
-                    } else {
-                        // Execute without changing the setting, if the requested mode is
-                        // compatible.
-                        final boolean swipeUpEnabledDefaultValue =
-                                SwipeUpSetting.isSwipeUpEnabledDefaultValue();
-                        if (mode == BOTH ||
-                                mode == ON && swipeUpEnabledDefaultValue ||
-                                mode == OFF && !swipeUpEnabledDefaultValue) {
-                            evaluateWithoutChangingSetting(base);
+                        if (mode == OFF || mode == BOTH) {
+                            evaluateWithQuickstepOff();
                         }
+                    } finally {
+                        setActiveOverlay(prevOverlayPkg);
                     }
-                }
-
-                public void setSwipeUpSetting(String value) {
-                    Log.d(TAG, "setSwipeUpSetting: " + value);
-                    assertTrue("Couldn't change Quickstep mode",
-                            Settings.Secure.putString(
-                                    InstrumentationRegistry.getInstrumentation().getTargetContext().
-                                            getContentResolver(),
-                                    SWIPE_UP_SETTING_NAME,
-                                    value));
                 }
 
                 public void evaluateWithoutChangingSetting(Statement base) throws Throwable {
@@ -115,13 +103,35 @@ public class QuickStepOnOffRule implements TestRule {
                 }
 
                 private void evaluateWithQuickstepOff() throws Throwable {
-                    setSwipeUpSetting("0");
+                    setActiveOverlay(NAV_BAR_MODE_3BUTTON_OVERLAY);
                     evaluateWithoutChangingSetting(base);
                 }
 
                 private void evaluateWithQuickstepOn() throws Throwable {
-                    setSwipeUpSetting("1");
+                    setActiveOverlay(NAV_BAR_MODE_2BUTTON_OVERLAY);
                     base.evaluate();
+                }
+
+                private void setActiveOverlay(String overlayPackage) {
+                    setOverlayPackageEnabled(NAV_BAR_MODE_3BUTTON_OVERLAY,
+                            overlayPackage == NAV_BAR_MODE_3BUTTON_OVERLAY);
+                    setOverlayPackageEnabled(NAV_BAR_MODE_2BUTTON_OVERLAY,
+                            overlayPackage == NAV_BAR_MODE_2BUTTON_OVERLAY);
+                    setOverlayPackageEnabled(NAV_BAR_MODE_GESTURAL_OVERLAY,
+                            overlayPackage == NAV_BAR_MODE_GESTURAL_OVERLAY);
+
+                    // TODO: Wait until nav bar mode has applied
+                }
+
+                private void setOverlayPackageEnabled(String overlayPackage, boolean enable) {
+                    Log.d(TAG, "setOverlayPackageEnabled: " + overlayPackage + " " + enable);
+                    final String action = enable ? "enable" : "disable";
+                    try {
+                        UiDevice.getInstance(getInstrumentation()).executeShellCommand(
+                                "cmd overlay " + action + " " + overlayPackage);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             };
         } else {
