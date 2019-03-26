@@ -20,7 +20,9 @@ import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
 import static com.android.launcher3.Utilities.getDevicePrefs;
 
 import android.annotation.TargetApi;
+import android.appwidget.AppWidgetHostView;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -29,6 +31,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -114,6 +117,7 @@ public class InvariantDeviceProfile {
     public DeviceProfile portraitProfile;
 
     public Point defaultWallpaperSize;
+    public Rect defaultWidgetPadding;
 
     private final ArrayList<OnIDPChangeListener> mChangeListeners = new ArrayList<>();
     private ConfigMonitor mConfigMonitor;
@@ -235,6 +239,10 @@ public class InvariantDeviceProfile {
         } else {
             defaultWallpaperSize = new Point(Math.max(smallSide * 2, largeSide), largeSide);
         }
+
+        ComponentName cn = new ComponentName(context.getPackageName(), getClass().getName());
+        defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
+
         return closestProfile.name;
     }
 
