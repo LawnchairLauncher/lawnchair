@@ -97,6 +97,7 @@ import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.logging.UserEventDispatcher.UserEventDelegate;
+import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.popup.PopupContainerWithArrow;
@@ -694,7 +695,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startActivitySafely(v, intent, null);
+                startActivitySafely(v, intent, null, null);
             } else {
                 // TODO: Show a snack bar with link to settings
                 Toast.makeText(this, getString(R.string.msg_no_phone_permission,
@@ -798,6 +799,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             getUserEventDispatcher().startSession();
 
             UiFactory.onLauncherStateOrResumeChanged(this);
+            AppLaunchTracker.INSTANCE.get(this).onReturnedToHome();
         }
     }
 
@@ -1652,8 +1654,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
-        boolean success = super.startActivitySafely(v, intent, item);
+    public boolean startActivitySafely(View v, Intent intent, ItemInfo item,
+            @Nullable String sourceContainer) {
+        boolean success = super.startActivitySafely(v, intent, item, sourceContainer);
         if (success && v instanceof BubbleTextView) {
             // This is set to the view that launched the activity that navigated the user away
             // from launcher. Since there is no callback for when the activity has finished
