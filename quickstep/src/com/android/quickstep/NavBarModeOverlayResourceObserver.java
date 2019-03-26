@@ -70,6 +70,11 @@ public class NavBarModeOverlayResourceObserver extends BroadcastReceiver {
                 NAV_BAR_INTERACTION_MODE_RES_NAME));
     }
 
+    public static boolean isLegacyModeEnabled(Context context) {
+        return QuickStepContract.isLegacyMode(getSystemIntegerRes(context,
+                NAV_BAR_INTERACTION_MODE_RES_NAME));
+    }
+
     private static int getSystemIntegerRes(Context context, String resName) {
         Resources res = context.getResources();
         int resId = res.getIdentifier(resName, "integer", "android");
