@@ -24,6 +24,7 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
+import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
@@ -284,11 +285,13 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private boolean isNavBarOnRight() {
-        return mDisplayRotation == Surface.ROTATION_90 && mStableInsets.right > 0;
+        return SysUINavigationMode.INSTANCE.get(getBaseContext()).getMode() != NO_BUTTON
+                && mDisplayRotation == Surface.ROTATION_90 && mStableInsets.right > 0;
     }
 
     private boolean isNavBarOnLeft() {
-        return mDisplayRotation == Surface.ROTATION_270 && mStableInsets.left > 0;
+        return SysUINavigationMode.INSTANCE.get(getBaseContext()).getMode() != NO_BUTTON
+                && mDisplayRotation == Surface.ROTATION_270 && mStableInsets.left > 0;
     }
 
     private void startTouchTrackingForWindowAnimation(long touchTimeMs) {

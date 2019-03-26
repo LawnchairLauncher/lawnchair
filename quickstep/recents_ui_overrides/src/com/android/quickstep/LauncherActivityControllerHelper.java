@@ -24,6 +24,7 @@ import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_D
 import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_STIFFNESS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -74,7 +75,8 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     @Override
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
         LayoutUtils.calculateLauncherTaskSize(context, dp, outRect);
-        if (dp.isVerticalBarLayout()) {
+        if (dp.isVerticalBarLayout()
+                && SysUINavigationMode.INSTANCE.get(context).getMode() != NO_BUTTON) {
             Rect targetInsets = dp.getInsets();
             int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
             return dp.hotseatBarSizePx + hotseatInset;
