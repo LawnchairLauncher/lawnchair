@@ -121,7 +121,7 @@ public class WorkspaceStateTransitionAnimation {
                 scaleAndTranslation.translationY, translationInterpolator);
 
         propertySetter.setFloat(hotseat, View.TRANSLATION_Y,
-                hotseatScaleAndTranslation.translationX, translationInterpolator);
+                hotseatScaleAndTranslation.translationY, translationInterpolator);
         propertySetter.setFloat(mWorkspace.getPageIndicator(), View.TRANSLATION_Y,
                 hotseatScaleAndTranslation.translationY, translationInterpolator);
 
