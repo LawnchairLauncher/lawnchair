@@ -298,12 +298,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         if (grid.shouldFadeAdjacentWorkspaceScreens()) {
             // In landscape mode the page spacing is set to the default.
-            setPageSpacing(grid.defaultPageSpacingPx);
+            setPageSpacing(grid.edgeMarginPx);
         } else {
             // In portrait, we want the pages spaced such that there is no
             // overhang of the previous / next page into the current page viewport.
             // We assume symmetrical padding in portrait mode.
-            setPageSpacing(Math.max(grid.defaultPageSpacingPx, padding.left + 1));
+            setPageSpacing(Math.max(grid.edgeMarginPx, padding.left + 1));
         }
 
         int paddingLeftRight = grid.cellLayoutPaddingLeftRightPx;

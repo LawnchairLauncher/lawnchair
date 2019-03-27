@@ -249,7 +249,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     public void launchTask(boolean animate) {
-        launchTask(animate, (result) -> {
+        launchTask(animate, false /* freezeTaskList */);
+    }
+
+    public void launchTask(boolean animate, boolean freezeTaskList) {
+        launchTask(animate, freezeTaskList, (result) -> {
             if (!result) {
                 notifyTaskLaunchFailed(TAG);
             }
@@ -258,25 +262,33 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     public void launchTask(boolean animate, Consumer<Boolean> resultCallback,
             Handler resultCallbackHandler) {
+        launchTask(animate, false /* freezeTaskList */, resultCallback, resultCallbackHandler);
+    }
+
+    public void launchTask(boolean animate, boolean freezeTaskList, Consumer<Boolean> resultCallback,
+            Handler resultCallbackHandler) {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             if (isRunningTask()) {
                 getRecentsView().finishRecentsAnimation(false /* toRecents */,
                         () -> resultCallbackHandler.post(() -> resultCallback.accept(true)));
             } else {
-                launchTaskInternal(animate, resultCallback, resultCallbackHandler);
+                launchTaskInternal(animate, freezeTaskList, resultCallback, resultCallbackHandler);
             }
         } else {
-            launchTaskInternal(animate, resultCallback, resultCallbackHandler);
+            launchTaskInternal(animate, freezeTaskList, resultCallback, resultCallbackHandler);
         }
     }
 
-    private void launchTaskInternal(boolean animate, Consumer<Boolean> resultCallback,
-            Handler resultCallbackHandler) {
+    private void launchTaskInternal(boolean animate, boolean freezeTaskList,
+            Consumer<Boolean> resultCallback, Handler resultCallbackHandler) {
         if (mTask != null) {
             final ActivityOptions opts;
             if (animate) {
                 opts = ((BaseDraggingActivity) fromContext(getContext()))
                         .getActivityLaunchOptions(this);
+                if (freezeTaskList) {
+                    ActivityOptionsCompat.setFreezeRecentTasksList(opts);
+                }
                 ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(mTask.key,
                         opts, resultCallback, resultCallbackHandler);
             } else {
@@ -287,6 +299,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                         resultCallbackHandler.post(() -> resultCallback.accept(true));
                     }
                 }, resultCallbackHandler);
+                if (freezeTaskList) {
+                    ActivityOptionsCompat.setFreezeRecentTasksList(opts);
+                }
                 ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(mTask.key,
                         opts, (success) -> {
                             if (resultCallback != null && !success) {

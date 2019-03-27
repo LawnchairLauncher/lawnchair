@@ -195,7 +195,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
             return view -> {
                 Intent intent = new PackageManagerHelper(view.getContext()).getMarketIntent(
                         itemInfo.getTargetComponent().getPackageName());
-                activity.startActivitySafely(view, intent, itemInfo);
+                activity.startActivitySafely(view, intent, itemInfo, null);
                 AbstractFloatingView.closeAllOpenViews(activity);
             };
         }

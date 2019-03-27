@@ -34,21 +34,37 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
      * Flings forward (down) and waits the fling's end.
      */
     public void flingForward() {
-        final UiObject2 widgetsContainer = verifyActiveContainer();
-        widgetsContainer.setGestureMargin(100);
-        widgetsContainer.fling(Direction.DOWN, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
-        verifyActiveContainer();
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to fling forward in widgets")) {
+            LauncherInstrumentation.log("Widgets.flingForward enter");
+            final UiObject2 widgetsContainer = verifyActiveContainer();
+            widgetsContainer.setGestureMargin(100);
+            widgetsContainer.fling(Direction.DOWN,
+                    (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("flung forward")) {
+                verifyActiveContainer();
+            }
+            LauncherInstrumentation.log("Widgets.flingForward exit");
+        }
     }
 
     /**
      * Flings backward (up) and waits the fling's end.
      */
     public void flingBackward() {
-        final UiObject2 widgetsContainer = verifyActiveContainer();
-        widgetsContainer.setGestureMargin(100);
-        widgetsContainer.fling(Direction.UP, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
-        mLauncher.waitForIdle();
-        verifyActiveContainer();
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to fling backwards in widgets")) {
+            LauncherInstrumentation.log("Widgets.flingBackward enter");
+            final UiObject2 widgetsContainer = verifyActiveContainer();
+            widgetsContainer.setGestureMargin(100);
+            widgetsContainer.fling(Direction.UP,
+                    (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
+            mLauncher.waitForIdle();
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("flung back")) {
+                verifyActiveContainer();
+            }
+            LauncherInstrumentation.log("Widgets.flingBackward exit");
+        }
     }
 
     @Override
