@@ -16,14 +16,8 @@
 
 package com.android.quickstep;
 
-import static com.android.systemui.shared.system.SettingsCompat.SWIPE_UP_SETTING_NAME;
-
-import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
-
-import com.android.launcher3.util.SecureSettingsObserver;
-import com.android.launcher3.util.SecureSettingsObserver.OnChangeListener;
 
 public final class SwipeUpSetting {
     private static final String TAG = "SwipeUpSetting";
@@ -31,8 +25,9 @@ public final class SwipeUpSetting {
     private static final String SWIPE_UP_SETTING_AVAILABLE_RES_NAME =
             "config_swipe_up_gesture_setting_available";
 
-    private static final String SWIPE_UP_ENABLED_DEFAULT_RES_NAME =
-            "config_swipe_up_gesture_default";
+    public static boolean isSystemNavigationSettingAvailable() {
+        return getSystemBooleanRes(SWIPE_UP_SETTING_AVAILABLE_RES_NAME);
+    }
 
     private static boolean getSystemBooleanRes(String resName) {
         Resources res = Resources.getSystem();
@@ -44,19 +39,5 @@ public final class SwipeUpSetting {
             Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
             return false;
         }
-    }
-
-    public static boolean isSwipeUpSettingAvailable() {
-        return getSystemBooleanRes(SWIPE_UP_SETTING_AVAILABLE_RES_NAME);
-    }
-
-    public static boolean isSwipeUpEnabledDefaultValue() {
-        return getSystemBooleanRes(SWIPE_UP_ENABLED_DEFAULT_RES_NAME);
-    }
-
-    public static SecureSettingsObserver newSwipeUpSettingsObserver(Context context,
-            OnChangeListener listener) {
-        return new SecureSettingsObserver(context.getContentResolver(), listener,
-                SWIPE_UP_SETTING_NAME, isSwipeUpEnabledDefaultValue() ? 1 : 0);
     }
 }

@@ -15,7 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.quickstep.SwipeUpSetting.newSwipeUpSettingsObserver;
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_DISABLE_QUICK_SCRUB;
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_DISABLE_SWIPE_UP;
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_SHOW_OVERVIEW_BUTTON;
@@ -28,10 +27,11 @@ import android.util.Log;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.DiscoveryBounce;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.MainThreadInitializedObject;
-import com.android.launcher3.util.SecureSettingsObserver;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.ISystemUiProxy;
+import com.android.systemui.shared.system.QuickStepContract;
 
 import androidx.annotation.WorkerThread;
 
@@ -58,7 +58,8 @@ public class OverviewInteractionState {
     private static final int MSG_SET_BACK_BUTTON_ALPHA = 201;
     private static final int MSG_SET_SWIPE_UP_ENABLED = 202;
 
-    private final SecureSettingsObserver mSwipeUpSettingObserver;
+    // TODO: Discriminate between swipe up and edge to edge
+    private final NavBarModeOverlayResourceObserver mSwipeUpSettingObserver;
 
     private final Context mContext;
     private final Handler mUiHandler;
@@ -66,7 +67,7 @@ public class OverviewInteractionState {
 
     // These are updated on the background thread
     private ISystemUiProxy mISystemUiProxy;
-    private boolean mSwipeUpEnabled = true;
+    private boolean mSwipeUpEnabled;
     private float mBackButtonAlpha = 1;
 
     private Runnable mOnSwipeUpSettingChangedListener;
@@ -80,15 +81,15 @@ public class OverviewInteractionState {
         mUiHandler = new Handler(this::handleUiMessage);
         mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleBgMessage);
 
-        if (SwipeUpSetting.isSwipeUpSettingAvailable()) {
-            mSwipeUpSettingObserver =
-                    newSwipeUpSettingsObserver(context, this::notifySwipeUpSettingChanged);
+        mSwipeUpEnabled = NavBarModeOverlayResourceObserver.isSwipeUpModeEnabled(mContext)
+                || NavBarModeOverlayResourceObserver.isEdgeToEdgeModeEnabled(mContext);
+        if (SwipeUpSetting.isSystemNavigationSettingAvailable()) {
+            mSwipeUpSettingObserver = new NavBarModeOverlayResourceObserver(context,
+                    this::notifySwipeUpSettingChanged);
             mSwipeUpSettingObserver.register();
-            mSwipeUpEnabled = mSwipeUpSettingObserver.getValue();
             resetHomeBounceSeenOnQuickstepEnabledFirstTime();
         } else {
             mSwipeUpSettingObserver = null;
-            mSwipeUpEnabled = SwipeUpSetting.isSwipeUpEnabledDefaultValue();
         }
     }
 
@@ -175,7 +176,13 @@ public class OverviewInteractionState {
         }
     }
 
-    private void notifySwipeUpSettingChanged(boolean swipeUpEnabled) {
+    private void notifySwipeUpSettingChanged(int mode) {
+        boolean swipeUpEnabled = !QuickStepContract.isLegacyMode(mode);
+        boolean gesturalEnabled = QuickStepContract.isGesturalMode(mode);
+
+        FeatureFlags.SWIPE_HOME.updateStorage(mContext, gesturalEnabled);
+        FeatureFlags.ENABLE_ASSISTANT_GESTURE.updateStorage(mContext, gesturalEnabled);
+
         mUiHandler.removeMessages(MSG_SET_SWIPE_UP_ENABLED);
         mUiHandler.obtainMessage(MSG_SET_SWIPE_UP_ENABLED, swipeUpEnabled ? 1 : 0, 0).
                 sendToTarget();
