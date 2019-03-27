@@ -36,6 +36,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
     public void flingForward() {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to fling forward in widgets")) {
+            LauncherInstrumentation.log("Widgets.flingForward enter");
             final UiObject2 widgetsContainer = verifyActiveContainer();
             widgetsContainer.setGestureMargin(100);
             widgetsContainer.fling(Direction.DOWN,
@@ -43,6 +44,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("flung forward")) {
                 verifyActiveContainer();
             }
+            LauncherInstrumentation.log("Widgets.flingForward exit");
         }
     }
 
@@ -52,6 +54,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
     public void flingBackward() {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to fling backwards in widgets")) {
+            LauncherInstrumentation.log("Widgets.flingBackward enter");
             final UiObject2 widgetsContainer = verifyActiveContainer();
             widgetsContainer.setGestureMargin(100);
             widgetsContainer.fling(Direction.UP,
@@ -60,6 +63,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("flung back")) {
                 verifyActiveContainer();
             }
+            LauncherInstrumentation.log("Widgets.flingBackward exit");
         }
     }
 
