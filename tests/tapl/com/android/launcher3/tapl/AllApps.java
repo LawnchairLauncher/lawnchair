@@ -63,6 +63,8 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to get app icon on all apps")) {
             final UiObject2 allAppsContainer = verifyActiveContainer();
+            final UiObject2 navBar = mLauncher.waitForSystemUiObject("navigation_bar_frame");
+            allAppsContainer.setGestureMargins(0, 0, 0, navBar.getVisibleBounds().height());
             final BySelector appIconSelector = AppIcon.getAppIconSelector(appName, mLauncher);
             if (!hasClickableIcon(allAppsContainer, appIconSelector)) {
                 scrollBackToBeginning();
