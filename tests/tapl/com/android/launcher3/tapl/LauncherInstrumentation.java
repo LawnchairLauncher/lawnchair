@@ -321,20 +321,21 @@ public final class LauncherInstrumentation {
         // We need waiting for any accessibility event generated after pressing Home because
         // otherwise waitForIdle may return immediately in case when there was a big enough pause in
         // accessibility events prior to pressing Home.
+        final String action;
         if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
             if (hasLauncherObject(WORKSPACE_RES_ID)) {
-                log("0-button pressHome: already in workspace");
+                log(action = "0-button: already in workspace");
             } else if (hasLauncherObject(OVERVIEW_RES_ID)) {
-                log("0-button pressHome: overview");
+                log(action = "0-button: from overview");
                 mDevice.pressHome();
             } else if (hasLauncherObject(WIDGETS_RES_ID)) {
-                log("0-button pressHome: widgets");
+                log(action = "0-button: from widgets");
                 mDevice.pressHome();
             } else if (hasLauncherObject(APPS_RES_ID)) {
-                log("0-button pressHome: all apps");
+                log(action = "0-button: from all apps");
                 mDevice.pressHome();
             } else {
-                log("0-button pressHome: another app");
+                log(action = "0-button: from another app");
                 assertTrue("Launcher is visible, don't know how to go home",
                         !mDevice.hasObject(By.pkg(getLauncherPackageName())));
                 final UiObject2 navBar = waitForSystemUiObject("navigation_bar_frame");
@@ -345,6 +346,7 @@ public final class LauncherInstrumentation {
                         BACKGROUND_APP_STATE_ORDINAL, ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
             }
         } else {
+            log(action = "clicking home button");
             executeAndWaitForEvent(
                     () -> {
                         log("LauncherInstrumentation.pressHome before clicking");
@@ -364,7 +366,10 @@ public final class LauncherInstrumentation {
                     "Pressing Home didn't produce any events");
             mDevice.waitForIdle();
         }
-        return getWorkspace();
+        try (LauncherInstrumentation.Closable c = addContextLayer(
+                "performed action to switch to Home - " + action)) {
+            return getWorkspace();
+        }
     }
 
     /**
