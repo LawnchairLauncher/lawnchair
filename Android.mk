@@ -33,10 +33,7 @@ LOCAL_USE_AAPT2 := true
 LOCAL_AAPT2_ONLY := true
 LOCAL_MODULE_TAGS := optional
 
-ifneq (,$(wildcard frameworks/base))
-else
-    LOCAL_STATIC_JAVA_LIBRARIES:= libPluginCore
-endif
+LOCAL_STATIC_JAVA_LIBRARIES:= libPluginCore
 
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src_plugins)
