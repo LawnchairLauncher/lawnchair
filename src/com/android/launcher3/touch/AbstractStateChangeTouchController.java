@@ -224,7 +224,8 @@ public abstract class AbstractStateChangeTouchController
         return true;
     }
 
-    private boolean goingBetweenNormalAndOverview(LauncherState fromState, LauncherState toState) {
+    protected boolean goingBetweenNormalAndOverview(LauncherState fromState,
+            LauncherState toState) {
         return (fromState == NORMAL || fromState == OVERVIEW)
                 && (toState == NORMAL || toState == OVERVIEW)
                 && mPendingAnimation == null;
@@ -242,7 +243,7 @@ public abstract class AbstractStateChangeTouchController
             mStartContainerType = LauncherLogProto.ContainerType.ALLAPPS;
         } else if (mStartState == NORMAL) {
             mStartContainerType = getLogContainerTypeForNormalState();
-        } else if (mStartState   == OVERVIEW){
+        } else if (mStartState == OVERVIEW){
             mStartContainerType = LauncherLogProto.ContainerType.TASKSWITCHER;
         }
         if (mCurrentAnimation == null) {

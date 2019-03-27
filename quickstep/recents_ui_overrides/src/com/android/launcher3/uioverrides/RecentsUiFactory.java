@@ -30,6 +30,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.uioverrides.touchcontrollers.FlingAndHoldTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.LandscapeEdgeSwipeController;
+import com.android.launcher3.uioverrides.touchcontrollers.NavBarToHomeTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.OverviewToAllAppsTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchController;
@@ -64,6 +65,7 @@ public abstract class RecentsUiFactory {
         list.add(launcher.getDragController());
         if (mode == Mode.NO_BUTTON) {
             list.add(new QuickSwitchTouchController(launcher));
+            list.add(new NavBarToHomeTouchController(launcher));
             list.add(new FlingAndHoldTouchController(launcher));
         } else {
             if (launcher.getDeviceProfile().isVerticalBarLayout()) {
