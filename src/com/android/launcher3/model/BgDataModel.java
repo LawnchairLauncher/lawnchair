@@ -26,7 +26,7 @@ import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.DumpTargetWrapper;
@@ -185,7 +185,7 @@ public class BgDataModel {
             FolderInfo fInfo = folders.valueAt(i);
             dtw = new DumpTargetWrapper(ContainerType.FOLDER, folders.size());
             dtw.writeToDumpTarget(fInfo);
-            for(ShortcutInfo sInfo: fInfo.contents) {
+            for(WorkspaceItemInfo sInfo: fInfo.contents) {
                 DumpTargetWrapper child = new DumpTargetWrapper(sInfo);
                 child.writeToDumpTarget(sInfo);
                 dtw.add(child);
@@ -335,7 +335,7 @@ public class BgDataModel {
                             Log.e(TAG, msg);
                         }
                     } else {
-                        findOrMakeFolder(item.container).add((ShortcutInfo) item, false);
+                        findOrMakeFolder(item.container).add((WorkspaceItemInfo) item, false);
                     }
 
                 }

@@ -43,7 +43,7 @@ import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -86,8 +86,8 @@ public class ItemClickHandler {
         }
 
         Object tag = v.getTag();
-        if (tag instanceof ShortcutInfo) {
-            onClickAppShortcut(v, (ShortcutInfo) tag, launcher, sourceContainer);
+        if (tag instanceof WorkspaceItemInfo) {
+            onClickAppShortcut(v, (WorkspaceItemInfo) tag, launcher, sourceContainer);
         } else if (tag instanceof FolderInfo) {
             if (v instanceof FolderIcon) {
                 onClickFolderIcon(v);
@@ -176,12 +176,13 @@ public class ItemClickHandler {
     /**
      * Event handler for an app shortcut click.
      *
-     * @param v The view that was clicked. Must be a tagged with a {@link ShortcutInfo}.
+     * @param v The view that was clicked. Must be a tagged with a {@link WorkspaceItemInfo}.
      */
-    public static void onClickAppShortcut(View v, ShortcutInfo shortcut, Launcher launcher,
+    public static void onClickAppShortcut(View v, WorkspaceItemInfo shortcut, Launcher launcher,
             @Nullable String sourceContainer) {
         if (shortcut.isDisabled()) {
-            final int disabledFlags = shortcut.runtimeStatusFlags & ShortcutInfo.FLAG_DISABLED_MASK;
+            final int disabledFlags = shortcut.runtimeStatusFlags
+                    & WorkspaceItemInfo.FLAG_DISABLED_MASK;
             if ((disabledFlags &
                     ~FLAG_DISABLED_SUSPENDED &
                     ~FLAG_DISABLED_QUIET_USER) == 0) {
@@ -212,7 +213,7 @@ public class ItemClickHandler {
                     shortcut.intent.getComponent().getPackageName() : shortcut.intent.getPackage();
             if (!TextUtils.isEmpty(packageName)) {
                 onClickPendingAppItem(v, launcher, packageName,
-                        shortcut.hasStatusFlag(ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE));
+                        shortcut.hasStatusFlag(WorkspaceItemInfo.FLAG_INSTALL_SESSION_ACTIVE));
                 return;
             }
         }
@@ -233,9 +234,9 @@ public class ItemClickHandler {
         if (intent == null) {
             throw new IllegalArgumentException("Input must have a valid intent");
         }
-        if (item instanceof ShortcutInfo) {
-            ShortcutInfo si = (ShortcutInfo) item;
-            if (si.hasStatusFlag(ShortcutInfo.FLAG_SUPPORTS_WEB_UI)
+        if (item instanceof WorkspaceItemInfo) {
+            WorkspaceItemInfo si = (WorkspaceItemInfo) item;
+            if (si.hasStatusFlag(WorkspaceItemInfo.FLAG_SUPPORTS_WEB_UI)
                     && Intent.ACTION_VIEW.equals(intent.getAction())) {
                 // make a copy of the intent that has the package set to null
                 // we do this because the platform sometimes disables instant

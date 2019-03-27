@@ -30,7 +30,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -145,7 +145,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     }
 
     private boolean itemSupportsAccessibleDrag(ItemInfo item) {
-        if (item instanceof ShortcutInfo) {
+        if (item instanceof WorkspaceItemInfo) {
             // Support the action unless the item is in a context menu.
             return item.screenId >= 0;
         }
@@ -173,7 +173,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                 @Override
                 public void run() {
                     if (item instanceof AppInfo) {
-                        ShortcutInfo info = ((AppInfo) item).makeShortcut();
+                        WorkspaceItemInfo info = ((AppInfo) item).makeWorkspaceItem();
                         mLauncher.getModelWriter().addItemToDatabase(info,
                                 Favorites.CONTAINER_DESKTOP,
                                 screenId, coordinates[0], coordinates[1]);
@@ -195,7 +195,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         } else if (action == MOVE_TO_WORKSPACE) {
             Folder folder = Folder.getOpen(mLauncher);
             folder.close(true);
-            ShortcutInfo info = (ShortcutInfo) item;
+            WorkspaceItemInfo info = (WorkspaceItemInfo) item;
             folder.getInfo().remove(info, false);
 
             final int[] coordinates = new int[2];

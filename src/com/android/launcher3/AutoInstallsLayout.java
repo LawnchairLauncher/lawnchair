@@ -391,7 +391,7 @@ public class AutoInstallsLayout {
                 return -1;
             }
 
-            mValues.put(Favorites.RESTORED, ShortcutInfo.FLAG_AUTOINSTALL_ICON);
+            mValues.put(Favorites.RESTORED, WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON);
             final Intent intent = new Intent(Intent.ACTION_MAIN, null)
                 .addCategory(Intent.CATEGORY_LAUNCHER)
                 .setComponent(new ComponentName(packageName, className))

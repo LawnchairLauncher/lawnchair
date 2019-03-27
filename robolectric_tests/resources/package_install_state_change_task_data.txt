@@ -1,6 +1,6 @@
 # Model data used by PackageInstallStateChangeTaskTest
 
-classMap s com.android.launcher3.ShortcutInfo
+classMap s com.android.launcher3.WorkspaceItemInfo
 classMap w com.android.launcher3.LauncherAppWidgetInfo
 
 # Items for the BgDataModel

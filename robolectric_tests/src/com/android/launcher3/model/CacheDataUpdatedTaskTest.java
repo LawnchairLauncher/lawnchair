@@ -8,7 +8,7 @@ import static org.junit.Assert.assertNull;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -89,10 +89,10 @@ public class CacheDataUpdatedTaskTest extends BaseModelUpdateTaskTestCase {
         for (ItemInfo info : bgDataModel.itemsIdMap) {
             if (updates.contains(info.id)) {
                 assertEquals(NEW_LABEL_PREFIX + info.id, info.title);
-                assertNotNull(((ShortcutInfo) info).iconBitmap);
+                assertNotNull(((WorkspaceItemInfo) info).iconBitmap);
             } else {
                 assertNotSame(NEW_LABEL_PREFIX + info.id, info.title);
-                assertNull(((ShortcutInfo) info).iconBitmap);
+                assertNull(((WorkspaceItemInfo) info).iconBitmap);
             }
         }
     }

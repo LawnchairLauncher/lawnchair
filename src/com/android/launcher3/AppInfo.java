@@ -81,8 +81,8 @@ public class AppInfo extends ItemInfoWithIcon {
         return super.dumpProperties() + " componentName=" + componentName;
     }
 
-    public ShortcutInfo makeShortcut() {
-        return new ShortcutInfo(this);
+    public WorkspaceItemInfo makeWorkspaceItem() {
+        return new WorkspaceItemInfo(this);
     }
 
     public ComponentKey toComponentKey() {
