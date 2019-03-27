@@ -434,6 +434,8 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
                     fade.play(ObjectAnimator.ofFloat(originalView, ALPHA, 0f, 1f));
                 }
                 fade.start();
+                // TODO: Do not run fade animation until we fix b/129421279.
+                fade.end();
             };
         }
         return view;
