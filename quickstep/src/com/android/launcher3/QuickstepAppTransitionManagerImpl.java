@@ -20,15 +20,16 @@ import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_PENDING_FLAGS;
 import static com.android.launcher3.BaseActivity.PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION;
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
+import static com.android.launcher3.anim.Interpolators.EXAGGERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_TRANSITIONS;
+import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
@@ -45,6 +46,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.CancellationSignal;
@@ -52,10 +54,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Pair;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
-import com.android.launcher3.InsettableFrameLayout.LayoutParams;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -103,13 +103,18 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     private static final String CONTROL_REMOTE_APP_TRANSITION_PERMISSION =
             "android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS";
 
-    private static final int APP_LAUNCH_DURATION = 500;
+    private static final long APP_LAUNCH_DURATION = 500;
     // Use a shorter duration for x or y translation to create a curve effect
-    private static final int APP_LAUNCH_CURVED_DURATION = APP_LAUNCH_DURATION / 2;
+    private static final long APP_LAUNCH_CURVED_DURATION = APP_LAUNCH_DURATION / 2;
+    private static final long APP_LAUNCH_ALPHA_DURATION = 50;
+
     // We scale the durations for the downward app launch animations (minus the scale animation).
     private static final float APP_LAUNCH_DOWN_DUR_SCALE_FACTOR = 0.8f;
-    private static final int APP_LAUNCH_ALPHA_START_DELAY = 32;
-    private static final int APP_LAUNCH_ALPHA_DURATION = 50;
+    private static final long APP_LAUNCH_DOWN_DURATION =
+            (long) (APP_LAUNCH_DURATION * APP_LAUNCH_DOWN_DUR_SCALE_FACTOR);
+    private static final long APP_LAUNCH_DOWN_CURVED_DURATION = APP_LAUNCH_DOWN_DURATION / 2;
+    private static final long APP_LAUNCH_ALPHA_DOWN_DURATION =
+            (long) (APP_LAUNCH_ALPHA_DURATION * APP_LAUNCH_DOWN_DUR_SCALE_FACTOR);
 
     public static final int RECENTS_LAUNCH_DURATION = 336;
     private static final int LAUNCHER_RESUME_START_DELAY = 100;
@@ -207,11 +212,11 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
 
             // Note that this duration is a guess as we do not know if the animation will be a
             // recents launch or not for sure until we know the opening app targets.
-            int duration = fromRecents
+            long duration = fromRecents
                     ? RECENTS_LAUNCH_DURATION
                     : APP_LAUNCH_DURATION;
 
-            int statusBarTransitionDelay = duration - STATUS_BAR_TRANSITION_DURATION
+            long statusBarTransitionDelay = duration - STATUS_BAR_TRANSITION_DURATION
                     - STATUS_BAR_TRANSITION_PRE_DELAY;
             return ActivityOptionsCompat.makeRemoteAnimation(new RemoteAnimationAdapterCompat(
                     runner, duration, statusBarTransitionDelay));
@@ -266,7 +271,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             }
             if (!isAllOpeningTargetTrs) break;
         }
-        playIconAnimators(anim, v, windowTargetBounds, !isAllOpeningTargetTrs);
+        anim.play(getOpeningWindowAnimators(v, targets, windowTargetBounds,
+                !isAllOpeningTargetTrs));
         if (launcherClosing) {
             Pair<AnimatorSet, Runnable> launcherContentAnimator =
                     getLauncherContentAnimator(true /* isAppOpening */,
@@ -279,7 +285,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 }
             });
         }
-        anim.play(getOpeningWindowAnimators(v, targets, windowTargetBounds));
     }
 
     /**
@@ -398,124 +403,13 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             float[] alphas, float[] trans);
 
     /**
-     * Animators for the "floating view" of the view used to launch the target.
-     */
-    private void playIconAnimators(AnimatorSet appOpenAnimator, View v, Rect windowTargetBounds,
-            boolean toggleVisibility) {
-        final boolean isBubbleTextView = v instanceof BubbleTextView;
-        if (mFloatingView != null) {
-            mFloatingView.setTranslationX(0);
-            mFloatingView.setTranslationY(0);
-            mFloatingView.setScaleX(1);
-            mFloatingView.setScaleY(1);
-            mFloatingView.setAlpha(1);
-            mFloatingView.setBackground(null);
-        }
-        Rect rect = new Rect();
-        mFloatingView = FloatingIconView.getFloatingIconView(mLauncher, v, toggleVisibility,
-                true /* useDrawableAsIs */, -1 /* aspectRatio */, rect, mFloatingView);
-
-        int viewLocationStart = mIsRtl ? windowTargetBounds.width() - rect.right : rect.left;
-        LayoutParams lp = (LayoutParams) mFloatingView.getLayoutParams();
-        // Special RTL logic is needed to handle the window target bounds.
-        lp.leftMargin = mIsRtl ? windowTargetBounds.width() - rect.right : rect.left;
-        mFloatingView.setLayoutParams(lp);
-
-        int[] dragLayerBounds = new int[2];
-        mDragLayer.getLocationOnScreen(dragLayerBounds);
-
-        // Animate the app icon to the center of the window bounds in screen coordinates.
-        float centerX = windowTargetBounds.centerX() - dragLayerBounds[0];
-        float centerY = windowTargetBounds.centerY() - dragLayerBounds[1];
-
-        float xPosition = mIsRtl
-                ? windowTargetBounds.width() - lp.getMarginStart() - rect.width()
-                : lp.getMarginStart();
-        float dX = centerX - xPosition - (lp.width / 2f);
-        float dY = centerY - lp.topMargin - (lp.height / 2f);
-
-        ObjectAnimator x = ObjectAnimator.ofFloat(mFloatingView, View.TRANSLATION_X, 0f, dX);
-        ObjectAnimator y = ObjectAnimator.ofFloat(mFloatingView, View.TRANSLATION_Y, 0f, dY);
-
-        // Use upward animation for apps that are either on the bottom half of the screen, or are
-        // relatively close to the center.
-        boolean useUpwardAnimation = lp.topMargin > centerY
-                || Math.abs(dY) < mLauncher.getDeviceProfile().cellHeightPx;
-        if (useUpwardAnimation) {
-            x.setDuration(APP_LAUNCH_CURVED_DURATION);
-            y.setDuration(APP_LAUNCH_DURATION);
-        } else {
-            x.setDuration((long) (APP_LAUNCH_DOWN_DUR_SCALE_FACTOR * APP_LAUNCH_DURATION));
-            y.setDuration((long) (APP_LAUNCH_DOWN_DUR_SCALE_FACTOR * APP_LAUNCH_CURVED_DURATION));
-        }
-        x.setInterpolator(AGGRESSIVE_EASE);
-        y.setInterpolator(AGGRESSIVE_EASE);
-        appOpenAnimator.play(x);
-        appOpenAnimator.play(y);
-
-        // Scale the app icon to take up the entire screen. This simplifies the math when
-        // animating the app window position / scale.
-        float maxScaleX = windowTargetBounds.width() / (float) rect.width();
-        float maxScaleY = windowTargetBounds.height() / (float) rect.height();
-        float scale = Math.max(maxScaleX, maxScaleY);
-        float startScale = 1f;
-        if (isBubbleTextView && !(v.getParent() instanceof DeepShortcutView)) {
-            Drawable dr = ((BubbleTextView) v).getIcon();
-            if (dr instanceof FastBitmapDrawable) {
-                startScale = ((FastBitmapDrawable) dr).getAnimatedScale();
-            }
-        }
-
-        ObjectAnimator scaleAnim = ObjectAnimator
-                .ofFloat(mFloatingView, SCALE_PROPERTY, startScale, scale);
-        scaleAnim.setDuration(APP_LAUNCH_DURATION)
-                .setInterpolator(Interpolators.EXAGGERATED_EASE);
-        appOpenAnimator.play(scaleAnim);
-
-        // Fade out the app icon.
-        ObjectAnimator alpha = ObjectAnimator.ofFloat(mFloatingView, View.ALPHA, 1f, 0f);
-        if (useUpwardAnimation) {
-            alpha.setStartDelay(APP_LAUNCH_ALPHA_START_DELAY);
-            alpha.setDuration(APP_LAUNCH_ALPHA_DURATION);
-        } else {
-            alpha.setStartDelay((long) (APP_LAUNCH_DOWN_DUR_SCALE_FACTOR
-                    * APP_LAUNCH_ALPHA_START_DELAY));
-            alpha.setDuration((long) (APP_LAUNCH_DOWN_DUR_SCALE_FACTOR * APP_LAUNCH_ALPHA_DURATION));
-        }
-        alpha.setInterpolator(LINEAR);
-        appOpenAnimator.play(alpha);
-
-        appOpenAnimator.addListener(mFloatingView);
-        appOpenAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                // Reset launcher to normal state
-                if (isBubbleTextView) {
-                    ((BubbleTextView) v).setStayPressed(false);
-                }
-                v.setVisibility(View.VISIBLE);
-                ((ViewGroup) mDragLayer.getParent()).getOverlay().remove(mFloatingView);
-            }
-        });
-    }
-
-    /**
      * @return Animator that controls the window of the opening targets.
      */
     private ValueAnimator getOpeningWindowAnimators(View v, RemoteAnimationTargetCompat[] targets,
-            Rect windowTargetBounds) {
+            Rect windowTargetBounds, boolean toggleVisibility) {
         Rect bounds = new Rect();
-        if (v.getParent() instanceof DeepShortcutView) {
-            // Deep shortcut views have their icon drawn in a separate view.
-            DeepShortcutView view = (DeepShortcutView) v.getParent();
-            mDragLayer.getDescendantRectRelativeToSelf(view.getIconView(), bounds);
-        } else if (v instanceof BubbleTextView) {
-            ((BubbleTextView) v).getIconBounds(bounds);
-        } else {
-            mDragLayer.getDescendantRectRelativeToSelf(v, bounds);
-        }
-        int[] floatingViewBounds = new int[2];
-
+        mFloatingView = FloatingIconView.getFloatingIconView(mLauncher, v, toggleVisibility,
+                bounds, true /* isOpening */, mFloatingView);
         Rect crop = new Rect();
         Matrix matrix = new Matrix();
 
@@ -526,37 +420,99 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         SyncRtSurfaceTransactionApplierCompat surfaceApplier =
                 new SyncRtSurfaceTransactionApplierCompat(mFloatingView);
 
+        // Scale the app icon to take up the entire screen. This simplifies the math when
+        // animating the app window position / scale.
+        float maxScaleX = windowTargetBounds.width() / (float) bounds.width();
+        // We use windowTargetBounds.width for scaleY too since we start off the animation where the
+        // window is clipped to a square.
+        float maxScaleY = windowTargetBounds.width() / (float) bounds.height();
+        float scale = Math.max(maxScaleX, maxScaleY);
+        float startScale = 1f;
+        if (v instanceof BubbleTextView && !(v.getParent() instanceof DeepShortcutView)) {
+            Drawable dr = ((BubbleTextView) v).getIcon();
+            if (dr instanceof FastBitmapDrawable) {
+                startScale = ((FastBitmapDrawable) dr).getAnimatedScale();
+            }
+        }
+        final float initialStartScale = startScale;
+
+        int[] dragLayerBounds = new int[2];
+        mDragLayer.getLocationOnScreen(dragLayerBounds);
+
+        // Animate the app icon to the center of the window bounds in screen coordinates.
+        float centerX = windowTargetBounds.centerX() - dragLayerBounds[0];
+        float centerY = windowTargetBounds.centerY() - dragLayerBounds[1];
+
+        float dX = centerX - bounds.centerX();
+        float dY = centerY - bounds.centerY();
+
+        boolean useUpwardAnimation = bounds.top > centerY
+                || Math.abs(dY) < mLauncher.getDeviceProfile().cellHeightPx;
+        final long xDuration = useUpwardAnimation ? APP_LAUNCH_CURVED_DURATION
+                : APP_LAUNCH_DOWN_DURATION;
+        final long yDuration = useUpwardAnimation ? APP_LAUNCH_DURATION
+                : APP_LAUNCH_DOWN_CURVED_DURATION;
+        final long alphaDuration = useUpwardAnimation ? APP_LAUNCH_ALPHA_DURATION
+                : APP_LAUNCH_ALPHA_DOWN_DURATION;
+
+        RectF targetBounds = new RectF(windowTargetBounds);
+        RectF currentBounds = new RectF();
+        RectF temp = new RectF();
+
         ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
         appAnimator.setDuration(APP_LAUNCH_DURATION);
+        appAnimator.setInterpolator(LINEAR);
+        appAnimator.addListener(mFloatingView);
+        appAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (v instanceof BubbleTextView) {
+                    ((BubbleTextView) v).setStayPressed(false);
+                }
+            }
+        });
+
+        float shapeRevealDuration = APP_LAUNCH_DURATION * SHAPE_PROGRESS_DURATION;
         appAnimator.addUpdateListener(new MultiValueUpdateListener() {
-            // Fade alpha for the app window.
-            FloatProp mAlpha = new FloatProp(0f, 1f, 0, 60, LINEAR);
+            FloatProp mDx = new FloatProp(0, dX, 0, xDuration, AGGRESSIVE_EASE);
+            FloatProp mDy = new FloatProp(0, dY, 0, yDuration, AGGRESSIVE_EASE);
+            FloatProp mIconScale = new FloatProp(initialStartScale, scale, 0, APP_LAUNCH_DURATION,
+                    EXAGGERATED_EASE);
+            FloatProp mIconAlpha = new FloatProp(1f, 0f, shapeRevealDuration, alphaDuration,
+                    LINEAR);
+            FloatProp mCropHeight = new FloatProp(windowTargetBounds.width(),
+                    windowTargetBounds.height(), 0, shapeRevealDuration, AGGRESSIVE_EASE);
 
             @Override
             public void onUpdate(float percent) {
-                final float easePercent = AGGRESSIVE_EASE.getInterpolation(percent);
-
                 // Calculate app icon size.
-                float iconWidth = bounds.width() * mFloatingView.getScaleX();
-                float iconHeight = bounds.height() * mFloatingView.getScaleY();
+                float iconWidth = bounds.width() * mIconScale.value;
+                float iconHeight = bounds.height() * mIconScale.value;
+
+                // Animate the window crop so that it starts off as a square, and then reveals
+                // horizontally.
+                int windowWidth = windowTargetBounds.width();
+                int windowHeight = (int) mCropHeight.value;
+                crop.set(0, 0, windowWidth, windowHeight);
 
                 // Scale the app window to match the icon size.
-                float scaleX = iconWidth / windowTargetBounds.width();
-                float scaleY = iconHeight / windowTargetBounds.height();
-                float scale = Math.min(1f, Math.min(scaleX, scaleY));
+                float scaleX = iconWidth / windowWidth;
+                float scaleY = iconHeight / windowHeight;
+                float scale = Math.min(1f, Math.max(scaleX, scaleY));
 
-                // Position the scaled window on top of the icon
-                int windowWidth = windowTargetBounds.width();
-                int windowHeight = windowTargetBounds.height();
                 float scaledWindowWidth = windowWidth * scale;
                 float scaledWindowHeight = windowHeight * scale;
 
                 float offsetX = (scaledWindowWidth - iconWidth) / 2;
                 float offsetY = (scaledWindowHeight - iconHeight) / 2;
-                mFloatingView.getLocationOnScreen(floatingViewBounds);
 
-                float transX0 = floatingViewBounds[0] - offsetX;
-                float transY0 = floatingViewBounds[1] - offsetY;
+                // Calculate the window position
+                temp.set(bounds);
+                temp.offset(dragLayerBounds[0], dragLayerBounds[1]);
+                temp.offset(mDx.value, mDy.value);
+                Utilities.scaleRectFAboutCenter(temp, mIconScale.value);
+                float transX0 = temp.left - offsetX;
+                float transY0 = temp.top - offsetY;
 
                 float windowRadius = 0;
                 if (!mDeviceProfile.isMultiWindowMode &&
@@ -565,19 +521,9 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                             .getWindowCornerRadius();
                 }
 
-                // Animate the window crop so that it starts off as a square, and then reveals
-                // horizontally.
-                float cropHeight = windowHeight * easePercent + windowWidth * (1 - easePercent);
-                float initialTop = (windowHeight - windowWidth) / 2f;
-                crop.left = 0;
-                crop.top = (int) (initialTop * (1 - easePercent));
-                crop.right = windowWidth;
-                crop.bottom = (int) (crop.top + cropHeight);
-
                 SurfaceParams[] params = new SurfaceParams[targets.length];
                 for (int i = targets.length - 1; i >= 0; i--) {
                     RemoteAnimationTargetCompat target = targets[i];
-
                     Rect targetCrop;
                     final float alpha;
                     final float cornerRadius;
@@ -585,12 +531,15 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                         matrix.setScale(scale, scale);
                         matrix.postTranslate(transX0, transY0);
                         targetCrop = crop;
-                        alpha = mAlpha.value;
+                        alpha = 1f - mIconAlpha.value;
                         cornerRadius = windowRadius;
+                        matrix.mapRect(currentBounds, targetBounds);
+                        mFloatingView.update(currentBounds, mIconAlpha.value, percent, 0f,
+                                cornerRadius * scale, true /* isOpening */);
                     } else {
                         matrix.setTranslate(target.position.x, target.position.y);
-                        alpha = 1f;
                         targetCrop = target.sourceContainerBounds;
+                        alpha = 1f;
                         cornerRadius = 0;
                     }
 

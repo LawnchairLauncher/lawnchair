@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.views;
 
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
 
 import android.animation.Animator;
@@ -47,7 +48,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
 import com.android.launcher3.folder.FolderIcon;
@@ -60,18 +60,20 @@ import com.android.launcher3.shortcuts.DeepShortcutView;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
+import static com.android.launcher3.Utilities.mapToRange;
+
 /**
  * A view that is created to look like another view with the purpose of creating fluid animations.
  */
 
 public class FloatingIconView extends View implements Animator.AnimatorListener, ClipPathView {
 
+    public static final float SHAPE_PROGRESS_DURATION = 0.15f;
+
     private static final Rect sTmpRect = new Rect();
 
-    private Runnable mStartRunnable;
     private Runnable mEndRunnable;
 
-    private int mOriginalHeight;
     private final int mBlurSizeOutline;
 
     private boolean mIsAdaptiveIcon = false;
@@ -82,30 +84,28 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
     private final Rect mStartRevealRect = new Rect();
     private final Rect mEndRevealRect = new Rect();
     private Path mClipPath;
-    protected final Rect mOutline = new Rect();
-    private final float mTaskCornerRadius;
+    private float mTaskCornerRadius;
 
     private final Rect mFinalDrawableBounds = new Rect();
     private final Rect mBgDrawableBounds = new Rect();
     private float mBgDrawableStartScale = 1f;
+    private float mBgDrawableEndScale = 1f;
 
     private FloatingIconView(Context context) {
         super(context);
-
         mBlurSizeOutline = context.getResources().getDimensionPixelSize(
                 R.dimen.blur_size_medium_outline);
-
-        mTaskCornerRadius = 0; // TODO
     }
 
     /**
      * Positions this view to match the size and location of {@param rect}.
-     *
      * @param alpha The alpha to set this view.
      * @param progress A value from [0, 1] that represents the animation progress.
-     * @param windowAlphaThreshold The value at which the window alpha is 0.
+     * @param shapeProgressStart The progress value at which to start the shape reveal.
+     * @param cornerRadius The corner radius of {@param rect}.
      */
-    public void update(RectF rect, float alpha, float progress, float windowAlphaThreshold) {
+    public void update(RectF rect, float alpha, float progress, float shapeProgressStart,
+            float cornerRadius, boolean isOpening) {
         setAlpha(alpha);
 
         LayoutParams lp = (LayoutParams) getLayoutParams();
@@ -116,46 +116,39 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
 
         float scaleX = rect.width() / (float) lp.width;
         float scaleY = rect.height() / (float) lp.height;
-        float scale = mIsAdaptiveIcon ? Math.max(scaleX, scaleY) : Math.min(scaleX, scaleY);
+        float scale = mIsAdaptiveIcon && !isOpening ? Math.max(scaleX, scaleY)
+                : Math.min(scaleX, scaleY);
+        scale = Math.max(1f, scale);
+
         setPivotX(0);
         setPivotY(0);
         setScaleX(scale);
         setScaleY(scale);
 
-        // Wait until the window is no longer visible before morphing the icon into its final shape.
-        float shapeRevealProgress = Utilities.mapToRange(Math.max(windowAlphaThreshold, progress),
-                windowAlphaThreshold, 1f, 0f, 1, Interpolators.LINEAR);
-        if (mIsAdaptiveIcon && shapeRevealProgress > 0) {
+        // shapeRevealProgress = 1 when progress = shapeProgressStart + SHAPE_PROGRESS_DURATION
+        float toMax = isOpening ? 1 / SHAPE_PROGRESS_DURATION : 1f;
+        float shapeRevealProgress = Utilities.boundToRange(mapToRange(
+                Math.max(shapeProgressStart, progress), shapeProgressStart, 1f, 0, toMax,
+                LINEAR), 0, 1);
+
+        mTaskCornerRadius = cornerRadius;
+        if (mIsAdaptiveIcon && shapeRevealProgress >= 0) {
             if (mRevealAnimator == null) {
-                mEndRevealRect.set(mOutline);
-                // We play the reveal animation in reverse so that we end with the icon shape.
                 mRevealAnimator = (ValueAnimator) FolderShape.getShape().createRevealAnimator(this,
-                        mStartRevealRect, mEndRevealRect, mTaskCornerRadius / scale, true);
-                mRevealAnimator.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mRevealAnimator = null;
-                    }
-                });
+                        mStartRevealRect, mEndRevealRect, mTaskCornerRadius / scale, !isOpening);
                 mRevealAnimator.start();
                 // We pause here so we can set the current fraction ourselves.
                 mRevealAnimator.pause();
             }
 
-            float bgScale = shapeRevealProgress + mBgDrawableStartScale * (1 - shapeRevealProgress);
-            setBackgroundDrawableBounds(bgScale);
-
             mRevealAnimator.setCurrentFraction(shapeRevealProgress);
+
+            float bgScale = (mBgDrawableEndScale * shapeRevealProgress) + mBgDrawableStartScale
+                    * (1 - shapeRevealProgress);
+            setBackgroundDrawableBounds(bgScale);
         }
         invalidate();
         invalidateOutline();
-    }
-
-    @Override
-    public void onAnimationStart(Animator animator) {
-        if (mStartRunnable != null) {
-            mStartRunnable.run();
-        }
     }
 
     @Override
@@ -180,7 +173,6 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         Utilities.getLocationBoundsForView(launcher, v, positionOut);
         final LayoutParams lp = new LayoutParams(positionOut.width(), positionOut.height());
         lp.ignoreInsets = true;
-        mOriginalHeight = lp.height;
 
         // Position the floating view exactly on top of the original
         lp.leftMargin = positionOut.left;
@@ -193,11 +185,11 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
     }
 
     @WorkerThread
-    private void getIcon(Launcher launcher, View v, ItemInfo info, boolean useDrawableAsIs,
-            float aspectRatio) {
+    private void getIcon(Launcher launcher, View v, ItemInfo info, boolean isOpening,
+            Runnable onIconLoadedRunnable) {
         final LayoutParams lp = (LayoutParams) getLayoutParams();
         Drawable drawable = null;
-        boolean supportsAdaptiveIcons = ADAPTIVE_ICON_WINDOW_ANIM.get() && !useDrawableAsIs
+        boolean supportsAdaptiveIcons = ADAPTIVE_ICON_WINDOW_ANIM.get()
                 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
         if (!supportsAdaptiveIcons && v instanceof BubbleTextView) {
             // Similar to DragView, we simply use the BubbleTextView icon here.
@@ -214,7 +206,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         }
         if (drawable == null) {
             drawable = Utilities.getFullDrawable(launcher, info, lp.width, lp.height,
-                    useDrawableAsIs, new Object[1]);
+                    false, new Object[1]);
         }
 
         Drawable finalDrawable = drawable == null ? null
@@ -247,35 +239,50 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
                     sbd.setShiftY(sbd.getShiftY() - sTmpRect.top);
                 }
 
+                final int originalHeight = lp.height;
+                final int originalWidth = lp.width;
+
                 int blurMargin = mBlurSizeOutline / 2;
-                mFinalDrawableBounds.set(0, 0, lp.width, mOriginalHeight);
+                mFinalDrawableBounds.set(0, 0, originalWidth, originalHeight);
                 if (!isFolderIcon) {
                     mFinalDrawableBounds.inset(iconOffset - blurMargin, iconOffset - blurMargin);
                 }
                 mForeground.setBounds(mFinalDrawableBounds);
                 mBackground.setBounds(mFinalDrawableBounds);
 
-                if (isFolderIcon) {
-                    mStartRevealRect.set(0, 0, lp.width, mOriginalHeight);
+                mStartRevealRect.set(0, 0, originalWidth, originalHeight);
+
+                if (!isFolderIcon) {
+                    mStartRevealRect.inset(mBlurSizeOutline, mBlurSizeOutline);
+                }
+
+                float aspectRatio = launcher.getDeviceProfile().aspectRatio;
+                if (launcher.getDeviceProfile().isVerticalBarLayout()) {
+                    lp.width = (int) Math.max(lp.width, lp.height * aspectRatio);
                 } else {
-                    mStartRevealRect.set(mBlurSizeOutline, mBlurSizeOutline,
-                            lp.width - mBlurSizeOutline, mOriginalHeight - mBlurSizeOutline);
-                }
-
-                if (aspectRatio > 0) {
                     lp.height = (int) Math.max(lp.height, lp.width * aspectRatio);
-                    layout(lp.leftMargin, lp.topMargin, lp.leftMargin + lp.width, lp.topMargin
-                            + lp.height);
                 }
-                mBgDrawableStartScale = (float) lp.height / mOriginalHeight;
-                setBackgroundDrawableBounds(mBgDrawableStartScale);
+                layout(lp.leftMargin, lp.topMargin, lp.leftMargin + lp.width, lp.topMargin
+                        + lp.height);
 
-                // Set up outline
-                mOutline.set(0, 0, lp.width, lp.height);
+                Rect rectOutline = new Rect();
+                float scale = Math.max((float) lp.height / originalHeight,
+                        (float) lp.width / originalWidth);
+                if (isOpening) {
+                    mBgDrawableStartScale = 1f;
+                    mBgDrawableEndScale = scale;
+                    rectOutline.set(0, 0, originalWidth, originalHeight);
+                } else {
+                    mBgDrawableStartScale = scale;
+                    mBgDrawableEndScale = 1f;
+                    rectOutline.set(0, 0, lp.width, lp.height);
+                }
+                mEndRevealRect.set(0, 0, lp.width, lp.height);
+                setBackgroundDrawableBounds(mBgDrawableStartScale);
                 setOutlineProvider(new ViewOutlineProvider() {
                     @Override
                     public void getOutline(View view, Outline outline) {
-                        outline.setRoundRect(mOutline, mTaskCornerRadius);
+                        outline.setRoundRect(rectOutline, mTaskCornerRadius);
                     }
                 });
                 setClipToOutline(true);
@@ -283,6 +290,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
                 setBackground(finalDrawable);
             }
 
+            onIconLoadedRunnable.run();
             invalidate();
             invalidateOutline();
         });
@@ -350,6 +358,9 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
     }
 
     @Override
+    public void onAnimationStart(Animator animator) {}
+
+    @Override
     public void onAnimationCancel(Animator animator) {}
 
     @Override
@@ -357,17 +368,16 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
 
     /**
      * Creates a floating icon view for {@param originalView}.
-     *
      * @param originalView The view to copy
      * @param hideOriginal If true, it will hide {@param originalView} while this view is visible.
-     * @param useDrawableAsIs If true, we do not separate the foreground/background of adaptive
-     * icons. TODO(b/122843905): We can remove this once app opening uses new animation.
-     * @param aspectRatio If >= 0, we will use this aspect ratio for the initial adaptive icon size.
      * @param positionOut Rect that will hold the size and position of v.
+     * @param isOpening True if this view replaces the icon for app open animation.
      */
     public static FloatingIconView getFloatingIconView(Launcher launcher, View originalView,
-            boolean hideOriginal, boolean useDrawableAsIs, float aspectRatio, Rect positionOut,
-            FloatingIconView recycle) {
+            boolean hideOriginal, Rect positionOut, boolean isOpening, FloatingIconView recycle) {
+        if (recycle != null) {
+            recycle.recycle();
+        }
         FloatingIconView view = recycle != null ? recycle : new FloatingIconView(launcher);
 
         // Match the position of the original view.
@@ -376,9 +386,16 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         // Get the drawable on the background thread
         // Must be called after matchPositionOf so that we know what size to load.
         if (originalView.getTag() instanceof ItemInfo) {
+            Runnable onIconLoaded = () -> {
+                // Delay swapping views until the icon is loaded to prevent a flash.
+                view.setVisibility(VISIBLE);
+                if (hideOriginal) {
+                    originalView.setVisibility(INVISIBLE);
+                }
+            };
             new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(() -> {
-                view.getIcon(launcher, originalView, (ItemInfo) originalView.getTag(),
-                        useDrawableAsIs, aspectRatio);
+                view.getIcon(launcher, originalView, (ItemInfo) originalView.getTag(), isOpening,
+                        onIconLoaded);
             });
         }
 
@@ -387,12 +404,6 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         view.setVisibility(INVISIBLE);
         ((ViewGroup) dragLayer.getParent()).getOverlay().add(view);
 
-        view.mStartRunnable = () -> {
-            view.setVisibility(VISIBLE);
-            if (hideOriginal) {
-                originalView.setVisibility(INVISIBLE);
-            }
-        };
         if (hideOriginal) {
             view.mEndRunnable = () -> {
                 AnimatorSet fade = new AnimatorSet();
@@ -441,5 +452,25 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
             };
         }
         return view;
+    }
+
+    private void recycle() {
+        setTranslationX(0);
+        setTranslationY(0);
+        setScaleX(1);
+        setScaleY(1);
+        setAlpha(1);
+        setBackground(null);
+        mEndRunnable = null;
+        mIsAdaptiveIcon = false;
+        mForeground = null;
+        mBackground = null;
+        mClipPath = null;
+        mFinalDrawableBounds.setEmpty();
+        mBgDrawableBounds.setEmpty();;
+        if (mRevealAnimator != null) {
+            mRevealAnimator.cancel();
+        }
+        mRevealAnimator = null;
     }
 }
