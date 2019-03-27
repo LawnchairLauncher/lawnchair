@@ -32,6 +32,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -263,12 +264,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_SEARCH_MARKET:
                 View searchMarketView = mLayoutInflater.inflate(R.layout.all_apps_search_market,
                         parent, false);
-                searchMarketView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mLauncher.startActivitySafely(v, mMarketSearchIntent, null);
-                    }
-                });
+                searchMarketView.setOnClickListener(v -> mLauncher.startActivitySafely(
+                        v, mMarketSearchIntent, null, AppLaunchTracker.CONTAINER_SEARCH));
                 return new ViewHolder(searchMarketView);
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(
