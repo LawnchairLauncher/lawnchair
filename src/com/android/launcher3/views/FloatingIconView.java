@@ -427,7 +427,9 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
                         public void onAnimationEnd(Animator animation) {
                             folderIcon.setBackgroundVisible(true);
                             folderIcon.animateBgShadowAndStroke();
-                            folderIcon.animateDotScale(0, 1f);
+                            if (folderIcon.hasDot()) {
+                                folderIcon.animateDotScale(0, 1f);
+                            }
                         }
                     });
                 } else {
