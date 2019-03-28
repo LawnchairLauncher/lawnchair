@@ -1,4 +1,4 @@
-package com.android.launcher3.uioverrides;
+package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;

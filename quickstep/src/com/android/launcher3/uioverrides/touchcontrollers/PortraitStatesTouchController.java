@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.uioverrides;
+package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ACCESSIBLE;
 import static com.android.launcher3.LauncherState.ALL_APPS;
@@ -43,6 +43,8 @@ import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SwipeDetector;
+import com.android.launcher3.uioverrides.states.OverviewState;
+import com.android.launcher3.uioverrides.touchcontrollers.PortraitOverviewStateTouchHelper;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.RecentsModel;

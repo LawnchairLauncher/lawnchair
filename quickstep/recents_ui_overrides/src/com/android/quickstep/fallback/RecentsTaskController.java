@@ -15,7 +15,7 @@
  */
 package com.android.quickstep.fallback;
 
-import com.android.launcher3.uioverrides.TaskViewTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController;
 import com.android.quickstep.RecentsActivity;
 
 public class RecentsTaskController extends TaskViewTouchController<RecentsActivity> {
