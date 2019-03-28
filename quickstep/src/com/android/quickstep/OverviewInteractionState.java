@@ -30,8 +30,8 @@ import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.UiThreadHelper;
+import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.systemui.shared.recents.ISystemUiProxy;
-import com.android.systemui.shared.system.QuickStepContract;
 
 import androidx.annotation.WorkerThread;
 
@@ -56,10 +56,7 @@ public class OverviewInteractionState {
 
     private static final int MSG_SET_PROXY = 200;
     private static final int MSG_SET_BACK_BUTTON_ALPHA = 201;
-    private static final int MSG_SET_SWIPE_UP_ENABLED = 202;
-
-    // TODO: Discriminate between swipe up and edge to edge
-    private final NavBarModeOverlayResourceObserver mSwipeUpSettingObserver;
+    private static final int MSG_APPLY_FLAGS = 202;
 
     private final Context mContext;
     private final Handler mUiHandler;
@@ -70,8 +67,6 @@ public class OverviewInteractionState {
     private boolean mSwipeUpEnabled;
     private float mBackButtonAlpha = 1;
 
-    private Runnable mOnSwipeUpSettingChangedListener;
-
     private OverviewInteractionState(Context context) {
         mContext = context;
 
@@ -81,20 +76,8 @@ public class OverviewInteractionState {
         mUiHandler = new Handler(this::handleUiMessage);
         mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleBgMessage);
 
-        mSwipeUpEnabled = NavBarModeOverlayResourceObserver.isSwipeUpModeEnabled(mContext)
-                || NavBarModeOverlayResourceObserver.isEdgeToEdgeModeEnabled(mContext);
-        if (SwipeUpSetting.isSystemNavigationSettingAvailable()) {
-            mSwipeUpSettingObserver = new NavBarModeOverlayResourceObserver(context,
-                    this::notifySwipeUpSettingChanged);
-            mSwipeUpSettingObserver.register();
-            resetHomeBounceSeenOnQuickstepEnabledFirstTime();
-        } else {
-            mSwipeUpSettingObserver = null;
-        }
-    }
-
-    public boolean isSwipeUpGestureEnabled() {
-        return mSwipeUpEnabled;
+        onNavigationModeChanged(SysUINavigationMode.INSTANCE.get(context)
+                .addModeChangeListener(this::onNavigationModeChanged));
     }
 
     public float getBackButtonAlpha() {
@@ -130,21 +113,11 @@ public class OverviewInteractionState {
             case MSG_SET_BACK_BUTTON_ALPHA:
                 applyBackButtonAlpha((float) msg.obj, msg.arg1 == 1);
                 return true;
-            case MSG_SET_SWIPE_UP_ENABLED:
-                mSwipeUpEnabled = msg.arg1 != 0;
-                resetHomeBounceSeenOnQuickstepEnabledFirstTime();
-
-                if (mOnSwipeUpSettingChangedListener != null) {
-                    mOnSwipeUpSettingChangedListener.run();
-                }
+            case MSG_APPLY_FLAGS:
                 break;
         }
         applyFlags();
         return true;
-    }
-
-    public void setOnSwipeUpSettingChangedListener(Runnable listener) {
-        mOnSwipeUpSettingChangedListener = listener;
     }
 
     @WorkerThread
@@ -176,16 +149,12 @@ public class OverviewInteractionState {
         }
     }
 
-    private void notifySwipeUpSettingChanged(int mode) {
-        boolean swipeUpEnabled = !QuickStepContract.isLegacyMode(mode);
-        boolean gesturalEnabled = QuickStepContract.isGesturalMode(mode);
+    private void onNavigationModeChanged(SysUINavigationMode.Mode mode) {
+        FeatureFlags.SWIPE_HOME.updateStorage(mContext, mode == Mode.NO_BUTTON);
 
-        FeatureFlags.SWIPE_HOME.updateStorage(mContext, gesturalEnabled);
-        FeatureFlags.ENABLE_ASSISTANT_GESTURE.updateStorage(mContext, gesturalEnabled);
-
-        mUiHandler.removeMessages(MSG_SET_SWIPE_UP_ENABLED);
-        mUiHandler.obtainMessage(MSG_SET_SWIPE_UP_ENABLED, swipeUpEnabled ? 1 : 0, 0).
-                sendToTarget();
+        mSwipeUpEnabled = mode.hasGestures;
+        resetHomeBounceSeenOnQuickstepEnabledFirstTime();
+        mBgHandler.obtainMessage(MSG_APPLY_FLAGS).sendToTarget();
     }
 
     private void resetHomeBounceSeenOnQuickstepEnabledFirstTime() {

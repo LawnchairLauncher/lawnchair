@@ -32,9 +32,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.FloatProperty;
 import android.view.View;
-import android.view.ViewDebug;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -44,7 +42,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.views.ScrimView;
-import com.android.quickstep.OverviewInteractionState;
+import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.hints.ChipsContainer;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.ClipAnimationHelper.TransformParams;
@@ -132,7 +130,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
             ClipAnimationHelper helper) {
         AnimatorSet anim = super.createAdjacentPageAnimForTaskLaunch(tv, helper);
 
-        if (!OverviewInteractionState.INSTANCE.get(mActivity).isSwipeUpGestureEnabled()) {
+        if (!SysUINavigationMode.INSTANCE.get(mActivity).getMode().hasGestures) {
             // Hotseat doesn't move when opening recents with the button,
             // so don't animate it here either.
             return anim;

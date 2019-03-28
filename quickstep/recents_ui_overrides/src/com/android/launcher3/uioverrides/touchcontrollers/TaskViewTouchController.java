@@ -38,7 +38,7 @@ import com.android.launcher3.util.FlingBlockCheck;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.quickstep.OverviewInteractionState;
+import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
@@ -123,8 +123,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
                     if (mRecentsView.isTaskViewVisible(view) && mActivity.getDragLayer()
                             .isEventOverView(view, ev)) {
                         mTaskBeingDragged = view;
-                        if (!OverviewInteractionState.INSTANCE.get(mActivity)
-                                .isSwipeUpGestureEnabled()) {
+                        if (!SysUINavigationMode.INSTANCE.get(mActivity).getMode().hasGestures) {
                             // Don't allow swipe down to open if we don't support swipe up
                             // to enter overview.
                             directionsToDetectScroll = SwipeDetector.DIRECTION_POSITIVE;

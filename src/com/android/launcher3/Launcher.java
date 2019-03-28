@@ -257,6 +257,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public ViewGroupFocusHelper mFocusHandler;
 
     private RotationHelper mRotationHelper;
+    private Runnable mCancelTouchController;
 
     final Handler mHandler = new Handler();
     private final Runnable mHandleDeferredResume = this::handleDeferredResume;
@@ -946,7 +947,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         // Setup the drag layer
         mDragLayer.setup(mDragController, mWorkspace);
-        UiFactory.setOnTouchControllersChangedListener(this, mDragLayer::recreateControllers);
+        mCancelTouchController = UiFactory.enableLiveTouchControllerChanges(mDragLayer);
 
         mWorkspace.setup(mDragController);
         // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
@@ -1318,7 +1319,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         unregisterReceiver(mScreenOffReceiver);
         mWorkspace.removeFolderListeners();
 
-        UiFactory.setOnTouchControllersChangedListener(this, null);
+        if (mCancelTouchController != null) {
+            mCancelTouchController.run();
+            mCancelTouchController = null;
+        }
 
         // Stop callbacks from LauncherModel
         // It's possible to receive onDestroy after a new Launcher activity has

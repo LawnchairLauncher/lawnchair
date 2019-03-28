@@ -30,7 +30,7 @@ import com.android.launcher3.uioverrides.touchcontrollers.LandscapeStatesTouchCo
 import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchController;
 import com.android.launcher3.util.TouchController;
-import com.android.quickstep.OverviewInteractionState;
+import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.views.IconRecentsView;
 
 import java.util.ArrayList;
@@ -52,8 +52,8 @@ public abstract class RecentsUiFactory {
             list.add(new LandscapeStatesTouchController(launcher));
             list.add(new LandscapeEdgeSwipeController(launcher));
         } else {
-            boolean allowDragToOverview = OverviewInteractionState.INSTANCE.get(launcher)
-                    .isSwipeUpGestureEnabled();
+            boolean allowDragToOverview = SysUINavigationMode.INSTANCE.get(launcher)
+                    .getMode().hasGestures;
             list.add(new PortraitStatesTouchController(launcher, allowDragToOverview));
         }
         if (FeatureFlags.PULL_DOWN_STATUS_BAR && Utilities.IS_DEBUG_DEVICE
