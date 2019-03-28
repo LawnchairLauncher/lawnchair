@@ -45,6 +45,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -96,6 +97,14 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         // Re apply state in case we did something funky during the transition.
         activity.getStateManager().reapplyState();
         DiscoveryBounce.showForOverviewIfNeeded(activity);
+    }
+
+    @Override
+    public void onAssistantVisibilityChanged(float visibility) {
+        Launcher launcher = getCreatedActivity();
+        if (launcher != null) {
+            launcher.setQuickSearchBarAlpha(1f - visibility);
+        }
     }
 
     @NonNull
