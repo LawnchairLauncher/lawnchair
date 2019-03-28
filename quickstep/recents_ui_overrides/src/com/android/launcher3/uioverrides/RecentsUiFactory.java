@@ -34,6 +34,7 @@ import com.android.launcher3.uioverrides.touchcontrollers.LandscapeEdgeSwipeCont
 import com.android.launcher3.uioverrides.touchcontrollers.OverviewToAllAppsTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.QuickSwitchTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
@@ -66,6 +67,7 @@ public abstract class RecentsUiFactory {
         list.add(launcher.getDragController());
 
         if (swipeUpToHome) {
+            list.add(new QuickSwitchTouchController(launcher));
             list.add(new FlingAndHoldTouchController(launcher));
         } else {
             if (launcher.getDeviceProfile().isVerticalBarLayout()) {
@@ -74,6 +76,9 @@ public abstract class RecentsUiFactory {
             } else {
                 list.add(new PortraitStatesTouchController(launcher,
                         swipeUpEnabled /* allowDragToOverview */));
+                if (swipeUpEnabled) {
+                    list.add(new QuickSwitchTouchController(launcher));
+                }
             }
         }
 

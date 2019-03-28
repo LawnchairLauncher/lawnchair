@@ -308,8 +308,12 @@ public final class Utilities {
             Log.e(TAG, "mapToRange: range has 0 length");
             return toMin;
         }
-        float progress = Math.abs(t - fromMin) / Math.abs(fromMax - fromMin);
+        float progress = getProgress(t, fromMin, fromMax);
         return mapRange(interpolator.getInterpolation(progress), toMin, toMax);
+    }
+
+    public static float getProgress(float current, float min, float max) {
+        return Math.abs(current - min) / Math.abs(max - min);
     }
 
     public static float mapRange(float value, float min, float max) {

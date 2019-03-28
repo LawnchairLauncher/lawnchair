@@ -22,7 +22,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_SCALE;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
@@ -296,7 +296,7 @@ public class LauncherStateManager {
             builder.setInterpolator(ANIM_WORKSPACE_SCALE, OVERSHOOT_1_2);
             builder.setInterpolator(ANIM_WORKSPACE_FADE, OVERSHOOT_1_2);
             builder.setInterpolator(ANIM_OVERVIEW_SCALE, OVERSHOOT_1_2);
-            builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE, OVERSHOOT_1_7);
+            builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, OVERSHOOT_1_7);
             builder.setInterpolator(ANIM_OVERVIEW_FADE, OVERSHOOT_1_2);
 
             // Start from a higher overview scale, but only if we're invisible so we don't jump.
@@ -305,7 +305,7 @@ public class LauncherStateManager {
             builder.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL);
             builder.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);
             builder.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCEL, 0, 0.9f));
-            builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE, ACCEL);
+            builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL);
             builder.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
             Workspace workspace = mLauncher.getWorkspace();
 
