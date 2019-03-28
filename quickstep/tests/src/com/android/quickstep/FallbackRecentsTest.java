@@ -17,38 +17,37 @@ package com.android.quickstep;
 
 import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 
+import static androidx.test.InstrumentationRegistry.getInstrumentation;
+
 import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
 import static com.android.launcher3.tapl.TestHelpers.getHomeIntentInPackage;
 import static com.android.launcher3.tapl.TestHelpers.getLauncherInMyProcess;
 import static com.android.launcher3.util.rule.ShellCommandRule.disableHeadsUpNotification;
 import static com.android.launcher3.util.rule.ShellCommandRule.getLauncherCommand;
-import static com.android.quickstep.QuickStepOnOffRule.Mode.OFF;
+import static com.android.quickstep.NavigationModeSwitchRule.Mode.THREE_BUTTON;
 
 import static org.junit.Assert.assertTrue;
-
-import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
 import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 
-import com.android.launcher3.MainThreadExecutor;
+import androidx.test.filters.LargeTest;
+import androidx.test.runner.AndroidJUnit4;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.Until;
+
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
-import com.android.quickstep.QuickStepOnOffRule.QuickstepOnOff;
+import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
-
-import androidx.test.filters.LargeTest;
-import androidx.test.runner.AndroidJUnit4;
-import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.UiDevice;
-import androidx.test.uiautomator.Until;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -72,7 +71,7 @@ public class FallbackRecentsTest {
         mDevice = UiDevice.getInstance(instrumentation);
         mLauncher = new LauncherInstrumentation(instrumentation);
 
-        mQuickstepOnOffExecutor = new QuickStepOnOffRule(new MainThreadExecutor(), mLauncher);
+        mQuickstepOnOffExecutor = new NavigationModeSwitchRule(mLauncher);
         mOtherLauncherActivity = context.getPackageManager().queryIntentActivities(
                 getHomeIntentInPackage(context),
                 MATCH_DISABLED_COMPONENTS).get(0).activityInfo;
@@ -94,7 +93,7 @@ public class FallbackRecentsTest {
         };
     }
 
-    @QuickstepOnOff(mode = OFF)
+    @NavigationModeSwitch(mode = THREE_BUTTON)
     @Test
     public void goToOverviewFromHome() {
         mDevice.pressHome();
@@ -104,7 +103,7 @@ public class FallbackRecentsTest {
         mLauncher.getBackground().switchToOverview();
     }
 
-    @QuickstepOnOff(mode = OFF)
+    @NavigationModeSwitch(mode = THREE_BUTTON)
     @Test
     public void goToOverviewFromApp() {
         startAppFast("com.android.settings");

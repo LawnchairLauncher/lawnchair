@@ -37,7 +37,7 @@ import com.android.launcher3.tapl.Overview;
 import com.android.launcher3.tapl.OverviewTask;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.ui.TaplTestsLauncher3;
-import com.android.quickstep.QuickStepOnOffRule.QuickstepOnOff;
+import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.views.RecentsView;
 
 import org.junit.Before;
@@ -79,7 +79,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     }
 
     @Test
-    @QuickstepOnOff
+    @NavigationModeSwitch
     @PortraitLandscape
     public void testWorkspaceSwitchToAllApps() {
         assertNotNull("switchToAllApps() returned null",
@@ -198,7 +198,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     }
 
     @Test
-    @QuickstepOnOff
+    @NavigationModeSwitch
     @PortraitLandscape
     public void testSwitchToOverview() throws Exception {
         assertNotNull("Workspace.switchToOverview() returned null",
@@ -208,7 +208,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     }
 
     @Test
-    @QuickstepOnOff
+    @NavigationModeSwitch
     @PortraitLandscape
     public void testBackground() throws Exception {
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));

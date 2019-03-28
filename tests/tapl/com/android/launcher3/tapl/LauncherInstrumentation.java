@@ -166,23 +166,28 @@ public final class LauncherInstrumentation {
     }
 
     public NavigationModel getNavigationModel() {
-        return isSwipeUpEnabled() ? NavigationModel.TWO_BUTTON : NavigationModel.THREE_BUTTON;
-    }
-
-    static boolean needSlowGestures() {
-        return Build.MODEL.contains("Cuttlefish");
-    }
-
-    private boolean isSwipeUpEnabled() {
         final Context baseContext = mInstrumentation.getTargetContext();
         try {
             // Workaround, use constructed context because both the instrumentation context and the
             // app context are not constructed with resources that take overlays into account
-            Context ctx = baseContext.createPackageContext(getLauncherPackageName(), 0);
-            return !QuickStepContract.isLegacyMode(ctx);
+            final Context ctx = baseContext.createPackageContext("android", 0);
+            if (QuickStepContract.isGesturalMode(ctx)) {
+                return NavigationModel.ZERO_BUTTON;
+            } else if (QuickStepContract.isSwipeUpMode(ctx)) {
+                return NavigationModel.TWO_BUTTON;
+            } else if (QuickStepContract.isLegacyMode(ctx)) {
+                return NavigationModel.THREE_BUTTON;
+            } else {
+                fail("Can't detect navigation mode");
+            }
         } catch (PackageManager.NameNotFoundException e) {
-            return false;
+            fail(e.toString());
         }
+        return NavigationModel.THREE_BUTTON;
+    }
+
+    static boolean needSlowGestures() {
+        return Build.MODEL.contains("Cuttlefish");
     }
 
     static void log(String message) {
@@ -233,9 +238,13 @@ public final class LauncherInstrumentation {
     private UiObject2 verifyContainerType(ContainerType containerType) {
         assertEquals("Unexpected display rotation",
                 mExpectedRotation, mDevice.getDisplayRotation());
-        assertTrue("Presence of recents button doesn't match isSwipeUpEnabled()",
-                isSwipeUpEnabled() ==
-                        (mDevice.findObject(By.res(SYSTEMUI_PACKAGE, "recent_apps")) == null));
+        final NavigationModel navigationModel = getNavigationModel();
+        assertTrue("Presence of recents button doesn't match the interaction mode",
+                (navigationModel == NavigationModel.THREE_BUTTON) ==
+                        mDevice.hasObject(By.res(SYSTEMUI_PACKAGE, "recent_apps")));
+        assertTrue("Presence of home button doesn't match the interaction mode",
+                (navigationModel != NavigationModel.ZERO_BUTTON) ==
+                        mDevice.hasObject(By.res(SYSTEMUI_PACKAGE, "home")));
         log("verifyContainerType: " + containerType);
 
         try (Closable c = addContextLayer(
