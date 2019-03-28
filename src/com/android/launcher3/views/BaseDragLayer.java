@@ -114,16 +114,28 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     }
 
     protected boolean findActiveController(MotionEvent ev) {
+        if (com.android.launcher3.TestProtocol.sDebugTracing) {
+            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                    "mActiveController = null");
+        }
         mActiveController = null;
 
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
         if (topView != null && topView.onControllerInterceptTouchEvent(ev)) {
+            if (com.android.launcher3.TestProtocol.sDebugTracing) {
+                android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                        "setting controller1: " + topView.getClass().getSimpleName());
+            }
             mActiveController = topView;
             return true;
         }
 
         for (TouchController controller : mControllers) {
             if (controller.onControllerInterceptTouchEvent(ev)) {
+                if (com.android.launcher3.TestProtocol.sDebugTracing) {
+                    android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                            "setting controller1: " + controller.getClass().getSimpleName());
+                }
                 mActiveController = controller;
                 return true;
             }
@@ -193,8 +205,17 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
         }
 
         if (mActiveController != null) {
+            if (com.android.launcher3.TestProtocol.sDebugTracing) {
+                android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                        "BaseDragLayer before onControllerTouchEvent " +
+                                mActiveController.getClass().getSimpleName());
+            }
             return mActiveController.onControllerTouchEvent(ev);
         } else {
+            if (com.android.launcher3.TestProtocol.sDebugTracing) {
+                android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                        "BaseDragLayer no controller");
+            }
             // In case no child view handled the touch event, we may not get onIntercept anymore
             return findActiveController(ev);
         }

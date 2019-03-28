@@ -23,7 +23,6 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
 import static com.android.launcher3.Launcher.REQUEST_BIND_PENDING_APPWIDGET;
 import static com.android.launcher3.Launcher.REQUEST_RECONFIGURE_APPWIDGET;
 import static com.android.launcher3.model.AppLaunchTracker.CONTAINER_ALL_APPS;
-import static com.android.launcher3.model.AppLaunchTracker.CONTAINER_DEFAULT;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -32,6 +31,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
@@ -50,8 +51,6 @@ import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
 
-import androidx.annotation.Nullable;
-
 /**
  * Class for handling clicks on workspace and all-apps items
  */
@@ -67,6 +66,14 @@ public class ItemClickHandler {
     }
 
     private static void onClick(View v, String sourceContainer) {
+        if (com.android.launcher3.TestProtocol.sDebugTracing) {
+            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                    "onClick() called with: v = [" + v.getClass().getSimpleName() +
+                            "], sourceContainer = [" +
+                            (sourceContainer != null ?
+                                    sourceContainer.getClass().getSimpleName() : "null")
+                            + "]");
+        }
         // Make sure that rogue clicks don't get through while allapps is launching, or after the
         // view has detached (it's possible for this to happen if the view is removed mid touch).
         if (v.getWindowToken() == null) {

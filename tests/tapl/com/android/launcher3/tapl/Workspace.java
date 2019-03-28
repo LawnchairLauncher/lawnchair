@@ -136,7 +136,9 @@ public final class Workspace extends Home {
 
     static void dragIconToWorkspace(LauncherInstrumentation launcher, Launchable launchable,
             Point dest, int icon_drag_speed) {
+        LauncherInstrumentation.log("dragIconToWorkspace: begin");
         launchable.getObject().drag(dest, icon_drag_speed);
+        LauncherInstrumentation.log("dragIconToWorkspace: end");
         launcher.waitUntilGone("drop_target_bar");
     }
 
