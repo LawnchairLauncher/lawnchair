@@ -53,6 +53,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     void onSwipeUpComplete(T activity);
 
+    void onAssistantVisibilityChanged(float visibility);
+
     @NonNull HomeAnimationFactory prepareHomeUI(T activity);
 
     AnimationFactory prepareRecentsUI(T activity, boolean activityVisible,

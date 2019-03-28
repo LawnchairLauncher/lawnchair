@@ -408,6 +408,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         onIdpChanged(idp);
     }
 
+    public void setQuickSearchBarAlpha(float alpha) {
+        View qsbAllApps = findViewById(R.id.search_container_all_apps);
+        if (qsbAllApps != null) {
+            qsbAllApps.setAlpha(alpha);
+        }
+    }
+
     private void onIdpChanged(InvariantDeviceProfile idp) {
         mUserEventDispatcher = null;
 
