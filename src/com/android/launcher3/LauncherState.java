@@ -18,10 +18,10 @@ package com.android.launcher3;
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
-
 import static com.android.launcher3.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.NORMAL_STATE_ORDINAL;
+import static com.android.launcher3.TestProtocol.OVERVIEW_PEEK_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
@@ -29,9 +29,9 @@ import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.uioverrides.AllAppsState;
-import com.android.launcher3.uioverrides.BackgroundAppState;
 import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
@@ -92,10 +92,13 @@ public class LauncherState {
      */
     public static final LauncherState SPRING_LOADED = new SpringLoadedState(
             SPRING_LOADED_STATE_ORDINAL);
-    public static final LauncherState OVERVIEW = new OverviewState(OVERVIEW_STATE_ORDINAL);
     public static final LauncherState ALL_APPS = new AllAppsState(ALL_APPS_STATE_ORDINAL);
-    public static final LauncherState BACKGROUND_APP = new BackgroundAppState(
-            BACKGROUND_APP_STATE_ORDINAL);
+
+    public static final LauncherState OVERVIEW = new OverviewState(OVERVIEW_STATE_ORDINAL);
+    public static final LauncherState OVERVIEW_PEEK =
+            OverviewState.newPeekState(OVERVIEW_PEEK_STATE_ORDINAL);
+    public static final LauncherState BACKGROUND_APP =
+            OverviewState.newBackgroundState(BACKGROUND_APP_STATE_ORDINAL);
 
     public final int ordinal;
 
@@ -193,6 +196,11 @@ public class LauncherState {
     }
 
     public ScaleAndTranslation getOverviewScaleAndTranslation(Launcher launcher) {
+        if (FeatureFlags.SWIPE_HOME.get()) {
+            float offscreenTranslationX = launcher.getDragLayer().getWidth()
+                    - launcher.getOverviewPanel().getPaddingStart();
+            return new ScaleAndTranslation(1f, offscreenTranslationX, 0f);
+        }
         return new ScaleAndTranslation(1.1f, 0f, 0f);
     }
 

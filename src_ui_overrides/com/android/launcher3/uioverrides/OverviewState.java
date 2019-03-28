@@ -28,4 +28,12 @@ public class OverviewState extends LauncherState {
     public OverviewState(int id) {
         super(id, ContainerType.WORKSPACE, OVERVIEW_TRANSITION_MS, FLAG_DISABLE_RESTORE);
     }
+
+    public static OverviewState newBackgroundState(int id) {
+        return new OverviewState(id);
+    }
+
+    public static OverviewState newPeekState(int id) {
+        return new OverviewState(id);
+    }
 }

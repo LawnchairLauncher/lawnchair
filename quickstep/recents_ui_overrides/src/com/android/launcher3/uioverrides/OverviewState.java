@@ -151,4 +151,12 @@ public class OverviewState extends LauncherState {
             super.onBackPressed(launcher);
         }
     }
+
+    public static OverviewState newBackgroundState(int id) {
+        return new BackgroundAppState(id);
+    }
+
+    public static OverviewState newPeekState(int id) {
+        return new OverviewPeekState(id);
+    }
 }
