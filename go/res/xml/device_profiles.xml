@@ -30,7 +30,7 @@
             launcher:name="Go Device"
             launcher:minWidthDps="296"
             launcher:minHeightDps="491.33"
-            launcher:iconSize="60"
+            launcher:iconImageSize="60"
             launcher:iconTextSize="14.0"
             launcher:canBeDefault="true" />
 

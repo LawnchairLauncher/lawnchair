@@ -30,7 +30,7 @@
             launcher:name="Super Short Stubby"
             launcher:minWidthDps="255"
             launcher:minHeightDps="300"
-            launcher:iconSize="48"
+            launcher:iconImageSize="48"
             launcher:iconTextSize="13.0"
             launcher:canBeDefault="true" />
 
@@ -38,7 +38,7 @@
             launcher:name="Shorter Stubby"
             launcher:minWidthDps="255"
             launcher:minHeightDps="400"
-            launcher:iconSize="48"
+            launcher:iconImageSize="48"
             launcher:iconTextSize="13.0"
             launcher:canBeDefault="true" />
 
@@ -57,7 +57,7 @@
             launcher:name="Short Stubby"
             launcher:minWidthDps="275"
             launcher:minHeightDps="420"
-            launcher:iconSize="48"
+            launcher:iconImageSize="48"
             launcher:iconTextSize="13.0"
             launcher:canBeDefault="true" />
 
@@ -65,7 +65,7 @@
             launcher:name="Stubby"
             launcher:minWidthDps="255"
             launcher:minHeightDps="450"
-            launcher:iconSize="48"
+            launcher:iconImageSize="48"
             launcher:iconTextSize="13.0"
             launcher:canBeDefault="true" />
 
@@ -73,7 +73,7 @@
             launcher:name="Nexus S"
             launcher:minWidthDps="296"
             launcher:minHeightDps="491.33"
-            launcher:iconSize="48"
+            launcher:iconImageSize="48"
             launcher:iconTextSize="13.0"
             launcher:canBeDefault="true" />
 
@@ -81,7 +81,7 @@
             launcher:name="Nexus 4"
             launcher:minWidthDps="359"
             launcher:minHeightDps="567"
-            launcher:iconSize="54"
+            launcher:iconImageSize="54"
             launcher:iconTextSize="13.0"
             launcher:canBeDefault="true" />
 
@@ -89,7 +89,7 @@
             launcher:name="Nexus 5"
             launcher:minWidthDps="335"
             launcher:minHeightDps="567"
-            launcher:iconSize="54"
+            launcher:iconImageSize="54"
             launcher:iconTextSize="13.0"
             launcher:canBeDefault="true" />
 
@@ -108,7 +108,7 @@
             launcher:name="Large Phone"
             launcher:minWidthDps="406"
             launcher:minHeightDps="694"
-            launcher:iconSize="56"
+            launcher:iconImageSize="56"
             launcher:iconTextSize="14.4"
             launcher:canBeDefault="true" />
 
@@ -116,7 +116,7 @@
             launcher:name="Shorter Stubby"
             launcher:minWidthDps="255"
             launcher:minHeightDps="400"
-            launcher:iconSize="48"
+            launcher:iconImageSize="48"
             launcher:iconTextSize="13.0"
             launcher:canBeDefault="true" />
 
