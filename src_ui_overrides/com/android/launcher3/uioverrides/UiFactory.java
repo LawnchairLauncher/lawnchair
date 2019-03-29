@@ -22,6 +22,7 @@ import android.os.CancellationSignal;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.TouchController;
 
 import java.io.PrintWriter;
@@ -33,7 +34,9 @@ public class UiFactory {
                 launcher.getDragController(), new AllAppsSwipeController(launcher)};
     }
 
-    public static void setOnTouchControllersChangedListener(Context context, Runnable listener) { }
+    public static Runnable enableLiveTouchControllerChanges(DragLayer dl) {
+        return null;
+    }
 
     public static StateHandler[] getStateHandler(Launcher launcher) {
         return new StateHandler[] {
