@@ -432,6 +432,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     private void resetViewTransforms() {
+        setCurveScale(1);
         setZoomScale(1);
         setTranslationX(0f);
         setTranslationY(0f);
