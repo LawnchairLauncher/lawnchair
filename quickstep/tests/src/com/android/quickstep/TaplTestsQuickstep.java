@@ -41,6 +41,7 @@ import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.views.RecentsView;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestWatcher;
@@ -71,6 +72,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @PortraitLandscape
+    @Ignore
     public void testPressRecentAppsLauncherAndGetOverview() throws RemoteException {
         mDevice.pressRecentApps();
         waitForState("Launcher internal state didn't switch to Overview", LauncherState.OVERVIEW);
