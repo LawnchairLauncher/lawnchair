@@ -35,14 +35,16 @@ import java.util.List;
 public class SysUINavigationMode {
 
     public enum Mode {
-        THREE_BUTTONS(false),
-        TWO_BUTTONS(true),
-        NO_BUTTON(true);
+        THREE_BUTTONS(false, 0),
+        TWO_BUTTONS(true, 1),
+        NO_BUTTON(true, 2);
 
         public final boolean hasGestures;
+        public final int resValue;
 
-        Mode(boolean hasGestures) {
+        Mode(boolean hasGestures, int resValue) {
             this.hasGestures = hasGestures;
+            this.resValue = resValue;
         }
     }
 
@@ -80,13 +82,10 @@ public class SysUINavigationMode {
 
     private void initializeMode() {
         int modeInt = getSystemIntegerRes(mContext, NAV_BAR_INTERACTION_MODE_RES_NAME);
-
-        if (QuickStepContract.isGesturalMode(modeInt)) {
-            mMode = Mode.NO_BUTTON;
-        } else if (QuickStepContract.isSwipeUpMode(modeInt)) {
-            mMode = Mode.TWO_BUTTONS;
-        } else {
-            mMode = Mode.THREE_BUTTONS;
+        for(Mode m : Mode.values()) {
+            if (m.resValue == modeInt) {
+                mMode = m;
+            }
         }
     }
 
