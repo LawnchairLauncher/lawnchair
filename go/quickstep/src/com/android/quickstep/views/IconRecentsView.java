@@ -144,8 +144,6 @@ public final class IconRecentsView extends FrameLayout {
      * Logic for when we know we are going to overview/recents and will be putting up the recents
      * view. This should be used to prepare recents (e.g. load any task data, etc.) before it
      * becomes visible.
-     *
-     * TODO: Hook this up for fallback recents activity as well
      */
     public void onBeginTransitionToOverview() {
         // Load any task changes
