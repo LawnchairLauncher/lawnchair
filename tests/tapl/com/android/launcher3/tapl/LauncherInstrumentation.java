@@ -347,12 +347,7 @@ public final class LauncherInstrumentation {
                 log(action = "0-button: from another app");
                 assertTrue("Launcher is visible, don't know how to go home",
                         !mDevice.hasObject(By.pkg(getLauncherPackageName())));
-                final UiObject2 navBar = waitForSystemUiObject("navigation_bar_frame");
-
-                swipe(
-                        navBar.getVisibleBounds().centerX(), navBar.getVisibleBounds().centerY(),
-                        navBar.getVisibleBounds().centerX(), 0,
-                        BACKGROUND_APP_STATE_ORDINAL, ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
+                mDevice.pressHome();
             }
         } else {
             log(action = "clicking home button");
