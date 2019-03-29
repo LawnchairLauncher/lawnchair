@@ -170,7 +170,7 @@ public class AssistantTouchConsumer implements InputConsumer {
                     // Movement
                     mDistance = (float) Math.hypot(mLastPos.x - mStartDragPos.x,
                             mLastPos.y - mStartDragPos.y);
-                    mMotionPauseDetector.addPosition(mDistance, 0);
+                    mMotionPauseDetector.addPosition(mDistance, 0, ev.getEventTime());
                     if (mDistance >= 0) {
                         final long diff = SystemClock.uptimeMillis() - mDragTime;
                         mTimeFraction = Math.min(diff * 1f / mTimeThreshold, 1);
