@@ -378,14 +378,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
 
         if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0) {
-            mUserEventDispatcher = null;
-            initDeviceProfile(mDeviceProfile.inv);
-            dispatchDeviceProfileChanged();
-            reapplyUi();
-            mDragLayer.recreateControllers();
-
-            // TODO: We can probably avoid rebind when only screen size changed.
-            rebindModel();
+            onIdpChanged(mDeviceProfile.inv);
         }
 
         mOldConfig.setTo(newConfig);
@@ -410,8 +403,19 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public void onIdpChanged(int changeFlags, InvariantDeviceProfile idp) {
+        onIdpChanged(idp);
+    }
+
+    private void onIdpChanged(InvariantDeviceProfile idp) {
+        mUserEventDispatcher = null;
+
         initDeviceProfile(idp);
-        getRootView().dispatchInsets();
+        dispatchDeviceProfileChanged();
+        reapplyUi();
+        mDragLayer.recreateControllers();
+
+        // TODO: We can probably avoid rebind when only screen size changed.
+        rebindModel();
     }
 
     private void initDeviceProfile(InvariantDeviceProfile idp) {
@@ -488,11 +492,15 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public void invalidateParent(ItemInfo info) {
-        FolderIconPreviewVerifier verifier = new FolderIconPreviewVerifier(getDeviceProfile().inv);
-        if (verifier.isItemInPreview(info.rank) && (info.container >= 0)) {
+        if (info.container >= 0) {
             View folderIcon = getWorkspace().getHomescreenIconByItemId(info.container);
-            if (folderIcon != null) {
-                folderIcon.invalidate();
+            if (folderIcon instanceof FolderIcon && folderIcon.getTag() instanceof FolderInfo) {
+                FolderIconPreviewVerifier verifier =
+                        new FolderIconPreviewVerifier(getDeviceProfile().inv);
+                verifier.setFolderInfo((FolderInfo) folderIcon.getTag());
+                if (verifier.isItemInPreview(info.rank)) {
+                    folderIcon.invalidate();
+                }
             }
         }
     }
@@ -1763,12 +1771,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     public void bindScreens(IntArray orderedScreenIds) {
         // Make sure the first screen is always at the start.
-        if (FeatureFlags.QSB_ON_FIRST_SCREEN.get() &&
+        if (FeatureFlags.QSB_ON_FIRST_SCREEN &&
                 orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != 0) {
             orderedScreenIds.removeValue(Workspace.FIRST_SCREEN_ID);
             orderedScreenIds.add(0, Workspace.FIRST_SCREEN_ID);
-        } else if (!FeatureFlags.QSB_ON_FIRST_SCREEN.get()
-                && orderedScreenIds.isEmpty()) {
+        } else if (!FeatureFlags.QSB_ON_FIRST_SCREEN && orderedScreenIds.isEmpty()) {
             // If there are no screens, we need to have an empty screen
             mWorkspace.addExtraEmptyScreen();
         }
@@ -1784,7 +1791,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         int count = orderedScreenIds.size();
         for (int i = 0; i < count; i++) {
             int screenId = orderedScreenIds.get(i);
-            if (!FeatureFlags.QSB_ON_FIRST_SCREEN.get() || screenId != Workspace.FIRST_SCREEN_ID) {
+            if (!FeatureFlags.QSB_ON_FIRST_SCREEN || screenId != Workspace.FIRST_SCREEN_ID) {
                 // No need to bind the first screen, as its always bound.
                 mWorkspace.insertNewWorkspaceScreenBeforeEmptyScreen(screenId);
             }

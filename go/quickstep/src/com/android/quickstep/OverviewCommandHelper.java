@@ -96,7 +96,7 @@ public class OverviewCommandHelper {
             if (recents == null) {
                 return false;
             }
-            //TODO: Launch last running task or go to home.
+            recents.handleOverviewCommand();
             return true;
         }
     }
@@ -146,7 +146,7 @@ public class OverviewCommandHelper {
         protected boolean handleCommand(long elapsedTime) {
             IconRecentsView recents = mHelper.getVisibleRecentsView();
             if (recents != null) {
-                //TODO: Launch next task in icon recents.
+                recents.handleOverviewCommand();
                 return true;
             } else if (elapsedTime < ViewConfiguration.getDoubleTapTimeout()) {
                 // The user tried to launch back into overview too quickly, either after

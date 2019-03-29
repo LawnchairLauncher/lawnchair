@@ -18,10 +18,15 @@ package com.android.launcher3.provider;
 
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 
+import android.app.backup.BackupManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
+import android.os.UserHandle;
+import android.util.LongSparseArray;
+import android.util.SparseLongArray;
 
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherProvider.DatabaseHelper;
@@ -48,10 +53,10 @@ public class RestoreDbTask {
     private static final String INFO_COLUMN_NAME = "name";
     private static final String INFO_COLUMN_DEFAULT_VALUE = "dflt_value";
 
-    public static boolean performRestore(DatabaseHelper helper) {
+    public static boolean performRestore(DatabaseHelper helper, BackupManager backupManager) {
         SQLiteDatabase db = helper.getWritableDatabase();
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
-            new RestoreDbTask().sanitizeDB(helper, db);
+            new RestoreDbTask().sanitizeDB(helper, db, backupManager);
             t.commit();
             return true;
         } catch (Exception e) {
@@ -62,20 +67,44 @@ public class RestoreDbTask {
 
     /**
      * Makes the following changes in the provider DB.
-     *   1. Removes all entries belonging to a managed profile as managed profiles
-     *      cannot be restored.
+     *   1. Removes all entries belonging to any profiles that were not restored.
      *   2. Marks all entries as restored. The flags are updated during first load or as
      *      the restored apps get installed.
-     *   3. If the user serial for primary profile is different than that of the previous device,
-     *      update the entries to the new profile id.
+     *   3. If the user serial for any restored profile is different than that of the previous
+     *      device, update the entries to the new profile id.
      */
-    private void sanitizeDB(DatabaseHelper helper, SQLiteDatabase db) throws Exception {
+    private void sanitizeDB(DatabaseHelper helper, SQLiteDatabase db, BackupManager backupManager)
+            throws Exception {
+        // Primary user ids
+        long myProfileId = helper.getDefaultUserSerial();
         long oldProfileId = getDefaultProfileId(db);
-        // Delete all entries which do not belong to the main user
-        int itemsDeleted = db.delete(
-                Favorites.TABLE_NAME, "profileId != ?", new String[]{Long.toString(oldProfileId)});
+        LongSparseArray<Long> oldManagedProfileIds = getManagedProfileIds(db, oldProfileId);
+        LongSparseArray<Long> profileMapping = new LongSparseArray<>(oldManagedProfileIds.size()
+                + 1);
+
+        // Build mapping of restored profile ids to their new profile ids.
+        profileMapping.put(oldProfileId, myProfileId);
+        for (int i = oldManagedProfileIds.size() - 1; i >= 0; --i) {
+            long oldManagedProfileId = oldManagedProfileIds.keyAt(i);
+            UserHandle user = getUserForAncestralSerialNumber(backupManager, oldManagedProfileId);
+            if (user != null) {
+                long newManagedProfileId = helper.getSerialNumberForUser(user);
+                profileMapping.put(oldManagedProfileId, newManagedProfileId);
+            }
+        }
+
+        // Delete all entries which do not belong to any restored profile(s).
+        int numProfiles = profileMapping.size();
+        String[] profileIds = new String[numProfiles];
+        profileIds[0] = Long.toString(oldProfileId);
+        StringBuilder whereClause = new StringBuilder("profileId != ?");
+        for (int i = profileMapping.size() - 1; i >= 1; --i) {
+            whereClause.append(" AND profileId != ?");
+            profileIds[i] = Long.toString(profileMapping.keyAt(i));
+        }
+        int itemsDeleted = db.delete(Favorites.TABLE_NAME, whereClause.toString(), profileIds);
         if (itemsDeleted > 0) {
-            FileLog.d(TAG, itemsDeleted + " items belonging to a managed profile, were deleted");
+            FileLog.d(TAG, itemsDeleted + " items from unrestored user(s) were deleted");
         }
 
         // Mark all items as restored.
@@ -85,7 +114,7 @@ public class RestoreDbTask {
                 | (keepAllIcons ? ShortcutInfo.FLAG_RESTORE_STARTED : 0));
         db.update(Favorites.TABLE_NAME, values, null, null);
 
-        // Mark widgets with appropriate restore flag
+        // Mark widgets with appropriate restore flag.
         values.put(Favorites.RESTORED,  LauncherAppWidgetInfo.FLAG_ID_NOT_VALID |
                 LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY |
                 LauncherAppWidgetInfo.FLAG_UI_NOT_READY |
@@ -93,27 +122,89 @@ public class RestoreDbTask {
         db.update(Favorites.TABLE_NAME, values, "itemType = ?",
                 new String[]{Integer.toString(Favorites.ITEM_TYPE_APPWIDGET)});
 
-        long myProfileId = helper.getDefaultUserSerial();
+        // Migrate ids. To avoid any overlap, we initially move conflicting ids to a temp location.
+        // Using Long.MIN_VALUE since profile ids can not be negative, so there will be no overlap.
+        final long tempLocationOffset = Long.MIN_VALUE;
+        SparseLongArray tempMigratedIds = new SparseLongArray(profileMapping.size());
+        int numTempMigrations = 0;
+        for (int i = profileMapping.size() - 1; i >= 0; --i) {
+            long oldId = profileMapping.keyAt(i);
+            long newId = profileMapping.valueAt(i);
+
+            if (oldId != newId) {
+                if (profileMapping.indexOfKey(newId) >= 0) {
+                    tempMigratedIds.put(numTempMigrations, newId);
+                    numTempMigrations++;
+                    newId = tempLocationOffset + newId;
+                }
+                migrateProfileId(db, oldId, newId);
+            }
+        }
+
+        // Migrate ids from their temporary id to their actual final id.
+        for (int i = tempMigratedIds.size() - 1; i >= 0; --i) {
+            long newId = tempMigratedIds.valueAt(i);
+            migrateProfileId(db, tempLocationOffset + newId, newId);
+        }
+
         if (myProfileId != oldProfileId) {
-            FileLog.d(TAG, "Changing primary user id from " + oldProfileId + " to " + myProfileId);
-            migrateProfileId(db, myProfileId);
+            changeDefaultColumn(db, myProfileId);
         }
     }
 
     /**
-     * Updates profile id of all entries and changes the default value for the column.
+     * Updates profile id of all entries from {@param oldProfileId} to {@param newProfileId}.
      */
-    protected void migrateProfileId(SQLiteDatabase db, long newProfileId) {
+    protected void migrateProfileId(SQLiteDatabase db, long oldProfileId, long newProfileId) {
+        FileLog.d(TAG, "Changing profile user id from " + oldProfileId + " to " + newProfileId);
         // Update existing entries.
         ContentValues values = new ContentValues();
         values.put(Favorites.PROFILE_ID, newProfileId);
-        db.update(Favorites.TABLE_NAME, values, null, null);
+        db.update(Favorites.TABLE_NAME, values, "profileId = ?",
+                new String[]{Long.toString(oldProfileId)});
 
         // Change default value of the column.
         db.execSQL("ALTER TABLE favorites RENAME TO favorites_old;");
         Favorites.addTableToDb(db, newProfileId, false);
         db.execSQL("INSERT INTO favorites SELECT * FROM favorites_old;");
         dropTable(db, "favorites_old");
+    }
+
+
+    /**
+     * Changes the default value for the column.
+     */
+    protected void changeDefaultColumn(SQLiteDatabase db, long newProfileId) {
+        db.execSQL("ALTER TABLE favorites RENAME TO favorites_old;");
+        Favorites.addTableToDb(db, newProfileId, false);
+        db.execSQL("INSERT INTO favorites SELECT * FROM favorites_old;");
+        dropTable(db, "favorites_old");
+    }
+
+    /**
+     * Returns a list of the managed profile id(s) used in the favorites table of the provided db.
+     */
+    private LongSparseArray<Long> getManagedProfileIds(SQLiteDatabase db, long defaultProfileId) {
+        LongSparseArray<Long> ids = new LongSparseArray<>();
+        try (Cursor c = db.rawQuery("SELECT profileId from favorites WHERE profileId != ? "
+                + "GROUP BY profileId", new String[] {Long.toString(defaultProfileId)})){
+                while (c.moveToNext()) {
+                    ids.put(c.getLong(c.getColumnIndex(Favorites.PROFILE_ID)), null);
+                }
+        }
+        return ids;
+    }
+
+    /**
+     * Returns a UserHandle of a restored managed profile with the given serial number, or null
+     * if none found.
+     */
+    private UserHandle getUserForAncestralSerialNumber(BackupManager backupManager,
+            long ancestralSerialNumber) {
+        if (Build.VERSION.SDK_INT < 29) {
+            return null;
+        }
+        return backupManager.getUserForAncestralSerialNumber(ancestralSerialNumber);
     }
 
     /**

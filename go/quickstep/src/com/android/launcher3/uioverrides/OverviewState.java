@@ -43,7 +43,7 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
+    public float[] getOverviewScaleAndTranslationY(Launcher launcher) {
         return new float[] {1f, 0f};
     }
 
@@ -84,9 +84,11 @@ public class OverviewState extends LauncherState {
         super.onBackPressed(launcher);
     }
 
-
     public static float getDefaultSwipeHeight(Launcher launcher) {
-        DeviceProfile dp = launcher.getDeviceProfile();
+        return getDefaultSwipeHeight(launcher.getDeviceProfile());
+    }
+
+    public static float getDefaultSwipeHeight(DeviceProfile dp) {
         return dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx;
     }
 }

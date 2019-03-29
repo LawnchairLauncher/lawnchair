@@ -24,6 +24,7 @@ import com.android.systemui.shared.recents.model.Task;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -45,13 +46,13 @@ public final class TaskListLoader {
 
     /**
      * Returns the current task list as of the last completed load (see
-     * {@link #loadTaskList}). This list of tasks is guaranteed to always have all its task
-     * content loaded.
+     * {@link #loadTaskList}) as a read-only list. This list of tasks is guaranteed to always have
+     * all its task content loaded.
      *
      * @return the current list of tasks w/ all content loaded
      */
-    public ArrayList<Task> getCurrentTaskList() {
-        return mTaskList;
+    public List<Task> getCurrentTaskList() {
+        return Collections.unmodifiableList(mTaskList);
     }
 
     /**
@@ -85,34 +86,54 @@ public final class TaskListLoader {
     }
 
     /**
-     * Loads task content for a list of tasks, including the label and the icon. Uses the list of
-     * tasks since the last load as a cache for loaded content.
+     * Removes the task from the current task list.
+     */
+    void removeTask(Task task) {
+        mTaskList.remove(task);
+    }
+
+    /**
+     * Clears the current task list.
+     */
+    void clearAllTasks() {
+        mTaskList.clear();
+    }
+
+    /**
+     * Loads task content for a list of tasks, including the label, icon, and thumbnail. For content
+     * that isn't cached, load the content asynchronously in the background.
      *
      * @param tasksToLoad list of tasks that need to load their content
-     * @param onLoadedCallback runnable to run after all tasks have loaded their content
+     * @param onFullyLoadedCallback runnable to run after all tasks have loaded their content
      */
     private void loadTaskContents(ArrayList<Task> tasksToLoad,
-            @Nullable Runnable onLoadedCallback) {
-        AtomicInteger loadRequestsCount = new AtomicInteger(0);
+            @Nullable Runnable onFullyLoadedCallback) {
+        // Make two load requests per task, one for the icon/title and one for the thumbnail.
+        AtomicInteger loadRequestsCount = new AtomicInteger(tasksToLoad.size() * 2);
+        Runnable itemLoadedRunnable = () -> {
+            if (loadRequestsCount.decrementAndGet() == 0 && onFullyLoadedCallback != null) {
+                onFullyLoadedCallback.run();
+            }
+        };
         for (Task task : tasksToLoad) {
+            // Load icon and title.
             int index = mTaskList.indexOf(task);
             if (index >= 0) {
                 // If we've already loaded the task and have its content then just copy it over.
                 Task loadedTask = mTaskList.get(index);
                 task.titleDescription = loadedTask.titleDescription;
                 task.icon = loadedTask.icon;
+                itemLoadedRunnable.run();
             } else {
                 // Otherwise, load the content in the background.
-                loadRequestsCount.getAndIncrement();
-                mRecentsModel.getIconCache().updateIconInBackground(task, loadedTask -> {
-                    if (loadRequestsCount.decrementAndGet() == 0 && onLoadedCallback != null) {
-                        onLoadedCallback.run();
-                    }
-                });
+                mRecentsModel.getIconCache().updateIconInBackground(task,
+                        loadedTask -> itemLoadedRunnable.run());
             }
-        }
-        if (loadRequestsCount.get() == 0 && onLoadedCallback != null) {
-            onLoadedCallback.run();
+
+            // Load the thumbnail. May return immediately and synchronously if the thumbnail is
+            // cached.
+            mRecentsModel.getThumbnailCache().updateThumbnailInBackground(task,
+                    thumbnail -> itemLoadedRunnable.run());
         }
     }
 }

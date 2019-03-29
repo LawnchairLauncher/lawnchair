@@ -56,27 +56,6 @@ import com.android.quickstep.util.LayoutUtils;
 @TargetApi(Build.VERSION_CODES.O)
 public class LauncherRecentsView extends RecentsView<Launcher> {
 
-    public static final FloatProperty<LauncherRecentsView> TRANSLATION_Y_FACTOR =
-            new FloatProperty<LauncherRecentsView>("translationYFactor") {
-
-                @Override
-                public void setValue(LauncherRecentsView view, float v) {
-                    view.setTranslationYFactor(v);
-                }
-
-                @Override
-                public Float get(LauncherRecentsView view) {
-                    return view.mTranslationYFactor;
-                }
-            };
-
-    /**
-     * A ratio representing the view's relative placement within its padded space. For example, 0
-     * is top aligned and 0.5 is centered vertically.
-     */
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private float mTranslationYFactor;
-
     private final TransformParams mTransformParams = new TransformParams();
     private ChipsContainer mChipsContainer;
 
@@ -95,18 +74,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
 
     @Override
     public void startHome() {
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            takeScreenshotAndFinishRecentsAnimation(true,
-                    () -> mActivity.getStateManager().goToState(NORMAL));
-        } else {
-            mActivity.getStateManager().goToState(NORMAL);
-        }
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        setTranslationYFactor(mTranslationYFactor);
+        mActivity.getStateManager().goToState(NORMAL);
     }
 
     @Override
@@ -117,19 +85,15 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
         params.bottomMargin = mActivity.getDeviceProfile().chipHintBottomMarginPx;
     }
 
-    public void setTranslationYFactor(float translationFactor) {
-        mTranslationYFactor = translationFactor;
-        setTranslationY(computeTranslationYForFactor(mTranslationYFactor));
+    @Override
+    public void setTranslationY(float translationY) {
+        super.setTranslationY(translationY);
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             LauncherState state = mActivity.getStateManager().getState();
             if (state == OVERVIEW || state == ALL_APPS) {
                 redrawLiveTile(false);
             }
         }
-    }
-
-    public float computeTranslationYForFactor(float translationYFactor) {
-        return translationYFactor * (getPaddingBottom() - getPaddingTop());
     }
 
     public void setHintVisibility(float v) {

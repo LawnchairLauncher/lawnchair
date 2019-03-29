@@ -188,9 +188,12 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
 
     private void setAlphas(LauncherState toState, AnimationConfig config,
             AnimatorSetBuilder builder) {
+        setAlphas(toState.getVisibleElements(mLauncher), config, builder);
+    }
+
+    public void setAlphas(int visibleElements, AnimationConfig config, AnimatorSetBuilder builder) {
         PropertySetter setter = config == null ? NO_ANIM_PROPERTY_SETTER
                 : config.getPropertySetter(builder);
-        int visibleElements = toState.getVisibleElements(mLauncher);
         boolean hasHeaderExtra = (visibleElements & ALL_APPS_HEADER_EXTRA) != 0;
         boolean hasContent = (visibleElements & ALL_APPS_CONTENT) != 0;
 

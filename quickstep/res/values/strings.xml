@@ -55,10 +55,6 @@
      escaped form of '<'). [CHAR LIMIT=15] -->
     <string name="shorter_duration_less_than_one_minute">&lt; 1 minute</string>
 
-    <!-- Annotation shown on an app card in Recents, telling that the app was switched to a
-    grayscale because it ran over its time limit [CHAR LIMIT=25] -->
-    <string name="app_in_grayscale">App in grayscale</string>
-
     <!-- Annotation shown on an app card in Recents, telling that the app has a usage limit set by
     the user, and a given time is left for it today [CHAR LIMIT=22] -->
     <string name="time_left_for_app"><xliff:g id="time" example="7 minutes">%1$s</xliff:g> left today</string>
