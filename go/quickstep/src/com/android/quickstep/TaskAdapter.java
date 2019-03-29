@@ -75,8 +75,20 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
             // Task list has updated.
             return;
         }
-        holder.bindTask(tasks.get(position));
-
+        Task task = tasks.get(position);
+        holder.bindTask(task);
+        mLoader.loadTaskIconAndLabel(task, () -> {
+            // Ensure holder still has the same task.
+            if (task.equals(holder.getTask())) {
+                holder.getTaskItemView().setIcon(task.icon);
+                holder.getTaskItemView().setLabel(task.titleDescription);
+            }
+        });
+        mLoader.loadTaskThumbnail(task, () -> {
+            if (task.equals(holder.getTask())) {
+                holder.getTaskItemView().setThumbnail(task.thumbnail.thumbnail);
+            }
+        });
     }
 
     @Override
