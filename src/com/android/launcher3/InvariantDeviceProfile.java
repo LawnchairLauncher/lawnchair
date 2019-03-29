@@ -543,7 +543,7 @@ public class InvariantDeviceProfile {
             canBeDefault = a.getBoolean(
                     R.styleable.ProfileDisplayOption_canBeDefault, false);
 
-            iconSize = a.getFloat(R.styleable.ProfileDisplayOption_iconSize, 0);
+            iconSize = a.getFloat(R.styleable.ProfileDisplayOption_iconImageSize, 0);
             landscapeIconSize = a.getFloat(R.styleable.ProfileDisplayOption_landscapeIconSize,
                     iconSize);
             iconTextSize = a.getFloat(R.styleable.ProfileDisplayOption_iconTextSize, 0);
