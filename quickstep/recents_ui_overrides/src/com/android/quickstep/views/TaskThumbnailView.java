@@ -46,6 +46,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
+import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.systemui.shared.recents.model.Task;
@@ -81,6 +82,7 @@ public class TaskThumbnailView extends View {
     private final Paint mBackgroundPaint = new Paint();
     private final Paint mClearPaint = new Paint();
     private final Paint mDimmingPaintAfterClearing = new Paint();
+    private final float mWindowCornerRadius;
 
     private final Matrix mMatrix = new Matrix();
 
@@ -114,6 +116,7 @@ public class TaskThumbnailView extends View {
         mDimmingPaintAfterClearing.setColor(Color.BLACK);
         mActivity = BaseActivity.fromContext(context);
         mIsDarkTextTheme = Themes.getAttrBoolean(mActivity, R.attr.isWorkspaceDarkText);
+        mWindowCornerRadius = RecentsModel.INSTANCE.get(context).getWindowCornerRadius();
     }
 
     public void bind(Task task) {
@@ -196,19 +199,22 @@ public class TaskThumbnailView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        float fullscreenProgress = ((TaskView) getParent()).getFullscreenProgress();
+        TaskView taskView = (TaskView) getParent();
+        float fullscreenProgress = taskView.getFullscreenProgress();
         if (mIsRotated) {
             // Don't show insets in the wrong orientation.
             fullscreenProgress = 0;
         }
         if (fullscreenProgress > 0) {
             // Draw the insets if we're being drawn fullscreen (we do this for quick switch).
+            float cornerRadius = Utilities.mapRange(fullscreenProgress, mCornerRadius,
+                    mWindowCornerRadius);
             drawOnCanvas(canvas,
                     -mScaledInsets.left * fullscreenProgress,
                     -mScaledInsets.top * fullscreenProgress,
                     getMeasuredWidth() + mScaledInsets.right * fullscreenProgress,
                     getMeasuredHeight() + mScaledInsets.bottom * fullscreenProgress,
-                    mCornerRadius);
+                    cornerRadius / taskView.getRecentsView().getScaleX());
         } else {
             drawOnCanvas(canvas, 0, 0, getMeasuredWidth(), getMeasuredHeight(), mCornerRadius);
         }
