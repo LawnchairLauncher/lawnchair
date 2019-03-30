@@ -42,6 +42,8 @@
         android:layout_marginStart="52dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
+        android:inputType="textCapWords"
+        android:selectAllOnFocus="true"
         android:singleLine="true"
         style="@style/TextAppearance.AppCompat.Title"
         tools:text="Favorites"
