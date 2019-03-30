@@ -173,8 +173,10 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
 
         // Keep recents visible throughout the animation.
         SurfaceParams[] params = new SurfaceParams[2];
+        // Closing app should stay on top.
+        int boostedMode = MODE_CLOSING;
         params[0] = new SurfaceParams(recentsTarget.leash, 1f, null /* matrix */,
-                null /* windowCrop */, getLayer(recentsTarget, MODE_OPENING), 0 /* cornerRadius */);
+                null /* windowCrop */, getLayer(recentsTarget, boostedMode), 0 /* cornerRadius */);
 
         valueAnimator.addUpdateListener(new MultiValueUpdateListener() {
             private final FloatProp mScaleX;
@@ -214,7 +216,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
                 m.postTranslate(mTranslationX.value, mTranslationY.value);
 
                 params[1] = new SurfaceParams(appTarget.leash, mAlpha.value, m,
-                        null /* windowCrop */, getLayer(appTarget, MODE_CLOSING),
+                        null /* windowCrop */, getLayer(appTarget, boostedMode),
                         0 /* cornerRadius */);
                 surfaceApplier.scheduleApply(params);
             }
