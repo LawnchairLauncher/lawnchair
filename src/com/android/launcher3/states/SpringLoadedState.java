@@ -41,7 +41,7 @@ public class SpringLoadedState extends LauncherState {
     }
 
     @Override
-    public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
+    public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
         DeviceProfile grid = launcher.getDeviceProfile();
         Workspace ws = launcher.getWorkspace();
         if (ws.getChildCount() == 0) {
@@ -50,7 +50,7 @@ public class SpringLoadedState extends LauncherState {
 
         if (grid.isVerticalBarLayout()) {
             float scale = grid.workspaceSpringLoadShrinkFactor;
-            return new float[] {scale, 0, 0};
+            return new ScaleAndTranslation(scale, 0, 0);
         }
 
         float scale = grid.workspaceSpringLoadShrinkFactor;
@@ -69,12 +69,12 @@ public class SpringLoadedState extends LauncherState {
         float myCenter = ws.getTop() + halfHeight;
         float cellTopFromCenter = halfHeight - ws.getChildAt(0).getTop();
         float actualCellTop = myCenter - cellTopFromCenter * scale;
-        return new float[] { scale, 0, (desiredCellTop - actualCellTop) / scale};
+        return new ScaleAndTranslation(scale, 0, (desiredCellTop - actualCellTop) / scale);
     }
 
     @Override
-    public float[] getHotseatScaleAndTranslation(Launcher launcher) {
-        return new float[] {1, 0, 0};
+    public ScaleAndTranslation getHotseatScaleAndTranslation(Launcher launcher) {
+        return new ScaleAndTranslation(1, 0, 0);
     }
 
     @Override

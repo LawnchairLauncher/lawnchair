@@ -33,7 +33,7 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Fes doble toc i mantén premut per seleccionar un widget o per utilitzar les accions personalitzades."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d d\'amplada per %2$d d\'alçada"</string>
-    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Toca i mantén premut l\'element per col·locar-lo manualment"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Mantén premut l\'element per afegir-lo manualment"</string>
     <string name="place_automatically" msgid="8064208734425456485">"Afegeix automàticament"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Cerca aplicacions"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"S\'estan carregant les aplicacions…"</string>

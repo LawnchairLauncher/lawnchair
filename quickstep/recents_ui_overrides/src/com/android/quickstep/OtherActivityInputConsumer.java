@@ -284,11 +284,13 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private boolean isNavBarOnRight() {
-        return mDisplayRotation == Surface.ROTATION_90 && mStableInsets.right > 0;
+        return !NavBarModeOverlayResourceObserver.isEdgeToEdgeModeEnabled(getBaseContext())
+                && mDisplayRotation == Surface.ROTATION_90 && mStableInsets.right > 0;
     }
 
     private boolean isNavBarOnLeft() {
-        return mDisplayRotation == Surface.ROTATION_270 && mStableInsets.left > 0;
+        return !NavBarModeOverlayResourceObserver.isEdgeToEdgeModeEnabled(getBaseContext())
+                && mDisplayRotation == Surface.ROTATION_270 && mStableInsets.left > 0;
     }
 
     private void startTouchTrackingForWindowAnimation(long touchTimeMs) {

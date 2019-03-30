@@ -145,7 +145,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         assertFalse(mDevice.findObject(new UiSelector().description(info.label)).exists());
     }
 
-    @Test
+    @Test @Ignore
     public void testPendingWidget_autoRestored() {
         // A non-restored widget with no config screen gets restored automatically.
         LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);

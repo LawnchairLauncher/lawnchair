@@ -16,8 +16,6 @@
 
 package com.android.quickstep;
 
-import static android.content.Intent.ACTION_OVERLAY_CHANGED;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -34,6 +32,7 @@ public class NavBarModeOverlayResourceObserver extends BroadcastReceiver {
 
     private static final String TAG = "NavBarModeOverlayResourceObserver";
 
+    private final String ACTION_OVERLAY_CHANGED = "android.intent.action.OVERLAY_CHANGED";
     private static final String NAV_BAR_INTERACTION_MODE_RES_NAME =
             "config_navBarInteractionMode";
 
@@ -68,6 +67,11 @@ public class NavBarModeOverlayResourceObserver extends BroadcastReceiver {
 
     public static boolean isEdgeToEdgeModeEnabled(Context context) {
         return QuickStepContract.isGesturalMode(getSystemIntegerRes(context,
+                NAV_BAR_INTERACTION_MODE_RES_NAME));
+    }
+
+    public static boolean isLegacyModeEnabled(Context context) {
+        return QuickStepContract.isLegacyMode(getSystemIntegerRes(context,
                 NAV_BAR_INTERACTION_MODE_RES_NAME));
     }
 

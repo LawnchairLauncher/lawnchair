@@ -851,16 +851,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             Interpolator interpolator, GestureEndTarget target, PointF velocityPxPerMs) {
         mGestureEndTarget = target;
 
-        if (mGestureEndTarget.canBeContinued) {
-            // Because we might continue this gesture, e.g. for consecutive quick switch, we need to
-            // stabilize the task list so that tasks don't rearrange in the middle of the gesture.
-            RecentsModel.INSTANCE.get(mContext).startStabilizationSession();
-        } else if (mGestureEndTarget.isLauncher) {
-            // Otherwise, if we're going to home or overview,
-            // we reset the tasks to a consistent start state.
-            RecentsModel.INSTANCE.get(mContext).endStabilizationSession();
-        }
-
         if (mGestureEndTarget == HOME) {
             HomeAnimationFactory homeAnimFactory;
             if (mActivity != null) {
@@ -1003,10 +993,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         // Launch the task user scrolled to (mRecentsView.getNextPage()).
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             // We finish recents animation inside launchTask() when live tile is enabled.
-            mRecentsView.getTaskViewAt(mRecentsView.getNextPage()).launchTask(false);
+            mRecentsView.getTaskViewAt(mRecentsView.getNextPage()).launchTask(false /* animate */,
+                    true /* freezeTaskList */);
         } else {
             mRecentsAnimationWrapper.finish(true /* toRecents */, () -> {
-                mRecentsView.getTaskViewAt(mRecentsView.getNextPage()).launchTask(false);
+                mRecentsView.getTaskViewAt(mRecentsView.getNextPage()).launchTask(
+                        false /* animate */, true /* freezeTaskList */);
             });
         }
         TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", false);

@@ -44,10 +44,13 @@ public final class OverviewTask {
      * Swipes the task up.
      */
     public void dismiss() {
-        verifyActiveContainer();
-        // Dismiss the task via flinging it up.
-        mTask.fling(Direction.DOWN, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
-        mLauncher.waitForIdle();
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to dismiss a task")) {
+            verifyActiveContainer();
+            // Dismiss the task via flinging it up.
+            mTask.fling(Direction.DOWN, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
+            mLauncher.waitForIdle();
+        }
     }
 
     /**
@@ -55,7 +58,7 @@ public final class OverviewTask {
      */
     public Background open() {
         verifyActiveContainer();
-        LauncherInstrumentation.assertTrue("Launching task didn't open a new window: " +
+        mLauncher.assertTrue("Launching task didn't open a new window: " +
                         mTask.getParent().getContentDescription(),
                 mTask.clickAndWait(Until.newWindow(), LauncherInstrumentation.WAIT_TIME_MS));
         return new Background(mLauncher);
