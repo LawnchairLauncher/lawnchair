@@ -73,7 +73,7 @@ class CustomFontManager(private val context: Context) {
     private val allAppsFont = FontPref("pref_font_allApps", launcherCondensed)
     private val folderFont = FontPref("pref_font_folder", launcherCondensed)
     private val actionFont = FontPref("pref_font_action", launcherCondensed)
-    private val drawerTab = FontPref("pref_font_drawerTab", launcherMedium)
+    private val drawerTab = FontPref("pref_font_drawerTab", uiMedium)
 
     private val deepShortcutFont = FontPref("pref_font_deepShortcut", launcherRegular)
     private val systemShortcutFont = FontPref("pref_font_systemShortcut", launcherRegular)

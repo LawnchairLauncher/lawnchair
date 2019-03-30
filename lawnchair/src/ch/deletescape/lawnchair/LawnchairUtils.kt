@@ -615,12 +615,24 @@ fun Context.resourcesForApplication(packageName: String): Resources? {
     }
 }
 
-fun ViewGroup.setCustomFont(type: Int) {
+fun ViewGroup.setCustomFont(type: Int, allCaps: Boolean? = null) {
     forEachChild {
         if (it is ViewGroup) {
-            it.setCustomFont(type)
+            it.setCustomFont(type, allCaps)
         } else if (it is TextView) {
             it.setCustomFont(type)
+            if (allCaps != null) {
+                it.isAllCaps = allCaps
+            }
         }
     }
+}
+
+fun getTabRipple(context: Context, accent: Int): ColorStateList {
+    return ColorStateList(arrayOf(
+            intArrayOf(android.R.attr.state_selected),
+            intArrayOf()),
+            intArrayOf(
+                    ColorUtils.setAlphaComponent(accent, 31),
+                    context.getColorAttr(android.R.attr.colorControlHighlight)))
 }

@@ -28,6 +28,7 @@ import android.widget.*
 import ch.deletescape.lawnchair.ViewPagerAdapter
 import ch.deletescape.lawnchair.colors.*
 import ch.deletescape.lawnchair.font.CustomFontManager
+import ch.deletescape.lawnchair.getTabRipple
 import ch.deletescape.lawnchair.setCustomFont
 import com.android.launcher3.R
 import kotlinx.android.synthetic.main.tabbed_color_picker.view.*
@@ -94,9 +95,9 @@ class TabbedPickerView(context: Context, val key: String, initialColor: Int,
         viewPager.childFilter = { it is ChromaView }
         tabLayout.setupWithViewPager(viewPager)
         val color = engine.accent
-        tabLayout.tabRippleColor = ColorStateList.valueOf(color)
+        tabLayout.tabRippleColor = getTabRipple(context, color)
         tabLayout.setSelectedTabIndicatorColor(color)
-        tabLayout.setCustomFont(CustomFontManager.FONT_BUTTON)
+        tabLayout.setCustomFont(CustomFontManager.FONT_BUTTON, false)
         if (isCustom) {
             viewPager.currentItem = 1
         }

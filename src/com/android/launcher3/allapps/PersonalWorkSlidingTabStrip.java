@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -66,9 +67,8 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     private int mLastActivePage = 0;
     private boolean mIsRtl;
 
-    private int mTextColorTertiary;
-
     private ArgbEvaluator mArgbEvaluator = new ArgbEvaluator();
+    private Path mIndicatorPath = new Path();
 
     public PersonalWorkSlidingTabStrip(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -88,7 +88,6 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         mSharedPreferences = Launcher.getLauncher(getContext()).getSharedPrefs();
         mIsRtl = Utilities.isRtl(getResources());
 
-        mTextColorTertiary = Themes.getAttrColor(getContext(), android.R.attr.textColorTertiary);
         ColorEngine.getInstance(context)
                 .addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT);
     }
@@ -102,7 +101,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         mSelectedPosition = pos;
         for (int i = 0; i < getChildCount(); i++) {
             ColoredButton tab = (ColoredButton) getChildAt(i);
-            tab.setTextColor(pos == i ? tab.getColor() : mTextColorTertiary);
+            tab.setSelected(pos == i);
         }
     }
 
@@ -113,11 +112,50 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         }
     }
 
+    private int getChildWidth() {
+        int width = 0;
+        for (int i = 0; i < getChildCount(); i++) {
+            width += getChildAt(i).getMeasuredWidth();
+        }
+        return width;
+    }
+
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
+        int childWidth = getChildWidth();
+        if (childWidth < getMeasuredWidth()) {
+            boolean isLayoutRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
+            int count = getChildCount();
+            int start = 0;
+            int dir = 1;
+            //In case of RTL, start drawing from the last child.
+            if (isLayoutRtl) {
+                start = count - 1;
+                dir = -1;
+            }
+
+            int horizontalPadding = getPaddingLeft() + getPaddingRight();
+            int padding = (getMeasuredWidth() - childWidth - horizontalPadding) / (count + 1);
+            int left = getPaddingLeft();
+
+            for (int i = 0; i < count; i++) {
+                final int childIndex = start + dir * i;
+                View child = getChildAt(childIndex);
+
+                left += padding;
+                setChildFrame(child, left, getPaddingTop(), child.getMeasuredWidth(), child.getMeasuredHeight());
+                left += child.getMeasuredWidth();
+            }
+        } else {
+            super.onLayout(changed, l, t, r, b);
+        }
+
         updateTabTextColor(mSelectedPosition);
         updateIndicatorPosition(mScrollOffset);
+    }
+
+    private void setChildFrame(View child, int left, int top, int width, int height) {
+        child.layout(left, top, left + width, top + height);
     }
 
     private void updateIndicatorPosition() {
@@ -129,8 +167,18 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         ColoredButton leftTab = (ColoredButton) getChildAt(leftIndex);
         ColoredButton rightTab = (ColoredButton) getChildAt(leftIndex + 1);
         if (leftTab != null && rightTab != null) {
-            left = (int) (leftTab.getLeft() + leftTab.getWidth() * leftFraction);
-            right = (int) (rightTab.getRight() - (rightTab.getWidth() * rightFraction));
+            int leftWidth = leftTab.getWidth();
+            int rightWidth = rightTab.getWidth();
+            float width = leftWidth + (rightWidth - leftWidth) * leftFraction;
+            float halfWidth = width / 2;
+
+            float leftCenter = leftTab.getLeft() + leftWidth / 2f;
+            float rightCenter = rightTab.getLeft() + rightWidth / 2f;
+            float dis = rightCenter - leftCenter;
+            float center = leftCenter + (int) (dis * leftFraction);
+            left = (int) (center - halfWidth);
+            right = (int) (center + halfWidth);
+
             int leftColor = leftTab.getColor();
             int rightColor = rightTab.getColor();
             if (leftColor == rightColor) {
@@ -182,10 +230,23 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        float y = getHeight() - mDividerPaint.getStrokeWidth();
+        float y = getHeight() - mDividerPaint.getStrokeWidth() / 2;
         canvas.drawLine(getPaddingLeft(), y, getWidth() - getPaddingRight(), y, mDividerPaint);
-        canvas.drawRect(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight,
+        drawIndicator(canvas, mIndicatorLeft, getHeight() - mSelectedIndicatorHeight,
                 mIndicatorRight, getHeight(), mSelectedIndicatorPaint);
+    }
+
+    private void drawIndicator(Canvas canvas, int l, int t, int r, int b, Paint paint) {
+        l = Math.max(l, getPaddingLeft());
+        r = Math.min(r, getWidth() - getPaddingRight());
+        paint.setAntiAlias(true);
+        mIndicatorPath.reset();
+        mIndicatorPath.moveTo(l, b);
+        mIndicatorPath.quadTo(l, t, l + mSelectedIndicatorHeight, t);
+        mIndicatorPath.lineTo(r - mSelectedIndicatorHeight, t);
+        mIndicatorPath.quadTo(r, t, r, b);
+        mIndicatorPath.lineTo(r, b);
+        canvas.drawPath(mIndicatorPath, paint);
     }
 
     public void highlightWorkTabIfNecessary() {
@@ -243,31 +304,6 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         invalidate();
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        for (int i = 0; i < getChildCount(); i++) {
-            View child = getChildAt(i);
-            LayoutParams lp = (LayoutParams) child.getLayoutParams();
-            lp.width = LayoutParams.WRAP_CONTENT;
-            lp.weight = 0;
-        }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int used = 0;
-        for (int i = 0; i < getChildCount(); i++) {
-            View child = getChildAt(i);
-            used += child.getMeasuredWidth();
-        }
-        if (used < getMeasuredWidth()) {
-            for (int i = 0; i < getChildCount(); i++) {
-                View child = getChildAt(i);
-                LayoutParams lp = (LayoutParams) child.getLayoutParams();
-                lp.width = 0;
-                lp.weight = 1;
-            }
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        }
-    }
-
     void inflateButtons(AllAppsTabs tabs) {
         int childCount = getChildCount();
         int count = tabs.getCount();
@@ -282,7 +318,6 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
             Tab tab = tabs.get(i);
             ColoredButton button = (ColoredButton) getChildAt(i);
             button.setColorResolver(tab.getDrawerTab().getColorResolver());
-            button.reset();
             button.setText(tab.getName());
             button.setOnLongClickListener(v -> {
                 DrawerTabs.Tab drawerTab = tab.getDrawerTab();

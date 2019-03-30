@@ -18,33 +18,48 @@
 package ch.deletescape.lawnchair.views
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.drawable.RippleDrawable
 import android.util.AttributeSet
 import android.widget.Button
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.font.CustomFontManager
+import ch.deletescape.lawnchair.getTabRipple
 
 class ColoredButton(context: Context, attrs: AttributeSet) : Button(context, attrs) {
 
-    private var resolved = false
-
     var colorResolver: ColorEngine.ColorResolver = ColorEngine.getInstance(context).accentResolver
-    var color: Int = 0
-        private set(value) {
-            field = value
-        }
-        get() {
-            if (!resolved) {
-                field = colorResolver.resolveColor()
-                resolved = true
+        set(value) {
+            if (field != value) {
+                field = value
+                reset()
             }
-            return field
         }
+    var color: Int = 0
+
+    private val defaultColor = currentTextColor
 
     init {
         CustomFontManager.getInstance(context).loadCustomFont(this, attrs)
     }
 
     fun reset() {
-        resolved = false
+        color = colorResolver.resolveColor()
+        setTextColor()
+        setRippleColor()
+    }
+
+    private fun setTextColor() {
+        val stateList = ColorStateList(arrayOf(
+                intArrayOf(android.R.attr.state_selected),
+                intArrayOf()),
+                intArrayOf(
+                        color,
+                        defaultColor))
+        setTextColor(stateList)
+    }
+
+    private fun setRippleColor() {
+        background = RippleDrawable(getTabRipple(context, color), null, null)
     }
 }
