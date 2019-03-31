@@ -42,6 +42,7 @@ import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
+import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
@@ -209,12 +210,12 @@ public class FolderInfo extends ItemInfo {
         int iconSize = launcher.mDeviceProfile.iconSizePx;
         FrameLayout dummy = new FrameLayout(launcher, null);
         FolderIcon icon = FolderIcon.fromXml(R.layout.folder_icon, launcher, dummy, this);
-        final Bitmap b = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(b);
-        c.translate(iconSize / 2f, 0);
-        // TODO: make folder icons more visible in front of the bottom sheet
-        //c.drawColor(Color.RED);
-        icon.draw(c);
+        Bitmap b = BitmapRenderer.createHardwareBitmap(iconSize, iconSize, out -> {
+            out.translate(iconSize / 2f, 0);
+            // TODO: make folder icons more visible in front of the bottom sheet
+            // out.drawColor(Color.RED);
+            icon.draw(out);
+        });
         return new BitmapDrawable(launcher.getResources(), b);
     }
 
