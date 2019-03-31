@@ -25,9 +25,13 @@ interface ControlledPreference {
 
     val controller: PreferenceController?
 
-    class Delegate(private val context: Context) : ControlledPreference {
+    class Delegate(private val context: Context, attrs: AttributeSet?) : ControlledPreference {
 
         override var controller: PreferenceController? = null
+
+        init {
+            parseAttributes(attrs)
+        }
 
         fun parseAttributes(attrs: AttributeSet?) {
             if (attrs == null) return

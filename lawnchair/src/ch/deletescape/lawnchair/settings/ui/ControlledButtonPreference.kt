@@ -22,13 +22,5 @@ import android.util.AttributeSet
 import com.android.launcher3.views.ButtonPreference
 
 class ControlledButtonPreference(context: Context, attrs: AttributeSet?) :
-        ButtonPreference(context, attrs), ControlledPreference {
-
-    private val delegate = ControlledPreference.Delegate(context)
-
-    override val controller = delegate.controller
-
-    init {
-        delegate.parseAttributes(attrs)
-    }
-}
+        ButtonPreference(context, attrs),
+        ControlledPreference by ControlledPreference.Delegate(context, attrs)

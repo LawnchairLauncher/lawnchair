@@ -35,20 +35,14 @@ import java.lang.IllegalStateException
 @Keep
 class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int): PreferenceGroup(context, attrs, defStyleAttr, defStyleRes),
         ValueAnimator.AnimatorUpdateListener,
-        ControlledPreference {
+        ControlledPreference by ControlledPreference.Delegate(context, attrs) {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
     private val hasSummary: Boolean
     private var bound: Boolean = false
 
-    private val delegate = ControlledPreference.Delegate(context)
-
-    override val controller get() = delegate.controller
-
     init {
-        delegate.parseAttributes(attrs)
-
         layoutResource = R.layout.preference_expandable
 
         val ta = context.obtainStyledAttributes(attrs, R.styleable.AdvancedPreferencesGroup)

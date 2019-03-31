@@ -22,13 +22,5 @@ import android.support.v7.preference.ListPreference
 import android.util.AttributeSet
 
 class ControlledListPreference(context: Context, attrs: AttributeSet?) :
-        ListPreference(context, attrs), ControlledPreference {
-
-    private val delegate = ControlledPreference.Delegate(context)
-
-    override val controller get() = delegate.controller
-
-    init {
-        delegate.parseAttributes(attrs)
-    }
-}
+        ListPreference(context, attrs),
+        ControlledPreference by ControlledPreference.Delegate(context, attrs)

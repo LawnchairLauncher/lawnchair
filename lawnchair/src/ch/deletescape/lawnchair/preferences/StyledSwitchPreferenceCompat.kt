@@ -37,18 +37,11 @@ import ch.deletescape.lawnchair.settings.ui.search.SearchIndex
 import com.android.launcher3.util.Themes
 
 open class StyledSwitchPreferenceCompat @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
-        SwitchPreference(context, attrs), ColorEngine.OnColorChangeListener, ControlledPreference, SearchIndex.Slice {
+        SwitchPreference(context, attrs), ColorEngine.OnColorChangeListener,
+        ControlledPreference by ControlledPreference.Delegate(context, attrs), SearchIndex.Slice {
 
     protected var checkableView: View? = null
         private set
-
-    private val delegate = ControlledPreference.Delegate(context)
-
-    override val controller get() = delegate.controller
-
-    init {
-        delegate.parseAttributes(attrs)
-    }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder?) {
         super.onBindViewHolder(holder)
