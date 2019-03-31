@@ -96,6 +96,7 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
         private val summary: TextView = itemView.findViewById(R.id.summary)
         private val edit: ImageView = itemView.findViewById(R.id.edit)
         private val delete: ImageView = itemView.findViewById(R.id.delete)
+        private var deleted = false
 
         init {
             itemView.findViewById<View>(R.id.drag_handle).setOnTouchListener { _, event ->
@@ -122,14 +123,18 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
                 val size = info.contents.size
                 summary.text = context.resources.getQuantityString(R.plurals.tab_apps_count, size, size)
             }
+            deleted = false
         }
 
         private fun startEdit() {
+            if (deleted) return
             val tab = tabs[adapterPosition] as? DrawerTabs.CustomTab ?: return
             DrawerTabEditBottomSheet.edit(context, tab)
         }
 
         private fun delete() {
+            if (deleted) return
+            deleted = true
             tabs.removeAt(adapterPosition)
             notifyItemRemoved(adapterPosition)
             saved = false
