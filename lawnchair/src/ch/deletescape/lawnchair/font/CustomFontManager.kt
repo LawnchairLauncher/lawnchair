@@ -43,30 +43,12 @@ class CustomFontManager(private val context: Context) {
 
     private val fontName = context.lawnchairPrefs.customFontName
 
-    private var uiRegular: FontCache.Font
-    private var uiMedium: FontCache.Font
+    private val uiRegular = FontCache.GoogleFont(context, fontName)
+    private val uiMedium = FontCache.GoogleFont(context, fontName, VARIANT_MEDIUM)
 
-    private var launcherRegular: FontCache.Font
-    private var launcherMedium: FontCache.Font
-    private var launcherCondensed: FontCache.Font
-
-    init {
-        if (prefs.showFools) {
-            uiRegular = FontCache.AssetFont(context.assets, "Comic Sans MS")
-            uiMedium = FontCache.AssetFont(context.assets, "Comic Sans MS Bold")
-
-            launcherRegular = uiRegular
-            launcherMedium = uiMedium
-            launcherCondensed = uiRegular
-        } else {
-            uiRegular = FontCache.GoogleFont(context, fontName)
-            uiMedium = FontCache.GoogleFont(context, fontName, VARIANT_MEDIUM)
-
-            launcherRegular = FontCache.SystemFont("sans-serif")
-            launcherMedium = FontCache.SystemFont("sans-serif-medium")
-            launcherCondensed = FontCache.SystemFont("sans-serif-condensed")
-        }
-    }
+    private val launcherRegular = FontCache.SystemFont("sans-serif")
+    private val launcherMedium = FontCache.SystemFont("sans-serif-medium")
+    private val launcherCondensed = FontCache.SystemFont("sans-serif-condensed")
 
     private val smartspaceTextFont = FontPref("pref_font_smartspaceText", uiRegular)
     private val workspaceFont = FontPref("pref_font_workspace", launcherCondensed)
