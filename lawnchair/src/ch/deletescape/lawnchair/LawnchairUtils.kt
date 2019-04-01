@@ -49,6 +49,7 @@ import android.view.animation.Interpolator
 import android.widget.*
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.font.CustomFontManager
+import ch.deletescape.lawnchair.util.JSONMap
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
@@ -62,6 +63,7 @@ import com.android.systemui.shared.recents.model.TaskStack
 import com.google.android.apps.nexuslauncher.CustomAppPredictor
 import com.google.android.apps.nexuslauncher.CustomIconUtils
 import org.json.JSONArray
+import org.json.JSONObject
 import org.xmlpull.v1.XmlPullParser
 import java.lang.reflect.Field
 import java.util.*
@@ -636,3 +638,9 @@ fun getTabRipple(context: Context, accent: Int): ColorStateList {
                     ColorUtils.setAlphaComponent(accent, 31),
                     context.getColorAttr(android.R.attr.colorControlHighlight)))
 }
+
+fun JSONObject.getNullable(key: String): Any? {
+    return opt(key)
+}
+
+fun JSONObject.asMap() = JSONMap(this)

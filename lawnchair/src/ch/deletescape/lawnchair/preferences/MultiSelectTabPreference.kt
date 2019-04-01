@@ -30,7 +30,7 @@ import android.widget.CheckedTextView
 import ch.deletescape.lawnchair.addOrRemove
 import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.lawnchairPrefs
-import ch.deletescape.lawnchair.settings.DrawerTabs
+import ch.deletescape.lawnchair.groups.DrawerTabs
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
@@ -39,7 +39,7 @@ class MultiSelectTabPreference(context: Context, attrs: AttributeSet?) : Recycle
 
     lateinit var componentKey: ComponentKey
     private val selections = mutableMapOf<DrawerTabs.CustomTab, Boolean>()
-    private val tabs = context.lawnchairPrefs.drawerTabs.getTabs().mapNotNull { it as? DrawerTabs.CustomTab }
+    private val tabs = context.lawnchairPrefs.drawerTabs.getGroups().mapNotNull { it as? DrawerTabs.CustomTab }
     var edited = false
         private set(value) {
             field = value
@@ -55,7 +55,7 @@ class MultiSelectTabPreference(context: Context, attrs: AttributeSet?) : Recycle
 
         builder.setPositiveButton(android.R.string.ok) { _, _ ->
             tabs.forEach {
-                if (it.contents.addOrRemove(componentKey, selections[it] == true)) {
+                if (it.contents.value().addOrRemove(componentKey, selections[it] == true)) {
                     edited = true
                 }
             }
@@ -73,7 +73,7 @@ class MultiSelectTabPreference(context: Context, attrs: AttributeSet?) : Recycle
 
     fun loadSummary() {
         val added = tabs
-                .filter { it.contents.contains(componentKey) }
+                .filter { it.contents.value().contains(componentKey) }
                 .map { it.title }
         summary = if (!added.isEmpty()) {
             TextUtils.join(", ", added)
@@ -86,7 +86,7 @@ class MultiSelectTabPreference(context: Context, attrs: AttributeSet?) : Recycle
 
         init {
             tabs.forEach {
-                selections[it] = it.contents.contains(componentKey)
+                selections[it] = it.contents.value().contains(componentKey)
             }
         }
 

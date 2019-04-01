@@ -26,8 +26,9 @@ import android.widget.*
 import ch.deletescape.lawnchair.applyColor
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.colors.preferences.TabbedPickerView
+import ch.deletescape.lawnchair.groups.AppGroupsUtils
 import ch.deletescape.lawnchair.lawnchairPrefs
-import ch.deletescape.lawnchair.settings.DrawerTabs
+import ch.deletescape.lawnchair.groups.DrawerTabs
 import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheet
 import ch.deletescape.lawnchair.tintDrawable
 import ch.deletescape.lawnchair.views.BaseBottomSheet
@@ -155,7 +156,7 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
             var colorResolver: ColorEngine.ColorResolver,
             val drawerTab: DrawerTabs.Tab? = null) {
         constructor(tab: DrawerTabs.CustomTab) :
-                this(tab.title, tab.hideFromAllApps, HashSet(tab.contents), tab.colorResolver, tab)
+                this(tab.title, tab.hideFromAllApps.value(), HashSet(tab.contents.value), tab.colorResolver.value(), tab)
         constructor(config: TabConfig) :
                 this(config.title, config.hideFromMain, HashSet(config.contents), config.colorResolver, config.drawerTab)
     }
@@ -184,7 +185,7 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
 
         fun newTab(context: Context, callback: (TabConfig) -> Unit) {
             val config = TabConfig(context.getString(R.string.default_tab_name), true, mutableSetOf(),
-                    context.lawnchairPrefs.drawerTabs.defaultColorResolver)
+                    AppGroupsUtils.getInstance(context).defaultColorResolver)
             show(context, config) {
                 callback(config)
             }
@@ -196,10 +197,9 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
             show(context, config) {
                 if (oldConfig != config) {
                     tab.title = config.title
-                    tab.colorResolver = config.colorResolver
-                    tab.hideFromAllApps = config.hideFromMain
-                    tab.contents.clear()
-                    tab.contents.addAll(config.contents)
+                    tab.colorResolver.value = config.colorResolver
+                    tab.hideFromAllApps.value = config.hideFromMain
+                    tab.contents.value = config.contents
                     context.lawnchairPrefs.drawerTabs.saveToJson()
                 }
             }
@@ -216,10 +216,9 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
             show(launcher, config, {
                 if (oldConfig != config) {
                     tab.title = config.title
-                    tab.colorResolver = config.colorResolver
-                    tab.hideFromAllApps = config.hideFromMain
-                    tab.contents.clear()
-                    tab.contents.addAll(config.contents)
+                    tab.colorResolver.value = config.colorResolver
+                    tab.hideFromAllApps.value = config.hideFromMain
+                    tab.contents.value = config.contents
                     launcher.lawnchairPrefs.drawerTabs.saveToJson()
                 }
             }, animate)

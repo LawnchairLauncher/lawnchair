@@ -18,8 +18,6 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
-import android.os.Bundle
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.*
@@ -28,9 +26,7 @@ import android.widget.TextView
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.lawnchairPrefs
-import ch.deletescape.lawnchair.settings.DrawerTabs
-import ch.deletescape.lawnchair.settings.ui.SettingsActivity
-import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheetDialog
+import ch.deletescape.lawnchair.groups.DrawerTabs
 import ch.deletescape.lawnchair.tintDrawable
 import com.android.launcher3.R
 import com.android.launcher3.compat.UserManagerCompat
@@ -59,7 +55,11 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
     }
 
     fun addTab(config: DrawerTabEditBottomSheet.TabConfig) {
-        val tab = DrawerTabs.CustomTab(config.title, config.hideFromMain, config.contents, config.colorResolver)
+        val tab = DrawerTabs.CustomTab(context)
+        tab.title = config.title
+        tab.hideFromAllApps.value = config.hideFromMain
+        tab.contents.value = config.contents
+        tab.colorResolver.value = config.colorResolver
         tabs.add(tab)
         notifyItemInserted(tabs.size - 1)
         saved = false
@@ -68,16 +68,16 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
     fun reloadTabs() {
         tabs.clear()
         if (hasWorkApps) {
-            tabs.addAll(drawerTabs.getTabs())
+            tabs.addAll(drawerTabs.getGroups())
         } else {
-            tabs.addAll(drawerTabs.getTabs().filter { it !is DrawerTabs.WorkTab })
+            tabs.addAll(drawerTabs.getGroups().filter { it !is DrawerTabs.WorkTab })
         }
         notifyDataSetChanged()
     }
 
     fun saveChanges() {
         if (saved) return
-        drawerTabs.setTabs(tabs)
+        drawerTabs.setGroups(tabs)
         drawerTabs.saveToJson()
         saved = true
     }
@@ -120,7 +120,7 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
             delete.isVisible = info is DrawerTabs.CustomTab
             delete.tintDrawable(accent)
             if (info is DrawerTabs.CustomTab) {
-                val size = info.contents.size
+                val size = info.contents.value().size
                 summary.text = context.resources.getQuantityString(R.plurals.tab_apps_count, size, size)
             }
             deleted = false

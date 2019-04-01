@@ -21,7 +21,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import ch.deletescape.lawnchair.LawnchairAppFilter
 import ch.deletescape.lawnchair.lawnchairPrefs
-import ch.deletescape.lawnchair.settings.DrawerTabs
+import ch.deletescape.lawnchair.groups.DrawerTabs
 import com.android.launcher3.util.ComponentKey
 
 class DrawerTabEditFragment : RecyclerViewFragment(), SelectableAppsAdapter.Callback {
@@ -29,7 +29,7 @@ class DrawerTabEditFragment : RecyclerViewFragment(), SelectableAppsAdapter.Call
     private var tabContents: Set<String> = emptySet()
     private val tabIndex by lazy { arguments!!.getInt(EXTRA_INDEX) }
     private val drawerTabs by lazy { activity!!.lawnchairPrefs.drawerTabs }
-    private val tab by lazy { drawerTabs.getTabs()[tabIndex] as DrawerTabs.CustomTab }
+    private val tab by lazy { drawerTabs.getGroups()[tabIndex] as DrawerTabs.CustomTab }
 
     override fun onRecyclerViewCreated(recyclerView: RecyclerView) {
         tabContents = loadContents()
@@ -44,14 +44,14 @@ class DrawerTabEditFragment : RecyclerViewFragment(), SelectableAppsAdapter.Call
     }
 
     private fun loadContents(): Set<String> {
-        return tab.contents.map { it.toString() }.toSet()
+        return tab.contents.value().map { it.toString() }.toSet()
     }
 
     override fun onPause() {
         super.onPause()
 
-        tab.contents.clear()
-        tabContents.mapTo(tab.contents) { ComponentKey(activity!!, it ) }
+        tab.contents.value().clear()
+        tabContents.mapTo(tab.contents.value()) { ComponentKey(activity!!, it ) }
         drawerTabs.saveToJson()
     }
 

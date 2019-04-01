@@ -37,7 +37,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
-import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.gestures.BlankGestureHandler;
 import ch.deletescape.lawnchair.gestures.GestureHandler;
 import ch.deletescape.lawnchair.gestures.ui.LauncherGesturePreference;
@@ -209,7 +208,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 screen.removePreference(mPrefHide);
             }
 
-            if (!isApp || prefs.getDrawerTabs().getTabs().isEmpty()) {
+            if (!isApp || prefs.getDrawerTabs().getGroups().isEmpty()) {
                 screen.removePreference(mTabsPref);
             } else {
                 mTabsPref.setComponentKey(mKey);

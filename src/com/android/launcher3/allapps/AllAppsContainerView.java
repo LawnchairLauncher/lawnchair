@@ -370,7 +370,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             AllAppsRecyclerView recyclerView = mAH[AdapterHolder.MAIN].recyclerView;
             if (recyclerView != null) {
                 LawnchairUtilsKt.runOnAttached(recyclerView, () -> recyclerView.setScrollbarColor(
-                        mTabsController.getTabs().get(0).getDrawerTab().getColorResolver()));
+                        mTabsController.getTabs().get(0).getDrawerTab().getColorResolver().value()));
             }
         }
         setupHeader();
@@ -413,7 +413,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         if (mAH[pos].recyclerView != null) {
             mAH[pos].recyclerView.bindFastScrollbar();
             mAH[pos].recyclerView.setScrollbarColor(mTabsController.getTabs().get(pos)
-                    .getDrawerTab().getColorResolver());
+                    .getDrawerTab().getColorResolver().value());
 
             mTabsController.bindButtons(findViewById(R.id.tabs), mViewPager);
 
@@ -518,7 +518,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     public void onColorChange(@NotNull String resolver, int color, int foregroundColor) {
         AllAppsRecyclerView recyclerView = getActiveRecyclerView();
         LawnchairUtilsKt.runOnAttached(recyclerView, () -> recyclerView.setScrollbarColor(
-                mTabsController.getTabs().get(0).getDrawerTab().getColorResolver()));
+                mTabsController.getTabs().get(0).getDrawerTab().getColorResolver().value()));
     }
 
     /**
