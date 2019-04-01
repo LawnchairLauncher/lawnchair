@@ -32,7 +32,7 @@ class IconMask {
         get() = field && !(iconBack?.drawableId == 0 && iconMask?.drawableId == 0 && iconUpon?.drawableId == 0)
     var onlyMaskLegacy: Boolean = false
     var scale: Float = 1.0f
-        get() = if (Utilities.ATLEAST_OREO && iconBack?.drawable is AdaptiveIconDrawable) {
+        get() = if (Utilities.ATLEAST_OREO && iconBack?.drawableId != 0 && iconBack?.drawable is AdaptiveIconDrawable) {
             field - (1f - FixedScaleDrawable.LEGACY_ICON_SCALE)
         } else field
     var iconBack: IconPackImpl.Entry? = null
@@ -45,7 +45,7 @@ class IconMask {
         var adaptiveBackground: Drawable? = null
         // Some random magic to get an acceptable resolution
         var size = (LauncherAppState.getIDP(context).iconBitmapSize * (3 - scale)).toInt()
-        if (Utilities.ATLEAST_OREO && iconBack?.drawable is AdaptiveIconDrawable) {
+        if (Utilities.ATLEAST_OREO && iconBack?.drawableId != 0 && iconBack?.drawable is AdaptiveIconDrawable) {
             size += (size * AdaptiveIconDrawable.getExtraInsetFraction()).toInt()
         }
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
