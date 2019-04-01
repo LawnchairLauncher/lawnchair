@@ -19,20 +19,20 @@ package ch.deletescape.lawnchair.settings.ui
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.preference.Preference
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
-import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.iconpack.DefaultPack
 import ch.deletescape.lawnchair.iconpack.IconPackManager
-import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.mainHandler
 import ch.deletescape.lawnchair.preferences.IconPackFragment
+import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.settings.ui.search.SearchIndex
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
+import java.lang.IllegalStateException
 
 class IconPackPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : Preference(context, attrs), SearchIndex.Slice {
     private val ipm by lazy { IconPackManager.getInstance(context) }
@@ -56,14 +56,18 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     private fun updatePreview() {
-        summary = if (packList.currentPack() is DefaultPack) {
-            packList.currentPack().displayName
-        } else {
-            packList.appliedPacks
-                    .filter { it !is DefaultPack }
-                    .joinToString(", ") { it.displayName }
+        try {
+            summary = if (packList.currentPack() is DefaultPack) {
+                packList.currentPack().displayName
+            } else {
+                packList.appliedPacks
+                        .filter { it !is DefaultPack }
+                        .joinToString(", ") { it.displayName }
+            }
+            icon = packList.currentPack().displayIcon
+        } catch(ignored: IllegalStateException) {
+            //TODO: Fix updating pref when scrolled down
         }
-        icon = packList.currentPack().displayIcon
     }
 
     override fun getSlice(context: Context, key: String): View {
