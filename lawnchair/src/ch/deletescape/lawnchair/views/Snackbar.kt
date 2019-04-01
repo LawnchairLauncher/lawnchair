@@ -32,7 +32,7 @@ import com.android.launcher3.views.BaseDragLayer
 
 class Snackbar(context: Context, attributeSet: AttributeSet?) : AbstractFloatingView(context, attributeSet) {
 
-    private val launcher: Launcher by lazy { Launcher.getLauncher(context) }
+    private val launcher = Launcher.getLauncher(context)
     var onDismissed: Runnable? = null
 
     init {

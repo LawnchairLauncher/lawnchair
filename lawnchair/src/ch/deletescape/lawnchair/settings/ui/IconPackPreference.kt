@@ -35,8 +35,8 @@ import com.android.launcher3.R
 import java.lang.IllegalStateException
 
 class IconPackPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : Preference(context, attrs), SearchIndex.Slice {
-    private val ipm by lazy { IconPackManager.getInstance(context) }
-    private val packList by lazy { ipm.packList }
+    private val ipm = IconPackManager.getInstance(context)
+    private val packList = ipm.packList
 
     init {
         layoutResource = R.layout.pref_with_preview_icon

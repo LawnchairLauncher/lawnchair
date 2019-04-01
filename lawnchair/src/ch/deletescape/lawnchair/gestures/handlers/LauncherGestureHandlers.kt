@@ -100,7 +100,7 @@ class OpenOverviewGestureHandler(context: Context, config: JSONObject?) : Gestur
 @Keep
 class StartGlobalSearchGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    private val searchProvider by lazy { SearchProviderController.getInstance(context).searchProvider }
+    private val searchProvider get() = SearchProviderController.getInstance(context).searchProvider
     override val displayName = context.getString(R.string.action_global_search)!!
     override val icon: Drawable by lazy { searchProvider.getIcon() }
     override val requiresForeground = true
@@ -266,8 +266,8 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
 @Keep
 class StartAssistantGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    private val searchProvider by lazy { SearchProviderController.getInstance(context).searchProvider }
-    override val isAvailable by lazy { searchProvider.supportsAssistant }
+    private val searchProvider get() = SearchProviderController.getInstance(context).searchProvider
+    override val isAvailable get() = searchProvider.supportsAssistant
     override val displayName = context.getString(R.string.action_assistant)
     override val icon: Drawable? by lazy { searchProvider.getAssistantIcon() }
 
@@ -285,8 +285,8 @@ class StartAssistantGestureHandler(context: Context, config: JSONObject?) : Gest
 @Keep
 class StartVoiceSearchGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    private val searchProvider by lazy { SearchProviderController.getInstance(context).searchProvider }
-    override val isAvailable by lazy { searchProvider.supportsVoiceSearch }
+    private val searchProvider get() = SearchProviderController.getInstance(context).searchProvider
+    override val isAvailable get() = searchProvider.supportsVoiceSearch
     override val displayName = context.getString(R.string.action_voice_search)
     override val icon: Drawable? by lazy { searchProvider.getVoiceIcon() }
 

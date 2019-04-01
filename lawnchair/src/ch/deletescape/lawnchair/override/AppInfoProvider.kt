@@ -32,7 +32,7 @@ import com.android.launcher3.util.ComponentKey
 
 class AppInfoProvider private constructor(context: Context) : CustomInfoProvider<AppInfo>(context) {
 
-    private val prefs by lazy { context.lawnchairPrefs }
+    private val prefs = context.lawnchairPrefs
     private val launcherApps by lazy { LauncherAppsCompat.getInstance(context) }
 
     override fun getTitle(info: AppInfo): String {

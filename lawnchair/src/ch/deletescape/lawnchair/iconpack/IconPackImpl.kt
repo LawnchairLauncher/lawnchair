@@ -58,7 +58,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     private val packDynamicDrawables: MutableMap<Int, DynamicDrawable.Metadata> = HashMap()
     private var packMask: IconMask = IconMask()
     private val defaultPack = DefaultPack(context)
-    private val packResources by lazy { context.packageManager.getResourcesForApplication(packPackageName) }
+    private val packResources = context.packageManager.getResourcesForApplication(packPackageName)
     private val prefs by lazy { Utilities.getLawnchairPrefs(context) }
     override val entries get() = packComponents.values.toList()
 

@@ -25,6 +25,7 @@ import android.view.MotionEvent
 import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.gestures.gestures.*
 import ch.deletescape.lawnchair.gestures.handlers.*
+import ch.deletescape.lawnchair.lawnchairPrefs
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.TouchController
 import org.json.JSONException
@@ -32,8 +33,8 @@ import org.json.JSONObject
 
 class GestureController(val launcher: LawnchairLauncher) : TouchController {
 
-    private val prefs by lazy { Utilities.getLawnchairPrefs(launcher) }
-    private val blankGestureHandler by lazy { BlankGestureHandler(launcher, null) }
+    private val prefs = launcher.lawnchairPrefs
+    private val blankGestureHandler = BlankGestureHandler(launcher, null)
     private val doubleTapGesture by lazy { DoubleTapGesture(this) }
     private val pressHomeGesture by lazy { PressHomeGesture(this) }
     private val pressBackGesture by lazy { PressBackGesture(this) }

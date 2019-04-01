@@ -30,7 +30,7 @@ import com.google.android.apps.nexuslauncher.clock.CustomClock
 
 class LawnchairDrawableFactory(context: Context) : DynamicDrawableFactory(context) {
 
-    private val iconPackManager by lazy { IconPackManager.getInstance(context) }
+    private val iconPackManager = IconPackManager.getInstance(context)
     val customClockDrawer by lazy { CustomClock(context) }
 
     override fun newIcon(info: ItemInfoWithIcon): FastBitmapDrawable {

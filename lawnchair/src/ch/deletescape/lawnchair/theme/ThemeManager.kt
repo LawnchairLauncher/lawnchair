@@ -19,10 +19,7 @@ package ch.deletescape.lawnchair.theme
 
 import android.content.Context
 import android.content.res.Configuration
-import ch.deletescape.lawnchair.ensureOnMainThread
-import ch.deletescape.lawnchair.lawnchairApp
-import ch.deletescape.lawnchair.useApplicationContext
-import ch.deletescape.lawnchair.usingNightMode
+import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -46,10 +43,10 @@ import com.android.launcher3.uioverrides.WallpaperColorInfo
 
 class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener {
 
-    private val app by lazy { context.lawnchairApp }
+    private val app = context.lawnchairApp
     private val wallpaperColorInfo = WallpaperColorInfo.getInstance(context)!!
     private val listeners = HashSet<ThemeOverride>()
-    private val prefs by lazy { Utilities.getLawnchairPrefs(context) }
+    private val prefs = context.lawnchairPrefs
     private var themeFlags = 0
     private var usingNightMode = context.resources.configuration.usingNightMode
         set(value) {

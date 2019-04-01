@@ -61,7 +61,7 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
     var updateWallpaper = true
 
     protected open val isScreenshotMode = false
-    private val prefCallback by lazy { LawnchairPreferencesChangeCallback(this) }
+    private val prefCallback = LawnchairPreferencesChangeCallback(this)
     private var paused = false
 
     private val customLayoutInflater by lazy {

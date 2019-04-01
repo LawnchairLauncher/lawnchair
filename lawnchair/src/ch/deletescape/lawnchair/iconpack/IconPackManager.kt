@@ -30,6 +30,7 @@ import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.text.TextUtils
 import ch.deletescape.lawnchair.LawnchairPreferences
+import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.override.AppInfoProvider
 import ch.deletescape.lawnchair.override.CustomInfoProvider
 import ch.deletescape.lawnchair.reloadIcons
@@ -41,8 +42,8 @@ import kotlin.collections.HashMap
 
 class IconPackManager(private val context: Context) {
 
-    val prefs by lazy { LawnchairPreferences.getInstance(context) }
-    private val appInfoProvider by lazy { AppInfoProvider.getInstance(context) }
+    val prefs = context.lawnchairPrefs
+    private val appInfoProvider = AppInfoProvider.getInstance(context)
     val defaultPack = DefaultPack(context)
     var dayOfMonth = 0
         set(value) {

@@ -190,7 +190,7 @@ fun ComponentKey.getLauncherActivityInfo(context: Context): LauncherActivityInfo
 @Suppress("UNCHECKED_CAST")
 class JavaField<T>(private val targetObject: Any, fieldName: String, targetClass: Class<*> = targetObject::class.java) {
 
-    private val field: Field by lazy { targetClass.getDeclaredField(fieldName).apply { isAccessible = true } }
+    private val field: Field = targetClass.getDeclaredField(fieldName).apply { isAccessible = true }
 
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
         return field.get(targetObject) as T

@@ -38,8 +38,8 @@ class IconMask {
     var iconBack: IconPackImpl.Entry? = null
     var iconMask: IconPackImpl.Entry? = null
     var iconUpon: IconPackImpl.Entry? = null
-    val matrix by lazy { Matrix() }
-    val paint by lazy { Paint() }
+    val matrix = Matrix()
+    val paint = Paint()
 
     fun getIcon(context: Context, baseIcon: Drawable): Drawable {
         var adaptiveBackground: Drawable? = null

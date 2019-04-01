@@ -12,7 +12,7 @@ abstract class SearchProvider(protected val context: Context) {
     abstract val supportsVoiceSearch: Boolean
     abstract val supportsAssistant: Boolean
     abstract val supportsFeed: Boolean
-    open val settingsIntent: Intent by lazy { Intent().setClass(context, SettingsSearchActivity::class.java) }
+    open val settingsIntent get() = Intent().setClass(context, SettingsSearchActivity::class.java)
     /**
      * Whether the settings intent needs to be sent as broadcast
      */

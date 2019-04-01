@@ -28,6 +28,7 @@ import android.view.View
 import android.widget.EdgeEffect
 import ch.deletescape.lawnchair.KFloatProperty
 import ch.deletescape.lawnchair.KFloatPropertyCompat
+import ch.deletescape.lawnchair.lawnchairPrefs
 import com.android.launcher3.Utilities
 import com.android.launcher3.touch.OverScroll
 import kotlin.reflect.KMutableProperty0
@@ -39,7 +40,7 @@ class SpringEdgeEffect(
         private val activeEdge: KMutableProperty0<SpringEdgeEffect?>,
         private val velocityMultiplier: Float) : EdgeEffect(context) {
 
-    private val prefs by lazy { Utilities.getLawnchairPrefs(context) }
+    private val prefs = context.lawnchairPrefs
 
     private val shiftProperty = KFloatProperty(target, "value")
     private val spring = SpringAnimation(this, KFloatPropertyCompat(target, "value"), 0f).apply {
