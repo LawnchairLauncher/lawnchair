@@ -100,9 +100,9 @@ class OpenOverviewGestureHandler(context: Context, config: JSONObject?) : Gestur
 @Keep
 class StartGlobalSearchGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    private val searchProvider = SearchProviderController.getInstance(context).searchProvider
+    private val searchProvider by lazy { SearchProviderController.getInstance(context).searchProvider }
     override val displayName = context.getString(R.string.action_global_search)!!
-    override val icon: Drawable = searchProvider.getIcon()
+    override val icon: Drawable by lazy { searchProvider.getIcon() }
     override val requiresForeground = true
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
@@ -266,10 +266,10 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
 @Keep
 class StartAssistantGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    private val searchProvider = SearchProviderController.getInstance(context).searchProvider
-    override val isAvailable = searchProvider.supportsAssistant
+    private val searchProvider by lazy { SearchProviderController.getInstance(context).searchProvider }
+    override val isAvailable by lazy { searchProvider.supportsAssistant }
     override val displayName = context.getString(R.string.action_assistant)
-    override val icon: Drawable? = searchProvider.getAssistantIcon()
+    override val icon: Drawable? by lazy { searchProvider.getAssistantIcon() }
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         SearchProviderController.getInstance(context).searchProvider.startAssistant {
@@ -285,10 +285,10 @@ class StartAssistantGestureHandler(context: Context, config: JSONObject?) : Gest
 @Keep
 class StartVoiceSearchGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    private val searchProvider = SearchProviderController.getInstance(context).searchProvider
-    override val isAvailable = SearchProviderController.getInstance(context).searchProvider.supportsVoiceSearch
+    private val searchProvider by lazy { SearchProviderController.getInstance(context).searchProvider }
+    override val isAvailable by lazy { searchProvider.supportsVoiceSearch }
     override val displayName = context.getString(R.string.action_voice_search)
-    override val icon: Drawable? = searchProvider.getVoiceIcon()
+    override val icon: Drawable? by lazy { searchProvider.getVoiceIcon() }
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         SearchProviderController.getInstance(context).searchProvider.startVoiceSearch {

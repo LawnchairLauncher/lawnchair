@@ -39,7 +39,7 @@ class SpringEdgeEffect(
         private val activeEdge: KMutableProperty0<SpringEdgeEffect?>,
         private val velocityMultiplier: Float) : EdgeEffect(context) {
 
-    private val prefs = Utilities.getLawnchairPrefs(context)
+    private val prefs by lazy { Utilities.getLawnchairPrefs(context) }
 
     private val shiftProperty = KFloatProperty(target, "value")
     private val spring = SpringAnimation(this, KFloatPropertyCompat(target, "value"), 0f).apply {

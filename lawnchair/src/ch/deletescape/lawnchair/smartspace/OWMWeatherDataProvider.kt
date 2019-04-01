@@ -25,14 +25,15 @@ import com.android.launcher3.Utilities
 import net.aksingh.owmjapis.core.OWM
 import kotlin.math.roundToInt
 
+// TODO: fix this trainwreck
 @Keep
 class OWMWeatherDataProvider(controller: LawnchairSmartspaceController) :
         LawnchairSmartspaceController.PeriodicDataProvider(controller), LawnchairPreferences.OnPreferenceChangeListener {
 
     private val context = controller.context
     private val prefs = Utilities.getLawnchairPrefs(context)
-    private val owm = OWM(prefs.weatherApiKey)
-    private val iconProvider = WeatherIconProvider(context)
+    private val owm by lazy { OWM(prefs.weatherApiKey) }
+    private val iconProvider by lazy { WeatherIconProvider(context) }
 
     init {
         prefs.addOnPreferenceChangeListener(this, "pref_weatherApiKey", "pref_weather_city", "pref_weather_units")

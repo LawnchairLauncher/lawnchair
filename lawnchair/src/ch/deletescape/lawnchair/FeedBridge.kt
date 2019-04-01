@@ -30,9 +30,9 @@ import com.android.launcher3.config.FeatureFlags
 
 class FeedBridge(private val context: Context) {
 
-    private val bridgePackages = listOf(
+    private val bridgePackages by lazy { listOf(
             PixelBridgeInfo("com.google.android.apps.nexuslauncher", R.integer.bridge_signature_hash),
-            BridgeInfo("ch.deletescape.lawnchair.lawnfeed", R.integer.lawnfeed_signature_hash))
+            BridgeInfo("ch.deletescape.lawnchair.lawnfeed", R.integer.lawnfeed_signature_hash)) }
 
     fun resolveBridge(): BridgeInfo? {
         if (!useBridge) return null

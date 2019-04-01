@@ -46,10 +46,10 @@ import com.android.launcher3.uioverrides.WallpaperColorInfo
 
 class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener {
 
-    private val app = context.lawnchairApp
+    private val app by lazy { context.lawnchairApp }
     private val wallpaperColorInfo = WallpaperColorInfo.getInstance(context)!!
     private val listeners = HashSet<ThemeOverride>()
-    private val prefs = Utilities.getLawnchairPrefs(context)
+    private val prefs by lazy { Utilities.getLawnchairPrefs(context) }
     private var themeFlags = 0
     private var usingNightMode = context.resources.configuration.usingNightMode
         set(value) {

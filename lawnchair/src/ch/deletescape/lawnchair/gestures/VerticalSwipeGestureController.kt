@@ -41,9 +41,9 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     private val triggerVelocity = 2.25f
     private val notificationsCloseVelocity = 0.35f
 
-    private val controller = LawnchairLauncher.getLauncher(launcher).gestureController
-    private val gesture = controller.verticalSwipeGesture
-    private val detector = SwipeDetector(launcher, this, SwipeDetector.VERTICAL)
+    private val controller by lazy { LawnchairLauncher.getLauncher(launcher).gestureController }
+    private val gesture by lazy { controller.verticalSwipeGesture }
+    private val detector by lazy { SwipeDetector(launcher, this, SwipeDetector.VERTICAL) }
     private var noIntercept = false
 
     private var swipeUpOverride: GestureHandler? = null

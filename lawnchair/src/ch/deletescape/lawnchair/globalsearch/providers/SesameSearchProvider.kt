@@ -16,7 +16,7 @@ class SesameSearchProvider(context: Context) : SearchProvider(context) {
     override val supportsAssistant: Boolean
         get() = false
     override val supportsFeed = false
-    override val settingsIntent = Intent(Sesame.ACTION_OPEN_SETTINGS).setPackage(Sesame.PACKAGE)
+    override val settingsIntent get () = Intent(Sesame.ACTION_OPEN_SETTINGS).setPackage(Sesame.PACKAGE)
 
     override val isAvailable: Boolean
         get() = PackageManagerHelper.isAppEnabled(context.packageManager, Sesame.PACKAGE, 0)

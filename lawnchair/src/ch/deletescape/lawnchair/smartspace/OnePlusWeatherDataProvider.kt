@@ -48,11 +48,11 @@ class OnePlusWeatherDataProvider(controller: LawnchairSmartspaceController) :
 
     private val context = controller.context
     private val provider by lazy { OPWeatherProvider(context) }
-    private val locationAccess = Utilities.hasPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) ||
-            Utilities.hasPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-    private val locationManager: LocationManager? = if (locationAccess) {
+    private val locationAccess by lazy { Utilities.hasPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) ||
+            Utilities.hasPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) }
+    private val locationManager: LocationManager? by lazy { if (locationAccess) {
         context.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-    } else null
+    } else null }
 
     init {
         if (!OnePlusWeatherDataProvider.isAvailable(context)) {

@@ -33,7 +33,7 @@ class LawnchairBugReporter(private val context: Context, private val crashHandle
 
     private val hasPermission get() = ContextCompat.checkSelfPermission(context,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-    private val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Lawnchair/logs")
+    private val folder by lazy { File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Lawnchair/logs") }
 
     override fun uncaughtException(t: Thread?, e: Throwable?) {
         handleException(e)

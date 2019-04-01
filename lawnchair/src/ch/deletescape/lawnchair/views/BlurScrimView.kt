@@ -82,9 +82,9 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         }
     }
 
-    private val bubbleGap = resources.getDimensionPixelSize(R.dimen.qsb_two_bubble_gap)
-    private val micWidth = resources.getDimensionPixelSize(R.dimen.qsb_mic_width)
-    private val isRtl = Utilities.isRtl(resources)
+    private val bubbleGap by lazy { resources.getDimensionPixelSize(R.dimen.qsb_two_bubble_gap) }
+    private val micWidth by lazy { resources.getDimensionPixelSize(R.dimen.qsb_mic_width) }
+    private val isRtl by lazy { Utilities.isRtl(resources) }
     private val provider by lazy { BlurWallpaperProvider.getInstance(context) }
     private val useFlatColor get() = mLauncher.deviceProfile.isVerticalBarLayout
     private val blurRadius get() = if (useFlatColor) 0f else mRadius

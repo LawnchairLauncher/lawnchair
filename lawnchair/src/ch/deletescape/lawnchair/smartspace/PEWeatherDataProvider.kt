@@ -32,7 +32,7 @@ class PEWeatherDataProvider(controller: LawnchairSmartspaceController) :
         LawnchairSmartspaceController.PeriodicDataProvider(controller) {
 
     private val context = controller.context
-    private val contentResolver = controller.context.contentResolver
+    private val contentResolver = context.contentResolver
 
     init {
         if (!PEWeatherDataProvider.isAvailable(context)) {

@@ -33,7 +33,7 @@ import com.android.launcher3.Utilities
 class BlurWallpaperProvider(val context: Context) {
 
     private val prefs by lazy { context.lawnchairPrefs }
-    private val mWallpaperManager: WallpaperManager = WallpaperManager.getInstance(context)
+    private val mWallpaperManager: WallpaperManager by lazy { WallpaperManager.getInstance(context) }
     private val mListeners = ArrayList<Listener>()
     private val mDisplayMetrics = DisplayMetrics()
     var wallpaper: Bitmap? = null

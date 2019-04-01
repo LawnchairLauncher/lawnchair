@@ -32,17 +32,17 @@ import org.json.JSONObject
 
 class GestureController(val launcher: LawnchairLauncher) : TouchController {
 
-    private val prefs = Utilities.getLawnchairPrefs(launcher)
-    private val blankGestureHandler = BlankGestureHandler(launcher, null)
-    private val doubleTapGesture = DoubleTapGesture(this)
-    private val pressHomeGesture = PressHomeGesture(this)
-    private val pressBackGesture = PressBackGesture(this)
-    private val longPressGesture = LongPressGesture(this)
+    private val prefs by lazy { Utilities.getLawnchairPrefs(launcher) }
+    private val blankGestureHandler by lazy { BlankGestureHandler(launcher, null) }
+    private val doubleTapGesture by lazy { DoubleTapGesture(this) }
+    private val pressHomeGesture by lazy { PressHomeGesture(this) }
+    private val pressBackGesture by lazy { PressBackGesture(this) }
+    private val longPressGesture by lazy { LongPressGesture(this) }
 
     val hasBackGesture
         get() = pressBackGesture.handler !is BlankGestureHandler
-    val verticalSwipeGesture = VerticalSwipeGesture(this)
-    val navSwipeUpGesture = NavSwipeUpGesture(this)
+    val verticalSwipeGesture by lazy { VerticalSwipeGesture(this) }
+    val navSwipeUpGesture by lazy { NavSwipeUpGesture(this) }
 
     var touchDownPoint = PointF()
 

@@ -71,7 +71,7 @@ class SleepGestureHandler(context: Context, config: JSONObject?) : GestureHandle
 class SleepMethodPowerManager(context: Context) : SleepGestureHandler.SleepMethod(context) {
     override val supported = Utilities.ATLEAST_MARSHMALLOW && Utilities.hasPermission(context, "android.permission.DEVICE_POWER")
 
-    private val clazz = PowerManager::class.java
+    private val clazz by lazy { PowerManager::class.java }
     private val powerManager: PowerManager by lazy { context.getSystemService(clazz) }
     private val goToSleep: Method by lazy {
         clazz.getDeclaredMethod("goToSleep", Long::class.java).apply {
