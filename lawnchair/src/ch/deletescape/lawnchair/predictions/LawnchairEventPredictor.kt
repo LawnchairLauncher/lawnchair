@@ -54,7 +54,7 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
         }
     }
 
-    override fun logAppLaunch(v: View?, intent: Intent?, user: UserHandle) {
+    override fun logAppLaunch(v: View?, intent: Intent?, user: UserHandle?) {
         super.logAppLaunch(v, intent, user)
         if (isPredictorEnabled && recursiveIsDrawer(v)) {
             val componentInfo = intent?.component
