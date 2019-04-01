@@ -18,6 +18,7 @@ package com.android.quickstep.fallback;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.RecentsActivity;
 
@@ -27,5 +28,7 @@ import com.android.quickstep.RecentsActivity;
 public final class GoRecentsActivityRootView extends BaseDragLayer<RecentsActivity> {
     public GoRecentsActivityRootView(Context context, AttributeSet attrs) {
         super(context, attrs, 1 /* alphaChannelCount */);
+        // Go leaves touch control to the view itself.
+        mControllers = new TouchController[0];
     }
 }
