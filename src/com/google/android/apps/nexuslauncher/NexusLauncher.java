@@ -63,6 +63,7 @@ public class NexusLauncher {
         public void bindAllApplications(final ArrayList<AppInfo> list) {
             getUpdateReceiver().di();
             PredictionUiStateManager.getInstance(mLauncher).dispatchOnChange();
+            mLauncher.getUserEventDispatcher().updatePredictions();
         }
 
         public void dump(final String s, final FileDescriptor fileDescriptor, final PrintWriter printWriter, final String[] array) {
@@ -295,6 +296,7 @@ public class NexusLauncher {
             if (mLauncher.hasBeenResumed()) {
                 ReflectionClient.getInstance(mLauncher).updatePredictionsNow(
                         FeatureFlags.REFLECTION_FORCE_OVERVIEW_MODE ? Client.OVERVIEW.id : Client.HOME.id);
+                mLauncher.getUserEventDispatcher().updatePredictions();
             }
         }
 

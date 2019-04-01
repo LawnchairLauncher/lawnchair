@@ -169,6 +169,10 @@ public class UserEventDispatcher {
         return true;
     }
 
+    public void updatePredictions() {
+        // do nothing
+    }
+
     public void logAppLaunch(View v, Intent intent, UserHandle user) {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
                 newItemTarget(v, mInstantAppResolver), newTarget(Target.Type.CONTAINER));

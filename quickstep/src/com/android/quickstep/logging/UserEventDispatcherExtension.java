@@ -25,17 +25,15 @@ import static com.android.systemui.shared.system.LauncherEventUtil.DISMISS;
 import static com.android.systemui.shared.system.LauncherEventUtil.RECENTS_QUICK_SCRUB_ONBOARDING_TIP;
 import static com.android.systemui.shared.system.LauncherEventUtil.RECENTS_SWIPE_UP_ONBOARDING_TIP;
 
-import com.android.launcher3.logging.UserEventDispatcher;
+import ch.deletescape.lawnchair.predictions.LawnchairEventPredictor;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.systemui.shared.system.MetricsLoggerCompat;
-import com.google.android.apps.nexuslauncher.CustomAppPredictor;
 
 /**
  * This class handles AOSP MetricsLogger function calls and logging around
  * quickstep interactions.
  */
 @SuppressWarnings("unused")
-public class UserEventDispatcherExtension extends CustomAppPredictor {
+public class UserEventDispatcherExtension extends LawnchairEventPredictor {
 
     private static final String TAG = "UserEventDispatcher";
 
