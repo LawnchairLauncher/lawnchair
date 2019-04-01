@@ -119,6 +119,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
     private static final String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
     public final static String SHOW_PREDICTIONS_PREF = "pref_show_predictions";
+    public final static String SHOW_ACTIONS_PREF = "pref_show_suggested_actions";
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
     public final static String FEED_THEME_PREF = "pref_feedTheme";
     public final static String SMARTSPACE_PREF = "pref_smartspace";

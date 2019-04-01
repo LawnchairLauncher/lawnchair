@@ -26,6 +26,7 @@ import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import android.util.DisplayMetrics;
 import ch.deletescape.lawnchair.iconpack.IconPackManager;
 import ch.deletescape.lawnchair.sesame.SesameShortcutInfo;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -104,6 +105,8 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     public IconPackManager.CustomIconEntry customIconEntry;
 
     public String swipeUpAction;
+
+    public ShortcutInfoCompat shortcutInfo;
 
     public ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
@@ -186,6 +189,8 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     }
 
     public void updateFromDeepShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
+        this.shortcutInfo = shortcutInfo;
+
         // {@link ShortcutInfoCompat#getActivity} can change during an update. Recreate the intent
         intent = shortcutInfo.makeIntent();
         title = shortcutInfo.getShortLabel();

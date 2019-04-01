@@ -221,6 +221,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
                 }
             } finally {
                 StrictMode.setVmPolicy(oldPolicy);
+                getUserEventDispatcher().logShortcutLaunch(intent, info);
             }
         } catch (SecurityException e) {
             if (!onErrorStartingShortcut(intent, info)) {

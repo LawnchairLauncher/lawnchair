@@ -115,7 +115,6 @@
             android:title="@string/app_actions_pref_title"
             android:summary="@string/app_actions_pref_desc"
             android:defaultValue="true"
-            app:controllerClass=".ActionSuggestionsController"
             app:searchTitle="@string/app_actions_pref_title_in_search" />
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 

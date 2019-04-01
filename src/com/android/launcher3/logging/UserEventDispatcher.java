@@ -173,6 +173,10 @@ public class UserEventDispatcher {
         // do nothing
     }
 
+    public void updateActions() {
+        // do nothing
+    }
+
     public void logAppLaunch(View v, Intent intent, UserHandle user) {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
                 newItemTarget(v, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
@@ -185,6 +189,10 @@ public class UserEventDispatcher {
         }
         dispatchUserEvent(event, intent);
         mAppOrTaskLaunch = true;
+    }
+
+    public void logShortcutLaunch(Intent intent, ItemInfo info) {
+        // do nothing
     }
 
     public void logActionTip(int actionType, int viewType) { }

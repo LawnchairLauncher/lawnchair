@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.LinearLayout;
+import ch.deletescape.lawnchair.predictions.LawnchairEventPredictor;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -29,7 +30,9 @@ import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
+import com.android.quickstep.TouchInteractionService;
 import com.google.android.apps.nexuslauncher.allapps.ActionsController.UpdateListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -122,8 +125,13 @@ public class ActionsRowView extends LinearLayout implements UpdateListener, LogC
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         this.mActionsController = ActionsController.get(getContext());
-        this.mActionsController.setListener(this);
-        onUpdated(this.mActionsController.getActions());
+        if (PackageManagerHelper.isAppEnabled(getContext().getPackageManager(), LawnchairEventPredictor.ACTIONS_PACKAGE, 0)
+                && TouchInteractionService.isConnected()) {
+            // Only set listener if it is even just remotely possible for us to receive actions
+            this.mActionsController.setListener(this);
+            onUpdated(this.mActionsController.getActions());
+        }
+        mLauncher.getUserEventDispatcher().updateActions();
     }
 
     protected void onDetachedFromWindow() {
