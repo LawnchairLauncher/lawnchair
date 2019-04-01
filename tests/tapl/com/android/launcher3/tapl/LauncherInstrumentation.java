@@ -30,6 +30,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.SystemClock;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.MotionEvent;
@@ -222,6 +223,12 @@ public final class LauncherInstrumentation {
     private void assertEquals(String message, int expected, int actual) {
         if (expected != actual) {
             fail(message + " expected: " + expected + " but was: " + actual);
+        }
+    }
+
+    private void assertEquals(String message, String expected, String actual) {
+        if (!TextUtils.equals(expected, actual)) {
+            fail(message + " expected: '" + expected + "' but was: '" + actual + "'");
         }
     }
 
@@ -544,8 +551,9 @@ public final class LauncherInstrumentation {
                 event -> TestProtocol.SWITCHED_TO_STATE_MESSAGE.equals(event.getClassName()),
                 "Swipe failed to receive an event for the swipe end: " + startX + ", " + startY
                         + ", " + endX + ", " + endY);
-        assertEquals("Swipe switched launcher to a wrong state",
-                expectedState, parcel.getInt(TestProtocol.STATE_FIELD));
+        assertEquals("Swipe switched launcher to a wrong state;",
+                TestProtocol.stateOrdinalToString(expectedState),
+                TestProtocol.stateOrdinalToString(parcel.getInt(TestProtocol.STATE_FIELD)));
     }
 
     void waitForIdle() {
