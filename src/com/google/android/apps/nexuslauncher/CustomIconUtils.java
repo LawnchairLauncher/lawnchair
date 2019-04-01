@@ -46,9 +46,11 @@ public class CustomIconUtils {
 
     public static void reloadIcon(DeepShortcutManager shortcutManager, LauncherModel model, UserHandle user, String pkg) {
         model.onPackageChanged(pkg, user);
-        List<ShortcutInfoCompat> shortcuts = shortcutManager.queryForPinnedShortcuts(pkg, user);
-        if (!shortcuts.isEmpty()) {
-            model.updatePinnedShortcuts(pkg, shortcuts, user);
+        if (shortcutManager.wasLastCallSuccess()) {
+            List<ShortcutInfoCompat> shortcuts = shortcutManager.queryForPinnedShortcuts(pkg, user);
+            if (!shortcuts.isEmpty()) {
+                model.updatePinnedShortcuts(pkg, shortcuts, user);
+            }
         }
     }
 }
