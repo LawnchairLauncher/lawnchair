@@ -95,6 +95,7 @@ import com.google.android.apps.nexuslauncher.reflection.ReflectionClient;
 import java.io.IOException;
 import java.util.Objects;
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -590,14 +591,14 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 IconPackManager ipm = IconPackManager.Companion.getInstance(mContext);
                 Preference packMaskingPreference = findPreference("pref_iconPackMasking");
                 PreferenceGroup parent = packMaskingPreference.getParent();
-                Utilities.getLawnchairPrefs(mContext).addOnPreferenceChangeListener(
-                        "pref_iconPacks", (key, prefs, force) -> {
-                            if (!ipm.maskSupported()) {
-                                parent.removePreference(packMaskingPreference);
-                            } else if (!force) {
-                                parent.addPreference(packMaskingPreference);
-                            }
-                        });
+                ipm.addListener(() -> {
+                    if (!ipm.maskSupported()) {
+                        parent.removePreference(packMaskingPreference);
+                    } else if (parent.findPreference("pref_iconPackMasking") == null) {
+                        parent.addPreference(packMaskingPreference);
+                    }
+                    return null;
+                });
             } else if (getContent() == R.xml.lawnchair_app_drawer_preferences) {
                 findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
             } else if (getContent() == R.xml.lawnchair_dev_options_preference) {

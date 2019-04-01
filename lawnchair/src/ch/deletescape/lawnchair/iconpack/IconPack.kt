@@ -32,7 +32,7 @@ import java.util.concurrent.Semaphore
 
 abstract class IconPack(val context: Context, val packPackageName: String) {
     private var waiter: Semaphore? = Semaphore(0)
-    private val indexCompat = AlphabeticIndexCompat(context)
+    private val indexCompat by lazy { AlphabeticIndexCompat(context) }
     private val loadCompleteListeners = ArrayList<(IconPack) -> Unit>()
 
     fun executeLoadPack() {

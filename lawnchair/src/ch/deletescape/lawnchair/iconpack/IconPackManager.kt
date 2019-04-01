@@ -41,8 +41,8 @@ import kotlin.collections.HashMap
 
 class IconPackManager(private val context: Context) {
 
-    val prefs = LawnchairPreferences.getInstance(context)
-    val appInfoProvider = AppInfoProvider.getInstance(context)
+    val prefs by lazy { LawnchairPreferences.getInstance(context) }
+    private val appInfoProvider by lazy { AppInfoProvider.getInstance(context) }
     val defaultPack = DefaultPack(context)
     var dayOfMonth = 0
         set(value) {
@@ -170,7 +170,9 @@ class IconPackManager(private val context: Context) {
 
     fun addListener(listener: () -> Unit) {
         listeners.add(listener)
-        listener.invoke()
+        if (!packList.appliedPacks.isEmpty()) {
+            listener.invoke()
+        }
     }
 
     fun removeListener(listener: () -> Unit) {

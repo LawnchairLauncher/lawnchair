@@ -17,7 +17,6 @@
 
 package ch.deletescape.lawnchair.iconpack
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.AdaptiveIconDrawable
@@ -30,16 +29,17 @@ import com.android.launcher3.graphics.FixedScaleDrawable
 
 class IconMask {
     var hasMask: Boolean = false
+        get() = field && !(iconBack?.drawableId == 0 && iconMask?.drawableId == 0 && iconUpon?.drawableId == 0)
     var onlyMaskLegacy: Boolean = false
     var scale: Float = 1.0f
         get() = if (Utilities.ATLEAST_OREO && iconBack?.drawable is AdaptiveIconDrawable) {
             field - (1f - FixedScaleDrawable.LEGACY_ICON_SCALE)
         } else field
-    var iconBack: IconPack.Entry? = null
-    var iconMask: IconPack.Entry? = null
-    var iconUpon: IconPack.Entry? = null
-    val matrix = Matrix()
-    val paint = Paint()
+    var iconBack: IconPackImpl.Entry? = null
+    var iconMask: IconPackImpl.Entry? = null
+    var iconUpon: IconPackImpl.Entry? = null
+    val matrix by lazy { Matrix() }
+    val paint by lazy { Paint() }
 
     fun getIcon(context: Context, baseIcon: Drawable): Drawable {
         var adaptiveBackground: Drawable? = null
@@ -50,7 +50,7 @@ class IconMask {
         }
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-        if (iconBack != null) {
+        if (iconBack != null && iconBack!!.drawableId != 0) {
             val drawable = iconBack!!.drawable
             if (Utilities.ATLEAST_OREO && drawable is AdaptiveIconDrawable) {
                 adaptiveBackground = drawable.background
@@ -64,7 +64,7 @@ class IconMask {
         }
         var bb = baseIcon.toBitmap()!!
         if (!bb.isMutable) bb = bb.copy(bb.config, true)
-        if (iconMask != null) {
+        if (iconMask != null && iconMask!!.drawableId != 0) {
             val tmp = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
             val saveCount = canvas.save()
             canvas.setBitmap(tmp)
@@ -88,7 +88,7 @@ class IconMask {
             canvas.drawBitmap(bb, matrix, paint)
             matrix.reset()
         }
-        if (iconUpon != null) {
+        if (iconUpon != null && iconUpon!!.drawableId != 0) {
             iconUpon!!.drawable.toBitmap()!!.let {
                 matrix.setScale(size.toFloat() / it.width, size.toFloat() / it.height)
                 canvas.drawBitmap(it, matrix, paint)

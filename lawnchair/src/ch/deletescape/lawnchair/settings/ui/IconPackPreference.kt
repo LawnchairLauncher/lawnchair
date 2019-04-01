@@ -34,9 +34,9 @@ import ch.deletescape.lawnchair.settings.ui.search.SearchIndex
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
-class IconPackPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : Preference(context, attrs),
-        LawnchairPreferences.OnPreferenceChangeListener, SearchIndex.Slice {
-    private val packList by lazy { IconPackManager.getInstance(context).packList }
+class IconPackPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : Preference(context, attrs), SearchIndex.Slice {
+    private val ipm by lazy { IconPackManager.getInstance(context) }
+    private val packList by lazy { ipm.packList }
 
     init {
         layoutResource = R.layout.pref_with_preview_icon
@@ -46,17 +46,13 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
     override fun onAttached() {
         super.onAttached()
 
-        context.lawnchairPrefs.addOnPreferenceChangeListener(key, this)
+        ipm.addListener(this::updatePreview)
     }
 
     override fun onDetached() {
         super.onDetached()
 
-       context.lawnchairPrefs.removeOnPreferenceChangeListener(key, this)
-    }
-
-    override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
-        updatePreview()
+       ipm.removeListener(this::updatePreview)
     }
 
     private fun updatePreview() {
