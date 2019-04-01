@@ -132,7 +132,11 @@ class IconPackManager(private val context: Context) {
             pack.newIcon(icon, itemInfo, customEntry, packList.iterator(), drawableFactory)
         } else {
             val iterator = packList.iterator()
-            iterator.next().newIcon(icon, itemInfo, customEntry, iterator, drawableFactory)
+            if (iterator.hasNext()) {
+                iterator.next().newIcon(icon, itemInfo, customEntry, iterator, drawableFactory)
+            } else {
+                defaultPack.newIcon(icon, itemInfo, customEntry, iterator, drawableFactory)
+            }
         }
     }
 
