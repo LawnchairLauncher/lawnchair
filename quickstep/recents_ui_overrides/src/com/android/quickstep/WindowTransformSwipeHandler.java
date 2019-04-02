@@ -203,6 +203,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private static final long SHELF_ANIM_DURATION = 120;
 
+    /**
+     * Used as the page index for logging when we return to the last task at the end of the gesture.
+     */
+    private static final int LOG_NO_OP_PAGE_INDEX = -1;
+
     private final ClipAnimationHelper mClipAnimationHelper;
     private final ClipAnimationHelper.TransformParams mTransformParams;
 
@@ -245,6 +250,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private boolean mPassedOverviewThreshold;
     private boolean mGestureStarted;
     private int mLogAction = Touch.SWIPE;
+    private int mLogDirection = Direction.UP;
 
     private final RecentsAnimationWrapper mRecentsAnimationWrapper;
 
@@ -692,6 +698,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         setStateOnUiThread(STATE_GESTURE_COMPLETED);
 
         mLogAction = isFling ? Touch.FLING : Touch.SWIPE;
+        boolean isVelocityVertical = Math.abs(velocity.y) > Math.abs(velocity.x);
+        if (isVelocityVertical) {
+            mLogDirection = velocity.y < 0 ? Direction.UP : Direction.DOWN;
+        } else {
+            mLogDirection = velocity.x < 0 ? Direction.LEFT : Direction.RIGHT;
+        }
         handleNormalGestureEnd(endVelocity, isFling, velocity);
     }
 
@@ -824,19 +836,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             // We probably never received an animation controller, skip logging.
             return;
         }
-        boolean toLauncher = endTarget.isLauncher;
-        final int direction;
-        if (dp.isVerticalBarLayout()) {
-            direction = (dp.isSeascape() ^ toLauncher) ? Direction.LEFT : Direction.RIGHT;
-        } else {
-            direction = toLauncher ? Direction.UP : Direction.DOWN;
-        }
 
+        int pageIndex = endTarget == LAST_TASK
+                ? LOG_NO_OP_PAGE_INDEX
+                : mRecentsView.getNextPage();
         UserEventDispatcher.newInstance(mContext).logStateChangeAction(
-                mLogAction, direction,
+                mLogAction, mLogDirection,
                 ContainerType.NAVBAR, ContainerType.APP,
                 endTarget.containerType,
-                0);
+                pageIndex);
     }
 
     /** Animates to the given progress, where 0 is the current app and 1 is overview. */
