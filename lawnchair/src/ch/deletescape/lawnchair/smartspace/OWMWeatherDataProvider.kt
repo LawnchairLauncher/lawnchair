@@ -74,8 +74,8 @@ class OWMWeatherDataProvider(controller: LawnchairSmartspaceController) :
     }
 
     override fun onSuccess(currentWeather: CurrentWeather) {
-        val temp = currentWeather.main.temp
-        val icon = currentWeather.weather[0].icon
+        val temp = currentWeather.main?.temp ?: return
+        val icon = currentWeather.weather.getOrNull(0)?.icon ?: return
         updateData(LawnchairSmartspaceController.WeatherData(
                 iconProvider.getIcon(icon),
                 Temperature(
