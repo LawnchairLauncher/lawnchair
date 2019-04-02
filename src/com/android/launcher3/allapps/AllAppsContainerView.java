@@ -242,7 +242,11 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
      * Resets the state of AllApps.
      */
     public void reset(boolean animate) {
-        if (!Utilities.getLawnchairPrefs(getContext()).getSaveScrollPosition()) {
+        reset(animate, false);
+    }
+
+    public void reset(boolean animate, boolean force) {
+        if (force || !Utilities.getLawnchairPrefs(getContext()).getSaveScrollPosition()) {
             for (int i = 0; i < mAH.length; i++) {
                 if (mAH[i].recyclerView != null) {
                     mAH[i].recyclerView.scrollToTop();
@@ -409,7 +413,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     public void onTabChanged(int pos) {
         mHeader.setCurrentActive(pos);
-        reset(true /* animate */);
+        reset(true /* animate */, true);
         if (mAH[pos].recyclerView != null) {
             mAH[pos].recyclerView.bindFastScrollbar();
             mAH[pos].recyclerView.setScrollbarColor(mTabsController.getTabs().get(pos)
