@@ -117,6 +117,12 @@ class LawnchairSmartspaceController(val context: Context) {
         }
     }
 
+    fun updateWeatherData() {
+        runOnMainThread {
+            weatherDataProvider.forceUpdate()
+        }
+    }
+
     fun openWeather(v: View) {
         if (weatherData == null) return
         val launcher = Launcher.getLauncher(v.context)
@@ -183,7 +189,7 @@ class LawnchairSmartspaceController(val context: Context) {
             cardUpdateListener?.invoke(card)
         }
 
-        fun forceUpdate() {
+        open fun forceUpdate() {
             if (currentData != null) {
                 updateData(currentData?.weather, currentData?.card)
             }
@@ -232,6 +238,11 @@ class LawnchairSmartspaceController(val context: Context) {
 
         open fun queryCardData() : CardData? {
             return null
+        }
+
+        override fun forceUpdate() {
+            super.forceUpdate()
+            updateNow()
         }
     }
 

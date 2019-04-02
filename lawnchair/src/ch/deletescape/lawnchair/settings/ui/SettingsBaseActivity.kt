@@ -31,9 +31,11 @@ import android.view.ViewGroup
 import ch.deletescape.lawnchair.LawnchairLayoutInflater
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.getBooleanAttr
+import ch.deletescape.lawnchair.launcherAppState
 import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import com.android.launcher3.InsettableFrameLayout
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
@@ -165,6 +167,11 @@ open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnColorChange
             return customLayoutInflater
         }
         return super.getSystemService(name)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        launcherAppState.launcher?.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     companion object {

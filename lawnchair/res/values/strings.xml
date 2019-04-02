@@ -554,4 +554,5 @@
     <string name="units_reaumur">Réaumur</string>
     <string name="units_romer">Rømer</string>
 
+    <string name="owm_get_your_own_key">Please get your own API key from api.openweathermap.org</string>
 </resources>

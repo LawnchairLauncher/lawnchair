@@ -17,44 +17,83 @@
 
 package ch.deletescape.lawnchair.smartspace
 
+import android.Manifest
+import android.content.Context
+import android.location.Criteria
+import android.location.LocationManager
 import android.support.annotation.Keep
 import android.util.Log
+import android.widget.Toast
 import ch.deletescape.lawnchair.LawnchairPreferences
+import ch.deletescape.lawnchair.lawnchairApp
 import ch.deletescape.lawnchair.util.Temperature
+import com.android.launcher3.LauncherAppState
+import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import net.aksingh.owmjapis.core.OWM
+import com.kwabenaberko.openweathermaplib.constants.Units
+import com.kwabenaberko.openweathermaplib.implementation.OpenWeatherMapHelper
+import com.kwabenaberko.openweathermaplib.implementation.callbacks.CurrentWeatherCallback
+import com.kwabenaberko.openweathermaplib.models.currentweather.CurrentWeather
 import kotlin.math.roundToInt
 
-// TODO: fix this trainwreck
 @Keep
+@Suppress("DEPRECATION")
 class OWMWeatherDataProvider(controller: LawnchairSmartspaceController) :
-        LawnchairSmartspaceController.PeriodicDataProvider(controller), LawnchairPreferences.OnPreferenceChangeListener {
+        LawnchairSmartspaceController.PeriodicDataProvider(controller), LawnchairPreferences.OnPreferenceChangeListener, CurrentWeatherCallback {
 
     private val context = controller.context
     private val prefs = Utilities.getLawnchairPrefs(context)
-    private val owm by lazy { OWM(prefs.weatherApiKey) }
+    private val owm by lazy { OpenWeatherMapHelper(prefs.weatherApiKey) }
     private val iconProvider by lazy { WeatherIconProvider(context) }
+
+    private val locationAccess get() =  Utilities.hasPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) ||
+            Utilities.hasPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+    private val locationManager: LocationManager? by lazy { if (locationAccess) {
+        context.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+    } else null }
 
     init {
         prefs.addOnPreferenceChangeListener(this, "pref_weatherApiKey", "pref_weather_city", "pref_weather_units")
     }
 
-    override fun queryWeatherData(): LawnchairSmartspaceController.WeatherData? {
-        try {
-            val currentWeatherList = owm.currentWeatherByCityName(prefs.weatherCity)
-            val temp = if (currentWeatherList.hasMainData()) currentWeatherList.mainData!!.temp else -1.0
-            val icon = if (currentWeatherList.hasMainData()) currentWeatherList.weatherList?.get(0)?.iconCode else "-1"
-            val forecastUrl = "https://openweathermap.org/city/${currentWeatherList.cityId}"
-            return LawnchairSmartspaceController.WeatherData(iconProvider.getIcon(icon),
-                    Temperature(temp!!.roundToInt(), when (owm.unit) {
-                        OWM.Unit.METRIC -> Temperature.Unit.Celsius
-                        OWM.Unit.IMPERIAL -> Temperature.Unit.Fahrenheit
-                        OWM.Unit.STANDARD -> Temperature.Unit.Kelvin
-                    }), forecastUrl)
-        } catch (e: Exception){
-            Log.w("OWM", "Updating weather data failed", e)
+    override fun updateData() {
+        // TODO: Create a search/dropdown for cities, make Auto the default
+        if (prefs.weatherCity == "##Auto") {
+            if (!locationAccess) {
+                Utilities.requestLocationPermission(context.lawnchairApp.activityHandler.foregroundActivity)
+                return
+            }
+            val locationProvider = locationManager?.getBestProvider(Criteria(), true)
+            val location = locationManager?.getLastKnownLocation(locationProvider)
+            if (location != null) {
+                owm.getCurrentWeatherByGeoCoordinates(location.latitude, location.longitude, this)
+            }
+        } else {
+            owm.getCurrentWeatherByCityName(prefs.weatherCity, this)
         }
-        return null
+    }
+
+    override fun onSuccess(currentWeather: CurrentWeather) {
+        val temp = currentWeather.main.temp
+        val icon = currentWeather.weather[0].icon
+        updateData(LawnchairSmartspaceController.WeatherData(
+                iconProvider.getIcon(icon),
+                Temperature(
+                        temp.roundToInt(),
+                        if (prefs.weatherUnit != Temperature.Unit.Fahrenheit) Temperature.Unit.Celsius else Temperature.Unit.Fahrenheit
+                ),
+                "https://openweathermap.org/city/${currentWeather.id}"
+        ), null)
+    }
+
+    override fun onFailure(throwable: Throwable?) {
+        Log.w("OWM", "Updating weather data failed", throwable)
+        if (prefs.weatherApiKey == context.getString(R.string.default_owm_key)) {
+            Toast.makeText(context, R.string.owm_get_your_own_key, Toast.LENGTH_LONG).show()
+        } else if (throwable != null) {
+            Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
+        }
+        updateData(null, null)
     }
 
     override fun onDestroy() {
@@ -65,13 +104,13 @@ class OWMWeatherDataProvider(controller: LawnchairSmartspaceController) :
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
         if (key in arrayOf("pref_weatherApiKey", "pref_weather_city", "pref_weather_units")) {
             if (key == "pref_weather_units") {
-                owm.unit = when (prefs.weatherUnit) {
-                    Temperature.Unit.Celsius -> OWM.Unit.METRIC
-                    Temperature.Unit.Fahrenheit -> OWM.Unit.IMPERIAL
-                    else -> OWM.Unit.STANDARD
-                }
-            } else if (key == "pref_weatherApiKey") {
-                owm.apiKey = prefs.weatherApiKey
+                owm.setUnits(when (prefs.weatherUnit) {
+                            Temperature.Unit.Celsius -> Units.METRIC
+                            Temperature.Unit.Fahrenheit -> Units.IMPERIAL
+                            else -> Units.METRIC
+                        })
+            } else if (key == "pref_weatherApiKey" && !force) {
+                owm.setApiKey(prefs.weatherApiKey)
             }
             if (!force) updateNow()
         }

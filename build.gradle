@@ -232,7 +232,7 @@ dependencies {
     implementation 'com.github.florent37:fiftyshadesof:1.0.0'
     implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'net.aksingh:owm-japis:2.5.2.2'
+    implementation 'com.github.KwabenBerko:OpenWeatherMap-Android-Library:2.0.1'
     implementation 'com.github.LawnchairLauncher:chroma:1.2.5'
     implementation 'com.github.LawnchairLauncher:hoko-lite:0e21db9ae5'
     implementation('com.github.LawnchairLauncher:attribouter-y:0.1.6') {

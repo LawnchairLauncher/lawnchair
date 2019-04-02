@@ -43,6 +43,7 @@ import ch.deletescape.lawnchair.iconpack.EditIconActivity
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.override.CustomInfoProvider
 import ch.deletescape.lawnchair.root.RootHelperManager
+import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.views.LawnchairBackgroundView
 import com.android.launcher3.*
@@ -223,6 +224,8 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
                             applyAccent()
                         }
                 }
+        } else if(requestCode == REQUEST_PERMISSION_LOCATION_ACCESS) {
+            lawnchairApp.smartspace.updateWeatherData()
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
@@ -301,6 +304,7 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
     companion object {
 
         const val REQUEST_PERMISSION_STORAGE_ACCESS = 666
+        const val REQUEST_PERMISSION_LOCATION_ACCESS = 667
         const val CODE_EDIT_ICON = 100
 
         var sRestart = false
