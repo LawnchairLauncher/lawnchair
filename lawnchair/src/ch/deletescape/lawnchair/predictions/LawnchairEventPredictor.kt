@@ -63,7 +63,7 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
 
     private val devicePrefs = Utilities.getDevicePrefs(context)
     private val appsList = CountRankedArrayPreference(devicePrefs, "recent_app_launches", 250)
-    private val actionList = CountRankedArrayPreference(devicePrefs, "recent_shortcut_launches")
+    private val actionList = CountRankedArrayPreference(devicePrefs, "recent_shortcut_launches", 100)
     private val isActionsEnabled get() = !(PackageManagerHelper.isAppEnabled(context.packageManager, ACTIONS_PACKAGE, 0) && TouchInteractionService.isConnected() && ActionsController.get(context).actions.size > 0) && prefs.showActions
 
     private var actionsCache = listOf<String>()
