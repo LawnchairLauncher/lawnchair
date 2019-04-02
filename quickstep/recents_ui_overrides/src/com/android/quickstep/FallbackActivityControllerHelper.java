@@ -192,7 +192,11 @@ public final class FallbackActivityControllerHelper implements
 
     @Override
     public int getContainerType() {
-        return LauncherLogProto.ContainerType.SIDELOADED_LAUNCHER;
+        RecentsActivity activity = getCreatedActivity();
+        boolean visible = activity != null && activity.isStarted() && activity.hasWindowFocus();
+        return visible
+                ? LauncherLogProto.ContainerType.SIDELOADED_LAUNCHER
+                : LauncherLogProto.ContainerType.APP;
     }
 
     @Override
