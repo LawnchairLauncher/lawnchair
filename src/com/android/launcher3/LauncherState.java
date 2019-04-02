@@ -183,17 +183,17 @@ public class LauncherState {
         return Arrays.copyOf(sAllStates, sAllStates.length);
     }
 
-    public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
-        return new float[] {1, 0, 0};
+    public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
+        return new ScaleAndTranslation(1, 0, 0);
     }
 
-    public float[] getHotseatScaleAndTranslation(Launcher launcher) {
+    public ScaleAndTranslation getHotseatScaleAndTranslation(Launcher launcher) {
         // For most states, treat the hotseat as if it were part of the workspace.
         return getWorkspaceScaleAndTranslation(launcher);
     }
 
-    public float[] getOverviewScaleAndTranslationY(Launcher launcher) {
-        return new float[] {1.1f, 0f};
+    public ScaleAndTranslation getOverviewScaleAndTranslation(Launcher launcher) {
+        return new ScaleAndTranslation(1.1f, 0f, 0f);
     }
 
     public void onStateEnabled(Launcher launcher) {
@@ -280,5 +280,17 @@ public class LauncherState {
         }
 
         public abstract float getPageAlpha(int pageIndex);
+    }
+
+    public static class ScaleAndTranslation {
+        public float scale;
+        public float translationX;
+        public float translationY;
+
+        public ScaleAndTranslation(float scale, float translationX, float translationY) {
+            this.scale = scale;
+            this.translationX = translationX;
+            this.translationY = translationY;
+        }
     }
 }

@@ -20,10 +20,10 @@ import static com.android.launcher3.TestProtocol.ALL_APPS_STATE_ORDINAL;
 
 import android.graphics.Point;
 
-import com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
-
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
+
+import com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
 
 /**
  * Overview pane.
@@ -47,14 +47,20 @@ public final class Overview extends BaseOverview {
      */
     @NonNull
     public AllAppsFromOverview switchToAllApps() {
-        verifyActiveContainer();
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to switch from overview to all apps")) {
+            verifyActiveContainer();
 
-        // Swipe from navbar to the top.
-        final UiObject2 navBar = mLauncher.waitForSystemUiObject("navigation_bar_frame");
-        final Point start = navBar.getVisibleCenter();
-        LauncherInstrumentation.log("Overview.switchToAllApps before swipe");
-        mLauncher.swipe(start.x, start.y, start.x, 0, ALL_APPS_STATE_ORDINAL);
+            // Swipe from navbar to the top.
+            final UiObject2 navBar = mLauncher.waitForSystemUiObject("navigation_bar_frame");
+            final Point start = navBar.getVisibleCenter();
+            LauncherInstrumentation.log("Overview.switchToAllApps before swipe");
+            mLauncher.swipe(start.x, start.y, start.x, 0, ALL_APPS_STATE_ORDINAL);
 
-        return new AllAppsFromOverview(mLauncher);
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "swiped all way up from overview")) {
+                return new AllAppsFromOverview(mLauncher);
+            }
+        }
     }
 }

@@ -46,13 +46,21 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
 
         super.onDragStart(start);
 
-        if (mStartState == NORMAL) {
+        if (handlingOverviewAnim()) {
             mMotionPauseDetector.setOnMotionPauseListener(isPaused -> {
                 RecentsView recentsView = mLauncher.getOverviewPanel();
                 recentsView.setOverviewStateEnabled(isPaused);
                 maybeUpdateAtomicAnim(NORMAL, OVERVIEW, isPaused ? 1 : 0);
             });
         }
+    }
+
+    /**
+     * @return Whether we are handling the overview animation, rather than
+     * having it as part of the existing animation to the target state.
+     */
+    private boolean handlingOverviewAnim() {
+        return mStartState == NORMAL;
     }
 
     @Override
@@ -63,7 +71,7 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
 
     @Override
     public void onDragEnd(float velocity, boolean fling) {
-        if (mMotionPauseDetector.isPaused() && mStartState == NORMAL) {
+        if (mMotionPauseDetector.isPaused() && handlingOverviewAnim()) {
             float range = getShiftRange();
             long maxAccuracy = (long) (2 * range);
 
@@ -92,5 +100,14 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
             super.onDragEnd(velocity, fling);
         }
         mMotionPauseDetector.clear();
+    }
+
+    @Override
+    protected void updateAnimatorBuilderOnReinit(AnimatorSetBuilder builder) {
+        if (handlingOverviewAnim()) {
+            // We don't want the state transition to all apps to animate overview,
+            // as that will cause a jump after our atomic animation.
+            builder.addFlag(AnimatorSetBuilder.FLAG_DONT_ANIMATE_OVERVIEW);
+        }
     }
 }

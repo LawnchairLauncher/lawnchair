@@ -33,7 +33,7 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"위젯을 선택하려면 두 번 탭한 다음 길게 터치하거나 맞춤 액션을 사용합니다."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d×%2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"너비 %1$d, 높이 %2$d"</string>
-    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"길게 터치하여 직접 장소 추가"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"길게 터치하여 직접 추가"</string>
     <string name="place_automatically" msgid="8064208734425456485">"자동으로 추가"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"앱 검색"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"앱 로드 중…"</string>

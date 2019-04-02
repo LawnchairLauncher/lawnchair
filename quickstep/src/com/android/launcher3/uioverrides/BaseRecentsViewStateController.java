@@ -19,6 +19,8 @@ package com.android.launcher3.uioverrides;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.FLAG_DONT_ANIMATE_OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
@@ -28,6 +30,7 @@ import android.view.animation.Interpolator;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.anim.AnimatorSetBuilder;
@@ -53,9 +56,15 @@ public abstract class BaseRecentsViewStateController<T extends View>
 
     @Override
     public void setState(@NonNull LauncherState state) {
-        float[] scaleTranslationY = state.getOverviewScaleAndTranslationY(mLauncher);
-        SCALE_PROPERTY.set(mRecentsView, scaleTranslationY[0]);
-        mRecentsView.setTranslationY(scaleTranslationY[1]);
+        ScaleAndTranslation scaleAndTranslation = state
+                .getOverviewScaleAndTranslation(mLauncher);
+        SCALE_PROPERTY.set(mRecentsView, scaleAndTranslation.scale);
+        float translationX = scaleAndTranslation.translationX;
+        if (mRecentsView.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+            translationX = -translationX;
+        }
+        mRecentsView.setTranslationX(translationX);
+        mRecentsView.setTranslationY(scaleAndTranslation.translationY);
         getContentAlphaProperty().set(mRecentsView, state.overviewUi ? 1f : 0);
     }
 
@@ -64,6 +73,9 @@ public abstract class BaseRecentsViewStateController<T extends View>
             @NonNull AnimatorSetBuilder builder, @NonNull AnimationConfig config) {
         if (!config.playAtomicComponent()) {
             // The entire recents animation is played atomically.
+            return;
+        }
+        if (builder.hasFlag(FLAG_DONT_ANIMATE_OVERVIEW)) {
             return;
         }
         setStateWithAnimationInternal(toState, builder, config);
@@ -79,26 +91,20 @@ public abstract class BaseRecentsViewStateController<T extends View>
     void setStateWithAnimationInternal(@NonNull final LauncherState toState,
             @NonNull AnimatorSetBuilder builder, @NonNull AnimationConfig config) {
         PropertySetter setter = config.getPropertySetter(builder);
-        float[] scaleTranslationY = toState.getOverviewScaleAndTranslationY(mLauncher);
-        Interpolator scaleAndTransYInterpolator = getScaleAndTransYInterpolator(toState, builder);
-        setter.setFloat(mRecentsView, SCALE_PROPERTY, scaleTranslationY[0],
-                scaleAndTransYInterpolator);
-        setter.setFloat(mRecentsView, View.TRANSLATION_Y, scaleTranslationY[1],
-                scaleAndTransYInterpolator);
+        ScaleAndTranslation scaleAndTranslation = toState.getOverviewScaleAndTranslation(mLauncher);
+        Interpolator scaleInterpolator = builder.getInterpolator(ANIM_OVERVIEW_SCALE, LINEAR);
+        setter.setFloat(mRecentsView, SCALE_PROPERTY, scaleAndTranslation.scale, scaleInterpolator);
+        Interpolator translateInterpolator = builder.getInterpolator(
+                ANIM_OVERVIEW_TRANSLATE, LINEAR);
+        float translationX = scaleAndTranslation.translationX;
+        if (mRecentsView.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+            translationX = -translationX;
+        }
+        setter.setFloat(mRecentsView, View.TRANSLATION_X, translationX, translateInterpolator);
+        setter.setFloat(mRecentsView, View.TRANSLATION_Y, scaleAndTranslation.translationY,
+                translateInterpolator);
         setter.setFloat(mRecentsView, getContentAlphaProperty(), toState.overviewUi ? 1 : 0,
                 builder.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));
-    }
-
-    /**
-     * Get the interpolator to use for the scale and translation Y animation for the view.
-     *
-     * @param toState state to animate to
-     * @param builder animator set builder
-     * @return interpolator for scale and trans Y recents view animation
-     */
-    Interpolator getScaleAndTransYInterpolator(@NonNull final LauncherState toState,
-            @NonNull AnimatorSetBuilder builder) {
-        return builder.getInterpolator(ANIM_OVERVIEW_SCALE, LINEAR);
     }
 
     /**

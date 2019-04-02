@@ -36,7 +36,7 @@ import com.android.launcher3.TestProtocol;
 public final class Workspace extends Home {
     private static final float FLING_SPEED = 3500.0F;
     private final UiObject2 mHotseat;
-    private final int ICON_DRAG_SPEED = 2000;
+    private final int ICON_DRAG_SPEED = LauncherInstrumentation.needSlowGestures() ? 100 : 570;
 
     Workspace(LauncherInstrumentation launcher) {
         super(launcher);
@@ -50,21 +50,27 @@ public final class Workspace extends Home {
      */
     @NonNull
     public AllApps switchToAllApps() {
-        verifyActiveContainer();
-        final UiObject2 hotseat = mHotseat;
-        final Point start = hotseat.getVisibleCenter();
-        final int swipeHeight = mLauncher.getTestInfo(
-                TestProtocol.REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT).
-                getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
-        mLauncher.swipe(
-                start.x,
-                start.y,
-                start.x,
-                start.y - swipeHeight - mLauncher.getTouchSlop(),
-                ALL_APPS_STATE_ORDINAL
-        );
+        try(LauncherInstrumentation.Closable c =
+                    mLauncher.addContextLayer("want to switch from workspace to all apps")) {
+            verifyActiveContainer();
+            final UiObject2 hotseat = mHotseat;
+            final Point start = hotseat.getVisibleCenter();
+            final int swipeHeight = mLauncher.getTestInfo(
+                    TestProtocol.REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT).
+                    getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+            mLauncher.swipe(
+                    start.x,
+                    start.y,
+                    start.x,
+                    start.y - swipeHeight - mLauncher.getTouchSlop(),
+                    ALL_APPS_STATE_ORDINAL
+            );
 
-        return new AllApps(mLauncher);
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "swiped to all apps")) {
+                return new AllApps(mLauncher);
+            }
+        }
     }
 
     /**
@@ -75,9 +81,13 @@ public final class Workspace extends Home {
      */
     @Nullable
     public AppIcon tryGetWorkspaceAppIcon(String appName) {
-        final UiObject2 workspace = verifyActiveContainer();
-        final UiObject2 icon = workspace.findObject(AppIcon.getAppIconSelector(appName, mLauncher));
-        return icon != null ? new AppIcon(mLauncher, icon) : null;
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to get a workspace icon")) {
+            final UiObject2 workspace = verifyActiveContainer();
+            final UiObject2 icon = workspace.findObject(
+                    AppIcon.getAppIconSelector(appName, mLauncher));
+            return icon != null ? new AppIcon(mLauncher, icon) : null;
+        }
     }
 
 
@@ -107,7 +117,7 @@ public final class Workspace extends Home {
                     getHotseatAppIcon("Messages"),
                     new Point(mLauncher.getDevice().getDisplayWidth(),
                             workspace.getVisibleBounds().centerY()),
-                    ICON_DRAG_SPEED);
+                    (int) (ICON_DRAG_SPEED * mLauncher.getDisplayDensity()));
             verifyActiveContainer();
         }
         assertTrue("Home screen workspace didn't become scrollable",
@@ -165,7 +175,9 @@ public final class Workspace extends Home {
     public Widgets openAllWidgets() {
         verifyActiveContainer();
         mLauncher.getDevice().pressKeyCode(KeyEvent.KEYCODE_W, KeyEvent.META_CTRL_ON);
-        return new Widgets(mLauncher);
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer("pressed Ctrl+W")) {
+            return new Widgets(mLauncher);
+        }
     }
 
     @Override

@@ -195,6 +195,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
         final AnimatorSetBuilder builder = totalShift == 0 ? new AnimatorSetBuilder()
                 : getAnimatorSetBuilderForStates(mFromState, mToState);
+        updateAnimatorBuilderOnReinit(builder);
 
         cancelPendingAnim();
 
@@ -226,6 +227,12 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                     * OverviewState.getDefaultSwipeHeight(mLauncher);
         }
         return 1 / totalShift;
+    }
+
+    /**
+     * Give subclasses the chance to update the animation when we re-initialize towards a new state.
+     */
+    protected void updateAnimatorBuilderOnReinit(AnimatorSetBuilder builder) {
     }
 
     private void cancelPendingAnim() {

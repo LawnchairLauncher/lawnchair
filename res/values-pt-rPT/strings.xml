@@ -104,7 +104,7 @@
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Widgets de <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widgets_list" msgid="796804551140113767">"Lista de widgets"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Lista de widgets fechada."</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"Adicionar ao Ecrã principal"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"Adicionar ao ecrã principal"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Mover o item para aqui"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Item adicionado ao ecrã principal"</string>
     <string name="item_removed" msgid="851119963877842327">"Item removido"</string>

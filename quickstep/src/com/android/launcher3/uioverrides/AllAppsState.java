@@ -60,10 +60,10 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
-        float[] scaleAndTranslation = LauncherState.OVERVIEW.getWorkspaceScaleAndTranslation(
-                launcher);
-        scaleAndTranslation[0] = 1;
+    public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
+        ScaleAndTranslation scaleAndTranslation = LauncherState.OVERVIEW
+                .getWorkspaceScaleAndTranslation(launcher);
+        scaleAndTranslation.scale = 1;
         return scaleAndTranslation;
     }
 
@@ -78,9 +78,9 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public float[] getOverviewScaleAndTranslationY(Launcher launcher) {
+    public ScaleAndTranslation getOverviewScaleAndTranslation(Launcher launcher) {
         float slightParallax = -launcher.getDeviceProfile().allAppsCellHeightPx * 0.3f;
-        return new float[] {0.9f, slightParallax};
+        return new ScaleAndTranslation(0.9f, 0f, slightParallax);
     }
 
     @Override

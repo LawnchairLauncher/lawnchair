@@ -44,7 +44,6 @@ public class RecentTasksList extends TaskStackChangeListener {
     private final KeyguardManagerCompat mKeyguardManager;
     private final MainThreadExecutor mMainThreadExecutor;
     private final BackgroundExecutor mBgThreadExecutor;
-    private final TaskListStabilizer mStabilizer = new TaskListStabilizer();
 
     // The list change id, increments as the task list changes in the system
     private int mChangeId;
@@ -74,14 +73,6 @@ public class RecentTasksList extends TaskStackChangeListener {
         });
     }
 
-    public void startStabilizationSession() {
-        mStabilizer.startStabilizationSession();
-    }
-
-    public void endStabilizationSession() {
-        mStabilizer.endStabilizationSession();
-    }
-
     /**
      * Asynchronously fetches the list of recent tasks, reusing cached list if available.
      *
@@ -93,7 +84,7 @@ public class RecentTasksList extends TaskStackChangeListener {
         final int requestLoadId = mChangeId;
         Runnable resultCallback = callback == null
                 ? () -> { }
-                : () -> callback.accept(mStabilizer.reorder(mTasks));
+                : () -> callback.accept(mTasks);
 
         if (mLastLoadedId == mChangeId && (!mLastLoadHadKeysOnly || loadKeysOnly)) {
             // The list is up to date, callback with the same list

@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.SystemClock;
@@ -52,6 +53,8 @@ import org.junit.Assert;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -89,9 +92,14 @@ public final class LauncherInstrumentation {
          * @return UI object for the container.
          */
         final UiObject2 verifyActiveContainer() {
-            assertTrue("Attempt to use a stale container", this == sActiveContainer.get());
+            mLauncher.assertTrue("Attempt to use a stale container",
+                    this == sActiveContainer.get());
             return mLauncher.verifyContainerType(getContainerType());
         }
+    }
+
+    interface Closable extends AutoCloseable {
+        void close();
     }
 
     private static final String WORKSPACE_RES_ID = "workspace";
@@ -107,6 +115,7 @@ public final class LauncherInstrumentation {
     private final Instrumentation mInstrumentation;
     private int mExpectedRotation = Surface.ROTATION_0;
     private final Uri mTestProviderUri;
+    private final Deque<String> mDiagnosticContext = new LinkedList<>();
 
     /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
@@ -160,6 +169,10 @@ public final class LauncherInstrumentation {
         return isSwipeUpEnabled() ? NavigationModel.TWO_BUTTON : NavigationModel.THREE_BUTTON;
     }
 
+    static boolean needSlowGestures() {
+        return Build.MODEL.contains("Cuttlefish");
+    }
+
     private boolean isSwipeUpEnabled() {
         final Context baseContext = mInstrumentation.getTargetContext();
         try {
@@ -176,31 +189,38 @@ public final class LauncherInstrumentation {
         Log.d(TAG, message);
     }
 
-    private static void fail(String message) {
-        Assert.fail("http://go/tapl : " + message);
+    Closable addContextLayer(String piece) {
+        mDiagnosticContext.addLast(piece);
+        return () -> mDiagnosticContext.removeLast();
     }
 
-    static void assertTrue(String message, boolean condition) {
+    private void fail(String message) {
+        final String ctxt = mDiagnosticContext.isEmpty() ? "" : String.join(", ",
+                mDiagnosticContext) + "; ";
+        Assert.fail("http://go/tapl : " + ctxt + message);
+    }
+
+    void assertTrue(String message, boolean condition) {
         if (!condition) {
             fail(message);
         }
     }
 
-    static void assertNotNull(String message, Object object) {
+    void assertNotNull(String message, Object object) {
         assertTrue(message, object != null);
     }
 
-    static private void failEquals(String message, Object actual) {
+    private void failEquals(String message, Object actual) {
         fail(message + ". " + "Actual: " + actual);
     }
 
-    static private void assertEquals(String message, int expected, int actual) {
+    private void assertEquals(String message, int expected, int actual) {
         if (expected != actual) {
             fail(message + " expected: " + expected + " but was: " + actual);
         }
     }
 
-    static void assertNotEquals(String message, int unexpected, int actual) {
+    void assertNotEquals(String message, int unexpected, int actual) {
         if (unexpected == actual) {
             failEquals(message, actual);
         }
@@ -218,49 +238,52 @@ public final class LauncherInstrumentation {
                         (mDevice.findObject(By.res(SYSTEMUI_PACKAGE, "recent_apps")) == null));
         log("verifyContainerType: " + containerType);
 
-        switch (containerType) {
-            case WORKSPACE: {
-                waitForLauncherObject(APPS_RES_ID);
-                waitUntilGone(OVERVIEW_RES_ID);
-                waitUntilGone(WIDGETS_RES_ID);
-                return waitForLauncherObject(WORKSPACE_RES_ID);
-            }
-            case WIDGETS: {
-                waitUntilGone(WORKSPACE_RES_ID);
-                waitUntilGone(APPS_RES_ID);
-                waitUntilGone(OVERVIEW_RES_ID);
-                return waitForLauncherObject(WIDGETS_RES_ID);
-            }
-            case ALL_APPS: {
-                waitUntilGone(WORKSPACE_RES_ID);
-                waitUntilGone(OVERVIEW_RES_ID);
-                waitUntilGone(WIDGETS_RES_ID);
-                return waitForLauncherObject(APPS_RES_ID);
-            }
-            case OVERVIEW: {
-                if (mDevice.isNaturalOrientation()) {
+        try (Closable c = addContextLayer(
+                "but the current state is not " + containerType.name())) {
+            switch (containerType) {
+                case WORKSPACE: {
                     waitForLauncherObject(APPS_RES_ID);
-                } else {
-                    waitUntilGone(APPS_RES_ID);
+                    waitUntilGone(OVERVIEW_RES_ID);
+                    waitUntilGone(WIDGETS_RES_ID);
+                    return waitForLauncherObject(WORKSPACE_RES_ID);
                 }
-                // Fall through
-            }
-            case BASE_OVERVIEW: {
-                waitUntilGone(WORKSPACE_RES_ID);
-                waitUntilGone(WIDGETS_RES_ID);
+                case WIDGETS: {
+                    waitUntilGone(WORKSPACE_RES_ID);
+                    waitUntilGone(APPS_RES_ID);
+                    waitUntilGone(OVERVIEW_RES_ID);
+                    return waitForLauncherObject(WIDGETS_RES_ID);
+                }
+                case ALL_APPS: {
+                    waitUntilGone(WORKSPACE_RES_ID);
+                    waitUntilGone(OVERVIEW_RES_ID);
+                    waitUntilGone(WIDGETS_RES_ID);
+                    return waitForLauncherObject(APPS_RES_ID);
+                }
+                case OVERVIEW: {
+                    if (mDevice.isNaturalOrientation()) {
+                        waitForLauncherObject(APPS_RES_ID);
+                    } else {
+                        waitUntilGone(APPS_RES_ID);
+                    }
+                    // Fall through
+                }
+                case BASE_OVERVIEW: {
+                    waitUntilGone(WORKSPACE_RES_ID);
+                    waitUntilGone(WIDGETS_RES_ID);
 
-                return waitForLauncherObject(OVERVIEW_RES_ID);
+                    return waitForLauncherObject(OVERVIEW_RES_ID);
+                }
+                case BACKGROUND: {
+                    waitUntilGone(WORKSPACE_RES_ID);
+                    waitUntilGone(APPS_RES_ID);
+                    waitUntilGone(OVERVIEW_RES_ID);
+                    waitUntilGone(WIDGETS_RES_ID);
+                    return null;
+                }
+                default:
+                    fail("Invalid state: " + containerType);
+                    return null;
             }
-            case BACKGROUND: {
-                waitUntilGone(WORKSPACE_RES_ID);
-                waitUntilGone(APPS_RES_ID);
-                waitUntilGone(OVERVIEW_RES_ID);
-                waitUntilGone(WIDGETS_RES_ID);
-                return null;
-            }
-            default:
-                fail("Invalid state: " + containerType);
-                return null;
         }
     }
 
@@ -298,20 +321,21 @@ public final class LauncherInstrumentation {
         // We need waiting for any accessibility event generated after pressing Home because
         // otherwise waitForIdle may return immediately in case when there was a big enough pause in
         // accessibility events prior to pressing Home.
+        final String action;
         if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
             if (hasLauncherObject(WORKSPACE_RES_ID)) {
-                log("0-button pressHome: already in workspace");
+                log(action = "0-button: already in workspace");
             } else if (hasLauncherObject(OVERVIEW_RES_ID)) {
-                log("0-button pressHome: overview");
+                log(action = "0-button: from overview");
                 mDevice.pressHome();
             } else if (hasLauncherObject(WIDGETS_RES_ID)) {
-                log("0-button pressHome: widgets");
+                log(action = "0-button: from widgets");
                 mDevice.pressHome();
             } else if (hasLauncherObject(APPS_RES_ID)) {
-                log("0-button pressHome: all apps");
+                log(action = "0-button: from all apps");
                 mDevice.pressHome();
             } else {
-                log("0-button pressHome: another app");
+                log(action = "0-button: from another app");
                 assertTrue("Launcher is visible, don't know how to go home",
                         !mDevice.hasObject(By.pkg(getLauncherPackageName())));
                 final UiObject2 navBar = waitForSystemUiObject("navigation_bar_frame");
@@ -322,6 +346,7 @@ public final class LauncherInstrumentation {
                         BACKGROUND_APP_STATE_ORDINAL, ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
             }
         } else {
+            log(action = "clicking home button");
             executeAndWaitForEvent(
                     () -> {
                         log("LauncherInstrumentation.pressHome before clicking");
@@ -341,7 +366,10 @@ public final class LauncherInstrumentation {
                     "Pressing Home didn't produce any events");
             mDevice.waitForIdle();
         }
-        return getWorkspace();
+        try (LauncherInstrumentation.Closable c = addContextLayer(
+                "performed action to switch to Home - " + action)) {
+            return getWorkspace();
+        }
     }
 
     /**
@@ -352,7 +380,9 @@ public final class LauncherInstrumentation {
      */
     @NonNull
     public Workspace getWorkspace() {
-        return new Workspace(this);
+        try (LauncherInstrumentation.Closable c = addContextLayer("want to get workspace object")) {
+            return new Workspace(this);
+        }
     }
 
     /**
@@ -374,7 +404,9 @@ public final class LauncherInstrumentation {
      */
     @NonNull
     public Widgets getAllWidgets() {
-        return new Widgets(this);
+        try (LauncherInstrumentation.Closable c = addContextLayer("want to get widgets")) {
+            return new Widgets(this);
+        }
     }
 
     /**
@@ -385,7 +417,9 @@ public final class LauncherInstrumentation {
      */
     @NonNull
     public Overview getOverview() {
-        return new Overview(this);
+        try (LauncherInstrumentation.Closable c = addContextLayer("want to get overview")) {
+            return new Overview(this);
+        }
     }
 
     /**
@@ -409,7 +443,9 @@ public final class LauncherInstrumentation {
      */
     @NonNull
     public AllApps getAllApps() {
-        return new AllApps(this);
+        try (LauncherInstrumentation.Closable c = addContextLayer("want to get all apps object")) {
+            return new AllApps(this);
+        }
     }
 
     /**
@@ -422,7 +458,9 @@ public final class LauncherInstrumentation {
      */
     @NonNull
     public AllAppsFromOverview getAllAppsFromOverview() {
-        return new AllAppsFromOverview(this);
+        try (LauncherInstrumentation.Closable c = addContextLayer("want to get all apps object")) {
+            return new AllAppsFromOverview(this);
+        }
     }
 
     void waitUntilGone(String resId) {
