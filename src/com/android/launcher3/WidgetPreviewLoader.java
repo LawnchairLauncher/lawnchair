@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.CancellationSignal;
 import android.os.Handler;
+import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 import android.util.LongSparseArray;
@@ -73,7 +74,6 @@ public class WidgetPreviewLoader {
     private final Context mContext;
     private final IconCache mIconCache;
     private final UserManagerCompat mUserManager;
-    private final AppWidgetManagerCompat mWidgetManager;
     private final CacheDb mDb;
 
     private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
@@ -82,7 +82,6 @@ public class WidgetPreviewLoader {
     public WidgetPreviewLoader(Context context, IconCache iconCache) {
         mContext = context;
         mIconCache = iconCache;
-        mWidgetManager = AppWidgetManagerCompat.getInstance(context);
         mUserManager = UserManagerCompat.getInstance(context);
         mDb = new CacheDb(context);
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
@@ -107,6 +106,10 @@ public class WidgetPreviewLoader {
         return signal;
     }
 
+    public void refresh() {
+        mDb.clear();
+
+    }
     /**
      * The DB holds the generated previews for various components. Previews can also have different
      * sizes (landscape vs portrait).
@@ -474,8 +477,9 @@ public class WidgetPreviewLoader {
         RectF boxRect = drawBoxWithShadow(c, size, size);
 
         LauncherIcons li = LauncherIcons.obtain(mContext);
-        Bitmap icon = li.createScaledBitmapWithoutShadow(
-                mutateOnMainThread(info.getFullResIcon(mIconCache)), 0);
+        Bitmap icon = li.createBadgedIconBitmap(
+                mutateOnMainThread(info.getFullResIcon(mIconCache)),
+                Process.myUserHandle(), 0).icon;
         li.recycle();
 
         Rect src = new Rect(0, 0, icon.getWidth(), icon.getHeight());
