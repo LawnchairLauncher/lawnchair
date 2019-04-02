@@ -360,7 +360,13 @@ public abstract class FolderShape {
     @RequiresApi(api = VERSION_CODES.O)
     private static Path getIconMask(Context context) {
         if (Utilities.isMiui()) {
-            String pathData = Utilities.getDevicePrefs(context).getString(IconShapeOverride.KEY_PREFERENCE, "");
+            String devValue = Utilities.getDevicePrefs(context).getString(IconShapeOverride.KEY_PREFERENCE, "");
+            if (!TextUtils.isEmpty(devValue)) {
+                // Migrate
+                Utilities.getPrefs(context).edit().putString(IconShapeOverride.KEY_PREFERENCE, devValue).apply();
+                Utilities.getDevicePrefs(context).edit().remove(IconShapeOverride.KEY_PREFERENCE).apply();
+            }
+            String pathData = Utilities.getPrefs(context).getString(IconShapeOverride.KEY_PREFERENCE, "");
             if (!TextUtils.isEmpty(pathData)) {
                 try {
                     Path mask = PathParser.createPathFromPathData(pathData);

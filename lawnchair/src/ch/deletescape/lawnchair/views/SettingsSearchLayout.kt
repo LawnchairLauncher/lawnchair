@@ -32,7 +32,7 @@ class SettingsSearchLayout(context: Context, attrs: AttributeSet?) : InsettableF
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        Utilities.getDevicePrefs(context).registerOnSharedPreferenceChangeListener(this)
+        Utilities.getPrefs(context).registerOnSharedPreferenceChangeListener(this)
         updateRadius()
     }
 
@@ -51,7 +51,7 @@ class SettingsSearchLayout(context: Context, attrs: AttributeSet?) : InsettableF
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        Utilities.getDevicePrefs(context).unregisterOnSharedPreferenceChangeListener(this)
+        Utilities.getPrefs(context).unregisterOnSharedPreferenceChangeListener(this)
     }
 
     override fun setInsets(insets: Rect) {

@@ -35,6 +35,7 @@ import com.android.launcher3.util.LooperExecutor;
 import java.lang.reflect.Field;
 
 import static com.android.launcher3.Utilities.getDevicePrefs;
+import static com.android.launcher3.Utilities.getPrefs;
 import static com.android.launcher3.Utilities.restartLauncher;
 
 /**
@@ -91,7 +92,7 @@ public class IconShapeOverride {
         } catch (Exception e) {
             Log.e(TAG, "Unable to override icon shape", e);
             // revert value.
-            getDevicePrefs(context).edit().remove(KEY_PREFERENCE).apply();
+            getPrefs(context).edit().remove(KEY_PREFERENCE).apply();
         }
     }
 
@@ -106,7 +107,14 @@ public class IconShapeOverride {
     }
 
     private static String getAppliedValue(Context context) {
-        return getDevicePrefs(context).getString(KEY_PREFERENCE, "");
+        String devValue = getDevicePrefs(context).getString(KEY_PREFERENCE, "");
+        if (!TextUtils.isEmpty(devValue)) {
+            // Migrate to general preferences to back up shape overrides
+            getPrefs(context).edit().putString(KEY_PREFERENCE, devValue).apply();;
+            getDevicePrefs(context).edit().remove(KEY_PREFERENCE).apply();
+        }
+
+        return getPrefs(context).getString(KEY_PREFERENCE, "");
     }
 
     public static void handlePreferenceUi(ListPreference preference) {
@@ -182,7 +190,7 @@ public class IconShapeOverride {
         @Override
         public void run() {
             // Synchronously write the preference.
-            getDevicePrefs(mContext).edit().putString(KEY_PREFERENCE, mValue).commit();
+            getPrefs(mContext).edit().putString(KEY_PREFERENCE, mValue).commit();
             // Clear the icon cache.
             LauncherAppState.getInstance(mContext).getIconCache().clear();
 
