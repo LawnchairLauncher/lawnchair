@@ -46,9 +46,9 @@ class HiddenAppsFragment : RecyclerViewFragment(), SelectableAppsAdapter.Callbac
 
     override fun onSelectionsChanged(newSize: Int) {
         if (newSize > 0) {
-            activity!!.title = "$newSize${getString(R.string.hide_app_selected)}"
+            activity?.title = "$newSize${getString(R.string.hide_app_selected)}"
         } else {
-            activity!!.title = getString(R.string.hidden_app)
+            activity?.title = getString(R.string.hidden_app)
         }
     }
 
