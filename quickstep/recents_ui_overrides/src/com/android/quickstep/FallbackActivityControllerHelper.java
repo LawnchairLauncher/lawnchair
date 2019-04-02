@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 
 import android.animation.Animator;
@@ -60,7 +61,7 @@ public final class FallbackActivityControllerHelper implements
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
         LayoutUtils.calculateFallbackTaskSize(context, dp, outRect);
         if (dp.isVerticalBarLayout()
-                && !NavBarModeOverlayResourceObserver.isEdgeToEdgeModeEnabled(context)) {
+                && SysUINavigationMode.INSTANCE.get(context).getMode() != NO_BUTTON) {
             Rect targetInsets = dp.getInsets();
             int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
             return dp.hotseatBarSizePx + hotseatInset;

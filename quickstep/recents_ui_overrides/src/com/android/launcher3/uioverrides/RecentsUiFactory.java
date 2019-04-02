@@ -17,11 +17,9 @@
 package com.android.launcher3.uioverrides;
 
 import static android.view.View.VISIBLE;
-
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.config.FeatureFlags.SWIPE_HOME;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -30,10 +28,19 @@ import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.uioverrides.touchcontrollers.FlingAndHoldTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.LandscapeEdgeSwipeController;
+import com.android.launcher3.uioverrides.touchcontrollers.NavBarToHomeTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.OverviewToAllAppsTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.QuickSwitchTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
-import com.android.quickstep.OverviewInteractionState;
+import com.android.quickstep.SysUINavigationMode;
+import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
@@ -52,15 +59,13 @@ public abstract class RecentsUiFactory {
     private static final float RECENTS_PREPARE_SCALE = 1.33f;
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
-        boolean swipeUpEnabled = OverviewInteractionState.INSTANCE.get(launcher)
-                .isSwipeUpGestureEnabled();
-        boolean swipeUpToHome = swipeUpEnabled && SWIPE_HOME.get();
-
+        Mode mode = SysUINavigationMode.INSTANCE.get(launcher).getMode();
 
         ArrayList<TouchController> list = new ArrayList<>();
         list.add(launcher.getDragController());
-
-        if (swipeUpToHome) {
+        if (mode == Mode.NO_BUTTON) {
+            list.add(new QuickSwitchTouchController(launcher));
+            list.add(new NavBarToHomeTouchController(launcher));
             list.add(new FlingAndHoldTouchController(launcher));
         } else {
             if (launcher.getDeviceProfile().isVerticalBarLayout()) {
@@ -68,7 +73,10 @@ public abstract class RecentsUiFactory {
                 list.add(new LandscapeEdgeSwipeController(launcher));
             } else {
                 list.add(new PortraitStatesTouchController(launcher,
-                        swipeUpEnabled /* allowDragToOverview */));
+                        mode.hasGestures /* allowDragToOverview */));
+                if (mode.hasGestures) {
+                    list.add(new QuickSwitchTouchController(launcher));
+                }
             }
         }
 
@@ -98,6 +106,10 @@ public abstract class RecentsUiFactory {
      * @param launcher the launcher activity
      */
     public static void prepareToShowOverview(Launcher launcher) {
+        if (FeatureFlags.SWIPE_HOME.get()) {
+            // Overview lives on the side, so doesn't scale in from above.
+            return;
+        }
         RecentsView overview = launcher.getOverviewPanel();
         if (overview.getVisibility() != VISIBLE || overview.getContentAlpha() == 0) {
             SCALE_PROPERTY.set(overview, RECENTS_PREPARE_SCALE);

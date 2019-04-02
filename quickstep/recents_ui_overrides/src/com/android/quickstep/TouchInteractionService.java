@@ -44,10 +44,10 @@ import android.view.MotionEvent;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.EventLogArray;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.UiThreadHelper;
+import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -315,8 +315,8 @@ public class TouchInteractionService extends Service {
                 mOverviewComponentObserver.getActivityControlHelper();
         if (runningTaskInfo == null && !mSwipeSharedState.goingToLauncher) {
             return InputConsumer.NO_OP;
-        } else if (mAssistantAvailable && mOverviewInteractionState.isSwipeUpGestureEnabled()
-                && FeatureFlags.ENABLE_ASSISTANT_GESTURE.get()
+        } else if (mAssistantAvailable
+                && SysUINavigationMode.INSTANCE.get(this).getMode() == Mode.NO_BUTTON
                 && AssistantTouchConsumer.withinTouchRegion(this, event)) {
             return new AssistantTouchConsumer(this, mISystemUiProxy, !activityControl.isResumed()
                             ? createOtherActivityInputConsumer(event, runningTaskInfo) : null);

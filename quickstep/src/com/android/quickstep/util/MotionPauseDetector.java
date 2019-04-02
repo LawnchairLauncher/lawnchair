@@ -71,9 +71,6 @@ public class MotionPauseDetector {
      */
     public void setOnMotionPauseListener(OnMotionPauseListener listener) {
         mOnMotionPauseListener = listener;
-        if (mOnMotionPauseListener != null) {
-            mOnMotionPauseListener.onMotionPauseChanged(mIsPaused);
-        }
     }
 
     /**

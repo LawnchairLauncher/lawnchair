@@ -67,9 +67,7 @@ public final class RecentsActivity extends BaseRecentsActivity {
 
     @Override
     protected void onStart() {
-        // Set the alpha to 1 before calling super, as it may get set back to 0 due to
-        // onActivityStart callback.
-        mIconRecentsView.setAlpha(0);
+        mIconRecentsView.onBeginTransitionToOverview();
         super.onStart();
     }
 }

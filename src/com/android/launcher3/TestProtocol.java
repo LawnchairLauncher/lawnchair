@@ -28,8 +28,31 @@ public final class TestProtocol {
     public static final int NORMAL_STATE_ORDINAL = 0;
     public static final int SPRING_LOADED_STATE_ORDINAL = 1;
     public static final int OVERVIEW_STATE_ORDINAL = 2;
-    public static final int ALL_APPS_STATE_ORDINAL = 3;
-    public static final int BACKGROUND_APP_STATE_ORDINAL = 4;
+    public static final int OVERVIEW_PEEK_STATE_ORDINAL = 3;
+    public static final int QUICK_SWITCH_STATE_ORDINAL = 4;
+    public static final int ALL_APPS_STATE_ORDINAL = 5;
+    public static final int BACKGROUND_APP_STATE_ORDINAL = 6;
+
+    public static String stateOrdinalToString(int ordinal) {
+        switch (ordinal) {
+            case NORMAL_STATE_ORDINAL:
+                return "Normal";
+            case SPRING_LOADED_STATE_ORDINAL:
+                return "SpringLoaded";
+            case OVERVIEW_STATE_ORDINAL:
+                return "Overview";
+            case OVERVIEW_PEEK_STATE_ORDINAL:
+                return "OverviewPeek";
+            case QUICK_SWITCH_STATE_ORDINAL:
+                return "QuickSwitch";
+            case ALL_APPS_STATE_ORDINAL:
+                return "AllApps";
+            case BACKGROUND_APP_STATE_ORDINAL:
+                return "Background";
+            default:
+                return null;
+        }
+    }
 
     public static final String TEST_INFO_RESPONSE_FIELD = "response";
     public static final String REQUEST_HOME_TO_OVERVIEW_SWIPE_HEIGHT =
@@ -40,4 +63,7 @@ public final class TestProtocol {
             "all-apps-to-overview-swipe-height";
     public static final String REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT =
             "home-to-all-apps-swipe-height";
+
+    public static boolean sDebugTracing = false;
+    public static final String NO_DRAG_TAG = "b/129434166";
 }

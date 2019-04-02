@@ -28,6 +28,7 @@ import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.launcher3.config.FeatureFlags.SWIPE_HOME;
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
+import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState.HIDE;
 import static com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState.PEEK;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
@@ -945,7 +946,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
         // We want the window alpha to be 0 once this threshold is met, so that the
         // FolderIconView can be seen morphing into the icon shape.
-        final float windowAlphaThreshold = isFloatingIconView ? 0.75f : 1f;
+        final float windowAlphaThreshold = isFloatingIconView ? 1f - SHAPE_PROGRESS_DURATION : 1f;
         anim.addOnUpdateListener((currentRect, progress) -> {
             float interpolatedProgress = Interpolators.ACCEL_1_5.getInterpolation(progress);
 
@@ -959,7 +960,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
             if (isFloatingIconView) {
                 ((FloatingIconView) floatingView).update(currentRect, iconAlpha, progress,
-                        windowAlphaThreshold);
+                        windowAlphaThreshold, mClipAnimationHelper.getCurrentCornerRadius(), false);
             }
 
         });

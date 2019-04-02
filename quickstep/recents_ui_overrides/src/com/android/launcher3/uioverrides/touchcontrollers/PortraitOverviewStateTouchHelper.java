@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.uioverrides;
+package com.android.launcher3.uioverrides.touchcontrollers;
 
-import static com.android.launcher3.uioverrides.PortraitStatesTouchController.isTouchOverHotseat;
+import static com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController.isTouchOverHotseat;
 
 import android.view.MotionEvent;
 

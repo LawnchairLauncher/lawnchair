@@ -64,7 +64,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                 "want to get app icon on all apps")) {
             final UiObject2 allAppsContainer = verifyActiveContainer();
             final UiObject2 navBar = mLauncher.waitForSystemUiObject("navigation_bar_frame");
-            allAppsContainer.setGestureMargins(0, 0, 0, navBar.getVisibleBounds().height());
+            allAppsContainer.setGestureMargins(0, 0, 0, navBar.getVisibleBounds().height() + 1);
             final BySelector appIconSelector = AppIcon.getAppIconSelector(appName, mLauncher);
             if (!hasClickableIcon(allAppsContainer, appIconSelector)) {
                 scrollBackToBeginning();
@@ -141,8 +141,8 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
      * Flings forward (down) and waits the fling's end.
      */
     public void flingForward() {
-        try(LauncherInstrumentation.Closable c =
-                    mLauncher.addContextLayer("want to fling forward in all apps")) {
+        try (LauncherInstrumentation.Closable c =
+                     mLauncher.addContextLayer("want to fling forward in all apps")) {
             final UiObject2 allAppsContainer = verifyActiveContainer();
             // Start the gesture in the center to avoid starting at elements near the top.
             allAppsContainer.setGestureMargins(0, 0, 0, mHeight / 2);
@@ -156,8 +156,8 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
      * Flings backward (up) and waits the fling's end.
      */
     public void flingBackward() {
-        try(LauncherInstrumentation.Closable c =
-                    mLauncher.addContextLayer("want to fling backward in all apps")) {
+        try (LauncherInstrumentation.Closable c =
+                     mLauncher.addContextLayer("want to fling backward in all apps")) {
             final UiObject2 allAppsContainer = verifyActiveContainer();
             // Start the gesture in the center, for symmetry with forward.
             allAppsContainer.setGestureMargins(0, mHeight / 2, 0, 0);

@@ -205,7 +205,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         mAppsView.getSearchUiManager().setContentVisibility(visibleElements, setter, allAppsFade);
 
         setter.setInt(mScrimView, ScrimView.DRAG_HANDLE_ALPHA,
-                (visibleElements & VERTICAL_SWIPE_INDICATOR) != 0 ? 255 : 0, LINEAR);
+                (visibleElements & VERTICAL_SWIPE_INDICATOR) != 0 ? 255 : 0, allAppsFade);
     }
 
     public AnimatorListenerAdapter getProgressAnimatorListener() {

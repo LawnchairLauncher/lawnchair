@@ -30,11 +30,13 @@ public class AnimatorSetBuilder {
 
     public static final int ANIM_VERTICAL_PROGRESS = 0;
     public static final int ANIM_WORKSPACE_SCALE = 1;
-    public static final int ANIM_WORKSPACE_FADE = 2;
-    public static final int ANIM_OVERVIEW_SCALE = 3;
-    public static final int ANIM_OVERVIEW_TRANSLATE = 4;
-    public static final int ANIM_OVERVIEW_FADE = 5;
-    public static final int ANIM_ALL_APPS_FADE = 6;
+    public static final int ANIM_WORKSPACE_TRANSLATE = 2;
+    public static final int ANIM_WORKSPACE_FADE = 3;
+    public static final int ANIM_OVERVIEW_SCALE = 4;
+    public static final int ANIM_OVERVIEW_TRANSLATE_X = 5;
+    public static final int ANIM_OVERVIEW_TRANSLATE_Y = 6;
+    public static final int ANIM_OVERVIEW_FADE = 7;
+    public static final int ANIM_ALL_APPS_FADE = 8;
 
     public static final int FLAG_DONT_ANIMATE_OVERVIEW = 1 << 0;
 

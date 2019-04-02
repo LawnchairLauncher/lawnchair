@@ -25,7 +25,6 @@ import com.android.systemui.shared.recents.model.Task;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 /**
@@ -39,35 +38,48 @@ public final class TaskListLoader {
 
     private ArrayList<Task> mTaskList = new ArrayList<>();
     private int mTaskListChangeId;
+    private RecentsModel.TaskThumbnailChangeListener listener = (taskId, thumbnailData) -> {
+        Task foundTask = null;
+        for (Task task : mTaskList) {
+            if (task.key.id == taskId) {
+                foundTask = task;
+                break;
+            }
+        }
+        if (foundTask != null) {
+            foundTask.thumbnail = thumbnailData;
+        }
+        return foundTask;
+    };
 
     public TaskListLoader(Context context) {
         mRecentsModel = RecentsModel.INSTANCE.get(context);
+        mRecentsModel.addThumbnailChangeListener(listener);
     }
 
     /**
-     * Returns the current task list as of the last completed load (see
-     * {@link #loadTaskList}) as a read-only list. This list of tasks is guaranteed to always have
-     * all its task content loaded.
+     * Returns the current task list as of the last completed load (see {@link #loadTaskList}) as a
+     * read-only list. This list of tasks is not guaranteed to have all content loaded.
      *
-     * @return the current list of tasks w/ all content loaded
+     * @return the current list of tasks
      */
     public List<Task> getCurrentTaskList() {
         return Collections.unmodifiableList(mTaskList);
     }
 
     /**
-     * Fetches the most recent tasks and updates the task list asynchronously. In addition it
-     * loads the content for each task (icon and label). The callback and task list being updated
-     * only occur when all task content is fully loaded and up-to-date.
+     * Fetches the most recent tasks and updates the task list asynchronously. This call does not
+     * provide guarantees the task content (icon, thumbnail, label) are loaded but will fill in
+     * what it has. May run the callback immediately if there have been no changes in the task
+     * list.
      *
-     * @param onTasksLoadedCallback callback for when the tasks are fully loaded. Done on the UI
-     *                              thread
+     * @param onLoadedCallback callback to run when task list is loaded
      */
-    public void loadTaskList(@Nullable Consumer<ArrayList<Task>> onTasksLoadedCallback) {
+    public void loadTaskList(@Nullable Consumer<ArrayList<Task>> onLoadedCallback) {
         if (mRecentsModel.isTaskListValid(mTaskListChangeId)) {
             // Current task list is already up to date. No need to update.
-            if (onTasksLoadedCallback != null) {
-                onTasksLoadedCallback.accept(mTaskList);
+            if (onLoadedCallback != null) {
+                onLoadedCallback.accept(mTaskList);
             }
             return;
         }
@@ -76,13 +88,43 @@ public final class TaskListLoader {
             // Reverse tasks to put most recent at the bottom of the view
             Collections.reverse(tasks);
             // Load task content
-            loadTaskContents(tasks, () -> {
-                mTaskList = tasks;
-                if (onTasksLoadedCallback != null) {
-                    onTasksLoadedCallback.accept(mTaskList);
+            for (Task task : tasks) {
+                int loadedPos = mTaskList.indexOf(task);
+                if (loadedPos == -1) {
+                    continue;
                 }
-            });
+                Task loadedTask = mTaskList.get(loadedPos);
+                task.icon = loadedTask.icon;
+                task.titleDescription = loadedTask.titleDescription;
+                task.thumbnail = loadedTask.thumbnail;
+            }
+            mTaskList = tasks;
+            onLoadedCallback.accept(tasks);
         });
+    }
+
+    /**
+     * Load task icon and label asynchronously if it is not already loaded in the task. If the task
+     * already has an icon, this calls the callback immediately.
+     *
+     * @param task task to update with icon + label
+     * @param onLoadedCallback callback to run when task has icon and label
+     */
+    public void loadTaskIconAndLabel(Task task, @Nullable Runnable onLoadedCallback) {
+        mRecentsModel.getIconCache().updateIconInBackground(task,
+                loadedTask -> onLoadedCallback.run());
+    }
+
+    /**
+     * Load thumbnail asynchronously if not already loaded in the task. If the task already has a
+     * thumbnail or if the thumbnail is cached, this calls the callback immediately.
+     *
+     * @param task task to update with the thumbnail
+     * @param onLoadedCallback callback to run when task has thumbnail
+     */
+    public void loadTaskThumbnail(Task task, @Nullable Runnable onLoadedCallback) {
+        mRecentsModel.getThumbnailCache().updateThumbnailInBackground(task,
+                thumbnail -> onLoadedCallback.run());
     }
 
     /**
@@ -97,43 +139,5 @@ public final class TaskListLoader {
      */
     void clearAllTasks() {
         mTaskList.clear();
-    }
-
-    /**
-     * Loads task content for a list of tasks, including the label, icon, and thumbnail. For content
-     * that isn't cached, load the content asynchronously in the background.
-     *
-     * @param tasksToLoad list of tasks that need to load their content
-     * @param onFullyLoadedCallback runnable to run after all tasks have loaded their content
-     */
-    private void loadTaskContents(ArrayList<Task> tasksToLoad,
-            @Nullable Runnable onFullyLoadedCallback) {
-        // Make two load requests per task, one for the icon/title and one for the thumbnail.
-        AtomicInteger loadRequestsCount = new AtomicInteger(tasksToLoad.size() * 2);
-        Runnable itemLoadedRunnable = () -> {
-            if (loadRequestsCount.decrementAndGet() == 0 && onFullyLoadedCallback != null) {
-                onFullyLoadedCallback.run();
-            }
-        };
-        for (Task task : tasksToLoad) {
-            // Load icon and title.
-            int index = mTaskList.indexOf(task);
-            if (index >= 0) {
-                // If we've already loaded the task and have its content then just copy it over.
-                Task loadedTask = mTaskList.get(index);
-                task.titleDescription = loadedTask.titleDescription;
-                task.icon = loadedTask.icon;
-                itemLoadedRunnable.run();
-            } else {
-                // Otherwise, load the content in the background.
-                mRecentsModel.getIconCache().updateIconInBackground(task,
-                        loadedTask -> itemLoadedRunnable.run());
-            }
-
-            // Load the thumbnail. May return immediately and synchronously if the thumbnail is
-            // cached.
-            mRecentsModel.getThumbnailCache().updateThumbnailInBackground(task,
-                    thumbnail -> itemLoadedRunnable.run());
-        }
     }
 }

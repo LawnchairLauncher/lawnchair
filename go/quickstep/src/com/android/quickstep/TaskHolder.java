@@ -35,17 +35,18 @@ public final class TaskHolder extends ViewHolder {
         mTaskItemView = itemView;
     }
 
+    public TaskItemView getTaskItemView() {
+        return mTaskItemView;
+    }
+
     /**
-     * Bind task content to the view. This includes the task icon and title as well as binding
-     * input handlers such as which task to launch/remove.
+     * Bind a task to the holder, resetting the view and preparing it for content to load in.
      *
      * @param task the task to bind to the view
      */
     public void bindTask(Task task) {
         mTask = task;
-        mTaskItemView.setLabel(task.titleDescription);
-        mTaskItemView.setIcon(task.icon);
-        mTaskItemView.setThumbnail(task.thumbnail.thumbnail);
+        mTaskItemView.resetTaskItemView();
     }
 
     /**

@@ -19,7 +19,8 @@ package com.android.launcher3.uioverrides;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE_X;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE_Y;
 import static com.android.launcher3.anim.AnimatorSetBuilder.FLAG_DONT_ANIMATE_OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -71,7 +72,9 @@ public abstract class BaseRecentsViewStateController<T extends View>
     @Override
     public final void setStateWithAnimation(@NonNull final LauncherState toState,
             @NonNull AnimatorSetBuilder builder, @NonNull AnimationConfig config) {
-        if (!config.playAtomicComponent()) {
+        boolean playAtomicOverviewComponent = config.playAtomicOverviewScaleComponent()
+                || config.playAtomicOverviewPeekComponent();
+        if (!playAtomicOverviewComponent) {
             // The entire recents animation is played atomically.
             return;
         }
@@ -94,15 +97,17 @@ public abstract class BaseRecentsViewStateController<T extends View>
         ScaleAndTranslation scaleAndTranslation = toState.getOverviewScaleAndTranslation(mLauncher);
         Interpolator scaleInterpolator = builder.getInterpolator(ANIM_OVERVIEW_SCALE, LINEAR);
         setter.setFloat(mRecentsView, SCALE_PROPERTY, scaleAndTranslation.scale, scaleInterpolator);
-        Interpolator translateInterpolator = builder.getInterpolator(
-                ANIM_OVERVIEW_TRANSLATE, LINEAR);
+        Interpolator translateXInterpolator = builder.getInterpolator(
+                ANIM_OVERVIEW_TRANSLATE_X, LINEAR);
+        Interpolator translateYInterpolator = builder.getInterpolator(
+                ANIM_OVERVIEW_TRANSLATE_Y, LINEAR);
         float translationX = scaleAndTranslation.translationX;
         if (mRecentsView.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
             translationX = -translationX;
         }
-        setter.setFloat(mRecentsView, View.TRANSLATION_X, translationX, translateInterpolator);
+        setter.setFloat(mRecentsView, View.TRANSLATION_X, translationX, translateXInterpolator);
         setter.setFloat(mRecentsView, View.TRANSLATION_Y, scaleAndTranslation.translationY,
-                translateInterpolator);
+                translateYInterpolator);
         setter.setFloat(mRecentsView, getContentAlphaProperty(), toState.overviewUi ? 1 : 0,
                 builder.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));
     }

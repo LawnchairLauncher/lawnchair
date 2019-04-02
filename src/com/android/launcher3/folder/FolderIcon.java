@@ -199,6 +199,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public void getPreviewBounds(Rect outBounds) {
+        mPreviewItemManager.recomputePreviewDrawingParams();
         mBackground.getBounds(outBounds);
     }
 
