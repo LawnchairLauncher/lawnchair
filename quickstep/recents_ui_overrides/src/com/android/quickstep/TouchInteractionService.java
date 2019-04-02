@@ -53,6 +53,7 @@ import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.logging.EventLogArray;
+import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -139,6 +140,14 @@ public class TouchInteractionService extends Service implements
                 mOverviewComponentObserver.getActivityControlHelper()
                         .onAssistantVisibilityChanged(visibility);
             });
+        }
+
+        public void onBackAction(boolean completed, int downX, int downY, boolean isButton,
+                boolean gestureSwipeLeft) {
+            final ActivityControlHelper activityControl =
+                    mOverviewComponentObserver.getActivityControlHelper();
+            UserEventDispatcher.newInstance(getBaseContext()).logActionBack(completed, downX, downY,
+                    isButton, gestureSwipeLeft, activityControl.getContainerType());
         }
 
         /** Deprecated methods **/

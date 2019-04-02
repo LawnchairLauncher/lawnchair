@@ -85,6 +85,10 @@ public class TouchInteractionService extends Service {
             // TODO handle assistant
         }
 
+        public void onBackAction(boolean completed, int downX, int downY, boolean isButton,
+                boolean gestureSwipeLeft) {
+        }
+
         /** Deprecated methods **/
         public void onQuickStep(MotionEvent motionEvent) { }
 
