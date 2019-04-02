@@ -1,15 +1,4 @@
 pipeline:
-  # Step 0: Notify team members about upcoming build
-  notify:
-    image: appleboy/drone-telegram:latest
-    secrets: [ telegram_token ]
-    to: "-1001092684628"
-    format: markdown
-    message: >
-      *{{repo.owner}}/{{repo.name}}:*
-      Preparing to start build {{build.number}}...
-    when:
-      event: push
 
   # Step 1: Generate changelog for later use
   changelog:
@@ -64,23 +53,6 @@ pipeline:
     when:
       event: pull_request
       status: success
-
-  # Step 4: Notify team members about build status
-  telegram:
-    image: appleboy/drone-telegram:latest
-    secrets: [ telegram_token ]
-    to: "-1001092684628"
-    format: markdown
-    message: >
-      *{{repo.owner}}/{{repo.name}}:*
-      {{#success build.status}}
-      Build {{build.number}} succeeded. Good job mate!
-      {{else}}
-      Build {{build.number}} failed. Fix me please sir!
-      {{/success}}
-    when:
-      event: [ push, tag, deployment ]
-      status: [ failure, success ]
 
 branches:
   exclude: [ l10n_alpha2, lawnchair-v1 ]
