@@ -2,6 +2,7 @@ package ch.deletescape.lawnchair.globalsearch.ui
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.preference.PreferenceDialogFragmentCompat
@@ -73,7 +74,9 @@ class SelectSearchProviderFragment : PreferenceDialogFragmentCompat() {
             val text = itemView.findViewById<CheckedTextView>(android.R.id.text1)!!.apply {
                 setOnClickListener(this@Holder)
                 val tintList = ColorStateList.valueOf(ColorEngine.getInstance(context).accent)
-                compoundDrawableTintList = tintList
+                if (Utilities.ATLEAST_MARSHMALLOW) {
+                    compoundDrawableTintList = tintList
+                }
                 backgroundTintList = tintList
             }
 

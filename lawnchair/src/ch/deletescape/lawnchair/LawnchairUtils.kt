@@ -563,7 +563,9 @@ fun <E> MutableSet<E>.addOrRemove(obj: E, exists: Boolean): Boolean {
 
 fun CheckedTextView.applyAccent() {
     val tintList = ColorStateList.valueOf(ColorEngine.getInstance(context).accent)
-    compoundDrawableTintList = tintList
+    if (Utilities.ATLEAST_MARSHMALLOW) {
+        compoundDrawableTintList = tintList
+    }
     backgroundTintList = tintList
 }
 

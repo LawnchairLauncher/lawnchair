@@ -159,7 +159,11 @@ public abstract class ButtonDropTarget extends TextView
                     x = getMeasuredWidth() / 2 + message.getMeasuredWidth() / 2;
                 }
             }
-            mToolTip.showAsDropDown(this, x, y);
+            try {
+                mToolTip.showAsDropDown(this, x, y);
+            } catch (NullPointerException ignored) {
+                // This crash appears to happen on L, deep down in TextView
+            }
         }
 
         d.dragView.setColor(mHoverColor);
