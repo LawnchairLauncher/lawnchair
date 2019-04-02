@@ -16,14 +16,13 @@
 
 package com.android.launcher3.tapl;
 
-import static com.android.launcher3.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
-
 import android.app.ActivityManager;
 import android.app.Instrumentation;
 import android.app.UiAutomation;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
@@ -37,7 +36,6 @@ import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.By;
@@ -46,18 +44,15 @@ import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
-
 import com.android.launcher3.TestProtocol;
 import com.android.systemui.shared.system.QuickStepContract;
-
-import org.junit.Assert;
-
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
+import org.junit.Assert;
 
 /**
  * The main tapl object. The only object that can be explicitly constructed by the using code. It
@@ -66,6 +61,8 @@ import java.util.concurrent.TimeoutException;
 public final class LauncherInstrumentation {
 
     private static final String TAG = "Tapl";
+    private static final String NAV_BAR_INTERACTION_MODE_RES_NAME =
+            "config_navBarInteractionMode";
     private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 20;
 
     // Types for launcher containers that the user is interacting with. "Background" is a
@@ -172,11 +169,11 @@ public final class LauncherInstrumentation {
             // Workaround, use constructed context because both the instrumentation context and the
             // app context are not constructed with resources that take overlays into account
             final Context ctx = baseContext.createPackageContext("android", 0);
-            if (QuickStepContract.isGesturalMode(ctx)) {
+            if (isGesturalMode(ctx)) {
                 return NavigationModel.ZERO_BUTTON;
-            } else if (QuickStepContract.isSwipeUpMode(ctx)) {
+            } else if (isSwipeUpMode(ctx)) {
                 return NavigationModel.TWO_BUTTON;
-            } else if (QuickStepContract.isLegacyMode(ctx)) {
+            } else if (isLegacyMode(ctx)) {
                 return NavigationModel.THREE_BUTTON;
             } else {
                 fail("Can't detect navigation mode");
@@ -600,6 +597,33 @@ public final class LauncherInstrumentation {
             point.y = from.y + (int) (progress * (to.y - from.y));
 
             sendPointer(downTime, currentTime, MotionEvent.ACTION_MOVE, point);
+        }
+    }
+
+    public static boolean isGesturalMode(Context context) {
+        return QuickStepContract.isGesturalMode(
+                getSystemIntegerRes(context, NAV_BAR_INTERACTION_MODE_RES_NAME));
+    }
+
+    public static boolean isSwipeUpMode(Context context) {
+        return QuickStepContract.isSwipeUpMode(
+                getSystemIntegerRes(context, NAV_BAR_INTERACTION_MODE_RES_NAME));
+    }
+
+    public static boolean isLegacyMode(Context context) {
+        return QuickStepContract.isLegacyMode(
+                getSystemIntegerRes(context, NAV_BAR_INTERACTION_MODE_RES_NAME));
+    }
+
+    private static int getSystemIntegerRes(Context context, String resName) {
+        Resources res = context.getResources();
+        int resId = res.getIdentifier(resName, "integer", "android");
+
+        if (resId != 0) {
+            return res.getInteger(resId);
+        } else {
+            Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
+            return -1;
         }
     }
 
