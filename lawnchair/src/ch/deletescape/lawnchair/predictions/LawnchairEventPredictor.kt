@@ -40,6 +40,7 @@ import com.android.launcher3.util.Provider
 import com.android.quickstep.TouchInteractionService
 import com.google.android.apps.nexuslauncher.CustomAppPredictor
 import com.google.android.apps.nexuslauncher.allapps.Action
+import com.google.android.apps.nexuslauncher.allapps.ActionView
 import com.google.android.apps.nexuslauncher.allapps.ActionsController
 import com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader
 import com.google.android.apps.nexuslauncher.util.ComponentKeyMapper
@@ -84,7 +85,7 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
 
     override fun logAppLaunch(v: View?, intent: Intent?, user: UserHandle?) {
         super.logAppLaunch(v, intent, user)
-        if (isPredictorEnabled && recursiveIsDrawer(v)) {
+        if (isPredictorEnabled && recursiveIsDrawer(v) && v !is ActionView) {
             val componentInfo = intent?.component
             if (componentInfo != null && mAppFilter.shouldShowApp(componentInfo, user)) {
                 clearRemovedComponents()
