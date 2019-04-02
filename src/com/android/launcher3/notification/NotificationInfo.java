@@ -109,10 +109,14 @@ public class NotificationInfo implements View.OnClickListener {
             return;
         }
         final Launcher launcher = Launcher.getLauncher(view.getContext());
-        Bundle activityOptions = ActivityOptions.makeClipRevealAnimation(
-                view, 0, 0, view.getWidth(), view.getHeight()).toBundle();
         try {
-            intent.send(null, 0, null, null, null, null, activityOptions);
+            if (Utilities.ATLEAST_MARSHMALLOW) {
+                Bundle activityOptions = ActivityOptions.makeClipRevealAnimation(
+                        view, 0, 0, view.getWidth(), view.getHeight()).toBundle();
+                intent.send(null, 0, null, null, null, null, activityOptions);
+            } else {
+                intent.send();
+            }
             launcher.getUserEventDispatcher().logNotificationLaunch(view, intent);
         } catch (PendingIntent.CanceledException e) {
             e.printStackTrace();
