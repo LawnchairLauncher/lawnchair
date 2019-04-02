@@ -45,29 +45,32 @@ class DrawerTabs(prefs: LawnchairPreferences) : AppGroups<DrawerTabs.Tab>(prefs,
 
     open class Tab(context: Context, type: Int) : Group(type) {
 
-        val colorResolver = ColorCustomization(AppGroupsUtils.getInstance(context).defaultColorResolver)
+        val colorResolver = ColorRow(KEY_COLOR, AppGroupsUtils.getInstance(context).defaultColorResolver)
 
         init {
-            addCustomization(KEY_COLOR, colorResolver)
+            addCustomization(colorResolver)
         }
     }
 
     class CustomTab(context: Context) : Tab(context, TYPE_CUSTOM) {
 
-        private val customTitle = StringCustomization("")
-        val hideFromAllApps = BooleanCustomization(true)
-        val contents = ItemsCustomization(mutableSetOf())
+        private val customTitle = CustomTitle(KEY_TITLE, context.getString(R.string.default_tab_name))
+        val hideFromAllApps = SwitchRow(R.drawable.tab_hide_from_main, R.string.tab_hide_from_main,
+                KEY_HIDE_FROM_ALL_APPS, true)
+        val contents = AppsRow(KEY_ITEMS, mutableSetOf())
 
         override var title: String
-            get() = customTitle.value ?: ""
+            get() = customTitle.value()
             set(value) {
                 customTitle.value = value
             }
 
         init {
-            addCustomization(KEY_TITLE, customTitle)
-            addCustomization(KEY_HIDE_FROM_ALL_APPS, hideFromAllApps)
-            addCustomization(KEY_ITEMS, contents)
+            addCustomization(customTitle)
+            addCustomization(hideFromAllApps)
+            addCustomization(contents)
+
+            customizations.setOrder(KEY_TITLE, KEY_HIDE_FROM_ALL_APPS, KEY_COLOR, KEY_ITEMS)
         }
     }
 

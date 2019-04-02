@@ -1372,7 +1372,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         // We close any open folders and shortcut containers since they will not be re-opened,
         // and we need to make sure this state is reflected.
-        AbstractFloatingView.closeAllOpenViews(this, false);
+        AbstractFloatingView.closeOpenViews(this, false, AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_SETTINGS_SHEET);
+        finishAutoCancelActionMode();
 
         if (mPendingRequestArgs != null) {
             outState.putParcelable(RUNTIME_STATE_PENDING_REQUEST_ARGS, mPendingRequestArgs);

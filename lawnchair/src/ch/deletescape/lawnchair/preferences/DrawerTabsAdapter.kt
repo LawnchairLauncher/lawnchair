@@ -24,6 +24,7 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.groups.AppGroups
 import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.groups.DrawerTabs
@@ -54,12 +55,9 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
         holder.bind(tabs[position])
     }
 
-    fun addTab(config: DrawerTabEditBottomSheet.TabConfig) {
+    fun addTab(config: AppGroups.Group.CustomizationMap) {
         val tab = DrawerTabs.CustomTab(context)
-        tab.title = config.title
-        tab.hideFromAllApps.value = config.hideFromMain
-        tab.contents.value = config.contents
-        tab.colorResolver.value = config.colorResolver
+        tab.customizations.applyFrom(config)
         tabs.add(tab)
         notifyItemInserted(tabs.size - 1)
         saved = false

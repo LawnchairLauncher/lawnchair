@@ -34,15 +34,30 @@
 
 package ch.deletescape.lawnchair.groups
 
+import android.app.AlertDialog
 import android.content.Context
-import ch.deletescape.lawnchair.LawnchairPreferences
-import ch.deletescape.lawnchair.asMap
+import android.content.res.Configuration
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.ImageView
+import android.widget.Switch
+import android.widget.TextView
+import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.colors.LawnchairAccentResolver
-import ch.deletescape.lawnchair.ensureOnMainThread
-import ch.deletescape.lawnchair.useApplicationContext
+import ch.deletescape.lawnchair.colors.preferences.TabbedPickerView
+import ch.deletescape.lawnchair.preferences.SelectableAppsActivity
 import ch.deletescape.lawnchair.util.SingletonHolder
+import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
+import me.priyesh.chroma.ColorMode
+import me.priyesh.chroma.orientation
+import me.priyesh.chroma.percentOf
+import me.priyesh.chroma.screenDimensions
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -53,7 +68,7 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
 
     private val context = prefs.context
 
-    private var groupsDataJson by prefs.StringPref(key, "[]", prefs.withChangeCallback {
+    private var groupsDataJson by prefs.StringPref(key, "{}", prefs.withChangeCallback {
         it.launcher.allAppsController.appsView.reloadTabs()
     })
     private val groups = ArrayList<T>()
@@ -146,14 +161,14 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
 
         open val title: String = "null"
 
-        private val customizations: MutableMap<String, Customization<*, *>> = HashMap()
+        val customizations = CustomizationMap()
 
-        fun addCustomization(key: String, customization: Customization<*, *>) {
-            customizations[key] = customization
+        fun addCustomization(customization: Customization<*, *>) {
+            customizations.add(customization)
         }
 
         open fun loadCustomizations(context: Context, obj: Map<String, Any>) {
-            customizations.entries.forEach { it.value.loadFromJsonInternal(context, obj[it.key]) }
+            customizations.entries.forEach { it.loadFromJsonInternal(context, obj[it.key]) }
         }
 
         fun saveCustomizationsInternal(): Map<String, Any> {
@@ -165,15 +180,15 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
         open fun saveCustomizations(obj: MutableMap<String, Any>) {
             obj[KEY_TYPE] = type
             customizations.entries.forEach { entry ->
-                entry.value.saveToJson()?.let { obj[entry.key] = it }
+                entry.saveToJson()?.let { obj[entry.key] = it }
             }
         }
 
-        fun cloneCustomizations(): Map<String, Customization<*, *>> {
-            return customizations.mapValues { it.value.clone() }
+        fun cloneCustomizations(): CustomizationMap {
+            return CustomizationMap(customizations)
         }
 
-        abstract class Customization<T: Any, S: Any>(protected val default: T) {
+        abstract class Customization<T: Any, S: Any>(val key: String, protected val default: T) {
 
             var value: T? = null
 
@@ -189,9 +204,18 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
             abstract fun saveToJson(): S?
 
             abstract fun clone(): Customization<T, S>
+
+            fun applyFrom(other: Customization<*, *>) {
+                value = other.value as? T
+            }
+
+            open fun createRow(context: Context, parent: ViewGroup, accent: Int): View? {
+                return null
+            }
         }
 
-        class StringCustomization(default: String) : Customization<String, String>(default) {
+        open class StringCustomization(key: String, default: String) :
+                Customization<String, String>(key, default) {
 
             override fun loadFromJson(context: Context, obj: String?) {
                 value = obj
@@ -202,11 +226,42 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
             }
 
             override fun clone(): Customization<String, String> {
-                return StringCustomization(default).also { it.value = value }
+                return StringCustomization(key, default).also { it.value = value }
             }
         }
 
-        class BooleanCustomization(default: Boolean) : Customization<Boolean, Boolean>(default) {
+        class CustomTitle(key: String, default: String) : StringCustomization(key, default) {
+
+            override fun createRow(context: Context, parent: ViewGroup, accent: Int): View? {
+                val view = LayoutInflater.from(context).inflate(R.layout.drawer_tab_custom_title_row, parent, false)
+                view.findViewById<TextView>(R.id.name_label).setTextColor(accent)
+
+                val tabName = view.findViewById<TextView>(R.id.name)
+                tabName.text = value()
+                tabName.addTextChangedListener(object : TextWatcher {
+                    override fun afterTextChanged(s: Editable?) {
+                        value = s?.toString()
+                    }
+
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+                    }
+
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                    }
+
+                })
+                return view
+            }
+
+            override fun clone(): Customization<String, String> {
+                return CustomTitle(key, default).also { it.value = value }
+            }
+        }
+
+        open class BooleanCustomization(key: String, default: Boolean) :
+                Customization<Boolean, Boolean>(key, default) {
 
             override fun loadFromJson(context: Context, obj: Boolean?) {
                 value = obj
@@ -217,11 +272,42 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
             }
 
             override fun clone(): Customization<Boolean, Boolean> {
-                return BooleanCustomization(default).also { it.value = value }
+                return BooleanCustomization(key, default).also { it.value = value }
             }
         }
 
-        class ColorCustomization(default: ColorEngine.ColorResolver): Customization<ColorEngine.ColorResolver, String>(default) {
+        class SwitchRow(private val icon: Int, private val label: Int, key: String, default: Boolean) :
+                BooleanCustomization(key, default) {
+
+            override fun createRow(context: Context, parent: ViewGroup, accent: Int): View? {
+                val view = LayoutInflater.from(context).inflate(R.layout.drawer_tab_switch_row, parent, false)
+
+                view.findViewById<ImageView>(R.id.icon).apply {
+                    setImageResource(icon)
+                    tintDrawable(accent)
+                }
+
+                view.findViewById<TextView>(R.id.title).setText(label)
+
+                val switch = view.findViewById<Switch>(R.id.switch_widget)
+                switch.isChecked = value()
+                switch.applyColor(accent)
+
+                view.setOnClickListener {
+                    value = !value()
+                    switch.isChecked = value()
+                }
+
+                return view
+            }
+
+            override fun clone(): Customization<Boolean, Boolean> {
+                return SwitchRow(icon, label, key, default).also { it.value = value }
+            }
+        }
+
+        open class ColorCustomization(key: String, default: ColorEngine.ColorResolver) :
+                Customization<ColorEngine.ColorResolver, String>(key, default) {
 
             override fun loadFromJson(context: Context, obj: String?) {
                 value = obj?.let { AppGroupsUtils.getInstance(context).createColorResolver(it) }
@@ -232,11 +318,62 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
             }
 
             override fun clone(): Customization<ColorEngine.ColorResolver, String> {
-                return ColorCustomization(default).also { it.value = value }
+                return ColorCustomization(key, default).also { it.value = value }
             }
         }
 
-        abstract class SetCustomization<T: Any, S: Any>(default: MutableSet<T>) : Customization<MutableSet<T>, JSONArray>(default) {
+        class ColorRow(key: String, default: ColorEngine.ColorResolver) :
+                ColorCustomization(key, default) {
+
+            override fun createRow(context: Context, parent: ViewGroup, accent: Int): View? {
+                val view = LayoutInflater.from(context).inflate(R.layout.drawer_tab_color_row, parent, false)
+                val resources = context.resources
+
+                updateColor(view)
+
+                view.setOnClickListener {
+                    val dialog = AlertDialog.Builder(context).create()
+                    val current = value()
+                    val resolvers = resources.getStringArray(R.array.resolver_tabs)
+                    with(dialog) {
+                        val tabbedPickerView = TabbedPickerView(this.context, "tabs", current.resolveColor(),
+                                ColorMode.RGB, resolvers, current.isCustom, {
+                            value = it
+                            updateColor(view)
+                        }, dialog::dismiss)
+                        setView(tabbedPickerView)
+                        setOnShowListener {
+                            val width: Int; val height: Int
+                            if (orientation(this.context) == Configuration.ORIENTATION_LANDSCAPE) {
+                                height = WindowManager.LayoutParams.WRAP_CONTENT
+                                width = 80 percentOf screenDimensions(this.context).widthPixels
+                            } else {
+                                height = WindowManager.LayoutParams.WRAP_CONTENT
+                                width = resources.getDimensionPixelSize(R.dimen.chroma_dialog_width)
+                            }
+                            window!!.setLayout(width, height)
+
+                            // for some reason it won't respect the windowBackground attribute in the theme
+                            window!!.setBackgroundDrawable(this.context.getDrawable(R.drawable.dialog_material_background))
+                        }
+                    }
+                    dialog.show()
+                }
+
+                return view
+            }
+
+            private fun updateColor(view: View) {
+                view.findViewById<ImageView>(R.id.color_ring_icon).tintDrawable(value().resolveColor())
+            }
+
+            override fun clone(): Customization<ColorEngine.ColorResolver, String> {
+                return ColorRow(key, default).also { it.value = value }
+            }
+        }
+
+        abstract class SetCustomization<T: Any, S: Any>(key: String, default: MutableSet<T>) :
+                Customization<MutableSet<T>, JSONArray>(key, default) {
 
             @Suppress("UNCHECKED_CAST")
             override fun loadFromJson(context: Context, obj: JSONArray?) {
@@ -263,7 +400,8 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
             abstract fun flatten(value: T): S
         }
 
-        class ItemsCustomization(default: MutableSet<ComponentKey>) : SetCustomization<ComponentKey, String>(default) {
+        open class ComponentsCustomization(key: String, default: MutableSet<ComponentKey>) :
+                SetCustomization<ComponentKey, String>(key, default) {
 
             override fun loadFromJson(context: Context, obj: JSONArray?) {
                 super.loadFromJson(context, obj)
@@ -281,9 +419,88 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
             }
 
             override fun clone(): Customization<MutableSet<ComponentKey>, JSONArray> {
-                return ItemsCustomization(default).also { newInstance ->
-                    value?.let { newInstance.value = it }
+                return ComponentsCustomization(key, default).also { newInstance ->
+                    value?.let { newInstance.value = HashSet(it) }
                 }
+            }
+        }
+
+        class AppsRow(key: String, default: MutableSet<ComponentKey>) :
+                ComponentsCustomization(key, default) {
+
+            override fun createRow(context: Context, parent: ViewGroup, accent: Int): View? {
+                val view = LayoutInflater.from(context).inflate(R.layout.drawer_tab_apps_row, parent, false)
+
+                view.findViewById<ImageView>(R.id.manage_apps_icon).tintDrawable(accent)
+                updateCount(view)
+
+                view.setOnClickListener {
+                    SelectableAppsActivity.start(context, value()) { newSelections ->
+                        if (newSelections != null) {
+                            value = HashSet(newSelections)
+                            updateCount(view)
+                        }
+                    }
+                }
+
+                return view
+            }
+
+            private fun updateCount(view: View) {
+                val count = value().size
+                view.findViewById<TextView>(R.id.apps_count).text =
+                        view.resources.getQuantityString(R.plurals.tab_apps_count, count, count)
+            }
+
+            override fun clone(): Customization<MutableSet<ComponentKey>, JSONArray> {
+                return AppsRow(key, default).also { newInstance ->
+                    value?.let { newInstance.value = HashSet(it) }
+                }
+            }
+        }
+
+        class CustomizationMap(old: CustomizationMap? = null) {
+
+            private val map = HashMap<String, Customization<*, *>>()
+            private val order = HashMap<String, Int>()
+
+            init {
+                old?.map?.mapValuesTo(map) { it.value.clone() }
+                old?.order?.entries?.forEach { order[it.key] = it.value }
+            }
+
+            fun add(customization: Customization<*, *>) {
+                map[customization.key] = customization
+            }
+
+            fun get(customization: Customization<*, *>): Customization<*, *>? {
+                return map[customization.key]
+            }
+
+            fun setOrder(vararg keys: String) {
+                keys.forEachIndexed { index, s -> order[s] = index }
+            }
+
+            fun applyFrom(config: CustomizationMap) {
+                map.values.forEach { entry ->
+                    val other = config.map[entry.key] ?: return@forEach
+                    entry.applyFrom(other)
+                }
+            }
+
+            val entries get() = map.values
+
+            val sortedEntries get() =
+                if (order.isEmpty()) entries
+                else entries.sortedBy { order[it.key] }
+
+            override fun equals(other: Any?): Boolean {
+                if (other !is CustomizationMap) return false
+                return map == other.map
+            }
+
+            override fun hashCode(): Int {
+                return map.hashCode()
             }
         }
     }

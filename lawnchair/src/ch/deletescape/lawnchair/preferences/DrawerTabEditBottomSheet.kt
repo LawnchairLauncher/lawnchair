@@ -17,50 +17,35 @@
 
 package ch.deletescape.lawnchair.preferences
 
-import android.app.AlertDialog
 import android.content.Context
-import android.content.res.Configuration
+import android.os.Parcelable
 import android.view.View
-import android.view.WindowManager
-import android.widget.*
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.TextView
 import ch.deletescape.lawnchair.applyColor
 import ch.deletescape.lawnchair.colors.ColorEngine
-import ch.deletescape.lawnchair.colors.preferences.TabbedPickerView
-import ch.deletescape.lawnchair.groups.AppGroupsUtils
-import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.groups.AppGroups
 import ch.deletescape.lawnchair.groups.DrawerTabs
+import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheet
-import ch.deletescape.lawnchair.tintDrawable
 import ch.deletescape.lawnchair.views.BaseBottomSheet
-import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
-import com.android.launcher3.util.ComponentKey
-import me.priyesh.chroma.ColorMode
-import me.priyesh.chroma.orientation
-import me.priyesh.chroma.percentOf
-import me.priyesh.chroma.screenDimensions
 
-class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
+class DrawerTabEditBottomSheet(context: Context, config: AppGroups.Group.CustomizationMap,
                                private val callback: (Boolean) -> Unit) : FrameLayout(context), View.OnClickListener {
-
-    private val tabName by lazy { findViewById<TextView>(R.id.name) }
-    private val appsCount by lazy { findViewById<TextView>(R.id.apps_count) }
-    private val hideSwitch by lazy { findViewById<Switch>(R.id.hide_switch) }
-    private val tabColor by lazy { findViewById<ImageView>(R.id.color_ring_icon) }
 
     init {
         View.inflate(context, R.layout.drawer_tab_edit_bottom_sheet, this)
-        tabName.text = config.title
-        hideSwitch.isChecked = config.hideFromMain
 
         val accent = ColorEngine.getInstance(context).accent
+        val container = findViewById<ViewGroup>(R.id.customization_container)
+        config.sortedEntries.reversed().forEach { entry ->
+            entry.createRow(context, container, accent)?.let { container.addView(it, 0) }
+        }
 
-        findViewById<TextView>(R.id.name_label).setTextColor(accent)
-
-        findViewById<View>(R.id.hide_toggle).setOnClickListener(this)
-        findViewById<View>(R.id.tab_color).setOnClickListener(this)
-        findViewById<View>(R.id.manage_apps).setOnClickListener(this)
         findViewById<Button>(R.id.save).apply {
             applyColor(accent)
             setTextColor(accent)
@@ -69,101 +54,18 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
         findViewById<TextView>(R.id.cancel).apply {
             setOnClickListener(this@DrawerTabEditBottomSheet)
         }
-
-        findViewById<ImageView>(R.id.hide_icon).tintDrawable(accent)
-        findViewById<ImageView>(R.id.manage_apps_icon).tintDrawable(accent)
-
-        hideSwitch.applyColor(accent)
-
-        updateSummary()
-    }
-
-    private fun updateSummary() {
-        val count = config.contents.size
-        appsCount.text = resources.getQuantityString(R.plurals.tab_apps_count, count, count)
-        tabColor.tintDrawable(config.colorResolver.resolveColor())
     }
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.hide_toggle -> toggleHideFromMain()
-            R.id.tab_color -> openColorDialog()
-            R.id.manage_apps -> openAppsSelector()
-            R.id.save -> {
-                config.title = tabName.text.toString()
-                config.hideFromMain = hideSwitch.isChecked
-                callback(true)
-            }
+            R.id.save -> callback(true)
             R.id.cancel -> callback(false)
         }
     }
 
-    private fun toggleHideFromMain() {
-        hideSwitch.isChecked = !hideSwitch.isChecked
-    }
-
-    private fun openAppsSelector() {
-        SelectableAppsActivity.start(context, config.contents) { newSelections ->
-            if (newSelections != null) {
-                config.contents.clear()
-                config.contents.addAll(newSelections)
-                updateSummary()
-            }
-            try {
-                val launcher = Launcher.getLauncher(context)
-                val tab = config.drawerTab as? DrawerTabs.CustomTab ?: return@start
-                AbstractFloatingView.closeAllOpenViews(launcher, false)
-                edit(launcher, TabConfig(tab), config, tab, false)
-            } catch (ignored: ClassCastException) {
-
-            }
-        }
-    }
-
-    private fun openColorDialog() {
-        val dialog = AlertDialog.Builder(context).create()
-        val current = config.colorResolver
-        val resolvers = resources.getStringArray(R.array.resolver_tabs)
-        with(dialog) {
-            val tabbedPickerView = TabbedPickerView(context, "tabs", current.resolveColor(),
-                    ColorMode.RGB, resolvers, current.isCustom, {
-                config.colorResolver = it
-                updateSummary()
-            }, dialog::dismiss)
-            setView(tabbedPickerView)
-            setOnShowListener {
-                val width: Int; val height: Int
-                if (orientation(context) == Configuration.ORIENTATION_LANDSCAPE) {
-                    height = WindowManager.LayoutParams.WRAP_CONTENT
-                    width = 80 percentOf screenDimensions(context).widthPixels
-                } else {
-                    height = WindowManager.LayoutParams.WRAP_CONTENT
-                    width = resources.getDimensionPixelSize(R.dimen.chroma_dialog_width)
-                }
-                window.setLayout(width, height)
-
-                // for some reason it won't respect the windowBackground attribute in the theme
-                window.setBackgroundDrawable(context.getDrawable(R.drawable.dialog_material_background))
-            }
-        }
-        dialog.show()
-    }
-
-    data class TabConfig(
-            var title: String = "",
-            var hideFromMain: Boolean = true,
-            val contents: MutableSet<ComponentKey> = mutableSetOf(),
-            var colorResolver: ColorEngine.ColorResolver,
-            val drawerTab: DrawerTabs.Tab? = null) {
-        constructor(tab: DrawerTabs.CustomTab) :
-                this(tab.title, tab.hideFromAllApps.value(), HashSet(tab.contents.value), tab.colorResolver.value(), tab)
-        constructor(config: TabConfig) :
-                this(config.title, config.hideFromMain, HashSet(config.contents), config.colorResolver, config.drawerTab)
-    }
-
     companion object {
 
-        fun show(context: Context, config: TabConfig, callback: () -> Unit) {
+        fun show(context: Context, config: AppGroups.Group.CustomizationMap, callback: () -> Unit) {
             val sheet = SettingsBottomSheet.inflate(context)
             sheet.show(DrawerTabEditBottomSheet(context, config) {
                 if (it) {
@@ -173,7 +75,7 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
             }, true)
         }
 
-        fun show(launcher: Launcher, config: TabConfig, callback: () -> Unit, animate: Boolean = true) {
+        fun show(launcher: Launcher, config: AppGroups.Group.CustomizationMap, callback: () -> Unit, animate: Boolean = true) {
             val sheet = BaseBottomSheet.inflate(launcher)
             sheet.show(DrawerTabEditBottomSheet(launcher, config) {
                 if (it) {
@@ -183,44 +85,31 @@ class DrawerTabEditBottomSheet(context: Context, private var config: TabConfig,
             }, animate)
         }
 
-        fun newTab(context: Context, callback: (TabConfig) -> Unit) {
-            val config = TabConfig(context.getString(R.string.default_tab_name), true, mutableSetOf(),
-                    AppGroupsUtils.getInstance(context).defaultColorResolver)
+        fun newTab(context: Context, callback: (AppGroups.Group.CustomizationMap) -> Unit) {
+            val config = DrawerTabs.CustomTab(context).customizations
             show(context, config) {
                 callback(config)
             }
         }
 
-        fun edit(context: Context, tab: DrawerTabs.CustomTab) {
-            val oldConfig = TabConfig(tab)
-            val config = TabConfig(oldConfig)
-            show(context, config) {
-                if (oldConfig != config) {
-                    tab.title = config.title
-                    tab.colorResolver.value = config.colorResolver
-                    tab.hideFromAllApps.value = config.hideFromMain
-                    tab.contents.value = config.contents
-                    context.lawnchairPrefs.drawerTabs.saveToJson()
-                }
+        fun edit(context: Context, group: AppGroups.Group) {
+            val config = AppGroups.Group.CustomizationMap(group.customizations)
+        show(context, config) {
+                group.customizations.applyFrom(config)
+                context.lawnchairPrefs.drawerTabs.saveToJson()
             }
         }
 
-        fun edit(launcher: Launcher, tab: DrawerTabs.CustomTab) {
-            val oldConfig = TabConfig(tab)
-            val config = TabConfig(oldConfig)
-            edit(launcher, oldConfig, config, tab)
+        fun edit(launcher: Launcher, group: AppGroups.Group) {
+            val config = AppGroups.Group.CustomizationMap(group.customizations)
+            edit(launcher, config, group)
         }
 
-        fun edit(launcher: Launcher, oldConfig: TabConfig, config: TabConfig,
-                 tab: DrawerTabs.CustomTab, animate: Boolean = true) {
+        fun edit(launcher: Launcher, config: AppGroups.Group.CustomizationMap,
+                 group: AppGroups.Group, animate: Boolean = true) {
             show(launcher, config, {
-                if (oldConfig != config) {
-                    tab.title = config.title
-                    tab.colorResolver.value = config.colorResolver
-                    tab.hideFromAllApps.value = config.hideFromMain
-                    tab.contents.value = config.contents
-                    launcher.lawnchairPrefs.drawerTabs.saveToJson()
-                }
+                group.customizations.applyFrom(config)
+                launcher.lawnchairPrefs.drawerTabs.saveToJson()
             }, animate)
         }
     }

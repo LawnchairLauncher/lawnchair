@@ -114,7 +114,7 @@ public class BaseBottomSheet extends AbstractSlideInView implements Insettable {
 
     @Override
     protected boolean isOfType(@FloatingViewType int type) {
-        return (type & TYPE_WIDGETS_BOTTOM_SHEET) != 0;
+        return (type & TYPE_SETTINGS_SHEET) != 0;
     }
 
     @Override
