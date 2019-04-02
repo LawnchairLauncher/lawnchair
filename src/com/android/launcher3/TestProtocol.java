@@ -33,6 +33,27 @@ public final class TestProtocol {
     public static final int ALL_APPS_STATE_ORDINAL = 5;
     public static final int BACKGROUND_APP_STATE_ORDINAL = 6;
 
+    public static String stateOrdinalToString(int ordinal) {
+        switch (ordinal) {
+            case NORMAL_STATE_ORDINAL:
+                return "Normal";
+            case SPRING_LOADED_STATE_ORDINAL:
+                return "SpringLoaded";
+            case OVERVIEW_STATE_ORDINAL:
+                return "Overview";
+            case OVERVIEW_PEEK_STATE_ORDINAL:
+                return "OverviewPeek";
+            case QUICK_SWITCH_STATE_ORDINAL:
+                return "QuickSwitch";
+            case ALL_APPS_STATE_ORDINAL:
+                return "AllApps";
+            case BACKGROUND_APP_STATE_ORDINAL:
+                return "Background";
+            default:
+                return null;
+        }
+    }
+
     public static final String TEST_INFO_RESPONSE_FIELD = "response";
     public static final String REQUEST_HOME_TO_OVERVIEW_SWIPE_HEIGHT =
             "home-to-overview-swipe-height";
