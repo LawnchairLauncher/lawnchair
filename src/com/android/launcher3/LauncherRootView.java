@@ -8,11 +8,15 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Insets;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
+import android.view.WindowInsets;
 
 public class LauncherRootView extends InsettableFrameLayout {
 
@@ -22,6 +26,9 @@ public class LauncherRootView extends InsettableFrameLayout {
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private final Rect mConsumedInsets = new Rect();
+
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private final RectF mTouchExcludeRegion = new RectF();
 
     private View mAlignedView;
     private WindowStateListener mWindowStateListener;
@@ -143,6 +150,31 @@ public class LauncherRootView extends InsettableFrameLayout {
         if (mWindowStateListener != null) {
             mWindowStateListener.onWindowVisibilityChanged(visibility);
         }
+    }
+
+    @Override
+    public WindowInsets dispatchApplyWindowInsets(WindowInsets insets) {
+        if (Utilities.ATLEAST_Q) {
+            Insets gestureInsets = insets.getMandatorySystemGestureInsets();
+            mTouchExcludeRegion.set(gestureInsets.left, gestureInsets.top,
+                    gestureInsets.right, gestureInsets.bottom);
+        }
+        return super.dispatchApplyWindowInsets(insets);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            float x = ev.getX();
+            float y = ev.getY();
+            if (y < mTouchExcludeRegion.top
+                    || x < mTouchExcludeRegion.left
+                    || x > (getWidth() - mTouchExcludeRegion.right)
+                    || y > (getHeight() - mTouchExcludeRegion.bottom)) {
+                return false;
+            }
+        }
+        return super.dispatchTouchEvent(ev);
     }
 
     public interface WindowStateListener {
