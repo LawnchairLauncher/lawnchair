@@ -56,6 +56,7 @@ import com.android.quickstep.util.RecentsAnimationListenerSet;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.InputConsumerController;
+import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.NavigationBarCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
@@ -81,6 +82,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private final TaskOverlayFactory mTaskOverlayFactory;
     private final InputConsumerController mInputConsumer;
     private final SwipeSharedState mSwipeSharedState;
+    private final InputMonitorCompat mInputMonitorCompat;
 
     private final int mDisplayRotation;
     private final Rect mStableInsets = new Rect();
@@ -118,7 +120,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             boolean isDeferredDownTarget, OverviewCallbacks overviewCallbacks,
             TaskOverlayFactory taskOverlayFactory, InputConsumerController inputConsumer,
             Consumer<OtherActivityInputConsumer> onCompleteCallback,
-            SwipeSharedState swipeSharedState) {
+            SwipeSharedState swipeSharedState, InputMonitorCompat inputMonitorCompat) {
         super(base);
 
         mMainThreadHandler = new Handler(Looper.getMainLooper());
@@ -129,6 +131,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mMotionPauseDetector = new MotionPauseDetector(base);
         mOnCompleteCallback = onCompleteCallback;
         mVelocityTracker = VelocityTracker.obtain();
+        mInputMonitorCompat = inputMonitorCompat;
 
         mActivityControlHelper = activityControl;
         boolean continuingPreviousGesture = swipeSharedState.getActiveListener() != null;
@@ -276,6 +279,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         if (mInteractionHandler == null) {
             return;
         }
+        mInputMonitorCompat.pilferPointers();
 
         mOverviewCallbacks.closeAllWindows();
         ActivityManagerWrapper.getInstance().closeSystemWindows(
