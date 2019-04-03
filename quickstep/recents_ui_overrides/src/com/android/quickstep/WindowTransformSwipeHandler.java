@@ -939,7 +939,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             HomeAnimationFactory homeAnimationFactory) {
         final RemoteAnimationTargetSet targetSet = mRecentsAnimationWrapper.targetSet;
         final RectF startRect = new RectF(mClipAnimationHelper.applyTransform(targetSet,
-                mTransformParams.setProgress(startProgress)));
+                mTransformParams.setProgress(startProgress), false /* launcherOnTop */));
         final RectF targetRect = homeAnimationFactory.getWindowTargetRect();
 
         final View floatingView = homeAnimationFactory.getFloatingView();
@@ -964,7 +964,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                     windowAlphaThreshold, 0f, 1f, Interpolators.LINEAR);
             mTransformParams.setCurrentRectAndTargetAlpha(currentRect, 1f - iconAlpha)
                     .setSyncTransactionApplier(mSyncTransactionApplier);
-            mClipAnimationHelper.applyTransform(targetSet, mTransformParams);
+            mClipAnimationHelper.applyTransform(targetSet, mTransformParams,
+                    false /* launcherOnTop */);
 
             if (isFloatingIconView) {
                 ((FloatingIconView) floatingView).update(currentRect, iconAlpha, progress,
@@ -976,6 +977,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             @Override
             public void onAnimationStart(Animator animation) {
                 homeAnim.dispatchOnStart();
+                mActivity.getRootView().getOverlay().remove(mLiveTileOverlay);
             }
 
             @Override
