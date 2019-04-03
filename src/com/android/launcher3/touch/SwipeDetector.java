@@ -219,6 +219,10 @@ public class SwipeDetector {
 
         boolean onDrag(float displacement);
 
+        default boolean onDrag(float displacement, MotionEvent event) {
+            return onDrag(displacement);
+        }
+
         void onDragEnd(float velocity, boolean fling);
     }
 
@@ -307,7 +311,7 @@ public class SwipeDetector {
                     setState(ScrollState.DRAGGING);
                 }
                 if (mState == ScrollState.DRAGGING) {
-                    reportDragging();
+                    reportDragging(ev);
                 }
                 mLastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex));
                 break;
@@ -359,14 +363,14 @@ public class SwipeDetector {
         return mDir.isPositive(mSubtractDisplacement);
     }
 
-    private boolean reportDragging() {
+    private boolean reportDragging(MotionEvent event) {
         if (mDisplacement != mLastDisplacement) {
             if (DBG) {
                 Log.d(TAG, String.format("onDrag disp=%.1f", mDisplacement));
             }
 
             mLastDisplacement = mDisplacement;
-            return mListener.onDrag(mDisplacement - mSubtractDisplacement);
+            return mListener.onDrag(mDisplacement - mSubtractDisplacement, event);
         }
         return true;
     }
