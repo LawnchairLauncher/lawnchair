@@ -43,6 +43,7 @@ import com.google.android.apps.nexuslauncher.allapps.Action
 import com.google.android.apps.nexuslauncher.allapps.ActionView
 import com.google.android.apps.nexuslauncher.allapps.ActionsController
 import com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader
+import com.google.android.apps.nexuslauncher.reflection.ReflectionClient
 import com.google.android.apps.nexuslauncher.util.ComponentKeyMapper
 import org.json.JSONObject
 
@@ -65,7 +66,7 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
     private val devicePrefs = Utilities.getDevicePrefs(context)
     private val appsList = CountRankedArrayPreference(devicePrefs, "recent_app_launches", 250)
     private val actionList = CountRankedArrayPreference(devicePrefs, "recent_shortcut_launches", 100)
-    private val isActionsEnabled get() = !(PackageManagerHelper.isAppEnabled(context.packageManager, ACTIONS_PACKAGE, 0) && TouchInteractionService.isConnected() && ActionsController.get(context).actions.size > 0) && prefs.showActions
+    private val isActionsEnabled get() = !(PackageManagerHelper.isAppEnabled(context.packageManager, ACTIONS_PACKAGE, 0) && ActionsController.get(context).actions.size > 0) && prefs.showActions
 
     private var actionsCache = listOf<String>()
 
@@ -185,8 +186,8 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
     }
 
     override fun isPredictorEnabled(): Boolean {
-        // Only enable as fallback
-        return super.isPredictorEnabled() && !TouchInteractionService.isConnected()
+        // Only enable as fallback, that pref would be set to a proper timestamp if prediction actually worked.
+        return super.isPredictorEnabled() && Utilities.getReflectionPrefs(context).getLong("reflection_most_recent_usage", 0L) == 0L
     }
 
     /**
