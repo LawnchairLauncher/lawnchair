@@ -75,6 +75,11 @@ public final class FallbackActivityControllerHelper implements
         // TODO:
     }
 
+    @Override
+    public void onAssistantVisibilityChanged(float visibility) {
+        // TODO:
+    }
+
     @NonNull
     @Override
     public HomeAnimationFactory prepareHomeUI(RecentsActivity activity) {

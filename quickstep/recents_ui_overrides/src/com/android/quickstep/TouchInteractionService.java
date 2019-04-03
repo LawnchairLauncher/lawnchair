@@ -133,6 +133,14 @@ public class TouchInteractionService extends Service implements
             mAssistantAvailable = available;
         }
 
+        @Override
+        public void onAssistantVisibilityChanged(float visibility) {
+            MAIN_THREAD_EXECUTOR.execute(() -> {
+                mOverviewComponentObserver.getActivityControlHelper()
+                        .onAssistantVisibilityChanged(visibility);
+            });
+        }
+
         /** Deprecated methods **/
         public void onQuickStep(MotionEvent motionEvent) { }
 

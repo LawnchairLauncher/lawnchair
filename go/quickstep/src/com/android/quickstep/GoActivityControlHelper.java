@@ -34,6 +34,11 @@ public abstract class GoActivityControlHelper<T extends BaseDraggingActivity> im
     }
 
     @Override
+    public void onAssistantVisibilityChanged(float visibility) {
+        // Go does not support assistant visibility transitions.
+    }
+
+    @Override
     public HomeAnimationFactory prepareHomeUI(T activity) {
         // Go does not support gestures from app to home.
         return null;

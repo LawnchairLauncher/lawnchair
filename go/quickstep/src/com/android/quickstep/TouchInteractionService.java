@@ -80,6 +80,11 @@ public class TouchInteractionService extends Service {
             // TODO handle assistant
         }
 
+        @Override
+        public void onAssistantVisibilityChanged(float visibility) {
+            // TODO handle assistant
+        }
+
         /** Deprecated methods **/
         public void onQuickStep(MotionEvent motionEvent) { }
 
