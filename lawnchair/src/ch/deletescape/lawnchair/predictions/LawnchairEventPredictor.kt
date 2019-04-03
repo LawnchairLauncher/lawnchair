@@ -17,15 +17,11 @@
 
 package ch.deletescape.lawnchair.predictions
 
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.bluetooth.BluetoothHeadset
+import android.bluetooth.BluetoothProfile
+import android.content.*
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.os.Handler
-import android.os.HandlerThread
-import android.os.Process
-import android.os.UserHandle
+import android.os.*
 import android.util.Log
 import android.view.View
 import ch.deletescape.lawnchair.runOnMainThread
@@ -36,16 +32,14 @@ import com.android.launcher3.graphics.LauncherIcons
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
-import com.android.launcher3.util.Provider
-import com.android.quickstep.TouchInteractionService
 import com.google.android.apps.nexuslauncher.CustomAppPredictor
 import com.google.android.apps.nexuslauncher.allapps.Action
 import com.google.android.apps.nexuslauncher.allapps.ActionView
 import com.google.android.apps.nexuslauncher.allapps.ActionsController
 import com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader
-import com.google.android.apps.nexuslauncher.reflection.ReflectionClient
 import com.google.android.apps.nexuslauncher.util.ComponentKeyMapper
 import org.json.JSONObject
+import java.util.concurrent.TimeUnit
 
 // TODO: Fix action icons being loaded too early, leading to f*cked icons when using sesame
 /**
@@ -65,10 +59,83 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
 
     private val devicePrefs = Utilities.getDevicePrefs(context)
     private val appsList = CountRankedArrayPreference(devicePrefs, "recent_app_launches", 250)
+    private val phonesList = CountRankedArrayPreference(devicePrefs, "plugged_app_launches", 20)
     private val actionList = CountRankedArrayPreference(devicePrefs, "recent_shortcut_launches", 100)
     private val isActionsEnabled get() = !(PackageManagerHelper.isAppEnabled(context.packageManager, ACTIONS_PACKAGE, 0) && ActionsController.get(context).actions.size > 0) && prefs.showActions
 
     private var actionsCache = listOf<String>()
+
+    /**
+     * Time at which headphones have been plugged in / connected. 0 if disconnected, -1 before initialized
+     */
+    private var phonesConnectedAt = -1L
+        set(value) {
+            field = value
+            if (value != -1L) {
+                phonesLaunches = 0
+                updatePredictions()
+                if (value != 0L) {
+                    // Ensure temporary predictions get removed again after
+                    handler.postDelayed(this::updatePredictions, DURATION_RECENTLY)
+                }
+            }
+        }
+    /**
+     * Whether headphones have just been plugged in / connected (in the last two minutes)
+     * TODO: Is two minutes appropriate or do we want to increase this?
+     */
+    private val phonesJustConnected get() = phonesConnectedAt > 0 && SystemClock.uptimeMillis() in phonesConnectedAt until phonesConnectedAt + DURATION_RECENTLY
+    /**
+     * Whether or not the current app launch is relevant for headphone suggestions or not
+     */
+    private val relevantForPhones get() = phonesLaunches < 2 && phonesJustConnected
+    /**
+     * Number of launches recorded since headphones were connected
+     */
+    private var phonesLaunches = 0
+    private val phonesStateChangeReceiver by lazy {
+        object : BroadcastReceiver() {
+            private var firstReceive = true
+
+            override fun onReceive(context: Context, intent: Intent) {
+                if (!firstReceive) {
+                    phonesConnectedAt = when (intent.action) {
+                        Intent.ACTION_HEADSET_PLUG -> {
+                            when (intent.getIntExtra("state", -1)) {
+                                1 -> SystemClock.currentThreadTimeMillis()
+                                else -> 0
+                            }
+                        }
+                        BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED -> {
+                            when (intent.getIntExtra(BluetoothProfile.EXTRA_STATE, -1)) {
+                                2 -> SystemClock.currentThreadTimeMillis()
+                                else -> 0
+                            }
+                        }
+                        else -> 0
+                    }
+                }
+                firstReceive = false
+            }
+        }
+    }
+
+    init {
+        if (isPredictorEnabled) {
+            setupBroadcastReceiver()
+        }
+    }
+
+    private fun setupBroadcastReceiver() {
+        context.registerReceiver( phonesStateChangeReceiver,
+                IntentFilter(Intent.ACTION_HEADSET_PLUG).apply {
+                    addAction(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED)
+                }, null, handler)
+    }
+
+    private fun tearDownBroadcastReceiver() {
+        context.unregisterReceiver(phonesStateChangeReceiver)
+    }
 
     override fun updatePredictions() {
         super.updatePredictions()
@@ -86,11 +153,22 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
 
     override fun logAppLaunch(v: View?, intent: Intent?, user: UserHandle?) {
         super.logAppLaunch(v, intent, user)
-        if (isPredictorEnabled && recursiveIsDrawer(v) && v !is ActionView) {
-            val componentInfo = intent?.component
-            if (componentInfo != null && mAppFilter.shouldShowApp(componentInfo, user)) {
-                clearRemovedComponents()
-                appsList.add(ComponentKey(componentInfo, user).toString())
+        if (isPredictorEnabled && v !is ActionView && intent?.component != null && mAppFilter.shouldShowApp(intent.component, user)) {
+            clearRemovedComponents()
+
+            var changed = false
+            val key = ComponentKey(intent.component, user).toString()
+            if (recursiveIsDrawer(v)) {
+                appsList.add(key)
+                changed = true
+            }
+            if (relevantForPhones) {
+                phonesList.add(key)
+                phonesLaunches++
+                changed = true
+            }
+
+            if (changed) {
                 updatePredictions()
             }
         }
@@ -117,6 +195,26 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
         }
     }
 
+    // TODO: There must be a better, more elegant way to concatenate these lists
+    override fun getPredictions(): MutableList<ComponentKeyMapper> {
+        return if (isPredictorEnabled) {
+            clearRemovedComponents()
+            val user = Process.myUserHandle()
+            val appList = if (phonesJustConnected) phonesList.getRanked().take(MAX_HEADPHONE_SUGGESTIONS).toMutableList() else mutableListOf()
+            appList.addAll(appsList.getRanked().filterNot { appList.contains(it) }.take(MAX_PREDICTIONS - appList.size))
+            val fullList = appList.map { getComponentFromString(it) }
+                    .filter { !isHiddenApp(context, it.componentKey) }.toMutableList()
+            if (fullList.size < MAX_PREDICTIONS) {
+                fullList.addAll(
+                        PLACE_HOLDERS.mapNotNull { packageManager.getLaunchIntentForPackage(it)?.component }
+                                .map { ComponentKeyMapper(context, ComponentKey(it, user)) }
+                )
+            }
+            fullList.take(MAX_PREDICTIONS).toMutableList()
+        } else mutableListOf()
+    }
+
+    // TODO: Extension function?
     private fun clearRemovedComponents() {
         appsList.removeAll {
             val component = getComponentFromString(it).componentKey?.componentName ?: return@removeAll true
@@ -136,30 +234,22 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
                 true
             }
         }
-    }
-
-    override fun getPredictions(): MutableList<ComponentKeyMapper> {
-        return (if (isPredictorEnabled) {
-            clearRemovedComponents()
-
-            val rankedSet = appsList.getRanked()
-            rankedSet.map { getComponentFromString(it) }.filter { !isHiddenApp(context, it.componentKey) }.toMutableList()
-        } else mutableListOf()).apply {
-            for (placeholder in PLACE_HOLDERS) {
-                if (size >= MAX_PREDICTIONS) {
-                    break
-                }
-                val intent = packageManager.getLaunchIntentForPackage(placeholder)
+        phonesList.removeAll {
+            val component = getComponentFromString(it).componentKey?.componentName ?: return@removeAll true
+            try {
+                packageManager.getActivityInfo(component, 0)
+                false
+            } catch (ignored: PackageManager.NameNotFoundException) {
+                val intent = packageManager.getLaunchIntentForPackage(component.packageName)
                 if (intent != null) {
-                    val component = intent.component
-                    if (component != null) {
-                        val key = ComponentKey(component, Process.myUserHandle())
-
-                        if (!appsList.contains(key.toString()) && !isHiddenApp(context, key)) {
-                            add(ComponentKeyMapper(context, key))
-                        }
+                    val componentInfo = intent.component
+                    if (componentInfo != null) {
+                        val key = ComponentKey(componentInfo, Process.myUserHandle())
+                        phonesList.replace(it, key.toString())
+                        return@removeAll false
                     }
                 }
+                true
             }
         }
     }
@@ -177,6 +267,9 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
         if (key == SettingsActivity.SHOW_PREDICTIONS_PREF) {
             if (!isPredictorEnabled) {
                 appsList.clear()
+                tearDownBroadcastReceiver()
+            } else {
+                setupBroadcastReceiver()
             }
         } else if (key == SettingsActivity.SHOW_ACTIONS_PREF) {
             if (!isActionsEnabled) {
@@ -229,7 +322,6 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
 
     private fun actionFromString(string: String, position: Long = 0): Action? {
         try {
-            Log.d("EventPredictor", string)
             val obj = JSONObject(string)
             val id = obj.getString(KEY_ID)
             //val expiration = obj.getLong(KEY_EXPIRATION)
@@ -276,5 +368,11 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
         const val KEY_PUBLISHER = "publisher"
         const val KEY_BADGE = "badge"
         const val KEY_POSITION = "position"
+
+        // TODO: Increase to two?
+        const val MAX_HEADPHONE_SUGGESTIONS = 1
+        // Our definition of "Recently"
+        @JvmStatic
+        val DURATION_RECENTLY = TimeUnit.MINUTES.toMillis(2)
     }
 }
