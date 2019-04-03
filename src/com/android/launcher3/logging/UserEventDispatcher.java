@@ -62,7 +62,6 @@ import androidx.annotation.Nullable;
  *
  * $ adb shell setprop log.tag.UserEvent VERBOSE
  */
-@Deprecated
 public class UserEventDispatcher implements ResourceBasedOverride {
 
     private static final String TAG = "UserEvent";

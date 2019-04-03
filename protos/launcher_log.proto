@@ -142,6 +142,7 @@ message Action {
     SWIPE = 3;
     FLING = 4;
     PINCH = 5;
+    SWIPE_NOOP = 6;
   }
 
   enum Direction {
@@ -150,6 +151,8 @@ message Action {
     DOWN = 2;
     LEFT = 3;
     RIGHT = 4;
+    UPRIGHT = 5;
+    UPLEFT = 6;
   }
   enum Command {
     HOME_INTENT = 0;
