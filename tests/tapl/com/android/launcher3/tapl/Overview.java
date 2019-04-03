@@ -18,8 +18,6 @@ package com.android.launcher3.tapl;
 
 import static com.android.launcher3.TestProtocol.ALL_APPS_STATE_ORDINAL;
 
-import android.graphics.Point;
-
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
@@ -53,9 +51,9 @@ public final class Overview extends BaseOverview {
 
             // Swipe from navbar to the top.
             final UiObject2 navBar = mLauncher.waitForSystemUiObject("navigation_bar_frame");
-            final Point start = navBar.getVisibleCenter();
             LauncherInstrumentation.log("Overview.switchToAllApps before swipe");
-            mLauncher.swipe(start.x, start.y, start.x, 0, ALL_APPS_STATE_ORDINAL);
+            final int x = navBar.getVisibleCenter().x;
+            mLauncher.swipe(x, navBar.getVisibleBounds().top - 1, x, 0, ALL_APPS_STATE_ORDINAL);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "swiped all way up from overview")) {
