@@ -207,8 +207,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         // Test that ensureWorkspaceIsScrollable adds a page by dragging an icon there.
         executeOnLauncher(launcher -> assertFalse("Initial workspace state is scrollable",
                 isWorkspaceScrollable(launcher)));
-        assertNull("Messages app was found on empty workspace",
-                workspace.tryGetWorkspaceAppIcon("Messages"));
+        assertNull("Play Store app was found on empty workspace",
+                workspace.tryGetWorkspaceAppIcon("Play Store"));
 
         workspace.ensureWorkspaceIsScrollable();
 
@@ -218,8 +218,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         executeOnLauncher(
                 launcher -> assertTrue("ensureScrollable didn't make workspace scrollable",
                         isWorkspaceScrollable(launcher)));
-        assertNotNull("ensureScrollable didn't add Messages app",
-                workspace.tryGetWorkspaceAppIcon("Messages"));
+        assertNotNull("ensureScrollable didn't add Play Store app",
+                workspace.tryGetWorkspaceAppIcon("Play Store"));
 
         // Test flinging workspace.
         workspace.flingBackward();
@@ -235,10 +235,10 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         assertTrue("Launcher internal state is not Home", isInState(LauncherState.NORMAL));
 
         // Test starting a workspace app.
-        final AppIcon app = workspace.tryGetWorkspaceAppIcon("Messages");
-        assertNotNull("No Messages app in workspace", app);
+        final AppIcon app = workspace.tryGetWorkspaceAppIcon("Play Store");
+        assertNotNull("No Play Store app in workspace", app);
         assertNotNull("AppIcon.launch returned null",
-                app.launch(resolveSystemApp(Intent.CATEGORY_APP_MESSAGING)));
+                app.launch(resolveSystemApp(Intent.CATEGORY_APP_MARKET)));
         executeOnLauncher(launcher -> assertTrue(
                 "Launcher activity is the top activity; expecting another activity to be the top "
                         + "one",
