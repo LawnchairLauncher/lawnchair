@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static android.view.View.VISIBLE;
+
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
@@ -29,7 +30,6 @@ import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
-import static com.android.launcher3.anim.Interpolators.NEVER;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
@@ -41,6 +41,8 @@ import android.animation.AnimatorSet;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.IntDef;
+
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
@@ -51,8 +53,6 @@ import com.android.launcher3.uioverrides.UiFactory;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
-
-import androidx.annotation.IntDef;
 
 /**
  * TODO: figure out what kind of tests we can write for this
@@ -326,7 +326,8 @@ public class LauncherStateManager {
         } else if (fromState == NORMAL && toState == OVERVIEW_PEEK) {
             builder.setInterpolator(ANIM_OVERVIEW_FADE, INSTANT);
         } else if (fromState == OVERVIEW_PEEK && toState == NORMAL) {
-            builder.setInterpolator(ANIM_OVERVIEW_FADE, NEVER);
+            // Keep fully visible until the very end (when overview is offscreen) to make invisible.
+            builder.setInterpolator(ANIM_OVERVIEW_FADE, t -> t < 1 ? 0 : 1);
         }
     }
 

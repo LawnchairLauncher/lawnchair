@@ -255,7 +255,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         float orthogonalDisplacement = !isLandscape
                                 ? ev.getX() - mDownPos.x
                                 : ev.getY() - mDownPos.y;
-                        mMotionPauseDetector.addPosition(displacement, orthogonalDisplacement);
+                        mMotionPauseDetector.addPosition(displacement, orthogonalDisplacement,
+                                ev.getEventTime());
                     }
                 }
                 break;

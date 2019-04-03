@@ -15,7 +15,8 @@
  */
 package com.android.launcher3.logging;
 
-import android.content.Context;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType.NAVBAR;
+
 import android.util.ArrayMap;
 import android.util.SparseArray;
 import android.view.View;
@@ -97,7 +98,8 @@ public class LoggerUtils {
             case Target.Type.CONTAINER:
                 str = getFieldName(t.containerType, ContainerType.class);
                 if (t.containerType == ContainerType.WORKSPACE ||
-                        t.containerType == ContainerType.HOTSEAT) {
+                        t.containerType == ContainerType.HOTSEAT ||
+                        t.containerType == NAVBAR) {
                     str += " id=" + t.pageIndex;
                 } else if (t.containerType == ContainerType.FOLDER) {
                     str += " grid(" + t.gridX + "," + t.gridY+ ")";

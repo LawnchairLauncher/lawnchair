@@ -58,7 +58,6 @@ public class Interpolators {
     public static final Interpolator EXAGGERATED_EASE;
 
     public static final Interpolator INSTANT = t -> 1;
-    public static final Interpolator NEVER = t -> 0;
 
     private static final int MIN_SETTLE_DURATION = 200;
     private static final float OVERSHOOT_FACTOR = 0.9f;

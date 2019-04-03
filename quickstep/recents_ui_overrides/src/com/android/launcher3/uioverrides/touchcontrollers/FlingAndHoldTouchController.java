@@ -27,6 +27,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.view.HapticFeedbackConstants;
+import android.view.MotionEvent;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -96,9 +97,9 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
     }
 
     @Override
-    public boolean onDrag(float displacement) {
-        mMotionPauseDetector.addPosition(displacement, 0);
-        return super.onDrag(displacement);
+    public boolean onDrag(float displacement, MotionEvent event) {
+        mMotionPauseDetector.addPosition(displacement, 0, event.getEventTime());
+        return super.onDrag(displacement, event);
     }
 
     @Override
