@@ -24,6 +24,9 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.FocusLogic;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AppWidgetResizeFrame extends AbstractFloatingView implements View.OnKeyListener {
     private static final int SNAP_DURATION = 150;
     private static final float DIMMED_HANDLE_ALPHA = 0f;
@@ -45,6 +48,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private final FirstFrameAnimatorHelper mFirstFrameAnimatorHelper;
 
     private final View[] mDragHandles = new View[HANDLE_COUNT];
+    private final List<Rect> mSystemGestureExclusionRects = new ArrayList<>(HANDLE_COUNT);
 
     private LauncherAppWidgetHostView mWidgetView;
     private CellLayout mCellLayout;
@@ -106,6 +110,10 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                 .getDimensionPixelSize(R.dimen.resize_frame_background_padding);
         mTouchTargetWidth = 2 * mBackgroundPadding;
         mFirstFrameAnimatorHelper = new FirstFrameAnimatorHelper(this);
+
+        for (int i = 0; i < HANDLE_COUNT; i++) {
+            mSystemGestureExclusionRects.add(new Rect());
+        }
     }
 
     @Override
@@ -115,6 +123,19 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         ViewGroup content = (ViewGroup) getChildAt(0);
         for (int i = 0; i < HANDLE_COUNT; i ++) {
             mDragHandles[i] = content.getChildAt(i);
+        }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        if (Utilities.ATLEAST_Q) {
+            for (int i = 0; i < HANDLE_COUNT; i++) {
+                View dragHandle = mDragHandles[i];
+                mSystemGestureExclusionRects.get(i).set(dragHandle.getLeft(), dragHandle.getTop(),
+                        dragHandle.getRight(), dragHandle.getBottom());
+            }
+            setSystemGestureExclusionRects(mSystemGestureExclusionRects);
         }
     }
 
