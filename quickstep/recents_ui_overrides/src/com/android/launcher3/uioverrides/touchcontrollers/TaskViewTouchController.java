@@ -123,7 +123,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
                     if (mRecentsView.isTaskViewVisible(view) && mActivity.getDragLayer()
                             .isEventOverView(view, ev)) {
                         mTaskBeingDragged = view;
-                        if (!SysUINavigationMode.INSTANCE.get(mActivity).getMode().hasGestures) {
+                        if (!SysUINavigationMode.getMode(mActivity).hasGestures) {
                             // Don't allow swipe down to open if we don't support swipe up
                             // to enter overview.
                             directionsToDetectScroll = SwipeDetector.DIRECTION_POSITIVE;
