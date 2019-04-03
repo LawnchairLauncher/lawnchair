@@ -114,8 +114,6 @@ public class ItemInfo {
 
     ItemInfo(ItemInfo info) {
         copyFrom(info);
-        // tempdebug:
-        LauncherModel.checkItemInfo(this);
     }
 
     public void copyFrom(ItemInfo info) {
