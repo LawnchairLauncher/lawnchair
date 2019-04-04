@@ -33,6 +33,7 @@ import com.android.launcher3.Utilities;
 
 import com.android.launcher3.util.LooperExecutor;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
 import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.Utilities.getPrefs;
@@ -89,6 +90,10 @@ public class IconShapeOverride {
             Resources override =
                     new ResourcesOverride(Resources.getSystem(), getConfigResId(), path);
             getSystemResField().set(null, override);
+            int masks = getOverrideMasksResId();
+            if (masks != 0) {
+                ((ResourcesOverride) override).setArrayOverrideId(masks);
+            }
         } catch (Exception e) {
             Log.e(TAG, "Unable to override icon shape", e);
             // revert value.
@@ -104,6 +109,10 @@ public class IconShapeOverride {
 
     private static int getConfigResId() {
         return Resources.getSystem().getIdentifier("config_icon_mask", "string", "android");
+    }
+
+    private static int getOverrideMasksResId() {
+        return Resources.getSystem().getIdentifier("system_icon_masks", "array", "android");
     }
 
     private static String getAppliedValue(Context context) {
@@ -126,6 +135,7 @@ public class IconShapeOverride {
     private static class ResourcesOverride extends Resources {
 
         private final int mOverrideId;
+        private int mArrayOverrideId = 0;
         private final String mOverrideValue;
 
         @SuppressWarnings("deprecation")
@@ -142,6 +152,23 @@ public class IconShapeOverride {
                 return mOverrideValue;
             }
             return super.getString(id);
+        }
+
+        void setArrayOverrideId(int id) {
+            mArrayOverrideId = id;
+        }
+
+        // I do admit that this is one hell of a hack
+        @NonNull
+        @Override
+        public String[] getStringArray(int id) throws NotFoundException {
+            if (id != 0 && id == mArrayOverrideId) {
+                int size = super.getStringArray(id).length;
+                String[] arr = new String[size];
+                Arrays.fill(arr, mOverrideValue);
+                return arr;
+            }
+            return super.getStringArray(id);
         }
     }
 
