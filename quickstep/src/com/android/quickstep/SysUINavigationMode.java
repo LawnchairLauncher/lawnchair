@@ -48,6 +48,10 @@ public class SysUINavigationMode {
         }
     }
 
+    public static Mode getMode(Context context) {
+        return INSTANCE.get(context).getMode();
+    }
+
     public static MainThreadInitializedObject<SysUINavigationMode> INSTANCE =
             new MainThreadInitializedObject<>(SysUINavigationMode::new);
 

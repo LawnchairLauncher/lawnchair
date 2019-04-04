@@ -45,10 +45,10 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RaceConditionTracker;
 import com.android.launcher3.util.TraceHelper;
+import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget;
 import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
@@ -83,6 +83,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private final InputConsumerController mInputConsumer;
     private final SwipeSharedState mSwipeSharedState;
     private final InputMonitorCompat mInputMonitorCompat;
+    private final SysUINavigationMode.Mode mMode;
 
     private final int mDisplayRotation;
     private final Rect mStableInsets = new Rect();
@@ -127,6 +128,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mRunningTask = runningTaskInfo;
         mRecentsModel = recentsModel;
         mHomeIntent = homeIntent;
+        mMode = SysUINavigationMode.getMode(base);
 
         mMotionPauseDetector = new MotionPauseDetector(base);
         mOnCompleteCallback = onCompleteCallback;
@@ -250,7 +252,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                     // Move
                     mInteractionHandler.updateDisplacement(displacement - mStartDisplacement);
 
-                    if (FeatureFlags.SWIPE_HOME.get()) {
+                    if (mMode == Mode.NO_BUTTON) {
                         boolean isLandscape = isNavBarOnLeft() || isNavBarOnRight();
                         float orthogonalDisplacement = !isLandscape
                                 ? ev.getX() - mDownPos.x

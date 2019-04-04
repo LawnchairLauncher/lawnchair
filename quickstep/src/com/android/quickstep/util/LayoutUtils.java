@@ -27,6 +27,8 @@ import androidx.annotation.IntDef;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.quickstep.SysUINavigationMode;
+import com.android.quickstep.SysUINavigationMode.Mode;
 
 import java.lang.annotation.Retention;
 
@@ -116,7 +118,7 @@ public class LayoutUtils {
     }
 
     public static int getShelfTrackingDistance(Context context, DeviceProfile dp) {
-        if (FeatureFlags.SWIPE_HOME.get()) {
+        if (SysUINavigationMode.getMode(context) == Mode.NO_BUTTON) {
             // Track the bottom of the window rather than the top of the shelf.
             int shelfHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
             int spaceBetweenShelfAndRecents = (int) context.getResources().getDimension(
