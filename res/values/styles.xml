@@ -44,7 +44,7 @@
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
         <item name="folderDotColor">?android:attr/colorPrimary</item>
         <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
-        <item name="loadingIconColor">#FFF</item>
+        <item name="loadingIconColor">#CCFFFFFF</item>
 
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowTranslucentNavigation">false</item>
@@ -82,7 +82,7 @@
         <item name="folderDotColor">#FF464646</item>
         <item name="folderIconBorderColor">#FF80868B</item>
         <item name="isMainColorDark">true</item>
-        <item name="loadingIconColor">#000</item>
+        <item name="loadingIconColor">#99FFFFFF</item>
     </style>
 
     <style name="LauncherTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark">
