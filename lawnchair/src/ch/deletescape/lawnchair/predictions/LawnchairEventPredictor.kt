@@ -145,14 +145,18 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
     override fun updatePredictions() {
         super.updatePredictions()
         if (isPredictorEnabled) {
-            predictionsHeader.setPredictedApps(isPredictorEnabled, predictions)
+            runOnMainThread {
+                predictionsHeader.setPredictedApps(isPredictorEnabled, predictions)
+            }
         }
     }
 
     override fun updateActions() {
         super.updateActions()
         if (isActionsEnabled) {
-            actionsRow.onUpdated(getActions())
+            runOnMainThread {
+                actionsRow.onUpdated(getActions())
+            }
         }
     }
 
