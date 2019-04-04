@@ -162,7 +162,7 @@ open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnColorChange
         }
     }
 
-    override fun getSystemService(name: String): Any {
+    override fun getSystemService(name: String): Any? {
         if (name == Context.LAYOUT_INFLATER_SERVICE) {
             return customLayoutInflater
         }
