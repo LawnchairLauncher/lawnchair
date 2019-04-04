@@ -224,12 +224,20 @@ public class FolderInfo extends ItemInfo {
         return getIconInternal(launcher) != null;
     }
 
+    private Drawable cached;
+    private String cachedIcon;
+
     private Drawable getIconInternal(Launcher launcher) {
         CustomInfoProvider<FolderInfo> infoProvider = CustomInfoProvider.Companion.forItem(launcher, this);
         CustomIconEntry entry = infoProvider == null ? null : infoProvider.getIcon(this);
         if (entry != null && entry.getIcon() != null) {
-            IconPack pack = IconPackManager.Companion.getInstance(launcher).getIconPack(entry.getPackPackageName(), false, true);
-            return pack.getIcon(entry.getIcon(), launcher.mDeviceProfile.inv.fillResIconDpi);
+            if (!entry.getIcon().equals(cachedIcon)) {
+                IconPack pack = IconPackManager.Companion.getInstance(launcher)
+                        .getIconPack(entry.getPackPackageName(), false, true);
+                cached = pack.getIcon(entry.getIcon(), launcher.mDeviceProfile.inv.fillResIconDpi);
+                cachedIcon = entry.getIcon();
+            }
+            return cached.mutate();
         }
         return null;
     }

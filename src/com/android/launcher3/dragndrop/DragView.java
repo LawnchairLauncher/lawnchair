@@ -211,15 +211,12 @@ public class DragView extends View {
             public void run() {
                 LauncherAppState appState = LauncherAppState.getInstance(mLauncher);
                 Object[] outObj = new Object[1];
+                // TODO: Actually support wiggling for custom folder icons, but with proper sizing
                 final Drawable dr = getFullDrawable(info, appState, outObj);
 
-                if (dr instanceof AdaptiveIconDrawable) {
+                if (dr instanceof AdaptiveIconDrawable && !(info instanceof FolderInfo && ((FolderInfo) info).hasCustomIcon(mLauncher))) {
                     int w = mBitmap.getWidth();
                     int h = mBitmap.getHeight();
-                    if (info.itemType == Favorites.ITEM_TYPE_FOLDER && !(dr instanceof FolderAdaptiveIcon)){
-                        // TODO: Find a proper fix for folder drag and drop with custom adaptive icon
-                        h = w;
-                    }
                     int blurMargin = (int) mLauncher.getResources()
                             .getDimension(R.dimen.blur_size_medium_outline) / 2;
 
@@ -353,10 +350,6 @@ public class DragView extends View {
                 return sm.getShortcutIconDrawable(si.get(0), iconDpi);
             }
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
-            FolderInfo fInfo = info instanceof FolderInfo ? (FolderInfo) info : null;
-            if (fInfo != null && fInfo.hasCustomIcon(getContext())) {
-                return fInfo.getIcon(getContext());
-            }
             FolderAdaptiveIcon icon =  FolderAdaptiveIcon.createFolderAdaptiveIcon(
                     mLauncher, info.id, new Point(mBitmap.getWidth(), mBitmap.getHeight()));
             if (icon == null) {
