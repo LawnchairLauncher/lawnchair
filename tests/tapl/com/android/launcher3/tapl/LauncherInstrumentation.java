@@ -22,6 +22,7 @@ import android.app.UiAutomation;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
@@ -172,11 +173,11 @@ public final class LauncherInstrumentation {
             // Workaround, use constructed context because both the instrumentation context and the
             // app context are not constructed with resources that take overlays into account
             final Context ctx = baseContext.createPackageContext("android", 0);
-            if (QuickStepContract.isGesturalMode(ctx)) {
+            if (isGesturalMode(ctx)) {
                 return NavigationModel.ZERO_BUTTON;
-            } else if (QuickStepContract.isSwipeUpMode(ctx)) {
+            } else if (isSwipeUpMode(ctx)) {
                 return NavigationModel.TWO_BUTTON;
-            } else if (QuickStepContract.isLegacyMode(ctx)) {
+            } else if (isLegacyMode(ctx)) {
                 return NavigationModel.THREE_BUTTON;
             } else {
                 fail("Can't detect navigation mode");
@@ -607,6 +608,46 @@ public final class LauncherInstrumentation {
         }
     }
 
+    public static boolean isGesturalMode(Context context) {
+        return QuickStepContract.isGesturalMode(getCurrentInteractionMode(context));
+    }
+
+    public static boolean isSwipeUpMode(Context context) {
+        return QuickStepContract.isSwipeUpMode(getCurrentInteractionMode(context));
+    }
+
+    public static boolean isLegacyMode(Context context) {
+        return QuickStepContract.isLegacyMode(getCurrentInteractionMode(context));
+    }
+
+    private static int getCurrentInteractionMode(Context context) {
+        return getSystemIntegerRes(context, "config_navBarInteractionMode");
+    }
+
+    private static int getSystemIntegerRes(Context context, String resName) {
+        Resources res = context.getResources();
+        int resId = res.getIdentifier(resName, "integer", "android");
+
+        if (resId != 0) {
+            return res.getInteger(resId);
+        } else {
+            Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
+            return -1;
+        }
+    }
+
+    private static int getSystemDimensionResId(Context context, String resName) {
+        Resources res = context.getResources();
+        int resId = res.getIdentifier(resName, "dimen", "android");
+
+        if (resId != 0) {
+            return resId;
+        } else {
+            Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
+            return -1;
+        }
+    }
+
     static void sleep(int duration) {
         try {
             Thread.sleep(duration);
@@ -616,8 +657,10 @@ public final class LauncherInstrumentation {
 
     int getEdgeSensitivityWidth() {
         try {
-            return QuickStepContract.getEdgeSensitivityWidth(
-                    mInstrumentation.getTargetContext().createPackageContext("android", 0)) + 1;
+            final Context context = mInstrumentation.getTargetContext().createPackageContext(
+                    "android", 0);
+            return context.getResources().getDimensionPixelSize(
+                    getSystemDimensionResId(context, "config_backGestureInset")) + 1;
         } catch (PackageManager.NameNotFoundException e) {
             fail("Can't get edge sensitivity: " + e);
             return 0;
