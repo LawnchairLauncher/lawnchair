@@ -20,6 +20,8 @@ import static androidx.test.InstrumentationRegistry.getInstrumentation;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import static java.lang.System.exit;
+
 import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -29,6 +31,7 @@ import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Process;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.Surface;
 
 import androidx.test.InstrumentationRegistry;
@@ -78,9 +81,10 @@ public abstract class AbstractLauncherUiTest {
     public static final long DEFAULT_ACTIVITY_TIMEOUT = TimeUnit.SECONDS.toMillis(10);
     public static final long DEFAULT_BROADCAST_TIMEOUT_SECS = 5;
 
-    public static final long SHORT_UI_TIMEOUT= 300;
+    public static final long SHORT_UI_TIMEOUT = 300;
     public static final long DEFAULT_UI_TIMEOUT = 10000;
     protected static final int LONG_WAIT_TIME_MS = 60000;
+    private static final String TAG = "AbstractLauncherUiTest";
 
     protected MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
     protected final UiDevice mDevice;
@@ -107,10 +111,12 @@ public abstract class AbstractLauncherUiTest {
     @Rule
     public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
 
-    @Rule public ShellCommandRule mDefaultLauncherRule =
+    @Rule
+    public ShellCommandRule mDefaultLauncherRule =
             TestHelpers.isInLauncherProcess() ? ShellCommandRule.setDefaultLauncher() : null;
 
-    @Rule public ShellCommandRule mDisableHeadsUpNotification =
+    @Rule
+    public ShellCommandRule mDisableHeadsUpNotification =
             ShellCommandRule.disableHeadsUpNotification();
 
     // Annotation for tests that need to be run in portrait and landscape modes.
@@ -164,9 +170,17 @@ public abstract class AbstractLauncherUiTest {
     }
 
     @After
-    public void tearDown() throws Exception {
-        // Limits UI tests affecting tests running after them.
-        waitForModelLoaded();
+    public void tearDown() {
+        try {
+            // Limits UI tests affecting tests running after them.
+            waitForModelLoaded();
+        } catch (Throwable t) {
+            Log.e(TAG,
+                    "Couldn't deinit after a test, exiting tests, see logs for failures that "
+                            + "could have caused this",
+                    t);
+            exit(1);
+        }
     }
 
     protected void lockRotation(boolean naturalOrientation) throws RemoteException {
@@ -189,6 +203,7 @@ public abstract class AbstractLauncherUiTest {
 
     /**
      * Scrolls the {@param container} until it finds an object matching {@param condition}.
+     *
      * @return the matching object.
      */
     protected UiObject2 scrollAndFind(UiObject2 container, BySelector condition) {
