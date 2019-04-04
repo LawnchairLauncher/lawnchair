@@ -44,6 +44,7 @@ import android.support.animation.SpringAnimation;
 import android.support.animation.SpringForce;
 import android.view.View;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.iconpack.IconPackManager;
 import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider;
 import com.android.launcher3.*;
@@ -116,6 +117,7 @@ public class DragView extends View {
     private ColorMatrixColorFilter mBaseFilter;
 
     private final IconProvider iconProvider;
+    private final LawnchairPreferences prefs;
 
     /**
      * Construct the drag view.
@@ -188,6 +190,8 @@ public class DragView extends View {
 
         mBlurSizeOutline = getResources().getDimensionPixelSize(R.dimen.blur_size_medium_outline);
         setElevation(getResources().getDimension(R.dimen.drag_elevation));
+
+        prefs = Utilities.getLawnchairPrefs(mLauncher);
     }
 
     /**
@@ -234,9 +238,12 @@ public class DragView extends View {
                     li.recycle();
                     AdaptiveIconDrawable adaptiveIcon = (AdaptiveIconDrawable) dr;
 
+                    Rect fgBounds = new Rect(bounds);
+                    Rect bgBounds = new Rect(bounds);
+                    Utilities.scaleRectAboutCenter(bgBounds, 1.1f);
                     // Shrink very tiny bit so that the clip path is smaller than the original bitmap
                     // that has anti aliased edges and shadows.
-                    Rect shrunkBounds = new Rect(bounds);
+                    Rect shrunkBounds = new Rect(prefs.getScaleAdaptiveBg() ? bgBounds : fgBounds);
                     Utilities.scaleRectAboutCenter(shrunkBounds, 0.98f);
                     adaptiveIcon.setBounds(shrunkBounds);
                     final Path mask = adaptiveIcon.getIconMask();
@@ -246,20 +253,24 @@ public class DragView extends View {
                     mTranslateY = new SpringFloatValue(DragView.this,
                             h * AdaptiveIconDrawable.getExtraInsetFraction());
 
-                    bounds.inset(
-                            (int) (-bounds.width() * AdaptiveIconDrawable.getExtraInsetFraction()),
-                            (int) (-bounds.height() * AdaptiveIconDrawable.getExtraInsetFraction())
+                    fgBounds.inset(
+                            (int) (-fgBounds.width() * AdaptiveIconDrawable.getExtraInsetFraction()),
+                            (int) (-fgBounds.height() * AdaptiveIconDrawable.getExtraInsetFraction())
+                    );
+                    bgBounds.inset(
+                            (int) (-bgBounds.width() * AdaptiveIconDrawable.getExtraInsetFraction()),
+                            (int) (-bgBounds.height() * AdaptiveIconDrawable.getExtraInsetFraction())
                     );
                     mBgSpringDrawable = adaptiveIcon.getBackground();
                     if (mBgSpringDrawable == null) {
                         mBgSpringDrawable = new ColorDrawable(Color.TRANSPARENT);
                     }
-                    mBgSpringDrawable.setBounds(bounds);
+                    mBgSpringDrawable.setBounds(prefs.getScaleAdaptiveBg() ? bgBounds : fgBounds);
                     mFgSpringDrawable = adaptiveIcon.getForeground();
                     if (mFgSpringDrawable == null) {
                         mFgSpringDrawable = new ColorDrawable(Color.TRANSPARENT);
                     }
-                    mFgSpringDrawable.setBounds(bounds);
+                    mFgSpringDrawable.setBounds(fgBounds);
 
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override

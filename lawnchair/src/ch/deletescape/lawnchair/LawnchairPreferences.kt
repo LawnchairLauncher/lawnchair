@@ -188,6 +188,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     var customFontName by StringPref("pref_customFontName", "Google Sans", doNothing)
     var forceEnableFools by BooleanPref("pref_forceEnableFools", false, restart)
     val visualizeOccupied by BooleanPref("pref_debugVisualizeOccupied")
+    val scaleAdaptiveBg by BooleanPref("pref_scaleAdaptiveBg", false)
 
     // Search
     var searchProvider by StringPref("pref_globalSearchProvider", context.resources.getString(R.string.config_default_search_provider)) {
