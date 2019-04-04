@@ -157,11 +157,20 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
         const val TYPE_UNDEFINED = -1
     }
 
-    open class Group(private val type: Int) {
+    open class Group(private val type: Int, context: Context, titleRes: Int) {
 
-        open val title: String = "null"
+        private val defaultTitle: String = context.getString(titleRes)
 
         val customizations = CustomizationMap()
+        val title = CustomTitle(KEY_TITLE, defaultTitle)
+
+        init {
+            addCustomization(title)
+        }
+
+        fun getTitle(): String {
+            return title.value ?: defaultTitle
+        }
 
         fun addCustomization(customization: Customization<*, *>) {
             customizations.add(customization)
@@ -237,10 +246,11 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
                 view.findViewById<TextView>(R.id.name_label).setTextColor(accent)
 
                 val tabName = view.findViewById<TextView>(R.id.name)
-                tabName.text = value()
+                tabName.text = value
+                tabName.hint = default
                 tabName.addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(s: Editable?) {
-                        value = s?.toString()
+                        value = s?.toString()?.asNonEmpty()
                     }
 
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -253,6 +263,10 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
 
                 })
                 return view
+            }
+
+            override fun saveToJson(): String? {
+                return value?.asNonEmpty()
             }
 
             override fun clone(): Customization<String, String> {

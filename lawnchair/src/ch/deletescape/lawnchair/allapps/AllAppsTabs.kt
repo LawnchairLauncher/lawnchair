@@ -23,7 +23,6 @@ import android.os.Process
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.groups.DrawerTabs
 import com.android.launcher3.ItemInfo
-import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.ItemInfoMatcher
 
@@ -52,16 +51,16 @@ class AllAppsTabs(private val context: Context) : Iterable<AllAppsTabs.Tab> {
         context.lawnchairPrefs.drawerTabs.getGroups().mapNotNullTo(tabs) {
             when {
                 hasWorkApps && it is DrawerTabs.PersonalTab ->
-                    PersonalTab(context, createMatcher(addedApps, personalMatcher), drawerTab = it)
+                    PersonalTab(createMatcher(addedApps, personalMatcher), drawerTab = it)
                 hasWorkApps && it is DrawerTabs.WorkTab ->
-                    WorkTab(context, createMatcher(addedApps, workMatcher), drawerTab = it)
-                !hasWorkApps && it is DrawerTabs.PersonalTab ->
-                    AllAppsTab(context, createMatcher(addedApps), drawerTab = it)
+                    WorkTab(createMatcher(addedApps, workMatcher), drawerTab = it)
+                !hasWorkApps && it is DrawerTabs.AllAppsTab ->
+                    AllAppsTab(createMatcher(addedApps), drawerTab = it)
                 it is DrawerTabs.CustomTab -> {
                     if (it.hideFromAllApps.value()) {
                         addedApps.addAll(it.contents.value())
                     }
-                    Tab(it.title, createTabMatcher(it.contents.value()), drawerTab = it)
+                    Tab(it.getTitle(), createTabMatcher(it.contents.value()), drawerTab = it)
                 }
                 else -> null
             }
@@ -91,22 +90,17 @@ class AllAppsTabs(private val context: Context) : Iterable<AllAppsTabs.Tab> {
 
     operator fun get(index: Int) = tabs[index]
 
-    class AllAppsTab(context: Context, matcher: ItemInfoMatcher?, drawerTab: DrawerTabs.Tab)
-        : Tab(R.string.all_apps_label, context, matcher, drawerTab = drawerTab)
+    class AllAppsTab(matcher: ItemInfoMatcher?, drawerTab: DrawerTabs.Tab)
+        : Tab(drawerTab.getTitle(), matcher, drawerTab = drawerTab)
 
     private val personalMatcher = ItemInfoMatcher.ofUser(Process.myUserHandle())!!
     private val workMatcher = ItemInfoMatcher.not(personalMatcher)!!
 
-    inner class PersonalTab(context: Context, matcher: ItemInfoMatcher?, drawerTab: DrawerTabs.Tab)
-        : Tab(R.string.all_apps_personal_tab, context, matcher, drawerTab = drawerTab)
-    inner class WorkTab(context: Context, matcher: ItemInfoMatcher?, drawerTab: DrawerTabs.Tab)
-        : Tab(R.string.all_apps_work_tab, context, matcher, true, drawerTab)
+    inner class PersonalTab(matcher: ItemInfoMatcher?, drawerTab: DrawerTabs.Tab)
+        : Tab(drawerTab.getTitle(), matcher, drawerTab = drawerTab)
+    inner class WorkTab(matcher: ItemInfoMatcher?, drawerTab: DrawerTabs.Tab)
+        : Tab(drawerTab.getTitle(), matcher, true, drawerTab)
 
     open class Tab(val name: String, val matcher: ItemInfoMatcher?,
-                   val isWork: Boolean = false, val drawerTab: DrawerTabs.Tab) {
-
-        constructor(nameRes: Int, context: Context, matcher: ItemInfoMatcher?,
-                    isWork: Boolean = false, drawerTab: DrawerTabs.Tab) :
-                this(context.getString(nameRes), matcher, isWork, drawerTab)
-    }
+                   val isWork: Boolean = false, val drawerTab: DrawerTabs.Tab)
 }

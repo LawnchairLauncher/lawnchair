@@ -320,13 +320,9 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
             button.setColorResolver(tab.getDrawerTab().getColorResolver().value());
             button.setText(tab.getName());
             button.setOnLongClickListener(v -> {
-                DrawerTabs.Tab drawerTab = tab.getDrawerTab();
-                if (drawerTab instanceof CustomTab) {
-                    DrawerTabEditBottomSheet.Companion
-                            .edit(Launcher.getLauncher(getContext()), (CustomTab) drawerTab);
-                    return true;
-                }
-                return false;
+                DrawerTabEditBottomSheet.Companion
+                        .edit(Launcher.getLauncher(getContext()), tab.getDrawerTab());
+                return true;
             });
         }
         updateIndicatorPosition();

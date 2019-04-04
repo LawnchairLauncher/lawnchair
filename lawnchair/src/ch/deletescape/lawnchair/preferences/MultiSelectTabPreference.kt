@@ -74,7 +74,7 @@ class MultiSelectTabPreference(context: Context, attrs: AttributeSet?) : Recycle
     fun loadSummary() {
         val added = tabs
                 .filter { it.contents.value().contains(componentKey) }
-                .map { it.title }
+                .map { it.getTitle() }
         summary = if (!added.isEmpty()) {
             TextUtils.join(", ", added)
         } else {
@@ -116,7 +116,7 @@ class MultiSelectTabPreference(context: Context, attrs: AttributeSet?) : Recycle
             }
 
             fun bind(tab: DrawerTabs.CustomTab) {
-                textView.text = tab.title
+                textView.text = tab.getTitle()
                 checked = selections[tab] == true
             }
 

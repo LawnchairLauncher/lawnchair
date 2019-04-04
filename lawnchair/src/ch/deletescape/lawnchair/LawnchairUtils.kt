@@ -39,6 +39,7 @@ import android.support.v4.view.PagerAdapter
 import android.support.v7.app.AlertDialog
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceGroup
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.Property
 import android.util.TypedValue
@@ -646,3 +647,8 @@ fun JSONObject.getNullable(key: String): Any? {
 }
 
 fun JSONObject.asMap() = JSONMap(this)
+
+fun String.asNonEmpty(): String? {
+    if (TextUtils.isEmpty(this)) return null
+    return this
+}

@@ -20,6 +20,7 @@ package ch.deletescape.lawnchair.preferences
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
+import android.text.TextUtils
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
@@ -66,9 +67,9 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
     fun reloadTabs() {
         tabs.clear()
         if (hasWorkApps) {
-            tabs.addAll(drawerTabs.getGroups())
+            tabs.addAll(drawerTabs.getGroups().filter { it !is DrawerTabs.AllAppsTab })
         } else {
-            tabs.addAll(drawerTabs.getGroups().filter { it !is DrawerTabs.WorkTab })
+            tabs.addAll(drawerTabs.getGroups().filter { it !is DrawerTabs.PersonalTab && it !is DrawerTabs.WorkTab })
         }
         notifyDataSetChanged()
     }
@@ -109,24 +110,18 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
         }
 
         fun bind(info: DrawerTabs.Tab) {
-            itemView.isClickable = info is DrawerTabs.CustomTab
-            title.text = if (info is DrawerTabs.PersonalTab)
-                info.loadTitle(context, hasWorkApps) else info.title
-            summary.isVisible = info is DrawerTabs.CustomTab
-            edit.isVisible = info is DrawerTabs.CustomTab
+            title.text = info.getTitle()
             edit.tintDrawable(accent)
             delete.isVisible = info is DrawerTabs.CustomTab
             delete.tintDrawable(accent)
-            if (info is DrawerTabs.CustomTab) {
-                val size = info.contents.value().size
-                summary.text = context.resources.getQuantityString(R.plurals.tab_apps_count, size, size)
-            }
+            summary.text = info.getSummary(context)
+            summary.isVisible = !TextUtils.isEmpty(summary.text)
             deleted = false
         }
 
         private fun startEdit() {
             if (deleted) return
-            val tab = tabs[adapterPosition] as? DrawerTabs.CustomTab ?: return
+            val tab = tabs[adapterPosition]
             DrawerTabEditBottomSheet.edit(context, tab)
         }
 

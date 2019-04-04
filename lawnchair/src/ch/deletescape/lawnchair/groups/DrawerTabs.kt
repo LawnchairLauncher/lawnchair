@@ -19,12 +19,13 @@ package ch.deletescape.lawnchair.groups
 
 import android.content.Context
 import ch.deletescape.lawnchair.LawnchairPreferences
+import ch.deletescape.lawnchair.asNonEmpty
 import com.android.launcher3.R
 
 class DrawerTabs(prefs: LawnchairPreferences) : AppGroups<DrawerTabs.Tab>(prefs, "pref_drawerTabs") {
 
     override fun getDefaultGroups(): List<GroupCreator<Tab>> {
-        return listOf(::createPersonalTab, ::createWorkTab)
+        return listOf(::createAllAppsTab, ::createPersonalTab, ::createWorkTab)
     }
 
     override fun getGroupCreator(type: Int): GroupCreator<Tab> {
@@ -32,6 +33,7 @@ class DrawerTabs(prefs: LawnchairPreferences) : AppGroups<DrawerTabs.Tab>(prefs,
             TYPE_CUSTOM, TYPE_UNDEFINED -> ::createCustomTab
             TYPE_PERSONAL -> ::createPersonalTab
             TYPE_WORK -> ::createWorkTab
+            TYPE_ALL_APPS -> ::createAllAppsTab
             else -> ::createNull
         }
     }
@@ -40,58 +42,59 @@ class DrawerTabs(prefs: LawnchairPreferences) : AppGroups<DrawerTabs.Tab>(prefs,
 
     private fun createWorkTab(context: Context) = WorkTab(context)
 
+    private fun createAllAppsTab(context: Context) = AllAppsTab(context)
+
     @Suppress("UNUSED_PARAMETER")
     private fun createCustomTab(context: Context) = CustomTab(context)
 
-    open class Tab(context: Context, type: Int) : Group(type) {
+    abstract class Tab(context: Context, type: Int, titleRes: Int) : Group(type, context, titleRes) {
 
         val colorResolver = ColorRow(KEY_COLOR, AppGroupsUtils.getInstance(context).defaultColorResolver)
 
         init {
             addCustomization(colorResolver)
         }
+
+        open fun getSummary(context: Context): String? = null
     }
 
-    class CustomTab(context: Context) : Tab(context, TYPE_CUSTOM) {
+    class CustomTab(context: Context) : Tab(context, TYPE_CUSTOM, R.string.default_tab_name) {
 
-        private val customTitle = CustomTitle(KEY_TITLE, context.getString(R.string.default_tab_name))
         val hideFromAllApps = SwitchRow(R.drawable.tab_hide_from_main, R.string.tab_hide_from_main,
                 KEY_HIDE_FROM_ALL_APPS, true)
         val contents = AppsRow(KEY_ITEMS, mutableSetOf())
 
-        override var title: String
-            get() = customTitle.value()
-            set(value) {
-                customTitle.value = value
-            }
-
         init {
-            addCustomization(customTitle)
             addCustomization(hideFromAllApps)
             addCustomization(contents)
 
             customizations.setOrder(KEY_TITLE, KEY_HIDE_FROM_ALL_APPS, KEY_COLOR, KEY_ITEMS)
         }
-    }
 
-    class PersonalTab(context: Context) : Tab(context, TYPE_PERSONAL) {
-
-        override val title: String = context.getString(R.string.all_apps_personal_tab)
-
-        fun loadTitle(context: Context, hasWorkApps: Boolean): String {
-            return context.getString(if (hasWorkApps) R.string.all_apps_personal_tab else R.string.all_apps_label)
+        override fun getSummary(context: Context): String? {
+            val size = contents.value().size
+            return context.resources.getQuantityString(R.plurals.tab_apps_count, size, size)
         }
     }
 
-    class WorkTab(context: Context) : Tab(context, TYPE_WORK) {
+    open class PredefinedTab(context: Context, type: Int, titleRes: Int) : Tab(context, type, titleRes) {
 
-        override val title: String = context.getString(R.string.all_apps_work_tab)
+        init {
+            customizations.setOrder(KEY_TITLE, KEY_COLOR)
+        }
     }
+
+    class AllAppsTab(context: Context) : PredefinedTab(context, TYPE_ALL_APPS, R.string.all_apps_label)
+
+    class PersonalTab(context: Context) : PredefinedTab(context, TYPE_PERSONAL, R.string.all_apps_personal_tab)
+
+    class WorkTab(context: Context) : PredefinedTab(context, TYPE_WORK, R.string.all_apps_work_tab)
 
     companion object {
 
         const val TYPE_PERSONAL = 0
         const val TYPE_WORK = 1
         const val TYPE_CUSTOM = 2
+        const val TYPE_ALL_APPS = 3
     }
 }
