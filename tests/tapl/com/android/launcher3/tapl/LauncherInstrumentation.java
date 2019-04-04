@@ -16,6 +16,9 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
+import static com.android.launcher3.TestProtocol.NORMAL_STATE_ORDINAL;
+
 import android.app.ActivityManager;
 import android.app.Instrumentation;
 import android.app.UiAutomation;
@@ -344,18 +347,33 @@ public final class LauncherInstrumentation {
                 log(action = "0-button: already in workspace");
             } else if (hasLauncherObject(OVERVIEW_RES_ID)) {
                 log(action = "0-button: from overview");
-                mDevice.pressHome();
+                final UiObject2 navBar = waitForSystemUiObject("navigation_bar_frame");
+
+                swipe(
+                        navBar.getVisibleBounds().centerX(), navBar.getVisibleBounds().centerY(),
+                        navBar.getVisibleBounds().centerX(), 0,
+                        NORMAL_STATE_ORDINAL, ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
             } else if (hasLauncherObject(WIDGETS_RES_ID)) {
                 log(action = "0-button: from widgets");
                 mDevice.pressHome();
             } else if (hasLauncherObject(APPS_RES_ID)) {
                 log(action = "0-button: from all apps");
-                mDevice.pressHome();
+                final UiObject2 navBar = waitForSystemUiObject("navigation_bar_frame");
+
+                swipe(
+                        navBar.getVisibleBounds().centerX(), navBar.getVisibleBounds().centerY(),
+                        navBar.getVisibleBounds().centerX(), 0,
+                        NORMAL_STATE_ORDINAL, ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
             } else {
                 log(action = "0-button: from another app");
                 assertTrue("Launcher is visible, don't know how to go home",
                         !mDevice.hasObject(By.pkg(getLauncherPackageName())));
-                mDevice.pressHome();
+                final UiObject2 navBar = waitForSystemUiObject("navigation_bar_frame");
+
+                swipe(
+                        navBar.getVisibleBounds().centerX(), navBar.getVisibleBounds().centerY(),
+                        navBar.getVisibleBounds().centerX(), 0,
+                        BACKGROUND_APP_STATE_ORDINAL, ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
             }
         } else {
             log(action = "clicking home button");
