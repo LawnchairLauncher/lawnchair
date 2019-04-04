@@ -36,6 +36,7 @@ import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.By;
@@ -44,15 +45,18 @@ import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
+
 import com.android.launcher3.TestProtocol;
 import com.android.systemui.shared.system.QuickStepContract;
+
+import org.junit.Assert;
+
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
-import org.junit.Assert;
 
 /**
  * The main tapl object. The only object that can be explicitly constructed by the using code. It
@@ -149,6 +153,8 @@ public final class LauncherInstrumentation {
         } catch (IOException e) {
             fail(e.toString());
         }
+
+        assertTrue("Phone is locked", !hasSystemUiObject("keyguard_status_view"));
     }
 
     Context getContext() {
@@ -245,10 +251,10 @@ public final class LauncherInstrumentation {
         final NavigationModel navigationModel = getNavigationModel();
         assertTrue("Presence of recents button doesn't match the interaction mode",
                 (navigationModel == NavigationModel.THREE_BUTTON) ==
-                        mDevice.hasObject(By.res(SYSTEMUI_PACKAGE, "recent_apps")));
+                        hasSystemUiObject("recent_apps"));
         assertTrue("Presence of home button doesn't match the interaction mode",
                 (navigationModel != NavigationModel.ZERO_BUTTON) ==
-                        mDevice.hasObject(By.res(SYSTEMUI_PACKAGE, "home")));
+                        hasSystemUiObject("home"));
         log("verifyContainerType: " + containerType);
 
         try (Closable c = addContextLayer(
@@ -475,6 +481,10 @@ public final class LauncherInstrumentation {
         assertTrue("Unexpected launcher object visible: " + resId,
                 mDevice.wait(Until.gone(getLauncherObjectSelector(resId)),
                         WAIT_TIME_MS));
+    }
+
+    private boolean hasSystemUiObject(String resId) {
+        return mDevice.hasObject(By.res(SYSTEMUI_PACKAGE, resId));
     }
 
     @NonNull
