@@ -235,7 +235,7 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
         BlurWallpaperProvider.getInstance(this).updateAsync()
     }
 
-    override fun getSystemService(name: String): Any {
+    override fun getSystemService(name: String): Any? {
         if (name == Context.LAYOUT_INFLATER_SERVICE) {
             return customLayoutInflater
         }
