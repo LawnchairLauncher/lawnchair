@@ -296,8 +296,6 @@ public class NexusLauncher {
             if (mLauncher.hasBeenResumed()) {
                 ReflectionClient.getInstance(mLauncher).updatePredictionsNow(
                         FeatureFlags.REFLECTION_FORCE_OVERVIEW_MODE ? Client.OVERVIEW.id : Client.HOME.id);
-                mLauncher.getUserEventDispatcher().updatePredictions();
-                mLauncher.getUserEventDispatcher().updateActions();
             }
         }
 
