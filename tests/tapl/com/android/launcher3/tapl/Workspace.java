@@ -114,7 +114,7 @@ public final class Workspace extends Home {
         if (!isWorkspaceScrollable(workspace)) {
             dragIconToWorkspace(
                     mLauncher,
-                    getHotseatAppIcon("Play Store"),
+                    getHotseatAppIcon("Chrome"),
                     new Point(mLauncher.getDevice().getDisplayWidth(),
                             workspace.getVisibleBounds().centerY()),
                     (int) (ICON_DRAG_SPEED * mLauncher.getDisplayDensity()));
