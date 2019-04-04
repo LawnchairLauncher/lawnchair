@@ -60,7 +60,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     }
 
     private void startTestApps() throws Exception {
-        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_MARKET));
+        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_BROWSER));
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CONTACTS));
 
