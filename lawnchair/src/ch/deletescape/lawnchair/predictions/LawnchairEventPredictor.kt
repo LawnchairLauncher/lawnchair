@@ -162,6 +162,10 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
 
     override fun logAppLaunch(v: View?, intent: Intent?, user: UserHandle?) {
         super.logAppLaunch(v, intent, user)
+        logAppLaunchImpl(v, intent, user ?: Process.myUserHandle())
+    }
+
+    private fun logAppLaunchImpl(v: View?, intent: Intent?, user: UserHandle) {
         if (isPredictorEnabled && v !is ActionView && intent?.component != null && mAppFilter.shouldShowApp(intent.component, user)) {
             clearRemovedComponents()
 
