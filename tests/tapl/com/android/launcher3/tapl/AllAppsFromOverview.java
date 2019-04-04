@@ -23,6 +23,8 @@ import android.graphics.Point;
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
+import com.android.launcher3.TestProtocol;
+
 /**
  * Operations on AllApps opened from Overview.
  */
@@ -40,16 +42,24 @@ public final class AllAppsFromOverview extends AllApps {
      */
     @NonNull
     public Overview switchBackToOverview() {
-        final UiObject2 allAppsContainer = verifyActiveContainer();
-        // Swipe from the search box to the bottom.
-        final UiObject2 qsb = mLauncher.waitForObjectInContainer(
-                allAppsContainer, "search_container_all_apps");
-        final Point start = qsb.getVisibleCenter();
-        final int endY = (int) (mLauncher.getDevice().getDisplayHeight() * 0.6);
-        LauncherInstrumentation.log("AllAppsFromOverview.switchBackToOverview before swipe");
-        mLauncher.swipe(start.x, start.y, start.x, endY, OVERVIEW_STATE_ORDINAL);
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to switch back from all apps to overview")) {
+            final UiObject2 allAppsContainer = verifyActiveContainer();
+            // Swipe from the search box to the bottom.
+            final UiObject2 qsb = mLauncher.waitForObjectInContainer(
+                    allAppsContainer, "search_container_all_apps");
+            final Point start = qsb.getVisibleCenter();
+            final int swipeHeight = mLauncher.getTestInfo(
+                    TestProtocol.REQUEST_ALL_APPS_TO_OVERVIEW_SWIPE_HEIGHT).
+                    getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
 
-        return new Overview(mLauncher);
+            final int endY = start.y + swipeHeight + mLauncher.getTouchSlop();
+            LauncherInstrumentation.log("AllAppsFromOverview.switchBackToOverview before swipe");
+            mLauncher.swipe(start.x, start.y, start.x, endY, OVERVIEW_STATE_ORDINAL);
+
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("swiped down")) {
+                return new Overview(mLauncher);
+            }
+        }
     }
-
 }

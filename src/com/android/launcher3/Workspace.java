@@ -298,12 +298,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         if (grid.shouldFadeAdjacentWorkspaceScreens()) {
             // In landscape mode the page spacing is set to the default.
-            setPageSpacing(grid.defaultPageSpacingPx);
+            setPageSpacing(grid.edgeMarginPx);
         } else {
             // In portrait, we want the pages spaced such that there is no
             // overhang of the previous / next page into the current page viewport.
             // We assume symmetrical padding in portrait mode.
-            setPageSpacing(Math.max(grid.defaultPageSpacingPx, padding.left + 1));
+            setPageSpacing(Math.max(grid.edgeMarginPx, padding.left + 1));
         }
 
         int paddingLeftRight = grid.cellLayoutPaddingLeftRightPx;
@@ -487,7 +487,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      * @param qsb an existing qsb to recycle or null.
      */
     public void bindAndInitFirstWorkspaceScreen(View qsb) {
-        if (!FeatureFlags.QSB_ON_FIRST_SCREEN.get()) {
+        if (!FeatureFlags.QSB_ON_FIRST_SCREEN) {
             return;
         }
         // Add the first page
@@ -794,7 +794,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             int id = mWorkspaceScreens.keyAt(i);
             CellLayout cl = mWorkspaceScreens.valueAt(i);
             // FIRST_SCREEN_ID can never be removed.
-            if ((!FeatureFlags.QSB_ON_FIRST_SCREEN.get() || id > FIRST_SCREEN_ID)
+            if ((!FeatureFlags.QSB_ON_FIRST_SCREEN || id > FIRST_SCREEN_ID)
                     && cl.getShortcutsAndWidgets().getChildCount() == 0) {
                 removeScreens.add(id);
             }
@@ -1446,6 +1446,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     public DragView beginDragShared(View child, DragSource source, ItemInfo dragObject,
             DragPreviewProvider previewProvider, DragOptions dragOptions) {
+        if (com.android.launcher3.TestProtocol.sDebugTracing) {
+            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                    "beginDragShared");
+        }
         float iconScale = 1f;
         if (child instanceof BubbleTextView) {
             Drawable icon = ((BubbleTextView) child).getIcon();

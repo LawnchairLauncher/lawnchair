@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     private static final int FLING_SPEED = 1500;
-    private static final int FLINGS_FOR_DISMISS_LIMIT = 5;
+    private static final int FLINGS_FOR_DISMISS_LIMIT = 40;
 
     BaseOverview(LauncherInstrumentation launcher) {
         super(launcher);
@@ -44,38 +44,54 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      * Flings forward (left) and waits the fling's end.
      */
     public void flingForward() {
-        final UiObject2 overview = verifyActiveContainer();
-        LauncherInstrumentation.log("Overview.flingForward before fling");
-        overview.fling(Direction.LEFT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
-        mLauncher.waitForIdle();
-        verifyActiveContainer();
+        try (LauncherInstrumentation.Closable c =
+                     mLauncher.addContextLayer("want to fling forward in overview")) {
+            LauncherInstrumentation.log("Overview.flingForward before fling");
+            final UiObject2 overview = verifyActiveContainer();
+            final int margin = (int) (50 * mLauncher.getDisplayDensity()) + 1;
+            overview.setGestureMargins(margin, 0, 0, 0);
+            overview.fling(Direction.LEFT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
+            mLauncher.waitForIdle();
+            verifyActiveContainer();
+        }
     }
 
     /**
      * Dismissed all tasks by scrolling to Clear-all button and pressing it.
      */
     public Workspace dismissAllTasks() {
-        final BySelector clearAllSelector = mLauncher.getLauncherObjectSelector("clear_all");
-        for (int i = 0;
-                i < FLINGS_FOR_DISMISS_LIMIT
-                        && verifyActiveContainer().findObject(clearAllSelector) == null;
-                ++i) {
-            flingForward();
-        }
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "dismissing all tasks")) {
+            final BySelector clearAllSelector = mLauncher.getLauncherObjectSelector("clear_all");
+            for (int i = 0;
+                    i < FLINGS_FOR_DISMISS_LIMIT
+                            && !verifyActiveContainer().hasObject(clearAllSelector);
+                    ++i) {
+                flingForward();
+            }
 
-        mLauncher.getObjectInContainer(verifyActiveContainer(), clearAllSelector).click();
-        return new Workspace(mLauncher);
+            mLauncher.getObjectInContainer(verifyActiveContainer(), clearAllSelector).click();
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "dismissed all tasks")) {
+                return new Workspace(mLauncher);
+            }
+        }
     }
 
     /**
      * Flings backward (right) and waits the fling's end.
      */
     public void flingBackward() {
-        final UiObject2 overview = verifyActiveContainer();
-        LauncherInstrumentation.log("Overview.flingBackward before fling");
-        overview.fling(Direction.RIGHT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
-        mLauncher.waitForIdle();
-        verifyActiveContainer();
+        try (LauncherInstrumentation.Closable c =
+                     mLauncher.addContextLayer("want to fling backward in overview")) {
+            LauncherInstrumentation.log("Overview.flingBackward before fling");
+            final UiObject2 overview = verifyActiveContainer();
+            final int margin = (int) (50 * mLauncher.getDisplayDensity()) + 1;
+            overview.setGestureMargins(0, 0, margin, 0);
+            overview.fling(Direction.RIGHT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
+            mLauncher.waitForIdle();
+            verifyActiveContainer();
+        }
     }
 
     /**
@@ -85,18 +101,21 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      */
     @NonNull
     public OverviewTask getCurrentTask() {
-        verifyActiveContainer();
-        final List<UiObject2> taskViews = mLauncher.getDevice().findObjects(
-                mLauncher.getLauncherObjectSelector("snapshot"));
-        LauncherInstrumentation.assertNotEquals("Unable to find a task", 0, taskViews.size());
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to get current task")) {
+            verifyActiveContainer();
+            final List<UiObject2> taskViews = mLauncher.getDevice().findObjects(
+                    mLauncher.getLauncherObjectSelector("snapshot"));
+            mLauncher.assertNotEquals("Unable to find a task", 0, taskViews.size());
 
-        // taskViews contains up to 3 task views: the 'main' (having the widest visible
-        // part) one in the center, and parts of its right and left siblings. Find the
-        // main task view by its width.
-        final UiObject2 widestTask = Collections.max(taskViews,
-                (t1, t2) -> Integer.compare(t1.getVisibleBounds().width(),
-                        t2.getVisibleBounds().width()));
+            // taskViews contains up to 3 task views: the 'main' (having the widest visible
+            // part) one in the center, and parts of its right and left siblings. Find the
+            // main task view by its width.
+            final UiObject2 widestTask = Collections.max(taskViews,
+                    (t1, t2) -> Integer.compare(t1.getVisibleBounds().width(),
+                            t2.getVisibleBounds().width()));
 
-        return new OverviewTask(mLauncher, widestTask, this);
+            return new OverviewTask(mLauncher, widestTask, this);
+        }
     }
 }

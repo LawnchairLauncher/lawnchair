@@ -16,14 +16,14 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.quickstep.views.IconRecentsView.CONTENT_ALPHA;
-import static com.android.quickstep.views.IconRecentsView.TRANSLATION_Y_FACTOR;
 
 import android.util.FloatProperty;
 
-import androidx.annotation.NonNull;
-
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherRecentsToActivityHelper;
 import com.android.quickstep.views.IconRecentsView;
+
+import androidx.annotation.NonNull;
 
 /**
  * State handler for Go's {@link IconRecentsView}.
@@ -33,11 +33,8 @@ public final class RecentsViewStateController extends
 
     public RecentsViewStateController(@NonNull Launcher launcher) {
         super(launcher);
-    }
-
-    @Override
-    FloatProperty<IconRecentsView> getTranslationYFactorProperty() {
-        return TRANSLATION_Y_FACTOR;
+        launcher.<IconRecentsView>getOverviewPanel().setRecentsToActivityHelper(
+                new LauncherRecentsToActivityHelper(launcher));
     }
 
     @Override

@@ -20,12 +20,18 @@ import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
 import static com.android.launcher3.Utilities.getDevicePrefs;
 
 import android.annotation.TargetApi;
+import android.appwidget.AppWidgetHostView;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -111,9 +117,11 @@ public class InvariantDeviceProfile {
     public DeviceProfile portraitProfile;
 
     public Point defaultWallpaperSize;
+    public Rect defaultWidgetPadding;
 
     private final ArrayList<OnIDPChangeListener> mChangeListeners = new ArrayList<>();
     private ConfigMonitor mConfigMonitor;
+    private OverlayMonitor mOverlayMonitor;
 
     @VisibleForTesting
     public InvariantDeviceProfile() {}
@@ -131,6 +139,7 @@ public class InvariantDeviceProfile {
         defaultLayoutId = p.defaultLayoutId;
         demoModeLayoutId = p.demoModeLayoutId;
         mExtraAttrs = p.mExtraAttrs;
+        mOverlayMonitor = p.mOverlayMonitor;
     }
 
     @TargetApi(23)
@@ -138,8 +147,12 @@ public class InvariantDeviceProfile {
         initGrid(context, Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null));
         mConfigMonitor = new ConfigMonitor(context,
                 APPLY_CONFIG_AT_RUNTIME.get() ? this::onConfigChanged : this::killProcess);
+        mOverlayMonitor = new OverlayMonitor(context);
     }
 
+    /**
+     * This constructor should NOT have any monitors by design.
+     */
     public InvariantDeviceProfile(Context context, String gridName) {
         String newName = initGrid(context, gridName);
         if (newName == null || !newName.equals(gridName)) {
@@ -226,6 +239,10 @@ public class InvariantDeviceProfile {
         } else {
             defaultWallpaperSize = new Point(Math.max(smallSide * 2, largeSide), largeSide);
         }
+
+        ComponentName cn = new ComponentName(context.getPackageName(), getClass().getName());
+        defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
+
         return closestProfile.name;
     }
 
@@ -553,6 +570,22 @@ public class InvariantDeviceProfile {
             landscapeIconSize += p.landscapeIconSize;
             iconTextSize += p.iconTextSize;
             return this;
+        }
+    }
+
+    private class OverlayMonitor extends BroadcastReceiver {
+
+        private final String ACTION_OVERLAY_CHANGED = "android.intent.action.OVERLAY_CHANGED";
+
+        OverlayMonitor(Context context) {
+            IntentFilter filter = new IntentFilter(ACTION_OVERLAY_CHANGED);
+            filter.addDataScheme("package");
+            context.registerReceiver(this, filter);
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            onConfigChanged(context);
         }
     }
 }

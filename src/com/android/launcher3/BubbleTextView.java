@@ -276,14 +276,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     @Override
-    public void setTag(Object tag) {
-        if (tag != null) {
-            LauncherModel.checkItemInfo((ItemInfo) tag);
-        }
-        super.setTag(tag);
-    }
-
-    @Override
     public void refreshDrawableState() {
         if (!mIgnorePressedStateChange) {
             super.refreshDrawableState();
@@ -488,7 +480,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
      */
     public ObjectAnimator createTextAlphaAnimator(boolean fadeIn) {
         float toAlpha = shouldTextBeVisible() && fadeIn ? 1 : 0;
-        return ObjectAnimator.ofFloat(this, TEXT_ALPHA_PROPERTY, toAlpha);
+        float fromAlpha = toAlpha == 1 ? 0 : 1f;
+        return ObjectAnimator.ofFloat(this, TEXT_ALPHA_PROPERTY, fromAlpha, toAlpha);
     }
 
     @Override

@@ -18,22 +18,23 @@ package com.android.launcher3;
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
-
 import static com.android.launcher3.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.NORMAL_STATE_ORDINAL;
+import static com.android.launcher3.TestProtocol.OVERVIEW_PEEK_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.OVERVIEW_STATE_ORDINAL;
+import static com.android.launcher3.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.states.SpringLoadedState;
-import com.android.launcher3.uioverrides.AllAppsState;
-import com.android.launcher3.uioverrides.BackgroundAppState;
-import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.uioverrides.UiFactory;
+import com.android.launcher3.uioverrides.states.AllAppsState;
+import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
@@ -77,7 +78,7 @@ public class LauncherState {
                 }
             };
 
-    private static final LauncherState[] sAllStates = new LauncherState[6];
+    private static final LauncherState[] sAllStates = new LauncherState[7];
 
     /**
      * TODO: Create a separate class for NORMAL state.
@@ -92,10 +93,15 @@ public class LauncherState {
      */
     public static final LauncherState SPRING_LOADED = new SpringLoadedState(
             SPRING_LOADED_STATE_ORDINAL);
-    public static final LauncherState OVERVIEW = new OverviewState(OVERVIEW_STATE_ORDINAL);
     public static final LauncherState ALL_APPS = new AllAppsState(ALL_APPS_STATE_ORDINAL);
-    public static final LauncherState BACKGROUND_APP = new BackgroundAppState(
-            BACKGROUND_APP_STATE_ORDINAL);
+
+    public static final LauncherState OVERVIEW = new OverviewState(OVERVIEW_STATE_ORDINAL);
+    public static final LauncherState OVERVIEW_PEEK =
+            OverviewState.newPeekState(OVERVIEW_PEEK_STATE_ORDINAL);
+    public static final LauncherState QUICK_SWITCH =
+            OverviewState.newSwitchState(QUICK_SWITCH_STATE_ORDINAL);
+    public static final LauncherState BACKGROUND_APP =
+            OverviewState.newBackgroundState(BACKGROUND_APP_STATE_ORDINAL);
 
     public final int ordinal;
 
@@ -183,23 +189,22 @@ public class LauncherState {
         return Arrays.copyOf(sAllStates, sAllStates.length);
     }
 
-    public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
-        return new float[] {1, 0, 0};
+    public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
+        return new ScaleAndTranslation(1, 0, 0);
     }
 
-    public float[] getHotseatScaleAndTranslation(Launcher launcher) {
+    public ScaleAndTranslation getHotseatScaleAndTranslation(Launcher launcher) {
         // For most states, treat the hotseat as if it were part of the workspace.
         return getWorkspaceScaleAndTranslation(launcher);
     }
 
-    /**
-     * Returns 2 floats designating how to transition overview:
-     *   scale for the current and adjacent pages
-     *   translationY factor where 0 is top aligned and 0.5 is centered vertically
-     */
-    public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
-        // TODO: Simplify to use a constant value instead of a factor.
-        return new float[] {1.1f, 0f};
+    public ScaleAndTranslation getOverviewScaleAndTranslation(Launcher launcher) {
+        if (FeatureFlags.SWIPE_HOME.get()) {
+            float offscreenTranslationX = launcher.getDragLayer().getWidth()
+                    - launcher.getOverviewPanel().getPaddingStart();
+            return new ScaleAndTranslation(1f, offscreenTranslationX, 0f);
+        }
+        return new ScaleAndTranslation(1.1f, 0f, 0f);
     }
 
     public void onStateEnabled(Launcher launcher) {
@@ -286,5 +291,17 @@ public class LauncherState {
         }
 
         public abstract float getPageAlpha(int pageIndex);
+    }
+
+    public static class ScaleAndTranslation {
+        public float scale;
+        public float translationX;
+        public float translationY;
+
+        public ScaleAndTranslation(float scale, float translationX, float translationY) {
+            this.scale = scale;
+            this.translationX = translationX;
+            this.translationY = translationY;
+        }
     }
 }

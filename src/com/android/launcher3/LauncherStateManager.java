@@ -17,15 +17,21 @@
 package com.android.launcher3;
 
 import static android.view.View.VISIBLE;
+
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_SCALE;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
+import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
+import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 
@@ -34,6 +40,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.os.Handler;
 import android.os.Looper;
+
+import androidx.annotation.IntDef;
 
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -45,8 +53,6 @@ import com.android.launcher3.uioverrides.UiFactory;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
-
-import androidx.annotation.IntDef;
 
 /**
  * TODO: figure out what kind of tests we can write for this
@@ -96,17 +102,21 @@ public class LauncherStateManager {
     // We separate the state animations into "atomic" and "non-atomic" components. The atomic
     // components may be run atomically - that is, all at once, instead of user-controlled. However,
     // atomic components are not restricted to this purpose; they can be user-controlled alongside
-    // non atomic components as well.
+    // non atomic components as well. Note that each gesture model has exactly one atomic component,
+    // ATOMIC_OVERVIEW_SCALE_COMPONENT *or* ATOMIC_OVERVIEW_PEEK_COMPONENT.
     @IntDef(flag = true, value = {
             NON_ATOMIC_COMPONENT,
-            ATOMIC_COMPONENT
+            ATOMIC_OVERVIEW_SCALE_COMPONENT,
+            ATOMIC_OVERVIEW_PEEK_COMPONENT,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface AnimationComponents {}
     public static final int NON_ATOMIC_COMPONENT = 1 << 0;
-    public static final int ATOMIC_COMPONENT = 1 << 1;
+    public static final int ATOMIC_OVERVIEW_SCALE_COMPONENT = 1 << 1;
+    public static final int ATOMIC_OVERVIEW_PEEK_COMPONENT = 1 << 2;
 
-    public static final int ANIM_ALL = NON_ATOMIC_COMPONENT | ATOMIC_COMPONENT;
+    public static final int ANIM_ALL = NON_ATOMIC_COMPONENT | ATOMIC_OVERVIEW_SCALE_COMPONENT
+            | ATOMIC_OVERVIEW_PEEK_COMPONENT;
 
     private final AnimationConfig mConfig = new AnimationConfig();
     private final Handler mUiHandler;
@@ -282,18 +292,20 @@ public class LauncherStateManager {
      */
     public void prepareForAtomicAnimation(LauncherState fromState, LauncherState toState,
             AnimatorSetBuilder builder) {
-        if (fromState == NORMAL && toState.overviewUi) {
+        if (fromState == NORMAL && toState == OVERVIEW) {
             builder.setInterpolator(ANIM_WORKSPACE_SCALE, OVERSHOOT_1_2);
             builder.setInterpolator(ANIM_WORKSPACE_FADE, OVERSHOOT_1_2);
             builder.setInterpolator(ANIM_OVERVIEW_SCALE, OVERSHOOT_1_2);
+            builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, OVERSHOOT_1_7);
             builder.setInterpolator(ANIM_OVERVIEW_FADE, OVERSHOOT_1_2);
 
             // Start from a higher overview scale, but only if we're invisible so we don't jump.
             UiFactory.prepareToShowOverview(mLauncher);
-        } else if (fromState.overviewUi && toState == NORMAL) {
+        } else if (fromState == OVERVIEW && toState == NORMAL) {
             builder.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL);
             builder.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);
             builder.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCEL, 0, 0.9f));
+            builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL);
             builder.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
             Workspace workspace = mLauncher.getWorkspace();
 
@@ -311,7 +323,24 @@ public class LauncherStateManager {
                 workspace.getHotseat().setScaleX(0.92f);
                 workspace.getHotseat().setScaleY(0.92f);
             }
+        } else if (fromState == NORMAL && toState == OVERVIEW_PEEK) {
+            builder.setInterpolator(ANIM_OVERVIEW_FADE, INSTANT);
+        } else if (fromState == OVERVIEW_PEEK && toState == NORMAL) {
+            // Keep fully visible until the very end (when overview is offscreen) to make invisible.
+            builder.setInterpolator(ANIM_OVERVIEW_FADE, t -> t < 1 ? 0 : 1);
         }
+    }
+
+    public AnimatorSet createAtomicAnimation(LauncherState fromState, LauncherState toState,
+            AnimatorSetBuilder builder, @AnimationComponents int atomicComponent, long duration) {
+        prepareForAtomicAnimation(fromState, toState, builder);
+        AnimationConfig config = new AnimationConfig();
+        config.animComponents = atomicComponent;
+        config.duration = duration;
+        for (StateHandler handler : mLauncher.getStateManager().getStateHandlers()) {
+            handler.setStateWithAnimation(toState, builder, config);
+        }
+        return builder.build();
     }
 
     /**
@@ -373,7 +402,6 @@ public class LauncherStateManager {
             AnimatorSetBuilder builder, final Runnable onCompleteRunnable) {
 
         for (StateHandler handler : getStateHandlers()) {
-            builder.startTag(handler);
             handler.setStateWithAnimation(state, builder, mConfig);
         }
 
@@ -594,8 +622,12 @@ public class LauncherStateManager {
             mCurrentAnimation.addListener(this);
         }
 
-        public boolean playAtomicComponent() {
-            return (animComponents & ATOMIC_COMPONENT) != 0;
+        public boolean playAtomicOverviewScaleComponent() {
+            return (animComponents & ATOMIC_OVERVIEW_SCALE_COMPONENT) != 0;
+        }
+
+        public boolean playAtomicOverviewPeekComponent() {
+            return (animComponents & ATOMIC_OVERVIEW_PEEK_COMPONENT) != 0;
         }
 
         public boolean playNonAtomicComponent() {

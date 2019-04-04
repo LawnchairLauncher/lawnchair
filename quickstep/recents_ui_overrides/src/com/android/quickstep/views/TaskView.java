@@ -155,7 +155,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private float mZoomScale;
     private float mFullscreenProgress;
 
-    private Animator mIconAndDimAnimator;
+    private ObjectAnimator mIconAndDimAnimator;
+    private float mIconScaleAnimStartProgress = 0;
     private float mFocusTransitionProgress = 1;
 
     private boolean mShowScreenshot;
@@ -248,7 +249,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     public void launchTask(boolean animate) {
-        launchTask(animate, (result) -> {
+        launchTask(animate, false /* freezeTaskList */);
+    }
+
+    public void launchTask(boolean animate, boolean freezeTaskList) {
+        launchTask(animate, freezeTaskList, (result) -> {
             if (!result) {
                 notifyTaskLaunchFailed(TAG);
             }
@@ -257,26 +262,33 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     public void launchTask(boolean animate, Consumer<Boolean> resultCallback,
             Handler resultCallbackHandler) {
+        launchTask(animate, false /* freezeTaskList */, resultCallback, resultCallbackHandler);
+    }
+
+    public void launchTask(boolean animate, boolean freezeTaskList, Consumer<Boolean> resultCallback,
+            Handler resultCallbackHandler) {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             if (isRunningTask()) {
-                getRecentsView().finishRecentsAnimation(false,
+                getRecentsView().finishRecentsAnimation(false /* toRecents */,
                         () -> resultCallbackHandler.post(() -> resultCallback.accept(true)));
             } else {
-                getRecentsView().takeScreenshotAndFinishRecentsAnimation(true,
-                        () -> launchTaskInternal(animate, resultCallback, resultCallbackHandler));
+                launchTaskInternal(animate, freezeTaskList, resultCallback, resultCallbackHandler);
             }
         } else {
-            launchTaskInternal(animate, resultCallback, resultCallbackHandler);
+            launchTaskInternal(animate, freezeTaskList, resultCallback, resultCallbackHandler);
         }
     }
 
-    private void launchTaskInternal(boolean animate, Consumer<Boolean> resultCallback,
-            Handler resultCallbackHandler) {
+    private void launchTaskInternal(boolean animate, boolean freezeTaskList,
+            Consumer<Boolean> resultCallback, Handler resultCallbackHandler) {
         if (mTask != null) {
             final ActivityOptions opts;
             if (animate) {
                 opts = ((BaseDraggingActivity) fromContext(getContext()))
                         .getActivityLaunchOptions(this);
+                if (freezeTaskList) {
+                    ActivityOptionsCompat.setFreezeRecentTasksList(opts);
+                }
                 ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(mTask.key,
                         opts, resultCallback, resultCallbackHandler);
             } else {
@@ -287,6 +299,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                         resultCallbackHandler.post(() -> resultCallback.accept(true));
                     }
                 }, resultCallbackHandler);
+                if (freezeTaskList) {
+                    ActivityOptionsCompat.setFreezeRecentTasksList(opts);
+                }
                 ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(mTask.key,
                         opts, (success) -> {
                             if (resultCallback != null && !success) {
@@ -316,11 +331,16 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mIconLoadRequest = iconCache.updateIconInBackground(mTask,
                     (task) -> {
                         setIcon(task.icon);
+                        if (isRunningTask()) {
+                            getRecentsView().updateLiveTileIcon(task.icon);
+                        }
                         mDigitalWellBeingToast.initialize(
                                 mTask,
-                                (saturation, contentDescription) -> {
+                                contentDescription -> {
                                     setContentDescription(contentDescription);
-                                    mSnapshotView.setSaturation(saturation);
+                                    if (mDigitalWellBeingToast.getVisibility() == VISIBLE) {
+                                        getRecentsView().onDigitalWellbeingToastShown();
+                                    }
                                 });
                     });
         } else {
@@ -379,11 +399,16 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mIconView.setScaleY(scale);
     }
 
+    public void setIconScaleAnimStartProgress(float startProgress) {
+        mIconScaleAnimStartProgress = startProgress;
+    }
+
     public void animateIconScaleAndDimIntoView() {
         if (mIconAndDimAnimator != null) {
             mIconAndDimAnimator.cancel();
         }
         mIconAndDimAnimator = ObjectAnimator.ofFloat(this, FOCUS_TRANSITION, 1);
+        mIconAndDimAnimator.setCurrentFraction(mIconScaleAnimStartProgress);
         mIconAndDimAnimator.setDuration(DIM_ANIM_DURATION).setInterpolator(LINEAR);
         mIconAndDimAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -406,6 +431,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     private void resetViewTransforms() {
+        setCurveScale(1);
         setZoomScale(1);
         setTranslationX(0f);
         setTranslationY(0f);

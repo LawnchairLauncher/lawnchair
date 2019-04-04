@@ -16,12 +16,12 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -60,7 +60,8 @@ public final class FallbackActivityControllerHelper implements
     @Override
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
         LayoutUtils.calculateFallbackTaskSize(context, dp, outRect);
-        if (dp.isVerticalBarLayout()) {
+        if (dp.isVerticalBarLayout()
+                && SysUINavigationMode.INSTANCE.get(context).getMode() != NO_BUTTON) {
             Rect targetInsets = dp.getInsets();
             int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
             return dp.hotseatBarSizePx + hotseatInset;
@@ -71,6 +72,11 @@ public final class FallbackActivityControllerHelper implements
 
     @Override
     public void onSwipeUpComplete(RecentsActivity activity) {
+        // TODO:
+    }
+
+    @Override
+    public void onAssistantVisibilityChanged(float visibility) {
         // TODO:
     }
 
@@ -90,7 +96,7 @@ public final class FallbackActivityControllerHelper implements
 
             @NonNull
             @Override
-            public Animator createActivityAnimationToHome() {
+            public AnimatorPlaybackController createActivityAnimationToHome() {
                 Animator anim = ObjectAnimator.ofFloat(recentsView, CONTENT_ALPHA, 0);
                 anim.addListener(new AnimationSuccessListener() {
                     @Override
@@ -98,7 +104,10 @@ public final class FallbackActivityControllerHelper implements
                         recentsView.startHome();
                     }
                 });
-                return anim;
+                AnimatorSet animatorSet = new AnimatorSet();
+                animatorSet.play(anim);
+                long accuracy = 2 * Math.max(recentsView.getWidth(), recentsView.getHeight());
+                return AnimatorPlaybackController.wrap(animatorSet, accuracy);
             }
         };
     }
@@ -182,13 +191,12 @@ public final class FallbackActivityControllerHelper implements
     }
 
     @Override
-    public AlphaProperty getAlphaProperty(RecentsActivity activity) {
-        return activity.getDragLayer().getAlphaProperty(0);
-    }
-
-    @Override
     public int getContainerType() {
-        return LauncherLogProto.ContainerType.SIDELOADED_LAUNCHER;
+        RecentsActivity activity = getCreatedActivity();
+        boolean visible = activity != null && activity.isStarted() && activity.hasWindowFocus();
+        return visible
+                ? LauncherLogProto.ContainerType.SIDELOADED_LAUNCHER
+                : LauncherLogProto.ContainerType.APP;
     }
 
     @Override

@@ -48,8 +48,14 @@ public abstract class Home extends Background {
     @NonNull
     @Override
     public Overview switchToOverview() {
-        verifyActiveContainer();
-        goToOverviewUnchecked(OVERVIEW_STATE_ORDINAL);
-        return new Overview(mLauncher);
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to switch from home to overview")) {
+            verifyActiveContainer();
+            goToOverviewUnchecked(OVERVIEW_STATE_ORDINAL);
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "performed the switch action")) {
+                return new Overview(mLauncher);
+            }
+        }
     }
 }

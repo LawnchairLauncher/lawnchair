@@ -32,9 +32,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.FloatProperty;
 import android.view.View;
-import android.view.ViewDebug;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -44,7 +42,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.views.ScrimView;
-import com.android.quickstep.OverviewInteractionState;
+import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.hints.ChipsContainer;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.ClipAnimationHelper.TransformParams;
@@ -55,27 +53,6 @@ import com.android.quickstep.util.LayoutUtils;
  */
 @TargetApi(Build.VERSION_CODES.O)
 public class LauncherRecentsView extends RecentsView<Launcher> {
-
-    public static final FloatProperty<LauncherRecentsView> TRANSLATION_Y_FACTOR =
-            new FloatProperty<LauncherRecentsView>("translationYFactor") {
-
-                @Override
-                public void setValue(LauncherRecentsView view, float v) {
-                    view.setTranslationYFactor(v);
-                }
-
-                @Override
-                public Float get(LauncherRecentsView view) {
-                    return view.mTranslationYFactor;
-                }
-            };
-
-    /**
-     * A ratio representing the view's relative placement within its padded space. For example, 0
-     * is top aligned and 0.5 is centered vertically.
-     */
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private float mTranslationYFactor;
 
     private final TransformParams mTransformParams = new TransformParams();
     private ChipsContainer mChipsContainer;
@@ -95,18 +72,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
 
     @Override
     public void startHome() {
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            takeScreenshotAndFinishRecentsAnimation(true,
-                    () -> mActivity.getStateManager().goToState(NORMAL));
-        } else {
-            mActivity.getStateManager().goToState(NORMAL);
-        }
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        setTranslationYFactor(mTranslationYFactor);
+        mActivity.getStateManager().goToState(NORMAL);
     }
 
     @Override
@@ -117,19 +83,15 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
         params.bottomMargin = mActivity.getDeviceProfile().chipHintBottomMarginPx;
     }
 
-    public void setTranslationYFactor(float translationFactor) {
-        mTranslationYFactor = translationFactor;
-        setTranslationY(computeTranslationYForFactor(mTranslationYFactor));
+    @Override
+    public void setTranslationY(float translationY) {
+        super.setTranslationY(translationY);
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             LauncherState state = mActivity.getStateManager().getState();
             if (state == OVERVIEW || state == ALL_APPS) {
                 redrawLiveTile(false);
             }
         }
-    }
-
-    public float computeTranslationYForFactor(float translationYFactor) {
-        return translationYFactor * (getPaddingBottom() - getPaddingTop());
     }
 
     public void setHintVisibility(float v) {
@@ -168,7 +130,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
             ClipAnimationHelper helper) {
         AnimatorSet anim = super.createAdjacentPageAnimForTaskLaunch(tv, helper);
 
-        if (!OverviewInteractionState.INSTANCE.get(mActivity).isSwipeUpGestureEnabled()) {
+        if (!SysUINavigationMode.INSTANCE.get(mActivity).getMode().hasGestures) {
             // Hotseat doesn't move when opening recents with the button,
             // so don't animate it here either.
             return anim;

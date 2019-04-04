@@ -27,5 +27,5 @@ import org.junit.rules.TestRule;
 public abstract class AbstractQuickStepTest extends AbstractLauncherUiTest {
     @Rule
     public TestRule mQuickstepOnOffExecutor =
-            new QuickStepOnOffRule(mMainThreadExecutor, mLauncher);
+            new NavigationModeSwitchRule(mLauncher);
 }

@@ -17,7 +17,6 @@ package com.android.quickstep.util;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.SystemClock;
 import android.view.MotionEvent;
 
 import com.android.launcher3.Alarm;
@@ -71,9 +70,6 @@ public class MotionPauseDetector {
      */
     public void setOnMotionPauseListener(OnMotionPauseListener listener) {
         mOnMotionPauseListener = listener;
-        if (mOnMotionPauseListener != null) {
-            mOnMotionPauseListener.onMotionPauseChanged(mIsPaused);
-        }
     }
 
     /**
@@ -83,7 +79,7 @@ public class MotionPauseDetector {
      *
      * TODO: Use historical positions as well, e.g. {@link MotionEvent#getHistoricalY(int, int)}.
      */
-    public void addPosition(float position, float orthogonalPosition) {
+    public void addPosition(float position, float orthogonalPosition, long time) {
         if (mFirstPosition == null) {
             mFirstPosition = position;
         }
@@ -91,7 +87,6 @@ public class MotionPauseDetector {
             mFirstOrthogonalPosition = orthogonalPosition;
         }
         mForcePauseTimeout.setAlarm(FORCE_PAUSE_TIMEOUT);
-        long time = SystemClock.uptimeMillis();
         if (mPreviousTime != null && mPreviousPosition != null) {
             long changeInTime = Math.max(1, time - mPreviousTime);
             float changeInPosition = position - mPreviousPosition;

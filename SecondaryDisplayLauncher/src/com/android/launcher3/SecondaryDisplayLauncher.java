@@ -26,12 +26,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import com.google.android.material.circularreveal.cardview.CircularRevealCardView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
@@ -40,6 +39,9 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory;
+
+import com.google.android.material.circularreveal.cardview.CircularRevealCardView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -141,6 +143,16 @@ public class SecondaryDisplayLauncher extends FragmentActivity implements AppPic
 
     public void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+
+        if (Intent.ACTION_MAIN.equals(intent.getAction())) {
+            // Hide keyboard.
+            final View v = getWindow().peekDecorView();
+            if (v != null && v.getWindowToken() != null) {
+                getSystemService(InputMethodManager.class).hideSoftInputFromWindow(
+                        v.getWindowToken(), 0);
+            }
+        }
+
         // A new intent will bring the launcher to top. Hide the app drawer to reset the state.
         showAppDrawer(false);
     }

@@ -97,6 +97,7 @@ import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.logging.UserEventDispatcher.UserEventDelegate;
+import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.popup.PopupContainerWithArrow;
@@ -256,6 +257,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public ViewGroupFocusHelper mFocusHandler;
 
     private RotationHelper mRotationHelper;
+    private Runnable mCancelTouchController;
 
     final Handler mHandler = new Handler();
     private final Runnable mHandleDeferredResume = this::handleDeferredResume;
@@ -378,14 +380,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
 
         if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0) {
-            mUserEventDispatcher = null;
-            initDeviceProfile(mDeviceProfile.inv);
-            dispatchDeviceProfileChanged();
-            reapplyUi();
-            mDragLayer.recreateControllers();
-
-            // TODO: We can probably avoid rebind when only screen size changed.
-            rebindModel();
+            onIdpChanged(mDeviceProfile.inv);
         }
 
         mOldConfig.setTo(newConfig);
@@ -410,8 +405,26 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public void onIdpChanged(int changeFlags, InvariantDeviceProfile idp) {
+        onIdpChanged(idp);
+    }
+
+    public void setQuickSearchBarAlpha(float alpha) {
+        View qsbAllApps = findViewById(R.id.search_container_all_apps);
+        if (qsbAllApps != null) {
+            qsbAllApps.setAlpha(alpha);
+        }
+    }
+
+    private void onIdpChanged(InvariantDeviceProfile idp) {
+        mUserEventDispatcher = null;
+
         initDeviceProfile(idp);
-        getRootView().dispatchInsets();
+        dispatchDeviceProfileChanged();
+        reapplyUi();
+        mDragLayer.recreateControllers();
+
+        // TODO: We can probably avoid rebind when only screen size changed.
+        rebindModel();
     }
 
     private void initDeviceProfile(InvariantDeviceProfile idp) {
@@ -488,11 +501,15 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public void invalidateParent(ItemInfo info) {
-        FolderIconPreviewVerifier verifier = new FolderIconPreviewVerifier(getDeviceProfile().inv);
-        if (verifier.isItemInPreview(info.rank) && (info.container >= 0)) {
+        if (info.container >= 0) {
             View folderIcon = getWorkspace().getHomescreenIconByItemId(info.container);
-            if (folderIcon != null) {
-                folderIcon.invalidate();
+            if (folderIcon instanceof FolderIcon && folderIcon.getTag() instanceof FolderInfo) {
+                FolderIconPreviewVerifier verifier =
+                        new FolderIconPreviewVerifier(getDeviceProfile().inv);
+                verifier.setFolderInfo((FolderInfo) folderIcon.getTag());
+                if (verifier.isItemInPreview(info.rank)) {
+                    folderIcon.invalidate();
+                }
             }
         }
     }
@@ -686,7 +703,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startActivitySafely(v, intent, null);
+                startActivitySafely(v, intent, null, null);
             } else {
                 // TODO: Show a snack bar with link to settings
                 Toast.makeText(this, getString(R.string.msg_no_phone_permission,
@@ -790,6 +807,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             getUserEventDispatcher().startSession();
 
             UiFactory.onLauncherStateOrResumeChanged(this);
+            AppLaunchTracker.INSTANCE.get(this).onReturnedToHome();
         }
     }
 
@@ -936,7 +954,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         // Setup the drag layer
         mDragLayer.setup(mDragController, mWorkspace);
-        UiFactory.setOnTouchControllersChangedListener(this, mDragLayer::recreateControllers);
+        mCancelTouchController = UiFactory.enableLiveTouchControllerChanges(mDragLayer);
 
         mWorkspace.setup(mDragController);
         // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
@@ -1308,7 +1326,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         unregisterReceiver(mScreenOffReceiver);
         mWorkspace.removeFolderListeners();
 
-        UiFactory.setOnTouchControllersChangedListener(this, null);
+        if (mCancelTouchController != null) {
+            mCancelTouchController.run();
+            mCancelTouchController = null;
+        }
 
         // Stop callbacks from LauncherModel
         // It's possible to receive onDestroy after a new Launcher activity has
@@ -1644,8 +1665,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
-        boolean success = super.startActivitySafely(v, intent, item);
+    public boolean startActivitySafely(View v, Intent intent, ItemInfo item,
+            @Nullable String sourceContainer) {
+        boolean success = super.startActivitySafely(v, intent, item, sourceContainer);
         if (success && v instanceof BubbleTextView) {
             // This is set to the view that launched the activity that navigated the user away
             // from launcher. Since there is no callback for when the activity has finished
@@ -1763,12 +1785,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     public void bindScreens(IntArray orderedScreenIds) {
         // Make sure the first screen is always at the start.
-        if (FeatureFlags.QSB_ON_FIRST_SCREEN.get() &&
+        if (FeatureFlags.QSB_ON_FIRST_SCREEN &&
                 orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != 0) {
             orderedScreenIds.removeValue(Workspace.FIRST_SCREEN_ID);
             orderedScreenIds.add(0, Workspace.FIRST_SCREEN_ID);
-        } else if (!FeatureFlags.QSB_ON_FIRST_SCREEN.get()
-                && orderedScreenIds.isEmpty()) {
+        } else if (!FeatureFlags.QSB_ON_FIRST_SCREEN && orderedScreenIds.isEmpty()) {
             // If there are no screens, we need to have an empty screen
             mWorkspace.addExtraEmptyScreen();
         }
@@ -1784,7 +1805,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         int count = orderedScreenIds.size();
         for (int i = 0; i < count; i++) {
             int screenId = orderedScreenIds.get(i);
-            if (!FeatureFlags.QSB_ON_FIRST_SCREEN.get() || screenId != Workspace.FIRST_SCREEN_ID) {
+            if (!FeatureFlags.QSB_ON_FIRST_SCREEN || screenId != Workspace.FIRST_SCREEN_ID) {
                 // No need to bind the first screen, as its always bound.
                 mWorkspace.insertNewWorkspaceScreenBeforeEmptyScreen(screenId);
             }

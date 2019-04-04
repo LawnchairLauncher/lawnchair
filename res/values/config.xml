@@ -70,6 +70,7 @@
     <string name="instant_app_resolver_class" translatable="false"></string>
     <string name="main_process_initializer_class" translatable="false"></string>
     <string name="system_shortcut_factory_class" translatable="false"></string>
+    <string name="app_launch_tracker_class" translatable="false"></string>
 
     <!-- Package name of the default wallpaper picker. -->
     <string name="wallpaper_picker_package" translatable="false"></string>

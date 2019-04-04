@@ -23,16 +23,19 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
 	androidx.annotation_annotation \
 	androidx.test.runner \
 	androidx.test.rules \
-	androidx.test.uiautomator_uiautomator \
-	libSharedSystemUI
+	androidx.test.uiautomator_uiautomator
 
-LOCAL_SRC_FILES := $(call all-java-files-under, tapl) \
-  ../quickstep/src/com/android/quickstep/SwipeUpSetting.java \
-  ../src/com/android/launcher3/util/SecureSettingsObserver.java \
-  ../src/com/android/launcher3/TestProtocol.java \
+ifneq (,$(wildcard frameworks/base))
+else
+    LOCAL_STATIC_JAVA_LIBRARIES += libSharedSystemUI
 
-LOCAL_SDK_VERSION := current
+    LOCAL_SRC_FILES := $(call all-java-files-under, tapl) \
+        ../src/com/android/launcher3/util/SecureSettingsObserver.java \
+        ../src/com/android/launcher3/TestProtocol.java
+endif
+
 LOCAL_MODULE := ub-launcher-aosp-tapl
+LOCAL_SDK_VERSION := current
 
 include $(BUILD_STATIC_JAVA_LIBRARY)
 
@@ -43,18 +46,18 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE_TAGS := tests
 LOCAL_STATIC_JAVA_LIBRARIES := \
-	androidx.test.runner \
-	androidx.test.rules \
-	androidx.test.uiautomator_uiautomator \
-	mockito-target-minus-junit4
+    androidx.test.runner \
+    androidx.test.rules \
+    androidx.test.uiautomator_uiautomator \
+    mockito-target-minus-junit4
 
 ifneq (,$(wildcard frameworks/base))
-  LOCAL_PRIVATE_PLATFORM_APIS := true
-  LOCAL_STATIC_JAVA_LIBRARIES += launcher-aosp-tapl
+    LOCAL_PRIVATE_PLATFORM_APIS := true
+    LOCAL_STATIC_JAVA_LIBRARIES += launcher-aosp-tapl
 else
-  LOCAL_SDK_VERSION := 28
-  LOCAL_MIN_SDK_VERSION := 21
-  LOCAL_STATIC_JAVA_LIBRARIES += ub-launcher-aosp-tapl
+    LOCAL_SDK_VERSION := 28
+    LOCAL_MIN_SDK_VERSION := 21
+    LOCAL_STATIC_JAVA_LIBRARIES += ub-launcher-aosp-tapl
 endif
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src)

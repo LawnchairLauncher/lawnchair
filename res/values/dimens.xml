@@ -22,13 +22,10 @@
     <dimen name="dynamic_grid_edge_margin">8dp</dimen>
     <dimen name="dynamic_grid_page_indicator_line_height">1dp</dimen>
     <dimen name="dynamic_grid_icon_drawable_padding">8dp</dimen>
-    <dimen name="dynamic_grid_workspace_top_padding">8dp</dimen>
-    <dimen name="dynamic_grid_workspace_page_spacing">8dp</dimen>
     <!-- Minimum space between workspace and hotseat in spring loaded mode -->
     <dimen name="dynamic_grid_min_spring_loaded_space">8dp</dimen>
 
     <dimen name="dynamic_grid_cell_layout_padding">5.5dp</dimen>
-    <dimen name="dynamic_grid_cell_layout_bottom_padding">0dp</dimen>
     <dimen name="dynamic_grid_cell_padding_x">8dp</dimen>
 
     <!-- Hotseat -->

@@ -131,6 +131,7 @@ public class LauncherAppState {
         if ((changeFlags & CHANGE_FLAG_ICON_PARAMS) != 0) {
             LauncherIcons.clearPool();
             mIconCache.updateIconParams(idp.fillResIconDpi, idp.iconBitmapSize);
+            mWidgetCache.refresh();
         }
 
         mModel.forceReload();

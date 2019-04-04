@@ -36,6 +36,7 @@ public final class RecentsActivity extends BaseRecentsActivity {
         setContentView(R.layout.fallback_recents_activity);
         mRecentsRootView = findViewById(R.id.drag_layer);
         mIconRecentsView = findViewById(R.id.overview_panel);
+        mIconRecentsView.setRecentsToActivityHelper(new FallbackRecentsToActivityHelper(this));
     }
 
     @Override
@@ -60,15 +61,13 @@ public final class RecentsActivity extends BaseRecentsActivity {
 
     @Override
     public ActivityOptions getActivityLaunchOptions(View v) {
-        //TODO: Hook into recents launch animation
+        // Stubbed. Recents launch animation will come from the recents view itself.
         return null;
     }
 
     @Override
     protected void onStart() {
-        // Set the alpha to 1 before calling super, as it may get set back to 0 due to
-        // onActivityStart callback.
-        mIconRecentsView.setAlpha(0);
+        mIconRecentsView.onBeginTransitionToOverview();
         super.onStart();
     }
 }

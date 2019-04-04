@@ -173,6 +173,12 @@ public class RecentsAnimationWrapper {
         return true;
     }
 
+    public void setCancelWithDeferredScreenshot(boolean deferredWithScreenshot) {
+        if (targetSet != null) {
+            targetSet.controller.setCancelWithDeferredScreenshot(deferredWithScreenshot);
+        }
+    }
+
     public SwipeAnimationTargetSet getController() {
         return targetSet;
     }

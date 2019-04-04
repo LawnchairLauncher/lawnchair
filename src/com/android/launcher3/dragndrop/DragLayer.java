@@ -63,8 +63,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     public static final int ALPHA_INDEX_OVERLAY = 0;
     public static final int ALPHA_INDEX_LAUNCHER_LOAD = 1;
     public static final int ALPHA_INDEX_TRANSITIONS = 2;
-    public static final int ALPHA_INDEX_SWIPE_UP = 3;
-    private static final int ALPHA_CHANNEL_COUNT = 4;
+    private static final int ALPHA_CHANNEL_COUNT = 3;
 
     public static final int ANIMATION_END_DISAPPEAR = 0;
     public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
@@ -127,6 +126,10 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     protected boolean findActiveController(MotionEvent ev) {
         if (mActivity.getStateManager().getState().disableInteraction) {
             // You Shall Not Pass!!!
+            if (com.android.launcher3.TestProtocol.sDebugTracing) {
+                android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                        "mActiveController = null");
+            }
             mActiveController = null;
             return true;
         }

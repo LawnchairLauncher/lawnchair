@@ -340,8 +340,6 @@ public class LoaderTask implements Runnable {
                 Intent intent;
                 String targetPkg;
 
-                FolderIconPreviewVerifier verifier =
-                        new FolderIconPreviewVerifier(mApp.getInvariantDeviceProfile());
                 while (!mStopped && c.moveToNext()) {
                     try {
                         if (c.user == null) {
@@ -366,13 +364,13 @@ public class LoaderTask implements Runnable {
                             ComponentName cn = intent.getComponent();
                             targetPkg = cn == null ? intent.getPackage() : cn.getPackageName();
 
-                            if (!Process.myUserHandle().equals(c.user)) {
+                            if (allUsers.indexOfValue(c.user) < 0) {
                                 if (c.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
-                                    c.markDeleted("Legacy shortcuts are only allowed for default user");
+                                    c.markDeleted("Legacy shortcuts are only allowed for current users");
                                     continue;
                                 } else if (c.restoreFlag != 0) {
                                     // Don't restore items for other profiles.
-                                    c.markDeleted("Restore from managed profile not supported");
+                                    c.markDeleted("Restore from other profiles not supported");
                                     continue;
                                 }
                             }
@@ -461,8 +459,7 @@ public class LoaderTask implements Runnable {
                                 c.markRestored();
                             }
 
-                            boolean useLowResIcon = !c.isOnWorkspaceOrHotseat() &&
-                                    !verifier.isItemInPreview(c.getInt(rankIndex));
+                            boolean useLowResIcon = !c.isOnWorkspaceOrHotseat();
 
                             if (c.restoreFlag != 0) {
                                 // Already verified above that user is same as default user
@@ -745,24 +742,25 @@ public class LoaderTask implements Runnable {
                 }
             }
 
+            // Sort the folder items, update ranks, and make sure all preview items are high res.
             FolderIconPreviewVerifier verifier =
                     new FolderIconPreviewVerifier(mApp.getInvariantDeviceProfile());
-            // Sort the folder items and make sure all items in the preview are high resolution.
             for (FolderInfo folder : mBgDataModel.folders) {
                 Collections.sort(folder.contents, Folder.ITEM_POS_COMPARATOR);
                 verifier.setFolderInfo(folder);
+                int size = folder.contents.size();
 
-                int numItemsInPreview = 0;
-                for (ShortcutInfo info : folder.contents) {
+                // Update ranks here to ensure there are no gaps caused by removed folder items.
+                // Ranks are the source of truth for folder items, so cellX and cellY can be ignored
+                // for now. Database will be updated once user manually modifies folder.
+                for (int rank = 0; rank < size; ++rank) {
+                    ShortcutInfo info = folder.contents.get(rank);
+                    info.rank = rank;
+
                     if (info.usingLowResIcon()
                             && info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
                             && verifier.isItemInPreview(info.rank)) {
                         mIconCache.getTitleAndIcon(info, false);
-                        numItemsInPreview++;
-                    }
-
-                    if (numItemsInPreview >= MAX_NUM_ITEMS_IN_PREVIEW) {
-                        break;
                     }
                 }
             }

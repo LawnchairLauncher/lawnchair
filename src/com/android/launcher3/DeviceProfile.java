@@ -16,8 +16,6 @@
 
 package com.android.launcher3;
 
-import android.appwidget.AppWidgetHostView;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -53,6 +51,9 @@ public class DeviceProfile {
     public final int heightPx;
     public final int availableWidthPx;
     public final int availableHeightPx;
+
+    public final float aspectRatio;
+
     /**
      * The maximum amount of left/right workspace padding as a percentage of the screen width.
      * To be clear, this means that up to 7% of the screen width can be used as left padding, and
@@ -70,9 +71,6 @@ public class DeviceProfile {
     public final int cellLayoutPaddingLeftRightPx;
     public final int cellLayoutBottomPaddingPx;
     public final int edgeMarginPx;
-    public final Rect defaultWidgetPadding;
-    public final int defaultPageSpacingPx;
-    private final int topWorkspacePadding;
     public float workspaceSpringLoadShrinkFactor;
     public final int workspaceSpringLoadedBottomSpace;
 
@@ -133,6 +131,7 @@ public class DeviceProfile {
     private final Rect mInsets = new Rect();
     public final Rect workspacePadding = new Rect();
     private final Rect mHotseatPadding = new Rect();
+    // When true, nav bar is on the left side of the screen.
     private boolean mIsSeascape;
 
     // Notification dots
@@ -164,7 +163,7 @@ public class DeviceProfile {
         isTablet = res.getBoolean(R.bool.is_tablet);
         isLargeTablet = res.getBoolean(R.bool.is_large_tablet);
         isPhone = !isTablet && !isLargeTablet;
-        float aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
+        aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
         boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
 
         // Some more constants
@@ -176,26 +175,25 @@ public class DeviceProfile {
                 : Configuration.ORIENTATION_PORTRAIT);
         res = context.getResources();
 
-
-        ComponentName cn = new ComponentName(context.getPackageName(),
-                this.getClass().getName());
-        defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         desiredWorkspaceLeftRightMarginPx = isVerticalBarLayout() ? 0 : edgeMarginPx;
+
         int cellLayoutPaddingLeftRightMultiplier = !isVerticalBarLayout() && isTablet
                 ? PORTRAIT_TABLET_LEFT_RIGHT_PADDING_MULTIPLIER : 1;
-        cellLayoutPaddingLeftRightPx = cellLayoutPaddingLeftRightMultiplier *
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
-        cellLayoutBottomPaddingPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_bottom_padding);
+        int cellLayoutPadding = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
+        if (isLandscape) {
+            cellLayoutPaddingLeftRightPx = 0;
+            cellLayoutBottomPaddingPx = cellLayoutPadding;
+        } else {
+            cellLayoutPaddingLeftRightPx = cellLayoutPaddingLeftRightMultiplier * cellLayoutPadding;
+            cellLayoutBottomPaddingPx = 0;
+        }
+
         verticalDragHandleSizePx = res.getDimensionPixelSize(
                 R.dimen.vertical_drag_handle_size);
         verticalDragHandleOverlapWorkspace =
                 res.getDimensionPixelSize(R.dimen.vertical_drag_handle_overlap_workspace);
-        defaultPageSpacingPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_page_spacing);
-        topWorkspacePadding =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_top_padding);
+
         iconDrawablePaddingOriginalPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_icon_drawable_padding);
         dropTargetBarSizePx = res.getDimensionPixelSize(R.dimen.dynamic_grid_drop_target_size);
@@ -359,7 +357,7 @@ public class DeviceProfile {
 
         if (!isVerticalLayout) {
             int expectedWorkspaceHeight = availableHeightPx - hotseatBarSizePx
-                    - verticalDragHandleSizePx - topWorkspacePadding;
+                    - verticalDragHandleSizePx - edgeMarginPx;
             float minRequiredHeight = dropTargetBarSizePx + workspaceSpringLoadedBottomSpace;
             workspaceSpringLoadShrinkFactor = Math.min(
                     res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f,
@@ -470,15 +468,15 @@ public class DeviceProfile {
                         ((inv.numColumns - 1) * cellWidthPx)));
                 availablePaddingX = (int) Math.min(availablePaddingX,
                         widthPx * MAX_HORIZONTAL_PADDING_PERCENT);
-                int availablePaddingY = Math.max(0, heightPx - topWorkspacePadding - paddingBottom
+                int availablePaddingY = Math.max(0, heightPx - edgeMarginPx - paddingBottom
                         - (2 * inv.numRows * cellHeightPx) - hotseatBarTopPaddingPx
                         - hotseatBarBottomPaddingPx);
-                padding.set(availablePaddingX / 2, topWorkspacePadding + availablePaddingY / 2,
+                padding.set(availablePaddingX / 2, edgeMarginPx + availablePaddingY / 2,
                         availablePaddingX / 2, paddingBottom + availablePaddingY / 2);
             } else {
                 // Pad the top and bottom of the workspace with search/hotseat bar sizes
                 padding.set(desiredWorkspaceLeftRightMarginPx,
-                        topWorkspacePadding,
+                        edgeMarginPx,
                         desiredWorkspaceLeftRightMarginPx,
                         paddingBottom);
             }
@@ -587,34 +585,40 @@ public class DeviceProfile {
     /**
      * Gets an item's location on the home screen. This is useful if the home screen
      * is animating, otherwise use {@link View#getLocationOnScreen(int[])}.
-     *
-     * TODO(b/123900446): Handle landscape mode
      * @param pageDiff The page difference relative to the current page.
      */
     public void getItemLocation(int cellX, int cellY, int spanX, int spanY, int container,
             int pageDiff, Rect outBounds) {
         outBounds.setEmpty();
-        outBounds.left = mInsets.left
-                + workspacePadding.left + cellLayoutPaddingLeftRightPx + (cellX * getCellSize().x);
-        outBounds.top = mInsets.top;
         if (container == CONTAINER_HOTSEAT) {
-            outBounds.top += workspacePadding.top
-                    + (inv.numRows * getCellSize().y)
-                    + verticalDragHandleSizePx
-                    - verticalDragHandleOverlapWorkspace;
-            outBounds.bottom = outBounds.top + hotseatBarSizePx - hotseatBarBottomPaddingPx;
+            final int actualHotseatCellHeight;
+            if (isVerticalBarLayout()) {
+                actualHotseatCellHeight = availableHeightPx / inv.numRows;
+                if (mIsSeascape) {
+                    outBounds.left = mHotseatPadding.left;
+                } else {
+                    outBounds.left = availableWidthPx - hotseatBarSizePx + mHotseatPadding.left;
+                }
+                outBounds.right = outBounds.left + iconSizePx;
+                outBounds.top = mHotseatPadding.top
+                        + actualHotseatCellHeight * (inv.numRows - cellX - 1);
+                outBounds.bottom = outBounds.top + actualHotseatCellHeight;
+            } else {
+                actualHotseatCellHeight = hotseatBarSizePx - hotseatBarBottomPaddingPx
+                        - hotseatBarTopPaddingPx;
+                outBounds.left = mInsets.left + workspacePadding.left + cellLayoutPaddingLeftRightPx
+                        + (cellX * getCellSize().x);
+                outBounds.right = outBounds.left + getCellSize().x;
+                outBounds.top = mInsets.top + availableHeightPx - hotseatBarSizePx;
+                outBounds.bottom = outBounds.top + actualHotseatCellHeight;
+            }
         } else {
-            outBounds.top += workspacePadding.top + (cellY * getCellSize().y);
+            outBounds.left = mInsets.left + workspacePadding.left + cellLayoutPaddingLeftRightPx
+                    + (cellX * getCellSize().x) + (pageDiff * availableWidthPx);
+            outBounds.right = outBounds.left + (getCellSize().x * spanX);
+            outBounds.top = mInsets.top + workspacePadding.top + (cellY * getCellSize().y);
             outBounds.bottom = outBounds.top + (getCellSize().y * spanY);
-            outBounds.left += (pageDiff) * availableWidthPx;
         }
-        outBounds.right = outBounds.left + (getCellSize().x * spanX);
-    }
-
-    public float getAspectRatioWithInsets() {
-        int w = widthPx - mInsets.left - mInsets.right;
-        int h = heightPx - mInsets.top - mInsets.bottom;
-        return ((float) Math.max(w, h)) / Math.min(w, h);
     }
 
     private static Context getContext(Context c, int orientation) {
