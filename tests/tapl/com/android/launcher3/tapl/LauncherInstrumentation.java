@@ -22,7 +22,6 @@ import android.app.UiAutomation;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
@@ -65,8 +64,6 @@ import java.util.concurrent.TimeoutException;
 public final class LauncherInstrumentation {
 
     private static final String TAG = "Tapl";
-    private static final String NAV_BAR_INTERACTION_MODE_RES_NAME =
-            "config_navBarInteractionMode";
     private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 20;
 
     // Types for launcher containers that the user is interacting with. "Background" is a
@@ -175,11 +172,11 @@ public final class LauncherInstrumentation {
             // Workaround, use constructed context because both the instrumentation context and the
             // app context are not constructed with resources that take overlays into account
             final Context ctx = baseContext.createPackageContext("android", 0);
-            if (isGesturalMode(ctx)) {
+            if (QuickStepContract.isGesturalMode(ctx)) {
                 return NavigationModel.ZERO_BUTTON;
-            } else if (isSwipeUpMode(ctx)) {
+            } else if (QuickStepContract.isSwipeUpMode(ctx)) {
                 return NavigationModel.TWO_BUTTON;
-            } else if (isLegacyMode(ctx)) {
+            } else if (QuickStepContract.isLegacyMode(ctx)) {
                 return NavigationModel.THREE_BUTTON;
             } else {
                 fail("Can't detect navigation mode");
@@ -610,37 +607,20 @@ public final class LauncherInstrumentation {
         }
     }
 
-    public static boolean isGesturalMode(Context context) {
-        return QuickStepContract.isGesturalMode(
-                getSystemIntegerRes(context, NAV_BAR_INTERACTION_MODE_RES_NAME));
-    }
-
-    public static boolean isSwipeUpMode(Context context) {
-        return QuickStepContract.isSwipeUpMode(
-                getSystemIntegerRes(context, NAV_BAR_INTERACTION_MODE_RES_NAME));
-    }
-
-    public static boolean isLegacyMode(Context context) {
-        return QuickStepContract.isLegacyMode(
-                getSystemIntegerRes(context, NAV_BAR_INTERACTION_MODE_RES_NAME));
-    }
-
-    private static int getSystemIntegerRes(Context context, String resName) {
-        Resources res = context.getResources();
-        int resId = res.getIdentifier(resName, "integer", "android");
-
-        if (resId != 0) {
-            return res.getInteger(resId);
-        } else {
-            Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
-            return -1;
-        }
-    }
-
     static void sleep(int duration) {
         try {
             Thread.sleep(duration);
         } catch (InterruptedException e) {
+        }
+    }
+
+    int getEdgeSensitivityWidth() {
+        try {
+            return QuickStepContract.getEdgeSensitivityWidth(
+                    mInstrumentation.getTargetContext().createPackageContext("android", 0)) + 1;
+        } catch (PackageManager.NameNotFoundException e) {
+            fail("Can't get edge sensitivity: " + e);
+            return 0;
         }
     }
 }

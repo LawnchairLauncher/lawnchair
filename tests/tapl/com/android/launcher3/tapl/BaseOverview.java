@@ -48,8 +48,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                      mLauncher.addContextLayer("want to fling forward in overview")) {
             LauncherInstrumentation.log("Overview.flingForward before fling");
             final UiObject2 overview = verifyActiveContainer();
-            final int margin = (int) (50 * mLauncher.getDisplayDensity()) + 1;
-            overview.setGestureMargins(margin, 0, 0, 0);
+            overview.setGestureMargins(mLauncher.getEdgeSensitivityWidth(), 0, 0, 0);
             overview.fling(Direction.LEFT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
             mLauncher.waitForIdle();
             verifyActiveContainer();
@@ -86,8 +85,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                      mLauncher.addContextLayer("want to fling backward in overview")) {
             LauncherInstrumentation.log("Overview.flingBackward before fling");
             final UiObject2 overview = verifyActiveContainer();
-            final int margin = (int) (50 * mLauncher.getDisplayDensity()) + 1;
-            overview.setGestureMargins(0, 0, margin, 0);
+            overview.setGestureMargins(0, 0, mLauncher.getEdgeSensitivityWidth(), 0);
             overview.fling(Direction.RIGHT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
             mLauncher.waitForIdle();
             verifyActiveContainer();
