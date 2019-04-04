@@ -1,4 +1,4 @@
-package com.android.launcher3.uioverrides;
+package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -41,7 +41,7 @@ public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchContro
 
     @Override
     protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
-        boolean draggingFromNav = mLauncher.getDeviceProfile().isSeascape() != isDragTowardPositive;
+        boolean draggingFromNav = mLauncher.getDeviceProfile().isSeascape() == isDragTowardPositive;
         return draggingFromNav ? OVERVIEW : NORMAL;
     }
 

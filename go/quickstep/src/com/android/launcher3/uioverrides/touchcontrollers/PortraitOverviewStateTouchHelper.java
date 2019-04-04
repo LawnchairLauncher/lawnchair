@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.uioverrides;
+package com.android.launcher3.uioverrides.touchcontrollers;
 
 import android.view.MotionEvent;
 

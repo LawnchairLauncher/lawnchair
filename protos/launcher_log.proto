@@ -106,7 +106,7 @@ enum ControlType {
   RESIZE_HANDLE = 8;
   VERTICAL_SCROLL = 9;
   HOME_INTENT = 10; // Deprecated, use enum Command instead
-  BACK_BUTTON = 11; // Deprecated, use enum Command instead
+  BACK_BUTTON = 11;
   QUICK_SCRUB_BUTTON = 12;
   CLEAR_ALL_BUTTON = 13;
   CANCEL_TARGET = 14;
@@ -114,6 +114,7 @@ enum ControlType {
   SPLIT_SCREEN_TARGET = 16;
   REMOTE_ACTION_SHORTCUT = 17;
   APP_USAGE_SETTINGS = 18;
+  BACK_GESTURE = 19;
 }
 
 enum TipType {
@@ -142,6 +143,7 @@ message Action {
     SWIPE = 3;
     FLING = 4;
     PINCH = 5;
+    SWIPE_NOOP = 6;
   }
 
   enum Direction {
@@ -150,6 +152,8 @@ message Action {
     DOWN = 2;
     LEFT = 3;
     RIGHT = 4;
+    UPRIGHT = 5;
+    UPLEFT = 6;
   }
   enum Command {
     HOME_INTENT = 0;

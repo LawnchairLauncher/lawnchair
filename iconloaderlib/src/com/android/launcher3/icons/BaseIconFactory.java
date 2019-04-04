@@ -61,6 +61,7 @@ public class BaseIconFactory implements AutoCloseable {
 
         mCanvas = new Canvas();
         mCanvas.setDrawFilter(new PaintFlagsDrawFilter(DITHER_FLAG, FILTER_BITMAP_FLAG));
+        clear();
     }
 
     protected void clear() {
@@ -111,11 +112,6 @@ public class BaseIconFactory implements AutoCloseable {
     public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user,
             boolean shrinkNonAdaptiveIcons) {
         return createBadgedIconBitmap(icon, user, shrinkNonAdaptiveIcons, false, null);
-    }
-
-    public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user,
-            boolean shrinkNonAdaptiveIcons, boolean isInstantApp) {
-        return createBadgedIconBitmap(icon, user, shrinkNonAdaptiveIcons, isInstantApp, null);
     }
 
     public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user,

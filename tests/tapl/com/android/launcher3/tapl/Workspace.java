@@ -50,8 +50,8 @@ public final class Workspace extends Home {
      */
     @NonNull
     public AllApps switchToAllApps() {
-        try(LauncherInstrumentation.Closable c =
-                    mLauncher.addContextLayer("want to switch from workspace to all apps")) {
+        try (LauncherInstrumentation.Closable c =
+                     mLauncher.addContextLayer("want to switch from workspace to all apps")) {
             verifyActiveContainer();
             final UiObject2 hotseat = mHotseat;
             final Point start = hotseat.getVisibleCenter();
@@ -114,7 +114,7 @@ public final class Workspace extends Home {
         if (!isWorkspaceScrollable(workspace)) {
             dragIconToWorkspace(
                     mLauncher,
-                    getHotseatAppIcon("Messages"),
+                    getHotseatAppIcon("Play Store"),
                     new Point(mLauncher.getDevice().getDisplayWidth(),
                             workspace.getVisibleBounds().centerY()),
                     (int) (ICON_DRAG_SPEED * mLauncher.getDisplayDensity()));
@@ -136,7 +136,9 @@ public final class Workspace extends Home {
 
     static void dragIconToWorkspace(LauncherInstrumentation launcher, Launchable launchable,
             Point dest, int icon_drag_speed) {
+        LauncherInstrumentation.log("dragIconToWorkspace: begin");
         launchable.getObject().drag(dest, icon_drag_speed);
+        LauncherInstrumentation.log("dragIconToWorkspace: end");
         launcher.waitUntilGone("drop_target_bar");
     }
 

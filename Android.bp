@@ -23,7 +23,6 @@ android_library {
     ],
     srcs: [
         "tests/tapl/**/*.java",
-        "quickstep/src/com/android/quickstep/SwipeUpSetting.java",
         "src/com/android/launcher3/util/SecureSettingsObserver.java",
         "src/com/android/launcher3/TestProtocol.java",
     ],

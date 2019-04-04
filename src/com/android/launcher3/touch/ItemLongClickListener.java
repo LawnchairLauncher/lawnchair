@@ -74,6 +74,10 @@ public class ItemLongClickListener {
     }
 
     private static boolean onAllAppsItemLongClick(View v) {
+        if (com.android.launcher3.TestProtocol.sDebugTracing) {
+            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                    "onAllAppsItemLongClick");
+        }
         Launcher launcher = Launcher.getLauncher(v.getContext());
         if (!canStartDrag(launcher)) return false;
         // When we have exited all apps or are in transition, disregard long clicks

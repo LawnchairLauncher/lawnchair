@@ -24,6 +24,8 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
+import com.android.launcher3.Utilities;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
@@ -64,20 +66,25 @@ public class SwipeDetector {
 
     public static abstract class Direction {
 
-        abstract float getDisplacement(MotionEvent ev, int pointerIndex, PointF refPoint);
+        abstract float getDisplacement(MotionEvent ev, int pointerIndex, PointF refPoint,
+                boolean isRtl);
 
         /**
          * Distance in pixels a touch can wander before we think the user is scrolling.
          */
         abstract float getActiveTouchSlop(MotionEvent ev, int pointerIndex, PointF downPos);
 
-        abstract float getVelocity(VelocityTracker tracker);
+        abstract float getVelocity(VelocityTracker tracker, boolean isRtl);
+
+        abstract boolean isPositive(float displacement);
+
+        abstract boolean isNegative(float displacement);
     }
 
     public static final Direction VERTICAL = new Direction() {
 
         @Override
-        float getDisplacement(MotionEvent ev, int pointerIndex, PointF refPoint) {
+        float getDisplacement(MotionEvent ev, int pointerIndex, PointF refPoint, boolean isRtl) {
             return ev.getY(pointerIndex) - refPoint.y;
         }
 
@@ -87,16 +94,32 @@ public class SwipeDetector {
         }
 
         @Override
-        float getVelocity(VelocityTracker tracker) {
+        float getVelocity(VelocityTracker tracker, boolean isRtl) {
             return tracker.getYVelocity();
+        }
+
+        @Override
+        boolean isPositive(float displacement) {
+            // Up
+            return displacement < 0;
+        }
+
+        @Override
+        boolean isNegative(float displacement) {
+            // Down
+            return displacement > 0;
         }
     };
 
     public static final Direction HORIZONTAL = new Direction() {
 
         @Override
-        float getDisplacement(MotionEvent ev, int pointerIndex, PointF refPoint) {
-            return ev.getX(pointerIndex) - refPoint.x;
+        float getDisplacement(MotionEvent ev, int pointerIndex, PointF refPoint, boolean isRtl) {
+            float displacement = ev.getX(pointerIndex) - refPoint.x;
+            if (isRtl) {
+                displacement = -displacement;
+            }
+            return displacement;
         }
 
         @Override
@@ -105,8 +128,24 @@ public class SwipeDetector {
         }
 
         @Override
-        float getVelocity(VelocityTracker tracker) {
-            return tracker.getXVelocity();
+        float getVelocity(VelocityTracker tracker, boolean isRtl) {
+            float velocity = tracker.getXVelocity();
+            if (isRtl) {
+                velocity = -velocity;
+            }
+            return velocity;
+        }
+
+        @Override
+        boolean isPositive(float displacement) {
+            // Right
+            return displacement > 0;
+        }
+
+        @Override
+        boolean isNegative(float displacement) {
+            // Left
+            return displacement < 0;
         }
     };
 
@@ -159,6 +198,7 @@ public class SwipeDetector {
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
     private final Direction mDir;
+    private final boolean mIsRtl;
 
     private final float mTouchSlop;
     private final float mMaxVelocity;
@@ -179,18 +219,23 @@ public class SwipeDetector {
 
         boolean onDrag(float displacement);
 
+        default boolean onDrag(float displacement, MotionEvent event) {
+            return onDrag(displacement);
+        }
+
         void onDragEnd(float velocity, boolean fling);
     }
 
     public SwipeDetector(@NonNull Context context, @NonNull Listener l, @NonNull Direction dir) {
-        this(ViewConfiguration.get(context), l, dir);
+        this(ViewConfiguration.get(context), l, dir, Utilities.isRtl(context.getResources()));
     }
 
     @VisibleForTesting
     protected SwipeDetector(@NonNull ViewConfiguration config, @NonNull Listener l,
-            @NonNull Direction dir) {
+            @NonNull Direction dir, boolean isRtl) {
         mListener = l;
         mDir = dir;
+        mIsRtl = isRtl;
         mTouchSlop = config.getScaledTouchSlop();
         mMaxVelocity = config.getScaledMaximumFlingVelocity();
     }
@@ -212,8 +257,8 @@ public class SwipeDetector {
         }
 
         // Check if the client is interested in scroll in current direction.
-        if (((mScrollConditions & DIRECTION_NEGATIVE) > 0 && mDisplacement > 0) ||
-                ((mScrollConditions & DIRECTION_POSITIVE) > 0 && mDisplacement < 0)) {
+        if (((mScrollConditions & DIRECTION_NEGATIVE) > 0 && mDir.isNegative(mDisplacement)) ||
+                ((mScrollConditions & DIRECTION_POSITIVE) > 0 && mDir.isPositive(mDisplacement))) {
             return true;
         }
         return false;
@@ -259,14 +304,14 @@ public class SwipeDetector {
                 if (pointerIndex == INVALID_POINTER_ID) {
                     break;
                 }
-                mDisplacement = mDir.getDisplacement(ev, pointerIndex, mDownPos);
+                mDisplacement = mDir.getDisplacement(ev, pointerIndex, mDownPos, mIsRtl);
 
                 // handle state and listener calls.
                 if (mState != ScrollState.DRAGGING && shouldScrollStart(ev, pointerIndex)) {
                     setState(ScrollState.DRAGGING);
                 }
                 if (mState == ScrollState.DRAGGING) {
-                    reportDragging();
+                    reportDragging(ev);
                 }
                 mLastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex));
                 break;
@@ -315,24 +360,24 @@ public class SwipeDetector {
      * @see #DIRECTION_BOTH
      */
     public boolean wasInitialTouchPositive() {
-        return mSubtractDisplacement < 0;
+        return mDir.isPositive(mSubtractDisplacement);
     }
 
-    private boolean reportDragging() {
+    private boolean reportDragging(MotionEvent event) {
         if (mDisplacement != mLastDisplacement) {
             if (DBG) {
                 Log.d(TAG, String.format("onDrag disp=%.1f", mDisplacement));
             }
 
             mLastDisplacement = mDisplacement;
-            return mListener.onDrag(mDisplacement - mSubtractDisplacement);
+            return mListener.onDrag(mDisplacement - mSubtractDisplacement, event);
         }
         return true;
     }
 
     private void reportDragEnd() {
         mVelocityTracker.computeCurrentVelocity(1000, mMaxVelocity);
-        float velocity = mDir.getVelocity(mVelocityTracker) / 1000;
+        float velocity = mDir.getVelocity(mVelocityTracker, mIsRtl) / 1000;
         if (DBG) {
             Log.d(TAG, String.format("onScrollEnd disp=%.1f, velocity=%.1f",
                     mDisplacement, velocity));

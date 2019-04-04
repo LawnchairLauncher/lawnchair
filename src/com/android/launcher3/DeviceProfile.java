@@ -51,6 +51,9 @@ public class DeviceProfile {
     public final int heightPx;
     public final int availableWidthPx;
     public final int availableHeightPx;
+
+    public final float aspectRatio;
+
     /**
      * The maximum amount of left/right workspace padding as a percentage of the screen width.
      * To be clear, this means that up to 7% of the screen width can be used as left padding, and
@@ -160,7 +163,7 @@ public class DeviceProfile {
         isTablet = res.getBoolean(R.bool.is_tablet);
         isLargeTablet = res.getBoolean(R.bool.is_large_tablet);
         isPhone = !isTablet && !isLargeTablet;
-        float aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
+        aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
         boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
 
         // Some more constants
@@ -616,12 +619,6 @@ public class DeviceProfile {
             outBounds.top = mInsets.top + workspacePadding.top + (cellY * getCellSize().y);
             outBounds.bottom = outBounds.top + (getCellSize().y * spanY);
         }
-    }
-
-    public float getAspectRatioWithInsets() {
-        int w = widthPx - mInsets.left - mInsets.right;
-        int h = heightPx - mInsets.top - mInsets.bottom;
-        return ((float) Math.max(w, h)) / Math.min(w, h);
     }
 
     private static Context getContext(Context c, int orientation) {

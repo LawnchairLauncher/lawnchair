@@ -24,9 +24,6 @@ import android.util.Log;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.R;
 
-import java.util.Collections;
-import java.util.List;
-
 /**
  * A wrapper class to access instant app related APIs.
  */
@@ -54,9 +51,5 @@ public class InstantAppResolver implements ResourceBasedOverride {
                     + packageName, e);
         }
         return false;
-    }
-
-    public List<ApplicationInfo> getInstantApps() {
-        return Collections.emptyList();
     }
 }

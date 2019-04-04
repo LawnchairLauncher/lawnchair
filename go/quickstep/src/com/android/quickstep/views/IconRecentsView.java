@@ -19,6 +19,10 @@ import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
@@ -65,6 +69,10 @@ public final class IconRecentsView extends FrameLayout {
                 }
             };
     private static final long CROSSFADE_DURATION = 300;
+    private static final long ITEM_ANIMATE_OUT_DURATION = 150;
+    private static final long ITEM_ANIMATE_OUT_DELAY_BETWEEN = 40;
+    private static final float ITEM_ANIMATE_OUT_TRANSLATION_X_RATIO = .25f;
+    private static final long CLEAR_ALL_FADE_DELAY = 120;
 
     /**
      * A ratio representing the view's relative placement within its padded space. For example, 0
@@ -81,6 +89,7 @@ public final class IconRecentsView extends FrameLayout {
     private RecyclerView mTaskRecyclerView;
     private View mEmptyView;
     private View mContentView;
+    private View mClearAllView;
     private boolean mTransitionedFromApp;
 
     public IconRecentsView(Context context, AttributeSet attrs) {
@@ -117,10 +126,20 @@ public final class IconRecentsView extends FrameLayout {
                     updateContentViewVisibility();
                 }
             });
-
-            View clearAllView = findViewById(R.id.clear_all_button);
-            clearAllView.setOnClickListener(v -> mTaskActionController.clearAllTasks());
+            mClearAllView = findViewById(R.id.clear_all_button);
+            mClearAllView.setOnClickListener(v -> animateClearAllTasks());
         }
+    }
+
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        TaskItemView[] itemViews = getTaskViews();
+        for (TaskItemView itemView : itemViews) {
+            itemView.setEnabled(enabled);
+        }
+        mClearAllView.setEnabled(enabled);
     }
 
     /**
@@ -136,8 +155,6 @@ public final class IconRecentsView extends FrameLayout {
      * Logic for when we know we are going to overview/recents and will be putting up the recents
      * view. This should be used to prepare recents (e.g. load any task data, etc.) before it
      * becomes visible.
-     *
-     * TODO: Hook this up for fallback recents activity as well
      */
     public void onBeginTransitionToOverview() {
         // Load any task changes
@@ -192,6 +209,78 @@ public final class IconRecentsView extends FrameLayout {
             return null;
         }
         return view.getThumbnailView();
+    }
+
+    /**
+     * Clear all tasks and animate out.
+     */
+    private void animateClearAllTasks() {
+        setEnabled(false);
+        TaskItemView[] itemViews = getTaskViews();
+
+        AnimatorSet clearAnim = new AnimatorSet();
+        long currentDelay = 0;
+
+        // Animate each item view to the right and fade out.
+        for (TaskItemView itemView : itemViews) {
+            PropertyValuesHolder transXproperty = PropertyValuesHolder.ofFloat(TRANSLATION_X,
+                    0, itemView.getWidth() * ITEM_ANIMATE_OUT_TRANSLATION_X_RATIO);
+            PropertyValuesHolder alphaProperty = PropertyValuesHolder.ofFloat(ALPHA, 1.0f, 0f);
+            ObjectAnimator itemAnim = ObjectAnimator.ofPropertyValuesHolder(itemView,
+                    transXproperty, alphaProperty);
+            itemAnim.setDuration(ITEM_ANIMATE_OUT_DURATION);
+            itemAnim.setStartDelay(currentDelay);
+
+            clearAnim.play(itemAnim);
+            currentDelay += ITEM_ANIMATE_OUT_DELAY_BETWEEN;
+        }
+
+        // Animate view fading and leave recents when faded enough.
+        ValueAnimator contentAlpha = ValueAnimator.ofFloat(1.0f, 0f)
+                .setDuration(CROSSFADE_DURATION);
+        contentAlpha.setStartDelay(CLEAR_ALL_FADE_DELAY);
+        contentAlpha.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            private boolean mLeftRecents = false;
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                mContentView.setAlpha((float) valueAnimator.getAnimatedValue());
+                // Leave recents while fading out.
+                if ((float) valueAnimator.getAnimatedValue() < .5f && !mLeftRecents) {
+                    mActivityHelper.leaveRecents();
+                    mLeftRecents = true;
+                }
+            }
+        });
+
+        clearAnim.play(contentAlpha);
+        clearAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                for (TaskItemView itemView : itemViews) {
+                    itemView.setTranslationX(0);
+                    itemView.setAlpha(1.0f);
+                }
+                setEnabled(true);
+                mContentView.setVisibility(GONE);
+                mTaskActionController.clearAllTasks();
+            }
+        });
+        clearAnim.start();
+    }
+
+    /**
+     * Get attached task item views ordered by most recent.
+     *
+     * @return array of attached task item views
+     */
+    private TaskItemView[] getTaskViews() {
+        int taskCount = mTaskRecyclerView.getChildCount();
+        TaskItemView[] itemViews = new TaskItemView[taskCount];
+        for (int i = 0; i < taskCount; i ++) {
+            itemViews[i] = (TaskItemView) mTaskRecyclerView.getChildAt(i);
+        }
+        return itemViews;
     }
 
     /**

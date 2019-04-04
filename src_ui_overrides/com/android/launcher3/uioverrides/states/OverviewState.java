@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.uioverrides;
+package com.android.launcher3.uioverrides.states;
 
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 
@@ -27,5 +27,17 @@ public class OverviewState extends LauncherState {
 
     public OverviewState(int id) {
         super(id, ContainerType.WORKSPACE, OVERVIEW_TRANSITION_MS, FLAG_DISABLE_RESTORE);
+    }
+
+    public static OverviewState newBackgroundState(int id) {
+        return new OverviewState(id);
+    }
+
+    public static OverviewState newPeekState(int id) {
+        return new OverviewState(id);
+    }
+
+    public static OverviewState newSwitchState(int id) {
+        return new OverviewState(id);
     }
 }

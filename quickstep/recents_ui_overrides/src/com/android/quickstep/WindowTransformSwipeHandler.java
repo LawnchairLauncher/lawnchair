@@ -28,6 +28,7 @@ import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.launcher3.config.FeatureFlags.SWIPE_HOME;
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
+import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState.HIDE;
 import static com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState.PEEK;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
@@ -202,6 +203,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private static final long SHELF_ANIM_DURATION = 120;
 
+    /**
+     * Used as the page index for logging when we return to the last task at the end of the gesture.
+     */
+    private static final int LOG_NO_OP_PAGE_INDEX = -1;
+
     private final ClipAnimationHelper mClipAnimationHelper;
     private final ClipAnimationHelper.TransformParams mTransformParams;
 
@@ -244,6 +250,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private boolean mPassedOverviewThreshold;
     private boolean mGestureStarted;
     private int mLogAction = Touch.SWIPE;
+    private int mLogDirection = Direction.UP;
 
     private final RecentsAnimationWrapper mRecentsAnimationWrapper;
 
@@ -691,6 +698,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         setStateOnUiThread(STATE_GESTURE_COMPLETED);
 
         mLogAction = isFling ? Touch.FLING : Touch.SWIPE;
+        boolean isVelocityVertical = Math.abs(velocity.y) > Math.abs(velocity.x);
+        if (isVelocityVertical) {
+            mLogDirection = velocity.y < 0 ? Direction.UP : Direction.DOWN;
+        } else {
+            mLogDirection = velocity.x < 0 ? Direction.LEFT : Direction.RIGHT;
+        }
         handleNormalGestureEnd(endVelocity, isFling, velocity);
     }
 
@@ -823,19 +836,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             // We probably never received an animation controller, skip logging.
             return;
         }
-        boolean toLauncher = endTarget.isLauncher;
-        final int direction;
-        if (dp.isVerticalBarLayout()) {
-            direction = (dp.isSeascape() ^ toLauncher) ? Direction.LEFT : Direction.RIGHT;
-        } else {
-            direction = toLauncher ? Direction.UP : Direction.DOWN;
-        }
 
+        int pageIndex = endTarget == LAST_TASK
+                ? LOG_NO_OP_PAGE_INDEX
+                : mRecentsView.getNextPage();
         UserEventDispatcher.newInstance(mContext).logStateChangeAction(
-                mLogAction, direction,
+                mLogAction, mLogDirection,
                 ContainerType.NAVBAR, ContainerType.APP,
                 endTarget.containerType,
-                0);
+                pageIndex);
     }
 
     /** Animates to the given progress, where 0 is the current app and 1 is overview. */
@@ -930,7 +939,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             HomeAnimationFactory homeAnimationFactory) {
         final RemoteAnimationTargetSet targetSet = mRecentsAnimationWrapper.targetSet;
         final RectF startRect = new RectF(mClipAnimationHelper.applyTransform(targetSet,
-                mTransformParams.setProgress(startProgress)));
+                mTransformParams.setProgress(startProgress), false /* launcherOnTop */));
         final RectF targetRect = homeAnimationFactory.getWindowTargetRect();
 
         final View floatingView = homeAnimationFactory.getFloatingView();
@@ -945,7 +954,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
         // We want the window alpha to be 0 once this threshold is met, so that the
         // FolderIconView can be seen morphing into the icon shape.
-        final float windowAlphaThreshold = isFloatingIconView ? 0.75f : 1f;
+        final float windowAlphaThreshold = isFloatingIconView ? 1f - SHAPE_PROGRESS_DURATION : 1f;
         anim.addOnUpdateListener((currentRect, progress) -> {
             float interpolatedProgress = Interpolators.ACCEL_1_5.getInterpolation(progress);
 
@@ -955,11 +964,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                     windowAlphaThreshold, 0f, 1f, Interpolators.LINEAR);
             mTransformParams.setCurrentRectAndTargetAlpha(currentRect, 1f - iconAlpha)
                     .setSyncTransactionApplier(mSyncTransactionApplier);
-            mClipAnimationHelper.applyTransform(targetSet, mTransformParams);
+            mClipAnimationHelper.applyTransform(targetSet, mTransformParams,
+                    false /* launcherOnTop */);
 
             if (isFloatingIconView) {
                 ((FloatingIconView) floatingView).update(currentRect, iconAlpha, progress,
-                        windowAlphaThreshold);
+                        windowAlphaThreshold, mClipAnimationHelper.getCurrentCornerRadius(), false);
             }
 
         });
@@ -967,6 +977,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             @Override
             public void onAnimationStart(Animator animation) {
                 homeAnim.dispatchOnStart();
+                mActivity.getRootView().getOverlay().remove(mLiveTileOverlay);
             }
 
             @Override

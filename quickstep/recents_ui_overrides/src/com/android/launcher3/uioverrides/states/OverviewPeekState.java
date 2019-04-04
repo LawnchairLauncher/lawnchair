@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.uioverrides;
+package com.android.launcher3.uioverrides.states;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
 
-/**
- * State indicating that the Launcher is behind an app. Same as {@link OverviewState} for Go as we
- * do not support swipe to overview or swipe to home.
- */
-public final class BackgroundAppState extends OverviewState {
-    public BackgroundAppState(int id) {
+public class OverviewPeekState extends OverviewState {
+    public OverviewPeekState(int id) {
         super(id);
+    }
+
+    @Override
+    public ScaleAndTranslation getOverviewScaleAndTranslation(Launcher launcher) {
+        ScaleAndTranslation result = super.getOverviewScaleAndTranslation(launcher);
+        result.translationX = NORMAL.getOverviewScaleAndTranslation(launcher).translationX
+                - launcher.getResources().getDimension(R.dimen.overview_peek_distance);
+        return result;
     }
 }

@@ -45,10 +45,18 @@ public abstract class DragDriver {
     public void onDragViewAnimationEnd() { }
 
     public boolean onTouchEvent(MotionEvent ev) {
+        if (com.android.launcher3.TestProtocol.sDebugTracing) {
+            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                    "onTouchEvent " + ev);
+        }
         final int action = ev.getAction();
 
         switch (action) {
             case MotionEvent.ACTION_MOVE:
+                if (com.android.launcher3.TestProtocol.sDebugTracing) {
+                    android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                            "onTouchEvent MOVE");
+                }
                 mEventListener.onDriverDragMove(ev.getX(), ev.getY());
                 break;
             case MotionEvent.ACTION_UP:

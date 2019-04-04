@@ -126,6 +126,10 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     protected boolean findActiveController(MotionEvent ev) {
         if (mActivity.getStateManager().getState().disableInteraction) {
             // You Shall Not Pass!!!
+            if (com.android.launcher3.TestProtocol.sDebugTracing) {
+                android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                        "mActiveController = null");
+            }
             mActiveController = null;
             return true;
         }

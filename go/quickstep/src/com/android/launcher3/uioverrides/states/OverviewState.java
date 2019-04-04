@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.uioverrides;
+package com.android.launcher3.uioverrides.states;
 
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
@@ -90,5 +90,18 @@ public class OverviewState extends LauncherState {
 
     public static float getDefaultSwipeHeight(DeviceProfile dp) {
         return dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx;
+    }
+
+
+    public static OverviewState newBackgroundState(int id) {
+        return new OverviewState(id);
+    }
+
+    public static OverviewState newPeekState(int id) {
+        return new OverviewState(id);
+    }
+
+    public static OverviewState newSwitchState(int id) {
+        return new OverviewState(id);
     }
 }

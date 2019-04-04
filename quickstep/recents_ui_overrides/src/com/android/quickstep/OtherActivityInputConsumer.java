@@ -24,6 +24,7 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
+import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
@@ -55,6 +56,7 @@ import com.android.quickstep.util.RecentsAnimationListenerSet;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.InputConsumerController;
+import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.NavigationBarCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
@@ -80,6 +82,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private final TaskOverlayFactory mTaskOverlayFactory;
     private final InputConsumerController mInputConsumer;
     private final SwipeSharedState mSwipeSharedState;
+    private final InputMonitorCompat mInputMonitorCompat;
 
     private final int mDisplayRotation;
     private final Rect mStableInsets = new Rect();
@@ -117,7 +120,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             boolean isDeferredDownTarget, OverviewCallbacks overviewCallbacks,
             TaskOverlayFactory taskOverlayFactory, InputConsumerController inputConsumer,
             Consumer<OtherActivityInputConsumer> onCompleteCallback,
-            SwipeSharedState swipeSharedState) {
+            SwipeSharedState swipeSharedState, InputMonitorCompat inputMonitorCompat) {
         super(base);
 
         mMainThreadHandler = new Handler(Looper.getMainLooper());
@@ -128,6 +131,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mMotionPauseDetector = new MotionPauseDetector(base);
         mOnCompleteCallback = onCompleteCallback;
         mVelocityTracker = VelocityTracker.obtain();
+        mInputMonitorCompat = inputMonitorCompat;
 
         mActivityControlHelper = activityControl;
         boolean continuingPreviousGesture = swipeSharedState.getActiveListener() != null;
@@ -251,7 +255,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         float orthogonalDisplacement = !isLandscape
                                 ? ev.getX() - mDownPos.x
                                 : ev.getY() - mDownPos.y;
-                        mMotionPauseDetector.addPosition(displacement, orthogonalDisplacement);
+                        mMotionPauseDetector.addPosition(displacement, orthogonalDisplacement,
+                                ev.getEventTime());
                     }
                 }
                 break;
@@ -274,6 +279,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         if (mInteractionHandler == null) {
             return;
         }
+        mInputMonitorCompat.pilferPointers();
 
         mOverviewCallbacks.closeAllWindows();
         ActivityManagerWrapper.getInstance().closeSystemWindows(
@@ -284,12 +290,12 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private boolean isNavBarOnRight() {
-        return !NavBarModeOverlayResourceObserver.isEdgeToEdgeModeEnabled(getBaseContext())
+        return SysUINavigationMode.INSTANCE.get(getBaseContext()).getMode() != NO_BUTTON
                 && mDisplayRotation == Surface.ROTATION_90 && mStableInsets.right > 0;
     }
 
     private boolean isNavBarOnLeft() {
-        return !NavBarModeOverlayResourceObserver.isEdgeToEdgeModeEnabled(getBaseContext())
+        return SysUINavigationMode.INSTANCE.get(getBaseContext()).getMode() != NO_BUTTON
                 && mDisplayRotation == Surface.ROTATION_270 && mStableInsets.left > 0;
     }
 

@@ -21,6 +21,11 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.SWIPE;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.SWIPE_NOOP;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction.UPLEFT;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction.UPRIGHT;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType.NAVBAR;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -32,6 +37,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.launcher3.R;
@@ -66,6 +72,7 @@ public class AssistantTouchConsumer implements InputConsumer {
     private long mDragTime;
     private float mLastProgress;
     private int mState;
+    private int mDirection;
 
     private final float mDistThreshold;
     private final long mTimeThreshold;
@@ -74,10 +81,12 @@ public class AssistantTouchConsumer implements InputConsumer {
     private final MotionPauseDetector mMotionPauseDetector;
     private final ISystemUiProxy mSysUiProxy;
     private final InputConsumer mConsumerDelegate;
+    private final Context mContext;
 
     public AssistantTouchConsumer(Context context, ISystemUiProxy systemUiProxy,
             InputConsumer delegate) {
         final Resources res = context.getResources();
+        mContext = context;
         mSysUiProxy = systemUiProxy;
         mConsumerDelegate = delegate;
         mMotionPauseDetector = new MotionPauseDetector(context);
@@ -151,6 +160,7 @@ public class AssistantTouchConsumer implements InputConsumer {
                         // Determine if angle is larger than threshold for assistant detection
                         float angle = (float) Math.toDegrees(
                                 Math.atan2(mDownPos.y - mLastPos.y, mDownPos.x - mLastPos.x));
+                        mDirection = angle > 90 ? UPLEFT : UPRIGHT;
                         angle = angle > 90 ? 180 - angle : angle;
                         if (angle > mAngleThreshold) {
                             mState = STATE_ASSISTANT_ACTIVE;
@@ -170,7 +180,7 @@ public class AssistantTouchConsumer implements InputConsumer {
                     // Movement
                     mDistance = (float) Math.hypot(mLastPos.x - mStartDragPos.x,
                             mLastPos.y - mStartDragPos.y);
-                    mMotionPauseDetector.addPosition(mDistance, 0);
+                    mMotionPauseDetector.addPosition(mDistance, 0, ev.getEventTime());
                     if (mDistance >= 0) {
                         final long diff = SystemClock.uptimeMillis() - mDragTime;
                         mTimeFraction = Math.min(diff * 1f / mTimeThreshold, 1);
@@ -184,9 +194,12 @@ public class AssistantTouchConsumer implements InputConsumer {
                 if (mState != STATE_DELEGATE_ACTIVE && !mLaunchedAssistant) {
                     ValueAnimator animator = ValueAnimator.ofFloat(mLastProgress, 0)
                             .setDuration(RETRACT_ANIMATION_DURATION_MS);
+                    UserEventDispatcher.newInstance(mContext).logActionOnContainer(
+                            SWIPE_NOOP, mDirection, NAVBAR);
                     animator.addUpdateListener(valueAnimator -> {
                             float progress = (float) valueAnimator.getAnimatedValue();
                             try {
+
                                 mSysUiProxy.onAssistantProgress(progress);
                             } catch (RemoteException e) {
                                 Log.w(TAG, "Failed to send SysUI start/send assistant progress: "
@@ -211,8 +224,9 @@ public class AssistantTouchConsumer implements InputConsumer {
             mLastProgress = progress;
             try {
                 mSysUiProxy.onAssistantProgress(progress);
-
                 if (mDistance >= mDistThreshold && mTimeFraction >= 1) {
+                    UserEventDispatcher.newInstance(mContext).logActionOnContainer(
+                            SWIPE, mDirection, NAVBAR);
                     mSysUiProxy.startAssistant(new Bundle());
                     mLaunchedAssistant = true;
                 }

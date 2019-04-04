@@ -24,6 +24,7 @@ import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_D
 import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_STIFFNESS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -44,6 +45,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -75,7 +77,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
         LayoutUtils.calculateLauncherTaskSize(context, dp, outRect);
         if (dp.isVerticalBarLayout()
-                && !NavBarModeOverlayResourceObserver.isEdgeToEdgeModeEnabled(context)) {
+                && SysUINavigationMode.INSTANCE.get(context).getMode() != NO_BUTTON) {
             Rect targetInsets = dp.getInsets();
             int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
             return dp.hotseatBarSizePx + hotseatInset;
@@ -97,6 +99,14 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         DiscoveryBounce.showForOverviewIfNeeded(activity);
     }
 
+    @Override
+    public void onAssistantVisibilityChanged(float visibility) {
+        Launcher launcher = getCreatedActivity();
+        if (launcher != null) {
+            launcher.setQuickSearchBarAlpha(1f - visibility);
+        }
+    }
+
     @NonNull
     @Override
     public HomeAnimationFactory prepareHomeUI(Launcher activity) {
@@ -114,8 +124,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         final Rect iconLocation = new Rect();
         final FloatingIconView floatingView = workspaceView == null ? null
                 : FloatingIconView.getFloatingIconView(activity, workspaceView,
-                true /* hideOriginal */, false /* useDrawableAsIs */,
-                activity.getDeviceProfile().getAspectRatioWithInsets(), iconLocation, null);
+                true /* hideOriginal */, iconLocation, false /* isOpening */, null /* recycle */);
 
         return new HomeAnimationFactory() {
             @Nullable

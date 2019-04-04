@@ -30,7 +30,6 @@ else
     LOCAL_STATIC_JAVA_LIBRARIES += libSharedSystemUI
 
     LOCAL_SRC_FILES := $(call all-java-files-under, tapl) \
-        ../quickstep/src/com/android/quickstep/SwipeUpSetting.java \
         ../src/com/android/launcher3/util/SecureSettingsObserver.java \
         ../src/com/android/launcher3/TestProtocol.java
 endif
