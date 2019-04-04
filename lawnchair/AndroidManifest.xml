@@ -342,18 +342,6 @@
             android:name="ch.deletescape.lawnchair.BlankActivity"
             android:theme="@style/Theme.Transparent"/>
 
-        <activity
-            android:name="ch.deletescape.lawnchair.FakeLauncher"
-            android:enabled="false">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.HOME" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
         <!-- DT2S using screen timeout -->
         <activity
             android:name="ch.deletescape.lawnchair.gestures.handlers.SleepTimeoutActivity"

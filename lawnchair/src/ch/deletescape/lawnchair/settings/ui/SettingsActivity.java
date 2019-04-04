@@ -24,8 +24,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -63,7 +61,7 @@ import androidx.preference.TwoStatePreference;
 import androidx.preference.internal.AbstractMultiSelectListPreference;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
-import ch.deletescape.lawnchair.FakeLauncherKt;
+import ch.deletescape.lawnchair.DefaultHomeCompat;
 import ch.deletescape.lawnchair.FeedBridge;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
@@ -143,8 +141,9 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
     private boolean isSubSettings;
     protected boolean forceSubSettings = false;
-
     private boolean hasPreview = false;
+
+    private DefaultHomeCompat mDefaultHomeCompat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,6 +174,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         updateUpButton();
 
         if (showSearch) {
+            mDefaultHomeCompat = DefaultHomeCompat.create(this);
             Toolbar toolbar = findViewById(R.id.search_action_bar);
             toolbar.setOnClickListener(this);
         }
@@ -245,7 +245,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 menuView.getOverflowIcon()
                         .setTint(ColorEngine.getInstance(this).getAccent());
             }
-            if (!BuildConfig.APPLICATION_ID.equals(resolveDefaultHome())) {
+            if (!mDefaultHomeCompat.isDefaultHome()) {
                 toolbar.inflateMenu(R.menu.menu_change_default_home);
             }
             toolbar.setOnMenuItemClickListener(menuItem -> {
@@ -255,7 +255,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
                         prefs.setNoFools(!prefs.getNoFools());
                         prefs.endBlockingEdit();
                     case R.id.action_change_default_home:
-                        FakeLauncherKt.changeDefaultHome(this);
+                        mDefaultHomeCompat.requestDefaultHome();
                         break;
                     case R.id.action_restart_lawnchair:
                         Utilities.killLauncher();
@@ -274,18 +274,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 }
                 return true;
             });
-        }
-    }
-
-    private String resolveDefaultHome() {
-        Intent homeIntent = new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_HOME);
-        ResolveInfo info = getPackageManager()
-                .resolveActivity(homeIntent, PackageManager.MATCH_DEFAULT_ONLY);
-        if (info != null && info.activityInfo != null) {
-            return info.activityInfo.packageName;
-        } else {
-            return null;
         }
     }
 
