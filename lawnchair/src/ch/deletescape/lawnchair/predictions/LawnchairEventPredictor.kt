@@ -134,7 +134,12 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
     }
 
     private fun tearDownBroadcastReceiver() {
-        context.unregisterReceiver(phonesStateChangeReceiver)
+        try {
+            context.unregisterReceiver(phonesStateChangeReceiver)
+        } catch(ignored: Exception) {
+            // there is apparently no way to reliably check if a receiver is actually registered and
+            // an exception is thrown when trying to unregister one that never was
+        }
     }
 
     override fun updatePredictions() {
