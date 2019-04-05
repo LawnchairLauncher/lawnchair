@@ -6,5 +6,5 @@
     android:gravity="center"
     android:paddingTop="@dimen/all_apps_divider_margin_vertical"
     android:paddingBottom="@dimen/all_apps_divider_margin_vertical"
-    android:text="@string/all_apps_label"
+    android:text="@string/apps_label"
     android:textSize="14sp" />

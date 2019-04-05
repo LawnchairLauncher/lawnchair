@@ -123,6 +123,13 @@
         android:title="@string/pref_category_misc">
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_showAllAppsLabel"
+            android:title="@string/all_apps_label_pref_title"
+            android:defaultValue="false"
+            android:persistent="true"
+            app:controllerClass=".AllAppsLabelController" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_separateWorkApps"
             android:title="@string/separate_work_apps_pref_title"
             android:defaultValue="true"

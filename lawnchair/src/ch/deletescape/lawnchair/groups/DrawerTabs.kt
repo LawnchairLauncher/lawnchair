@@ -19,7 +19,6 @@ package ch.deletescape.lawnchair.groups
 
 import android.content.Context
 import ch.deletescape.lawnchair.LawnchairPreferences
-import ch.deletescape.lawnchair.asNonEmpty
 import com.android.launcher3.R
 
 class DrawerTabs(prefs: LawnchairPreferences) : AppGroups<DrawerTabs.Tab>(prefs, "pref_drawerTabs") {
@@ -84,7 +83,7 @@ class DrawerTabs(prefs: LawnchairPreferences) : AppGroups<DrawerTabs.Tab>(prefs,
         }
     }
 
-    class AllAppsTab(context: Context) : PredefinedTab(context, TYPE_ALL_APPS, R.string.all_apps_label)
+    class AllAppsTab(context: Context) : PredefinedTab(context, TYPE_ALL_APPS, R.string.apps_label)
 
     class PersonalTab(context: Context) : PredefinedTab(context, TYPE_PERSONAL, R.string.all_apps_personal_tab)
 

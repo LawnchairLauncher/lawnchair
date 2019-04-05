@@ -218,7 +218,7 @@ public class ActionsRowView extends LinearLayout implements UpdateListener, LogC
                 textPaint.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
                 textPaint.setColor(ContextCompat.getColor(getContext(), Themes.getAttrBoolean(getContext(), R.attr.isMainColorDark) ? R.color.all_apps_label_text_dark : R.color.all_apps_label_text));
                 textPaint.setTextSize((float) getResources().getDimensionPixelSize(R.dimen.all_apps_label_text_size));
-                CharSequence text = getResources().getText(R.string.all_apps_label);
+                CharSequence text = getResources().getText(R.string.apps_label);
                 this.mAllAppsLabelLayout = Builder.obtain(text, 0, text.length(), textPaint, Math.round(textPaint.measureText(text.toString()))).setAlignment(Alignment.ALIGN_CENTER).setMaxLines(1).setIncludePad(true).build();
             } else {
                 this.mAllAppsLabelLayout = null;

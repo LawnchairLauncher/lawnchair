@@ -188,15 +188,15 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
     @SuppressLint("NewApi")
     public void setDividerType(DividerType dividerType) {
         int i = 0;
-        if (this.mDividerType != dividerType) {
+        if (mDividerType != dividerType) {
             if (dividerType == DividerType.ALL_APPS_LABEL) {
-                this.mAllAppsLabelTextPaint.setAntiAlias(true);
-                this.mAllAppsLabelTextPaint.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
-                this.mAllAppsLabelTextPaint.setTextSize((float) getResources().getDimensionPixelSize(R.dimen.all_apps_label_text_size));
+                mAllAppsLabelTextPaint.setAntiAlias(true);
+                mAllAppsLabelTextPaint.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                mAllAppsLabelTextPaint.setTextSize((float) getResources().getDimensionPixelSize(R.dimen.all_apps_label_text_size));
                 CharSequence text = getResources().getText(R.string.all_apps_label);
-                this.mAllAppsLabelLayout = Builder.obtain(text, 0, text.length(), this.mAllAppsLabelTextPaint, Math.round(this.mAllAppsLabelTextPaint.measureText(text.toString()))).setAlignment(Alignment.ALIGN_CENTER).setMaxLines(1).setIncludePad(true).build();
+                mAllAppsLabelLayout = Builder.obtain(text, 0, text.length(), mAllAppsLabelTextPaint, Math.round(mAllAppsLabelTextPaint.measureText(text.toString()))).setAlignment(Alignment.ALIGN_CENTER).setMaxLines(1).setIncludePad(true).build();
             } else {
-                this.mAllAppsLabelLayout = null;
+                mAllAppsLabelLayout = null;
             }
         }
         this.mDividerType = dividerType;

@@ -37,6 +37,7 @@ import ch.deletescape.lawnchair.util.Temperature
 import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
 import com.android.quickstep.OverviewInteractionState
+import com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -156,6 +157,10 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val allAppsEndAlpha get() = allAppsOpacity
     val allAppsSearch by BooleanPref("pref_allAppsSearch", true, recreate)
     val allAppsGlobalSearch by BooleanPref("pref_allAppsGoogleSearch", true, doNothing)
+    val showAllAppsLabel by BooleanPref("pref_showAllAppsLabel", false) {
+        val header = onChangeCallback?.launcher?.appsView?.floatingHeaderView as? PredictionsFloatingHeader
+        header?.updateShowAllAppsLabel()
+    }
     val separateWorkApps by BooleanPref("pref_separateWorkApps", true, recreate)
     val saveScrollPosition by BooleanPref("pref_keepScrollState", false, doNothing)
     private val drawerGridSizeDelegate = ResettableLazy { GridSize(this, "numColsDrawer", LauncherAppState.getIDP(context), recreate) }

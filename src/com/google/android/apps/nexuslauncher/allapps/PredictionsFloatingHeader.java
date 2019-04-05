@@ -58,7 +58,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         super.onFinishInflate();
         mPredictionRowView = findViewById(R.id.prediction_row);
         mActionsRowView = findViewById(R.id.actions_row);
-        setShowAllAppsLabel(false);
+        updateShowAllAppsLabel();
     }
 
     @Override
@@ -150,6 +150,10 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         allowTouchForwarding(hasContent);
         propertySetter.setFloat(this, CONTENT_ALPHA, hasContent ? 1.0f : 0.0f, interpolator);
         mPredictionRowView.setContentVisibility(hasHeader, hasContent, propertySetter, interpolator);
+    }
+
+    public void updateShowAllAppsLabel() {
+        setShowAllAppsLabel(Utilities.getLawnchairPrefs(getContext()).getShowAllAppsLabel());
     }
 
     public void setShowAllAppsLabel(boolean show) {

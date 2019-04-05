@@ -299,9 +299,11 @@
     
     <string name="smartspace_provider_error">Something went wrong</string>
     <string name="smartspace_widget_provider_not_found">Something went wrong. Install or update the Google app.</string>
-    <string name="all_apps_label">Apps</string>
+    <string name="apps_label">Apps</string>
+    <string name="all_apps_label">All Apps</string>
+    <string name="all_apps_label_pref_title">Show "All Apps" label</string>
     <string name="separate_work_apps_pref_title">Second tab for work apps</string>
-    
+
     <string name="title_search_hidden_apps">Find hidden apps</string>
     <string name="summary_search_hidden_apps">Show hidden apps in results</string>
 
