@@ -166,9 +166,13 @@ public final class IconRecentsView extends FrameLayout {
      */
     public void onBeginTransitionToOverview() {
         mTaskRecyclerView.scheduleLayoutAnimation();
+
+        // Load any task changes
+        if (!mTaskLoader.needsToLoad()) {
+            return;
+        }
         mTaskAdapter.setIsShowingLoadingUi(true);
         mTaskAdapter.notifyDataSetChanged();
-        // Load any task changes
         mTaskLoader.loadTaskList(tasks -> {
             mTaskAdapter.setIsShowingLoadingUi(false);
             // TODO: Animate the loading UI out and the loaded data in.
