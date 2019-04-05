@@ -102,8 +102,9 @@ class DefaultPack(context: Context) : IconPack(context, "") {
     }
 
     override fun getIcon(launcherActivityInfo: LauncherActivityInfo,
-                         iconDpi: Int, flattenDrawable: Boolean, customIconEntry: IconPackManager.CustomIconEntry?,
-                         basePacks: Iterator<IconPack>, iconProvider: LawnchairIconProvider?): Drawable {
+                         iconDpi: Int, flattenDrawable: Boolean,
+                         customIconEntry: IconPackManager.CustomIconEntry?,
+                         iconProvider: LawnchairIconProvider?): Drawable {
         ensureInitialLoadComplete()
 
         val key: ComponentKey
@@ -131,7 +132,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         return iconProvider?.getDynamicIcon(info, iconDpi, flattenDrawable) ?: originalIcon
     }
 
-    override fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int, basePacks: Iterator<IconPack>): Drawable {
+    override fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
         ensureInitialLoadComplete()
 
         val drawable = DeepShortcutManager.getInstance(context).getShortcutIconDrawable(shortcutInfo, iconDpi)
@@ -156,8 +157,9 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
     }
 
-    override fun newIcon(icon: Bitmap, itemInfo: ItemInfo, customIconEntry: IconPackManager.CustomIconEntry?,
-                         basePacks: Iterator<IconPack>, drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable {
+    override fun newIcon(icon: Bitmap, itemInfo: ItemInfo,
+                         customIconEntry: IconPackManager.CustomIconEntry?,
+                         drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable {
         ensureInitialLoadComplete()
 
         if (Utilities.ATLEAST_OREO && itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {

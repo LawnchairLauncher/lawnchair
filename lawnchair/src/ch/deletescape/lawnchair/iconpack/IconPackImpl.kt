@@ -238,8 +238,9 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     }
 
     override fun getIcon(launcherActivityInfo: LauncherActivityInfo, iconDpi: Int,
-                         flattenDrawable: Boolean, customIconEntry: IconPackManager.CustomIconEntry?,
-                         basePacks: Iterator<IconPack>, iconProvider: LawnchairIconProvider?): Drawable {
+                         flattenDrawable: Boolean,
+                         customIconEntry: IconPackManager.CustomIconEntry?,
+                         iconProvider: LawnchairIconProvider?): Drawable? {
         ensureInitialLoadComplete()
 
         val component = launcherActivityInfo.componentName
@@ -266,28 +267,29 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
         if (prefs.iconPackMasking && packMask.hasMask) {
             val baseIcon = defaultPack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable,
-                    customIconEntry, basePacks, iconProvider)
+                    customIconEntry, iconProvider)
             return packMask.getIcon(context, baseIcon)
         }
 
-        return basePacks.next().getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null,
-                basePacks, iconProvider)
+        return null
     }
 
-    override fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int,
-                         basePacks: Iterator<IconPack>): Drawable {
+    override fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
         ensureInitialLoadComplete()
 
         if (prefs.iconPackMasking && packMask.hasMask) {
-            val baseIcon = defaultPack.getIcon(shortcutInfo, iconDpi, basePacks)
-            return packMask.getIcon(context, baseIcon)
+            val baseIcon = defaultPack.getIcon(shortcutInfo, iconDpi)
+            if (baseIcon != null) {
+                return packMask.getIcon(context, baseIcon)
+            }
         }
 
-        return basePacks.next().getIcon(shortcutInfo, iconDpi, basePacks)
+        return null
     }
 
-    override fun newIcon(icon: Bitmap, itemInfo: ItemInfo, customIconEntry: IconPackManager.CustomIconEntry?,
-                         basePacks: Iterator<IconPack>, drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable {
+    override fun newIcon(icon: Bitmap, itemInfo: ItemInfo,
+                         customIconEntry: IconPackManager.CustomIconEntry?,
+                         drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable? {
         ensureInitialLoadComplete()
 
         if (Utilities.ATLEAST_OREO && itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
@@ -310,8 +312,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 return FastBitmapDrawable(icon)
             }
         }
-        return basePacks.next().newIcon(icon, itemInfo, null,
-                basePacks, drawableFactory)
+        return null
     }
 
     override fun getAllIcons(callback: (List<PackEntry>) -> Unit, cancel: () -> Boolean) {

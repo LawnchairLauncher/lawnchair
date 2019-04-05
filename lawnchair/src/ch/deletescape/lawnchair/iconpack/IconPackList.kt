@@ -91,7 +91,7 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
     }
 
     private fun setPackList(packs: List<String>) {
-        onPackListUpdated(packs.filter { IconPackManager.isPackProvider(context, it) } + "")
+        onPackListUpdated(packs.filter { IconPackManager.isPackProvider(context, it) })
     }
 
     fun iterator() = appliedPacks.iterator()

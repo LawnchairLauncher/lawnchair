@@ -29,7 +29,6 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.text.TextUtils
-import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.override.AppInfoProvider
 import ch.deletescape.lawnchair.override.CustomInfoProvider
@@ -95,50 +94,39 @@ class IconPackManager(private val context: Context) {
                 iconProvider: LawnchairIconProvider?): Drawable {
         val customEntry = CustomInfoProvider.forItem<ItemInfo>(context, itemInfo)?.getIcon(itemInfo!!)
                 ?: appInfoProvider.getCustomIconEntry(launcherActivityInfo)
-        val pack = customEntry?.run {
+        val customPack = customEntry?.run {
             getIconPackInternal(packPackageName)
         }
-        return if (pack != null) {
-            pack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, customEntry,
-                    packList.iterator(), iconProvider)
-        } else {
-            val iterator = packList.iterator()
-            if (iterator.hasNext()) {
-                iterator.next().getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null,
-                        iterator, iconProvider)
-            } else {
-                // This should technically never be the case, but apparently it is
-                defaultPack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null,
-                        iterator, iconProvider)
-            }
+        if (customPack != null) {
+            customPack.getIcon(launcherActivityInfo, iconDpi,
+                    flattenDrawable, customEntry, iconProvider)?.let { icon -> return icon }
         }
+        packList.iterator().forEach { pack ->
+            pack.getIcon(launcherActivityInfo, iconDpi,
+                    flattenDrawable, null, iconProvider)?.let { return it }
+        }
+        return defaultPack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null, iconProvider)
     }
 
-    fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable {
-        val iterator = packList.iterator()
-        return if (iterator.hasNext()) {
-            iterator.next().getIcon(shortcutInfo, iconDpi, packList.iterator())
-        } else {
-            // This should technically never be the case, but apparently it is
-            defaultPack.getIcon(shortcutInfo, iconDpi, packList.iterator())
+    fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
+        packList.iterator().forEach { pack ->
+            pack.getIcon(shortcutInfo, iconDpi)?.let { return it }
         }
+        return defaultPack.getIcon(shortcutInfo, iconDpi)
     }
 
     fun newIcon(icon: Bitmap, itemInfo: ItemInfo, drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable {
         val key = itemInfo.targetComponent?.let { ComponentKey(it, itemInfo.user) }
         val customEntry = CustomInfoProvider.forItem<ItemInfo>(context, itemInfo)?.getIcon(itemInfo)
                 ?: key?.let { appInfoProvider.getCustomIconEntry(it) }
-        val pack = customEntry?.run { getIconPackInternal(packPackageName) }
-        return if (pack != null) {
-            pack.newIcon(icon, itemInfo, customEntry, packList.iterator(), drawableFactory)
-        } else {
-            val iterator = packList.iterator()
-            if (iterator.hasNext()) {
-                iterator.next().newIcon(icon, itemInfo, customEntry, iterator, drawableFactory)
-            } else {
-                defaultPack.newIcon(icon, itemInfo, customEntry, iterator, drawableFactory)
-            }
+        val customPack = customEntry?.run { getIconPackInternal(packPackageName) }
+        if (customPack != null) {
+            customPack.newIcon(icon, itemInfo, customEntry, drawableFactory)?.let { return it }
         }
+        packList.iterator().forEach { pack ->
+            pack.newIcon(icon, itemInfo, customEntry, drawableFactory)?.let { return it }
+        }
+        return defaultPack.newIcon(icon, itemInfo, customEntry, drawableFactory)
     }
 
     fun maskSupported(): Boolean = packList.appliedPacks.any { it.supportsMasking() }

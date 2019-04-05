@@ -74,13 +74,15 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
     }
 
     abstract fun getIcon(launcherActivityInfo: LauncherActivityInfo,
-                         iconDpi: Int, flattenDrawable: Boolean, customIconEntry: IconPackManager.CustomIconEntry?,
-                         basePacks: Iterator<IconPack>, iconProvider: LawnchairIconProvider?): Drawable
+                         iconDpi: Int, flattenDrawable: Boolean,
+                         customIconEntry: IconPackManager.CustomIconEntry?,
+                         iconProvider: LawnchairIconProvider?): Drawable?
 
-    abstract fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int, basePacks: Iterator<IconPack>): Drawable
+    abstract fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable?
 
-    abstract fun newIcon(icon: Bitmap, itemInfo: ItemInfo, customIconEntry: IconPackManager.CustomIconEntry?,
-                         basePacks: Iterator<IconPack>, drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable
+    abstract fun newIcon(icon: Bitmap, itemInfo: ItemInfo,
+                         customIconEntry: IconPackManager.CustomIconEntry?,
+                         drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable?
 
     open fun getAllIcons(callback: (List<PackEntry>) -> Unit, cancel: () -> Boolean) {
         ensureInitialLoadComplete()

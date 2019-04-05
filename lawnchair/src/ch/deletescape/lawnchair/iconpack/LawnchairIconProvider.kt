@@ -36,7 +36,7 @@ class LawnchairIconProvider(context: Context) : DynamicIconProvider(context) {
         return iconPackManager.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, itemInfo, this)
     }
 
-    fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable {
+    fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
         return iconPackManager.getIcon(shortcutInfo, iconDpi)
     }
 
