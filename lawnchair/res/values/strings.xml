@@ -492,6 +492,10 @@
         <item quantity="one">%1$d app</item>
         <item quantity="other">%1$d apps</item>
     </plurals>
+
+    <plurals name="hidden_apps_count">
+        <item quantity="other">%1$d hidden</item>
+    </plurals>
     
     <string name="selected_count">%1$d selected</string>
     <string name="tab_manage_apps">Manage apps</string>

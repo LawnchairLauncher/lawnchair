@@ -32,7 +32,7 @@ import ch.deletescape.lawnchair.tintDrawable
 import com.android.launcher3.R
 
 @Keep
-class DrawerTabsFragment : RecyclerViewFragment(), LawnchairPreferences.OnPreferenceChangeListener {
+class DrawerTabsFragment : RecyclerViewFragment() {
 
     private var adapter: DrawerTabsAdapter? = null
 
@@ -72,17 +72,12 @@ class DrawerTabsFragment : RecyclerViewFragment(), LawnchairPreferences.OnPrefer
     override fun onResume() {
         super.onResume()
 
-        context!!.lawnchairPrefs.addOnPreferenceChangeListener("pref_drawerTabs", this)
+        adapter?.reloadTabs()
     }
 
     override fun onPause() {
         super.onPause()
 
-        context!!.lawnchairPrefs.removeOnPreferenceChangeListener("pref_drawerTabs", this)
         adapter?.saveChanges()
-    }
-
-    override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
-        adapter!!.reloadTabs()
     }
 }

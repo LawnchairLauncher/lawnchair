@@ -122,7 +122,7 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
         private fun startEdit() {
             if (deleted) return
             val tab = tabs[adapterPosition]
-            DrawerTabEditBottomSheet.edit(context, tab)
+            DrawerTabEditBottomSheet.edit(context, tab, ::reloadTabs)
         }
 
         private fun delete() {

@@ -18,17 +18,22 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Process
 import android.os.ResultReceiver
+import android.os.UserHandle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import ch.deletescape.lawnchair.LawnchairAppFilter
+import ch.deletescape.lawnchair.groups.DrawerTabs
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
+import com.android.launcher3.AppFilter
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 
@@ -59,13 +64,16 @@ class SelectableAppsActivity : SettingsActivity() {
         private var changed = false
 
         override fun onRecyclerViewCreated(recyclerView: RecyclerView) {
-            selection = HashSet(arguments!!.getStringArrayList(KEY_SELECTION))
-            
+            val arguments = arguments!!
+            val isWork = if (arguments.containsKey(KEY_FILTER_IS_WORK))
+                arguments.getBoolean(KEY_FILTER_IS_WORK) else null
+            selection = HashSet(arguments.getStringArrayList(KEY_SELECTION))
+
             val context = recyclerView.context
             recyclerView.setHasFixedSize(true)
             recyclerView.layoutManager = LinearLayoutManager(context)
             recyclerView.adapter = SelectableAppsAdapter.ofProperty(activity!!,
-                    ::selection, this, LawnchairAppFilter(context))
+                    ::selection, this, createAppFilter(context, DrawerTabs.getWorkFilter(isWork)))
         }
 
         override fun onDestroy() {
@@ -101,9 +109,10 @@ class SelectableAppsActivity : SettingsActivity() {
         
         private const val KEY_SELECTION = "selection"
         private const val KEY_CALLBACK = "callback"
+        private const val KEY_FILTER_IS_WORK = "filterIsWork"
 
         fun start(context: Context, selection: Collection<ComponentKey>,
-                  callback: (Collection<ComponentKey>?) -> Unit) {
+                  callback: (Collection<ComponentKey>?) -> Unit, filterIsWork: Boolean? = null) {
             val intent = Intent(context, SelectableAppsActivity::class.java).apply {
                 putStringArrayListExtra(KEY_SELECTION, ArrayList(selection.map { it.toString() }))
                 putExtra(KEY_CALLBACK, object : ResultReceiver(Handler()) {
@@ -118,9 +127,23 @@ class SelectableAppsActivity : SettingsActivity() {
                         }
                     }
                 })
+                filterIsWork?.let { putExtra(KEY_FILTER_IS_WORK, it) }
             }
             context.startActivity(intent)
-            Log.d("Tabs", "intent sent")
+        }
+
+        private fun createAppFilter(context: Context, predicate: (ComponentKey) -> Boolean): AppFilter {
+            return object : AppFilter() {
+
+                val base = LawnchairAppFilter(context)
+
+                override fun shouldShowApp(app: ComponentName, user: UserHandle?): Boolean {
+                    if (!base.shouldShowApp(app, user)) {
+                        return false
+                    }
+                    return predicate(ComponentKey(app, user ?: Process.myUserHandle()))
+                }
+            }
         }
     }
 }

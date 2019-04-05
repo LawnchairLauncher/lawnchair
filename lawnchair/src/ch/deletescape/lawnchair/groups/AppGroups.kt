@@ -132,7 +132,7 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
     fun saveToJson() {
         val arr = JSONArray()
         groups.forEach { group ->
-            arr.put(JSONObject(group.saveCustomizationsInternal()))
+            arr.put(JSONObject(group.saveCustomizationsInternal(context)))
         }
 
         val obj = JSONObject()
@@ -151,7 +151,6 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
         const val KEY_TYPE = "type"
         const val KEY_COLOR = "color"
         const val KEY_TITLE = "title"
-        const val KEY_ITEMS = "items"
         const val KEY_HIDE_FROM_ALL_APPS = "hideFromAllApps"
 
         const val TYPE_UNDEFINED = -1
@@ -180,16 +179,16 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
             customizations.entries.forEach { it.loadFromJsonInternal(context, obj[it.key]) }
         }
 
-        fun saveCustomizationsInternal(): Map<String, Any> {
+        fun saveCustomizationsInternal(context: Context): Map<String, Any> {
             val obj = HashMap<String, Any>()
-            saveCustomizations(obj)
+            saveCustomizations(context, obj)
             return obj
         }
 
-        open fun saveCustomizations(obj: MutableMap<String, Any>) {
+        open fun saveCustomizations(context: Context, obj: MutableMap<String, Any>) {
             obj[KEY_TYPE] = type
             customizations.entries.forEach { entry ->
-                entry.saveToJson()?.let { obj[entry.key] = it }
+                entry.saveToJson(context)?.let { obj[entry.key] = it }
             }
         }
 
@@ -210,11 +209,11 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
 
             abstract fun loadFromJson(context: Context, obj: S?)
 
-            abstract fun saveToJson(): S?
+            abstract fun saveToJson(context: Context): S?
 
             abstract fun clone(): Customization<T, S>
 
-            fun applyFrom(other: Customization<*, *>) {
+            open fun applyFrom(other: Customization<*, *>) {
                 value = other.value as? T
             }
 
@@ -230,7 +229,7 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
                 value = obj
             }
 
-            override fun saveToJson(): String? {
+            override fun saveToJson(context: Context): String? {
                 return value
             }
 
@@ -265,7 +264,7 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
                 return view
             }
 
-            override fun saveToJson(): String? {
+            override fun saveToJson(context: Context): String? {
                 return value?.asNonEmpty()
             }
 
@@ -281,7 +280,7 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
                 value = obj
             }
 
-            override fun saveToJson(): Boolean? {
+            override fun saveToJson(context: Context): Boolean? {
                 return value
             }
 
@@ -327,7 +326,7 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
                 value = obj?.let { AppGroupsUtils.getInstance(context).createColorResolver(it) }
             }
 
-            override fun saveToJson(): String? {
+            override fun saveToJson(context: Context): String? {
                 return if (value is LawnchairAccentResolver) null else value.toString()
             }
 
@@ -402,7 +401,7 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
                 }
             }
 
-            override fun saveToJson(): JSONArray? {
+            override fun saveToJson(context: Context): JSONArray? {
                 val list = value ?: return null
                 val array = JSONArray()
                 list.forEach { array.put(flatten(it)) }
@@ -449,12 +448,12 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
                 updateCount(view)
 
                 view.setOnClickListener {
-                    SelectableAppsActivity.start(context, value()) { newSelections ->
+                    SelectableAppsActivity.start(context, value(), { newSelections ->
                         if (newSelections != null) {
                             value = HashSet(newSelections)
                             updateCount(view)
                         }
-                    }
+                    })
                 }
 
                 return view
