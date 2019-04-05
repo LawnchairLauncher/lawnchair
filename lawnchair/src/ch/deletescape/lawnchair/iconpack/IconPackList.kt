@@ -36,6 +36,8 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
     private val loadedPacks = HashMap<String, LoadedPack>()
     val appliedPacks = ArrayList<IconPack>()
 
+    private val default by lazy { DefaultLoadedPack() }
+
     init {
         reloadPacks()
     }
@@ -70,7 +72,7 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
     }
 
     private fun loadPack(packageName: String) = if (!TextUtils.isEmpty(packageName))
-        LoadedPackImpl(packageName) else DefaultLoadedPack()
+        LoadedPackImpl(packageName) else default
 
     fun getPack(packageName: String, keep: Boolean): IconPack {
         if (keep) {
@@ -96,7 +98,7 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
 
     fun iterator() = appliedPacks.iterator()
 
-    fun currentPack() = appliedPacks[0]
+    fun currentPack() = if (!appliedPacks.isEmpty()) appliedPacks[0] else default.iconPack
 
     fun getAvailablePacks(): MutableSet<PackInfo> {
         val pm = context.packageManager
