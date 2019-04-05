@@ -235,4 +235,8 @@
 <!-- Hints -->
     <dimen name="chip_hint_height">26dp</dimen>
     <dimen name="chip_hint_bottom_margin">194dp</dimen>
+
+<!-- Theming related -->
+    <dimen name="default_dialog_corner_radius">8dp</dimen>
+
 </resources>

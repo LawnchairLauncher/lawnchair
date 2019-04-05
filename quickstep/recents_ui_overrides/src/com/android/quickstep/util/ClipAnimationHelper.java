@@ -35,6 +35,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.views.RecentsView;
@@ -101,9 +102,7 @@ public class ClipAnimationHelper {
     public ClipAnimationHelper(Context context) {
         mWindowCornerRadius = getWindowCornerRadius(context.getResources());
         mSupportsRoundedCornersOnWindows = supportsRoundedCornersOnWindows(context.getResources());
-        int taskCornerRadiusRes = mSupportsRoundedCornersOnWindows ?
-                R.dimen.task_corner_radius : R.dimen.task_corner_radius_small;
-        mTaskCornerRadius = context.getResources().getDimension(taskCornerRadiusRes);
+        mTaskCornerRadius = Themes.getDialogCornerRadius(context);
     }
 
     private void updateSourceStack(RemoteAnimationTargetCompat target) {
