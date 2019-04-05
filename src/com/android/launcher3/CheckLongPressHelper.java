@@ -33,12 +33,20 @@ public class CheckLongPressHelper {
 
     class CheckForLongPress implements Runnable {
         public void run() {
+            if (com.android.launcher3.TestProtocol.sDebugTracing) {
+                android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                        "CheckForLongPress1");
+            }
             if ((mView.getParent() != null) && mView.hasWindowFocus()
                     && !mHasPerformedLongPress) {
                 boolean handled;
                 if (mListener != null) {
                     handled = mListener.onLongClick(mView);
                 } else {
+                    if (com.android.launcher3.TestProtocol.sDebugTracing) {
+                        android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                                "CheckForLongPress2");
+                    }
                     handled = mView.performLongClick();
                 }
                 if (handled) {
@@ -73,11 +81,20 @@ public class CheckLongPressHelper {
         }
         mView.postDelayed(mPendingCheckForLongPress,
                 (long) (ViewConfiguration.getLongPressTimeout() * mLongPressTimeoutFactor));
+        if (com.android.launcher3.TestProtocol.sDebugTracing) {
+            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                    "postCheckForLongPress: " + ViewConfiguration.getLongPressTimeout() + " "
+                            + mLongPressTimeoutFactor);
+        }
     }
 
     public void cancelLongPress() {
         mHasPerformedLongPress = false;
         if (mPendingCheckForLongPress != null) {
+            if (com.android.launcher3.TestProtocol.sDebugTracing) {
+                android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                        "cancelLongPress");
+            }
             mView.removeCallbacks(mPendingCheckForLongPress);
             mPendingCheckForLongPress = null;
         }
