@@ -18,10 +18,10 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <TextView
@@ -31,6 +31,7 @@
         android:layout_marginStart="56dp"
         android:layout_marginEnd="16dp"
         android:text="@string/tab_name"
+        android:textAlignment="viewStart"
         android:textColor="?android:colorAccent"
         app:customFontType="preferenceTitle"/>
 
@@ -44,6 +45,7 @@
         android:inputType="textCapWords"
         android:selectAllOnFocus="true"
         android:singleLine="true"
+        android:textAlignment="viewStart"
         style="@style/TextAppearance.AppCompat.Title"
         tools:text="Favorites"
         app:customFontType="title"/>
