@@ -161,11 +161,13 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     private void updateIndicatorPosition() {
         float scaled = mScrollOffset * (getChildCount() - 1);
         int left = -1, right = -1;
-        int leftIndex = (int) Math.floor(scaled);
-        float leftFraction = scaled - leftIndex;
+        int position = (int) Math.floor(scaled);
+        float leftFraction = scaled - position;
         float rightFraction = 1 - leftFraction;
+        int leftIndex = mIsRtl ? getChildCount() - position - 1 : position;
+        int rightIndex = mIsRtl ? leftIndex - 1 : leftIndex + 1;
         ColoredButton leftTab = (ColoredButton) getChildAt(leftIndex);
-        ColoredButton rightTab = (ColoredButton) getChildAt(leftIndex + 1);
+        ColoredButton rightTab = (ColoredButton) getChildAt(rightIndex);
         if (leftTab != null && rightTab != null) {
             int leftWidth = leftTab.getWidth();
             int rightWidth = rightTab.getWidth();
