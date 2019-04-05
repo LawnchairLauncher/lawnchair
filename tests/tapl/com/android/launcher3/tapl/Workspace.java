@@ -114,7 +114,7 @@ public final class Workspace extends Home {
         if (!isWorkspaceScrollable(workspace)) {
             dragIconToWorkspace(
                     mLauncher,
-                    getHotseatAppIcon("Play Store"),
+                    getHotseatAppIcon("Chrome"),
                     new Point(mLauncher.getDevice().getDisplayWidth(),
                             workspace.getVisibleBounds().centerY()),
                     (int) (ICON_DRAG_SPEED * mLauncher.getDisplayDensity()));
@@ -148,8 +148,7 @@ public final class Workspace extends Home {
      */
     public void flingForward() {
         final UiObject2 workspace = verifyActiveContainer();
-        final int margin = (int) (50 * mLauncher.getDisplayDensity()) + 1;
-        workspace.setGestureMargins(0, 0, margin, 0);
+        workspace.setGestureMargins(0, 0, mLauncher.getEdgeSensitivityWidth(), 0);
         workspace.fling(Direction.RIGHT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
         mLauncher.waitForIdle();
         verifyActiveContainer();
@@ -161,8 +160,7 @@ public final class Workspace extends Home {
      */
     public void flingBackward() {
         final UiObject2 workspace = verifyActiveContainer();
-        final int margin = (int) (50 * mLauncher.getDisplayDensity()) + 1;
-        workspace.setGestureMargins(margin, 0, 0, 0);
+        workspace.setGestureMargins(mLauncher.getEdgeSensitivityWidth(), 0, 0, 0);
         workspace.fling(Direction.LEFT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
         mLauncher.waitForIdle();
         verifyActiveContainer();

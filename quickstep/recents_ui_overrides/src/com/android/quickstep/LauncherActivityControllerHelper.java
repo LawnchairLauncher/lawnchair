@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 import static android.view.View.TRANSLATION_Y;
+
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -24,7 +25,6 @@ import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_D
 import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_STIFFNESS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -45,16 +45,15 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
+import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
@@ -76,8 +75,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     @Override
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
         LayoutUtils.calculateLauncherTaskSize(context, dp, outRect);
-        if (dp.isVerticalBarLayout()
-                && SysUINavigationMode.INSTANCE.get(context).getMode() != NO_BUTTON) {
+        if (dp.isVerticalBarLayout() && SysUINavigationMode.getMode(context) != Mode.NO_BUTTON) {
             Rect targetInsets = dp.getInsets();
             int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
             return dp.hotseatBarSizePx + hotseatInset;
@@ -254,8 +252,8 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
 
         AnimatorSet anim = new AnimatorSet();
         if (!activity.getDeviceProfile().isVerticalBarLayout()
-                && !FeatureFlags.SWIPE_HOME.get()) {
-            // Don't animate the shelf when SWIPE_HOME is true, because we update it atomically.
+                && SysUINavigationMode.getMode(activity) != Mode.NO_BUTTON) {
+            // Don't animate the shelf when the mode is NO_BUTTON, because we update it atomically.
             Animator shiftAnim = createShelfProgressAnim(activity,
                     fromState.getVerticalProgress(activity),
                     endState.getVerticalProgress(activity));

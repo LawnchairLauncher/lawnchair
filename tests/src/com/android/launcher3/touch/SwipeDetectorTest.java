@@ -17,6 +17,7 @@ package com.android.launcher3.touch;
 
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyFloat;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -149,7 +150,7 @@ public class SwipeDetectorTest {
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100, 100 + mTouchSlop);
         // TODO: actually calculate the following parameters and do exact value checks.
-        verify(mMockListener).onDrag(anyFloat());
+        verify(mMockListener).onDrag(anyFloat(), anyObject());
     }
 
     @Test
