@@ -24,13 +24,9 @@ public class CustomAppFilter extends LawnchairAppFilter {
                 && (user == null || !isHiddenApp(mContext, new ComponentKey(componentName, user)));
     }
 
-    static void resetAppFilter(Context context) {
-        Utilities.getLawnchairPrefs(context).setHiddenAppSet(new HashSet<String>());
-    }
-
     static void setComponentNameState(Context context, ComponentKey key, boolean hidden) {
         String comp = key.toString();
-        Set<String> hiddenApps = getHiddenApps(context);
+        Set<String> hiddenApps = new HashSet<>(getHiddenApps(context));
         while (hiddenApps.contains(comp)) {
             hiddenApps.remove(comp);
         }
@@ -45,8 +41,8 @@ public class CustomAppFilter extends LawnchairAppFilter {
     }
 
     @SuppressWarnings("ConstantConditions") // This can't be null anyway
-    public static Set<String> getHiddenApps(Context context) {
-        return new HashSet<>(Utilities.getLawnchairPrefs(context).getHiddenAppSet());
+    private static Set<String> getHiddenApps(Context context) {
+        return Utilities.getLawnchairPrefs(context).getHiddenAppSet();
     }
 
     public static void setHiddenApps(Context context, Set<String> hiddenApps) {
