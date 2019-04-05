@@ -153,7 +153,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     }
 
     public void updateShowAllAppsLabel() {
-        setShowAllAppsLabel(Utilities.getLawnchairPrefs(getContext()).getShowAllAppsLabel());
+        setShowAllAppsLabel(Utilities.ATLEAST_MARSHMALLOW && Utilities.getLawnchairPrefs(getContext()).getShowAllAppsLabel());
     }
 
     public void setShowAllAppsLabel(boolean show) {

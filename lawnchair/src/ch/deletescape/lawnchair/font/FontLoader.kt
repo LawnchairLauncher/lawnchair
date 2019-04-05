@@ -25,7 +25,8 @@ class FontLoader(font: FontCache.Font) : FontCache.Font.LoadCallback {
 
     private var fontLoaded = false
     private var face: Typeface? = null
-    private var waitingTasks = HashMap<TextView, Typeface>()
+    private var textViews = HashMap<TextView, Typeface>()
+    private var receivers = HashMap<FontReceiver, Typeface>()
 
     init {
         font.load(this)
@@ -35,17 +36,33 @@ class FontLoader(font: FontCache.Font) : FontCache.Font.LoadCallback {
         runOnMainThread {
             fontLoaded = true
             face = typeface
-            waitingTasks.entries.forEach { into(it.key, it.value) }
-            waitingTasks.clear()
+            textViews.entries.forEach { into(it.key, it.value) }
+            textViews.clear()
+            receivers.entries.forEach { into(it.key, it.value) }
+            receivers.clear()
         }
     }
 
     fun into(target: TextView, fallback: Typeface) {
         if (!fontLoaded) {
             target.typeface = fallback
-            waitingTasks[target] = fallback
+            textViews[target] = fallback
         } else {
             target.typeface = face ?: fallback
         }
+    }
+
+    fun into(target: FontReceiver, fallback: Typeface) {
+        if (!fontLoaded) {
+            target.setTypeface(fallback)
+            receivers[target] = fallback
+        } else {
+            target.setTypeface(face ?: fallback)
+        }
+    }
+
+    interface FontReceiver {
+
+        fun setTypeface(typeface: Typeface)
     }
 }

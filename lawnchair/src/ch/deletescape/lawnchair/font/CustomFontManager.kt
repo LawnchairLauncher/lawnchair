@@ -120,6 +120,11 @@ class CustomFontManager(private val context: Context) {
         loaderManager.loadFont(spec.font).into(textView, spec.fallback)
     }
 
+    fun setCustomFont(receiver: FontLoader.FontReceiver, type: Int) {
+        val spec = specMap[type] ?: return
+        loaderManager.loadFont(spec.font).into(receiver, spec.fallback)
+    }
+
     class FontSpec(val loader: () -> FontCache.Font, val fallback: Typeface) {
 
         constructor(font: FontCache.Font, fallback: Typeface) : this({ font }, fallback)

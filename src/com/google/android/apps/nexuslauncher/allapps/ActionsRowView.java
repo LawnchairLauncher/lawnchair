@@ -20,6 +20,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.LinearLayout;
+import ch.deletescape.lawnchair.font.CustomFontManager;
+import ch.deletescape.lawnchair.font.FontLoader.FontReceiver;
 import ch.deletescape.lawnchair.predictions.LawnchairEventPredictor;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
@@ -36,8 +38,10 @@ import com.android.quickstep.TouchInteractionService;
 import com.google.android.apps.nexuslauncher.allapps.ActionsController.UpdateListener;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
-public class ActionsRowView extends LinearLayout implements UpdateListener, LogContainerProvider {
+public class ActionsRowView extends LinearLayout implements UpdateListener, LogContainerProvider,
+        FontReceiver {
     private static final boolean DEBUG = false;
     private static final String TAG = "ActionsRowView";
     private LauncherAccessibilityDelegate mActionAccessibilityDelegate;
@@ -51,6 +55,7 @@ public class ActionsRowView extends LinearLayout implements UpdateListener, LogC
     private PredictionsFloatingHeader mParent;
     private boolean mShowAllAppsLabel;
     private int mSpacing;
+    private Typeface mAllAppsLabelTypeface = Typeface.create("sans-serif-medium", Typeface.NORMAL);
 
     public ActionsRowView(@NonNull Context context) {
         this(context, null);
@@ -89,6 +94,8 @@ public class ActionsRowView extends LinearLayout implements UpdateListener, LogC
             }
         };
         this.mActionAccessibilityDelegate.addAccessibilityAction(R.id.action_dismiss_suggestion, R.string.dismiss_drop_target_label);
+        
+        CustomFontManager.Companion.getInstance(context).setCustomFont(this, CustomFontManager.FONT_DRAWER_TAB);
     }
 
     public void setup(PredictionsFloatingHeader predictionsFloatingHeader) {
@@ -206,22 +213,15 @@ public class ActionsRowView extends LinearLayout implements UpdateListener, LogC
         updateVisibility();
     }
 
-    @SuppressLint("NewApi")
     public void setShowAllAppsLabel(boolean z) {
         if (this.mShowAllAppsLabel != z) {
             this.mShowAllAppsLabel = z;
             setWillNotDraw(!this.mShowAllAppsLabel);
             int i = 0;
-            if (this.mShowAllAppsLabel) {
-                TextPaint textPaint = new TextPaint();
-                textPaint.setAntiAlias(true);
-                textPaint.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
-                textPaint.setColor(ContextCompat.getColor(getContext(), Themes.getAttrBoolean(getContext(), R.attr.isMainColorDark) ? R.color.all_apps_label_text_dark : R.color.all_apps_label_text));
-                textPaint.setTextSize((float) getResources().getDimensionPixelSize(R.dimen.all_apps_label_text_size));
-                CharSequence text = getResources().getText(R.string.apps_label);
-                this.mAllAppsLabelLayout = Builder.obtain(text, 0, text.length(), textPaint, Math.round(textPaint.measureText(text.toString()))).setAlignment(Alignment.ALIGN_CENTER).setMaxLines(1).setIncludePad(true).build();
+            if (mShowAllAppsLabel) {
+                rebuildLabel();
             } else {
-                this.mAllAppsLabelLayout = null;
+                mAllAppsLabelLayout = null;
             }
             int paddingTop = getPaddingTop();
             int paddingRight = getPaddingRight();
@@ -230,6 +230,31 @@ public class ActionsRowView extends LinearLayout implements UpdateListener, LogC
             }
             setPadding(getPaddingLeft(), paddingTop, paddingRight, i);
         }
+    }
+
+    @Override
+    public void setTypeface(@NotNull Typeface typeface) {
+        mAllAppsLabelTypeface = typeface;
+        if (mShowAllAppsLabel) {
+            rebuildLabel();
+            if (isAttachedToWindow()) {
+                ((PredictionsFloatingHeader) getParent()).headerChanged();
+                invalidate();
+            }
+        }
+    }
+
+    @SuppressLint("NewApi")
+    private void rebuildLabel() {
+        TextPaint textPaint = new TextPaint();
+        textPaint.setAntiAlias(true);
+        textPaint.setTypeface(mAllAppsLabelTypeface);
+        textPaint.setColor(ContextCompat
+                .getColor(getContext(), Themes.getAttrBoolean(getContext(), R.attr.isMainColorDark) ? R.color.all_apps_label_text_dark : R.color.all_apps_label_text));
+        textPaint.setTextSize((float) getResources().getDimensionPixelSize(R.dimen.all_apps_label_text_size));
+        CharSequence text = getResources().getText(R.string.all_apps_label);
+        mAllAppsLabelLayout = Builder.obtain(text, 0, text.length(), textPaint, Math.round(textPaint.measureText(text.toString()))).setAlignment(
+                Alignment.ALIGN_CENTER).setMaxLines(1).setIncludePad(true).build();
     }
 
     public boolean shouldDraw() {

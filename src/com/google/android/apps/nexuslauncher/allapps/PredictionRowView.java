@@ -22,6 +22,8 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
+import ch.deletescape.lawnchair.font.CustomFontManager;
+import ch.deletescape.lawnchair.font.FontLoader.FontReceiver;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
@@ -48,8 +50,10 @@ import com.google.android.apps.nexuslauncher.util.ComponentKeyMapper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
-public class PredictionRowView extends LinearLayout implements LogContainerProvider, OnUpdateListener, OnDeviceProfileChangeListener {
+public class PredictionRowView extends LinearLayout implements LogContainerProvider,
+        OnUpdateListener, OnDeviceProfileChangeListener, FontReceiver {
     private static final Interpolator ALPHA_FACTOR_INTERPOLATOR = input -> input < 0.8f ? 0.0f : (input - 0.8f) / 0.2f;
     private static final String TAG = "PredictionRowView";
 
@@ -90,6 +94,7 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
     private float mScrollTranslation;
     private boolean mScrolledOut;
     private final int mStrokeColor;
+    private Typeface mAllAppsLabelTypeface = Typeface.create("sans-serif-medium", Typeface.NORMAL);
 
     public enum DividerType {
         NONE,
@@ -134,6 +139,8 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
         mAllAppsLabelTextFullAlpha = Color.alpha(this.mAllAppsLabelTextColor);
         mAllAppsLabelTextCurrentAlpha = this.mAllAppsLabelTextFullAlpha;
         updateVisibility();
+
+        CustomFontManager.Companion.getInstance(context).setCustomFont(this, CustomFontManager.FONT_DRAWER_TAB);
     }
 
     protected void onAttachedToWindow() {
@@ -185,27 +192,44 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
         return dp.allAppsCellHeightPx + getPaddingBottom() + getPaddingTop();
     }
 
-    @SuppressLint("NewApi")
     public void setDividerType(DividerType dividerType) {
         int i = 0;
         if (mDividerType != dividerType) {
             if (dividerType == DividerType.ALL_APPS_LABEL) {
-                mAllAppsLabelTextPaint.setAntiAlias(true);
-                mAllAppsLabelTextPaint.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
-                mAllAppsLabelTextPaint.setTextSize((float) getResources().getDimensionPixelSize(R.dimen.all_apps_label_text_size));
-                CharSequence text = getResources().getText(R.string.all_apps_label);
-                mAllAppsLabelLayout = Builder.obtain(text, 0, text.length(), mAllAppsLabelTextPaint, Math.round(mAllAppsLabelTextPaint.measureText(text.toString()))).setAlignment(Alignment.ALIGN_CENTER).setMaxLines(1).setIncludePad(true).build();
+                rebuildLabel();
             } else {
                 mAllAppsLabelLayout = null;
             }
         }
-        this.mDividerType = dividerType;
-        if (this.mDividerType == DividerType.LINE) {
+        mDividerType = dividerType;
+        if (mDividerType == DividerType.LINE) {
             i = getResources().getDimensionPixelSize(R.dimen.all_apps_prediction_row_divider_height);
-        } else if (this.mDividerType == DividerType.ALL_APPS_LABEL) {
+        } else if (mDividerType == DividerType.ALL_APPS_LABEL) {
             i = getAllAppsLayoutFullHeight();
         }
         setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), i);
+    }
+
+    @Override
+    public void setTypeface(@NotNull Typeface typeface) {
+        mAllAppsLabelTypeface = typeface;
+        if (mDividerType == DividerType.ALL_APPS_LABEL) {
+            rebuildLabel();
+            if (isAttachedToWindow()) {
+                ((PredictionsFloatingHeader) getParent()).headerChanged();
+                invalidate();
+            }
+        }
+    }
+
+    @SuppressLint("NewApi")
+    private void rebuildLabel() {
+        mAllAppsLabelTextPaint.setAntiAlias(true);
+        mAllAppsLabelTextPaint.setTypeface(mAllAppsLabelTypeface);
+        mAllAppsLabelTextPaint.setTextSize((float) getResources().getDimensionPixelSize(R.dimen.all_apps_label_text_size));
+        CharSequence text = getResources().getText(R.string.all_apps_label);
+        mAllAppsLabelLayout = Builder.obtain(text, 0, text.length(), mAllAppsLabelTextPaint, Math.round(mAllAppsLabelTextPaint.measureText(text.toString()))).setAlignment(
+                Alignment.ALIGN_CENTER).setMaxLines(1).setIncludePad(true).build();
     }
 
     public List<ItemInfoWithIcon> getPredictedApps() {
