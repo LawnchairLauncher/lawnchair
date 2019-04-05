@@ -73,11 +73,10 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     }
 
     private void updateExpectedHeight() {
-        ActionsRowView actionsRowView = mActionsRowView;
-        boolean useAllAppsLabel = mShowAllAppsLabel && mTabsHidden && mActionsRowView.shouldDraw();
-        actionsRowView.setShowAllAppsLabel(useAllAppsLabel);
+        boolean useAllAppsLabel = mShowAllAppsLabel && mTabsHidden;
+        mActionsRowView.setShowAllAppsLabel(useAllAppsLabel && mActionsRowView.shouldDraw());
         DividerType dividerType = DividerType.NONE;
-        if (useAllAppsLabel && mTabsHidden && !mActionsRowView.shouldDraw()) {
+        if (useAllAppsLabel && !mActionsRowView.shouldDraw()) {
             dividerType = DividerType.ALL_APPS_LABEL;
         } else if (mTabsHidden && !mActionsRowView.shouldDraw()) {
             dividerType = DividerType.LINE;
