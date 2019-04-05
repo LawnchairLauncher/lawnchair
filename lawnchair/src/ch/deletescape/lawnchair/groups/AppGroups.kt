@@ -250,7 +250,7 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
                 tabName.hint = default
                 tabName.addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(s: Editable?) {
-                        value = s?.toString()?.asNonEmpty()
+                        value = s?.toString()?.trim()?.asNonEmpty()
                     }
 
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
