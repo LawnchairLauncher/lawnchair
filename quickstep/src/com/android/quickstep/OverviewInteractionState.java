@@ -27,10 +27,8 @@ import android.util.Log;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.DiscoveryBounce;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.UiThreadHelper;
-import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 
 import androidx.annotation.WorkerThread;
@@ -150,8 +148,6 @@ public class OverviewInteractionState {
     }
 
     private void onNavigationModeChanged(SysUINavigationMode.Mode mode) {
-        FeatureFlags.SWIPE_HOME.updateStorage(mContext, mode == Mode.NO_BUTTON);
-
         mSwipeUpEnabled = mode.hasGestures;
         resetHomeBounceSeenOnQuickstepEnabledFirstTime();
         mBgHandler.obtainMessage(MSG_APPLY_FLAGS).sendToTarget();

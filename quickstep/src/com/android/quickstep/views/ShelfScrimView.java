@@ -34,9 +34,11 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
+import com.android.quickstep.SysUINavigationMode;
+import com.android.quickstep.SysUINavigationMode.Mode;
+import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 
 /**
  * Scrim used for all-apps and shelf in Overview
@@ -45,7 +47,7 @@ import com.android.launcher3.views.ScrimView;
  *    From normal state to overview state, the shelf just fades in and does not move
  *    From overview state to all-apps state the shelf moves up and fades in to cover the screen
  */
-public class ShelfScrimView extends ScrimView {
+public class ShelfScrimView extends ScrimView implements NavigationModeChangeListener {
 
     // If the progress is more than this, shelf follows the finger, otherwise it moves faster to
     // cover the whole screen
@@ -78,6 +80,8 @@ public class ShelfScrimView extends ScrimView {
     private final Path mRemainingScreenPath = new Path();
     private boolean mRemainingScreenPathValid = false;
 
+    private Mode mSysUINavigationMode;
+
     public ShelfScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mMaxScrimAlpha = Math.round(OVERVIEW.getWorkspaceScrimAlpha(mLauncher) * 255);
@@ -95,6 +99,24 @@ public class ShelfScrimView extends ScrimView {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mRemainingScreenPathValid = false;
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        onNavigationModeChanged(SysUINavigationMode.INSTANCE.get(getContext())
+                .addModeChangeListener(this));
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        SysUINavigationMode.INSTANCE.get(getContext()).removeModeChangeListener(this);
+    }
+
+    @Override
+    public void onNavigationModeChanged(Mode newMode) {
+        mSysUINavigationMode = newMode;
     }
 
     @Override
@@ -137,7 +159,7 @@ public class ShelfScrimView extends ScrimView {
         if (mProgress >= 1) {
             mRemainingScreenColor = 0;
             mShelfColor = 0;
-            if (FeatureFlags.SWIPE_HOME.get()
+            if (mSysUINavigationMode == Mode.NO_BUTTON
                     && mLauncher.getStateManager().getState() == BACKGROUND_APP) {
                 // Show the shelf background when peeking during swipe up.
                 mShelfColor = setColorAlphaBound(mEndScrim, mMidAlpha);

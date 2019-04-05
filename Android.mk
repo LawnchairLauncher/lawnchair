@@ -16,15 +16,6 @@
 
 LOCAL_PATH := $(call my-dir)
 
-include $(CLEAR_VARS)
-LOCAL_MODULE := libPluginCore
-LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_CLASS := JAVA_LIBRARIES
-LOCAL_SRC_FILES := libs/plugin_core.jar
-LOCAL_UNINSTALLABLE_MODULE := true
-LOCAL_SDK_VERSION := current
-include $(BUILD_PREBUILT)
-
 #
 # Build rule for plugin lib (needed to write a plugin).
 #
@@ -33,7 +24,11 @@ LOCAL_USE_AAPT2 := true
 LOCAL_AAPT2_ONLY := true
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_STATIC_JAVA_LIBRARIES:= libPluginCore
+ifneq (,$(wildcard frameworks/base))
+    LOCAL_STATIC_JAVA_LIBRARIES:= PluginCoreLib
+else
+    LOCAL_STATIC_JAVA_LIBRARIES:= libPluginCore
+endif
 
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src_plugins)

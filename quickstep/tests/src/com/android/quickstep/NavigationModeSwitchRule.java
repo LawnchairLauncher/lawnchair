@@ -17,6 +17,7 @@
 package com.android.quickstep;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
+
 import static com.android.quickstep.NavigationModeSwitchRule.Mode.ALL;
 import static com.android.quickstep.NavigationModeSwitchRule.Mode.THREE_BUTTON;
 import static com.android.quickstep.NavigationModeSwitchRule.Mode.TWO_BUTTON;
@@ -26,17 +27,22 @@ import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_
 
 import android.content.Context;
 import android.util.Log;
+
 import androidx.test.uiautomator.UiDevice;
+
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.android.systemui.shared.system.QuickStepContract;
+
 import org.junit.Assert;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Test rule that allows executing a test with Quickstep on and then Quickstep off.
@@ -72,9 +78,9 @@ public class NavigationModeSwitchRule implements TestRule {
                 @Override
                 public void evaluate() throws Throwable {
                     final Context context = getInstrumentation().getContext();
-                    final String prevOverlayPkg = LauncherInstrumentation.isGesturalMode(context)
+                    final String prevOverlayPkg = QuickStepContract.isGesturalMode(context)
                             ? NAV_BAR_MODE_GESTURAL_OVERLAY
-                            : LauncherInstrumentation.isSwipeUpMode(context)
+                            : QuickStepContract.isSwipeUpMode(context)
                                     ? NAV_BAR_MODE_2BUTTON_OVERLAY
                                     : NAV_BAR_MODE_3BUTTON_OVERLAY;
                     final LauncherInstrumentation.NavigationModel originalMode =
