@@ -148,9 +148,4 @@ class DrawerTabsAdapter(private val context: Context) : RecyclerView.Adapter<Dra
 
         }
     }
-
-    companion object {
-        const val ITEM_RENAME = 0
-        const val ITEM_DELETE = 1
-    }
 }

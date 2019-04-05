@@ -69,7 +69,7 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
     private val context = prefs.context
 
     private var groupsDataJson by prefs.StringPref(key, "{}", prefs.withChangeCallback {
-        it.launcher.allAppsController.appsView.reloadTabs()
+        onGroupsChanged(it)
     })
     private val groups = ArrayList<T>()
 
@@ -120,6 +120,8 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
     @Suppress("UNUSED_PARAMETER")
     protected fun createNull(context: Context) = null
 
+    abstract fun onGroupsChanged(changeCallback: LawnchairPreferencesChangeCallback)
+
     fun getGroups(): List<T> {
         return groups
     }
@@ -127,6 +129,17 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
     fun setGroups(groups: List<T>) {
         this.groups.clear()
         this.groups.addAll(groups)
+
+        val used = mutableSetOf<GroupCreator<T>>()
+        groups.forEach {
+            val creator = getGroupCreator(it.type)
+            used.add(creator)
+        }
+        getDefaultGroups().asReversed().forEach { creator ->
+            if (creator !in used) {
+                creator(context)?.let { this.groups.add(0, it) }
+            }
+        }
     }
 
     fun saveToJson() {
@@ -156,7 +169,7 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
         const val TYPE_UNDEFINED = -1
     }
 
-    open class Group(private val type: Int, context: Context, titleRes: Int) {
+    open class Group(val type: Int, context: Context, titleRes: Int) {
 
         private val defaultTitle: String = context.getString(titleRes)
 

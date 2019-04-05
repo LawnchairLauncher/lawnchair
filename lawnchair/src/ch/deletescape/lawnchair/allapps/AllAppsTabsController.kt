@@ -31,40 +31,43 @@ class AllAppsTabsController(val tabs: AllAppsTabs, private val container: AllApp
     val tabsCount get() = tabs.count
     val shouldShowTabs get() = tabsCount > 1
 
+    private var holders: AdapterHolders = emptyArray()
+
     private var horizontalPadding = 0
     private var bottomPadding = 0
 
-    fun createHolders(oldHolders: AdapterHolders?): AdapterHolders {
-        if (oldHolders != null && oldHolders.size >= tabsCount) {
-            return oldHolders
+    fun createHolders(): AdapterHolders {
+        if (holders.size >= tabsCount) {
+            return holders
         }
-        return AdapterHolders(tabsCount) { container.createHolder(false).apply {
+        holders = AdapterHolders(tabsCount) { container.createHolder(false).apply {
             padding.bottom = bottomPadding
             padding.left = horizontalPadding
             padding.right = horizontalPadding
         } }
+        return holders
     }
 
     fun reloadTabs() {
         tabs.reloadTabs()
     }
 
-    fun registerIconContainers(allAppsStore: AllAppsStore, holders: AdapterHolders) {
+    fun registerIconContainers(allAppsStore: AllAppsStore) {
         holders.forEach { allAppsStore.registerIconContainer(it.recyclerView) }
     }
 
-    fun unregisterIconContainers(allAppsStore: AllAppsStore, holders: AdapterHolders) {
+    fun unregisterIconContainers(allAppsStore: AllAppsStore) {
         holders.forEach { allAppsStore.unregisterIconContainer(it.recyclerView) }
     }
 
-    fun setup(pagedView: AllAppsPagedView, holders: AdapterHolders) {
+    fun setup(pagedView: AllAppsPagedView) {
         tabs.forEachIndexed { index, tab ->
             holders[index].setIsWork(tab.isWork)
             holders[index].setup(pagedView.getChildAt(index), tab.matcher)
         }
     }
 
-    fun setup(view: View, holders: AdapterHolders) {
+    fun setup(view: View) {
         holders.forEach { it.recyclerView = null }
         holders[0].setup(view, null)
     }
@@ -75,7 +78,7 @@ class AllAppsTabsController(val tabs: AllAppsTabs, private val container: AllApp
         }
     }
 
-    fun setPadding(horizontal: Int, bottom: Int, holders: AdapterHolders) {
+    fun setPadding(horizontal: Int, bottom: Int) {
         horizontalPadding = horizontal
         bottomPadding = bottom
 

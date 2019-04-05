@@ -133,7 +133,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     private void createHolders() {
-        mAH = mTabsController.createHolders(mAH);
+        mAH = mTabsController.createHolders();
     }
 
     public AllAppsStore getAppsStore() {
@@ -160,6 +160,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     private void onAppsUpdated() {
+        boolean force = false;
         if (FeatureFlags.ALL_APPS_TABS_ENABLED && Utilities.getLawnchairPrefs(getContext()).getSeparateWorkApps()) {
             boolean hasWorkApps = false;
             for (AppInfo app : mAllAppsStore.getApps()) {
@@ -168,9 +169,11 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                     break;
                 }
             }
-            mTabsController.getTabs().setHasWorkApps(hasWorkApps);
+            AllAppsTabs allAppsTabs = mTabsController.getTabs();
+            force = allAppsTabs.getHasWorkApps() != hasWorkApps;
+            allAppsTabs.setHasWorkApps(hasWorkApps);
         }
-        rebindAdapters(mTabsController.getShouldShowTabs());
+        rebindAdapters(mTabsController.getShouldShowTabs(), force);
     }
 
     /**
@@ -304,7 +307,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         int leftRightPadding = grid.desiredWorkspaceLeftRightMarginPx
                 + grid.cellLayoutPaddingLeftRightPx;
 
-        mTabsController.setPadding(leftRightPadding, insets.bottom, mAH);
+        mTabsController.setPadding(leftRightPadding, insets.bottom);
 
         ViewGroup.MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
         if (grid.isVerticalBarLayout()) {
@@ -343,7 +346,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     public void reloadTabs() {
         mTabsController.reloadTabs();
-        rebindAdapters(mTabsController.getTabsCount() > 1, true);
+        rebindAdapters(mTabsController.getShouldShowTabs(), true);
     }
 
     private void rebindAdapters(boolean showTabs) {
@@ -355,18 +358,18 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             return;
         }
         int currentTab = mViewPager != null ? mViewPager.getNextPage() : 0;
-        mTabsController.unregisterIconContainers(mAllAppsStore, mAH);
+        mTabsController.unregisterIconContainers(mAllAppsStore);
 
         createHolders();
         replaceRVContainer(showTabs);
         mUsingTabs = showTabs;
 
         if (mUsingTabs) {
-            mTabsController.setup(mViewPager, mAH);
+            mTabsController.setup(mViewPager);
             ((PersonalWorkSlidingTabStrip) findViewById(R.id.tabs)).inflateButtons(mTabsController.getTabs());
             onTabChanged(mViewPager.getNextPage());
         } else {
-            mTabsController.setup((View) findViewById(R.id.apps_list_view), mAH);
+            mTabsController.setup((View) findViewById(R.id.apps_list_view));
             AllAppsRecyclerView recyclerView = mAH[AdapterHolder.MAIN].recyclerView;
             if (recyclerView != null) {
                 LawnchairUtilsKt.runOnAttached(recyclerView, () -> recyclerView.setScrollbarColor(
@@ -375,7 +378,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
         setupHeader();
 
-        mTabsController.registerIconContainers(mAllAppsStore, mAH);
+        mTabsController.registerIconContainers(mAllAppsStore);
         if (mViewPager != null) {
             mViewPager.snapToPage(Math.min(mTabsController.getTabsCount() - 1, currentTab), 0);
         }

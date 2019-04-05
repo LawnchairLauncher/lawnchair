@@ -25,6 +25,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import ch.deletescape.lawnchair.LawnchairPreferences
+import ch.deletescape.lawnchair.LawnchairPreferencesChangeCallback
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.preferences.SelectableAppsActivity
 import ch.deletescape.lawnchair.tintDrawable
@@ -55,6 +56,10 @@ class DrawerTabs(prefs: LawnchairPreferences) : AppGroups<DrawerTabs.Tab>(prefs,
 
     @Suppress("UNUSED_PARAMETER")
     private fun createCustomTab(context: Context) = CustomTab(context)
+
+    override fun onGroupsChanged(changeCallback: LawnchairPreferencesChangeCallback) {
+        changeCallback.launcher.allAppsController.appsView.reloadTabs()
+    }
 
     abstract class Tab(context: Context, type: Int, titleRes: Int) : Group(type, context, titleRes) {
 
