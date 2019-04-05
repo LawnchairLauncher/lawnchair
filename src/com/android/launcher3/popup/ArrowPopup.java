@@ -82,7 +82,8 @@ public abstract class ArrowPopup extends AbstractFloatingView {
     public ArrowPopup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mInflater = LayoutInflater.from(context);
-        mOutlineRadius = getResources().getDimension(R.dimen.bg_round_rect_radius);
+        mOutlineRadius = Themes.getDialogCornerRadius(context,
+                getResources().getDimension(R.dimen.bg_round_rect_radius));
         mLauncher = Launcher.getLauncher(context);
         mIsRtl = Utilities.isRtl(getResources());
 
