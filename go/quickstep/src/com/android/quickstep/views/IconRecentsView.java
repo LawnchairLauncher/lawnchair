@@ -157,10 +157,12 @@ public final class IconRecentsView extends FrameLayout {
      * becomes visible.
      */
     public void onBeginTransitionToOverview() {
+        mTaskAdapter.setIsShowingLoadingUi(true);
+        mTaskAdapter.notifyDataSetChanged();
         // Load any task changes
         mTaskLoader.loadTaskList(tasks -> {
-            // TODO: Put up some loading UI while task content is loading. May have to do something
-            // smarter when animating from app to overview.
+            mTaskAdapter.setIsShowingLoadingUi(false);
+            // TODO: Animate the loading UI out and the loaded data in.
             mTaskAdapter.notifyDataSetChanged();
         });
     }
