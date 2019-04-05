@@ -317,7 +317,9 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
             prefs.edit().remove(key).apply()
         }
         fun removeAll(filter: (String) -> Boolean) = list.removeAll(filter)
-        fun replace(filter: String, replacement: String) = list.replaceAll { if (it == filter) replacement else it }
+        fun replace(filter: String, replacement: String) {
+            list = list.map { if (it == filter) replacement else it }.toMutableList()
+        }
         fun contains(element: String) = list.contains(element)
 
         private fun load() = (prefs.getString(key, "")?: "").split(delimiter).toMutableList()
