@@ -590,6 +590,10 @@ public class CellLayout extends ViewGroup {
             if (LOGD) {
                 Log.d(TAG, "Adding view to ShortcutsAndWidgetsContainer: " + child);
             }
+            if (child.getParent() != null && child.getParent() instanceof ViewGroup) {
+                // This really shouldn't happen but apparently it does sometimes
+                ((ViewGroup) child.getParent()).removeView(child);
+            }
             try {
                 mShortcutsAndWidgets.addView(child, index, lp);
             } catch(NullPointerException e){
