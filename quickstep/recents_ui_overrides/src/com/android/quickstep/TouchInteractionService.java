@@ -101,7 +101,6 @@ public class TouchInteractionService extends Service implements
             MAIN_THREAD_EXECUTOR.execute(TouchInteractionService.this::initInputMonitor);
             runWhenUserUnlocked(() -> {
                 mRecentsModel.setSystemUiProxy(mISystemUiProxy);
-                mRecentsModel.onInitializeSystemUI(bundle);
                 mOverviewInteractionState.setSystemUiProxy(mISystemUiProxy);
             });
         }

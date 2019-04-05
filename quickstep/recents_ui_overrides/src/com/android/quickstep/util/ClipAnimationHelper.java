@@ -16,6 +16,8 @@
 package com.android.quickstep.util;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
+import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
@@ -97,9 +99,8 @@ public class ClipAnimationHelper {
             (t, a1) -> a1;
 
     public ClipAnimationHelper(Context context) {
-        mWindowCornerRadius = RecentsModel.INSTANCE.get(context).getWindowCornerRadius();
-        mSupportsRoundedCornersOnWindows = RecentsModel.INSTANCE.get(context)
-                .supportsRoundedCornersOnWindows();
+        mWindowCornerRadius = getWindowCornerRadius(context.getResources());
+        mSupportsRoundedCornersOnWindows = supportsRoundedCornersOnWindows(context.getResources());
         int taskCornerRadiusRes = mSupportsRoundedCornersOnWindows ?
                 R.dimen.task_corner_radius : R.dimen.task_corner_radius_small;
         mTaskCornerRadius = context.getResources().getDimension(taskCornerRadiusRes);
