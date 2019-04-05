@@ -304,11 +304,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         int leftRightPadding = grid.desiredWorkspaceLeftRightMarginPx
                 + grid.cellLayoutPaddingLeftRightPx;
 
-        for (int i = 0; i < mAH.length; i++) {
-            mAH[i].padding.bottom = insets.bottom;
-            mAH[i].padding.left = mAH[i].padding.right = leftRightPadding;
-            mAH[i].applyPadding();
-        }
+        mTabsController.setPadding(leftRightPadding, insets.bottom, mAH);
 
         ViewGroup.MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
         if (grid.isVerticalBarLayout()) {
@@ -571,7 +567,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         public final AllAppsGridAdapter adapter;
         final LinearLayoutManager layoutManager;
         final AlphabeticalAppsList appsList;
-        final Rect padding = new Rect();
+        public final Rect padding = new Rect();
         public AllAppsRecyclerView recyclerView;
         boolean verticalFadingEdge;
 
@@ -601,7 +597,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             applyPadding();
         }
 
-        void applyPadding() {
+        public void applyPadding() {
             if (recyclerView != null) {
                 recyclerView.setPadding(padding.left, padding.top, padding.right, padding.bottom);
             }

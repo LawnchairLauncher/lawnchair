@@ -31,11 +31,18 @@ class AllAppsTabsController(val tabs: AllAppsTabs, private val container: AllApp
     val tabsCount get() = tabs.count
     val shouldShowTabs get() = tabsCount > 1
 
+    private var horizontalPadding = 0
+    private var bottomPadding = 0
+
     fun createHolders(oldHolders: AdapterHolders?): AdapterHolders {
         if (oldHolders != null && oldHolders.size >= tabsCount) {
             return oldHolders
         }
-        return AdapterHolders(tabsCount) { container.createHolder(false) }
+        return AdapterHolders(tabsCount) { container.createHolder(false).apply {
+            padding.bottom = bottomPadding
+            padding.left = horizontalPadding
+            padding.right = horizontalPadding
+        } }
     }
 
     fun reloadTabs() {
@@ -65,6 +72,18 @@ class AllAppsTabsController(val tabs: AllAppsTabs, private val container: AllApp
     fun bindButtons(buttonsContainer: ViewGroup, pagedView: AllAppsPagedView) {
         buttonsContainer.forEachChildIndexed { view, i ->
             view.setOnClickListener { pagedView.snapToPage(i) }
+        }
+    }
+
+    fun setPadding(horizontal: Int, bottom: Int, holders: AdapterHolders) {
+        horizontalPadding = horizontal
+        bottomPadding = bottom
+
+        holders.forEach {
+            it.padding.bottom = bottomPadding
+            it.padding.left = horizontalPadding
+            it.padding.right = horizontalPadding
+            it.applyPadding()
         }
     }
 }
