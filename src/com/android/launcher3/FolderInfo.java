@@ -237,7 +237,9 @@ public class FolderInfo extends ItemInfo {
                 cached = pack.getIcon(entry.getIcon(), launcher.mDeviceProfile.inv.fillResIconDpi);
                 cachedIcon = entry.getIcon();
             }
-            return cached.mutate();
+            if (cached != null) {
+                return cached.mutate();
+            }
         }
         return null;
     }
