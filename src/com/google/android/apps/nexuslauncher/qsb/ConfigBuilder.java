@@ -29,6 +29,7 @@ import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 import com.google.android.apps.nexuslauncher.PredictionUiStateManager;
+import com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader;
 import com.google.android.apps.nexuslauncher.search.AppSearchProvider;
 import com.google.android.apps.nexuslauncher.search.nano.SearchProto.a_search;
 import com.google.android.apps.nexuslauncher.search.nano.SearchProto.b_search;
@@ -279,7 +280,7 @@ public class ConfigBuilder {
             mNano.ez = viewBounds3;
         }
         bW();
-        List<ComponentKeyMapper> predictedApps = PredictionUiStateManager.getInstance(mActivity).getCurrentState().apps;
+        List<ComponentKeyMapper> predictedApps = ((PredictionsFloatingHeader) mActivity.getAppsView().getFloatingHeaderView()).getPredictionRowView().getPredictedAppComponents();
         int i = Math.min(predictedApps.size(), allAppsCols);
         mNano.eo = new b_search[i];
         for (int i2 = 0; i2 < i; i2++) {

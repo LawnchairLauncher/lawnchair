@@ -219,6 +219,10 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
         onAppsUpdated();
     }
 
+    public List<ComponentKeyMapper> getPredictedAppComponents() {
+        return mPredictedAppComponents;
+    }
+
     public void onDeviceProfileChanged(DeviceProfile deviceProfile) {
         removeAllViews();
         applyPredictionApps();
