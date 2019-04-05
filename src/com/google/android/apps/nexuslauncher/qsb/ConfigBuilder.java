@@ -97,6 +97,9 @@ public class ConfigBuilder {
     }
 
     private b_search bZ(final AppInfo appInfo, final int n) {
+        if (appInfo == null) {
+            return null;
+        }
         final b_search b = new b_search();
         b.label = appInfo.title.toString();
         b.ej = "icon_bitmap_" + n;
@@ -281,11 +284,16 @@ public class ConfigBuilder {
         }
         bW();
         List<ComponentKeyMapper> predictedApps = ((PredictionsFloatingHeader) mActivity.getAppsView().getFloatingHeaderView()).getPredictionRowView().getPredictedAppComponents();
-        int i = Math.min(predictedApps.size(), allAppsCols);
-        mNano.eo = new b_search[i];
-        for (int i2 = 0; i2 < i; i2++) {
-            mNano.eo[i2] = bZ(mActivity.getAppsView().getAppsStore().getApp(predictedApps.get(i2).getComponentKey()), i2);
+        List<b_search> bSearches = new ArrayList<>();
+        final int count = Math.min(predictedApps.size(), allAppsCols);
+        for (int i = 0; i < count; i++) {
+            b_search bSearch = bZ(mActivity.getAppsView().getAppsStore().getApp(predictedApps.get(i).getComponentKey()), i);
+            if (bSearch != null) {
+                bSearches.add(bSearch);
+            }
         }
+        mNano.eo = new b_search[bSearches.size()];
+        bSearches.toArray(mNano.eo);
     }
 
     private void cf() {
