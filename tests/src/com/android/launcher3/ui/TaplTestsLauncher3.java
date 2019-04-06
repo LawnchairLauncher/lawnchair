@@ -25,7 +25,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Intent;
-import android.content.pm.LauncherActivityInfo;
 import android.util.Log;
 
 import androidx.test.filters.LargeTest;
@@ -62,6 +61,7 @@ import java.io.IOException;
 @RunWith(AndroidJUnit4.class)
 public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     private static final String TAG = "TaplTestsAosp";
+    private static final String APP_NAME = "LauncherTestApp";
 
     private static int sScreenshotCount = 0;
 
@@ -307,12 +307,11 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @PortraitLandscape
     public void testLaunchMenuItem() throws Exception {
         if (!TestHelpers.isInLauncherProcess()) return;
-        final LauncherActivityInfo testApp = getSettingsApp();
 
         final AppIconMenu menu = mLauncher.
                 getWorkspace().
                 switchToAllApps().
-                getAppIcon(testApp.getLabel().toString()).
+                getAppIcon(APP_NAME).
                 openMenu();
 
         executeOnLauncher(
@@ -322,7 +321,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         final AppIconMenuItem menuItem = menu.getMenuItem(1);
         final String itemName = menuItem.getText();
 
-        menuItem.launch(testApp.getComponentName().getPackageName(), itemName);
+        menuItem.launch(getAppPackageName(), APP_NAME);
     }
 
     @Test
@@ -330,16 +329,15 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     public void testDragAppIcon() throws Throwable {
         try {
             TestProtocol.sDebugTracing = true;
-            final String appName = "LauncherTestApp";
             // 1. Open all apps and wait for load complete.
             // 2. Drag icon to homescreen.
             // 3. Verify that the icon works on homescreen.
             mLauncher.getWorkspace().
                     switchToAllApps().
-                    getAppIcon(appName).
+                    getAppIcon(APP_NAME).
                     dragToWorkspace().
-                    getWorkspaceAppIcon(appName).
-                    launch(getInstrumentation().getContext().getPackageName());
+                    getWorkspaceAppIcon(APP_NAME).
+                    launch(getAppPackageName(), APP_NAME);
         } finally {
             TestProtocol.sDebugTracing = false;
         }
@@ -349,7 +347,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @PortraitLandscape
     public void testDragShortcut() throws Throwable {
         if (!TestHelpers.isInLauncherProcess()) return;
-        LauncherActivityInfo testApp = getSettingsApp();
 
         // 1. Open all apps and wait for load complete.
         // 2. Find the app and long press it to show shortcuts.
@@ -357,7 +354,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         final AppIconMenuItem menuItem = mLauncher.
                 getWorkspace().
                 switchToAllApps().
-                getAppIcon(testApp.getLabel().toString()).
+                getAppIcon(APP_NAME).
                 openMenu().
                 getMenuItem(0);
         final String shortcutName = menuItem.getText();
@@ -368,6 +365,10 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         menuItem.
                 dragToWorkspace().
                 getWorkspaceAppIcon(shortcutName).
-                launch(testApp.getComponentName().getPackageName(), shortcutName);
+                launch(getAppPackageName(), APP_NAME);
+    }
+
+    private static String getAppPackageName() {
+        return getInstrumentation().getContext().getPackageName();
     }
 }
