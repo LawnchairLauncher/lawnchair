@@ -95,7 +95,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         if (mCursor != null) {
             mCursor.close();
         }

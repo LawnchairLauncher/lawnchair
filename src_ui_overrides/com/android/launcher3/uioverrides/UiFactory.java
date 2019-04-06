@@ -21,6 +21,7 @@ import android.content.Context;
 import android.os.CancellationSignal;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.TouchController;
@@ -67,4 +68,9 @@ public class UiFactory {
     public static void prepareToShowOverview(Launcher launcher) { }
 
     public static void setBackButtonAlpha(Launcher launcher, float alpha, boolean animate) { }
+
+
+    public static ScaleAndTranslation getOverviewScaleAndTranslationForNormalState(Launcher l) {
+        return new ScaleAndTranslation(1.1f, 0f, 0f);
+    }
 }

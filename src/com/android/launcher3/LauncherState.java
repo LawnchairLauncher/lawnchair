@@ -199,12 +199,7 @@ public class LauncherState {
     }
 
     public ScaleAndTranslation getOverviewScaleAndTranslation(Launcher launcher) {
-        if (FeatureFlags.SWIPE_HOME.get()) {
-            float offscreenTranslationX = launcher.getDragLayer().getWidth()
-                    - launcher.getOverviewPanel().getPaddingStart();
-            return new ScaleAndTranslation(1f, offscreenTranslationX, 0f);
-        }
-        return new ScaleAndTranslation(1.1f, 0f, 0f);
+        return UiFactory.getOverviewScaleAndTranslationForNormalState(launcher);
     }
 
     public void onStateEnabled(Launcher launcher) {

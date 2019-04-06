@@ -59,7 +59,7 @@ public abstract class RecentsUiFactory {
     private static final float RECENTS_PREPARE_SCALE = 1.33f;
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
-        Mode mode = SysUINavigationMode.INSTANCE.get(launcher).getMode();
+        Mode mode = SysUINavigationMode.getMode(launcher);
 
         ArrayList<TouchController> list = new ArrayList<>();
         list.add(launcher.getDragController());
@@ -106,7 +106,7 @@ public abstract class RecentsUiFactory {
      * @param launcher the launcher activity
      */
     public static void prepareToShowOverview(Launcher launcher) {
-        if (FeatureFlags.SWIPE_HOME.get()) {
+        if (SysUINavigationMode.getMode(launcher) == Mode.NO_BUTTON) {
             // Overview lives on the side, so doesn't scale in from above.
             return;
         }
