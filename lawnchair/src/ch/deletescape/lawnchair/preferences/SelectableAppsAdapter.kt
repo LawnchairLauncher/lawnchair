@@ -44,6 +44,13 @@ abstract class SelectableAppsAdapter(context: Context, private val callback: Cal
     }
 
     override fun onAppsListLoaded() {
+        val tmp = HashSet(selections)
+        selections.clear()
+        apps.forEach {
+            if (it.key in tmp) {
+                selections.add(it.key)
+            }
+        }
         super.onAppsListLoaded()
         callback?.onSelectionsChanged(selections.size)
     }
