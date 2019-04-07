@@ -25,8 +25,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.text.InputType;
@@ -74,6 +76,7 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.graphics.ColorExtractor;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -398,6 +401,10 @@ public class Folder extends AbstractFloatingView implements DragSource,
         // the folder itself.
         requestFocus();
         super.onAttachedToWindow();
+        if (mFolderIcon != null && mFolderIcon.isCustomIcon && Utilities.getLawnchairPrefs(getContext()).getFolderBgColored()) {
+            int color = ColorExtractor.findDominantColorByHue(Utilities.drawableToBitmap(mFolderIcon.customIcon));
+            setBackgroundTintList(ColorStateList.valueOf(color));
+        }
     }
 
     @Override

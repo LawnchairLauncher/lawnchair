@@ -121,7 +121,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private GestureHandler mSwipeUpHandler;
 
     public boolean isCustomIcon = false;
-    private Drawable customIcon = null;
+    Drawable customIcon = null;
 
     private static final Property<FolderIcon, Float> BADGE_SCALE_PROPERTY
             = new Property<FolderIcon, Float>(Float.TYPE, "badgeScale") {
