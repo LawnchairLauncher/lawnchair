@@ -197,7 +197,7 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
             else -> null
         }
         currentEditInfo = itemInfo
-        val intent = EditIconActivity.newIntent(this, infoProvider.getTitle(itemInfo), component)
+        val intent = EditIconActivity.newIntent(this, infoProvider.getTitle(itemInfo), itemInfo is FolderInfo, component)
         val flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
         BlankActivity.startActivityForResult(this, intent, CODE_EDIT_ICON,
                 flags) { resultCode, data -> handleEditIconResult(resultCode, data) }

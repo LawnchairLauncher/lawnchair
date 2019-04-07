@@ -315,7 +315,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         return null
     }
 
-    override fun getAllIcons(callback: (List<PackEntry>) -> Unit, cancel: () -> Boolean) {
+    override fun getAllIcons(callback: (List<PackEntry>) -> Unit, cancel: () -> Boolean, filter: (item: String) -> Boolean) {
         var lastSend = System.currentTimeMillis() - 900
         var tmpList = ArrayList<PackEntry>()
         val sendResults = { force: Boolean ->
@@ -340,12 +340,14 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                     sendResults(false)
                 } else if ("item" == parser.name) {
                     val drawableName = parser["drawable"]!!
-                    val resId = getDrawableId(drawableName)
-                    if (resId != 0) {
-                        entry = Entry(drawableName, resId)
-                        tmpList.add(entry)
-                        sendResults(false)
-                        found = true
+                    if (filter(drawableName)) {
+                        val resId = getDrawableId(drawableName)
+                        if (resId != 0) {
+                            entry = Entry(drawableName, resId)
+                            tmpList.add(entry)
+                            sendResults(false)
+                            found = true
+                        }
                     }
                 }
             }
@@ -356,7 +358,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        super.getAllIcons(callback, cancel)
+        super.getAllIcons(callback, cancel, filter)
     }
 
     override fun supportsMasking(): Boolean = packMask.hasMask
@@ -392,7 +394,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     }
 
     private val idCache = mutableMapOf<String, Int>()
-    private fun getDrawableId(name: String) =packResources.getIdentifier(name, "drawable", packPackageName)// idCache.getOrPut(name) {    }
+    private fun getDrawableId(name: String) = packResources.getIdentifier(name, "drawable", packPackageName)// idCache.getOrPut(name) {    }
 
     fun createEntry(icon: Intent.ShortcutIconResource): Entry {
         val id = packResources.getIdentifier(icon.resourceName, null, null)

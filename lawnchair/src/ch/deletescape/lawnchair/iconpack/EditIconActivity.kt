@@ -38,6 +38,7 @@ import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
+import kotlinx.android.synthetic.main.activity_new_backup.*
 import java.lang.ref.WeakReference
 
 class EditIconActivity : SettingsBaseActivity() {
@@ -52,6 +53,7 @@ class EditIconActivity : SettingsBaseActivity() {
             ComponentKey(intent.getParcelableExtra<ComponentName>(EXTRA_COMPONENT), intent.getParcelableExtra(EXTRA_USER))
         } else null
     }
+    private val isFolder by lazy { intent.getBooleanExtra(EXTRA_FOLDER, false) }
     private val iconPacks by lazy {
         listOf(IconPackInfo("")) + iconPackManager.getPackProviders()
                 .map { IconPackInfo(it) }.sortedBy { it.title }
@@ -68,7 +70,34 @@ class EditIconActivity : SettingsBaseActivity() {
         LooperExecutor(LauncherModel.getUiWorkerLooper()).execute {
             val packs = iconPacks.map { it.getIconPack() }
             runOnUiThread(::bindViews)
-            if (component != null) {
+            if (isFolder) {
+                packs.forEach {
+                    it.ensureInitialLoadComplete()
+                    it.getAllIcons({
+                        list ->
+                        // Max 3 icons per pack
+                        list.mapNotNull { it as? IconPack.Entry }.take(3).forEach { entry ->
+                            runOnUiThread {
+                                val item = IconItem(entry, it is DefaultPack, it.displayName)
+                                val index = icons.size - 1
+                                if (index >= 0) {
+                                    icons.add(index, item)
+                                    iconAdapter.notifyItemInserted(index)
+                                }
+                            }
+                        }
+                    }, {
+                        false
+                    }, {
+                        // Filter for folder icons
+                        it.contains("folder", true)
+                    })
+                }
+                runOnUiThread {
+                    icons.removeAt(icons.size - 1)
+                    iconAdapter.notifyItemRemoved(icons.size)
+                }
+            } else if (component != null) {
                 packs.forEach {
                     it.ensureInitialLoadComplete()
                     val entry = it.getEntryForComponent(component!!)
@@ -263,13 +292,15 @@ class EditIconActivity : SettingsBaseActivity() {
         const val EXTRA_TITLE = "title"
         const val EXTRA_COMPONENT = "component"
         const val EXTRA_USER = "user"
+        const val EXTRA_FOLDER = "is_folder"
 
-        fun newIntent(context: Context, title: String, componentKey: ComponentKey? = null): Intent {
+        fun newIntent(context: Context, title: String, isFolder: Boolean, componentKey: ComponentKey? = null): Intent {
             return Intent(context, EditIconActivity::class.java).apply {
                 putExtra(EXTRA_TITLE, title)
                 componentKey?.run {
                     putExtra(EXTRA_COMPONENT, componentName)
                     putExtra(EXTRA_USER, user)
+                    putExtra(EXTRA_FOLDER, isFolder)
                 }
             }
         }

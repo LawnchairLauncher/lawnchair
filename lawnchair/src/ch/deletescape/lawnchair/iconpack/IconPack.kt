@@ -84,9 +84,9 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
                          customIconEntry: IconPackManager.CustomIconEntry?,
                          drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable?
 
-    open fun getAllIcons(callback: (List<PackEntry>) -> Unit, cancel: () -> Boolean) {
+    open fun getAllIcons(callback: (List<PackEntry>) -> Unit, cancel: () -> Boolean, filter: (item: String) -> Boolean = { _ -> true }) {
         ensureInitialLoadComplete()
-        callback(categorize(filterDuplicates(entries)))
+        callback(categorize(filterDuplicates(entries)).filter { if (it is Entry) filter(it.identifierName) else true })
     }
 
     abstract fun supportsMasking(): Boolean

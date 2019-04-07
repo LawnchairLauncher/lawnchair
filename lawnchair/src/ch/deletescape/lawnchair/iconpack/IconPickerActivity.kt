@@ -90,7 +90,7 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
         runOnUiWorkerThread {
             // make sure whatever running on ui worker has finished, then start parsing the pack
             runOnThread(iconPackUiHandler) {
-                iconPack.getAllIcons(::addEntries) { canceled }
+                iconPack.getAllIcons(::addEntries, { canceled })
                 // Wait for the ui to finish processing new data
                 val waiter = Semaphore(0)
                 runOnUiThread {
