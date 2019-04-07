@@ -26,6 +26,7 @@ import android.util.Log
 import android.view.View
 import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.runOnThread
+import ch.deletescape.lawnchair.runOnUiWorkerThread
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import com.android.launcher3.*
 import com.android.launcher3.graphics.LauncherIcons
@@ -154,8 +155,11 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
     override fun updateActions() {
         super.updateActions()
         if (isActionsEnabled) {
-            runOnMainThread {
-                actionsRow.onUpdated(getActions())
+            getActions {
+                actions ->
+                runOnMainThread {
+                    actionsRow.onUpdated(actions)
+                }
             }
         }
     }
@@ -267,13 +271,17 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
         }
     }
 
-    fun getActions(): ArrayList<Action> {
+    fun getActions(callback: (ArrayList<Action>) -> Unit) {
         cleanActions()
-        return ArrayList(actionList.getRanked().take(ActionsController.MAX_ITEMS).mapIndexedNotNull { index, s -> actionFromString(s, index.toLong()) })
+        runOnUiWorkerThread {
+            callback(ArrayList(actionList.getRanked().take(ActionsController.MAX_ITEMS).mapIndexedNotNull { index, s -> actionFromString(s, index.toLong()) }))
+        }
     }
 
     fun cleanActions() {
-        actionList.removeAll { actionFromString(it) == null }
+        runOnUiWorkerThread {
+            actionList.removeAll { actionFromString(it) == null }
+        }
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
