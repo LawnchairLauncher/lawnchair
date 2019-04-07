@@ -63,8 +63,10 @@ class LawnchairApp : Application() {
                     val ipm = IconPackManager.getInstance(thiz)
                     ipm.addListener {
                         if (thiz.lawnchairPrefs.syncIconPackWithSesame) {
-                            val pkg = ipm.packList.currentPack().packPackageName
-                            SesameFrontend.setIconPack(thiz, if (pkg == "") null else pkg)
+                            runOnUiWorkerThread {
+                                val pkg = ipm.packList.currentPack().packPackageName
+                                SesameFrontend.setIconPack(thiz, if (pkg == "") null else pkg)
+                            }
                         }
                     }
                 }
