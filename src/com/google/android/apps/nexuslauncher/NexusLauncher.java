@@ -39,6 +39,7 @@ public class NexusLauncher {
     private final Bundle mUiInformation = new Bundle();
     private ItemInfoUpdateReceiver mItemInfoUpdateReceiver;
     QsbAnimationController mQsbAnimationController;
+    private Handler handler = new Handler(LauncherModel.getUiWorkerLooper());
 
     public NexusLauncher(NexusLauncherActivity activity) {
         mLauncher = activity;
@@ -296,6 +297,10 @@ public class NexusLauncher {
             if (mLauncher.hasBeenResumed()) {
                 ReflectionClient.getInstance(mLauncher).updatePredictionsNow(
                         FeatureFlags.REFLECTION_FORCE_OVERVIEW_MODE ? Client.OVERVIEW.id : Client.HOME.id);
+                handler.post(() -> {
+                    mLauncher.getUserEventDispatcher().updatePredictions();
+                    mLauncher.getUserEventDispatcher().updateActions();
+                });
             }
         }
 
