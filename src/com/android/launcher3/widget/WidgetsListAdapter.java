@@ -25,6 +25,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.R;
 import com.android.launcher3.WidgetPreviewLoader;
@@ -214,6 +215,18 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
         @Override
         public int compare(WidgetListRowEntry a, WidgetListRowEntry b) {
+            // Display Lawnchair at the top of the list
+            boolean leftIsLC = a.pkgItem.packageName.equals(BuildConfig.APPLICATION_ID);
+            boolean rightIsLc = b.pkgItem.packageName.equals(BuildConfig.APPLICATION_ID);
+            if (leftIsLC || rightIsLc) {
+                if (leftIsLC && rightIsLc) {
+                    return 0;
+                }
+                if (leftIsLC) {
+                    return -1;
+                }
+                return 1;
+            }
             return mComparator.compare(a.pkgItem.title.toString(), b.pkgItem.title.toString());
         }
     }
