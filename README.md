@@ -1,25 +1,46 @@
-# Lawnchair - [![Builds](https://build.codebucket.de/api/badges/LawnchairLauncher/LawnchairAlpha/status.svg)](https://build.codebucket.de/LawnchairLauncher/Lawnchair) - [![Crowdin](https://d322cqt584bo4o.cloudfront.net/lawnchairandroid/localized.svg)](http://translate.lawnchair.info) - [![Codacy grade](https://img.shields.io/codacy/grade/e2727925367548d7bbef71d54209d35b.svg)](https://www.codacy.com/app/deletescape/Lawnchair/dashboard) - [![Donate on PayPal](https://img.shields.io/badge/PayPal-Donate%20Now-brightgreen.svg)](https://paypal.me/deletescape)
+# Lawnchair - [![Crowdin](https://d322cqt584bo4o.cloudfront.net/lawnchairandroid/localized.svg)](http://translate.lawnchair.info)
 
 ![Lawnchair](banner.png)
 
-Lawnchair is a free, open source launcher aiming at bringing Pixel Launcher features to many devices. 
-Download now!
-
-<a href="https://play.google.com/store/apps/details?id=ch.deletescape.lawnchair.plah">
-<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" height="70" alt="Get it on Google Play"/></a>
-<a href="https://f-droid.org/packages/ch.deletescape.lawnchair.plah/" target="_blank">
-<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="70"/></a>
-
-## Now what does this cost?
-
-Nothing, I am promising that Lawnchair, including all it's features, will always be free! But if you really like it, you can still buy me a beer or something via [PayPal](https://www.paypal.me/deletescape).
+Lawnchair is the customizable Pixel Launcher alternative. This Repository contains our full rewrite from scratch (simply known as V2), 
+if you were looking for our older V1 sources you can find the archive [here](https://github.com/LawnchairLauncher/Lawnchair-V1).
 
 ## How to Contribute?
 
-Contributing to Lawnchair is pretty straightforward! Fork the project, clone your fork and start coding!
+If you know Java/Android and have some Kotlin knowledge you should quickly be able to start contributing to Lawnchair.
+Make sure to generally add any new classes/resources to the `lawnchair/` subdirectory and try to make as little changes as necessary directly inside Launcher3 code.
+Kotlin is preferred but we'll accept great contributions in Java as well. We'll happily accept all bug fixes and will most likely also accept your well thought out feature.
 
-Before implementing any new big features I would be happy if you could either hit me up in via a GitHub issue, or on [Telegram](https://t.me/deletescape). I probably won't reject it, but this is just to make sure that you don't invest your time for something I won't include.
+### Adding a search provider
 
-## Graphics
+A great entry point to start to understand how we work is trying to add your own search provider. You can find existing providers to reference in the `ch.deletescape.lawnchair.globalsearch.providers` package. 
+It is pretty self explanatory, all you really need to do is find an Intent to directly start the search in the app of your liking, and then add that to a new provider. 
+After registering it in `ch.deletescape.lawnchair.globalsearch.SearchProviderController` your new provider should appear in the app and be ready for testing.
 
-The official Lawnchair graphics were designed by Josh Baldassarre & Lumiq Creative. Thanks a lot to those awesome designers!
+### Building
+
+Alright, I admit it, our build variants are a bit of a mess right now. Make sure to choose one of the variants prefixed `quickstepLawnchair*`
+from the "Build Variants" menu in Android Studio. Our team is usually always on the latest canary version of Android Studio, builds are not guaranteed to work in the Stable channel.
+
+## Source releases
+
+To make our problems with rip-offs a bit easier we will work in private development cycles but release our newest sources with every production release (beta, stable).
+This also means that any contributions will be cherry-picked to our tree internally, we'll notify you whenever we do this. We're going to keep releasing public alpha builds in-between
+cycles in the future.
+
+## Licensing
+
+All of Lawnchairs additions to Launcher3 are licensed under GPLv3 and anyone wanting to use it (even in parts) has to adhere to this license,
+make sure to inform yourself before creating your own project based on Lawnchair. Here some guidelines to how we actually handle licensing in the case of Lawnchair
+(I am not a Lawyer, don't take this as legally binding advice):
+
+ * We will ALWAYS use all our legal options if you simply rename our app, strip it of all credit and upload it anywhere as your own, be this with or without monetization.
+ * We usually do not enforce the GPL clause which would force you to release the source of your entire project, but do however ask you to release any direct modifications to Lawnchair code.
+ * You are required to give us full credits for any work you may be using from us.
+ * If you're simply using Lawnchair as a reference for minor implementation details or utility functions (not entire features of our app) you can treat that as if it were licensed under Apache2 and properly credit us.
+ * We kindly ask you to use common sense and don't profit entirely off the work of others.
+ * If you have any questions regarding licensing or derivative works feel free to contact licensing@deletescape.ch
+
+ ## Graphics
+
+ The official Lawnchair graphics were designed by [Josh Baldassarre](https://www.uplabs.com/jshbldssrr) & [Lumiq Creative](https://lumiqcreative.com). Thanks a lot to those awesome designers!
