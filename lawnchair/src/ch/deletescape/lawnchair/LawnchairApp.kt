@@ -55,6 +55,9 @@ class LawnchairApp : Application() {
 
         ThemeManager.getInstance(this)
         BlurWallpaperProvider.getInstance(this)
+    }
+
+    fun onLauncherAppStateCreated() {
         if (BuildConfig.FEATURE_QUINOA) {
             SesameFrontend.init(this, object: SesameInitOnComplete {
                 override fun onConnect() {

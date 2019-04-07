@@ -24,6 +24,7 @@ import android.content.IntentFilter;
 import android.os.Looper;
 import android.util.Log;
 
+import ch.deletescape.lawnchair.LawnchairAppKt;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
@@ -131,6 +132,8 @@ public class LauncherAppState {
             };
             mNotificationBadgingObserver.register(NOTIFICATION_BADGING);
         }
+
+        LawnchairAppKt.getLawnchairApp(context).onLauncherAppStateCreated();
     }
 
     /**
