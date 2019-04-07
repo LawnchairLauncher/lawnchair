@@ -44,3 +44,7 @@ make sure to inform yourself before creating your own project based on Lawnchair
  ## Graphics
 
  The official Lawnchair graphics were designed by [Josh Baldassarre](https://www.uplabs.com/jshbldssrr) & [Lumiq Creative](https://lumiqcreative.com). Thanks a lot to those awesome designers!
+
+## Links
+
+[Website](https://lawnchair.app) - [Twitter](https://twitter.com/lawnchairapp) - [Telegram](https://t.me/lawnchair)
