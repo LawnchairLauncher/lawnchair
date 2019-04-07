@@ -32,7 +32,9 @@ import android.text.TextUtils
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import ch.deletescape.lawnchair.*
+import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.iconpack.EditIconActivity.Companion.EXTRA_ENTRY
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.LauncherModel
@@ -54,6 +56,7 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
     private var searchView: SearchView? = null
     private val collator = Collator.getInstance()
     private var closingSearch:Boolean = false
+    private val showDebugInfo = lawnchairPrefs.showDebugInfo
 
     private var dynamicPadding = 0
 
@@ -305,12 +308,19 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
                     value?.callback = this
                     field = value
                 }
+            private var name = "Unknown"
 
             init {
                 itemView.setOnClickListener(this)
                 (itemView.layoutParams as ViewGroup.MarginLayoutParams).apply {
                     leftMargin = dynamicPadding
                     rightMargin = dynamicPadding
+                }
+                if (showDebugInfo) {
+                    itemView.setOnLongClickListener {
+                        Toast.makeText(applicationContext, name, Toast.LENGTH_LONG).show()
+                        true
+                    }
                 }
             }
 
@@ -325,8 +335,9 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
                 itemView.animate().alpha(1f).setDuration(125).start()
             }
 
-            override fun onIconLoaded(drawable: Drawable) {
+            override fun onIconLoaded(drawable: Drawable, name: String) {
                 (itemView as ImageView).setImageDrawable(drawable)
+                this.name = name
             }
 
             override fun onClick(v: View) {
@@ -357,13 +368,14 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
         fun loadIcon() {
             runOnUiWorkerThread {
                 val drawable = entry.drawable
-                runOnMainThread { callback?.onIconLoaded(drawable) }
+                val displayName = entry.displayName
+                runOnMainThread { callback?.onIconLoaded(drawable, displayName) }
             }
         }
 
         interface Callback {
 
-            fun onIconLoaded(drawable: Drawable)
+            fun onIconLoaded(drawable: Drawable, name: String)
         }
     }
 
