@@ -125,6 +125,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
     public final static String SMARTSPACE_PREF = "pref_smartspace";
     private final static String BRIDGE_TAG = "tag_bridge";
 
+    public final static String EXTRA_TITLE = "title";
+
     public final static String EXTRA_FRAGMENT = "fragment";
     public final static String EXTRA_FRAGMENT_ARGS = "fragmentArgs";
 
@@ -165,6 +167,10 @@ public class SettingsActivity extends SettingsBaseActivity implements
     }
 
     protected Fragment createLaunchFragment(Intent intent) {
+        CharSequence title = intent.getCharSequenceExtra(EXTRA_TITLE);
+        if (title != null) {
+            setTitle(title);
+        }
         String fragment = intent.getStringExtra(EXTRA_FRAGMENT);
         if (fragment != null) {
             return Fragment.instantiate(this, fragment, intent.getBundleExtra(EXTRA_FRAGMENT_ARGS));
@@ -291,14 +297,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         if (fragment instanceof DialogFragment) {
             ((DialogFragment) fragment).show(getSupportFragmentManager(), preference.getKey());
         } else {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            setTitle(preference.getTitle());
-            transaction
-                    .setCustomAnimations(R.animator.fly_in, R.animator.fade_out, R.animator.fade_in,
-                            R.animator.fly_out);
-            transaction.replace(R.id.content, fragment);
-            transaction.addToBackStack("PreferenceFragment");
-            transaction.commit();
+            startFragment(this, preference.getFragment(), preference.getExtras(), preference.getTitle());
         }
         return true;
     }
@@ -926,9 +925,23 @@ public class SettingsActivity extends SettingsBaseActivity implements
     }
 
     public static void startFragment(Context context, String fragment, @Nullable Bundle args) {
+        startFragment(context, fragment, args, null);
+    }
+
+    public static void startFragment(Context context, String fragment, @Nullable Bundle args,
+            @Nullable CharSequence title) {
+        context.startActivity(createFragmentIntent(context, fragment, args, title));
+    }
+
+    @NotNull
+    private static Intent createFragmentIntent(Context context, String fragment,
+            @Nullable Bundle args, @Nullable CharSequence title) {
         Intent intent = new Intent(context, SettingsActivity.class);
         intent.putExtra(EXTRA_FRAGMENT, fragment);
         intent.putExtra(EXTRA_FRAGMENT_ARGS, args);
-        context.startActivity(intent);
+        if (title != null) {
+            intent.putExtra(EXTRA_TITLE, title);
+        }
+        return intent;
     }
 }
