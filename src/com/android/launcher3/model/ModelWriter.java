@@ -352,6 +352,7 @@ public class ModelWriter {
             ModelVerifier verifier = new ModelVerifier();
 
             mWorkerExecutor.execute(() -> {
+                info.clearCustomIcon(mContext);
                 ContentResolver cr = mContext.getContentResolver();
                 cr.delete(LauncherSettings.Favorites.CONTENT_URI,
                         LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);

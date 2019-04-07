@@ -224,6 +224,14 @@ public class FolderInfo extends ItemInfo {
         return getIconInternal(launcher) != null;
     }
 
+    public void clearCustomIcon(Context context) {
+        Launcher launcher = LawnchairLauncher.getLauncher(context);
+        CustomInfoProvider<FolderInfo> infoProvider = CustomInfoProvider.Companion.forItem(launcher, this);
+        if (infoProvider != null) {
+            infoProvider.setIcon(this, null);
+        }
+    }
+
     private Drawable cached;
     private String cachedIcon;
 
