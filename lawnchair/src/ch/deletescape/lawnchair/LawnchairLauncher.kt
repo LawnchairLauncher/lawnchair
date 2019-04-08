@@ -48,6 +48,7 @@ import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.views.LawnchairBackgroundView
 import com.android.launcher3.*
+import com.android.launcher3.uioverrides.OverviewState
 import com.android.launcher3.util.ComponentKey
 import com.android.quickstep.views.LauncherRecentsView
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity
@@ -237,6 +238,15 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
     override fun onRotationChanged() {
         super.onRotationChanged()
         BlurWallpaperProvider.getInstance(this).updateAsync()
+    }
+
+    fun getShelfHeight(): Int {
+        return if (lawnchairPrefs.showPredictions) {
+            val qsbHeight = resources.getDimensionPixelSize(R.dimen.qsb_widget_height)
+            (OverviewState.getDefaultSwipeHeight(deviceProfile) + qsbHeight).toInt()
+        } else {
+            deviceProfile.hotseatBarSizePx
+        }
     }
 
     override fun getSystemService(name: String): Any? {
