@@ -73,10 +73,7 @@ public final class TaskHolder extends ViewHolder {
      */
     public void bindEmptyUi() {
         mTask = null;
-        // TODO: Set the task view to a loading, empty UI.
-        // Temporarily using the one below for visual confirmation but should be swapped out to new
-        // UI later.
-        mTaskItemView.resetTaskItemView();
+        mTaskItemView.resetToEmptyUi();
     }
 
     /**
