@@ -484,11 +484,13 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     }
 
     private void updateFolderCellSize(float scale, DisplayMetrics dm, Resources res) {
+        int folderLabelRowCount = prefs.getHomeLabelRows();
+        
         folderChildIconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * scale);
         folderChildTextSizePx =
                 (int) (res.getDimensionPixelSize(R.dimen.folder_child_text_size) * scale);
 
-        int textHeight = Utilities.calculateTextHeight(folderChildTextSizePx);
+        int textHeight = Utilities.calculateTextHeight(folderChildTextSizePx) * folderLabelRowCount;
         int cellPaddingX = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_x_padding) * scale);
         int cellPaddingY = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_y_padding) * scale);
 
