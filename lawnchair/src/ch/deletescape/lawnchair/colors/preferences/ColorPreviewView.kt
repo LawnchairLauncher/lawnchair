@@ -21,8 +21,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
-import android.widget.TextView
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.createRipple
 import ch.deletescape.lawnchair.font.CustomFontManager
 
 @SuppressLint("ViewConstructor")
@@ -35,8 +35,9 @@ class ColorPreviewView(context: Context, attrs: AttributeSet) : AppCompatTextVie
     var colorResolver: ColorEngine.ColorResolver? = null
         set(value) {
             if (value == null) throw IllegalArgumentException("colorResolver must not be null")
-            setBackgroundColor(value.resolveColor())
-            setTextColor(value.computeForegroundColor())
+            val foregroundColor = value.computeForegroundColor()
+            background = createRipple(foregroundColor, value.resolveColor())
+            setTextColor(foregroundColor)
             text = value.getDisplayName()
             field = value
         }

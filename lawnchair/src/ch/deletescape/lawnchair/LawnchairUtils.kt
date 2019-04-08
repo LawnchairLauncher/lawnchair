@@ -27,11 +27,11 @@ import android.content.res.Resources
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.RippleDrawable
+import android.graphics.drawable.ShapeDrawable
 import android.os.Handler
 import android.os.Looper
 import android.support.animation.FloatPropertyCompat
 import android.support.annotation.ColorInt
-import android.support.design.widget.TabLayout
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.ColorUtils
 import android.support.v4.graphics.drawable.DrawableCompat
@@ -651,4 +651,9 @@ fun JSONObject.asMap() = JSONMap(this)
 fun String.asNonEmpty(): String? {
     if (TextUtils.isEmpty(this)) return null
     return this
+}
+
+fun createRipple(foreground: Int, background: Int): RippleDrawable {
+    val rippleColor = ColorStateList.valueOf(ColorUtils.setAlphaComponent(foreground, 31))
+    return RippleDrawable(rippleColor, ShapeDrawable().apply { paint.color = background }, ShapeDrawable())
 }
