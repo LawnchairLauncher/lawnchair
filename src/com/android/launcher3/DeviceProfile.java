@@ -484,6 +484,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     }
 
     private void updateFolderCellSize(float scale, DisplayMetrics dm, Resources res) {
+        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(mContext);
         int folderLabelRowCount = prefs.getHomeLabelRows();
         
         folderChildIconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * scale);
