@@ -89,6 +89,10 @@ public class TouchInteractionService extends Service {
                 boolean gestureSwipeLeft) {
         }
 
+        public void onSystemUiStateChanged(int stateFlags) {
+            // To be implemented
+        }
+
         /** Deprecated methods **/
         public void onQuickStep(MotionEvent motionEvent) { }
 
