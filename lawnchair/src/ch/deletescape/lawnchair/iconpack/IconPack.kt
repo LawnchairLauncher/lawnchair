@@ -128,6 +128,7 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
         abstract val displayName: String
         abstract val identifierName: String
         abstract val drawable: Drawable
+        abstract val isAvailable: Boolean
 
         abstract fun toCustomEntry(): IconPackManager.CustomIconEntry
     }

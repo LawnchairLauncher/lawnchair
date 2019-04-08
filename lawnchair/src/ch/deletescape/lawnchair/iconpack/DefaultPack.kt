@@ -264,6 +264,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         override val displayName by lazy { app.label.toString() }
         override val identifierName = ComponentKey(app.componentName, app.user).toString()
         override val drawable get() = app.getIcon(0)!!
+        override val isAvailable = true
 
         override fun toCustomEntry() = IconPackManager.CustomIconEntry("", ComponentKey(app.componentName, app.user).toString())
     }

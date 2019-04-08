@@ -217,7 +217,11 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         Toast.makeText(context, "Failed to parse AppFilter", Toast.LENGTH_SHORT).show()
     }
 
-    override fun getEntryForComponent(key: ComponentKey) = packComponents[key.componentName]
+    override fun getEntryForComponent(key: ComponentKey): Entry? {
+        val entry = packComponents[key.componentName]
+        if (entry?.isAvailable != true) return null
+        return entry
+    }
 
     override fun getIcon(name: String, iconDpi: Int): Drawable? {
         val drawableId = getDrawableId(name)
@@ -408,12 +412,18 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         override val identifierName = drawableName
         override val drawable: Drawable
             get() {
+                if (!isAvailable) {
+                    throw IllegalStateException("Trying to access an unavailable entry $debugName")
+                }
                 try {
                     return packResources.getDrawable(drawableId)
                 } catch (e: Resources.NotFoundException) {
-                    throw Exception("Failed to get drawable $drawableId ($drawableName) from $packPackageName", e)
+                    throw Exception("Failed to get drawable $drawableId ($debugName)", e)
                 }
             }
+        override val isAvailable by lazy { drawableId != 0 }
+
+        val debugName get() = "$drawableName in $packPackageName"
         val drawableId: Int by lazy { id ?: getDrawableId(drawableName) }
 
         override fun toCustomEntry() = IconPackManager.CustomIconEntry(packPackageName, drawableName)
