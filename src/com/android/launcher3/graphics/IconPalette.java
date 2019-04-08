@@ -19,6 +19,7 @@ package com.android.launcher3.graphics;
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 
@@ -87,7 +88,7 @@ public class IconPalette {
      */
     private static int resolveColor(Context context, int color) {
         if (color == Notification.COLOR_DEFAULT) {
-            return context.getColor(R.color.notification_icon_default_color);
+            return ContextCompat.getColor(context, R.color.notification_icon_default_color);
         }
         return color;
     }
