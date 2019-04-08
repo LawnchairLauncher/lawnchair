@@ -138,6 +138,8 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     private final Point minSize;
     private final Point maxSize;
 
+    private final LawnchairPreferences prefs;
+
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
             Point minSize, Point maxSize,
             int width, int height, boolean isLandscape, boolean isMultiWindowMode) {
@@ -204,8 +206,8 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
 
         workspaceCellPaddingXPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_padding_x);
 
-        Utilities.getLawnchairPrefs(context)
-                .addOnPreferenceChangeListener(this, "pref_fullWidthWidgets", "pref_dockSearchBar",
+        prefs = Utilities.getLawnchairPrefs(context);
+        prefs.addOnPreferenceChangeListener(this, "pref_fullWidthWidgets", "pref_dockSearchBar",
                         "pref_twoRowDock", "pref_compactDock", "pref_allAppsPaddingScale", "pref_dockScale");
     }
 
@@ -262,7 +264,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         Resources res = mContext.getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
 
-        boolean fullWidthWidgets = Utilities.getLawnchairPrefs(mContext).getAllowFullWidthWidgets();
+        boolean fullWidthWidgets = prefs.getAllowFullWidthWidgets();
         boolean dockSearchBar = prefs.getDockSearchBar();
         boolean dockHidden = prefs.getDockHide();
         int dockRows = prefs.getDockRowsCount();
@@ -359,7 +361,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         iconDrawablePaddingPx = 0;
         cellHeightPx = iconSizePx;
 
-        int labelRows = Utilities.getLawnchairPrefs(mContext).getDrawerLabelRows();
+        int labelRows = prefs.getDrawerLabelRows();
 
         // In normal cases, All Apps cell height should equal the Workspace cell height.
         // Since we are removing labels from the Workspace, we need to manually compute the
@@ -384,7 +386,6 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     }
 
     private void updateIconSize(float scale, Resources res, DisplayMetrics dm) {
-        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(mContext);
         boolean dockVisible = !prefs.getDockHide();
         int labelRowCount = prefs.getHomeLabelRows();
         int drawerLabelRowCount = prefs.getDrawerLabelRows();
@@ -434,7 +435,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         // Hotseat
         if (isVerticalLayout) {
             hotseatBarSizePx =
-                    iconSizePx * Utilities.getLawnchairPrefs(mContext).getDockRowsCount()
+                    iconSizePx * prefs.getDockRowsCount()
                     + hotseatBarSidePaddingStartPx + hotseatBarSidePaddingEndPx;
         }
         hotseatCellHeightPx = iconSizePx;
@@ -484,11 +485,13 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     }
 
     private void updateFolderCellSize(float scale, DisplayMetrics dm, Resources res) {
+        int folderLabelRowCount = prefs.getHomeLabelRows();
+        
         folderChildIconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * scale);
         folderChildTextSizePx =
                 (int) (res.getDimensionPixelSize(R.dimen.folder_child_text_size) * scale);
 
-        int textHeight = Utilities.calculateTextHeight(folderChildTextSizePx);
+        int textHeight = Utilities.calculateTextHeight(folderChildTextSizePx) * folderLabelRowCount;
         int cellPaddingX = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_x_padding) * scale);
         int cellPaddingY = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_y_padding) * scale);
 
@@ -542,7 +545,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
      * new workspace padding
      */
     private void updateWorkspacePadding() {
-        boolean dockVisible = !Utilities.getLawnchairPrefs(mContext).getDockHide();
+        boolean dockVisible = !prefs.getDockHide();
         Rect padding = workspacePadding;
         if (isVerticalBarLayout()) {
             padding.top = 0;
