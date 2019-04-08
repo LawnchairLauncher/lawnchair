@@ -159,6 +159,10 @@ public class TouchInteractionService extends Service implements
                     isButton, gestureSwipeLeft, activityControl.getContainerType());
         }
 
+        public void onSystemUiStateChanged(int stateFlags) {
+            // To be implemented
+        }
+
         /** Deprecated methods **/
         public void onQuickStep(MotionEvent motionEvent) { }
 
