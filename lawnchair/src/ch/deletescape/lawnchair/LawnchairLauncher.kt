@@ -25,6 +25,7 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -99,7 +100,9 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
     }
 
     inline fun prepareDummyView(view: View, crossinline callback: (View) -> Unit) {
-        prepareDummyView(view.left, view.top, view.right, view.bottom, callback)
+        val rect = Rect()
+        dragLayer.getViewRectRelativeToSelf(view, rect)
+        prepareDummyView(rect.left, rect.top, rect.right, rect.bottom, callback)
     }
 
     inline fun prepareDummyView(left: Int, top: Int, crossinline callback: (View) -> Unit) {
