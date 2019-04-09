@@ -40,7 +40,7 @@ open class EdgeSearchProvider(context: Context) : SearchProvider(context) {
                 .setClassName(PACKAGE, "com.microsoft.bingsearchsdk.api.ui.activities.RubyBingSearchActivity"))
     }
 
-    override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_search)!!
+    override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_edge)!!
 
     companion object {
         private const val PACKAGE = "com.microsoft.emmx"
