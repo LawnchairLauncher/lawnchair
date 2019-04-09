@@ -133,9 +133,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     @Thunk int mPageIndicatorViewId;
     protected T mPageIndicator;
 
-    // Convenience/caching
-    private static final Rect sTmpRect = new Rect();
-
     protected final Rect mInsets = new Rect();
     protected boolean mIsRtl;
 
@@ -805,12 +802,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         super.requestDisallowInterceptTouchEvent(disallowIntercept);
     }
 
-    /** Returns whether x and y originated within the buffered viewport */
-    private boolean isTouchPointInViewportWithBuffer(float x, float y) {
-        sTmpRect.set(-getMeasuredWidth() / 2, 0, 3 * getMeasuredWidth() / 2, getMeasuredHeight());
-        return sTmpRect.contains((int) x, (int) y);
-    }
-
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         /*
@@ -876,7 +867,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                         pageEndTransition();
                     }
                 } else {
-                    mIsBeingDragged = isTouchPointInViewportWithBuffer(mDownMotionX, mDownMotionY);
+                    mIsBeingDragged = true;
                 }
 
                 break;
@@ -917,13 +908,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         final int pointerIndex = ev.findPointerIndex(mActivePointerId);
         if (pointerIndex == -1) return;
 
-        // Disallow scrolling if we started the gesture from outside the viewport
         final float x = ev.getX(pointerIndex);
-        final float y = ev.getY(pointerIndex);
-        if (!isTouchPointInViewportWithBuffer(x, y)) return;
-
         final int xDiff = (int) Math.abs(x - mLastMotionX);
-
         final int touchSlop = Math.round(touchSlopScale * mTouchSlop);
         boolean xMoved = xDiff > touchSlop;
 
