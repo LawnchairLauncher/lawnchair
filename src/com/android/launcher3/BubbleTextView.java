@@ -209,6 +209,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
         setEllipsize(TruncateAt.END);
+        setHorizontallyScrolling(false);
         setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
         setTextAlpha(1f);
     }
