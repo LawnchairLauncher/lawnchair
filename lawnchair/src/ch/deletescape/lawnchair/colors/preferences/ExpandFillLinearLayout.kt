@@ -20,7 +20,9 @@ package ch.deletescape.lawnchair.colors.preferences
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
+import ch.deletescape.lawnchair.forEachChild
 import ch.deletescape.lawnchair.forEachChildIndexed
 
 class ExpandFillLinearLayout(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs) {
@@ -29,34 +31,33 @@ class ExpandFillLinearLayout(context: Context, attrs: AttributeSet?) : LinearLay
     var childHeight = 0
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val fillLayout = if (orientation == HORIZONTAL) {
-            val exactHeight = MeasureSpec.makeMeasureSpec(measuredHeight, MeasureSpec.EXACTLY)
-            performMeasure(widthMeasureSpec, childWidth) { view, spec ->
-                measureChild(view, spec, exactHeight)
+        when (orientation) {
+            VERTICAL -> calculateChildSize(heightMeasureSpec, childHeight) { view, size ->
+                view.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                view.layoutParams.height = size
             }
-        } else {
-            val exactWidth = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY)
-            performMeasure(heightMeasureSpec, childHeight) { view, spec ->
-                measureChild(view, exactWidth, spec)
+            HORIZONTAL -> calculateChildSize(widthMeasureSpec, childWidth) { view, size ->
+                view.layoutParams.width = size
+                view.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             }
         }
-        if (fillLayout) {
-            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec))
-        } else {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
-    private inline fun performMeasure(spec: Int, childSize: Int, crossinline measureChild: (View, Int) -> Unit): Boolean {
-        val available = MeasureSpec.getSize(spec)
-        if (childSize * childCount >= available || childCount == 0) return false
-        val width = available / childCount
-        val used = width * childCount
-        val remaining = available - used
-        forEachChildIndexed { view, i ->
-            if (i < remaining) measureChild(view, MeasureSpec.makeMeasureSpec(width + 1, MeasureSpec.EXACTLY))
-            else measureChild(view, MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY))
+    private inline fun calculateChildSize(sizeSpec: Int, min: Int, crossinline setSize: (View, Int) -> Unit) {
+        var available = MeasureSpec.getSize(sizeSpec)
+        if (min * childCount >= available || childCount == 0) {
+            forEachChild {
+                it.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                it.layoutParams.height = childHeight
+                setSize(it, min)
+            }
+        } else {
+            forEachChildIndexed { it, i ->
+                val size = available / (childCount - i)
+                setSize(it, size)
+                available -= size
+            }
         }
-        return true
     }
 }

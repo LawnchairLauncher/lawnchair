@@ -25,6 +25,7 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -47,6 +48,7 @@ import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.views.LawnchairBackgroundView
 import com.android.launcher3.*
+import com.android.launcher3.uioverrides.OverviewState
 import com.android.launcher3.util.ComponentKey
 import com.android.quickstep.views.LauncherRecentsView
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity
@@ -99,7 +101,9 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
     }
 
     inline fun prepareDummyView(view: View, crossinline callback: (View) -> Unit) {
-        prepareDummyView(view.left, view.top, view.right, view.bottom, callback)
+        val rect = Rect()
+        dragLayer.getViewRectRelativeToSelf(view, rect)
+        prepareDummyView(rect.left, rect.top, rect.right, rect.bottom, callback)
     }
 
     inline fun prepareDummyView(left: Int, top: Int, crossinline callback: (View) -> Unit) {
@@ -193,7 +197,7 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
         currentEditIcon = when (itemInfo) {
             is AppInfo -> IconPackManager.getInstance(this).getEntryForComponent(component!!)?.drawable
             is ShortcutInfo -> BitmapDrawable(resources, itemInfo.iconBitmap)
-            is FolderInfo -> itemInfo.getIcon(this)
+            is FolderInfo -> itemInfo.getFolderIcon(this)
             else -> null
         }
         currentEditInfo = itemInfo
@@ -234,6 +238,15 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
     override fun onRotationChanged() {
         super.onRotationChanged()
         BlurWallpaperProvider.getInstance(this).updateAsync()
+    }
+
+    fun getShelfHeight(): Int {
+        return if (lawnchairPrefs.showPredictions) {
+            val qsbHeight = resources.getDimensionPixelSize(R.dimen.qsb_widget_height)
+            (OverviewState.getDefaultSwipeHeight(deviceProfile) + qsbHeight).toInt()
+        } else {
+            deviceProfile.hotseatBarSizePx
+        }
     }
 
     override fun getSystemService(name: String): Any? {

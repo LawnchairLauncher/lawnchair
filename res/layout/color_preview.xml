@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:textColor="?android:textColorPrimary"
-    android:foreground="?selectableItemBackground"
     android:gravity="start|bottom"
     android:padding="16dp"
     android:textSize="16sp"

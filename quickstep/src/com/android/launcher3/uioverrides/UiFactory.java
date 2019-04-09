@@ -36,6 +36,7 @@ import android.os.CancellationSignal;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 
+import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.gestures.VerticalSwipeGestureController;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
@@ -185,11 +186,15 @@ public class UiFactory {
     public static void onLauncherStateOrResumeChanged(Launcher launcher) {
         LauncherState state = launcher.getStateManager().getState();
         DeviceProfile profile = launcher.getDeviceProfile();
-        if (ContextCompat.checkSelfPermission(launcher, Manifest.permission.STATUS_BAR) == PackageManager.PERMISSION_GRANTED) {
-            WindowManagerWrapper.getInstance().setShelfHeight(
-                    (state == NORMAL || state == OVERVIEW) && launcher.isUserActive()
-                            && !profile.isVerticalBarLayout(),
-                    profile.hotseatBarSizePx);
+        if (Utilities.isRecentsEnabled()) {
+            try {
+                WindowManagerWrapper.getInstance().setShelfHeight(
+                        (state == NORMAL || state == OVERVIEW) && launcher.isUserActive()
+                                && !profile.isVerticalBarLayout(),
+                        ((LawnchairLauncher) launcher).getShelfHeight());
+            } catch (Exception ignore) {
+
+            }
         }
 
         if (state == NORMAL) {

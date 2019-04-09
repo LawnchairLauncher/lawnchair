@@ -210,6 +210,8 @@ public class FolderInfo extends ItemInfo {
         int iconSize = launcher.mDeviceProfile.iconSizePx;
         FrameLayout dummy = new FrameLayout(launcher, null);
         FolderIcon icon = FolderIcon.fromXml(R.layout.folder_icon, launcher, dummy, this);
+        icon.isCustomIcon = false;
+        icon.getFolderBackground().setStartOpacity(1f);
         Bitmap b = BitmapRenderer.createHardwareBitmap(iconSize, iconSize, out -> {
             out.translate(iconSize / 2f, 0);
             // TODO: make folder icons more visible in front of the bottom sheet

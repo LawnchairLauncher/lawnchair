@@ -55,6 +55,7 @@ import com.android.launcher3.FolderInfo.FolderListener;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
@@ -476,7 +477,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             if (!mBackground.drawingDelegated() && !isCustomIcon) {
                 mBackground.drawBackground(canvas);
             }
-        } else if (!isCustomIcon) return;
+        } else if (!isCustomIcon || mInfo.container == Favorites.CONTAINER_HOTSEAT) return;
 
         if (isCustomIcon) {
             int offsetX = mBackground.getOffsetX();
