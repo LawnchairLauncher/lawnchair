@@ -55,7 +55,7 @@ class EditIconActivity : SettingsBaseActivity() {
     }
     private val isFolder by lazy { intent.getBooleanExtra(EXTRA_FOLDER, false) }
     private val iconPacks by lazy {
-        listOf(IconPackInfo("")) + iconPackManager.getPackProviders()
+        listOf(IconPackInfo(iconPackManager.defaultPackProvider)) + iconPackManager.getPackProviders()
                 .map { IconPackInfo(it) }.sortedBy { it.title }
     }
     private val iconAdapter by lazy { IconAdapter() }
@@ -142,8 +142,8 @@ class EditIconActivity : SettingsBaseActivity() {
         finish()
     }
 
-    fun onSelectIconPack(packageName: String) {
-        startActivityForResult(IconPickerActivity.newIntent(this, packageName), CODE_PICK_ICON)
+    fun onSelectIconPack(provider: IconPackManager.PackProvider) {
+        startActivityForResult(IconPickerActivity.newIntent(this, provider), CODE_PICK_ICON)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -241,14 +241,14 @@ class EditIconActivity : SettingsBaseActivity() {
             }
 
             override fun onClick(v: View) {
-                onSelectIconPack(iconPacks[adapterPosition].packageName)
+                onSelectIconPack(iconPacks[adapterPosition].provider)
             }
         }
     }
 
-    inner class IconPackInfo(val name: String) {
+    inner class IconPackInfo(val provider: IconPackManager.PackProvider) {
 
-        val info = IconPackList.PackInfo.forPackage(this@EditIconActivity, name)
+        val info = IconPackList.PackInfo.forPackage(this@EditIconActivity, provider.name)
 
         val icon = info.displayIcon
         val title = info.displayName
@@ -258,7 +258,7 @@ class EditIconActivity : SettingsBaseActivity() {
 
         fun getIconPack(): IconPack {
             if (packRef?.get() == null) {
-                packRef = WeakReference(iconPackManager.getIconPack(name, true, false))
+                packRef = WeakReference(iconPackManager.getIconPack(provider, true, false))
             }
             return packRef!!.get()!!
         }
