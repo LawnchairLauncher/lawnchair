@@ -65,4 +65,7 @@
     <!-- Assistant Gestures -->
     <dimen name="gestures_assistant_size">28dp</dimen>
     <dimen name="gestures_assistant_drag_threshold">70dp</dimen>
+
+    <!-- Distance to move elements when swiping up to go home from launcher -->
+    <dimen name="home_pullback_distance">28dp</dimen>
 </resources>

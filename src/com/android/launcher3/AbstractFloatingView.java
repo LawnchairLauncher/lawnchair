@@ -19,9 +19,11 @@ package com.android.launcher3;
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
+
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 
+import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -30,15 +32,17 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import androidx.annotation.IntDef;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-
-import androidx.annotation.IntDef;
 
 /**
  * Base class for a View which shows a floating UI on top of the launcher UI.
@@ -124,7 +128,19 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
 
     protected abstract void handleClose(boolean animate);
 
+    /**
+     * Creates a user-controlled animation to hint that the view will be closed if completed.
+     * @param distanceToMove The max distance that elements should move from their starting point.
+     */
+    public @Nullable Animator createHintCloseAnim(float distanceToMove) {
+        return null;
+    }
+
     public abstract void logActionCommand(int command);
+
+    public int getLogContainerType() {
+        return ContainerType.DEFAULT_CONTAINERTYPE;
+    }
 
     public final boolean isOpen() {
         return mIsOpen;
