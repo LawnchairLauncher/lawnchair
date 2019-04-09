@@ -20,6 +20,7 @@
 package ch.deletescape.lawnchair.util.extensions
 
 import android.util.Log
+import kotlin.system.measureTimeMillis
 
 // Utilities for simpler debug logging without having to bother with tags
 // The instance variants (Any.*) are faster and also produce significantly less overhead when compiled
@@ -68,4 +69,20 @@ inline fun e(message: String) = Log.e(callingClass, message)
 
 inline fun <reified T> T.e(message: String, t: Throwable) = Log.e(TAG, message, t)
 
-inline fun <reified T> T.e(message: String) = Log.e(TAG, message)
+inline fun <reified T> measure(method: String, block: () -> T): T {
+    var ret: T? = null
+    val time = measureTimeMillis {
+        ret = block()
+    }
+    d("$method took ${time}ms")
+    return ret!!
+}
+
+inline fun <reified I, reified T> I.measure(method: String, block: () -> T): T {
+    var ret: T? = null
+    val time = measureTimeMillis {
+        ret = block()
+    }
+    d("$method() took ${time}ms")
+    return ret!!
+}
