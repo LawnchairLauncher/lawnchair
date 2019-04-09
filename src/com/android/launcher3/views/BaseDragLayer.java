@@ -223,14 +223,18 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        return verifyTouchDispatch(this, ev) && super.dispatchTouchEvent(ev);
+        return dispatchTouchEvent(this, ev);
+    }
+
+    public boolean dispatchTouchEvent(Object caller, MotionEvent ev) {
+        return verifyTouchDispatch(caller, ev) && super.dispatchTouchEvent(ev);
     }
 
     /**
      * Returns true if the {@param caller} is allowed to dispatch {@param ev} on this view,
      * false otherwise.
      */
-    public boolean verifyTouchDispatch(Object caller, MotionEvent ev) {
+    private boolean verifyTouchDispatch(Object caller, MotionEvent ev) {
         int action = ev.getAction();
         if (action == ACTION_DOWN) {
             if (mCurrentTouchOwner != null) {
