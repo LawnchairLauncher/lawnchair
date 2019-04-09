@@ -50,6 +50,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     private final ColorStateList dH;
     private final int mSmartspaceBackgroundRes;
     private IcuDateTextView mClockView;
+    private IcuDateTextView mClockAboveView;
     private ViewGroup mSmartspaceContent;
     private final SmartspaceController dp;
     private SmartspaceDataContainer dq;
@@ -193,6 +194,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         mSubtitleIcon.setImageTintList(dH);
         mSubtitleIcon.setImageBitmap(data.getCard().getIcon());
         bindWeather(data, mSubtitleWeatherContent, mSubtitleWeatherText, mSubtitleWeatherIcon);
+        bindClockAbove(false);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -217,6 +219,22 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             mClockView.setVisibility(View.GONE);
             mTitleSeparator.setVisibility(View.GONE);
         }
+        bindClockAbove(forced);
+    }
+
+    private void bindClockAbove(boolean forced) {
+        if(mPrefs.getSmartspaceTime() && mPrefs.getSmartspaceTimeAbove()) {
+            mClockAboveView.setVisibility(View.VISIBLE);
+            // TODO: Create click listener opening clock
+            mClockAboveView.setOnClickListener(mCalendarClickListener);
+            mClockAboveView.setOnLongClickListener(co());
+            if (forced)
+                mClockAboveView.reloadDateFormat(true);
+            if (!Utilities.ATLEAST_NOUGAT)
+                mClockAboveView.onVisibilityAggregated(true);
+        } else {
+            mClockAboveView.setVisibility(GONE);
+        }
     }
 
     private void bindWeather(LawnchairSmartspaceController.DataContainer data, View container, TextView title, ImageView icon) {
@@ -237,6 +255,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         if (!mDoubleLine) {
             bindClockAndSeparator(true);
         }
+        bindClockAbove(true);
     }
 
     private Bitmap addShadowToBitmap(Bitmap bitmap) {
@@ -263,6 +282,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         mSubtitleWeatherText = findViewById(R.id.subtitle_weather_text);
         backportClockVisibility(false);
         mClockView = findViewById(R.id.clock);
+        mClockAboveView = findViewById(R.id.time_above);
         backportClockVisibility(true);
         mTitleSeparator = findViewById(R.id.title_sep);
     }

@@ -35,6 +35,14 @@
             />
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_smartspace_time_above"
+            android:title="@string/pref_smartspace_time_above"
+            android:summary="@string/pref_smartspace_time_above_summary"
+            android:defaultValue="false"
+            android:dependency="pref_smartspace_time"
+            />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_smartspace_time_24_h"
             android:title="@string/smartspace_time_24_h"
             android:defaultValue="false"

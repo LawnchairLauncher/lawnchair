@@ -561,4 +561,7 @@
     <string name="units_romer">Rømer</string>
 
     <string name="owm_get_your_own_key">Please get your own API key from api.openweathermap.org</string>
+
+    <string name="pref_smartspace_time_above">Show large clock</string>
+    <string name="pref_smartspace_time_above_summary">Show the clock above the widget</string>
 </resources>

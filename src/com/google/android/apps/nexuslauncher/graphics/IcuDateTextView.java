@@ -37,7 +37,7 @@ public class IcuDateTextView extends DoubleShadowTextView {
     public void reloadDateFormat(boolean forcedChange) {
         String format;
         if (Utilities.ATLEAST_NOUGAT) {
-            mDateFormat = getDateFormat(getContext(), forcedChange, mDateFormat);
+            mDateFormat = getDateFormat(getContext(), forcedChange, mDateFormat, getId() == R.id.time_above);
             format = mDateFormat.format(System.currentTimeMillis());
         } else {
             format = DateUtils.formatDateTime(getContext(), System.currentTimeMillis(),
@@ -48,7 +48,7 @@ public class IcuDateTextView extends DoubleShadowTextView {
     }
 
     @RequiresApi(24)
-    public static DateFormat getDateFormat(Context context, boolean forcedChange, DateFormat oldFormat) {
+    public static DateFormat getDateFormat(Context context, boolean forcedChange, DateFormat oldFormat, boolean isTimeAbove) {
         if (oldFormat == null || forcedChange) {
             (oldFormat = DateFormat.getInstanceForSkeleton(context
                     .getString(R.string.icu_abbrev_wday_month_day_no_year), Locale.getDefault()))
@@ -56,11 +56,12 @@ public class IcuDateTextView extends DoubleShadowTextView {
         }
         LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
         boolean showTime = prefs.getSmartspaceTime();
+        boolean timeAbove = prefs.getSmartspaceTimeAbove();
         boolean show24h = prefs.getSmartspaceTime24H();
         boolean showDate = prefs.getSmartspaceDate();
-        if (showTime) {
+        if ((showTime && !timeAbove) || isTimeAbove) {
             String format = context.getString(show24h ? R.string.icu_abbrev_time : R.string.icu_abbrev_time_12h);
-            if (showDate)
+            if (showDate && !isTimeAbove)
                 format += context.getString(R.string.icu_abbrev_date);
             (oldFormat = DateFormat.getInstanceForSkeleton(format, Locale.getDefault()))
                     .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
