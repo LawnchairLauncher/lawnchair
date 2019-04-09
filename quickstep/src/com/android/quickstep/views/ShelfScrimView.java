@@ -53,6 +53,9 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
     // cover the whole screen
     private static final float SCRIM_CATCHUP_THRESHOLD = 0.2f;
 
+    // Temporarily needed until android.R.attr.bottomDialogCornerRadius becomes public
+    private static final float BOTTOM_CORNER_RADIUS_RATIO = 2f;
+
     // In transposed layout, we simply draw a flat color.
     private boolean mDrawingFlatColor;
 
@@ -87,7 +90,7 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
         mMaxScrimAlpha = Math.round(OVERVIEW.getWorkspaceScrimAlpha(mLauncher) * 255);
 
         mEndAlpha = Color.alpha(mEndScrim);
-        mRadius = mLauncher.getResources().getDimension(R.dimen.shelf_surface_radius);
+        mRadius = BOTTOM_CORNER_RADIUS_RATIO * Themes.getDialogCornerRadius(context);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         mShelfOffset = context.getResources().getDimension(R.dimen.shelf_surface_offset);
