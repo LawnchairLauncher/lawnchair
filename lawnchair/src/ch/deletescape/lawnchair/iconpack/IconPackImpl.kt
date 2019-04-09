@@ -33,6 +33,8 @@ import android.util.Xml
 import android.widget.Toast
 import ch.deletescape.lawnchair.get
 import ch.deletescape.lawnchair.toTitleCase
+import ch.deletescape.lawnchair.util.extensions.d
+import ch.deletescape.lawnchair.util.extensions.e
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
@@ -50,8 +52,6 @@ import kotlin.collections.ArrayList
 
 class IconPackImpl(context: Context, packPackageName: String) : IconPack(context, packPackageName) {
 
-    private val TAG = "IconPackImpl"
-
     private val packComponents: MutableMap<ComponentName, Entry> = HashMap()
     private val packCalendars: MutableMap<ComponentName, String> = HashMap()
     private val packClocks: MutableMap<Int, CustomClock.Metadata> = HashMap()
@@ -64,7 +64,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
     init {
         if (prefs.showDebugInfo) {
-            Log.d(TAG, "init pack $packPackageName on ${Looper.myLooper()!!.thread.name}", Throwable())
+            d("init pack $packPackageName on ${Looper.myLooper()!!.thread.name}", Throwable())
         }
         executeLoadPack()
     }
@@ -203,7 +203,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 }
             }
             val endTime = System.currentTimeMillis()
-            Log.d("IconPackImpl", "completed parsing pack $packPackageName in ${endTime - startTime}ms")
+            d("completed parsing pack $packPackageName in ${endTime - startTime}ms")
             return
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
@@ -234,8 +234,8 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                     drawable = DynamicDrawable.getIcon(context, drawable, packDynamicDrawables[drawableId]!!, iconDpi)
                 }
                 return drawable.mutate()
-            } catch (e: Resources.NotFoundException) {
-                Log.e(TAG, "Can't get drawable for name $name ($drawableId)", e)
+            } catch (ex: Resources.NotFoundException) {
+                e("Can't get drawable for name $name ($drawableId)", ex)
             }
         }
         return null
@@ -264,8 +264,8 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                     drawable = DynamicDrawable.getIcon(context, drawable, packDynamicDrawables[drawableId]!!, iconDpi)
                 }
                 return drawable.mutate()
-            } catch (e: Resources.NotFoundException) {
-                Log.e(TAG, "Can't get drawable for $component ($drawableId)", e)
+            } catch (ex: Resources.NotFoundException) {
+                e("Can't get drawable for $component ($drawableId)", ex)
             }
         }
 
@@ -335,7 +335,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         var entry: Entry
         try {
             val parser = getXml("drawable")
-            Log.d("IconPackImpl", "initialized parser for pack $packPackageName in ${System.currentTimeMillis() - startTime}ms")
+            d("initialized parser for pack $packPackageName in ${System.currentTimeMillis() - startTime}ms")
             while (parser != null && parser.next() != XmlPullParser.END_DOCUMENT) {
                 if (cancel()) return
                 if (parser.eventType != XmlPullParser.START_TAG) continue
@@ -391,8 +391,8 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         val id = getDrawableId(name)
         return try {
             if (id != 0) packResources.getDrawableForDensity(id, density) else null
-        } catch (e: Resources.NotFoundException) {
-            Log.e(TAG, "Can't get drawable $id($name) from $packPackageName", e)
+        } catch (ex: Resources.NotFoundException) {
+            e("Can't get drawable $id($name) from $packPackageName", ex)
             null
         }
     }
