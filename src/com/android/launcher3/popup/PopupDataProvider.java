@@ -78,7 +78,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
                 new SesameSettings(),
                 new SystemShortcut.AppInfo(),
                 new SystemShortcut.Widgets(),
-                new SystemShortcut.Install()
+                new SystemShortcut.Install(),
+                new SystemShortcut.Uninstall()
         };
     }
 
