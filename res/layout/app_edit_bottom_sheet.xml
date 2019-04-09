@@ -44,7 +44,7 @@
         android:textSize="24sp"
         android:layout_marginBottom="32dp"/>
 
-    <EditText
+    <com.android.launcher3.ExtendedEditText
         style="@style/TextTitle"
         android:id="@+id/edit_title"
         android:background="@android:color/transparent"
@@ -56,7 +56,9 @@
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="24sp"
         android:layout_marginBottom="32dp"
-        app:customFontType="title"/>
+        app:customFontType="title"
+        android:maxLength="30"
+        android:inputType="textFilter"/>
 
     <fragment
         android:id="@+id/sheet_prefs"

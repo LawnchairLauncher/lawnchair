@@ -34,6 +34,7 @@ public class ExtendedEditText extends EditText {
 
     private boolean mShowImeAfterFirstLayout;
     private boolean mForceDisableSuggestions = false;
+    private boolean mForceDisableAutoFill = false;
 
     /**
      * Implemented by listeners of the back key.
@@ -140,5 +141,19 @@ public class ExtendedEditText extends EditText {
             }
         }
         hideKeyboard();
+    }
+
+    /**
+     * This method allows to force AutoFill availability.
+     *
+     * @param forceDisableAutoFill whether to disable AutoFill or not.
+     */
+    public void setAutoFill(boolean forceDisableAutoFill) {
+        mForceDisableAutoFill = forceDisableAutoFill;
+    }
+
+    @Override
+    public int getAutofillType() {
+        return mForceDisableAutoFill ? AUTOFILL_TYPE_NONE : super.getAutofillType();
     }
 }

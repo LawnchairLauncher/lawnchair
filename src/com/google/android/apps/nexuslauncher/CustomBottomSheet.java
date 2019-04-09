@@ -31,7 +31,6 @@ import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +42,7 @@ import ch.deletescape.lawnchair.gestures.ui.LauncherGesturePreference;
 import ch.deletescape.lawnchair.override.CustomInfoProvider;
 import ch.deletescape.lawnchair.preferences.MultiSelectTabPreference;
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.ItemInfoWithIcon;
@@ -56,7 +56,7 @@ import com.android.launcher3.widget.WidgetsBottomSheet;
 
 public class CustomBottomSheet extends WidgetsBottomSheet {
     private FragmentManager mFragmentManager;
-    private EditText mEditTitle;
+    private ExtendedEditText mEditTitle;
     private String mPreviousTitle;
     private ItemInfo mItemInfo;
     private CustomInfoProvider<ItemInfo> mInfoProvider;
@@ -104,6 +104,8 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             if (mPreviousTitle == null)
                 mPreviousTitle = "";
             mEditTitle = findViewById(R.id.edit_title);
+            // Disable AutoFill
+            mEditTitle.setAutoFill(true);
             mEditTitle.setHint(mInfoProvider.getDefaultTitle(mItemInfo));
             mEditTitle.setText(mPreviousTitle);
             mEditTitle.setVisibility(VISIBLE);
