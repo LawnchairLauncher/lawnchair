@@ -49,6 +49,8 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.MultiValueAlpha;
+import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BottomUserEducationView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
@@ -70,6 +72,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private static final float FLING_VELOCITY_MULTIPLIER = 135f;
     // Starts the springs after at least 55% of the animation has passed.
     private static final float FLING_ANIMATION_THRESHOLD = 0.55f;
+    private static final int ALPHA_CHANNEL_COUNT = 2;
 
     private final Launcher mLauncher;
     private final AdapterHolder[] mAH;
@@ -92,6 +95,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     private RecyclerViewFastScroller mTouchHandler;
     private final Point mFastScrollerOffset = new Point();
+
+    private final MultiValueAlpha mMultiValueAlpha;
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -122,10 +127,16 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         addSpringView(R.id.all_apps_header);
         addSpringView(R.id.apps_list_view);
         addSpringView(R.id.all_apps_tabs_view_pager);
+
+        mMultiValueAlpha = new MultiValueAlpha(this, ALPHA_CHANNEL_COUNT);
     }
 
     public AllAppsStore getAppsStore() {
         return mAllAppsStore;
+    }
+
+    public AlphaProperty getAlphaProperty(int index) {
+        return mMultiValueAlpha.getProperty(index);
     }
 
     @Override

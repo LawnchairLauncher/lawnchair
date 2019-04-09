@@ -24,6 +24,8 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_SNACKBAR;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.logging.LoggerUtils.newTarget;
@@ -128,6 +130,7 @@ import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.OptionsPopupView;
+import com.android.launcher3.views.ScrimView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
@@ -147,6 +150,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.function.Predicate;
 
+import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
 
 /**
@@ -202,6 +206,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private static final int NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS = 5;
     @Thunk static final int NEW_APPS_ANIMATION_DELAY = 500;
 
+    private static final int APPS_VIEW_ALPHA_CHANNEL_INDEX = 1;
+    private static final int SCRIM_VIEW_ALPHA_CHANNEL_INDEX = 0;
+
     private LauncherAppTransitionManager mAppTransitionManager;
     private Configuration mOldConfig;
 
@@ -222,6 +229,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     // Main container view for the all apps screen.
     @Thunk AllAppsContainerView mAppsView;
     AllAppsTransitionController mAllAppsController;
+
+    // Scrim view for the all apps and overview state.
+    @Thunk ScrimView mScrimView;
 
     // UI and state for the overview panel
     private View mOverviewPanel;
@@ -260,6 +270,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     final Handler mHandler = new Handler();
     private final Runnable mHandleDeferredResume = this::handleDeferredResume;
+
+    private float mCurrentAssistantVisibility = 0f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -361,6 +373,24 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         TraceHelper.endSection("Launcher-onCreate");
         RaceConditionTracker.onEvent(ON_CREATE_EVT, EXIT);
+        mStateManager.addStateListener(new LauncherStateManager.StateListener() {
+            @Override
+            public void onStateTransitionStart(LauncherState toState) {}
+
+            @Override
+            public void onStateTransitionComplete(LauncherState finalState) {
+                float alpha = 1f - mCurrentAssistantVisibility;
+                if (finalState == NORMAL) {
+                    mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
+                } else if (finalState == OVERVIEW || finalState == OVERVIEW_PEEK) {
+                    mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
+                    mScrimView.getAlphaProperty(SCRIM_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
+                } else {
+                    mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(1f);
+                    mScrimView.getAlphaProperty(SCRIM_VIEW_ALPHA_CHANNEL_INDEX).setValue(1f);
+                }
+            }
+        });
     }
 
     @Override
@@ -407,13 +437,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         onIdpChanged(idp);
     }
 
-    public void setQuickSearchBarAlpha(float alpha) {
-        View qsbAllApps = findViewById(R.id.search_container_all_apps);
-        if (qsbAllApps != null) {
-            qsbAllApps.setAlpha(alpha);
-        }
-    }
-
     private void onIdpChanged(InvariantDeviceProfile idp) {
         mUserEventDispatcher = null;
 
@@ -424,6 +447,18 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         // TODO: We can probably avoid rebind when only screen size changed.
         rebindModel();
+    }
+
+    public void onAssistantVisibilityChanged(float visibility) {
+        mCurrentAssistantVisibility = visibility;
+        float alpha = 1f - visibility;
+        LauncherState state = mStateManager.getState();
+        if (state == NORMAL) {
+            mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
+        } else if (state == OVERVIEW || state == OVERVIEW_PEEK) {
+            mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
+            mScrimView.getAlphaProperty(SCRIM_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
+        }
     }
 
     private void initDeviceProfile(InvariantDeviceProfile idp) {
@@ -967,6 +1002,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         // Setup Apps
         mAppsView = findViewById(R.id.apps_view);
+
+        // Setup Scrim
+        mScrimView = findViewById(R.id.scrim_view);
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         mDragController.setMoveTarget(mWorkspace);
@@ -1639,7 +1677,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public int getCurrentState() {
         if(mStateManager.getState() == LauncherState.ALL_APPS) {
             return StatsLogUtils.LAUNCHER_STATE_ALLAPPS;
-        } else if (mStateManager.getState() == LauncherState.OVERVIEW) {
+        } else if (mStateManager.getState() == OVERVIEW) {
             return StatsLogUtils.LAUNCHER_STATE_OVERVIEW;
         }
         return StatsLogUtils.LAUNCHER_STATE_HOME;
@@ -1657,7 +1695,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             LauncherState state = mStateManager.getState();
             if (state == LauncherState.ALL_APPS) {
                 event.srcTarget[2].containerType = ContainerType.ALLAPPS;
-            } else if (state == LauncherState.OVERVIEW) {
+            } else if (state == OVERVIEW) {
                 event.srcTarget[2].containerType = ContainerType.TASKSWITCHER;
             }
         }
