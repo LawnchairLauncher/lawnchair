@@ -482,7 +482,13 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         if (isCustomIcon) {
             int offsetX = mBackground.getOffsetX();
             int offsetY = mBackground.getOffsetY();
-            int previewSize = (int) (mBackground.previewSize * mBackground.mScale);
+            float actualSize = mBackground.previewSize * mBackground.mScale;
+            int previewSize = (int) (actualSize * mIconScale);
+            if (mIconScale != 1) {
+                int offset = (int) ((previewSize - actualSize) / 2);
+                offsetX -= offset;
+                offsetY -= offset;
+            }
             mTempBounds.set(offsetX, offsetY, offsetX + previewSize, offsetY + previewSize);
             customIcon.setBounds(mTempBounds);
             customIcon.draw(canvas);
@@ -686,4 +692,28 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             mSwipeUpHandler = null;
         }
     }
+
+    private float mIconScale = 1f;
+
+    public void setIconScale(float scale) {
+        mIconScale = scale;
+        invalidate();
+    }
+
+    public float getIconScale() {
+        return mIconScale;
+    }
+
+    public static final Property<FolderIcon, Float> ICON_SCALE_PROPERTY =
+            new Property<FolderIcon, Float>(Float.class, "iconScale") {
+                @Override
+                public Float get(FolderIcon icon) {
+                    return icon.getIconScale();
+                }
+
+                @Override
+                public void set(FolderIcon icon, Float scale) {
+                    icon.setIconScale(scale);
+                }
+            };
 }

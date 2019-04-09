@@ -20,6 +20,7 @@ import static com.android.launcher3.BubbleTextView.TEXT_ALPHA_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.ALPHA_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
+import static com.android.launcher3.folder.FolderIcon.ICON_SCALE_PROPERTY;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -42,6 +43,7 @@ import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertyResetListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.Themes;
@@ -284,12 +286,11 @@ public class FolderAnimationManager {
             scaleAnimator.setInterpolator(previewItemInterpolator);
             play(animatorSet, scaleAnimator);
 
-            Animator alphaAnimator = null;
-
-            if (!mIsOpening && mFolderIcon.isCustomIcon) {
-                alphaAnimator = getAnimator(btv, ALPHA_PROPERTY, btv.getAlpha(), 0f);
-                alphaAnimator.setInterpolator(previewItemInterpolator);
-                play(animatorSet, alphaAnimator);
+            if (mFolderIcon.isCustomIcon) {
+                Animator iconScaleAnimator = getAnimator(mFolderIcon, ICON_SCALE_PROPERTY, 1f, 1.3f);
+                iconScaleAnimator.setInterpolator(Interpolators.DEACCEL_1_5);
+                iconScaleAnimator.setStartDelay(mIsOpening ? mDelay * 2 : mDelay);
+                play(animatorSet, iconScaleAnimator);
             }
 
             if (mFolder.getItemCount() > MAX_NUM_ITEMS_IN_PREVIEW) {
@@ -304,9 +305,6 @@ public class FolderAnimationManager {
                 translationX.setDuration(translationX.getDuration() - delay);
                 translationY.setDuration(translationY.getDuration() - delay);
                 scaleAnimator.setDuration(scaleAnimator.getDuration() - delay);
-                if (alphaAnimator != null) {
-                    alphaAnimator.setDuration(alphaAnimator.getDuration() -delay);
-                }
             }
 
             animatorSet.addListener(new AnimatorListenerAdapter() {
@@ -329,6 +327,7 @@ public class FolderAnimationManager {
                     btv.setTranslationY(0.0f);
                     btv.setScaleX(1f);
                     btv.setScaleY(1f);
+                    mFolderIcon.setIconScale(1f);
                 }
             });
         }
