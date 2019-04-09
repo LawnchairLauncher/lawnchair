@@ -18,7 +18,7 @@
 -->
 
 <resources>
-    <style name="SecondaryLauncherTheme" parent="Theme.AppCompat.Light.NoActionBar" >
+    <style name="SecondaryLauncherTheme" parent="Theme.MaterialComponents.NoActionBar" >
         <item name="android:windowShowWallpaper">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsTranslucent">true</item>
