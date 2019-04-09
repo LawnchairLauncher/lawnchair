@@ -42,7 +42,6 @@ import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.QuickstepAppTransitionManagerImpl;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsModel;
@@ -87,6 +86,9 @@ public class UiFactory extends RecentsUiFactory {
         }
         OverviewInteractionState.INSTANCE.get(launcher)
                 .setBackButtonAlpha(shouldBackButtonBeHidden ? 0 : 1, true /* animate */);
+        if (launcher != null && launcher.getDragLayer() != null) {
+            launcher.getDragLayer().setDisallowBackGesture(shouldBackButtonBeHidden);
+        }
     }
 
     public static void onCreate(Launcher launcher) {
