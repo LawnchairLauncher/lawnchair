@@ -550,6 +550,7 @@
 	
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
+    <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">OnePlus Weather</string>
     <string name="overlap_placement">Overlapped placement</string>
     <string name="overlap_placement_summary">Allow icons and widgets to overlap each other.</string>
