@@ -1130,7 +1130,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private void finishCurrentTransitionToHome() {
         synchronized (mRecentsAnimationWrapper) {
             mRecentsAnimationWrapper.finish(true /* toRecents */,
-                    () -> setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
+                    () -> setStateOnUiThread(STATE_CURRENT_TASK_FINISHED),
+                    true /* sendUserLeaveHint */);
         }
         TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", true);
         doLogGesture(HOME);
