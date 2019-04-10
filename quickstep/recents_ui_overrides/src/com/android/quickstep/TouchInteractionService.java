@@ -425,7 +425,7 @@ public class TouchInteractionService extends Service implements
 
     private InputConsumer newConsumer(boolean useSharedState, MotionEvent event) {
         // TODO: this makes a binder call every touch down. we should move to a listener pattern.
-        if (mKM.isDeviceLocked()) {
+        if (!mIsUserUnlocked || mKM.isDeviceLocked()) {
             // This handles apps launched in direct boot mode (e.g. dialer) as well as apps launched
             // while device is locked even after exiting direct boot mode (e.g. camera).
             return new DeviceLockedInputConsumer(this);
