@@ -250,7 +250,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private T mActivity;
     private RecentsView mRecentsView;
-    private SyncRtSurfaceTransactionApplierCompat mSyncTransactionApplier;
     private AnimationFactory mAnimationFactory = (t) -> { };
     private LiveTileOverlay mLiveTileOverlay = new LiveTileOverlay();
 
@@ -405,8 +404,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         }
 
         mRecentsView = activity.getOverviewPanel();
-        SyncRtSurfaceTransactionApplierCompat.create(mRecentsView,
-                applier ->  mSyncTransactionApplier = applier );
+        SyncRtSurfaceTransactionApplierCompat.create(mRecentsView, applier -> {
+            mTransformParams.setSyncTransactionApplier(applier);
+            mRecentsAnimationWrapper.runOnInit(() ->
+                    mRecentsAnimationWrapper.targetSet.addDependentTransactionApplier(applier));
+            });
         mRecentsView.setEnableFreeScroll(false);
 
         mRecentsView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -648,8 +650,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             }
             float offsetScale = getTaskCurveScaleForOffsetX(offsetX,
                     mClipAnimationHelper.getTargetRect().width());
-            mTransformParams.setProgress(shift).setOffsetX(offsetX).setOffsetScale(offsetScale)
-                    .setSyncTransactionApplier(mSyncTransactionApplier);
+            mTransformParams.setProgress(shift).setOffsetX(offsetX).setOffsetScale(offsetScale);
             mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet,
                     mTransformParams);
             mRecentsAnimationWrapper.setWindowThresholdCrossed(
@@ -1047,8 +1048,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
             float iconAlpha = Utilities.mapToRange(interpolatedProgress, 0,
                     windowAlphaThreshold, 0f, 1f, Interpolators.LINEAR);
-            mTransformParams.setCurrentRectAndTargetAlpha(currentRect, 1f - iconAlpha)
-                    .setSyncTransactionApplier(mSyncTransactionApplier);
+            mTransformParams.setCurrentRectAndTargetAlpha(currentRect, 1f - iconAlpha);
             mClipAnimationHelper.applyTransform(targetSet, mTransformParams,
                     false /* launcherOnTop */);
 

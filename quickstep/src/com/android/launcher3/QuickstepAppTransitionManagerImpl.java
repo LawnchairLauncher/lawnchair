@@ -416,10 +416,9 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
 
         RemoteAnimationTargetSet openingTargets = new RemoteAnimationTargetSet(targets,
                 MODE_OPENING);
-        RemoteAnimationTargetSet closingTargets = new RemoteAnimationTargetSet(targets,
-                MODE_CLOSING);
         SyncRtSurfaceTransactionApplierCompat surfaceApplier =
                 new SyncRtSurfaceTransactionApplierCompat(mFloatingView);
+        openingTargets.addDependentTransactionApplier(surfaceApplier);
 
         // Scale the app icon to take up the entire screen. This simplifies the math when
         // animating the app window position / scale.
@@ -470,6 +469,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 if (v instanceof BubbleTextView) {
                     ((BubbleTextView) v).setStayPressed(false);
                 }
+                openingTargets.release();
             }
         });
 
