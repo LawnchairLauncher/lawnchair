@@ -24,10 +24,12 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -43,6 +45,7 @@ import com.android.launcher3.DropTargetBar;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.folder.Folder;
@@ -54,6 +57,8 @@ import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A ViewGroup that coordinates dragging across its descendants
@@ -67,6 +72,9 @@ public class DragLayer extends BaseDragLayer<Launcher> {
 
     public static final int ANIMATION_END_DISAPPEAR = 0;
     public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
+
+    private static final List<Rect> SYSTEM_GESTURE_EXCLUSION_RECT =
+            Collections.singletonList(new Rect());
 
     @Thunk DragController mDragController;
 
@@ -85,6 +93,8 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     // Related to adjacent page hints
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
     private final WorkspaceAndHotseatScrim mScrim;
+
+    private boolean mDisallowBackGesture;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -550,6 +560,24 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     public void setInsets(Rect insets) {
         super.setInsets(insets);
         mScrim.onInsetsChanged(insets);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        SYSTEM_GESTURE_EXCLUSION_RECT.get(0).set(l, t, r, b);
+        setDisallowBackGesture(mDisallowBackGesture);
+    }
+
+    @TargetApi(Build.VERSION_CODES.Q)
+    public void setDisallowBackGesture(boolean disallowBackGesture) {
+        if (!Utilities.ATLEAST_Q) {
+            return;
+        }
+        mDisallowBackGesture = disallowBackGesture;
+        setSystemGestureExclusionRects(mDisallowBackGesture
+                ? SYSTEM_GESTURE_EXCLUSION_RECT
+                : Collections.emptyList());
     }
 
     public WorkspaceAndHotseatScrim getScrim() {
