@@ -85,15 +85,24 @@ public class RecentsAnimationWrapper {
         }
     }
 
+    /** See {@link #finish(boolean, Runnable, boolean)} */
+    @UiThread
+    public void finish(boolean toRecents, Runnable onFinishComplete) {
+        finish(toRecents, onFinishComplete, false /* sendUserLeaveHint */);
+    }
+
     /**
      * @param onFinishComplete A callback that runs on the main thread after the animation
      *                         controller has finished on the background thread.
+     * @param sendUserLeaveHint Determines whether userLeaveHint flag will be set on the pausing
+     *                          activity. If userLeaveHint is true, the activity will enter into
+     *                          picture-in-picture mode upon being paused.
      */
     @UiThread
-    public void finish(boolean toRecents, Runnable onFinishComplete) {
+    public void finish(boolean toRecents, Runnable onFinishComplete, boolean sendUserLeaveHint) {
         Preconditions.assertUIThread();
         if (!toRecents) {
-            finishAndClear(false, onFinishComplete);
+            finishAndClear(false, onFinishComplete, sendUserLeaveHint);
         } else {
             if (mTouchInProgress) {
                 mFinishPending = true;
@@ -102,16 +111,17 @@ public class RecentsAnimationWrapper {
                     onFinishComplete.run();
                 }
             } else {
-                finishAndClear(true, onFinishComplete);
+                finishAndClear(true, onFinishComplete, sendUserLeaveHint);
             }
         }
     }
 
-    private void finishAndClear(boolean toRecents, Runnable onFinishComplete) {
+    private void finishAndClear(boolean toRecents, Runnable onFinishComplete,
+            boolean sendUserLeaveHint) {
         SwipeAnimationTargetSet controller = targetSet;
         targetSet = null;
         if (controller != null) {
-            controller.finishController(toRecents, onFinishComplete);
+            controller.finishController(toRecents, onFinishComplete, sendUserLeaveHint);
         }
     }
 
@@ -163,7 +173,7 @@ public class RecentsAnimationWrapper {
             mTouchInProgress = false;
             if (mFinishPending) {
                 mFinishPending = false;
-                finishAndClear(true /* toRecents */, null);
+                finishAndClear(true /* toRecents */, null, false /* sendUserLeaveHint */);
             }
         }
         if (mInputConsumer != null) {
