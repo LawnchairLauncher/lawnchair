@@ -136,6 +136,12 @@ public class TouchInteractionService extends Service implements
 
         @Override
         public void onAssistantVisibilityChanged(float visibility) {
+            if (mOverviewComponentObserver == null) {
+                // Save the visibility to be applied when the user is unlocked
+                mPendingAssistantVisibility = visibility;
+                return;
+            }
+
             MAIN_THREAD_EXECUTOR.execute(() -> {
                 mOverviewComponentObserver.getActivityControlHelper()
                         .onAssistantVisibilityChanged(visibility);
@@ -144,6 +150,10 @@ public class TouchInteractionService extends Service implements
 
         public void onBackAction(boolean completed, int downX, int downY, boolean isButton,
                 boolean gestureSwipeLeft) {
+            if (mOverviewComponentObserver == null) {
+                return;
+            }
+
             final ActivityControlHelper activityControl =
                     mOverviewComponentObserver.getActivityControlHelper();
             UserEventDispatcher.newInstance(getBaseContext()).logActionBack(completed, downX, downY,
@@ -186,6 +196,7 @@ public class TouchInteractionService extends Service implements
     private InputConsumerController mInputConsumer;
     private SwipeSharedState mSwipeSharedState;
     private boolean mAssistantAvailable;
+    private float mPendingAssistantVisibility = 0;
 
     private boolean mIsUserUnlocked;
     private List<Runnable> mOnUserUnlockedCallbacks;
@@ -338,6 +349,8 @@ public class TouchInteractionService extends Service implements
         mAM = ActivityManagerWrapper.getInstance();
         mRecentsModel = RecentsModel.INSTANCE.get(this);
         mOverviewComponentObserver = new OverviewComponentObserver(this);
+        mOverviewComponentObserver.getActivityControlHelper().onAssistantVisibilityChanged(
+                mPendingAssistantVisibility);
 
         mOverviewCommandHelper = new OverviewCommandHelper(this, mOverviewComponentObserver);
         mOverviewInteractionState = OverviewInteractionState.INSTANCE.get(this);
