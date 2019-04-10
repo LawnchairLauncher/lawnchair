@@ -16,8 +16,9 @@
 package com.android.quickstep.views;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -25,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
@@ -36,14 +38,16 @@ public final class TaskItemView extends LinearLayout {
 
     private static final String DEFAULT_LABEL = "...";
     private final Drawable mDefaultIcon;
+    private final Drawable mDefaultThumbnail;
     private TextView mLabelView;
     private ImageView mIconView;
     private ImageView mThumbnailView;
 
     public TaskItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mDefaultIcon = context.getResources().getDrawable(
-                android.R.drawable.sym_def_app_icon, context.getTheme());
+        Resources res = context.getResources();
+        mDefaultIcon = res.getDrawable(android.R.drawable.sym_def_app_icon, context.getTheme());
+        mDefaultThumbnail = res.getDrawable(R.drawable.default_thumbnail, context.getTheme());
     }
 
     @Override
@@ -69,11 +73,7 @@ public final class TaskItemView extends LinearLayout {
      * @param label task label
      */
     public void setLabel(@Nullable String label) {
-        if (label == null) {
-            mLabelView.setText(DEFAULT_LABEL);
-            return;
-        }
-        mLabelView.setText(label);
+        mLabelView.setText(getSafeLabel(label));
     }
 
     /**
@@ -86,11 +86,7 @@ public final class TaskItemView extends LinearLayout {
         // The icon proper is actually smaller than the drawable and has "padding" on the side for
         // the purpose of drawing the shadow, allowing the icon to pop up, so we need to scale the
         // view if we want the icon to be flush with the bottom of the thumbnail.
-        if (icon == null) {
-            mIconView.setImageDrawable(mDefaultIcon);
-            return;
-        }
-        mIconView.setImageDrawable(icon);
+        mIconView.setImageDrawable(getSafeIcon(icon));
     }
 
     /**
@@ -99,16 +95,23 @@ public final class TaskItemView extends LinearLayout {
      * @param thumbnail task thumbnail for the task
      */
     public void setThumbnail(@Nullable Bitmap thumbnail) {
-        if (thumbnail == null) {
-            mThumbnailView.setImageBitmap(null);
-            mThumbnailView.setBackgroundColor(Color.GRAY);
-            return;
-        }
-        mThumbnailView.setBackgroundColor(Color.TRANSPARENT);
-        mThumbnailView.setImageBitmap(thumbnail);
+        mThumbnailView.setImageDrawable(getSafeThumbnail(thumbnail));
     }
 
     public View getThumbnailView() {
         return mThumbnailView;
+    }
+
+    private @NonNull Drawable getSafeIcon(@Nullable Drawable icon) {
+        return (icon != null) ? icon : mDefaultIcon;
+    }
+
+    private @NonNull Drawable getSafeThumbnail(@Nullable Bitmap thumbnail) {
+        return (thumbnail != null) ? new BitmapDrawable(getResources(), thumbnail)
+                                   : mDefaultThumbnail;
+    }
+
+    private @NonNull String getSafeLabel(@Nullable String label) {
+        return (label != null) ? label : DEFAULT_LABEL;
     }
 }
