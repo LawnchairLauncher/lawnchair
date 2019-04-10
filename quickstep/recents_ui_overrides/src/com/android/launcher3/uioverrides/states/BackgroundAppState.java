@@ -75,12 +75,4 @@ public class BackgroundAppState extends OverviewState {
         return new ScaleAndTranslation(scale, 0f, 0f);
     }
 
-    @Override
-    public int getVisibleElements(Launcher launcher) {
-        if (SysUINavigationMode.getMode(launcher) == Mode.NO_BUTTON) {
-            return super.getVisibleElements(launcher);
-        }
-        // Hide shelf content (e.g. QSB) because we fade it in when swiping up.
-        return ALL_APPS_HEADER_EXTRA;
-    }
 }
