@@ -116,7 +116,7 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
         val newItems = entries.mapNotNull {
             when (it) {
                 is IconPack.CategoryTitle -> CategoryItem(it.title)
-                is IconPack.Entry -> IconItem(it)
+                is IconPack.Entry -> if (it.isAvailable) IconItem(it) else null
                 else -> null
             }
         }
