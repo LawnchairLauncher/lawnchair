@@ -19,9 +19,7 @@
     <dimen name="task_thumbnail_top_margin">24dp</dimen>
     <dimen name="task_thumbnail_half_top_margin">12dp</dimen>
     <dimen name="task_thumbnail_icon_size">48dp</dimen>
-    <dimen name="task_corner_radius">8dp</dimen>
-    <!-- For screens without rounded corners -->
-    <dimen name="task_corner_radius_small">2dp</dimen>
+
     <dimen name="recents_page_spacing">10dp</dimen>
     <dimen name="recents_clear_all_deadzone_vertical_margin">70dp</dimen>
     <dimen name="overview_peek_distance">32dp</dimen>
@@ -61,11 +59,13 @@
        docked_stack_divider_thickness - 2 * docked_stack_divider_insets -->
     <dimen name="multi_window_task_divider_size">10dp</dimen>
 
-    <dimen name="shelf_surface_radius">16dp</dimen>
     <!-- same as vertical_drag_handle_size -->
     <dimen name="shelf_surface_offset">24dp</dimen>
 
     <!-- Assistant Gestures -->
     <dimen name="gestures_assistant_size">28dp</dimen>
     <dimen name="gestures_assistant_drag_threshold">70dp</dimen>
+
+    <!-- Distance to move elements when swiping up to go home from launcher -->
+    <dimen name="home_pullback_distance">28dp</dimen>
 </resources>

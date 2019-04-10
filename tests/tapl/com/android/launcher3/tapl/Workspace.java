@@ -21,7 +21,9 @@ import static com.android.launcher3.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static junit.framework.TestCase.assertTrue;
 
 import android.graphics.Point;
+import android.os.SystemClock;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,8 +37,8 @@ import com.android.launcher3.TestProtocol;
  */
 public final class Workspace extends Home {
     private static final float FLING_SPEED = 3500.0F;
+    private static final int DRAG_DURACTION = 2000;
     private final UiObject2 mHotseat;
-    private final int ICON_DRAG_SPEED = LauncherInstrumentation.needSlowGestures() ? 100 : 570;
 
     Workspace(LauncherInstrumentation launcher) {
         super(launcher);
@@ -116,8 +118,7 @@ public final class Workspace extends Home {
                     mLauncher,
                     getHotseatAppIcon("Chrome"),
                     new Point(mLauncher.getDevice().getDisplayWidth(),
-                            workspace.getVisibleBounds().centerY()),
-                    (int) (ICON_DRAG_SPEED * mLauncher.getDisplayDensity()));
+                            workspace.getVisibleBounds().centerY()));
             verifyActiveContainer();
         }
         assertTrue("Home screen workspace didn't become scrollable",
@@ -134,10 +135,16 @@ public final class Workspace extends Home {
                 mHotseat, AppIcon.getAppIconSelector(appName, mLauncher)));
     }
 
-    static void dragIconToWorkspace(LauncherInstrumentation launcher, Launchable launchable,
-            Point dest, int icon_drag_speed) {
+    static void dragIconToWorkspace(
+            LauncherInstrumentation launcher, Launchable launchable, Point dest) {
         LauncherInstrumentation.log("dragIconToWorkspace: begin");
-        launchable.getObject().drag(dest, icon_drag_speed);
+        final Point launchableCenter = launchable.getObject().getVisibleCenter();
+        final long downTime = SystemClock.uptimeMillis();
+        launcher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, launchableCenter);
+        launcher.waitForLauncherObject("deep_shortcuts_container");
+        launcher.movePointer(downTime, DRAG_DURACTION, launchableCenter, dest);
+        launcher.sendPointer(
+                downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, dest);
         LauncherInstrumentation.log("dragIconToWorkspace: end");
         launcher.waitUntilGone("drop_target_bar");
     }

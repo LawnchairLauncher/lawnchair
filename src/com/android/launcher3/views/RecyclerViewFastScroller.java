@@ -24,6 +24,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.MotionEvent;
@@ -31,13 +32,16 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.FastScrollThumbDrawable;
 import com.android.launcher3.util.Themes;
 
-import androidx.recyclerview.widget.RecyclerView;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The track and scrollbar that shows when you scroll the list.
@@ -65,6 +69,9 @@ public class RecyclerViewFastScroller extends View {
     private final static int SCROLL_BAR_VIS_DURATION = 150;
     private static final float FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR = 0.75f;
 
+    private static final List<Rect> SYSTEM_GESTURE_EXCLUSION_RECT =
+            Collections.singletonList(new Rect());
+
     private final int mMinWidth;
     private final int mMaxWidth;
     private final int mThumbPadding;
@@ -81,6 +88,8 @@ public class RecyclerViewFastScroller extends View {
 
     private final Paint mThumbPaint;
     protected final int mThumbHeight;
+    private final RectF mThumbBounds = new RectF();
+    private final Point mThumbDrawOffset = new Point();
 
     private final Paint mTrackPaint;
 
@@ -292,15 +301,23 @@ public class RecyclerViewFastScroller extends View {
         }
         int saveCount = canvas.save();
         canvas.translate(getWidth() / 2, mRv.getScrollBarTop());
+        mThumbDrawOffset.set(getWidth() / 2, mRv.getScrollBarTop());
         // Draw the track
         float halfW = mWidth / 2;
         canvas.drawRoundRect(-halfW, 0, halfW, mRv.getScrollbarTrackHeight(),
                 mWidth, mWidth, mTrackPaint);
 
         canvas.translate(0, mThumbOffsetY);
+        mThumbDrawOffset.y += mThumbOffsetY;
         halfW += mThumbPadding;
         float r = getScrollThumbRadius();
-        canvas.drawRoundRect(-halfW, 0, halfW, mThumbHeight, r, r, mThumbPaint);
+        mThumbBounds.set(-halfW, 0, halfW, mThumbHeight);
+        canvas.drawRoundRect(mThumbBounds, r, r, mThumbPaint);
+        if (Utilities.ATLEAST_Q) {
+            mThumbBounds.roundOut(SYSTEM_GESTURE_EXCLUSION_RECT.get(0));
+            SYSTEM_GESTURE_EXCLUSION_RECT.get(0).offset(mThumbDrawOffset.x, mThumbDrawOffset.y);
+            setSystemGestureExclusionRects(SYSTEM_GESTURE_EXCLUSION_RECT);
+        }
         canvas.restoreToCount(saveCount);
     }
 

@@ -68,16 +68,26 @@ public final class TaskListLoader {
     }
 
     /**
+     * Whether or not the loader needs to load data to be up to date. This can return true if the
+     * task list is already up to date OR there is already a load in progress for the task list to
+     * become up to date.
+     *
+     * @return true if already up to date or load in progress, false otherwise
+     */
+    public boolean needsToLoad() {
+        return !mRecentsModel.isTaskListValid(mTaskListChangeId);
+    }
+
+    /**
      * Fetches the most recent tasks and updates the task list asynchronously. This call does not
      * provide guarantees the task content (icon, thumbnail, label) are loaded but will fill in
      * what it has. May run the callback immediately if there have been no changes in the task
-     * list.
+     * list since the start of the last load.
      *
      * @param onLoadedCallback callback to run when task list is loaded
      */
     public void loadTaskList(@Nullable Consumer<ArrayList<Task>> onLoadedCallback) {
-        if (mRecentsModel.isTaskListValid(mTaskListChangeId)) {
-            // Current task list is already up to date. No need to update.
+        if (!needsToLoad()) {
             if (onLoadedCallback != null) {
                 onLoadedCallback.accept(mTaskList);
             }
