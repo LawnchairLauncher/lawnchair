@@ -18,29 +18,50 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
+import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceCategory
 import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
 import android.widget.TextView
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.createDisabledColor
+import ch.deletescape.lawnchair.getColorAttr
+import ch.deletescape.lawnchair.getDisabled
 
 class StyledPreferenceCategory(context: Context, attrs: AttributeSet?) : PreferenceCategory(context, attrs), ColorEngine.OnColorChangeListener {
+
+    private var dependencyMet = true
+    private var parentDependencyMet = true
+
     var title: TextView? = null
+
+    private val enabled get() = dependencyMet && parentDependencyMet
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
         title = holder.findViewById(android.R.id.title) as TextView
+        title!!.isEnabled = enabled
         ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
     override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
         if (resolver == ColorEngine.Resolvers.ACCENT) {
-            title?.setTextColor(color)
+            title?.setTextColor(context.createDisabledColor(color))
         }
     }
 
     override fun onDetached() {
         super.onDetached()
         ColorEngine.getInstance(context).removeColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
+    }
+
+    override fun onDependencyChanged(dependency: Preference?, disableDependent: Boolean) {
+        dependencyMet = !disableDependent
+        super.onDependencyChanged(dependency, disableDependent)
+    }
+
+    override fun onParentChanged(parent: Preference?, disableChild: Boolean) {
+        parentDependencyMet = !disableChild
+        super.onParentChanged(parent, disableChild)
     }
 }

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~     This file is part of Lawnchair Launcher.
+  ~
+  ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Lawnchair Launcher is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<android.support.v7.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ch.deletescape.lawnchair.font.settingsui.GlobalFontPreference
+        android:key="pref_font_global"
+        android:icon="@drawable/ic_global_font"
+        android:title="@string/pref_fonts_global_font" />
+
+    <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
+        android:title="@string/pref_fonts_category_home"
+        android:layout="@layout/settings_category_fonts"
+        android:dependency="pref_font_global">
+
+        <ch.deletescape.lawnchair.font.settingsui.FontPreference
+            android:key="pref_font_workspace"
+            android:icon="@android:color/transparent"
+            android:title="@string/pref_fonts_home_icons" />
+
+        <ch.deletescape.lawnchair.font.settingsui.FontPreference
+            android:key="pref_font_smartspaceText"
+            android:icon="@android:color/transparent"
+            android:title="@string/pref_fonts_home_smartspace" />
+
+        <ch.deletescape.lawnchair.font.settingsui.FontPreference
+            android:key="pref_font_deepShortcut"
+            android:icon="@android:color/transparent"
+            android:title="@string/pref_fonts_home_shortcuts" />
+    </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
+
+    <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
+        android:title="@string/pref_fonts_category_drawer"
+        android:layout="@layout/settings_category_fonts"
+        android:dependency="pref_font_global">
+
+        <ch.deletescape.lawnchair.font.settingsui.FontPreference
+            android:key="pref_font_allApps"
+            android:icon="@android:color/transparent"
+            android:title="@string/pref_fonts_drawer_icons" />
+
+        <ch.deletescape.lawnchair.font.settingsui.FontPreference
+            android:key="pref_font_drawerTab"
+            android:icon="@android:color/transparent"
+            android:title="@string/pref_fonts_drawer_tabs" />
+    </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
+</android.support.v7.preference.PreferenceScreen>

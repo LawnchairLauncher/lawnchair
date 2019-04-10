@@ -26,6 +26,7 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.*
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.InsetDrawable
 import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.os.Handler
@@ -656,4 +657,28 @@ fun String.asNonEmpty(): String? {
 fun createRipple(foreground: Int, background: Int): RippleDrawable {
     val rippleColor = ColorStateList.valueOf(ColorUtils.setAlphaComponent(foreground, 31))
     return RippleDrawable(rippleColor, ShapeDrawable().apply { paint.color = background }, ShapeDrawable())
+}
+
+fun Context.createColoredButtonBackground(color: Int): Drawable {
+    val shape = getDrawable(R.drawable.colored_button_shape)!!
+    shape.setTintList(ColorStateList(arrayOf(
+            intArrayOf(-android.R.attr.state_enabled),
+            intArrayOf()),
+            intArrayOf(
+                    getDisabled(getColorAttr(R.attr.colorButtonNormal)),
+                    color)))
+    val highlight = getColorAttr(R.attr.colorControlHighlight)
+    val ripple = RippleDrawable(ColorStateList.valueOf(highlight), shape, null)
+    val insetHorizontal = resources.getDimensionPixelSize(R.dimen.abc_button_inset_horizontal_material)
+    val insetVertical = resources.getDimensionPixelSize(R.dimen.abc_button_inset_vertical_material)
+    return InsetDrawable(ripple, insetHorizontal, insetVertical, insetHorizontal, insetVertical)
+}
+
+fun Context.createDisabledColor(color: Int): ColorStateList {
+    return ColorStateList(arrayOf(
+            intArrayOf(-android.R.attr.state_enabled),
+            intArrayOf()),
+            intArrayOf(
+                    getDisabled(getColorAttr(android.R.attr.colorForeground)),
+                    color))
 }

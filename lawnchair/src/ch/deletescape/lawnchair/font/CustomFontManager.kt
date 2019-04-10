@@ -50,16 +50,20 @@ class CustomFontManager(private val context: Context) {
     private val launcherMedium = FontCache.SystemFont("sans-serif-medium")
     private val launcherCondensed = FontCache.SystemFont("sans-serif-condensed")
 
-    private val smartspaceTextFont = FontPref("pref_font_smartspaceText", uiRegular)
+    var enableGlobalFont by prefs.BooleanPref("enable_global_font", false, prefs.recreate)
+    private val globalFont = FontPref("pref_font_global", launcherRegular)
+
     private val workspaceFont = FontPref("pref_font_workspace", launcherCondensed)
-    private val allAppsFont = FontPref("pref_font_allApps", launcherCondensed)
-    private val folderFont = FontPref("pref_font_folder", launcherCondensed)
-    private val actionFont = FontPref("pref_font_action", launcherCondensed)
-    private val drawerTab = FontPref("pref_font_drawerTab", uiMedium)
+    private val folderFont = workspaceFont
+    private val smartspaceTextFont = FontPref("pref_font_smartspaceText", uiRegular)
 
     private val deepShortcutFont = FontPref("pref_font_deepShortcut", launcherRegular)
-    private val systemShortcutFont = FontPref("pref_font_systemShortcut", launcherRegular)
-    private val taskOptionFont = FontPref("pref_font_taskOption", launcherRegular)
+    private val systemShortcutFont = deepShortcutFont
+    private val taskOptionFont = deepShortcutFont
+
+    private val allAppsFont = FontPref("pref_font_allApps", launcherCondensed)
+    private val actionFont = allAppsFont
+    private val drawerTab = FontPref("pref_font_drawerTab", uiMedium)
 
     private fun createFontMap(): Map<Int, FontSpec> {
         TraceHelper.beginSection("createFontMap")
@@ -139,9 +143,12 @@ class CustomFontManager(private val context: Context) {
         private var prefValue by prefs.NullableStringPref(key, null, ::onChange)
         var preferenceUi: FontPreference? = null
 
-        var fontCache: FontCache.Font? = null
+        private var fontCache: FontCache.Font? = null
         val font: FontCache.Font
             get() {
+                if (enableGlobalFont && this !== globalFont) {
+                    return globalFont.font
+                }
                 if (fontCache == null) {
                     fontCache = loadFont()
                 }

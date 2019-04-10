@@ -28,7 +28,7 @@ import ch.deletescape.lawnchair.font.CustomFontManager
 import ch.deletescape.lawnchair.font.FontCache
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 
-class FontPreference(context: Context, attrs: AttributeSet) : Preference(context, attrs), FontCache.Font.LoadCallback {
+open class FontPreference(context: Context, attrs: AttributeSet) : Preference(context, attrs), FontCache.Font.LoadCallback {
 
     private val pref = CustomFontManager.getInstance(context).fontPrefs.getValue(key)
     private var typeface: Typeface? = null

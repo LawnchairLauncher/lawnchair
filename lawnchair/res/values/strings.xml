@@ -564,4 +564,18 @@
 
     <string name="pref_smartspace_time_above">Show large clock</string>
     <string name="pref_smartspace_time_above_summary">Show the clock above the widget</string>
+
+    <string name="pref_fonts_title">Fonts</string>
+
+    <string name="pref_fonts_global_font">Global font</string>
+    <string name="pref_fonts_change_global_font">Change</string>
+
+    <string name="pref_fonts_category_home">Home screen</string>
+    <string name="pref_fonts_home_icons">App &amp; folder names</string>
+    <string name="pref_fonts_home_smartspace">\'At a Glance\' widget</string>
+    <string name="pref_fonts_home_shortcuts">Shortcuts bubbles</string>
+
+    <string name="pref_fonts_category_drawer">Drawer</string>
+    <string name="pref_fonts_drawer_icons">App names</string>
+    <string name="pref_fonts_drawer_tabs">Tab names</string>
 </resources>
