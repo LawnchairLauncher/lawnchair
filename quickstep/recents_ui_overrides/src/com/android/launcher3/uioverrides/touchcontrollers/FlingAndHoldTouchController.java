@@ -111,6 +111,7 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
 
             AnimatorSetBuilder builder = new AnimatorSetBuilder();
             builder.setInterpolator(AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS, OVERSHOOT_1_2);
+            builder.setInterpolator(AnimatorSetBuilder.ANIM_WORKSPACE_TRANSLATE, OVERSHOOT_1_2);
             AnimatorSet overviewAnim = mLauncher.getStateManager().createAtomicAnimation(
                     NORMAL, OVERVIEW, builder, ANIM_ALL, ATOMIC_DURATION);
             overviewAnim.addListener(new AnimatorListenerAdapter() {
