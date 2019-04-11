@@ -15,6 +15,9 @@
  */
 package com.android.quickstep;
 
+import android.graphics.Bitmap;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -40,13 +43,28 @@ public final class TaskHolder extends ViewHolder {
     }
 
     /**
-     * Bind a task to the holder, resetting the view and preparing it for content to load in.
+     * Bind the task model to the holder. This will take the current task content in the task
+     * object (i.e. icon, thumbnail, label) and either apply the content immediately or simply bind
+     * the content to animate to at a later time. If the task does not have all its content loaded,
+     * the view will prepare appropriate default placeholders and it is the callers responsibility
+     * to change them at a later time.
+     *
+     * Regardless of whether it is animating, input handlers will be bound immediately (see
+     * {@link TaskActionController}).
      *
      * @param task the task to bind to the view
+     * @param willAnimate true if UI should animate in later, false if it should apply immediately
      */
-    public void bindTask(Task task) {
+    public void bindTask(@NonNull Task task, boolean willAnimate) {
         mTask = task;
-        mTaskItemView.resetTaskItemView();
+        Bitmap thumbnail = (task.thumbnail != null) ? task.thumbnail.thumbnail : null;
+        if (willAnimate) {
+            mTaskItemView.startContentAnimation(task.icon, thumbnail, task.titleDescription);
+        } else {
+            mTaskItemView.setIcon(task.icon);
+            mTaskItemView.setThumbnail(thumbnail);
+            mTaskItemView.setLabel(task.titleDescription);
+        }
     }
 
     /**

@@ -94,7 +94,7 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
             return;
         }
         Task task = tasks.get(position);
-        holder.bindTask(task);
+        holder.bindTask(task, false /* willAnimate */);
         mLoader.loadTaskIconAndLabel(task, () -> {
             // Ensure holder still has the same task.
             if (Objects.equals(task, holder.getTask())) {
@@ -107,6 +107,13 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
                 holder.getTaskItemView().setThumbnail(task.thumbnail.thumbnail);
             }
         });
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull TaskHolder holder, int position,
+            @NonNull List<Object> payloads) {
+        // TODO: Bind task in preparation for animation. For now, we apply UI changes immediately.
+        super.onBindViewHolder(holder, position, payloads);
     }
 
     @Override

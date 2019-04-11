@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -39,15 +40,37 @@ public final class TaskItemView extends LinearLayout {
     private static final String DEFAULT_LABEL = "...";
     private final Drawable mDefaultIcon;
     private final Drawable mDefaultThumbnail;
+    private final TaskLayerDrawable mIconDrawable;
+    private final TaskLayerDrawable mThumbnailDrawable;
     private TextView mLabelView;
     private ImageView mIconView;
     private ImageView mThumbnailView;
+    private float mContentTransitionProgress;
+
+    /**
+     * Property representing the content transition progress of the view. 1.0f represents that the
+     * currently bound icon, thumbnail, and label are fully animated in and visible.
+     */
+    public static FloatProperty CONTENT_TRANSITION_PROGRESS =
+            new FloatProperty<TaskItemView>("taskContentTransitionProgress") {
+                @Override
+                public void setValue(TaskItemView view, float progress) {
+                    view.setContentTransitionProgress(progress);
+                }
+
+                @Override
+                public Float get(TaskItemView view) {
+                    return view.mContentTransitionProgress;
+                }
+            };
 
     public TaskItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
         Resources res = context.getResources();
         mDefaultIcon = res.getDrawable(android.R.drawable.sym_def_app_icon, context.getTheme());
         mDefaultThumbnail = res.getDrawable(R.drawable.default_thumbnail, context.getTheme());
+        mIconDrawable = new TaskLayerDrawable(context);
+        mThumbnailDrawable = new TaskLayerDrawable(context);
     }
 
     @Override
@@ -56,6 +79,12 @@ public final class TaskItemView extends LinearLayout {
         mLabelView = findViewById(R.id.task_label);
         mThumbnailView = findViewById(R.id.task_thumbnail);
         mIconView = findViewById(R.id.task_icon);
+
+        mThumbnailView.setImageDrawable(mThumbnailDrawable);
+        mIconView.setImageDrawable(mIconDrawable);
+
+        resetTaskItemView();
+        CONTENT_TRANSITION_PROGRESS.setValue(this, 1.0f);
     }
 
     /**
@@ -74,6 +103,7 @@ public final class TaskItemView extends LinearLayout {
      */
     public void setLabel(@Nullable String label) {
         mLabelView.setText(getSafeLabel(label));
+        // TODO: Animation for label
     }
 
     /**
@@ -86,7 +116,7 @@ public final class TaskItemView extends LinearLayout {
         // The icon proper is actually smaller than the drawable and has "padding" on the side for
         // the purpose of drawing the shadow, allowing the icon to pop up, so we need to scale the
         // view if we want the icon to be flush with the bottom of the thumbnail.
-        mIconView.setImageDrawable(getSafeIcon(icon));
+        mIconDrawable.setCurrentDrawable(getSafeIcon(icon));
     }
 
     /**
@@ -95,11 +125,36 @@ public final class TaskItemView extends LinearLayout {
      * @param thumbnail task thumbnail for the task
      */
     public void setThumbnail(@Nullable Bitmap thumbnail) {
-        mThumbnailView.setImageDrawable(getSafeThumbnail(thumbnail));
+        mThumbnailDrawable.setCurrentDrawable(getSafeThumbnail(thumbnail));
     }
 
     public View getThumbnailView() {
         return mThumbnailView;
+    }
+
+    /**
+     * Start a new animation from the current task content to the specified new content. The caller
+     * is responsible for the actual animation control via the property
+     * {@link #CONTENT_TRANSITION_PROGRESS}.
+     *
+     * @param endIcon the icon to animate to
+     * @param endThumbnail the thumbnail to animate to
+     * @param endLabel the label to animate to
+     */
+    public void startContentAnimation(@Nullable Drawable endIcon, @Nullable Bitmap endThumbnail,
+            @Nullable String endLabel) {
+        mIconDrawable.startNewTransition(getSafeIcon(endIcon));
+        mThumbnailDrawable.startNewTransition(getSafeThumbnail(endThumbnail));
+        // TODO: Animation for label
+
+        setContentTransitionProgress(0.0f);
+    }
+
+    private void setContentTransitionProgress(float progress) {
+        mContentTransitionProgress = progress;
+        mIconDrawable.setTransitionProgress(progress);
+        mThumbnailDrawable.setTransitionProgress(progress);
+        // TODO: Animation for label
     }
 
     private @NonNull Drawable getSafeIcon(@Nullable Drawable icon) {
