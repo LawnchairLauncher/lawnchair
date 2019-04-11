@@ -34,6 +34,8 @@ import java.util.Objects;
  */
 public final class TaskAdapter extends Adapter<TaskHolder> {
 
+    public static final int CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT = 0;
+
     private static final int MAX_TASKS_TO_DISPLAY = 6;
     private static final String TAG = "TaskAdapter";
     private final TaskListLoader mLoader;
@@ -71,6 +73,28 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
 
     @Override
     public void onBindViewHolder(TaskHolder holder, int position) {
+        onBindViewHolderInternal(holder, position, false /* willAnimate */);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull TaskHolder holder, int position,
+            @NonNull List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads);
+            return;
+        }
+        int changeType = (int) payloads.get(0);
+        if (changeType == CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT) {
+            // Bind in preparation for animation
+            onBindViewHolderInternal(holder, position, true /* willAnimate */);
+        } else {
+            throw new IllegalArgumentException("Payload content is not a valid change event type: "
+                    + changeType);
+        }
+    }
+
+    private void onBindViewHolderInternal(@NonNull TaskHolder holder, int position,
+            boolean willAnimate) {
         if (mIsShowingLoadingUi) {
             holder.bindEmptyUi();
             return;
@@ -81,7 +105,7 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
             return;
         }
         Task task = tasks.get(position);
-        holder.bindTask(task, false /* willAnimate */);
+        holder.bindTask(task, willAnimate /* willAnimate */);
         mLoader.loadTaskIconAndLabel(task, () -> {
             // Ensure holder still has the same task.
             if (Objects.equals(task, holder.getTask())) {
@@ -94,13 +118,6 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
                 holder.getTaskItemView().setThumbnail(task.thumbnail.thumbnail);
             }
         });
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull TaskHolder holder, int position,
-            @NonNull List<Object> payloads) {
-        // TODO: Bind task in preparation for animation. For now, we apply UI changes immediately.
-        super.onBindViewHolder(holder, position, payloads);
     }
 
     @Override
