@@ -118,7 +118,7 @@ public final class Workspace extends Home {
                     mLauncher,
                     getHotseatAppIcon("Chrome"),
                     new Point(mLauncher.getDevice().getDisplayWidth(),
-                            workspace.getVisibleBounds().centerY()));
+                            workspace.getVisibleBounds().centerY()), "deep_shortcuts_container");
             verifyActiveContainer();
         }
         assertTrue("Home screen workspace didn't become scrollable",
@@ -136,12 +136,13 @@ public final class Workspace extends Home {
     }
 
     static void dragIconToWorkspace(
-            LauncherInstrumentation launcher, Launchable launchable, Point dest) {
+            LauncherInstrumentation launcher, Launchable launchable, Point dest,
+            String longPressIndicator) {
         LauncherInstrumentation.log("dragIconToWorkspace: begin");
         final Point launchableCenter = launchable.getObject().getVisibleCenter();
         final long downTime = SystemClock.uptimeMillis();
         launcher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, launchableCenter);
-        launcher.waitForLauncherObject("deep_shortcuts_container");
+        launcher.waitForLauncherObject(longPressIndicator);
         launcher.movePointer(downTime, DRAG_DURACTION, launchableCenter, dest);
         launcher.sendPointer(
                 downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, dest);

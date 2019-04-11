@@ -27,7 +27,7 @@ import androidx.test.uiautomator.Until;
 /**
  * Ancestor for AppIcon and AppMenuItem.
  */
-class Launchable {
+abstract class Launchable {
     protected final LauncherInstrumentation mLauncher;
 
     protected final UiObject2 mObject;
@@ -76,10 +76,13 @@ class Launchable {
         Workspace.dragIconToWorkspace(
                 mLauncher,
                 this,
-                new Point(device.getDisplayWidth() / 2, device.getDisplayHeight() / 2));
+                new Point(device.getDisplayWidth() / 2, device.getDisplayHeight() / 2),
+                getLongPressIndicator());
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "dragged launchable to workspace")) {
             return new Workspace(mLauncher);
         }
     }
+
+    protected abstract String getLongPressIndicator();
 }
