@@ -17,6 +17,8 @@ package com.android.quickstep.views;
 
 import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
 
+import static com.android.quickstep.TaskAdapter.CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -34,6 +36,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,6 +44,7 @@ import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener;
 
 import com.android.launcher3.R;
+import com.android.quickstep.ContentFillItemAnimator;
 import com.android.quickstep.RecentsToActivityHelper;
 import com.android.quickstep.TaskActionController;
 import com.android.quickstep.TaskAdapter;
@@ -89,6 +93,9 @@ public final class IconRecentsView extends FrameLayout {
     private final TaskListLoader mTaskLoader;
     private final TaskAdapter mTaskAdapter;
     private final TaskActionController mTaskActionController;
+    private final DefaultItemAnimator mDefaultItemAnimator = new DefaultItemAnimator();
+    private final ContentFillItemAnimator mLoadingContentItemAnimator =
+            new ContentFillItemAnimator();
 
     private RecentsToActivityHelper mActivityHelper;
     private RecyclerView mTaskRecyclerView;
@@ -134,6 +141,9 @@ public final class IconRecentsView extends FrameLayout {
                         @Override
                         public void onChildViewDetachedFromWindow(@NonNull View view) { }
                     });
+            mTaskRecyclerView.setItemAnimator(mDefaultItemAnimator);
+            mLoadingContentItemAnimator.setOnAnimationFinishedRunnable(
+                    () -> mTaskRecyclerView.setItemAnimator(new DefaultItemAnimator()));
 
             mEmptyView = findViewById(R.id.recent_task_empty_view);
             mContentView = findViewById(R.id.recent_task_content_view);
@@ -186,9 +196,19 @@ public final class IconRecentsView extends FrameLayout {
         mTaskAdapter.setIsShowingLoadingUi(true);
         mTaskAdapter.notifyDataSetChanged();
         mTaskLoader.loadTaskList(tasks -> {
+            int numEmptyItems = mTaskAdapter.getItemCount();
             mTaskAdapter.setIsShowingLoadingUi(false);
-            // TODO: Animate the loading UI out and the loaded data in.
-            mTaskAdapter.notifyDataSetChanged();
+            int numActualItems = mTaskAdapter.getItemCount();
+            if (numEmptyItems < numActualItems) {
+                throw new IllegalStateException("There are less empty item views than the number "
+                        + "of items to animate to.");
+            }
+            // Set item animator for content filling animation. The item animator will switch back
+            // to the default on completion.
+            mTaskRecyclerView.setItemAnimator(mLoadingContentItemAnimator);
+            mTaskAdapter.notifyItemRangeRemoved(numActualItems, numEmptyItems - numActualItems);
+            mTaskAdapter.notifyItemRangeChanged(
+                    0, numActualItems, CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT);
         });
     }
 
