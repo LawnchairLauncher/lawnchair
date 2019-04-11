@@ -321,7 +321,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         final AppIconMenuItem menuItem = menu.getMenuItem(1);
         final String itemName = menuItem.getText();
 
-        menuItem.launch(getAppPackageName(), APP_NAME);
+        menuItem.launch(getAppPackageName());
     }
 
     @Test
@@ -337,7 +337,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                     getAppIcon(APP_NAME).
                     dragToWorkspace().
                     getWorkspaceAppIcon(APP_NAME).
-                    launch(getAppPackageName(), APP_NAME);
+                    launch(getAppPackageName());
         } finally {
             TestProtocol.sDebugTracing = false;
         }
@@ -365,7 +365,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         menuItem.
                 dragToWorkspace().
                 getWorkspaceAppIcon(shortcutName).
-                launch(getAppPackageName(), APP_NAME);
+                launch(getAppPackageName());
     }
 
     private static String getAppPackageName() {
