@@ -34,7 +34,7 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d रूंद बाय %2$d उंच"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"स्वतः ठेवण्यासाठी स्पर्श करा आणि धरून ठेवा"</string>
-    <string name="place_automatically" msgid="8064208734425456485">"अापोआप जोडा"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"आपोआप जोडा"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"अॅप्स शोधा"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"अॅप्स लोड करत आहे…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" शी जुळणारे कोणतेही अॅप्स आढळले नाहीत"</string>

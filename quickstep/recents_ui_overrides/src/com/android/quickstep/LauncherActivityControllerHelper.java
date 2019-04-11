@@ -23,7 +23,6 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_DAMPING_RATIO;
 import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_STIFFNESS;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.animation.Animator;
@@ -44,11 +43,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
-import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -220,7 +216,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                         : mShelfState == ShelfAnimState.PEEK
                                 ? shelfPeekingProgress
                                 : shelfOverviewProgress;
-                mShelfAnim = createShelfProgressAnim(activity, toProgress);
+                mShelfAnim = createShelfAnim(activity, toProgress);
                 mShelfAnim.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -238,10 +234,10 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
             LauncherState fromState, long transitionLength,
             Consumer<AnimatorPlaybackController> callback) {
         LauncherState endState = OVERVIEW;
-        DeviceProfile dp = activity.getDeviceProfile();
-        long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
         if (wasVisible && fromState != BACKGROUND_APP) {
             // If a translucent app was launched fom launcher, animate launcher states.
+            DeviceProfile dp = activity.getDeviceProfile();
+            long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
             callback.accept(activity.getStateManager()
                     .createAnimationToNewWorkspace(fromState, endState, accuracy));
             return;
@@ -254,11 +250,10 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         if (!activity.getDeviceProfile().isVerticalBarLayout()
                 && SysUINavigationMode.getMode(activity) != Mode.NO_BUTTON) {
             // Don't animate the shelf when the mode is NO_BUTTON, because we update it atomically.
-            Animator shiftAnim = createShelfProgressAnim(activity,
+            Animator shiftAnim = createShelfAnim(activity,
                     fromState.getVerticalProgress(activity),
                     endState.getVerticalProgress(activity));
             anim.play(shiftAnim);
-            anim.play(createShelfAlphaAnim(activity, endState, accuracy));
         }
         playScaleDownAnim(anim, activity, endState);
 
@@ -275,25 +270,12 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         callback.accept(controller);
     }
 
-    private Animator createShelfProgressAnim(Launcher activity, float ... progressValues) {
+    private Animator createShelfAnim(Launcher activity, float ... progressValues) {
         Animator shiftAnim = new SpringObjectAnimator<>(activity.getAllAppsController(),
                 "allAppsSpringFromACH", activity.getAllAppsController().getShiftRange(),
                 SPRING_DAMPING_RATIO, SPRING_STIFFNESS, progressValues);
         shiftAnim.setInterpolator(LINEAR);
         return shiftAnim;
-    }
-
-    /**
-     * Very quickly fade the alpha of shelf content.
-     */
-    private Animator createShelfAlphaAnim(Launcher activity, LauncherState toState, long accuracy) {
-        AllAppsTransitionController allAppsController = activity.getAllAppsController();
-        AnimatorSetBuilder animBuilder = new AnimatorSetBuilder();
-        animBuilder.setInterpolator(AnimatorSetBuilder.ANIM_ALL_APPS_FADE, DEACCEL_3);
-        LauncherStateManager.AnimationConfig config = new LauncherStateManager.AnimationConfig();
-        config.duration = accuracy;
-        allAppsController.setAlphas(toState.getVisibleElements(activity), config, animBuilder);
-        return animBuilder.build();
     }
 
     /**

@@ -18,6 +18,7 @@ package com.android.launcher3.testcomponent;
 import static android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
 import static android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
 import static android.content.pm.PackageManager.DONT_KILL_APP;
+import static android.os.ParcelFileDescriptor.MODE_READ_WRITE;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -28,6 +29,13 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
+import android.util.Base64;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import androidx.test.InstrumentationRegistry;
 
@@ -103,5 +111,20 @@ public class TestCommandReceiver extends ContentProvider {
         Instrumentation inst = InstrumentationRegistry.getInstrumentation();
         Uri uri = Uri.parse("content://" + inst.getContext().getPackageName() + ".commands");
         return inst.getTargetContext().getContentResolver().call(uri, command, arg, null);
+    }
+
+    @Override
+    public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
+        String path = Base64.encodeToString(uri.getPath().getBytes(),
+                Base64.NO_CLOSE | Base64.NO_PADDING | Base64.NO_WRAP);
+        File file = new File(getContext().getCacheDir(), path);
+        if (!file.exists()) {
+            // Create an empty file so that we can pass its descriptor
+            try {
+                file.createNewFile();
+            } catch (IOException e) { }
+        }
+
+        return ParcelFileDescriptor.open(file, MODE_READ_WRITE);
     }
 }

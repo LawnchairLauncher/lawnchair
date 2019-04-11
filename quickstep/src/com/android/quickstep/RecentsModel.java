@@ -35,6 +35,7 @@ import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
@@ -62,9 +63,6 @@ public class RecentsModel extends TaskStackChangeListener {
     private final TaskIconCache mIconCache;
     private final TaskThumbnailCache mThumbnailCache;
 
-    private float mWindowCornerRadius = 0;
-    private boolean mSupportsRoundedCornersOnWindows;
-
     private RecentsModel(Context context) {
         mContext = context;
         HandlerThread loaderThread = new HandlerThread("TaskThumbnailIconCache",
@@ -74,12 +72,6 @@ public class RecentsModel extends TaskStackChangeListener {
         mIconCache = new TaskIconCache(context, loaderThread.getLooper());
         mThumbnailCache = new TaskThumbnailCache(context, loaderThread.getLooper());
         ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
-    }
-
-    public void onInitializeSystemUI(Bundle params) {
-        mWindowCornerRadius = params.getFloat(KEY_EXTRA_WINDOW_CORNER_RADIUS, 0);
-        mSupportsRoundedCornersOnWindows =
-                params.getBoolean(KEY_EXTRA_SUPPORTS_WINDOW_CORNERS, false);
     }
 
     public TaskIconCache getIconCache() {
@@ -180,14 +172,6 @@ public class RecentsModel extends TaskStackChangeListener {
 
     public ISystemUiProxy getSystemUiProxy() {
         return mSystemUiProxy;
-    }
-
-    public float getWindowCornerRadius() {
-        return mWindowCornerRadius;
-    }
-
-    public boolean supportsRoundedCornersOnWindows() {
-        return mSupportsRoundedCornersOnWindows;
     }
 
     public void onTrimMemory(int level) {

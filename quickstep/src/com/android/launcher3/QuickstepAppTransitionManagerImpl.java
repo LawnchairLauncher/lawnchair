@@ -31,6 +31,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_TRANSITIONS;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
+import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
@@ -63,12 +64,12 @@ import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.views.FloatingIconView;
-import com.android.quickstep.RecentsModel;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
+import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 import com.android.systemui.shared.system.RemoteAnimationDefinitionCompat;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
@@ -473,6 +474,10 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         });
 
         float shapeRevealDuration = APP_LAUNCH_DURATION * SHAPE_PROGRESS_DURATION;
+
+        final float windowRadius = mDeviceProfile.isMultiWindowMode
+                ? 0 :  getWindowCornerRadius(mLauncher.getResources());
+
         appAnimator.addUpdateListener(new MultiValueUpdateListener() {
             FloatProp mDx = new FloatProp(0, dX, 0, xDuration, AGGRESSIVE_EASE);
             FloatProp mDy = new FloatProp(0, dY, 0, yDuration, AGGRESSIVE_EASE);
@@ -513,13 +518,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 Utilities.scaleRectFAboutCenter(temp, mIconScale.value);
                 float transX0 = temp.left - offsetX;
                 float transY0 = temp.top - offsetY;
-
-                float windowRadius = 0;
-                if (!mDeviceProfile.isMultiWindowMode &&
-                        RecentsModel.INSTANCE.get(mLauncher).supportsRoundedCornersOnWindows()) {
-                    windowRadius = RecentsModel.INSTANCE.get(mLauncher)
-                            .getWindowCornerRadius();
-                }
 
                 SurfaceParams[] params = new SurfaceParams[targets.length];
                 for (int i = targets.length - 1; i >= 0; i--) {
@@ -651,7 +649,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         ValueAnimator unlockAnimator = ValueAnimator.ofFloat(0, 1);
         unlockAnimator.setDuration(CLOSING_TRANSITION_DURATION_MS);
         float cornerRadius = mDeviceProfile.isMultiWindowMode ? 0 :
-                RecentsModel.INSTANCE.get(mLauncher).getWindowCornerRadius();
+                QuickStepContract.getWindowCornerRadius(mLauncher.getResources());
         unlockAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -677,8 +675,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         Matrix matrix = new Matrix();
         ValueAnimator closingAnimator = ValueAnimator.ofFloat(0, 1);
         int duration = CLOSING_TRANSITION_DURATION_MS;
-        float windowCornerRadius = mDeviceProfile.isMultiWindowMode ? 0 :
-                RecentsModel.INSTANCE.get(mLauncher).getWindowCornerRadius();
+        float windowCornerRadius = mDeviceProfile.isMultiWindowMode
+                ? 0 : getWindowCornerRadius(mLauncher.getResources());
         closingAnimator.setDuration(duration);
         closingAnimator.addUpdateListener(new MultiValueUpdateListener() {
             FloatProp mDy = new FloatProp(0, mClosingWindowTransY, 0, duration, DEACCEL_1_7);

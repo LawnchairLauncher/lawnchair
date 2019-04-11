@@ -290,6 +290,10 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
             if (sysUiProxy == null) {
                 return null;
             }
+            if (SysUINavigationMode.getMode(activity) == SysUINavigationMode.Mode.NO_BUTTON) {
+                // TODO(b/130225926): Temporarily disable pinning while gesture nav is enabled
+                return null;
+            }
             if (!ActivityManagerWrapper.getInstance().isScreenPinningEnabled()) {
                 return null;
             }

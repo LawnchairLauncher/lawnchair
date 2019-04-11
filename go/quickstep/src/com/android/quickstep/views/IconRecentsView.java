@@ -28,6 +28,10 @@ import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.view.View;
 import android.view.ViewDebug;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.LayoutAnimationController;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -69,6 +73,8 @@ public final class IconRecentsView extends FrameLayout {
                 }
             };
     private static final long CROSSFADE_DURATION = 300;
+    private static final long LAYOUT_ITEM_ANIMATE_IN_DURATION = 150;
+    private static final long LAYOUT_ITEM_ANIMATE_IN_DELAY_BETWEEN = 40;
     private static final long ITEM_ANIMATE_OUT_DURATION = 150;
     private static final long ITEM_ANIMATE_OUT_DELAY_BETWEEN = 40;
     private static final float ITEM_ANIMATE_OUT_TRANSLATION_X_RATIO = .25f;
@@ -84,6 +90,7 @@ public final class IconRecentsView extends FrameLayout {
     private final TaskListLoader mTaskLoader;
     private final TaskAdapter mTaskAdapter;
     private final TaskActionController mTaskActionController;
+    private final LayoutAnimationController mLayoutAnimation;
 
     private RecentsToActivityHelper mActivityHelper;
     private RecyclerView mTaskRecyclerView;
@@ -99,6 +106,7 @@ public final class IconRecentsView extends FrameLayout {
         mTaskAdapter = new TaskAdapter(mTaskLoader);
         mTaskActionController = new TaskActionController(mTaskLoader, mTaskAdapter);
         mTaskAdapter.setActionController(mTaskActionController);
+        mLayoutAnimation = createLayoutAnimation();
     }
 
     @Override
@@ -112,6 +120,7 @@ public final class IconRecentsView extends FrameLayout {
             ItemTouchHelper helper = new ItemTouchHelper(
                     new TaskSwipeCallback(mTaskActionController));
             helper.attachToRecyclerView(mTaskRecyclerView);
+            mTaskRecyclerView.setLayoutAnimation(mLayoutAnimation);
 
             mEmptyView = findViewById(R.id.recent_task_empty_view);
             mContentView = findViewById(R.id.recent_task_content_view);
@@ -130,7 +139,6 @@ public final class IconRecentsView extends FrameLayout {
             mClearAllView.setOnClickListener(v -> animateClearAllTasks());
         }
     }
-
 
     @Override
     public void setEnabled(boolean enabled) {
@@ -157,10 +165,17 @@ public final class IconRecentsView extends FrameLayout {
      * becomes visible.
      */
     public void onBeginTransitionToOverview() {
+        mTaskRecyclerView.scheduleLayoutAnimation();
+
         // Load any task changes
+        if (!mTaskLoader.needsToLoad()) {
+            return;
+        }
+        mTaskAdapter.setIsShowingLoadingUi(true);
+        mTaskAdapter.notifyDataSetChanged();
         mTaskLoader.loadTaskList(tasks -> {
-            // TODO: Put up some loading UI while task content is loading. May have to do something
-            // smarter when animating from app to overview.
+            mTaskAdapter.setIsShowingLoadingUi(false);
+            // TODO: Animate the loading UI out and the loaded data in.
             mTaskAdapter.notifyDataSetChanged();
         });
     }
@@ -321,5 +336,19 @@ public final class IconRecentsView extends FrameLayout {
                         fadeOutView.setVisibility(GONE);
                     }
                 });
+    }
+
+    private static LayoutAnimationController createLayoutAnimation() {
+        AnimationSet anim = new AnimationSet(false /* shareInterpolator */);
+
+        Animation alphaAnim = new AlphaAnimation(0, 1);
+        alphaAnim.setDuration(LAYOUT_ITEM_ANIMATE_IN_DURATION);
+        anim.addAnimation(alphaAnim);
+
+        LayoutAnimationController layoutAnim = new LayoutAnimationController(anim);
+        layoutAnim.setDelay(
+                (float) LAYOUT_ITEM_ANIMATE_IN_DELAY_BETWEEN / LAYOUT_ITEM_ANIMATE_IN_DURATION);
+
+        return layoutAnim;
     }
 }
