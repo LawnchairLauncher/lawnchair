@@ -35,7 +35,6 @@ import ch.deletescape.lawnchair.launcherAppState
 import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import com.android.launcher3.InsettableFrameLayout
-import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
@@ -52,6 +51,8 @@ open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnColorChange
     private val customLayoutInflater by lazy {
         LawnchairLayoutInflater(super.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater, this)
     }
+
+    private val fromSettings by lazy { intent.getBooleanExtra(EXTRA_FROM_SETTINGS, false) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (layoutInflater as LawnchairLayoutInflater).installFactory(delegate)
@@ -79,6 +80,30 @@ open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnColorChange
         flags = flags or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
         flags = flags or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         window.decorView.systemUiVisibility = flags
+    }
+
+    protected fun overrideOpenAnim() {
+        if (fromSettings) {
+            overridePendingTransition("activity_open_enter", "activity_open_exit")
+        }
+    }
+
+    protected fun overrideCloseAnim() {
+        if (fromSettings) {
+            overridePendingTransition("activity_close_enter", "activity_close_exit")
+        }
+    }
+
+    private fun getAndroidAnimRes(name: String): Int {
+        return resources.getIdentifier(name, "anim", "android")
+    }
+
+    private fun overridePendingTransition(enter: String, exit: String) {
+        val enterRes = getAndroidAnimRes(enter)
+        val exitRes = getAndroidAnimRes(exit)
+        if (enterRes != 0 && exitRes != 0) {
+            overridePendingTransition(enterRes, exitRes)
+        }
     }
 
     override fun onBackPressed() {
@@ -175,6 +200,8 @@ open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnColorChange
     }
 
     companion object {
+
+        const val EXTRA_FROM_SETTINGS = "fromSettings"
 
         fun getActivity(context: Context): SettingsBaseActivity {
             return context as? SettingsBaseActivity ?: (context as ContextWrapper).baseContext as SettingsBaseActivity
