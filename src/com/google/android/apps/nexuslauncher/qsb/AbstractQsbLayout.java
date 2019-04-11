@@ -18,6 +18,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.LauncherLayoutChangeListener;
@@ -198,7 +199,10 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
     }
 
     private void loadPreferences(SharedPreferences sharedPreferences) {
-        mMicIconView.setVisibility(sharedPreferences.getBoolean("opa_enabled", true) ? View.GONE : View.VISIBLE);
+        ((ImageView) mMicIconView).setImageResource(
+                sharedPreferences.getBoolean("opa_enabled", true)
+                        ? R.drawable.ic_poodle_color
+                        : R.drawable.ic_mic_color);
         requestLayout();
     }
 }
