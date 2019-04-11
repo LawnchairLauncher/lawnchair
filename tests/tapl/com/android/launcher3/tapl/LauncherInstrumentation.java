@@ -201,13 +201,19 @@ public final class LauncherInstrumentation {
 
     Closable addContextLayer(String piece) {
         mDiagnosticContext.addLast(piece);
-        return () -> mDiagnosticContext.removeLast();
+        log("Added context: " + getContextDescription());
+        return () -> {
+            log("Removing context: " + getContextDescription());
+            mDiagnosticContext.removeLast();
+        };
     }
 
     private void fail(String message) {
-        final String ctxt = mDiagnosticContext.isEmpty() ? "" : String.join(", ",
-                mDiagnosticContext) + "; ";
-        Assert.fail("http://go/tapl : " + ctxt + message);
+        Assert.fail("http://go/tapl : " + getContextDescription() + message);
+    }
+
+    private String getContextDescription() {
+        return mDiagnosticContext.isEmpty() ? "" : String.join(", ", mDiagnosticContext) + "; ";
     }
 
     void assertTrue(String message, boolean condition) {
