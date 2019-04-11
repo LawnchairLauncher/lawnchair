@@ -1,5 +1,6 @@
 package com.google.android.apps.nexuslauncher.smartspace;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -10,6 +11,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -304,7 +306,23 @@ public class SmartspaceCard {
                 break;
             }
             case 2: {
-                launcher.startActivitySafely(view, intent, null);
+                try {
+                    Intent internal = Intent.parseUri(
+                            intent.getExtras().getString("com.google.android.apps.gsa.smartspace.extra.SMARTSPACE_INTENT"),
+                            Intent.URI_INTENT_SCHEME);
+
+                    ComponentName velvet = new ComponentName("com.google.android.googlequicksearchbox",
+                            "com.google.android.apps.gsa.velour.dynamichosts.VelvetDynamicHostActivity");
+                    if (velvet.equals(internal.getComponent())) {
+                        internal.setComponent(new ComponentName("com.google.android.googlequicksearchbox",
+                                "com.google.android.apps.gsa.velour.DynamicActivityTrampoline"));
+                    }
+
+                    launcher.startActivitySafely(view, internal, null);
+                } catch (URISyntaxException | NullPointerException | SecurityException e) {
+                    e.printStackTrace();
+                    launcher.startActivitySafely(view, intent, null);
+                }
                 break;
             }
         }
