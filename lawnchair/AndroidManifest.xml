@@ -126,6 +126,13 @@
             android:theme="@style/SettingsTheme.V2" />
 
         <activity
+            android:autoRemoveFromRecents="true"
+            android:label="@string/derived_app_name"
+            android:name="ch.deletescape.lawnchair.font.settingsui.FontSelectionActivity"
+            android:theme="@style/SettingsTheme.V2"
+            android:parentActivityName="ch.deletescape.lawnchair.settings.ui.SettingsActivity" />
+
+        <activity
             android:name="com.android.launcher3.SettingsActivity"
             tools:node="remove" />
 

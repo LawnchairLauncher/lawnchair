@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.font.settingsui
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.preference.Preference
@@ -42,7 +43,7 @@ open class FontPreference(context: Context, attrs: AttributeSet) : Preference(co
     fun reloadFont() {
         val font = pref.font
         font.load(this)
-        summary = font.displayName
+        summary = font.fullDisplayName
     }
 
     override fun onFontLoaded(typeface: Typeface?) {
@@ -57,10 +58,8 @@ open class FontPreference(context: Context, attrs: AttributeSet) : Preference(co
     }
 
     override fun onClick() {
-        SettingsActivity.startFragment(context, FontSelectionFragment::class.java.name, Bundle(2).apply {
-            putString(FontSelectionFragment.ARG_TITLE, title.toString())
-            putString(FontSelectionFragment.ARG_KEY, key)
-        })
+        context.startActivity(Intent(context, FontSelectionActivity::class.java)
+                .putExtra(FontSelectionActivity.EXTRA_KEY, key))
     }
 
     override fun onAttached() {

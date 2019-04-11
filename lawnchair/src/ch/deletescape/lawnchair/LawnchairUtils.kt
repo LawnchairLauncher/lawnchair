@@ -682,3 +682,49 @@ fun Context.createDisabledColor(color: Int): ColorStateList {
                     getDisabled(getColorAttr(android.R.attr.colorForeground)),
                     color))
 }
+
+class ViewGroupChildIterator(private val viewGroup: ViewGroup, private var current: Int) : ListIterator<View> {
+
+    override fun hasNext() = current < viewGroup.childCount
+
+    override fun next() = viewGroup.getChildAt(current++)!!
+
+    override fun nextIndex() = current
+
+    override fun hasPrevious() = current > 0
+
+    override fun previous() = viewGroup.getChildAt(current--)!!
+
+    override fun previousIndex() = current - 1
+}
+
+class ViewGroupChildList(private val viewGroup: ViewGroup) : List<View> {
+
+    override val size get() = viewGroup.childCount
+
+    override fun isEmpty() = size == 0
+
+    override fun contains(element: View): Boolean {
+        return any { it === element }
+    }
+
+    override fun containsAll(elements: Collection<View>): Boolean {
+        return elements.all { contains(it) }
+    }
+
+    override fun get(index: Int) = viewGroup.getChildAt(index)!!
+
+    override fun indexOf(element: View) = indexOfFirst { it === element }
+
+    override fun lastIndexOf(element: View) = indexOfLast { it === element }
+
+    override fun iterator() = listIterator()
+
+    override fun listIterator() = listIterator(0)
+
+    override fun listIterator(index: Int) = ViewGroupChildIterator(viewGroup, index)
+
+    override fun subList(fromIndex: Int, toIndex: Int) = ArrayList(this).subList(fromIndex, toIndex)
+}
+
+val ViewGroup.childs get() = ViewGroupChildList(this)

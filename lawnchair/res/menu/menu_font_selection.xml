@@ -22,5 +22,5 @@
     <item
         android:id="@+id/action_reset"
         android:title="@string/font_reset"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
 </menu>

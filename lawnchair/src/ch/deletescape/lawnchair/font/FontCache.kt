@@ -50,8 +50,16 @@ class FontCache(private val context: Context) {
         return fontLoaders.getOrPut(font) { FontLoader(font) }
     }
 
+    class Family(val displayName: String, val variants: Map<String, Font>) {
+
+        constructor(font: Font) : this(font.displayName, mapOf(Pair("regular", font)))
+
+        val default = variants.getOrElse("regular") { variants.values.first() }
+    }
+
     abstract class Font {
 
+        abstract val fullDisplayName: String
         abstract val displayName: String
 
         abstract fun load(callback: LoadCallback)
@@ -85,7 +93,8 @@ class FontCache(private val context: Context) {
 
     abstract class TypefaceFont(private val typeface: Typeface?) : Font() {
 
-        override val displayName = typeface.toString()
+        override val fullDisplayName = typeface.toString()
+        override val displayName get() = fullDisplayName
 
         override fun load(callback: LoadCallback) {
             callback.onFontLoaded(typeface)
@@ -96,7 +105,7 @@ class FontCache(private val context: Context) {
         }
 
         override fun hashCode(): Int {
-            return displayName.hashCode()
+            return fullDisplayName.hashCode()
         }
     }
 
@@ -128,7 +137,7 @@ class FontCache(private val context: Context) {
 
         private val hashCode = "SystemFont|$family|$style".hashCode()
 
-        override val displayName = family
+        override val fullDisplayName = family
 
         override fun saveToJson(obj: JSONObject) {
             super.saveToJson(obj)
@@ -162,7 +171,7 @@ class FontCache(private val context: Context) {
 
         private val hashCode = "AssetFont|$name".hashCode()
 
-        override val displayName = name
+        override val fullDisplayName = name
 
         override fun equals(other: Any?): Boolean {
             return other is AssetFont && name == other.name
@@ -180,14 +189,16 @@ class FontCache(private val context: Context) {
 
         private val hashCode = "GoogleFont|$family|$variant".hashCode()
 
-        override val displayName = createDisplayName()
+        override val displayName = createVariantName()
+        override val fullDisplayName = "$family $displayName"
 
-        private fun createDisplayName(): String {
+        private fun createVariantName(): String {
+            if (variant == "italic") return context.getString(R.string.font_variant_italic)
             val weight = GoogleFontsListing.getWeight(variant)
             val weightString = FontCache.getInstance(context).weightNameMap[weight] ?: weight
             val italicString = if (GoogleFontsListing.isItalic(variant))
                 " " + context.getString(R.string.font_variant_italic) else ""
-            return "$family $weightString$italicString"
+            return "$weightString$italicString"
         }
 
         override fun load(callback: LoadCallback) {
