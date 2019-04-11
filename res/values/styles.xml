@@ -126,7 +126,7 @@
 
     <style name="WidgetContainerTheme.Dark" />
 
-    <style name="FastScrollerPopup" parent="@android:style/TextAppearance.DeviceDefault">
+    <style name="FastScrollerPopup" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:minWidth">@dimen/fastscroll_popup_width</item>
         <item name="android:layout_height">@dimen/fastscroll_popup_height</item>
@@ -173,7 +173,7 @@
     </style>
 
     <!-- Drop targets -->
-    <style name="DropTargetButtonBase">
+    <style name="DropTargetButtonBase" parent="@android:style/TextAppearance.DeviceDefault">
         <item name="android:drawablePadding">7.5dp</item>
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
@@ -188,6 +188,8 @@
     </style>
 
     <style name="DropTargetButton" parent="DropTargetButtonBase" />
+
+    <style name="TextHeadline" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle" />
 
     <style name="TextTitle" parent="@android:style/TextAppearance.DeviceDefault" />
 
