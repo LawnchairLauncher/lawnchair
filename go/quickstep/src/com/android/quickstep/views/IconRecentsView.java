@@ -24,14 +24,12 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.util.ArraySet;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.view.View;
 import android.view.ViewDebug;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.LayoutAnimationController;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -40,6 +38,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
+import androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener;
 
 import com.android.launcher3.R;
 import com.android.quickstep.RecentsToActivityHelper;
@@ -90,7 +89,6 @@ public final class IconRecentsView extends FrameLayout {
     private final TaskListLoader mTaskLoader;
     private final TaskAdapter mTaskAdapter;
     private final TaskActionController mTaskActionController;
-    private final LayoutAnimationController mLayoutAnimation;
 
     private RecentsToActivityHelper mActivityHelper;
     private RecyclerView mTaskRecyclerView;
@@ -98,6 +96,9 @@ public final class IconRecentsView extends FrameLayout {
     private View mContentView;
     private View mClearAllView;
     private boolean mTransitionedFromApp;
+    private AnimatorSet mLayoutAnimation;
+    private final ArraySet<View> mLayingOutViews = new ArraySet<>();
+
 
     public IconRecentsView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -106,7 +107,6 @@ public final class IconRecentsView extends FrameLayout {
         mTaskAdapter = new TaskAdapter(mTaskLoader);
         mTaskActionController = new TaskActionController(mTaskLoader, mTaskAdapter);
         mTaskAdapter.setActionController(mTaskActionController);
-        mLayoutAnimation = createLayoutAnimation();
     }
 
     @Override
@@ -120,7 +120,20 @@ public final class IconRecentsView extends FrameLayout {
             ItemTouchHelper helper = new ItemTouchHelper(
                     new TaskSwipeCallback(mTaskActionController));
             helper.attachToRecyclerView(mTaskRecyclerView);
-            mTaskRecyclerView.setLayoutAnimation(mLayoutAnimation);
+            mTaskRecyclerView.addOnChildAttachStateChangeListener(
+                    new OnChildAttachStateChangeListener() {
+                        @Override
+                        public void onChildViewAttachedToWindow(@NonNull View view) {
+                            if (mLayoutAnimation != null && !mLayingOutViews.contains(view)) {
+                                // Child view was added that is not part of current layout animation
+                                // so restart the animation.
+                                animateFadeInLayoutAnimation();
+                            }
+                        }
+
+                        @Override
+                        public void onChildViewDetachedFromWindow(@NonNull View view) { }
+                    });
 
             mEmptyView = findViewById(R.id.recent_task_empty_view);
             mContentView = findViewById(R.id.recent_task_content_view);
@@ -165,8 +178,7 @@ public final class IconRecentsView extends FrameLayout {
      * becomes visible.
      */
     public void onBeginTransitionToOverview() {
-        mTaskRecyclerView.scheduleLayoutAnimation();
-
+        scheduleFadeInLayoutAnimation();
         // Load any task changes
         if (!mTaskLoader.needsToLoad()) {
             return;
@@ -338,17 +350,56 @@ public final class IconRecentsView extends FrameLayout {
                 });
     }
 
-    private static LayoutAnimationController createLayoutAnimation() {
-        AnimationSet anim = new AnimationSet(false /* shareInterpolator */);
+    /**
+     * Schedule a one-shot layout animation on the next layout. Separate from
+     * {@link #scheduleLayoutAnimation()} as the animation is {@link Animator} based and acts on the
+     * view properties themselves, allowing more controllable behavior and making it easier to
+     * manage when the animation conflicts with another animation.
+     */
+    private void scheduleFadeInLayoutAnimation() {
+        ViewTreeObserver viewTreeObserver = mTaskRecyclerView.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        animateFadeInLayoutAnimation();
+                        viewTreeObserver.removeOnGlobalLayoutListener(this);
+                    }
+                });
+    }
 
-        Animation alphaAnim = new AlphaAnimation(0, 1);
-        alphaAnim.setDuration(LAYOUT_ITEM_ANIMATE_IN_DURATION);
-        anim.addAnimation(alphaAnim);
-
-        LayoutAnimationController layoutAnim = new LayoutAnimationController(anim);
-        layoutAnim.setDelay(
-                (float) LAYOUT_ITEM_ANIMATE_IN_DELAY_BETWEEN / LAYOUT_ITEM_ANIMATE_IN_DURATION);
-
-        return layoutAnim;
+    /**
+     * Start animating the layout animation where items fade in.
+     */
+    private void animateFadeInLayoutAnimation() {
+        if (mLayoutAnimation != null) {
+            // If layout animation still in progress, cancel and restart.
+            mLayoutAnimation.cancel();
+        }
+        TaskItemView[] views = getTaskViews();
+        int delay = 0;
+        mLayoutAnimation = new AnimatorSet();
+        for (TaskItemView view : views) {
+            view.setAlpha(0.0f);
+            Animator alphaAnim = ObjectAnimator.ofFloat(view, ALPHA, 0.0f, 1.0f);
+            alphaAnim.setDuration(LAYOUT_ITEM_ANIMATE_IN_DURATION).setStartDelay(delay);
+            alphaAnim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    view.setAlpha(1.0f);
+                    mLayingOutViews.remove(view);
+                }
+            });
+            delay += LAYOUT_ITEM_ANIMATE_IN_DELAY_BETWEEN;
+            mLayoutAnimation.play(alphaAnim);
+            mLayingOutViews.add(view);
+        }
+        mLayoutAnimation.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mLayoutAnimation = null;
+            }
+        });
+        mLayoutAnimation.start();
     }
 }
