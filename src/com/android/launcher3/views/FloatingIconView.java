@@ -34,6 +34,7 @@ import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
@@ -73,6 +74,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
     private static final Rect sTmpRect = new Rect();
 
     private Runnable mEndRunnable;
+    private CancellationSignal mLoadIconSignal;
 
     private final int mBlurSizeOutline;
 
@@ -153,6 +155,9 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
 
     @Override
     public void onAnimationEnd(Animator animator) {
+        if (mLoadIconSignal != null) {
+            mLoadIconSignal.cancel();
+        }
         if (mEndRunnable != null) {
             mEndRunnable.run();
         } else {
@@ -186,7 +191,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
 
     @WorkerThread
     private void getIcon(Launcher launcher, View v, ItemInfo info, boolean isOpening,
-            Runnable onIconLoadedRunnable) {
+            Runnable onIconLoadedRunnable, CancellationSignal loadIconSignal) {
         final LayoutParams lp = (LayoutParams) getLayoutParams();
         Drawable drawable = null;
         boolean supportsAdaptiveIcons = ADAPTIVE_ICON_WINDOW_ANIM.get()
@@ -290,7 +295,9 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
                 setBackground(finalDrawable);
             }
 
-            onIconLoadedRunnable.run();
+            if (!loadIconSignal.isCanceled()) {
+                onIconLoadedRunnable.run();
+            }
             invalidate();
             invalidateOutline();
         });
@@ -386,6 +393,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         // Get the drawable on the background thread
         // Must be called after matchPositionOf so that we know what size to load.
         if (originalView.getTag() instanceof ItemInfo) {
+            view.mLoadIconSignal = new CancellationSignal();
             Runnable onIconLoaded = () -> {
                 // Delay swapping views until the icon is loaded to prevent a flash.
                 view.setVisibility(VISIBLE);
@@ -393,9 +401,10 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
                     originalView.setVisibility(INVISIBLE);
                 }
             };
+            CancellationSignal loadIconSignal = view.mLoadIconSignal;
             new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(() -> {
                 view.getIcon(launcher, originalView, (ItemInfo) originalView.getTag(), isOpening,
-                        onIconLoaded);
+                        onIconLoaded, loadIconSignal);
             });
         }
 
@@ -461,6 +470,10 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         setScaleY(1);
         setAlpha(1);
         setBackground(null);
+        if (mLoadIconSignal != null) {
+            mLoadIconSignal.cancel();
+        }
+        mLoadIconSignal = null;
         mEndRunnable = null;
         mIsAdaptiveIcon = false;
         mForeground = null;

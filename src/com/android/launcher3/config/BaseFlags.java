@@ -90,10 +90,6 @@ abstract class BaseFlags {
     // trying to make them fit the orientation the device is in.
     public static final boolean OVERVIEW_USE_SCREENSHOT_ORIENTATION = true;
 
-    public static final ToggleableGlobalSettingsFlag STYLE_WALLPAPER
-            = new ToggleableGlobalSettingsFlag("STYLE_WALLPAPER", false,
-            "Direct users to the new ThemePicker based WallpaperPicker");
-
     /**
      * Feature flag to handle define config changes dynamically instead of killing the process.
      */

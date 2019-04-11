@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
@@ -97,5 +98,11 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
 
         setLayoutParams(lp);
         InsettableFrameLayout.dispatchInsets(this, insets);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        // Don't let if follow through to workspace
+        return true;
     }
 }

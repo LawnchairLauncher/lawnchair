@@ -34,6 +34,7 @@ import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ProviderInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -51,8 +52,10 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.provider.BaseColumns;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Xml;
 
 import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -63,15 +66,21 @@ import com.android.launcher3.model.DbDowngradeHelper;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.provider.RestoreDbTask;
+import com.android.launcher3.util.IOUtils;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.NoLocaleSQLiteHelper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Thunk;
 
+import org.xmlpull.v1.XmlPullParser;
+
 import java.io.File;
 import java.io.FileDescriptor;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,8 +101,6 @@ public class LauncherProvider extends ContentProvider {
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".settings";
 
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
-
-    private static final String RESTRICTION_PACKAGE_NAME = "workspace.configuration.package.name";
 
     private final ChangeListenerWrapper mListenerWrapper = new ChangeListenerWrapper();
     private Handler mListenerHandler;
@@ -505,25 +512,40 @@ public class LauncherProvider extends ContentProvider {
      */
     private AutoInstallsLayout createWorkspaceLoaderFromAppRestriction(AppWidgetHost widgetHost) {
         Context ctx = getContext();
-        UserManager um = (UserManager) ctx.getSystemService(Context.USER_SERVICE);
-        Bundle bundle = um.getApplicationRestrictions(ctx.getPackageName());
-        if (bundle == null) {
+        InvariantDeviceProfile grid = LauncherAppState.getIDP(ctx);
+
+        String authority = Settings.Secure.getString(ctx.getContentResolver(),
+                "launcher3.layout.provider");
+        if (TextUtils.isEmpty(authority)) {
             return null;
         }
 
-        String packageName = bundle.getString(RESTRICTION_PACKAGE_NAME);
-        if (packageName != null) {
-            try {
-                Resources targetResources = ctx.getPackageManager()
-                        .getResourcesForApplication(packageName);
-                return AutoInstallsLayout.get(ctx, packageName, targetResources,
-                        widgetHost, mOpenHelper);
-            } catch (NameNotFoundException e) {
-                Log.e(TAG, "Target package for restricted profile not found", e);
-                return null;
-            }
+        ProviderInfo pi = ctx.getPackageManager().resolveContentProvider(authority, 0);
+        if (pi == null) {
+            Log.e(TAG, "No provider found for authority " + authority);
+            return null;
         }
-        return null;
+        Uri uri = new Uri.Builder().scheme("content").authority(authority).path("launcher_layout")
+                .appendQueryParameter("version", "1")
+                .appendQueryParameter("gridWidth", Integer.toString(grid.numColumns))
+                .appendQueryParameter("gridHeight", Integer.toString(grid.numRows))
+                .appendQueryParameter("hotseatSize", Integer.toString(grid.numHotseatIcons))
+                .build();
+
+        try (InputStream in = ctx.getContentResolver().openInputStream(uri)) {
+            // Read the full xml so that we fail early in case of any IO error.
+            String layout = new String(IOUtils.toByteArray(in));
+            XmlPullParser parser = Xml.newPullParser();
+            parser.setInput(new StringReader(layout));
+
+            Log.d(TAG, "Loading layout from " + authority);
+            return new AutoInstallsLayout(ctx, widgetHost, mOpenHelper,
+                    ctx.getPackageManager().getResourcesForApplication(pi.applicationInfo),
+                    () -> parser, AutoInstallsLayout.TAG_WORKSPACE);
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting layout stream from: " + authority , e);
+            return null;
+        }
     }
 
     private DefaultLayoutParser getDefaultLayoutParser(AppWidgetHost widgetHost) {

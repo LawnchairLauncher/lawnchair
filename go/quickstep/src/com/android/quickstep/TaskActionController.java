@@ -42,6 +42,9 @@ public final class TaskActionController {
      * @param viewHolder the task view holder to launch
      */
     public void launchTask(TaskHolder viewHolder) {
+        if (viewHolder.getTask() == null) {
+            return;
+        }
         TaskItemView itemView = (TaskItemView) (viewHolder.itemView);
         View v = itemView.getThumbnailView();
         int left = 0;
@@ -60,6 +63,9 @@ public final class TaskActionController {
      * @param viewHolder the task view holder to remove
      */
     public void removeTask(TaskHolder viewHolder) {
+        if (viewHolder.getTask() == null) {
+            return;
+        }
         int position = viewHolder.getAdapterPosition();
         Task task = viewHolder.getTask();
         ActivityManagerWrapper.getInstance().removeTask(task.key.id);

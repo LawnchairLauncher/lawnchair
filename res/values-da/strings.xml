@@ -33,7 +33,7 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Tryk to gange, og hold fingeren nede for at vælge en widget eller bruge tilpassede handlinger."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d i bredden og %2$d i højden"</string>
-    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Tryk og hold fingeren nede for at placere manuelt"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Tryk og hold nede for at placere manuelt"</string>
     <string name="place_automatically" msgid="8064208734425456485">"Tilføj automatisk"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Søg efter apps"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Indlæser apps…"</string>

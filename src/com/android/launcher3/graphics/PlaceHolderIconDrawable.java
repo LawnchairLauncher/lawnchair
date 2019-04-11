@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.graphics;
 
+import static androidx.core.graphics.ColorUtils.compositeColors;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -47,7 +49,8 @@ public class PlaceHolderIconDrawable extends FastBitmapDrawable {
         super(b, iconColor);
 
         mProgressPath = progressPath;
-        mPaint.setColor(Themes.getAttrColor(context, R.attr.loadingIconColor));
+        mPaint.setColor(compositeColors(
+                Themes.getAttrColor(context, R.attr.loadingIconColor), iconColor));
     }
 
     @Override

@@ -28,8 +28,8 @@
         <!-- Background -->
         <shape>
             <corners
-                android:topLeftRadius="@dimen/task_corner_radius"
-                android:topRightRadius="@dimen/task_corner_radius"
+                android:topLeftRadius="?android:attr/dialogCornerRadius"
+                android:topRightRadius="?android:attr/dialogCornerRadius"
                 android:bottomLeftRadius="0dp"
                 android:bottomRightRadius="0dp" />
             <solid android:color="?attr/popupColorPrimary" />

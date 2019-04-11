@@ -152,7 +152,7 @@ public class OptionsPopupView extends ArrowPopup
         RectF target = new RectF(x - halfSize, y - halfSize, x + halfSize, y + halfSize);
 
         ArrayList<OptionItem> options = new ArrayList<>();
-        int res = FeatureFlags.STYLE_WALLPAPER.get() && existsStyleWallpapers(launcher) ?
+        int res = existsStyleWallpapers(launcher) ?
                 R.string.styles_wallpaper_button_text : R.string.wallpaper_button_text;
         options.add(new OptionItem(res, R.drawable.ic_wallpaper,
                 ControlType.WALLPAPER_BUTTON, OptionsPopupView::startWallpaperPicker));
@@ -210,7 +210,7 @@ public class OptionsPopupView extends ArrowPopup
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .putExtra(EXTRA_WALLPAPER_OFFSET,
                         launcher.getWorkspace().getWallpaperOffsetForCenterPage());
-        if (!FeatureFlags.STYLE_WALLPAPER.get()) {
+        if (!existsStyleWallpapers(launcher)) {
             intent.putExtra(EXTRA_WALLPAPER_FLAVOR, "wallpaper_only");
         }
         String pickerPackage = launcher.getString(R.string.wallpaper_picker_package);
