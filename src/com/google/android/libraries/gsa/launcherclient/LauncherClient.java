@@ -165,6 +165,7 @@ public class LauncherClient {
                         mOverlay.onResume();
                     } else {
                         mOverlay.setActivityState(mActivityState);
+                        mOverlay.onResume();
                     }
                 } catch (RemoteException ignored) {
                 }
@@ -181,6 +182,7 @@ public class LauncherClient {
                         mOverlay.onPause();
                     } else {
                         mOverlay.setActivityState(mActivityState);
+                        mOverlay.onPause();
                     }
                 } catch (RemoteException ignored) {
                 }
