@@ -31,6 +31,7 @@ import com.android.launcher3.R;
  */
 public final class TaskLayerDrawable extends LayerDrawable {
     private final Drawable mEmptyDrawable;
+    private float mProgress;
 
     public TaskLayerDrawable(Context context) {
         super(new Drawable[0]);
@@ -50,6 +51,7 @@ public final class TaskLayerDrawable extends LayerDrawable {
      */
     public void setCurrentDrawable(@NonNull Drawable drawable) {
         setDrawable(0, drawable);
+        applyTransitionProgress(mProgress);
     }
 
     /**
@@ -82,9 +84,18 @@ public final class TaskLayerDrawable extends LayerDrawable {
         if (progress > 1 || progress < 0) {
             throw new IllegalArgumentException("Transition progress should be between 0 and 1");
         }
+        mProgress = progress;
+        applyTransitionProgress(progress);
+    }
+
+    private void applyTransitionProgress(float progress) {
         int drawableAlpha = (int) (progress * 255);
         getDrawable(0).setAlpha(drawableAlpha);
-        getDrawable(1).setAlpha(255 - drawableAlpha);
+        if (getDrawable(0) != getDrawable(1)) {
+            // Only do this if it's a different drawable so that it fades out.
+            // Otherwise, we'd just be overwriting the front drawable's alpha.
+            getDrawable(1).setAlpha(255 - drawableAlpha);
+        }
         invalidateSelf();
     }
 }
