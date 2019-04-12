@@ -41,7 +41,7 @@ open class FontPreference(context: Context, attrs: AttributeSet) : Preference(co
         }
 
     fun reloadFont() {
-        val font = pref.font
+        val font = pref.actualFont
         font.load(this)
         summary = font.fullDisplayName
     }

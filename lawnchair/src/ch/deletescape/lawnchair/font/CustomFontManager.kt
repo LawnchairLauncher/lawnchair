@@ -146,9 +146,13 @@ class CustomFontManager(private val context: Context) {
         private var fontCache: FontCache.Font? = null
         val font: FontCache.Font
             get() {
-                if (enableGlobalFont && this !== globalFont) {
-                    return globalFont.font
+                if (enableGlobalFont) {
+                    return fontOrDefault(globalFont.actualFont, default)
                 }
+                return fontOrDefault(actualFont, default)
+            }
+        val actualFont: FontCache.Font
+            get() {
                 if (fontCache == null) {
                     fontCache = loadFont()
                 }
@@ -181,6 +185,10 @@ class CustomFontManager(private val context: Context) {
             fontCache = null
             preferenceUi?.reloadFont()
             prefs.recreate()
+        }
+
+        private fun fontOrDefault(font: FontCache.Font, default: FontCache.Font): FontCache.Font {
+            return if (font.isAvailable) font else default
         }
     }
 

@@ -32,6 +32,7 @@ import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.R
 import org.json.JSONObject
 import java.io.File
+import java.lang.Exception
 
 class FontCache(private val context: Context) {
 
@@ -64,6 +65,7 @@ class FontCache(private val context: Context) {
         abstract val fullDisplayName: String
         abstract val displayName: String
         open val familySorter get() = fullDisplayName
+        open val isAvailable get() = true
 
         abstract fun load(callback: LoadCallback)
 
@@ -135,10 +137,12 @@ class FontCache(private val context: Context) {
     }
 
     class TTFFont(context: Context, private val file: File) :
-            TypefaceFont(Typeface.createFromFile(file)) {
+            TypefaceFont(createTypeface(file)) {
 
-        override val fullDisplayName: String = if (typeface === Typeface.DEFAULT)
-            context.getString(R.string.pref_fonts_missing_font) else Uri.decode(file.name)
+        private val actualName: String = Uri.decode(file.name)
+        override val isAvailable = typeface != null
+        override val fullDisplayName: String = if (typeface == null)
+            context.getString(R.string.pref_fonts_missing_font) else actualName
 
         fun delete() = file.delete()
 
@@ -148,12 +152,20 @@ class FontCache(private val context: Context) {
         }
 
         override fun equals(other: Any?): Boolean {
-            return other is TTFFont && fullDisplayName == other.fullDisplayName
+            return other is TTFFont && actualName == other.actualName
         }
 
-        override fun hashCode() = fullDisplayName.hashCode()
+        override fun hashCode() = actualName.hashCode()
 
         companion object {
+
+            fun createTypeface(file: File): Typeface? {
+                return try {
+                    Typeface.createFromFile(file)
+                } catch (e: Exception) {
+                    null
+                }
+            }
 
             fun getFontsDir(context: Context): File {
                 return File(context.filesDir, "customFonts").apply { mkdirs() }
