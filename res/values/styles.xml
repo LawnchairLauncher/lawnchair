@@ -75,8 +75,8 @@
         <item name="allAppsScrimColor">#EA212121</item>
         <item name="allAppsInterimScrimAlpha">102</item>
         <item name="allAppsNavBarScrimColor">#80000000</item>
-        <item name="popupColorPrimary">?android:attr/colorPrimary</item>
-        <item name="popupColorSecondary">#424242</item> <!-- Gray 800 -->
+        <item name="popupColorPrimary">#3C4043</item> <!-- Gray 800 -->
+        <item name="popupColorSecondary">#5F6368</item> <!-- Gray 700 -->
         <item name="popupColorTertiary">#757575</item> <!-- Gray 600 -->
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
         <item name="folderDotColor">#FF464646</item>
