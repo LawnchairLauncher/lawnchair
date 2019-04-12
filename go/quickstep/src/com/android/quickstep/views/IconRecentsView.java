@@ -225,16 +225,15 @@ public final class IconRecentsView extends FrameLayout {
     }
 
     /**
-     * Get the thumbnail view associated with a task for the purposes of animation.
+     * Get the bottom most thumbnail view to animate to.
      *
-     * @param taskId task id of thumbnail view to get
-     * @return the thumbnail view for the task if attached, null otherwise
+     * @return the thumbnail view if laid out
      */
-    public @Nullable View getThumbnailViewForTask(int taskId) {
-        TaskItemView view = mTaskAdapter.getTaskItemView(taskId);
-        if (view == null) {
+    public @Nullable View getBottomThumbnailView() {
+        if (mTaskRecyclerView.getChildCount() == 0) {
             return null;
         }
+        TaskItemView view = (TaskItemView) mTaskRecyclerView.getChildAt(0);
         return view.getThumbnailView();
     }
 
