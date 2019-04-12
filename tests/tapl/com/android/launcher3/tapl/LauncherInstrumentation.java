@@ -154,8 +154,6 @@ public final class LauncherInstrumentation {
         } catch (IOException e) {
             fail(e.toString());
         }
-
-        assertTrue("Phone is locked", !hasSystemUiObject("keyguard_status_view"));
     }
 
     Context getContext() {
