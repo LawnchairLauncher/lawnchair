@@ -334,7 +334,7 @@ public final class IconRecentsView extends FrameLayout {
      * of tasks.
      */
     private void updateContentViewVisibility() {
-        int taskListSize = mTaskLoader.getCurrentTaskList().size();
+        int taskListSize = mTaskAdapter.getItemCount();
         if (mEmptyView.getVisibility() != VISIBLE && taskListSize == 0) {
             crossfadeViews(mEmptyView, mContentView);
             mActivityHelper.leaveRecents();
