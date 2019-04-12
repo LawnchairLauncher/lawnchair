@@ -32,6 +32,14 @@ import com.android.launcher3.R;
  */
 public class Themes {
 
+    public static String getDefaultBodyFont(Context context) {
+        TypedArray ta = context.obtainStyledAttributes(android.R.style.TextAppearance_DeviceDefault,
+                new int[]{android.R.attr.fontFamily});
+        String value = ta.getString(0);
+        ta.recycle();
+        return value;
+    }
+
     public static float getDialogCornerRadius(Context context) {
         return getDimension(context, android.R.attr.dialogCornerRadius,
                 context.getResources().getDimension(R.dimen.default_dialog_corner_radius));
