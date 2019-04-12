@@ -102,7 +102,7 @@ public class ClipAnimationHelper {
     public ClipAnimationHelper(Context context) {
         mWindowCornerRadius = getWindowCornerRadius(context.getResources());
         mSupportsRoundedCornersOnWindows = supportsRoundedCornersOnWindows(context.getResources());
-        mTaskCornerRadius = Themes.getDialogCornerRadius(context);
+        mTaskCornerRadius = TaskCornerRadius.get(context);
     }
 
     private void updateSourceStack(RemoteAnimationTargetCompat target) {
