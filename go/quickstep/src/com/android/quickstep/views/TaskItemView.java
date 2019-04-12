@@ -37,6 +37,7 @@ import com.android.launcher3.R;
  */
 public final class TaskItemView extends LinearLayout {
 
+    private static final String EMPTY_LABEL = "";
     private static final String DEFAULT_LABEL = "...";
     private final Drawable mDefaultIcon;
     private final Drawable mDefaultThumbnail;
@@ -83,17 +84,17 @@ public final class TaskItemView extends LinearLayout {
         mThumbnailView.setImageDrawable(mThumbnailDrawable);
         mIconView.setImageDrawable(mIconDrawable);
 
-        resetTaskItemView();
+        resetToEmptyUi();
         CONTENT_TRANSITION_PROGRESS.setValue(this, 1.0f);
     }
 
     /**
-     * Resets task item view to default values.
+     * Resets task item view to empty, loading UI.
      */
-    public void resetTaskItemView() {
-        setLabel(DEFAULT_LABEL);
-        setIcon(null);
-        setThumbnail(null);
+    public void resetToEmptyUi() {
+        mIconDrawable.resetDrawable();
+        mThumbnailDrawable.resetDrawable();
+        setLabel(EMPTY_LABEL);
     }
 
     /**
