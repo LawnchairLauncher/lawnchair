@@ -15,12 +15,10 @@
  */
 package com.android.quickstep;
 
-import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import com.android.launcher3.R;
@@ -39,7 +37,6 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
     private static final int MAX_TASKS_TO_DISPLAY = 6;
     private static final String TAG = "TaskAdapter";
     private final TaskListLoader mLoader;
-    private final ArrayMap<Integer, TaskItemView> mTaskIdToViewMap = new ArrayMap<>();
     private TaskActionController mTaskActionController;
     private boolean mIsShowingLoadingUi;
 
@@ -61,16 +58,6 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
      */
     public void setIsShowingLoadingUi(boolean isShowingLoadingUi) {
         mIsShowingLoadingUi = isShowingLoadingUi;
-    }
-
-    /**
-     * Get task item view for a given task id if it's attached to the view.
-     *
-     * @param taskId task id to search for
-     * @return corresponding task item view if it's attached, null otherwise
-     */
-    public @Nullable TaskItemView getTaskItemView(int taskId) {
-        return mTaskIdToViewMap.get(taskId);
     }
 
     @Override
@@ -114,22 +101,6 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
             @NonNull List<Object> payloads) {
         // TODO: Bind task in preparation for animation. For now, we apply UI changes immediately.
         super.onBindViewHolder(holder, position, payloads);
-    }
-
-    @Override
-    public void onViewAttachedToWindow(@NonNull TaskHolder holder) {
-        if (holder.getTask() == null) {
-            return;
-        }
-        mTaskIdToViewMap.put(holder.getTask().key.id, (TaskItemView) holder.itemView);
-    }
-
-    @Override
-    public void onViewDetachedFromWindow(@NonNull TaskHolder holder) {
-        if (holder.getTask() == null) {
-            return;
-        }
-        mTaskIdToViewMap.remove(holder.getTask().key.id);
     }
 
     @Override
