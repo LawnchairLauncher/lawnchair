@@ -578,4 +578,9 @@
     <string name="pref_fonts_category_drawer">Drawer</string>
     <string name="pref_fonts_drawer_icons">App names</string>
     <string name="pref_fonts_drawer_tabs">Tab names</string>
+
+    <string name="pref_fonts_find_fonts">Find fonts</string>
+    <string name="pref_fonts_add_fonts">Add fonts</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported</string>
+    <string name="pref_fonts_missing_font">Missing font</string>
 </resources>

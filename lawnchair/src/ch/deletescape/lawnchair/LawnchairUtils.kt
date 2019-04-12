@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair
 
 import android.app.Activity
+import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
@@ -29,8 +30,10 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.InsetDrawable
 import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.ShapeDrawable
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.provider.OpenableColumns
 import android.support.animation.FloatPropertyCompat
 import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
@@ -99,6 +102,11 @@ val Context.lawnchairPrefs get() = Utilities.getLawnchairPrefs(this)
 val Context.hasStoragePermission
     get() = PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(
             this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+
+@ColorInt
+fun Context.getColorEngineAccent(): Int {
+    return ColorEngine.getInstance(this).accent
+}
 
 @ColorInt
 fun Context.getColorAccent(): Int {
@@ -728,3 +736,12 @@ class ViewGroupChildList(private val viewGroup: ViewGroup) : List<View> {
 }
 
 val ViewGroup.childs get() = ViewGroupChildList(this)
+
+fun ContentResolver.getDisplayName(uri: Uri): String? {
+    query(uri, null, null, null, null)?.use { cursor ->
+        if (cursor.moveToFirst()) {
+            return cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+        }
+    }
+    return null
+}

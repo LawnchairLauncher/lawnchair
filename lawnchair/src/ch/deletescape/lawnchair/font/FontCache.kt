@@ -20,6 +20,7 @@ package ch.deletescape.lawnchair.font
 import android.content.Context
 import android.content.res.AssetManager
 import android.graphics.Typeface
+import android.net.Uri
 import android.support.annotation.Keep
 import android.support.v4.provider.FontRequest
 import android.support.v4.provider.FontsContractCompat
@@ -30,6 +31,7 @@ import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.R
 import org.json.JSONObject
+import java.io.File
 
 class FontCache(private val context: Context) {
 
@@ -91,7 +93,7 @@ class FontCache(private val context: Context) {
         }
     }
 
-    abstract class TypefaceFont(private val typeface: Typeface?) : Font() {
+    abstract class TypefaceFont(protected val typeface: Typeface?) : Font() {
 
         override val fullDisplayName = typeface.toString()
         override val displayName get() = fullDisplayName
@@ -127,6 +129,44 @@ class FontCache(private val context: Context) {
             @JvmStatic
             fun fromJson(context: Context, obj: JSONObject): Font {
                 return DummyFont()
+            }
+        }
+    }
+
+    class TTFFont(context: Context, private val file: File) :
+            TypefaceFont(Typeface.createFromFile(file)) {
+
+        override val fullDisplayName: String = if (typeface === Typeface.DEFAULT)
+            context.getString(R.string.pref_fonts_missing_font) else Uri.decode(file.name)
+
+        fun delete() = file.delete()
+
+        override fun saveToJson(obj: JSONObject) {
+            super.saveToJson(obj)
+            obj.put(KEY_FONT_NAME, fullDisplayName)
+        }
+
+        override fun equals(other: Any?): Boolean {
+            return other is TTFFont && fullDisplayName == other.fullDisplayName
+        }
+
+        override fun hashCode() = fullDisplayName.hashCode()
+
+        companion object {
+
+            fun getFontsDir(context: Context): File {
+                return File(context.filesDir, "customFonts").apply { mkdirs() }
+            }
+
+            fun getFile(context: Context, name: String): File {
+                return File(getFontsDir(context), Uri.encode(name))
+            }
+
+            @Keep
+            @JvmStatic
+            fun fromJson(context: Context, obj: JSONObject): Font {
+                val fontName = obj.getString(KEY_FONT_NAME)
+                return TTFFont(context, getFile(context, fontName))
             }
         }
     }
@@ -253,5 +293,6 @@ class FontCache(private val context: Context) {
         private const val KEY_FAMILY_NAME = "family"
         private const val KEY_STYLE = "style"
         private const val KEY_VARIANT = "variant"
+        private const val KEY_FONT_NAME = "font"
     }
 }
