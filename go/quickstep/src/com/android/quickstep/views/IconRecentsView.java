@@ -417,13 +417,12 @@ public final class IconRecentsView extends FrameLayout {
      * manage when the animation conflicts with another animation.
      */
     private void scheduleFadeInLayoutAnimation() {
-        ViewTreeObserver viewTreeObserver = mTaskRecyclerView.getViewTreeObserver();
-        viewTreeObserver.addOnGlobalLayoutListener(
+        mTaskRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
                         animateFadeInLayoutAnimation();
-                        viewTreeObserver.removeOnGlobalLayoutListener(this);
+                        mTaskRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                 });
     }
