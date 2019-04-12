@@ -38,6 +38,7 @@ import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.ViewConfiguration;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.NonNull;
@@ -350,36 +351,17 @@ public final class LauncherInstrumentation {
         final String action;
         if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
             if (hasLauncherObject(WORKSPACE_RES_ID)) {
-                log(action = "0-button: already in workspace");
-            } else if (hasLauncherObject(OVERVIEW_RES_ID)) {
-                log(action = "0-button: from overview");
-                final UiObject2 navBar = waitForSystemUiObject("navigation_bar_frame");
-
-                swipe(
-                        navBar.getVisibleBounds().centerX(), navBar.getVisibleBounds().centerY(),
-                        navBar.getVisibleBounds().centerX(), 0,
-                        NORMAL_STATE_ORDINAL, ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
-            } else if (hasLauncherObject(WIDGETS_RES_ID)) {
-                log(action = "0-button: from widgets");
-                mDevice.pressHome();
-            } else if (hasLauncherObject(APPS_RES_ID)) {
-                log(action = "0-button: from all apps");
-                final UiObject2 navBar = waitForSystemUiObject("navigation_bar_frame");
-
-                swipe(
-                        navBar.getVisibleBounds().centerX(), navBar.getVisibleBounds().centerY(),
-                        navBar.getVisibleBounds().centerX(), 0,
-                        NORMAL_STATE_ORDINAL, ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
+                log(action = "already at home");
             } else {
-                log(action = "0-button: from another app");
-                assertTrue("Launcher is visible, don't know how to go home",
-                        !mDevice.hasObject(By.pkg(getLauncherPackageName())));
-                final UiObject2 navBar = waitForSystemUiObject("navigation_bar_frame");
+                log(action = "swiping up to home");
+                final int finalState = mDevice.hasObject(By.pkg(getLauncherPackageName()))
+                        ? NORMAL_STATE_ORDINAL : BACKGROUND_APP_STATE_ORDINAL;
+                final Point displaySize = getRealDisplaySize();
 
                 swipe(
-                        navBar.getVisibleBounds().centerX(), navBar.getVisibleBounds().centerY(),
-                        navBar.getVisibleBounds().centerX(), 0,
-                        BACKGROUND_APP_STATE_ORDINAL, ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
+                        displaySize.x / 2, displaySize.y - 1,
+                        displaySize.x / 2, 0,
+                        finalState, ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
             }
         } else {
             log(action = "clicking home button");
@@ -689,5 +671,11 @@ public final class LauncherInstrumentation {
             fail("Can't get edge sensitivity: " + e);
             return 0;
         }
+    }
+
+    Point getRealDisplaySize() {
+        final Point size = new Point();
+        getContext().getSystemService(WindowManager.class).getDefaultDisplay().getRealSize(size);
+        return size;
     }
 }
