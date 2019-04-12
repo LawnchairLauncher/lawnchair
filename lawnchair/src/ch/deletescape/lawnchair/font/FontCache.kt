@@ -63,6 +63,7 @@ class FontCache(private val context: Context) {
 
         abstract val fullDisplayName: String
         abstract val displayName: String
+        open val familySorter get() = fullDisplayName
 
         abstract fun load(callback: LoadCallback)
 
@@ -231,6 +232,7 @@ class FontCache(private val context: Context) {
 
         override val displayName = createVariantName()
         override val fullDisplayName = "$family $displayName"
+        override val familySorter = "${GoogleFontsListing.getWeight(variant)}${GoogleFontsListing.isItalic(variant)}"
 
         private fun createVariantName(): String {
             if (variant == "italic") return context.getString(R.string.font_variant_italic)

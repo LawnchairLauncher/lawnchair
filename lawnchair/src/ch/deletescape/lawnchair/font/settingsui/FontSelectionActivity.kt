@@ -413,7 +413,7 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
             override val viewType = TYPE_FAMILY
             val displayName = family.displayName
             val default = Cache(family.default)
-            val variants = family.variants.values.sortedBy { it.displayName }.map { Cache(it) }
+            val variants = family.variants.values.sortedBy { it.familySorter }.map { Cache(it) }
         }
 
         inner class Cache(val font: FontCache.Font): FontCache.Font.LoadCallback {
