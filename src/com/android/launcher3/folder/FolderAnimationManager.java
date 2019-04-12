@@ -203,6 +203,7 @@ public class FolderAnimationManager {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
+                mFolder.setAlpha(1f);
                 mFolder.setTranslationX(0.0f);
                 mFolder.setTranslationY(0.0f);
                 mFolder.setTranslationZ(0.0f);
