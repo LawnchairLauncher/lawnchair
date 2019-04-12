@@ -163,6 +163,8 @@ public abstract class AbstractLauncherUiTest {
     public void setUp() throws Exception {
         mTargetContext = InstrumentationRegistry.getTargetContext();
         mTargetPackage = mTargetContext.getPackageName();
+        // Unlock the phone
+        mDevice.executeShellCommand("input keyevent 82");
     }
 
     @After
