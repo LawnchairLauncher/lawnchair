@@ -18,6 +18,8 @@
 package ch.deletescape.lawnchair.font.settingsui
 
 import android.content.Context
+import android.os.Build
+import android.support.v4.content.ContextCompat
 import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
 import android.widget.Button
@@ -29,6 +31,7 @@ import ch.deletescape.lawnchair.createColoredButtonBackground
 import ch.deletescape.lawnchair.font.CustomFontManager
 import ch.deletescape.lawnchair.tintDrawable
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 
 class GlobalFontPreference(context: Context, attrs: AttributeSet) : FontPreference(context, attrs) {
 
@@ -52,6 +55,9 @@ class GlobalFontPreference(context: Context, attrs: AttributeSet) : FontPreferen
         (holder.findViewById(android.R.id.icon) as ImageView).tintDrawable(accent)
 
         button = holder.findViewById(R.id.changeButton) as Button?
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
+            button!!.setTextColor(context.getColorStateList(R.color.btn_colored_text_material))
+        }
         button!!.background = context.createColoredButtonBackground(accent)
         button!!.setOnClickListener { super.onClick() }
 
