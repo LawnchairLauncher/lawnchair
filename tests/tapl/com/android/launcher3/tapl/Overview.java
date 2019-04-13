@@ -49,11 +49,13 @@ public final class Overview extends BaseOverview {
                 "want to switch from overview to all apps")) {
             verifyActiveContainer();
 
-            // Swipe from navbar to the top.
-            final UiObject2 navBar = mLauncher.waitForSystemUiObject("navigation_bar_frame");
+            // Swipe from the prediction row to the top.
             LauncherInstrumentation.log("Overview.switchToAllApps before swipe");
-            final int x = navBar.getVisibleCenter().x;
-            mLauncher.swipe(x, navBar.getVisibleBounds().top - 1, x, 0, ALL_APPS_STATE_ORDINAL);
+            final UiObject2 predictionRow = mLauncher.waitForLauncherObject("prediction_row");
+            mLauncher.swipe(mLauncher.getDevice().getDisplayWidth() / 2,
+                    predictionRow.getVisibleBounds().centerY(),
+                    mLauncher.getDevice().getDisplayWidth() / 2,
+                    0, ALL_APPS_STATE_ORDINAL);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "swiped all way up from overview")) {
