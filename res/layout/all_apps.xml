@@ -24,7 +24,7 @@
     android:clipChildren="true"
     android:clipToPadding="false"
     android:focusable="false"
-    android:saveEnabled="false" >
+    android:saveEnabled="false">
 
     <include
         layout="@layout/all_apps_rv_layout"
@@ -47,7 +47,8 @@
             android:layout_height="@dimen/all_apps_header_tab_height"
             android:layout_marginLeft="@dimen/all_apps_tabs_side_padding"
             android:layout_marginRight="@dimen/all_apps_tabs_side_padding"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            style="@style/TextHeadline">
 
             <Button
                 android:id="@+id/tab_personal"
@@ -55,7 +56,6 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="?android:attr/selectableItemBackground"
-                android:fontFamily="sans-serif-medium"
                 android:text="@string/all_apps_personal_tab"
                 android:textAllCaps="true"
                 android:textColor="@color/all_apps_tab_text"
@@ -67,7 +67,6 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="?android:attr/selectableItemBackground"
-                android:fontFamily="sans-serif-medium"
                 android:text="@string/all_apps_work_tab"
                 android:textAllCaps="true"
                 android:textColor="@color/all_apps_tab_text"
