@@ -44,6 +44,7 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Command;
@@ -212,6 +213,7 @@ public class NavBarToHomeTouchController implements TouchController, SwipeDetect
     private void onSwipeInteractionCompleted(LauncherState targetState) {
         clearState();
         mLauncher.getStateManager().goToState(targetState, false /* animated */);
+        AccessibilityManagerCompat.sendStateEventToTest(mLauncher, targetState.ordinal);
     }
 
     private void logStateChange(int startContainerType, int logAction) {
