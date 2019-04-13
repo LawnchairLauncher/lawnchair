@@ -17,14 +17,13 @@
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:viewportHeight="24"
+    android:tint="?android:attr/textColorPrimary">
 
     <path
-        android:fillColor="?android:attr/textColorPrimary"
+        android:fillColor="@android:color/white"
         android:pathData="M18,15v3H6v-3H4v3c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2v-3H18z" />
     <path
-        android:fillColor="?android:attr/textColorPrimary"
+        android:fillColor="@android:color/white"
         android:pathData="M 17 11.5 L 15.59 10.09 L 13 12.67 L 13 4 L 11 4 L 11 12.67 L 8.41 10.09 L 7 11.5 L 12 16.5 Z" />
-    <path
-        android:pathData="M0 0h24v24H0z" />
 </vector>
