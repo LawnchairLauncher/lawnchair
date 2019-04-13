@@ -47,7 +47,7 @@ class EditIconActivity : SettingsBaseActivity() {
     private val divider by lazy { findViewById<View>(R.id.divider) }
     private val iconRecyclerView by lazy { findViewById<RecyclerView>(R.id.iconRecyclerView) }
     private val iconPackRecyclerView by lazy { findViewById<RecyclerView>(R.id.iconPackRecyclerView) }
-    private val iconPackManager = IconPackManager.getInstance(this)
+    private val iconPackManager by lazy { IconPackManager.getInstance(this) }
     private val component by lazy {
         if (intent.hasExtra(EXTRA_COMPONENT)) {
             ComponentKey(intent.getParcelableExtra<ComponentName>(EXTRA_COMPONENT), intent.getParcelableExtra(EXTRA_USER))
