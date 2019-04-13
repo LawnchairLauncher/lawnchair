@@ -20,6 +20,9 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_INPUT_MONITOR;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NAV_BAR_HIDDEN;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -65,6 +68,8 @@ import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
+import com.android.systemui.shared.system.QuickStepContract;
+import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -101,7 +106,6 @@ public class TouchInteractionService extends Service implements
             MAIN_THREAD_EXECUTOR.execute(TouchInteractionService.this::initInputMonitor);
             runWhenUserUnlocked(() -> {
                 mRecentsModel.setSystemUiProxy(mISystemUiProxy);
-                mRecentsModel.onInitializeSystemUI(bundle);
                 mOverviewInteractionState.setSystemUiProxy(mISystemUiProxy);
             });
         }
@@ -136,6 +140,12 @@ public class TouchInteractionService extends Service implements
 
         @Override
         public void onAssistantVisibilityChanged(float visibility) {
+            if (mOverviewComponentObserver == null) {
+                // Save the visibility to be applied when the user is unlocked
+                mPendingAssistantVisibility = visibility;
+                return;
+            }
+
             MAIN_THREAD_EXECUTOR.execute(() -> {
                 mOverviewComponentObserver.getActivityControlHelper()
                         .onAssistantVisibilityChanged(visibility);
@@ -144,10 +154,18 @@ public class TouchInteractionService extends Service implements
 
         public void onBackAction(boolean completed, int downX, int downY, boolean isButton,
                 boolean gestureSwipeLeft) {
+            if (mOverviewComponentObserver == null) {
+                return;
+            }
+
             final ActivityControlHelper activityControl =
                     mOverviewComponentObserver.getActivityControlHelper();
             UserEventDispatcher.newInstance(getBaseContext()).logActionBack(completed, downX, downY,
                     isButton, gestureSwipeLeft, activityControl.getContainerType());
+        }
+
+        public void onSystemUiStateChanged(int stateFlags) {
+            mSystemUiStateFlags = stateFlags;
         }
 
         /** Deprecated methods **/
@@ -186,6 +204,8 @@ public class TouchInteractionService extends Service implements
     private InputConsumerController mInputConsumer;
     private SwipeSharedState mSwipeSharedState;
     private boolean mAssistantAvailable;
+    private float mPendingAssistantVisibility = 0;
+    private @SystemUiStateFlags int mSystemUiStateFlags;
 
     private boolean mIsUserUnlocked;
     private List<Runnable> mOnUserUnlockedCallbacks;
@@ -338,6 +358,8 @@ public class TouchInteractionService extends Service implements
         mAM = ActivityManagerWrapper.getInstance();
         mRecentsModel = RecentsModel.INSTANCE.get(this);
         mOverviewComponentObserver = new OverviewComponentObserver(this);
+        mOverviewComponentObserver.getActivityControlHelper().onAssistantVisibilityChanged(
+                mPendingAssistantVisibility);
 
         mOverviewCommandHelper = new OverviewCommandHelper(this, mOverviewComponentObserver);
         mOverviewInteractionState = OverviewInteractionState.INSTANCE.get(this);
@@ -398,7 +420,8 @@ public class TouchInteractionService extends Service implements
         MotionEvent event = (MotionEvent) ev;
         TOUCH_INTERACTION_LOG.addLog("onMotionEvent", event.getActionMasked());
         if (event.getAction() == ACTION_DOWN) {
-            if (mSwipeTouchRegion.contains(event.getX(), event.getY())) {
+            if (isInValidSystemUiState()
+                    && mSwipeTouchRegion.contains(event.getX(), event.getY())) {
                 boolean useSharedState = mConsumer.isActive();
                 mConsumer.onConsumerAboutToBeSwitched();
                 mConsumer = newConsumer(useSharedState, event);
@@ -411,9 +434,15 @@ public class TouchInteractionService extends Service implements
         mUncheckedConsumer.onMotionEvent(event);
     }
 
+    private boolean isInValidSystemUiState() {
+        return (mSystemUiStateFlags & SYSUI_STATE_SCREEN_PINNING) == 0
+                && (mSystemUiStateFlags & SYSUI_STATE_NAV_BAR_HIDDEN) == 0
+                && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0;
+    }
+
     private InputConsumer newConsumer(boolean useSharedState, MotionEvent event) {
         // TODO: this makes a binder call every touch down. we should move to a listener pattern.
-        if (mKM.isDeviceLocked()) {
+        if (!mIsUserUnlocked || mKM.isDeviceLocked()) {
             // This handles apps launched in direct boot mode (e.g. dialer) as well as apps launched
             // while device is locked even after exiting direct boot mode (e.g. camera).
             return new DeviceLockedInputConsumer(this);

@@ -102,10 +102,6 @@ public abstract class AbstractLauncherUiTest {
         }
         if (TestHelpers.isInLauncherProcess()) Utilities.enableRunningInTestHarnessForTests();
         mLauncher = new LauncherInstrumentation(instrumentation);
-        try {
-            mDevice.executeShellCommand("settings delete secure assistant");
-        } catch (IOException e) {
-        }
     }
 
     @Rule

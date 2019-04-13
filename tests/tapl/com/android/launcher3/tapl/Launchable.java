@@ -28,7 +28,6 @@ import androidx.test.uiautomator.Until;
  * Ancestor for AppIcon and AppMenuItem.
  */
 class Launchable {
-    private static final int DRAG_SPEED = 500;
     protected final LauncherInstrumentation mLauncher;
 
     protected final UiObject2 mObject;
@@ -77,8 +76,7 @@ class Launchable {
         Workspace.dragIconToWorkspace(
                 mLauncher,
                 this,
-                new Point(device.getDisplayWidth() / 2, device.getDisplayHeight() / 2),
-                DRAG_SPEED);
+                new Point(device.getDisplayWidth() / 2, device.getDisplayHeight() / 2));
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "dragged launchable to workspace")) {
             return new Workspace(mLauncher);

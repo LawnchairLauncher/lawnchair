@@ -25,10 +25,24 @@ import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.util.TypedValue;
 
+import com.android.launcher3.R;
+
 /**
  * Various utility methods associated with theming.
  */
 public class Themes {
+
+    public static float getDialogCornerRadius(Context context) {
+        return getDimension(context, android.R.attr.dialogCornerRadius,
+                context.getResources().getDimension(R.dimen.default_dialog_corner_radius));
+    }
+
+    public static float getDimension(Context context, int attr, float defaultValue) {
+        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
+        float value = ta.getDimension(0, defaultValue);
+        ta.recycle();
+        return value;
+    }
 
     public static int getColorAccent(Context context) {
         return getAttrColor(context, android.R.attr.colorAccent);

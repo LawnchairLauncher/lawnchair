@@ -46,11 +46,11 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
-import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.QuickStepContract;
 
 /**
  * A task in the Recents view.
@@ -108,7 +108,7 @@ public class TaskThumbnailView extends View {
 
     public TaskThumbnailView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mCornerRadius = getResources().getDimension(R.dimen.task_corner_radius);
+        mCornerRadius = Themes.getDialogCornerRadius(context);
         mOverlay = TaskOverlayFactory.INSTANCE.get(context).createOverlay(this);
         mPaint.setFilterBitmap(true);
         mBackgroundPaint.setColor(Color.WHITE);
@@ -116,7 +116,7 @@ public class TaskThumbnailView extends View {
         mDimmingPaintAfterClearing.setColor(Color.BLACK);
         mActivity = BaseActivity.fromContext(context);
         mIsDarkTextTheme = Themes.getAttrBoolean(mActivity, R.attr.isWorkspaceDarkText);
-        mWindowCornerRadius = RecentsModel.INSTANCE.get(context).getWindowCornerRadius();
+        mWindowCornerRadius = QuickStepContract.getWindowCornerRadius(context.getResources());
     }
 
     public void bind(Task task) {

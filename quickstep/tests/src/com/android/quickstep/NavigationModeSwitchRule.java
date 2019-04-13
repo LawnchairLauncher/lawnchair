@@ -32,7 +32,6 @@ import androidx.test.uiautomator.UiDevice;
 
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
-import com.android.systemui.shared.system.QuickStepContract;
 
 import org.junit.Assert;
 import org.junit.rules.TestRule;
@@ -78,9 +77,9 @@ public class NavigationModeSwitchRule implements TestRule {
                 @Override
                 public void evaluate() throws Throwable {
                     final Context context = getInstrumentation().getContext();
-                    final String prevOverlayPkg = QuickStepContract.isGesturalMode(context)
+                    final String prevOverlayPkg = LauncherInstrumentation.isGesturalMode(context)
                             ? NAV_BAR_MODE_GESTURAL_OVERLAY
-                            : QuickStepContract.isSwipeUpMode(context)
+                            : LauncherInstrumentation.isSwipeUpMode(context)
                                     ? NAV_BAR_MODE_2BUTTON_OVERLAY
                                     : NAV_BAR_MODE_3BUTTON_OVERLAY;
                     final LauncherInstrumentation.NavigationModel originalMode =

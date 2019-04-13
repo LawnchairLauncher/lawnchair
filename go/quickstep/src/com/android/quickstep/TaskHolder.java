@@ -15,7 +15,7 @@
  */
 package com.android.quickstep;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.android.quickstep.views.TaskItemView;
@@ -50,11 +50,23 @@ public final class TaskHolder extends ViewHolder {
     }
 
     /**
-     * Gets the task currently bound to this view
+     * Bind a generic empty UI to the holder to make it clear that the item is loading/unbound and
+     * should not be expected to react to user input.
+     */
+    public void bindEmptyUi() {
+        mTask = null;
+        // TODO: Set the task view to a loading, empty UI.
+        // Temporarily using the one below for visual confirmation but should be swapped out to new
+        // UI later.
+        mTaskItemView.resetTaskItemView();
+    }
+
+    /**
+     * Gets the task currently bound to this view. May be null if task holder is in a loading state.
      *
      * @return the current task
      */
-    public @NonNull Task getTask() {
+    public @Nullable Task getTask() {
         return mTask;
     }
 }

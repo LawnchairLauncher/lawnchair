@@ -974,7 +974,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mDropTargetBar.setup(mDragController);
 
         mAllAppsController.setupViews(mAppsView);
-        mHotseat.setOnInterceptTouchListener(mWorkspace::onInterceptHotseatTouch);
     }
 
     /**

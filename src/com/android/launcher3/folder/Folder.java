@@ -1406,7 +1406,12 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     @Override
     public void logActionCommand(int command) {
         mLauncher.getUserEventDispatcher().logActionCommand(
-                command, getFolderIcon(), ContainerType.FOLDER);
+                command, getFolderIcon(), getLogContainerType());
+    }
+
+    @Override
+    public int getLogContainerType() {
+        return ContainerType.FOLDER;
     }
 
     @Override

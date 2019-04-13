@@ -136,17 +136,13 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
     }
 
     private void sendEvent(MotionEvent ev) {
-        if (mInvalidated || !mTarget.verifyTouchDispatch(this, ev)) {
-            mInvalidated = true;
+        if (mInvalidated) {
             return;
         }
         int flags = ev.getEdgeFlags();
         ev.setEdgeFlags(flags | Utilities.EDGE_NAV_BAR);
         ev.offsetLocation(-mLocationOnScreen[0], -mLocationOnScreen[1]);
-        if (ev.getAction() == ACTION_DOWN) {
-            mTarget.onInterceptTouchEvent(ev);
-        }
-        mTarget.onTouchEvent(ev);
+        mInvalidated = !mTarget.dispatchTouchEvent(this, ev);
         ev.offsetLocation(mLocationOnScreen[0], mLocationOnScreen[1]);
         ev.setEdgeFlags(flags);
     }
