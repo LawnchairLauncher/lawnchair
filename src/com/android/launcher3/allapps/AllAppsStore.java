@@ -44,6 +44,7 @@ public class AllAppsStore {
 
     private boolean mDeferUpdates = false;
     private boolean mUpdatePending = false;
+    private boolean mNotifyingUpdate = false;
 
     public Collection<AppInfo> getApps() {
         return mComponentToAppMap.values();
@@ -108,17 +109,25 @@ public class AllAppsStore {
             mUpdatePending = true;
             return;
         }
+        mNotifyingUpdate = true;
         int count = mUpdateListeners.size();
         for (int i = 0; i < count; i++) {
             mUpdateListeners.get(i).onAppsUpdated();
         }
+        mNotifyingUpdate = false;
     }
 
     public void addUpdateListener(OnUpdateListener listener) {
+        if (mNotifyingUpdate) {
+            throw new IllegalStateException("Add update listener while notifying update");
+        }
         mUpdateListeners.add(listener);
     }
 
     public void removeUpdateListener(OnUpdateListener listener) {
+        if (mNotifyingUpdate) {
+            throw new IllegalStateException("Remove update listener while notifying update");
+        }
         mUpdateListeners.remove(listener);
     }
 
