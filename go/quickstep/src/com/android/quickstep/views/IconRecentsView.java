@@ -18,6 +18,10 @@ package com.android.quickstep.views;
 import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
 
 import static com.android.quickstep.TaskAdapter.CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT;
+import static com.android.quickstep.views.TaskLayoutUtils.getClearAllButtonHeight;
+import static com.android.quickstep.views.TaskLayoutUtils.getClearAllButtonTopBottomMargin;
+import static com.android.quickstep.views.TaskLayoutUtils.getClearAllButtonWidth;
+import static com.android.quickstep.views.TaskLayoutUtils.getTaskListHeight;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -31,6 +35,7 @@ import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.view.View;
 import android.view.ViewDebug;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
@@ -43,6 +48,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener;
 
+import com.android.launcher3.BaseActivity;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.quickstep.ContentFillItemAnimator;
 import com.android.quickstep.RecentsToActivityHelper;
@@ -96,6 +103,7 @@ public final class IconRecentsView extends FrameLayout {
     private final DefaultItemAnimator mDefaultItemAnimator = new DefaultItemAnimator();
     private final ContentFillItemAnimator mLoadingContentItemAnimator =
             new ContentFillItemAnimator();
+    private final DeviceProfile mDeviceProfile;
 
     private RecentsToActivityHelper mActivityHelper;
     private RecyclerView mTaskRecyclerView;
@@ -109,9 +117,11 @@ public final class IconRecentsView extends FrameLayout {
 
     public IconRecentsView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        BaseActivity activity = BaseActivity.fromContext(context);
         mContext = context;
+        mDeviceProfile = activity.getDeviceProfile();
         mTaskLoader = new TaskListLoader(mContext);
-        mTaskAdapter = new TaskAdapter(mTaskLoader);
+        mTaskAdapter = new TaskAdapter(mTaskLoader, mDeviceProfile);
         mTaskActionController = new TaskActionController(mTaskLoader, mTaskAdapter);
         mTaskAdapter.setActionController(mTaskActionController);
     }
@@ -121,6 +131,8 @@ public final class IconRecentsView extends FrameLayout {
         super.onFinishInflate();
         if (mTaskRecyclerView == null) {
             mTaskRecyclerView = findViewById(R.id.recent_task_recycler_view);
+            ViewGroup.LayoutParams recyclerViewParams = mTaskRecyclerView.getLayoutParams();
+            recyclerViewParams.height = getTaskListHeight(mDeviceProfile);
             mTaskRecyclerView.setAdapter(mTaskAdapter);
             mTaskRecyclerView.setLayoutManager(
                     new LinearLayoutManager(mContext, VERTICAL, true /* reverseLayout */));
@@ -159,6 +171,12 @@ public final class IconRecentsView extends FrameLayout {
                 }
             });
             mClearAllView = findViewById(R.id.clear_all_button);
+            MarginLayoutParams clearAllParams =
+                    (MarginLayoutParams) mClearAllView.getLayoutParams();
+            clearAllParams.height = getClearAllButtonHeight(mDeviceProfile);
+            clearAllParams.width = getClearAllButtonWidth(mDeviceProfile);
+            clearAllParams.topMargin = getClearAllButtonTopBottomMargin(mDeviceProfile);
+            clearAllParams.bottomMargin = getClearAllButtonTopBottomMargin(mDeviceProfile);
             mClearAllView.setOnClickListener(v -> animateClearAllTasks());
         }
     }
