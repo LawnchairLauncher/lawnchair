@@ -280,7 +280,7 @@ public abstract class AbstractLauncherUiTest {
     // the results of that gesture because the wait can hide flakeness.
     protected void waitForState(String message, LauncherState state) {
         waitForLauncherCondition(message,
-                launcher -> launcher.getStateManager().getState() == state);
+                launcher -> launcher.getStateManager().getCurrentStableState() == state);
     }
 
     protected void waitForResumed(String message) {
@@ -299,6 +299,19 @@ public abstract class AbstractLauncherUiTest {
             String message, Function<Launcher, Boolean> condition, long timeout) {
         if (!TestHelpers.isInLauncherProcess()) return;
         Wait.atMost(message, () -> getFromLauncher(condition), timeout);
+    }
+
+    // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide
+    // flakiness.
+    protected void waitForLauncherCondition(
+            String message,
+            Runnable testThreadAction, Function<Launcher, Boolean> condition,
+            long timeout) {
+        if (!TestHelpers.isInLauncherProcess()) return;
+        Wait.atMost(message, () -> {
+            testThreadAction.run();
+            return getFromLauncher(condition);
+        }, timeout);
     }
 
     protected LauncherActivityInfo getSettingsApp() {

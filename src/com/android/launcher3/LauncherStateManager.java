@@ -140,6 +140,10 @@ public class LauncherStateManager {
         return mState;
     }
 
+    public LauncherState getCurrentStableState() {
+        return mCurrentStableState;
+    }
+
     public StateHandler[] getStateHandlers() {
         if (mStateHandlers == null) {
             mStateHandlers = UiFactory.getStateHandler(mLauncher);
