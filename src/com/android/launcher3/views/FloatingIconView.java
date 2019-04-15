@@ -421,12 +421,6 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
                     @Override
                     public void onAnimationStart(Animator animation) {
                         originalView.setVisibility(VISIBLE);
-
-                        if (originalView instanceof FolderIcon) {
-                            FolderIcon folderIcon = (FolderIcon) originalView;
-                            folderIcon.setBackgroundVisible(false);
-                            folderIcon.getFolderName().setTextVisibility(false);
-                        }
                     }
 
                     @Override
@@ -441,6 +435,8 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
 
                 if (originalView instanceof FolderIcon) {
                     FolderIcon folderIcon = (FolderIcon) originalView;
+                    folderIcon.setBackgroundVisible(false);
+                    folderIcon.getFolderName().setTextVisibility(false);
                     fade.play(folderIcon.getFolderName().createTextAlphaAnimator(true));
                     fade.addListener(new AnimatorListenerAdapter() {
                         @Override
