@@ -114,12 +114,16 @@ public final class Workspace extends Home {
     public void ensureWorkspaceIsScrollable() {
         final UiObject2 workspace = verifyActiveContainer();
         if (!isWorkspaceScrollable(workspace)) {
-            dragIconToWorkspace(
-                    mLauncher,
-                    getHotseatAppIcon("Chrome"),
-                    new Point(mLauncher.getDevice().getDisplayWidth(),
-                            workspace.getVisibleBounds().centerY()), "deep_shortcuts_container");
-            verifyActiveContainer();
+            try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                    "dragging icon to a second page of workspace to make it scrollable")) {
+                dragIconToWorkspace(
+                        mLauncher,
+                        getHotseatAppIcon("Chrome"),
+                        new Point(mLauncher.getDevice().getDisplayWidth(),
+                                workspace.getVisibleBounds().centerY()),
+                        "deep_shortcuts_container");
+                verifyActiveContainer();
+            }
         }
         assertTrue("Home screen workspace didn't become scrollable",
                 isWorkspaceScrollable(workspace));
