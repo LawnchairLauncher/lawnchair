@@ -320,8 +320,12 @@ public class LauncherStateManager {
             if (!isWorkspaceVisible) {
                 workspace.setScaleX(0.92f);
                 workspace.setScaleY(0.92f);
-                workspace.getHotseat().setScaleX(0.92f);
-                workspace.getHotseat().setScaleY(0.92f);
+            }
+            Hotseat hotseat = workspace.getHotseat();
+            boolean isHotseatVisible = hotseat.getVisibility() == VISIBLE && hotseat.getAlpha() > 0;
+            if (!isHotseatVisible) {
+                hotseat.setScaleX(0.92f);
+                hotseat.setScaleY(0.92f);
             }
         } else if (fromState == NORMAL && toState == OVERVIEW_PEEK) {
             builder.setInterpolator(ANIM_OVERVIEW_FADE, INSTANT);

@@ -17,8 +17,6 @@ package com.android.launcher3.uioverrides.states;
 
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.launcher3.logging.LoggerUtils.getTargetStr;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 
@@ -27,7 +25,6 @@ import android.view.View;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
@@ -71,6 +68,15 @@ public class OverviewState extends LauncherState {
         float scale = (float) sTempRect.width() / workspacePageWidth;
         float parallaxFactor = 0.5f;
         return new ScaleAndTranslation(scale, 0, -getDefaultSwipeHeight(launcher) * parallaxFactor);
+    }
+
+    @Override
+    public ScaleAndTranslation getHotseatScaleAndTranslation(Launcher launcher) {
+        if ((getVisibleElements(launcher) & HOTSEAT_ICONS) != 0) {
+            // If the hotseat icons are visible in overview, keep them in their normal position.
+            return super.getWorkspaceScaleAndTranslation(launcher);
+        }
+        return getWorkspaceScaleAndTranslation(launcher);
     }
 
     @Override
