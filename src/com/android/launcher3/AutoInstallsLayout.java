@@ -50,6 +50,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.function.Supplier;
 
 /**
  * Layout parsing code for auto installs layout
@@ -76,12 +77,8 @@ public class AutoInstallsLayout {
         if (customizationApkInfo == null) {
             return null;
         }
-        return get(context, customizationApkInfo.first, customizationApkInfo.second,
-                appWidgetHost, callback);
-    }
-
-    static AutoInstallsLayout get(Context context, String pkg, Resources targetRes,
-            AppWidgetHost appWidgetHost, LayoutParserCallback callback) {
+        String pkg = customizationApkInfo.first;
+        Resources targetRes = customizationApkInfo.second;
         InvariantDeviceProfile grid = LauncherAppState.getIDP(context);
 
         // Try with grid size and hotseat count
@@ -114,7 +111,7 @@ public class AutoInstallsLayout {
 
     // Object Tags
     private static final String TAG_INCLUDE = "include";
-    private static final String TAG_WORKSPACE = "workspace";
+    public static final String TAG_WORKSPACE = "workspace";
     private static final String TAG_APP_ICON = "appicon";
     private static final String TAG_AUTO_INSTALL = "autoinstall";
     private static final String TAG_FOLDER = "folder";
@@ -156,7 +153,7 @@ public class AutoInstallsLayout {
 
     protected final PackageManager mPackageManager;
     protected final Resources mSourceRes;
-    protected final int mLayoutId;
+    protected final Supplier<XmlPullParser> mInitialLayoutSupplier;
 
     private final InvariantDeviceProfile mIdp;
     private final int mRowCount;
@@ -171,6 +168,12 @@ public class AutoInstallsLayout {
     public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
             LayoutParserCallback callback, Resources res,
             int layoutId, String rootTag) {
+        this(context, appWidgetHost, callback, res, () -> res.getXml(layoutId), rootTag);
+    }
+
+    public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
+            LayoutParserCallback callback, Resources res,
+            Supplier<XmlPullParser> initialLayoutSupplier, String rootTag) {
         mContext = context;
         mAppWidgetHost = appWidgetHost;
         mCallback = callback;
@@ -180,7 +183,7 @@ public class AutoInstallsLayout {
         mRootTag = rootTag;
 
         mSourceRes = res;
-        mLayoutId = layoutId;
+        mInitialLayoutSupplier = initialLayoutSupplier;
 
         mIdp = LauncherAppState.getIDP(context);
         mRowCount = mIdp.numRows;
@@ -193,9 +196,9 @@ public class AutoInstallsLayout {
     public int loadLayout(SQLiteDatabase db, IntArray screenIds) {
         mDb = db;
         try {
-            return parseLayout(mLayoutId, screenIds);
+            return parseLayout(mInitialLayoutSupplier.get(), screenIds);
         } catch (Exception e) {
-            Log.e(TAG, "Error parsing layout: " + e);
+            Log.e(TAG, "Error parsing layout: ", e);
             return -1;
         }
     }
@@ -203,9 +206,8 @@ public class AutoInstallsLayout {
     /**
      * Parses the layout and returns the number of elements added on the homescreen.
      */
-    protected int parseLayout(int layoutId, IntArray screenIds)
+    protected int parseLayout(XmlPullParser parser, IntArray screenIds)
             throws XmlPullParserException, IOException {
-        XmlPullParser parser = mSourceRes.getXml(layoutId);
         beginDocument(parser, mRootTag);
         final int depth = parser.getDepth();
         int type;
@@ -248,7 +250,7 @@ public class AutoInstallsLayout {
             final int resId = getAttributeResourceValue(parser, ATTR_WORKSPACE, 0);
             if (resId != 0) {
                 // recursively load some more favorites, why not?
-                return parseLayout(resId, screenIds);
+                return parseLayout(mSourceRes.getXml(resId), screenIds);
             } else {
                 return 0;
             }

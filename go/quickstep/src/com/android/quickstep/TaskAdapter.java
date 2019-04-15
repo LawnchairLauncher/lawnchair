@@ -28,6 +28,7 @@ import com.android.quickstep.views.TaskItemView;
 import com.android.systemui.shared.recents.model.Task;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Recycler view adapter that dynamically inflates and binds {@link TaskHolder} instances with the
@@ -40,6 +41,7 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
     private final TaskListLoader mLoader;
     private final ArrayMap<Integer, TaskItemView> mTaskIdToViewMap = new ArrayMap<>();
     private TaskActionController mTaskActionController;
+    private boolean mIsShowingLoadingUi;
 
     public TaskAdapter(@NonNull TaskListLoader loader) {
         mLoader = loader;
@@ -47,6 +49,18 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
 
     public void setActionController(TaskActionController taskActionController) {
         mTaskActionController = taskActionController;
+    }
+
+    /**
+     * Sets all positions in the task adapter to loading views, binding new views if necessary.
+     * This changes the task adapter's view of the data, so the appropriate notify events should be
+     * called in addition to this method to reflect the changes.
+     *
+     * @param isShowingLoadingUi true to bind loading task views to all positions, false to return
+     *                           to the real data
+     */
+    public void setIsShowingLoadingUi(boolean isShowingLoadingUi) {
+        mIsShowingLoadingUi = isShowingLoadingUi;
     }
 
     /**
@@ -70,6 +84,10 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
 
     @Override
     public void onBindViewHolder(TaskHolder holder, int position) {
+        if (mIsShowingLoadingUi) {
+            holder.bindEmptyUi();
+            return;
+        }
         List<Task> tasks = mLoader.getCurrentTaskList();
         if (position >= tasks.size()) {
             // Task list has updated.
@@ -79,13 +97,13 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
         holder.bindTask(task);
         mLoader.loadTaskIconAndLabel(task, () -> {
             // Ensure holder still has the same task.
-            if (task.equals(holder.getTask())) {
+            if (Objects.equals(task, holder.getTask())) {
                 holder.getTaskItemView().setIcon(task.icon);
                 holder.getTaskItemView().setLabel(task.titleDescription);
             }
         });
         mLoader.loadTaskThumbnail(task, () -> {
-            if (task.equals(holder.getTask())) {
+            if (Objects.equals(task, holder.getTask())) {
                 holder.getTaskItemView().setThumbnail(task.thumbnail.thumbnail);
             }
         });
@@ -93,16 +111,27 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
 
     @Override
     public void onViewAttachedToWindow(@NonNull TaskHolder holder) {
+        if (holder.getTask() == null) {
+            return;
+        }
         mTaskIdToViewMap.put(holder.getTask().key.id, (TaskItemView) holder.itemView);
     }
 
     @Override
     public void onViewDetachedFromWindow(@NonNull TaskHolder holder) {
+        if (holder.getTask() == null) {
+            return;
+        }
         mTaskIdToViewMap.remove(holder.getTask().key.id);
     }
 
     @Override
     public int getItemCount() {
-        return Math.min(mLoader.getCurrentTaskList().size(), MAX_TASKS_TO_DISPLAY);
+        if (mIsShowingLoadingUi) {
+            // Show loading version of all items.
+            return MAX_TASKS_TO_DISPLAY;
+        } else {
+            return Math.min(mLoader.getCurrentTaskList().size(), MAX_TASKS_TO_DISPLAY);
+        }
     }
 }

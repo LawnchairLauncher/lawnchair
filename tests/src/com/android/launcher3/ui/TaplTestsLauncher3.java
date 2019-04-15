@@ -330,9 +330,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     public void testDragAppIcon() throws Throwable {
         try {
             TestProtocol.sDebugTracing = true;
-            LauncherActivityInfo settingsApp = getSettingsApp();
-
-            final String appName = settingsApp.getLabel().toString();
+            final String appName = "LauncherTestApp";
             // 1. Open all apps and wait for load complete.
             // 2. Drag icon to homescreen.
             // 3. Verify that the icon works on homescreen.
@@ -341,7 +339,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                     getAppIcon(appName).
                     dragToWorkspace().
                     getWorkspaceAppIcon(appName).
-                    launch(settingsApp.getComponentName().getPackageName());
+                    launch(getInstrumentation().getContext().getPackageName());
         } finally {
             TestProtocol.sDebugTracing = false;
         }

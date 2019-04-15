@@ -44,7 +44,6 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.uioverrides.states.OverviewState;
-import com.android.launcher3.uioverrides.touchcontrollers.PortraitOverviewStateTouchHelper;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.RecentsModel;
@@ -114,8 +113,10 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 return false;
             }
         } else {
+            // If we are swiping to all apps instead of overview, allow it from anywhere.
+            boolean interceptAnywhere = mLauncher.isInState(NORMAL) && !mAllowDragToOverview;
             // For all other states, only listen if the event originated below the hotseat height
-            if (!isTouchOverHotseat(mLauncher, ev)) {
+            if (!interceptAnywhere && !isTouchOverHotseat(mLauncher, ev)) {
                 return false;
             }
         }

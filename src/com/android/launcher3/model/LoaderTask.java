@@ -425,7 +425,8 @@ public class LoaderTask implements Runnable {
                                     } else if (installingPkgs.containsKey(targetPkg)) {
                                         // App restore has started. Update the flag
                                         c.restoreFlag |= ShortcutInfo.FLAG_RESTORE_STARTED;
-                                        c.updater().commit();
+                                        c.updater().put(LauncherSettings.Favorites.RESTORED,
+                                                c.restoreFlag).commit();
                                     } else {
                                         c.markDeleted("Unrestored app removed: " + targetPkg);
                                         continue;

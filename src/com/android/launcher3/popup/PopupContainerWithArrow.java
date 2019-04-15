@@ -157,7 +157,12 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     @Override
     public void logActionCommand(int command) {
         mLauncher.getUserEventDispatcher().logActionCommand(
-                command, mOriginalIcon, ContainerType.DEEPSHORTCUTS);
+                command, mOriginalIcon, getLogContainerType());
+    }
+
+    @Override
+    public int getLogContainerType() {
+        return ContainerType.DEEPSHORTCUTS;
     }
 
     public OnClickListener getItemClickListener() {

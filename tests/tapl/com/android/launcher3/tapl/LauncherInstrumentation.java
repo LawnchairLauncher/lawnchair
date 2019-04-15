@@ -16,12 +16,16 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
+import static com.android.launcher3.TestProtocol.NORMAL_STATE_ORDINAL;
+
 import android.app.ActivityManager;
 import android.app.Instrumentation;
 import android.app.UiAutomation;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
@@ -172,11 +176,11 @@ public final class LauncherInstrumentation {
             // Workaround, use constructed context because both the instrumentation context and the
             // app context are not constructed with resources that take overlays into account
             final Context ctx = baseContext.createPackageContext("android", 0);
-            if (QuickStepContract.isGesturalMode(ctx)) {
+            if (isGesturalMode(ctx)) {
                 return NavigationModel.ZERO_BUTTON;
-            } else if (QuickStepContract.isSwipeUpMode(ctx)) {
+            } else if (isSwipeUpMode(ctx)) {
                 return NavigationModel.TWO_BUTTON;
-            } else if (QuickStepContract.isLegacyMode(ctx)) {
+            } else if (isLegacyMode(ctx)) {
                 return NavigationModel.THREE_BUTTON;
             } else {
                 fail("Can't detect navigation mode");
@@ -343,18 +347,33 @@ public final class LauncherInstrumentation {
                 log(action = "0-button: already in workspace");
             } else if (hasLauncherObject(OVERVIEW_RES_ID)) {
                 log(action = "0-button: from overview");
-                mDevice.pressHome();
+                final UiObject2 navBar = waitForSystemUiObject("navigation_bar_frame");
+
+                swipe(
+                        navBar.getVisibleBounds().centerX(), navBar.getVisibleBounds().centerY(),
+                        navBar.getVisibleBounds().centerX(), 0,
+                        NORMAL_STATE_ORDINAL, ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
             } else if (hasLauncherObject(WIDGETS_RES_ID)) {
                 log(action = "0-button: from widgets");
                 mDevice.pressHome();
             } else if (hasLauncherObject(APPS_RES_ID)) {
                 log(action = "0-button: from all apps");
-                mDevice.pressHome();
+                final UiObject2 navBar = waitForSystemUiObject("navigation_bar_frame");
+
+                swipe(
+                        navBar.getVisibleBounds().centerX(), navBar.getVisibleBounds().centerY(),
+                        navBar.getVisibleBounds().centerX(), 0,
+                        NORMAL_STATE_ORDINAL, ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
             } else {
                 log(action = "0-button: from another app");
                 assertTrue("Launcher is visible, don't know how to go home",
                         !mDevice.hasObject(By.pkg(getLauncherPackageName())));
-                mDevice.pressHome();
+                final UiObject2 navBar = waitForSystemUiObject("navigation_bar_frame");
+
+                swipe(
+                        navBar.getVisibleBounds().centerX(), navBar.getVisibleBounds().centerY(),
+                        navBar.getVisibleBounds().centerX(), 0,
+                        BACKGROUND_APP_STATE_ORDINAL, ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
             }
         } else {
             log(action = "clicking home button");
@@ -607,6 +626,46 @@ public final class LauncherInstrumentation {
         }
     }
 
+    public static boolean isGesturalMode(Context context) {
+        return QuickStepContract.isGesturalMode(getCurrentInteractionMode(context));
+    }
+
+    public static boolean isSwipeUpMode(Context context) {
+        return QuickStepContract.isSwipeUpMode(getCurrentInteractionMode(context));
+    }
+
+    public static boolean isLegacyMode(Context context) {
+        return QuickStepContract.isLegacyMode(getCurrentInteractionMode(context));
+    }
+
+    private static int getCurrentInteractionMode(Context context) {
+        return getSystemIntegerRes(context, "config_navBarInteractionMode");
+    }
+
+    private static int getSystemIntegerRes(Context context, String resName) {
+        Resources res = context.getResources();
+        int resId = res.getIdentifier(resName, "integer", "android");
+
+        if (resId != 0) {
+            return res.getInteger(resId);
+        } else {
+            Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
+            return -1;
+        }
+    }
+
+    private static int getSystemDimensionResId(Context context, String resName) {
+        Resources res = context.getResources();
+        int resId = res.getIdentifier(resName, "dimen", "android");
+
+        if (resId != 0) {
+            return resId;
+        } else {
+            Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
+            return -1;
+        }
+    }
+
     static void sleep(int duration) {
         try {
             Thread.sleep(duration);
@@ -616,8 +675,10 @@ public final class LauncherInstrumentation {
 
     int getEdgeSensitivityWidth() {
         try {
-            return QuickStepContract.getEdgeSensitivityWidth(
-                    mInstrumentation.getTargetContext().createPackageContext("android", 0)) + 1;
+            final Context context = mInstrumentation.getTargetContext().createPackageContext(
+                    "android", 0);
+            return context.getResources().getDimensionPixelSize(
+                    getSystemDimensionResId(context, "config_backGestureInset")) + 1;
         } catch (PackageManager.NameNotFoundException e) {
             fail("Can't get edge sensitivity: " + e);
             return 0;

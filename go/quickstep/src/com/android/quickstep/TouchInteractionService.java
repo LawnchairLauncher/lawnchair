@@ -49,7 +49,6 @@ public class TouchInteractionService extends Service {
             ISystemUiProxy iSystemUiProxy = ISystemUiProxy.Stub
                     .asInterface(bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
             mRecentsModel.setSystemUiProxy(iSystemUiProxy);
-            mRecentsModel.onInitializeSystemUI(bundle);
         }
 
         @Override
@@ -87,6 +86,10 @@ public class TouchInteractionService extends Service {
 
         public void onBackAction(boolean completed, int downX, int downY, boolean isButton,
                 boolean gestureSwipeLeft) {
+        }
+
+        public void onSystemUiStateChanged(int stateFlags) {
+            // To be implemented
         }
 
         /** Deprecated methods **/
