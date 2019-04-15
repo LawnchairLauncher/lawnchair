@@ -480,8 +480,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
      */
     public ObjectAnimator createTextAlphaAnimator(boolean fadeIn) {
         float toAlpha = shouldTextBeVisible() && fadeIn ? 1 : 0;
-        float fromAlpha = toAlpha == 1 ? 0 : 1f;
-        return ObjectAnimator.ofFloat(this, TEXT_ALPHA_PROPERTY, fromAlpha, toAlpha);
+        return ObjectAnimator.ofFloat(this, TEXT_ALPHA_PROPERTY, toAlpha);
     }
 
     @Override
