@@ -15,12 +15,18 @@
  */
 package com.android.quickstep;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+
+import static com.android.quickstep.views.TaskLayoutUtils.getTaskHeight;
+import static com.android.quickstep.views.TaskLayoutUtils.getTaskTopMargin;
+
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.quickstep.views.TaskItemView;
 import com.android.systemui.shared.recents.model.Task;
@@ -35,15 +41,17 @@ import java.util.Objects;
 public final class TaskAdapter extends Adapter<TaskHolder> {
 
     public static final int CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT = 0;
+    public static final int MAX_TASKS_TO_DISPLAY = 6;
 
-    private static final int MAX_TASKS_TO_DISPLAY = 6;
     private static final String TAG = "TaskAdapter";
     private final TaskListLoader mLoader;
+    private final DeviceProfile mDeviceProfile;
     private TaskActionController mTaskActionController;
     private boolean mIsShowingLoadingUi;
 
-    public TaskAdapter(@NonNull TaskListLoader loader) {
+    public TaskAdapter(@NonNull TaskListLoader loader, DeviceProfile dp) {
         mLoader = loader;
+        mDeviceProfile = dp;
     }
 
     public void setActionController(TaskActionController taskActionController) {
@@ -66,6 +74,11 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
     public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         TaskItemView itemView = (TaskItemView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.task_item_view, parent, false);
+        ViewGroup.MarginLayoutParams itemViewParams =
+                (ViewGroup.MarginLayoutParams) itemView.getLayoutParams();
+        itemViewParams.width = MATCH_PARENT;
+        itemViewParams.height = getTaskHeight(mDeviceProfile);
+        itemViewParams.topMargin = getTaskTopMargin(mDeviceProfile);
         TaskHolder holder = new TaskHolder(itemView);
         itemView.setOnClickListener(view -> mTaskActionController.launchTask(holder));
         return holder;

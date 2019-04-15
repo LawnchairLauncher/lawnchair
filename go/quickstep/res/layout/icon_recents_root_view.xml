@@ -33,10 +33,9 @@
             android:scrollbars="none"/>
         <Button
             android:id="@+id/clear_all_button"
-            android:layout_width="@dimen/clear_all_button_width"
-            android:layout_height="@dimen/clear_all_button_height"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginVertical="@dimen/task_item_half_vert_margin"
             android:background="@drawable/clear_all_button"
             android:gravity="center"
             android:text="@string/recents_clear_all"
