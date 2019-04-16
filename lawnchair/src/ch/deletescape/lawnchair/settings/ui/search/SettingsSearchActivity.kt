@@ -177,6 +177,7 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
                     (slice.parent as? ViewGroup)?.removeView(slice)
                     sliceView.removeAllViews()
                     sliceView.addView(slice)
+                    sliceView.isVisible = true
                 } else {
                     sliceView.isVisible = false
                 }
@@ -185,6 +186,7 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
                     (slice.parent as? ViewGroup)?.removeView(slice)
                     horizontalSliceView.removeAllViews()
                     horizontalSliceView.addView(slice)
+                    horizontalSliceView.isVisible = true
                 } else {
                     horizontalSliceView.isVisible = false
                 }
