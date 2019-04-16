@@ -371,8 +371,8 @@
     <string name="automatic_short">Auto</string>
     <string name="playstore_query_icon_pack">Icon pack</string>
 
-    <string name="bridge_missing_title">Rootless Pixel Bridge</string>
-    <string name="bridge_missing_message">Install or update Rootless Pixel Bridge </string>
+    <string name="bridge_missing_title">Lawnfeed</string>
+    <string name="bridge_missing_message">Install or update Lawnfeed</string>
     <string name="quickstep_pref_title">Recents</string>
     <string name="quickstep_pref_summary">Gestures, corners, blur</string>
     
