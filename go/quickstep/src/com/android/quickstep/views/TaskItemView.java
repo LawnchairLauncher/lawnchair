@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.views;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -23,6 +25,8 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -39,6 +43,7 @@ public final class TaskItemView extends LinearLayout {
 
     private static final String EMPTY_LABEL = "";
     private static final String DEFAULT_LABEL = "...";
+    private static final float SUBITEM_FRAME_RATIO = .6f;
     private final Drawable mDefaultIcon;
     private final Drawable mDefaultThumbnail;
     private final TaskLayerDrawable mIconDrawable;
@@ -46,6 +51,7 @@ public final class TaskItemView extends LinearLayout {
     private TextView mLabelView;
     private ImageView mIconView;
     private ImageView mThumbnailView;
+    private FrameLayout mThumbnailIconFrame;
     private float mContentTransitionProgress;
 
     /**
@@ -80,12 +86,38 @@ public final class TaskItemView extends LinearLayout {
         mLabelView = findViewById(R.id.task_label);
         mThumbnailView = findViewById(R.id.task_thumbnail);
         mIconView = findViewById(R.id.task_icon);
+        mThumbnailIconFrame = findViewById(R.id.task_icon_and_thumbnail);
 
         mThumbnailView.setImageDrawable(mThumbnailDrawable);
         mIconView.setImageDrawable(mIconDrawable);
 
         resetToEmptyUi();
         CONTENT_TRANSITION_PROGRESS.setValue(this, 1.0f);
+    }
+
+    @Override
+    public void setLayoutParams(ViewGroup.LayoutParams params) {
+        super.setLayoutParams(params);
+
+        // TODO: Rather than setting child layout params, make custom views and override onMeasure.
+        if (mThumbnailIconFrame == null
+                || mIconView == null
+                || mThumbnailView == null) {
+            // Views not initialized yet.
+            return;
+        }
+
+        int frameSize = params.height;
+        ViewGroup.LayoutParams frameParams = mThumbnailIconFrame.getLayoutParams();
+        frameParams.width = frameSize;
+
+        int frameSubItemWidth = (int) (SUBITEM_FRAME_RATIO * frameSize);
+        ViewGroup.LayoutParams thumbnailParams = mThumbnailView.getLayoutParams();
+        thumbnailParams.width = frameSubItemWidth;
+
+        ViewGroup.LayoutParams iconParams = mIconView.getLayoutParams();
+        iconParams.width = frameSubItemWidth;
+        iconParams.height = frameSubItemWidth;
     }
 
     /**
