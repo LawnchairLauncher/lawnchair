@@ -27,9 +27,12 @@ import android.util.AttributeSet
 import android.widget.TextView
 import ch.deletescape.lawnchair.font.CustomFontManager
 import ch.deletescape.lawnchair.font.FontCache
+import ch.deletescape.lawnchair.settings.ui.ControlledPreference
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 
-open class FontPreference(context: Context, attrs: AttributeSet) : Preference(context, attrs), FontCache.Font.LoadCallback {
+open class FontPreference(context: Context, attrs: AttributeSet) : Preference(context, attrs),
+        FontCache.Font.LoadCallback,
+        ControlledPreference by ControlledPreference.Delegate(context, attrs) {
 
     private val pref = CustomFontManager.getInstance(context).fontPrefs.getValue(key)
     private var typeface: Typeface? = null

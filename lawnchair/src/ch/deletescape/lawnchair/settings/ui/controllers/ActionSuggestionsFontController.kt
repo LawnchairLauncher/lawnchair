@@ -19,13 +19,11 @@ package ch.deletescape.lawnchair.settings.ui.controllers
 
 import android.content.Context
 import android.support.annotation.Keep
+import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.PreferenceController
-import com.android.launcher3.util.PackageManagerHelper
 
 @Keep
-class ActionSuggestionsController(context: Context) : PreferenceController(context) {
+class ActionSuggestionsFontController(context: Context) : PreferenceController(context) {
 
-    private val asPackage = "com.google.android.as"
-
-    override val isVisible by lazy { PackageManagerHelper.isAppEnabled(context.packageManager, asPackage, 0) }
+    override val isVisible get() = context.lawnchairPrefs.showActions
 }

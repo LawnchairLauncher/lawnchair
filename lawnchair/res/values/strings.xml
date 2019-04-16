@@ -577,6 +577,7 @@
 
     <string name="pref_fonts_category_drawer">Drawer</string>
     <string name="pref_fonts_drawer_icons">App names</string>
+    <string name="pref_fonts_drawer_app_actions_icons">App action names</string>
     <string name="pref_fonts_drawer_tabs">Tab names</string>
 
     <string name="pref_fonts_find_fonts">Find fonts</string>

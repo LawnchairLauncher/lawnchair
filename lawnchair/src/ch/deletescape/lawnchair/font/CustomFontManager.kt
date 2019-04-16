@@ -62,7 +62,7 @@ class CustomFontManager(private val context: Context) {
     private val taskOptionFont = deepShortcutFont
 
     private val allAppsFont = FontPref("pref_font_allApps", launcherCondensed)
-    private val actionFont = allAppsFont
+    private val actionFont = FontPref("pref_font_drawerAppActions", launcherCondensed)
     private val drawerTab = FontPref("pref_font_drawerTab", uiMedium)
 
     private fun createFontMap(): Map<Int, FontSpec> {

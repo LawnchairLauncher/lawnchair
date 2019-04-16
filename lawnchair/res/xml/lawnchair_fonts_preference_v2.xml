@@ -17,7 +17,8 @@
   -->
 
 <android.support.v7.preference.PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ch.deletescape.lawnchair.font.settingsui.GlobalFontPreference
         android:key="pref_font_global"
@@ -54,6 +55,12 @@
             android:key="pref_font_allApps"
             android:icon="@android:color/transparent"
             android:title="@string/pref_fonts_drawer_icons" />
+
+        <ch.deletescape.lawnchair.font.settingsui.FontPreference
+            android:key="pref_font_drawerAppActions"
+            android:icon="@android:color/transparent"
+            android:title="@string/pref_fonts_drawer_app_actions_icons"
+            app:controllerClass=".ActionSuggestionsFontController" />
 
         <ch.deletescape.lawnchair.font.settingsui.FontPreference
             android:key="pref_font_drawerTab"
