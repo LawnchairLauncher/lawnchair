@@ -17,25 +17,23 @@
 <com.android.quickstep.views.TaskItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="horizontal">
-    <FrameLayout
+    <com.android.quickstep.views.TaskThumbnailIconView
         android:id="@+id/task_icon_and_thumbnail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        android:layout_marginHorizontal="8dp">
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="16dp">
         <ImageView
             android:id="@+id/task_thumbnail"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="top|start"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
         <ImageView
             android:id="@+id/task_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"/>
-    </FrameLayout>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </com.android.quickstep.views.TaskThumbnailIconView>
     <TextView
         android:id="@+id/task_label"
         android:layout_width="wrap_content"

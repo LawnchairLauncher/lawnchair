@@ -15,11 +15,6 @@
  */
 package com.android.quickstep;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-
-import static com.android.quickstep.views.TaskLayoutUtils.getTaskHeight;
-import static com.android.quickstep.views.TaskLayoutUtils.getTaskTopMargin;
-
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -45,13 +40,11 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
 
     private static final String TAG = "TaskAdapter";
     private final TaskListLoader mLoader;
-    private final DeviceProfile mDeviceProfile;
     private TaskActionController mTaskActionController;
     private boolean mIsShowingLoadingUi;
 
-    public TaskAdapter(@NonNull TaskListLoader loader, DeviceProfile dp) {
+    public TaskAdapter(@NonNull TaskListLoader loader) {
         mLoader = loader;
-        mDeviceProfile = dp;
     }
 
     public void setActionController(TaskActionController taskActionController) {
@@ -74,11 +67,6 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
     public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         TaskItemView itemView = (TaskItemView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.task_item_view, parent, false);
-        ViewGroup.MarginLayoutParams itemViewParams =
-                (ViewGroup.MarginLayoutParams) itemView.getLayoutParams();
-        itemViewParams.width = MATCH_PARENT;
-        itemViewParams.height = getTaskHeight(mDeviceProfile);
-        itemViewParams.topMargin = getTaskTopMargin(mDeviceProfile);
         TaskHolder holder = new TaskHolder(itemView);
         itemView.setOnClickListener(view -> mTaskActionController.launchTask(holder));
         return holder;

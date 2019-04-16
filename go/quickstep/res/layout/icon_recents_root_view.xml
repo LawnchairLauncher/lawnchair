@@ -29,7 +29,6 @@
             android:id="@+id/recent_task_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:scrollbars="none"/>
         <Button
             android:id="@+id/clear_all_button"

@@ -26,22 +26,8 @@ public final class TaskLayoutUtils {
     private static final float BUTTON_TO_DEVICE_HEIGHT_RATIO = 36.0f/569;
     private static final float BUTTON_WIDTH_TO_HEIGHT_RATIO = 53.0f/18;
     private static final float BUTTON_MARGIN_TO_BUTTON_HEIGHT_RATIO = 5.0f/9;
-    private static final float TASK_TO_DEVICE_HEIGHT_RATIO = 15.0f/19;
-    private static final float TASK_MARGIN_TO_TASK_HEIGHT_RATIO = 4.0f/15;
 
     private TaskLayoutUtils() {}
-
-    public static int getTaskHeight(DeviceProfile dp) {
-        return (int) (TASK_TO_DEVICE_HEIGHT_RATIO * getTaskItemSpace(dp));
-    }
-
-    public static int getTaskTopMargin(DeviceProfile dp) {
-        return (int) (TASK_MARGIN_TO_TASK_HEIGHT_RATIO * getTaskHeight(dp));
-    }
-
-    private static int getTaskItemSpace(DeviceProfile dp) {
-        return getTaskListHeight(dp) / TaskAdapter.MAX_TASKS_TO_DISPLAY;
-    }
 
     public static int getTaskListHeight(DeviceProfile dp) {
         int clearAllSpace = getClearAllButtonHeight(dp) + 2 * getClearAllButtonTopBottomMargin(dp);
