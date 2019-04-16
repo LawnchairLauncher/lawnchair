@@ -38,23 +38,9 @@ public final class TaskListLoader {
 
     private ArrayList<Task> mTaskList = new ArrayList<>();
     private int mTaskListChangeId;
-    private RecentsModel.TaskThumbnailChangeListener listener = (taskId, thumbnailData) -> {
-        Task foundTask = null;
-        for (Task task : mTaskList) {
-            if (task.key.id == taskId) {
-                foundTask = task;
-                break;
-            }
-        }
-        if (foundTask != null) {
-            foundTask.thumbnail = thumbnailData;
-        }
-        return foundTask;
-    };
 
     public TaskListLoader(Context context) {
         mRecentsModel = RecentsModel.INSTANCE.get(context);
-        mRecentsModel.addThumbnailChangeListener(listener);
     }
 
     /**
