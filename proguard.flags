@@ -1,4 +1,8 @@
--keep,allowshrinking,allowoptimization class com.android.launcher3.** {
+-keep,allowoptimization class com.android.launcher3.** {
+  *;
+}
+
+-keep,allowoptimization class com.google.protobuf.nano.** {
   *;
 }
 
