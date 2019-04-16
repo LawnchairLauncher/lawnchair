@@ -107,6 +107,7 @@ public final class IconRecentsView extends FrameLayout {
 
     private RecentsToActivityHelper mActivityHelper;
     private RecyclerView mTaskRecyclerView;
+    private View mShowingContentView;
     private View mEmptyView;
     private View mContentView;
     private View mClearAllView;
@@ -355,11 +356,13 @@ public final class IconRecentsView extends FrameLayout {
      */
     private void updateContentViewVisibility() {
         int taskListSize = mTaskAdapter.getItemCount();
-        if (mEmptyView.getVisibility() != VISIBLE && taskListSize == 0) {
+        if (mShowingContentView != mEmptyView && taskListSize == 0) {
+            mShowingContentView = mEmptyView;
             crossfadeViews(mEmptyView, mContentView);
             mActivityHelper.leaveRecents();
         }
-        if (mContentView.getVisibility() != VISIBLE && taskListSize > 0) {
+        if (mShowingContentView != mContentView && taskListSize > 0) {
+            mShowingContentView = mContentView;
             crossfadeViews(mContentView, mEmptyView);
         }
     }
@@ -371,6 +374,7 @@ public final class IconRecentsView extends FrameLayout {
      * @param fadeOutView view that should fade out
      */
     private void crossfadeViews(View fadeInView, View fadeOutView) {
+        fadeInView.animate().cancel();
         fadeInView.setVisibility(VISIBLE);
         fadeInView.setAlpha(0f);
         fadeInView.animate()
@@ -378,6 +382,7 @@ public final class IconRecentsView extends FrameLayout {
                 .setDuration(CROSSFADE_DURATION)
                 .setListener(null);
 
+        fadeOutView.animate().cancel();
         fadeOutView.animate()
                 .alpha(0f)
                 .setDuration(CROSSFADE_DURATION)
