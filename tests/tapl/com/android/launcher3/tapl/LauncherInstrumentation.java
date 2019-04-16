@@ -598,11 +598,12 @@ public final class LauncherInstrumentation {
 
     void movePointer(long downTime, long duration, Point from, Point to) {
         final Point point = new Point();
+        final long startTime = SystemClock.uptimeMillis();
         for (; ; ) {
             sleep(16);
 
             final long currentTime = SystemClock.uptimeMillis();
-            final float progress = (currentTime - downTime) / (float) duration;
+            final float progress = (currentTime - startTime) / (float) duration;
             if (progress > 1) return;
 
             point.x = from.x + (int) (progress * (to.x - from.x));
