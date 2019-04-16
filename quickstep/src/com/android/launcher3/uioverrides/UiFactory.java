@@ -165,6 +165,14 @@ public class UiFactory {
         }
     }
 
+    public static void onEnterAnimationComplete(Context context) {
+        // After the transition to home, enable the high-res thumbnail loader if it wasn't enabled
+        // as a part of quickstep/scrub, so that high-res thumbnails can load the next time we
+        // enter overview
+        RecentsModel.getInstance(context).getRecentsTaskLoader()
+                .getHighResThumbnailLoader().setVisible(true);
+    }
+
     public static void onLauncherStateOrResumeChanged(Launcher launcher) {
         LauncherState state = launcher.getStateManager().getState();
         DeviceProfile profile = launcher.getDeviceProfile();
