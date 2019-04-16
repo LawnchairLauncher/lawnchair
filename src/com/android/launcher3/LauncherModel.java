@@ -149,7 +149,7 @@ public class LauncherModel extends BroadcastReceiver
         public void bindAppsAdded(IntArray newScreens,
                 ArrayList<ItemInfo> addNotAnimated, ArrayList<ItemInfo> addAnimated);
         public void bindPromiseAppProgressUpdated(PromiseAppInfo app);
-        public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated, UserHandle user);
+        public void bindWorkspaceItemsChanged(ArrayList<WorkspaceItemInfo> updated);
         public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
         public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
         public void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher);
@@ -530,8 +530,8 @@ public class LauncherModel extends BroadcastReceiver
 
     }
 
-    public void updateAndBindShortcutInfo(final ShortcutInfo si, final ShortcutInfoCompat info) {
-        updateAndBindShortcutInfo(() -> {
+    public void updateAndBindWorkspaceItem(WorkspaceItemInfo si, ShortcutInfoCompat info) {
+        updateAndBindWorkspaceItem(() -> {
             si.updateFromDeepShortcutInfo(info, mApp.getContext());
             LauncherIcons li = LauncherIcons.obtain(mApp.getContext());
             si.applyFrom(li.createShortcutIcon(info));
@@ -543,15 +543,15 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Utility method to update a shortcut on the background thread.
      */
-    public void updateAndBindShortcutInfo(final Supplier<ShortcutInfo> shortcutProvider) {
+    public void updateAndBindWorkspaceItem(final Supplier<WorkspaceItemInfo> itemProvider) {
         enqueueModelUpdateTask(new BaseModelUpdateTask() {
             @Override
             public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
-                ShortcutInfo info = shortcutProvider.get();
+                WorkspaceItemInfo info = itemProvider.get();
                 getModelWriter().updateItemInDatabase(info);
-                ArrayList<ShortcutInfo> update = new ArrayList<>();
+                ArrayList<WorkspaceItemInfo> update = new ArrayList<>();
                 update.add(info);
-                bindUpdatedShortcuts(update, info.user);
+                bindUpdatedWorkspaceItems(update);
             }
         });
     }

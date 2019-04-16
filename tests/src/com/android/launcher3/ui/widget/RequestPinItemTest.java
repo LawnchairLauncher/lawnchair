@@ -34,7 +34,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.shortcuts.ShortcutKey;
@@ -134,7 +134,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         runTest("pinShortcut", false, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View view) {
-                return info instanceof ShortcutInfo &&
+                return info instanceof WorkspaceItemInfo &&
                         info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
                         ShortcutKey.fromItemInfo(info).getId().equals(mShortcutId);
             }

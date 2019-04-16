@@ -57,7 +57,6 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.os.Process;
 import android.os.StrictMode;
-import android.os.UserHandle;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
@@ -981,7 +980,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      *
      * @param info The data structure describing the shortcut.
      */
-    View createShortcut(ShortcutInfo info) {
+    View createShortcut(WorkspaceItemInfo info) {
         return createShortcut((ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentPage()), info);
     }
 
@@ -993,10 +992,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      *
      * @return A View inflated from layoutResId.
      */
-    public View createShortcut(ViewGroup parent, ShortcutInfo info) {
+    public View createShortcut(ViewGroup parent, WorkspaceItemInfo info) {
         BubbleTextView favorite = (BubbleTextView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.app_icon, parent, false);
-        favorite.applyFromShortcutInfo(info);
+        favorite.applyFromWorkspaceItem(info);
         favorite.setOnClickListener(ItemClickHandler.INSTANCE);
         favorite.setOnFocusChangeListener(mFocusHandler);
         return favorite;
@@ -1017,9 +1016,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         int[] cellXY = mTmpAddItemCellCoordinates;
         CellLayout layout = getCellLayout(container, screenId);
 
-        ShortcutInfo info = null;
+        WorkspaceItemInfo info = null;
         if (Utilities.ATLEAST_OREO) {
-            info = LauncherAppsCompatVO.createShortcutInfoFromPinItemRequest(
+            info = LauncherAppsCompatVO.createWorkspaceItemFromPinItemRequest(
                     this, LauncherAppsCompatVO.getPinItemRequest(data), 0);
         }
 
@@ -1541,11 +1540,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * @param deleteFromDb whether or not to delete this item from the db.
      */
     public boolean removeItem(View v, final ItemInfo itemInfo, boolean deleteFromDb) {
-        if (itemInfo instanceof ShortcutInfo) {
+        if (itemInfo instanceof WorkspaceItemInfo) {
             // Remove the shortcut from the folder before removing it from launcher
             View folderIcon = mWorkspace.getHomescreenIconByItemId(itemInfo.container);
             if (folderIcon instanceof FolderIcon) {
-                ((FolderInfo) folderIcon.getTag()).remove((ShortcutInfo) itemInfo, true);
+                ((FolderInfo) folderIcon.getTag()).remove((WorkspaceItemInfo) itemInfo, true);
             } else {
                 mWorkspace.removeWorkspaceItem(v);
             }
@@ -1870,7 +1869,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                 case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
-                    ShortcutInfo info = (ShortcutInfo) item;
+                    WorkspaceItemInfo info = (WorkspaceItemInfo) item;
                     view = createShortcut(info);
                     break;
                 }
@@ -2228,7 +2227,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * @param updated list of shortcuts which have changed.
      */
     @Override
-    public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated, final UserHandle user) {
+    public void bindWorkspaceItemsChanged(ArrayList<WorkspaceItemInfo> updated) {
         if (!updated.isEmpty()) {
             mWorkspace.updateShortcuts(updated);
         }

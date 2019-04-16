@@ -29,7 +29,7 @@ import com.android.launcher3.util.ContentWriter;
 /**
  * Represents a launchable icon on the workspaces and in folders.
  */
-public class ShortcutInfo extends ItemInfoWithIcon {
+public class WorkspaceItemInfo extends ItemInfoWithIcon {
 
     public static final int DEFAULT = 0;
 
@@ -86,11 +86,11 @@ public class ShortcutInfo extends ItemInfoWithIcon {
      */
     private int mInstallProgress;
 
-    public ShortcutInfo() {
+    public WorkspaceItemInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
     }
 
-    public ShortcutInfo(ShortcutInfo info) {
+    public WorkspaceItemInfo(WorkspaceItemInfo info) {
         super(info);
         title = info.title;
         intent = new Intent(info.intent);
@@ -99,17 +99,17 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         mInstallProgress = info.mInstallProgress;
     }
 
-    /** TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut. */
-    public ShortcutInfo(AppInfo info) {
+    /** TODO: Remove this.  It's only called by ApplicationInfo.makeWorkspaceItem. */
+    public WorkspaceItemInfo(AppInfo info) {
         super(info);
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
     }
 
     /**
-     * Creates a {@link ShortcutInfo} from a {@link ShortcutInfoCompat}.
+     * Creates a {@link WorkspaceItemInfo} from a {@link ShortcutInfoCompat}.
      */
-    public ShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
+    public WorkspaceItemInfo(ShortcutInfoCompat shortcutInfo, Context context) {
         user = shortcutInfo.getUserHandle();
         itemType = Favorites.ITEM_TYPE_DEEP_SHORTCUT;
         updateFromDeepShortcutInfo(shortcutInfo, context);
@@ -176,7 +176,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         disabledMessage = shortcutInfo.getDisabledMessage();
     }
 
-    /** Returns the ShortcutInfo id associated with the deep shortcut. */
+    /** Returns the WorkspaceItemInfo id associated with the deep shortcut. */
     public String getDeepShortcutId() {
         return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT ?
                 getIntent().getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID) : null;
