@@ -18,7 +18,6 @@ package com.android.launcher3.shortcuts;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -27,10 +26,9 @@ import android.widget.FrameLayout;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.popup.PopupContainerWithArrow;
-import com.android.launcher3.touch.ItemClickHandler;
 
 /**
  * A {@link android.widget.FrameLayout} that contains a {@link DeepShortcutView}.
@@ -44,7 +42,7 @@ public class DeepShortcutView extends FrameLayout {
     private View mIconView;
     private View mDivider;
 
-    private ShortcutInfo mInfo;
+    private WorkspaceItemInfo mInfo;
     private ShortcutInfoCompat mDetail;
 
     public DeepShortcutView(Context context) {
@@ -95,11 +93,11 @@ public class DeepShortcutView extends FrameLayout {
     }
 
     /** package private **/
-    public void applyShortcutInfo(ShortcutInfo info, ShortcutInfoCompat detail,
+    public void applyShortcutInfo(WorkspaceItemInfo info, ShortcutInfoCompat detail,
             PopupContainerWithArrow container) {
         mInfo = info;
         mDetail = detail;
-        mBubbleText.applyFromShortcutInfo(info);
+        mBubbleText.applyFromWorkspaceItem(info);
         mIconView.setBackground(mBubbleText.getIcon());
 
         // Use the long label as long as it exists and fits.
@@ -119,12 +117,12 @@ public class DeepShortcutView extends FrameLayout {
     /**
      * Returns the shortcut info that is suitable to be added on the homescreen
      */
-    public ShortcutInfo getFinalInfo() {
-        final ShortcutInfo badged = new ShortcutInfo(mInfo);
+    public WorkspaceItemInfo getFinalInfo() {
+        final WorkspaceItemInfo badged = new WorkspaceItemInfo(mInfo);
         // Queue an update task on the worker thread. This ensures that the badged
         // shortcut eventually gets its icon updated.
         Launcher.getLauncher(getContext()).getModel()
-                .updateAndBindShortcutInfo(badged, mDetail);
+                .updateAndBindWorkspaceItem(badged, mDetail);
         return badged;
     }
 

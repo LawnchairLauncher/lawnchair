@@ -21,7 +21,6 @@ import static android.view.View.VISIBLE;
 
 import android.annotation.TargetApi;
 import android.app.Fragment;
-import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -30,7 +29,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.AdaptiveIconDrawable;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Handler;
@@ -52,7 +50,7 @@ import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceLayoutManager;
 import com.android.launcher3.allapps.SearchUiManager;
@@ -85,7 +83,7 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
     private final DeviceProfile mDp;
     private final Rect mInsets;
 
-    private final ShortcutInfo mShortcutInfo;
+    private final WorkspaceItemInfo mWorkspaceItemInfo;
 
     public LauncherPreviewRenderer(Context context, InvariantDeviceProfile idp) {
         mUiHandler = new Handler(Looper.getMainLooper());
@@ -106,10 +104,10 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
                 Process.myUserHandle(),
                 Build.VERSION.SDK_INT);
 
-        mShortcutInfo = new ShortcutInfo();
-        mShortcutInfo.applyFrom(iconInfo);
-        mShortcutInfo.intent = new Intent();
-        mShortcutInfo.contentDescription = mShortcutInfo.title =
+        mWorkspaceItemInfo = new WorkspaceItemInfo();
+        mWorkspaceItemInfo.applyFrom(iconInfo);
+        mWorkspaceItemInfo.intent = new Intent();
+        mWorkspaceItemInfo.contentDescription = mWorkspaceItemInfo.title =
                 context.getString(R.string.label_application);
     }
 
@@ -217,10 +215,10 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
             return mWorkspace;
         }
 
-        private void inflateAndAddIcon(ShortcutInfo info) {
+        private void inflateAndAddIcon(WorkspaceItemInfo info) {
             BubbleTextView icon = (BubbleTextView) mHomeElementInflater.inflate(
                     R.layout.app_icon, mWorkspace, false);
-            icon.applyFromShortcutInfo(info);
+            icon.applyFromWorkspaceItem(info);
             addInScreenFromBind(icon, info);
         }
 
@@ -245,7 +243,7 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
         private void renderScreenShot(Canvas canvas) {
             // Add hotseat icons
             for (int i = 0; i < mIdp.numHotseatIcons; i++) {
-                ShortcutInfo info = new ShortcutInfo(mShortcutInfo);
+                WorkspaceItemInfo info = new WorkspaceItemInfo(mWorkspaceItemInfo);
                 info.container = Favorites.CONTAINER_HOTSEAT;
                 info.screenId = i;
                 inflateAndAddIcon(info);
@@ -253,7 +251,7 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
 
             // Add workspace icons
             for (int i = 0; i < mIdp.numColumns; i++) {
-                ShortcutInfo info = new ShortcutInfo(mShortcutInfo);
+                WorkspaceItemInfo info = new WorkspaceItemInfo(mWorkspaceItemInfo);
                 info.container = Favorites.CONTAINER_DESKTOP;
                 info.screenId = 0;
                 info.cellX = i;

@@ -23,7 +23,7 @@ import android.service.notification.StatusBarNotification;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationKeyData;
@@ -147,7 +147,7 @@ public class PopupPopulator {
             shortcuts = PopupPopulator.sortAndFilterShortcuts(shortcuts, shortcutIdToDeDupe);
             for (int i = 0; i < shortcuts.size() && i < shortcutViews.size(); i++) {
                 final ShortcutInfoCompat shortcut = shortcuts.get(i);
-                final ShortcutInfo si = new ShortcutInfo(shortcut, launcher);
+                final WorkspaceItemInfo si = new WorkspaceItemInfo(shortcut, launcher);
                 // Use unbadged icon for the menu.
                 LauncherIcons li = LauncherIcons.obtain(launcher);
                 si.applyFrom(li.createShortcutIcon(shortcut, false /* badged */));
