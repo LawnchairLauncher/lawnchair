@@ -51,6 +51,7 @@ import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.quickstep.ContentFillItemAnimator;
+import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RecentsToActivityHelper;
 import com.android.quickstep.TaskActionController;
 import com.android.quickstep.TaskAdapter;
@@ -58,6 +59,7 @@ import com.android.quickstep.TaskHolder;
 import com.android.quickstep.TaskLayoutManager;
 import com.android.quickstep.TaskListLoader;
 import com.android.quickstep.TaskSwipeCallback;
+import com.android.systemui.shared.recents.model.Task;
 
 /**
  * Root view for the icon recents view. Acts as the main interface to the rest of the Launcher code
@@ -114,7 +116,20 @@ public final class IconRecentsView extends FrameLayout {
     private boolean mTransitionedFromApp;
     private AnimatorSet mLayoutAnimation;
     private final ArraySet<View> mLayingOutViews = new ArraySet<>();
-
+    private final RecentsModel.TaskThumbnailChangeListener listener = (taskId, thumbnailData) -> {
+        TaskItemView[] itemViews = getTaskViews();
+        for (TaskItemView taskView : itemViews) {
+            TaskHolder taskHolder = (TaskHolder) mTaskRecyclerView.getChildViewHolder(taskView);
+            Task task = taskHolder.getTask();
+            if (taskHolder.getTask().key.id == taskId) {
+                // Update thumbnail on the task.
+                task.thumbnail = thumbnailData;
+                taskView.setThumbnail(thumbnailData.thumbnail);
+                return task;
+            }
+        }
+        return null;
+    };
 
     public IconRecentsView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -125,6 +140,7 @@ public final class IconRecentsView extends FrameLayout {
         mTaskAdapter = new TaskAdapter(mTaskLoader);
         mTaskActionController = new TaskActionController(mTaskLoader, mTaskAdapter);
         mTaskAdapter.setActionController(mTaskActionController);
+        RecentsModel.INSTANCE.get(context).addThumbnailChangeListener(listener);
     }
 
     @Override
