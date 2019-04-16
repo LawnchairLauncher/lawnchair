@@ -64,6 +64,9 @@ import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.view.animation.Interpolator;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
+
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
@@ -102,9 +105,6 @@ import com.android.systemui.shared.system.WindowCallbacksCompat;
 
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.UiThread;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
@@ -429,8 +429,19 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         // If we've already ended the gesture and are going home, don't prepare recents UI,
         // as that will set the state as BACKGROUND_APP, overriding the animation to NORMAL.
         if (mGestureEndTarget != HOME) {
-            mAnimationFactory = mActivityControlHelper.prepareRecentsUI(mActivity,
-                    mWasLauncherAlreadyVisible, true, this::onAnimatorPlaybackControllerCreated);
+            Runnable initAnimFactory = () -> {
+                mAnimationFactory = mActivityControlHelper.prepareRecentsUI(mActivity,
+                        mWasLauncherAlreadyVisible, true,
+                        this::onAnimatorPlaybackControllerCreated);
+            };
+            if (mWasLauncherAlreadyVisible) {
+                // Launcher is visible, but might be about to stop. Thus, if we prepare recents
+                // now, it might get overridden by moveToRestState() in onStop(). To avoid this,
+                // wait until the next gesture (and possibly launcher) starts.
+                mStateCallback.addCallback(STATE_GESTURE_STARTED, initAnimFactory);
+            } else {
+                initAnimFactory.run();
+            }
         }
         AbstractFloatingView.closeAllOpenViews(activity, mWasLauncherAlreadyVisible);
 
@@ -1044,7 +1055,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void invalidateHandlerWithLauncher() {
-        mLauncherTransitionController = null;
+        if (mLauncherTransitionController != null) {
+            if (mLauncherTransitionController.getAnimationPlayer().isStarted()) {
+                mLauncherTransitionController.getAnimationPlayer().cancel();
+            }
+            mLauncherTransitionController = null;
+        }
 
         mRecentsView.setEnableFreeScroll(true);
         mRecentsView.setRunningTaskIconScaledDown(false);
