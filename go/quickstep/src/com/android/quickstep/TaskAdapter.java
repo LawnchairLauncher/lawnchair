@@ -16,12 +16,14 @@
 package com.android.quickstep;
 
 import android.view.LayoutInflater;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.quickstep.views.TaskItemView;
 import com.android.systemui.shared.recents.model.Task;
@@ -34,14 +36,17 @@ import java.util.Optional;
  * Recycler view adapter that dynamically inflates and binds {@link TaskHolder} instances with the
  * appropriate {@link Task} from the recents task list.
  */
-public final class TaskAdapter extends Adapter<TaskHolder> {
+public final class TaskAdapter extends Adapter<ViewHolder> {
 
     public static final int CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT = 0;
     public static final int MAX_TASKS_TO_DISPLAY = 6;
 
     private static final String TAG = "TaskAdapter";
+    private static final int ITEM_TYPE_TASK = 0;
+    private static final int ITEM_TYPE_CLEAR_ALL = 1;
     private final TaskListLoader mLoader;
     private TaskActionController mTaskActionController;
+    private OnClickListener mClearAllListener;
     private boolean mIsShowingLoadingUi;
 
     public TaskAdapter(@NonNull TaskListLoader loader) {
@@ -50,6 +55,10 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
 
     public void setActionController(TaskActionController taskActionController) {
         mTaskActionController = taskActionController;
+    }
+
+    public void setOnClearAllClickListener(OnClickListener listener) {
+        mClearAllListener = listener;
     }
 
     /**
@@ -65,21 +74,32 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
     }
 
     @Override
-    public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        TaskItemView itemView = (TaskItemView) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.task_item_view, parent, false);
-        TaskHolder holder = new TaskHolder(itemView);
-        itemView.setOnClickListener(view -> mTaskActionController.launchTask(holder));
-        return holder;
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case ITEM_TYPE_TASK:
+                TaskItemView itemView = (TaskItemView) LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.task_item_view, parent, false);
+                TaskHolder taskHolder = new TaskHolder(itemView);
+                itemView.setOnClickListener(view -> mTaskActionController.launchTask(taskHolder));
+                return taskHolder;
+            case ITEM_TYPE_CLEAR_ALL:
+                Button clearView = (Button) LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.clear_all_button, parent, false);
+                ClearAllHolder clearAllHolder = new ClearAllHolder(clearView);
+                clearView.setOnClickListener(mClearAllListener);
+                return clearAllHolder;
+            default:
+                throw new IllegalArgumentException("No known holder for item type: " + viewType);
+        }
     }
 
     @Override
-    public void onBindViewHolder(TaskHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         onBindViewHolderInternal(holder, position, false /* willAnimate */);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TaskHolder holder, int position,
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position,
             @NonNull List<Object> payloads) {
         if (payloads.isEmpty()) {
             super.onBindViewHolder(holder, position, payloads);
@@ -95,40 +115,60 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
         }
     }
 
-    private void onBindViewHolderInternal(@NonNull TaskHolder holder, int position,
+    private void onBindViewHolderInternal(@NonNull ViewHolder holder, int position,
             boolean willAnimate) {
-        if (mIsShowingLoadingUi) {
-            holder.bindEmptyUi();
-            return;
+        int itemType = getItemViewType(position);
+        switch (itemType) {
+            case ITEM_TYPE_TASK:
+                TaskHolder taskHolder = (TaskHolder) holder;
+                if (mIsShowingLoadingUi) {
+                    taskHolder.bindEmptyUi();
+                    return;
+                }
+                List<Task> tasks = mLoader.getCurrentTaskList();
+                if (position >= tasks.size()) {
+                    // Task list has updated.
+                    return;
+                }
+                Task task = tasks.get(position);
+                taskHolder.bindTask(task, willAnimate /* willAnimate */);
+                mLoader.loadTaskIconAndLabel(task, () -> {
+                    // Ensure holder still has the same task.
+                    if (Objects.equals(Optional.of(task), taskHolder.getTask())) {
+                        taskHolder.getTaskItemView().setIcon(task.icon);
+                        taskHolder.getTaskItemView().setLabel(task.titleDescription);
+                    }
+                });
+                mLoader.loadTaskThumbnail(task, () -> {
+                    if (Objects.equals(Optional.of(task), taskHolder.getTask())) {
+                        taskHolder.getTaskItemView().setThumbnail(task.thumbnail.thumbnail);
+                    }
+                });
+                break;
+            case ITEM_TYPE_CLEAR_ALL:
+                // Nothing to bind.
+                break;
+            default:
+                throw new IllegalArgumentException("No known holder for item type: " + itemType);
         }
-        List<Task> tasks = mLoader.getCurrentTaskList();
-        if (position >= tasks.size()) {
-            // Task list has updated.
-            return;
-        }
-        Task task = tasks.get(position);
-        holder.bindTask(task, willAnimate /* willAnimate */);
-        mLoader.loadTaskIconAndLabel(task, () -> {
-            // Ensure holder still has the same task.
-            if (Objects.equals(Optional.of(task), holder.getTask())) {
-                holder.getTaskItemView().setIcon(task.icon);
-                holder.getTaskItemView().setLabel(task.titleDescription);
-            }
-        });
-        mLoader.loadTaskThumbnail(task, () -> {
-            if (Objects.equals(Optional.of(task), holder.getTask())) {
-                holder.getTaskItemView().setThumbnail(task.thumbnail.thumbnail);
-            }
-        });
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        // Bottom is always clear all button.
+        return (position == 0) ? ITEM_TYPE_CLEAR_ALL : ITEM_TYPE_TASK;
     }
 
     @Override
     public int getItemCount() {
+        // Always at least one for clear all button.
+        int itemCount = 1;
         if (mIsShowingLoadingUi) {
             // Show loading version of all items.
-            return MAX_TASKS_TO_DISPLAY;
+            itemCount += MAX_TASKS_TO_DISPLAY;
         } else {
-            return Math.min(mLoader.getCurrentTaskList().size(), MAX_TASKS_TO_DISPLAY);
+            itemCount += Math.min(mLoader.getCurrentTaskList().size(), MAX_TASKS_TO_DISPLAY);
         }
+        return itemCount;
     }
 }
