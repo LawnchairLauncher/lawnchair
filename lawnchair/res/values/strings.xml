@@ -585,4 +585,6 @@
     <string name="pref_fonts_add_fonts">Add fonts</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported</string>
     <string name="pref_fonts_missing_font">Missing font</string>
+
+    <string name="about_translate">Translations</string>
 </resources>
