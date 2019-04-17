@@ -18,9 +18,6 @@ package com.android.quickstep.views;
 import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
 
 import static com.android.quickstep.TaskAdapter.CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT;
-import static com.android.quickstep.views.TaskLayoutUtils.getClearAllButtonHeight;
-import static com.android.quickstep.views.TaskLayoutUtils.getClearAllButtonTopBottomMargin;
-import static com.android.quickstep.views.TaskLayoutUtils.getClearAllButtonWidth;
 import static com.android.quickstep.views.TaskLayoutUtils.getTaskListHeight;
 
 import android.animation.Animator;
@@ -114,7 +111,6 @@ public final class IconRecentsView extends FrameLayout {
     private View mShowingContentView;
     private View mEmptyView;
     private View mContentView;
-    private View mClearAllView;
     private boolean mTransitionedFromApp;
     private AnimatorSet mLayoutAnimation;
     private final ArraySet<View> mLayingOutViews = new ArraySet<>();
@@ -141,6 +137,7 @@ public final class IconRecentsView extends FrameLayout {
         mDeviceProfile = activity.getDeviceProfile();
         mTaskLoader = new TaskListLoader(mContext);
         mTaskAdapter = new TaskAdapter(mTaskLoader);
+        mTaskAdapter.setOnClearAllClickListener(view -> animateClearAllTasks());
         mTaskActionController = new TaskActionController(mTaskLoader, mTaskAdapter);
         mTaskAdapter.setActionController(mTaskActionController);
         RecentsModel.INSTANCE.get(context).addThumbnailChangeListener(listener);
@@ -178,7 +175,7 @@ public final class IconRecentsView extends FrameLayout {
                     () -> mTaskRecyclerView.setItemAnimator(new DefaultItemAnimator()));
 
             mEmptyView = findViewById(R.id.recent_task_empty_view);
-            mContentView = findViewById(R.id.recent_task_content_view);
+            mContentView = mTaskRecyclerView;
             mTaskAdapter.registerAdapterDataObserver(new AdapterDataObserver() {
                 @Override
                 public void onChanged() {
@@ -190,16 +187,7 @@ public final class IconRecentsView extends FrameLayout {
                     updateContentViewVisibility();
                 }
             });
-            // TODO: Move clear all button to recycler view so that it can scroll off screen.
             // TODO: Move layout param logic into onMeasure
-            mClearAllView = findViewById(R.id.clear_all_button);
-            MarginLayoutParams clearAllParams =
-                    (MarginLayoutParams) mClearAllView.getLayoutParams();
-            clearAllParams.height = getClearAllButtonHeight(mDeviceProfile);
-            clearAllParams.width = getClearAllButtonWidth(mDeviceProfile);
-            clearAllParams.topMargin = getClearAllButtonTopBottomMargin(mDeviceProfile);
-            clearAllParams.bottomMargin = getClearAllButtonTopBottomMargin(mDeviceProfile);
-            mClearAllView.setOnClickListener(v -> animateClearAllTasks());
         }
     }
 
@@ -210,7 +198,7 @@ public final class IconRecentsView extends FrameLayout {
         for (TaskItemView itemView : itemViews) {
             itemView.setEnabled(enabled);
         }
-        mClearAllView.setEnabled(enabled);
+        // TODO: Disable clear all button.
     }
 
     /**
@@ -365,6 +353,7 @@ public final class IconRecentsView extends FrameLayout {
      * @return array of attached task item views
      */
     private TaskItemView[] getTaskViews() {
+        // TODO: Check that clear all button isn't here..
         int taskCount = mTaskRecyclerView.getChildCount();
         TaskItemView[] itemViews = new TaskItemView[taskCount];
         for (int i = 0; i < taskCount; i ++) {
