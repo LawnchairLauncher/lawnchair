@@ -18,11 +18,12 @@ package com.android.quickstep;
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.android.quickstep.views.TaskItemView;
 import com.android.systemui.shared.recents.model.Task;
+
+import java.util.Optional;
 
 /**
  * A recycler view holder that holds the task view and binds {@link Task} content (app title, icon,
@@ -81,7 +82,7 @@ public final class TaskHolder extends ViewHolder {
      *
      * @return the current task
      */
-    public @Nullable Task getTask() {
-        return mTask;
+    public Optional<Task> getTask() {
+        return Optional.ofNullable(mTask);
     }
 }
