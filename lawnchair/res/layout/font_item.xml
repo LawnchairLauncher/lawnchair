@@ -16,18 +16,52 @@
   ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/font_item"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:gravity="center"
+    android:minHeight="?android:attr/listPreferredItemHeightSmall">
+
+    <FrameLayout
+        android:layout_width="@dimen/dashboard_tile_image_size"
+        android:layout_height="@dimen/dashboard_tile_image_size"
+        android:layout_marginStart="@dimen/dashboard_tile_image_margin"
+        android:layout_marginEnd="@dimen/dashboard_tile_image_margin">
+
+        <RadioButton
+            android:id="@+id/radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="false" />
+    </FrameLayout>
 
     <TextView
         android:id="@android:id/title"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:padding="16dp"
-        android:textSize="24sp"
+        android:layout_weight="1"
+        android:textAppearance="@style/SettingsTheme.PreferenceTheme.Preference.Title"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         tools:text="Open Sans Regular"/>
-</FrameLayout>
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="end" />
+
+    <ImageView
+        android:id="@+id/delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="26dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:srcCompat="@drawable/ic_uninstall_no_shadow"/>
+</LinearLayout>

@@ -120,6 +120,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     // Smartspace
     val enableSmartspace by BooleanPref("pref_smartspace", context.resources.getBoolean(R.bool.config_enable_smartspace))
     val smartspaceTime by BooleanPref("pref_smartspace_time", false, refreshGrid)
+    val smartspaceTimeAbove by BooleanPref("pref_smartspace_time_above", false, refreshGrid)
     val smartspaceTime24H by BooleanPref("pref_smartspace_time_24_h", false, refreshGrid)
     val smartspaceDate by BooleanPref("pref_smartspace_date", true, refreshGrid)
     var smartspaceWidgetId by IntPref("smartspace_widget_id", -1, doNothing)
@@ -175,11 +176,17 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val showActions by BooleanPref("pref_show_suggested_actions", true, doNothing)
 
     // Dev
-    var developerOptionsKey by StringPref("pref_developerOptionsKey", "", doNothing)
+    private var developerOptionsKey by StringPref("pref_developerOptionsKey", "", doNothing)
     var developerOptionsEnabled
         get() = developerOptionsKey == Settings.Secure.ANDROID_ID
         set(value) {
             developerOptionsKey = if (value) Settings.Secure.ANDROID_ID else ""
+        }
+    private var wipOptionsKey by StringPref("pref_wipOptionsKey", "", doNothing)
+    var wipOptionsEnabled
+        get() = wipOptionsKey == Settings.Secure.ANDROID_ID
+        set(value) {
+            wipOptionsKey = if (value) Settings.Secure.ANDROID_ID else ""
         }
     val showDebugInfo by BooleanPref("pref_showDebugInfo", false, doNothing)
     val alwaysClearIconCache by BooleanPref("pref_alwaysClearIconCache", false, restart)

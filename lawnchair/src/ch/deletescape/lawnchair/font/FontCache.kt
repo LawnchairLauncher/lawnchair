@@ -20,6 +20,7 @@ package ch.deletescape.lawnchair.font
 import android.content.Context
 import android.content.res.AssetManager
 import android.graphics.Typeface
+import android.net.Uri
 import android.support.annotation.Keep
 import android.support.v4.provider.FontRequest
 import android.support.v4.provider.FontsContractCompat
@@ -30,6 +31,8 @@ import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.R
 import org.json.JSONObject
+import java.io.File
+import java.lang.Exception
 
 class FontCache(private val context: Context) {
 
@@ -50,9 +53,19 @@ class FontCache(private val context: Context) {
         return fontLoaders.getOrPut(font) { FontLoader(font) }
     }
 
+    class Family(val displayName: String, val variants: Map<String, Font>) {
+
+        constructor(font: Font) : this(font.displayName, mapOf(Pair("regular", font)))
+
+        val default = variants.getOrElse("regular") { variants.values.first() }
+    }
+
     abstract class Font {
 
+        abstract val fullDisplayName: String
         abstract val displayName: String
+        open val familySorter get() = fullDisplayName
+        open val isAvailable get() = true
 
         abstract fun load(callback: LoadCallback)
 
@@ -83,9 +96,10 @@ class FontCache(private val context: Context) {
         }
     }
 
-    abstract class TypefaceFont(private val typeface: Typeface?) : Font() {
+    abstract class TypefaceFont(protected val typeface: Typeface?) : Font() {
 
-        override val displayName = typeface.toString()
+        override val fullDisplayName = typeface.toString()
+        override val displayName get() = fullDisplayName
 
         override fun load(callback: LoadCallback) {
             callback.onFontLoaded(typeface)
@@ -96,7 +110,7 @@ class FontCache(private val context: Context) {
         }
 
         override fun hashCode(): Int {
-            return displayName.hashCode()
+            return fullDisplayName.hashCode()
         }
     }
 
@@ -122,13 +136,61 @@ class FontCache(private val context: Context) {
         }
     }
 
+    class TTFFont(context: Context, private val file: File) :
+            TypefaceFont(createTypeface(file)) {
+
+        private val actualName: String = Uri.decode(file.name)
+        override val isAvailable = typeface != null
+        override val fullDisplayName: String = if (typeface == null)
+            context.getString(R.string.pref_fonts_missing_font) else actualName
+
+        fun delete() = file.delete()
+
+        override fun saveToJson(obj: JSONObject) {
+            super.saveToJson(obj)
+            obj.put(KEY_FONT_NAME, fullDisplayName)
+        }
+
+        override fun equals(other: Any?): Boolean {
+            return other is TTFFont && actualName == other.actualName
+        }
+
+        override fun hashCode() = actualName.hashCode()
+
+        companion object {
+
+            fun createTypeface(file: File): Typeface? {
+                return try {
+                    Typeface.createFromFile(file)
+                } catch (e: Exception) {
+                    null
+                }
+            }
+
+            fun getFontsDir(context: Context): File {
+                return File(context.filesDir, "customFonts").apply { mkdirs() }
+            }
+
+            fun getFile(context: Context, name: String): File {
+                return File(getFontsDir(context), Uri.encode(name))
+            }
+
+            @Keep
+            @JvmStatic
+            fun fromJson(context: Context, obj: JSONObject): Font {
+                val fontName = obj.getString(KEY_FONT_NAME)
+                return TTFFont(context, getFile(context, fontName))
+            }
+        }
+    }
+
     class SystemFont(
             val family: String,
             val style: Int = Typeface.NORMAL) : TypefaceFont(Typeface.create(family, style)) {
 
         private val hashCode = "SystemFont|$family|$style".hashCode()
 
-        override val displayName = family
+        override val fullDisplayName = family
 
         override fun saveToJson(obj: JSONObject) {
             super.saveToJson(obj)
@@ -162,7 +224,7 @@ class FontCache(private val context: Context) {
 
         private val hashCode = "AssetFont|$name".hashCode()
 
-        override val displayName = name
+        override val fullDisplayName = name
 
         override fun equals(other: Any?): Boolean {
             return other is AssetFont && name == other.name
@@ -180,14 +242,17 @@ class FontCache(private val context: Context) {
 
         private val hashCode = "GoogleFont|$family|$variant".hashCode()
 
-        override val displayName = createDisplayName()
+        override val displayName = createVariantName()
+        override val fullDisplayName = "$family $displayName"
+        override val familySorter = "${GoogleFontsListing.getWeight(variant)}${GoogleFontsListing.isItalic(variant)}"
 
-        private fun createDisplayName(): String {
+        private fun createVariantName(): String {
+            if (variant == "italic") return context.getString(R.string.font_variant_italic)
             val weight = GoogleFontsListing.getWeight(variant)
             val weightString = FontCache.getInstance(context).weightNameMap[weight] ?: weight
             val italicString = if (GoogleFontsListing.isItalic(variant))
                 " " + context.getString(R.string.font_variant_italic) else ""
-            return "$family $weightString$italicString"
+            return "$weightString$italicString"
         }
 
         override fun load(callback: LoadCallback) {
@@ -242,5 +307,6 @@ class FontCache(private val context: Context) {
         private const val KEY_FAMILY_NAME = "family"
         private const val KEY_STYLE = "style"
         private const val KEY_VARIANT = "variant"
+        private const val KEY_FONT_NAME = "font"
     }
 }

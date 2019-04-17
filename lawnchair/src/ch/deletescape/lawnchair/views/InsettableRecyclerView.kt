@@ -26,14 +26,8 @@ open class InsettableRecyclerView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : SpringRecyclerView(context, attrs, defStyleAttr), Insettable {
 
-    private var inflationDone = false
-
     private val currentInsets = Rect()
-
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-        inflationDone = true
-    }
+    private val currentPadding = Rect()
 
     override fun setInsets(insets: Rect) {
         super.setPadding(
@@ -45,9 +39,11 @@ open class InsettableRecyclerView @JvmOverloads constructor(
     }
 
     override fun setPadding(left: Int, top: Int, right: Int, bottom: Int) {
-        if (!inflationDone) {
-            super.setPadding(left, top, right, bottom)
-            currentInsets.setEmpty()
-        }
+        super.setPadding(
+                paddingLeft + left - currentPadding.left,
+                paddingTop + top - currentPadding.top,
+                paddingRight + right - currentPadding.right,
+                paddingBottom + bottom - currentPadding.bottom)
+        currentPadding.set(left, top, right, bottom)
     }
 }

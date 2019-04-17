@@ -7,7 +7,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0-alpha10'
+        classpath 'com.android.tools.build:gradle:3.5.0-alpha11'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.8'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
@@ -87,7 +87,16 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard.flags'
+            if (System.getenv("CI_BUILD") == "true") {
+                if (System.getenv("CI_EVENT_TYPE") != "pull_request") {
+                    signingConfig signingConfigs.ci
+                }
+            }
         }
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
     }
 
     kotlinOptions {
@@ -142,13 +151,6 @@ android {
         }
     }
 
-    // Disable release builds for now
-    android.variantFilter { variant ->
-        if (variant.buildType.name.endsWith('release')) {
-            variant.setIgnore(true);
-        }
-    }
-
     sourceSets {
         main {
             res.srcDirs = ['res']
@@ -168,6 +170,10 @@ android {
         }
 
         optimized {
+            manifest.srcFile "AndroidManifest.xml"
+        }
+
+        release {
             manifest.srcFile "AndroidManifest.xml"
         }
 

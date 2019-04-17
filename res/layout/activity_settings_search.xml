@@ -90,10 +90,12 @@
                 android:background="?android:attr/selectableItemBackground"
                 android:theme="?android:attr/actionBarTheme"
                 app:contentInsetStartWithNavigation="0dp">
-                <SearchView
+                <ch.deletescape.lawnchair.settings.ui.search.SettingsSearchView
                     android:id="@+id/search_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:paddingStart="-2dp"
+                    android:paddingEnd="0dp"
                     android:iconifiedByDefault="false"
                     android:imeOptions="actionSearch|flagNoExtractUi"
                     android:searchIcon="@null"/>

@@ -30,28 +30,27 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceFragment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.XmlRes;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceFragmentCompat.OnPreferenceDisplayDialogCallback;
 import android.support.v7.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCallback;
 import android.support.v7.preference.PreferenceGroup;
 import android.support.v7.preference.PreferenceRecyclerViewAccessibilityDelegate;
 import android.support.v7.preference.PreferenceScreen;
 import android.support.v7.preference.TwoStatePreference;
 import android.support.v7.preference.internal.AbstractMultiSelectListPreference;
-import android.support.v7.view.menu.BaseMenuPresenter;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
@@ -95,7 +94,6 @@ import com.google.android.apps.nexuslauncher.reflection.ReflectionClient;
 import java.io.IOException;
 import java.util.Objects;
 import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -104,7 +102,8 @@ import org.jetbrains.annotations.Nullable;
  * Settings activity for Launcher.
  */
 public class SettingsActivity extends SettingsBaseActivity implements
-        OnPreferenceStartFragmentCallback, OnBackStackChangedListener, OnClickListener {
+        OnPreferenceStartFragmentCallback, OnPreferenceDisplayDialogCallback,
+        OnBackStackChangedListener, OnClickListener {
 
     public static final String EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key";
 
@@ -133,6 +132,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
     private boolean isSubSettings;
     protected boolean forceSubSettings = false;
 
+    private boolean hasPreview = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         savedInstanceState = getRelaunchInstanceState(savedInstanceState);
@@ -140,6 +141,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         String fragmentName = getIntent().getStringExtra(EXTRA_FRAGMENT);
         int content = getIntent().getIntExtra(SubSettingsFragment.CONTENT_RES_ID, 0);
         isSubSettings = content != 0 || fragmentName != null || forceSubSettings;
+        hasPreview = getIntent().getBooleanExtra(SubSettingsFragment.HAS_PREVIEW, false);
 
         boolean showSearch = shouldShowSearch();
 
@@ -163,6 +165,19 @@ public class SettingsActivity extends SettingsBaseActivity implements
         if (showSearch) {
             Toolbar toolbar = findViewById(R.id.search_action_bar);
             toolbar.setOnClickListener(this);
+        }
+
+        if (hasPreview) {
+            overrideOpenAnim();
+        }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+
+        if (hasPreview) {
+            overrideCloseAnim();
         }
     }
 
@@ -274,7 +289,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
     @NotNull
     @Override
     protected ThemeSet getThemeSet() {
-        if (getIntent().getBooleanExtra(SubSettingsFragment.HAS_PREVIEW, false)) {
+        if (hasPreview) {
             return new ThemeOverride.SettingsTransparent();
         } else {
             return super.getThemeSet();
@@ -300,6 +315,17 @@ public class SettingsActivity extends SettingsBaseActivity implements
             startFragment(this, preference.getFragment(), preference.getExtras(), preference.getTitle());
         }
         return true;
+    }
+
+    @Override
+    public boolean onPreferenceDisplayDialog(@NonNull PreferenceFragmentCompat caller,
+            Preference pref) {
+        if (ENABLE_MINUS_ONE_PREF.equals(pref.getKey())) {
+            InstallFragment fragment = new InstallFragment();
+            fragment.show(getSupportFragmentManager(), BRIDGE_TAG);
+            return true;
+        }
+        return false;
     }
 
     private void updateUpButton() {

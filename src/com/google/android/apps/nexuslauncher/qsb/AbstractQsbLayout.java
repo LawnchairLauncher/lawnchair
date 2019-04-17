@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -17,6 +18,7 @@ import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.InsetDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Process;
@@ -390,7 +392,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         int i;
         int i2;
         int dG;
-        InsetDrawable insetDrawable = (InsetDrawable) getResources().getDrawable(R.drawable.bg_qsb_click_feedback).mutate();
+        InsetDrawable insetDrawable = (InsetDrawable) createRipple().mutate();
         RippleDrawable rippleDrawable = (RippleDrawable) insetDrawable.getDrawable();
         if (this.mIsRtl) {
             dF = dF();
@@ -420,6 +422,26 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         }
         this.mMicIconView.setPadding(i2, 0, dG, 0);
         this.mMicIconView.requestLayout();
+    }
+
+    private InsetDrawable createRipple() {
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        shape.setCornerRadius(getCornerRadius());
+        shape.setColor(ContextCompat.getColor(getContext(), android.R.color.white));
+
+        ColorStateList rippleColor = ContextCompat.getColorStateList(getContext(), R.color.focused_background);
+        RippleDrawable ripple = new RippleDrawable(rippleColor, null, shape);
+        return new InsetDrawable(ripple, getResources().getDimensionPixelSize(R.dimen.qsb_shadow_margin));
+    }
+
+    private float getCornerRadius() {
+        TypedValue edgeRadius = FolderShape.sInstance.mAttrs.get(R.attr.qsbEdgeRadius);
+        if (edgeRadius != null) {
+            return edgeRadius.getDimension(getResources().getDisplayMetrics());
+        } else {
+            return Utilities.pxFromDp(100, getResources().getDisplayMetrics());
+        }
     }
 
     public boolean dI() {

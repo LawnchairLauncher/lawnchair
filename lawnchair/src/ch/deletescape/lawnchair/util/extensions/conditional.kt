@@ -15,17 +15,16 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.deletescape.lawnchair.settings.ui.controllers
+package ch.deletescape.lawnchair.util.extensions
 
-import android.content.Context
-import android.support.annotation.Keep
-import ch.deletescape.lawnchair.settings.ui.PreferenceController
-import com.android.launcher3.util.PackageManagerHelper
+inline fun <T> whenEnabled(flag: Boolean, block: () -> T) = if (flag) block() else null
 
-@Keep
-class ActionSuggestionsController(context: Context) : PreferenceController(context) {
+inline fun <T> Boolean.whenTrue(block: () -> T) = if (this) block() else null
 
-    private val asPackage = "com.google.android.as"
+inline infix fun <T: Any> Boolean.then(block: () -> T) = if (this) block() else null
 
-    override val isVisible by lazy { PackageManagerHelper.isAppEnabled(context.packageManager, asPackage, 0) }
-}
+inline infix fun <T: Any> Boolean.then(value: T) = if (this) value else null
+
+inline infix fun <T> T.or(block: () -> T) = this ?: block()
+
+inline infix fun <T> T.or(value: T) = this ?: value

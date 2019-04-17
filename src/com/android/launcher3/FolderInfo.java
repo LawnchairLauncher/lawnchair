@@ -244,8 +244,11 @@ public class FolderInfo extends ItemInfo {
             if (!entry.getIcon().equals(cachedIcon)) {
                 IconPack pack = IconPackManager.Companion.getInstance(launcher)
                         .getIconPack(entry.getPackPackageName(), false, true);
-                cached = pack.getIcon(entry.getIcon(), launcher.mDeviceProfile.inv.fillResIconDpi);
-                cachedIcon = entry.getIcon();
+                if (pack != null) {
+                    cached = pack
+                            .getIcon(entry.getIcon(), launcher.mDeviceProfile.inv.fillResIconDpi);
+                    cachedIcon = entry.getIcon();
+                }
             }
             if (cached != null) {
                 return cached.mutate();

@@ -79,7 +79,7 @@
         android:key="gestures"
         app:content="@xml/lawnchair_gesture_preferences"
         android:layout="@layout/home_preference" />
-    s
+
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:key="quickstep"
         android:summary="@string/quickstep_pref_summary"

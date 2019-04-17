@@ -100,7 +100,7 @@
     <string name="backup_loading">Loading...</string>
     <string name="backup_invalid">Incorrect backup file</string>
     
-    <string name="backup_delete">Hide</string>
+    <string name="backup_delete">Delete</string>
     <string name="backup_delete_failed">Something went wrong</string>
     <string name="backup_share">Share</string>
     <string name="backup_pref_summary">Save home screen, restore backups</string>
@@ -232,7 +232,7 @@
     <string name="about_role_designer">Designer</string>
     
     <string name="about_role_ui_ux_designer">UI/UX designer</string>
-    <string name="about_role_special_snowflake">PR manager/moderator</string>
+    <string name="about_role_special_snowflake">Social Media/PR &amp; OEM relations</string>
     <string name="about_role_mod_support">Moderator/support</string>
     <string name="about_role_family_member">Family member</string>
     
@@ -242,7 +242,7 @@
     <string name="about_bio_recoded">Mild coder and graphics designer.</string>
     
     <string name="about_bio_josh">Freelance graphic designer.</string>
-    <string name="about_bio_chris">Creative Mind, Influencer &amp; Content Creator. Social Media and PR Manager.</string>
+    <string name="about_bio_chris">Millenial af, idk and idc. Something with design and social media. Let\'s hang out together over at @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">Core developer at halogenOS and application developer at substratum.</string>
 
     <!--Marker E-->
@@ -371,8 +371,8 @@
     <string name="automatic_short">Auto</string>
     <string name="playstore_query_icon_pack">Icon pack</string>
 
-    <string name="bridge_missing_title">Rootless Pixel Bridge</string>
-    <string name="bridge_missing_message">Install or update Rootless Pixel Bridge </string>
+    <string name="bridge_missing_title">Lawnfeed</string>
+    <string name="bridge_missing_message">Install or update Lawnfeed</string>
     <string name="quickstep_pref_title">Recents</string>
     <string name="quickstep_pref_summary">Gestures, corners, blur</string>
     
@@ -550,6 +550,7 @@
 	
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
+    <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">OnePlus Weather</string>
     <string name="overlap_placement">Overlapped placement</string>
     <string name="overlap_placement_summary">Allow icons and widgets to overlap each other.</string>
@@ -561,4 +562,30 @@
     <string name="units_romer">Rømer</string>
 
     <string name="owm_get_your_own_key">Please get your own API key from api.openweathermap.org</string>
+
+    <string name="pref_smartspace_time_above">Show large clock</string>
+    <string name="pref_smartspace_time_above_summary">Show the clock above the widget</string>
+
+    <string name="pref_fonts_title">Fonts</string>
+    <string name="pref_fonts_summary">Change the font of different elements</string>
+
+    <string name="pref_fonts_global_font">Global font</string>
+    <string name="pref_fonts_change_global_font">Change</string>
+
+    <string name="pref_fonts_category_home">Home screen</string>
+    <string name="pref_fonts_home_icons">App &amp; folder names</string>
+    <string name="pref_fonts_home_smartspace">\'At a Glance\' widget</string>
+    <string name="pref_fonts_home_shortcuts">Shortcuts bubbles</string>
+
+    <string name="pref_fonts_category_drawer">Drawer</string>
+    <string name="pref_fonts_drawer_icons">App names</string>
+    <string name="pref_fonts_drawer_app_actions_icons">App action names</string>
+    <string name="pref_fonts_drawer_tabs">Tab names</string>
+
+    <string name="pref_fonts_find_fonts">Find fonts</string>
+    <string name="pref_fonts_add_fonts">Add fonts</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported</string>
+    <string name="pref_fonts_missing_font">Missing font</string>
+
+    <string name="about_translate">Translations</string>
 </resources>

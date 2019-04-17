@@ -34,7 +34,6 @@ import android.text.TextUtils
 import android.view.MenuItem
 import android.widget.*
 import ch.deletescape.lawnchair.LawnchairPreferences
-import ch.deletescape.lawnchair.isChild
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY
@@ -178,6 +177,7 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
                     (slice.parent as? ViewGroup)?.removeView(slice)
                     sliceView.removeAllViews()
                     sliceView.addView(slice)
+                    sliceView.isVisible = true
                 } else {
                     sliceView.isVisible = false
                 }
@@ -186,6 +186,7 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
                     (slice.parent as? ViewGroup)?.removeView(slice)
                     horizontalSliceView.removeAllViews()
                     horizontalSliceView.addView(slice)
+                    horizontalSliceView.isVisible = true
                 } else {
                     horizontalSliceView.isVisible = false
                 }
@@ -256,6 +257,11 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
                 Pair("!!restart", { _ -> prefs.restart() }),
                 Pair("!!peru", { it ->
                     prefs.developerOptionsEnabled = !prefs.developerOptionsEnabled
+                    it.startActivity(Intent(it, SettingsActivity::class.java)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                }),
+                Pair("!!veryperu", { it ->
+                    prefs.wipOptionsEnabled = !prefs.wipOptionsEnabled
                     it.startActivity(Intent(it, SettingsActivity::class.java)
                             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
                 }),

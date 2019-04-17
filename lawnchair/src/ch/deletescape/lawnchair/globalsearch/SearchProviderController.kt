@@ -112,7 +112,8 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
                 YandexSearchProvider(context),
                 QwantSearchProvider(context),
                 SearchLiteSearchProvider(context),
-                CoolSearchSearchProvider(context)
+                CoolSearchSearchProvider(context),
+                EdgeSearchProvider(context)
         ).filter { it.isAvailable }
     }
 }

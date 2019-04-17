@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair
 
 import android.app.Activity
+import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
@@ -26,10 +27,13 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.*
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.InsetDrawable
 import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.ShapeDrawable
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.provider.OpenableColumns
 import android.support.animation.FloatPropertyCompat
 import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
@@ -98,6 +102,11 @@ val Context.lawnchairPrefs get() = Utilities.getLawnchairPrefs(this)
 val Context.hasStoragePermission
     get() = PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(
             this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+
+@ColorInt
+fun Context.getColorEngineAccent(): Int {
+    return ColorEngine.getInstance(this).accent
+}
 
 @ColorInt
 fun Context.getColorAccent(): Int {
@@ -656,4 +665,83 @@ fun String.asNonEmpty(): String? {
 fun createRipple(foreground: Int, background: Int): RippleDrawable {
     val rippleColor = ColorStateList.valueOf(ColorUtils.setAlphaComponent(foreground, 31))
     return RippleDrawable(rippleColor, ShapeDrawable().apply { paint.color = background }, ShapeDrawable())
+}
+
+fun Context.createColoredButtonBackground(color: Int): Drawable {
+    val shape = getDrawable(R.drawable.colored_button_shape)!!
+    shape.setTintList(ColorStateList(arrayOf(
+            intArrayOf(-android.R.attr.state_enabled),
+            intArrayOf()),
+            intArrayOf(
+                    getDisabled(getColorAttr(R.attr.colorButtonNormal)),
+                    color)))
+    val highlight = getColorAttr(R.attr.colorControlHighlight)
+    val ripple = RippleDrawable(ColorStateList.valueOf(highlight), shape, null)
+    val insetHorizontal = resources.getDimensionPixelSize(R.dimen.abc_button_inset_horizontal_material)
+    val insetVertical = resources.getDimensionPixelSize(R.dimen.abc_button_inset_vertical_material)
+    return InsetDrawable(ripple, insetHorizontal, insetVertical, insetHorizontal, insetVertical)
+}
+
+fun Context.createDisabledColor(color: Int): ColorStateList {
+    return ColorStateList(arrayOf(
+            intArrayOf(-android.R.attr.state_enabled),
+            intArrayOf()),
+            intArrayOf(
+                    getDisabled(getColorAttr(android.R.attr.colorForeground)),
+                    color))
+}
+
+class ViewGroupChildIterator(private val viewGroup: ViewGroup, private var current: Int) : ListIterator<View> {
+
+    override fun hasNext() = current < viewGroup.childCount
+
+    override fun next() = viewGroup.getChildAt(current++)!!
+
+    override fun nextIndex() = current
+
+    override fun hasPrevious() = current > 0
+
+    override fun previous() = viewGroup.getChildAt(current--)!!
+
+    override fun previousIndex() = current - 1
+}
+
+class ViewGroupChildList(private val viewGroup: ViewGroup) : List<View> {
+
+    override val size get() = viewGroup.childCount
+
+    override fun isEmpty() = size == 0
+
+    override fun contains(element: View): Boolean {
+        return any { it === element }
+    }
+
+    override fun containsAll(elements: Collection<View>): Boolean {
+        return elements.all { contains(it) }
+    }
+
+    override fun get(index: Int) = viewGroup.getChildAt(index)!!
+
+    override fun indexOf(element: View) = indexOfFirst { it === element }
+
+    override fun lastIndexOf(element: View) = indexOfLast { it === element }
+
+    override fun iterator() = listIterator()
+
+    override fun listIterator() = listIterator(0)
+
+    override fun listIterator(index: Int) = ViewGroupChildIterator(viewGroup, index)
+
+    override fun subList(fromIndex: Int, toIndex: Int) = ArrayList(this).subList(fromIndex, toIndex)
+}
+
+val ViewGroup.childs get() = ViewGroupChildList(this)
+
+fun ContentResolver.getDisplayName(uri: Uri): String? {
+    query(uri, null, null, null, null)?.use { cursor ->
+        if (cursor.moveToFirst()) {
+            return cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+        }
+    }
+    return null
 }

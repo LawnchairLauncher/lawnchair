@@ -247,6 +247,7 @@
 
 <!-- Pixel -->
     <dimen name="smartspace_title_size">24dp</dimen>
+    <dimen name="smartspace_clock_above_size">40dp</dimen>
     <dimen name="smartspace_title_min_size">14dp</dimen>
     <dimen name="smartspace_horizontal_padding">56dp</dimen>
     <dimen name="smartspace_title_sep_width">1dp</dimen>

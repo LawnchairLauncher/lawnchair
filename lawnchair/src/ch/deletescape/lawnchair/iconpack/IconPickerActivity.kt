@@ -47,7 +47,8 @@ import java.util.concurrent.Semaphore
 class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, SearchView.OnQueryTextListener, View.OnFocusChangeListener {
     private val iconPackManager = IconPackManager.getInstance(this)
     private val iconGrid by lazy { findViewById<RecyclerView>(R.id.iconGrid) }
-    private val iconPack by lazy { iconPackManager.getIconPack(intent.getStringExtra(EXTRA_ICON_PACK), false) }
+    private val iconPack by lazy { iconPackManager.getIconPack(
+            intent.getParcelableExtra<IconPackManager.PackProvider>(EXTRA_ICON_PACK), false) }
     private val items get() = searchItems ?: actualItems
     private var actualItems = ArrayList<AdapterItem>()
     private val adapter = IconGridAdapter()
@@ -115,7 +116,7 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
         val newItems = entries.mapNotNull {
             when (it) {
                 is IconPack.CategoryTitle -> CategoryItem(it.title)
-                is IconPack.Entry -> IconItem(it)
+                is IconPack.Entry -> if (it.isAvailable) IconItem(it) else null
                 else -> null
             }
         }
@@ -387,9 +388,9 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
 
         private const val EXTRA_ICON_PACK = "pack"
 
-        fun newIntent(context: Context, packageName: String): Intent {
+        fun newIntent(context: Context, provider: IconPackManager.PackProvider): Intent {
             return Intent(context, IconPickerActivity::class.java).apply {
-                putExtra(EXTRA_ICON_PACK, packageName)
+                putExtra(EXTRA_ICON_PACK, provider)
             }
         }
     }

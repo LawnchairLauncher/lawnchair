@@ -78,6 +78,12 @@
             android:title="@string/pref_accent_color"
             app:resolvers="@array/resolvers_accent"/>
 
+        <ch.deletescape.lawnchair.settings.ui.SubPreference
+            android:key="fonts"
+            android:title="@string/pref_fonts_title"
+            android:summary="@string/pref_fonts_summary"
+            app:content="@xml/lawnchair_fonts_preference_v2"/>
+
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="@bool/config_default_enable_blur"
             android:key="pref_enableBlur"

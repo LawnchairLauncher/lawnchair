@@ -33,7 +33,7 @@ class SmartspacePreview(context: Context, attrs: AttributeSet?) :
     private val prefs = Utilities.getLawnchairPrefs(context)
     private val enable = prefs::enableSmartspace
     private val usePillQsb = prefs::usePillQsb
-    private val prefsToWatch = arrayOf("pref_smartspace", "pref_smartspace_time",
+    private val prefsToWatch = arrayOf("pref_smartspace", "pref_smartspace_time",  "pref_smartspace_time_above",
             "pref_smartspace_time_24_h", "pref_smartspace_date", "pref_use_pill_qsb")
     private val needsReinflate = setOf("pref_smartspace", "pref_use_pill_qsb")
     private var currentView: SmartspaceView? = null

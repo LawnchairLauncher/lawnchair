@@ -28,6 +28,8 @@ import android.content.pm.ResolveInfo
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Handler
+import android.os.Parcel
+import android.os.Parcelable
 import android.text.TextUtils
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.override.AppInfoProvider
@@ -54,6 +56,7 @@ class IconPackManager(private val context: Context) {
         }
 
     val packList = IconPackList(context, this)
+    val defaultPackProvider = PackProvider(privateObj, "")
 
     private val listeners: MutableSet<() -> Unit> = mutableSetOf()
 
@@ -86,8 +89,12 @@ class IconPackManager(private val context: Context) {
         } else null
     }
 
-    fun getIconPack(name: String, put: Boolean = true, load: Boolean = false): IconPack {
+    fun getIconPack(name: String, put: Boolean = true, load: Boolean = false): IconPack? {
         return getIconPackInternal(name, put, load)!!
+    }
+
+    fun getIconPack(packProvider: PackProvider, put: Boolean = true, load: Boolean = false): IconPack {
+        return getIconPackInternal(packProvider.name, put, load)!!
     }
 
     fun getIcon(launcherActivityInfo: LauncherActivityInfo,
@@ -140,11 +147,11 @@ class IconPackManager(private val context: Context) {
         return defaultPack.getEntryForComponent(component)
     }
 
-    fun getPackProviders(): Set<String> {
+    fun getPackProviders(): Set<PackProvider> {
         val pm = context.packageManager
-        val packs = HashSet<String>()
+        val packs = HashSet<PackProvider>()
         ICON_INTENTS.forEach { intent -> pm.queryIntentActivities(Intent(intent), PackageManager.GET_META_DATA).forEach {
-            packs.add(it.activityInfo.packageName)
+            packs.add(PackProvider(privateObj, it.activityInfo.packageName))
         } }
         return packs
     }
@@ -204,6 +211,41 @@ class IconPackManager(private val context: Context) {
         }
     }
 
+    class PackProvider(obj: Any, val name: String) : Parcelable {
+
+        constructor(parcel: Parcel) : this(privateObj, parcel.readString()!!)
+
+        init {
+            if (obj !== privateObj) {
+                UnsupportedOperationException("Cannot create PackProvider outside of IconPackManager")
+            }
+        }
+
+        override fun equals(other: Any?): Boolean {
+            return (other as? PackProvider)?.name == name
+        }
+
+        override fun hashCode() = name.hashCode()
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeString(name)
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<PackProvider> {
+            override fun createFromParcel(parcel: Parcel): PackProvider {
+                return PackProvider(parcel)
+            }
+
+            override fun newArray(size: Int): Array<PackProvider?> {
+                return arrayOfNulls(size)
+            }
+        }
+    }
+
     interface OnPackChangeListener {
         fun onPackChanged()
     }
@@ -211,6 +253,7 @@ class IconPackManager(private val context: Context) {
     companion object {
 
         const val TAG = "IconPackManager"
+        private val privateObj = Object()
 
         @SuppressLint("StaticFieldLeak")
         private var INSTANCE: IconPackManager? = null

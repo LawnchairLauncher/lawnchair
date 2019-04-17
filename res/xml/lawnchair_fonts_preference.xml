@@ -16,43 +16,31 @@
   ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <ch.deletescape.lawnchair.font.settingsui.FontPreference
-        android:key="pref_font_smartspaceText"
-        android:title="Smartspace title" />
+<android.support.v7.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ch.deletescape.lawnchair.font.settingsui.FontPreference
         android:key="pref_font_workspace"
-        android:title="Workspace icon label" />
+        android:icon="@android:color/transparent"
+        android:title="@string/pref_fonts_home_icons" />
 
     <ch.deletescape.lawnchair.font.settingsui.FontPreference
-        android:key="pref_font_allApps"
-        android:title="App icon label" />
-
-    <ch.deletescape.lawnchair.font.settingsui.FontPreference
-        android:key="pref_font_folder"
-        android:title="Folder icon label" />
-
-    <ch.deletescape.lawnchair.font.settingsui.FontPreference
-        android:key="pref_font_action"
-        android:title="App action label" />
-
-    <ch.deletescape.lawnchair.font.settingsui.FontPreference
-        android:key="pref_font_drawerTab"
-        android:title="Drawer tab label" />
+        android:key="pref_font_smartspaceText"
+        android:icon="@android:color/transparent"
+        android:title="@string/pref_fonts_home_smartspace" />
 
     <ch.deletescape.lawnchair.font.settingsui.FontPreference
         android:key="pref_font_deepShortcut"
-        android:title="App shortcut label" />
+        android:icon="@android:color/transparent"
+        android:title="@string/pref_fonts_home_shortcuts" />
 
     <ch.deletescape.lawnchair.font.settingsui.FontPreference
-        android:key="pref_font_systemShortcut"
-        android:title="Launcher menu label" />
+        android:key="pref_font_allApps"
+        android:icon="@android:color/transparent"
+        android:title="@string/pref_fonts_drawer_icons" />
 
     <ch.deletescape.lawnchair.font.settingsui.FontPreference
-        android:key="pref_font_taskOption"
-        android:title="Task menu label" />
-
+        android:key="pref_font_drawerTab"
+        android:icon="@android:color/transparent"
+        android:title="@string/pref_fonts_drawer_tabs" />
 </android.support.v7.preference.PreferenceScreen>

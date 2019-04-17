@@ -366,8 +366,12 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
         if (mUsingTabs) {
             mTabsController.setup(mViewPager);
-            ((PersonalWorkSlidingTabStrip) findViewById(R.id.tabs)).inflateButtons(mTabsController.getTabs());
-            onTabChanged(mViewPager.getNextPage());
+            PersonalWorkSlidingTabStrip tabStrip = findViewById(R.id.tabs);
+            tabStrip.inflateButtons(mTabsController.getTabs());
+            if (currentTab == 0) {
+                tabStrip.setScroll(0, 1);
+            }
+            onTabChanged(currentTab);
         } else {
             mTabsController.setup((View) findViewById(R.id.apps_list_view));
             AllAppsRecyclerView recyclerView = mAH[AdapterHolder.MAIN].recyclerView;

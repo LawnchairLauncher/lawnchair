@@ -81,6 +81,7 @@ open class SubPreference(context: Context, attrs: AttributeSet) : StyledIconPref
         intent.putExtra(SettingsActivity.SubSettingsFragment.TITLE, title)
         intent.putExtra(SettingsActivity.SubSettingsFragment.CONTENT_RES_ID, content)
         intent.putExtra(SettingsActivity.SubSettingsFragment.HAS_PREVIEW, hasPreview())
+        intent.putExtra(SettingsBaseActivity.EXTRA_FROM_SETTINGS, true)
         context.startActivity(intent)
     }
 }
