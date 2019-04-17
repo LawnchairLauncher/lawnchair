@@ -23,15 +23,6 @@
         android:layout="@layout/home_preference" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
-        android:key="fonts"
-        android:title="@string/pref_fonts_title"
-        android:summary="Very peru"
-        android:icon="@android:color/transparent"
-        android:layout="@layout/home_preference"
-        app:content="@xml/lawnchair_fonts_preference_v2"
-        app:controllerClass=".SecretOptionsController" />
-
-    <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:icon="@drawable/ic_pref_desktop"
         android:summary="@string/general_pref_summary"
         android:title="@string/general_pref_title"

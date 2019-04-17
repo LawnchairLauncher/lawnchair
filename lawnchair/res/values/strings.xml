@@ -566,6 +566,7 @@
     <string name="pref_smartspace_time_above_summary">Show the clock above the widget</string>
 
     <string name="pref_fonts_title">Fonts</string>
+    <string name="pref_fonts_summary">Change the font of different elements</string>
 
     <string name="pref_fonts_global_font">Global font</string>
     <string name="pref_fonts_change_global_font">Change</string>
