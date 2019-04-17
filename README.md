@@ -22,6 +22,10 @@ After registering it in `ch.deletescape.lawnchair.globalsearch.SearchProviderCon
 Alright, I admit it, our build variants are a bit of a mess right now. Make sure to choose one of the variants prefixed `quickstepLawnchair*`
 from the "Build Variants" menu in Android Studio. Our team is usually always on the latest canary version of Android Studio, builds are not guaranteed to work in the Stable channel.
 
+## Translations
+
+Wanna help us by translating Lawnchair to your own language? Just take a look at [our Crowdin page](https://crowdin.com/project/lawnchairandroid).
+
 ## Source releases
 
 To make our problems with rip-offs a bit easier we will work in private development cycles but release our newest sources with every production release (beta, stable).
@@ -45,6 +49,7 @@ make sure to inform yourself before creating your own project based on Lawnchair
 
  The official Lawnchair graphics were designed by [Josh Baldassarre](https://www.uplabs.com/jshbldssrr) & [Lumiq Creative](https://lumiqcreative.com). Thanks a lot to those awesome designers!
 
-## Links
+## Useful links
 
-[Website](https://lawnchair.app) - [Twitter](https://twitter.com/lawnchairapp) - [Telegram](https://t.me/lawnchair)
+[Website](https://lawnchair.app) - [Twitter](https://twitter.com/lawnchairapp) - [Telegram](https://t.me/lawnchair) - 
+[XDA Thread](https://forum.xda-developers.com/android/apps-games/lawnchair-customizable-pixel-launcher-t3627137)
