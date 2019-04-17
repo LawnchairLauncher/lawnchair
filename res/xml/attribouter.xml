@@ -23,7 +23,7 @@
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="Till Kottmann"
             avatar="https://avatars.githubusercontent.com/u/13785669"
-            bio="@string/about_bio_deletescape"
+            bio="^@string/about_bio_deletescape"
             blog="https://deletescape.ch"
             login="deletescape"
             position="1"
@@ -64,7 +64,7 @@
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="reCoded"
             avatar="https://avatars.githubusercontent.com/u/29968331"
-            bio="@string/about_bio_recoded"
+            bio="^@string/about_bio_recoded"
             login="reC0D3D"
             task="^@string/about_role_dev_mod">
             <me.jfenn.attribouter.wedges.link.LinkWedge
@@ -98,9 +98,9 @@
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="Christopher Kardas"
             avatar="https://avatars.githubusercontent.com/u/15703840"
-            bio="@string/about_bio_chris"
+            bio="^@string/about_bio_chris"
             blog="https://christopherkardas.me/"
-            login="christopherkardas"
+            login="chriskardas"
             task="^@string/about_role_special_snowflake">
             <me.jfenn.attribouter.wedges.link.LinkWedge
                 name="@string/about_twitter"
