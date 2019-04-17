@@ -15,6 +15,8 @@
  */
 package com.android.quickstep;
 
+import static com.android.quickstep.TaskAdapter.TASKS_START_POSITION;
+
 import android.app.ActivityOptions;
 import android.view.View;
 
@@ -81,6 +83,6 @@ public final class TaskActionController {
         int count = mAdapter.getItemCount();
         ActivityManagerWrapper.getInstance().removeAllRecentTasks();
         mLoader.clearAllTasks();
-        mAdapter.notifyItemRangeRemoved(0 /* positionStart */, count);
+        mAdapter.notifyItemRangeRemoved(TASKS_START_POSITION /* positionStart */, count);
     }
 }

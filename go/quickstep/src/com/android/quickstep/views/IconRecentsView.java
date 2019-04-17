@@ -18,6 +18,7 @@ package com.android.quickstep.views;
 import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
 
 import static com.android.quickstep.TaskAdapter.CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT;
+import static com.android.quickstep.TaskAdapter.TASKS_START_POSITION;
 import static com.android.quickstep.views.TaskLayoutUtils.getTaskListHeight;
 
 import android.animation.Animator;
@@ -58,6 +59,7 @@ import com.android.quickstep.TaskListLoader;
 import com.android.quickstep.TaskSwipeCallback;
 import com.android.systemui.shared.recents.model.Task;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -115,8 +117,9 @@ public final class IconRecentsView extends FrameLayout {
     private AnimatorSet mLayoutAnimation;
     private final ArraySet<View> mLayingOutViews = new ArraySet<>();
     private final RecentsModel.TaskThumbnailChangeListener listener = (taskId, thumbnailData) -> {
-        TaskItemView[] itemViews = getTaskViews();
-        for (TaskItemView taskView : itemViews) {
+        ArrayList<TaskItemView> itemViews = getTaskViews();
+        for (int i = 0, size = itemViews.size(); i < size; i++) {
+            TaskItemView taskView = itemViews.get(i);
             TaskHolder taskHolder = (TaskHolder) mTaskRecyclerView.getChildViewHolder(taskView);
             Optional<Task> optTask = taskHolder.getTask();
             if (optTask.filter(task -> task.key.id == taskId).isPresent()) {
@@ -194,11 +197,10 @@ public final class IconRecentsView extends FrameLayout {
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        TaskItemView[] itemViews = getTaskViews();
-        for (TaskItemView itemView : itemViews) {
-            itemView.setEnabled(enabled);
+        int childCount = mTaskRecyclerView.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            mTaskRecyclerView.getChildAt(i).setEnabled(enabled);
         }
-        // TODO: Disable clear all button.
     }
 
     /**
@@ -224,9 +226,9 @@ public final class IconRecentsView extends FrameLayout {
         mTaskAdapter.setIsShowingLoadingUi(true);
         mTaskAdapter.notifyDataSetChanged();
         mTaskLoader.loadTaskList(tasks -> {
-            int numEmptyItems = mTaskAdapter.getItemCount();
+            int numEmptyItems = mTaskAdapter.getItemCount() - TASKS_START_POSITION;
             mTaskAdapter.setIsShowingLoadingUi(false);
-            int numActualItems = mTaskAdapter.getItemCount();
+            int numActualItems = mTaskAdapter.getItemCount() - TASKS_START_POSITION;
             if (numEmptyItems < numActualItems) {
                 throw new IllegalStateException("There are less empty item views than the number "
                         + "of items to animate to.");
@@ -237,6 +239,10 @@ public final class IconRecentsView extends FrameLayout {
                 // Set item animator for content filling animation. The item animator will switch
                 // back to the default on completion
                 mTaskRecyclerView.setItemAnimator(mLoadingContentItemAnimator);
+                mTaskAdapter.notifyItemRangeRemoved(TASKS_START_POSITION + numActualItems,
+                        numEmptyItems - numActualItems);
+                mTaskAdapter.notifyItemRangeChanged(TASKS_START_POSITION, numActualItems,
+                        CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT);
             }
             mTaskAdapter.notifyItemRangeRemoved(numActualItems, numEmptyItems - numActualItems);
             mTaskAdapter.notifyItemRangeChanged(
@@ -258,19 +264,21 @@ public final class IconRecentsView extends FrameLayout {
      * the app. In that case, we launch the next most recent.
      */
     public void handleOverviewCommand() {
-        int childCount = mTaskRecyclerView.getChildCount();
-        if (childCount == 0) {
+        // TODO(130735711): Need to address case where most recent task is off screen/unattached.
+        ArrayList<TaskItemView> taskViews = getTaskViews();
+        int taskViewsSize = taskViews.size();
+        if (taskViewsSize <= 1) {
             // Do nothing
             return;
         }
         TaskHolder taskToLaunch;
-        if (mTransitionedFromApp && childCount > 1) {
+        if (mTransitionedFromApp && taskViewsSize > 1) {
             // Launch the next most recent app
-            TaskItemView itemView = (TaskItemView) mTaskRecyclerView.getChildAt(1);
+            TaskItemView itemView = taskViews.get(1);
             taskToLaunch = (TaskHolder) mTaskRecyclerView.getChildViewHolder(itemView);
         } else {
             // Launch the most recent app
-            TaskItemView itemView = (TaskItemView) mTaskRecyclerView.getChildAt(0);
+            TaskItemView itemView = taskViews.get(0);
             taskToLaunch = (TaskHolder) mTaskRecyclerView.getChildViewHolder(itemView);
         }
         mTaskActionController.launchTask(taskToLaunch);
@@ -282,10 +290,11 @@ public final class IconRecentsView extends FrameLayout {
      * @return the thumbnail view if laid out
      */
     public @Nullable View getBottomThumbnailView() {
-        if (mTaskRecyclerView.getChildCount() == 0) {
+        ArrayList<TaskItemView> taskViews = getTaskViews();
+        if (taskViews.isEmpty()) {
             return null;
         }
-        TaskItemView view = (TaskItemView) mTaskRecyclerView.getChildAt(0);
+        TaskItemView view = taskViews.get(0);
         return view.getThumbnailView();
     }
 
@@ -294,13 +303,14 @@ public final class IconRecentsView extends FrameLayout {
      */
     private void animateClearAllTasks() {
         setEnabled(false);
-        TaskItemView[] itemViews = getTaskViews();
+        ArrayList<TaskItemView> itemViews = getTaskViews();
 
         AnimatorSet clearAnim = new AnimatorSet();
         long currentDelay = 0;
 
         // Animate each item view to the right and fade out.
-        for (TaskItemView itemView : itemViews) {
+        for (int i = 0, size = itemViews.size(); i < size; i++) {
+            TaskItemView itemView = itemViews.get(i);
             PropertyValuesHolder transXproperty = PropertyValuesHolder.ofFloat(TRANSLATION_X,
                     0, itemView.getWidth() * ITEM_ANIMATE_OUT_TRANSLATION_X_RATIO);
             PropertyValuesHolder alphaProperty = PropertyValuesHolder.ofFloat(ALPHA, 1.0f, 0f);
@@ -335,7 +345,8 @@ public final class IconRecentsView extends FrameLayout {
         clearAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                for (TaskItemView itemView : itemViews) {
+                for (int i = 0, size = itemViews.size(); i < size; i++) {
+                    TaskItemView itemView = itemViews.get(i);
                     itemView.setTranslationX(0);
                     itemView.setAlpha(1.0f);
                 }
@@ -350,14 +361,16 @@ public final class IconRecentsView extends FrameLayout {
     /**
      * Get attached task item views ordered by most recent.
      *
-     * @return array of attached task item views
+     * @return array list of attached task item views
      */
-    private TaskItemView[] getTaskViews() {
-        // TODO: Check that clear all button isn't here..
+    private ArrayList<TaskItemView> getTaskViews() {
         int taskCount = mTaskRecyclerView.getChildCount();
-        TaskItemView[] itemViews = new TaskItemView[taskCount];
+        ArrayList<TaskItemView> itemViews = new ArrayList<>();
         for (int i = 0; i < taskCount; i ++) {
-            itemViews[i] = (TaskItemView) mTaskRecyclerView.getChildAt(i);
+            View child = mTaskRecyclerView.getChildAt(i);
+            if (child instanceof TaskItemView) {
+                itemViews.add((TaskItemView) child);
+            }
         }
         return itemViews;
     }
@@ -367,7 +380,7 @@ public final class IconRecentsView extends FrameLayout {
      * of tasks.
      */
     private void updateContentViewVisibility() {
-        int taskListSize = mTaskAdapter.getItemCount();
+        int taskListSize = mTaskAdapter.getItemCount() - TASKS_START_POSITION;
         if (mShowingContentView != mEmptyView && taskListSize == 0) {
             mShowingContentView = mEmptyView;
             crossfadeViews(mEmptyView, mContentView);
@@ -431,10 +444,11 @@ public final class IconRecentsView extends FrameLayout {
             // If layout animation still in progress, cancel and restart.
             mLayoutAnimation.cancel();
         }
-        TaskItemView[] views = getTaskViews();
+        ArrayList<TaskItemView> views = getTaskViews();
         int delay = 0;
         mLayoutAnimation = new AnimatorSet();
-        for (TaskItemView view : views) {
+        for (int i = 0, size = views.size(); i < size; i++) {
+            TaskItemView view = views.get(i);
             view.setAlpha(0.0f);
             Animator alphaAnim = ObjectAnimator.ofFloat(view, ALPHA, 0.0f, 1.0f);
             alphaAnim.setDuration(LAYOUT_ITEM_ANIMATE_IN_DURATION).setStartDelay(delay);

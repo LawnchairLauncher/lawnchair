@@ -40,6 +40,7 @@ public final class TaskAdapter extends Adapter<ViewHolder> {
 
     public static final int CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT = 0;
     public static final int MAX_TASKS_TO_DISPLAY = 6;
+    public static final int TASKS_START_POSITION = 1;
 
     private static final String TAG = "TaskAdapter";
     private static final int ITEM_TYPE_TASK = 0;
@@ -126,11 +127,12 @@ public final class TaskAdapter extends Adapter<ViewHolder> {
                     return;
                 }
                 List<Task> tasks = mLoader.getCurrentTaskList();
-                if (position >= tasks.size()) {
+                int taskPos = position - TASKS_START_POSITION;
+                if (taskPos >= tasks.size()) {
                     // Task list has updated.
                     return;
                 }
-                Task task = tasks.get(position);
+                Task task = tasks.get(taskPos);
                 taskHolder.bindTask(task, willAnimate /* willAnimate */);
                 mLoader.loadTaskIconAndLabel(task, () -> {
                     // Ensure holder still has the same task.
@@ -161,8 +163,7 @@ public final class TaskAdapter extends Adapter<ViewHolder> {
 
     @Override
     public int getItemCount() {
-        // Always at least one for clear all button.
-        int itemCount = 1;
+        int itemCount = TASKS_START_POSITION;
         if (mIsShowingLoadingUi) {
             // Show loading version of all items.
             itemCount += MAX_TASKS_TO_DISPLAY;
