@@ -100,7 +100,7 @@
     <string name="backup_loading">Loading...</string>
     <string name="backup_invalid">Incorrect backup file</string>
     
-    <string name="backup_delete">Hide</string>
+    <string name="backup_delete">Delete</string>
     <string name="backup_delete_failed">Something went wrong</string>
     <string name="backup_share">Share</string>
     <string name="backup_pref_summary">Save home screen, restore backups</string>
