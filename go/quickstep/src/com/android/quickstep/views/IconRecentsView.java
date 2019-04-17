@@ -43,7 +43,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener;
@@ -56,6 +55,7 @@ import com.android.quickstep.RecentsToActivityHelper;
 import com.android.quickstep.TaskActionController;
 import com.android.quickstep.TaskAdapter;
 import com.android.quickstep.TaskHolder;
+import com.android.quickstep.TaskLayoutManager;
 import com.android.quickstep.TaskListLoader;
 import com.android.quickstep.TaskSwipeCallback;
 
@@ -121,7 +121,7 @@ public final class IconRecentsView extends FrameLayout {
         mContext = context;
         mDeviceProfile = activity.getDeviceProfile();
         mTaskLoader = new TaskListLoader(mContext);
-        mTaskAdapter = new TaskAdapter(mTaskLoader, mDeviceProfile);
+        mTaskAdapter = new TaskAdapter(mTaskLoader);
         mTaskActionController = new TaskActionController(mTaskLoader, mTaskAdapter);
         mTaskAdapter.setActionController(mTaskActionController);
     }
@@ -135,7 +135,7 @@ public final class IconRecentsView extends FrameLayout {
             recyclerViewParams.height = getTaskListHeight(mDeviceProfile);
             mTaskRecyclerView.setAdapter(mTaskAdapter);
             mTaskRecyclerView.setLayoutManager(
-                    new LinearLayoutManager(mContext, VERTICAL, true /* reverseLayout */));
+                    new TaskLayoutManager(mContext, VERTICAL, true /* reverseLayout */));
             ItemTouchHelper helper = new ItemTouchHelper(
                     new TaskSwipeCallback(mTaskActionController));
             helper.attachToRecyclerView(mTaskRecyclerView);
@@ -170,6 +170,8 @@ public final class IconRecentsView extends FrameLayout {
                     updateContentViewVisibility();
                 }
             });
+            // TODO: Move clear all button to recycler view so that it can scroll off screen.
+            // TODO: Move layout param logic into onMeasure
             mClearAllView = findViewById(R.id.clear_all_button);
             MarginLayoutParams clearAllParams =
                     (MarginLayoutParams) mClearAllView.getLayoutParams();
