@@ -255,12 +255,14 @@ public final class LauncherInstrumentation {
         assertEquals("Unexpected display rotation",
                 mExpectedRotation, mDevice.getDisplayRotation());
         final NavigationModel navigationModel = getNavigationModel();
-        assertTrue("Presence of recents button doesn't match the interaction mode",
-                (navigationModel == NavigationModel.THREE_BUTTON) ==
-                        hasSystemUiObject("recent_apps"));
-        assertTrue("Presence of home button doesn't match the interaction mode",
-                (navigationModel != NavigationModel.ZERO_BUTTON) ==
-                        hasSystemUiObject("home"));
+        final boolean hasRecentsButton = hasSystemUiObject("recent_apps");
+        final boolean hasHomeButton = hasSystemUiObject("home");
+        assertTrue("Presence of recents button doesn't match the interaction mode, mode="
+                        + navigationModel.name() + ", hasRecents=" + hasRecentsButton,
+                (navigationModel == NavigationModel.THREE_BUTTON) == hasRecentsButton);
+        assertTrue("Presence of home button doesn't match the interaction mode, mode="
+                        + navigationModel.name() + ", hasHome=" + hasHomeButton,
+                (navigationModel != NavigationModel.ZERO_BUTTON) == hasHomeButton);
         log("verifyContainerType: " + containerType);
 
         try (Closable c = addContextLayer(
