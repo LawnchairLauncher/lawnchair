@@ -239,14 +239,11 @@ public final class IconRecentsView extends FrameLayout {
                 // Set item animator for content filling animation. The item animator will switch
                 // back to the default on completion
                 mTaskRecyclerView.setItemAnimator(mLoadingContentItemAnimator);
-                mTaskAdapter.notifyItemRangeRemoved(TASKS_START_POSITION + numActualItems,
-                        numEmptyItems - numActualItems);
-                mTaskAdapter.notifyItemRangeChanged(TASKS_START_POSITION, numActualItems,
-                        CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT);
             }
-            mTaskAdapter.notifyItemRangeRemoved(numActualItems, numEmptyItems - numActualItems);
-            mTaskAdapter.notifyItemRangeChanged(
-                    0, numActualItems, CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT);
+            mTaskAdapter.notifyItemRangeRemoved(TASKS_START_POSITION + numActualItems,
+                    numEmptyItems - numActualItems);
+            mTaskAdapter.notifyItemRangeChanged(TASKS_START_POSITION, numActualItems,
+                    CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT);
         });
     }
 
