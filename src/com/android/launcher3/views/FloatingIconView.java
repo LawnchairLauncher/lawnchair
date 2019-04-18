@@ -377,6 +377,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
      * Creates a floating icon view for {@param originalView}.
      * @param originalView The view to copy
      * @param hideOriginal If true, it will hide {@param originalView} while this view is visible.
+     *                     Else, we will not draw anything in this view.
      * @param positionOut Rect that will hold the size and position of v.
      * @param isOpening True if this view replaces the icon for app open animation.
      */
@@ -392,14 +393,11 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
 
         // Get the drawable on the background thread
         // Must be called after matchPositionOf so that we know what size to load.
-        if (originalView.getTag() instanceof ItemInfo) {
+        if (originalView.getTag() instanceof ItemInfo && hideOriginal) {
             view.mLoadIconSignal = new CancellationSignal();
             Runnable onIconLoaded = () -> {
                 // Delay swapping views until the icon is loaded to prevent a flash.
                 view.setVisibility(VISIBLE);
-                if (hideOriginal) {
-                    originalView.setVisibility(INVISIBLE);
-                }
             };
             CancellationSignal loadIconSignal = view.mLoadIconSignal;
             new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(() -> {
