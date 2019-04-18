@@ -192,6 +192,16 @@
         <item name="bottomSheetDialogTheme">@style/SettingsTheme.BottomSheetDialog.Light</item>
         <item name="bottomSheetNavBarColor">@color/all_apps_navbar_color</item>
         <item name="bottomSheetScrimColor">#F9FAFC</item>
+        <item name="actionOverflowMenuStyle">@style/SettingsTheme.PopupMenu.Overflow</item>
+        <item name="popupMenuStyle">@style/SettingsTheme.PopupMenu</item>
+    </style>
+    <style name="SettingsTheme.PopupMenu" parent="@style/Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@drawable/mtrl_popupmenu_background</item>
+        <item name="android:popupElevation">8dp</item>
+    </style>
+    <style name="SettingsTheme.PopupMenu.Overflow" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@drawable/mtrl_popupmenu_background</item>
+        <item name="android:popupElevation">8dp</item>
     </style>
     <style name="SettingsTheme.V2" parent="@style/SettingsTheme.Base">
         <item name="android:statusBarColor">@color/lollipopStatusBar</item>
@@ -229,6 +239,8 @@
         <item name="bottomSheetDialogTheme">@style/SettingsTheme.BottomSheetDialog</item>
         <item name="bottomSheetNavBarColor">@android:color/transparent</item>
         <item name="bottomSheetScrimColor">@android:color/black</item>
+        <item name="actionOverflowMenuStyle">@style/SettingsTheme.PopupMenu.Overflow</item>
+        <item name="popupMenuStyle">@style/SettingsTheme.PopupMenu</item>
     </style>
     <style name="SettingsTheme.V2.Dark.ActionBar" parent="SettingsTheme.V2.Dark">
         <item name="titleTextAppearance">@style/SettingsTheme.V2.ActionBar.Title</item>
