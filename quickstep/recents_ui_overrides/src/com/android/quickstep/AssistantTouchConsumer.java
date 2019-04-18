@@ -41,6 +41,7 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.launcher3.R;
+import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.NavigationBarCompat;
 
 /**
@@ -83,8 +84,11 @@ public class AssistantTouchConsumer implements InputConsumer {
     private final InputConsumer mConsumerDelegate;
     private final Context mContext;
 
+    private final InputMonitorCompat mInputMonitorCompat;
+
+
     public AssistantTouchConsumer(Context context, ISystemUiProxy systemUiProxy,
-            InputConsumer delegate) {
+            InputConsumer delegate, InputMonitorCompat inputMonitorCompat) {
         final Resources res = context.getResources();
         mContext = context;
         mSysUiProxy = systemUiProxy;
@@ -94,6 +98,7 @@ public class AssistantTouchConsumer implements InputConsumer {
         mTimeThreshold = res.getInteger(R.integer.assistant_gesture_min_time_threshold);
         mAngleThreshold = res.getInteger(R.integer.assistant_gesture_corner_deg_threshold);
         mSlop = NavigationBarCompat.getQuickScrubTouchSlopPx();
+        mInputMonitorCompat = inputMonitorCompat;
         mState = STATE_INACTIVE;
     }
 
@@ -153,6 +158,10 @@ public class AssistantTouchConsumer implements InputConsumer {
                 if (!mPassedSlop) {
                     // Normal gesture, ensure we pass the slop before we start tracking the gesture
                     if (Math.hypot(mLastPos.x - mDownPos.x, mLastPos.y - mDownPos.y) > mSlop) {
+
+                        // Cancel touches to other windows (intercept)
+                        mInputMonitorCompat.pilferPointers();
+
                         mPassedSlop = true;
                         mStartDragPos.set(mLastPos.x, mLastPos.y);
                         mDragTime = SystemClock.uptimeMillis();
@@ -162,7 +171,8 @@ public class AssistantTouchConsumer implements InputConsumer {
                                 Math.atan2(mDownPos.y - mLastPos.y, mDownPos.x - mLastPos.x));
                         mDirection = angle > 90 ? UPLEFT : UPRIGHT;
                         angle = angle > 90 ? 180 - angle : angle;
-                        if (angle > mAngleThreshold) {
+
+                        if (angle > mAngleThreshold && angle < 90 - mAngleThreshold) {
                             mState = STATE_ASSISTANT_ACTIVE;
 
                             if (mConsumerDelegate != null) {
@@ -209,6 +219,7 @@ public class AssistantTouchConsumer implements InputConsumer {
                     animator.setInterpolator(Interpolators.DEACCEL_2);
                     animator.start();
                 }
+                mState = STATE_INACTIVE;
                 mMotionPauseDetector.clear();
                 break;
         }
