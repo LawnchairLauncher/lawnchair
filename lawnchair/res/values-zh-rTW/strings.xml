@@ -17,7 +17,7 @@
     <string name="pref_icon_pack">圖示包</string>
     <string name="home_widget">主頁小工具</string>
     <string name="title_show_google_app">位於%1$s左側</string>
-    <string name="msg_minus_one_on_left">在主熒幕左側的資訊列</string>
+    <string name="msg_minus_one_on_left">在桌面左側的資訊欄</string>
     <string name="about">關於</string>
     <string name="title_google_app">Google 應用程式</string>
     <string name="about_app_version">版本</string>
@@ -67,6 +67,7 @@
     <string name="no_recent_backups">沒有東西可顯示</string>
     <string name="backup_loading">載入中...</string>
     <string name="backup_invalid">不正確的備份檔</string>
+    <string name="backup_delete">刪除</string>
     <string name="backup_delete_failed">出了點問題</string>
     <string name="backup_share">分享</string>
     <string name="backup_pref_summary">保存主頁畫面、還原備份</string>
@@ -80,7 +81,7 @@
     <string name="restore_read_meta_fail">不正確的備份檔</string>
     <string name="backup_share_title">分享</string>
     <string name="backup_share_text">Lawnchair 備份</string>
-    <string name="full_width_widgets_pref_summary">使小工具自動縮放至熒幕邊緣</string>
+    <string name="full_width_widgets_pref_summary">使小工具自動縮放至螢幕邊緣</string>
     <string name="full_width_width_widgets_pref_title">寬大的小工具</string>
     <string name="hide_apps">隱藏應用程式</string>
     <string name="hide_apps_sum">從應用程式抽屜中移除應用</string>
@@ -181,12 +182,12 @@
     <!--Marker E-->
     <string name="debug_crash_launcher">模擬應用程式崩潰</string>
     <string name="gestures_pref_title">手勢</string>
-    <string name="gestures_pref_summary">連按、主熒幕按鈕、向下滑動</string>
+    <string name="gestures_pref_summary">連按、主螢幕按鈕、向下滑動</string>
     <string name="action_open_drawer">開啟應用程式清單</string>
     <string name="action_last_task">開啟上一個應用程式</string>
     <string name="action_open_widgets">開啟篩選清單</string>
     <string name="action_open_settings">打開啟動器設定</string>
-    <string name="action_open_overview">使用彈出窗口打開主熒幕</string>
+    <string name="action_open_overview">使用彈出窗口打開主螢幕</string>
     <string name="action_global_search">打開全域搜尋</string>
     <string name="action_app_search">打開應用程式搜尋</string>
     <string name="action_overlay">打開 Google feed</string>
@@ -241,7 +242,7 @@
     <string name="no_icon_found">找不到圖示</string>
     <string name="icon_pack_external_picker">開啟外部選擇器</string>
     <string name="week_day_format">%1$s：%2$s</string>
-    <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
+    <string name="full_wday_month_day_no_year">M月dd日EEEE</string>
     <string name="title_use_pill_qsb">使用膠囊樣式的搜尋列</string>
     <string name="weather_provider_testing">偵錯</string>
     <!--Marker G-->
@@ -261,8 +262,8 @@
     <string name="pref_legacy_treatment_summary">自動適應圖示到所有應用程式</string>
     <string name="action_search">搜尋</string>
     <string name="pref_accent_color">強調色</string>
-    <string name="dt2s_admin_hint">如需點按兩下以鎖定熒幕，請先授予權限</string>
-    <string name="dt2s_admin_warning">點按兩下以鎖定熒幕將被停用</string>
+    <string name="dt2s_admin_hint">如需點按兩下以鎖定螢幕，請先授予權限</string>
+    <string name="dt2s_admin_warning">點按兩下以鎖定螢幕將被停用</string>
     <string name="icon_pack_applied_toast">已套用 %s</string>
     <string name="app_gesture_failed_toast">出了點問題</string>
     <string name="color_system_accent">系統強調色</string>
@@ -277,6 +278,8 @@
     <string name="pref_recents_radius">圓角</string>
     <string name="automatic_short">自動</string>
     <string name="playstore_query_icon_pack">圖示包</string>
+    <string name="bridge_missing_title">Lawnfeed</string>
+    <string name="bridge_missing_message">安裝或更新 Lawnfeed</string>
     <string name="quickstep_pref_title">總覽</string>
     <string name="quickstep_pref_summary">手勢、邊角、模糊</string>
     <string name="swipe_up_to_switch_apps_title">向上滑動即可切換應用程式</string>
@@ -294,7 +297,7 @@
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
     <string name="search_provider_baidu">百度</string>
-    <string name="search_provider_appsearch">查找應用</string>
+    <string name="search_provider_appsearch">查找應用程式</string>
     <string name="search_provider_search_lite">搜尋 Lite</string>
     <string name="search_provider_cool_search">Cool Search</string>
     <string name="recent_task_option_force_stop">強制停止</string>
@@ -345,7 +348,7 @@
     <string name="title_app_suggestions">應用程式</string>
     <string name="title_app_suggestions_in_search">應用程式建議</string>
     <string name="summary_app_suggestions">最近用過的應用</string>
-    <string name="summary_app_suggestions_lawnstep">在最近應用程式熒幕和應用程式抽屜中</string>
+    <string name="summary_app_suggestions_lawnstep">在最近應用程式螢幕和應用程式抽屜中</string>
     <string name="app_actions_pref_title">動作</string>
     <string name="app_actions_pref_title_in_search">建議的動作</string>
     <string name="app_actions_pref_desc">經常被使用的捷徑</string>
@@ -396,7 +399,7 @@
     <string name="sesame_enable_integration_title">啟用整合</string>
     <string name="sesame_enable_integration_description"><![CDATA[啟用 Lawnchair 與 Sesame 之間的資料共用，您可以隨時在 Lawnchair 或 Sesame 中變更設定。]]></string>
     <string name="sesame_version">整合套件版本</string>
-    <string name="sesame_shortcut_disabled">Sesame 捷徑不可用</string>
+    <string name="sesame_shortcut_disabled">Sesame 捷徑無法使用</string>
     <string name="pref_sesame_sync_icon_pack">分享圖示包</string>
     <string name="pref_sesame_sync_icon_pack_summary">與 Sesame 同步 Lawnchair 使用的圖示包</string>
     <string name="font_reset">重設</string>
@@ -413,6 +416,7 @@
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
+    <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">一加天氣</string>
     <string name="overlap_placement">重疊放置</string>
     <string name="overlap_placement_summary">允許圖示與小工具相互重疊</string>
@@ -422,4 +426,23 @@
     <string name="units_reaumur">列氏温度</string>
     <string name="units_romer">兰氏温度</string>
     <string name="owm_get_your_own_key">請從 api.openweathermap.org 獲取您自己的 API 金鑰</string>
+    <string name="pref_smartspace_time_above">顯示大型時鐘</string>
+    <string name="pref_smartspace_time_above_summary">於小工具上方顯示時鐘</string>
+    <string name="pref_fonts_title">字型</string>
+    <string name="pref_fonts_summary">改變部件字體</string>
+    <string name="pref_fonts_global_font">全域字體</string>
+    <string name="pref_fonts_change_global_font">改變</string>
+    <string name="pref_fonts_category_home">主頁面</string>
+    <string name="pref_fonts_home_icons">應用程式和資料夾名稱</string>
+    <string name="pref_fonts_home_smartspace">「快速查看」小工具</string>
+    <string name="pref_fonts_home_shortcuts">捷徑氣泡</string>
+    <string name="pref_fonts_category_drawer">應用程式抽屜</string>
+    <string name="pref_fonts_drawer_icons">應用程式名稱</string>
+    <string name="pref_fonts_drawer_app_actions_icons">應用程式動作名稱</string>
+    <string name="pref_fonts_drawer_tabs">分頁名稱</string>
+    <string name="pref_fonts_find_fonts">尋找字型</string>
+    <string name="pref_fonts_add_fonts">新增字型</string>
+    <string name="pref_fonts_add_fonts_summary">支援 OTF 和 TTF</string>
+    <string name="pref_fonts_missing_font">遺失字型</string>
+    <string name="about_translate">翻譯</string>
 </resources>
