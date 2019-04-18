@@ -461,7 +461,7 @@ public class TouchInteractionService extends Service implements
                 && SysUINavigationMode.INSTANCE.get(this).getMode() == Mode.NO_BUTTON
                 && AssistantTouchConsumer.withinTouchRegion(this, event)) {
             return new AssistantTouchConsumer(this, mISystemUiProxy, !activityControl.isResumed()
-                            ? createOtherActivityInputConsumer(event, runningTaskInfo) : null);
+                            ? createOtherActivityInputConsumer(event, runningTaskInfo) : null, mInputMonitorCompat);
         } else if (mSwipeSharedState.goingToLauncher || activityControl.isResumed()) {
             return OverviewInputConsumer.newInstance(activityControl, false);
         } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() &&

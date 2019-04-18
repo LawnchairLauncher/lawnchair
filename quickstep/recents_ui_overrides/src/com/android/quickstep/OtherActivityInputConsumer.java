@@ -149,6 +149,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
         mDragSlop = NavigationBarCompat.getQuickStepDragSlopPx();
         mTouchSlop = NavigationBarCompat.getQuickStepTouchSlopPx();
+
         mPassedTouchSlop = mPassedDragSlop = continuingPreviousGesture;
     }
 
