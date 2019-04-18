@@ -65,7 +65,7 @@
     <dimen name="shelf_surface_offset">24dp</dimen>
 
     <!-- Assistant Gestures -->
-    <dimen name="gestures_assistant_size">28dp</dimen>
+    <dimen name="gestures_assistant_size">48dp</dimen>
     <dimen name="gestures_assistant_drag_threshold">70dp</dimen>
 
     <!-- Distance to move elements when swiping up to go home from launcher -->
