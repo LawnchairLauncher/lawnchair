@@ -21,4 +21,7 @@
     <item android:id="@+id/action_restart_lawnchair"
         android:title="@string/restart_lawnchair_pref_title"
         app:showAsAction="never"/>
+    <item android:id="@+id/action_dev_options"
+        android:title="@string/developer_options_title"
+        app:showAsAction="never"/>
 </menu>

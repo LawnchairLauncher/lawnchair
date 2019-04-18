@@ -588,4 +588,6 @@
     <string name="pref_fonts_missing_font">Missing font</string>
 
     <string name="about_translate">Translations</string>
+
+    <string name="pref_show_dev_options">Show in settings</string>
 </resources>
