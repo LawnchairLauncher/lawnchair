@@ -61,6 +61,7 @@
     <string name="no_recent_backups">표시할 내용 없음</string>
     <string name="backup_loading">로딩중...</string>
     <string name="backup_invalid">올바르지 않은 백업 파일</string>
+    <string name="backup_delete">삭제</string>
     <string name="backup_delete_failed">문제가 발생함</string>
     <string name="backup_share">공유</string>
     <string name="backup_pref_summary">홈 스크린 저장 및 백업 복구</string>
@@ -126,6 +127,7 @@
     <string name="dock_gradient">그레디언트</string>
     <!--Marker C-->
     <string name="pref_category_icons">아이콘</string>
+    <string name="pref_category_aag">At a glance</string>
     <string name="pref_category_weather">날씨</string>
     <string name="pref_category_layout">레이아웃</string>
     <string name="pref_category_theme">스타일</string>
@@ -166,6 +168,7 @@
     <string name="action_open_app_with_target">%s 열기</string>
     <string name="action_open_app_select_app">앱 선택</string>
     <string name="action_none">아무것도 하지 않기</string>
+    <string name="action_despacito">YouTube Rewind 2018 (earrape) 재생</string>
     <string name="gesture_press_home">홈 버튼</string>
     <string name="gesture_press_back">뒤로 가기 버튼</string>
     <string name="gesture_double_tap">두번 탭하기</string>
@@ -211,21 +214,26 @@
     <string name="iconpack_none">없음</string>
     <string name="reset">다시 설정</string>
     <string name="theme_title">테마</string>
+    <string name="theme_automatic">자동</string>
     <string name="theme_default">기본</string>
     <string name="theme_transparent">투명</string>
+    <string name="pref_open_source_licenses_title">라이선스</string>
     <string name="action_search">검색</string>
+    <string name="pref_accent_color">액센트</string>
     <string name="app_gesture_failed_toast">문제가 발생함</string>
     <string name="color_presets">프리셋</string>
     <string name="color_custom">사용자 정의</string>
     <string name="hotseat_qsb_preferences">개인화</string>
     <string name="automatic_short">자동</string>
     <string name="playstore_query_icon_pack">아이콘 팩</string>
+    <string name="bridge_missing_message">Lawnfeed를 설치나 업데이트 하기</string>
     <string name="pref_global_search_provider">검색 엔진</string>
     <string name="google">Google</string>
     <string name="search_provider_google_go">Google Go</string>
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
     <string name="search_provider_appsearch">앱 검색</string>
+    <string name="recent_task_option_force_stop">강제 종료</string>
     <string name="pref_icon_packs">아이콘 팩</string>
     <!--Marker H-->
     <string name="dismiss_drop_target_label">"안 보기"</string>
@@ -238,7 +246,9 @@
     <string name="theme_light">밝은 테마</string>
     <string name="theme_dark">어두운 테마</string>
     <string name="theme_black">검은색</string>
+    <string name="search_menu">설정 검색</string>
     <string name="search_provider_s_finder">S Finder</string>
+    <string name="lawnchair_accent">액센트</string>
     <!--Marker I-->
     <string name="title_app_suggestions">앱</string>
     <string name="app_actions_pref_title">액션</string>
@@ -264,8 +274,16 @@
     <string name="sesame_upsell">탭하여 Sesame 설치</string>
     <string name="sesame_search_upsell">검색</string>
     <string name="pref_sesame_show_shortcuts">앱 바로가기</string>
+    <string name="pref_sesame_sync_icon_pack">아이콘 팩 공유</string>
     <string name="font_reset">다시 설정</string>
     <string name="font_weight_light">밝은 테마</string>
     <string name="font_weight_extra_black">검은색</string>
     <!--Marker K-->
+    <string name="pref_smartspace_time_above">큰 시계 보기</string>
+    <string name="pref_smartspace_time_above_summary">시계를 위젯 위에 보기</string>
+    <string name="pref_fonts_home_smartspace">\'At a Glance\' 위젯</string>
+    <string name="pref_fonts_drawer_icons">앱 이름</string>
+    <string name="pref_fonts_drawer_app_actions_icons">앱 액션 이름</string>
+    <string name="pref_fonts_drawer_tabs">탭 이름</string>
+    <string name="about_translate">번역</string>
 </resources>

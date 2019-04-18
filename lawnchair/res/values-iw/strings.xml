@@ -4,13 +4,18 @@
     <!--Marker A-->
     <string name="label_search">חפש</string>
     <string name="label_voice_search">חיפוש קולי</string>
+    <string name="pref_icon_pack">ערכת סמלים</string>
+    <string name="about">אודות</string>
+    <string name="about_app_version">גרסה</string>
     <string name="pixel_style_pref_title">סגנון Pixel</string>
     <string name="about_title">אודות</string>
     <string name="about_summary_title">סיכום</string>
     <string name="pixel_ui_pref_title">ממשק Pixel</string>
+    <string name="action_edit">ערוך</string>
     <string name="hide_app">הסתר אפליקציה</string>
     <string name="icon_shape_rounded_square">ריבוע מעוגל</string>
     <string name="app_drawer_pref_title">מגירת יישומים</string>
+    <string name="search_pref_title">חיפוש</string>
     <string name="general_pref_title">כללי</string>
     <string name="hide_app_reset">איפוס</string>
     <string name="hide_app_apply">החל</string>
@@ -21,16 +26,23 @@
     <string name="backup_name">שֵׁם</string>
     <string name="backup_location">מיקום</string>
     <string name="choose_backup_path">עיון</string>
+    <string name="backup_homescreen">מסך הבית</string>
     <string name="backup_settings">הגדרות</string>
     <string name="backup_wallpaper">טפט</string>
     <string name="backup_creating">יוצר גיבוי</string>
     <string name="backup_loading">טוען...</string>
     <string name="backup_share">שתף</string>
     <string name="backup_restarting">מפעיל מחדש</string>
+    <string name="backup_share_title">שתף</string>
+    <string name="grid_size_default">ברירת מחדל</string>
     <string name="blur_pref_title">אפשר טשטוש</string>
     <!--Marker B-->
+    <string name="dock_style_default">ברירת מחדל</string>
     <string name="loading">טוען…</string>
     <!--Marker C-->
+    <string name="pref_category_icons">סמלים</string>
+    <string name="pref_category_weather">מזג אוויר</string>
+    <string name="pref_category_searchbar">סרגל חיפוש</string>
     <!--Marker D-->
     <string name="title_attribouter_licenses">רישיונות קוד פתוח</string>
     <string name="title_attribouter_email">דוא\"ל</string>
@@ -52,6 +64,8 @@
     <string name="about_role_designer">מעצב</string>
     <string name="about_bio_josh">מעצב גרפי עצמאי.</string>
     <!--Marker E-->
+    <string name="action_none">אל תעשה דבר</string>
+    <string name="weather_provider_disabled">מבוטל</string>
     <!--Marker F-->
     <string name="pref_weather_api_key_title">מפתח API</string>
     <string name="pref_weather_city_summary">לקבלת התוצאות הטובות ביותר אנא כלול קוד מדינה</string>
@@ -59,11 +73,33 @@
     <string name="all_icons">כל הסמלים</string>
     <string name="error_no_browser">לא נמצאה פעילות שבה ניתן לפתוח כתובות URL</string>
     <string name="week_day_format">%1$s, %2$s</string>
+    <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
+    <string name="weather_provider_testing">תיקון שגיאות</string>
     <!--Marker G-->
+    <string name="iconpack_none">ללא</string>
+    <string name="reset">איפוס</string>
+    <string name="theme_title">ערכת נושא</string>
+    <string name="theme_default">ברירת מחדל</string>
+    <string name="action_search">חיפוש</string>
+    <string name="playstore_query_icon_pack">ערכת סמלים</string>
     <!--Marker H-->
+    <string name="action_voice_search">חיפוש קולי</string>
+    <string name="pref_drawer_columns">מספר עמודות</string>
+    <string name="theme_pref_title">ערכת נושא</string>
     <string name="theme_light">בהיר</string>
     <string name="theme_dark">כהה</string>
+    <string name="theme_black">שחור</string>
     <!--Marker I-->
+    <string name="delete_tab">מחק</string>
+    <string name="tabs_none_selected">ללא</string>
+    <string name="selected_count">‏%1$d נבחרו</string>
+    <string name="tab_name">שֵׁם</string>
     <!--Marker J-->
+    <string name="shortcut_sesame">קיצורי דרך</string>
+    <string name="sesame_search_upsell">חיפוש</string>
+    <string name="pref_sesame_show_shortcuts">קיצורי דרך של אפליקציות</string>
+    <string name="font_reset">איפוס</string>
+    <string name="font_weight_light">בהיר</string>
+    <string name="font_weight_extra_black">שחור</string>
     <!--Marker K-->
 </resources>
