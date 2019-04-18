@@ -28,6 +28,7 @@ import com.android.systemui.shared.recents.model.Task;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Recycler view adapter that dynamically inflates and binds {@link TaskHolder} instances with the
@@ -109,13 +110,13 @@ public final class TaskAdapter extends Adapter<TaskHolder> {
         holder.bindTask(task, willAnimate /* willAnimate */);
         mLoader.loadTaskIconAndLabel(task, () -> {
             // Ensure holder still has the same task.
-            if (Objects.equals(task, holder.getTask())) {
+            if (Objects.equals(Optional.of(task), holder.getTask())) {
                 holder.getTaskItemView().setIcon(task.icon);
                 holder.getTaskItemView().setLabel(task.titleDescription);
             }
         });
         mLoader.loadTaskThumbnail(task, () -> {
-            if (Objects.equals(task, holder.getTask())) {
+            if (Objects.equals(Optional.of(task), holder.getTask())) {
                 holder.getTaskItemView().setThumbnail(task.thumbnail.thumbnail);
             }
         });

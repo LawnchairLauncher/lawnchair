@@ -61,6 +61,8 @@ import com.android.quickstep.TaskListLoader;
 import com.android.quickstep.TaskSwipeCallback;
 import com.android.systemui.shared.recents.model.Task;
 
+import java.util.Optional;
+
 /**
  * Root view for the icon recents view. Acts as the main interface to the rest of the Launcher code
  * base.
@@ -120,8 +122,9 @@ public final class IconRecentsView extends FrameLayout {
         TaskItemView[] itemViews = getTaskViews();
         for (TaskItemView taskView : itemViews) {
             TaskHolder taskHolder = (TaskHolder) mTaskRecyclerView.getChildViewHolder(taskView);
-            Task task = taskHolder.getTask();
-            if (taskHolder.getTask().key.id == taskId) {
+            Optional<Task> optTask = taskHolder.getTask();
+            if (optTask.filter(task -> task.key.id == taskId).isPresent()) {
+                Task task = optTask.get();
                 // Update thumbnail on the task.
                 task.thumbnail = thumbnailData;
                 taskView.setThumbnail(thumbnailData.thumbnail);
