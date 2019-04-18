@@ -32,7 +32,6 @@ import android.os.UserHandle;
 import android.util.ArrayMap;
 
 import com.android.launcher3.compat.ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVL;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
@@ -179,12 +178,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         public void onShortcutsChanged(@NonNull String packageName,
             @NonNull List<ShortcutInfo> shortcuts,
             @NonNull UserHandle user) {
-            List<ShortcutInfoCompat> shortcutInfoCompats = new ArrayList<>(shortcuts.size());
-            for (ShortcutInfo shortcutInfo : shortcuts) {
-                shortcutInfoCompats.add(new ShortcutInfoCompat(shortcutInfo));
-            }
-
-            mCallback.onShortcutsChanged(packageName, shortcutInfoCompats, user);
+            mCallback.onShortcutsChanged(packageName, shortcuts, user);
         }
     }
 

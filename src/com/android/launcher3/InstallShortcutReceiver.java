@@ -25,6 +25,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -44,7 +45,6 @@ import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Preconditions;
@@ -253,7 +253,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         return (WorkspaceItemInfo) (new PendingInstallShortcutInfo(info, context).getItemInfo().first);
     }
 
-    public static void queueShortcut(ShortcutInfoCompat info, Context context) {
+    public static void queueShortcut(ShortcutInfo info, Context context) {
         queuePendingShortcutInfo(new PendingInstallShortcutInfo(info, context), context);
     }
 
@@ -327,7 +327,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     private static class PendingInstallShortcutInfo {
 
         final LauncherActivityInfo activityInfo;
-        final ShortcutInfoCompat shortcutInfo;
+        final ShortcutInfo shortcutInfo;
         final AppWidgetProviderInfo providerInfo;
 
         final Intent data;
@@ -372,7 +372,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         /**
          * Initializes a PendingInstallShortcutInfo to represent a launcher target.
          */
-        public PendingInstallShortcutInfo(ShortcutInfoCompat info, Context context) {
+        public PendingInstallShortcutInfo(ShortcutInfo info, Context context) {
             activityInfo = null;
             shortcutInfo = info;
             providerInfo = null;
@@ -381,7 +381,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             mContext = context;
             user = info.getUserHandle();
 
-            launchIntent = info.makeIntent();
+            launchIntent = ShortcutKey.makeIntent(info);
             label = info.getShortLabel().toString();
         }
 
@@ -537,10 +537,10 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 return info == null ? null : new PendingInstallShortcutInfo(info, context);
             } else if (decoder.optBoolean(DEEPSHORTCUT_TYPE_KEY)) {
                 DeepShortcutManager sm = DeepShortcutManager.getInstance(context);
-                List<ShortcutInfoCompat> si = sm.queryForFullDetails(
+                List<ShortcutInfo> si = sm.queryForFullDetails(
                         decoder.launcherIntent.getPackage(),
                         Arrays.asList(decoder.launcherIntent.getStringExtra(
-                                ShortcutInfoCompat.EXTRA_SHORTCUT_ID)),
+                                ShortcutKey.EXTRA_SHORTCUT_ID)),
                         decoder.user);
                 if (si.isEmpty()) {
                     return null;

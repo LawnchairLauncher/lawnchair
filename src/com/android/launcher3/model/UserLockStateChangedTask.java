@@ -18,6 +18,7 @@ package com.android.launcher3.model;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 
 import android.content.Context;
+import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 
 import com.android.launcher3.AllAppsList;
@@ -28,7 +29,6 @@ import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -56,12 +56,12 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
         boolean isUserUnlocked = UserManagerCompat.getInstance(context).isUserUnlocked(mUser);
         DeepShortcutManager deepShortcutManager = DeepShortcutManager.getInstance(context);
 
-        HashMap<ShortcutKey, ShortcutInfoCompat> pinnedShortcuts = new HashMap<>();
+        HashMap<ShortcutKey, ShortcutInfo> pinnedShortcuts = new HashMap<>();
         if (isUserUnlocked) {
-            List<ShortcutInfoCompat> shortcuts =
+            List<ShortcutInfo> shortcuts =
                     deepShortcutManager.queryForPinnedShortcuts(null, mUser);
             if (deepShortcutManager.wasLastCallSuccess()) {
-                for (ShortcutInfoCompat shortcut : shortcuts) {
+                for (ShortcutInfo shortcut : shortcuts) {
                     pinnedShortcuts.put(ShortcutKey.fromInfo(shortcut), shortcut);
                 }
             } else {
@@ -82,7 +82,7 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
                 WorkspaceItemInfo si = (WorkspaceItemInfo) itemInfo;
                 if (isUserUnlocked) {
                     ShortcutKey key = ShortcutKey.fromItemInfo(si);
-                    ShortcutInfoCompat shortcut = pinnedShortcuts.get(key);
+                    ShortcutInfo shortcut = pinnedShortcuts.get(key);
                     // We couldn't verify the shortcut during loader. If its no longer available
                     // (probably due to clear data), delete the workspace item as well
                     if (shortcut == null) {

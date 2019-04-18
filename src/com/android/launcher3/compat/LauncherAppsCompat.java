@@ -21,12 +21,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.ShortcutInfo;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.UserHandle;
 
 import com.android.launcher3.Utilities;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.List;
@@ -43,7 +43,7 @@ public abstract class LauncherAppsCompat {
         void onPackagesUnavailable(String[] packageNames, UserHandle user, boolean replacing);
         void onPackagesSuspended(String[] packageNames, UserHandle user);
         void onPackagesUnsuspended(String[] packageNames, UserHandle user);
-        void onShortcutsChanged(String packageName, List<ShortcutInfoCompat> shortcuts,
+        void onShortcutsChanged(String packageName, List<ShortcutInfo> shortcuts,
                 UserHandle user);
     }
 

@@ -24,6 +24,7 @@ import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.PinItemRequest;
 import android.content.pm.PackageManager;
+import android.content.pm.ShortcutInfo;
 import android.os.Build;
 import android.os.Parcelable;
 import android.os.Process;
@@ -34,7 +35,6 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVO;
 import com.android.launcher3.icons.LauncherIcons;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageUserKey;
 
@@ -135,14 +135,14 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
                 });
             }
 
-            ShortcutInfoCompat compat = new ShortcutInfoCompat(request.getShortcutInfo());
-            WorkspaceItemInfo info = new WorkspaceItemInfo(compat, context);
+            ShortcutInfo si = request.getShortcutInfo();
+            WorkspaceItemInfo info = new WorkspaceItemInfo(si, context);
             // Apply the unbadged icon and fetch the actual icon asynchronously.
             LauncherIcons li = LauncherIcons.obtain(context);
-            info.applyFrom(li.createShortcutIcon(compat, false /* badged */));
+            info.applyFrom(li.createShortcutIcon(si, false /* badged */));
             li.recycle();
             LauncherAppState.getInstance(context).getModel()
-                    .updateAndBindWorkspaceItem(info, compat);
+                    .updateAndBindWorkspaceItem(info, si);
             return info;
         } else {
             return null;
