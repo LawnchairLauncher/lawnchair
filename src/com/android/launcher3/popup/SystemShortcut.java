@@ -3,6 +3,7 @@ package com.android.launcher3.popup;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -159,9 +160,8 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
             return (view) -> {
                 dismissTaskMenuView(activity);
                 Rect sourceBounds = activity.getViewBounds(view);
-                Bundle opts = activity.getActivityLaunchOptionsAsBundle(view);
                 new PackageManagerHelper(activity).startDetailsActivityForInfo(
-                        itemInfo, sourceBounds, opts);
+                        itemInfo, sourceBounds, ActivityOptions.makeBasic().toBundle());
                 activity.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
                         ControlType.APPINFO_TARGET, view);
             };
