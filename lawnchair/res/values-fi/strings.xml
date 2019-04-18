@@ -7,7 +7,7 @@
     <string name="smartspace_date">Päivämäärä</string>
     <string name="smartspace_preferences">Muokkaa</string>
     <string name="smartspace_preferences_in_settings">Pikanäkymä</string>
-    <string name="smartspace_preferences_in_settings_desc">Päivämäärä, aika, säälähde</string>
+    <string name="smartspace_preferences_in_settings_desc">Päivämäärä, aika, säätietojen lähde</string>
     <string name="label_search">Haku</string>
     <string name="label_voice_search">Puhehaku</string>
     <string name="pref_icon_pack">Kuvakepaketti</string>
@@ -35,6 +35,7 @@
     <string name="search_pref_summary">Väri, hakukone, kuvakkeet</string>
     <string name="general_pref_title">Aloitusnäyttö</string>
     <string name="general_pref_summary">Ruudukko, kuvakeasettelu, tilapalkki</string>
+    <string name="about_pref_summary">Tiimi, linkit, lisenssit</string>
     <string name="hidden_app">Piilota sovelluksia</string>
     <string name="hide_app_selected">&#160; piilotettu</string>
     <string name="hide_app_reset">Nollaa</string>
@@ -102,7 +103,7 @@
     <!--Marker B-->
     <string name="dock_colored_google">Värjätyt kuvakkeet</string>
     <string name="hotseat_show_arrow">Nuoli</string>
-    <string name="hotseat_show_page_indicator">Sivu indikaattori</string>
+    <string name="hotseat_show_page_indicator">Sivun ilmaisin</string>
     <string name="dock_style_pref_title">Telakan tyyli</string>
     <string name="dock_style_default">Oletus</string>
     <string name="dock_style_p">Pyöristetty</string>
@@ -167,14 +168,21 @@
     <string name="action_open_drawer">Avaa sovellusvalikko</string>
     <string name="action_last_task">Avaa edellinen sovellus</string>
     <string name="action_open_widgets">Avaa widgetvalikko</string>
+    <string name="action_overlay">Avaa Google fiidi</string>
     <string name="action_open_notifications">Avaa ilmoitukset</string>
     <string name="action_close_notifications">Sulje ilmoitukset</string>
     <string name="action_open_app">Avaa sovellus</string>
+    <string name="action_open_app_with_target">Avaa %s</string>
     <string name="action_open_app_select_app">Valitse sovellus</string>
     <string name="action_none">Älä tee mitään</string>
     <string name="gesture_press_home">Aloitusnäyttöpainike</string>
     <string name="gesture_press_back">Takaisin-näppäin</string>
     <string name="gesture_double_tap">Kaksoisnapautus</string>
+    <string name="gesture_long_press">Kosketa pitkään</string>
+    <string name="gesture_swipe_down">Pyyhkäisy alas</string>
+    <string name="gesture_swipe_up">Pyyhkäisy ylös</string>
+    <string name="pref_show_assistant_title">Puhehaku-näppäin</string>
+    <string name="pref_show_assistant_summary">Näytä puhehaku-näppäin, jos se on tuettu</string>
     <string name="current_weather_provider">Säätietojen lähde</string>
     <string name="smartspace_time_24_h">24-tunnin muoto</string>
     <string name="weather_provider_disabled">Pois käytöstä</string>
@@ -202,6 +210,8 @@
     <string name="full_wday_month_day_no_year">EEEE d. MMMM</string>
     <string name="weather_provider_testing">Debug</string>
     <!--Marker G-->
+    <string name="backup_generate_report">Luo virheraportti</string>
+    <string name="two_row_dock">Kaksi riviä</string>
     <string name="keep_scroll_state_pref_title">Muista vierityskohta</string>
     <string name="iconpack_none">Ei mitään</string>
     <string name="reset">Nollaa</string>
@@ -220,6 +230,7 @@
     <string name="pref_hide_statusbar">Piilota tilapalkki</string>
     <string name="pref_recents_radius">Kulmien pyöristys</string>
     <string name="playstore_query_icon_pack">Kuvakepaketti</string>
+    <string name="bridge_missing_message">Asenna tai päivitä Lawnfeed</string>
     <string name="quickstep_pref_title">Viimeisimmät</string>
     <string name="quickstep_pref_summary">Eleet, kulmat, sumennus</string>
     <string name="swipe_up_to_switch_apps_title">Vaihda sovellusta pyyhkäisemällä ylös</string>
@@ -302,5 +313,17 @@
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
+    <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">OnePlus Weather</string>
+    <string name="pref_smartspace_time_above">Näytä iso kello</string>
+    <string name="pref_smartspace_time_above_summary">Näytä kello widgetin yläpuolella</string>
+    <string name="pref_fonts_title">Fontit</string>
+    <string name="pref_fonts_change_global_font">Muuta</string>
+    <string name="pref_fonts_category_home">Aloitusnäyttö</string>
+    <string name="pref_fonts_home_smartspace">\'Pikanäkymä\' widget</string>
+    <string name="pref_fonts_category_drawer">Sovellusvalikko</string>
+    <string name="pref_fonts_drawer_icons">Sovellusten nimet</string>
+    <string name="pref_fonts_find_fonts">Etsi fontteja</string>
+    <string name="pref_fonts_add_fonts">Lisää fontteja</string>
+    <string name="about_translate">Käännökset</string>
 </resources>
