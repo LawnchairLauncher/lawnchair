@@ -243,9 +243,13 @@ public final class IconRecentsView extends FrameLayout {
                 throw new IllegalStateException("There are less empty item views than the number "
                         + "of items to animate to.");
             }
-            // Set item animator for content filling animation. The item animator will switch back
-            // to the default on completion.
-            mTaskRecyclerView.setItemAnimator(mLoadingContentItemAnimator);
+            // Possible that task list loads faster than adapter changes propagate to layout so
+            // only start content fill animation if there aren't any pending adapter changes.
+            if (!mTaskRecyclerView.hasPendingAdapterUpdates()) {
+                // Set item animator for content filling animation. The item animator will switch
+                // back to the default on completion
+                mTaskRecyclerView.setItemAnimator(mLoadingContentItemAnimator);
+            }
             mTaskAdapter.notifyItemRangeRemoved(numActualItems, numEmptyItems - numActualItems);
             mTaskAdapter.notifyItemRangeChanged(
                     0, numActualItems, CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT);
