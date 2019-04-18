@@ -4,7 +4,7 @@
         icon="@mipmap/ic_launcher"
         playStoreUrl="https://play.google.com/store/apps/details?id=ch.deletescape.lawnchair.plah"
         repo="LawnchairLauncher/Lawnchair"
-        websiteUrl="https://lawnchair.info">
+        websiteUrl="https://lawnchair.app">
         <me.jfenn.attribouter.wedges.link.LinkWedge
             name="@string/about_twitter"
             icon="@drawable/ic_twitter"
@@ -122,7 +122,7 @@
             name="Abhijeet Bohra"
             avatar="https://avatars.githubusercontent.com/u/34155181"
             login="bohrabhijeet"
-            task="^@string/about_role_special_snowflake">
+            task="^@string/about_role_mod_support">
             <me.jfenn.attribouter.wedges.link.LinkWedge
                 name="@string/about_twitter"
                 icon="@drawable/ic_twitter"
