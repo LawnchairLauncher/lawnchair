@@ -398,6 +398,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
             Runnable onIconLoaded = () -> {
                 // Delay swapping views until the icon is loaded to prevent a flash.
                 view.setVisibility(VISIBLE);
+                originalView.setVisibility(INVISIBLE);
             };
             CancellationSignal loadIconSignal = view.mLoadIconSignal;
             new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(() -> {
