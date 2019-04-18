@@ -10,7 +10,7 @@
     <string name="smartspace_time">Czas</string>
     <string name="smartspace_date">Data</string>
     <string name="smartspace_preferences">Dostosuj</string>
-    <string name="smartspace_preferences_in_settings">At a Glance</string>
+    <string name="smartspace_preferences_in_settings">W skrócie</string>
     <string name="smartspace_preferences_in_settings_desc">Data, godzina, źródło pogody</string>
     <string name="label_search">Szukaj</string>
     <string name="label_voice_search">Wyszukiwanie głosowe</string>
@@ -67,6 +67,7 @@
     <string name="no_recent_backups">Nie ma nic do pokazania</string>
     <string name="backup_loading">Ładowanie...</string>
     <string name="backup_invalid">Nieprawidłowy plik kopii zapasowej</string>
+    <string name="backup_delete">Usuń</string>
     <string name="backup_delete_failed">Coś poszło nie tak</string>
     <string name="backup_share">Udostępnij</string>
     <string name="backup_pref_summary">Zapisz główny pulpit, przywróć kopie zapasowe</string>
@@ -277,6 +278,8 @@
     <string name="pref_recents_radius">Zaokrąglenie rogów</string>
     <string name="automatic_short">Automatycznie</string>
     <string name="playstore_query_icon_pack">Zestaw ikon</string>
+    <string name="bridge_missing_title">Lawnfeed</string>
+    <string name="bridge_missing_message">Zainstaluj lub zaktualizuj Lawnfeed</string>
     <string name="quickstep_pref_title">Ostatnie</string>
     <string name="quickstep_pref_summary">Gesty, narożniki, rozmycie</string>
     <string name="swipe_up_to_switch_apps_title">Przesuń w górę aby zmienić aplikacje</string>
@@ -419,6 +422,7 @@
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
+    <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">OnePlus Weather</string>
     <string name="overlap_placement">Położenie pokrywane</string>
     <string name="overlap_placement_summary">Zezwól ikonom i widżetom na nasuwanie się na siebie.</string>
@@ -428,4 +432,23 @@
     <string name="units_reaumur">Réaumur</string>
     <string name="units_romer">Rømer</string>
     <string name="owm_get_your_own_key">Zdobądź własny klucz API z api.openweathermap.org</string>
+    <string name="pref_smartspace_time_above">Pokaż duży zegar</string>
+    <string name="pref_smartspace_time_above_summary">Pokaż zegar nad widżetami</string>
+    <string name="pref_fonts_title">Czcionki</string>
+    <string name="pref_fonts_summary">Zmień czcionkę różnych elementów</string>
+    <string name="pref_fonts_global_font">Globalna czcionka</string>
+    <string name="pref_fonts_change_global_font">Zmień</string>
+    <string name="pref_fonts_category_home">Ekran Główny</string>
+    <string name="pref_fonts_home_icons">Nazwy folderów i aplikacji</string>
+    <string name="pref_fonts_home_smartspace">Widżet \"w skrócie\"</string>
+    <string name="pref_fonts_home_shortcuts">Dymki skrótów</string>
+    <string name="pref_fonts_category_drawer">Lista Aplikacji</string>
+    <string name="pref_fonts_drawer_icons">Nazwy aplikacji</string>
+    <string name="pref_fonts_drawer_app_actions_icons">Nazwy akcji aplikacji</string>
+    <string name="pref_fonts_drawer_tabs">Nazwy kart</string>
+    <string name="pref_fonts_find_fonts">Znajdź czcionki</string>
+    <string name="pref_fonts_add_fonts">Dodaj czcionki</string>
+    <string name="pref_fonts_add_fonts_summary">Wspierane OTF i TTF</string>
+    <string name="pref_fonts_missing_font">Brakująca czcionka</string>
+    <string name="about_translate">Tłumaczenia</string>
 </resources>
