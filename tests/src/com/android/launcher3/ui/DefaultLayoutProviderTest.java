@@ -33,6 +33,7 @@ import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -103,6 +104,7 @@ public class DefaultLayoutProviderTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @Ignore
     public void testCustomProfileLoaded_with_folder() throws Exception {
         writeLayout(new LauncherLayoutBuilder().atHotseat(0).putFolder(android.R.string.copy)
                 .addApp(SETTINGS_APP, SETTINGS_APP)
