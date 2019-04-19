@@ -17,10 +17,12 @@
             priority="-1"
             url="https://translate.lawnchair.app" />
     </me.jfenn.attribouter.wedges.AppWedge>
+
     <me.jfenn.attribouter.wedges.ContributorsWedge
-        repo=""
         showDefaults="false"
         title="@string/about_our_team">
+
+        <!-- Lead developer: deletescape -->
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="Till Kottmann"
             avatar="https://avatars.githubusercontent.com/u/13785669"
@@ -34,6 +36,8 @@
                 icon="@drawable/ic_twitter"
                 url="https://twitter.com/deletescape" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
+
+        <!-- DevOps: divadsn -->
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="David Sn"
             avatar="https://avatars.githubusercontent.com/u/28547847"
@@ -47,21 +51,29 @@
                 icon="@drawable/ic_twitter"
                 url="https://twitter.com/divadsn" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
+
+        <!-- Developer: paphonb -->
         <me.jfenn.attribouter.wedges.ContributorWedge
             avatar="https://avatars.githubusercontent.com/u/8080853"
             login="paphonb"
             position="3"
             task="^@string/about_role_dev" />
+
+        <!-- Developer: fonix232 -->
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="Jozsef Kiraly"
             avatar="https://avatars.githubusercontent.com/u/371847"
             login="fonix232"
             task="^@string/about_role_dev" />
+
+        <!-- Developer: amirzaidi -->
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="Amir Zaidi"
             avatar="https://avatars.githubusercontent.com/u/2102185"
             login="amirzaidi"
             task="^@string/about_role_dev" />
+
+        <!-- Developer: reCoded -->
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="reCoded"
             avatar="https://avatars.githubusercontent.com/u/29968331"
@@ -73,6 +85,8 @@
                 icon="@drawable/ic_twitter"
                 url="https://twitter.com/colinrecoded" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
+
+        <!-- Designer: joshuabaldassarre -->
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="Joshua Baldassarre"
             avatar="https://avatars.githubusercontent.com/u/20582840"
@@ -85,6 +99,8 @@
                 icon="@drawable/ic_twitter"
                 url="https://twitter.com/JoshBaldassarre" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
+
+        <!-- UI/UX Designer: lumiqcreative -->
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="Lumiq Creative"
             avatar="https://avatars.githubusercontent.com/u/30959743"
@@ -96,6 +112,8 @@
                 priority="3"
                 url="https://twitter.com/lumiqcreative" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
+
+        <!-- Public relations: chriskardas -->
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="Christopher Kardas"
             avatar="https://avatars.githubusercontent.com/u/15703840"
@@ -108,6 +126,8 @@
                 icon="@drawable/ic_twitter"
                 url="https://twitter.com/chris_kardas" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
+
+        <!-- Supporter: rickkode -->
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="Rik Koedoot"
             avatar="https://avatars.githubusercontent.com/u/29402532"
@@ -119,6 +139,8 @@
                 priority="3"
                 url="https://twitter.com/RickKode" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
+
+        <!-- Supporter: bohrabhijeet -->
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="Abhijeet Bohra"
             avatar="https://avatars.githubusercontent.com/u/34155181"
@@ -130,6 +152,8 @@
                 priority="3"
                 url="https://twitter.com/bohrabhijeet" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
+
+        <!-- Magisk boi: Skittles9823 -->
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="Rhyse Simpson"
             avatar="https://avatars.githubusercontent.com/u/7065700"
@@ -142,6 +166,8 @@
                 url="https://twitter.com/skittles9823"/>
         </me.jfenn.attribouter.wedges.ContributorWedge>
     </me.jfenn.attribouter.wedges.ContributorsWedge>
+
+    <!-- Other family members -->
     <me.jfenn.attribouter.wedges.ContributorsWedge
         repo=""
         showDefaults="false"
