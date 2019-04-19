@@ -57,6 +57,9 @@ android {
         buildConfigField "boolean", "FEATURE_QUINOA", "true"
         buildConfigField "boolean", "FEATURE_SETTINGS_SEARCH", "true"
 
+        def githubToken = localProps.getProperty('githubToken') ?: '"' + System.getenv("GITHUB_TOKEN") + '"'
+        buildConfigField "String", "GITHUB_TOKEN", githubToken
+
         ndk {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a"
         }
