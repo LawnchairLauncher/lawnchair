@@ -6,7 +6,7 @@
     <string name="icu_abbrev_time">HH:mm</string>
     <string name="icu_abbrev_time_12h">hh:mm aa</string>
     <string name="icu_abbrev_date"> dd MMMM</string>
-    <string name="in_smartspace">Bir bakışta widget\'ta</string>
+    <string name="in_smartspace">\‘Bir bakışta\’ widget\'ında</string>
     <string name="smartspace_time">Saat</string>
     <string name="smartspace_date">Tarih</string>
     <string name="smartspace_preferences">Özelleştirme</string>
@@ -16,7 +16,7 @@
     <string name="label_voice_search">Sesli arama</string>
     <string name="pref_icon_pack">Simge paketi</string>
     <string name="home_widget">Ana ekran widget\'ı</string>
-    <string name="title_show_google_app">Solda %1$s</string>
+    <string name="title_show_google_app">%1$s solda</string>
     <string name="msg_minus_one_on_left">Haber akışı ana ekranın solunda</string>
     <string name="about">Hakkında</string>
     <string name="title_google_app">Google uygulaması</string>
@@ -67,6 +67,7 @@
     <string name="no_recent_backups">Gösterilecek bir şey yok</string>
     <string name="backup_loading">Yükleniyor...</string>
     <string name="backup_invalid">Yanlış yedekleme dosyası</string>
+    <string name="backup_delete">Sil</string>
     <string name="backup_delete_failed">Bir sorun oluştu</string>
     <string name="backup_share">Paylaş</string>
     <string name="backup_pref_summary">Ana ekranı kaydedin, yedekleri geri yükleyin</string>
@@ -103,12 +104,12 @@
     <string name="launcher_theme_override_label">Karanlık temaya zorla</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="blur_pref_title">Bulanıklık</string>
-    <string name="blur_pref_summary">Uygulama çekmecesi, yuva, ayarlar arka planları için bulanıklık efekti</string>
+    <string name="blur_pref_summary">Uygulama çekmecesi, alt panel, ayarlar arka planları için bulanıklık efekti</string>
     <string name="blur_radius_pref_title">Bulanıklık seviyesi</string>
     <string name="blur_oom">Bir sorun oluştu</string>
     <!--Marker B-->
     <string name="dock_colored_google">Renkli simgeler</string>
-    <string name="hotseat_show_arrow">Ok</string>
+    <string name="hotseat_show_arrow">Ok işareti</string>
     <string name="hotseat_show_page_indicator">Sayfa göstergesi</string>
     <string name="dock_style_pref_title">Alt panel stili</string>
     <string name="dock_style_default">Varsayılan</string>
@@ -176,7 +177,7 @@
     <string name="about_bio_divadsn">19 yaşında, kafein ve pizzayı kod haline getirdi. Daha önce Codebucket olarak da bilinirdi.</string>
     <string name="about_bio_recoded">Hafif kodlayıcı ve grafik tasarımcısı.</string>
     <string name="about_bio_josh">Serbest grafik tasarımcısı.</string>
-    <string name="about_bio_chris">Yaratıcı Zihin, Etkileyici ve İçerik Oluşturucu. Sosyal Medya ve Halkla İlişkiler Yöneticisi.</string>
+    <string name="about_bio_chris">Yaratıcı Zihin, Etkileyici ve İçerik Oluşturucu. Sosyal Medya ve Halkla İlişkiler Yöneticisi. @lawnchairapp\'ta birlikte takılalım ✨</string>
     <string name="about_bio_msfjarvis">HalogenOS\'ta çekirdek geliştirici ve substratum da ki uygulama geliştiricisi.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Başlatıcı çöktü</string>
@@ -189,7 +190,7 @@
     <string name="action_open_overview">Ana ekran açılır penceresini aç</string>
     <string name="action_global_search">Genel aramayı aç</string>
     <string name="action_app_search">Uygulama içi aramayı aç</string>
-    <string name="action_overlay">Google akışını aç</string>
+    <string name="action_overlay">Google haber akışını aç</string>
     <string name="action_assistant">Asistanı aç</string>
     <string name="action_open_notifications">Bildirimleri aç</string>
     <string name="action_close_notifications">Bildirimleri kapat</string>
@@ -225,7 +226,7 @@
     <string name="all_apps_label">Tüm uygulamalar</string>
     <string name="all_apps_label_pref_title">\"Tüm uygulamalar\" etiketini göster</string>
     <string name="separate_work_apps_pref_title">İş uygulamaları için ikinci sekme</string>
-    <string name="title_search_hidden_apps">Gizli uygulamaları bulun</string>
+    <string name="title_search_hidden_apps">Gizli uygulamaları bul</string>
     <string name="summary_search_hidden_apps">Sonuçlarda gizli uygulamaları göster</string>
     <!--Marker F-->
     <string name="default_city">Lucerne, CH</string>
@@ -277,10 +278,12 @@
     <string name="pref_recents_radius">Köşe yuvarlama</string>
     <string name="automatic_short">Otomatik</string>
     <string name="playstore_query_icon_pack">Simge paketi</string>
+    <string name="bridge_missing_title">Lawnfeed</string>
+    <string name="bridge_missing_message">Lawnfeed\'i yükle veya güncelle</string>
     <string name="quickstep_pref_title">Son uygulamalar</string>
     <string name="quickstep_pref_summary">Hareketler, köşeler, bulanıklık</string>
-    <string name="swipe_up_to_switch_apps_title">Uygulamaları değiştirmek için yukarı kaydırın</string>
-    <string name="swipe_left_to_go_back_title">Geri gitmek için sola kaydırın</string>
+    <string name="swipe_up_to_switch_apps_title">Uygulamaları değiştirmek için yukarı kaydır</string>
+    <string name="swipe_left_to_go_back_title">Geri gitmek için sola kaydır</string>
     <string name="pref_category_nav_swipe_up_gestures">Yukarı kaydırma eylemleri</string>
     <string name="gesture_nav_swipe_up_left">Sol taraftan</string>
     <string name="gesture_nav_swipe_up_center">Ortadan</string>
@@ -294,7 +297,7 @@
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
     <string name="search_provider_baidu">Baidu</string>
-    <string name="search_provider_appsearch">Uygulama ara</string>
+    <string name="search_provider_appsearch">Uygulama arama</string>
     <string name="search_provider_search_lite">Hafif arama</string>
     <string name="search_provider_cool_search">Havalı arama</string>
     <string name="recent_task_option_force_stop">Durmaya zorla</string>
@@ -337,7 +340,7 @@
     <string name="search_clear_history">Geçmişi temizle</string>
     <string name="search_no_results">Hiçbir şey bulunamadı</string>
     <string name="search_menu">Ayarları bul</string>
-    <string name="search_provider_s_finder">S bulucu</string>
+    <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Vurgu rengi</string>
     <string name="color_theme_based">Temaya uyum sağla</string>
     <!--Marker I-->
@@ -345,10 +348,10 @@
     <string name="title_app_suggestions">Uygulamalar</string>
     <string name="title_app_suggestions_in_search">Uygulama önerileri</string>
     <string name="summary_app_suggestions">Son kullanılan uygulamalar</string>
-    <string name="summary_app_suggestions_lawnstep">Son uygulamalar ekran ve uygulama çekmecesinde</string>
+    <string name="summary_app_suggestions_lawnstep">Son uygulamalar ekranı ve uygulama çekmecesinde</string>
     <string name="app_actions_pref_title">Eylemler</string>
     <string name="app_actions_pref_title_in_search">Eylem önerileri</string>
-    <string name="app_actions_pref_desc">Sık açılan ekranlar için kısayollar</string>
+    <string name="app_actions_pref_desc">Sık açılan ekranları için kısayollar</string>
     <string name="change_default_home">Ana ekran olarak ayarla</string>
     <string name="recent_task_option_popup_window">İletişim penceresi</string>
     <string name="blur_wallpaper_failed">Bir sorun oluştu</string>
@@ -389,7 +392,7 @@
     <string name="sesame_upsell">Sesame yüklemek için dokunun</string>
     <string name="sesame_search_upsell">Ara</string>
     <string name="sesame_search_upsell_on">Sesame\'ı arama sağlayıcısı olarak ayarla</string>
-    <string name="sesame_search_upsell_off">Sesame arama sağlayıcısı olarak ayarlanamadı</string>
+    <string name="sesame_search_upsell_off">Sesame arama sağlayıcısı olarak ayarlanmadı</string>
     <string name="pref_sesame_enabled">Sesame kısayol verisi paylaşıldı</string>
     <string name="pref_sesame_disabled">Paylaşılan veri yok</string>
     <string name="pref_sesame_show_shortcuts">Uygulama kısayolları</string>
@@ -415,6 +418,7 @@
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
+    <string name="search_provider_edge">Kenar</string>
     <string name="weather_provider_oneplus_weather">OnePlus hava durumu</string>
     <string name="overlap_placement">Örtüşen yerleşim</string>
     <string name="overlap_placement_summary">Simgelerin ve widget\'ların birbirleriyle örtüşmesine izin verin.</string>
@@ -424,4 +428,23 @@
     <string name="units_reaumur">Reaumur</string>
     <string name="units_romer">Romer</string>
     <string name="owm_get_your_own_key">Lütfen api.openweathermap.org adresinden kendi API anahtarınızı edinin</string>
+    <string name="pref_smartspace_time_above">Büyük saati göster</string>
+    <string name="pref_smartspace_time_above_summary">Saati widget\'ın üstünde göster</string>
+    <string name="pref_fonts_title">Yazı tipleri</string>
+    <string name="pref_fonts_summary">Farklı öğelerin yazı tipini değiştirme</string>
+    <string name="pref_fonts_global_font">Genel yazı tipi</string>
+    <string name="pref_fonts_change_global_font">Değiştir</string>
+    <string name="pref_fonts_category_home">Ana ekran</string>
+    <string name="pref_fonts_home_icons">Uygulama ve klasör adları</string>
+    <string name="pref_fonts_home_smartspace">\'Bir Bakışta\' widget\'ı</string>
+    <string name="pref_fonts_home_shortcuts">Kısayol baloncukları</string>
+    <string name="pref_fonts_category_drawer">Uygulama çekmecesi</string>
+    <string name="pref_fonts_drawer_icons">Uygulama adları</string>
+    <string name="pref_fonts_drawer_app_actions_icons">Uygulama eylem adları</string>
+    <string name="pref_fonts_drawer_tabs">Sekme adları</string>
+    <string name="pref_fonts_find_fonts">Yazı tiplerini bul</string>
+    <string name="pref_fonts_add_fonts">Yazı tipi ekle</string>
+    <string name="pref_fonts_add_fonts_summary">OTF ve TTF destekleniyor</string>
+    <string name="pref_fonts_missing_font">Eksik yazı tipi</string>
+    <string name="about_translate">Çeviriler</string>
 </resources>
