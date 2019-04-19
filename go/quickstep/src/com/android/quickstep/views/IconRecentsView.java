@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.views;
 
+import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+
 import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
 
 import static com.android.quickstep.TaskAdapter.CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT;
@@ -99,6 +101,7 @@ public final class IconRecentsView extends FrameLayout {
     private final Context mContext;
     private final TaskListLoader mTaskLoader;
     private final TaskAdapter mTaskAdapter;
+    private final LinearLayoutManager mTaskLayoutManager;
     private final TaskActionController mTaskActionController;
     private final DefaultItemAnimator mDefaultItemAnimator = new DefaultItemAnimator();
     private final ContentFillItemAnimator mLoadingContentItemAnimator =
@@ -138,6 +141,7 @@ public final class IconRecentsView extends FrameLayout {
         mTaskAdapter.setOnClearAllClickListener(view -> animateClearAllTasks());
         mTaskActionController = new TaskActionController(mTaskLoader, mTaskAdapter);
         mTaskAdapter.setActionController(mTaskActionController);
+        mTaskLayoutManager = new LinearLayoutManager(mContext, VERTICAL, true /* reverseLayout */);
         RecentsModel.INSTANCE.get(context).addThumbnailChangeListener(listener);
     }
 
@@ -147,8 +151,7 @@ public final class IconRecentsView extends FrameLayout {
         if (mTaskRecyclerView == null) {
             mTaskRecyclerView = findViewById(R.id.recent_task_recycler_view);
             mTaskRecyclerView.setAdapter(mTaskAdapter);
-            mTaskRecyclerView.setLayoutManager(
-                    new LinearLayoutManager(mContext, VERTICAL, true /* reverseLayout */));
+            mTaskRecyclerView.setLayoutManager(mTaskLayoutManager);
             ItemTouchHelper helper = new ItemTouchHelper(
                     new TaskSwipeCallback(mTaskActionController));
             helper.attachToRecyclerView(mTaskRecyclerView);
@@ -211,6 +214,12 @@ public final class IconRecentsView extends FrameLayout {
      * becomes visible.
      */
     public void onBeginTransitionToOverview() {
+        if (mContext.getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
+            // Scroll to bottom of task in landscape mode. This is a non-issue in portrait mode as
+            // all tasks should be visible to fill up the screen in portrait mode and the view will
+            // not be scrollable.
+            mTaskLayoutManager.scrollToPositionWithOffset(TASKS_START_POSITION, 0 /* offset */);
+        }
         scheduleFadeInLayoutAnimation();
         // Load any task changes
         if (!mTaskLoader.needsToLoad()) {
