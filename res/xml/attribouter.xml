@@ -15,7 +15,7 @@
             name="@string/about_translate"
             icon="@drawable/ic_translate"
             priority="-1"
-            url="https://del.dog/lawnchairtl" />
+            url="https://translate.lawnchair.app" />
     </me.jfenn.attribouter.wedges.AppWedge>
     <me.jfenn.attribouter.wedges.ContributorsWedge
         repo=""
