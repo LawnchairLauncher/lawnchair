@@ -39,11 +39,9 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.hints.ChipsContainer;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.ClipAnimationHelper.TransformParams;
 import com.android.quickstep.util.LayoutUtils;
@@ -55,7 +53,6 @@ import com.android.quickstep.util.LayoutUtils;
 public class LauncherRecentsView extends RecentsView<Launcher> {
 
     private final TransformParams mTransformParams = new TransformParams();
-    private ChipsContainer mChipsContainer;
 
     public LauncherRecentsView(Context context) {
         this(context, null);
@@ -76,14 +73,6 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        mChipsContainer = mActivity.findViewById(R.id.hints);
-        BaseDragLayer.LayoutParams params = (BaseDragLayer.LayoutParams) mChipsContainer.getLayoutParams();
-        params.bottomMargin = mActivity.getDeviceProfile().chipHintBottomMarginPx;
-    }
-
-    @Override
     public void setTranslationY(float translationY) {
         super.setTranslationY(translationY);
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
@@ -92,16 +81,6 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
                 redrawLiveTile(false);
             }
         }
-    }
-
-    public void setHintVisibility(float v) {
-        if (mChipsContainer != null && ENABLE_HINTS_IN_OVERVIEW.get()) {
-            mChipsContainer.setHintVisibility(v);
-        }
-    }
-
-    public ChipsContainer getChipsContainer() {
-        return mChipsContainer;
     }
 
     @Override
@@ -150,37 +129,6 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
                 mActivity.findViewById(R.id.scrim_view), ScrimView.DRAG_HANDLE_ALPHA, 0);
         dragHandleAnim.setInterpolator(Interpolators.ACCEL_2);
         anim.play(dragHandleAnim);
-
-        return anim;
-    }
-
-    @Override
-    public PendingAnimation createTaskLauncherAnimation(TaskView tv, long duration) {
-        PendingAnimation anim = super.createTaskLauncherAnimation(tv, duration);
-
-        if (ENABLE_HINTS_IN_OVERVIEW.get()) {
-            anim.anim.play(ObjectAnimator.ofFloat(
-                    mChipsContainer, ChipsContainer.HINT_VISIBILITY, 0));
-        }
-
-        return anim;
-    }
-
-    @Override
-    public PendingAnimation createTaskDismissAnimation(TaskView taskView, boolean animateTaskView,
-            boolean shouldRemoveTask, long duration) {
-        PendingAnimation anim = super.createTaskDismissAnimation(taskView, animateTaskView,
-                shouldRemoveTask, duration);
-
-        if (ENABLE_HINTS_IN_OVERVIEW.get()) {
-            anim.anim.play(ObjectAnimator.ofFloat(
-                    mChipsContainer, ChipsContainer.HINT_VISIBILITY, 0));
-            anim.addEndListener(onEndListener -> {
-                if (!onEndListener.isSuccess) {
-                    mChipsContainer.setHintVisibility(1);
-                }
-            });
-        }
 
         return anim;
     }
