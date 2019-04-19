@@ -83,7 +83,7 @@
 
         <!-- Developer: reCoded -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^reCoded"
+            name="^Colin Reimer"
             avatar="https://avatars.githubusercontent.com/u/29968331"
             bio="^@string/about_bio_recoded"
             login="reC0D3D"
@@ -260,7 +260,8 @@
         <!-- HokoBlur-Lite -->
         <me.jfenn.attribouter.wedges.LicenseWedge
             title="^HokoBlur-Lite"
-            repo="LawnchairLauncher/hoko-lite" />
+            repo="LawnchairLauncher/hoko-lite"
+            license="apache-2.0" />
 
         <!-- Chroma -->
         <me.jfenn.attribouter.wedges.LicenseWedge
