@@ -19,7 +19,6 @@ import static com.android.quickstep.TaskAdapter.MAX_TASKS_TO_DISPLAY;
 
 import android.content.Context;
 
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 
 /**
@@ -27,17 +26,7 @@ import com.android.launcher3.InvariantDeviceProfile;
  */
 public final class TaskLayoutUtils {
 
-    private static final float BUTTON_TO_DEVICE_HEIGHT_RATIO = 36.0f/569;
-    private static final float BUTTON_WIDTH_TO_HEIGHT_RATIO = 53.0f/18;
-    private static final float BUTTON_MARGIN_TO_BUTTON_HEIGHT_RATIO = 5.0f/9;
-
     private TaskLayoutUtils() {}
-
-    public static int getTaskListHeight(DeviceProfile dp) {
-        // TODO: Remove this as task height is determined directly from device height.
-        int clearAllSpace = getClearAllButtonHeight(dp) + 2 * getClearAllButtonTopBottomMargin(dp);
-        return getDeviceLongWidth(dp) - clearAllSpace;
-    }
 
     /**
      * Calculate task height based off the available height in portrait mode such that when the
@@ -54,19 +43,8 @@ public final class TaskLayoutUtils {
         return (int) (availableHeight * 1.0f / MAX_TASKS_TO_DISPLAY);
     }
 
-    public static int getClearAllButtonHeight(DeviceProfile dp) {
-        return (int) (BUTTON_TO_DEVICE_HEIGHT_RATIO * getDeviceLongWidth(dp));
-    }
-
-    public static int getClearAllButtonWidth(DeviceProfile dp) {
-        return (int) (BUTTON_WIDTH_TO_HEIGHT_RATIO * getClearAllButtonHeight(dp));
-    }
-
-    public static int getClearAllButtonTopBottomMargin(DeviceProfile dp) {
-        return (int) (BUTTON_MARGIN_TO_BUTTON_HEIGHT_RATIO * getClearAllButtonHeight(dp));
-    }
-
-    private static int getDeviceLongWidth(DeviceProfile dp) {
-        return Math.max(dp.availableHeightPx, dp.availableWidthPx);
+    public static int getClearAllButtonHeight(Context context) {
+        // TODO: Implement this
+        return 0;
     }
 }
