@@ -15,8 +15,12 @@
  */
 package com.android.quickstep.views;
 
+import static com.android.quickstep.TaskAdapter.MAX_TASKS_TO_DISPLAY;
+
+import android.content.Context;
+
 import com.android.launcher3.DeviceProfile;
-import com.android.quickstep.TaskAdapter;
+import com.android.launcher3.InvariantDeviceProfile;
 
 /**
  * Utils to determine dynamically task and view sizes based off the device height and width.
@@ -30,8 +34,24 @@ public final class TaskLayoutUtils {
     private TaskLayoutUtils() {}
 
     public static int getTaskListHeight(DeviceProfile dp) {
+        // TODO: Remove this as task height is determined directly from device height.
         int clearAllSpace = getClearAllButtonHeight(dp) + 2 * getClearAllButtonTopBottomMargin(dp);
         return getDeviceLongWidth(dp) - clearAllSpace;
+    }
+
+    /**
+     * Calculate task height based off the available height in portrait mode such that when the
+     * recents list is full, the total height fills in the available device height perfectly. In
+     * landscape mode, we keep the same task height so that tasks scroll off the top.
+     *
+     * @param context current context
+     * @return task height
+     */
+    public static int getTaskHeight(Context context) {
+        final int availableHeight =
+                InvariantDeviceProfile.INSTANCE.get(context).portraitProfile.availableHeightPx;
+        // TODO: Take into account clear all button height for task height
+        return (int) (availableHeight * 1.0f / MAX_TASKS_TO_DISPLAY);
     }
 
     public static int getClearAllButtonHeight(DeviceProfile dp) {
