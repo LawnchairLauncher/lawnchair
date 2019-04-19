@@ -177,7 +177,6 @@
 
     <!-- Other family members -->
     <me.jfenn.attribouter.wedges.ContributorsWedge
-        repo=""
         showDefaults="false"
         title="@string/about_our_family">
         <me.jfenn.attribouter.wedges.ContributorWedge
