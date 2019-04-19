@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -84,10 +85,11 @@ public final class TaskAdapter extends Adapter<ViewHolder> {
                 itemView.setOnClickListener(view -> mTaskActionController.launchTask(taskHolder));
                 return taskHolder;
             case ITEM_TYPE_CLEAR_ALL:
-                Button clearView = (Button) LayoutInflater.from(parent.getContext())
+                View clearView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.clear_all_button, parent, false);
                 ClearAllHolder clearAllHolder = new ClearAllHolder(clearView);
-                clearView.setOnClickListener(mClearAllListener);
+                Button clearViewButton = clearView.findViewById(R.id.clear_all_button);
+                clearViewButton.setOnClickListener(mClearAllListener);
                 return clearAllHolder;
             default:
                 throw new IllegalArgumentException("No known holder for item type: " + viewType);
