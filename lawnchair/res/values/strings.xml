@@ -590,4 +590,6 @@
     <string name="about_translate">Translations</string>
 
     <string name="pref_show_dev_options">Show in settings</string>
+
+    <string name="app_description">A customizable Pixel Launcher alternative.</string>
 </resources>

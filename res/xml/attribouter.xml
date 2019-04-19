@@ -2,6 +2,7 @@
 <about>
     <me.jfenn.attribouter.wedges.AppWedge
         icon="@mipmap/ic_launcher"
+        description="^@string/app_description"
         playStoreUrl="https://play.google.com/store/apps/details?id=ch.deletescape.lawnchair.plah"
         repo="LawnchairLauncher/Lawnchair"
         websiteUrl="https://lawnchair.app">
