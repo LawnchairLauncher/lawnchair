@@ -147,8 +147,11 @@ public final class Workspace extends Home {
         final Point launchableCenter = launchable.getObject().getVisibleCenter();
         final long downTime = SystemClock.uptimeMillis();
         launcher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, launchableCenter);
+        LauncherInstrumentation.log("dragIconToWorkspace: sent down");
         launcher.waitForLauncherObject(longPressIndicator);
+        LauncherInstrumentation.log("dragIconToWorkspace: indicator");
         launcher.movePointer(downTime, DRAG_DURACTION, launchableCenter, dest);
+        LauncherInstrumentation.log("dragIconToWorkspace: moved pointer");
         launcher.sendPointer(
                 downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, dest);
         LauncherInstrumentation.log("dragIconToWorkspace: end");
