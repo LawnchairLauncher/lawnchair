@@ -58,4 +58,13 @@
     <!-- Annotation shown on an app card in Recents, telling that the app has a usage limit set by
     the user, and a given time is left for it today [CHAR LIMIT=22] -->
     <string name="time_left_for_app"><xliff:g id="time" example="7 minutes">%1$s</xliff:g> left today</string>
+
+    <!-- Accessibility title for the row of all-apps containing app predictions. [CHAR LIMIT=50] -->
+    <string name="title_app_suggestions">App suggestions</string>
+    <!-- Label for the header text of the All Apps section in All Apps view, used to separate Predicted Apps and Actions section from All Apps section. [CHAR_LIMIT=50] -->
+    <string name="all_apps_label">All apps</string>
+    <!-- Text of the tip when user lands in all apps view for the first time, indicating where the tip toast points to is the predicted apps section. [CHAR_LIMIT=50] -->
+    <string name="all_apps_prediction_tip">Your predicted apps</string>
+
+
 </resources>

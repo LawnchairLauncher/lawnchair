@@ -36,6 +36,8 @@ import com.android.systemui.shared.system.MetricsLoggerCompat;
 @SuppressWarnings("unused")
 public class UserEventDispatcherExtension extends UserEventDispatcher {
 
+    public static final int ALL_APPS_PREDICTION_TIPS = 2;
+
     private static final String TAG = "UserEventDispatcher";
 
     public UserEventDispatcherExtension(Context context) { }
