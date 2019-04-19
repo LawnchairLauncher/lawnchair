@@ -26,6 +26,8 @@ import com.android.launcher3.InvariantDeviceProfile;
  */
 public final class TaskLayoutUtils {
 
+    private static final float CLEAR_ALL_ITEM_TO_HEIGHT_RATIO = 7.0f / 64;
+
     private TaskLayoutUtils() {}
 
     /**
@@ -39,12 +41,19 @@ public final class TaskLayoutUtils {
     public static int getTaskHeight(Context context) {
         final int availableHeight =
                 InvariantDeviceProfile.INSTANCE.get(context).portraitProfile.availableHeightPx;
-        // TODO: Take into account clear all button height for task height
-        return (int) (availableHeight * 1.0f / MAX_TASKS_TO_DISPLAY);
+        final int availableTaskSpace = availableHeight - getClearAllItemHeight(context);
+        return (int) (availableTaskSpace * 1.0f / MAX_TASKS_TO_DISPLAY);
     }
 
-    public static int getClearAllButtonHeight(Context context) {
-        // TODO: Implement this
-        return 0;
+    /**
+     * Calculate clear all item height scaled to available height in portrait mode.
+     *
+     * @param context current context
+     * @return clear all item height
+     */
+    public static int getClearAllItemHeight(Context context) {
+        final int availableHeight =
+                InvariantDeviceProfile.INSTANCE.get(context).portraitProfile.availableHeightPx;
+        return (int) (CLEAR_ALL_ITEM_TO_HEIGHT_RATIO * availableHeight);
     }
 }
