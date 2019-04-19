@@ -70,7 +70,7 @@ import static com.android.launcher3.Utilities.mapToRange;
 public class FloatingIconView extends View implements Animator.AnimatorListener, ClipPathView {
 
     public static final float SHAPE_PROGRESS_DURATION = 0.15f;
-
+    private static final int FADE_DURATION_MS = 200;
     private static final Rect sTmpRect = new Rect();
 
     private Runnable mEndRunnable;
@@ -93,10 +93,15 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
     private float mBgDrawableStartScale = 1f;
     private float mBgDrawableEndScale = 1f;
 
+    private AnimatorSet mFadeAnimatorSet;
+    private ListenerView mListenerView;
+
     private FloatingIconView(Context context) {
         super(context);
+
         mBlurSizeOutline = context.getResources().getDimensionPixelSize(
                 R.dimen.blur_size_medium_outline);
+        mListenerView = new ListenerView(context, null);
     }
 
     /**
@@ -138,6 +143,12 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
             if (mRevealAnimator == null) {
                 mRevealAnimator = (ValueAnimator) FolderShape.getShape().createRevealAnimator(this,
                         mStartRevealRect, mEndRevealRect, mTaskCornerRadius / scale, !isOpening);
+                mRevealAnimator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mRevealAnimator = null;
+                    }
+                });
                 mRevealAnimator.start();
                 // We pause here so we can set the current fraction ourselves.
                 mRevealAnimator.pause();
@@ -314,7 +325,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
 
     @WorkerThread
     private int getOffsetForIconBounds(Drawable drawable) {
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O ||
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O ||
                 !(drawable instanceof AdaptiveIconDrawable)) {
             return 0;
         }
@@ -364,6 +375,18 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         }
     }
 
+    public void onListenerViewClosed() {
+        // Fast finish here.
+        if (mEndRunnable != null) {
+            mEndRunnable.run();
+            mEndRunnable = null;
+        }
+        if (mFadeAnimatorSet != null) {
+            mFadeAnimatorSet.end();
+            mFadeAnimatorSet = null;
+        }
+    }
+
     @Override
     public void onAnimationStart(Animator animator) {}
 
@@ -410,52 +433,69 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         // We need to add it to the overlay, but keep it invisible until animation starts..
         final DragLayer dragLayer = launcher.getDragLayer();
         view.setVisibility(INVISIBLE);
-        ((ViewGroup) dragLayer.getParent()).getOverlay().add(view);
+        ((ViewGroup) dragLayer.getParent()).addView(view);
+        dragLayer.addView(view.mListenerView);
+        view.mListenerView.setListener(view::onListenerViewClosed);
 
-        if (hideOriginal) {
-            view.mEndRunnable = () -> {
-                AnimatorSet fade = new AnimatorSet();
-                fade.setDuration(200);
-                fade.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        originalView.setVisibility(VISIBLE);
-                    }
+        view.mEndRunnable = () -> {
+            view.mEndRunnable = null;
 
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        ((ViewGroup) dragLayer.getParent()).getOverlay().remove(view);
-
-                        if (view.mRevealAnimator != null) {
-                            view.mRevealAnimator.end();
-                        }
-                    }
-                });
-
-                if (originalView instanceof FolderIcon) {
-                    FolderIcon folderIcon = (FolderIcon) originalView;
-                    folderIcon.setBackgroundVisible(false);
-                    folderIcon.getFolderName().setTextVisibility(false);
-                    fade.play(folderIcon.getFolderName().createTextAlphaAnimator(true));
-                    fade.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            folderIcon.setBackgroundVisible(true);
-                            folderIcon.animateBgShadowAndStroke();
-                            if (folderIcon.hasDot()) {
-                                folderIcon.animateDotScale(0, 1f);
-                            }
-                        }
-                    });
+            if (hideOriginal) {
+                if (isOpening) {
+                    originalView.setVisibility(VISIBLE);
+                    view.finish(dragLayer);
                 } else {
-                    fade.play(ObjectAnimator.ofFloat(originalView, ALPHA, 0f, 1f));
+                    view.mFadeAnimatorSet = view.createFadeAnimation(originalView, dragLayer);
+                    view.mFadeAnimatorSet.start();
                 }
-                fade.start();
-                // TODO: Do not run fade animation until we fix b/129421279.
-                fade.end();
-            };
-        }
+            } else {
+                view.finish(dragLayer);
+            }
+        };
         return view;
+    }
+
+    private AnimatorSet createFadeAnimation(View originalView, DragLayer dragLayer) {
+        AnimatorSet fade = new AnimatorSet();
+        fade.setDuration(FADE_DURATION_MS);
+        fade.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                originalView.setVisibility(VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                finish(dragLayer);
+            }
+        });
+
+        if (originalView instanceof FolderIcon) {
+            FolderIcon folderIcon = (FolderIcon) originalView;
+            folderIcon.setBackgroundVisible(false);
+            folderIcon.getFolderName().setTextVisibility(false);
+            fade.play(folderIcon.getFolderName().createTextAlphaAnimator(true));
+            fade.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    folderIcon.setBackgroundVisible(true);
+                    folderIcon.animateBgShadowAndStroke();
+                    if (folderIcon.hasDot()) {
+                        folderIcon.animateDotScale(0, 1f);
+                    }
+                }
+            });
+        } else {
+            fade.play(ObjectAnimator.ofFloat(originalView, ALPHA, 0f, 1f));
+        }
+
+        return fade;
+    }
+
+    private void finish(DragLayer dragLayer) {
+        ((ViewGroup) dragLayer.getParent()).removeView(this);
+        dragLayer.removeView(mListenerView);
+        recycle();
     }
 
     private void recycle() {
@@ -475,10 +515,15 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         mBackground = null;
         mClipPath = null;
         mFinalDrawableBounds.setEmpty();
-        mBgDrawableBounds.setEmpty();;
+        mBgDrawableBounds.setEmpty();
         if (mRevealAnimator != null) {
             mRevealAnimator.cancel();
         }
         mRevealAnimator = null;
+        if (mFadeAnimatorSet != null) {
+            mFadeAnimatorSet.cancel();
+        }
+        mFadeAnimatorSet = null;
+        mListenerView.setListener(null);
     }
 }
