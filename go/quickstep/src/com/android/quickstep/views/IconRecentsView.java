@@ -19,7 +19,6 @@ import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
 
 import static com.android.quickstep.TaskAdapter.CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT;
 import static com.android.quickstep.TaskAdapter.TASKS_START_POSITION;
-import static com.android.quickstep.views.TaskLayoutUtils.getTaskListHeight;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -33,7 +32,6 @@ import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.view.View;
 import android.view.ViewDebug;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
@@ -47,7 +45,6 @@ import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener;
 
 import com.android.launcher3.BaseActivity;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.quickstep.ContentFillItemAnimator;
 import com.android.quickstep.RecentsModel;
@@ -106,7 +103,6 @@ public final class IconRecentsView extends FrameLayout {
     private final DefaultItemAnimator mDefaultItemAnimator = new DefaultItemAnimator();
     private final ContentFillItemAnimator mLoadingContentItemAnimator =
             new ContentFillItemAnimator();
-    private final DeviceProfile mDeviceProfile;
 
     private RecentsToActivityHelper mActivityHelper;
     private RecyclerView mTaskRecyclerView;
@@ -137,7 +133,6 @@ public final class IconRecentsView extends FrameLayout {
         super(context, attrs);
         BaseActivity activity = BaseActivity.fromContext(context);
         mContext = context;
-        mDeviceProfile = activity.getDeviceProfile();
         mTaskLoader = new TaskListLoader(mContext);
         mTaskAdapter = new TaskAdapter(mTaskLoader);
         mTaskAdapter.setOnClearAllClickListener(view -> animateClearAllTasks());
@@ -151,8 +146,6 @@ public final class IconRecentsView extends FrameLayout {
         super.onFinishInflate();
         if (mTaskRecyclerView == null) {
             mTaskRecyclerView = findViewById(R.id.recent_task_recycler_view);
-            ViewGroup.LayoutParams recyclerViewParams = mTaskRecyclerView.getLayoutParams();
-            recyclerViewParams.height = getTaskListHeight(mDeviceProfile);
             mTaskRecyclerView.setAdapter(mTaskAdapter);
             mTaskRecyclerView.setLayoutManager(
                     new LinearLayoutManager(mContext, VERTICAL, true /* reverseLayout */));
