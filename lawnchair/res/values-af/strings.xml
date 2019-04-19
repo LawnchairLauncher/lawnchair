@@ -14,6 +14,7 @@
     <string name="backup_location">Ligging</string>
     <string name="backup_settings">Instellings</string>
     <string name="backup_wallpaper">Muurpapier</string>
+    <string name="backup_delete">Verwyder</string>
     <string name="backup_share">Deel</string>
     <string name="backup_share_title">Deel</string>
     <string name="grid_size_default">Verstek</string>

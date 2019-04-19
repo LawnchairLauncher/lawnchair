@@ -13,6 +13,7 @@
     <string name="backup_name">Emri</string>
     <string name="backup_location">Vendndodhja</string>
     <string name="backup_settings">Parametrat</string>
+    <string name="backup_delete">Fshi</string>
     <string name="backup_share">Ndaj</string>
     <string name="backup_share_title">Ndaj</string>
     <string name="grid_size_default">E paracaktuar</string>

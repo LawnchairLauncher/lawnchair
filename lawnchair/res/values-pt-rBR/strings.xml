@@ -29,7 +29,7 @@
     <string name="backup_wallpaper">Papel de Parede</string>
     <string name="backup_creating">Criando cópia de segurança</string>
     <string name="backup_loading">Carregando...</string>
-    <string name="backup_delete">Ocultar</string>
+    <string name="backup_delete">Excluir</string>
     <string name="backup_share">Compartilhar</string>
     <string name="backup_restarting">Reiniciando</string>
     <string name="backup_share_title">Compartilhar</string>
@@ -71,7 +71,6 @@
     <string name="about_role_designer">Designer</string>
     <string name="about_bio_recoded">Programador e designer gráfico.</string>
     <string name="about_bio_josh">Designer gráfico independente.</string>
-    <string name="about_bio_chris">Mente criativa, influenciador &amp; Criador de conteúdos. Redes sociais e gestor de PR.</string>
     <string name="about_bio_msfjarvis">Principal programador do halogenOS e programador de aplicações em substratum.</string>
     <string name="action_none">Não fazer nada</string>
     <string name="gesture_press_home">Botão início</string>
@@ -126,4 +125,6 @@
     <string name="font_weight_light">Claro</string>
     <string name="font_weight_medium">Média</string>
     <string name="font_weight_extra_black">Preto</string>
+    <string name="pref_fonts_category_home">Tela Inicial</string>
+    <string name="pref_fonts_category_drawer">Gaveta</string>
 </resources>

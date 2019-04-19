@@ -24,6 +24,7 @@
     <string name="backup_homescreen">Домашній екран</string>
     <string name="backup_settings">Налаштування</string>
     <string name="backup_wallpaper">Шпалери</string>
+    <string name="backup_delete">Видалити</string>
     <string name="backup_share">Поділитися</string>
     <string name="backup_share_title">Поділитися</string>
     <string name="grid_size">Розмір сітки</string>
@@ -97,4 +98,5 @@
     <string name="font_weight_light">Світла</string>
     <string name="font_weight_medium">Середнє</string>
     <string name="font_weight_extra_black">Чорна</string>
+    <string name="pref_fonts_category_home">Домашній екран</string>
 </resources>

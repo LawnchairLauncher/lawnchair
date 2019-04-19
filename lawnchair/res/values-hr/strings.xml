@@ -14,7 +14,7 @@
     <string name="backup_location">Lokacija</string>
     <string name="backup_settings">Postavke</string>
     <string name="backup_wallpaper">Pozadinska slika</string>
-    <string name="backup_delete">Sakrij</string>
+    <string name="backup_delete">Izbriši</string>
     <string name="backup_share">Podijeli</string>
     <string name="backup_share_title">Podijeli</string>
     <string name="grid_size">Veličina mreže</string>

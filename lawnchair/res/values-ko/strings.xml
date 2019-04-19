@@ -24,6 +24,7 @@
     <string name="backup_homescreen">홈 화면</string>
     <string name="backup_settings">설정</string>
     <string name="backup_wallpaper">배경화면</string>
+    <string name="backup_delete">삭제</string>
     <string name="backup_share">공유</string>
     <string name="backup_share_title">공유</string>
     <string name="grid_size">격자 크기</string>
@@ -95,4 +96,5 @@
     <string name="font_weight_light">밝은 테마</string>
     <string name="font_weight_medium">중간</string>
     <string name="font_weight_extra_black">검은색</string>
+    <string name="pref_fonts_category_home">홈 화면</string>
 </resources>

@@ -13,6 +13,7 @@
     <string name="restore_backup">ຄືນຄ່າ</string>
     <string name="backup_location">ສະຖານທີ່</string>
     <string name="backup_wallpaper">ຮູບພື້ນຫຼັງ</string>
+    <string name="backup_delete">ລຶບ</string>
     <string name="backup_share">ແບ່ງປັນ</string>
     <string name="backup_share_title">ແບ່ງປັນ</string>
     <string name="grid_size_default">ຄ່າເລີ່ມຕົ້ນ</string>

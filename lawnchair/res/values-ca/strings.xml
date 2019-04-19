@@ -23,7 +23,7 @@
     <string name="backup_location">Ubicació</string>
     <string name="backup_settings">Configuració</string>
     <string name="backup_wallpaper">Fons de pantalla</string>
-    <string name="backup_delete">Ocultar</string>
+    <string name="backup_delete">Esborra</string>
     <string name="backup_share">Comparteix</string>
     <string name="backup_share_title">Comparteix</string>
     <string name="grid_size_default">Per defecte</string>

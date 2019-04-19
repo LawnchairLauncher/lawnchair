@@ -30,7 +30,7 @@
     <string name="backup_wallpaper">Papel tapiz</string>
     <string name="backup_creating">Creando copia de seguridad</string>
     <string name="backup_loading">Cargando...</string>
-    <string name="backup_delete">Ocultar</string>
+    <string name="backup_delete">Eliminar</string>
     <string name="backup_share">Compartir</string>
     <string name="backup_restarting">Reiniciando</string>
     <string name="backup_share_title">Compartir</string>
@@ -72,7 +72,6 @@
     <string name="about_role_designer">Diseñador</string>
     <string name="about_bio_recoded">Coder suave y diseñador de gráficos.</string>
     <string name="about_bio_josh">Diseñador Gráfico Freelance.</string>
-    <string name="about_bio_chris">Mente creativa, influyente &amp; creador de contenidos. Administrador de medios de comunicación y PR.</string>
     <string name="about_bio_msfjarvis">Desarrollador base en halogenOS y desarrollador de aplicaciones en substratum.</string>
     <string name="action_none">No hacer nada</string>
     <string name="gesture_press_home">Botón de inicio</string>
@@ -127,4 +126,6 @@
     <string name="font_weight_light">Claro</string>
     <string name="font_weight_medium">Media</string>
     <string name="font_weight_extra_black">Negro</string>
+    <string name="pref_fonts_category_home">Pantalla de inicio</string>
+    <string name="pref_fonts_category_drawer">Cajón de aplicaciones</string>
 </resources>

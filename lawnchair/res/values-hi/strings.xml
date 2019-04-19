@@ -21,6 +21,7 @@
     <string name="backup_location">स्थान</string>
     <string name="backup_settings">सेटिंग</string>
     <string name="backup_wallpaper">वॉलपेपर</string>
+    <string name="backup_delete">हटाएं</string>
     <string name="backup_share">साझा करें</string>
     <string name="backup_share_title">साझा करें</string>
     <string name="backup_location_documents_storage">कस्टम</string>

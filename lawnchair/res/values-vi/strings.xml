@@ -30,6 +30,7 @@
     <string name="backup_wallpaper">Hình nền</string>
     <string name="backup_creating">Tạo sao lưu</string>
     <string name="backup_loading">Đang tải...</string>
+    <string name="backup_delete">Xóa</string>
     <string name="backup_share">Chia sẻ</string>
     <string name="backup_restarting">Đang khởi động lại</string>
     <string name="backup_share_title">Chia sẻ</string>
@@ -71,7 +72,6 @@
     <string name="about_role_designer">Nhà thiết kế</string>
     <string name="about_bio_recoded">Thiết kế nhẹ coder và đồ họa.</string>
     <string name="about_bio_josh">Freelance thiết kế đồ họa.</string>
-    <string name="about_bio_chris">Duy sáng tạo, Influencer &amp; người sáng tạo nội dung. Xã hội truyền thông và PR Manager.</string>
     <string name="about_bio_msfjarvis">Lõi các phát triển tại halogenOS và ứng dụng phát triển tại substratum.</string>
     <string name="action_none">Không làm gì</string>
     <string name="gesture_press_home">Phím Trang chính</string>
@@ -126,4 +126,6 @@
     <string name="font_weight_light">Sáng</string>
     <string name="font_weight_medium">Trung bình</string>
     <string name="font_weight_extra_black">Đen</string>
+    <string name="pref_fonts_category_home">Màn hình chủ</string>
+    <string name="pref_fonts_category_drawer">Ngăn chứa ứng dụng</string>
 </resources>

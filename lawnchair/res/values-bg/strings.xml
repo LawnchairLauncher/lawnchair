@@ -20,6 +20,7 @@
     <string name="backup_homescreen">Начален екран</string>
     <string name="backup_settings">Настройки</string>
     <string name="backup_wallpaper">Тапет</string>
+    <string name="backup_delete">Изтриване</string>
     <string name="backup_share">Споделяне</string>
     <string name="backup_share_title">Споделяне</string>
     <string name="grid_size">Големина на иконки</string>
@@ -83,4 +84,5 @@
     <string name="font_weight_light">Светло</string>
     <string name="font_weight_medium">Средно</string>
     <string name="font_weight_extra_black">Черно</string>
+    <string name="pref_fonts_category_home">Начален екран</string>
 </resources>

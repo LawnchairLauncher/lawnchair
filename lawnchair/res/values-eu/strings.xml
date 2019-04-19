@@ -13,6 +13,7 @@
     <string name="backup_name">Izena</string>
     <string name="backup_location">Kokalekua</string>
     <string name="backup_settings">Ezarpenak</string>
+    <string name="backup_delete">Ezabatu</string>
     <string name="backup_share">Partekatu</string>
     <string name="backup_share_title">Partekatu</string>
     <string name="grid_size_default">Lehenetsia</string>

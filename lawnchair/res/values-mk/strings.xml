@@ -9,6 +9,7 @@
     <string name="hide_app_apply">Примени</string>
     <string name="backup_name">Име</string>
     <string name="backup_settings">Поставки</string>
+    <string name="backup_delete">Избриши</string>
     <string name="grid_size_default">Стандардно</string>
     <string name="backup_location_documents_storage">Рачно</string>
     <string name="dock_style_default">Стандардно</string>

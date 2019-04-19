@@ -29,7 +29,7 @@
     <string name="backup_wallpaper">Hintergrund</string>
     <string name="backup_creating">Erstelle Backup</string>
     <string name="backup_loading">Lade...</string>
-    <string name="backup_delete">Verstecken</string>
+    <string name="backup_delete">Löschen</string>
     <string name="backup_share">Teilen</string>
     <string name="backup_restarting">Neustart</string>
     <string name="backup_share_title">Teilen</string>
@@ -71,7 +71,6 @@
     <string name="about_role_designer">Designer</string>
     <string name="about_bio_recoded">Nebenbei coder und Graphik-Designer.</string>
     <string name="about_bio_josh">Freiberuflicher Grafik-Designer.</string>
-    <string name="about_bio_chris">Kreativer Kopf, Influencer &amp; Content Creator. Social Media und PR-Manager.</string>
     <string name="about_bio_msfjarvis">Hauptentwickler und halogenOS und App-Entwickler bei substratum.</string>
     <string name="action_none">Nichts tun</string>
     <string name="gesture_press_home">Home-Taste</string>
@@ -126,4 +125,6 @@
     <string name="font_weight_light">Hell</string>
     <string name="font_weight_medium">Mittel</string>
     <string name="font_weight_extra_black">Schwarz</string>
+    <string name="pref_fonts_category_home">Startbildschirm</string>
+    <string name="pref_fonts_category_drawer">App-Übersicht</string>
 </resources>

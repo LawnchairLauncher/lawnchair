@@ -7,6 +7,7 @@
     <string name="backup_name">Enw</string>
     <string name="backup_homescreen">Sgrin gartref</string>
     <string name="backup_settings">Gosodiadau</string>
+    <string name="backup_delete">Dileu</string>
     <string name="backup_location_documents_storage">Addasedig</string>
     <string name="dock_style_custom">Addasedig</string>
     <string name="gesture_press_home">Botwm cartref</string>
@@ -22,4 +23,5 @@
     <string name="tab_name">Enw</string>
     <string name="sesame_search_upsell">Chwilio</string>
     <string name="font_reset">Ailosod</string>
+    <string name="pref_fonts_category_home">Sgrin gartref</string>
 </resources>

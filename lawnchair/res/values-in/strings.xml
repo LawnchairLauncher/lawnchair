@@ -29,7 +29,7 @@
     <string name="backup_wallpaper">Wallpaper</string>
     <string name="backup_creating">Membuat cadangan</string>
     <string name="backup_loading">Memuat...</string>
-    <string name="backup_delete">Sembunyikan</string>
+    <string name="backup_delete">Hapus</string>
     <string name="backup_share">Bagikan</string>
     <string name="backup_restarting">Memulai ulang</string>
     <string name="backup_share_title">Bagikan</string>
@@ -71,7 +71,6 @@
     <string name="about_role_designer">Desainer</string>
     <string name="about_bio_recoded">Desainer coder dan grafis ringan.</string>
     <string name="about_bio_josh">Desainer grafis freelance.</string>
-    <string name="about_bio_chris">Pikiran kreatif, pencipta konten &amp; Influencer. Media sosial dan PR Manager.</string>
     <string name="about_bio_msfjarvis">Pengembang inti di halogenOS dan pengembang aplikasi di substratum.</string>
     <string name="action_none">Jangan lakukan apa-apa</string>
     <string name="gesture_press_home">Tombol home</string>
@@ -126,4 +125,6 @@
     <string name="font_weight_light">Terang</string>
     <string name="font_weight_medium">Sedang</string>
     <string name="font_weight_extra_black">Hitam</string>
+    <string name="pref_fonts_category_home">Layar utama</string>
+    <string name="pref_fonts_category_drawer">Laci</string>
 </resources>

@@ -29,7 +29,7 @@
     <string name="backup_wallpaper">Tapeta</string>
     <string name="backup_creating">Vytvára sa záloha</string>
     <string name="backup_loading">Načitávanie...</string>
-    <string name="backup_delete">Skryť</string>
+    <string name="backup_delete">Vymazať</string>
     <string name="backup_share">Zdieľať</string>
     <string name="backup_restarting">Prebieha reštartovanie</string>
     <string name="backup_share_title">Zdieľať</string>
@@ -71,7 +71,6 @@
     <string name="about_role_designer">Dizajnér</string>
     <string name="about_bio_recoded">Kóder a grafický dizajnér.</string>
     <string name="about_bio_josh">Externý grafik.</string>
-    <string name="about_bio_chris">Tvorca myšlienky, vplyvná osoba &amp; tvorca obsahu. Vedúci sociálnych médií a PR manažér.</string>
     <string name="about_bio_msfjarvis">Hlavný vývojár HalogenOS a vývojár aplikácie Substratum.</string>
     <string name="action_none">Nerobiť nič</string>
     <string name="gesture_press_home">Tlačidlo Domov</string>
@@ -126,4 +125,6 @@
     <string name="font_weight_light">Svetlá</string>
     <string name="font_weight_medium">Stredná</string>
     <string name="font_weight_extra_black">Čierna</string>
+    <string name="pref_fonts_category_home">Domovská obrazovka</string>
+    <string name="pref_fonts_category_drawer">Ponuka aplikácií</string>
 </resources>

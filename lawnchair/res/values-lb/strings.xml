@@ -10,6 +10,7 @@
     <string name="hide_app_apply">Applizéieren</string>
     <string name="backup_location">Standuert</string>
     <string name="backup_wallpaper">Hannergrondbild</string>
+    <string name="backup_delete">Läschen</string>
     <string name="backup_share">Deelen</string>
     <string name="backup_share_title">Deelen</string>
     <string name="grid_size_default">Standard</string>

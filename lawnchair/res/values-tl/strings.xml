@@ -24,6 +24,7 @@
     <string name="backup_homescreen">Home screen</string>
     <string name="backup_settings">Mga setting</string>
     <string name="backup_wallpaper">Ang wolpeyper</string>
+    <string name="backup_delete">Tanggalin</string>
     <string name="backup_share">Ibahagi</string>
     <string name="backup_share_title">Ibahagi</string>
     <string name="grid_size_default">Pangunahin</string>
@@ -87,4 +88,5 @@
     <string name="font_weight_light">Liwanag</string>
     <string name="font_weight_medium">Ang kaayusan</string>
     <string name="font_weight_extra_black">Itim</string>
+    <string name="pref_fonts_category_home">Home screen</string>
 </resources>

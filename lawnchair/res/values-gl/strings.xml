@@ -13,7 +13,7 @@
     <string name="backup_name">Nome</string>
     <string name="backup_location">Localización</string>
     <string name="backup_settings">Configuración</string>
-    <string name="backup_delete">Ocultar</string>
+    <string name="backup_delete">Eliminar</string>
     <string name="backup_share">Compartir</string>
     <string name="backup_share_title">Compartir</string>
     <string name="grid_size_default">Defecto</string>

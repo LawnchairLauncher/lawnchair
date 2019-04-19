@@ -24,7 +24,7 @@
     <string name="backup_homescreen">Kotinäyttö</string>
     <string name="backup_settings">Asetukset</string>
     <string name="backup_wallpaper">taustakuvaksi</string>
-    <string name="backup_delete">Piilota</string>
+    <string name="backup_delete">Poista</string>
     <string name="backup_share">Jaa</string>
     <string name="backup_share_title">Jaa</string>
     <string name="grid_size">Ruudukon koko</string>
@@ -94,4 +94,5 @@
     <string name="font_weight_light">Vaalea</string>
     <string name="font_weight_medium">Keskitaso</string>
     <string name="font_weight_extra_black">Musta</string>
+    <string name="pref_fonts_category_home">Kotinäyttö</string>
 </resources>

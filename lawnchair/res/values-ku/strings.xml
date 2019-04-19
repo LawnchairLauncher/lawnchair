@@ -9,6 +9,7 @@
     <string name="hide_app_apply">جێبه‌جێکردن</string>
     <string name="backup_location">شوێن</string>
     <string name="backup_wallpaper">دیوارپۆش</string>
+    <string name="backup_delete">سڕینه‌وه‌</string>
     <string name="backup_share">به‌شداری پێکردن</string>
     <string name="backup_share_title">به‌شداری پێکردن</string>
     <string name="backup_location_documents_storage">تایبەت بە خۆ</string>

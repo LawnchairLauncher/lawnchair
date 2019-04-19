@@ -10,6 +10,7 @@
     <string name="hide_app_apply">Ашиглах</string>
     <string name="backup_location">Байршил</string>
     <string name="backup_wallpaper">Ханын зураг</string>
+    <string name="backup_delete">Устгах</string>
     <string name="backup_share">Хуваалцах</string>
     <string name="backup_share_title">Хуваалцах</string>
     <string name="backup_location_documents_storage">Тусгай</string>

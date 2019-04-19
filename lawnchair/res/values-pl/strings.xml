@@ -29,7 +29,7 @@
     <string name="backup_wallpaper">Tapeta</string>
     <string name="backup_creating">Tworzenie kopii zapasowej</string>
     <string name="backup_loading">Ładuję...</string>
-    <string name="backup_delete">Ukryj</string>
+    <string name="backup_delete">Usuń</string>
     <string name="backup_share">Udostępnij</string>
     <string name="backup_restarting">Ponowne uruchamianie</string>
     <string name="backup_share_title">Udostępnij</string>
@@ -71,7 +71,6 @@
     <string name="about_role_designer">Projektant</string>
     <string name="about_bio_recoded">Programista i grafik.</string>
     <string name="about_bio_josh">Niezależny grafik.</string>
-    <string name="about_bio_chris">Creative Mind, Influencer &amp; Twórca treści. Media społecznościowe i PR Manager.</string>
     <string name="about_bio_msfjarvis">Programista rdzenia w halogenOS oraz programista aplikacji substratum.</string>
     <string name="action_none">Nic nie rób</string>
     <string name="gesture_press_home">Przycisk Home</string>
@@ -127,4 +126,6 @@
     <string name="font_weight_light">Jasny</string>
     <string name="font_weight_medium">Średnia czułość</string>
     <string name="font_weight_extra_black">Czarny</string>
+    <string name="pref_fonts_category_home">Ekran główny</string>
+    <string name="pref_fonts_category_drawer">Szuflada</string>
 </resources>

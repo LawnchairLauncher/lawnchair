@@ -71,7 +71,7 @@
     <string name="no_recent_backups">Нет данных для отображения</string>
     <string name="backup_loading">Загрузка...</string>
     <string name="backup_invalid">Неверный файл резервной копии</string>
-    <string name="backup_delete">Скрыть</string>
+    <string name="backup_delete">Удалить</string>
     <string name="backup_delete_failed">Что-то пошло не так</string>
     <string name="backup_share">Отправить</string>
     <string name="backup_pref_summary">Сохранить домашний экран, восстановить резервные копии</string>
@@ -171,7 +171,7 @@
     <string name="about_role_dev_mod">Разработчик и модератор</string>
     <string name="about_role_designer">Дизайнер</string>
     <string name="about_role_ui_ux_designer">Дизайнер UI/UX</string>
-    <string name="about_role_special_snowflake">PR-менеджер и модератор</string>
+    <string name="about_role_special_snowflake">Социальные сети/PR и OEM-отношения</string>
     <string name="about_role_mod_support">Модерация и поддержка</string>
     <string name="about_role_family_member">Член семьи</string>
     <string name="about_role_magisk_maintainer">Разработчик модуля Magisk</string>
@@ -179,7 +179,7 @@
     <string name="about_bio_divadsn">19 лет, умеет превращать кофеин и пиццу в программный код. Ранее известный как Codebucket.</string>
     <string name="about_bio_recoded">Кодер и графический дизайнер.</string>
     <string name="about_bio_josh">Внештатный графический дизайнер.</string>
-    <string name="about_bio_chris">Творческий разум, контент-менеджер, социальный и PR-менеджер.</string>
+    <string name="about_bio_chris">Что-то связанное с дизайном и социальными сетями. Давайте потусим вместе на @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">Главный разработчик halogenOS и приложения для Substratum.</string>
     <string name="debug_crash_launcher">Ошибка лаунчера</string>
     <string name="gestures_pref_title">Жесты</string>
@@ -277,8 +277,8 @@
     <string name="pref_recents_radius">Скругление углов</string>
     <string name="automatic_short">Авто</string>
     <string name="playstore_query_icon_pack">Набор значков</string>
-    <string name="bridge_missing_title">Rootless Pixel Bridge</string>
-    <string name="bridge_missing_message">Установить или обновить Rootless Pixel Bridge </string>
+    <string name="bridge_missing_title">Lawnfeed</string>
+    <string name="bridge_missing_message">Установите или обновите Lawnfeed</string>
     <string name="quickstep_pref_title">Недавние</string>
     <string name="quickstep_pref_summary">Жесты, углы, размытие</string>
     <string name="swipe_up_to_switch_apps_title">Свайп вверх для переключения приложений</string>
@@ -299,7 +299,7 @@
     <string name="search_provider_appsearch">Поиск приложений</string>
     <string name="search_provider_search_lite">Search Lite</string>
     <string name="search_provider_cool_search">Cool Search</string>
-    <string name="recent_task_option_force_stop">Остановить принудительно</string>
+    <string name="recent_task_option_force_stop">Остановить</string>
     <string name="pref_icon_packs">Наборы иконок</string>
     <string name="drag_to_enable_packs">Перетащите вверх, чтобы включить</string>
     <string name="drag_to_disable_packs">Перетащите вниз, чтобы отключить</string>
@@ -417,6 +417,7 @@
     <string name="font_weight_extra_black">Чёрный</string>
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
+    <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">Погода OnePlus</string>
     <string name="overlap_placement">Перекрытый участок</string>
     <string name="overlap_placement_summary">Разрешить значкам и виджетам перекрывать друг друга.</string>
@@ -426,4 +427,23 @@
     <string name="units_reaumur">Шкала Реомюра</string>
     <string name="units_romer">Шкала Рёмера</string>
     <string name="owm_get_your_own_key">Пожалуйста, получите свой собственный ключ API на api.openweathermap.org</string>
+    <string name="pref_smartspace_time_above">Показывать большие часы</string>
+    <string name="pref_smartspace_time_above_summary">Показывать часы над виджетом</string>
+    <string name="pref_fonts_title">Шрифты</string>
+    <string name="pref_fonts_summary">Заменить шрифты разных элементов</string>
+    <string name="pref_fonts_global_font">Основной шрифт</string>
+    <string name="pref_fonts_change_global_font">Изменить</string>
+    <string name="pref_fonts_category_home">Домашний экран</string>
+    <string name="pref_fonts_home_icons">Названия папок и приложений</string>
+    <string name="pref_fonts_home_smartspace">Виджет «At a Glance»</string>
+    <string name="pref_fonts_home_shortcuts">Пузыри ярлыков</string>
+    <string name="pref_fonts_category_drawer">Меню приложений</string>
+    <string name="pref_fonts_drawer_icons">Имена приложений</string>
+    <string name="pref_fonts_drawer_app_actions_icons">Названия действий приложения</string>
+    <string name="pref_fonts_drawer_tabs">Имена вкладок</string>
+    <string name="pref_fonts_find_fonts">Поиск шрифтов</string>
+    <string name="pref_fonts_add_fonts">Добавить щрифты</string>
+    <string name="pref_fonts_add_fonts_summary">Поддерживаются OTF и TTF</string>
+    <string name="pref_fonts_missing_font">Шрифт не найден</string>
+    <string name="about_translate">Переводчики</string>
 </resources>

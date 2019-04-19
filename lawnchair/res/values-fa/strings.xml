@@ -14,6 +14,7 @@
     <string name="backup_location">موقعیت مکانی</string>
     <string name="backup_settings">تنظیمات</string>
     <string name="backup_wallpaper">تصویر زمینه</string>
+    <string name="backup_delete">حذف</string>
     <string name="backup_share">اشتراک‌گذاری</string>
     <string name="backup_share_title">اشتراک‌گذاری</string>
     <string name="backup_location_documents_storage">سفارشی</string>

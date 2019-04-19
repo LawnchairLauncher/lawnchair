@@ -24,6 +24,7 @@
     <string name="backup_homescreen">Ecrã Principal</string>
     <string name="backup_settings">Definições</string>
     <string name="backup_wallpaper">Imagem de fundo</string>
+    <string name="backup_delete">Eliminar</string>
     <string name="backup_share">Partilhar</string>
     <string name="backup_share_title">Partilhar</string>
     <string name="grid_size">Tamanho de grelha</string>
@@ -95,4 +96,5 @@
     <string name="font_weight_light">Claro</string>
     <string name="font_weight_medium">Médio</string>
     <string name="font_weight_extra_black">Preto</string>
+    <string name="pref_fonts_category_home">Ecrã Principal</string>
 </resources>

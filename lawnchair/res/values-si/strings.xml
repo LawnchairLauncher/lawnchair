@@ -10,6 +10,7 @@
     <string name="hide_app_apply">යොදන්න</string>
     <string name="backup_location">ස්ථානය</string>
     <string name="backup_wallpaper">වෝල්පේපරය</string>
+    <string name="backup_delete">මකන්න</string>
     <string name="backup_share">බෙදාගන්න</string>
     <string name="backup_share_title">බෙදාගන්න</string>
     <string name="backup_location_documents_storage">අභිරුචි</string>

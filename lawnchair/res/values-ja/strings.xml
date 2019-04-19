@@ -29,7 +29,7 @@
     <string name="backup_wallpaper">壁紙</string>
     <string name="backup_creating">バックアップを作成中</string>
     <string name="backup_loading">読み込み中...</string>
-    <string name="backup_delete">非表示</string>
+    <string name="backup_delete">削除</string>
     <string name="backup_share">共有</string>
     <string name="backup_restarting">再起動中...</string>
     <string name="backup_share_title">共有</string>
@@ -71,7 +71,6 @@
     <string name="about_role_designer">デザイナー</string>
     <string name="about_bio_recoded">ちょっとのプログラムコーダーとグラフィックデザイナー</string>
     <string name="about_bio_josh">フリーランスのグラフィックデザイナー</string>
-    <string name="about_bio_chris">クリエイティブマインド、インフルエンサー、コンテンツクリエイター。ソーシャルメディアとPRマネージャー。</string>
     <string name="about_bio_msfjarvis">HalogenOSのコア開発者とSubstratumのアプリ開発者</string>
     <string name="action_none">何もしない</string>
     <string name="gesture_press_home">ホームボタン</string>
@@ -126,4 +125,6 @@
     <string name="font_weight_light">明るい</string>
     <string name="font_weight_medium">標準</string>
     <string name="font_weight_extra_black">黒</string>
+    <string name="pref_fonts_category_home">ホーム画面</string>
+    <string name="pref_fonts_category_drawer">ドロワー</string>
 </resources>

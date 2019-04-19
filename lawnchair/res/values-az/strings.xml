@@ -11,7 +11,7 @@
     <string name="restore_backup">Bərpa et</string>
     <string name="backup_location">Məkan</string>
     <string name="backup_wallpaper">Divar kağızı</string>
-    <string name="backup_delete">Gizlət</string>
+    <string name="backup_delete">Silin</string>
     <string name="backup_share">Paylaşın</string>
     <string name="backup_share_title">Paylaşın</string>
     <string name="grid_size_default">İlkin</string>

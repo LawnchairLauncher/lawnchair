@@ -23,6 +23,7 @@
     <string name="backup_location">Локација</string>
     <string name="backup_settings">Подешавања</string>
     <string name="backup_wallpaper">Позадина</string>
+    <string name="backup_delete">Брисање</string>
     <string name="backup_share">Дели</string>
     <string name="backup_share_title">Дели</string>
     <string name="grid_size_default">Подразумевано</string>

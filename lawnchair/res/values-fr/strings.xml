@@ -30,7 +30,7 @@
     <string name="backup_wallpaper">Fond d\'écran</string>
     <string name="backup_creating">Création d\'une sauvegarde</string>
     <string name="backup_loading">Chargement en cours…</string>
-    <string name="backup_delete">Masquer</string>
+    <string name="backup_delete">Supprimer</string>
     <string name="backup_share">Partager</string>
     <string name="backup_restarting">Redémarrage en cours</string>
     <string name="backup_share_title">Partager</string>
@@ -72,7 +72,6 @@
     <string name="about_role_designer">Designer</string>
     <string name="about_bio_recoded">Programmeur et designer graphique.</string>
     <string name="about_bio_josh">Designer graphique indépendant.</string>
-    <string name="about_bio_chris">Esprit créatif, influenceur &amp; et créateur de contenu. Responsable des médias sociaux et des relations publiques.</string>
     <string name="about_bio_msfjarvis">Développeur principal pour halogenOS et développeur d\'application pour Substratum.</string>
     <string name="action_none">Ne rien faire</string>
     <string name="gesture_press_home">Bouton d\'accueil</string>
@@ -128,4 +127,6 @@
     <string name="font_weight_light">Clair</string>
     <string name="font_weight_medium">Moyenne</string>
     <string name="font_weight_extra_black">Noir</string>
+    <string name="pref_fonts_category_home">Écran d\'accueil</string>
+    <string name="pref_fonts_category_drawer">Liste d\'applications</string>
 </resources>

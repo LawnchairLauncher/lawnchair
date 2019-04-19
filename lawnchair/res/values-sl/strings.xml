@@ -29,7 +29,7 @@
     <string name="backup_wallpaper">Slika za ozadje</string>
     <string name="backup_creating">Ustvarjanje varnostne kopije</string>
     <string name="backup_loading">Nalagam...</string>
-    <string name="backup_delete">Skrij</string>
+    <string name="backup_delete">Izbriši</string>
     <string name="backup_share">Souporaba</string>
     <string name="backup_restarting">Ponovni zagon</string>
     <string name="backup_share_title">Souporaba</string>
@@ -71,7 +71,6 @@
     <string name="about_role_designer">Oblikovalec</string>
     <string name="about_bio_recoded">Pisec kode in grafični oblikovalec.</string>
     <string name="about_bio_josh">Samostojni grafični oblikovalec.</string>
-    <string name="about_bio_chris">Ustvarjalni um, vpliv &amp; avtor vsebine. Socialni mediji in PR vodja.</string>
     <string name="about_bio_msfjarvis">Razvijalec jedra pri halogenOS in razvijalec programa pri substratum.</string>
     <string name="action_none">Ne naredi ničesar</string>
     <string name="gesture_press_home">Gumb Domov</string>
@@ -127,4 +126,6 @@
     <string name="font_weight_light">Svetla</string>
     <string name="font_weight_medium">Srednja</string>
     <string name="font_weight_extra_black">Črna</string>
+    <string name="pref_fonts_category_home">Domači zaslon</string>
+    <string name="pref_fonts_category_drawer">Predal</string>
 </resources>

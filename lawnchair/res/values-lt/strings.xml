@@ -12,7 +12,7 @@
     <string name="backup_name">Pavadinimas: </string>
     <string name="backup_location">Vieta</string>
     <string name="backup_wallpaper">Darbalaukio fonas</string>
-    <string name="backup_delete">Slėpti</string>
+    <string name="backup_delete">Ištrinti</string>
     <string name="backup_share">Bendrinti</string>
     <string name="backup_share_title">Bendrinti</string>
     <string name="grid_size_default">Numatytasis</string>

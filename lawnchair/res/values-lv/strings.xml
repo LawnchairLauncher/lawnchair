@@ -10,6 +10,7 @@
     <string name="hide_app_apply">Lietot</string>
     <string name="backup_location">Atraš. vieta</string>
     <string name="backup_wallpaper">Fona tapete</string>
+    <string name="backup_delete">Dzēst</string>
     <string name="backup_share">Dalies</string>
     <string name="backup_share_title">Dalies</string>
     <string name="backup_location_documents_storage">Pielāgots</string>

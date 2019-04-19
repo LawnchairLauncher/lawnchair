@@ -10,6 +10,7 @@
     <string name="hide_app_apply">Tekeleza</string>
     <string name="backup_location">Eneo</string>
     <string name="backup_wallpaper">Mandhari</string>
+    <string name="backup_delete">Futa</string>
     <string name="backup_share">Shiriki</string>
     <string name="backup_share_title">Shiriki</string>
     <string name="backup_location_documents_storage">Maalum</string>

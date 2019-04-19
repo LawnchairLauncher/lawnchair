@@ -20,4 +20,5 @@
     <string name="color_custom">Customise</string>
     <string name="tab_bottom_sheet_save">Save</string>
     <string name="shortcut_sesame">Short cuts</string>
+    <string name="pref_fonts_category_home">Home screen</string>
 </resources>

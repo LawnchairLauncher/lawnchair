@@ -10,6 +10,7 @@
     <string name="hide_app_apply">ተግብር</string>
     <string name="backup_location">አካባቢ</string>
     <string name="backup_wallpaper">ልጣፍ</string>
+    <string name="backup_delete">ሰርዝ</string>
     <string name="backup_share">አጋራ</string>
     <string name="backup_share_title">አጋራ</string>
     <string name="backup_location_documents_storage">ብጁ</string>

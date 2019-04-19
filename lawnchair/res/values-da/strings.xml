@@ -21,7 +21,7 @@
     <string name="backup_homescreen">Startskærm</string>
     <string name="backup_settings">Indstillinger</string>
     <string name="backup_wallpaper">Baggrund</string>
-    <string name="backup_delete">Skjul</string>
+    <string name="backup_delete">Slet</string>
     <string name="backup_share">Del</string>
     <string name="backup_share_title">Del</string>
     <string name="grid_size_default">Standard</string>
@@ -81,4 +81,5 @@
     <string name="font_weight_light">Lyst</string>
     <string name="font_weight_medium">Normal</string>
     <string name="font_weight_extra_black">Sort</string>
+    <string name="pref_fonts_category_home">Startskærm</string>
 </resources>

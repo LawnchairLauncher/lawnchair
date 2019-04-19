@@ -67,7 +67,7 @@
     <string name="no_recent_backups">Nic k zobrazení</string>
     <string name="backup_loading">Načítání...</string>
     <string name="backup_invalid">Nesprávný soubor zálohy</string>
-    <string name="backup_delete">Skrýt</string>
+    <string name="backup_delete">Smazat</string>
     <string name="backup_delete_failed">Něco se pokazilo</string>
     <string name="backup_share">Sdílet</string>
     <string name="backup_pref_summary">Uložit domovskou obrazovku, obnovit zálohy</string>
@@ -145,7 +145,6 @@
     <string name="about_role_designer">Designer</string>
     <string name="about_bio_recoded">Kodér a grafický designér.</string>
     <string name="about_bio_josh">Grafický návrhář na volné noze.</string>
-    <string name="about_bio_chris">Tvůrce myšlenky, vlivná osoba &amp; tvůrce obsahu. Vedoucí sociálních médií a PR manažer.</string>
     <string name="about_bio_msfjarvis">Hlavní vývojář HalogenOS a vývojář aplikace Substratum.</string>
     <string name="action_none">Nedělat nic</string>
     <string name="gesture_press_home">Tlačítko Domů</string>
@@ -224,4 +223,6 @@
     <string name="units_delisle">Delisle</string>
     <string name="units_reaumur">Réaumur</string>
     <string name="units_romer">Rømer</string>
+    <string name="pref_fonts_category_home">Domovská obrazovka</string>
+    <string name="pref_fonts_category_drawer">Seznam aplikací</string>
 </resources>

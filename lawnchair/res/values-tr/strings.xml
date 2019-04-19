@@ -71,7 +71,7 @@
     <string name="no_recent_backups">Gösterilecek bir şey yok</string>
     <string name="backup_loading">Yükleniyor...</string>
     <string name="backup_invalid">Yanlış yedekleme dosyası</string>
-    <string name="backup_delete">Gizle</string>
+    <string name="backup_delete">Sil</string>
     <string name="backup_delete_failed">Bir şeyler yanlış gitti</string>
     <string name="backup_share">Paylaş</string>
     <string name="backup_pref_summary">Ana ekranı kaydedin, yedekleri geri yükleyin</string>
@@ -171,7 +171,6 @@
     <string name="about_role_dev_mod">Geliştirici / Moderatör</string>
     <string name="about_role_designer">Tasarımcı</string>
     <string name="about_role_ui_ux_designer">UI/UX tasarımcısı</string>
-    <string name="about_role_special_snowflake">Halkla ilişkiler yöneticisi/moderatör</string>
     <string name="about_role_mod_support">Moderatör/destek</string>
     <string name="about_role_family_member">Aile üyesi</string>
     <string name="about_role_magisk_maintainer">Magisk modül sorumlusu</string>
@@ -179,7 +178,6 @@
     <string name="about_bio_divadsn">19 yaşında, kafein ve pizzayı kod haline getirdi. Daha önce Codebucket olarak da bilinirdi.</string>
     <string name="about_bio_recoded">Hafif kodlayıcı ve grafik tasarımcısı.</string>
     <string name="about_bio_josh">Serbest grafik tasarımcısı.</string>
-    <string name="about_bio_chris">Yaratıcı Akıl, Etkileyici &amp; İçerik yaratıcı. Sosyal Medya ve Halkla İlişkiler Müdürü.</string>
     <string name="about_bio_msfjarvis">Halojenlerde çekirdek geliştirici ve substratumda uygulama geliştiricisi.</string>
     <string name="debug_crash_launcher">Crash launcher</string>
     <string name="gestures_pref_title">Hareketler</string>
@@ -277,8 +275,6 @@
     <string name="pref_recents_radius">Köşe yuvarlama</string>
     <string name="automatic_short">Otomatik</string>
     <string name="playstore_query_icon_pack">Simge paketi</string>
-    <string name="bridge_missing_title">Rootless pixel bridge</string>
-    <string name="bridge_missing_message">Rootless pixel bridge\'i kurma veya güncelleme </string>
     <string name="quickstep_pref_title">Son uygulamalar</string>
     <string name="quickstep_pref_summary">Hareketler, köşeler, bulanıklık</string>
     <string name="swipe_up_to_switch_apps_title">Uygulamaları değiştirmek için yukarı kaydırın</string>
@@ -422,4 +418,6 @@
     <string name="units_reaumur">Reaumur</string>
     <string name="units_romer">Romer</string>
     <string name="owm_get_your_own_key">Lütfen api.openweathermap.org adresinden kendi API anahtarınızı edinin</string>
+    <string name="pref_fonts_category_home">Ana ekran</string>
+    <string name="pref_fonts_category_drawer">Uygulama çekmecesi</string>
 </resources>

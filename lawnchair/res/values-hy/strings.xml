@@ -10,6 +10,7 @@
     <string name="hide_app_apply">Կիրառել</string>
     <string name="backup_location">Տեղադրություն</string>
     <string name="backup_wallpaper">Պաստառ</string>
+    <string name="backup_delete">Ջնջել</string>
     <string name="backup_share">Կիսվել</string>
     <string name="backup_share_title">Կիսվել</string>
     <string name="backup_location_documents_storage">Հատուկ</string>

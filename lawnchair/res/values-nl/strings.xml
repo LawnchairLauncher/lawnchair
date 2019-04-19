@@ -24,7 +24,7 @@
     <string name="backup_homescreen">Beginscherm</string>
     <string name="backup_settings">Instellingen</string>
     <string name="backup_wallpaper">Achtergrond</string>
-    <string name="backup_delete">Verbergen</string>
+    <string name="backup_delete">Verwijderen</string>
     <string name="backup_share">Delen</string>
     <string name="backup_share_title">Delen</string>
     <string name="grid_size">Rastergrootte</string>
@@ -98,4 +98,5 @@
     <string name="font_weight_light">Licht</string>
     <string name="font_weight_medium">Middel</string>
     <string name="font_weight_extra_black">Zwart</string>
+    <string name="pref_fonts_category_home">Beginscherm</string>
 </resources>

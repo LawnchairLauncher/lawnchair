@@ -29,7 +29,7 @@
     <string name="backup_wallpaper">Fondo de pantalla</string>
     <string name="backup_creating">Creando copia de seguridad</string>
     <string name="backup_loading">Cargando...</string>
-    <string name="backup_delete">Ocultar</string>
+    <string name="backup_delete">Eliminar</string>
     <string name="backup_share">Compartir</string>
     <string name="backup_restarting">Reiniciando</string>
     <string name="backup_share_title">Compartir</string>
@@ -118,4 +118,6 @@
     <string name="font_weight_light">Claro</string>
     <string name="font_weight_medium">Media</string>
     <string name="font_weight_extra_black">Negro</string>
+    <string name="pref_fonts_category_home">Pantalla de inicio</string>
+    <string name="pref_fonts_category_drawer">Cajón de aplicaciones</string>
 </resources>

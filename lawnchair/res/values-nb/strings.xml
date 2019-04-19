@@ -15,7 +15,7 @@
     <string name="backup_location">Posisjon</string>
     <string name="backup_settings">Innstillinger</string>
     <string name="backup_wallpaper">Bakgrunnsbilde</string>
-    <string name="backup_delete">Skjul</string>
+    <string name="backup_delete">Slett</string>
     <string name="backup_share">Del</string>
     <string name="backup_share_title">Del</string>
     <string name="grid_size_default">Standard</string>

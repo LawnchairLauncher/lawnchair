@@ -29,7 +29,7 @@
     <string name="backup_wallpaper">Sfondo</string>
     <string name="backup_creating">Creazione backup</string>
     <string name="backup_loading">Caricamento...</string>
-    <string name="backup_delete">Nascondi</string>
+    <string name="backup_delete">Elimina</string>
     <string name="backup_share">Condividi</string>
     <string name="backup_restarting">Riavvio</string>
     <string name="backup_share_title">Condividi</string>
@@ -71,7 +71,6 @@
     <string name="about_role_designer">Progettista</string>
     <string name="about_bio_recoded">Mite programmatore e designer grafico.</string>
     <string name="about_bio_josh">Designer grafico indipendente.</string>
-    <string name="about_bio_chris">Mente Creativa, Influencer &amp; Creatore di Contenuti. Social Media e PR Manager.</string>
     <string name="about_bio_msfjarvis">Sviluppatore principale di halogenOS e sviluppatore di applicazioni di substratum.</string>
     <string name="action_none">Non far nulla</string>
     <string name="gesture_press_home">Tasto Home</string>
@@ -127,4 +126,6 @@
     <string name="font_weight_light">Chiaro</string>
     <string name="font_weight_medium">Media</string>
     <string name="font_weight_extra_black">Nero</string>
+    <string name="pref_fonts_category_home">Schermata Home</string>
+    <string name="pref_fonts_category_drawer">Drawer</string>
 </resources>

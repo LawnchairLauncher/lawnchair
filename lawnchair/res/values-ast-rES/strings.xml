@@ -12,6 +12,7 @@
     <string name="backup_location">Allugamientu</string>
     <string name="backup_homescreen">Pantalla d\'aniciu</string>
     <string name="backup_settings">Axustes</string>
+    <string name="backup_delete">Desaniciar</string>
     <string name="backup_share">Compartir</string>
     <string name="backup_share_title">Compartir</string>
     <string name="grid_size_width">Anchor</string>
@@ -42,4 +43,5 @@
     <string name="sesame_search_upsell">Guetar</string>
     <string name="font_reset">Reafitar</string>
     <string name="font_weight_extra_black">Prietu</string>
+    <string name="pref_fonts_category_home">Pantalla d\'aniciu</string>
 </resources>

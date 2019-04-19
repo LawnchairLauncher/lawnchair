@@ -10,6 +10,7 @@
     <string name="hide_app_apply">អនុវត្ត</string>
     <string name="backup_location">ទីកន្លែង</string>
     <string name="backup_wallpaper">ផ្ទាំង​រូបភាព</string>
+    <string name="backup_delete">លុប</string>
     <string name="backup_share">ចែក​រំលែក</string>
     <string name="backup_share_title">ចែក​រំលែក</string>
     <string name="backup_location_documents_storage">តាម​តម្រូវ​ការ</string>

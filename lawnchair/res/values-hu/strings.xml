@@ -71,7 +71,7 @@
     <string name="no_recent_backups">Nincs megjeleníthető elem</string>
     <string name="backup_loading">Betöltés...</string>
     <string name="backup_invalid">Hibás biztonságimásolat-fájl</string>
-    <string name="backup_delete">Elrejtés</string>
+    <string name="backup_delete">Törlés</string>
     <string name="backup_delete_failed">Valami hiba történt</string>
     <string name="backup_share">Megosztás</string>
     <string name="backup_pref_summary">Kezdőképernyő-mentés, biztonságimásolat-visszaállítás</string>
@@ -171,7 +171,7 @@
     <string name="about_role_dev_mod">Fejlesztő/Moderátor</string>
     <string name="about_role_designer">Dizájner</string>
     <string name="about_role_ui_ux_designer">Felhasználóifelület-tervező</string>
-    <string name="about_role_special_snowflake">PR menedzser/Moderátor</string>
+    <string name="about_role_special_snowflake">Közösségi Média/PR és OEM-kapcsolatok</string>
     <string name="about_role_mod_support">Moderátor/Segítő</string>
     <string name="about_role_family_member">\"Családtag\"</string>
     <string name="about_role_magisk_maintainer">Magisk-modulfelelős</string>
@@ -179,7 +179,7 @@
     <string name="about_bio_divadsn">19 éves, még a koffeint és a pizzát is kódra fordítja. Korábban Codebucket néven volt ismert.</string>
     <string name="about_bio_recoded">Könnyűprogramozó és grafikai dizájner.</string>
     <string name="about_bio_josh">Független grafikai dizájner.</string>
-    <string name="about_bio_chris">Kreatív elme, Ötletadó és Tartalomkészítő. Közösségi média és PR menedzser.</string>
+    <string name="about_bio_chris">Nagyon új évezredbeli, laza arc vagyok. A design és a közösségi média az asztalom. Lógjunk együtt itt: @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">A HalogenOS fő fejlesztője és a Substratum alkalmazásfejlesztője.</string>
     <string name="debug_crash_launcher">Launcher-összeomlás</string>
     <string name="gestures_pref_title">Mozdulatvezérlés</string>
@@ -277,8 +277,8 @@
     <string name="pref_recents_radius">Sarokkerekítés</string>
     <string name="automatic_short">Automata</string>
     <string name="playstore_query_icon_pack">Ikoncsomag</string>
-    <string name="bridge_missing_title">Rootmentes Pixel Bridge</string>
-    <string name="bridge_missing_message">Telepítse vagy frissítse a Rootmentes Pixel Bridge-t </string>
+    <string name="bridge_missing_title">Lawnfeed</string>
+    <string name="bridge_missing_message">Telepítse vagy frissítse a Lawnfeed-et</string>
     <string name="quickstep_pref_title">Előzmények</string>
     <string name="quickstep_pref_summary">Mozdulatvezérlés, sarkok, homályosítás</string>
     <string name="swipe_up_to_switch_apps_title">Alkalmazásváltás felfelé csúsztatással</string>
@@ -413,6 +413,7 @@
     <string name="font_weight_extra_black">Fekete</string>
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
+    <string name="search_provider_edge">MS Edge</string>
     <string name="weather_provider_oneplus_weather">OnePlus Időjárás</string>
     <string name="overlap_placement">Átfedéses elhelyezés</string>
     <string name="overlap_placement_summary">Lehetővé teszi, hogy az ikonok és a kiaslkalmazások fedjék egymást.</string>
@@ -422,4 +423,23 @@
     <string name="units_reaumur">Réaumure</string>
     <string name="units_romer">Rømer</string>
     <string name="owm_get_your_own_key">Szerezzen saját API-kulcsot az api.openweathermap.org oldalon</string>
+    <string name="pref_smartspace_time_above">Nagyobb óra megjelenítése</string>
+    <string name="pref_smartspace_time_above_summary">Az óra megjelenítése a kisalkalmazás felett</string>
+    <string name="pref_fonts_title">Betűtípusok</string>
+    <string name="pref_fonts_summary">Különböző elemek betűtípusának cseréje</string>
+    <string name="pref_fonts_global_font">Fő betűtípus</string>
+    <string name="pref_fonts_change_global_font">Módosítás</string>
+    <string name="pref_fonts_category_home">Főképernyő</string>
+    <string name="pref_fonts_home_icons">Alkalmazás- és mappanevek</string>
+    <string name="pref_fonts_home_smartspace">\'Belepillantás\' kisalkalmazás</string>
+    <string name="pref_fonts_home_shortcuts">Parancsikon-buborékok</string>
+    <string name="pref_fonts_category_drawer">Alkalmazásfiók</string>
+    <string name="pref_fonts_drawer_icons">Alkalmazásnevek</string>
+    <string name="pref_fonts_drawer_app_actions_icons">Alkalmazásművelet-nevek</string>
+    <string name="pref_fonts_drawer_tabs">Fül-/Lapnevek</string>
+    <string name="pref_fonts_find_fonts">Betűtípus-keresés</string>
+    <string name="pref_fonts_add_fonts">Betűtípusok hozzáadása</string>
+    <string name="pref_fonts_add_fonts_summary">Az OTF és a TTF támogatott</string>
+    <string name="pref_fonts_missing_font">Hiányzó betűtípus</string>
+    <string name="about_translate">Fordítások</string>
 </resources>

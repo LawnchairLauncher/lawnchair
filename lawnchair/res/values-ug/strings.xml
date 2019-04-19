@@ -11,6 +11,7 @@
     <string name="backup_location">ئورنى</string>
     <string name="backup_settings">تەڭشەش</string>
     <string name="backup_wallpaper">تام قەغىزى</string>
+    <string name="backup_delete">ئۆچۈر</string>
     <string name="backup_share">ھەمبەھىر</string>
     <string name="backup_share_title">ھەمبەھىر</string>
     <string name="backup_location_documents_storage">ئىختىيارىي</string>

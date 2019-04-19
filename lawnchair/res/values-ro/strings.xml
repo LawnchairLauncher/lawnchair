@@ -29,6 +29,7 @@
     <string name="backup_wallpaper">Imagine de fundal</string>
     <string name="backup_creating">Creare copie rezervă</string>
     <string name="backup_loading">Încărcare...</string>
+    <string name="backup_delete">Ștergeți</string>
     <string name="backup_share">Distribuiți</string>
     <string name="backup_restarting">Repornire</string>
     <string name="backup_share_title">Distribuiți</string>
@@ -104,4 +105,5 @@
     <string name="font_weight_light">Luminoasă</string>
     <string name="font_weight_medium">Medie</string>
     <string name="font_weight_extra_black">Neagră</string>
+    <string name="pref_fonts_category_home">Ecran principal</string>
 </resources>

@@ -27,7 +27,7 @@
     <string name="backup_homescreen">Hemskärm</string>
     <string name="backup_settings">Inställningar</string>
     <string name="backup_wallpaper">Bakgrund</string>
-    <string name="backup_delete">Dölj</string>
+    <string name="backup_delete">Ta bort</string>
     <string name="backup_share">Dela</string>
     <string name="backup_restarting">Startar om</string>
     <string name="backup_share_title">Dela</string>
@@ -107,4 +107,5 @@
     <string name="font_reset">Återställ</string>
     <string name="font_weight_light">Ljus</string>
     <string name="font_weight_extra_black">Svart</string>
+    <string name="pref_fonts_category_home">Hemskärm</string>
 </resources>

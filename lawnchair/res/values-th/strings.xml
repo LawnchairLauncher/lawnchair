@@ -10,6 +10,7 @@
     <string name="hide_app_apply">ใช้</string>
     <string name="backup_location">ตำแหน่ง</string>
     <string name="backup_wallpaper">วอลเปเปอร์</string>
+    <string name="backup_delete">ลบ</string>
     <string name="backup_share">แบ่งปัน</string>
     <string name="backup_share_title">แบ่งปัน</string>
     <string name="grid_size_default">ค่าเริ่มต้น</string>

@@ -10,6 +10,7 @@
     <string name="hide_app_apply">Sebenzisa</string>
     <string name="backup_location">Indawo</string>
     <string name="backup_wallpaper">Iphephadonga</string>
+    <string name="backup_delete">Susa</string>
     <string name="backup_share">Yabelana</string>
     <string name="backup_share_title">Yabelana</string>
     <string name="backup_location_documents_storage">Ngokwezifiso</string>

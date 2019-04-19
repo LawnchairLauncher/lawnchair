@@ -10,6 +10,7 @@
     <string name="hide_app_apply">გამოყენება</string>
     <string name="backup_location">მდებარეობა</string>
     <string name="backup_wallpaper">ფონი</string>
+    <string name="backup_delete">წაშლა</string>
     <string name="backup_share">გაზიარება</string>
     <string name="backup_share_title">გაზიარება</string>
     <string name="backup_location_documents_storage">მორგებული</string>

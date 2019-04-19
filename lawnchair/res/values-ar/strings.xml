@@ -71,7 +71,7 @@
     <string name="no_recent_backups">لا يوجد شيء للعرض</string>
     <string name="backup_loading">جاري التحميل...</string>
     <string name="backup_invalid">ملف النسخ الاحتياطي غير صحيح</string>
-    <string name="backup_delete">إخفاء</string>
+    <string name="backup_delete">حذف</string>
     <string name="backup_delete_failed">حدث خطأ ما</string>
     <string name="backup_share">مشاركة</string>
     <string name="backup_pref_summary">حفظ الشاشة الرئيسية، إستعادة النسخ الاحتياطية</string>
@@ -171,7 +171,6 @@
     <string name="about_role_dev_mod">المطور/مشرف</string>
     <string name="about_role_designer">مصمم</string>
     <string name="about_role_ui_ux_designer">مصمم UX/UI</string>
-    <string name="about_role_special_snowflake">مدير العلاقات العامة/مشرف</string>
     <string name="about_role_mod_support">مشرف/دعم</string>
     <string name="about_role_family_member">فرد من الاسرة</string>
     <string name="about_role_magisk_maintainer">مشرفة صيانة وحدة Magisk</string>
@@ -179,7 +178,6 @@
     <string name="about_bio_divadsn">18 عاماً، يحول الكافيين والبيتزا إلى التعليمات البرمجية. أيضا تعرف سابقاً باسم codebucket.</string>
     <string name="about_bio_recoded">مصمم البرامج والرسومات الخفيفة.</string>
     <string name="about_bio_josh">مصمم جرافيك حر.</string>
-    <string name="about_bio_chris">المبدع، المؤثر منشئ المحتوى. مدير العلاقات العامة والإعلام الاجتماعي.</string>
     <string name="about_bio_msfjarvis">المطور الأساسي في halogenOS و مطور التطبيق في substratum.</string>
     <string name="debug_crash_launcher">توقف المشغل</string>
     <string name="gestures_pref_title">الإيماءات</string>
@@ -277,8 +275,6 @@
     <string name="pref_recents_radius">تقوس الزاوية</string>
     <string name="automatic_short">تلقائية</string>
     <string name="playstore_query_icon_pack">حزم الإيقونات</string>
-    <string name="bridge_missing_title">جسر Rootless Pixel</string>
-    <string name="bridge_missing_message">تثبيت أو تحديث Rootless Pixel Bridge </string>
     <string name="quickstep_pref_title">التطبيقات الحديثة</string>
     <string name="quickstep_pref_summary">الإيماءات، الزوايا، الضبابية</string>
     <string name="swipe_up_to_switch_apps_title">التمرير لأعلى للتبديل بين التطبيقات</string>
@@ -430,4 +426,6 @@
     <string name="units_reaumur">ريامور</string>
     <string name="units_romer">رومر</string>
     <string name="owm_get_your_own_key">يرجى الحصول على مفتاح API الخاص بك من api.openweathermap.org</string>
+    <string name="pref_fonts_category_home">الشاشة الرئيسية</string>
+    <string name="pref_fonts_category_drawer">درج التطبيقات</string>
 </resources>

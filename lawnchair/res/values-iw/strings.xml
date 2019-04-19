@@ -23,6 +23,7 @@
     <string name="backup_homescreen">מסך הבית</string>
     <string name="backup_settings">הגדרות</string>
     <string name="backup_wallpaper">טפט</string>
+    <string name="backup_delete">מחק</string>
     <string name="backup_share">שיתוף</string>
     <string name="backup_share_title">שיתוף</string>
     <string name="grid_size">גודל הרשת</string>
@@ -92,4 +93,5 @@
     <string name="font_weight_light">בהיר</string>
     <string name="font_weight_medium">בינוני</string>
     <string name="font_weight_extra_black">שחור</string>
+    <string name="pref_fonts_category_home">מסך הבית</string>
 </resources>
