@@ -245,15 +245,40 @@
 
     <!-- TODO: UPDATE THIS!!! -->
     <me.jfenn.attribouter.wedges.LicensesWedge>
+
+        <!-- OpenWeatherMap-Android-Library -->
         <me.jfenn.attribouter.wedges.LicenseWedge
-            license="mit"
-            title="OWM JAPIs"
-            description="Java Library for OpenWeatherMap.org Weather APIs"
-            website="http://go.aksingh.net/owm-japis"
-            />
+            title="^OpenWeatherMap-Android-Library"
+            repo="KwabenBerko/OpenWeatherMap-Android-Library" />
+
+        <!-- Sunrise/SunsetLib -->
         <me.jfenn.attribouter.wedges.LicenseWedge
-            license="apache-2.0"
-            repo="ItsPriyesh/chroma" />
-        <me.jfenn.attribouter.wedges.LicenseWedge repo="florent37/FiftyShadesOf"/>
+            title="^Sunrise/SunsetLib"
+            repo="mikereedell/sunrisesunsetlib-java"
+            license="apache-2.0" />
+
+        <!-- HokoBlur-Lite -->
+        <me.jfenn.attribouter.wedges.LicenseWedge
+            title="^HokoBlur-Lite"
+            repo="LawnchairLauncher/hoko-lite" />
+
+        <!-- Chroma -->
+        <me.jfenn.attribouter.wedges.LicenseWedge
+            title="^Chroma"
+            repo="LawnchairLauncher/chroma"
+            license="apache-2.0" />
+
+        <!-- FiftyShadesOf -->
+        <me.jfenn.attribouter.wedges.LicenseWedge 
+            title="^FiftyShadesOf"
+            repo="florent37/FiftyShadesOf"
+            license="apache-2.0" />
+
+        <!-- libRootJava -->
+        <me.jfenn.attribouter.wedges.LicenseWedge 
+            title="^libRootJava"
+            repo="Chainfire/librootjava"
+            license="apache-2.0" />
+
     </me.jfenn.attribouter.wedges.LicensesWedge>
 </about>
