@@ -6,13 +6,13 @@
     <string name="icu_abbrev_time">HH:mm</string>
     <string name="icu_abbrev_time_12h">hh:mm aa</string>
     <string name="icu_abbrev_date"> dd MMMM</string>
-    <string name="in_smartspace">Ve widgetu \‘At a glance\’</string>
+    <string name="in_smartspace">Ve widgetu \‘Přehled událostí\’</string>
     <string name="smartspace_time">Čas</string>
     <string name="smartspace_date">Datum</string>
     <string name="smartspace_preferences">Přizpůsobení</string>
-    <string name="smartspace_preferences_in_settings">At a Glance</string>
+    <string name="smartspace_preferences_in_settings">Přehled událostí</string>
     <string name="smartspace_preferences_in_settings_desc">Datum, čas, zdroj počasí</string>
-    <string name="label_search">Vyhledat</string>
+    <string name="label_search">Vyhledávání</string>
     <string name="label_voice_search">Hlasové vyhledávání</string>
     <string name="pref_icon_pack">Balíčky ikon</string>
     <string name="home_widget">Domovský widget</string>
@@ -66,7 +66,8 @@
     <string name="no_recent_backups">Nic k zobrazení</string>
     <string name="backup_loading">Načítání...</string>
     <string name="backup_invalid">Nesprávný soubor zálohy</string>
-    <string name="backup_delete_failed">Něco se pokazilo</string>
+    <string name="backup_delete">Smazat</string>
+    <string name="backup_delete_failed">Něco se nepovedlo</string>
     <string name="backup_share">Sdílet</string>
     <string name="backup_pref_summary">Uložit domovskou obrazovku, obnovit zálohy</string>
     <string name="backup_timestamp">Datum vytvoření</string>
@@ -74,15 +75,15 @@
     <string name="backup_restarting">Restartování</string>
     <string name="restore_contents">Obnovit obsah</string>
     <string name="restore_success">Obnovování dokončeno</string>
-    <string name="backup_failed">Něco se pokazilo</string>
-    <string name="restore_failed">Něco se pokazilo</string>
+    <string name="backup_failed">Něco se nepovedlo</string>
+    <string name="restore_failed">Něco se nepovedlo</string>
     <string name="restore_read_meta_fail">Nesprávný soubor zálohy</string>
     <string name="backup_share_title">Sdílet</string>
     <string name="backup_share_text">Záloha Lawnchair</string>
     <string name="full_width_widgets_pref_summary">Umožnit roztažení widgetů až k okrajům obrazovky</string>
     <string name="full_width_width_widgets_pref_title">Široké widgety</string>
     <string name="hide_apps">Skrýt aplikace</string>
-    <string name="hide_apps_sum">Odebrat aplikace ze seznamu</string>
+    <string name="hide_apps_sum">Vyjmout aplikace z rolety</string>
     <string name="grid_size">Velikost mřížky</string>
     <string name="grid_size_default">Výchozí</string>
     <string name="developer_options_title">Možnosti pro vývojáře</string>
@@ -100,11 +101,11 @@
     <string name="grid_size_height">Výška</string>
     <string name="grid_size_width">Šířka</string>
     <string name="launcher_theme_override_label">Vynutit tmavý motiv</string>
-    <string name="smartspace_hours_mins">%1$s%2$s</string>
-    <string name="blur_pref_title">Povolit rozostření</string>
-    <string name="blur_pref_summary">Efekt rozmazání rolety aplikací, docku a pozadí menu nastavení</string>
-    <string name="blur_radius_pref_title">Intenzita rozmazání</string>
-    <string name="blur_oom">Něco se pokazilo</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="blur_pref_title">Rozostření</string>
+    <string name="blur_pref_summary">Efekt rozostření rolety aplikací, docku a pozadí menu nastavení</string>
+    <string name="blur_radius_pref_title">Míra rozostření</string>
+    <string name="blur_oom">Něco se nepovedlo</string>
     <!--Marker B-->
     <string name="dock_colored_google">Barevné ikony</string>
     <string name="hotseat_show_arrow">Šipka</string>
@@ -112,12 +113,12 @@
     <string name="dock_style_pref_title">Styl doku</string>
     <string name="dock_style_default">Výchozí</string>
     <string name="dock_style_p">Zaoblený</string>
-    <string name="dock_style_o">Barevný přechod</string>
+    <string name="dock_style_o">Gradient</string>
     <string name="dock_style_n">Plochý</string>
     <string name="dock_style_transparent">Průhledný</string>
     <string name="dock_style_hidden">Skrytý</string>
     <string name="dock_style_custom">Vlastní</string>
-    <string name="dock_search_bar">Vyhledávací panel doku</string>
+    <string name="dock_search_bar">Vyhledávací pruh doku</string>
     <string name="hotseat_uses_custom_opacity">Neprůhlednost</string>
     <string name="hotseat_custom_opacity">Neprůhlednost</string>
     <string name="all_apps_uses_custom_opacity">Neprůhlednost</string>
@@ -127,7 +128,7 @@
     <string name="num_hotseat_icons_pref_title">Počet ikon</string>
     <string name="icon_scale_pref_title">Velikost ikon</string>
     <string name="add_settings_shortcut_title">Přidat ikonu nastavení na domácí obrazovku</string>
-    <string name="icon_pack_default">Systemové ikony</string>
+    <string name="icon_pack_default">Systémové ikony</string>
     <string name="loading">Načítání…</string>
     <string name="low_performance_mode_pref_title">Režim nízkého výkonu</string>
     <string name="title_storage_permission_required">Vyžadováno povolení k úložišti</string>
@@ -135,17 +136,17 @@
     <string name="reset_to_default">Obnovit výchozí</string>
     <string name="dock_shadow">Stín</string>
     <string name="dock_radius">Zakulacené rohy</string>
-    <string name="dock_gradient">Barevný přechod</string>
+    <string name="dock_gradient">Gradient</string>
     <string name="dock_fill">Pozadí</string>
     <!--Marker C-->
     <string name="pref_category_icons">Ikony</string>
-    <string name="pref_category_aag">At a Glance</string>
+    <string name="pref_category_aag">Přehled událostí</string>
     <string name="pref_category_pixel_searchbar">Vyhledávací panel Pixel</string>
     <string name="pref_category_weather">Počasí</string>
     <string name="pref_category_misc">Ostatní</string>
     <string name="pref_category_layout">Rozložení</string>
     <string name="pref_category_theme">Styl</string>
-    <string name="pref_category_searchbar">Vyhledávací lišta</string>
+    <string name="pref_category_searchbar">Pruh vyhledávání</string>
     <!--Marker D-->
     <string name="title_attribouter_licenses">Open Source licence</string>
     <string name="title_attribouter_email">E-mail</string>
@@ -168,11 +169,11 @@
     <string name="about_role_designer">Návrhář</string>
     <string name="about_role_ui_ux_designer">UI/UX designer</string>
     <string name="about_role_special_snowflake">PR manažer / moderátor</string>
-    <string name="about_role_mod_support">Moderátor / podpora</string>
+    <string name="about_role_mod_support">Moderátor/podpora</string>
     <string name="about_role_family_member">Člen rodiny</string>
     <string name="about_role_magisk_maintainer">Správce Magisk modulu</string>
-    <string name="about_bio_deletescape">Vývojář androidu &amp; nadšenec, milující memy (příliš mnoho). Zakladatel projektu Lawnchair.</string>
-    <string name="about_bio_divadsn">19 let starý, mění kafe a pizzu v kódy. Dříve známý také jako Codebucket.</string>
+    <string name="about_bio_deletescape">Vývojář androidu &amp; nadšenec, milující memy (vlastně přespříliš). Zakladatel projektu Lawnchair.</string>
+    <string name="about_bio_divadsn">19-letý, přeměňuje kafe a pizzu v kód. Dříve známý také jako Codebucket.</string>
     <string name="about_bio_recoded">Kodér a grafický designér.</string>
     <string name="about_bio_josh">Grafický návrhář na volné noze.</string>
     <string name="about_bio_chris">Tvůrce myšlenky, vlivná osoba &amp; tvůrce obsahu. Vedoucí sociálních médií a PR manažer.</string>
@@ -195,12 +196,12 @@
     <string name="action_sleep_timeout">Spát (s prodlevou)</string>
     <string name="action_open_app">Otevřít aplikaci</string>
     <string name="action_open_app_with_target">Otevřít %s</string>
-    <string name="action_open_app_select_app">Vyberte aplikaci</string>
+    <string name="action_open_app_select_app">Vybrat aplikaci</string>
     <string name="action_none">Nic nedělat</string>
     <string name="action_despacito">Přehrát YouTube Rewind 2018 (earrape)</string>
     <string name="gesture_press_home">Tlačítko Domů</string>
     <string name="gesture_press_back">Tlačítko Zpět</string>
-    <string name="gesture_double_tap">Dvojí poklepání</string>
+    <string name="gesture_double_tap">Dvojité poklepání</string>
     <string name="gesture_long_press">Dotyk s podržením</string>
     <string name="gesture_swipe_down">Přejet dolů</string>
     <string name="gesture_swipe_up">Přejet nahoru</string>
@@ -241,7 +242,7 @@
     <string name="icon_pack_external_picker">Otevřít vnější volič</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
-    <string name="title_use_pill_qsb">Použít pilulkový vyhledávací vpruh</string>
+    <string name="title_use_pill_qsb">Použít pilulkový vyhledávací pruh</string>
     <string name="weather_provider_testing">Ladění</string>
     <!--Marker G-->
     <string name="backup_generate_report">Vytvořit hlášení o chybě</string>
@@ -276,8 +277,9 @@
     <string name="pref_recents_radius">Zakulacené rohy</string>
     <string name="automatic_short">Automaticky</string>
     <string name="playstore_query_icon_pack">Balíček ikon</string>
+    <string name="bridge_missing_message">Instalujte nebo aktualizujte Lawnfeed</string>
     <string name="quickstep_pref_title">Nedávné</string>
-    <string name="quickstep_pref_summary">Gesta, rohy, rozmazání</string>
+    <string name="quickstep_pref_summary">Gesta, rohy, rozostření</string>
     <string name="swipe_up_to_switch_apps_title">Potáhnutím nahoru přepnete aplikace</string>
     <string name="swipe_left_to_go_back_title">Přejet doleva pro návrat</string>
     <string name="pref_category_nav_swipe_up_gestures">Akce přejetím</string>
@@ -418,6 +420,7 @@
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
+    <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">Počasí OnePlus</string>
     <string name="overlap_placement">Překrývající se umístění</string>
     <string name="overlap_placement_summary">Povolit překrývání ikon a widgetů.</string>
@@ -427,4 +430,23 @@
     <string name="units_reaumur">Réaumur</string>
     <string name="units_romer">Rømer</string>
     <string name="owm_get_your_own_key">Zajistěte si vlastní klíč API z api.openweathermap.org</string>
+    <string name="pref_smartspace_time_above">Zobrazit velké hodiny</string>
+    <string name="pref_smartspace_time_above_summary">Zobrazit hodiny nad widgetem</string>
+    <string name="pref_fonts_title">Písma</string>
+    <string name="pref_fonts_summary">Změnit písmo různých prvků</string>
+    <string name="pref_fonts_global_font">Globální písmo</string>
+    <string name="pref_fonts_change_global_font">Změnit</string>
+    <string name="pref_fonts_category_home">Domovská obrazovka</string>
+    <string name="pref_fonts_home_icons">Aplikace &amp; jména složek</string>
+    <string name="pref_fonts_home_smartspace">Widget Přehled událostí</string>
+    <string name="pref_fonts_home_shortcuts">Bubliny se zkratkami</string>
+    <string name="pref_fonts_category_drawer">Roleta</string>
+    <string name="pref_fonts_drawer_icons">Názvy aplikací</string>
+    <string name="pref_fonts_drawer_app_actions_icons">Jména akcí aplikací</string>
+    <string name="pref_fonts_drawer_tabs">Názvy záložek</string>
+    <string name="pref_fonts_find_fonts">Najít písma</string>
+    <string name="pref_fonts_add_fonts">Přidat písma</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF podporováno</string>
+    <string name="pref_fonts_missing_font">Chybějící písmo</string>
+    <string name="about_translate">Překlady</string>
 </resources>
