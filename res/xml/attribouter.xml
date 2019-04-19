@@ -24,7 +24,7 @@
 
         <!-- Lead developer: deletescape -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Till Kottmann"
+            name="^Till Kottmann"
             avatar="https://avatars.githubusercontent.com/u/13785669"
             bio="^@string/about_bio_deletescape"
             blog="https://deletescape.ch"
@@ -39,9 +39,9 @@
 
         <!-- DevOps: divadsn -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="David Sn"
+            name="^David Sn"
             avatar="https://avatars.githubusercontent.com/u/28547847"
-            bio="@string/about_bio_divadsn"
+            bio="^@string/about_bio_divadsn"
             blog="https://www.codebucket.de"
             login="divadsn"
             position="2"
@@ -54,9 +54,9 @@
 
         <!-- Developer: paphonb -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="paphonb"
+            name="^paphonb"
             avatar="https://avatars.githubusercontent.com/u/8080853"
-            bio="@string/about_bio_paphonb"
+            bio="^@string/about_bio_paphonb"
             blog="https://paphonb.xyz"
             login="paphonb"
             position="3"
@@ -69,21 +69,21 @@
 
         <!-- Developer: fonix232 -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Jozsef Kiraly"
+            name="^Jozsef Kiraly"
             avatar="https://avatars.githubusercontent.com/u/371847"
             login="fonix232"
             task="^@string/about_role_dev" />
 
         <!-- Developer: amirzaidi -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Amir Zaidi"
+            name="^Amir Zaidi"
             avatar="https://avatars.githubusercontent.com/u/2102185"
             login="amirzaidi"
             task="^@string/about_role_dev" />
 
         <!-- Developer: reCoded -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="reCoded"
+            name="^reCoded"
             avatar="https://avatars.githubusercontent.com/u/29968331"
             bio="^@string/about_bio_recoded"
             login="reC0D3D"
@@ -96,9 +96,9 @@
 
         <!-- Designer: joshuabaldassarre -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Joshua Baldassarre"
+            name="^Joshua Baldassarre"
             avatar="https://avatars.githubusercontent.com/u/20582840"
-            bio="@string/about_bio_josh"
+            bio="^@string/about_bio_josh"
             blog="https://joshuabaldassarre.github.io/"
             login="joshuabaldassarre"
             task="^@string/about_role_designer">
@@ -110,7 +110,7 @@
 
         <!-- UI/UX Designer: lumiqcreative -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Lumiq Creative"
+            name="^Lumiq Creative"
             avatar="https://avatars.githubusercontent.com/u/30959743"
             login="lumiqcreative"
             task="^@string/about_role_ui_ux_designer">
@@ -123,7 +123,7 @@
 
         <!-- Public relations: chriskardas -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Christopher Kardas"
+            name="^Christopher Kardas"
             avatar="https://avatars.githubusercontent.com/u/15703840"
             bio="^@string/about_bio_chris"
             blog="https://christopherkardas.me/"
@@ -137,7 +137,7 @@
 
         <!-- Supporter: rickkode -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Rik Koedoot"
+            name="^Rik Koedoot"
             avatar="https://avatars.githubusercontent.com/u/29402532"
             login="rickkode"
             task="^@string/about_role_mod_support">
@@ -150,7 +150,7 @@
 
         <!-- Supporter: bohrabhijeet -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Abhijeet Bohra"
+            name="^Abhijeet Bohra"
             avatar="https://avatars.githubusercontent.com/u/34155181"
             login="bohrabhijeet"
             task="^@string/about_role_mod_support">
@@ -163,7 +163,7 @@
 
         <!-- Magisk boi: Skittles9823 -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Rhyse Simpson"
+            name="^Rhyse Simpson"
             avatar="https://avatars.githubusercontent.com/u/7065700"
             login="Skittles9823"
             task="^@string/about_role_magisk_maintainer">
@@ -180,7 +180,7 @@
         showDefaults="false"
         title="@string/about_our_family">
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Anas Karbila"
+            name="^Anas Karbila"
             avatar="https://avatars.githubusercontent.com/u/7457130"
             login="thecrazyskull"
             task="^@string/about_role_family_member" />
@@ -188,55 +188,55 @@
             name="Craig Hart"
             avatar="https://i.imgur.com/aRTfabO.png"
             blog="https://craigary.net/"
-            task="^@string/about_role_family_member" />
+            task="@string/about_role_family_member" />
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Dulce"
+            name="^Dulce"
             avatar="https://avatars.githubusercontent.com/u/32991635"
             login="dulcetiseduce"
             task="^@string/about_role_family_member" />
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="Giuseppe"
             avatar="https://avatars.githubusercontent.com/u/49398464"
-            task="^@string/about_role_family_member" />
+            task="@string/about_role_family_member" />
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Harsh Shandilya"
+            name="^Harsh Shandilya"
             avatar="https://avatars.githubusercontent.com/u/13348378"
-            bio="@string/about_bio_msfjarvis"
+            bio="^@string/about_bio_msfjarvis"
             blog="https://msfjarvis.website/"
             login="MSF-Jarvis"
             task="^@string/about_role_family_member" />
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="Jaffar"
             avatar="https://i.imgur.com/QS29Pw1.png"
-            task="^@string/about_role_family_member" />
+            task="@string/about_role_family_member" />
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="Joaco"
             avatar="https://i.imgur.com/4IN8bUD.png"
-            task="^@string/about_role_family_member" />
+            task="@string/about_role_family_member" />
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="Luca"
             avatar="https://i.imgur.com/IFXZUr7.png"
-            task="^@string/about_role_family_member" />
+            task="@string/about_role_family_member" />
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="Lukas (LPW00)"
             avatar="https://i.imgur.com/Dy3oThJ.png"
-            task="^@string/about_role_family_member" />
+            task="@string/about_role_family_member" />
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Nico Franke"
+            name="^Nico Franke"
             avatar="https://avatars.githubusercontent.com/u/23036430"
             login="ZerNico"
             task="^@string/about_role_family_member" />
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="Pratik"
             avatar="https://i.imgur.com/ZYTifu9.png"
-            task="^@string/about_role_family_member" />
+            task="@string/about_role_family_member" />
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Shubby"
+            name="^Shubby"
             avatar="https://avatars.githubusercontent.com/u/24932404"
             login="shubhchan"
             task="^@string/about_role_family_member" />
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Sicarius"
+            name="^Sicarius"
             avatar="https://avatars.githubusercontent.com/u/19359270"
             login="sicrs"
             blog="https://sicrs.github.io/"
@@ -244,7 +244,7 @@
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="Yannick"
             avatar="https://i.imgur.com/p9FrMbi.png"
-            task="^@string/about_role_family_member" />
+            task="@string/about_role_family_member" />
     </me.jfenn.attribouter.wedges.ContributorsWedge>
 
     <!-- TODO: UPDATE THIS!!! -->
