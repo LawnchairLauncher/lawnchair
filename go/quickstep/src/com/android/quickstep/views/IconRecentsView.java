@@ -41,6 +41,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener;
@@ -54,7 +55,6 @@ import com.android.quickstep.RecentsToActivityHelper;
 import com.android.quickstep.TaskActionController;
 import com.android.quickstep.TaskAdapter;
 import com.android.quickstep.TaskHolder;
-import com.android.quickstep.TaskLayoutManager;
 import com.android.quickstep.TaskListLoader;
 import com.android.quickstep.TaskSwipeCallback;
 import com.android.systemui.shared.recents.model.Task;
@@ -155,7 +155,7 @@ public final class IconRecentsView extends FrameLayout {
             recyclerViewParams.height = getTaskListHeight(mDeviceProfile);
             mTaskRecyclerView.setAdapter(mTaskAdapter);
             mTaskRecyclerView.setLayoutManager(
-                    new TaskLayoutManager(mContext, VERTICAL, true /* reverseLayout */));
+                    new LinearLayoutManager(mContext, VERTICAL, true /* reverseLayout */));
             ItemTouchHelper helper = new ItemTouchHelper(
                     new TaskSwipeCallback(mTaskActionController));
             helper.attachToRecyclerView(mTaskRecyclerView);

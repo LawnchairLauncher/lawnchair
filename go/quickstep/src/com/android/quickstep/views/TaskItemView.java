@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.views;
 
+import static com.android.quickstep.views.TaskLayoutUtils.getTaskHeight;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -86,6 +88,13 @@ public final class TaskItemView extends LinearLayout {
 
         resetToEmptyUi();
         CONTENT_TRANSITION_PROGRESS.setValue(this, 1.0f);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int taskHeight = getTaskHeight(getContext());
+        int newHeightSpec = MeasureSpec.makeMeasureSpec(taskHeight,MeasureSpec.EXACTLY);
+        super.onMeasure(widthMeasureSpec, newHeightSpec);
     }
 
     /**
