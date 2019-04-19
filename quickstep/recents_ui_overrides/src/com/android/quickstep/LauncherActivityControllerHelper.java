@@ -97,7 +97,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     public void onAssistantVisibilityChanged(float visibility) {
         Launcher launcher = getCreatedActivity();
         if (launcher != null) {
-            launcher.setQuickSearchBarAlpha(1f - visibility);
+            launcher.onAssistantVisibilityChanged(visibility);
         }
     }
 
