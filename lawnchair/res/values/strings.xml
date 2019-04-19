@@ -591,5 +591,6 @@
 
     <string name="pref_show_dev_options">Show in settings</string>
 
-    <string name="app_description">A customizable Pixel Launcher alternative.</string>
+    <string name="about_app_description">A customizable Pixel Launcher alternative.</string>
+    <string name="about_bio_paphonb">A 18-year-old student, an Android Developer, a developer of Lawnchair Launcher.</string>
 </resources>

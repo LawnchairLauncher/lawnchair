@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <about>
     <me.jfenn.attribouter.wedges.AppWedge
-        icon="@mipmap/ic_launcher"
-        description="^@string/app_description"
-        playStoreUrl="https://play.google.com/store/apps/details?id=ch.deletescape.lawnchair.plah"
         repo="LawnchairLauncher/Lawnchair"
+        icon="@mipmap/ic_launcher"
+        description="^@string/about_app_description"
+        playStoreUrl="https://play.google.com/store/apps/details?id=ch.deletescape.lawnchair.plah"
         websiteUrl="https://lawnchair.app">
         <me.jfenn.attribouter.wedges.link.LinkWedge
             name="@string/about_twitter"
@@ -54,10 +54,18 @@
 
         <!-- Developer: paphonb -->
         <me.jfenn.attribouter.wedges.ContributorWedge
+            name="paphonb"
             avatar="https://avatars.githubusercontent.com/u/8080853"
+            bio="@string/about_bio_paphonb"
+            blog="https://paphonb.xyz"
             login="paphonb"
             position="3"
-            task="^@string/about_role_dev" />
+            task="^@string/about_role_dev">
+            <me.jfenn.attribouter.wedges.link.LinkWedge
+                name="@string/about_twitter"
+                icon="@drawable/ic_twitter"
+                url="https://twitter.com/paphonb" />
+        </me.jfenn.attribouter.wedges.ContributorWedge>
 
         <!-- Developer: fonix232 -->
         <me.jfenn.attribouter.wedges.ContributorWedge
