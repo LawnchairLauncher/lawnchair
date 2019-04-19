@@ -49,9 +49,6 @@ public final class RecentsViewStateController extends
         if (state.overviewUi) {
             mRecentsView.updateEmptyMessage();
             mRecentsView.resetTaskVisuals();
-            mRecentsView.setHintVisibility(1);
-        } else {
-            mRecentsView.setHintVisibility(0);
         }
     }
 
@@ -62,7 +59,6 @@ public final class RecentsViewStateController extends
 
         if (!toState.overviewUi) {
             builder.addOnFinishRunnable(mRecentsView::resetTaskVisuals);
-            mRecentsView.setHintVisibility(0);
         }
 
         if (toState.overviewUi) {
@@ -74,7 +70,6 @@ public final class RecentsViewStateController extends
             updateAnim.setDuration(config.duration);
             builder.play(updateAnim);
             mRecentsView.updateEmptyMessage();
-            builder.addOnFinishRunnable(() -> mRecentsView.setHintVisibility(1));
         }
     }
 
