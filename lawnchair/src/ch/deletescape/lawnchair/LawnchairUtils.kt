@@ -745,3 +745,8 @@ fun ContentResolver.getDisplayName(uri: Uri): String? {
     }
     return null
 }
+
+inline fun avg(vararg of: Float) = of.average()
+inline fun avg(vararg of: Int) = of.average()
+inline fun avg(vararg of: Long) = of.average()
+inline fun avg(vararg of: Double) = of.average()

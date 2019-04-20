@@ -24,6 +24,7 @@ import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.RectF
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -44,6 +45,7 @@ import com.google.android.apps.nexuslauncher.clock.DynamicClock
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
+import kotlin.math.max
 
 class DefaultPack(context: Context) : IconPack(context, "") {
 
@@ -124,7 +126,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
             getRoundIcon(component, iconDpi)?.let {
                 roundIcon = it.apply { mutate() }
             }
-            if (Utilities.ATLEAST_OREO && shouldWrapToAdaptive(originalIcon)) {
+            if (Utilities.ATLEAST_OREO && ((roundIcon != null && shouldWrapToAdaptive(roundIcon)) || shouldWrapToAdaptive(originalIcon))) {
                 return wrapToAdaptiveIcon(roundIcon ?: originalIcon)
             }
             if (roundIcon != null) return roundIcon as Drawable
@@ -241,22 +243,40 @@ class DefaultPack(context: Context) : IconPack(context, "") {
                 setBounds(0, 0, 1, 1)
             }
             val outShape = BooleanArray(1)
-            val scale = normalizer.getScale(icon, null, dr.iconMask, outShape)
-            if (!outShape[0]) {
-                dr.apply {
-                    (dr.foreground as FixedScaleDrawable).drawable = icon
-                    (dr.background as ColorDrawable).color = extractColor(icon)
+            val outBounds = RectF()
+            val scale = normalizer.getScale(icon, outBounds, dr.iconMask, outShape)
+            dr.apply {
+                // Scale up full-bleed icons as well as icons matching the current mask
+                val zoomAndMask = outShape[0] || ColorExtractor.isFullBleed(icon, outBounds)
+                (dr.foreground as FixedScaleDrawable).apply {
+                    drawable = icon
+                    if (zoomAndMask) {
+
+                        // Scale up to remove any padding an icon may have
+                        val width = icon.intrinsicWidth
+                        val height = icon.intrinsicHeight
+                        val aWidth = width * (1 - (outBounds.left + outBounds.right))
+                        val aHeight = height * (1 - (outBounds.top + outBounds.bottom))
+                        val addScale = max(width / aWidth, height / aHeight)
+
+                        setScale(FULL_BLEED_ICON_SCALE * addScale)
+                    } else {
+                        setScale(scale)
+                    }
                 }
-            } else {
-                icon
+                (dr.background as ColorDrawable).color = extractColor(icon, zoomAndMask)
             }
         }
     }
 
-    private fun extractColor(drawable: Drawable): Int = if (prefs.colorizedLegacyTreatment) {
-        ColorExtractor.generateBackgroundColor(drawable.toBitmap())
+    private fun extractColor(drawable: Drawable, zoomAndMask: Boolean = false): Int = if (prefs.colorizedLegacyTreatment || zoomAndMask) {
+        ColorExtractor.generateBackgroundColor(drawable.toBitmap(), !zoomAndMask)
     } else {
         Color.WHITE
+    }
+
+    companion object {
+        const val FULL_BLEED_ICON_SCALE = 1.44f;
     }
 
     class Entry(private val app: LauncherActivityInfo) : IconPack.Entry() {

@@ -17,17 +17,23 @@ package com.android.launcher3.graphics;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.ColorUtils;
+import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 import com.android.launcher3.Utilities;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import kotlin.collections.ArraysKt;
+
+import static java.lang.Math.abs;
 import static java.lang.Math.min;
 import static java.lang.Math.max;
+import static java.lang.Math.round;
 
 /**
  * Utility class for extracting colors from a bitmap.
@@ -133,7 +139,7 @@ public class ColorExtractor {
      *
      * @param bitmap The bitmap to scan
      */
-    public static int generateBackgroundColor(Bitmap bitmap) {
+    public static int generateBackgroundColor(Bitmap bitmap, boolean addFillIn) {
         if (bitmap == null) {
             return Color.WHITE;
         }
@@ -167,6 +173,11 @@ public class ColorExtractor {
                 highScore = currentScore;
                 bestRGB = rgb;
             }
+        }
+
+        // return early if a mix-in isnt needed
+        if (!addFillIn) {
+            return bestRGB | 0xff << 24;
         }
 
         // Convert to HSL to get the lightness
@@ -249,4 +260,56 @@ public class ColorExtractor {
         return red << 16 | green << 8 | blue;
     }
 
+    /**
+     * Checks if a given icon can be considered "full-bleed-ish"
+     * @param drawable the icon
+     * @param bounds actual bounds (derived from IconNormalizer)
+     * @return
+     */
+    public static boolean isFullBleed(Drawable drawable, RectF bounds) {
+        if (drawable == null) return false;
+        if (drawable instanceof ColorDrawable) return true;
+
+        // Check if the icon is squareish
+        final float ratio = (drawable.getIntrinsicHeight() * (1 - (bounds.top + bounds.bottom)) /
+                (drawable.getIntrinsicWidth() * (1 - (bounds.left + bounds.right))));
+        if (ratio < 0.99 || ratio > 1.01) return false;
+
+        final Bitmap bitmap = Utilities.drawableToBitmap(drawable);
+        if (bitmap == null) {
+            return false;
+        }
+        if (!bitmap.hasAlpha()) {
+            return true;
+        }
+
+        final int height = bitmap.getHeight();
+        final int width = bitmap.getWidth();
+        final int size = height * width;
+
+        int[] pixels = new int[height * width];
+        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+
+        // Calculate number of padding pixels
+        // TODO: make this calculation a bit more readable
+        float adjHeight = height - bounds.top - bounds.bottom;
+        int addPixels = Math.round(bounds.left * width * adjHeight + bounds.top * height * width + bounds.right * width * adjHeight + bounds.bottom * height * width);
+
+
+        // Any icon with less than 2% transparent pixels (padding excluded) is considered "full-bleed-ish"
+        final int maxTransparent = (int) (round(size * .02) + addPixels);
+        int count = 0;
+
+        for (int pixel : pixels) {
+            int alpha = 0xFF & (pixel >> 24);
+            if (alpha < 0xDD) {
+                count++;
+                // return as soon as we pass the limit of transparent pixels
+                if (count > maxTransparent) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
