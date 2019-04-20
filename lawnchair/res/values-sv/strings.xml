@@ -15,10 +15,10 @@
     <string name="title_show_google_app">%1$s till vänster</string>
     <string name="msg_minus_one_on_left">Flöde till vänster om skrivbordet</string>
     <string name="about">Mer om</string>
-    <string name="title_google_app">Googleappen</string>
+    <string name="title_google_app">Google-appen</string>
     <string name="about_app_version">Version</string>
     <string name="title_disable_suggestions_prompt">Inaktivera appförslag</string>
-    <string name="msg_disable_suggestions_prompt">"Användningsdata kommer att raderas"</string>
+    <string name="msg_disable_suggestions_prompt">"Användardata kommer att raderas"</string>
     <string name="label_turn_off_suggestions">Inaktivera</string>
     <string name="pixel_style_pref_title">Pixel stil</string>
     <string name="about_title">Mer om</string>
