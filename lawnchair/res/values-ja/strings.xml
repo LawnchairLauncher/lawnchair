@@ -28,7 +28,7 @@
     <string name="action_edit">編集</string>
     <string name="hide_app_sum">ドロワーからアプリを非表示にする</string>
     <string name="hide_app">アプリを隠す</string>
-    <string name="icon_shape_rounded_square">丸い長方形</string>
+    <string name="icon_shape_rounded_square">角丸の長方形</string>
     <string name="pixel_ui_pref_summary">アイコンパック, 影, 色</string>
     <string name="app_drawer_pref_title">アプリドロワー</string>
     <string name="app_drawer_pref_summary">透明度, サジェスト, 非表示のアプリ</string>
@@ -42,7 +42,7 @@
     <string name="hide_app_reset">リセット</string>
     <string name="hide_app_apply">適用</string>
     <string name="hide_dock_gradient">グラデーションを無効にします。</string>
-    <string name="dock_pref_summary">スタイル、不透明度、ページ インジケーター</string>
+    <string name="dock_pref_summary">スタイル、透明度、インジケーター</string>
     <string name="dock_pref_title">ドック</string>
     <string name="hide_all_apps_icon_labels_pref_title">アプリ名を隠す</string>
     <string name="hide_icon_labels_pref_title">アプリ名を隠す</string>
@@ -86,10 +86,10 @@
     <string name="developer_options_title">開発者オプション</string>
     <string name="developer_options_enabled">開発者向けオプションが有効</string>
     <string name="restart_lawnchair_pref_title">再起動</string>
-    <string name="restart_lawnchair_pref_summary">設定を適用しますか？</string>
+    <string name="restart_lawnchair_pref_summary">設定を再度適用する</string>
     <string name="show_debug_info_pref_title">コンポーネント名を表示</string>
     <string name="debug_pref_title">開発者オプション</string>
-    <string name="debug_component_name">構成部品名</string>
+    <string name="debug_component_name">コンポーネント名</string>
     <string name="debug_component_name_copied">コピーしました</string>
     <string name="read_external_storage_required">バックアップを保存するには、ストレージ権限を付与します</string>
     <string name="local_backups">ストレージ内のバックアップ</string>
@@ -101,7 +101,7 @@
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="blur_pref_title">ぼかしを有効にする</string>
     <string name="blur_pref_summary">アプリの引き出し、ドック、設定の背景のぼかし効果</string>
-    <string name="blur_radius_pref_title">ぼかし強度</string>
+    <string name="blur_radius_pref_title">ぼかしの強さ</string>
     <string name="blur_oom">何らかのエラーが発生しました</string>
     <!--Marker B-->
     <string name="dock_colored_google">色付きのアイコン</string>
@@ -128,11 +128,12 @@
     <string name="icon_pack_default">システムアイコン</string>
     <string name="loading">読み込んでいます…</string>
     <string name="low_performance_mode_pref_title">省パフォーマンスモード</string>
-    <string name="title_storage_permission_required">ストレージへのアクセス許可が必要です。</string>
+    <string name="title_storage_permission_required">ストレージへのアクセス許可が必要です</string>
+    <string name="content_storage_permission_required">壁紙を設定するためにストレージへのアクセス許可を与える</string>
     <string name="reset_to_default">初期設定に戻す</string>
     <string name="dock_shadow">影</string>
     <string name="dock_radius">角の丸め</string>
-    <string name="dock_gradient">斜め模様</string>
+    <string name="dock_gradient">傾き</string>
     <string name="dock_fill">背景</string>
     <!--Marker C-->
     <string name="pref_category_icons">アイコン</string>
@@ -167,14 +168,18 @@
     <string name="about_role_mod_support">仲介者 / サポート</string>
     <string name="about_role_family_member">仲間たち</string>
     <string name="about_bio_divadsn">19歳で、カフェインとピザをコードに変える。以前はCodebucketとしても知られていました。</string>
-    <string name="about_bio_recoded">ちょっとのプログラムコーダーとグラフィックデザイナー</string>
+    <string name="about_bio_recoded">温和なコーダーで、グラフィックデザイナー</string>
     <string name="about_bio_josh">フリーランスのグラフィックデザイナー</string>
     <string name="about_bio_chris">クリエイティブマインド、インフルエンサー &amp; コンテンツクリエータ。ソーシャルメディアとPRマネージャ。</string>
     <string name="about_bio_msfjarvis">中心部の開発はhalogenOSが、アプリケーションの開発はsubstratumが行いました</string>
     <!--Marker E-->
+    <string name="debug_crash_launcher">ランチャーをクラッシュさせる</string>
     <string name="gestures_pref_title">ジェスチャー</string>
+    <string name="gestures_pref_summary">ダブルタップ, ホームボタン, スワイプダウン</string>
     <string name="action_open_drawer">アプリドロワーを開く</string>
     <string name="action_last_task">最後に開いたアプリケーションを開く</string>
+    <string name="action_open_widgets">ウィジェット一覧を開く</string>
+    <string name="action_open_settings">ランチャー設定を開く</string>
     <string name="action_app_search">アプリ検索を開く</string>
     <string name="action_overlay">Google Feedを開く</string>
     <string name="action_assistant">アシスタントを開く</string>
@@ -187,27 +192,35 @@
     <string name="gesture_press_home">ホームボタン</string>
     <string name="gesture_press_back">戻るボタン</string>
     <string name="gesture_double_tap">ダブルタップ</string>
+    <string name="gesture_long_press">タップしてホールド</string>
     <string name="gesture_swipe_down">下へスワイプ</string>
     <string name="gesture_swipe_up">上へスワイプ</string>
+    <string name="gesture_dock_swipe_up">ドックを上にスワイプ</string>
+    <string name="pref_show_assistant_title">音声検索ボタン</string>
+    <string name="pref_show_assistant_summary">音声検索に対応しているならボタンを表示する</string>
     <string name="pref_show_as_assistant_title">アシスタントを開く</string>
+    <string name="pref_show_as_assistant_summary">音声検索ボタンの代わりにアシスタントボタンを表示する</string>
     <string name="current_weather_provider">天気のソース</string>
     <string name="smartspace_time_24_h">24時間表示</string>
     <string name="weather_provider_disabled">無効になっています</string>
     <string name="weather_provider_widget">Google アプリ</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
     <string name="weather_provider_pe">PixelExperience</string>
-    <string name="pref_smartspace_widget_provider">天気のソース</string>
+    <string name="pref_smartspace_widget_provider">天気の提供元</string>
+    <string name="pref_smartspace_event_provider">カレンダーの提供元</string>
     <string name="smartspace_provider_error">何らかのエラーが発生しました</string>
     <string name="apps_label">アプリ</string>
-    <string name="all_apps_label">全アプリ</string>
+    <string name="all_apps_label">全てのアプリ</string>
+    <string name="all_apps_label_pref_title">\"すべてのアプリ\" のラベルを表示</string>
     <string name="separate_work_apps_pref_title">仕事用アプリの2番目のタブ</string>
     <string name="title_search_hidden_apps">隠しアプリを表示する</string>
+    <string name="summary_search_hidden_apps">非表示のアプリを結果に含める</string>
     <!--Marker F-->
-    <string name="default_city">Lucerne, CH</string>
+    <string name="default_city">Tokyo, JP</string>
     <string name="pref_weather_api_key_title">API キー</string>
     <string name="pref_weather_city_summary">国コードを含めると最良の結果を返します（例: Tokyo,JP）</string>
     <string name="pref_weather_city_title">都市</string>
-    <string name="pref_weather_units">温度単位</string>
+    <string name="pref_weather_units">温度の単位</string>
     <string name="units_metric">摂氏</string>
     <string name="units_imperial">華氏</string>
     <string name="units_kelvin">ケルビン</string>
@@ -217,6 +230,7 @@
     <string name="icon_pack_external_picker">外部ピッカーの開く</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="full_wday_month_day_no_year">M月dd日,EEEE</string>
+    <string name="title_use_pill_qsb">丸い検索バーを使用</string>
     <string name="weather_provider_testing">デバッグ</string>
     <!--Marker G-->
     <string name="backup_generate_report">バグレポートを作成する</string>
@@ -228,14 +242,16 @@
     <string name="theme_automatic">自動</string>
     <string name="theme_default">デフォルト</string>
     <string name="theme_transparent">透明度</string>
-    <string name="pref_open_source_licenses_title">免許証</string>
+    <string name="pref_open_source_licenses_title">ライセンス</string>
     <string name="pref_legacy_treatment_title">アダプティブアイコンを生成する</string>
     <string name="action_search">検索</string>
     <string name="pref_accent_color">アクセント</string>
+    <string name="dt2s_admin_hint">端末管理アプリの権限を有効にして、ダブルタップでのロックを有効にします</string>
+    <string name="dt2s_admin_warning">ダブルタップでのロックは無効化されています</string>
     <string name="icon_pack_applied_toast">%sが適用されました</string>
     <string name="app_gesture_failed_toast">何らかのエラーが発生しました</string>
     <string name="color_system_accent">システムアクセント</string>
-    <string name="color_pixel_accent">Pixel青</string>
+    <string name="color_pixel_accent">Pixelブルー</string>
     <string name="color_presets">プリセット</string>
     <string name="color_custom">カスタム</string>
     <string name="hotseat_qsb_preferences">カスタマイズ</string>
@@ -243,13 +259,16 @@
     <string name="pref_recents_radius">角の丸め</string>
     <string name="automatic_short">自動</string>
     <string name="playstore_query_icon_pack">アイコンパック</string>
+    <string name="bridge_missing_message">Lawnfeed をインストールもしくは更新</string>
     <string name="quickstep_pref_title">履歴</string>
+    <string name="quickstep_pref_summary">ジェスチャー, コーナー, 影</string>
     <string name="swipe_up_to_switch_apps_title">上スワイプでアプリ切り替え</string>
+    <string name="swipe_left_to_go_back_title">左にスワイプして戻る</string>
     <string name="pref_category_nav_swipe_up_gestures">スワイプアップアクション</string>
     <string name="gesture_nav_swipe_up_left">左から</string>
     <string name="gesture_nav_swipe_up_center">中心から</string>
     <string name="gesture_nav_swipe_up_right">右から</string>
-    <string name="action_switch_apps">スイッチアプリ</string>
+    <string name="action_switch_apps">アプリを切り替える</string>
     <string name="pref_global_search_provider">検索エンジン</string>
     <string name="searchbar_appearance_title">外観</string>
     <string name="google">Google</string>
@@ -259,13 +278,20 @@
     <string name="search_provider_bing">Bing</string>
     <string name="search_provider_baidu">バイドゥ</string>
     <string name="search_provider_appsearch">アプリ検索</string>
-    <string name="search_provider_search_lite">捜索Lite</string>
-    <string name="search_provider_cool_search">クールな検索</string>
+    <string name="search_provider_search_lite">Search Lite</string>
+    <string name="search_provider_cool_search">Cool Search</string>
+    <string name="drag_to_enable_packs">上にドラッグして有効化</string>
+    <string name="drag_to_disable_packs">下にドラッグして無効化</string>
+    <string name="enabled_icon_packs">有効</string>
     <string name="pref_legacy_colored_backgrounds">色付きの背景</string>
     <string name="pref_legacy_colored_backgrounds_summary">アイコンに順応した背景色を使用する</string>
+    <string name="pref_white_only_treatment">白の背景を置き換える</string>
     <!--Marker H-->
+    <string name="dismiss_drop_target_label">"表示しない"</string>
     <string name="action_voice_search">音声検索</string>
+    <string name="pref_drawer_padding">列の高さ</string>
     <string name="pref_drawer_columns">列数</string>
+    <string name="pref_prediction_count">候補の数</string>
     <string name="lawnchair_action_failed">何らかのエラーが発生しました</string>
     <string name="theme_pref_title">テーマ</string>
     <string name="theme_light">明るい</string>
@@ -273,22 +299,54 @@
     <string name="theme_black">黒</string>
     <string name="pref_qsb_color">色</string>
     <!--Marker I-->
+    <string name="title_app_suggestions">アプ</string>
+    <string name="summary_app_suggestions">最近使ったアプリ</string>
     <string name="app_actions_pref_title">動作</string>
+    <string name="app_actions_pref_title_in_search">アクションの候補</string>
+    <string name="change_default_home">ホーム画面に設定</string>
     <string name="blur_wallpaper_failed">何らかのエラーが発生しました</string>
     <string name="feed_theme_pref_title">背景色</string>
+    <string name="adaptive_icon">形状変化アイコン</string>
+    <string name="drawer_tabs">タブ</string>
+    <string name="add_new_tab">追加</string>
+    <string name="rename_tab">名前の変更</string>
     <string name="delete_tab">削除</string>
+    <string name="default_tab_name">新しいタブ</string>
+    <string name="show_in_tabs">タブ</string>
     <string name="tabs_none_selected">無し</string>
+    <string name="tabs_manage">管理</string>
+    <plurals name="tab_apps_count">
+        <item quantity="other">%1$d 個のアプリ</item>
+    </plurals>
+    <plurals name="hidden_apps_count">
+        <item quantity="other">%1$d 個の非表示のアプリ</item>
+    </plurals>
     <string name="selected_count">%1$d個選択済み</string>
+    <string name="tab_manage_apps">アプリを管理</string>
     <string name="tab_name">バックアップ名</string>
+    <string name="tab_bottom_sheet_save">保存</string>
+    <string name="tab_hide_from_main">アプリ一覧から隠す</string>
     <string name="tab_color">タブの色</string>
     <!--Marker J-->
     <string name="shortcut_sesame">ショートカット</string>
+    <string name="pref_integrations">連携</string>
+    <string name="pref_integrations_summary">検索, Sesame, Google</string>
     <string name="sesame">Sesame</string>
     <string name="sesame_upsell">タップしてSesameをインストール</string>
     <string name="sesame_search_upsell">検索</string>
+    <string name="sesame_search_upsell_on">Sesame を検索プロバイダーに設定</string>
+    <string name="sesame_search_upsell_off">Sesame が検索プロバイダーに設定されていません</string>
     <string name="pref_sesame_show_shortcuts">アプリ ショートカット</string>
+    <string name="allow">許可</string>
     <string name="font_reset">リセット</string>
+    <string name="font_variant_italic">斜体</string>
+    <string name="font_weight_thin">細字</string>
+    <string name="font_weight_extra_light">極細字</string>
     <string name="font_weight_light">明るい</string>
+    <string name="font_weight_regular">標準</string>
+    <string name="font_weight_medium">中</string>
+    <string name="font_weight_bold">太字</string>
+    <string name="font_weight_extra_bold">極太字</string>
     <string name="font_weight_extra_black">黒</string>
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
@@ -299,5 +357,7 @@
     <string name="pref_smartspace_time_above">大きな時計を表示</string>
     <string name="pref_smartspace_time_above_summary">ウィジェットの上に時計を表示する</string>
     <string name="pref_fonts_title">フォント</string>
+    <string name="pref_fonts_category_drawer">ドロワー</string>
+    <string name="pref_fonts_drawer_icons">アプリ名</string>
     <string name="about_translate">翻訳</string>
 </resources>
