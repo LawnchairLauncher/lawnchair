@@ -15,7 +15,7 @@
     <string name="home_widget">होम विजेट</string>
     <string name="title_show_google_app">%1$s बायीं ओर</string>
     <string name="msg_minus_one_on_left">फीड डेस्कटॉप के बाएं में</string>
-    <string name="about">बारे में</string>
+    <string name="about">विवरण</string>
     <string name="about_app_version">संस्करण</string>
     <string name="app_name_pixel_launcher">पिक्सेल लॉन्चर</string>
     <string name="title_disable_suggestions_prompt">ऐप सुझावों को बंद करें</string>
@@ -26,7 +26,7 @@
     <string name="action_edit">संपादित करें</string>
     <string name="hide_app_sum">एप्लिकेशन दराज से एप्लिकेशन छुपाएं</string>
     <string name="hide_app">एप्लिकेशन छुपाएँ</string>
-    <string name="icon_shape_rounded_square">गोल कोण चोकोण</string>
+    <string name="icon_shape_rounded_square">गोल कोने वाला वर्ग</string>
     <string name="pixel_ui_pref_summary">आइकन पैक, धुंधला, रंग</string>
     <string name="app_drawer_pref_title">एप्लिकेशन ड्रॉअर</string>
     <string name="app_drawer_pref_summary">अपारदर्शिता, सुझाव, ऐप्स छिपाएं</string>
@@ -80,11 +80,11 @@
     <string name="backup_location_device_storage">Lawnchair के फोल्डर</string>
     <string name="grid_size_height">ऊँचाई</string>
     <string name="grid_size_width">चौड़ाई</string>
-    <string name="launcher_theme_override_label">काले थीम को मजबुर करे</string>
+    <string name="launcher_theme_override_label">काले थीम को फोर्स करे</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
-    <string name="blur_pref_title">धुंधला सक्षम करें</string>
+    <string name="blur_pref_title">ब्लर सक्षम करें</string>
     <string name="blur_pref_summary">ऐप ड्रॉअर, डाक और सेटिंग्स बैकग्राउंड के लिए ब्लर इफेक्ट</string>
-    <string name="blur_radius_pref_title">‎पारदर्शिता ‎शक्ति</string>
+    <string name="blur_radius_pref_title">‎ब्लर ‎शक्ति</string>
     <!--Marker B-->
     <string name="dock_colored_google">रंगीन आइकन्स</string>
     <string name="hotseat_show_arrow">तीर</string>
@@ -149,7 +149,7 @@
     <string name="about_bio_msfjarvis">halogenOS के मूल विकाशक एवं substratum के विकाशक</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">क्रैश लॉन्चर</string>
-    <string name="gestures_pref_title">इशारे</string>
+    <string name="gestures_pref_title">जेशचर्स</string>
     <string name="gestures_pref_summary">‎दोहरा ‎दबाएँ, होम बटन, नीचे स्वाइप करें</string>
     <string name="action_open_drawer">दराज़ खोलें</string>
     <string name="action_last_task">पिछला ऐप खोलें</string>
@@ -218,6 +218,7 @@
     <string name="reset">रीसेट करें</string>
     <string name="theme_title">थीम</string>
     <string name="theme_automatic">स्वचालित</string>
+    <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">पूर्व निर्धारित</string>
     <string name="pref_open_source_licenses_title">लाइसेंस</string>
     <string name="pref_legacy_treatment_title">अडैप्टिव आइकन्स बनाएं</string>
@@ -324,6 +325,7 @@
     <string name="tab_bottom_sheet_save">सेव करें</string>
     <string name="tab_hide_from_main">एप्लिकेशन दराज से छुपाएँ</string>
     <string name="tab_color">टैब का रंग</string>
+    <string name="none">कुछ नहीं</string>
     <string name="undo">अकृत करें</string>
     <!--Marker J-->
     <string name="shortcut_sesame">शॉर्टकट</string>
@@ -343,14 +345,47 @@
     <string name="sesame_enable_integration_description"><![CDATA[यह लांचर और सेसामि के नीचे डाटा इंटेग्रेट करता है। आप इसे सेटिंग्स में चेंज कर सकते है]]></string>
     <string name="sesame_version">इंटीग्रेशन का वर्जन</string>
     <string name="sesame_shortcut_disabled">सेसामी शॉर्टकट्स उपलब्ध नहीं है</string>
+    <string name="pref_sesame_sync_icon_pack">आइकन पैक शेयर करें</string>
+    <string name="pref_sesame_sync_icon_pack_summary">लॉन्चर का आइकन पैक सिसमे के साथ तुल्यकालन करें</string>
+    <string name="font_variant_italic">इटालिक</string>
     <string name="font_weight_thin">पतला</string>
+    <string name="font_weight_extra_light">अधिक हल्का रंग</string>
     <string name="font_weight_light">हल्का</string>
+    <string name="font_weight_regular">नियमित</string>
+    <string name="font_weight_medium">मध्यम</string>
+    <string name="font_weight_semi_bold">कम मोटा</string>
+    <string name="font_weight_bold">बोल्ड</string>
+    <string name="font_weight_extra_bold">अधिक मोटा</string>
     <string name="font_weight_extra_black">काली</string>
     <!--Marker K-->
     <string name="search_provider_firefox">फायरफॉक्स</string>
+    <string name="search_provider_qwant">क्वांट</string>
     <string name="search_provider_edge">किनारा</string>
+    <string name="weather_provider_oneplus_weather">वन प्लस वैदर</string>
+    <string name="overlap_placement">ओवरलैप प्लेसमेंट</string>
+    <string name="overlap_placement_summary">आइकन और विजेट्स को ओवरलैप करें</string>
+    <string name="units_rakine">रंकाइं</string>
+    <string name="units_newton">न्यूटन</string>
+    <string name="units_delisle">देलिसल</string>
+    <string name="units_reaumur">रीमर</string>
+    <string name="units_romer">रोमर</string>
+    <string name="owm_get_your_own_key">कृपया api.openweathermap.org से अपनी API की लें</string>
+    <string name="pref_smartspace_time_above">बड़ा समय दिखाएं</string>
+    <string name="pref_smartspace_time_above_summary">समय को विजेट के ऊपर दिखाएं</string>
+    <string name="pref_fonts_title">फ़ॉन्ट्स</string>
+    <string name="pref_fonts_summary">अलग चीज़ों के लिए अलग फ़ॉन्ट दिखाएं</string>
+    <string name="pref_fonts_global_font">ग्लोबल फ़ॉन्ट</string>
+    <string name="pref_fonts_change_global_font">बदलें</string>
+    <string name="pref_fonts_home_icons">ऐप तथा फोल्डर के नाम</string>
+    <string name="pref_fonts_home_smartspace">At a glance विजेट</string>
+    <string name="pref_fonts_home_shortcuts">शोर्कट्स के बुलबुले</string>
+    <string name="pref_fonts_category_drawer">ड्रोवर</string>
+    <string name="pref_fonts_drawer_icons">ऐप्स के नाम</string>
+    <string name="pref_fonts_drawer_app_actions_icons">ऐप एक्शन के नाम</string>
     <string name="pref_fonts_drawer_tabs">टैब्स के नाम</string>
     <string name="pref_fonts_find_fonts">फ़ॉन्ट खोजें</string>
     <string name="pref_fonts_add_fonts">फ़ॉन्ट्स एड करें</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF समर्थन है</string>
+    <string name="pref_fonts_missing_font">फ़ॉन्ट गायब है</string>
     <string name="about_translate">अनुवादक</string>
 </resources>
