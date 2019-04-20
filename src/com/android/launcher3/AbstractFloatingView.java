@@ -182,6 +182,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     protected static <T extends AbstractFloatingView> T getOpenView(
             ActivityContext activity, @FloatingViewType int type) {
         BaseDragLayer dragLayer = activity.getDragLayer();
+        if (dragLayer == null) return null;
         // Iterate in reverse order. AbstractFloatingView is added later to the dragLayer,
         // and will be one of the last views.
         for (int i = dragLayer.getChildCount() - 1; i >= 0; i--) {
