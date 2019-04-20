@@ -68,7 +68,7 @@
     <string name="hide_apps_sum">Remove apps from drawer</string>
     <string name="grid_size">Grid size</string>
     <string name="developer_options_title">Default</string>
-    <string name="developer_options_enabled">Developer options</string>
+    <string name="developer_options_enabled">Developer options enabled</string>
     <string name="restart_lawnchair_pref_title">Restart</string>
     <string name="restart_lawnchair_pref_summary">Apply settings again</string>
     <string name="show_debug_info_pref_title">Show component names</string>
@@ -179,7 +179,7 @@
     <string name="pref_show_as_assistant_summary">Display assistant button instead of voice search</string>
     <string name="smartspace_time_24_h">24-hour format</string>
     <string name="weather_provider_disabled">Disabled</string>
-    <string name="weather_provider_owm">Lead Developer</string>
+    <string name="weather_provider_owm">OpenWeatherMap</string>
     <string name="weather_provider_pe">PixelExperience</string>
     <string name="pref_smartspace_widget_provider">Weather source</string>
     <string name="pref_smartspace_event_provider">Calendar source</string>
@@ -217,6 +217,7 @@
     <string name="reset">Reset</string>
     <string name="theme_title">Theme</string>
     <string name="theme_automatic">Automatic</string>
+    <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Default</string>
     <string name="pref_open_source_licenses_title">Licenses</string>
     <string name="pref_legacy_treatment_title">Create adaptive icons</string>
