@@ -6,9 +6,9 @@
     <string name="icu_abbrev_time">HH:mm</string>
     <string name="icu_abbrev_time_12h">hh:mm aa</string>
     <string name="icu_abbrev_date"> dd MMMM</string>
-    <string name="in_smartspace">في /‘النظرة السريعة/’ أداة</string>
+    <string name="in_smartspace">في أداة \‘النظرة السريعة\’</string>
     <string name="smartspace_time">الوقت</string>
-    <string name="smartspace_date">تاريخ</string>
+    <string name="smartspace_date">التاريخ</string>
     <string name="smartspace_preferences">تخصيص</string>
     <string name="smartspace_preferences_in_settings">النظرة السريعة</string>
     <string name="smartspace_preferences_in_settings_desc">التاريخ، الوقت، مصدر الطقس</string>
@@ -170,7 +170,7 @@
     <string name="about_role_designer">المصمم</string>
     <string name="about_role_ui_ux_designer">المصمم لواجهة المستخدم و تجربة المستخدم</string>
     <string name="about_role_special_snowflake">مدير العلاقات العامة/مشرف</string>
-    <string name="about_role_mod_support">مشرف/فريق الدعم</string>
+    <string name="about_role_mod_support">المشرف/الدعم</string>
     <string name="about_role_family_member">فرد من الاسرة</string>
     <string name="about_role_magisk_maintainer">مشرف أدوات Magisk</string>
     <string name="about_bio_deletescape">مطور اندرويد متحمس، يحب الميمات (كثيراً). مؤسس مشروع Lawnchair.</string>
