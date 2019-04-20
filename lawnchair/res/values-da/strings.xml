@@ -300,8 +300,8 @@
     <string name="search_provider_cool_search">Cool Search</string>
     <string name="recent_task_option_force_stop">Gennemtving stop</string>
     <string name="pref_icon_packs">Ikonpakker</string>
-    <string name="drag_to_enable_packs">Træk opad for at aktivere</string>
-    <string name="drag_to_disable_packs">Træk opad for at deaktivere</string>
+    <string name="drag_to_enable_packs">Træk op for at aktivere</string>
+    <string name="drag_to_disable_packs">Træk ned for at deaktivere</string>
     <string name="get_more_icon_packs">Få flere</string>
     <string name="enabled_icon_packs">Aktiveret</string>
     <string name="pref_icon_pack_masking">Ikonmaskering</string>
