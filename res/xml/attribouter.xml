@@ -249,7 +249,8 @@
         <!-- OpenWeatherMap-Android-Library -->
         <me.jfenn.attribouter.wedges.LicenseWedge
             title="^OpenWeatherMap-Android-Library"
-            repo="KwabenBerko/OpenWeatherMap-Android-Library" />
+            repo="KwabenBerko/OpenWeatherMap-Android-Library"
+            license="mit" />
 
         <!-- Sunrise/SunsetLib -->
         <me.jfenn.attribouter.wedges.LicenseWedge
