@@ -109,10 +109,10 @@
     <string name="blur_oom">Valami hiba történt</string>
     <!--Marker B-->
     <string name="dock_colored_google">Színezett ikonok</string>
-    <string name="hotseat_show_arrow">Nyíl</string>
-    <string name="hotseat_show_page_indicator">Oldaljelzés</string>
+    <string name="hotseat_show_arrow">Nyíl ikon</string>
+    <string name="hotseat_show_page_indicator">Oldalkijelzés</string>
     <string name="dock_style_pref_title">Dokkstílus</string>
-    <string name="dock_style_default">Alapérték</string>
+    <string name="dock_style_default">Alapértelmezett</string>
     <string name="dock_style_p">Lekerekített</string>
     <string name="dock_style_o">Színátmenetes</string>
     <string name="dock_style_n">Lapos</string>
@@ -141,7 +141,7 @@
     <string name="dock_fill">Háttér</string>
     <!--Marker C-->
     <string name="pref_category_icons">Ikonok</string>
-    <string name="pref_category_aag">Betekintéd</string>
+    <string name="pref_category_aag">Betekintés</string>
     <string name="pref_category_pixel_searchbar">Pixel-keresősáv</string>
     <string name="pref_category_weather">Időjárás</string>
     <string name="pref_category_misc">Egyéb</string>
@@ -219,17 +219,17 @@
     <string name="weather_provider_pe">PixelExperience</string>
     <string name="pref_smartspace_widget_provider">Az Időjárás forrása</string>
     <string name="pref_smartspace_event_provider">A Naptár forrása</string>
-    <string name="title_all_apps_search">Keresősáv az Alkamazásfiókban</string>
+    <string name="title_all_apps_search">Keresősáv az Alkamazáslistában</string>
     <string name="smartspace_provider_error">Valami hiba történt</string>
     <string name="smartspace_widget_provider_not_found">Valami hiba lépett fel. Telepítse vagy frissítse a Google-alkalmazást.</string>
     <string name="apps_label">Alkalmazások</string>
     <string name="all_apps_label">Minden alkalmazás</string>
     <string name="all_apps_label_pref_title">\'A minden alkalmazás\' felirat megjelenítése</string>
     <string name="separate_work_apps_pref_title">Második fül/lap a munkahelyi alkalmazásoknak</string>
-    <string name="title_search_hidden_apps">Rejtett alkalmazások megtalálása</string>
+    <string name="title_search_hidden_apps">Rejtett alkalmazások keresése</string>
     <string name="summary_search_hidden_apps">A rejtett alkalmazásokat is megjeleníti az eredmények között</string>
     <!--Marker F-->
-    <string name="default_city">Liverpool, GB</string>
+    <string name="default_city">Budapest, HU</string>
     <string name="pref_weather_api_key_title">API kulcs</string>
     <string name="pref_weather_city_summary">A legjobb eredmény érdekében adja meg az országkódot is</string>
     <string name="pref_weather_city_title">Település</string>
@@ -240,7 +240,7 @@
     <string name="all_icons">Összes ikon</string>
     <string name="error_no_browser">Nem található URL-eket kezelni képes alkalmazás</string>
     <string name="no_icon_found">Nem található ikon</string>
-    <string name="icon_pack_external_picker">Külső jelölő megnyitása</string>
+    <string name="icon_pack_external_picker">Külső kiejölő megnyitása</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="full_wday_month_day_no_year">MMMM. d., EEEE</string>
     <string name="title_use_pill_qsb">Kapszulaformájú keresősáv használata</string>
@@ -279,7 +279,7 @@
     <string name="automatic_short">Automatikus</string>
     <string name="playstore_query_icon_pack">Ikoncsomag</string>
     <string name="bridge_missing_message">Telepítse vagy frissítse a Lawnfeed-et</string>
-    <string name="quickstep_pref_title">Előzmények</string>
+    <string name="quickstep_pref_title">Legutóbbiak</string>
     <string name="quickstep_pref_summary">Mozdulatvezérlés, sarkok, homályosítás</string>
     <string name="swipe_up_to_switch_apps_title">Alkalmazásváltás felfelé csúsztatással</string>
     <string name="swipe_left_to_go_back_title">Visszalépés balra csúsztatással</string>
@@ -311,7 +311,7 @@
     <string name="pref_legacy_colored_backgrounds_summary">Színezett hátterek a készített alkalmazkodó ikonokhoz</string>
     <string name="pref_white_only_treatment">A fehér hátterek lecserélése</string>
     <string name="pref_white_only_treatment_summary">Színezett hátterek az összes alkalmazkodó ikonhoz</string>
-    <string name="smartspace_provider_bridge">Rootmentes Pixel Bridge</string>
+    <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <!--Marker H-->
     <string name="dismiss_drop_target_label">"Ne jelenítse meg"</string>
     <string name="suggested_action_content_description">%1$s megnyílik a következőben: %2$s</string>
@@ -324,8 +324,8 @@
     <string name="lawnchair_actions">Műveletek</string>
     <string name="lawnchair_action_failed">Valami hiba történt</string>
     <string name="theme_pref_title">Téma</string>
-    <string name="theme_auto">Háttérkép-követő</string>
-    <string name="theme_auto_night_mode">Rendszertéma-követő</string>
+    <string name="theme_auto">Háttérkép alapján</string>
+    <string name="theme_auto_night_mode">Rendszertéma alapján</string>
     <string name="theme_light">Világos</string>
     <string name="theme_dark_text">Világos, sötét szöveggel</string>
     <string name="theme_dark">Sötét</string>
@@ -334,20 +334,20 @@
     <string name="theme_black_dark_text">Fekete, sötét szöveggel</string>
     <string name="pref_qsb_color">Szín</string>
     <string name="hide_from_predictions">Elrejtés a javaslatokból</string>
-    <string name="hide_from_predictions_summary">Soha nem jeleníti meg az alkalmazásfiók javaslatait</string>
-    <string name="bubble_searchbar">Duplabuborék-keresősáv</string>
+    <string name="hide_from_predictions_summary">Soha nem jeleníti meg az alkalmazáslista javaslatait</string>
+    <string name="bubble_searchbar">Kettős buborék keresősáv</string>
     <string name="search_clear_history">Előzmények törlése</string>
     <string name="search_no_results">Nincs találat</string>
     <string name="search_menu">Keresőbeállítások</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Kiemelés</string>
-    <string name="color_theme_based">Témakövető</string>
+    <string name="color_theme_based">Téma alapján</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Javaslatok</string>
     <string name="title_app_suggestions">Alkalmazások</string>
     <string name="title_app_suggestions_in_search">Alkalmazásjavaslatok</string>
     <string name="summary_app_suggestions">Nemrég használt alkalmazások</string>
-    <string name="summary_app_suggestions_lawnstep">A legutóbb használt alkalmazások képernyőjén és az alkalmazásfiókban</string>
+    <string name="summary_app_suggestions_lawnstep">A legutóbb használt alkalmazások képernyőjén és az alkalmazáslistában</string>
     <string name="app_actions_pref_title">Műveletek</string>
     <string name="app_actions_pref_title_in_search">Műveletjavaslatok</string>
     <string name="app_actions_pref_desc">Gyakran megnyitott képernyők parancsikonjai</string>
@@ -355,7 +355,7 @@
     <string name="recent_task_option_popup_window">Párbeszédablak</string>
     <string name="blur_wallpaper_failed">Valami hiba történt</string>
     <string name="feed_theme_pref_title">Háttérszín</string>
-    <string name="feed_theme_follow_launcher">Témakövető</string>
+    <string name="feed_theme_follow_launcher">Téma alapján</string>
     <string name="recents_not_connected">A szolgáltatás nem kapcsolódik</string>
     <string name="advanced_settings">További %s-beállítások</string>
     <string name="adaptive_icon">alkalmazkodó ikon</string>
@@ -379,12 +379,12 @@
     <string name="tab_manage_apps">Alkalmazáskezelés</string>
     <string name="tab_name">Név</string>
     <string name="tab_bottom_sheet_save">Mentés</string>
-    <string name="tab_hide_from_main">Elrejtés az alkalmazásfiókból</string>
+    <string name="tab_hide_from_main">Elrejtés az alkalmazáslistából</string>
     <string name="tab_color">A lap színe</string>
     <string name="undo">Visszavonás</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Parancsikonok</string>
-    <string name="pref_integrations">Integrációk</string>
+    <string name="pref_integrations">Egységesítések</string>
     <string name="pref_integrations_summary">Keresés, Sesame, Google</string>
     <string name="sesame">Sesame</string>
     <string name="sesame_data_integration">Adategységesítés</string>
@@ -405,7 +405,7 @@
     <string name="pref_sesame_sync_icon_pack_summary">A Lawnchair-ikoncsomag szinkronizálása a Sesame-mal</string>
     <string name="font_reset">Visszaállítás</string>
     <string name="font_variant_italic">Dőlt</string>
-    <string name="font_weight_thin">Sovány</string>
+    <string name="font_weight_thin">Keskeny</string>
     <string name="font_weight_extra_light">Extravékony</string>
     <string name="font_weight_light">Vékony</string>
     <string name="font_weight_regular">Hagyományos</string>
@@ -434,14 +434,14 @@
     <string name="pref_fonts_global_font">Fő betűtípus</string>
     <string name="pref_fonts_change_global_font">Váltás</string>
     <string name="pref_fonts_category_home">Kezdőképernyő</string>
-    <string name="pref_fonts_home_icons">Alkalmazás- és mappanevek</string>
-    <string name="pref_fonts_home_smartspace">\'Belepillantás\' kisalkalmazás</string>
-    <string name="pref_fonts_home_shortcuts">Parancsikon-buborékok</string>
-    <string name="pref_fonts_category_drawer">Alkalmazásfiók</string>
+    <string name="pref_fonts_home_icons">Alkalmazás és mappanevek</string>
+    <string name="pref_fonts_home_smartspace">\'Betekintő\' kisalkalmazás</string>
+    <string name="pref_fonts_home_shortcuts">Parancsikon buborékok</string>
+    <string name="pref_fonts_category_drawer">Alkalmazáslista</string>
     <string name="pref_fonts_drawer_icons">Alkalmazásnevek</string>
     <string name="pref_fonts_drawer_app_actions_icons">Alkalmazásművelet-nevek</string>
-    <string name="pref_fonts_drawer_tabs">Fül-/Lapnevek</string>
-    <string name="pref_fonts_find_fonts">Betűtípus-keresés</string>
+    <string name="pref_fonts_drawer_tabs">Lap nevek</string>
+    <string name="pref_fonts_find_fonts">Betűtípus keresés</string>
     <string name="pref_fonts_add_fonts">Új betűtípus</string>
     <string name="pref_fonts_add_fonts_summary">Az OTF és a TTF támogatott</string>
     <string name="pref_fonts_missing_font">Hiányzó betűtípus</string>
