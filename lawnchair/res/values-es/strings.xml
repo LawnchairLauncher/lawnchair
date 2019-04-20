@@ -46,7 +46,7 @@
     <string name="backup_location">Ubicación</string>
     <string name="choose_backup_path">Explorar</string>
     <string name="backup_contents">Contenido</string>
-    <string name="backup_settings">Configuración</string>
+    <string name="backup_settings">Ajustes</string>
     <string name="backup_wallpaper">Fondo de Pantalla</string>
     <string name="backup_error_blank_name">Escriba un nombre para la copia de seguridad</string>
     <string name="backup_error_blank_location">Seleccione ubicación para la copia de seguridad</string>
@@ -98,7 +98,7 @@
     <string name="summary_all_apps_google_search">Encontrar resultados web y aplicaciones</string>
     <string name="num_hotseat_icons_pref_title">Número de iconos</string>
     <string name="icon_scale_pref_title">Tamaño de icono</string>
-    <string name="add_settings_shortcut_title">Agregar icono de configuración a la pantalla de inicio</string>
+    <string name="add_settings_shortcut_title">Agregar icono de ajustes a la pantalla de inicio</string>
     <string name="icon_pack_default">Iconos del sistema</string>
     <string name="loading">Cargando…</string>
     <string name="low_performance_mode_pref_title">Modo de bajo rendimiento</string>
@@ -154,7 +154,7 @@
     <string name="action_open_drawer">Abrir cajón de aplicaciones</string>
     <string name="action_last_task">Abrir última aplicación</string>
     <string name="action_open_widgets">Abrir cajón de widgets</string>
-    <string name="action_open_settings">Abrir configuración del launcher</string>
+    <string name="action_open_settings">Abrir ajustes del launcher</string>
     <string name="action_open_overview">Abrir ventana emergente de pantalla de inicio</string>
     <string name="action_global_search">Abrir búsqueda global</string>
     <string name="action_app_search">Abrir búsqueda de aplicaciones</string>
@@ -218,6 +218,7 @@
     <string name="reset">Reiniciar</string>
     <string name="theme_title">Tema</string>
     <string name="theme_automatic">Automático</string>
+    <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Por defecto</string>
     <string name="pref_open_source_licenses_title">Licencias</string>
     <string name="pref_legacy_treatment_title">Crear iconos adaptativos</string>
@@ -290,7 +291,7 @@
     <string name="bubble_searchbar">Barra de búsqueda de doble burbuja</string>
     <string name="search_clear_history">Borrar historial</string>
     <string name="search_no_results">Sin resultados</string>
-    <string name="search_menu">Buscar configuraciones</string>
+    <string name="search_menu">Buscar ajustes</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Acento</string>
     <!--Marker I-->
@@ -306,7 +307,7 @@
     <string name="recent_task_option_popup_window">Ventana de diálogo</string>
     <string name="feed_theme_pref_title">Color de fondo</string>
     <string name="recents_not_connected">Servicio no conectado</string>
-    <string name="advanced_settings">Más %s configuraciones</string>
+    <string name="advanced_settings">Más %s ajustes</string>
     <string name="adaptive_icon">icono adaptativo</string>
     <string name="drawer_tabs">Pestañas</string>
     <string name="add_new_tab">Añadir</string>
@@ -327,6 +328,7 @@
     <string name="tab_bottom_sheet_save">Guardar</string>
     <string name="tab_hide_from_main">Ocultar del cajón</string>
     <string name="tab_color">Color de la pestaña</string>
+    <string name="none">Ninguno</string>
     <string name="undo">Deshacer</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Accesos directos</string>
