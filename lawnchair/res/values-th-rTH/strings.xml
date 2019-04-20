@@ -32,7 +32,7 @@
     <string name="search_pref_summary">สี, เครื่องมือค้นหา, ไอคอน</string>
     <string name="general_pref_title">หน้าหลัก</string>
     <string name="general_pref_summary">กริด, แบบไอคอน, แถบสถานะ</string>
-    <string name="about_pref_summary">ทีมงาน, ลิ้งค์ต่างๆ</string>
+    <string name="about_pref_summary">ทีมงาน, ลิงก์ต่างๆ</string>
     <string name="hide_app_selected">&#160; ถูกซ่อน</string>
     <string name="hide_app_apply">นำไปใช้</string>
     <string name="hide_dock_gradient">ปิดการไล่ระดับสี</string>
@@ -58,7 +58,7 @@
     <string name="backup_pref_summary">สำรอง/กู้คืน การตั้งค่าหน้าหลัก</string>
     <string name="backup_timestamp">วันที่ถูกสร้าง</string>
     <string name="backup_restoring">กำลังคืนค่า</string>
-    <string name="backup_restarting">กำลังรีสตาร์ท</string>
+    <string name="backup_restarting">กำลังเริ่มใหม่</string>
     <string name="restore_contents">คืนค่าเนื้อหา</string>
     <string name="restore_success">คืนค่าสำเร็จ</string>
     <string name="backup_share_text">การสำรองข้อมูล Lawnchair</string>
@@ -69,7 +69,7 @@
     <string name="grid_size">ขนาดกริด</string>
     <string name="developer_options_title">สำหรับนักพัฒนาซอฟต์แวร์</string>
     <string name="developer_options_enabled">ตัวเลือกนักพัฒนาถูกเปิดใช้งาน</string>
-    <string name="restart_lawnchair_pref_title">รีสตาร์ท</string>
+    <string name="restart_lawnchair_pref_title">เริ่มใหม่</string>
     <string name="restart_lawnchair_pref_summary">โหลดการตั้งค่าอีกครั้ง</string>
     <string name="show_debug_info_pref_title">แสดงชื่อคอมโพเนนต์</string>
     <string name="debug_component_name">ชื่อคอมโพเนนต์</string>
@@ -156,7 +156,7 @@
     <string name="action_open_settings">เปิดารตั้งค่าหน้าแรก</string>
     <string name="action_open_overview">เปิดตัวเลือกหน้าแรก</string>
     <string name="action_global_search">เปิดการค้นหา</string>
-    <string name="action_app_search">ปิดการค้นหาแอป</string>
+    <string name="action_app_search">เปิดการค้นหาแอป</string>
     <string name="action_overlay">เปิดหน้าฟีด Google</string>
     <string name="action_assistant">เปิด assistant</string>
     <string name="action_open_notifications">เปิดแถบการแจ้งเตือน</string>
@@ -217,10 +217,11 @@
     <string name="reset">รีเซ็ต</string>
     <string name="theme_title">ธีม</string>
     <string name="theme_automatic">อัตโนมัติ</string>
+    <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">ค่าเริ่มต้น</string>
     <string name="pref_open_source_licenses_title">ใบอนุญาตโอเพนซอร์ส</string>
     <string name="pref_legacy_treatment_title">สร้างไอคอนแบบปรับอัตโนมัติ</string>
-    <string name="pref_legacy_treatment_summary">Adaptive icon สำหรับทุกแอป</string>
+    <string name="pref_legacy_treatment_summary">ไอคอนแบบปรับอัตโนมัติสำหรับทุกแอป</string>
     <string name="dt2s_admin_hint">โปรดให้สิทธิ์ผู้ดูแลระบบเพื่อใช้งานการแตะสองครั้งเพื่อล็อค</string>
     <string name="dt2s_admin_warning">การแตะสองครั้งเพื่อล็อคจะถูกปิด</string>
     <string name="icon_pack_applied_toast">เปิดใช้งาน %s แล้ว</string>
