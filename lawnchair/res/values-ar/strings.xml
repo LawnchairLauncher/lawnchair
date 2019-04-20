@@ -6,9 +6,9 @@
     <string name="icu_abbrev_time">HH:mm</string>
     <string name="icu_abbrev_time_12h">hh:mm aa</string>
     <string name="icu_abbrev_date"> dd MMMM</string>
-    <string name="in_smartspace">في /‘النظرة السريعة/’ أداة</string>
+    <string name="in_smartspace">في أداة \‘النظرة السريعة\’</string>
     <string name="smartspace_time">الوقت</string>
-    <string name="smartspace_date">تاريخ</string>
+    <string name="smartspace_date">التاريخ</string>
     <string name="smartspace_preferences_in_settings">النظرة السريعة</string>
     <string name="smartspace_preferences_in_settings_desc">التاريخ، الوقت، مصدر الطقس</string>
     <string name="label_voice_search">بحث صوتي</string>
@@ -138,7 +138,7 @@
     <string name="about_role_designer">المصمم</string>
     <string name="about_role_ui_ux_designer">المصمم لواجهة المستخدم و تجربة المستخدم</string>
     <string name="about_role_special_snowflake">مدير العلاقات العامة/مشرف</string>
-    <string name="about_role_mod_support">مشرف/فريق الدعم</string>
+    <string name="about_role_mod_support">المشرف/الدعم</string>
     <string name="about_role_family_member">فرد من الاسرة</string>
     <string name="about_role_magisk_maintainer">مشرف أدوات Magisk</string>
     <string name="about_bio_deletescape">مطور اندرويد متحمس، يحب الميمات (كثيراً). مؤسس مشروع Lawnchair.</string>
@@ -198,7 +198,7 @@
     <string name="pref_weather_city_summary">ضع رمز البلد للحصول على أفضل النتائج</string>
     <string name="pref_weather_city_title">المدينة</string>
     <string name="pref_weather_units">وحدة درجة الحرارة</string>
-    <string name="units_metric">درجة مئوية</string>
+    <string name="units_metric">مئوية</string>
     <string name="units_imperial">فهرنهايت</string>
     <string name="units_kelvin">كيلفن</string>
     <string name="all_icons">كل الأيقونات</string>
@@ -218,6 +218,7 @@
     <string name="reset">إعادة ضبط</string>
     <string name="theme_title">السمة</string>
     <string name="theme_automatic">تلقائي</string>
+    <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">الإفتراضي</string>
     <string name="pref_open_source_licenses_title">التراخيص</string>
     <string name="pref_legacy_treatment_title">إنشاء ايقونات متكيفة</string>
@@ -307,7 +308,7 @@
     <string name="recent_task_option_popup_window">نافذة الحوار</string>
     <string name="feed_theme_pref_title">لون الخلفية</string>
     <string name="recents_not_connected">الخدمة غير متصلة</string>
-    <string name="advanced_settings">مزيد %s إعدادات</string>
+    <string name="advanced_settings">إعدادات %s اكثر</string>
     <string name="adaptive_icon">الأيقونات المتكيفة</string>
     <string name="drawer_tabs">تبويبات</string>
     <string name="add_new_tab">إضافة</string>
@@ -336,11 +337,12 @@
     <string name="tab_bottom_sheet_save">حفظ</string>
     <string name="tab_hide_from_main">إخفاء من قائمة التطبيقات</string>
     <string name="tab_color">لون التبويب</string>
+    <string name="none">لا شئ</string>
     <string name="undo">تراجع</string>
     <!--Marker J-->
     <string name="shortcut_sesame">الاختصارات</string>
     <string name="pref_integrations">المدمجات</string>
-    <string name="pref_integrations_summary">بحث, Sesame, Google</string>
+    <string name="pref_integrations_summary">بحث، سمسم، جوجل</string>
     <string name="sesame">Sesame</string>
     <string name="sesame_data_integration">دمج البيانات</string>
     <string name="sesame_upsell">انقر لتثبيت Sesame</string>
@@ -374,11 +376,11 @@
     <string name="weather_provider_oneplus_weather">طقس OnePlus</string>
     <string name="overlap_placement">الوضع متداخل</string>
     <string name="overlap_placement_summary">السماح للايقونات والأدوات بالتداخل فيما بينها.</string>
-    <string name="units_rakine">مقياس رانكين</string>
+    <string name="units_rakine">رانكين</string>
     <string name="units_newton">نيوتن</string>
-    <string name="units_delisle">مقياس دليزل</string>
-    <string name="units_reaumur">مقياس ريومر</string>
-    <string name="units_romer">مقياس رومر</string>
+    <string name="units_delisle">ديليسل</string>
+    <string name="units_reaumur">رياومور</string>
+    <string name="units_romer">رومر</string>
     <string name="owm_get_your_own_key">يرجى الحصول على مفتاح API الخاص بك من api.openweathermap.org</string>
     <string name="pref_smartspace_time_above">عرض ساعة كبيرة</string>
     <string name="pref_smartspace_time_above_summary">اظهر الساعة في اعلى التطبيق المصغر</string>
