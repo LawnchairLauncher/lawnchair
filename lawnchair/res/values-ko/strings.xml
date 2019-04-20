@@ -93,11 +93,18 @@
     <string name="add_settings_shortcut_title">홈화면에 설정 아이콘 추가하기</string>
     <string name="icon_pack_default">시스템 아이콘</string>
     <string name="loading">로딩 중…</string>
+    <string name="low_performance_mode_pref_title">저사양 모드</string>
+    <string name="title_storage_permission_required">저장소 권한 필요</string>
     <string name="content_storage_permission_required">배경화면을 설정하기 위해 저장소 권한 부여하기</string>
+    <string name="reset_to_default">기본값으로 재설정</string>
+    <string name="dock_shadow">그림자</string>
+    <string name="dock_fill">배경화면</string>
     <!--Marker C-->
     <string name="pref_category_icons">아이콘</string>
     <string name="pref_category_aag">At a glance</string>
+    <string name="pref_category_pixel_searchbar">Pixel 검색 바</string>
     <string name="pref_category_weather">날씨</string>
+    <string name="pref_category_misc">기타</string>
     <string name="pref_category_layout">레이아웃</string>
     <string name="pref_category_theme">스타일</string>
     <string name="pref_category_searchbar">검색 바</string>
@@ -126,6 +133,8 @@
     <string name="about_bio_chris">창의적인 마인드, 인플루엔서 &amp; 콘텐츠 크리에이터. 소셜미디어와 홍보 매니저.</string>
     <string name="about_bio_msfjarvis">halogenOS의 핵심 개발자이자 substratum의 애플리케이션 개발자.</string>
     <!--Marker E-->
+    <string name="gestures_pref_title">제스처</string>
+    <string name="action_open_drawer">앱 서랍 열기</string>
     <string name="action_last_task">마지막 앱 열기</string>
     <string name="action_open_settings">런쳐 설정 열기</string>
     <string name="action_app_search">앱 검색 열기</string>
@@ -141,6 +150,7 @@
     <string name="gesture_press_home">홈 버튼</string>
     <string name="gesture_press_back">뒤로 가기 버튼</string>
     <string name="gesture_double_tap">두번 탭하기</string>
+    <string name="gesture_long_press">길게 터치</string>
     <string name="gesture_swipe_down">쓸어 내리기</string>
     <string name="gesture_swipe_up">쓸어 올리기</string>
     <string name="gesture_dock_swipe_up">독에서 쓸어 올리기</string>
@@ -176,19 +186,32 @@
     <string name="full_wday_month_day_no_year">MMMM d EEEE</string>
     <string name="weather_provider_testing">디버그</string>
     <!--Marker G-->
+    <string name="backup_generate_report">버그 리포트 생성</string>
+    <string name="keep_scroll_state_pref_title">스크롤 위치 기억하기</string>
     <string name="reset">다시 설정</string>
     <string name="theme_title">테마</string>
     <string name="theme_automatic">자동</string>
+    <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">기본</string>
     <string name="pref_open_source_licenses_title">라이선스</string>
+    <string name="pref_legacy_treatment_title">적응형 아이콘 생성</string>
+    <string name="pref_legacy_treatment_summary">모든 앱에 적응형 아이콘 적용</string>
+    <string name="dt2s_admin_warning">두 번 탭 하여 잠금 기능이 비활성화될 것입니다</string>
+    <string name="color_pixel_accent">Pixel 블루</string>
     <string name="color_presets">프리셋</string>
     <string name="automatic_short">자동</string>
     <string name="bridge_missing_message">Lawnfeed를 설치나 업데이트 하기</string>
+    <string name="swipe_up_to_switch_apps_title">위로 밀어서 앱 전환</string>
+    <string name="swipe_left_to_go_back_title">왼쪽으로 밀어서 뒤로 가기</string>
+    <string name="pref_category_nav_swipe_up_gestures">스와이프 동작</string>
     <string name="pref_global_search_provider">검색 엔진</string>
+    <string name="searchbar_appearance_title">스타일</string>
     <string name="google">Google</string>
     <string name="search_provider_google_go">Google Go</string>
+    <string name="search_provider_yandex">Yandex</string>
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
+    <string name="search_provider_baidu">Baidu</string>
     <string name="search_provider_appsearch">앱 검색</string>
     <string name="recent_task_option_force_stop">강제 종료</string>
     <string name="pref_icon_packs">아이콘 팩</string>
@@ -198,13 +221,17 @@
     <string name="pref_drawer_columns">열 개수</string>
     <string name="lawnchair_actions">액션</string>
     <string name="theme_light">밝은 테마</string>
+    <string name="theme_dark_text">밝은 배경에 검정색 글자</string>
     <string name="theme_dark">어두운 테마</string>
+    <string name="theme_dark_dark_text">어두운 배경에 흰색 글자</string>
     <string name="theme_black">검은색</string>
+    <string name="pref_qsb_color">색상</string>
     <string name="search_menu">설정 검색</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">액센트</string>
     <!--Marker I-->
     <string name="title_app_suggestions">앱</string>
+    <string name="summary_app_suggestions">최근 사용한 앱</string>
     <string name="app_actions_pref_title">액션</string>
     <string name="advanced_settings">더 %s 설정 보기</string>
     <string name="drawer_tabs">탭</string>
@@ -212,26 +239,47 @@
     <string name="rename_tab">이름 수정</string>
     <string name="default_tab_name">새 탭</string>
     <string name="show_in_tabs">탭</string>
+    <string name="tabs_manage">관리</string>
     <plurals name="tab_apps_count">
         <item quantity="other">%1$d 앱</item>
     </plurals>
     <string name="selected_count">%1$d개 선택됨</string>
+    <string name="tab_manage_apps">앱 관리</string>
     <string name="tab_bottom_sheet_save">저장</string>
+    <string name="tab_color">탭 색상</string>
+    <string name="none">없음</string>
+    <string name="undo">실행 취소</string>
     <!--Marker J-->
     <string name="shortcut_sesame">바로가기</string>
     <string name="pref_integrations_summary">검색, Sesame, Google</string>
     <string name="sesame">Sesame</string>
     <string name="sesame_upsell">탭하여 Sesame 설치</string>
     <string name="pref_sesame_show_shortcuts">앱 바로가기</string>
+    <string name="allow">허용</string>
     <string name="pref_sesame_sync_icon_pack">아이콘 팩 공유</string>
+    <string name="font_variant_italic">이탤릭체</string>
+    <string name="font_weight_thin">얇은체</string>
+    <string name="font_weight_extra_light">아주옅은체</string>
     <string name="font_weight_light">밝은 테마</string>
+    <string name="font_weight_regular">일반체</string>
+    <string name="font_weight_medium">중간체</string>
+    <string name="font_weight_semi_bold">세미볼드체</string>
+    <string name="font_weight_bold">볼드체</string>
+    <string name="font_weight_extra_bold">강한볼드체</string>
     <string name="font_weight_extra_black">검은색</string>
     <!--Marker K-->
+    <string name="search_provider_firefox">Firefox</string>
+    <string name="search_provider_qwant">Qwant</string>
+    <string name="weather_provider_oneplus_weather">OnePlus 런처</string>
     <string name="pref_smartspace_time_above">큰 시계 보기</string>
     <string name="pref_smartspace_time_above_summary">시계를 위젯 위에 보기</string>
+    <string name="pref_fonts_title">글꼴</string>
+    <string name="pref_fonts_global_font">전역 폰트</string>
+    <string name="pref_fonts_home_icons">앱 및 폴더 이름</string>
     <string name="pref_fonts_home_smartspace">\'At a Glance\' 위젯</string>
     <string name="pref_fonts_drawer_icons">앱 이름</string>
     <string name="pref_fonts_drawer_app_actions_icons">앱 액션 이름</string>
     <string name="pref_fonts_drawer_tabs">탭 이름</string>
+    <string name="pref_fonts_add_fonts">폰트 추가</string>
     <string name="about_translate">번역</string>
 </resources>
