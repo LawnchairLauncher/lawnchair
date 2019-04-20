@@ -135,15 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Pintasan dan notifikasi"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Tutup"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Notifikasi ditutup"</string>
-    <string name="smartspace_preferences">Preferensi</string>
-    <string name="label_search">Telusuri</string>
     <string name="label_voice_search">Penelusuran suara</string>
     <string name="smartspace_preferences_in_settings">At A Glance</string>
     <string name="smartspace_preferences_in_settings_desc">Di bagian atas Layar utama</string>
     <string name="title_show_google_app">Tampilkan %1$s</string>
     <string name="msg_minus_one_on_left">Di sebelah kiri layar Utama</string>
     <string name="about">Tentang</string>
-    <string name="title_google_app">Google app</string>
     <string name="title_app_suggestions">Tampilkan saran aplikasi</string>
     <string name="summary_app_suggestions">Di bagian atas daftar Semua Aplikasi</string>
     <string name="about_app_version">Versi</string>
@@ -162,7 +159,6 @@
     <string name="theme_default">Default</string>
     <string name="theme_light">Cahaya</string>
     <string name="theme_dark">Gelap</string>
-    <string name="theme_transparent">Transparan</string>
     <string name="pref_open_source_licenses_title">Lisensi open source</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Pribadi"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Kantor"</string>

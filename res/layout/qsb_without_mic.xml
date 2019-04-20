@@ -7,6 +7,6 @@
     android:layout_height="@dimen/qsb_button_height"
     android:src="@drawable/ic_super_g_color"
     android:scaleType="center"
-    android:contentDescription="@string/label_search"
+    android:contentDescription="@string/search"
     android:elevation="@dimen/qsb_button_elevation"
     xmlns:android="http://schemas.android.com/apk/res/android" />

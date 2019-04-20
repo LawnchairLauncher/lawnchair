@@ -4,20 +4,16 @@
     <!--Marker A-->
     <string name="label_voice_search">Hangalapú keresés</string>
     <string name="pixel_style_pref_title">Pixel stílus</string>
-    <string name="about_title">Névjegy</string>
     <string name="about_summary_title">Összegzés</string>
-    <string name="pixel_ui_pref_title">Téma</string>
     <string name="hide_app">Alkalmazás elrejtése</string>
     <string name="icon_shape_rounded_square">Lekerekített négyzet</string>
     <string name="app_drawer_pref_title">Alkalmazásfiók</string>
     <string name="general_pref_title">Asztal</string>
-    <string name="hide_app_reset">Visszaállítás</string>
     <string name="hide_app_apply">Alkalmazás</string>
     <string name="dock_pref_title">Dokk</string>
     <string name="backups">Mentések</string>
     <string name="new_backup">Új létrehozása</string>
     <string name="restore_backup">Visszaállítás</string>
-    <string name="backup_name">A mentés neve</string>
     <string name="backup_location">A mentés helye</string>
     <string name="choose_backup_path">Tallózás</string>
     <string name="backup_settings">Beállítások</string>

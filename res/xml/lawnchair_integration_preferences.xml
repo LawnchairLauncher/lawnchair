@@ -41,7 +41,7 @@
         <ch.deletescape.lawnchair.sesame.preferences.SesameSearchUpsellPreference
             android:dependency="sesame_integration"
             android:key="sesame_search_upsell"
-            android:title="@string/sesame_search_upsell"
+            android:title="@string/search"
             android:summaryOn="@string/sesame_search_upsell_on"
             android:summaryOff="@string/sesame_search_upsell_off"/>
 

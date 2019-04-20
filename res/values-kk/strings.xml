@@ -135,15 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Таңбашалар мен хабарландырулар"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Бас тарту"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Хабарландырудан бас тартылды"</string>
-    <string name="smartspace_preferences">Параметрлер</string>
-    <string name="label_search">Іздеу</string>
     <string name="label_voice_search">Дауыспен іздеу</string>
     <string name="smartspace_preferences_in_settings">\"Динамикалық көрсету\" функциясы</string>
     <string name="smartspace_preferences_in_settings_desc">Негізі экранның жоғарғы жағында</string>
     <string name="title_show_google_app">%1$s қолданбасын көрсету</string>
     <string name="msg_minus_one_on_left">Басты негізгі экранның сол жағында</string>
     <string name="about">Туралы</string>
-    <string name="title_google_app">Google қолданбасы</string>
     <string name="title_app_suggestions">Қолданба ұсыныстарын көрсету</string>
     <string name="summary_app_suggestions">\"Барлық бағдарламалар\" тізіміңіздің жоғарғы бөлігінде</string>
     <string name="about_app_version">Нұсқа</string>
@@ -159,7 +156,6 @@
     <string name="theme_default">Әдетті</string>
     <string name="theme_light">Жарық</string>
     <string name="theme_dark">Қараңғы</string>
-    <string name="theme_transparent">Мөлдір</string>
     <string name="pref_open_source_licenses_title">Ашық бастапқы код лицензиялары</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Жеке"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Жұмыс"</string>

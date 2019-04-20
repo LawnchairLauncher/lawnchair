@@ -135,17 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"바로가기 및 알림"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"닫기"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"알림이 해제되었습니다."</string>
-    <string name="smartspace_preferences">환경설정</string>
-    <string name="label_search">검색</string>
     <string name="label_voice_search">음성 검색</string>
-    <string name="pref_icon_pack">아이콘 팩</string>
-    <string name="state_loading">적용 중...</string>
     <string name="smartspace_preferences_in_settings">한눈에 보기</string>
     <string name="smartspace_preferences_in_settings_desc">홈 화면 상단</string>
     <string name="title_show_google_app">%1$s 표시</string>
     <string name="msg_minus_one_on_left">기본 홈 화면의 왼쪽으로</string>
     <string name="about">정보</string>
-    <string name="title_google_app">Google 앱</string>
     <string name="title_app_suggestions">앱 추천 표시</string>
     <string name="summary_app_suggestions">모든 앱 목록 상단</string>
     <string name="about_app_version">버전</string>
@@ -165,7 +160,6 @@
     <string name="theme_default">태만</string>
     <string name="theme_light">빛</string>
     <string name="theme_dark">어두운</string>
-    <string name="theme_transparent">투명한</string>
     <string name="pref_open_source_licenses_title">오픈소스 라이선스</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"개인"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"직장"</string>

@@ -135,15 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Otseteed ja märguanded"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Loobu"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Märguandest loobuti"</string>
-    <string name="smartspace_preferences">Eelistused</string>
-    <string name="label_search">Otsi</string>
     <string name="label_voice_search">Häälotsing</string>
     <string name="smartspace_preferences_in_settings">Ülevaade</string>
     <string name="smartspace_preferences_in_settings_desc">Avaekraani ülaosas</string>
     <string name="title_show_google_app">Kuva %1$s</string>
     <string name="msg_minus_one_on_left">Põhiavaekraanist vasakul</string>
     <string name="about">Teave</string>
-    <string name="title_google_app">"Google'i rakendus"</string>
     <string name="title_app_suggestions">Kuva rakenduste soovitused</string>
     <string name="summary_app_suggestions">Loendi Kõik rakendused ülaosas</string>
     <string name="about_app_version">Versioon</string>
@@ -159,7 +156,6 @@
     <string name="theme_default">Vaikimisi</string>
     <string name="theme_light">Valgus</string>
     <string name="theme_dark">Tume</string>
-    <string name="theme_transparent">Läbipaistev</string>
     <string name="pref_open_source_licenses_title">Avatud lähtekoodi litsentsid</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Isiklik"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Töö"</string>

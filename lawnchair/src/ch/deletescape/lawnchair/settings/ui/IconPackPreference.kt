@@ -80,7 +80,7 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
                         .setClass(context, SettingsActivity::class.java)
                         .putExtra(SettingsActivity.EXTRA_FRAGMENT, fragment)
                         .putExtra(SettingsActivity.EXTRA_FRAGMENT_ARGS, Bundle().apply {
-                            putString(SettingsActivity.SubSettingsFragment.TITLE, context.getString(R.string.pref_icon_pack))
+                            putString(SettingsActivity.SubSettingsFragment.TITLE, context.getString(R.string.icon_pack))
                         })
                 )
             }

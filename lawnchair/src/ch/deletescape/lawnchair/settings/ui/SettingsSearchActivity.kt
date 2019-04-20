@@ -27,6 +27,6 @@ class SettingsSearchActivity: SettingsActivity() {
     }
 
     override fun createLaunchFragment(intent: Intent?) = SubSettingsFragment.newInstance(
-            getString(R.string.search_pref_title),
+            getString(R.string.search),
             R.xml.lawnchair_search_preferences)
 }

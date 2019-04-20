@@ -190,7 +190,7 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
                             ?: context
                     if (foreground is AppCompatActivity) {
                         AlertDialog.Builder(foreground)
-                                .setTitle(R.string.smartspace_provider_error)
+                                .setTitle(R.string.failed)
                                 .setMessage(R.string.smartspace_widget_provider_not_found)
                                 .setNegativeButton(android.R.string.cancel, null).create().apply {
                                     show()

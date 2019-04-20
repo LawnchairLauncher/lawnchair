@@ -137,15 +137,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"શૉર્ટકટ અને નોટિફિકેશનો"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"છોડી દો"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"સૂચના છોડી દીધી"</string>
-    <string name="smartspace_preferences">પસંદગીઓ</string>
-    <string name="label_search">શોધો</string>
     <string name="label_voice_search">વૉઇસ શોધ</string>
     <string name="smartspace_preferences_in_settings">એક નજરમાં</string>
     <string name="smartspace_preferences_in_settings_desc">તમારી હોમ સ્ક્રીનની શીર્ષ પર</string>
     <string name="title_show_google_app">પ્રદર્શન %1$s</string>
     <string name="msg_minus_one_on_left">મુખ્ય હોમ સ્ક્રીનની ડાબી બાજુએ</string>
     <string name="about">વિશે</string>
-    <string name="title_google_app">Google ઍપ્લિકેશન</string>
     <string name="title_app_suggestions">ઍપ સૂચનો બતાવો</string>
     <string name="summary_app_suggestions">તમારી બધી ઍપ્લિકેશનોની સૂચિમાં ટોચ પર</string>
     <string name="about_app_version">સંસ્કરણ</string>
@@ -161,7 +158,6 @@
     <string name="theme_default">ડિફૉલ્ટ</string>
     <string name="theme_light">પ્રકાશ</string>
     <string name="theme_dark">ડાર્ક</string>
-    <string name="theme_transparent">પારદર્શક</string>
     <string name="pref_open_source_licenses_title">ઓપન સૉર્સ લાઇસન્સ</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"મનગમતી ઍપ"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"કાર્યાલયની ઍપ"</string>

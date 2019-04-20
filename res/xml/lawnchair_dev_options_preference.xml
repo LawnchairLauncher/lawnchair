@@ -61,7 +61,7 @@
 
     <Preference
         android:key="currentWeatherProvider"
-        android:title="@string/current_weather_provider" />
+        android:title="@string/pref_smartspace_widget_provider" />
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_wipOptions"

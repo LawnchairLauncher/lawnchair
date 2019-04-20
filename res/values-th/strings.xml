@@ -135,17 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"ทางลัดและการแจ้งเตือน"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ปิด"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ปิดการแจ้งเตือนแล้ว"</string>
-    <string name="smartspace_preferences">ค่ากำหนด</string>
-    <string name="label_search">ค้นหา</string>
     <string name="label_voice_search">ค้นหาด้วยเสียง</string>
-    <string name="pref_icon_pack">ชุดไอคอน</string>
-    <string name="state_loading">กำลังปรับใช้…</string>
     <string name="smartspace_preferences_in_settings">ข้อมูลโดยย่อ</string>
     <string name="smartspace_preferences_in_settings_desc">ที่ด้านบนของหน้าจอหลัก</string>
     <string name="title_show_google_app">แสดง %1$s</string>
     <string name="msg_minus_one_on_left">ที่ด้านซ้ายของหน้าจอหลัก</string>
     <string name="about">เกี่ยวกับ</string>
-    <string name="title_google_app">แอป Google</string>
     <string name="title_app_suggestions">แสดงคำแนะนำแอป</string>
     <string name="summary_app_suggestions">ที่ด้านบนของรายการ \"แอปทั้งหมด\"</string>
     <string name="about_app_version">เวอร์ชัน</string>
@@ -163,7 +158,6 @@
     <string name="theme_default">ค่าเริ่มต้น</string>
     <string name="theme_light">เบา</string>
     <string name="theme_dark">มืด</string>
-    <string name="theme_transparent">โปร่งใส</string>
     <string name="pref_open_source_licenses_title">ใบอนุญาตโอเพนซอร์ส</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ส่วนตัว"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"งาน"</string>

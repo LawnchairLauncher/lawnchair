@@ -21,6 +21,6 @@
 
     <item
         android:id="@+id/action_reset"
-        android:title="@string/font_reset"
+        android:title="@string/reset"
         app:showAsAction="never" />
 </menu>

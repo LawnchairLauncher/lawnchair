@@ -4,48 +4,36 @@
     <!--Marker A-->
     <string name="smartspace_time">Hora</string>
     <string name="smartspace_date">Data</string>
-    <string name="smartspace_preferences">Customitza</string>
     <string name="smartspace_preferences_in_settings_desc">Data, hora, font del temps</string>
-    <string name="label_search">Cerca</string>
     <string name="label_voice_search">Cerca per veu</string>
-    <string name="pref_icon_pack">Paquet d\'icones</string>
     <string name="about">Sobre</string>
-    <string name="title_google_app">App de Google</string>
     <string name="about_app_version">Versió</string>
     <string name="title_disable_suggestions_prompt">Deshabilita suggeriments d\'aplicacions</string>
     <string name="msg_disable_suggestions_prompt">"Les dades d'ús s'eliminaran"</string>
     <string name="label_turn_off_suggestions">Deshabilitar</string>
     <string name="pixel_style_pref_title">Estil Pixel</string>
-    <string name="about_title">Quant a</string>
     <string name="about_summary_title">Resum</string>
-    <string name="pixel_ui_pref_title">Tema</string>
     <string name="action_edit">Edita</string>
     <string name="hide_app">Amaga l\'aplicació</string>
     <string name="icon_shape_rounded_square">Quadrat arrodonit</string>
     <string name="pixel_ui_pref_summary">Paquet d\'icones, desenfocament, colors</string>
     <string name="app_drawer_pref_title">Calaix d\'aplicacions</string>
     <string name="app_drawer_pref_summary">Opacitat, suggeriments, amaga aplicacions</string>
-    <string name="search_pref_title">Cerca</string>
     <string name="search_pref_summary">Color, motor de cerca, icones</string>
     <string name="general_pref_title">General</string>
     <string name="general_pref_summary">Graella, disposició de les icones, barra d\'estat</string>
     <string name="about_pref_summary">Equip, enllaç, llicencies</string>
-    <string name="hidden_app">Amaga aplicacions</string>
     <string name="hide_app_selected">&#160; amagada</string>
-    <string name="hide_app_reset">Reinicia</string>
     <string name="hide_app_apply">Aplica</string>
     <string name="hide_dock_gradient">Desactiva el degradat</string>
     <string name="dock_pref_summary">Estil, opacitat, indicador de pàgina</string>
     <string name="dock_pref_title">Barra d\'aplicacions</string>
-    <string name="hide_all_apps_icon_labels_pref_title">Amaga els noms de les aplicacions</string>
     <string name="hide_icon_labels_pref_title">Amaga els noms de les aplicacions</string>
     <string name="backups">Còpies de seguretat</string>
     <string name="new_backup">Crea</string>
     <string name="restore_backup">Restaura</string>
-    <string name="backup_name">Nom</string>
     <string name="backup_location">Ubicació</string>
     <string name="choose_backup_path">Navega</string>
-    <string name="backup_homescreen">Pantalla d\'inici</string>
     <string name="backup_settings">Configuració</string>
     <string name="backup_wallpaper">Fons de pantalla</string>
     <string name="backup_error_blank_name">Insereix un nom per a la còpia de seguretat</string>
@@ -55,7 +43,6 @@
     <string name="no_recent_backups">No hi ha res per mostrar</string>
     <string name="backup_loading">S\'està carregant...</string>
     <string name="backup_invalid">El fitxer de la còpia de seguretat és incorrecte</string>
-    <string name="backup_delete_failed">Alguna cosa ha anat malament</string>
     <string name="backup_share">Comparteix</string>
     <string name="backup_pref_summary">Desa la pantalla d\'inici, restaura còpies de seguretat</string>
     <string name="backup_timestamp">Data de creació</string>
@@ -63,28 +50,18 @@
     <string name="backup_restarting">S\'està reiniciant</string>
     <string name="restore_contents">Restaura els continguts</string>
     <string name="restore_success">La restauració ha finalitzat</string>
-    <string name="backup_failed">Alguna cosa ha anat malament</string>
-    <string name="restore_failed">Alguna cosa no ha anat bé</string>
-    <string name="restore_read_meta_fail">El fitxer de la còpia de seguretat és incorrecte</string>
-    <string name="backup_share_title">Comparteix</string>
     <string name="backup_share_text">Còpia de seguretat del Lawnchair</string>
     <string name="hide_apps">Amaga aplicacions</string>
-    <string name="grid_size_default">Per defecte</string>
     <string name="developer_options_title">Opcions del desenvolupador</string>
     <string name="show_debug_info_pref_title">Ensenya els noms dels components</string>
-    <string name="debug_pref_title">Opcions del desenvolupador</string>
     <string name="debug_component_name">Nom del component</string>
     <string name="debug_component_name_copied">Copiat</string>
-    <string name="backup_location_documents_storage">Personalitzat</string>
     <string name="grid_size_height">Alçada</string>
     <string name="grid_size_width">Amplada</string>
     <string name="launcher_theme_override_label">Forçar el tema fosc</string>
     <string name="blur_pref_title">Activa el difuminat</string>
     <string name="blur_radius_pref_title">Força del desenfocament</string>
-    <string name="blur_oom">Alguna cosa ha anat malament</string>
     <!--Marker B-->
-    <string name="dock_style_default">Per defecte</string>
-    <string name="dock_style_custom">Personalitzat</string>
     <string name="loading">S\'està carregant…</string>
     <!--Marker C-->
     <string name="pref_category_icons">Icones</string>
@@ -118,8 +95,6 @@
     <!--Marker E-->
     <string name="action_none">No facis res</string>
     <string name="weather_provider_disabled">Desactivat</string>
-    <string name="weather_provider_widget">App de Google</string>
-    <string name="smartspace_provider_error">Alguna cosa ha anat malament</string>
     <!--Marker F-->
     <string name="pref_weather_api_key_title">Clau d\'API</string>
     <string name="pref_weather_city_summary">Per a millors resultats introduïu el codi del país</string>
@@ -130,34 +105,19 @@
     <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
     <string name="weather_provider_testing">Depuració</string>
     <!--Marker G-->
-    <string name="iconpack_none">Cap</string>
     <string name="reset">Reinicia</string>
     <string name="theme_title">Tema</string>
     <string name="theme_default">Per defecte</string>
-    <string name="action_search">Cerca</string>
-    <string name="app_gesture_failed_toast">Alguna cosa ha anat malament</string>
-    <string name="color_custom">Personalitzat</string>
-    <string name="hotseat_qsb_preferences">Customitza</string>
-    <string name="playstore_query_icon_pack">Paquet d\'icones</string>
     <!--Marker H-->
-    <string name="action_voice_search">Cerca per veu</string>
     <string name="pref_drawer_columns">Número de columnes</string>
-    <string name="lawnchair_action_failed">Alguna cosa ha anat malament</string>
-    <string name="theme_pref_title">Tema</string>
     <string name="theme_light">Clar</string>
     <string name="theme_dark">Fosc</string>
     <string name="theme_black">Negre</string>
     <!--Marker I-->
-    <string name="blur_wallpaper_failed">Alguna cosa ha anat malament</string>
-    <string name="delete_tab">Suprimeix</string>
-    <string name="tabs_none_selected">Cap</string>
     <string name="selected_count">%1$d seleccionats</string>
-    <string name="tab_name">Nom</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Dreceres</string>
-    <string name="sesame_search_upsell">Cerca</string>
     <string name="pref_sesame_show_shortcuts">Draceres d\'aplicació</string>
-    <string name="font_reset">Reinicia</string>
     <string name="font_weight_light">Clar</string>
     <string name="font_weight_extra_black">Negre</string>
     <!--Marker K-->

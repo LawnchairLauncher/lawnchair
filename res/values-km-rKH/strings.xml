@@ -130,7 +130,6 @@
     <string name="action_decrease_height" msgid="282377193880900022">"បន្ថយកម្ពស់"</string>
     <string name="widget_resized" msgid="9130327887929620">"ធាតុក្រាហ្វិកដែលបានប្តូរទំហំទៅទទឹងប្រវែង <xliff:g id="NUMBER_0">%1$s</xliff:g> កម្ពស់ប្រវែង <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ផ្លូវកាត់"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ផ្លូវកាត់សម្រាប់ <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"ផ្លូវកាត់ចំនួន <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> និង​ការជូនដំណឹងចំនួន <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> សម្រាប់ <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"បដិសេធ"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"បាន​បដិសេធ​ការជូនដំណឹង"</string>

@@ -135,15 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Accesos directos y notificaciones"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Descartar"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Se descartó la notificación"</string>
-    <string name="smartspace_preferences">Preferencias</string>
-    <string name="label_search">Buscar</string>
     <string name="label_voice_search">Búsqueda por voz</string>
     <string name="smartspace_preferences_in_settings">De un vistazo</string>
     <string name="smartspace_preferences_in_settings_desc">En la parte superior de tu pantalla principal</string>
     <string name="title_show_google_app">Mostrar %1$s</string>
     <string name="msg_minus_one_on_left">A la izquierda de la pantalla principal</string>
     <string name="about">Acerca de</string>
-    <string name="title_google_app">Google app</string>
     <string name="title_app_suggestions">Mostrar sugerencias de apps</string>
     <string name="summary_app_suggestions">En la parte superior de la lista de Todas las apps</string>
     <string name="about_app_version">Versión</string>
@@ -160,7 +157,6 @@
     <string name="theme_default">Defecto</string>
     <string name="theme_light">Ligero</string>
     <string name="theme_dark">Oscuro</string>
-    <string name="theme_transparent">Transparente</string>
     <string name="pref_open_source_licenses_title">Licencias de código abierto</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personales"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Laborales"</string>

@@ -135,15 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Flýtileiðir og tilkynningar"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Hunsa"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Tilkynningu lokað"</string>
-    <string name="smartspace_preferences">Kjörstillingar</string>
-    <string name="label_search">Leita</string>
     <string name="label_voice_search">Raddleit</string>
     <string name="smartspace_preferences_in_settings">Í fljótu bragði</string>
     <string name="smartspace_preferences_in_settings_desc">Efst á heimaskjánum</string>
     <string name="title_show_google_app">Birta %1$s</string>
     <string name="msg_minus_one_on_left">Vinstra megin við heimaskjáinn</string>
     <string name="about">Um forritið</string>
-    <string name="title_google_app">Google forrit</string>
     <string name="title_app_suggestions">Birta uppástungur um forrit</string>
     <string name="summary_app_suggestions">Efst á listanum yfir öll forrit</string>
     <string name="about_app_version">Útgáfa</string>
@@ -159,7 +156,6 @@
     <string name="theme_default">Sjálfgefið</string>
     <string name="theme_light">Ljós</string>
     <string name="theme_dark">Myrkur</string>
-    <string name="theme_transparent">Gegnsætt</string>
     <string name="pref_open_source_licenses_title">Leyfi opins kóða</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Persónulegt"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Vinna"</string>

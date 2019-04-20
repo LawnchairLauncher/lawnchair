@@ -135,17 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Atalhos e notificações"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Dispensar"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Notificação dispensada"</string>
-    <string name="smartspace_preferences">Preferências</string>
-    <string name="label_search">Pesquisar</string>
     <string name="label_voice_search">Pesquisa por voz</string>
-    <string name="pref_icon_pack">Conjunto de ícones</string>
-    <string name="state_loading">A aplicar…</string>
     <string name="smartspace_preferences_in_settings">Resumo</string>
     <string name="smartspace_preferences_in_settings_desc">Na parte superior da tela inicial</string>
     <string name="title_show_google_app">Exibir %1$s</string>
     <string name="msg_minus_one_on_left">À esquerda da tela inicial principal</string>
     <string name="about">Sobre</string>
-    <string name="title_google_app">Google app</string>
     <string name="title_app_suggestions">Exibir sugestões de apps</string>
     <string name="summary_app_suggestions">No topo da sua lista Todos os apps</string>
     <string name="about_app_version">Versão</string>
@@ -163,7 +158,6 @@
     <string name="theme_default">Padrão</string>
     <string name="theme_light">Branco</string>
     <string name="theme_dark">Escuro</string>
-    <string name="theme_transparent">Transparente</string>
     <string name="pref_open_source_licenses_title">Licenças de código aberto</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Pessoais"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Comerciais"</string>

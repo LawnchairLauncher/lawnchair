@@ -136,17 +136,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Prečaci i obavijesti"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Odbaci"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Obavijest je odbačena"</string>
-    <string name="smartspace_preferences">Postavke</string>
-    <string name="label_search">Pretraži</string>
     <string name="label_voice_search">Pretraži glasovno</string>
-    <string name="pref_icon_pack">Paket ikona</string>
-    <string name="state_loading">Primjenjivanje…</string>
     <string name="smartspace_preferences_in_settings">Kratki pregled</string>
     <string name="smartspace_preferences_in_settings_desc">Pri vrhu početnog zaslona</string>
     <string name="title_show_google_app">Prikaz značajke %1$s</string>
     <string name="msg_minus_one_on_left">Lijevo od glavnog početnog zaslona</string>
     <string name="about">O aplikaciji</string>
-    <string name="title_google_app">Aplikacija Google</string>
     <string name="title_app_suggestions">Prikaz prijedloga za aplikacije</string>
     <string name="summary_app_suggestions">Pri vrhu popisa Sve aplikacije</string>
     <string name="about_app_version">Verzija</string>
@@ -164,7 +159,6 @@
     <string name="theme_default">Zadano</string>
     <string name="theme_light">Svjetlo</string>
     <string name="theme_dark">Mrak</string>
-    <string name="theme_transparent">Transparentan</string>
     <string name="pref_open_source_licenses_title">Licence otvorenog izvornog koda</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Osobno"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Posao"</string>

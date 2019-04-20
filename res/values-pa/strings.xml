@@ -137,15 +137,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"ਸ਼ਾਰਟਕੱਟ ਅਤੇ ਸੂਚਨਾਵਾਂ"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ਖਾਰਜ ਕਰੋ"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ਸੂਚਨਾ ਖਾਰਜ ਕੀਤੀ ਗਈ"</string>
-    <string name="smartspace_preferences">ਤਰਜੀਹਾਂ</string>
-    <string name="label_search">ਖੋਜ</string>
     <string name="label_voice_search">ਵੌਇਸ ਖੋਜ</string>
     <string name="smartspace_preferences_in_settings">ਇੱਕ ਨਜ਼ਰ ਵਿੱਚ</string>
     <string name="smartspace_preferences_in_settings_desc">"ਤੁਹਾਡੀ ਹੋਮ ਸਕ੍ਰੀਨ ਦੇ ਸਿਖਰ 'ਤੇ"</string>
     <string name="title_show_google_app">%1$s ਪ੍ਰਦਰਸ਼ਿਤ ਕਰੋ</string>
     <string name="msg_minus_one_on_left">ਮੁੱਖ ਹੋਮ ਸਕ੍ਰੀਨ ਦੇ ਖੱਬੇ ਪਾਸੇ</string>
     <string name="about">ਇਸ ਬਾਰੇ</string>
-    <string name="title_google_app">Google ਐਪ</string>
     <string name="title_app_suggestions">ਐਪ ਸੁਝਾਅ ਪ੍ਰਦਰਸ਼ਿਤ ਕਰੋ</string>
     <string name="summary_app_suggestions">"ਤੁਹਾਡੀਆਂ ਸਾਰੀਆਂ ਐਪਾਂ ਦੀ ਸੂਚੀ ਦੇ ਸਿਖਰ 'ਤੇ"</string>
     <string name="about_app_version">ਰੂਪ</string>
@@ -161,7 +158,6 @@
     <string name="theme_default">ਡਿਫੌਲਟ</string>
     <string name="theme_light">ਲਾਈਟ</string>
     <string name="theme_dark">ਹਨੇਰ</string>
-    <string name="theme_transparent">ਪਾਰਦਰਸ਼ੀ</string>
     <string name="pref_open_source_licenses_title">ਖੁੱਲ੍ਹਾ ਸਰੋਤ ਲਾਇਸੰਸ</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ਨਿੱਜੀ"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ਕਾਰਜ-ਸਥਾਨ"</string>

@@ -135,15 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Преки пътища и известия"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Отхвърляне"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Известието е отхвърлено"</string>
-    <string name="smartspace_preferences">Предпочитания</string>
-    <string name="label_search">Търсене</string>
     <string name="label_voice_search">Гласово търсене</string>
     <string name="smartspace_preferences_in_settings">бърз поглед</string>
     <string name="smartspace_preferences_in_settings_desc">В горната част на началния ви екран</string>
     <string name="title_show_google_app">Показване на %1$s</string>
     <string name="msg_minus_one_on_left">Отляво на основния начален екран</string>
     <string name="about">Информация</string>
-    <string name="title_google_app">приложението Google</string>
     <string name="title_app_suggestions">Показване на предложения за приложения</string>
     <string name="summary_app_suggestions">В горната част на списъка с всички приложения</string>
     <string name="about_app_version">Версия</string>
@@ -160,7 +157,6 @@
     <string name="theme_default">По подразбиране</string>
     <string name="theme_light">Светлина</string>
     <string name="theme_dark">Тъмен</string>
-    <string name="theme_transparent">Прозрачен</string>
     <string name="pref_open_source_licenses_title">Лицензи за отворен код</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Лични"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Служебни"</string>

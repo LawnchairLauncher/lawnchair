@@ -135,15 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"शॉर्टकट आणि सूचना"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"डिसमिस करा"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"सूचना डिसमिस केली"</string>
-    <string name="smartspace_preferences">प्राधान्ये</string>
-    <string name="label_search">शोधा</string>
     <string name="label_voice_search">व्हॉइस शोध</string>
     <string name="smartspace_preferences_in_settings">एका दृष्‍टीक्षेपात</string>
     <string name="smartspace_preferences_in_settings_desc">तुमच्या होम स्क्रीनच्या शीर्षस्थानी</string>
     <string name="title_show_google_app">%1$s प्रदर्शित करा</string>
     <string name="msg_minus_one_on_left">मुख्य स्क्रीनच्या डावीकडे</string>
     <string name="about">बद्दल</string>
-    <string name="title_google_app">Google अॅप</string>
     <string name="title_app_suggestions">अ‍ॅपचे प्रस्ताव दाखवा</string>
     <string name="summary_app_suggestions">तुमच्‍या सर्व अॅप्‍स सूचीच्‍या शीर्षस्‍थानी</string>
     <string name="about_app_version">आवृत्ती</string>
@@ -159,7 +156,6 @@
     <string name="theme_default">डीफॉल्ट</string>
     <string name="theme_light">हलका</string>
     <string name="theme_dark">गडद</string>
-    <string name="theme_transparent">पारदर्शक</string>
     <string name="pref_open_source_licenses_title">मुक्त स्रोत परवाने</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"वैयक्तिक"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"कार्यालय"</string>

@@ -135,17 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"捷徑和通知"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"關閉"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"已關閉通知"</string>
-    <string name="smartspace_preferences">偏好設定</string>
-    <string name="label_search">搜尋</string>
     <string name="label_voice_search">語音搜尋</string>
-    <string name="pref_icon_pack">圖示套件</string>
-    <string name="state_loading">套用中…</string>
     <string name="smartspace_preferences_in_settings">快速查看</string>
     <string name="smartspace_preferences_in_settings_desc">主螢幕頂端</string>
     <string name="title_show_google_app">顯示「%1$s」</string>
     <string name="msg_minus_one_on_left">位於主螢幕左側</string>
     <string name="about">關於</string>
-    <string name="title_google_app">Google app</string>
     <string name="title_app_suggestions">顯示應用程式建議</string>
     <string name="summary_app_suggestions">位於「所有應用程式」清單頂端</string>
     <string name="about_app_version">版本</string>
@@ -165,7 +160,6 @@
     <string name="theme_default">默認</string>
     <string name="theme_light">光</string>
     <string name="theme_dark">黑暗</string>
-    <string name="theme_transparent">透明</string>
     <string name="pref_open_source_licenses_title">開放原始碼授權</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"個人"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"公司"</string>

@@ -2,5 +2,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_reset"
-        android:title="@string/hide_app_reset" />
+        android:title="@string/reset" />
 </menu>

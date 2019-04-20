@@ -85,7 +85,7 @@ class TabbedPickerView(context: Context, val key: String, initialColor: Int,
         measure(MeasureSpec.EXACTLY,0)
         viewPager.adapter = ViewPagerAdapter(listOf(
                 Pair(context.getString(R.string.color_presets), initPresetList()),
-                Pair(context.getString(R.string.color_custom), chromaView)
+                Pair(context.getString(R.string.custom), chromaView)
         ))
         if (!isLandscape) {
             viewPager.layoutParams.height = chromaViewHeight

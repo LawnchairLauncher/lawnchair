@@ -54,7 +54,7 @@ class DrawerQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config),
 
     override fun resolveColor() = if (isDark) darkResolver.resolveColor() else lightResolver.resolveColor()
 
-    override fun getDisplayName() = engine.context.resources.getString(R.string.color_theme_based)
+    override fun getDisplayName() = engine.context.resources.getString(R.string.theme_based)
 }
 
 @Keep

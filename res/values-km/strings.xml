@@ -135,15 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"ផ្លូវកាត់ និង​ការជូនដំណឹង"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"បដិសេធ"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"បាន​បដិសេធ​ការជូនដំណឹង"</string>
-    <string name="smartspace_preferences">ចំណូលចិត្ត</string>
-    <string name="label_search">ស្វែងរក</string>
     <string name="label_voice_search">ការ​ស្វែងរក​ជា​សំឡេង</string>
     <string name="smartspace_preferences_in_settings">មើលមួយភ្លែត</string>
     <string name="smartspace_preferences_in_settings_desc">នៅផ្នែក​ខាងលើ​នៃ​អេក្រង់ដើមរបស់អ្នក</string>
     <string name="title_show_google_app">បង្ហាញ %1$s</string>
     <string name="msg_minus_one_on_left">ទៅ​ខាងឆ្វេង​នៃ​អេក្រង់ដើម​ចម្បង</string>
     <string name="about">អំពី</string>
-    <string name="title_google_app">កម្មវិធី Google</string>
     <string name="title_app_suggestions">បង្ហាញការណែនាំពីកម្មវិធី</string>
     <string name="summary_app_suggestions">នៅផ្នែកខាងលើបញ្ជីកម្មវិធីទាំងអស់របស់អ្នក</string>
     <string name="about_app_version">កំណែ</string>
@@ -159,7 +156,6 @@
     <string name="theme_default">លំនាំដើម</string>
     <string name="theme_light">ពន្លឺ</string>
     <string name="theme_dark">ងងឹត</string>
-    <string name="theme_transparent">ថ្លា</string>
     <string name="pref_open_source_licenses_title">អាជ្ញាប័ណ្ណ​ប្រភព​កូដ​ចំហ</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ផ្ទាល់ខ្លួន"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ការងារ"</string>
