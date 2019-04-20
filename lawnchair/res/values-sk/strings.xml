@@ -6,13 +6,13 @@
     <string name="icu_abbrev_time">HH:mm</string>
     <string name="icu_abbrev_time_12h">hh:mm aa</string>
     <string name="icu_abbrev_date"> dd MMMM</string>
-    <string name="in_smartspace">Vo widgete \‘At a glance\’</string>
+    <string name="in_smartspace">Vo widgete \Prehľad udalostí\’</string>
     <string name="smartspace_time">Čas</string>
     <string name="smartspace_date">Dátum</string>
-    <string name="smartspace_preferences_in_settings">At a glance</string>
+    <string name="smartspace_preferences_in_settings">Prehľad udalostí</string>
     <string name="smartspace_preferences_in_settings_desc">Dátum, čas, zdroj počasia</string>
     <string name="label_voice_search">Hlasové vyhľadávanie</string>
-    <string name="home_widget">Domáci widget</string>
+    <string name="home_widget">Widget prehľad udalostí</string>
     <string name="title_show_google_app">Zostáva %1$s</string>
     <string name="msg_minus_one_on_left">Kanál na ľavú stranu obrazovky</string>
     <string name="about">O aplikácii</string>
@@ -30,12 +30,12 @@
     <string name="app_drawer_pref_title">Ponuka aplikácií</string>
     <string name="app_drawer_pref_summary">Priehľadnosť, návrhy, skryť aplikácie</string>
     <string name="search_pref_summary">Farba, vyhľadávanie, ikony</string>
-    <string name="general_pref_title">Všeobecné</string>
+    <string name="general_pref_title">Plocha</string>
     <string name="general_pref_summary">Mriežka, rozloženie ikon, stavový riadok</string>
     <string name="about_pref_summary">Tým, odkazy, licencie</string>
     <string name="hide_app_selected">&#160; skryté</string>
     <string name="hide_app_apply">Použiť</string>
-    <string name="hide_dock_gradient">Vypnúť</string>
+    <string name="hide_dock_gradient">Vypnúť prechod</string>
     <string name="dock_pref_summary">Štýl, priehľadnosť, indikátor strán</string>
     <string name="dock_pref_title">Dok - lišta aplikácií</string>
     <string name="hide_icon_labels_pref_title">Skryť názvy aplikácií</string>
@@ -217,6 +217,7 @@
     <string name="reset">Resetovať</string>
     <string name="theme_title">Téma</string>
     <string name="theme_automatic">Automaticky</string>
+    <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Predvolená</string>
     <string name="pref_open_source_licenses_title">Licencie</string>
     <string name="pref_legacy_treatment_title">Použiť adaptívne ikony</string>
@@ -259,12 +260,12 @@
     <string name="drag_to_disable_packs">Poťianhuť nadol pre vypnutie</string>
     <string name="get_more_icon_packs">Získať viac</string>
     <string name="enabled_icon_packs">Povolené</string>
-    <string name="pref_icon_pack_masking">Maakovanie ikon</string>
+    <string name="pref_icon_pack_masking">Maskovanie ikon</string>
     <string name="pref_icon_pack_masking_summary">Spraviť ikony bez témy aby sedeli s balíčkom ikon</string>
     <string name="pref_legacy_colored_backgrounds">Farebné tapety</string>
-    <string name="pref_legacy_colored_backgrounds_summary">Ferebné pozadie pre vygenerované prispôsobivé ikony</string>
+    <string name="pref_legacy_colored_backgrounds_summary">Ferebné pozadie pre vygenerované adaptívne ikony</string>
     <string name="pref_white_only_treatment">Nahradiť biele pozadie</string>
-    <string name="pref_white_only_treatment_summary">Ferebné pozadie pre vygenerované prispôsobivé ikony</string>
+    <string name="pref_white_only_treatment_summary">Ferebné pozadie pre vygenerované adaptívne ikony</string>
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <!--Marker H-->
     <string name="dismiss_drop_target_label">"Nezobraziť"</string>
@@ -330,7 +331,8 @@
     <string name="tab_bottom_sheet_save">Uložiť</string>
     <string name="tab_hide_from_main">Skryť zo zoznamu aplikácií</string>
     <string name="tab_color">Farba strany</string>
-    <string name="undo">Krok späť</string>
+    <string name="none">Žiadne</string>
+    <string name="undo">Odvolať zmenu</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Odkazy</string>
     <string name="pref_integrations">Integrácia</string>
@@ -353,8 +355,8 @@
     <string name="pref_sesame_sync_icon_pack_summary">Synchronizovať balíček ikon Lawnchair so Sesame</string>
     <string name="font_variant_italic">Šikmé</string>
     <string name="font_weight_thin">Tenké</string>
-    <string name="font_weight_extra_light">Extra Ľahké</string>
-    <string name="font_weight_light">Ľahké</string>
+    <string name="font_weight_extra_light">Extra Svetlé</string>
+    <string name="font_weight_light">Svetlé</string>
     <string name="font_weight_regular">Štandardné</string>
     <string name="font_weight_medium">Stredné</string>
     <string name="font_weight_semi_bold">PoloTučné</string>

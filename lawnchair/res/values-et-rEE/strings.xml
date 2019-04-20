@@ -76,6 +76,7 @@
     <!--Marker G-->
     <string name="reset">Lähtesta</string>
     <string name="theme_title">Teema</string>
+    <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Vaikimisi</string>
     <!--Marker H-->
     <string name="pref_drawer_columns">Veergude arv</string>
@@ -84,6 +85,7 @@
     <string name="theme_black">Must</string>
     <!--Marker I-->
     <string name="selected_count">%1$d valitud</string>
+    <string name="none">Pole</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Otseteed</string>
     <string name="pref_sesame_show_shortcuts">Rakenduste otseteed</string>

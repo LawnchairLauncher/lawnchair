@@ -6,14 +6,14 @@
     <string name="icu_abbrev_time">HH:mm</string>
     <string name="icu_abbrev_time_12h">hh:mm aa</string>
     <string name="icu_abbrev_date"> dd MMMM</string>
-    <string name="in_smartspace">Bir bakışta widget\'ta</string>
+    <string name="in_smartspace">\‘Bir bakışta\’ widget\'ında</string>
     <string name="smartspace_time">Saat</string>
     <string name="smartspace_date">Tarih</string>
     <string name="smartspace_preferences_in_settings">Bir bakışta</string>
     <string name="smartspace_preferences_in_settings_desc">Tarih, saat, hava durumu kaynağı</string>
     <string name="label_voice_search">Sesli arama</string>
     <string name="home_widget">Ana ekran widget\'ı</string>
-    <string name="title_show_google_app">Solda %1$s</string>
+    <string name="title_show_google_app">%1$s solda</string>
     <string name="msg_minus_one_on_left">Haber akışı ana ekranın solunda</string>
     <string name="about">Hakkında</string>
     <string name="about_app_version">Sürüm</string>
@@ -83,11 +83,11 @@
     <string name="launcher_theme_override_label">Karanlık temaya zorla</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="blur_pref_title">Bulanıklık</string>
-    <string name="blur_pref_summary">Uygulama çekmecesi, yuva, ayarlar arka planları için bulanıklık efekti</string>
+    <string name="blur_pref_summary">Uygulama çekmecesi, alt panel, ayarlar arka planları için bulanıklık efekti</string>
     <string name="blur_radius_pref_title">Bulanıklık seviyesi</string>
     <!--Marker B-->
     <string name="dock_colored_google">Renkli simgeler</string>
-    <string name="hotseat_show_arrow">Ok</string>
+    <string name="hotseat_show_arrow">Ok işareti</string>
     <string name="hotseat_show_page_indicator">Sayfa göstergesi</string>
     <string name="dock_style_pref_title">Alt panel stili</string>
     <string name="dock_style_p">Yuvarlatılmış</string>
@@ -137,7 +137,7 @@
     <string name="about_role_dev_mod">Geliştirici / Moderatör</string>
     <string name="about_role_designer">Tasarımcı</string>
     <string name="about_role_ui_ux_designer">UI/UX tasarımcısı</string>
-    <string name="about_role_special_snowflake">Sosyal medya/PR ve OEM ilişkileri</string>
+    <string name="about_role_special_snowflake">Halkla ilişkiler yöneticisi/moderatör</string>
     <string name="about_role_mod_support">Moderatör/destek</string>
     <string name="about_role_family_member">Aile üyesi</string>
     <string name="about_role_magisk_maintainer">Magisk modülü sorumlusu</string>
@@ -145,8 +145,7 @@
     <string name="about_bio_divadsn">19 yaşında, kafein ve pizzayı kod haline getirdi. Daha önce Codebucket olarak da bilinirdi.</string>
     <string name="about_bio_recoded">Hafif kodlayıcı ve grafik tasarımcısı.</string>
     <string name="about_bio_josh">Serbest grafik tasarımcısı.</string>
-    <string name="about_bio_chris">Bin yıllık af, idk ve idc. Tasarım ve sosyal medya ile bir şey. Hadi birlikte @lawnchairapp \'da takılalım
-✨</string>
+    <string name="about_bio_chris">Yaratıcı Zihin, Etkileyici ve İçerik Oluşturucu. Sosyal Medya ve Halkla İlişkiler Yöneticisi. @lawnchairapp\'ta birlikte takılalım ✨</string>
     <string name="about_bio_msfjarvis">HalogenOS\'ta çekirdek geliştirici ve substratum da ki uygulama geliştiricisi.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Başlatıcı çöktü</string>
@@ -159,7 +158,7 @@
     <string name="action_open_overview">Ana ekran açılır penceresini aç</string>
     <string name="action_global_search">Genel aramayı aç</string>
     <string name="action_app_search">Uygulama içi aramayı aç</string>
-    <string name="action_overlay">Google akışını aç</string>
+    <string name="action_overlay">Google haber akışını aç</string>
     <string name="action_assistant">Asistanı aç</string>
     <string name="action_open_notifications">Bildirimleri aç</string>
     <string name="action_close_notifications">Bildirimleri kapat</string>
@@ -191,7 +190,7 @@
     <string name="all_apps_label">Tüm uygulamalar</string>
     <string name="all_apps_label_pref_title">\"Tüm uygulamalar\" etiketini göster</string>
     <string name="separate_work_apps_pref_title">İş uygulamaları için ikinci sekme</string>
-    <string name="title_search_hidden_apps">Gizli uygulamaları bulun</string>
+    <string name="title_search_hidden_apps">Gizli uygulamaları bul</string>
     <string name="summary_search_hidden_apps">Sonuçlarda gizli uygulamaları göster</string>
     <!--Marker F-->
     <string name="default_city">Lucerne, CH</string>
@@ -219,6 +218,7 @@
     <string name="reset">Sıfırla</string>
     <string name="theme_title">Tema</string>
     <string name="theme_automatic">Otomatik</string>
+    <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Varsayılan</string>
     <string name="pref_open_source_licenses_title">Lisanslar</string>
     <string name="pref_legacy_treatment_title">Uyarlanabilir simgeler oluştur</string>
@@ -238,8 +238,8 @@
     <string name="bridge_missing_message">Lawnfeed\'i yükle veya güncelle</string>
     <string name="quickstep_pref_title">Son uygulamalar</string>
     <string name="quickstep_pref_summary">Hareketler, köşeler, bulanıklık</string>
-    <string name="swipe_up_to_switch_apps_title">Uygulamaları değiştirmek için yukarı kaydırın</string>
-    <string name="swipe_left_to_go_back_title">Geri gitmek için sola kaydırın</string>
+    <string name="swipe_up_to_switch_apps_title">Uygulamaları değiştirmek için yukarı kaydır</string>
+    <string name="swipe_left_to_go_back_title">Geri gitmek için sola kaydır</string>
     <string name="pref_category_nav_swipe_up_gestures">Yukarı kaydırma eylemleri</string>
     <string name="gesture_nav_swipe_up_left">Sol taraftan</string>
     <string name="gesture_nav_swipe_up_center">Ortadan</string>
@@ -253,7 +253,7 @@
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
     <string name="search_provider_baidu">Baidu</string>
-    <string name="search_provider_appsearch">Uygulama ara</string>
+    <string name="search_provider_appsearch">Uygulama arama</string>
     <string name="search_provider_search_lite">Hafif arama</string>
     <string name="search_provider_cool_search">Havalı arama</string>
     <string name="recent_task_option_force_stop">Durmaya zorla</string>
@@ -292,18 +292,18 @@
     <string name="bubble_searchbar">Çift baloncuk arama çubuğu</string>
     <string name="search_clear_history">Geçmişi temizle</string>
     <string name="search_no_results">Hiçbir şey bulunamadı</string>
-    <string name="search_menu">Ayarlarda bul</string>
-    <string name="search_provider_s_finder">S bulucu</string>
+    <string name="search_menu">Ayarları bul</string>
+    <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Vurgu rengi</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Öneriler</string>
     <string name="title_app_suggestions">Uygulamalar</string>
     <string name="title_app_suggestions_in_search">Uygulama önerileri</string>
     <string name="summary_app_suggestions">Son kullanılan uygulamalar</string>
-    <string name="summary_app_suggestions_lawnstep">Son uygulamalar ekran ve uygulama çekmecesinde</string>
+    <string name="summary_app_suggestions_lawnstep">Son uygulamalar ekranı ve uygulama çekmecesinde</string>
     <string name="app_actions_pref_title">Eylemler</string>
     <string name="app_actions_pref_title_in_search">Eylem önerileri</string>
-    <string name="app_actions_pref_desc">Sık açılan ekranlar için kısayollar</string>
+    <string name="app_actions_pref_desc">Sık açılan ekranları için kısayollar</string>
     <string name="change_default_home">Ana ekran olarak ayarla</string>
     <string name="recent_task_option_popup_window">İletişim penceresi</string>
     <string name="feed_theme_pref_title">Arka plan rengi</string>
@@ -329,6 +329,7 @@
     <string name="tab_bottom_sheet_save">Kaydet</string>
     <string name="tab_hide_from_main">Çekmeceden gizle</string>
     <string name="tab_color">Sekme rengi</string>
+    <string name="none">Hiçbiri</string>
     <string name="undo">Geri al</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Kısayollar</string>
@@ -374,13 +375,13 @@
     <string name="units_romer">Romer</string>
     <string name="owm_get_your_own_key">Lütfen api.openweathermap.org adresinden kendi API anahtarınızı edinin</string>
     <string name="pref_smartspace_time_above">Büyük saati göster</string>
-    <string name="pref_smartspace_time_above_summary">Widget\'ın üstündeki saati göster</string>
+    <string name="pref_smartspace_time_above_summary">Saati widget\'ın üstünde göster</string>
     <string name="pref_fonts_title">Yazı tipleri</string>
     <string name="pref_fonts_summary">Farklı öğelerin yazı tipini değiştirme</string>
     <string name="pref_fonts_global_font">Genel yazı tipi</string>
     <string name="pref_fonts_change_global_font">Değiştir</string>
     <string name="pref_fonts_home_icons">Uygulama ve klasör adları</string>
-    <string name="pref_fonts_home_smartspace">\"Bir Bakışta\" widget\'ı</string>
+    <string name="pref_fonts_home_smartspace">\'Bir Bakışta\' widget\'ı</string>
     <string name="pref_fonts_home_shortcuts">Kısayol baloncukları</string>
     <string name="pref_fonts_category_drawer">Uygulama çekmecesi</string>
     <string name="pref_fonts_drawer_icons">Uygulama adları</string>

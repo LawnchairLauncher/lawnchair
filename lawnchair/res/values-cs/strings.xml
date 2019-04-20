@@ -217,6 +217,7 @@
     <string name="reset">Resetovat</string>
     <string name="theme_title">Motiv</string>
     <string name="theme_automatic">Automatický</string>
+    <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Výchozí</string>
     <string name="pref_open_source_licenses_title">Licence</string>
     <string name="pref_legacy_treatment_title">Vytvořit adaptivní ikony</string>
@@ -330,6 +331,7 @@
     <string name="tab_bottom_sheet_save">Uložit</string>
     <string name="tab_hide_from_main">Skrýt v roletě</string>
     <string name="tab_color">Barva záložky</string>
+    <string name="none">Žádné</string>
     <string name="undo">Vrátit zpět</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Zkratky</string>

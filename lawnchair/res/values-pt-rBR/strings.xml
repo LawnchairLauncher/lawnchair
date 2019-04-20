@@ -66,7 +66,7 @@
     <string name="full_width_widgets_pref_summary">Deixe os widgets se estenderem para as bordas da tela</string>
     <string name="full_width_width_widgets_pref_title">Widgets largos</string>
     <string name="hide_apps">Ocultar aplicativos</string>
-    <string name="hide_apps_sum">Remover apps da gaveta</string>
+    <string name="hide_apps_sum">Remover aplicativos da gaveta</string>
     <string name="grid_size">Tamanho da grade</string>
     <string name="developer_options_title">Opções de desenvolvedor</string>
     <string name="developer_options_enabled">Opções de desenvolvedor ativadas</string>
@@ -218,10 +218,11 @@
     <string name="reset">Redefinir</string>
     <string name="theme_title">Tema</string>
     <string name="theme_automatic">Automático</string>
+    <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Padrão</string>
     <string name="pref_open_source_licenses_title">Licenças</string>
     <string name="pref_legacy_treatment_title">Criar ícones adaptáveis</string>
-    <string name="pref_legacy_treatment_summary">Ícones adaptáveis automaticamente para todos os aplicativos</string>
+    <string name="pref_legacy_treatment_summary">Ícones adaptativos automáticos para todos os aplicativos</string>
     <string name="dt2s_admin_hint">Para usar o toque duplo para bloquear, conceda permissão de administrador</string>
     <string name="dt2s_admin_warning">Toque duplo para bloquear será desativado</string>
     <string name="icon_pack_applied_toast">%s aplicado</string>
@@ -328,6 +329,7 @@
     <string name="tab_bottom_sheet_save">Salvar</string>
     <string name="tab_hide_from_main">Ocultar na gaveta</string>
     <string name="tab_color">Cor da aba</string>
+    <string name="none">Nenhum</string>
     <string name="undo">Desfazer</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Atalhos</string>

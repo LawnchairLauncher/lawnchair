@@ -39,7 +39,7 @@
     <string name="hide_dock_gradient">Отключить градиент</string>
     <string name="dock_pref_summary">Стиль, непрозрачность, индикатор страниц</string>
     <string name="dock_pref_title">Док-бар</string>
-    <string name="hide_icon_labels_pref_title">Скрыть имена приложений</string>
+    <string name="hide_icon_labels_pref_title">Скрыть названия приложений</string>
     <string name="backups">Резервные копии</string>
     <string name="new_backup">Создать</string>
     <string name="restore_backup">Восстановить</string>
@@ -93,7 +93,7 @@
     <string name="dock_style_p">Скруглённый</string>
     <string name="dock_style_n">Плоский</string>
     <string name="dock_style_hidden">Скрыт</string>
-    <string name="dock_search_bar">Панель поиска на док-баре</string>
+    <string name="dock_search_bar">Панель поиска в док-баре</string>
     <string name="title_all_apps_google_search">Глобальный поиск</string>
     <string name="summary_all_apps_google_search">Поиск в приложениях и интернете</string>
     <string name="num_hotseat_icons_pref_title">Количество иконок </string>
@@ -113,7 +113,7 @@
     <string name="pref_category_pixel_searchbar">Строка поиска Pixel</string>
     <string name="pref_category_weather">Погода</string>
     <string name="pref_category_misc">Другое</string>
-    <string name="pref_category_layout">Разметка</string>
+    <string name="pref_category_layout">Макет</string>
     <string name="pref_category_theme">Стиль</string>
     <string name="pref_category_searchbar">Строка поиска</string>
     <!--Marker D-->
@@ -143,9 +143,9 @@
     <string name="about_role_magisk_maintainer">Разработчик Magisk-модуля</string>
     <string name="about_bio_deletescape">Android-разработчик и энтузиаст, любит мемы (даже слишком, пожалуй). Основатель проекта Lawnchair.</string>
     <string name="about_bio_divadsn">19 лет, умеет превращать кофеин и пиццу в код. Ранее был известен как Codebucket.</string>
-    <string name="about_bio_recoded">Немного кодер и графичский дизайнер.</string>
-    <string name="about_bio_josh">Внештатный графический дизайнер.</string>
-    <string name="about_bio_chris">Творческий разум и контент-менеджер. Менеджер по соцсетям и PR-менеджер.</string>
+    <string name="about_bio_recoded">Немного кодер и графический дизайнер.</string>
+    <string name="about_bio_josh">Фрилансер, графический дизайнер.</string>
+    <string name="about_bio_chris">Миллениал до мозга костей. Занимаюсь чем-то связанным с дизайном и Сми. Приходи потусоваться к нам @lawnchairapp</string>
     <string name="about_bio_msfjarvis">Главный разработчик halogenOS и приложения для Substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Ошибка лаунчера</string>
@@ -172,9 +172,9 @@
     <string name="gesture_press_back">Кнопка \"Назад\"</string>
     <string name="gesture_double_tap">Двойное нажатие</string>
     <string name="gesture_long_press">Нажмите и удерживайте</string>
-    <string name="gesture_swipe_down">Провести пальцем вниз</string>
-    <string name="gesture_swipe_up">Провести пальцем вверх</string>
-    <string name="gesture_dock_swipe_up">Провести вверх на док-баре</string>
+    <string name="gesture_swipe_down">Свайп вниз</string>
+    <string name="gesture_swipe_up">Свайп вверх</string>
+    <string name="gesture_dock_swipe_up">Свайп вверх в док-баре</string>
     <string name="pref_show_assistant_title">Кнопка голосового поиска</string>
     <string name="pref_show_assistant_summary">Отображать кнопку голосового поиска, если поддерживается</string>
     <string name="pref_show_as_assistant_summary">Отображать кнопку Ассистента вместо голосового поиска</string>
@@ -183,7 +183,7 @@
     <string name="weather_provider_owm">OpenWeatherMap</string>
     <string name="weather_provider_pe">PixelExperience</string>
     <string name="pref_smartspace_widget_provider">Источник погоды</string>
-    <string name="pref_smartspace_event_provider">Источники календаря</string>
+    <string name="pref_smartspace_event_provider">Источник календаря</string>
     <string name="title_all_apps_search">Панель поиска в меню приложений</string>
     <string name="smartspace_widget_provider_not_found">Что-то пошло не так. Установите или обновите приложение Google</string>
     <string name="apps_label">Приложения</string>
@@ -218,6 +218,7 @@
     <string name="reset">Сброс</string>
     <string name="theme_title">Тема</string>
     <string name="theme_automatic">Автоматически</string>
+    <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">По умолчанию</string>
     <string name="pref_open_source_licenses_title">Лицензии</string>
     <string name="pref_legacy_treatment_title">Создать адаптивные иконки</string>
@@ -226,7 +227,7 @@
     <string name="dt2s_admin_warning">Двойное нажатие для блокировки будет отключено</string>
     <string name="icon_pack_applied_toast">%s применено</string>
     <string name="color_system_accent">Акцентный цвет системы</string>
-    <string name="color_pixel_accent">Пиксель голубой</string>
+    <string name="color_pixel_accent">Пиксель </string>
     <string name="color_presets">Предустановки</string>
     <string name="color_wallpaper_main">Обои — основной</string>
     <string name="color_wallpaper_secondary">Обои - вторичный</string>
@@ -241,7 +242,7 @@
     <string name="swipe_left_to_go_back_title">Свай влево для возврата</string>
     <string name="pref_category_nav_swipe_up_gestures">Действия свайпа вверх</string>
     <string name="gesture_nav_swipe_up_left">Слева</string>
-    <string name="gesture_nav_swipe_up_center">От центра</string>
+    <string name="gesture_nav_swipe_up_center">По центру</string>
     <string name="gesture_nav_swipe_up_right">Справа</string>
     <string name="action_switch_apps">Переключение между приложениями</string>
     <string name="pref_global_search_provider">Поисковый движок</string>
@@ -263,10 +264,10 @@
     <string name="enabled_icon_packs">Включено</string>
     <string name="pref_icon_pack_masking">Форма значков</string>
     <string name="pref_icon_pack_masking_summary">Сделать значки, не относящиеся к темам, похожими на примененный пакет значков</string>
-    <string name="pref_legacy_colored_backgrounds">Цветные фоны</string>
-    <string name="pref_legacy_colored_backgrounds_summary">Цветные фоны для сгенерированных адаптивных иконок</string>
+    <string name="pref_legacy_colored_backgrounds">Цветной фон</string>
+    <string name="pref_legacy_colored_backgrounds_summary">Цветной фон для сгенерированных адаптивных иконок</string>
     <string name="pref_white_only_treatment">Заменить белый фон</string>
-    <string name="pref_white_only_treatment_summary">Цветные фоны для всех адаптивных иконок</string>
+    <string name="pref_white_only_treatment_summary">Цветной фон для всех адаптивных иконок</string>
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <!--Marker H-->
     <string name="dismiss_drop_target_label">"Не показывать"</string>
@@ -275,10 +276,10 @@
     <string name="pref_drawer_padding">Высота строки</string>
     <string name="pref_drawer_columns">Количество столбцов</string>
     <string name="pref_prediction_count">Количество подсказок</string>
-    <string name="pref_mutliline_labels">Многострочные имена приложений</string>
+    <string name="pref_mutliline_labels">Многострочные названия приложений</string>
     <string name="lawnchair_actions">Действия</string>
     <string name="theme_auto">Исходя из цвета обоев</string>
-    <string name="theme_auto_night_mode">Повторять тему системы</string>
+    <string name="theme_auto_night_mode">На основе системной темы</string>
     <string name="theme_light">Светлая</string>
     <string name="theme_dark_text">Светлая с тёмным текстом</string>
     <string name="theme_dark">Тёмная</string>
@@ -332,6 +333,7 @@
     <string name="tab_bottom_sheet_save">Сохранить</string>
     <string name="tab_hide_from_main">Скрыть приложение</string>
     <string name="tab_color">Цвет вкладки</string>
+    <string name="none">Ничего</string>
     <string name="undo">Отмена</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Ярлыки</string>
@@ -368,7 +370,7 @@
     <string name="search_provider_qwant">Qwant</string>
     <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">Погода OnePlus</string>
-    <string name="overlap_placement">Перекрытое размещение</string>
+    <string name="overlap_placement">Перекрытие</string>
     <string name="overlap_placement_summary">Разрешить значкам и виджетам перекрывать друг друга.</string>
     <string name="units_rakine">Шкала Ранкина</string>
     <string name="units_newton">Шкала Ньютона</string>
@@ -382,13 +384,13 @@
     <string name="pref_fonts_summary">Заменить шрифты разных элементов</string>
     <string name="pref_fonts_global_font">Основной шрифт</string>
     <string name="pref_fonts_change_global_font">Изменить</string>
-    <string name="pref_fonts_home_icons">Имена папок и приложений</string>
+    <string name="pref_fonts_home_icons">Названия папок и приложений</string>
     <string name="pref_fonts_home_smartspace">\'At a Glance\' widget</string>
     <string name="pref_fonts_home_shortcuts">Пузыри ярлыков</string>
     <string name="pref_fonts_category_drawer">Меню приложений</string>
     <string name="pref_fonts_drawer_icons">Названия приложений</string>
     <string name="pref_fonts_drawer_app_actions_icons">Названия действий приложения</string>
-    <string name="pref_fonts_drawer_tabs">Имена вкладок</string>
+    <string name="pref_fonts_drawer_tabs">Названия вкладок</string>
     <string name="pref_fonts_find_fonts">Найти шрифты</string>
     <string name="pref_fonts_add_fonts">Добавить шрифты</string>
     <string name="pref_fonts_add_fonts_summary">Поддерживаются OTF и TTF</string>

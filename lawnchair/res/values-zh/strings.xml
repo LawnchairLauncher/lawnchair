@@ -218,6 +218,7 @@
     <string name="reset">重置</string>
     <string name="theme_title">主题</string>
     <string name="theme_automatic">自动</string>
+    <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">默认</string>
     <string name="pref_open_source_licenses_title">许可</string>
     <string name="pref_legacy_treatment_title">创建自适应图标</string>
@@ -326,6 +327,7 @@
     <string name="tab_bottom_sheet_save">保存</string>
     <string name="tab_hide_from_main">从抽屉中隐藏</string>
     <string name="tab_color">标签页颜色</string>
+    <string name="none">无</string>
     <string name="undo">撤销</string>
     <!--Marker J-->
     <string name="shortcut_sesame">快捷方式</string>

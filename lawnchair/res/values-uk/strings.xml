@@ -101,7 +101,7 @@
     <string name="icon_pack_default">Системні іконки</string>
     <string name="loading">Завантаження...</string>
     <string name="low_performance_mode_pref_title">Режим низької продуктивності</string>
-    <string name="title_storage_permission_required">Потрібен дозвіл на сховище</string>
+    <string name="title_storage_permission_required">Потрібен дозвіл на доступ до пам\'яті пристрою</string>
     <string name="content_storage_permission_required">Надайте доступ до сховища щоб встановити шпалери</string>
     <string name="reset_to_default">Скинути до стандартних</string>
     <string name="dock_shadow">Тінь</string>
@@ -109,12 +109,12 @@
     <!--Marker C-->
     <string name="pref_category_icons">Іконки</string>
     <string name="pref_category_aag">Інформаційний віджет</string>
-    <string name="pref_category_pixel_searchbar">Строка пошуку Pixel</string>
+    <string name="pref_category_pixel_searchbar">Панель пошуку Pixel</string>
     <string name="pref_category_weather">Погода</string>
     <string name="pref_category_misc">Інше</string>
     <string name="pref_category_layout">Розкладка</string>
     <string name="pref_category_theme">Стиль</string>
-    <string name="pref_category_searchbar">Строка пошуку</string>
+    <string name="pref_category_searchbar">Панель пошуку</string>
     <!--Marker D-->
     <string name="title_attribouter_licenses">Ліцензії відкритого джерела</string>
     <string name="title_attribouter_email">Електронна пошта</string>
@@ -217,6 +217,7 @@
     <string name="reset">Скинути</string>
     <string name="theme_title">Тема</string>
     <string name="theme_automatic">Автоматично</string>
+    <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">За замовчуванням</string>
     <string name="pref_open_source_licenses_title">Ліцензії</string>
     <string name="pref_legacy_treatment_title">Створити адаптивні іконки</string>
@@ -331,6 +332,7 @@
     <string name="tab_bottom_sheet_save">Зберігти</string>
     <string name="tab_hide_from_main">Приховати з списку додатків</string>
     <string name="tab_color">Колір вкладки</string>
+    <string name="none">НІчого</string>
     <string name="undo">Відмінити</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Ярлики</string>

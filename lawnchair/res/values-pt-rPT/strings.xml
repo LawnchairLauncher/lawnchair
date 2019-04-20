@@ -218,6 +218,7 @@
     <string name="reset">Repor</string>
     <string name="theme_title">Tema</string>
     <string name="theme_automatic">Automático</string>
+    <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Padrão</string>
     <string name="pref_open_source_licenses_title">Licenças</string>
     <string name="pref_legacy_treatment_title">Criar ícones adaptativos</string>
@@ -328,6 +329,7 @@
     <string name="tab_bottom_sheet_save">Guardar</string>
     <string name="tab_hide_from_main">Ocultar da gaveta</string>
     <string name="tab_color">Cor da aba</string>
+    <string name="none">Nenhuma</string>
     <string name="undo">Desfazer</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Atalhos</string>
