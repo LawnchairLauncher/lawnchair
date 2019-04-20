@@ -19,7 +19,7 @@
     <string name="title_show_google_app">%1$s na esquerda</string>
     <string name="msg_minus_one_on_left">Feed para a esquerda da área de trabalho</string>
     <string name="about">Sobre</string>
-    <string name="title_google_app">App da Google</string>
+    <string name="title_google_app">Aplicativo do Google</string>
     <string name="about_app_version">Versão</string>
     <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">Desativar sugestão de aplicativos</string>
@@ -84,7 +84,7 @@
     <string name="full_width_widgets_pref_summary">Deixe os widgets se estenderem para as bordas da tela</string>
     <string name="full_width_width_widgets_pref_title">Widgets largos</string>
     <string name="hide_apps">Ocultar aplicativos</string>
-    <string name="hide_apps_sum">Remover apps da gaveta</string>
+    <string name="hide_apps_sum">Remover aplicativos da gaveta</string>
     <string name="grid_size">Tamanho da grade</string>
     <string name="grid_size_default">Padrão</string>
     <string name="developer_options_title">Opções de desenvolvedor</string>
@@ -259,7 +259,7 @@
     <string name="theme_transparent">Transparente</string>
     <string name="pref_open_source_licenses_title">Licenças</string>
     <string name="pref_legacy_treatment_title">Criar ícones adaptáveis</string>
-    <string name="pref_legacy_treatment_summary">Ícones adaptáveis automaticamente para todos os aplicativos</string>
+    <string name="pref_legacy_treatment_summary">Ícones adaptativos automáticos para todos os aplicativos</string>
     <string name="action_search">Pesquisar</string>
     <string name="pref_accent_color">Cor de destaque</string>
     <string name="dt2s_admin_hint">Para usar o toque duplo para bloquear, conceda permissão de administrador</string>
