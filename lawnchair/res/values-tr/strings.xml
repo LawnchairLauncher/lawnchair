@@ -9,13 +9,17 @@
     <string name="in_smartspace">\‘Bir bakışta\’ widget\'ında</string>
     <string name="smartspace_time">Saat</string>
     <string name="smartspace_date">Tarih</string>
+    <string name="customize">Özelleştirme</string>
     <string name="smartspace_preferences_in_settings">Bir bakışta</string>
     <string name="smartspace_preferences_in_settings_desc">Tarih, saat, hava durumu kaynağı</string>
+    <string name="search">Ara</string>
     <string name="label_voice_search">Sesli arama</string>
+    <string name="icon_pack">Simge paketi</string>
     <string name="home_widget">Ana ekran widget\'ı</string>
     <string name="title_show_google_app">%1$s solda</string>
     <string name="msg_minus_one_on_left">Haber akışı ana ekranın solunda</string>
     <string name="about">Hakkında</string>
+    <string name="google_app">Google uygulaması</string>
     <string name="about_app_version">Sürüm</string>
     <string name="app_name_pixel_launcher">Pixel Başlatıcı</string>
     <string name="title_disable_suggestions_prompt">Uygulama önerilerini devre dışı bırak</string>
@@ -47,6 +51,7 @@
     <string name="choose_backup_path">Gözat</string>
     <string name="backup_contents">İçerik</string>
     <string name="backup_settings">Ayarlar</string>
+    <string name="homescreen">Ana ekran</string>
     <string name="backup_wallpaper">Duvar kağıdı</string>
     <string name="backup_error_blank_name">Yedek adını girin</string>
     <string name="backup_error_blank_location">Yedekleme konumunu seçin</string>
@@ -62,6 +67,7 @@
     <string name="backup_restarting">Yeniden başlatılıyor</string>
     <string name="restore_contents">İçeriği geri yükle</string>
     <string name="restore_success">Geri yükleme tamamlandı</string>
+    <string name="failed">Bir sorun oluştu</string>
     <string name="backup_share_text">Lawnchair yedekleme</string>
     <string name="full_width_widgets_pref_summary">Widget\'ların ekran kenarlarına yayılmasını sağlayın</string>
     <string name="full_width_width_widgets_pref_title">Geniş widget\'lar</string>
@@ -94,6 +100,7 @@
     <string name="dock_style_n">Düz</string>
     <string name="dock_style_hidden">Gizli</string>
     <string name="dock_search_bar">Alt panel arama çubuğu</string>
+    <string name="opacity">Saydamlık</string>
     <string name="title_all_apps_google_search">Genel arama</string>
     <string name="summary_all_apps_google_search">Web sonuçlarını ve uygulamaları bulun</string>
     <string name="num_hotseat_icons_pref_title">Simge sayısı</string>
@@ -107,6 +114,8 @@
     <string name="reset_to_default">Varsayılana sıfırla</string>
     <string name="dock_shadow">Gölge</string>
     <string name="dock_fill">Arka plan</string>
+    <string name="radius">Köşeleri yuvarla</string>
+    <string name="gradient">Eğim</string>
     <!--Marker C-->
     <string name="pref_category_icons">Simgeler</string>
     <string name="pref_category_aag">Bir bakışta</string>
@@ -142,7 +151,7 @@
     <string name="about_role_family_member">Aile üyesi</string>
     <string name="about_role_magisk_maintainer">Magisk modülü sorumlusu</string>
     <string name="about_bio_deletescape">Android geliştiricisi &amp; meraklısı. Lawnchair projesinin kurucusu.</string>
-    <string name="about_bio_divadsn">19 yaşında, kafein ve pizzayı kod haline getirdi. Daha önce Codebucket olarak da bilinirdi.</string>
+    <string name="about_bio_divadsn">19 yaşında, kafeini ve pizzayı koda dönüştürüyor, bir şeyler yanlış giderse barındırma ve 7 gün 24 saat destek sağlıyor. Boş zamanlarında açık kaynaklı projelere katkıda bulunur. Ayrıca daha önce Codebucket olarak da bilinirdi.</string>
     <string name="about_bio_recoded">Hafif kodlayıcı ve grafik tasarımcısı.</string>
     <string name="about_bio_josh">Serbest grafik tasarımcısı.</string>
     <string name="about_bio_chris">Yaratıcı Zihin, Etkileyici ve İçerik Oluşturucu. Sosyal Medya ve Halkla İlişkiler Yöneticisi. @lawnchairapp\'ta birlikte takılalım ✨</string>
@@ -185,7 +194,7 @@
     <string name="pref_smartspace_widget_provider">Hava durumu kaynağı</string>
     <string name="pref_smartspace_event_provider">Takvim kaynağı</string>
     <string name="title_all_apps_search">Çekmece arama çubuğu</string>
-    <string name="smartspace_widget_provider_not_found">Bir sorun oluştu. Google uygulamasını yükleyin veya güncelleyin.</string>
+    <string name="smartspace_widget_provider_not_found">Google uygulamasını yükleyin veya güncelleyin.</string>
     <string name="apps_label">Uygulamalar</string>
     <string name="all_apps_label">Tüm uygulamalar</string>
     <string name="all_apps_label_pref_title">\"Tüm uygulamalar\" etiketini göster</string>
@@ -220,6 +229,7 @@
     <string name="theme_automatic">Otomatik</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Varsayılan</string>
+    <string name="transparent">Şeffaf</string>
     <string name="pref_open_source_licenses_title">Lisanslar</string>
     <string name="pref_legacy_treatment_title">Uyarlanabilir simgeler oluştur</string>
     <string name="pref_legacy_treatment_summary">Tüm uygulamalar için otomatik uyarlamalı simgeler</string>
@@ -229,6 +239,7 @@
     <string name="color_system_accent">Sistem vurgu rengi</string>
     <string name="color_pixel_accent">Pixel mavisi</string>
     <string name="color_presets">Hazır</string>
+    <string name="custom">Özel</string>
     <string name="color_wallpaper_main">Duvar kağıdı - birincil</string>
     <string name="color_wallpaper_secondary">Duvar kağıdı - ikincil</string>
     <string name="color_wallpaper_tertiary">Duvar kağıdı - üçüncül</string>
@@ -295,6 +306,7 @@
     <string name="search_menu">Ayarları bul</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Vurgu rengi</string>
+    <string name="theme_based">Temaya uyum sağla</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Öneriler</string>
     <string name="title_app_suggestions">Uygulamalar</string>
@@ -329,8 +341,10 @@
     <string name="tab_bottom_sheet_save">Kaydet</string>
     <string name="tab_hide_from_main">Çekmeceden gizle</string>
     <string name="tab_color">Sekme rengi</string>
+    <string name="delete">Sil</string>
     <string name="none">Hiçbiri</string>
     <string name="undo">Geri al</string>
+    <string name="name">Ad</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Kısayollar</string>
     <string name="pref_integrations">Entegrasyonlar</string>
@@ -392,4 +406,8 @@
     <string name="pref_fonts_add_fonts_summary">OTF ve TTF destekleniyor</string>
     <string name="pref_fonts_missing_font">Eksik yazı tipi</string>
     <string name="about_translate">Çeviriler</string>
+    <string name="pref_show_dev_options">Ayarlarda göster</string>
+    <string name="about_app_description">Özelleştirilebilir bir Pixel Launcher alternatifi.</string>
+    <string name="about_bio_paphonb">18 yaşında bir öğrenci, Android Geliştirici ve Lawnchair Launcher\'ın en iyi geliştiricilerinden biri.</string>
+    <string name="dock_scale">Alt panel boyutu</string>
 </resources>
