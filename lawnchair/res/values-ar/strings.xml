@@ -9,13 +9,17 @@
     <string name="in_smartspace">في أداة \‘النظرة السريعة\’</string>
     <string name="smartspace_time">الوقت</string>
     <string name="smartspace_date">التاريخ</string>
+    <string name="customize">تخصيص</string>
     <string name="smartspace_preferences_in_settings">النظرة السريعة</string>
     <string name="smartspace_preferences_in_settings_desc">التاريخ، الوقت، مصدر الطقس</string>
+    <string name="search">بحث</string>
     <string name="label_voice_search">بحث صوتي</string>
+    <string name="icon_pack">حزم الإيقونات</string>
     <string name="home_widget">أداة الصفحة الرئيسية</string>
     <string name="title_show_google_app">%1$s على اليسار</string>
     <string name="msg_minus_one_on_left">الاخبار على اليسار من الصفحة الرئيسية</string>
     <string name="about">حول</string>
+    <string name="google_app">تطبيق Google</string>
     <string name="about_app_version">الإصدار</string>
     <string name="app_name_pixel_launcher">مشغل Pixel</string>
     <string name="title_disable_suggestions_prompt">تعطيل إقتراح التطبيقات</string>
@@ -47,6 +51,7 @@
     <string name="choose_backup_path">تصفح</string>
     <string name="backup_contents">المحتوى</string>
     <string name="backup_settings">الإعدادات</string>
+    <string name="homescreen">الشاشة الرئيسية</string>
     <string name="backup_wallpaper">الخلفية</string>
     <string name="backup_error_blank_name">أدخل اسم النسخة الإحتياطية</string>
     <string name="backup_error_blank_location">حدد مكان النسخة الإحتياطية</string>
@@ -62,6 +67,7 @@
     <string name="backup_restarting">يتم إعادة التشغيل</string>
     <string name="restore_contents">إستعادة المحتوى</string>
     <string name="restore_success">إنتهت الإستعادة</string>
+    <string name="failed">لقد حدث شئ خاطئ</string>
     <string name="backup_share_text">ملف النسخ الاحتياطي لـLawnchair</string>
     <string name="full_width_widgets_pref_summary">السماح للأدوات أن تمتد إلى حواف الشاشة</string>
     <string name="full_width_width_widgets_pref_title">أدوات عريضة</string>
@@ -94,6 +100,7 @@
     <string name="dock_style_n">مسطح</string>
     <string name="dock_style_hidden">مخفي</string>
     <string name="dock_search_bar">شريط البحث في الشريط السُفلي</string>
+    <string name="opacity">الشفافية</string>
     <string name="title_all_apps_google_search">بحث عام</string>
     <string name="summary_all_apps_google_search">البحث في الويب والتطبيقات</string>
     <string name="num_hotseat_icons_pref_title">عدد الأيقونات</string>
@@ -107,6 +114,8 @@
     <string name="reset_to_default">إعادة للوضع الافتراضي</string>
     <string name="dock_shadow">الظل</string>
     <string name="dock_fill">خلفية</string>
+    <string name="radius">تقوّس الزاوية</string>
+    <string name="gradient">تدرج</string>
     <!--Marker C-->
     <string name="pref_category_icons">الأيقونات</string>
     <string name="pref_category_aag">النظرة السريعة</string>
@@ -142,7 +151,8 @@
     <string name="about_role_family_member">فرد من الاسرة</string>
     <string name="about_role_magisk_maintainer">مشرف أدوات Magisk</string>
     <string name="about_bio_deletescape">مطور اندرويد متحمس، يحب الميمات (كثيراً). مؤسس مشروع Lawnchair.</string>
-    <string name="about_bio_divadsn">١٩ عاماً، يحول الكافيين والبيتزا إلى اكواد برمجية. أيضا تعرف سابقاً باسم codebucket.</string>
+    <string name="about_bio_divadsn">١٩ عاماً، يحول الكافيين والبيتزا إلى اكواد برمجية. يوفر الاستضافة و ٢٤\٧ دعم البرمجه إذا حدث شئ ما خاطئ. يساهم في المشاريع المصدر المفتوح خلال 
+وقته الحر. أيضا يعرف سابقاً باسم codebucket.</string>
     <string name="about_bio_recoded">مبرمج خفيف و مصمم جرافيكس.</string>
     <string name="about_bio_josh">مصمم جرافيك مستقل.</string>
     <string name="about_bio_chris">الالفيه كاللعنة، أنا لا أعرف وأنا لا اهتم. شيء ما مع التصميم ووسائل التواصل الاجتماعي. دعنا نجلس سوياً مع @lawnchairapp ✨</string>
@@ -185,7 +195,7 @@
     <string name="pref_smartspace_widget_provider">مصدر الطقس</string>
     <string name="pref_smartspace_event_provider">مصدر التقويم</string>
     <string name="title_all_apps_search">شريط بحث درج التطبيقات</string>
-    <string name="smartspace_widget_provider_not_found">هناك خطأ ما. قم بتثبيت أو تحديث تطبيق Google.</string>
+    <string name="smartspace_widget_provider_not_found">قم بتثبيت أو تحديث تطبيق Google.</string>
     <string name="apps_label">التطبيقات</string>
     <string name="all_apps_label">جميع التطبيقات</string>
     <string name="all_apps_label_pref_title">إظهار تسمية \"جميع التطبيقات\"</string>
@@ -220,6 +230,7 @@
     <string name="theme_automatic">تلقائي</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">الإفتراضي</string>
+    <string name="transparent">شفّاف</string>
     <string name="pref_open_source_licenses_title">التراخيص</string>
     <string name="pref_legacy_treatment_title">إنشاء ايقونات متكيفة</string>
     <string name="pref_legacy_treatment_summary">ايقونات متكيفة تلقائياً لجميع التطبيقات</string>
@@ -229,6 +240,7 @@
     <string name="color_system_accent">لون النظام الاساسي</string>
     <string name="color_pixel_accent">أزرق بكسل</string>
     <string name="color_presets">المسبقة</string>
+    <string name="custom">مُخصّص</string>
     <string name="color_wallpaper_main">الخلفية - الاساسية</string>
     <string name="color_wallpaper_secondary">الخلفية - الثانوية</string>
     <string name="color_wallpaper_tertiary">الخلفية - الثالثة</string>
@@ -289,12 +301,13 @@
     <string name="pref_qsb_color">اللون</string>
     <string name="hide_from_predictions">إخفاء من الإقتراحات</string>
     <string name="hide_from_predictions_summary">لا تظهر أبداً في اقتراحات قائمة التطبيقات</string>
-    <string name="bubble_searchbar">مظهر شريط البحث ثنائي الفقاعات</string>
+    <string name="bubble_searchbar">شريط البحث ثنائي الفقاعات</string>
     <string name="search_clear_history">مسح السجل</string>
     <string name="search_no_results">لم يتم العثور على شيء</string>
     <string name="search_menu">ايجاد الاعدادات</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">اللون الاساسي</string>
+    <string name="theme_based">تتبع المظهر</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">الاقتراحات</string>
     <string name="title_app_suggestions">تطبيقات</string>
@@ -337,8 +350,10 @@
     <string name="tab_bottom_sheet_save">حفظ</string>
     <string name="tab_hide_from_main">إخفاء من قائمة التطبيقات</string>
     <string name="tab_color">لون التبويب</string>
+    <string name="delete">حذف</string>
     <string name="none">لا شئ</string>
     <string name="undo">تراجع</string>
+    <string name="name">الإسم</string>
     <!--Marker J-->
     <string name="shortcut_sesame">الاختصارات</string>
     <string name="pref_integrations">المدمجات</string>
@@ -400,4 +415,8 @@
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF مدعومة</string>
     <string name="pref_fonts_missing_font">الخط مفقود</string>
     <string name="about_translate">الترجمات</string>
+    <string name="pref_show_dev_options">عرض في الإعدادات</string>
+    <string name="about_app_description">بديل لمشغل Pixel القابل للتخصيص.</string>
+    <string name="about_bio_paphonb">طالب ١٨ سنة، مبرمج اندرويد وواحد من أبرز المبرمجين في مشغل Lawnchair.</string>
+    <string name="dock_scale">حجم المنصة السفلية</string>
 </resources>
