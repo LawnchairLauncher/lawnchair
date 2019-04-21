@@ -6,16 +6,20 @@
     <string name="icu_abbrev_time">HH:mm</string>
     <string name="icu_abbrev_time_12h">hh:mm aa</string>
     <string name="icu_abbrev_date"> dd MMMM</string>
-    <string name="in_smartspace">Ve widgetu \‘Přehled událostí\’</string>
+    <string name="in_smartspace">Ve widgetu \‘At a glance\’</string>
     <string name="smartspace_time">Čas</string>
     <string name="smartspace_date">Datum</string>
-    <string name="smartspace_preferences_in_settings">Přehled událostí</string>
+    <string name="customize">Přizpůsobení</string>
+    <string name="smartspace_preferences_in_settings">At a Glance</string>
     <string name="smartspace_preferences_in_settings_desc">Datum, čas, zdroj počasí</string>
+    <string name="search">Hledat</string>
     <string name="label_voice_search">Hlasové vyhledávání</string>
+    <string name="icon_pack">Balíček ikon</string>
     <string name="home_widget">Domovský widget</string>
     <string name="title_show_google_app">%1$s na levé straně</string>
     <string name="msg_minus_one_on_left">Feed vlevo od plochy</string>
     <string name="about">O aplikaci</string>
+    <string name="google_app">Aplikace Google</string>
     <string name="about_app_version">Verze</string>
     <string name="title_disable_suggestions_prompt">Zakázat návrhy aplikací</string>
     <string name="msg_disable_suggestions_prompt">"Data o používání budou smazána"</string>
@@ -30,7 +34,7 @@
     <string name="app_drawer_pref_title">Menu aplikací</string>
     <string name="app_drawer_pref_summary">Neprůhlednost, návrhy, skrýt aplikace</string>
     <string name="search_pref_summary">Barva, vyhledávač, ikony</string>
-    <string name="general_pref_title">Obecné</string>
+    <string name="general_pref_title">Plocha</string>
     <string name="general_pref_summary">Mřížka, rozložení ikon, stavová lišta</string>
     <string name="about_pref_summary">Tým, odkazy, licence</string>
     <string name="hide_app_selected">&#160; skryto</string>
@@ -46,6 +50,7 @@
     <string name="choose_backup_path">Procházet</string>
     <string name="backup_contents">Obsah</string>
     <string name="backup_settings">Nastavení</string>
+    <string name="homescreen">Domovská obrazovka</string>
     <string name="backup_wallpaper">Tapeta</string>
     <string name="backup_error_blank_name">Zadejte název zálohy</string>
     <string name="backup_error_blank_location">Vyberte umístění zálohy</string>
@@ -61,6 +66,7 @@
     <string name="backup_restarting">Restartování</string>
     <string name="restore_contents">Obnovit obsah</string>
     <string name="restore_success">Obnovování dokončeno</string>
+    <string name="failed">Něco se nepovedlo</string>
     <string name="backup_share_text">Záloha Lawnchair</string>
     <string name="full_width_widgets_pref_summary">Umožnit roztažení widgetů až k okrajům obrazovky</string>
     <string name="full_width_width_widgets_pref_title">Široké widgety</string>
@@ -82,7 +88,7 @@
     <string name="launcher_theme_override_label">Vynutit tmavý motiv</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="blur_pref_title">Rozostření</string>
-    <string name="blur_pref_summary">Efekt rozostření rolety aplikací, docku a pozadí menu nastavení</string>
+    <string name="blur_pref_summary">Efekt rozostření rolety aplikací, doku a pozadí menu nastavení</string>
     <string name="blur_radius_pref_title">Míra rozostření</string>
     <!--Marker B-->
     <string name="dock_colored_google">Barevné ikony</string>
@@ -93,6 +99,7 @@
     <string name="dock_style_n">Plochý</string>
     <string name="dock_style_hidden">Skrytý</string>
     <string name="dock_search_bar">Vyhledávací pruh doku</string>
+    <string name="opacity">Neprůhlednost</string>
     <string name="title_all_apps_google_search">Globální hledání</string>
     <string name="summary_all_apps_google_search">Najít výsledky z webu a aplikací</string>
     <string name="num_hotseat_icons_pref_title">Počet ikon</string>
@@ -106,15 +113,17 @@
     <string name="reset_to_default">Obnovit výchozí</string>
     <string name="dock_shadow">Stín</string>
     <string name="dock_fill">Pozadí</string>
+    <string name="radius">Zakulacené rohy</string>
+    <string name="gradient">Gradient</string>
     <!--Marker C-->
     <string name="pref_category_icons">Ikony</string>
-    <string name="pref_category_aag">Přehled událostí</string>
+    <string name="pref_category_aag">At a Glance</string>
     <string name="pref_category_pixel_searchbar">Vyhledávací panel Pixel</string>
     <string name="pref_category_weather">Počasí</string>
     <string name="pref_category_misc">Ostatní</string>
     <string name="pref_category_layout">Rozložení</string>
     <string name="pref_category_theme">Styl</string>
-    <string name="pref_category_searchbar">Pruh vyhledávání</string>
+    <string name="pref_category_searchbar">Vyhledávací lišta</string>
     <!--Marker D-->
     <string name="title_attribouter_licenses">Open Source licence</string>
     <string name="title_attribouter_email">E-mail</string>
@@ -134,9 +143,9 @@
     <string name="about_role_devops">DevOps</string>
     <string name="about_role_dev">Vývojář</string>
     <string name="about_role_dev_mod">Vývojář/moderátor</string>
-    <string name="about_role_designer">Návrhář</string>
+    <string name="about_role_designer">Designer</string>
     <string name="about_role_ui_ux_designer">UI/UX designer</string>
-    <string name="about_role_special_snowflake">PR manažer / moderátor</string>
+    <string name="about_role_special_snowflake">Sociální média/PR &amp; OEM vztahy</string>
     <string name="about_role_mod_support">Moderátor/podpora</string>
     <string name="about_role_family_member">Člen rodiny</string>
     <string name="about_role_magisk_maintainer">Správce Magisk modulu</string>
@@ -144,7 +153,7 @@
     <string name="about_bio_divadsn">19-letý, přeměňuje kafe a pizzu v kód. Dříve známý také jako Codebucket.</string>
     <string name="about_bio_recoded">Kodér a grafický designér.</string>
     <string name="about_bio_josh">Grafický návrhář na volné noze.</string>
-    <string name="about_bio_chris">Tvůrce myšlenky, vlivná osoba &amp; tvůrce obsahu. Vedoucí sociálních médií a PR manažer.</string>
+    <string name="about_bio_chris">Tvůrce myšlenky, vlivná osoba &amp; tvůrce obsahu. Vedoucí sociálních médií a PR manažer ✨</string>
     <string name="about_bio_msfjarvis">Hlavní vývojář HalogenOS a vývojář aplikace Substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Shoď launcher</string>
@@ -173,7 +182,7 @@
     <string name="gesture_long_press">Dotyk s podržením</string>
     <string name="gesture_swipe_down">Přejet dolů</string>
     <string name="gesture_swipe_up">Přejet nahoru</string>
-    <string name="gesture_dock_swipe_up">Přejet nahoru z docku</string>
+    <string name="gesture_dock_swipe_up">Přejet nahoru z doku</string>
     <string name="pref_show_assistant_title">Tlačítko hlasového vyhledávání</string>
     <string name="pref_show_assistant_summary">Zobrazit tlačítko hlasového vyhledávání (pokud podporováno)</string>
     <string name="pref_show_as_assistant_summary">Zobrazit tlačítko asistenta místo hlasového vyhledávání</string>
@@ -219,15 +228,17 @@
     <string name="theme_automatic">Automatický</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Výchozí</string>
+    <string name="transparent">Průhledný</string>
     <string name="pref_open_source_licenses_title">Licence</string>
     <string name="pref_legacy_treatment_title">Vytvořit adaptivní ikony</string>
     <string name="pref_legacy_treatment_summary">Automatické adaptivní ikony pro všechny aplikace</string>
     <string name="dt2s_admin_hint">Pro použití zámku na dvojité ťuknutí udělte oprávnění administrátora</string>
-    <string name="dt2s_admin_warning">Zámek na dvojité ťuknutí bude deaktivován</string>
+    <string name="dt2s_admin_warning">Zámek na dvojité klepnutí bude deaktivován</string>
     <string name="icon_pack_applied_toast">%s použito</string>
     <string name="color_system_accent">Systémový odstín</string>
     <string name="color_pixel_accent">Pixel modrá</string>
-    <string name="color_presets">Přednastavené</string>
+    <string name="color_presets">Předvolby</string>
+    <string name="custom">Vlastní</string>
     <string name="color_wallpaper_main">Tapeta — primární</string>
     <string name="color_wallpaper_secondary">Tapeta — sekundární</string>
     <string name="color_wallpaper_tertiary">Tapeta — terciární</string>
@@ -253,7 +264,7 @@
     <string name="search_provider_baidu">Baidu</string>
     <string name="search_provider_appsearch">Aplikace vyhledávání</string>
     <string name="search_provider_search_lite">Vyhledávání \"Lite\"</string>
-    <string name="search_provider_cool_search">Hustý vyhledávání</string>
+    <string name="search_provider_cool_search">Vyhledávání \"Cool\"</string>
     <string name="recent_task_option_force_stop">Vynutit ukončení</string>
     <string name="pref_icon_packs">Balíčky ikon</string>
     <string name="drag_to_enable_packs">Přetáhnout nahoru pro povolení</string>
@@ -293,6 +304,7 @@
     <string name="search_menu">Najít nastavení</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Odstín</string>
+    <string name="theme_based">Podle motivu</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Návrhy</string>
     <string name="title_app_suggestions">Aplikace</string>
@@ -331,8 +343,10 @@
     <string name="tab_bottom_sheet_save">Uložit</string>
     <string name="tab_hide_from_main">Skrýt v roletě</string>
     <string name="tab_color">Barva záložky</string>
+    <string name="delete">Smazat</string>
     <string name="none">Žádné</string>
     <string name="undo">Vrátit zpět</string>
+    <string name="name">Název</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Zkratky</string>
     <string name="pref_integrations">Integrace</string>
@@ -353,16 +367,16 @@
     <string name="sesame_shortcut_disabled">Zkratky Sesame nejsou dostupné</string>
     <string name="pref_sesame_sync_icon_pack">Sdílet balíček ikon</string>
     <string name="pref_sesame_sync_icon_pack_summary">Synchronizovat balíčky ikon Lawnchair a Sesame</string>
-    <string name="font_variant_italic">Kurzíva</string>
-    <string name="font_weight_thin">Tenký</string>
-    <string name="font_weight_extra_light">Dodatečné světlo</string>
-    <string name="font_weight_light">Světlo</string>
-    <string name="font_weight_regular">Standardní</string>
-    <string name="font_weight_medium">Střední</string>
-    <string name="font_weight_semi_bold">Polotučný</string>
-    <string name="font_weight_bold">Tučný</string>
-    <string name="font_weight_extra_bold">Extra tučné</string>
-    <string name="font_weight_extra_black">Černé</string>
+    <string name="font_variant_italic">Italic</string>
+    <string name="font_weight_thin">Thin</string>
+    <string name="font_weight_extra_light">ExtraLight</string>
+    <string name="font_weight_light">Light</string>
+    <string name="font_weight_regular">Regular</string>
+    <string name="font_weight_medium">Medium</string>
+    <string name="font_weight_semi_bold">SemiBold</string>
+    <string name="font_weight_bold">Bold</string>
+    <string name="font_weight_extra_bold">ExtraBold</string>
+    <string name="font_weight_extra_black">Black</string>
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
@@ -394,4 +408,8 @@
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF podporováno</string>
     <string name="pref_fonts_missing_font">Chybějící písmo</string>
     <string name="about_translate">Překlady</string>
+    <string name="pref_show_dev_options">Zobrazit v nastavení</string>
+    <string name="about_app_description">Přizpůsobitelná alternativa Pixel launcheru.</string>
+    <string name="about_bio_paphonb">18-letý student, vývojář androidu a jeden z nejlepších vývojářů Lawnchair Launcher.</string>
+    <string name="dock_scale">Měřítko doku</string>
 </resources>
