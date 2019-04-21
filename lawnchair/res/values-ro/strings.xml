@@ -9,13 +9,17 @@
     <string name="in_smartspace">În widget-ul \"Pe scurt\"</string>
     <string name="smartspace_time">Ora</string>
     <string name="smartspace_date">Data</string>
+    <string name="customize">Personalizează</string>
     <string name="smartspace_preferences_in_settings">Pe scurt</string>
     <string name="smartspace_preferences_in_settings_desc">Dată, oră, sursă meteo</string>
+    <string name="search">Căutați</string>
     <string name="label_voice_search">Căutare vocală</string>
+    <string name="icon_pack">Set de pictograme</string>
     <string name="home_widget">Widget-ul de pe desktop</string>
     <string name="title_show_google_app">%1$s în stânga</string>
     <string name="msg_minus_one_on_left">Feed-ul în stânga desktop-ului</string>
     <string name="about">Despre</string>
+    <string name="google_app">Aplicația Google</string>
     <string name="about_app_version">Versiune</string>
     <string name="app_name_pixel_launcher">Lansatorul Pixel</string>
     <string name="title_disable_suggestions_prompt">Dezactivarea sugestiilor aplicațiilor</string>
@@ -47,6 +51,7 @@
     <string name="choose_backup_path">Răsfoire</string>
     <string name="backup_contents">Conţinut</string>
     <string name="backup_settings">Setări</string>
+    <string name="homescreen">Ecranul de pornire</string>
     <string name="backup_wallpaper">Imagine de fundal</string>
     <string name="backup_error_blank_name">Introduceţi numele copiei de rezervă</string>
     <string name="backup_error_blank_location">Alegeți locația pentru copiile de rezervă</string>
@@ -62,6 +67,7 @@
     <string name="backup_restarting">Repornire</string>
     <string name="restore_contents">Restabilire conţinut</string>
     <string name="restore_success">Restaurare finalizată</string>
+    <string name="failed">Ceva nu a funcţionat corect</string>
     <string name="backup_share_text">Copie de rezervă Lawnchair</string>
     <string name="full_width_widgets_pref_summary">Permiteți widget-urilor să se întindă până la marginile ecranului</string>
     <string name="full_width_width_widgets_pref_title">Widget-uri largi</string>
@@ -94,6 +100,7 @@
     <string name="dock_style_n">Plat</string>
     <string name="dock_style_hidden">Ascuns</string>
     <string name="dock_search_bar">Bară de căutare andocată</string>
+    <string name="opacity">Opacitate</string>
     <string name="title_all_apps_google_search">Căutare globală</string>
     <string name="summary_all_apps_google_search">Caută rezultate pe web sau în aplicații</string>
     <string name="num_hotseat_icons_pref_title">Număr de pictograme</string>
@@ -107,6 +114,8 @@
     <string name="reset_to_default">Resetare la mod implicit</string>
     <string name="dock_shadow">Umbră</string>
     <string name="dock_fill">Fundal</string>
+    <string name="radius">Rotunjirea colțurilor</string>
+    <string name="gradient">Gradient</string>
     <!--Marker C-->
     <string name="pref_category_icons">Pictograme</string>
     <string name="pref_category_aag">Pe scurt</string>
@@ -220,6 +229,7 @@
     <string name="theme_automatic">Automat</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Mod implicit</string>
+    <string name="transparent">Transparent</string>
     <string name="pref_open_source_licenses_title">Liciențe</string>
     <string name="pref_legacy_treatment_title">Creează pictograme adaptive</string>
     <string name="pref_legacy_treatment_summary">Pictograme adaptive automate pentru toate aplicațiile</string>
@@ -229,6 +239,7 @@
     <string name="color_system_accent">Accent de sistem</string>
     <string name="color_pixel_accent">Pixel Albastru</string>
     <string name="color_presets">Presetări</string>
+    <string name="custom">Particularizat</string>
     <string name="color_wallpaper_main">Fundal - primar</string>
     <string name="color_wallpaper_secondary">Fundal - secundar</string>
     <string name="color_wallpaper_tertiary">Fundal - terțiar</string>
@@ -295,6 +306,7 @@
     <string name="search_menu">Căutare în setări</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Accent</string>
+    <string name="theme_based">Urmărește tema</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Sugestii</string>
     <string name="title_app_suggestions">Aplicații</string>
@@ -326,8 +338,10 @@
     <string name="tab_bottom_sheet_save">Salvează</string>
     <string name="tab_hide_from_main">Ascunde din sertar</string>
     <string name="tab_color">Culoarea filei</string>
+    <string name="delete">Ștergeți</string>
     <string name="none">Niciuna</string>
     <string name="undo">Anulați</string>
+    <string name="name">Nume</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Scurtături</string>
     <string name="pref_integrations">Integrări</string>
@@ -389,4 +403,8 @@
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF suportat</string>
     <string name="pref_fonts_missing_font">Font lipsă</string>
     <string name="about_translate">Traduceri</string>
+    <string name="pref_show_dev_options">Afișare în setări</string>
+    <string name="about_app_description">O alternativă personalizabilă pentru lansatorul Pixel.</string>
+    <string name="about_bio_paphonb">Un student în vârstă de 18 ani, dezvoltator Android și unul dintre dezvoltatorii de top ai lansatorului Lawnchair.</string>
+    <string name="dock_scale">Scară zonă de andocare</string>
 </resources>
