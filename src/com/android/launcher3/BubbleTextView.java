@@ -198,6 +198,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setMaxLines(lines);
             setSingleLine(lines == 1);
             customFontManager.setCustomFont(this, CustomFontManager.FONT_FOLDER_ICON);
+        } else {
+            customFontManager.loadCustomFont(this, attrs);
         }
         mCenterVertically = a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
 
