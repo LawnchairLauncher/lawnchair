@@ -9,13 +9,17 @@
     <string name="in_smartspace">Vo widgete \Prehľad udalostí\’</string>
     <string name="smartspace_time">Čas</string>
     <string name="smartspace_date">Dátum</string>
+    <string name="customize">Prispôsobiť</string>
     <string name="smartspace_preferences_in_settings">Prehľad udalostí</string>
     <string name="smartspace_preferences_in_settings_desc">Dátum, čas, zdroj počasia</string>
+    <string name="search">Vyhľadávanie</string>
     <string name="label_voice_search">Hlasové vyhľadávanie</string>
+    <string name="icon_pack">Balíček ikon</string>
     <string name="home_widget">Widget prehľad udalostí</string>
     <string name="title_show_google_app">Zostáva %1$s</string>
     <string name="msg_minus_one_on_left">Kanál na ľavú stranu obrazovky</string>
     <string name="about">O aplikácii</string>
+    <string name="google_app">Google aplikácie</string>
     <string name="about_app_version">Verzia</string>
     <string name="title_disable_suggestions_prompt">Vypnúť návrhy aplikácií</string>
     <string name="msg_disable_suggestions_prompt">"Dáta o používaní budú odstránené"</string>
@@ -46,6 +50,7 @@
     <string name="choose_backup_path">Prehľadávať</string>
     <string name="backup_contents">Obsah</string>
     <string name="backup_settings">Nastavenia</string>
+    <string name="homescreen">Domovská obrazovka</string>
     <string name="backup_wallpaper">Tapeta</string>
     <string name="backup_error_blank_name">Vložte názov zálohy</string>
     <string name="backup_error_blank_location">Vybrať umiestnenie zálohy</string>
@@ -61,6 +66,7 @@
     <string name="backup_restarting">Reštartovanie</string>
     <string name="restore_contents">Obnoviť obsah</string>
     <string name="restore_success">Obnovenie úspešné</string>
+    <string name="failed">Došlo k chybe</string>
     <string name="backup_share_text">Záložný súbor Lawnchair</string>
     <string name="full_width_widgets_pref_summary">Dovoliť widgetom roztiahnuť sa po rohy obrazovky</string>
     <string name="full_width_width_widgets_pref_title">Široké widgety</string>
@@ -93,6 +99,7 @@
     <string name="dock_style_n">Ploché</string>
     <string name="dock_style_hidden">Skryté</string>
     <string name="dock_search_bar">Horný vyhľadávací panel</string>
+    <string name="opacity">Priehľadnosť</string>
     <string name="title_all_apps_google_search">Globálne vyhľadávanie</string>
     <string name="summary_all_apps_google_search">Vyhľadávať na webe a v aplikáciach</string>
     <string name="num_hotseat_icons_pref_title">Počet ikôn</string>
@@ -106,6 +113,8 @@
     <string name="reset_to_default">Obnoviť na predvolené</string>
     <string name="dock_shadow">Tieň</string>
     <string name="dock_fill">Pozadie</string>
+    <string name="radius">Zaoblenie rohov</string>
+    <string name="gradient">Prechod</string>
     <!--Marker C-->
     <string name="pref_category_icons">Ikony</string>
     <string name="pref_category_aag">Prehľad udalostí</string>
@@ -219,6 +228,7 @@
     <string name="theme_automatic">Automaticky</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Predvolená</string>
+    <string name="transparent">Priehľadné</string>
     <string name="pref_open_source_licenses_title">Licencie</string>
     <string name="pref_legacy_treatment_title">Použiť adaptívne ikony</string>
     <string name="pref_legacy_treatment_summary">Automatické adaptívne ikony pre všetky aplikácie</string>
@@ -228,6 +238,7 @@
     <string name="color_system_accent">Vzhľad systému</string>
     <string name="color_pixel_accent">Pixel modrá</string>
     <string name="color_presets">Predvoľby</string>
+    <string name="custom">Vlastné</string>
     <string name="color_wallpaper_main">Tapeta - hlavná</string>
     <string name="color_wallpaper_secondary">Tapeta - druhá</string>
     <string name="color_wallpaper_tertiary">Tapeta - treťia</string>
@@ -293,6 +304,7 @@
     <string name="search_menu">Nájsť nastavenia</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Odtieň farby</string>
+    <string name="theme_based">Podľa témy</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Návrhy</string>
     <string name="title_app_suggestions">Aplikácie</string>
@@ -331,8 +343,10 @@
     <string name="tab_bottom_sheet_save">Uložiť</string>
     <string name="tab_hide_from_main">Skryť zo zoznamu aplikácií</string>
     <string name="tab_color">Farba strany</string>
+    <string name="delete">Vymazať</string>
     <string name="none">Žiadne</string>
     <string name="undo">Odvolať zmenu</string>
+    <string name="name">Názov</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Odkazy</string>
     <string name="pref_integrations">Integrácia</string>
@@ -394,4 +408,8 @@
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF podporované</string>
     <string name="pref_fonts_missing_font">Chýbajúce písmo</string>
     <string name="about_translate">Preklady</string>
+    <string name="pref_show_dev_options">Zobraziť v nastaveniach</string>
+    <string name="about_app_description">Nastaviťeľná alternatíva domovskej obrazovky Pixel.</string>
+    <string name="about_bio_paphonb">18 ročný študent, Android Vývojár a jeden z najlepších vývojárov domovskej obrazpvky Lawnchair.</string>
+    <string name="dock_scale">Škála doku</string>
 </resources>
