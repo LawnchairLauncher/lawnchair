@@ -15,18 +15,17 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.deletescape.lawnchair.settings.ui
+package ch.deletescape.lawnchair.settings.ui.controllers
 
-import android.content.Intent
-import com.android.launcher3.R
+import android.content.Context
+import android.support.annotation.Keep
+import android.support.v7.preference.Preference
+import ch.deletescape.lawnchair.settings.ui.PreferenceController
 
-class SettingsSearchActivity: SettingsActivity() {
+@Keep
+class CrashLauncherController(context: Context) : PreferenceController(context) {
 
-    init {
-        forceSubSettings = true
+    override val onClick = Preference.OnPreferenceClickListener {
+        throw RuntimeException("Triggered from developer options")
     }
-
-    override fun createLaunchFragment(intent: Intent?) = SubSettingsFragment.newInstance(
-            getString(R.string.search),
-            R.xml.lawnchair_search_preferences)
 }

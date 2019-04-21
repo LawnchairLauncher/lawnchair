@@ -78,7 +78,7 @@ class MultiSelectTabPreference(context: Context, attrs: AttributeSet?) : Recycle
         summary = if (!added.isEmpty()) {
             TextUtils.join(", ", added)
         } else {
-            context.getString(R.string.tabs_none_selected)
+            context.getString(R.string.none)
         }
     }
 

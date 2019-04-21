@@ -176,12 +176,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val showActions by BooleanPref("pref_show_suggested_actions", true, doNothing)
 
     // Dev
-    private var developerOptionsKey by StringPref("pref_developerOptionsKey", "", doNothing)
-    var developerOptionsEnabled
-        get() = developerOptionsKey == Settings.Secure.ANDROID_ID
-        set(value) {
-            developerOptionsKey = if (value) Settings.Secure.ANDROID_ID else ""
-        }
+    var developerOptionsEnabled by BooleanPref("pref_showDevOptions", false, doNothing)
     private var wipOptionsKey by StringPref("pref_wipOptionsKey", "", doNothing)
     var wipOptionsEnabled
         get() = wipOptionsKey == Settings.Secure.ANDROID_ID

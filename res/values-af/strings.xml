@@ -135,15 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Kortpaaie en kennisgewings"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Maak toe"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Kennisgewing is toegemaak"</string>
-    <string name="smartspace_preferences">Voorkeure</string>
-    <string name="label_search">Soek</string>
     <string name="label_voice_search">Stemsoektog</string>
     <string name="smartspace_preferences_in_settings">Met een blik</string>
     <string name="smartspace_preferences_in_settings_desc">Boaan jou Tuisskerm</string>
     <string name="title_show_google_app">Wys %1$s</string>
     <string name="msg_minus_one_on_left">Links van die hooftuisskerm</string>
     <string name="about">Meer oor</string>
-    <string name="title_google_app">Google-program</string>
     <string name="title_app_suggestions">Wys programvoorstelle</string>
     <string name="summary_app_suggestions">Boaan jou Alle Programme-lys</string>
     <string name="about_app_version">Weergawe</string>
@@ -160,7 +157,6 @@
     <string name="theme_default">Verstek</string>
     <string name="theme_light">Lig</string>
     <string name="theme_dark">Donker</string>
-    <string name="theme_transparent">Deursigtige</string>
     <string name="pref_open_source_licenses_title">Oopbronlisensies</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Persoonlik"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Werk"</string>

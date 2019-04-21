@@ -57,6 +57,6 @@ class RunHandlerActivity : Activity() {
     private fun triggerGesture(handler: GestureHandler) = if (controller != null) {
         handler.onGestureTrigger(controller!!)
     } else {
-        Toast.makeText(this.applicationContext, R.string.lawnchair_action_failed, Toast.LENGTH_LONG).show()
+        Toast.makeText(this.applicationContext, R.string.failed, Toast.LENGTH_LONG).show()
     }
 }

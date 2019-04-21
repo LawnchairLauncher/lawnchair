@@ -24,7 +24,7 @@
             android:persistent="true"
             android:dependency="opa_enabled"
             android:summary="@string/pref_show_as_assistant_summary"
-            android:title="@string/pref_show_as_assistant_title" />
+            android:title="@string/action_assistant" />
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_bubbleSearchStyle"

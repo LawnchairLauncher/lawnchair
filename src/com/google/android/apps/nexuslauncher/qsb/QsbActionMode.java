@@ -32,7 +32,7 @@ public class QsbActionMode implements ActionMode.Callback {
             menu.add(0, 16908322, 0, 17039371).setShowAsAction(1);
         }
         if (settingsBroadcast != null || settingsIntent != null) {
-            menu.add(0, R.id.hotseat_qsb_menu_item, 0, R.string.hotseat_qsb_preferences).setShowAsAction(8);
+            menu.add(0, R.id.hotseat_qsb_menu_item, 0, R.string.customize).setShowAsAction(8);
         }
         return clipboardText != null || settingsBroadcast != null || settingsIntent != null;
     }

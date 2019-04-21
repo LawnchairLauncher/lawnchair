@@ -135,15 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Raccourcis et notifications"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Ignorer"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Notification ignorée"</string>
-    <string name="smartspace_preferences">Préférences</string>
-    <string name="label_search">Rechercher</string>
     <string name="label_voice_search">Recherche vocale</string>
     <string name="smartspace_preferences_in_settings">Aperçu</string>
     <string name="smartspace_preferences_in_settings_desc">"Dans le haut de votre écran d'accueil"</string>
     <string name="title_show_google_app">Afficher %1$s</string>
     <string name="msg_minus_one_on_left">"À la gauche de l'écran d'accueil principal"</string>
     <string name="about">À propos</string>
-    <string name="title_google_app">Appli Google</string>
     <string name="title_app_suggestions">"Afficher les suggestions d'applications"</string>
     <string name="summary_app_suggestions">Dans le haut de la liste Toutes les applications</string>
     <string name="about_app_version">Version</string>
@@ -160,7 +157,6 @@
     <string name="theme_default">Défaut</string>
     <string name="theme_light">Lumière</string>
     <string name="theme_dark">Foncé</string>
-    <string name="theme_transparent">Transparent</string>
     <string name="pref_open_source_licenses_title">Licences de logiciels libres</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personnel"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Travail"</string>

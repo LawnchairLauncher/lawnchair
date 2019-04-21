@@ -151,7 +151,7 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
     }
 
     private fun shareBackup(position: Int) {
-        val shareTitle = getString(R.string.backup_share_title)
+        val shareTitle = getString(R.string.backup_share)
         val shareText = getString(R.string.backup_share_text)
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = LawnchairBackup.MIME_TYPE

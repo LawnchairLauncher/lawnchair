@@ -135,17 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Phím tắt và thông báo"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Loại bỏ"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Đã loại bỏ thông báo"</string>
-    <string name="smartspace_preferences">Tùy chọn</string>
-    <string name="label_search">Tìm kiếm</string>
     <string name="label_voice_search">Tìm kiếm bằng giọng nói</string>
-    <string name="pref_icon_pack">Gói biểu tượng</string>
-    <string name="state_loading">Đang áp dụng…</string>
     <string name="smartspace_preferences_in_settings">Xem nhanh</string>
     <string name="smartspace_preferences_in_settings_desc">Ở đầu Màn hình chính của bạn</string>
     <string name="title_show_google_app">Hiển thị %1$s</string>
     <string name="msg_minus_one_on_left">Ở bên trái Màn hình chính chính</string>
     <string name="about">Giới thiệu</string>
-    <string name="title_google_app">Ứng dụng Google</string>
     <string name="title_app_suggestions">Hiển thị đề xuất ứng dụng</string>
     <string name="summary_app_suggestions">Ở đầu danh sách Tất cả ứng dụng của bạn</string>
     <string name="about_app_version">Phiên bản</string>
@@ -165,7 +160,6 @@
     <string name="theme_default">Mặc định</string>
     <string name="theme_light">Ánh sáng</string>
     <string name="theme_dark">Tối</string>
-    <string name="theme_transparent">Trong suốt</string>
     <string name="pref_open_source_licenses_title">Giấy phép nguồn mở</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Cá nhân"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Cơ quan"</string>

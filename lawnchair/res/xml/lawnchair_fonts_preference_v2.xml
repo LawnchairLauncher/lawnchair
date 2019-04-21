@@ -26,7 +26,7 @@
         android:title="@string/pref_fonts_global_font" />
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
-        android:title="@string/pref_fonts_category_home"
+        android:title="@string/homescreen"
         android:layout="@layout/settings_category_fonts"
         android:dependency="pref_font_global">
 

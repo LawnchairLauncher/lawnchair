@@ -41,7 +41,7 @@
 
     <ch.deletescape.lawnchair.preferences.LauncherStyledPreferenceCategory
         android:key="debug"
-        android:title="@string/debug_pref_title"
+        android:title="@string/developer_options_title"
         android:layout="@layout/settings_category_material">
 
         <Preference

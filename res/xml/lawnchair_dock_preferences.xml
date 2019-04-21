@@ -29,7 +29,7 @@
 
         <ch.deletescape.lawnchair.preferences.DockSeekbarPreference
             android:key="radius"
-            android:title="@string/dock_radius"
+            android:title="@string/radius"
             android:dependency="pref_dockPreset"
             app:minValue="0"
             app:maxValue="24"
@@ -41,7 +41,7 @@
 
         <ch.deletescape.lawnchair.preferences.DockAutoModeSeekbarPreference
             android:key="opacityPref"
-            android:title="@string/hotseat_custom_opacity"
+            android:title="@string/opacity"
             android:dependency="pref_dockPreset"
             app:minValue="0"
             app:maxValue="1"
@@ -51,7 +51,7 @@
 
         <ch.deletescape.lawnchair.preferences.SeekbarPreference
             android:key="pref_dockScale"
-            android:title="Dock scale"
+            android:title="@string/dock_scale"
             android:dependency="pref_dockPreset"
             app:minValue="0.75"
             app:maxValue="1.25"

@@ -137,15 +137,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Arifa na njia za mkato"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Ondoa"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Arifa imeondolewa"</string>
-    <string name="smartspace_preferences">Mapendeleo</string>
-    <string name="label_search">Tafuta</string>
     <string name="label_voice_search">Kutafuta kwa kutamka</string>
     <string name="smartspace_preferences_in_settings">Kwa Muhtasari</string>
     <string name="smartspace_preferences_in_settings_desc">Juu ya Skrini ya kwanza</string>
     <string name="title_show_google_app">Onyesha %1$s</string>
     <string name="msg_minus_one_on_left">Kushoto mwa Skrini kuu ya kwanza</string>
     <string name="about">Kuhusu</string>
-    <string name="title_google_app">Programu ya Google</string>
     <string name="title_app_suggestions">Onyesha mapendekezo ya programu</string>
     <string name="summary_app_suggestions">Katika sehemu ya juu ya orodha yako ya Programu Zote</string>
     <string name="about_app_version">Toleo</string>
@@ -162,7 +159,6 @@
     <string name="theme_default">Kwa kawaida</string>
     <string name="theme_light">Mwanga</string>
     <string name="theme_dark">Giza</string>
-    <string name="theme_transparent">Uwazi</string>
     <string name="pref_open_source_licenses_title">Leseni za programu huria</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Binafsi"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Kazini"</string>

@@ -137,17 +137,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"കുറുക്കുവഴികളും അറിയിപ്പുകളും"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"നിരസിക്കുക"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"അറിയിപ്പ് നിരസിച്ചു"</string>
-    <string name="smartspace_preferences">മുൻഗണനകൾ</string>
-    <string name="label_search">തിരയുക</string>
     <string name="label_voice_search">ശബ്ദതിരയൽ</string>
-    <string name="pref_icon_pack">ഐക്കണ്‍ പാക്ക്</string>
-    <string name="state_loading">ബാധകമാക്കുന്നു…</string>
     <string name="smartspace_preferences_in_settings">ഒറ്റനോട്ടത്തിൽ</string>
     <string name="smartspace_preferences_in_settings_desc">നിങ്ങളുടെ ഹോം സ്‌ക്രീനിന്റെ മുകളിൽ</string>
     <string name="title_show_google_app">%1$s പ്രദർശിപ്പിക്കുക</string>
     <string name="msg_minus_one_on_left">പ്രധാന ഹോം സ്‌ക്രീനിന്റെ ഇടതുവശത്ത്</string>
     <string name="about">ആമുഖം</string>
-    <string name="title_google_app">Google ആപ്പ്</string>
     <string name="title_app_suggestions">ആപ്പ് നിർദ്ദേശങ്ങൾ പ്രദർശിപ്പിക്കുക</string>
     <string name="summary_app_suggestions">"നിങ്ങളുടെ 'എല്ലാ ആപ്പുകളും' ലിസ്റ്റിന്റെ മുകളിൽ"</string>
     <string name="about_app_version">പതിപ്പ്</string>
@@ -164,7 +159,6 @@
     <string name="theme_default">സ്ഥിരസ്ഥിതി</string>
     <string name="theme_light">വെളിച്ചം</string>
     <string name="theme_dark">ഇരുണ്ടത്</string>
-    <string name="theme_transparent">സുതാര്യം</string>
     <string name="pref_open_source_licenses_title">ഓപ്പൺ സോഴ്‌സ് ലൈസൻസുകൾ</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"വ്യക്തിപരം"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ജോലി"</string>

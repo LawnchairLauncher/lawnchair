@@ -135,15 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"ປຸ່ມລັດ ແລະ ການແຈ້ງເຕືອນ"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ປິດໄວ້"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ປິດການແຈ້ງເຕືອນແລ້ວ"</string>
-    <string name="smartspace_preferences">ການຕັ້ງຄ່າ</string>
-    <string name="label_search">ຊອກຫາ</string>
     <string name="label_voice_search">ຊອກຫາດ້ວຍສຽງ</string>
     <string name="smartspace_preferences_in_settings">ການຕັ້ງຄ່າເບື້ອງຕົ້ນ</string>
     <string name="smartspace_preferences_in_settings_desc">ຢູ່ເທິງສຸດຂອງໜ້າຈໍຫຼັກຂອງທ່ານ</string>
     <string name="title_show_google_app">ສະແດງ %1$s</string>
     <string name="msg_minus_one_on_left">ທາງຊ້າຍຂອງໜ້າຈໍຫຼັກ</string>
     <string name="about">ກ່ຽວກັບ</string>
-    <string name="title_google_app">ແອັບ Google</string>
     <string name="title_app_suggestions">ສະແດງການແນະນຳແອັບ</string>
     <string name="summary_app_suggestions">ຢູ່ເທິງສຸດຂອງລາຍຊື່ແອັບທັງໝົດຂອງທ່ານ</string>
     <string name="about_app_version">ເວີຊັນ</string>
@@ -159,7 +156,6 @@
     <string name="theme_default">Default</string>
     <string name="theme_light">ແສງສະຫວ່າງ</string>
     <string name="theme_dark">ຊ້ໍາ</string>
-    <string name="theme_transparent">Transparent</string>
     <string name="pref_open_source_licenses_title">ໃບອະນຸຍາດໂອເພນຊອດ</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ສ່ວນຕົວ"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ວຽກ"</string>

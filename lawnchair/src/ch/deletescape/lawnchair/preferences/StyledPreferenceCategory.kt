@@ -27,8 +27,11 @@ import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.createDisabledColor
 import ch.deletescape.lawnchair.getColorAttr
 import ch.deletescape.lawnchair.getDisabled
+import ch.deletescape.lawnchair.settings.ui.ControlledPreference
 
-class StyledPreferenceCategory(context: Context, attrs: AttributeSet?) : PreferenceCategory(context, attrs), ColorEngine.OnColorChangeListener {
+class StyledPreferenceCategory(context: Context, attrs: AttributeSet?) :
+        PreferenceCategory(context, attrs), ColorEngine.OnColorChangeListener,
+        ControlledPreference by ControlledPreference.Delegate(context, attrs) {
 
     private var dependencyMet = true
     private var parentDependencyMet = true

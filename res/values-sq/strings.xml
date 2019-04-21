@@ -135,15 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Shkurtoret dhe njoftimet"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Hiqe"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Njoftimi u hoq"</string>
-    <string name="smartspace_preferences">Preferencat</string>
-    <string name="label_search">Kërko</string>
     <string name="label_voice_search">Kërkimi me zë</string>
     <string name="smartspace_preferences_in_settings">Shkurtimisht</string>
     <string name="smartspace_preferences_in_settings_desc">Në krye të Ekranit bazë</string>
     <string name="title_show_google_app">Shfaq %1$s</string>
     <string name="msg_minus_one_on_left">Në të majtë të ekranit bazë kryesor</string>
     <string name="about">Rreth kartës</string>
-    <string name="title_google_app">Aplikacioni i Google</string>
     <string name="title_app_suggestions">Shfaq sugjerimet e aplikacioneve</string>
     <string name="summary_app_suggestions">Në krye të listës tënde \"Të gjitha aplikacionet\"</string>
     <string name="about_app_version">Versioni</string>
@@ -159,7 +156,6 @@
     <string name="theme_default">Default</string>
     <string name="theme_light">Dritë</string>
     <string name="theme_dark">I errët</string>
-    <string name="theme_transparent">I tejdukshëm</string>
     <string name="pref_open_source_licenses_title">Licenca me burim informacioni të hapur</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personale"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Punë"</string>

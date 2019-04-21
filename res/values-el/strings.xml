@@ -135,17 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Συντομεύσεις και ειδοποιήσεις"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Παράβλεψη"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Η ειδοποίηση παραβλέφθηκε"</string>
-    <string name="smartspace_preferences">Προτιμήσεις</string>
-    <string name="label_search">Αναζήτηση</string>
     <string name="label_voice_search">Φωνητική αναζήτηση</string>
-    <string name="pref_icon_pack">Πακέτο εικονιδίων</string>
-    <string name="state_loading">Εφαρμογή…</string>
     <string name="smartspace_preferences_in_settings">Με μια ματιά</string>
     <string name="smartspace_preferences_in_settings_desc">Στην κορυφή της Αρχικής οθόνης</string>
     <string name="title_show_google_app">Προβολή %1$s</string>
     <string name="msg_minus_one_on_left">Στα αριστερά της κύριας Αρχικής οθόνης</string>
     <string name="about">Σχετικά με</string>
-    <string name="title_google_app">Εφαρμογή Google</string>
     <string name="title_app_suggestions">Εμφάνιση προτάσεων εφαρμογών</string>
     <string name="summary_app_suggestions">Στο επάνω μέρος της λίστας \"Όλες οι εφαρμογές\".</string>
     <string name="about_app_version">Έκδοση</string>
@@ -165,7 +160,6 @@
     <string name="theme_default">Προκαθορισμένο</string>
     <string name="theme_light">Φωτεινό</string>
     <string name="theme_dark">Σκοτεινό</string>
-    <string name="theme_transparent">Διάφανο</string>
     <string name="pref_open_source_licenses_title">Άδειες λογισμικού ανοικτού κώδικα</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Προσωπικές"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Εργασίας"</string>

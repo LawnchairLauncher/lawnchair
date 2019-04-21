@@ -17,16 +17,9 @@
 
 package ch.deletescape.lawnchair.settings.ui
 
-import android.content.Intent
-import com.android.launcher3.R
+import android.content.Context
+import android.support.v7.preference.Preference
+import android.util.AttributeSet
 
-class SettingsSearchActivity: SettingsActivity() {
-
-    init {
-        forceSubSettings = true
-    }
-
-    override fun createLaunchFragment(intent: Intent?) = SubSettingsFragment.newInstance(
-            getString(R.string.search),
-            R.xml.lawnchair_search_preferences)
-}
+open class BasePreference(context: Context, attrs: AttributeSet?) : Preference(context, attrs),
+        ControlledPreference by ControlledPreference.Delegate(context, attrs)

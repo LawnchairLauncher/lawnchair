@@ -130,7 +130,6 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Hündürlüyü azaldın"</string>
     <string name="widget_resized" msgid="9130327887929620">"Vidcetin eni <xliff:g id="NUMBER_0">%1$s</xliff:g> hündürlüyü <xliff:g id="NUMBER_1">%2$s</xliff:g> kimi ölçüləndirildi"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Qısa yollar"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> üçün <xliff:g id="APP_NAME">%2$s</xliff:g> qısa yolu"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> üçün <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> qısayol və  <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> bildiriş"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Rədd edin"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Bildiriş rədd edildi"</string>

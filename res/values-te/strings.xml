@@ -137,17 +137,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"షార్ట్‌కట్‌లు మరియు నోటిఫికేషన్‌లు"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"తీసివేయి"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"నోటిఫికేషన్ తీసివేయబడింది"</string>
-    <string name="smartspace_preferences">ప్రాధాన్యతలు</string>
-    <string name="label_search">శోధించు</string>
     <string name="label_voice_search">వాయిస్ శోధన</string>
-    <string name="pref_icon_pack">ఐకాన్ ప్యాక్</string>
-    <string name="state_loading">అప్లై చేస్తోంది...</string>
     <string name="smartspace_preferences_in_settings">త్వరిత వీక్షణ</string>
     <string name="smartspace_preferences_in_settings_desc">మీ హోమ్ స్క్రీన్ ఎగువన</string>
     <string name="title_show_google_app">%1$s ప్రదర్శించు</string>
     <string name="msg_minus_one_on_left">ప్రధాన హోమ్ స్క్రీన్‌లో ఎడమ వైపుకు</string>
     <string name="about">పరిచయం</string>
-    <string name="title_google_app">Google యాప్</string>
     <string name="title_app_suggestions">యాప్ సూచనలను చూపు</string>
     <string name="summary_app_suggestions">మీ అన్ని అనువర్తనాల జాబితా ఎగువన</string>
     <string name="about_app_version">వెర్షన్</string>
@@ -164,7 +159,6 @@
     <string name="theme_default">డిఫాల్ట్</string>
     <string name="theme_light">లైట్</string>
     <string name="theme_dark">డార్క్</string>
-    <string name="theme_transparent">పారదర్శక</string>
     <string name="pref_open_source_licenses_title">ఓపెన్ సోర్స్ లైసెన్స్‌లు</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"వ్యక్తిగతం"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"కార్యాలయం"</string>

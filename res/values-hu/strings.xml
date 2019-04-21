@@ -135,17 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Parancsikonok és értesítések"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Elvetés"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Értesítés elvetve"</string>
-    <string name="smartspace_preferences">Beállítások</string>
-    <string name="label_search">Keresés</string>
     <string name="label_voice_search">Hangalapú keresés</string>
-    <string name="pref_icon_pack">Ikon csomag</string>
-    <string name="state_loading">Alkalmazás…</string>
     <string name="smartspace_preferences_in_settings">Áttekintés</string>
     <string name="smartspace_preferences_in_settings_desc">A kezdőképernyő tetején</string>
     <string name="title_show_google_app">%1$s megjelenítése</string>
     <string name="msg_minus_one_on_left">A fő kezdőképernyőtól balra</string>
     <string name="about">Névjegy</string>
-    <string name="title_google_app">Google alkalmazás</string>
     <string name="title_app_suggestions">Alkalmazásjavaslatok megjelenítése</string>
     <string name="summary_app_suggestions">Az összes alkalmazás lista tetején</string>
     <string name="about_app_version">Verzió</string>
@@ -165,7 +160,6 @@
     <string name="theme_default">Alapértelmezett</string>
     <string name="theme_light">Fény</string>
     <string name="theme_dark">Sötét</string>
-    <string name="theme_transparent">Átlátszó</string>
     <string name="pref_open_source_licenses_title">Nyílt forráskódú licencek</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Személyes"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Munkahelyi"</string>

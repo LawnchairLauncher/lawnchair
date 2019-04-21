@@ -260,7 +260,7 @@ class IconPackAdapter(context: Context) : RecyclerView.Adapter<IconPackAdapter.H
 
         override fun onClick(v: View) {
             val intent = Intent.parseUri(v.context.getString(R.string.market_search_intent), 0)
-            intent.data = intent.data!!.buildUpon().appendQueryParameter("q", v.context.getString(R.string.playstore_query_icon_pack)).build()
+            intent.data = intent.data!!.buildUpon().appendQueryParameter("q", v.context.getString(R.string.icon_pack)).build()
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             v.context.startActivity(intent)
         }

@@ -57,7 +57,7 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
             backupMetaLoaderList.removeAt(position)
             notifyItemRemoved(position + 1)
         } else {
-            Toast.makeText(context, R.string.backup_delete_failed, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show()
         }
     }
 

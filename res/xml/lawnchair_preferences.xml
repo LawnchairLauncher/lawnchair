@@ -15,7 +15,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
-        android:title="@string/pixel_ui_pref_title"
+        android:title="@string/theme_title"
         android:summary="@string/pixel_ui_pref_summary"
         android:icon="@drawable/ic_theme"
         android:key="theme"
@@ -59,7 +59,7 @@
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:icon="@drawable/ic_pref_search"
         android:summary="@string/search_pref_summary"
-        android:title="@string/search_pref_title"
+        android:title="@string/search"
         android:key="search"
         app:content="@xml/lawnchair_search_preferences"
         android:layout="@layout/home_preference" />
@@ -111,7 +111,7 @@
         android:layout="@layout/home_preference" />
 
     <ch.deletescape.lawnchair.preferences.StyledIconPreference
-        android:title="@string/about_title"
+        android:title="@string/about"
         android:summary="@string/about_pref_summary"
         android:icon="@drawable/ic_pref_about"
         android:layout="@layout/home_preference"

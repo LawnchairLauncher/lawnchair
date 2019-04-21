@@ -217,7 +217,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 MenuItem foolsItem = toolbar.getMenu().findItem(R.id.action_toggle_fools);
                 foolsItem.setTitle(prefs.getNoFools() ? "AFD / OFF" : "AFD / ON");
             }
-            toolbar.inflateMenu(R.menu.menu_restart_lawnchair);
+            toolbar.inflateMenu(R.menu.menu_settings);
             ActionMenuView menuView = null;
             int count = toolbar.getChildCount();
             for (int i = 0; i < count; i++) {
@@ -245,6 +245,15 @@ public class SettingsActivity extends SettingsBaseActivity implements
                         break;
                     case R.id.action_restart_lawnchair:
                         Utilities.killLauncher();
+                        break;
+                    case R.id.action_dev_options:
+                        Intent intent = new Intent(this, SettingsActivity.class);
+                        intent.putExtra(SettingsActivity.SubSettingsFragment.TITLE,
+                                getString(R.string.developer_options_title));
+                        intent.putExtra(SettingsActivity.SubSettingsFragment.CONTENT_RES_ID,
+                                R.xml.lawnchair_dev_options_preference);
+                        intent.putExtra(SettingsBaseActivity.EXTRA_FROM_SETTINGS, true);
+                        startActivity(intent);
                         break;
                     default:
                         return false;
@@ -550,9 +559,12 @@ public class SettingsActivity extends SettingsBaseActivity implements
      */
     public static class LauncherSettingsFragment extends BaseFragment {
 
+        private boolean mShowDevOptions;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            mShowDevOptions = Utilities.getLawnchairPrefs(getActivity()).getDeveloperOptionsEnabled();
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
         }
 
@@ -565,7 +577,10 @@ public class SettingsActivity extends SettingsBaseActivity implements
         @Override
         public void onResume() {
             super.onResume();
-            getActivity().setTitle(R.string.derived_app_name);
+            boolean dev = Utilities.getLawnchairPrefs(getActivity()).getDeveloperOptionsEnabled();
+            if (dev != mShowDevOptions) {
+                getActivity().recreate();
+            }
         }
 
         @Override
@@ -629,12 +644,10 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
             } else if (getContent() == R.xml.lawnchair_dev_options_preference) {
                 findPreference("kill").setOnPreferenceClickListener(this);
-                findPreference("crashLauncher").setOnPreferenceClickListener(this);
                 findPreference("addSettingsShortcut").setOnPreferenceClickListener(this);
                 findPreference("currentWeatherProvider").setSummary(
                         Utilities.getLawnchairPrefs(mContext).getWeatherProvider());
                 findPreference("appInfo").setOnPreferenceClickListener(this);
-                findPreference("screenshot").setOnPreferenceClickListener(this);
             }
         }
 
@@ -765,8 +778,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 case "addSettingsShortcut":
                     Utilities.pinSettingsShortcut(getActivity());
                     break;
-                case "crashLauncher":
-                    throw new RuntimeException("Triggered from developer options");
                 case "appInfo":
                     ComponentName componentName = new ComponentName(getActivity(),
                             LawnchairLauncher.class);

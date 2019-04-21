@@ -135,15 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Кыска жолдор жана билдирмелер"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Этибарга албоо"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Эскертме көз жаздымда калтырылды"</string>
-    <string name="smartspace_preferences">Жеке жөндөөлөр</string>
-    <string name="label_search">Издөө</string>
     <string name="label_voice_search">Үн менен издөө</string>
     <string name="smartspace_preferences_in_settings">Дароо көрүү</string>
     <string name="smartspace_preferences_in_settings_desc">Башкы экрандын өйдө жагында</string>
     <string name="title_show_google_app">%1$s колдонмосун чагылдыруу</string>
     <string name="msg_minus_one_on_left">Негизги Башкы экрандын сол жагында</string>
     <string name="about">Колдонмо жөнүндө</string>
-    <string name="title_google_app">Google колдонмосу</string>
     <string name="title_app_suggestions">Колдонмонун сунуштарын көрсөтүү</string>
     <string name="summary_app_suggestions">\"Бардык колдонмолор\" тизмесинин башында</string>
     <string name="about_app_version">Версиясы</string>
@@ -159,7 +156,6 @@
     <string name="theme_default">По умолчанию</string>
     <string name="theme_light">Жарык</string>
     <string name="theme_dark">Караңгы</string>
-    <string name="theme_transparent">Тунук</string>
     <string name="pref_open_source_licenses_title">Баштапкы коду ачык программалардын уруксаттамалары</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Жеке колдонмолор"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Жумуш колдонмолору"</string>

@@ -130,7 +130,7 @@ class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader
             backupWallpaper.isEnabled = includeWallpaper
             backupWallpaper.isChecked = includeWallpaper
         } else {
-            showMessage(R.drawable.ic_close, R.string.restore_read_meta_fail)
+            showMessage(R.drawable.ic_close, R.string.backup_invalid)
         }
     }
 
@@ -213,7 +213,7 @@ class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader
             } else {
                 inProgress = false
 
-                showMessage(R.drawable.ic_close, R.string.restore_failed)
+                showMessage(R.drawable.ic_close, R.string.failed)
             }
         }
 

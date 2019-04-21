@@ -23,9 +23,9 @@
     </string-array>
 
     <string-array name="dockStyles">
-        <item>@string/dock_style_default</item>
+        <item>@string/theme_default</item>
         <item>@string/dock_style_hidden</item>
-        <item>@string/dock_style_custom</item>
+        <item>@string/custom</item>
     </string-array>
 
     <string-array name="dockStyleValues">
@@ -56,7 +56,7 @@
     </string-array>
 
     <string-array name="feedThemes">
-        <item>@string/feed_theme_follow_launcher</item>
+        <item>@string/theme_based</item>
         <item>@string/theme_light</item>
         <item>@string/theme_dark</item>
     </string-array>

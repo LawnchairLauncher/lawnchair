@@ -21,4 +21,4 @@
     android:layout_height="@dimen/qsb_widget_height"
     android:layout_gravity="bottom|center"
     android:background="@drawable/bg_qsb_click_feedback"
-    android:contentDescription="@string/label_search" />
+    android:contentDescription="@string/search" />

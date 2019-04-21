@@ -116,7 +116,7 @@ class BlurWallpaperProvider(val context: Context) {
         } catch (e: Exception) {
             prefs.enableBlur = false
             runOnMainThread {
-                val msg = "${context.getString(R.string.blur_wallpaper_failed)}: ${e.message}"
+                val msg = "${context.getString(R.string.failed)}: ${e.message}"
                 Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
                 notifyWallpaperChanged()
             }
@@ -146,7 +146,7 @@ class BlurWallpaperProvider(val context: Context) {
                 if (error is OutOfMemoryError) {
                     prefs.enableBlur = false
                     runOnMainThread {
-                        Toast.makeText(context, R.string.blur_oom, Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, R.string.failed, Toast.LENGTH_LONG).show()
                         notifyWallpaperChanged()
                     }
                 }

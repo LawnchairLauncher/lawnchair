@@ -135,15 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"მალსახმობები და შეტყობინებები"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"დახურვა"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"შეტყობინება დაიხურა"</string>
-    <string name="smartspace_preferences">პარამეტრები</string>
-    <string name="label_search">ძიება</string>
     <string name="label_voice_search">ხმოვანი ძიება</string>
     <string name="smartspace_preferences_in_settings">მოკლე მიმოხილვა</string>
     <string name="smartspace_preferences_in_settings_desc">მთავარი ეკრანის სათავეში</string>
     <string name="title_show_google_app">%1$s-ის ჩვენება</string>
     <string name="msg_minus_one_on_left">მთავარი ეკრანის მარცხნივ</string>
     <string name="about">ინფორმაცია</string>
-    <string name="title_google_app">Google აპი</string>
     <string name="title_app_suggestions">აპების შემოთავაზებების ჩვენება</string>
     <string name="summary_app_suggestions">თქვენი სიის „ყველა აპი“ სათავეში</string>
     <string name="about_app_version">ვერსია</string>
@@ -159,7 +156,6 @@
     <string name="theme_default">ნაგულისხმები</string>
     <string name="theme_light">მსუბუქი</string>
     <string name="theme_dark">ბნელი</string>
-    <string name="theme_transparent">გამჭვირვალე</string>
     <string name="pref_open_source_licenses_title">ღია კოდის ლიცენზიები</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"პირადი"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"სამსახური"</string>

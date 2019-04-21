@@ -12,6 +12,6 @@
         <item>@string/theme_default</item>
         <item>@string/theme_light</item>
         <item>@string/theme_dark</item>
-        <item>@string/theme_transparent</item>
+        <item>@string/transparent</item>
     </string-array>
 </resources>

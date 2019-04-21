@@ -251,7 +251,7 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
                             .startActivityForProfile(target!!.componentName, target!!.user, null, opts)
                 } catch (e: NullPointerException){
                     // App is probably not installed anymore, show a Toast
-                    Toast.makeText(context, R.string.app_gesture_failed_toast, Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, R.string.failed, Toast.LENGTH_LONG).show()
                 }
             }
             "shortcut" -> {
@@ -287,7 +287,7 @@ class StartVoiceSearchGestureHandler(context: Context, config: JSONObject?) : Ge
 
     private val searchProvider get() = SearchProviderController.getInstance(context).searchProvider
     override val isAvailable get() = searchProvider.supportsVoiceSearch
-    override val displayName = context.getString(R.string.action_voice_search)
+    override val displayName = context.getString(R.string.label_voice_search)
     override val icon: Drawable? by lazy { searchProvider.getVoiceIcon() }
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {

@@ -135,15 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Դյուրանցումներ և ծանուցումներ"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Անտեսել"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Ծանուցումը մերժված է"</string>
-    <string name="smartspace_preferences">Կարգավորումներ</string>
-    <string name="label_search">Որոնում</string>
     <string name="label_voice_search">Ձայնային որոնում</string>
     <string name="smartspace_preferences_in_settings">Հետհաշվարկ</string>
     <string name="smartspace_preferences_in_settings_desc">Ձեր հիմնական էկրանի վերևում</string>
     <string name="title_show_google_app">Ցուցադրել %1$s</string>
     <string name="msg_minus_one_on_left">Հիմնական էկրանից դեպի ձախ</string>
     <string name="about">Տեղեկատվություն</string>
-    <string name="title_google_app">Google հավելված</string>
     <string name="title_app_suggestions">Ցուցադրել հավելվածների առաջարկները</string>
     <string name="summary_app_suggestions">«Բոլոր հավելվածները» ցուցակի սկզբում</string>
     <string name="about_app_version">Տարբերակ</string>
@@ -159,7 +156,6 @@
     <string name="theme_default">Default</string>
     <string name="theme_light">Լույս</string>
     <string name="theme_dark">Dark</string>
-    <string name="theme_transparent">Թափանցիկ</string>
     <string name="pref_open_source_licenses_title">Բաց կոդով ծրագրակազմի արտոնագրեր</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Անձնական"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Աշխատանքային"</string>

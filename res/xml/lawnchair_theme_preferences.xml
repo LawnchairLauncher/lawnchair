@@ -71,11 +71,11 @@
             android:key="pref_launcherTheme"
             android:persistent="true"
             android:summary="%s"
-            android:title="@string/theme_pref_title" />
+            android:title="@string/theme_title" />
 
         <ch.deletescape.lawnchair.colors.preferences.ColorPickerPreference
             android:key="pref_accentColorResolver"
-            android:title="@string/pref_accent_color"
+            android:title="@string/lawnchair_accent"
             app:resolvers="@array/resolvers_accent"/>
 
         <ch.deletescape.lawnchair.settings.ui.SubPreference

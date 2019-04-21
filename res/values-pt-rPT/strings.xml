@@ -135,15 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Atalhos e notificações"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Ignorar"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Notificação ignorada"</string>
-    <string name="smartspace_preferences">Preferências</string>
-    <string name="label_search">Pesquisar</string>
     <string name="label_voice_search">Pesquisa por voz</string>
     <string name="smartspace_preferences_in_settings">Resumo</string>
     <string name="smartspace_preferences_in_settings_desc">Na parte superior do ecrã principal</string>
     <string name="title_show_google_app">Apresentar %1$s</string>
     <string name="msg_minus_one_on_left">À esquerda do ecrã principal</string>
     <string name="about">Acerca de</string>
-    <string name="title_google_app">Aplicação Google</string>
     <string name="title_app_suggestions">Apresentar sugestões de aplicações</string>
     <string name="summary_app_suggestions">No topo da lista Todas as aplicações</string>
     <string name="about_app_version">Versão</string>
@@ -162,7 +159,6 @@
     <string name="theme_default">Padrão</string>
     <string name="theme_light">Branco</string>
     <string name="theme_dark">Escuro</string>
-    <string name="theme_transparent">Transparente</string>
     <string name="pref_open_source_licenses_title">Licenças de código aberto</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Pessoal"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Trabalho"</string>

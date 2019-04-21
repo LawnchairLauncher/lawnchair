@@ -22,7 +22,7 @@
 
     <ch.deletescape.lawnchair.preferences.SeekbarPreference
         android:key="pref_recents_radius"
-        android:title="@string/pref_recents_radius"
+        android:title="@string/radius"
         app:minValue="0"
         app:maxValue="60"
         app:steps="60"

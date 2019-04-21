@@ -135,17 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"ショートカットと通知"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"表示しない"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"通知を非表示にしました"</string>
-    <string name="smartspace_preferences">設定</string>
-    <string name="label_search">検索</string>
     <string name="label_voice_search">音声検索</string>
-    <string name="pref_icon_pack">アイコンパック</string>
-    <string name="state_loading">適用中...</string>
     <string name="smartspace_preferences_in_settings">At A Glance</string>
     <string name="smartspace_preferences_in_settings_desc">Home 画面の上部</string>
     <string name="title_show_google_app">%1$sの表示</string>
     <string name="msg_minus_one_on_left">メインのホーム画面の左側</string>
     <string name="about">概要</string>
-    <string name="title_google_app">Google アプリ</string>
     <string name="title_app_suggestions">アプリの候補の表示</string>
     <string name="summary_app_suggestions">[すべてのアプリ] リストの一番上</string>
     <string name="about_app_version">バージョン</string>
@@ -165,7 +160,6 @@
     <string name="theme_default">デフォルト</string>
     <string name="theme_light">光</string>
     <string name="theme_dark">ダーク</string>
-    <string name="theme_transparent">トランスペアレント</string>
     <string name="pref_open_source_licenses_title">オープンソース ライセンス</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"個人用"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"仕事用"</string>

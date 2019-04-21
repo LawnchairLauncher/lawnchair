@@ -137,15 +137,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Spartieji klavišai ir pranešimai"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Atsisakyti"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Pranešimo atsisakyta"</string>
-    <string name="smartspace_preferences">Nuostatos</string>
-    <string name="label_search">Ieškoti</string>
     <string name="label_voice_search">Paieška balsu</string>
     <string name="smartspace_preferences_in_settings">Apžvalga</string>
     <string name="smartspace_preferences_in_settings_desc">Pagrindinio ekrano viršuje</string>
     <string name="title_show_google_app">Pateikti %1$s</string>
     <string name="msg_minus_one_on_left">Pagrindinio ekrano kairėje</string>
     <string name="about">Apie</string>
-    <string name="title_google_app">„Google“ programa</string>
     <string name="title_app_suggestions">Rodyti programų pasiūlymus</string>
     <string name="summary_app_suggestions">Visų programų sąrašo viršuje</string>
     <string name="about_app_version">Versija</string>
@@ -162,7 +159,6 @@
     <string name="theme_default">Numatytas</string>
     <string name="theme_light">Šviesa</string>
     <string name="theme_dark">Tamsus</string>
-    <string name="theme_transparent">Skaidrus</string>
     <string name="pref_open_source_licenses_title">Atvirojo šaltinio licencijos</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Asmeninės"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Darbo"</string>

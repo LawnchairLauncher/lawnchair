@@ -137,15 +137,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"শর্টকাট এবং বিজ্ঞপ্তি"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"খারিজ করুন"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"বিজ্ঞপ্তি খারিজ করা হয়েছে"</string>
-    <string name="smartspace_preferences">পছন্দগুলি</string>
-    <string name="label_search">অনুসন্ধান করুন</string>
     <string name="label_voice_search">ভয়েস অনুসন্ধান</string>
     <string name="smartspace_preferences_in_settings">এক ঝলকে</string>
     <string name="smartspace_preferences_in_settings_desc">আপনার হোম স্ক্রিনের উপরের দিকে</string>
     <string name="title_show_google_app">%1$s দেখান</string>
     <string name="msg_minus_one_on_left">প্রধান হোম স্ক্রিনের বাঁ দিকে</string>
     <string name="about">সম্পর্কে</string>
-    <string name="title_google_app">Google অ্যাপ</string>
     <string name="title_app_suggestions">অ্যাপের প্রস্তাবনা দেখুন</string>
     <string name="summary_app_suggestions">"আপনার 'সমস্ত অ্যাপ' তালিকার উপরে"</string>
     <string name="about_app_version">ভার্সন</string>
@@ -161,7 +158,6 @@
     <string name="theme_default">ডিফল্ট</string>
     <string name="theme_light">আলো</string>
     <string name="theme_dark">অন্ধকার</string>
-    <string name="theme_transparent">স্বচ্ছ</string>
     <string name="pref_open_source_licenses_title">ওপেন সোর্স লাইসেন্স</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ব্যক্তিগত"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"অফিস"</string>

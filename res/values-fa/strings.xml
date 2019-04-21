@@ -135,17 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"میان‌برها و اعلان‌ها"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"رد کردن"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"اعلان رد شد"</string>
-    <string name="smartspace_preferences">تنظیمات برگزیده</string>
-    <string name="label_search">جستجو</string>
     <string name="label_voice_search">جستجوی گفتاری</string>
-    <string name="pref_icon_pack">بستۀ شمایل</string>
-    <string name="state_loading">در حال اعمال…</string>
     <string name="smartspace_preferences_in_settings">در یک نگاه</string>
     <string name="smartspace_preferences_in_settings_desc">در بالای صفحه ‌اصلی‌</string>
     <string name="title_show_google_app">نمایش %1$s</string>
     <string name="msg_minus_one_on_left">به سمت راست صفحه اصلی</string>
     <string name="about">درباره</string>
-    <string name="title_google_app">‏برنامه Google</string>
     <string name="title_app_suggestions">نمایش پیشنهادهای برنامه</string>
     <string name="summary_app_suggestions">در بالای فهرست «همه برنامه‌های» شما</string>
     <string name="about_app_version">نسخه</string>
@@ -163,7 +158,6 @@
     <string name="theme_default">پیش فرض</string>
     <string name="theme_light">سبک</string>
     <string name="theme_dark">تاریکی</string>
-    <string name="theme_transparent">شفاف</string>
     <string name="pref_open_source_licenses_title">مجوزهای منبع آزاد</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"شخصی"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"محل کار"</string>

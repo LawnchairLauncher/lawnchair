@@ -22,6 +22,12 @@ tasks {
 
 final String SUPPORT_LIBS_VERSION = '28.0.0-alpha1'
 
+Properties localProps = new Properties()
+File localPropsFile = project.rootProject.file('local.properties')
+if (localPropsFile.exists()) {
+    localProps.load(localPropsFile.newDataInputStream())
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.google.protobuf'
@@ -56,6 +62,9 @@ android {
         def isPublicBuild = System.getenv("CI_BUILD") == "true" && System.getenv("DRONE_BRANCH") == "alpha"
         buildConfigField "boolean", "FEATURE_QUINOA", "true"
         buildConfigField "boolean", "FEATURE_SETTINGS_SEARCH", "true"
+
+        def githubToken = localProps.getProperty('githubToken') ?: '"' + System.getenv("GITHUB_TOKEN") + '"'
+        buildConfigField "String", "GITHUB_TOKEN", githubToken
 
         ndk {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a"

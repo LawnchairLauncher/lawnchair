@@ -8,7 +8,7 @@
 
         <ch.deletescape.lawnchair.preferences.AutoModeSeekbarPreference
             android:key="pref_allAppsOpacitySB"
-            android:title="@string/all_apps_opacity_pref_title"
+            android:title="@string/opacity"
             app:minValue="0"
             app:maxValue="1"
             app:summaryFormat="%.0f%%"
@@ -54,7 +54,7 @@
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_hideAllAppsAppLabels"
-            android:title="@string/hide_all_apps_icon_labels_pref_title"
+            android:title="@string/hide_icon_labels_pref_title"
             android:defaultValue="false"
             android:disableDependentsState="true"
             android:persistent="true" />

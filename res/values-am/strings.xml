@@ -135,15 +135,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"አቋራጮች እና ማሳወቂያዎች"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"አሰናብት"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ማሳወቂያ ተሰናብቷል"</string>
-    <string name="smartspace_preferences">ምርጫዎች</string>
-    <string name="label_search">ፈልግ</string>
     <string name="label_voice_search">የድምፅ ፍለጋ</string>
     <string name="smartspace_preferences_in_settings">በአፍታ እይታ</string>
     <string name="smartspace_preferences_in_settings_desc">በመነሻ ማያ ገጽዎ አናት ላይ</string>
     <string name="title_show_google_app">ማሳያ %1$s</string>
     <string name="msg_minus_one_on_left">ከዋናው መነሻ ገጽ በስተግራ</string>
     <string name="about">ስለ</string>
-    <string name="title_google_app">የGoogle መተግበሪያ</string>
     <string name="title_app_suggestions">የመተግበሪያ አስተያየት ጥቆማዎችን አሳይ</string>
     <string name="summary_app_suggestions">ከእርስዎ ሁሉም መተግበሪያች ዝርዝር አናት ላይ</string>
     <string name="about_app_version">ሥሪት</string>
@@ -160,7 +157,6 @@
     <string name="theme_default">ነባሪ</string>
     <string name="theme_light">ብርሃን</string>
     <string name="theme_dark">ጨለማ</string>
-    <string name="theme_transparent">ግልጽ</string>
     <string name="pref_open_source_licenses_title">የክፍት ምንጭ ፈቃዶች</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"የግል"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ሥራ"</string>

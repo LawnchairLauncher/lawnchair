@@ -66,6 +66,6 @@
         android:drawableStart="@drawable/ic_list_remove"
         android:gravity="center_vertical"
         android:padding="16dp"
-        android:text="@string/backup_delete" />
+        android:text="@string/delete" />
 
 </LinearLayout>

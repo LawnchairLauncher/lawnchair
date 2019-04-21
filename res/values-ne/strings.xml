@@ -137,15 +137,12 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"सर्टकट तथा सूचनाहरू"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"खारेज गर्नुहोस्"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"सूचना खारेज गरियो"</string>
-    <string name="smartspace_preferences">प्राथमिकताहरू</string>
-    <string name="label_search">खोज्नुहोस्</string>
     <string name="label_voice_search">आवाज मार्फत खोजी</string>
     <string name="smartspace_preferences_in_settings">एक झलकमा सम्पूर्ण सुविधाबारे जानकारी</string>
     <string name="smartspace_preferences_in_settings_desc">तपाईंको गृह स्क्रिनको शीर्षमा अवस्थित छ</string>
     <string name="title_show_google_app">%1$s देखाउनुहोस्</string>
     <string name="msg_minus_one_on_left">मुख्य गृह स्क्रिनको बायाँतिर</string>
     <string name="about">बारेमा</string>
-    <string name="title_google_app">Google app</string>
     <string name="title_app_suggestions">अनुप्रयोगबारे सुझाावहरू देखाउनुहोस्</string>
     <string name="summary_app_suggestions">तपाईंका सबै अनुप्रयोगहरूको सूचीको शीर्षमा देखाइन्छ</string>
     <string name="about_app_version">संस्करण</string>
@@ -161,7 +158,6 @@
     <string name="theme_default">पूर्वनिर्धारित</string>
     <string name="theme_light">लाइट</string>
     <string name="theme_dark">गाढा</string>
-    <string name="theme_transparent">पारदर्शी</string>
     <string name="pref_open_source_licenses_title">खुला स्रोतका इजाजतपत्रहरू</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"व्यक्तिगत"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"कार्यसम्बन्धी"</string>
