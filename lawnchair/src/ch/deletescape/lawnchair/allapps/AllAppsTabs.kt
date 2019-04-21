@@ -22,6 +22,7 @@ import android.content.Context
 import android.os.Process
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.groups.DrawerTabs
+import ch.deletescape.lawnchair.iconpack.IconPackManager
 import com.android.launcher3.ItemInfo
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.ItemInfoMatcher
@@ -60,7 +61,7 @@ class AllAppsTabs(private val context: Context) : Iterable<AllAppsTabs.Tab> {
                     if (it.hideFromAllApps.value()) {
                         addedApps.addAll(it.contents.value())
                     }
-                    Tab(it.getTitle(), createTabMatcher(it.contents.value()), drawerTab = it)
+                    Tab(it.getTitle(), it.getFilter(context).matcher, drawerTab = it)
                 }
                 else -> null
             }

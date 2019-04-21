@@ -86,9 +86,11 @@ class DrawerTabs(prefs: LawnchairPreferences) : AppGroups<DrawerTabs.Tab>(prefs,
         }
 
         override fun getSummary(context: Context): String? {
-            val size = contents.value().size
+            val size = getFilter(context).size
             return context.resources.getQuantityString(R.plurals.tab_apps_count, size, size)
         }
+
+        fun getFilter(context: Context): Filter<*> = CustomFilter(context, contents.value()) // IconPackFilter(context)
     }
 
     open class PredefinedTab(context: Context, type: Int, titleRes: Int,
