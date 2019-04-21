@@ -9,13 +9,17 @@
     <string name="in_smartspace">No widget \'At a glance\'</string>
     <string name="smartspace_time">Hora</string>
     <string name="smartspace_date">Data</string>
+    <string name="customize">Personalizar</string>
     <string name="smartspace_preferences_in_settings">At a Glance</string>
     <string name="smartspace_preferences_in_settings_desc">Data, hora, fonte da meteorologia</string>
+    <string name="search">Pesquisa</string>
     <string name="label_voice_search">Pesquisa por voz</string>
+    <string name="icon_pack">Pacote de ícones</string>
     <string name="home_widget">Widget do ecrã principal</string>
     <string name="title_show_google_app">%1$s restante</string>
     <string name="msg_minus_one_on_left">Feed à esquerda do ecrã principal</string>
     <string name="about">Acerca</string>
+    <string name="google_app">Aplicação Google</string>
     <string name="about_app_version">Versão</string>
     <string name="app_name_pixel_launcher">Launcher do Pixel</string>
     <string name="title_disable_suggestions_prompt">Desativar sugestões de aplicações</string>
@@ -47,6 +51,7 @@
     <string name="choose_backup_path">Explorar</string>
     <string name="backup_contents">Conteúdo</string>
     <string name="backup_settings">Definições</string>
+    <string name="homescreen">Ecrã principal</string>
     <string name="backup_wallpaper">Papel de parede</string>
     <string name="backup_error_blank_name">Digite o nome para o backup</string>
     <string name="backup_error_blank_location">Selecione o local para o backup</string>
@@ -62,6 +67,7 @@
     <string name="backup_restarting">A reiniciar...</string>
     <string name="restore_contents">Restaurar conteúdo</string>
     <string name="restore_success">Restauro concluído</string>
+    <string name="failed">Algo errado aconteceu</string>
     <string name="backup_share_text">Backup do Lawnchair</string>
     <string name="full_width_widgets_pref_summary">Permitir que widgets estendam até ao limite do ecrã</string>
     <string name="full_width_width_widgets_pref_title">Widgets largos</string>
@@ -94,6 +100,7 @@
     <string name="dock_style_n">Plano</string>
     <string name="dock_style_hidden">Oculta</string>
     <string name="dock_search_bar">Barra de pesquisa da doca</string>
+    <string name="opacity">Opacidade</string>
     <string name="title_all_apps_google_search">Pesquisa global</string>
     <string name="summary_all_apps_google_search">Pesquisar na web e nas aplicações</string>
     <string name="num_hotseat_icons_pref_title">Número de ícones</string>
@@ -107,6 +114,8 @@
     <string name="reset_to_default">Repor valores padrão</string>
     <string name="dock_shadow">Sombra</string>
     <string name="dock_fill">Fundo</string>
+    <string name="radius">Esquina redonda</string>
+    <string name="gradient">Gradiente</string>
     <!--Marker C-->
     <string name="pref_category_icons">Ícones</string>
     <string name="pref_category_aag">At a glance</string>
@@ -185,7 +194,7 @@
     <string name="pref_smartspace_widget_provider">Fonte de meteorologia</string>
     <string name="pref_smartspace_event_provider">Fonte do calendário</string>
     <string name="title_all_apps_search">Barra de pesquisa no menu</string>
-    <string name="smartspace_widget_provider_not_found">Algo errado aconteceu. Instale ou atualize a aplicação Google.</string>
+    <string name="smartspace_widget_provider_not_found">Instale ou atualize a aplicação Google.</string>
     <string name="apps_label">Aplicações</string>
     <string name="all_apps_label">Todas as aplicações</string>
     <string name="all_apps_label_pref_title">Mostrar etiqueta \"Todas as aplicações\"</string>
@@ -220,6 +229,7 @@
     <string name="theme_automatic">Automático</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Padrão</string>
+    <string name="transparent">Transparente</string>
     <string name="pref_open_source_licenses_title">Licenças</string>
     <string name="pref_legacy_treatment_title">Criar ícones adaptativos</string>
     <string name="pref_legacy_treatment_summary">Ícones adaptativos automáticos para todas as aplicações</string>
@@ -229,6 +239,7 @@
     <string name="color_system_accent">Realce do sistema</string>
     <string name="color_pixel_accent">Azul Pixel</string>
     <string name="color_presets">Predefinições</string>
+    <string name="custom">Personalizado</string>
     <string name="color_wallpaper_main">Papel de parede - primário</string>
     <string name="color_wallpaper_secondary">Papel de parede - secundário</string>
     <string name="color_wallpaper_tertiary">Papel de parede - terciário</string>
@@ -295,6 +306,7 @@
     <string name="search_menu">Pesquisar definições</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Realce</string>
+    <string name="theme_based">Segue tema</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Sugestões</string>
     <string name="title_app_suggestions">Aplicações</string>
@@ -329,8 +341,10 @@
     <string name="tab_bottom_sheet_save">Guardar</string>
     <string name="tab_hide_from_main">Ocultar da gaveta</string>
     <string name="tab_color">Cor da aba</string>
+    <string name="delete">Eliminar</string>
     <string name="none">Nenhuma</string>
     <string name="undo">Desfazer</string>
+    <string name="name">Nome</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Atalhos</string>
     <string name="pref_integrations">Integrações</string>
@@ -393,4 +407,7 @@ Podes alterar isto nas definições do Lawnchair ou do Sesame.]]></string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF suportados</string>
     <string name="pref_fonts_missing_font">Tipo de letra não encontrado</string>
     <string name="about_translate">Traduções</string>
+    <string name="pref_show_dev_options">Exibir em definições</string>
+    <string name="about_app_description">Uma alternativa personalizável ao Píxel Launcher.</string>
+    <string name="dock_scale">Escala da gaveta</string>
 </resources>
