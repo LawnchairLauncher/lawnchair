@@ -5,13 +5,17 @@
     <string name="in_smartspace">Al giny \‘At a glance\’</string>
     <string name="smartspace_time">Hora</string>
     <string name="smartspace_date">Data</string>
+    <string name="customize">Personalitza</string>
     <string name="smartspace_preferences_in_settings">D\'una ullada</string>
     <string name="smartspace_preferences_in_settings_desc">Data, hora, font del temps</string>
+    <string name="search">Cerca</string>
     <string name="label_voice_search">Cerca per veu</string>
+    <string name="icon_pack">Paquet d\'icones</string>
     <string name="home_widget">Giny de l\'inici</string>
     <string name="title_show_google_app">%1$s a l\'esquerra</string>
     <string name="msg_minus_one_on_left">Mur l\'esquerra de l\'escriptori</string>
     <string name="about">Quant a</string>
+    <string name="google_app">Aplicació Google</string>
     <string name="about_app_version">Versió</string>
     <string name="title_disable_suggestions_prompt">Desactiva els suggeriments d\'aplicacions</string>
     <string name="msg_disable_suggestions_prompt">"Les dades d'ús s'eliminaran"</string>
@@ -42,6 +46,7 @@
     <string name="choose_backup_path">Navega</string>
     <string name="backup_contents">Contingut</string>
     <string name="backup_settings">Configuració</string>
+    <string name="homescreen">Pantalla d\'inici</string>
     <string name="backup_wallpaper">Fons de pantalla</string>
     <string name="backup_error_blank_name">Introduïu el nom de la còpia de seguretat</string>
     <string name="backup_error_blank_location">Trieu la ubicació de còpia de la seguretat</string>
@@ -57,6 +62,7 @@
     <string name="backup_restarting">S\'està reiniciant</string>
     <string name="restore_contents">Restaura el contingut</string>
     <string name="restore_success">La restauració ha finalitzat</string>
+    <string name="failed">Quelcom ha fallat</string>
     <string name="backup_share_text">Còpia de seguretat del Lawnchair</string>
     <string name="full_width_widgets_pref_summary">Permet que els ginys ocupin les vores de la pantalla</string>
     <string name="full_width_width_widgets_pref_title">Ginys amples</string>
@@ -89,6 +95,7 @@
     <string name="dock_style_n">Pla</string>
     <string name="dock_style_hidden">Amagat</string>
     <string name="dock_search_bar">Barra de cerca de l\'acoblador</string>
+    <string name="opacity">Opacitat</string>
     <string name="title_all_apps_google_search">Cerca global</string>
     <string name="summary_all_apps_google_search">Cerqueu resultats web i aplicacions</string>
     <string name="num_hotseat_icons_pref_title">Número d\'icones</string>
@@ -102,6 +109,8 @@
     <string name="reset_to_default">Restableix els valors per defecte</string>
     <string name="dock_shadow">Ombra</string>
     <string name="dock_fill">Fons</string>
+    <string name="radius">Cantonades arrodonides</string>
+    <string name="gradient">Gradient</string>
     <!--Marker C-->
     <string name="pref_category_icons">Icones</string>
     <string name="pref_category_aag">D\'una ullada</string>
@@ -213,6 +222,7 @@
     <string name="theme_automatic">Automàtic</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Per defecte</string>
+    <string name="transparent">Transparent</string>
     <string name="pref_open_source_licenses_title">Llicències</string>
     <string name="pref_legacy_treatment_title">Crea icones adaptatives</string>
     <string name="pref_legacy_treatment_summary">Icones adaptatives automàtiques per a totes les aplicacions</string>
@@ -222,6 +232,7 @@
     <string name="color_system_accent">Accent del sistema</string>
     <string name="color_pixel_accent">Blau Pixel</string>
     <string name="color_presets">Predefinits</string>
+    <string name="custom">Personalitzat</string>
     <string name="color_wallpaper_main">Fons de pantalla — primari</string>
     <string name="color_wallpaper_secondary">Fons de pantalla — secundari</string>
     <string name="color_wallpaper_tertiary">Fons de pantalla — terciari</string>
@@ -287,6 +298,7 @@
     <string name="search_menu">Cerca configuracions</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Accent</string>
+    <string name="theme_based">Segueix el tema</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Suggeriments</string>
     <string name="title_app_suggestions">Aplicacions</string>
@@ -321,8 +333,10 @@
     <string name="tab_bottom_sheet_save">Desa</string>
     <string name="tab_hide_from_main">Oculta del calaix</string>
     <string name="tab_color">Color de la pestanya</string>
+    <string name="delete">Suprimeix</string>
     <string name="none">Cap</string>
     <string name="undo">Desfés</string>
+    <string name="name">Nom</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Dreceres</string>
     <string name="pref_integrations">Integracions</string>
