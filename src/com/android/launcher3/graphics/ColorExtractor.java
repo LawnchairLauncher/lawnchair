@@ -21,16 +21,13 @@ import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.ColorUtils;
-import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 import com.android.launcher3.Utilities;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import kotlin.collections.ArraysKt;
 
-import static java.lang.Math.abs;
 import static java.lang.Math.min;
 import static java.lang.Math.max;
 import static java.lang.Math.round;
@@ -241,7 +238,7 @@ public class ColorExtractor {
      * https://www.cs.umb.edu/~jreyes/csit114-fall-2007/project4/filters.html#posterize
      * https://github.com/gitgraghu/image-processing/blob/master/src/Effects/Posterize.java
      */
-    private static int posterize(int rgb) {
+    public static int posterize(int rgb) {
         int red = (0xff & (rgb >> 16));
         int green = (0xff & (rgb >> 8));
         int blue = (0xff & rgb);

@@ -175,6 +175,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val drawerLabelRows get() = if(drawerMultilineLabel) 2 else 1
     val drawerTabs by lazy { DrawerTabs(this) }
     val showActions by BooleanPref("pref_show_suggested_actions", true, doNothing)
+    val sortDrawerByColors by BooleanPref("pref_allAppsColorSorted", false, reloadAll)
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_showDevOptions", false, doNothing)

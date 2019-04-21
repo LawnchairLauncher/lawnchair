@@ -17,9 +17,11 @@ package com.android.launcher3.allapps;
 
 import android.content.Context;
 import android.content.pm.LauncherActivityInfo;
-import android.content.pm.PackageManager;
 
 import android.os.UserHandle;
+import android.support.v4.graphics.ColorUtils;
+import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.allapps.AppColorComparator;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.Launcher;
@@ -64,9 +66,12 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         public AdapterItem fastScrollToItem;
         // The touch fraction that should map to this fast scroll section info
         public float touchFraction;
+        // The color of this fast scroll section
+        public int color;
 
-        public FastScrollSectionInfo(String sectionName) {
+        public FastScrollSectionInfo(String sectionName, int color) {
             this.sectionName = sectionName;
+            this.color = color;
         }
     }
 
@@ -150,22 +155,26 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
     // The of ordered component names as a result of a search query
     private ArrayList<ComponentKey> mSearchResults;
-    private HashMap<CharSequence, String> mCachedSectionNames = new HashMap<>();
+    private HashMap<AppInfo, String> mCachedSectionNames = new HashMap<>();
     private AllAppsGridAdapter mAdapter;
     private AlphabeticIndexCompat mIndexer;
     private AppInfoComparator mAppNameComparator;
+    private AppColorComparator mAppColorComparator;
     private final int mNumAppsPerRow;
     private int mNumAppRowsInAdapter;
     private ItemInfoMatcher mItemFilter;
+    private LawnchairPreferences prefs;
 
     public AlphabeticalAppsList(Context context, AllAppsStore appsStore, boolean isWork) {
         mAllAppsStore = appsStore;
         mLauncher = Launcher.getLauncher(context);
         mIndexer = new AlphabeticIndexCompat(context);
         mAppNameComparator = new AppInfoComparator(context);
+        mAppColorComparator = new AppColorComparator(context);
         mIsWork = isWork;
         mNumAppsPerRow = mLauncher.getDeviceProfile().inv.numColsDrawer;
         mAllAppsStore.addUpdateListener(this);
+        prefs = Utilities.getLawnchairPrefs(context);
     }
 
     public void updateItemFilter(ItemInfoMatcher itemFilter) {
@@ -260,7 +269,11 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             }
         }
 
-        Collections.sort(mApps, mAppNameComparator);
+        if (prefs.getSortDrawerByColors()) {
+            Collections.sort(mApps, mAppColorComparator);
+        } else {
+            Collections.sort(mApps, mAppNameComparator);
+        }
 
         // As a special case for some languages (currently only Simplified Chinese), we may need to
         // coalesce sections
@@ -274,7 +287,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             TreeMap<String, ArrayList<AppInfo>> sectionMap = new TreeMap<>(new LabelComparator());
             for (AppInfo info : mApps) {
                 // Add the section to the cache
-                String sectionName = getAndUpdateCachedSectionName(info.title);
+                String sectionName = getAndUpdateCachedSectionName(info);
 
                 // Add it to the mapping
                 ArrayList<AppInfo> sectionApps = sectionMap.get(sectionName);
@@ -294,7 +307,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             // Just compute the section headers for use below
             for (AppInfo info : mApps) {
                 // Add the section to the cache
-                getAndUpdateCachedSectionName(info.title);
+                getAndUpdateCachedSectionName(info);
             }
         }
 
@@ -331,12 +344,16 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
         for (AppInfo info : getFiltersAppInfos()) {
-            String sectionName = getAndUpdateCachedSectionName(info.title);
+            String sectionName = getAndUpdateCachedSectionName(info);
 
             // Create a new section if the section names do not match
             if (!sectionName.equals(lastSectionName)) {
                 lastSectionName = sectionName;
-                lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName);
+                int color = 0;
+                if (prefs.getSortDrawerByColors()) {
+                    color = info.actualIconColor;
+                }
+                lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName, color);
                 mFastScrollerSections.add(lastFastScrollerSectionInfo);
             }
 
@@ -459,11 +476,17 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
      * Returns the cached section name for the given title, recomputing and updating the cache if
      * the title has no cached section name.
      */
-    private String getAndUpdateCachedSectionName(CharSequence title) {
-        String sectionName = mCachedSectionNames.get(title);
+    private String getAndUpdateCachedSectionName(AppInfo info) {
+        String sectionName = mCachedSectionNames.get(info);
         if (sectionName == null) {
-            sectionName = mIndexer.computeSectionName(title);
-            mCachedSectionNames.put(title, sectionName);
+            if (prefs.getSortDrawerByColors()) {
+                float[] hsl = new float[3];
+                ColorUtils.colorToHSL(info.actualIconColor, hsl);
+                sectionName = String.format("%d:%d:%d", AppColorComparator.remapHue(hsl[0]), AppColorComparator.remap(hsl[2]), AppColorComparator.remap(hsl[1]));
+            } else {
+                sectionName = mIndexer.computeSectionName(info.title);
+            }
+            mCachedSectionNames.put(info, sectionName);
         }
         return sectionName;
     }

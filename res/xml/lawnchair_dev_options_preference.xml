@@ -116,5 +116,11 @@
             android:title="Generate folder color"
             android:summary="Generates the folder color based on custom icons [this breaks readability depending on the color]"
             android:defaultValue="false" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_allAppsColorSorted"
+            android:title="Sort drawer by icon color"
+            android:summary="Some initial experiments with alternative drawer sorting modes"
+            android:defaultValue="false" />
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 </PreferenceScreen>
