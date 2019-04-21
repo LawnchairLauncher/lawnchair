@@ -95,7 +95,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     public int getTopMargin(Rect rect) {
-        return Math.max((int) (-this.Dy), rect.top - this.Dt);
+        return Math.max(Math.round(-this.Dy), rect.top - this.Dt);
     }
 
     protected void onAttachedToWindow() {
