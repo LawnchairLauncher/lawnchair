@@ -106,6 +106,8 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
 
     private Runnable mHideLineRunnable = () -> animateLineToAlpha(0);
 
+    private boolean mDockHasBackground;
+
     public WorkspacePageIndicator(Context context) {
         this(context, null);
     }
@@ -126,6 +128,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
         boolean darkText = ThemeManager.Companion.getInstance(context).getSupportsDarkText();
         mActiveAlpha = darkText ? BLACK_ALPHA : WHITE_ALPHA;
         mLinePaint.setColor(darkText ? Color.BLACK : Color.WHITE);
+        mDockHasBackground = !Utilities.getLawnchairPrefs(context).getDockGradientStyle();
     }
 
     public void updateLineHeight() {
@@ -147,6 +150,11 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
         int lineLeft = (int) (progress * (availableWidth - lineWidth));
         int lineRight = lineLeft + lineWidth;
 
+        if (mDockHasBackground) {
+            canvas.drawRoundRect(lineLeft, getHeight() - mLineHeight / 2, lineRight,
+                    getHeight() + mLineHeight / 2, mLineHeight, mLineHeight, mLinePaint);
+            return;
+        }
         canvas.drawRoundRect(lineLeft, getHeight() / 2 - mLineHeight / 2, lineRight,
                 getHeight() / 2 + mLineHeight / 2, mLineHeight, mLineHeight, mLinePaint);
     }
