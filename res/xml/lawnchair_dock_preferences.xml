@@ -89,7 +89,8 @@
     
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_dockSearchbar"
-        android:title="@string/pref_category_searchbar">
+        android:title="@string/pref_category_searchbar"
+        android:dependency="pref_dockPreset">
         
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_dockSearchBar"
