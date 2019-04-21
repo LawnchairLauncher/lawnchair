@@ -177,6 +177,7 @@
     <style name="SettingsTheme.Base" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@android:color/white</item>
         <item name="settingsBackground">@android:color/white</item>
+        <item name="settingsSearchBackground">?settingsBackground</item>
         <item name="colorPrimary">?android:windowBackground</item>
         <item name="colorPrimaryDark">?android:windowBackground</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -236,6 +237,7 @@
         <item name="alertDialogTheme">@style/SettingsTheme.V2.Dark.Dialog</item>
         <item name="buttonStyle">@style/SettingsTheme.V2.Button</item>
         <item name="settingsBackground">@color/settings_background_dark</item>
+        <item name="settingsSearchBackground">?settingsBackground</item>
         <item name="bottomSheetDialogTheme">@style/SettingsTheme.BottomSheetDialog</item>
         <item name="bottomSheetNavBarColor">@android:color/transparent</item>
         <item name="bottomSheetScrimColor">@android:color/black</item>
@@ -254,6 +256,7 @@
 
     <style name="SettingsTheme.V2.Black" parent="@style/SettingsTheme.V2.Dark">
         <item name="android:windowBackground">@android:color/black</item>
+        <item name="settingsSearchBackground">?android:colorBackground</item>
         <item name="settingsBackground">@android:color/black</item>
         <item name="actionBarTheme">@style/SettingsTheme.V2.Black.ActionBar</item>
     </style>

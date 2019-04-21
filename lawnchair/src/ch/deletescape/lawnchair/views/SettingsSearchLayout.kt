@@ -28,31 +28,7 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.graphics.IconShapeOverride
 
-class SettingsSearchLayout(context: Context, attrs: AttributeSet?) : InsettableFrameLayout(context, attrs), SharedPreferences.OnSharedPreferenceChangeListener {
-
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-        Utilities.getPrefs(context).registerOnSharedPreferenceChangeListener(this)
-        updateRadius()
-    }
-
-    fun updateRadius() {
-        val edgeRadius = FolderShape.sInstance.mAttrs.get(R.attr.qsbEdgeRadius)
-        if (edgeRadius != null) {
-            findViewById<CardView>(R.id.search_bar).radius = edgeRadius.getDimension(resources.displayMetrics)
-        }
-    }
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (key == IconShapeOverride.KEY_PREFERENCE) {
-            updateRadius()
-        }
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        Utilities.getPrefs(context).unregisterOnSharedPreferenceChangeListener(this)
-    }
+class SettingsSearchLayout(context: Context, attrs: AttributeSet?) : InsettableFrameLayout(context, attrs) {
 
     override fun setInsets(insets: Rect) {
         setPadding(0, insets.top, 0, 0)
