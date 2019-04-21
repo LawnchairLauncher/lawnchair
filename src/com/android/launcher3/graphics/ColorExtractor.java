@@ -273,7 +273,7 @@ public class ColorExtractor {
         // Check if the icon is squareish
         final float ratio = (drawable.getIntrinsicHeight() * (1 - (bounds.top + bounds.bottom)) /
                 (drawable.getIntrinsicWidth() * (1 - (bounds.left + bounds.right))));
-        if (ratio < 0.99 || ratio > 1.01) return false;
+        if (ratio < 0.99 || ratio > 1.001) return false;
 
         final Bitmap bitmap = Utilities.drawableToBitmap(drawable);
         if (bitmap == null) {
@@ -297,7 +297,7 @@ public class ColorExtractor {
 
 
         // Any icon with less than 2% transparent pixels (padding excluded) is considered "full-bleed-ish"
-        final int maxTransparent = (int) (round(size * .02) + addPixels);
+        final int maxTransparent = (int) (round(size * .035) + addPixels);
         int count = 0;
 
         for (int pixel : pixels) {
