@@ -9,13 +9,17 @@
     <string name="in_smartspace">ในข้อมูลโดยย่อ</string>
     <string name="smartspace_time">แสดงเวลา</string>
     <string name="smartspace_date">แสดงวันที่</string>
+    <string name="customize">ค่ากำหนด</string>
     <string name="smartspace_preferences_in_settings">ข้อมูลโดยย่อ</string>
     <string name="smartspace_preferences_in_settings_desc">วันที่, เวลา, สภาพอากาศ</string>
+    <string name="search">ค้นหา</string>
     <string name="label_voice_search">ค้นหาด้วยเสียง</string>
+    <string name="icon_pack">ชุดไอคอน</string>
     <string name="home_widget">ข้อมูลโดยย่อ</string>
     <string name="title_show_google_app">แสดง %1$s</string>
     <string name="msg_minus_one_on_left">ที่ด้านซ้ายของหน้าจอหลัก</string>
     <string name="about">เกี่ยวกับ</string>
+    <string name="google_app">แอป Google</string>
     <string name="about_app_version">เวอร์ชัน</string>
     <string name="title_disable_suggestions_prompt">ปิดคำแนะนำเกี่ยวกับแอปใช่ไหม</string>
     <string name="msg_disable_suggestions_prompt">"คำแนะนำจะไม่ปรากฏขึ้นที่ด้านบนของรายการแอป และข้อมูลการใช้งานที่ใช้ในการสร้างคำแนะนำจะถูกลบทิ้งถาวร"</string>
@@ -46,6 +50,7 @@
     <string name="choose_backup_path">เรียกดู</string>
     <string name="backup_contents">เนื้อหา</string>
     <string name="backup_settings">การตั้งค่า</string>
+    <string name="homescreen">หน้าหลัก</string>
     <string name="backup_wallpaper">ภาพพื้นหลัง</string>
     <string name="backup_error_blank_name">ใส่ชื่อการสำรองข้อมูล</string>
     <string name="backup_error_blank_location">เลือกตำแหน่งการสำรองข้อมูล</string>
@@ -61,6 +66,7 @@
     <string name="backup_restarting">กำลังเริ่มใหม่</string>
     <string name="restore_contents">คืนค่าเนื้อหา</string>
     <string name="restore_success">คืนค่าสำเร็จ</string>
+    <string name="failed">มีบางอย่างผิดพลาด</string>
     <string name="backup_share_text">การสำรองข้อมูล Lawnchair</string>
     <string name="full_width_widgets_pref_summary">ยืดวิดเจ็ตไปถึงขอบหน้าจอ</string>
     <string name="full_width_width_widgets_pref_title">วิดเจ็ตกว้าง</string>
@@ -93,6 +99,7 @@
     <string name="dock_style_n">เรียบ</string>
     <string name="dock_style_hidden">ซ่อน</string>
     <string name="dock_search_bar">แสดงแถบค้นหา</string>
+    <string name="opacity">ความทึบ</string>
     <string name="title_all_apps_google_search">การค้นหาภายนอก</string>
     <string name="summary_all_apps_google_search">ค้นหาจากในเว็บและแอป</string>
     <string name="num_hotseat_icons_pref_title">จำนวนไอคอน</string>
@@ -106,6 +113,8 @@
     <string name="reset_to_default">คืนค่าเริ่มต้น</string>
     <string name="dock_shadow">เงา</string>
     <string name="dock_fill">พื้นหลัง</string>
+    <string name="radius">ความโค้งของมุม</string>
+    <string name="gradient">ไล่ระดับสี</string>
     <!--Marker C-->
     <string name="pref_category_icons">ไอคอน</string>
     <string name="pref_category_aag">ข้อมูลโดยย่อ</string>
@@ -219,6 +228,7 @@
     <string name="theme_automatic">อัตโนมัติ</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">ค่าเริ่มต้น</string>
+    <string name="transparent">โปร่งใส</string>
     <string name="pref_open_source_licenses_title">ใบอนุญาตโอเพนซอร์ส</string>
     <string name="pref_legacy_treatment_title">สร้างไอคอนแบบปรับอัตโนมัติ</string>
     <string name="pref_legacy_treatment_summary">ไอคอนแบบปรับอัตโนมัติสำหรับทุกแอป</string>
@@ -228,6 +238,7 @@
     <string name="color_system_accent">สีที่ถูกเน้นของระบบ</string>
     <string name="color_pixel_accent">สีน้ำเงิน</string>
     <string name="color_presets">ที่กำหนดไว้</string>
+    <string name="custom">กำหนดเอง</string>
     <string name="color_wallpaper_main">ภาพพื้นหลัง - สีหลัก</string>
     <string name="color_wallpaper_secondary">ภาพพื้นหลัง - สีรอง</string>
     <string name="color_wallpaper_tertiary">ภาพพื้นหลัง - สีที่สาม</string>
@@ -293,6 +304,7 @@
     <string name="search_menu">ค้นหาการตั้งค่า</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">สีที่ถูกเน้น</string>
+    <string name="theme_based">ตามธีม</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">คำแนะนำ</string>
     <string name="title_app_suggestions">แอป</string>
@@ -325,7 +337,10 @@
     <string name="tab_bottom_sheet_save">บันทึก</string>
     <string name="tab_hide_from_main">ซ่อนจากรายการแอป</string>
     <string name="tab_color">สีแท็บ</string>
+    <string name="delete">ลบ</string>
+    <string name="none">ไม่มี</string>
     <string name="undo">เลิกทำ</string>
+    <string name="name">ชื่อ</string>
     <!--Marker J-->
     <string name="shortcut_sesame">ทางลัด</string>
     <string name="pref_integrations">การผสาน</string>
@@ -387,4 +402,8 @@
     <string name="pref_fonts_add_fonts_summary">รองรับไฟล์ OTF &amp; TTF</string>
     <string name="pref_fonts_missing_font">ไม่พบแบบอักษร</string>
     <string name="about_translate">การแปลภาษา</string>
+    <string name="pref_show_dev_options">แสดงในการตั้งค่า</string>
+    <string name="about_app_description">ทางเลือกที่ปรับแต่งได้แทน Pixel Launcher</string>
+    <string name="about_bio_paphonb">นักเรียนอายุ 18 ปี นักพัฒนา Android และหนึ่งในนักพัฒนา Lawnchair</string>
+    <string name="dock_scale">ขนาดแถบรายการโปรด</string>
 </resources>
