@@ -196,8 +196,9 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
                 items.add(FamilyCache(FontCache.Family(FontCache.SystemFont("sans-serif-condensed"))))
                 it.mapTo(items) { font ->
                     val variantsMap = HashMap<String, FontCache.Font>()
+                    val variants = font.variants.toTypedArray()
                     font.variants.forEach { variant ->
-                        variantsMap[variant] = FontCache.GoogleFont(context, font.family, variant)
+                        variantsMap[variant] = FontCache.GoogleFont(context, font.family, variant, variants)
                     }
                     FamilyCache(FontCache.Family(font.family, variantsMap))
                 }
