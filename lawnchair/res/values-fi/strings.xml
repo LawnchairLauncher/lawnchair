@@ -5,13 +5,17 @@
     <string name="in_smartspace">\‘Pikanäkymä\’ -widgetissä</string>
     <string name="smartspace_time">Aika</string>
     <string name="smartspace_date">Päivämäärä</string>
+    <string name="customize">Muokkaa</string>
     <string name="smartspace_preferences_in_settings">Pikanäkymä</string>
     <string name="smartspace_preferences_in_settings_desc">Päivämäärä, aika, säätietojen lähde</string>
+    <string name="search">Haku</string>
     <string name="label_voice_search">Puhehaku</string>
+    <string name="icon_pack">Kuvakepaketti</string>
     <string name="home_widget">Koti-widget</string>
     <string name="title_show_google_app">%1$s vasemmalla</string>
     <string name="msg_minus_one_on_left">Fiidi aloitusnäytön vasemmalla puolella</string>
     <string name="about">Tietoja</string>
+    <string name="google_app">Google-sovellus</string>
     <string name="about_app_version">Versio</string>
     <string name="title_disable_suggestions_prompt">Poista sovellussuositukset käytöstä</string>
     <string name="msg_disable_suggestions_prompt">"Käyttötiedot poistetaan"</string>
@@ -42,6 +46,7 @@
     <string name="choose_backup_path">Selaa</string>
     <string name="backup_contents">Sisältö</string>
     <string name="backup_settings">Asetukset</string>
+    <string name="homescreen">Aloitusnäyttö</string>
     <string name="backup_wallpaper">Taustakuva</string>
     <string name="backup_error_blank_name">Kirjoita varmuuskopion nimi</string>
     <string name="backup_error_blank_location">Valitse varmuuskopion sijainti</string>
@@ -57,6 +62,7 @@
     <string name="backup_restarting">Käynnistetään uudelleen</string>
     <string name="restore_contents">Palauta sisältö</string>
     <string name="restore_success">Palautus suoritettu</string>
+    <string name="failed">Jotain meni pieleen</string>
     <string name="backup_share_text">Lawnchair varmuuskopio</string>
     <string name="full_width_widgets_pref_summary">Anna widgetien venyä näytön reunoille</string>
     <string name="full_width_width_widgets_pref_title">Leveät widgetit</string>
@@ -89,6 +95,7 @@
     <string name="dock_style_n">Tasainen</string>
     <string name="dock_style_hidden">Piilotettu</string>
     <string name="dock_search_bar">Telakan hakupalkki</string>
+    <string name="opacity">Peittävyys</string>
     <string name="title_all_apps_google_search">Globaali haku</string>
     <string name="summary_all_apps_google_search">Etsi web-tuloksia ja sovelluksia</string>
     <string name="num_hotseat_icons_pref_title">Kuvakkeiden määrä</string>
@@ -102,6 +109,8 @@
     <string name="reset_to_default">Palauta oletukset</string>
     <string name="dock_shadow">Varjostus</string>
     <string name="dock_fill">Tausta</string>
+    <string name="radius">Kulmien pyöristys</string>
+    <string name="gradient">Gradientti</string>
     <!--Marker C-->
     <string name="pref_category_icons">Kuvakkeet</string>
     <string name="pref_category_aag">Pikanäkymä</string>
@@ -214,6 +223,7 @@
     <string name="theme_automatic">Automaattinen</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Oletus</string>
+    <string name="transparent">Läpinäkyvä</string>
     <string name="pref_open_source_licenses_title">Lisenssit</string>
     <string name="pref_legacy_treatment_title">Luo adaptiiviset kuvakkeet</string>
     <string name="pref_legacy_treatment_summary">Automaattiset adaptiiviset kuvakkeet kaikille sovelluksille</string>
@@ -223,11 +233,12 @@
     <string name="color_system_accent">Järjestelmän korostus</string>
     <string name="color_pixel_accent">Pixel-sininen</string>
     <string name="color_presets">Esiasetukset</string>
+    <string name="custom">Mukautettu</string>
     <string name="color_wallpaper_main">Taustakuva — ensisijainen</string>
     <string name="color_wallpaper_secondary">Taustakuva — toissijainen</string>
     <string name="color_wallpaper_tertiary">Taustakuva — tertiäärinen</string>
     <string name="pref_hide_statusbar">Piilota tilapalkki</string>
-    <string name="automatic_short">Autom.</string>
+    <string name="automatic_short">Auto</string>
     <string name="bridge_missing_message">Asenna tai päivitä Lawnfeed</string>
     <string name="quickstep_pref_title">Viimeisimmät</string>
     <string name="quickstep_pref_summary">Eleet, kulmat, sumennus</string>
@@ -287,6 +298,7 @@
     <string name="search_menu">Etsi asetuksia</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Korostus</string>
+    <string name="theme_based">Noudata teemaa</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Ehdotukset</string>
     <string name="title_app_suggestions">Sovellukset</string>
@@ -321,8 +333,10 @@
     <string name="tab_bottom_sheet_save">Tallenna</string>
     <string name="tab_hide_from_main">Piilota sovellusvalikosta</string>
     <string name="tab_color">Välilehden väri</string>
+    <string name="delete">Poista</string>
     <string name="none">Ei mitään</string>
     <string name="undo">Kumoa</string>
+    <string name="name">Nimi</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Pikakuvakkeet</string>
     <string name="pref_integrations">Integraatiot</string>
@@ -384,4 +398,7 @@
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF tuettu</string>
     <string name="pref_fonts_missing_font">Fontti puuttuu</string>
     <string name="about_translate">Käännökset</string>
+    <string name="pref_show_dev_options">Näytä asetuksissa</string>
+    <string name="about_app_description">Muokattavissa oleva Pixel Launcher -vaihtoehto.</string>
+    <string name="dock_scale">Telakan koko</string>
 </resources>
