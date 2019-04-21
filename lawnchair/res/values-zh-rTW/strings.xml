@@ -9,13 +9,17 @@
     <string name="in_smartspace">在 「快速查看」微件中</string>
     <string name="smartspace_time">時間</string>
     <string name="smartspace_date">日期</string>
+    <string name="customize">自訂</string>
     <string name="smartspace_preferences_in_settings">快速查看</string>
     <string name="smartspace_preferences_in_settings_desc">日期、時間、天氣資料來源</string>
+    <string name="search">搜尋</string>
     <string name="label_voice_search">語音搜尋</string>
+    <string name="icon_pack">圖示包</string>
     <string name="home_widget">主螢幕小工具</string>
     <string name="title_show_google_app">位於%1$s左側</string>
     <string name="msg_minus_one_on_left">在桌面左側的資訊欄</string>
     <string name="about">關於</string>
+    <string name="google_app">Google 應用程式</string>
     <string name="about_app_version">版本</string>
     <string name="app_name_pixel_launcher">Pixel 啟動器</string>
     <string name="title_disable_suggestions_prompt">停用應用程式建議</string>
@@ -47,6 +51,7 @@
     <string name="choose_backup_path">瀏覽</string>
     <string name="backup_contents">内容</string>
     <string name="backup_settings">設定</string>
+    <string name="homescreen">主畫面</string>
     <string name="backup_wallpaper">桌布</string>
     <string name="backup_error_blank_name">輸入備份的名稱</string>
     <string name="backup_error_blank_location">選擇備份位置</string>
@@ -62,6 +67,7 @@
     <string name="backup_restarting">重新啟動中</string>
     <string name="restore_contents">還原內容</string>
     <string name="restore_success">還原已完成</string>
+    <string name="failed">發生問題</string>
     <string name="backup_share_text">Lawnchair 備份</string>
     <string name="full_width_widgets_pref_summary">使小工具自動縮放至螢幕邊緣</string>
     <string name="full_width_width_widgets_pref_title">寬大的小工具</string>
@@ -94,6 +100,7 @@
     <string name="dock_style_n">扁平</string>
     <string name="dock_style_hidden">隱藏</string>
     <string name="dock_search_bar">Dock 欄搜尋列</string>
+    <string name="opacity">透明度</string>
     <string name="title_all_apps_google_search">全域搜尋</string>
     <string name="summary_all_apps_google_search">查找網路結果和應用</string>
     <string name="num_hotseat_icons_pref_title">圖標數</string>
@@ -107,6 +114,8 @@
     <string name="reset_to_default">重設為預設值</string>
     <string name="dock_shadow">陰影</string>
     <string name="dock_fill">背景</string>
+    <string name="radius">圓角</string>
+    <string name="gradient">漸層</string>
     <!--Marker C-->
     <string name="pref_category_icons">圖示</string>
     <string name="pref_category_aag">快速查看</string>
@@ -142,7 +151,7 @@
     <string name="about_role_family_member">家庭成員</string>
     <string name="about_role_magisk_maintainer">Magisk 模組的維護者</string>
     <string name="about_bio_deletescape">Android 開發人員與愛好者，喜歡迷因（玩得有點多）。Lawnchair 專案的創始人。</string>
-    <string name="about_bio_divadsn">19 歲，將咖啡因和披薩變成了程式碼。 此前也稱為 Codebucket。</string>
+    <string name="about_bio_divadsn">19 歲，將咖啡因和披薩變成了程式碼，提供寄管服務，且在發生問題之時提供 24/7 的開發協助。在他的空閒時間貢獻開源專案。此前也稱為 Codebucket。</string>
     <string name="about_bio_recoded">溫和的編碼師和圖形設計師。</string>
     <string name="about_bio_josh">獨立的的平面設計師</string>
     <string name="about_bio_chris">擁有創造性思的影響者、內容創造者&amp; 社交媒體和公關經理。</string>
@@ -185,7 +194,7 @@
     <string name="pref_smartspace_widget_provider">天氣來源</string>
     <string name="pref_smartspace_event_provider">日曆來源</string>
     <string name="title_all_apps_search">應用程式抽屜搜尋列</string>
-    <string name="smartspace_widget_provider_not_found">出了點問題。安裝或更新 Google 應用程式。</string>
+    <string name="smartspace_widget_provider_not_found">安裝或更新 Google 應用程式。</string>
     <string name="apps_label">應用程式</string>
     <string name="all_apps_label">所有應用程式</string>
     <string name="all_apps_label_pref_title">顯示「所有應用程式」標籤</string>
@@ -220,6 +229,7 @@
     <string name="theme_automatic">自動</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">預設</string>
+    <string name="transparent">透明度</string>
     <string name="pref_open_source_licenses_title">授權</string>
     <string name="pref_legacy_treatment_title">建立自適應圖示</string>
     <string name="pref_legacy_treatment_summary">自動適應圖示到所有應用程式</string>
@@ -229,6 +239,7 @@
     <string name="color_system_accent">系統強調色</string>
     <string name="color_pixel_accent">像素藍</string>
     <string name="color_presets">預設集</string>
+    <string name="custom">自訂</string>
     <string name="color_wallpaper_main">桌布 — 第一順位</string>
     <string name="color_wallpaper_secondary">桌布 — 第二順位</string>
     <string name="color_wallpaper_tertiary">桌布 — 第三順位</string>
@@ -295,6 +306,7 @@
     <string name="search_menu">設定搜尋</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">強調色</string>
+    <string name="theme_based">跟隨主題</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">建議</string>
     <string name="title_app_suggestions">應用程式</string>
@@ -327,8 +339,10 @@
     <string name="tab_bottom_sheet_save">儲存</string>
     <string name="tab_hide_from_main">從抽屜中隱藏</string>
     <string name="tab_color">標籤顏色</string>
+    <string name="delete">刪除</string>
     <string name="none">無</string>
     <string name="undo">復原</string>
+    <string name="name">名稱</string>
     <!--Marker J-->
     <string name="shortcut_sesame">捷徑</string>
     <string name="pref_integrations">整合</string>
@@ -390,4 +404,8 @@
     <string name="pref_fonts_add_fonts_summary">支援 OTF 和 TTF</string>
     <string name="pref_fonts_missing_font">遺失字型</string>
     <string name="about_translate">翻譯</string>
+    <string name="pref_show_dev_options">在設定中顯示</string>
+    <string name="about_app_description">可自訂的 Pixel Launcher 替代品。</string>
+    <string name="about_bio_paphonb">18 歲學生、Android 開發者且是 Lawnchair 啟動器的首席開發者之一。</string>
+    <string name="dock_scale">底欄大小</string>
 </resources>
