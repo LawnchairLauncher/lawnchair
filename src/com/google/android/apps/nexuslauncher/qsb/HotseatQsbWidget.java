@@ -316,7 +316,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         doOnClick();
     }
 
-    static int getBottomMargin(Launcher launcher) {
+    public static int getBottomMargin(Launcher launcher) {
         Resources resources = launcher.getResources();
         int minBottom = launcher.getDeviceProfile().getInsets().bottom + launcher.getResources()
                 .getDimensionPixelSize(R.dimen.hotseat_qsb_bottom_margin);

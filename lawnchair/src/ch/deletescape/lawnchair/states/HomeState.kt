@@ -17,9 +17,13 @@
 
 package ch.deletescape.lawnchair.states
 
+import android.content.Context
+import android.view.ViewGroup
 import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherState
+import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import kotlin.math.min
 
@@ -35,6 +39,8 @@ open class HomeState(id: Int, containerType: Int, transitionDuration: Int, flags
 
     companion object {
 
+        private val shelfOffset = SingletonHolder<Int, Context> { it.resources.getDimensionPixelSize(R.dimen.shelf_surface_offset) }
+
         fun getNormalProgress(launcher: Launcher): Float {
             return 1 - (getScrimHeight(launcher) / launcher.allAppsController.shiftRange)
         }
@@ -46,10 +52,9 @@ open class HomeState(id: Int, containerType: Int, transitionDuration: Int, flags
             return if (prefs.dockHide) {
                 dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx
             } else {
-                (dp.hotseatCellHeightPx * prefs.dockRowsCount + dp.hotseatBarTopPaddingPx)  * prefs.dockScale +
-                        if (prefs.twoRowDock && dp.isTallDevice) {
-                            dp.hotseatBarTopPaddingPx * prefs.dockScale
-                        } else 0f
+                val rangeDelta = dp.heightPx - launcher.allAppsController.shiftRange
+                val lp = launcher.hotseat.layoutParams
+                -rangeDelta + lp.height + dp.insets.top - shelfOffset.getInstance(launcher)
             }
         }
     }
