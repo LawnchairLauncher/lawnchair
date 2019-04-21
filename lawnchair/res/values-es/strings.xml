@@ -9,13 +9,17 @@
     <string name="in_smartspace">En el widget \‘At a glance\’</string>
     <string name="smartspace_time">Hora</string>
     <string name="smartspace_date">Fecha</string>
+    <string name="customize">Personalizar</string>
     <string name="smartspace_preferences_in_settings">De un vistazo</string>
     <string name="smartspace_preferences_in_settings_desc">Fecha, hora, servicio del clima</string>
+    <string name="search">Buscar</string>
     <string name="label_voice_search">Búsqueda por voz</string>
+    <string name="icon_pack">Paquete de íconos</string>
     <string name="home_widget">Widget de inicio</string>
     <string name="title_show_google_app">%1$s a la izquierda</string>
     <string name="msg_minus_one_on_left">Feed a la izquierda del escritorio</string>
     <string name="about">Acerca de</string>
+    <string name="google_app">Aplicación de Google</string>
     <string name="about_app_version">Versión</string>
     <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">Deshabilitar sugerencias de aplicaciones</string>
@@ -47,6 +51,7 @@
     <string name="choose_backup_path">Explorar</string>
     <string name="backup_contents">Contenido</string>
     <string name="backup_settings">Ajustes</string>
+    <string name="homescreen">Pantalla de inicio</string>
     <string name="backup_wallpaper">Fondo de Pantalla</string>
     <string name="backup_error_blank_name">Escriba un nombre para la copia de seguridad</string>
     <string name="backup_error_blank_location">Seleccione ubicación para la copia de seguridad</string>
@@ -62,6 +67,7 @@
     <string name="backup_restarting">Reiniciando</string>
     <string name="restore_contents">Restaurar contenido</string>
     <string name="restore_success">Restauración finalizada</string>
+    <string name="failed">Algo salió mal</string>
     <string name="backup_share_text">Copias de seguridad de Lawnchair</string>
     <string name="full_width_widgets_pref_summary">Permitir a los widgets ocupar los bordes</string>
     <string name="full_width_width_widgets_pref_title">Widgets anchos</string>
@@ -94,6 +100,7 @@
     <string name="dock_style_n">Plano</string>
     <string name="dock_style_hidden">Oculto</string>
     <string name="dock_search_bar">Barra de búsqueda del dock</string>
+    <string name="opacity">Opacidad</string>
     <string name="title_all_apps_google_search">Búsqueda global</string>
     <string name="summary_all_apps_google_search">Encontrar resultados web y aplicaciones</string>
     <string name="num_hotseat_icons_pref_title">Número de iconos</string>
@@ -107,6 +114,8 @@
     <string name="reset_to_default">Restaurar a valores por defecto</string>
     <string name="dock_shadow">Sombra</string>
     <string name="dock_fill">Fondo</string>
+    <string name="radius">Redondeo de las esquinas</string>
+    <string name="gradient">Degradado</string>
     <!--Marker C-->
     <string name="pref_category_icons">Iconos</string>
     <string name="pref_category_aag">De un vistazo</string>
@@ -220,6 +229,7 @@
     <string name="theme_automatic">Automático</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Por defecto</string>
+    <string name="transparent">Transparente</string>
     <string name="pref_open_source_licenses_title">Licencias</string>
     <string name="pref_legacy_treatment_title">Crear iconos adaptativos</string>
     <string name="pref_legacy_treatment_summary">Iconos adaptativos automáticos para todas las aplicaciones</string>
@@ -229,6 +239,7 @@
     <string name="color_system_accent">Acento del sistema</string>
     <string name="color_pixel_accent">Azul Pixel</string>
     <string name="color_presets">Predeterminados</string>
+    <string name="custom">Personalizado</string>
     <string name="color_wallpaper_main">Fondo de pantalla - primario</string>
     <string name="color_wallpaper_secondary">Fondo de pantalla - secundario</string>
     <string name="color_wallpaper_tertiary">Fondo de pantalla - terciario</string>
@@ -294,6 +305,7 @@
     <string name="search_menu">Buscar ajustes</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Acento</string>
+    <string name="theme_based">Seguir tema</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Sugerencias</string>
     <string name="title_app_suggestions">Aplicaciones</string>
@@ -328,8 +340,10 @@
     <string name="tab_bottom_sheet_save">Guardar</string>
     <string name="tab_hide_from_main">Ocultar del cajón</string>
     <string name="tab_color">Color de la pestaña</string>
+    <string name="delete">Eliminar</string>
     <string name="none">Ninguno</string>
     <string name="undo">Deshacer</string>
+    <string name="name">Nombre</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Accesos directos</string>
     <string name="pref_integrations">Integraciones</string>
@@ -391,4 +405,8 @@
     <string name="pref_fonts_add_fonts_summary">OTF y TTF compatibles</string>
     <string name="pref_fonts_missing_font">Fuente desaparecida</string>
     <string name="about_translate">Traducciones</string>
+    <string name="pref_show_dev_options">Mostrar en Configuración</string>
+    <string name="about_app_description">Una alternativa personalizable de Pixel Launcher.</string>
+    <string name="about_bio_paphonb">Un estudiante de 18 años, desarrollador de Android y uno de los desarrolladores principales de Lawnchair Launcher.</string>
+    <string name="dock_scale">Escala del Dock</string>
 </resources>
