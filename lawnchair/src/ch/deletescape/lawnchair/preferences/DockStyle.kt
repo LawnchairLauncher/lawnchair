@@ -49,7 +49,7 @@ abstract class DockStyle(protected val manager: StyleManager) {
     private class HiddenStyle(manager: StyleManager) : PredefinedStyle(manager, defaultArrow = false, defaultGradient = true, defaultRadius = 16f, defaultHide = true) {
         override var enableArrow
             get() = showArrowProperty.get()
-            set(value) { setProp(showArrowProperty, value, defaultArrow) }
+            set(value) { showArrowProperty.set(value) }
     }
 
     private class CustomStyle(manager: StyleManager) : DockStyle(manager) {
@@ -104,8 +104,7 @@ abstract class DockStyle(protected val manager: StyleManager) {
                     radiusProperty.set(radius)
                     opacityProperty.set(opacity)
                     showArrowProperty.set(enableArrow)
-                    if(manager.dockPreset != 5)
-                        manager.dockPreset = 0
+                    manager.dockPreset = 0
                     property.set(value)
                 }
             }

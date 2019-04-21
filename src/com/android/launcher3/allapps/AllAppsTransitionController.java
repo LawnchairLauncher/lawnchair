@@ -166,7 +166,8 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     private float getShiftApps(float progress, boolean inverted) {
         float normalShift = progress * mShiftRange;
         LawnchairPreferences prefs = LawnchairPreferences.Companion.getInstanceNoCreate();
-        if (prefs.getAllAppsSearch() != prefs.getDockSearchBar()) {
+        if (mAppsView.getFloatingHeaderView().hasVisibleContent()
+                && prefs.getAllAppsSearch() != prefs.getDockSearchBar()) {
             float overviewProgress = OVERVIEW.getVerticalProgress(mLauncher);
             float overviewShift = getQsbHeight();
             if (prefs.getAllAppsSearch()) {
