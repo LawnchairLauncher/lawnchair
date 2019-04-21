@@ -9,13 +9,17 @@
     <string name="in_smartspace">Im \'Auf einen Blick\' Widget</string>
     <string name="smartspace_time">Zeit</string>
     <string name="smartspace_date">Datum</string>
+    <string name="customize">Personalisieren</string>
     <string name="smartspace_preferences_in_settings">Auf einen Blick</string>
     <string name="smartspace_preferences_in_settings_desc">Datum, Zeit, Wetterdienst</string>
+    <string name="search">Suchen</string>
     <string name="label_voice_search">Sprachsuche</string>
+    <string name="icon_pack">Icon Pack</string>
     <string name="home_widget">Startbildschirm Widget</string>
     <string name="title_show_google_app">%1$s auf der linken Seite</string>
     <string name="msg_minus_one_on_left">Feed links vom Startbildschirm</string>
     <string name="about">Über</string>
+    <string name="google_app">Google App</string>
     <string name="about_app_version">Version</string>
     <string name="title_disable_suggestions_prompt">App-Vorschläge deaktivieren</string>
     <string name="msg_disable_suggestions_prompt">"Nutzungsdaten werden entfernt"</string>
@@ -23,12 +27,12 @@
     <string name="pixel_style_pref_title">Pixel Stil</string>
     <string name="about_summary_title">Übersicht</string>
     <string name="action_edit">Bearbeiten</string>
-    <string name="hide_app_sum">App in der App-Liste ausblenden</string>
+    <string name="hide_app_sum">In der App-Liste ausblenden</string>
     <string name="hide_app">App ausblenden</string>
     <string name="icon_shape_rounded_square">Abgerundetes Quadrat</string>
-    <string name="pixel_ui_pref_summary">Iconpack, Unschärfe, Farben</string>
+    <string name="pixel_ui_pref_summary">Icon Pack, Unschärfe, Farben</string>
     <string name="app_drawer_pref_title">App-Liste</string>
-    <string name="app_drawer_pref_summary">Deckkraft, Vorschläge, Apps verstecken</string>
+    <string name="app_drawer_pref_summary">Deckkraft, Vorschläge, Apps ausblenden</string>
     <string name="search_pref_summary">Farbe, Suchmaschine, Symbole</string>
     <string name="general_pref_title">Startbildschirm</string>
     <string name="general_pref_summary">Anordnung, Symbol Layout, Statusleiste</string>
@@ -46,6 +50,7 @@
     <string name="choose_backup_path">Durchsuchen</string>
     <string name="backup_contents">Inhalt</string>
     <string name="backup_settings">Einstellungen</string>
+    <string name="homescreen">Startbildschirm</string>
     <string name="backup_wallpaper">Hintergrundbild</string>
     <string name="backup_error_blank_name">Name des Backups festlegen</string>
     <string name="backup_error_blank_location">Wähle Sicherungsverzeichnis</string>
@@ -55,12 +60,13 @@
     <string name="backup_loading">Lade...</string>
     <string name="backup_invalid">Falsche Sicherungsdatei</string>
     <string name="backup_share">Teilen</string>
-    <string name="backup_pref_summary">Startseite sichern, Backups wiederherstellen</string>
+    <string name="backup_pref_summary">Startseite sichern, Sicherungen wiederherstellen</string>
     <string name="backup_timestamp">Datum erstellt</string>
-    <string name="backup_restoring">Wiederherstellen</string>
+    <string name="backup_restoring">Wird wiederhergestellt</string>
     <string name="backup_restarting">Starte neu</string>
     <string name="restore_contents">Inhalt wiederherstellen</string>
     <string name="restore_success">Wiederherstellen abgeschlossen</string>
+    <string name="failed">Etwas ist schief gelaufen</string>
     <string name="backup_share_text">Lawnchair Sicherung</string>
     <string name="full_width_widgets_pref_summary">Erlaube Widgets bis zum Bildschirmrand</string>
     <string name="full_width_width_widgets_pref_title">Breite Widgets</string>
@@ -93,19 +99,22 @@
     <string name="dock_style_n">Flach</string>
     <string name="dock_style_hidden">Ausgeblendet</string>
     <string name="dock_search_bar">Dock Suchleiste</string>
+    <string name="opacity">Deckkraft</string>
     <string name="title_all_apps_google_search">Globale Suche</string>
     <string name="summary_all_apps_google_search">Finde Webergebnisse und Apps</string>
     <string name="num_hotseat_icons_pref_title">Anzahl der Icons</string>
     <string name="icon_scale_pref_title">Icongröße</string>
-    <string name="add_settings_shortcut_title">Einstellungen-Icon auf Startseite</string>
+    <string name="add_settings_shortcut_title">Füge Einstellungssymbol zum Startbildschirm hinzu</string>
     <string name="icon_pack_default">Systemicons</string>
     <string name="loading">Lade…</string>
     <string name="low_performance_mode_pref_title">Geringe-Leistung Modus</string>
     <string name="title_storage_permission_required">Speicherberechtigung benötigt</string>
-    <string name="content_storage_permission_required">Speicherberechtigung benötigt, um das Hintergrundbild zu setzen</string>
+    <string name="content_storage_permission_required">Gewähre Speicherzugriff, um das Hintergrundbild festzulegen</string>
     <string name="reset_to_default">Auf Standard zurücksetzen</string>
     <string name="dock_shadow">Schatten</string>
     <string name="dock_fill">Hintergrund</string>
+    <string name="radius">Eckenrundung</string>
+    <string name="gradient">Farbverlauf</string>
     <!--Marker C-->
     <string name="pref_category_icons">Symbole</string>
     <string name="pref_category_aag">Auf einen Blick</string>
@@ -141,6 +150,7 @@
     <string name="about_role_family_member">Familienmitglied</string>
     <string name="about_role_magisk_maintainer">Magisk-Modul Entwickler</string>
     <string name="about_bio_deletescape">Android-Entwickler &amp; -Enthusiast. Mag Memes (fast ein bisschen zu sehr, um ehrlich zu sein). Gründer des Lawnchair Projekts.</string>
+    <string name="about_bio_divadsn">19 Jahre alt, verwandelt Koffein und Pizza in Code, bietet 24/7 Entwicklungsunterstützung an falls etwas schief geht. Trägt zu open-source Projekten in seiner Freizeit bei. Früher auch bekannt als Codebucket.</string>
     <string name="about_bio_recoded">Milder Programmierer und Grafikdesigner.</string>
     <string name="about_bio_josh">Freiberuflicher Grafikdesigner.</string>
     <string name="about_bio_chris">Millennial, ich weiß es nicht und es interessiert mich nicht. Irgendwas mit Design und sozialen Medien. Lass uns zusammen abhängen bei @lawnchairapp ✨</string>
@@ -148,7 +158,7 @@
     <!--Marker E-->
     <string name="debug_crash_launcher">Launcher abstürzen lassen</string>
     <string name="gestures_pref_title">Gesten</string>
-    <string name="gestures_pref_summary">Doppel-Touch, Home Button, runter wischen</string>
+    <string name="gestures_pref_summary">Doppel-Tip, Home Button, runter wischen</string>
     <string name="action_open_drawer">App-Liste öffnen</string>
     <string name="action_last_task">Letzte App öffnen</string>
     <string name="action_open_widgets">Widget-Liste öffnen</string>
@@ -165,17 +175,17 @@
     <string name="action_open_app_with_target">Öffne %s</string>
     <string name="action_open_app_select_app">Wähle eine App</string>
     <string name="action_none">Nichts tun</string>
-    <string name="action_despacito">Spiele YouTube Rewind 2018 (Ohrenvergewaltigung) ab</string>
+    <string name="action_despacito">Spiele YouTube Rewind 2018 ab (Ohrenvergewaltigung)</string>
     <string name="gesture_press_home">Home Taste</string>
     <string name="gesture_press_back">Zurück Taste</string>
     <string name="gesture_double_tap">Doppel-Touch</string>
-    <string name="gesture_long_press">Touch &amp; halten</string>
+    <string name="gesture_long_press">Tippe &amp; halte</string>
     <string name="gesture_swipe_down">Runter wischen</string>
     <string name="gesture_swipe_up">Hoch wischen</string>
     <string name="gesture_dock_swipe_up">Auf dem Dock hoch wischen</string>
-    <string name="pref_show_assistant_title">Button für die Sprachsuche</string>
-    <string name="pref_show_assistant_summary">Button für die Sprachsuche anzeigen, falls dieses Feature unterstützt wird</string>
-    <string name="pref_show_as_assistant_summary">Assistenten-Button statt dem Button für die Sprachsuche anzeigen</string>
+    <string name="pref_show_assistant_title">Knopf für die Sprachsuche</string>
+    <string name="pref_show_assistant_summary">Knopf für die Sprachsuche anzeigen, falls dieses Feature unterstützt wird</string>
+    <string name="pref_show_as_assistant_summary">Assistenten-Knopf statt dem Knopf für die Sprachsuche anzeigen</string>
     <string name="smartspace_time_24_h">24-Stunden-Format</string>
     <string name="weather_provider_disabled">Deaktiviert</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
@@ -183,12 +193,13 @@
     <string name="pref_smartspace_widget_provider">Wetterdienst</string>
     <string name="pref_smartspace_event_provider">Verwendeter Kalender</string>
     <string name="title_all_apps_search">Suchleiste in der App-Liste</string>
+    <string name="smartspace_widget_provider_not_found">Installiere oder aktualisiere die Google App.</string>
     <string name="apps_label">Apps</string>
     <string name="all_apps_label">Alle Apps</string>
     <string name="all_apps_label_pref_title">Zeige \"Alle Apps\" Beschriftung</string>
-    <string name="separate_work_apps_pref_title">Zweiten Tag für Apps von Arbeitgeber verwenden</string>
-    <string name="title_search_hidden_apps">Versteckte Apps durchsuchen</string>
-    <string name="summary_search_hidden_apps">Versteckte Apps in den Suchergebnissen anzeigen</string>
+    <string name="separate_work_apps_pref_title">Zweite Spalte für Arbeitsapps</string>
+    <string name="title_search_hidden_apps">Ausgeblendete Apps durchsuchen</string>
+    <string name="summary_search_hidden_apps">Ausgeblendete Apps in den Suchergebnissen anzeigen</string>
     <!--Marker F-->
     <string name="default_city">Luzern, CH</string>
     <string name="pref_weather_api_key_title">API-Schlüssel</string>
@@ -217,6 +228,7 @@
     <string name="theme_automatic">Automatisch</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Standard</string>
+    <string name="transparent">Transparent</string>
     <string name="pref_open_source_licenses_title">Lizenzen</string>
     <string name="pref_legacy_treatment_title">Adaptive Symbole erzeugen</string>
     <string name="pref_legacy_treatment_summary">Automatische adaptive Symbole für alle Apps</string>
@@ -226,6 +238,7 @@
     <string name="color_system_accent">Systemakzent</string>
     <string name="color_pixel_accent">Pixel-blau</string>
     <string name="color_presets">Voreinstellungen</string>
+    <string name="custom">Benutzerdefiniert</string>
     <string name="color_wallpaper_main">Hintergrundbild - primär</string>
     <string name="color_wallpaper_secondary">Hintergrundbild - sekundär</string>
     <string name="color_wallpaper_tertiary">Hintergrundbild - tertiär</string>
@@ -292,6 +305,7 @@
     <string name="search_menu">Einstellungen suchen</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Akzent</string>
+    <string name="theme_based">Folge dem Thema</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Vorschläge</string>
     <string name="title_app_suggestions">Apps</string>
@@ -326,8 +340,10 @@
     <string name="tab_bottom_sheet_save">Speichern</string>
     <string name="tab_hide_from_main">Verstecke App im Drawer</string>
     <string name="tab_color">Farbe des Tabs</string>
+    <string name="delete">Löschen</string>
     <string name="none">Keine</string>
     <string name="undo">Rückgängig machen</string>
+    <string name="name">Name</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Verknüpfungen</string>
     <string name="pref_integrations">Integrationen</string>
@@ -389,4 +405,8 @@
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF unterstützt</string>
     <string name="pref_fonts_missing_font">Schriftart fehlt</string>
     <string name="about_translate">Übersetzungen</string>
+    <string name="pref_show_dev_options">Zeige in Einstellungen</string>
+    <string name="about_app_description">Eine personalisierbare Pixel Launcher alternative.</string>
+    <string name="about_bio_paphonb">Ein 18 Jahre alter Schüler, Android Entwickler und einer der top Entwickler des Lawnchair Launchers.</string>
+    <string name="dock_scale">Dock Skalierung</string>
 </resources>
