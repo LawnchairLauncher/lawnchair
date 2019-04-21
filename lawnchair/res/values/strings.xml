@@ -25,7 +25,7 @@
     <string name="smartspace_time">Time</string>
     <string name="smartspace_date">Date</string>
 
-    <string name="customize">Customise</string>
+    <string name="customize">Customize</string>
     
     <string name="smartspace_preferences_in_settings">At a Glance</string>
     <string name="smartspace_preferences_in_settings_desc">Date, time, weather source</string>
@@ -56,11 +56,11 @@
     
     <string name="hide_app">Hide app</string>
     <string name="icon_shape_rounded_square">Rounded square</string>
-    <string name="pixel_ui_pref_summary">Icon pack, blur, colours</string>
+    <string name="pixel_ui_pref_summary">Icon pack, blur, colors</string>
     <string name="app_drawer_pref_title">App drawer</string>
     
     <string name="app_drawer_pref_summary">Opacity, suggestions, hide apps</string>
-    <string name="search_pref_summary">Colour, search engine, icons</string>
+    <string name="search_pref_summary">Color, search engine, icons</string>
     <string name="general_pref_title">Desktop</string>
     
     <string name="general_pref_summary">Grid, icon layout, status bar</string>
@@ -137,7 +137,7 @@
 
     <!--Marker B-->
     
-    <string name="dock_colored_google">Coloured icons</string>
+    <string name="dock_colored_google">Colored icons</string>
     <string name="hotseat_show_arrow">Arrow</string>
     <string name="hotseat_show_page_indicator">Page indicator</string>
     <string name="dock_style_pref_title">Dock style</string>
@@ -378,11 +378,11 @@
     <string name="enabled_icon_packs">Enabled</string>
     <string name="pref_icon_pack_masking">Icon masking</string>
     <string name="pref_icon_pack_masking_summary">Make unthemed icons match applied icon pack</string>
-    <string name="pref_legacy_colored_backgrounds">Coloured backgrounds</string>
+    <string name="pref_legacy_colored_backgrounds">Colored backgrounds</string>
     
-    <string name="pref_legacy_colored_backgrounds_summary">Coloured backgrounds for generated adaptive icons</string>
+    <string name="pref_legacy_colored_backgrounds_summary">Colored backgrounds for generated adaptive icons</string>
     <string name="pref_white_only_treatment">Replace white backgrounds</string>
-    <string name="pref_white_only_treatment_summary">Coloured backgrounds for all adaptive icons</string>
+    <string name="pref_white_only_treatment_summary">Colored backgrounds for all adaptive icons</string>
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     
     <!--Marker H-->
@@ -408,7 +408,7 @@
     <string name="theme_black">Black</string>
     <string name="theme_black_dark_text">Black with dark text</string>
     
-    <string name="pref_qsb_color">Colour</string>
+    <string name="pref_qsb_color">Color</string>
     <string name="hide_from_predictions">Hide from suggestions</string>
     <string name="hide_from_predictions_summary">Never show in drawer suggestions</string>
     <string name="bubble_searchbar">Dual bubble search bar</string>
@@ -437,7 +437,7 @@
     
     <string name="change_default_home">Set as home screen</string>
     <string name="recent_task_option_popup_window">Dialog window</string>
-    <string name="feed_theme_pref_title">Background colour</string>
+    <string name="feed_theme_pref_title">Background color</string>
     
     <string name="recents_not_connected">Service not connected</string>
     <string name="advanced_settings">More %s settings</string>
@@ -465,7 +465,7 @@
 
     <string name="tab_bottom_sheet_save">Save</string>
     <string name="tab_hide_from_main">Hide from drawer</string>
-    <string name="tab_color">Tab colour</string>
+    <string name="tab_color">Tab color</string>
 
     <string name="delete">Delete</string>
     <string name="none">None</string>
