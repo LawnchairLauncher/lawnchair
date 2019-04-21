@@ -9,13 +9,17 @@
     <string name="in_smartspace">\'एट अ ग्लांस\' विजेट में</string>
     <string name="smartspace_time">समय</string>
     <string name="smartspace_date">तारीख</string>
+    <string name="customize">अनुकूल</string>
     <string name="smartspace_preferences_in_settings">एट अ ग्लांस</string>
     <string name="smartspace_preferences_in_settings_desc">तारीख, समय, मौसम स्रोत</string>
+    <string name="search">खोजें</string>
     <string name="label_voice_search">आवाज से खोज</string>
+    <string name="icon_pack">आइकन पैक</string>
     <string name="home_widget">होम विजेट</string>
     <string name="title_show_google_app">%1$s बायीं ओर</string>
     <string name="msg_minus_one_on_left">फीड डेस्कटॉप के बाएं में</string>
     <string name="about">विवरण</string>
+    <string name="google_app">गूगल ऐप</string>
     <string name="about_app_version">संस्करण</string>
     <string name="app_name_pixel_launcher">पिक्सेल लॉन्चर</string>
     <string name="title_disable_suggestions_prompt">ऐप सुझावों को बंद करें</string>
@@ -27,16 +31,16 @@
     <string name="hide_app_sum">एप्लिकेशन दराज से एप्लिकेशन छुपाएं</string>
     <string name="hide_app">एप्लिकेशन छुपाएँ</string>
     <string name="icon_shape_rounded_square">गोल कोने वाला वर्ग</string>
-    <string name="pixel_ui_pref_summary">आइकन पैक, धुंधला, रंग</string>
-    <string name="app_drawer_pref_title">एप्लिकेशन ड्रॉअर</string>
+    <string name="pixel_ui_pref_summary">आइकन पैक, ब्लर, रंग</string>
+    <string name="app_drawer_pref_title">एप्लिकेशन दराज</string>
     <string name="app_drawer_pref_summary">अपारदर्शिता, सुझाव, ऐप्स छिपाएं</string>
     <string name="search_pref_summary">रंग, सर्च इंजन, आइकोंस</string>
-    <string name="general_pref_title">सामान्य</string>
+    <string name="general_pref_title">डेस्कटॉप</string>
     <string name="general_pref_summary">ग्रिड, आइकन लेआउट, स्टेटस बार</string>
-    <string name="about_pref_summary">समूह, लिंक्स, अनुज्ञाप‍त्र</string>
+    <string name="about_pref_summary">टीम, लिंक्स, लाइसेंस</string>
     <string name="hide_app_selected">&#160; छुपे हुए</string>
     <string name="hide_app_apply">लागू करें</string>
-    <string name="hide_dock_gradient">ग्रेडिएंट बंद करें</string>
+    <string name="hide_dock_gradient">ग्रेडिएंट बंध करें</string>
     <string name="dock_pref_summary">अंदाज, अपारदर्शिता, पृष्ठ सूचक</string>
     <string name="dock_pref_title">डॉक</string>
     <string name="hide_icon_labels_pref_title">ऐप के नामों को छुपाए</string>
@@ -47,8 +51,9 @@
     <string name="choose_backup_path">ब्राउज़ करें</string>
     <string name="backup_contents">सामग्री</string>
     <string name="backup_settings">सेटिंग्स</string>
+    <string name="homescreen">होम स्क्रीन</string>
     <string name="backup_wallpaper">वॉलपेपर</string>
-    <string name="backup_error_blank_name">दूसरा नाम डालिये</string>
+    <string name="backup_error_blank_name">बैकअप का नाम डालिये</string>
     <string name="backup_error_blank_location">बैकअप लोकेशन चुने</string>
     <string name="backup_error_blank_contents">बैकअप कंटेंट डालें</string>
     <string name="backup_creating">बैकअप बन रहा है</string>
@@ -62,6 +67,7 @@
     <string name="backup_restarting">पुनः आरंभ करें</string>
     <string name="restore_contents">सामग्री रीस्टोर करें</string>
     <string name="restore_success">पुनर्स्थापना समाप्त हुई</string>
+    <string name="failed">कुछ गड़बड़ हुई है।</string>
     <string name="backup_share_text">लौंचैर बैकअप</string>
     <string name="full_width_widgets_pref_summary">विजेट स्क्रीन के कोनों तक खीचें</string>
     <string name="full_width_width_widgets_pref_title">चौड़ी विजट्स</string>
@@ -80,7 +86,7 @@
     <string name="backup_location_device_storage">Lawnchair के फोल्डर</string>
     <string name="grid_size_height">ऊँचाई</string>
     <string name="grid_size_width">चौड़ाई</string>
-    <string name="launcher_theme_override_label">काले थीम को फोर्स करे</string>
+    <string name="launcher_theme_override_label">गहरा थीम फोर्स करे</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="blur_pref_title">ब्लर सक्षम करें</string>
     <string name="blur_pref_summary">ऐप ड्रॉअर, डाक और सेटिंग्स बैकग्राउंड के लिए ब्लर इफेक्ट</string>
@@ -94,6 +100,7 @@
     <string name="dock_style_n">चपटा</string>
     <string name="dock_style_hidden">छुपा हुआ</string>
     <string name="dock_search_bar">डाक खोज बार</string>
+    <string name="opacity">अपारदर्शिता</string>
     <string name="title_all_apps_google_search">‎वैश्विक ‎खोज</string>
     <string name="summary_all_apps_google_search">वेब रिजल्ट्स और ऐप खोजें</string>
     <string name="num_hotseat_icons_pref_title">आइकन्स की संख्या</string>
@@ -107,9 +114,11 @@
     <string name="reset_to_default">डिफ़ॉल्ट पर रीसेट करें</string>
     <string name="dock_shadow">छाया</string>
     <string name="dock_fill">बैकग्राउंड</string>
+    <string name="radius">कोना गोलाई</string>
+    <string name="gradient">ग्रेडिएंट</string>
     <!--Marker C-->
     <string name="pref_category_icons">आइकॉन्स</string>
-    <string name="pref_category_aag">एक नज़र में</string>
+    <string name="pref_category_aag">एट अ ग्लांस</string>
     <string name="pref_category_pixel_searchbar">पिक्सेल खोज बार</string>
     <string name="pref_category_weather">मौसम</string>
     <string name="pref_category_misc">अन्य</string>
@@ -120,7 +129,7 @@
     <string name="title_attribouter_licenses">ओपन सोर्स लाइसेंस</string>
     <string name="title_attribouter_email">ईमेल</string>
     <string name="title_attribouter_website">वेबसाइट</string>
-    <string name="title_attribouter_rate">मूल्यांकन करें</string>
+    <string name="title_attribouter_rate">रेट करें</string>
     <string name="title_attribouter_version">संस्करण%1$s</string>
     <string name="title_attribouter_license">लाइसेंस</string>
     <string name="title_attribouter_license_permissions">अनुमतियां</string>
@@ -142,10 +151,8 @@
     <string name="about_role_family_member">परिवार का सदस्य</string>
     <string name="about_role_magisk_maintainer">मैजिस्क ‎मॉड्यूल अनुरक्षक</string>
     <string name="about_bio_deletescape">एंड्रॉयड डेवलपर और ‎उत्साही, मीम्स प्रेमी (वास्तविकता में कुछ ज़्यादा ही) लॉन्चेयर परियोजना के संस्थापक।</string>
-    <string name="about_bio_divadsn">19 साल का, कैफीन और पिज्जा को कोड में बदल देता है। इसे पहले कोडबकेट के रूप में भी जाना जाता था।</string>
     <string name="about_bio_recoded">हल्के कोडर और ग्राफिक्स डिजाइनर।</string>
     <string name="about_bio_josh">फ्रीलांस ग्राफिक डिजाइनर।</string>
-    <string name="about_bio_chris">Millenial af, idk and idc. Something with design and social media. Let\'s hang out together over at @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">halogenOS के मूल विकाशक एवं substratum के विकाशक</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">क्रैश लॉन्चर</string>
@@ -180,7 +187,6 @@
     <string name="pref_show_as_assistant_summary">एसिस्टेंट बटन दर्शाए आवाज़ खोज की जगह</string>
     <string name="smartspace_time_24_h">‎24-घंटा प्रारूप</string>
     <string name="weather_provider_disabled">डिसेबल्ड</string>
-    <string name="weather_provider_owm">खुला मौसम मानचित्र</string>
     <string name="weather_provider_pe">‎पिक्सेल अनुभव</string>
     <string name="pref_smartspace_widget_provider">‎मौसम ‎स्रोत</string>
     <string name="pref_smartspace_event_provider">कैलेंडर स्रोत</string>
@@ -200,7 +206,7 @@
     <string name="pref_weather_units">तापमान इकाई</string>
     <string name="units_metric">सेल्सीयस</string>
     <string name="units_imperial">फ़ारेनहाइट</string>
-    <string name="units_kelvin">केल्विन (Automatic Translation)</string>
+    <string name="units_kelvin">केल्विन</string>
     <string name="all_icons">सभी आइकन्स</string>
     <string name="error_no_browser">URL को संभालने के लिए कोई गतिविधि नहीं मिली</string>
     <string name="no_icon_found">कोई आइकन नहीं मिला</string>
@@ -213,13 +219,14 @@
     <string name="backup_generate_report">बग रिपोर्ट बनाएं</string>
     <string name="show_top_shadow_pref_title">ऊपरी परछाई</string>
     <string name="show_top_shadow_pref_summary">स्टेटस बार के नीचे की परछाई</string>
-    <string name="two_row_dock">दो पंक्तियां</string>
+    <string name="two_row_dock">दो रोज़</string>
     <string name="keep_scroll_state_pref_title">स्क्रॉल पोजिशन याद रखें</string>
     <string name="reset">रीसेट करें</string>
     <string name="theme_title">थीम</string>
     <string name="theme_automatic">स्वचालित</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">पूर्व निर्धारित</string>
+    <string name="transparent">पारदर्शी</string>
     <string name="pref_open_source_licenses_title">लाइसेंस</string>
     <string name="pref_legacy_treatment_title">अडैप्टिव आइकन्स बनाएं</string>
     <string name="pref_legacy_treatment_summary">स्वचालित एडपटिव आइकन्स सारे ऐप्स के लिए</string>
@@ -229,6 +236,7 @@
     <string name="color_system_accent">सिस्टम एक्सेंट</string>
     <string name="color_pixel_accent">पिक्सेल ब्लू</string>
     <string name="color_presets">प्रीसेट</string>
+    <string name="custom">निजीकृत</string>
     <string name="color_wallpaper_main">वॉलपेपर — प्राइमरी</string>
     <string name="color_wallpaper_secondary">वॉलपेपर — सेकंडरी</string>
     <string name="color_wallpaper_tertiary">वॉलपेपर — टर्शियरी</string>
@@ -265,7 +273,7 @@
     <string name="pref_icon_pack_masking">आइकन मास्किंग</string>
     <string name="pref_icon_pack_masking_summary">अनचाहे आइकन का आइकॉन पैक से मिलान करें</string>
     <string name="pref_legacy_colored_backgrounds">रंगीन पृष्ठभूमि</string>
-    <string name="pref_legacy_colored_backgrounds_summary">उत्पन्न अनुकूल आइकन के लिए रंगीन पृष्ठभूमि</string>
+    <string name="pref_legacy_colored_backgrounds_summary">उत्पन्न अनुकूली आइकन के लिए रंगीन पृष्ठभूमि</string>
     <string name="pref_white_only_treatment">सफेद पृष्ठभूमि को बदलें</string>
     <string name="pref_white_only_treatment_summary">उत्पन्न अनुकूली आइकन के लिए रंगीन पृष्ठभूमि</string>
     <string name="smartspace_provider_bridge">रुटलेस पिक्सेल ब्रिज</string>
@@ -273,7 +281,7 @@
     <string name="dismiss_drop_target_label">"न दिखाएं"</string>
     <string name="suggested_action_content_description">%2$s %1$s में खुलेगा</string>
     <string name="action_sleep">स्लीप</string>
-    <string name="pref_drawer_padding">पंक्ति लंबाई</string>
+    <string name="pref_drawer_padding">रो की लंबाई</string>
     <string name="pref_drawer_columns">स्तंभों की संख्या</string>
     <string name="pref_prediction_count">सुझाव के अंक</string>
     <string name="pref_mutliline_labels">एक से अधिक लाइन में ऐप्स के नाम</string>
@@ -295,27 +303,32 @@
     <string name="search_menu">सेटिंग्स सर्च करें</string>
     <string name="search_provider_s_finder">एस फाइंडर</string>
     <string name="lawnchair_accent">एक्सेंट</string>
+    <string name="theme_based">थीम फॉलो करें</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">सुझाव</string>
     <string name="title_app_suggestions">ऐप्स</string>
     <string name="title_app_suggestions_in_search">ऐप्स के सुझाव</string>
-    <string name="summary_app_suggestions">जल्दी ही इस्तेमाल किए गए एप्स</string>
+    <string name="summary_app_suggestions">अत्यधिक इस्तेमाल किए गए एप्स</string>
     <string name="summary_app_suggestions_lawnstep">रीसेंट ऐप्स स्क्रीन और ड्रॉअर में</string>
     <string name="app_actions_pref_title">ऐक्शन</string>
     <string name="app_actions_pref_title_in_search">एक्शन सुझाव</string>
     <string name="app_actions_pref_desc">अनेक बार खोली गई स्क्रीन्स के लिए शॉर्टकट्स</string>
     <string name="change_default_home">होम स्क्रीन सेट करें</string>
     <string name="recent_task_option_popup_window">डायलॉग विंडो</string>
-    <string name="feed_theme_pref_title">बैकग्राउंड रंग</string>
+    <string name="feed_theme_pref_title">पृष्ठभूमि का रंग</string>
     <string name="recents_not_connected">सर्विस जुड़ी हुई नहीं है</string>
-    <string name="advanced_settings">और अधिक सेटिंग्स</string>
+    <string name="advanced_settings">और अधिक %s सेटिंग्स</string>
     <string name="adaptive_icon">एडापटिव आइकन्स</string>
     <string name="drawer_tabs">टैब्स</string>
-    <string name="add_new_tab">जोड़ें</string>
+    <string name="add_new_tab">सम्मिलित करें</string>
     <string name="rename_tab">नाम बदलें</string>
     <string name="default_tab_name">नया टैब</string>
     <string name="show_in_tabs">टैब्स</string>
     <string name="tabs_manage">प्रबंधित करें</string>
+    <plurals name="tab_apps_count">
+        <item quantity="one">%1$d ऐप्स</item>
+        <item quantity="other">%1$d ऐप्स</item>
+    </plurals>
     <plurals name="hidden_apps_count">
         <item quantity="one">%1$d छुपे हुए</item>
         <item quantity="other">%1$d छुपे हुए</item>
@@ -325,15 +338,17 @@
     <string name="tab_bottom_sheet_save">सेव करें</string>
     <string name="tab_hide_from_main">एप्लिकेशन दराज से छुपाएँ</string>
     <string name="tab_color">टैब का रंग</string>
+    <string name="delete">हटाएं</string>
     <string name="none">कुछ नहीं</string>
     <string name="undo">अकृत करें</string>
+    <string name="name">नाम</string>
     <!--Marker J-->
     <string name="shortcut_sesame">शॉर्टकट</string>
     <string name="pref_integrations">इंटीग्रेशन</string>
     <string name="pref_integrations_summary">सर्च, सेसमे, गूगल</string>
-    <string name="sesame">सेसामे</string>
+    <string name="sesame">सेसमे</string>
     <string name="sesame_data_integration">डाटा इंटीग्रेशन</string>
-    <string name="sesame_upsell">सेसेम इंस्टॉल करने के लिए टैप करें</string>
+    <string name="sesame_upsell">सेसमे इंस्टॉल करने के लिए टैप करें</string>
     <string name="sesame_search_upsell_on">सेसमी सर्च प्रोवाइडर सेट कर दिया गया है</string>
     <string name="sesame_search_upsell_off">सेसमी सर्च प्रोवाइडर नहीं है</string>
     <string name="pref_sesame_enabled">सेसमी शॉर्टकट डाटा शेयर कर दिया</string>
@@ -361,7 +376,7 @@
     <string name="search_provider_firefox">फायरफॉक्स</string>
     <string name="search_provider_qwant">क्वांट</string>
     <string name="search_provider_edge">किनारा</string>
-    <string name="weather_provider_oneplus_weather">वन प्लस वैदर</string>
+    <string name="weather_provider_oneplus_weather">वन प्लस मौसम</string>
     <string name="overlap_placement">ओवरलैप प्लेसमेंट</string>
     <string name="overlap_placement_summary">आइकन और विजेट्स को ओवरलैप करें</string>
     <string name="units_rakine">रंकाइं</string>
@@ -388,4 +403,8 @@
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF समर्थन है</string>
     <string name="pref_fonts_missing_font">फ़ॉन्ट गायब है</string>
     <string name="about_translate">अनुवादक</string>
+    <string name="pref_show_dev_options">सेटिंग्स में दिखाएँ</string>
+    <string name="about_app_description">एक अनुकूलन पिक्सल लॉन्चर विकल्प</string>
+    <string name="about_bio_paphonb">एक 18 साल का विद्यार्थी, एंड्रॉयड डेवलपर और Lawnchair लॉन्चर का एक ऊपरी डेवलपर्स</string>
+    <string name="dock_scale">डॉक की लंबाई</string>
 </resources>

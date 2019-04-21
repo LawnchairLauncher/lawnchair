@@ -9,13 +9,17 @@
     <string name="in_smartspace">Nel widget \'At a Glance\'</string>
     <string name="smartspace_time">Ora</string>
     <string name="smartspace_date">Data</string>
+    <string name="customize">Personalizza</string>
     <string name="smartspace_preferences_in_settings">At a Glance</string>
     <string name="smartspace_preferences_in_settings_desc">Data, orario, sorgente meteo</string>
+    <string name="search">Ricerca</string>
     <string name="label_voice_search">Ricerca vocale</string>
+    <string name="icon_pack">Pacchetto icone</string>
     <string name="home_widget">Widget Home</string>
     <string name="title_show_google_app">%1$s sulla sinistra</string>
     <string name="msg_minus_one_on_left">Feed alla sinistra della schermata home</string>
     <string name="about">Informazioni</string>
+    <string name="google_app">App Google</string>
     <string name="about_app_version">Versione</string>
     <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">Disbilita suggerimenti app</string>
@@ -47,6 +51,7 @@
     <string name="choose_backup_path">Sfoglia</string>
     <string name="backup_contents">Contenuto</string>
     <string name="backup_settings">Impostazioni</string>
+    <string name="homescreen">Schermata home</string>
     <string name="backup_wallpaper">Sfondo</string>
     <string name="backup_error_blank_name">Inserisci il nome del backup</string>
     <string name="backup_error_blank_location">Imposta percorso di backup</string>
@@ -62,6 +67,7 @@
     <string name="backup_restarting">Riavvio...</string>
     <string name="restore_contents">Ripristina contenuto</string>
     <string name="restore_success">Ripristino completato</string>
+    <string name="failed">Qualcosa è andato storto</string>
     <string name="backup_share_text">Backup Lawnchair</string>
     <string name="full_width_widgets_pref_summary">Permetti ai widget di estendersi fino ai bordi dello schermo</string>
     <string name="full_width_width_widgets_pref_title">Widget estesi</string>
@@ -94,6 +100,7 @@
     <string name="dock_style_n">Piatto</string>
     <string name="dock_style_hidden">Nascosto</string>
     <string name="dock_search_bar">Barra di ricerca nella dock</string>
+    <string name="opacity">Opacità</string>
     <string name="title_all_apps_google_search">Ricerca globale</string>
     <string name="summary_all_apps_google_search">Cerca nel web e tra le app</string>
     <string name="num_hotseat_icons_pref_title">Numero di icone</string>
@@ -107,6 +114,8 @@
     <string name="reset_to_default">Ripristina impostazioni predefinite</string>
     <string name="dock_shadow">Ombra</string>
     <string name="dock_fill">Sfondo</string>
+    <string name="radius">Arrotondamento angoli</string>
+    <string name="gradient">Sfumatura</string>
     <!--Marker C-->
     <string name="pref_category_icons">Icone</string>
     <string name="pref_category_aag">Riepilogo</string>
@@ -144,7 +153,7 @@
     <string name="about_bio_deletescape">Sviluppatore Android &amp; appassionato, adora i meme (effettivamente un po\' troppo). Fondatore del progetto Lawnchair.</string>
     <string name="about_bio_recoded">Mite programmatore e designer grafico.</string>
     <string name="about_bio_josh">Designer grafico indipendente.</string>
-    <string name="about_bio_chris">Mente Creativa, Influencer &amp; Creatore di Contenuti. Social Media e PR Manager.</string>
+    <string name="about_bio_chris">Millennial af, idk e idc. Pratico con il design e con i social. Passiamo un po’ di tempo insieme @lawnchairapp✨</string>
     <string name="about_bio_msfjarvis">Sviluppatore principale di halogenOS e sviluppatore di applicazioni di substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Crash launcher</string>
@@ -184,6 +193,7 @@
     <string name="pref_smartspace_widget_provider">Fonte meteo</string>
     <string name="pref_smartspace_event_provider">Fonte calendario</string>
     <string name="title_all_apps_search">Barra di ricerca nel drawer</string>
+    <string name="smartspace_widget_provider_not_found">Installa o aggiorna la app Google.</string>
     <string name="apps_label">Applicazioni</string>
     <string name="all_apps_label">Tutte le app</string>
     <string name="all_apps_label_pref_title">Mostra l\'etichetta \"Tutte le app\"</string>
@@ -218,6 +228,7 @@
     <string name="theme_automatic">Automatico</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Predefinito</string>
+    <string name="transparent">Trasparente</string>
     <string name="pref_open_source_licenses_title">Licenze</string>
     <string name="pref_legacy_treatment_title">Genera icone adattive</string>
     <string name="pref_legacy_treatment_summary">Icone adattive in automatico per tutte le app</string>
@@ -227,6 +238,7 @@
     <string name="color_system_accent">Colore primario del sistema</string>
     <string name="color_pixel_accent">Blu Pixel</string>
     <string name="color_presets">Predefiniti</string>
+    <string name="custom">Personalizzato</string>
     <string name="color_wallpaper_main">Sfondo - primario</string>
     <string name="color_wallpaper_secondary">Sfondo - secondario</string>
     <string name="color_wallpaper_tertiary">Sfondo - terziario</string>
@@ -293,6 +305,7 @@
     <string name="search_menu">Cerca nelle impostazioni</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Colore primario</string>
+    <string name="theme_based">Segui tema</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Suggerimenti</string>
     <string name="title_app_suggestions">Applicazioni</string>
@@ -327,8 +340,10 @@
     <string name="tab_bottom_sheet_save">Salva</string>
     <string name="tab_hide_from_main">Nascondi dalla lista applicazioni</string>
     <string name="tab_color">Colore tab</string>
+    <string name="delete">Elimina</string>
     <string name="none">Nessuno</string>
     <string name="undo">Annulla</string>
+    <string name="name">Nome</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Scorciatoie</string>
     <string name="pref_integrations">Integrazioni</string>
@@ -375,7 +390,7 @@
     <string name="pref_smartspace_time_above">Visualizza orologio grande</string>
     <string name="pref_smartspace_time_above_summary">Visualizza l\'orologio sopra il widget</string>
     <string name="pref_fonts_title">Caratteri</string>
-    <string name="pref_fonts_summary">Cambia lo stile caratteri di diversi elementi</string>
+    <string name="pref_fonts_summary">Cambia lo stile dei caratteri di elementi diversi</string>
     <string name="pref_fonts_global_font">Carattere generale</string>
     <string name="pref_fonts_change_global_font">Modifica</string>
     <string name="pref_fonts_home_icons">Nomi di app &amp; cartelle</string>
@@ -390,4 +405,10 @@
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supportati</string>
     <string name="pref_fonts_missing_font">Carattere mancante</string>
     <string name="about_translate">Traduzioni</string>
+    <string name="pref_show_dev_options">Mostra nelle impostazioni</string>
+    <string name="about_app_description">Un\'alternativa personalizzabile al Pixel Launcher.</string>
+    <string name="about_bio_paphonb">Studente di 18 anni, Sviluppatore Android e uno dei maggiori sviluppatori di Lawnchair Launcher.</string>
+    <string name="dock_scale">Grandezza dock</string>
+    <string name="adaptify_pack_title">Crea icone adattive per i pacchetti icone</string>
+    <string name="adaptify_pack_summary">Crea icone adattive per icone di un icon pack</string>
 </resources>

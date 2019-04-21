@@ -9,13 +9,17 @@
     <string name="in_smartspace">Dans le widget \‘En bref\’</string>
     <string name="smartspace_time">Heure</string>
     <string name="smartspace_date">Date</string>
+    <string name="customize">Personnaliser</string>
     <string name="smartspace_preferences_in_settings">En bref</string>
     <string name="smartspace_preferences_in_settings_desc">Date, heure, source de la météo</string>
+    <string name="search">Rechercher</string>
     <string name="label_voice_search">Recherche vocale</string>
+    <string name="icon_pack">Pack d\'icônes</string>
     <string name="home_widget">Widget de l\'écran d\'accueil</string>
     <string name="title_show_google_app">%1$s sur la gauche</string>
     <string name="msg_minus_one_on_left">Fil d\'actualité à gauche de l\'écran d\'accueil</string>
     <string name="about">À propos</string>
+    <string name="google_app">Appli Google</string>
     <string name="about_app_version">Version</string>
     <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">Désactiver les suggestions d\'applications</string>
@@ -25,7 +29,7 @@
     <string name="about_summary_title">Résumé</string>
     <string name="action_edit">Éditer</string>
     <string name="hide_app_sum">Masquer du tiroir d\'application</string>
-    <string name="hide_app">Masquer app</string>
+    <string name="hide_app">Masquer l\'appli</string>
     <string name="icon_shape_rounded_square">Carré arrondi</string>
     <string name="pixel_ui_pref_summary">Pack d\'icônes, flou, couleurs</string>
     <string name="app_drawer_pref_title">Tiroir des applications</string>
@@ -47,6 +51,7 @@
     <string name="choose_backup_path">Naviguer</string>
     <string name="backup_contents">Contenu</string>
     <string name="backup_settings">Paramètres</string>
+    <string name="homescreen">Écran d\'accueil</string>
     <string name="backup_wallpaper">Fond d\'écran</string>
     <string name="backup_error_blank_name">Entrez le nom de la sauvegarde</string>
     <string name="backup_error_blank_location">Choisissez l\'emplacement de la sauvegarde</string>
@@ -62,13 +67,14 @@
     <string name="backup_restarting">Redémarrage</string>
     <string name="restore_contents">Restaurer le contenu</string>
     <string name="restore_success">Restauration terminée</string>
+    <string name="failed">Une erreur s\'est produite</string>
     <string name="backup_share_text">Sauvegarde Lawnchair</string>
     <string name="full_width_widgets_pref_summary">Laisser les widgets s\'étirer jusqu\'aux bords de l\'écran</string>
     <string name="full_width_width_widgets_pref_title">Widgets larges</string>
     <string name="hide_apps">Masquer les applications</string>
     <string name="hide_apps_sum">Retirer des applications du tiroir d\'applications</string>
     <string name="grid_size">Taille de la grille</string>
-    <string name="developer_options_title">Options pour les développeurs</string>
+    <string name="developer_options_title">Options de développeur</string>
     <string name="developer_options_enabled">Options de développeur activées</string>
     <string name="restart_lawnchair_pref_title">Redémarrer</string>
     <string name="restart_lawnchair_pref_summary">Réappliquer les paramètres</string>
@@ -82,7 +88,7 @@
     <string name="grid_size_width">Largeur</string>
     <string name="launcher_theme_override_label">Forcer le thème sombre</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
-    <string name="blur_pref_title">Activer le flou</string>
+    <string name="blur_pref_title">Flou</string>
     <string name="blur_pref_summary">Effet de flou pour le tiroir d\'applications, le dock et les arrière-plans de paramètres</string>
     <string name="blur_radius_pref_title">Intensité du flou</string>
     <!--Marker B-->
@@ -94,6 +100,7 @@
     <string name="dock_style_n">Plat</string>
     <string name="dock_style_hidden">Masqué</string>
     <string name="dock_search_bar">Barre de recherche du Dock</string>
+    <string name="opacity">Opacité</string>
     <string name="title_all_apps_google_search">Recherche globale</string>
     <string name="summary_all_apps_google_search">Trouver des résultats Web et des applications</string>
     <string name="num_hotseat_icons_pref_title">Nombre d\'icônes</string>
@@ -107,6 +114,8 @@
     <string name="reset_to_default">Réinitialiser aux valeurs par défaut</string>
     <string name="dock_shadow">Ombre</string>
     <string name="dock_fill">Arrière plan</string>
+    <string name="radius">Arrondissage de coin</string>
+    <string name="gradient">Dégradé</string>
     <!--Marker C-->
     <string name="pref_category_icons">Icônes</string>
     <string name="pref_category_aag">En bref</string>
@@ -144,7 +153,6 @@
     <string name="about_bio_deletescape">Développeur Android &amp; passionné, adore les memes (un peu trop en fait). Fondateur du projet Lawnchair.</string>
     <string name="about_bio_recoded">Programmeur et designer graphique.</string>
     <string name="about_bio_josh">Designer graphique indépendant.</string>
-    <string name="about_bio_chris">Esprit créatif, influenceur et créateur de contenu. Responsable des médias sociaux et des relations publiques.</string>
     <string name="about_bio_msfjarvis">Développeur principal chez halogenOS et développeur d\'application pour Substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Arrêt soudain du launcher</string>
@@ -184,6 +192,7 @@
     <string name="pref_smartspace_widget_provider">Source météo</string>
     <string name="pref_smartspace_event_provider">Source du calendrier</string>
     <string name="title_all_apps_search">Barre de recherche du tiroir d\'applications</string>
+    <string name="smartspace_widget_provider_not_found">Installe ou mets à jours Google app.</string>
     <string name="apps_label">Applis</string>
     <string name="all_apps_label">Toutes les applis</string>
     <string name="all_apps_label_pref_title">Afficher le label de \"toutes les applications\"</string>
@@ -218,6 +227,7 @@
     <string name="theme_automatic">Automatique</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Par défaut</string>
+    <string name="transparent">Transparent</string>
     <string name="pref_open_source_licenses_title">Licences</string>
     <string name="pref_legacy_treatment_title">Générer des icônes adaptatives</string>
     <string name="pref_legacy_treatment_summary">Icônes adaptatives automatiques pour toutes les applications</string>
@@ -227,6 +237,7 @@
     <string name="color_system_accent">Accent du système</string>
     <string name="color_pixel_accent">Bleu Pixel</string>
     <string name="color_presets">Préréglages</string>
+    <string name="custom">Personnalisé</string>
     <string name="color_wallpaper_main">Fond d\'écran — primaire</string>
     <string name="color_wallpaper_secondary">Fond d\'écran — secondaire</string>
     <string name="color_wallpaper_tertiary">Fond d\'écran — tertiaire</string>
@@ -292,6 +303,7 @@
     <string name="search_menu">Trouver les paramètres</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Accent</string>
+    <string name="theme_based">Suivre le thème</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Suggestions</string>
     <string name="title_app_suggestions">Applications</string>
@@ -326,8 +338,10 @@
     <string name="tab_bottom_sheet_save">Enregistrer</string>
     <string name="tab_hide_from_main">Masquer du tiroir d\'applications</string>
     <string name="tab_color">Couleur de l\'onglet</string>
+    <string name="delete">Supprimer</string>
     <string name="none">Aucun</string>
     <string name="undo">Annuler</string>
+    <string name="name">Nom</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Raccourcis</string>
     <string name="pref_integrations">Intégrations</string>
@@ -389,4 +403,9 @@
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supportée</string>
     <string name="pref_fonts_missing_font">Police d\'écriture manquante</string>
     <string name="about_translate">Traductions</string>
+    <string name="pref_show_dev_options">Afficher dans les paramètres</string>
+    <string name="about_app_description">Une alternative paramétrable du \"Pixel Launcher\"</string>
+    <string name="about_bio_paphonb">Un étudiant de 18ans, Développeur Android et l\'un des meilleurs développeurs de Lawnchair launcher.</string>
+    <string name="dock_scale">Taille du Dock</string>
+    <string name="adaptify_pack_title">Créer des icônes adaptative pour les pack d\'icônes</string>
 </resources>

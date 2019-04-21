@@ -9,13 +9,17 @@
     <string name="in_smartspace">W widżecie \'At a glance\'</string>
     <string name="smartspace_time">Czas</string>
     <string name="smartspace_date">Data</string>
-    <string name="smartspace_preferences_in_settings">W skrócie</string>
+    <string name="customize">Dostosuj</string>
+    <string name="smartspace_preferences_in_settings">Na rzut oka</string>
     <string name="smartspace_preferences_in_settings_desc">Data, godzina, źródło pogody</string>
+    <string name="search">Szukaj</string>
     <string name="label_voice_search">Wyszukiwanie głosowe</string>
+    <string name="icon_pack">Paczka ikon</string>
     <string name="home_widget">Widżet główny</string>
     <string name="title_show_google_app">%1$s po lewo</string>
     <string name="msg_minus_one_on_left">Kanał po lewej stronie pulpitu</string>
     <string name="about">О aplikacji</string>
+    <string name="google_app">Aplikacja Google</string>
     <string name="about_app_version">Wersja</string>
     <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">Wyłącz sugerowane aplikacje</string>
@@ -47,6 +51,7 @@
     <string name="choose_backup_path">Przeglądaj</string>
     <string name="backup_contents">Zawartość</string>
     <string name="backup_settings">Ustawienia</string>
+    <string name="homescreen">Ekran główny</string>
     <string name="backup_wallpaper">Tapeta</string>
     <string name="backup_error_blank_name">Podaj nazwę kopii zapasowej</string>
     <string name="backup_error_blank_location">Wybierz lokalizację kopię zapasową</string>
@@ -62,20 +67,21 @@
     <string name="backup_restarting">Ponowne uruchamianie</string>
     <string name="restore_contents">Przywróć zawartość</string>
     <string name="restore_success">Przywracanie zakończone</string>
+    <string name="failed">Coś poszło nie tak</string>
     <string name="backup_share_text">Plik kopii zapasowej Lawnchair</string>
     <string name="full_width_widgets_pref_summary">Zezwól na rozciąganie widżetów do krawędzi ekranu</string>
     <string name="full_width_width_widgets_pref_title">Szerokie widżety</string>
     <string name="hide_apps">Ukryj aplikacje</string>
     <string name="hide_apps_sum">Usuń ikonę z szuflady aplikacji</string>
     <string name="grid_size">Rozmiar siatki</string>
-    <string name="developer_options_title">Opcje deweloperskie</string>
+    <string name="developer_options_title">Ustawienia programisty</string>
     <string name="developer_options_enabled">Opcje programistyczne są już włączone</string>
     <string name="restart_lawnchair_pref_title">Uruchom ponownie</string>
     <string name="restart_lawnchair_pref_summary">Zastosuj ustawienia ponownie</string>
     <string name="show_debug_info_pref_title">Pokaż nazwy składników</string>
     <string name="debug_component_name">Nazwa składnika</string>
     <string name="debug_component_name_copied">Skopiowano</string>
-    <string name="read_external_storage_required">Aby zapisać kopię zapasową, przydziel uprawnienia pamięci</string>
+    <string name="read_external_storage_required">Aby utworzyć kopię zapasową wymagany jest dostęp do plików</string>
     <string name="local_backups">Kopie zapasowe w pamięci</string>
     <string name="backup_location_device_storage">Folder Lawnchair</string>
     <string name="grid_size_height">Wysokość</string>
@@ -94,6 +100,7 @@
     <string name="dock_style_n">Płaski</string>
     <string name="dock_style_hidden">Ukryty</string>
     <string name="dock_search_bar">Pasek wyszukiwania w doku</string>
+    <string name="opacity">Przeźroczystość</string>
     <string name="title_all_apps_google_search">Wyszukiwanie globalne</string>
     <string name="summary_all_apps_google_search">Wyszukaj wyniki z internetu i aplikacje</string>
     <string name="num_hotseat_icons_pref_title">Ilość ikon</string>
@@ -107,6 +114,8 @@
     <string name="reset_to_default">Przywróć domyślne ustawienia</string>
     <string name="dock_shadow">Cień</string>
     <string name="dock_fill">Tło</string>
+    <string name="radius">Zaokrąglenie rogów</string>
+    <string name="gradient">Gradient</string>
     <!--Marker C-->
     <string name="pref_category_icons">Ikony</string>
     <string name="pref_category_aag">W skrócie</string>
@@ -141,11 +150,10 @@
     <string name="about_role_mod_support">Moderator / Wsparcie</string>
     <string name="about_role_family_member">Członek rodziny</string>
     <string name="about_role_magisk_maintainer">Opiekun Modułu Magisk</string>
-    <string name="about_bio_deletescape">Programista Androida &amp; entuzjasta, uwielbia memy (nawet za bardzo). Założyciel projektu Lawnchair.</string>
-    <string name="about_bio_divadsn">Dziewiętnastolatek, zamienia kofeinę i pizzę w kod. Wcześniej znany również jako Codebucket.</string>
+    <string name="about_bio_deletescape">Programista Androida &amp; entuzjasta, uwielbia memy (troche za bardzo). Założyciel projektu Lawnchair.</string>
     <string name="about_bio_recoded">Spokojny programista oraz grafik.</string>
     <string name="about_bio_josh">Niezależny grafik.</string>
-    <string name="about_bio_chris">Twórczy umysł, influencer oraz twórca contentu. Zarządca mediów społecznościowych oraz PR.</string>
+    <string name="about_bio_chris">Twórczy umysł, influencer oraz twórca contentu. Zarządca mediów społecznościowych oraz PR</string>
     <string name="about_bio_msfjarvis">Główny programista w halogenOS oraz twórca aplikacji w substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Crash launchera</string>
@@ -218,7 +226,9 @@
     <string name="reset">Resetuj</string>
     <string name="theme_title">Motyw</string>
     <string name="theme_automatic">Automatyczny</string>
+    <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Domyślny</string>
+    <string name="transparent">Przeźroczysty</string>
     <string name="pref_open_source_licenses_title">Licencje</string>
     <string name="pref_legacy_treatment_title">Stwórz ikony adapcyjne</string>
     <string name="pref_legacy_treatment_summary">Automatyczne adaptywne ikony dla wszystkich aplikacji</string>
@@ -228,6 +238,7 @@
     <string name="color_system_accent">Akcent systemu</string>
     <string name="color_pixel_accent">Pixel Blue</string>
     <string name="color_presets">Predefiniowane</string>
+    <string name="custom">Niestandardowy</string>
     <string name="color_wallpaper_main">Tapeta - główna</string>
     <string name="color_wallpaper_secondary">Tapeta - Druga</string>
     <string name="color_wallpaper_tertiary">Tapeta - trzeciorzędowa</string>
@@ -294,6 +305,7 @@
     <string name="search_menu">Znajdź ustawienia</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Akcent</string>
+    <string name="theme_based">Z motywu</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Sugestie</string>
     <string name="title_app_suggestions">Aplikacje</string>
@@ -332,7 +344,10 @@
     <string name="tab_bottom_sheet_save">Zapisz</string>
     <string name="tab_hide_from_main">Ukryj aplikację</string>
     <string name="tab_color">Kolor karty</string>
+    <string name="delete">Usuń</string>
+    <string name="none">Brak</string>
     <string name="undo">Cofnij</string>
+    <string name="name">Nazwa</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Skróty</string>
     <string name="pref_integrations">Integracje</string>
@@ -394,4 +409,10 @@
     <string name="pref_fonts_add_fonts_summary">Wspierane OTF i TTF</string>
     <string name="pref_fonts_missing_font">Brakująca czcionka</string>
     <string name="about_translate">Tłumaczenia</string>
+    <string name="pref_show_dev_options">Pokaż w ustawieniach</string>
+    <string name="about_app_description">Dostosowywalna alternatywa Pixel Launchera.</string>
+    <string name="about_bio_paphonb">18-letni student, programista i jeden z głównych twórców Lawnchair Launcher.</string>
+    <string name="dock_scale">Rozmiar docka</string>
+    <string name="adaptify_pack_title">Utwórz ikony adaptacyjne dla paczki ikon</string>
+    <string name="adaptify_pack_summary">Utwórz ikony adaptacyjne dla ikon z paczek ikon</string>
 </resources>

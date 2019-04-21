@@ -9,13 +9,17 @@
     <string name="in_smartspace">В виджете \‘At a Glance\’</string>
     <string name="smartspace_time">Время</string>
     <string name="smartspace_date">Дата</string>
+    <string name="customize">Настройка</string>
     <string name="smartspace_preferences_in_settings">At a Glance</string>
     <string name="smartspace_preferences_in_settings_desc">Дата, время, источник данных о погоде</string>
+    <string name="search">Поиск</string>
     <string name="label_voice_search">Голосовой поиск</string>
+    <string name="icon_pack">Набор значков</string>
     <string name="home_widget">Виджет на главном экране</string>
     <string name="title_show_google_app">%1$s слева</string>
     <string name="msg_minus_one_on_left">Лента новостей слева от рабочего стола</string>
     <string name="about">О программе</string>
+    <string name="google_app">Приложение Google</string>
     <string name="about_app_version">Версия</string>
     <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">Отключить подсказки в главном меню</string>
@@ -39,7 +43,7 @@
     <string name="hide_dock_gradient">Отключить градиент</string>
     <string name="dock_pref_summary">Стиль, непрозрачность, индикатор страниц</string>
     <string name="dock_pref_title">Док-бар</string>
-    <string name="hide_icon_labels_pref_title">Скрыть названия приложений</string>
+    <string name="hide_icon_labels_pref_title">Скрыть подписи приложений</string>
     <string name="backups">Резервные копии</string>
     <string name="new_backup">Создать</string>
     <string name="restore_backup">Восстановить</string>
@@ -47,6 +51,7 @@
     <string name="choose_backup_path">Открыть</string>
     <string name="backup_contents">Содержимое</string>
     <string name="backup_settings">Настройки</string>
+    <string name="homescreen">Главный экран</string>
     <string name="backup_wallpaper">Обои</string>
     <string name="backup_error_blank_name">Введите имя резервной копии</string>
     <string name="backup_error_blank_location">Выберите место сохранения резервной копии</string>
@@ -62,6 +67,7 @@
     <string name="backup_restarting">Перезапуск</string>
     <string name="restore_contents">Восстановление данных</string>
     <string name="restore_success">Восстановление завершено</string>
+    <string name="failed">Что-то пошло не так</string>
     <string name="backup_share_text">Файл резервной копии Lawnchair</string>
     <string name="full_width_widgets_pref_summary">Позволять виджетам расширяться до края экрана</string>
     <string name="full_width_width_widgets_pref_title">Широкие виджеты</string>
@@ -76,11 +82,11 @@
     <string name="debug_component_name">Наименование компонента</string>
     <string name="debug_component_name_copied">Скопировано</string>
     <string name="read_external_storage_required">Для сохранения резервной копии, предоставьте разрешение на доступ к хранилищу устройства</string>
-    <string name="local_backups">Бэкап в память устройства</string>
+    <string name="local_backups">Резервные копии в памяти устройства</string>
     <string name="backup_location_device_storage">Папка Lawnchair</string>
     <string name="grid_size_height">Высота</string>
     <string name="grid_size_width">Ширина</string>
-    <string name="launcher_theme_override_label">Использовать темную тему</string>
+    <string name="launcher_theme_override_label">Принудительно использовать темную тему</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="blur_pref_title">Размытие</string>
     <string name="blur_pref_summary">Эффект размытия для меню приложений, док-бара и настроек фона</string>
@@ -94,6 +100,7 @@
     <string name="dock_style_n">Плоский</string>
     <string name="dock_style_hidden">Скрыт</string>
     <string name="dock_search_bar">Панель поиска в док-баре</string>
+    <string name="opacity">Непрозрачность</string>
     <string name="title_all_apps_google_search">Глобальный поиск</string>
     <string name="summary_all_apps_google_search">Поиск в приложениях и интернете</string>
     <string name="num_hotseat_icons_pref_title">Количество иконок </string>
@@ -102,11 +109,13 @@
     <string name="icon_pack_default">Системные иконки</string>
     <string name="loading">Загрузка…</string>
     <string name="low_performance_mode_pref_title">Режим низкой производительности</string>
-    <string name="title_storage_permission_required">Нужно разрешение на доступ к памяти устройства</string>
+    <string name="title_storage_permission_required">Нужно разрешение на доступ к хранилищу</string>
     <string name="content_storage_permission_required">Предоставьте доступ к хранилищу для установки обоев</string>
     <string name="reset_to_default">Восстановить значения по умолчанию</string>
     <string name="dock_shadow">Тень</string>
     <string name="dock_fill">Фон</string>
+    <string name="radius">Скругление углов</string>
+    <string name="gradient">Градиент</string>
     <!--Marker C-->
     <string name="pref_category_icons">Иконки</string>
     <string name="pref_category_aag">At a Glance</string>
@@ -115,7 +124,7 @@
     <string name="pref_category_misc">Другое</string>
     <string name="pref_category_layout">Макет</string>
     <string name="pref_category_theme">Стиль</string>
-    <string name="pref_category_searchbar">Строка поиска</string>
+    <string name="pref_category_searchbar">Панель поиска </string>
     <!--Marker D-->
     <string name="title_attribouter_licenses">Open Source лицензии</string>
     <string name="title_attribouter_email">Адрес электронной почты</string>
@@ -142,15 +151,14 @@
     <string name="about_role_family_member">Член семьи</string>
     <string name="about_role_magisk_maintainer">Разработчик Magisk-модуля</string>
     <string name="about_bio_deletescape">Android-разработчик и энтузиаст, любит мемы (даже слишком, пожалуй). Основатель проекта Lawnchair.</string>
-    <string name="about_bio_divadsn">19 лет, умеет превращать кофеин и пиццу в код. Ранее был известен как Codebucket.</string>
     <string name="about_bio_recoded">Немного кодер и графический дизайнер.</string>
     <string name="about_bio_josh">Фрилансер, графический дизайнер.</string>
-    <string name="about_bio_chris">Миллениал до мозга костей. Занимаюсь чем-то связанным с дизайном и Сми. Приходи потусоваться к нам @lawnchairapp</string>
+    <string name="about_bio_chris">Миллениал до мозга костей. Занимается чем-то связанным с дизайном и СМИ. Приходи потусоваться к нам @lawnchairapp</string>
     <string name="about_bio_msfjarvis">Главный разработчик halogenOS и приложения для Substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Ошибка лаунчера</string>
     <string name="gestures_pref_title">Жесты</string>
-    <string name="gestures_pref_summary">Двойное нажатие, кнопка \"Домой\", жесты</string>
+    <string name="gestures_pref_summary">Двойное нажатие, кнопка \"Домой\", свайп вниз</string>
     <string name="action_open_drawer">Открыть меню приложений</string>
     <string name="action_last_task">Открыть последнее приложение</string>
     <string name="action_open_widgets">Открыть панель виджетов</string>
@@ -220,6 +228,7 @@
     <string name="theme_automatic">Автоматически</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">По умолчанию</string>
+    <string name="transparent">Прозрачный</string>
     <string name="pref_open_source_licenses_title">Лицензии</string>
     <string name="pref_legacy_treatment_title">Создать адаптивные иконки</string>
     <string name="pref_legacy_treatment_summary">Автоматически применять адаптивные иконки для всех приложений</string>
@@ -229,6 +238,7 @@
     <string name="color_system_accent">Акцентный цвет системы</string>
     <string name="color_pixel_accent">Пиксель </string>
     <string name="color_presets">Предустановки</string>
+    <string name="custom">Пользовательский</string>
     <string name="color_wallpaper_main">Обои — основной</string>
     <string name="color_wallpaper_secondary">Обои - вторичный</string>
     <string name="color_wallpaper_tertiary">Обои - третичный</string>
@@ -295,6 +305,7 @@
     <string name="search_menu">Поиск настроек</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Акцент</string>
+    <string name="theme_based">На основе темы</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Подсказки</string>
     <string name="title_app_suggestions">Приложения</string>
@@ -333,8 +344,10 @@
     <string name="tab_bottom_sheet_save">Сохранить</string>
     <string name="tab_hide_from_main">Скрыть приложение</string>
     <string name="tab_color">Цвет вкладки</string>
+    <string name="delete">Удалить</string>
     <string name="none">Ничего</string>
     <string name="undo">Отмена</string>
+    <string name="name">Название</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Ярлыки</string>
     <string name="pref_integrations">Интеграция</string>
@@ -396,4 +409,10 @@
     <string name="pref_fonts_add_fonts_summary">Поддерживаются OTF и TTF</string>
     <string name="pref_fonts_missing_font">Шрифт не найден</string>
     <string name="about_translate">Перевод</string>
+    <string name="pref_show_dev_options">Показать в настройках</string>
+    <string name="about_app_description">Кастомизируемая альтернатива Пиксель лаунчеру.</string>
+    <string name="about_bio_paphonb">18-летний студент,  Android разработчик и один из лучших разработчиков Lawnchair Launcher.</string>
+    <string name="dock_scale">Размер док-бара</string>
+    <string name="adaptify_pack_title">Создать адаптивные иконки для набора иконок</string>
+    <string name="adaptify_pack_summary">Создать адаптивные иконки для иконок из наборов иконок</string>
 </resources>

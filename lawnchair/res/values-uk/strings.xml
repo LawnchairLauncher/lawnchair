@@ -6,16 +6,20 @@
     <string name="icu_abbrev_time">HH:mm</string>
     <string name="icu_abbrev_time_12h">hh:mm aa</string>
     <string name="icu_abbrev_date"> dd MMMM</string>
-    <string name="in_smartspace">В віджеті гугл</string>
+    <string name="in_smartspace">У віджеті \‘At a glance\’</string>
     <string name="smartspace_time">Час</string>
     <string name="smartspace_date">Дата</string>
-    <string name="smartspace_preferences_in_settings">Віджет At a Glance</string>
-    <string name="smartspace_preferences_in_settings_desc">Дата, час, постачальник погоди</string>
+    <string name="customize">Персоналізувати</string>
+    <string name="smartspace_preferences_in_settings">Найголовніше</string>
+    <string name="smartspace_preferences_in_settings_desc">Дата, час, джерело даних про погоду</string>
+    <string name="search">Пошук</string>
     <string name="label_voice_search">Голосовий пошук</string>
-    <string name="home_widget">Віджет</string>
+    <string name="icon_pack">Набір іконок</string>
+    <string name="home_widget">Віджет на головному екрані</string>
     <string name="title_show_google_app">%1$s залишилось</string>
-    <string name="msg_minus_one_on_left">Стрічка новин зліва на робочому столі</string>
+    <string name="msg_minus_one_on_left">Стрічка новин зліва робочого столу</string>
     <string name="about">Про додаток</string>
+    <string name="google_app">Додаток Google</string>
     <string name="about_app_version">Версія</string>
     <string name="title_disable_suggestions_prompt">Вимкнути пропонування додатків</string>
     <string name="msg_disable_suggestions_prompt">"Інформація про використання буде видалена"</string>
@@ -46,6 +50,7 @@
     <string name="choose_backup_path">Огляд</string>
     <string name="backup_contents">Вміст</string>
     <string name="backup_settings">Налаштування</string>
+    <string name="homescreen">Головний екран</string>
     <string name="backup_wallpaper">Фоновий малюнок</string>
     <string name="backup_error_blank_name">Введіть назву резервної копії</string>
     <string name="backup_error_blank_location">Виьеріть місце збереження резервної копії</string>
@@ -61,6 +66,7 @@
     <string name="backup_restarting">Перезавантаження</string>
     <string name="restore_contents">Відновлення даних</string>
     <string name="restore_success">Відновлення завершене</string>
+    <string name="failed">Щось пішло не так</string>
     <string name="backup_share_text">Lawnchair резервна копія</string>
     <string name="full_width_widgets_pref_summary">Дозволити віддетам розтягуватсь до країв екрану</string>
     <string name="full_width_width_widgets_pref_title">Розширити віджети</string>
@@ -82,7 +88,7 @@
     <string name="launcher_theme_override_label">Використовувати темну тему</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="blur_pref_title">Увімкнути розмиття</string>
-    <string name="blur_pref_summary">Ефект розмиття для списку додатків, док бару, налаштування фону</string>
+    <string name="blur_pref_summary">Ефект розмиття для списку додатків, док-бару, налаштування фону</string>
     <string name="blur_radius_pref_title">Сила розмиття</string>
     <!--Marker B-->
     <string name="dock_colored_google">Кольорові іконки</string>
@@ -93,6 +99,7 @@
     <string name="dock_style_n">Плоский</string>
     <string name="dock_style_hidden">Прихований</string>
     <string name="dock_search_bar">Строка пошуку в док барі</string>
+    <string name="opacity">Прозорість</string>
     <string name="title_all_apps_google_search">Глобальний пошук</string>
     <string name="summary_all_apps_google_search">Знаходити веб результати і додатки</string>
     <string name="num_hotseat_icons_pref_title">Кількість іконок</string>
@@ -106,6 +113,8 @@
     <string name="reset_to_default">Скинути до стандартних</string>
     <string name="dock_shadow">Тінь</string>
     <string name="dock_fill">Фон</string>
+    <string name="radius">Заокруглення кутів</string>
+    <string name="gradient">Градієнт</string>
     <!--Marker C-->
     <string name="pref_category_icons">Іконки</string>
     <string name="pref_category_aag">Інформаційний віджет</string>
@@ -140,11 +149,9 @@
     <string name="about_role_mod_support">Модератор/підтримка</string>
     <string name="about_role_family_member">Член сім\'ї</string>
     <string name="about_role_magisk_maintainer">Підтримка Magisk Module</string>
-    <string name="about_bio_deletescape">Розробник андроіда &amp; ентузіаст, любить меми (забагато якшо чесно). Засновник проекту Lawnchair.</string>
-    <string name="about_bio_divadsn">19 років, перктворює кофеїн та піцу в код. Також, в минулому відомий як Codebucket.</string>
+    <string name="about_bio_deletescape">Android-розробник та ентузіаст, любить меми (можливо аж занадто). Засновник проекту Lawnchair.</string>
     <string name="about_bio_recoded">Кодер та графічний дизайнер.</string>
     <string name="about_bio_josh">Позаштатний графічний дизайнер.</string>
-    <string name="about_bio_chris">Креативний розум, впливає &amp; Створює контент. Соціальні засоби комунікації та PR менеджер.</string>
     <string name="about_bio_msfjarvis">Розробник коду в halogenOS і розробник додатків в substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Виліт лаунчера</string>
@@ -209,7 +216,7 @@
     <string name="title_use_pill_qsb">Використовувати стиль пігулки в строці пошуку</string>
     <string name="weather_provider_testing">Debug</string>
     <!--Marker G-->
-    <string name="backup_generate_report">Створити доповідь на помилку</string>
+    <string name="backup_generate_report">Створити звіт на помилку</string>
     <string name="show_top_shadow_pref_title">Верхня тінь</string>
     <string name="show_top_shadow_pref_summary">Тінь під рядком стану</string>
     <string name="two_row_dock">Два рядки</string>
@@ -219,6 +226,7 @@
     <string name="theme_automatic">Автоматично</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">За замовчуванням</string>
+    <string name="transparent">Прозорий</string>
     <string name="pref_open_source_licenses_title">Ліцензії</string>
     <string name="pref_legacy_treatment_title">Створити адаптивні іконки</string>
     <string name="pref_legacy_treatment_summary">Автоматичні адаптивні іконки для всіх додатків</string>
@@ -228,6 +236,7 @@
     <string name="color_system_accent">Відтінок системи</string>
     <string name="color_pixel_accent">Синій Pixel</string>
     <string name="color_presets">Шаблони</string>
+    <string name="custom">Користувальницькі</string>
     <string name="color_wallpaper_main">Шпалери - головні</string>
     <string name="color_wallpaper_secondary">Шпалери - другорядні</string>
     <string name="color_wallpaper_tertiary">Шпалери - третинні</string>
@@ -294,6 +303,7 @@
     <string name="search_menu">Знайти налаштування</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Відтінок</string>
+    <string name="theme_based">Слідувати темі</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Пропозиції</string>
     <string name="title_app_suggestions">Додатки</string>
@@ -332,8 +342,10 @@
     <string name="tab_bottom_sheet_save">Зберігти</string>
     <string name="tab_hide_from_main">Приховати з списку додатків</string>
     <string name="tab_color">Колір вкладки</string>
+    <string name="delete">Видалити</string>
     <string name="none">НІчого</string>
     <string name="undo">Відмінити</string>
+    <string name="name">Назва</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Ярлики</string>
     <string name="pref_integrations">Інтеграції</string>
@@ -379,7 +391,7 @@
     <string name="owm_get_your_own_key">Будь ласка отримайте власний APIтключ з api.openweathermap.org</string>
     <string name="pref_smartspace_time_above">Показати великий годинник</string>
     <string name="pref_smartspace_time_above_summary">Показати годинник над віджетом</string>
-    <string name="pref_fonts_title">Шрифт</string>
+    <string name="pref_fonts_title">Шрифти</string>
     <string name="pref_fonts_summary">Змінити шрифт різних елементів</string>
     <string name="pref_fonts_global_font">Глобальний шрифт</string>
     <string name="pref_fonts_change_global_font">Змінити</string>
@@ -395,4 +407,10 @@
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF підтримується</string>
     <string name="pref_fonts_missing_font">Відсутній шрифт</string>
     <string name="about_translate">Переклади</string>
+    <string name="pref_show_dev_options">Показати в налаштуваннях</string>
+    <string name="about_app_description">Альтернатива Pixel Launcher з широкими можливостями налаштування.</string>
+    <string name="about_bio_paphonb">18-річний студент, Android-програміст та один з основних розробників Lawnchair Launcher.</string>
+    <string name="dock_scale">Масштаб док-бару</string>
+    <string name="adaptify_pack_title">Створити адаптивні іконки для набору іконок</string>
+    <string name="adaptify_pack_summary">Створити адаптивні іконки для іконок з наборів іконок</string>
 </resources>

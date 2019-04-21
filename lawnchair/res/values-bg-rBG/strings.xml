@@ -6,13 +6,17 @@
     <string name="in_smartspace">В \‘Бърз поглед\’ уиджета</string>
     <string name="smartspace_time">Час</string>
     <string name="smartspace_date">Дата</string>
+    <string name="customize">Персонализирай</string>
     <string name="smartspace_preferences_in_settings">Бърз поглед</string>
     <string name="smartspace_preferences_in_settings_desc">Дата, час, източник за времето</string>
+    <string name="search">Търсене</string>
     <string name="label_voice_search">Гласово търсене</string>
+    <string name="icon_pack">Пакет с икони</string>
     <string name="home_widget">Уиджет на началния екран</string>
     <string name="title_show_google_app">%1$s отляво</string>
     <string name="msg_minus_one_on_left">Емисия с новини отляво на работния плот</string>
     <string name="about">Относно</string>
+    <string name="google_app">Приложението Google</string>
     <string name="about_app_version">Версия</string>
     <string name="title_disable_suggestions_prompt">Деактивиране на предложенията за приложения</string>
     <string name="msg_disable_suggestions_prompt">"Данните за използването ще бъдат премахнати"</string>
@@ -43,6 +47,7 @@
     <string name="choose_backup_path">Избери</string>
     <string name="backup_contents">Съдържание</string>
     <string name="backup_settings">Настройки</string>
+    <string name="homescreen">Начален екран</string>
     <string name="backup_wallpaper">Тапет</string>
     <string name="backup_error_blank_name">Въведете име на резервното копие</string>
     <string name="backup_error_blank_location">Изберете местоположение за резервното копие</string>
@@ -58,6 +63,7 @@
     <string name="backup_restarting">Рестартиране</string>
     <string name="restore_contents">Възстанови съдържание</string>
     <string name="restore_success">Възстановяването завърши</string>
+    <string name="failed">Нещо се обърка</string>
     <string name="backup_share_text">Резервно копие на Lawnchair</string>
     <string name="full_width_widgets_pref_summary">Позволи на уиджетите да се разтягат до краищата на екрана</string>
     <string name="full_width_width_widgets_pref_title">Широки уиджети</string>
@@ -90,6 +96,7 @@
     <string name="dock_style_n">Плосък</string>
     <string name="dock_style_hidden">Скрит</string>
     <string name="dock_search_bar">Лента за търсене в дока</string>
+    <string name="opacity">Прозрачност</string>
     <string name="title_all_apps_google_search">Глобално търсене</string>
     <string name="summary_all_apps_google_search">Намиране на уеб резултати и приложения</string>
     <string name="num_hotseat_icons_pref_title">Брой на иконките</string>
@@ -103,6 +110,8 @@
     <string name="reset_to_default">Нулиране</string>
     <string name="dock_shadow">Сянка</string>
     <string name="dock_fill">Фон</string>
+    <string name="radius">Закръгляване на ъглите</string>
+    <string name="gradient">Градиент</string>
     <!--Marker C-->
     <string name="pref_category_icons">Икони</string>
     <string name="pref_category_aag">Бърз поглед</string>
@@ -133,15 +142,14 @@
     <string name="about_role_dev_mod">Програмист/Модератор</string>
     <string name="about_role_designer">Дизайнер</string>
     <string name="about_role_ui_ux_designer">UI/UX дизайнер</string>
-    <string name="about_role_special_snowflake">Социална Медии/PR &amp; OEM отношения</string>
+    <string name="about_role_special_snowflake">Социални Мрежи/PR &amp; OEM отношения</string>
     <string name="about_role_mod_support">Модератор/Поддръжка</string>
     <string name="about_role_family_member">Член на семейството</string>
     <string name="about_role_magisk_maintainer">Разработчик на Magisk модула</string>
     <string name="about_bio_deletescape">Android програмист &amp; ентусиаст, обича мемета (всъщност твърде много). Основател на проекта Lawnchair.</string>
-    <string name="about_bio_divadsn">На 19 години, превръща кофеин и пица в код. Също така по-рано известен като Codebucket.</string>
     <string name="about_bio_recoded">Лек програмист и графичен дизайнер.</string>
     <string name="about_bio_josh">Графичен дизайнер на свободна практика.</string>
-    <string name="about_bio_chris">Millenial af, idk и idc. Нещо с дизайн и социална мрежа. Хайде да се мотаем заедно на @lawnchairapp ✨</string>
+    <string name="about_bio_chris">Millenial af, idk и idc. Нещо с дизайн и социални мрежи. Хайде да се мотаем заедно на @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">Основен програмист в halogenOS и разработчик на приложения за Substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Сриване на лаунчъра</string>
@@ -181,6 +189,7 @@
     <string name="pref_smartspace_widget_provider">Източник за времето</string>
     <string name="pref_smartspace_event_provider">Източник за календара</string>
     <string name="title_all_apps_search">Лента за търсене в списъка с прилож.</string>
+    <string name="smartspace_widget_provider_not_found">Инсталирайте или актуализирайте приложението Google.</string>
     <string name="apps_label">Приложения</string>
     <string name="all_apps_label">Всички приложения</string>
     <string name="all_apps_label_pref_title">Показвай надписа \"Всички приложения\"</string>
@@ -215,6 +224,7 @@
     <string name="theme_automatic">Автоматично</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">По подразбиране</string>
+    <string name="transparent">Прозрачен</string>
     <string name="pref_open_source_licenses_title">Лицензи</string>
     <string name="pref_legacy_treatment_title">Създай адаптивни икони</string>
     <string name="pref_legacy_treatment_summary">Автоматични адаптивни икони за всички приложения</string>
@@ -224,6 +234,7 @@
     <string name="color_system_accent">Системен акцент</string>
     <string name="color_pixel_accent">Pixel синьо</string>
     <string name="color_presets">Шаблони</string>
+    <string name="custom">Персонализиран</string>
     <string name="color_wallpaper_main">Тапет — основен</string>
     <string name="color_wallpaper_secondary">Тапет — вторичен</string>
     <string name="color_wallpaper_tertiary">Тапет — третичен</string>
@@ -289,6 +300,7 @@
     <string name="search_menu">Търсене в настройките</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Акцент</string>
+    <string name="theme_based">Следвай темата</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Предложения</string>
     <string name="title_app_suggestions">Приложения</string>
@@ -323,7 +335,10 @@
     <string name="tab_bottom_sheet_save">Запази</string>
     <string name="tab_hide_from_main">Скрий приложението от списъка с приложения</string>
     <string name="tab_color">Цвят на раздела</string>
+    <string name="delete">Изтрий</string>
+    <string name="none">Няма</string>
     <string name="undo">Отмяна</string>
+    <string name="name">Име</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Преки пътища</string>
     <string name="pref_integrations">Интеграции</string>
@@ -385,4 +400,10 @@
     <string name="pref_fonts_add_fonts_summary">OTF и TTF се поддържат</string>
     <string name="pref_fonts_missing_font">Липсващ шрифт</string>
     <string name="about_translate">Преводи</string>
+    <string name="pref_show_dev_options">Показване в настройките</string>
+    <string name="about_app_description">Персонализируема алтернатива на Pixel Launcher.</string>
+    <string name="about_bio_paphonb">18-годишен студент, Android разработчик и един от основните разработчици на Lawnchair Launcher.</string>
+    <string name="dock_scale">Размер на дока</string>
+    <string name="adaptify_pack_title">Създай адаптивни икони за пакета с икони</string>
+    <string name="adaptify_pack_summary">Създай адаптивни икони за иконите от пакета с икони</string>
 </resources>

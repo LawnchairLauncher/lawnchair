@@ -9,13 +9,17 @@
     <string name="in_smartspace">In \’In een oogopslag\’-widget</string>
     <string name="smartspace_time">Tijd</string>
     <string name="smartspace_date">Datum</string>
+    <string name="customize">Aanpassen</string>
     <string name="smartspace_preferences_in_settings">In een Oogopslag</string>
     <string name="smartspace_preferences_in_settings_desc">Datum, tijd, weerbron</string>
+    <string name="search">Zoeken</string>
     <string name="label_voice_search">Spraakgestuurd zoeken</string>
+    <string name="icon_pack">Pictogrampakket</string>
     <string name="home_widget">Thuiswidget</string>
     <string name="title_show_google_app">%1$s aan linkerzijde</string>
     <string name="msg_minus_one_on_left">Feed links van het startscherm</string>
     <string name="about">Over</string>
+    <string name="google_app">Google-app</string>
     <string name="about_app_version">Versie</string>
     <string name="app_name_pixel_launcher">Pixel Laucher</string>
     <string name="title_disable_suggestions_prompt">App-suggesties uitschakelen</string>
@@ -24,7 +28,7 @@
     <string name="pixel_style_pref_title">Pixel-stijl</string>
     <string name="about_summary_title">Overzicht</string>
     <string name="action_edit">Bewerken</string>
-    <string name="hide_app_sum">Verbergen in het app-overzicht</string>
+    <string name="hide_app_sum">Verbergen in app-overzicht</string>
     <string name="hide_app">App verbergen</string>
     <string name="icon_shape_rounded_square">Afgerond vierkant</string>
     <string name="pixel_ui_pref_summary">Pictogrampakket, vervaging, kleuren</string>
@@ -47,12 +51,13 @@
     <string name="choose_backup_path">Bladeren</string>
     <string name="backup_contents">Inhoud</string>
     <string name="backup_settings">Instellingen</string>
+    <string name="homescreen">Startscherm</string>
     <string name="backup_wallpaper">Achtergrond</string>
     <string name="backup_error_blank_name">Back-up naam invoeren</string>
     <string name="backup_error_blank_location">Back-up locatie kiezen</string>
     <string name="backup_error_blank_contents">Back-up inhoud toevoegen</string>
     <string name="backup_creating">Back-up maken</string>
-    <string name="no_recent_backups">Niets weer te geven</string>
+    <string name="no_recent_backups">Niets om te laten zien</string>
     <string name="backup_loading">Laden...</string>
     <string name="backup_invalid">Foutief back-up bestand</string>
     <string name="backup_share">Delen</string>
@@ -62,13 +67,14 @@
     <string name="backup_restarting">Herstarten</string>
     <string name="restore_contents">Inhoud herstellen</string>
     <string name="restore_success">Terugzetten voltooid</string>
+    <string name="failed">Er ging iets mis</string>
     <string name="backup_share_text">Lawnchair back-up</string>
     <string name="full_width_widgets_pref_summary">Laat widgets uitrekken naar schermranden</string>
     <string name="full_width_width_widgets_pref_title">Brede widgets</string>
     <string name="hide_apps">Apps verbergen</string>
     <string name="hide_apps_sum">Apps verbergen in app-overzicht</string>
     <string name="grid_size">Rastergrootte</string>
-    <string name="developer_options_title">Opties voor ontwikkelaars</string>
+    <string name="developer_options_title">Ontwikkelaarsopties</string>
     <string name="developer_options_enabled">Ontwikkelaarsopties ingeschakeld</string>
     <string name="restart_lawnchair_pref_title">Herstarten</string>
     <string name="restart_lawnchair_pref_summary">Instellingen opnieuw toepassen</string>
@@ -94,6 +100,7 @@
     <string name="dock_style_n">Vlak</string>
     <string name="dock_style_hidden">Verborgen</string>
     <string name="dock_search_bar">Dock zoekbalk</string>
+    <string name="opacity">Zichtbaarheid</string>
     <string name="title_all_apps_google_search">Globaal zoeken</string>
     <string name="summary_all_apps_google_search">Zoeken op web en apps</string>
     <string name="num_hotseat_icons_pref_title">Aantal pictogrammen</string>
@@ -103,21 +110,23 @@
     <string name="loading">Laden…</string>
     <string name="low_performance_mode_pref_title">Lage prestatiemodus</string>
     <string name="title_storage_permission_required">Opslagmachtiging vereist</string>
-    <string name="content_storage_permission_required">Opslagmachtiging verlenen om achtergrond te kunnen instellen</string>
+    <string name="content_storage_permission_required">Opslagmachtiging verlenen om achtergrond in te stellen</string>
     <string name="reset_to_default">Standaardwaarde terugzetten</string>
     <string name="dock_shadow">Schaduw</string>
     <string name="dock_fill">Achtergrond</string>
+    <string name="radius">Hoekafronding</string>
+    <string name="gradient">Kleurovergang</string>
     <!--Marker C-->
     <string name="pref_category_icons">Pictogrammen</string>
     <string name="pref_category_aag">In een oogopslag</string>
     <string name="pref_category_pixel_searchbar">Pixel zoekbalk</string>
     <string name="pref_category_weather">Weer</string>
-    <string name="pref_category_misc">Overige</string>
+    <string name="pref_category_misc">Andere</string>
     <string name="pref_category_layout">Lay-out</string>
     <string name="pref_category_theme">Stijl</string>
     <string name="pref_category_searchbar">Zoekbalk</string>
     <!--Marker D-->
-    <string name="title_attribouter_licenses">Open Source licenties</string>
+    <string name="title_attribouter_licenses">Open Source-licenties</string>
     <string name="title_attribouter_email">E-mail</string>
     <string name="title_attribouter_website">Website</string>
     <string name="title_attribouter_rate">Beoordelen</string>
@@ -137,12 +146,11 @@
     <string name="about_role_dev_mod">Ontwikkelaar/Moderator</string>
     <string name="about_role_designer">Vormgever</string>
     <string name="about_role_ui_ux_designer">UI/UX vormgever</string>
-    <string name="about_role_special_snowflake">PR manager/moderator</string>
+    <string name="about_role_special_snowflake">Sociale media/PR &amp; OEM-relaties</string>
     <string name="about_role_mod_support">Moderator/ondersteuning</string>
     <string name="about_role_family_member">Familielid</string>
     <string name="about_role_magisk_maintainer">Magisk module-onderhouder</string>
     <string name="about_bio_deletescape">Android ontwikkelaar &amp; enthousiast, houdt van memes (iets te veel eigenlijk). Oprichter van het Lawnchair project.</string>
-    <string name="about_bio_divadsn">19 jaar oud, verandert cafeïne en pizza in code. Voorheen ook bekent als Codebucket.</string>
     <string name="about_bio_recoded">Milde codeur en grafisch ontwerper.</string>
     <string name="about_bio_josh">Freelance grafisch ontwerper.</string>
     <string name="about_bio_chris">Millennial af, idk en idc. Iets met design en sociale media. Laten we samenkomen bij @lawnchairapp</string>
@@ -157,12 +165,12 @@
     <string name="action_open_settings">Launcher instellingen openen</string>
     <string name="action_open_overview">Startscherm pop-up openen</string>
     <string name="action_global_search">Globaal zoeken openen</string>
-    <string name="action_app_search">App-zoeken openen</string>
+    <string name="action_app_search">App zoeken openen</string>
     <string name="action_overlay">Google feed openen</string>
     <string name="action_assistant">Assistent openen</string>
     <string name="action_open_notifications">Meldingen openen</string>
     <string name="action_close_notifications">Meldingen sluiten</string>
-    <string name="action_sleep_timeout">Slapen (via time-out)</string>
+    <string name="action_sleep_timeout">Slaapstand (via time-out)</string>
     <string name="action_open_app">App openen</string>
     <string name="action_open_app_with_target">Open %s</string>
     <string name="action_open_app_select_app">App kiezen</string>
@@ -185,7 +193,7 @@
     <string name="pref_smartspace_widget_provider">Weerbron</string>
     <string name="pref_smartspace_event_provider">Agendabron</string>
     <string name="title_all_apps_search">Zoekbalk app-overzicht</string>
-    <string name="smartspace_widget_provider_not_found">Er ging iets mis. Installeer de Google-app of werk deze bij.</string>
+    <string name="smartspace_widget_provider_not_found">Installeer de Google-app of werk deze bij.</string>
     <string name="apps_label">Apps</string>
     <string name="all_apps_label">Alle apps</string>
     <string name="all_apps_label_pref_title">\"Alle Apps\"-label weergeven</string>
@@ -220,6 +228,7 @@
     <string name="theme_automatic">Automatisch</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Standaard</string>
+    <string name="transparent">Doorzichtig</string>
     <string name="pref_open_source_licenses_title">Licenties</string>
     <string name="pref_legacy_treatment_title">Adaptieve pictogrammen genereren</string>
     <string name="pref_legacy_treatment_summary">Automatische adaptieve pictogrammen voor alle apps</string>
@@ -228,14 +237,15 @@
     <string name="icon_pack_applied_toast">%s toegepast</string>
     <string name="color_system_accent">Systeemaccent</string>
     <string name="color_pixel_accent">Pixel blauw</string>
-    <string name="color_presets">Vooraf ingesteld</string>
-    <string name="color_wallpaper_main">Achtergrond - primair</string>
-    <string name="color_wallpaper_secondary">Achtergrond - secundair</string>
-    <string name="color_wallpaper_tertiary">Achtergrond - tertiair</string>
+    <string name="color_presets">Presets</string>
+    <string name="custom">Aangepast</string>
+    <string name="color_wallpaper_main">Achtergrond — primair</string>
+    <string name="color_wallpaper_secondary">Achtergrond — secundair</string>
+    <string name="color_wallpaper_tertiary">Achtergrond — tertiair</string>
     <string name="pref_hide_statusbar">Statusbalk verbergen</string>
     <string name="automatic_short">Auto</string>
     <string name="bridge_missing_title">Lawnfeed</string>
-    <string name="bridge_missing_message">Lawnfeed installeren of bijwerken</string>
+    <string name="bridge_missing_message">Installeer Lawnfeed of werk deze bij</string>
     <string name="quickstep_pref_title">Recente apps</string>
     <string name="quickstep_pref_summary">Gebaren, hoeken, vervagen</string>
     <string name="swipe_up_to_switch_apps_title">Veeg omhoog op van app te wisselen</string>
@@ -259,7 +269,7 @@
     <string name="recent_task_option_force_stop">Gedwongen stoppen</string>
     <string name="pref_icon_packs">Pictogrampakketten</string>
     <string name="drag_to_enable_packs">Sleep omhoog om te activeren</string>
-    <string name="drag_to_disable_packs">Sleep omlaag om uit te schakelen</string>
+    <string name="drag_to_disable_packs">Sleep omlaag om te deactiveren</string>
     <string name="get_more_icon_packs">Verkrijg meer</string>
     <string name="enabled_icon_packs">Ingeschakeld</string>
     <string name="pref_icon_pack_masking">Pictogrampakket</string>
@@ -295,6 +305,7 @@
     <string name="search_menu">Vind instellingen</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Accent</string>
+    <string name="theme_based">Volg thema</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Suggesties</string>
     <string name="title_app_suggestions">Apps</string>
@@ -303,7 +314,7 @@
     <string name="summary_app_suggestions_lawnstep">In recente-appsscherm en app-overzicht</string>
     <string name="app_actions_pref_title">Acties</string>
     <string name="app_actions_pref_title_in_search">Actie-suggesties</string>
-    <string name="app_actions_pref_desc">Snelkoppelingen naar frequent geopende schermen</string>
+    <string name="app_actions_pref_desc">Snelkoppelingen naar vaak geopende schermen</string>
     <string name="change_default_home">Als startpagina instellen</string>
     <string name="recent_task_option_popup_window">Dialoogscherm</string>
     <string name="feed_theme_pref_title">Achtergrondkleur</string>
@@ -312,7 +323,7 @@
     <string name="adaptive_icon">adaptief pictogram</string>
     <string name="drawer_tabs">Tabbladen</string>
     <string name="add_new_tab">Toevoegen</string>
-    <string name="rename_tab">Naam wijzigen</string>
+    <string name="rename_tab">Hernoemen</string>
     <string name="default_tab_name">Nieuw tabblad</string>
     <string name="show_in_tabs">Tabbladen</string>
     <string name="tabs_manage">Beheren</string>
@@ -329,8 +340,10 @@
     <string name="tab_bottom_sheet_save">Opslaan</string>
     <string name="tab_hide_from_main">Verberg in app-overzicht</string>
     <string name="tab_color">Tabbladkleur</string>
+    <string name="delete">Verwijderen</string>
     <string name="none">Geen</string>
     <string name="undo">Ongedaan maken</string>
+    <string name="name">Naam</string>
     <!--Marker J-->
     <string name="shortcut_sesame">Snelkoppelingen</string>
     <string name="pref_integrations">Integraties</string>
@@ -342,24 +355,24 @@
     <string name="sesame_search_upsell_off">Sesame is niet ingesteld als zoekvoorziening</string>
     <string name="pref_sesame_enabled">Sesame snelkoppelingsgegevens gedeeld</string>
     <string name="pref_sesame_disabled">Geen gegevens gedeeld</string>
-    <string name="pref_sesame_show_shortcuts">App snelkoppelingen</string>
+    <string name="pref_sesame_show_shortcuts">App-snelkoppelingen</string>
     <string name="pref_sesame_show_shortcuts_summary">Sesame snelkoppeling weergeven in pictogram-bubbels</string>
     <string name="allow">Toestaan</string>
     <string name="sesame_enable_integration_title">Integratie inschakelen</string>
     <string name="sesame_enable_integration_description"><![CDATA[Zet delen van gegevens tussen Lawnchair en Sesame aan. Je kunt dit aanpassen in de instellingen van Lawnchair of Sesame.]]></string>
-    <string name="sesame_version">Integratie versie</string>
-    <string name="sesame_shortcut_disabled">Sesame snelkoppeling niet beschikbaar</string>
+    <string name="sesame_version">Integratieversie</string>
+    <string name="sesame_shortcut_disabled">Sesame-snelkoppeling niet beschikbaar</string>
     <string name="pref_sesame_sync_icon_pack">Pictogrampakket delen</string>
     <string name="pref_sesame_sync_icon_pack_summary">Lawnchair pictogrampakket synchroniseren met Sesame</string>
     <string name="font_variant_italic">Cursief</string>
-    <string name="font_weight_thin">Thin</string>
-    <string name="font_weight_extra_light">ExtraLight</string>
-    <string name="font_weight_light">Light</string>
-    <string name="font_weight_regular">Regular</string>
-    <string name="font_weight_medium">Medium</string>
-    <string name="font_weight_semi_bold">SemiBold</string>
-    <string name="font_weight_bold">Bold</string>
-    <string name="font_weight_extra_bold">ExtraBold</string>
+    <string name="font_weight_thin">Dun</string>
+    <string name="font_weight_extra_light">ExtraLicht</string>
+    <string name="font_weight_light">Licht</string>
+    <string name="font_weight_regular">Normaal</string>
+    <string name="font_weight_medium">Middel</string>
+    <string name="font_weight_semi_bold">SemiVetgedrukt</string>
+    <string name="font_weight_bold">Vetgedrukt</string>
+    <string name="font_weight_extra_bold">ExtraVetgedrukt</string>
     <string name="font_weight_extra_black">Zwart</string>
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
@@ -367,7 +380,7 @@
     <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">OnePlus Weer</string>
     <string name="overlap_placement">Overlappende plaatsing</string>
-    <string name="overlap_placement_summary">Sta toe dat pictogrammen en widgets elkaar overlappen.</string>
+    <string name="overlap_placement_summary">Toestaan dat pictogrammen en widgets elkaar overlappen</string>
     <string name="units_rakine">Rankine</string>
     <string name="units_newton">Newton</string>
     <string name="units_delisle">Delisle</string>
@@ -382,7 +395,7 @@
     <string name="pref_fonts_change_global_font">Wijzigen</string>
     <string name="pref_fonts_home_icons">App- &amp; mapnamen</string>
     <string name="pref_fonts_home_smartspace">\'In een Oogopslag\'-widget</string>
-    <string name="pref_fonts_home_shortcuts">Snelkoppelingbubbels</string>
+    <string name="pref_fonts_home_shortcuts">Snelkoppelingsbubbels</string>
     <string name="pref_fonts_category_drawer">App-overzicht</string>
     <string name="pref_fonts_drawer_icons">App-namen</string>
     <string name="pref_fonts_drawer_app_actions_icons">App-actienamen</string>
@@ -392,4 +405,10 @@
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF ondersteund</string>
     <string name="pref_fonts_missing_font">Ontbrekend lettertype</string>
     <string name="about_translate">Vertalingen</string>
+    <string name="pref_show_dev_options">Weergeven in instellingen</string>
+    <string name="about_app_description">Een aanpasbaar alternatief voor Pixel Launcher.</string>
+    <string name="about_bio_paphonb">Een 18-jarige student, Android ontwikkelaar en één van de top ontwikkelaars bij Lawnchair Launcher.</string>
+    <string name="dock_scale">Dock schaal</string>
+    <string name="adaptify_pack_title">Adaptieve pictogrammen genereren voor pictogrampakket</string>
+    <string name="adaptify_pack_summary">Adaptieve pictogrammen genereren voor pictogrammen uit pictogrampakketten</string>
 </resources>
