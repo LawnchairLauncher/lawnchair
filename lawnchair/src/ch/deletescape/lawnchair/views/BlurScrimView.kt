@@ -282,6 +282,8 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         }
         blurDrawable?.alpha = alpha
         shadowHelper.paint.alpha = alpha
+
+        mDragHandleOffset = Math.max(0f, mDragHandleBounds.top + mDragHandleSize - mShelfTop)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {

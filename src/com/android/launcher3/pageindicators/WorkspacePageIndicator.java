@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -19,13 +18,13 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.theme.ThemeManager;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.uioverrides.WallpaperColorInfo;
 
 /**
  * A PageIndicator that briefly shows a fraction of a line when moving between pages
@@ -106,7 +105,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
 
     private Runnable mHideLineRunnable = () -> animateLineToAlpha(0);
 
-    private boolean mDockHasBackground;
+    private boolean mUseBottomLine;
 
     public WorkspacePageIndicator(Context context) {
         this(context, null);
@@ -128,7 +127,9 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
         boolean darkText = ThemeManager.Companion.getInstance(context).getSupportsDarkText();
         mActiveAlpha = darkText ? BLACK_ALPHA : WHITE_ALPHA;
         mLinePaint.setColor(darkText ? Color.BLACK : Color.WHITE);
-        mDockHasBackground = !Utilities.getLawnchairPrefs(context).getDockGradientStyle();
+
+        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
+        mUseBottomLine = !prefs.getDockGradientStyle() || prefs.getDockShowArrow();
     }
 
     public void updateLineHeight() {
@@ -150,7 +151,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
         int lineLeft = (int) (progress * (availableWidth - lineWidth));
         int lineRight = lineLeft + lineWidth;
 
-        if (mDockHasBackground) {
+        if (mUseBottomLine) {
             canvas.drawRoundRect(lineLeft, getHeight() - mLineHeight / 2, lineRight,
                     getHeight() + mLineHeight / 2, mLineHeight, mLineHeight, mLinePaint);
             return;

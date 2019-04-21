@@ -77,15 +77,20 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         if (mActivity.getDeviceProfile().isVerticalBarLayout()) {
             mActivity.getAllAppsController().setScrollRangeDelta(0);
         } else {
-            float range = HotseatQsbWidget.getBottomMargin(mActivity) + ((mlp.height + mlp.topMargin) + Dy);
+            float delta = HotseatQsbWidget.getBottomMargin(mActivity) + Dy;
             LawnchairPreferences prefs = LawnchairPreferences.Companion.getInstance(getContext());
-            if (!prefs.getDockSearchBar()) {
-                range -= mlp.height;
-                range -= mlp.topMargin;
-                range -= mlp.bottomMargin;
-                range += Dy;
+            if (!prefs.getDockHide()) {
+                delta += mlp.height + mlp.topMargin;
+                if (!prefs.getDockSearchBar()) {
+                    delta -= mlp.height;
+                    delta -= mlp.topMargin;
+                    delta -= mlp.bottomMargin;
+                    delta += Dy;
+                }
+            } else {
+                delta -= mActivity.getResources().getDimensionPixelSize(R.dimen.vertical_drag_handle_size);
             }
-            mActivity.getAllAppsController().setScrollRangeDelta(Math.round(range));
+            mActivity.getAllAppsController().setScrollRangeDelta(Math.round(delta));
         }
     }
 

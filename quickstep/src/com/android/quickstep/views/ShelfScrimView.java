@@ -65,7 +65,7 @@ public class ShelfScrimView extends ScrimView {
 
     protected float mShiftRange;
 
-    private final float mShelfOffset;
+    protected final float mShelfOffset;
     protected float mTopOffset;
     protected float mShelfTop;
     private float mShelfTopAtThreshold;
