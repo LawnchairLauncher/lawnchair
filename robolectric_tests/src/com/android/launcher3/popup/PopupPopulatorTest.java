@@ -22,16 +22,15 @@ import static com.android.launcher3.popup.PopupPopulator.NUM_DYNAMIC;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 
 import android.content.pm.ShortcutInfo;
 
-import androidx.test.filters.SmallTest;
-import androidx.test.runner.AndroidJUnit4;
-
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,8 +39,7 @@ import java.util.List;
 /**
  * Tests the sorting and filtering of shortcuts in {@link PopupPopulator}.
  */
-@SmallTest
-@RunWith(AndroidJUnit4.class)
+@RunWith(RobolectricTestRunner.class)
 public class PopupPopulatorTest {
 
     @Test
@@ -81,20 +79,20 @@ public class PopupPopulatorTest {
     }
 
     private void filterShortcutsAndAssertNumStaticAndDynamic(
-            List<ShortcutInfoCompat> shortcuts, int expectedStatic, int expectedDynamic) {
+            List<ShortcutInfo> shortcuts, int expectedStatic, int expectedDynamic) {
         filterShortcutsAndAssertNumStaticAndDynamic(shortcuts, expectedStatic, expectedDynamic, null);
     }
 
-    private void filterShortcutsAndAssertNumStaticAndDynamic(List<ShortcutInfoCompat> shortcuts,
+    private void filterShortcutsAndAssertNumStaticAndDynamic(List<ShortcutInfo> shortcuts,
             int expectedStatic, int expectedDynamic, String shortcutIdToRemove) {
         Collections.shuffle(shortcuts);
-        List<ShortcutInfoCompat> filteredShortcuts = PopupPopulator.sortAndFilterShortcuts(
+        List<ShortcutInfo> filteredShortcuts = PopupPopulator.sortAndFilterShortcuts(
                 shortcuts, shortcutIdToRemove);
         assertIsSorted(filteredShortcuts);
 
         int numStatic = 0;
         int numDynamic = 0;
-        for (ShortcutInfoCompat shortcut : filteredShortcuts) {
+        for (ShortcutInfo shortcut : filteredShortcuts) {
             if (shortcut.isDeclaredInManifest()) {
                 numStatic++;
             }
@@ -106,11 +104,11 @@ public class PopupPopulatorTest {
         assertEquals(expectedDynamic, numDynamic);
     }
 
-    private void assertIsSorted(List<ShortcutInfoCompat> shortcuts) {
+    private void assertIsSorted(List<ShortcutInfo> shortcuts) {
         int lastStaticRank = -1;
         int lastDynamicRank = -1;
         boolean hasSeenDynamic = false;
-        for (ShortcutInfoCompat shortcut : shortcuts) {
+        for (ShortcutInfo shortcut : shortcuts) {
             int rank = shortcut.getRank();
             if (shortcut.isDeclaredInManifest()) {
                 assertFalse("Static shortcuts should come before all dynamic shortcuts.",
@@ -126,51 +124,24 @@ public class PopupPopulatorTest {
         }
     }
 
-    private List<ShortcutInfoCompat> createShortcutsList(int numStatic, int numDynamic) {
-        List<ShortcutInfoCompat> shortcuts = new ArrayList<>();
+    private List<ShortcutInfo> createShortcutsList(int numStatic, int numDynamic) {
+        List<ShortcutInfo> shortcuts = new ArrayList<>();
         for (int i = 0; i < numStatic; i++) {
-            shortcuts.add(new Shortcut(true, i));
+            shortcuts.add(createInfo(true, i));
         }
         for (int i = 0; i < numDynamic; i++) {
-            shortcuts.add(new Shortcut(false, i));
+            shortcuts.add(createInfo(false, i));
         }
         return shortcuts;
     }
 
-    private class Shortcut extends ShortcutInfoCompat {
-        private boolean mIsStatic;
-        private int mRank;
-        private String mId;
-
-        public Shortcut(ShortcutInfo shortcutInfo) {
-            super(shortcutInfo);
-        }
-
-        public Shortcut(boolean isStatic, int rank) {
-            this(null);
-            mIsStatic = isStatic;
-            mRank = rank;
-            mId = generateId(isStatic, rank);
-        }
-
-        @Override
-        public boolean isDeclaredInManifest() {
-            return mIsStatic;
-        }
-
-        @Override
-        public boolean isDynamic() {
-            return !mIsStatic;
-        }
-
-        @Override
-        public int getRank() {
-            return mRank;
-        }
-
-        @Override
-        public String getId() {
-            return mId;
-        }
+    private ShortcutInfo createInfo(boolean isStatic, int rank) {
+        ShortcutInfo info = spy(new ShortcutInfo.Builder(
+                RuntimeEnvironment.application, generateId(isStatic, rank))
+                .setRank(rank)
+                .build());
+        doReturn(isStatic).when(info).isDeclaredInManifest();
+        doReturn(!isStatic).when(info).isDynamic();
+        return info;
     }
 }

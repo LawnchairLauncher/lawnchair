@@ -22,6 +22,7 @@ import static com.android.launcher3.config.FeatureFlags.IS_DOGFOOD_BUILD;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ShortcutInfo;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -48,7 +49,6 @@ import com.android.launcher3.model.PackageUpdatedTask;
 import com.android.launcher3.model.ShortcutsChangedTask;
 import com.android.launcher3.model.UserLockStateChangedTask;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -267,12 +267,12 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     @Override
-    public void onShortcutsChanged(String packageName, List<ShortcutInfoCompat> shortcuts,
+    public void onShortcutsChanged(String packageName, List<ShortcutInfo> shortcuts,
             UserHandle user) {
         enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, shortcuts, user, true));
     }
 
-    public void updatePinnedShortcuts(String packageName, List<ShortcutInfoCompat> shortcuts,
+    public void updatePinnedShortcuts(String packageName, List<ShortcutInfo> shortcuts,
             UserHandle user) {
         enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, shortcuts, user, false));
     }
@@ -530,7 +530,7 @@ public class LauncherModel extends BroadcastReceiver
 
     }
 
-    public void updateAndBindWorkspaceItem(WorkspaceItemInfo si, ShortcutInfoCompat info) {
+    public void updateAndBindWorkspaceItem(WorkspaceItemInfo si, ShortcutInfo info) {
         updateAndBindWorkspaceItem(() -> {
             si.updateFromDeepShortcutInfo(info, mApp.getContext());
             LauncherIcons li = LauncherIcons.obtain(mApp.getContext());
