@@ -150,6 +150,7 @@
     <string name="about_role_family_member">Family member</string>
     <string name="about_role_magisk_maintainer">Magisk Module Maintainer</string>
     <string name="about_bio_deletescape">Android developer &amp; enthusiast, loves memes (a bit too much actually). Founder of the Lawnchair project.</string>
+    <string name="about_bio_divadsn">19 years old, turns caffeine and pizza into code, provides hosting and 24/7 development support if something goes wrong. Contributes to open-source projects during his free time. Also previously known as Codebucket.</string>
     <string name="about_bio_recoded">Mild coder and graphics designer.</string>
     <string name="about_bio_josh">Freelance graphic designer.</string>
     <string name="about_bio_chris">Millenial af, idk and idc. Something with design and social media. Let\'s hang out together over at @lawnchairapp ✨</string>
@@ -192,6 +193,7 @@
     <string name="pref_smartspace_widget_provider">Værtjeneste</string>
     <string name="pref_smartspace_event_provider">Kalendertjeneste</string>
     <string name="title_all_apps_search">Søkelinje i Alle apper</string>
+    <string name="smartspace_widget_provider_not_found">Installer eller oppdater Google appen.</string>
     <string name="apps_label">Apper</string>
     <string name="all_apps_label">Alle apper</string>
     <string name="all_apps_label_pref_title">Vis \"Alle apper\" etikett</string>
@@ -402,4 +404,8 @@
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF støttet</string>
     <string name="pref_fonts_missing_font">Skrift mangler</string>
     <string name="about_translate">Oversettelser</string>
+    <string name="pref_show_dev_options">Vis i innstillingene</string>
+    <string name="about_app_description">Et Pixel Launcher alternativ som kan tilpasses.</string>
+    <string name="about_bio_paphonb">A 18-year-old student, Android Developer and one of the top developers at Lawnchair Launcher.</string>
+    <string name="dock_scale">Dokkskalering</string>
 </resources>
