@@ -19,6 +19,7 @@ package com.android.launcher3;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 
+import android.animation.ValueAnimator;
 import android.app.ActivityManager;
 import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
@@ -517,12 +518,10 @@ public final class Utilities {
                 LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
-    public static boolean isPowerSaverPreventingAnimation(Context context) {
-        if (ATLEAST_P) {
-            // Battery saver mode no longer prevents animations.
-            return false;
-        }
-        return context.getSystemService(PowerManager.class).isPowerSaveMode();
+    public static boolean areAnimationsEnabled(Context context) {
+        return ATLEAST_OREO
+                ? ValueAnimator.areAnimatorsEnabled()
+                : !context.getSystemService(PowerManager.class).isPowerSaveMode();
     }
 
     public static boolean isWallpaperAllowed(Context context) {

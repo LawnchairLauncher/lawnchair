@@ -30,7 +30,6 @@ import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.IntDef;
@@ -120,7 +119,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     public final void close(boolean animate) {
-        animate &= !Utilities.isPowerSaverPreventingAnimation(getContext());
+        animate &= Utilities.areAnimationsEnabled(getContext());
         if (mIsOpen) {
             BaseActivity.fromContext(getContext()).getUserEventDispatcher()
                     .resetElapsedContainerMillis("container closed");
