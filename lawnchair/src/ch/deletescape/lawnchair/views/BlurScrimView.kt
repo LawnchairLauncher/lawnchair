@@ -28,6 +28,8 @@ import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.states.HomeState
+import ch.deletescape.lawnchair.util.extensions.d
+import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.anim.Interpolators
@@ -103,6 +105,8 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     }
     private val insets = Rect()
 
+    private val alphaRanges = ArrayList<AlphaRange>()
+
     private fun createBlurDrawable(): BlurDrawable? {
         blurDrawable?.let { if (isAttachedToWindow) it.stopListening() }
         return if (BlurWallpaperProvider.isEnabled) {
@@ -148,6 +152,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         blurDrawable = createBlurDrawable()
         shadowBitmap = generateShadowBitmap()
         blurDrawable?.alpha = 0
+        rebuildColors()
         super.reInitUi()
     }
 
@@ -172,13 +177,48 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
                 mEndFlatColor = ColorUtils.compositeColors(mEndScrim, ColorUtils.setAlphaComponent(
                         mScrimColor, mMaxScrimAlpha))
                 mEndFlatColorAlpha = Color.alpha(mEndFlatColor)
+                reInitUi()
             }
             key_dock_opacity -> {
-                mMidAlpha = midAlpha
+                reInitUi()
             }
             key_dock_arrow -> {
                 updateDragHandleVisibility()
             }
+        }
+    }
+
+    private fun rebuildColors() {
+        val hasDockBackground = !prefs.dockGradientStyle
+        val hasRecents = Utilities.isRecentsEnabled()
+
+        val homeProgress = LauncherState.NORMAL.getScrimProgress(mLauncher)
+        val recentsProgress = LauncherState.OVERVIEW.getScrimProgress(mLauncher)
+
+        val alphas = ArrayList<Pair<Float, Int>>()
+        alphas.add(Pair(Float.NEGATIVE_INFINITY, mEndAlpha))
+        alphas.add(Pair(0.5f, mEndAlpha))
+        if (hasRecents && hasDockBackground) {
+            if (homeProgress < recentsProgress) {
+                alphas.add(Pair(homeProgress, midAlpha))
+                alphas.add(Pair(recentsProgress, super.getMidAlpha()))
+            } else {
+                alphas.add(Pair(recentsProgress, super.getMidAlpha()))
+                alphas.add(Pair(homeProgress, midAlpha))
+            }
+        } else if (hasDockBackground) {
+            alphas.add(Pair(homeProgress, midAlpha))
+        } else {
+            alphas.add(Pair(recentsProgress, super.getMidAlpha()))
+        }
+        alphas.add(Pair(1f, 0))
+        alphas.add(Pair(Float.POSITIVE_INFINITY, 0))
+
+        alphaRanges.clear()
+        for (i in (1 until alphas.size)) {
+            val alpha1 = alphas[i - 1]
+            val alpha2 = alphas[i]
+            alphaRanges.add(AlphaRange(alpha1.first, alpha2.first, alpha1.second, alpha2.second))
         }
     }
 
@@ -284,6 +324,12 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         shadowHelper.paint.alpha = alpha
 
         mDragHandleOffset = Math.max(0f, mDragHandleBounds.top + mDragHandleSize - mShelfTop)
+
+        alphaRanges.forEach {
+            if (mProgress in it) {
+                mShelfColor = ColorUtils.setAlphaComponent(mEndScrim, it.getAlpha(mProgress))
+            }
+        }
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -307,5 +353,18 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     override fun onEnabledChanged() {
         reInitUi()
         searchBlurDrawable = createSearchBlurDrawable()
+    }
+
+    class AlphaRange(private val start: Float, private val end: Float,
+                     private val startAlpha: Int, private val endAlpha: Int) {
+
+        private val range = start..end
+
+        fun getAlpha(progress: Float): Int {
+            return Math.round(Utilities.mapToRange(
+                    progress, start, end, startAlpha.toFloat(), endAlpha.toFloat(), ACCEL))
+        }
+
+        operator fun contains(value: Float) = value in range
     }
 }

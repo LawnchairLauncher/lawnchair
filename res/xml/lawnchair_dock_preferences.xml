@@ -42,7 +42,7 @@
         <ch.deletescape.lawnchair.preferences.DockAutoModeSeekbarPreference
             android:key="opacityPref"
             android:title="@string/opacity"
-            android:dependency="pref_dockPreset"
+            android:dependency="enableGradient"
             app:minValue="0"
             app:maxValue="1"
             app:summaryFormat="%.0f%%"
