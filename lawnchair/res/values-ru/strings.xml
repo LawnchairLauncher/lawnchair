@@ -179,7 +179,7 @@
     <string name="about_bio_divadsn">19 лет, умеет превращать кофеин и пиццу в программный код. Ранее известный как Codebucket.</string>
     <string name="about_bio_recoded">Кодер и графический дизайнер.</string>
     <string name="about_bio_josh">Внештатный графический дизайнер.</string>
-    <string name="about_bio_chris">Что-то связанное с дизайном и социальными сетями. Давайте потусим вместе на @lawnchairapp ✨</string>
+    <string name="about_bio_chris">Что-то связанное с дизайном и социальными сетями. Давайте пообщаемся вместе на @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">Главный разработчик halogenOS и приложения для Substratum.</string>
     <string name="debug_crash_launcher">Ошибка лаунчера</string>
     <string name="gestures_pref_title">Жесты</string>
@@ -440,10 +440,10 @@
     <string name="pref_fonts_category_drawer">Меню приложений</string>
     <string name="pref_fonts_drawer_icons">Имена приложений</string>
     <string name="pref_fonts_drawer_app_actions_icons">Названия действий приложения</string>
-    <string name="pref_fonts_drawer_tabs">Имена вкладок</string>
+    <string name="pref_fonts_drawer_tabs">Названия вкладок</string>
     <string name="pref_fonts_find_fonts">Поиск шрифтов</string>
     <string name="pref_fonts_add_fonts">Добавить щрифты</string>
-    <string name="pref_fonts_add_fonts_summary">Поддерживаются OTF и TTF</string>
+    <string name="pref_fonts_add_fonts_summary">Поддерживаются форматы OTF и TTF</string>
     <string name="pref_fonts_missing_font">Шрифт не найден</string>
     <string name="about_translate">Переводчики</string>
 </resources>

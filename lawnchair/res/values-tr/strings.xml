@@ -171,6 +171,7 @@
     <string name="about_role_dev_mod">Geliştirici / Moderatör</string>
     <string name="about_role_designer">Tasarımcı</string>
     <string name="about_role_ui_ux_designer">UI/UX tasarımcısı</string>
+    <string name="about_role_special_snowflake">Sosyal Medya/PR ve Oem ilişkileri</string>
     <string name="about_role_mod_support">Moderatör/destek</string>
     <string name="about_role_family_member">Aile üyesi</string>
     <string name="about_role_magisk_maintainer">Magisk modül sorumlusu</string>
@@ -178,6 +179,7 @@
     <string name="about_bio_divadsn">19 yaşında, kafein ve pizzayı kod haline getirdi. Daha önce Codebucket olarak da bilinirdi.</string>
     <string name="about_bio_recoded">Hafif kodlayıcı ve grafik tasarımcısı.</string>
     <string name="about_bio_josh">Serbest grafik tasarımcısı.</string>
+    <string name="about_bio_chris">Bin yıllık af, idk ve idc. Tasarım ve sosyal medya ile bir şey. Hadi birlikte @lawnchairapp ✨\'da takılalım</string>
     <string name="about_bio_msfjarvis">Halojenlerde çekirdek geliştirici ve substratumda uygulama geliştiricisi.</string>
     <string name="debug_crash_launcher">Crash launcher</string>
     <string name="gestures_pref_title">Hareketler</string>
@@ -275,6 +277,8 @@
     <string name="pref_recents_radius">Köşe yuvarlama</string>
     <string name="automatic_short">Otomatik</string>
     <string name="playstore_query_icon_pack">Simge paketi</string>
+    <string name="bridge_missing_title">Lawnfeed</string>
+    <string name="bridge_missing_message">Lawnfeed\'i yükle veya güncelle</string>
     <string name="quickstep_pref_title">Son uygulamalar</string>
     <string name="quickstep_pref_summary">Hareketler, köşeler, bulanıklık</string>
     <string name="swipe_up_to_switch_apps_title">Uygulamaları değiştirmek için yukarı kaydırın</string>
@@ -409,6 +413,7 @@
     <string name="font_weight_extra_black">Siyah</string>
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
+    <string name="search_provider_edge">Kenar</string>
     <string name="weather_provider_oneplus_weather">OnePlus hava durumu</string>
     <string name="overlap_placement">Örtüşen yerleşim</string>
     <string name="overlap_placement_summary">Simgelerin ve widget\'ların birbirleriyle örtüşmesine izin verin.</string>
@@ -418,6 +423,23 @@
     <string name="units_reaumur">Reaumur</string>
     <string name="units_romer">Romer</string>
     <string name="owm_get_your_own_key">Lütfen api.openweathermap.org adresinden kendi API anahtarınızı edinin</string>
+    <string name="pref_smartspace_time_above">Büyük saati göster</string>
+    <string name="pref_smartspace_time_above_summary">Saati widget\'ın üstünde göster</string>
+    <string name="pref_fonts_title">Yazı tipleri</string>
+    <string name="pref_fonts_summary">Farklı öğelerin yazı tipini değiştirme</string>
+    <string name="pref_fonts_global_font">Genel yazı tipi</string>
+    <string name="pref_fonts_change_global_font">Değiştir</string>
     <string name="pref_fonts_category_home">Ana ekran</string>
+    <string name="pref_fonts_home_icons">Uygulama ve klasör adları</string>
+    <string name="pref_fonts_home_smartspace">\'Bir Bakışta\' widget\'ı</string>
+    <string name="pref_fonts_home_shortcuts">Kısayol baloncukları</string>
     <string name="pref_fonts_category_drawer">Uygulama çekmecesi</string>
+    <string name="pref_fonts_drawer_icons">Uygulama adları</string>
+    <string name="pref_fonts_drawer_app_actions_icons">Uygulama eylem adları</string>
+    <string name="pref_fonts_drawer_tabs">Sekme adları</string>
+    <string name="pref_fonts_find_fonts">Yazı tiplerini bul</string>
+    <string name="pref_fonts_add_fonts">Yazı tipi ekle</string>
+    <string name="pref_fonts_add_fonts_summary">OTF ve TTF destekleniyor</string>
+    <string name="pref_fonts_missing_font">Eksik yazı tipi</string>
+    <string name="about_translate">Çeviri</string>
 </resources>

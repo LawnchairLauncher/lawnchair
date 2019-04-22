@@ -26,10 +26,12 @@
     <string name="title_attribouter_email">E-mail</string>
     <string name="iconpack_none">Puudub</string>
     <string name="reset">Lähtesta</string>
+    <string name="theme_automatic">Automaatne</string>
     <string name="theme_default">Vaikimisi</string>
     <string name="action_search">Otsing</string>
     <string name="color_custom">Kohandatud</string>
     <string name="automatic_short">Autom.</string>
+    <string name="search_clear_history">Puhasta ajalugu</string>
     <string name="delete_tab">Kustuta</string>
     <string name="tabs_none_selected">Puudub</string>
     <string name="tab_bottom_sheet_save">Salvesta</string>

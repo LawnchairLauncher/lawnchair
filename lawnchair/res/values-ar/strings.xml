@@ -171,6 +171,7 @@
     <string name="about_role_dev_mod">المطور/مشرف</string>
     <string name="about_role_designer">مصمم</string>
     <string name="about_role_ui_ux_designer">مصمم UX/UI</string>
+    <string name="about_role_special_snowflake">التواصل الاجتماعي/ العلاقات العامة</string>
     <string name="about_role_mod_support">مشرف/دعم</string>
     <string name="about_role_family_member">فرد من الاسرة</string>
     <string name="about_role_magisk_maintainer">مشرفة صيانة وحدة Magisk</string>
@@ -178,6 +179,7 @@
     <string name="about_bio_divadsn">18 عاماً، يحول الكافيين والبيتزا إلى التعليمات البرمجية. أيضا تعرف سابقاً باسم codebucket.</string>
     <string name="about_bio_recoded">مصمم البرامج والرسومات الخفيفة.</string>
     <string name="about_bio_josh">مصمم جرافيك حر.</string>
+    <string name="about_bio_chris">الألفي af ، Idk و Idc. شيء مع التصميم و وسائل التواصل الاجتماعي. دعنا نجلس معاً علىlawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">المطور الأساسي في halogenOS و مطور التطبيق في substratum.</string>
     <string name="debug_crash_launcher">توقف المشغل</string>
     <string name="gestures_pref_title">الإيماءات</string>
@@ -275,6 +277,8 @@
     <string name="pref_recents_radius">تقوس الزاوية</string>
     <string name="automatic_short">تلقائية</string>
     <string name="playstore_query_icon_pack">حزم الإيقونات</string>
+    <string name="bridge_missing_title">Lawnfeed</string>
+    <string name="bridge_missing_message">تثبيت أو تحديث Lawnfeed</string>
     <string name="quickstep_pref_title">التطبيقات الحديثة</string>
     <string name="quickstep_pref_summary">الإيماءات، الزوايا، الضبابية</string>
     <string name="swipe_up_to_switch_apps_title">التمرير لأعلى للتبديل بين التطبيقات</string>
@@ -417,6 +421,7 @@
     <string name="font_weight_extra_black">أسود</string>
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
+    <string name="search_provider_edge">الحافة</string>
     <string name="weather_provider_oneplus_weather">طقس OnePlus</string>
     <string name="overlap_placement">الوضع المتداخل</string>
     <string name="overlap_placement_summary">السماح للرموز والأدوات المصغّرة بالتداخل فيما بينها.</string>
@@ -426,6 +431,23 @@
     <string name="units_reaumur">ريامور</string>
     <string name="units_romer">رومر</string>
     <string name="owm_get_your_own_key">يرجى الحصول على مفتاح API الخاص بك من api.openweathermap.org</string>
+    <string name="pref_smartspace_time_above">إظهار الساعة الكبيرة</string>
+    <string name="pref_smartspace_time_above_summary">اظهر الساعة في اعلى التطبيق المصغر</string>
+    <string name="pref_fonts_title">الخطوط</string>
+    <string name="pref_fonts_summary">تغيير خط عناصر مختلفة</string>
+    <string name="pref_fonts_global_font">الخط العالمي</string>
+    <string name="pref_fonts_change_global_font">تغيير</string>
     <string name="pref_fonts_category_home">الشاشة الرئيسية</string>
+    <string name="pref_fonts_home_icons">أسماء التطبيق و المجلد</string>
+    <string name="pref_fonts_home_smartspace">أداة \'النظرة السريعة\'</string>
+    <string name="pref_fonts_home_shortcuts">فقاعات الاختصارات</string>
     <string name="pref_fonts_category_drawer">درج التطبيقات</string>
+    <string name="pref_fonts_drawer_icons">اسماء التطبيق</string>
+    <string name="pref_fonts_drawer_app_actions_icons">أسماء إجراء التطبيق</string>
+    <string name="pref_fonts_drawer_tabs">اسماء علامة التبويب</string>
+    <string name="pref_fonts_find_fonts">البحث عن الخطوط</string>
+    <string name="pref_fonts_add_fonts">إضافة خطوط</string>
+    <string name="pref_fonts_add_fonts_summary">OTF و TTF مدعومة</string>
+    <string name="pref_fonts_missing_font">الخط مفقود</string>
+    <string name="about_translate">الترجمات</string>
 </resources>
