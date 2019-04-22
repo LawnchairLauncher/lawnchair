@@ -222,6 +222,7 @@ public class LauncherStateManager {
 
     private void goToState(LauncherState state, boolean animated, long delay,
             final Runnable onCompleteRunnable) {
+        animated &= Utilities.areAnimationsEnabled(mLauncher);
         if (mLauncher.isInState(state)) {
             if (mConfig.mCurrentAnimation == null) {
                 // Run any queued runnable
