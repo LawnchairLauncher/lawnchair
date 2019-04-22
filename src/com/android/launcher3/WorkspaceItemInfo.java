@@ -19,11 +19,12 @@ package com.android.launcher3;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ShortcutInfo;
 import android.text.TextUtils;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
+import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ContentWriter;
 
 /**
@@ -107,9 +108,9 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     }
 
     /**
-     * Creates a {@link WorkspaceItemInfo} from a {@link ShortcutInfoCompat}.
+     * Creates a {@link WorkspaceItemInfo} from a {@link ShortcutInfo}.
      */
-    public WorkspaceItemInfo(ShortcutInfoCompat shortcutInfo, Context context) {
+    public WorkspaceItemInfo(ShortcutInfo shortcutInfo, Context context) {
         user = shortcutInfo.getUserHandle();
         itemType = Favorites.ITEM_TYPE_DEEP_SHORTCUT;
         updateFromDeepShortcutInfo(shortcutInfo, context);
@@ -158,9 +159,9 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         status |= FLAG_INSTALL_SESSION_ACTIVE;
     }
 
-    public void updateFromDeepShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
-        // {@link ShortcutInfoCompat#getActivity} can change during an update. Recreate the intent
-        intent = shortcutInfo.makeIntent();
+    public void updateFromDeepShortcutInfo(ShortcutInfo shortcutInfo, Context context) {
+        // {@link ShortcutInfo#getActivity} can change during an update. Recreate the intent
+        intent = ShortcutKey.makeIntent(shortcutInfo);
         title = shortcutInfo.getShortLabel();
 
         CharSequence label = shortcutInfo.getLongLabel();
@@ -179,7 +180,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     /** Returns the WorkspaceItemInfo id associated with the deep shortcut. */
     public String getDeepShortcutId() {
         return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT ?
-                getIntent().getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID) : null;
+                getIntent().getStringExtra(ShortcutKey.EXTRA_SHORTCUT_ID) : null;
     }
 
     @Override

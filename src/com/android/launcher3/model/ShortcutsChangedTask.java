@@ -16,6 +16,7 @@
 package com.android.launcher3.model;
 
 import android.content.Context;
+import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 
 import com.android.launcher3.AllAppsList;
@@ -25,7 +26,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
@@ -40,11 +40,11 @@ import java.util.List;
 public class ShortcutsChangedTask extends BaseModelUpdateTask {
 
     private final String mPackageName;
-    private final List<ShortcutInfoCompat> mShortcuts;
+    private final List<ShortcutInfo> mShortcuts;
     private final UserHandle mUser;
     private final boolean mUpdateIdMap;
 
-    public ShortcutsChangedTask(String packageName, List<ShortcutInfoCompat> shortcuts,
+    public ShortcutsChangedTask(String packageName, List<ShortcutInfo> shortcuts,
             UserHandle user, boolean updateIdMap) {
         mPackageName = packageName;
         mShortcuts = shortcuts;
@@ -56,7 +56,6 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
         final Context context = app.getContext();
         DeepShortcutManager deepShortcutManager = DeepShortcutManager.getInstance(context);
-        deepShortcutManager.onShortcutsChanged(mShortcuts);
 
         // Find WorkspaceItemInfo's that have changed on the workspace.
         HashSet<ShortcutKey> removedKeys = new HashSet<>();
@@ -76,9 +75,9 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
         final ArrayList<WorkspaceItemInfo> updatedWorkspaceItemInfos = new ArrayList<>();
         if (!keyToShortcutInfo.isEmpty()) {
             // Update the workspace to reflect the changes to updated shortcuts residing on it.
-            List<ShortcutInfoCompat> shortcuts = deepShortcutManager.queryForFullDetails(
+            List<ShortcutInfo> shortcuts = deepShortcutManager.queryForFullDetails(
                     mPackageName, new ArrayList<>(allIds), mUser);
-            for (ShortcutInfoCompat fullDetails : shortcuts) {
+            for (ShortcutInfo fullDetails : shortcuts) {
                 ShortcutKey key = ShortcutKey.fromInfo(fullDetails);
                 List<WorkspaceItemInfo> workspaceItemInfos = keyToShortcutInfo.remove(key);
                 if (!fullDetails.isPinned()) {

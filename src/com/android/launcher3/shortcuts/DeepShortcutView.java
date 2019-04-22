@@ -17,6 +17,7 @@
 package com.android.launcher3.shortcuts;
 
 import android.content.Context;
+import android.content.pm.ShortcutInfo;
 import android.graphics.Point;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -43,7 +44,7 @@ public class DeepShortcutView extends FrameLayout {
     private View mDivider;
 
     private WorkspaceItemInfo mInfo;
-    private ShortcutInfoCompat mDetail;
+    private ShortcutInfo mDetail;
 
     public DeepShortcutView(Context context) {
         this(context, null, 0);
@@ -93,7 +94,7 @@ public class DeepShortcutView extends FrameLayout {
     }
 
     /** package private **/
-    public void applyShortcutInfo(WorkspaceItemInfo info, ShortcutInfoCompat detail,
+    public void applyShortcutInfo(WorkspaceItemInfo info, ShortcutInfo detail,
             PopupContainerWithArrow container) {
         mInfo = info;
         mDetail = detail;
@@ -130,7 +131,7 @@ public class DeepShortcutView extends FrameLayout {
         return mIconView;
     }
 
-    public ShortcutInfoCompat getDetail() {
+    public ShortcutInfo getDetail() {
         return mDetail;
     }
 }

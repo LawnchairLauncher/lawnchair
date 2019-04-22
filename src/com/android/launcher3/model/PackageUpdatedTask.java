@@ -18,6 +18,7 @@ package com.android.launcher3.model;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ShortcutInfo;
 import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
@@ -42,7 +43,6 @@ import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -213,7 +213,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                             if (si.isPromise() && isNewApkAvailable) {
                                 boolean isTargetValid = true;
                                 if (si.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-                                    List<ShortcutInfoCompat> shortcut = DeepShortcutManager
+                                    List<ShortcutInfo> shortcut = DeepShortcutManager
                                             .getInstance(context).queryForPinnedShortcuts(
                                                     cn.getPackageName(),
                                                     Arrays.asList(si.getDeepShortcutId()), mUser);

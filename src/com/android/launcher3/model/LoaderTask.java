@@ -30,6 +30,7 @@ import android.content.IntentFilter;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
+import android.content.pm.ShortcutInfo;
 import android.os.Handler;
 import android.os.Process;
 import android.os.UserHandle;
@@ -66,7 +67,6 @@ import com.android.launcher3.icons.cache.IconCacheUpdateHandler;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LooperIdleLock;
@@ -285,7 +285,7 @@ public class LoaderTask implements Runnable {
                     mPackageInstaller.updateAndGetActiveSessionCache();
             mFirstScreenBroadcast = new FirstScreenBroadcast(installingPkgs);
 
-            Map<ShortcutKey, ShortcutInfoCompat> shortcutKeyToPinnedShortcuts = new HashMap<>();
+            Map<ShortcutKey, ShortcutInfo> shortcutKeyToPinnedShortcuts = new HashMap<>();
             final LoaderCursor c = new LoaderCursor(contentResolver.query(
                     LauncherSettings.Favorites.CONTENT_URI, null, null, null, null), mApp);
 
@@ -317,10 +317,10 @@ public class LoaderTask implements Runnable {
 
                     // We can only query for shortcuts when the user is unlocked.
                     if (userUnlocked) {
-                        List<ShortcutInfoCompat> pinnedShortcuts =
+                        List<ShortcutInfo> pinnedShortcuts =
                                 mShortcutManager.queryForPinnedShortcuts(null, user);
                         if (mShortcutManager.wasLastCallSuccess()) {
-                            for (ShortcutInfoCompat shortcut : pinnedShortcuts) {
+                            for (ShortcutInfo shortcut : pinnedShortcuts) {
                                 shortcutKeyToPinnedShortcuts.put(ShortcutKey.fromInfo(shortcut),
                                         shortcut);
                             }
@@ -473,7 +473,7 @@ public class LoaderTask implements Runnable {
 
                                 ShortcutKey key = ShortcutKey.fromIntent(intent, c.user);
                                 if (unlockedUsers.get(c.serialNumber)) {
-                                    ShortcutInfoCompat pinnedShortcut =
+                                    ShortcutInfo pinnedShortcut =
                                             shortcutKeyToPinnedShortcuts.get(key);
                                     if (pinnedShortcut == null) {
                                         // The shortcut is no longer valid.
@@ -839,7 +839,7 @@ public class LoaderTask implements Runnable {
         if (mBgDataModel.hasShortcutHostPermission) {
             for (UserHandle user : mUserManager.getUserProfiles()) {
                 if (mUserManager.isUserUnlocked(user)) {
-                    List<ShortcutInfoCompat> shortcuts =
+                    List<ShortcutInfo> shortcuts =
                             mShortcutManager.queryForAllShortcuts(user);
                     mBgDataModel.updateDeepShortcutCounts(null, user, shortcuts);
                 }
