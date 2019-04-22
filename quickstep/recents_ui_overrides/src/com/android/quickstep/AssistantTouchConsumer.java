@@ -60,6 +60,9 @@ public class AssistantTouchConsumer implements InputConsumer {
     private static final int STATE_ASSISTANT_ACTIVE = 1;
     private static final int STATE_DELEGATE_ACTIVE = 2;
 
+    private static final String INVOCATION_TYPE_KEY = "invocation_type";
+    private static final int INVOCATION_TYPE_GESTURE = 1;
+
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
     private final PointF mStartDragPos = new PointF();
@@ -227,7 +230,9 @@ public class AssistantTouchConsumer implements InputConsumer {
                 if (mDistance >= mDistThreshold && mTimeFraction >= 1) {
                     UserEventDispatcher.newInstance(mContext).logActionOnContainer(
                             SWIPE, mDirection, NAVBAR);
-                    mSysUiProxy.startAssistant(new Bundle());
+                    Bundle args = new Bundle();
+                    args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
+                    mSysUiProxy.startAssistant(args);
                     mLaunchedAssistant = true;
                 }
             } catch (RemoteException e) {
