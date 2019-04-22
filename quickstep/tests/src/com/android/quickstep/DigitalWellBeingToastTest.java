@@ -31,14 +31,14 @@ public class DigitalWellBeingToastTest extends AbstractQuickStepTest {
                 mTargetContext.getSystemService(UsageStatsManager.class);
         final int observerId = 0;
 
-        getInstrumentation().getUiAutomation().adoptShellPermissionIdentity();
         try {
             final String[] packages = new String[]{CALCULATOR_PACKAGE};
 
             // Set time limit for app.
-            usageStatsManager.registerAppUsageLimitObserver(observerId, packages,
-                    Duration.ofSeconds(600), Duration.ofSeconds(300),
-                    PendingIntent.getActivity(mTargetContext, -1, new Intent(), 0));
+            runWithShellPermission(() ->
+                    usageStatsManager.registerAppUsageLimitObserver(observerId, packages,
+                            Duration.ofSeconds(600), Duration.ofSeconds(300),
+                            PendingIntent.getActivity(mTargetContext, -1, new Intent(), 0)));
 
             mLauncher.pressHome();
             final DigitalWellBeingToast toast = getToast();
@@ -47,13 +47,14 @@ public class DigitalWellBeingToastTest extends AbstractQuickStepTest {
             assertEquals("Toast text: ", "5 minutes left today", toast.getTextView().getText());
 
             // Unset time limit for app.
-            usageStatsManager.unregisterAppUsageLimitObserver(observerId);
+            runWithShellPermission(
+                    () -> usageStatsManager.unregisterAppUsageLimitObserver(observerId));
 
             mLauncher.pressHome();
             assertFalse("Toast is visible", getToast().isShown());
         } finally {
-            usageStatsManager.unregisterAppUsageLimitObserver(observerId);
-            getInstrumentation().getUiAutomation().dropShellPermissionIdentity();
+            runWithShellPermission(
+                    () -> usageStatsManager.unregisterAppUsageLimitObserver(observerId));
         }
     }
 
@@ -72,5 +73,15 @@ public class DigitalWellBeingToastTest extends AbstractQuickStepTest {
 
     private TaskView getLatestTask(Launcher launcher) {
         return launcher.<RecentsView>getOverviewPanel().getTaskViewAt(0);
+    }
+
+    private void runWithShellPermission(Runnable action) {
+        getInstrumentation().getUiAutomation().adoptShellPermissionIdentity();
+        try {
+            action.run();
+        } finally {
+            getInstrumentation().getUiAutomation().dropShellPermissionIdentity();
+        }
+
     }
 }
