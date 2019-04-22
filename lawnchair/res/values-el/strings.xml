@@ -197,8 +197,8 @@
     <string name="title_all_apps_search">Γραφικό αναζήτησης συρταριού εφαρμογών</string>
     <string name="smartspace_widget_provider_not_found">Εγκαταστήστε ή ενημερώστε την εφαρμογή Google.</string>
     <string name="apps_label">Εφαρμογές</string>
-    <string name="all_apps_label">Όλες Οι Εφαρμογές</string>
-    <string name="all_apps_label_pref_title">Εμφάνιση τίτλου ‘Όλες Οι Εφαρμογές’</string>
+    <string name="all_apps_label">Όλες οι εφαρμογές</string>
+    <string name="all_apps_label_pref_title">Εμφάνιση τίτλου ‘Όλες οι εφαρμογές’</string>
     <string name="separate_work_apps_pref_title">Δεύτερη καρτέλα για Εφαρμογές Εργασίας</string>
     <string name="title_search_hidden_apps">Εύρεση κρυφών εφαρμογών</string>
     <string name="summary_search_hidden_apps">Εμφάνιση κρυφών εφαρμογών στα αποτελέσματα</string>
