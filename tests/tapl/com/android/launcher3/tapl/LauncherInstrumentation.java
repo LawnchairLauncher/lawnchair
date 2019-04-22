@@ -175,6 +175,7 @@ public final class LauncherInstrumentation {
             // Workaround, use constructed context because both the instrumentation context and the
             // app context are not constructed with resources that take overlays into account
             final Context ctx = baseContext.createPackageContext("android", 0);
+            log("Interaction mode = " + getCurrentInteractionMode(ctx));
             if (isGesturalMode(ctx)) {
                 return NavigationModel.ZERO_BUTTON;
             } else if (isSwipeUpMode(ctx)) {
