@@ -146,6 +146,7 @@
     <string name="about_role_family_member">Membre de la família</string>
     <string name="about_role_magisk_maintainer">Encarregat del mòdul de Magisk</string>
     <string name="about_bio_deletescape">Desenvolupador i entusiasta d\'Android, enamorat dels memes (en realitat una mica massa). Fundador del projecte Lawnchair.</string>
+    <string name="about_bio_divadsn">19 anys, converteix cafeïna i pizza en codi, amfitrió i proveïdor de suport 24 hores al dia quan alguna cosa va malament. Contribueix en projectes de codi obert durant el seu temps lliure. També conegut anteriorment com a Codebucket.</string>
     <string name="about_bio_recoded">Programador i dissenyador.</string>
     <string name="about_bio_josh">Dissenyador autònom.</string>
     <string name="about_bio_chris">Mil·lènial, no ho sé i no m\'interessa. Alguna cosa sobre disseny i xarxes socials. Anem a passar l\'estona junts a @lawnchairapp ✨</string>
@@ -188,6 +189,7 @@
     <string name="pref_smartspace_widget_provider">Font del temps</string>
     <string name="pref_smartspace_event_provider">Font del calendari</string>
     <string name="title_all_apps_search">Barra de cerca del calaix</string>
+    <string name="smartspace_widget_provider_not_found">Instal·la o actualitza l\'aplicació de Google.</string>
     <string name="apps_label">Aplicacions</string>
     <string name="all_apps_label">Totes les aplicacions</string>
     <string name="all_apps_label_pref_title">Mostra l\'etiqueta «totes les aplicacions»</string>
@@ -398,4 +400,8 @@
     <string name="pref_fonts_add_fonts_summary">OTF i TTF compatibles</string>
     <string name="pref_fonts_missing_font">Falta la font</string>
     <string name="about_translate">Traduccions</string>
+    <string name="pref_show_dev_options">Mostra a la configuració</string>
+    <string name="about_app_description">Un Pixel Launcher personalitzable alternatiu.</string>
+    <string name="about_bio_paphonb">Estudiant de 18 anys, desenvolupador d\'Android i un dels principals desenvolupadors de Lawnchair Launcher.</string>
+    <string name="dock_scale">Escala del caixó d\'aplicacions</string>
 </resources>
