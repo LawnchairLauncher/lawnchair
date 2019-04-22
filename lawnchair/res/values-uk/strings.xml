@@ -409,6 +409,8 @@
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF підтримується</string>
     <string name="pref_fonts_missing_font">Відсутній шрифт</string>
     <string name="about_translate">Переклади</string>
+    <string name="pref_show_dev_options">Показати в налаштуваннях</string>
     <string name="about_app_description">Альтернатива Pixel Launcher з широкими можливостями налаштування.</string>
     <string name="about_bio_paphonb">18-річний студент, Android-програміст та один з основних розробників Lawnchair Launcher.</string>
+    <string name="dock_scale">Масштаб док-бару</string>
 </resources>
