@@ -361,7 +361,7 @@ public abstract class AbstractLauncherUiTest {
                 mDevice.wait(Until.hasObject(By.pkg(packageName).depth(0)), LONG_WAIT_TIME_MS));
     }
 
-    protected String resolveSystemApp(String category) {
+    protected static String resolveSystemApp(String category) {
         return getInstrumentation().getContext().getPackageManager().resolveActivity(
                 new Intent(Intent.ACTION_MAIN).addCategory(category),
                 PackageManager.MATCH_SYSTEM_ONLY).

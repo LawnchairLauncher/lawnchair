@@ -32,7 +32,6 @@ import android.os.UserHandle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -67,6 +66,10 @@ public final class DigitalWellBeingToast extends LinearLayout {
                 View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
         setOnClickListener((view) -> openAppUsageSettings());
         mLauncherApps = context.getSystemService(LauncherApps.class);
+    }
+
+    public TextView getTextView() {
+        return mText;
     }
 
     @Override
