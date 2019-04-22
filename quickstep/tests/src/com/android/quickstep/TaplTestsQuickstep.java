@@ -16,6 +16,8 @@
 
 package com.android.quickstep;
 
+import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -60,7 +62,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     }
 
     private void startTestApps() throws Exception {
-        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_BROWSER));
+        startAppFast(getAppPackageName());
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CONTACTS));
 
