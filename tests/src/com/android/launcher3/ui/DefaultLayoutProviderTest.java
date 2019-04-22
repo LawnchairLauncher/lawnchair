@@ -71,6 +71,7 @@ public class DefaultLayoutProviderTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @Ignore
     public void testCustomProfileLoaded_with_icon_on_hotseat() throws Exception {
         writeLayout(new LauncherLayoutBuilder().atHotseat(0).putApp(SETTINGS_APP, SETTINGS_APP));
 
@@ -85,6 +86,7 @@ public class DefaultLayoutProviderTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @Ignore
     public void testCustomProfileLoaded_with_widget() throws Exception {
         // A non-restored widget with no config screen gets restored automatically.
         LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
