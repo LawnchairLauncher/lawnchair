@@ -87,7 +87,7 @@ public class TouchInteractionService extends Service implements
             new LooperExecutor(UiThreadHelper.getBackgroundLooper());
 
     private static final String NAVBAR_VERTICAL_SIZE = "navigation_bar_frame_height";
-    private static final String NAVBAR_HORIZONTAL_SIZE = "navigation_bar_frame_width";
+    private static final String NAVBAR_HORIZONTAL_SIZE = "navigation_bar_width";
 
     public static final EventLogArray TOUCH_INTERACTION_LOG =
             new EventLogArray("touch_interaction_log", 40);
