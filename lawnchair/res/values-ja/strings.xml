@@ -41,21 +41,21 @@
     <string name="dock_pref_title">ドック</string>
     <string name="hide_icon_labels_pref_title">アプリ名を隠す</string>
     <string name="backups">バックアップ</string>
-    <string name="new_backup">バックアップを作成</string>
-    <string name="restore_backup">バックアップから復元</string>
+    <string name="new_backup">作成</string>
+    <string name="restore_backup">復元</string>
     <string name="backup_location">バックアップ先</string>
     <string name="choose_backup_path">バックアップ先を選択</string>
     <string name="backup_contents">内容</string>
     <string name="backup_settings">設定</string>
     <string name="homescreen">ホーム画面</string>
     <string name="backup_wallpaper">壁紙</string>
-    <string name="backup_error_blank_name">バックアップ名を入力</string>
+    <string name="backup_error_blank_name">バックアップ名を入力してください</string>
     <string name="backup_error_blank_location">バックアップ場所を選択</string>
     <string name="backup_error_blank_contents">バックアップを追加</string>
     <string name="backup_creating">バックアップを作成中</string>
     <string name="no_recent_backups">表示するものがありません</string>
     <string name="backup_loading">読み込んでいます…</string>
-    <string name="backup_invalid">テーマファイルがおかしくなっています</string>
+    <string name="backup_invalid">バックアップファイルが不正です</string>
     <string name="backup_share">共有</string>
     <string name="backup_pref_summary">設定の保存と、バックアップの復元</string>
     <string name="backup_timestamp">作成日</string>
@@ -142,8 +142,10 @@
     <string name="about_role_dev_mod">開発者 / 仲介者</string>
     <string name="about_role_designer">デザイナー</string>
     <string name="about_role_ui_ux_designer">UI/UX デザイナー</string>
+    <string name="about_role_special_snowflake">ソーシャルメディア/ PR &amp; OEM関係</string>
     <string name="about_role_mod_support">仲介者 / サポート</string>
     <string name="about_role_family_member">仲間たち</string>
+    <string name="about_role_magisk_maintainer">Magiskモジュールメンテナ</string>
     <string name="about_bio_deletescape">Android開発者でファンですが、実はちょっとバイオ系の方が好きです。
 Lawnchairプロジェクトの創始者です。</string>
     <string name="about_bio_divadsn">19 歳で、カフェインとピザをコードに変えます。なにか問題が起こったら、休み無しに開発サポートとホスティングを行います。自由時間にオープンソースプロジェクトに貢献しています。以前は人に Codebucket と呼ばれていました。</string>
@@ -166,6 +168,7 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="action_assistant">アシスタントを開く</string>
     <string name="action_open_notifications">通知パネルを開く</string>
     <string name="action_close_notifications">通知パネルを閉じる</string>
+    <string name="action_sleep_timeout">スリープ（操作なし）</string>
     <string name="action_open_app">アプリを開く</string>
     <string name="action_open_app_with_target">%s を開く</string>
     <string name="action_open_app_select_app">アプリを選ぶ</string>
@@ -234,6 +237,9 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="color_pixel_accent">Pixelブルー</string>
     <string name="color_presets">標準</string>
     <string name="custom">カスタム</string>
+    <string name="color_wallpaper_main">壁紙 - 一番の</string>
+    <string name="color_wallpaper_secondary">壁紙 - 二番の</string>
+    <string name="color_wallpaper_tertiary">壁紙 - 三番の</string>
     <string name="pref_hide_statusbar">ステータスバーを隠す</string>
     <string name="automatic_short">自動</string>
     <string name="bridge_missing_message">Lawnfeed をインストールもしくは更新</string>
@@ -263,6 +269,8 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="drag_to_disable_packs">下にドラッグして無効化</string>
     <string name="get_more_icon_packs">さらに手に入れる</string>
     <string name="enabled_icon_packs">有効</string>
+    <string name="pref_icon_pack_masking">アイコンを覆う</string>
+    <string name="pref_icon_pack_masking_summary">無傷のアイコンを適用されたアイコンパックと一致させる</string>
     <string name="pref_legacy_colored_backgrounds">色付きの背景</string>
     <string name="pref_legacy_colored_backgrounds_summary">アイコンに順応した背景色を生成します</string>
     <string name="pref_white_only_treatment">白の背景を置き換える</string>
@@ -270,6 +278,7 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <!--Marker H-->
     <string name="dismiss_drop_target_label">"表示しない"</string>
+    <string name="suggested_action_content_description">%1$s が %2$s で対局しました。</string>
     <string name="action_sleep">スリープ</string>
     <string name="pref_drawer_padding">列の高さ</string>
     <string name="pref_drawer_columns">列数</string>
@@ -286,6 +295,8 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="theme_black_dark_text">黒テーマに暗い文字</string>
     <string name="pref_qsb_color">色</string>
     <string name="hide_from_predictions">候補から隠す</string>
+    <string name="hide_from_predictions_summary">ドロワーに候補を表示しない</string>
+    <string name="bubble_searchbar">デュアルバブルサーチバー</string>
     <string name="search_clear_history">履歴を削除</string>
     <string name="search_no_results">何も見つかりません</string>
     <string name="search_menu">設定を検索</string>
@@ -295,14 +306,17 @@ Lawnchairプロジェクトの創始者です。</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">検索予測</string>
     <string name="title_app_suggestions">アプリ</string>
+    <string name="title_app_suggestions_in_search">アプリの候補</string>
     <string name="summary_app_suggestions">最近使ったアプリ</string>
+    <string name="summary_app_suggestions_lawnstep">最近のアプリの画面とアプリの引き出し</string>
     <string name="app_actions_pref_title">動作</string>
     <string name="app_actions_pref_title_in_search">アクションの候補</string>
     <string name="app_actions_pref_desc">頻繁に開かれているショートカット</string>
     <string name="change_default_home">ホーム画面に設定</string>
+    <string name="recent_task_option_popup_window">ダイアログウィンドウ</string>
     <string name="feed_theme_pref_title">背景色</string>
     <string name="recents_not_connected">サービスが接続されていません</string>
-    <string name="advanced_settings">詳細設定</string>
+    <string name="advanced_settings">%sの詳細設定</string>
     <string name="adaptive_icon">アダプティブアイコン</string>
     <string name="drawer_tabs">タブ</string>
     <string name="add_new_tab">追加</string>
@@ -334,7 +348,10 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="sesame_upsell">タップしてSesameをインストール</string>
     <string name="sesame_search_upsell_on">Sesame が検索プロバイダーに設定されています</string>
     <string name="sesame_search_upsell_off">Sesame が検索プロバイダーに設定されていません</string>
+    <string name="pref_sesame_enabled">ごまショートカットデータの共有</string>
+    <string name="pref_sesame_disabled">共有するデーターがありません</string>
     <string name="pref_sesame_show_shortcuts">アプリ ショートカット</string>
+    <string name="pref_sesame_show_shortcuts_summary">ゴマのショートカットをアイコンの泡で表示する</string>
     <string name="allow">許可</string>
     <string name="sesame_enable_integration_title">統合を有効にする</string>
     <string name="sesame_enable_integration_description"><![CDATA[Lawnchair と Sesame でデーターを共有します。これは、Lawnchair もしくは Sesame の設定から変更できます。]]></string>
@@ -357,6 +374,7 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="search_provider_qwant">Qwant</string>
     <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">OnePlus Weather</string>
+    <string name="overlap_placement">重複した配置を許可する</string>
     <string name="overlap_placement_summary">アイコンとウィジェットが互いに重なるのを許可します</string>
     <string name="units_rakine">ランキン度</string>
     <string name="units_newton">ニュートン度</string>
@@ -372,6 +390,7 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="pref_fonts_change_global_font">変更</string>
     <string name="pref_fonts_home_icons">アプリとフォルダー名</string>
     <string name="pref_fonts_home_smartspace">\'At a Glance\' ウィジェット</string>
+    <string name="pref_fonts_home_shortcuts">ショートカットバブル</string>
     <string name="pref_fonts_category_drawer">ドロワー</string>
     <string name="pref_fonts_drawer_icons">アプリ名</string>
     <string name="pref_fonts_drawer_app_actions_icons">アプリのアクション名</string>
@@ -384,4 +403,5 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="pref_show_dev_options">設定に表示</string>
     <string name="about_app_description">カスタマイズできるPixel Launcher の代わりとなるランチャー</string>
     <string name="about_bio_paphonb">18歳の学生。Android 開発者で、 Lawnchair ランチャーの中心的な開発者の一人です.</string>
+    <string name="dock_scale">ドックの大きさ</string>
 </resources>
