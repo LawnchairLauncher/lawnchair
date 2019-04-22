@@ -6,7 +6,7 @@
     <string name="icu_abbrev_time">HH:mm</string>
     <string name="icu_abbrev_time_12h">hh:mm aa</string>
     <string name="icu_abbrev_date"> dd MMMM</string>
-    <string name="in_smartspace">在“速览”微件内</string>
+    <string name="in_smartspace">在“速览”小部件内</string>
     <string name="smartspace_time">时间</string>
     <string name="smartspace_date">日期</string>
     <string name="customize">自定义</string>
@@ -15,7 +15,7 @@
     <string name="search">搜索</string>
     <string name="label_voice_search">语音搜索</string>
     <string name="icon_pack">图标包</string>
-    <string name="home_widget">主屏幕微件</string>
+    <string name="home_widget">主屏幕小部件</string>
     <string name="title_show_google_app">负一屏 %1$s</string>
     <string name="msg_minus_one_on_left">负一屏显示 Feed</string>
     <string name="about">关于</string>
@@ -70,7 +70,7 @@
     <string name="failed">发生错误</string>
     <string name="backup_share_text">Lawnchair 备份</string>
     <string name="full_width_widgets_pref_summary">让小部件拉伸到屏幕边缘</string>
-    <string name="full_width_width_widgets_pref_title">拓宽微件</string>
+    <string name="full_width_width_widgets_pref_title">小部件宽度</string>
     <string name="hide_apps">隐藏应用</string>
     <string name="hide_apps_sum">从抽屉移除应用</string>
     <string name="grid_size">网格大小</string>
@@ -162,7 +162,7 @@
     <string name="gestures_pref_summary">双击、主屏按钮、向下滑动</string>
     <string name="action_open_drawer">打开应用抽屉</string>
     <string name="action_last_task">打开上一个应用</string>
-    <string name="action_open_widgets">打开微件抽屉</string>
+    <string name="action_open_widgets">打开小部件抽屉</string>
     <string name="action_open_settings">打开启动器设置</string>
     <string name="action_open_overview">打开主屏幕弹出菜单</string>
     <string name="action_global_search">打开全局搜索</string>
@@ -379,7 +379,7 @@
     <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">一加天气</string>
     <string name="overlap_placement">重叠放置</string>
-    <string name="overlap_placement_summary">允许图标和微件相互重叠。</string>
+    <string name="overlap_placement_summary">允许图标和小部件相互重叠。</string>
     <string name="units_rakine">兰金温标</string>
     <string name="units_newton">牛顿温标</string>
     <string name="units_delisle">德利尔温标</string>
@@ -387,13 +387,13 @@
     <string name="units_romer">罗氏温标</string>
     <string name="owm_get_your_own_key">请访问 api.openweathermap.org 获取您自己的 API 密钥</string>
     <string name="pref_smartspace_time_above">显示大号时钟</string>
-    <string name="pref_smartspace_time_above_summary">微件上方显示时钟</string>
+    <string name="pref_smartspace_time_above_summary">小部件上方显示时钟</string>
     <string name="pref_fonts_title">字体</string>
     <string name="pref_fonts_summary">更改各元素的字体</string>
     <string name="pref_fonts_global_font">全局字体</string>
     <string name="pref_fonts_change_global_font">更改</string>
     <string name="pref_fonts_home_icons">应用及文件夹名称</string>
-    <string name="pref_fonts_home_smartspace">速览微件</string>
+    <string name="pref_fonts_home_smartspace">速览小部件</string>
     <string name="pref_fonts_home_shortcuts">快捷方式气泡</string>
     <string name="pref_fonts_category_drawer">抽屉</string>
     <string name="pref_fonts_drawer_icons">应用程序名称</string>
