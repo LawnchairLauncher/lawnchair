@@ -119,6 +119,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         test.waitForLauncherCondition("Launcher didn't start", launcher -> launcher != null);
         test.waitForState("Launcher internal state didn't switch to Home", LauncherState.NORMAL);
         test.waitForResumed("Launcher internal state is still Background");
+        // Check that we switched to home.
+        test.mLauncher.getWorkspace();
     }
 
     // Please don't add negative test cases for methods that fail only after a long wait.
