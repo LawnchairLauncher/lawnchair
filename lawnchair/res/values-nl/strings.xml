@@ -14,7 +14,7 @@
     <string name="smartspace_preferences_in_settings_desc">Datum, tijd, weerbron</string>
     <string name="search">Zoeken</string>
     <string name="label_voice_search">Spraakgestuurd zoeken</string>
-    <string name="icon_pack">Icoon pakket</string>
+    <string name="icon_pack">Pictogrampakket</string>
     <string name="home_widget">Thuiswidget</string>
     <string name="title_show_google_app">%1$s aan linkerzijde</string>
     <string name="msg_minus_one_on_left">Feed links van het startscherm</string>
@@ -100,7 +100,7 @@
     <string name="dock_style_n">Vlak</string>
     <string name="dock_style_hidden">Verborgen</string>
     <string name="dock_search_bar">Dock zoekbalk</string>
-    <string name="opacity">Ondoorzichtigheid</string>
+    <string name="opacity">Zichtbaarheid</string>
     <string name="title_all_apps_google_search">Globaal zoeken</string>
     <string name="summary_all_apps_google_search">Zoeken op web en apps</string>
     <string name="num_hotseat_icons_pref_title">Aantal pictogrammen</string>
@@ -114,7 +114,7 @@
     <string name="reset_to_default">Standaardwaarde terugzetten</string>
     <string name="dock_shadow">Schaduw</string>
     <string name="dock_fill">Achtergrond</string>
-    <string name="radius">Radius afgeronde hoeken</string>
+    <string name="radius">Hoekafronding</string>
     <string name="gradient">Kleurovergang</string>
     <!--Marker C-->
     <string name="pref_category_icons">Pictogrammen</string>
@@ -151,7 +151,7 @@
     <string name="about_role_family_member">Familielid</string>
     <string name="about_role_magisk_maintainer">Magisk module-onderhouder</string>
     <string name="about_bio_deletescape">Android ontwikkelaar &amp; enthousiast, houdt van memes (iets te veel eigenlijk). Oprichter van het Lawnchair project.</string>
-    <string name="about_bio_divadsn">19 jaar oud, verandert cafeïne en pizza in code. Voorheen ook bekent als Codebucket.</string>
+    <string name="about_bio_divadsn">19 jaar oud, verandert cafeïne en pizza in code, verzorgt hosting en staat 24/7 klaar voor ontwikkelingsondersteuning als iets mis gaat. Draagt bij aan open-bron projecten in zijn vrije tijd. Voorheen ook bekent als Codebucket.</string>
     <string name="about_bio_recoded">Milde codeur en grafisch ontwerper.</string>
     <string name="about_bio_josh">Freelance grafisch ontwerper.</string>
     <string name="about_bio_chris">Millennial af, idk en idc. Iets met design en sociale media. Laten we samenkomen bij @lawnchairapp</string>
@@ -194,7 +194,7 @@
     <string name="pref_smartspace_widget_provider">Weerbron</string>
     <string name="pref_smartspace_event_provider">Agendabron</string>
     <string name="title_all_apps_search">Zoekbalk app-overzicht</string>
-    <string name="smartspace_widget_provider_not_found">Er ging iets mis. Installeer de Google-app of werk deze bij.</string>
+    <string name="smartspace_widget_provider_not_found">Installeer de Google-app of werk deze bij.</string>
     <string name="apps_label">Apps</string>
     <string name="all_apps_label">Alle apps</string>
     <string name="all_apps_label_pref_title">\"Alle Apps\"-label weergeven</string>
@@ -406,8 +406,8 @@
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF ondersteund</string>
     <string name="pref_fonts_missing_font">Ontbrekend lettertype</string>
     <string name="about_translate">Vertalingen</string>
-    <string name="pref_show_dev_options">Toon instellingen</string>
+    <string name="pref_show_dev_options">Weergeven in instellingen</string>
     <string name="about_app_description">Een aanpasbaar alternatief voor Pixel Launcher.</string>
-    <string name="about_bio_paphonb">Een 18-jarige student, Android Developer en één van de top ontwikkelaars bij Lawnchair Launcher.</string>
-    <string name="dock_scale">Dock stijl</string>
+    <string name="about_bio_paphonb">Een 18-jarige student, Android ontwikkelaar en één van de top ontwikkelaars bij Lawnchair Launcher.</string>
+    <string name="dock_scale">Dock schaal</string>
 </resources>
