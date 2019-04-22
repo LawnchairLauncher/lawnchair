@@ -370,7 +370,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 launch(getAppPackageName());
     }
 
-    private static String getAppPackageName() {
+    public static String getAppPackageName() {
         return getInstrumentation().getContext().getPackageName();
     }
 }
