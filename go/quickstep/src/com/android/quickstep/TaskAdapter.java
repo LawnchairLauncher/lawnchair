@@ -43,9 +43,10 @@ public final class TaskAdapter extends Adapter<ViewHolder> {
     public static final int MAX_TASKS_TO_DISPLAY = 6;
     public static final int TASKS_START_POSITION = 1;
 
+    public static final int ITEM_TYPE_TASK = 0;
+    public static final int ITEM_TYPE_CLEAR_ALL = 1;
+
     private static final String TAG = "TaskAdapter";
-    private static final int ITEM_TYPE_TASK = 0;
-    private static final int ITEM_TYPE_CLEAR_ALL = 1;
     private final TaskListLoader mLoader;
     private TaskActionController mTaskActionController;
     private OnClickListener mClearAllListener;
