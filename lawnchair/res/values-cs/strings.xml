@@ -280,7 +280,7 @@
     <string name="smartspace_provider_bridge">Přemostění Pixel (Rootless)</string>
     <!--Marker H-->
     <string name="dismiss_drop_target_label">"Nezobrazovat"</string>
-    <string name="suggested_action_content_description">%1$ se otevírají v %2$</string>
+    <string name="suggested_action_content_description">%1$s se otevírají v %2$s</string>
     <string name="action_sleep">Uspat</string>
     <string name="pref_drawer_padding">Výška řádku</string>
     <string name="pref_drawer_columns">Počet sloupců</string>
