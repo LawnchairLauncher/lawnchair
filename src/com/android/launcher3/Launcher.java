@@ -2223,10 +2223,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      */
     public void bindAllApplications(ArrayList<AppInfo> apps) {
         mAppsView.getAppsStore().setApps(apps);
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.bindAllApplications(apps);
-        }
     }
 
     /**

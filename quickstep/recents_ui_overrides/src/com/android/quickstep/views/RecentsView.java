@@ -82,6 +82,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.anim.SpringObjectAnimator;
+import com.android.launcher3.appprediction.PredictionUiStateManager;
+import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
@@ -751,8 +753,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
         unloadVisibleTaskData();
         setCurrentPage(0);
-
-        OverviewCallbacks.get(getContext()).onResetOverview();
     }
 
     /**

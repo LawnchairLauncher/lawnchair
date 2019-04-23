@@ -45,7 +45,7 @@ import androidx.annotation.UiThread;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherInitListener;
+import com.android.launcher3.LauncherInitListenerEx;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -304,7 +304,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     @Override
     public ActivityInitListener createActivityInitListener(
             BiPredicate<Launcher, Boolean> onInitListener) {
-        return new LauncherInitListener(onInitListener);
+        return new LauncherInitListenerEx(onInitListener);
     }
 
     @Nullable
