@@ -234,12 +234,8 @@ public abstract class AbstractLauncherUiTest {
 
     protected void resetLoaderState() {
         try {
-            mMainThreadExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    LauncherAppState.getInstance(mTargetContext).getModel().forceReload();
-                }
-            });
+            mMainThreadExecutor.execute(
+                    () -> LauncherAppState.getInstance(mTargetContext).getModel().forceReload());
         } catch (Throwable t) {
             throw new IllegalArgumentException(t);
         }
