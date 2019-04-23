@@ -21,7 +21,6 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.ALL_APPS_PROGRESS_OFF_SCREEN;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_HINTS_IN_OVERVIEW;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 
 import android.animation.AnimatorSet;
@@ -39,7 +38,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.views.BaseDragLayer;
+import com.android.launcher3.appprediction.PredictionUiStateManager;
+import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.util.ClipAnimationHelper;
@@ -194,5 +194,14 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
                         mTransformParams);
             }
         }
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+
+        // We are moving to home or some other UI with no recents. Switch back to the home client,
+        // the home predictions should have been updated when the activity was resumed.
+        PredictionUiStateManager.INSTANCE.get(getContext()).switchClient(Client.HOME);
     }
 }

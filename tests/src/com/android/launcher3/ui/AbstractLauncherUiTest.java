@@ -168,7 +168,7 @@ public abstract class AbstractLauncherUiTest {
     }
 
     @After
-    public void tearDown() {
+    public void verifyLauncherState() {
         try {
             // Limits UI tests affecting tests running after them.
             waitForModelLoaded();
