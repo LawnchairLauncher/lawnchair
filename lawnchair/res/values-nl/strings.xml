@@ -28,7 +28,7 @@
     <string name="pixel_style_pref_title">Pixel-stijl</string>
     <string name="about_summary_title">Overzicht</string>
     <string name="action_edit">Bewerken</string>
-    <string name="hide_app_sum">Verbergen in het app-overzicht</string>
+    <string name="hide_app_sum">Verbergen in app-overzicht</string>
     <string name="hide_app">App verbergen</string>
     <string name="icon_shape_rounded_square">Afgerond vierkant</string>
     <string name="pixel_ui_pref_summary">Pictogrampakket, vervaging, kleuren</string>
@@ -171,7 +171,7 @@
     <string name="action_assistant">Assistent openen</string>
     <string name="action_open_notifications">Meldingen openen</string>
     <string name="action_close_notifications">Meldingen sluiten</string>
-    <string name="action_sleep_timeout">Slapen (via time-out)</string>
+    <string name="action_sleep_timeout">Slaapstand (via time-out)</string>
     <string name="action_open_app">App openen</string>
     <string name="action_open_app_with_target">Open %s</string>
     <string name="action_open_app_select_app">App kiezen</string>
@@ -270,7 +270,7 @@
     <string name="recent_task_option_force_stop">Gedwongen stoppen</string>
     <string name="pref_icon_packs">Pictogrampakketten</string>
     <string name="drag_to_enable_packs">Sleep omhoog om te activeren</string>
-    <string name="drag_to_disable_packs">Sleep omlaag om uit te schakelen</string>
+    <string name="drag_to_disable_packs">Sleep omlaag om te deactiveren</string>
     <string name="get_more_icon_packs">Verkrijg meer</string>
     <string name="enabled_icon_packs">Ingeschakeld</string>
     <string name="pref_icon_pack_masking">Pictogrampakket</string>
