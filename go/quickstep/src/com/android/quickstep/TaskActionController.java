@@ -15,6 +15,8 @@
  */
 package com.android.quickstep;
 
+import static com.android.quickstep.TaskAdapter.TASKS_START_POSITION;
+
 import android.app.ActivityOptions;
 import android.view.View;
 
@@ -42,7 +44,7 @@ public final class TaskActionController {
      * @param viewHolder the task view holder to launch
      */
     public void launchTask(TaskHolder viewHolder) {
-        if (viewHolder.getTask() == null) {
+        if (!viewHolder.getTask().isPresent()) {
             return;
         }
         TaskItemView itemView = (TaskItemView) (viewHolder.itemView);
@@ -53,8 +55,9 @@ public final class TaskActionController {
         int height = v.getMeasuredHeight();
 
         ActivityOptions opts = ActivityOptions.makeClipRevealAnimation(v, left, top, width, height);
-        ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(viewHolder.getTask().key,
-                opts, null /* resultCallback */, null /* resultCallbackHandler */);
+        ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(
+                viewHolder.getTask().get().key, opts, null /* resultCallback */,
+                null /* resultCallbackHandler */);
     }
 
     /**
@@ -63,11 +66,11 @@ public final class TaskActionController {
      * @param viewHolder the task view holder to remove
      */
     public void removeTask(TaskHolder viewHolder) {
-        if (viewHolder.getTask() == null) {
+        if (!viewHolder.getTask().isPresent()) {
             return;
         }
         int position = viewHolder.getAdapterPosition();
-        Task task = viewHolder.getTask();
+        Task task = viewHolder.getTask().get();
         ActivityManagerWrapper.getInstance().removeTask(task.key.id);
         mLoader.removeTask(task);
         mAdapter.notifyItemRemoved(position);
@@ -80,6 +83,6 @@ public final class TaskActionController {
         int count = mAdapter.getItemCount();
         ActivityManagerWrapper.getInstance().removeAllRecentTasks();
         mLoader.clearAllTasks();
-        mAdapter.notifyItemRangeRemoved(0 /* positionStart */, count);
+        mAdapter.notifyItemRangeRemoved(TASKS_START_POSITION /* positionStart */, count);
     }
 }
