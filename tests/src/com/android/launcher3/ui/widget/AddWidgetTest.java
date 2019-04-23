@@ -49,14 +49,14 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
     @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
     @Test
-    @Ignore
+    @Ignore // Convert test to TAPL and enable them; b/131116002
     public void testDragIcon_portrait() throws Throwable {
         lockRotation(true);
         performTest();
     }
 
     @Test
-    @Ignore
+    @Ignore // Convert test to TAPL and enable them; b/131116002
     public void testDragIcon_landscape() throws Throwable {
         lockRotation(false);
         performTest();
