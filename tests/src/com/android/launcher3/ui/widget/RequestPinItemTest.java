@@ -80,7 +80,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
     @Test
     public void testEmpty() throws Throwable { /* needed while the broken tests are being fixed */ }
 
-    @Test @Ignore
+    @Test @Ignore // b/131116593
     public void testPinWidgetNoConfig() throws Throwable {
         runTest("pinWidgetNoConfig", true, new ItemOperator() {
             @Override
@@ -93,7 +93,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         });
     }
 
-    @Test @Ignore
+        @Test @Ignore // b/131116593
     public void testPinWidgetNoConfig_customPreview() throws Throwable {
         // Command to set custom preview
         Intent command =  RequestPinItemActivity.getCommandIntent(
@@ -111,7 +111,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         }, command);
     }
 
-    @Test @Ignore
+    @Test @Ignore // b/131116593
     public void testPinWidgetWithConfig() throws Throwable {
         runTest("pinWidgetWithConfig", true, new ItemOperator() {
             @Override
@@ -124,7 +124,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         });
     }
 
-    @Test @Ignore
+    @Test @Ignore // b/131116593
     public void testPinShortcut() throws Throwable {
         // Command to set the shortcut id
         Intent command = RequestPinItemActivity.getCommandIntent(

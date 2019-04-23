@@ -74,7 +74,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @PortraitLandscape
-    @Ignore
+    @Ignore // Enable after b/131115533
     public void testPressRecentAppsLauncherAndGetOverview() throws RemoteException {
         mDevice.pressRecentApps();
         waitForState("Launcher internal state didn't switch to Overview", LauncherState.OVERVIEW);
