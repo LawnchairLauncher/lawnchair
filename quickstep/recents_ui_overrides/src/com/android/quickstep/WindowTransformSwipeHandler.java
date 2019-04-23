@@ -769,6 +769,17 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     /**
+     * Called as a result on ACTION_CANCEL to return the UI to the start state.
+     */
+    @UiThread
+    public void onGestureCancelled() {
+        updateDisplacement(0);
+        setStateOnUiThread(STATE_GESTURE_COMPLETED);
+        mLogAction = Touch.SWIPE_NOOP;
+        handleNormalGestureEnd(0, false, new PointF(), true /* isCancel */);
+    }
+
+    /**
      * @param endVelocity The velocity in the direction of the nav bar to the middle of the screen.
      * @param velocity The x and y components of the velocity when the gesture ends.
      * @param downPos The x and y value of where the gesture started.
@@ -788,7 +799,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             mLogDirection = velocity.x < 0 ? Direction.LEFT : Direction.RIGHT;
         }
         mDownPos = downPos;
-        handleNormalGestureEnd(endVelocity, isFling, velocity);
+        handleNormalGestureEnd(endVelocity, isFling, velocity, false /* isCancel */);
     }
 
     @UiThread
@@ -806,7 +817,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     @UiThread
-    private void handleNormalGestureEnd(float endVelocity, boolean isFling, PointF velocity) {
+    private void handleNormalGestureEnd(float endVelocity, boolean isFling, PointF velocity,
+            boolean isCancel) {
         PointF velocityPxPerMs = new PointF(velocity.x / 1000, velocity.y / 1000);
         long duration = MAX_SWIPE_DURATION;
         float currentShift = mCurrentShift.value;
@@ -824,7 +836,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         }
         final boolean reachedOverviewThreshold = currentShift >= MIN_PROGRESS_FOR_OVERVIEW;
         if (!isFling) {
-            if (mMode == Mode.NO_BUTTON) {
+            if (isCancel) {
+                endTarget = LAST_TASK;
+            } else if (mMode == Mode.NO_BUTTON) {
                 if (mIsShelfPeeking) {
                     endTarget = RECENTS;
                 } else if (goingToNewTask) {
@@ -907,7 +921,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private void doLogGesture(GestureEndTarget endTarget) {
         DeviceProfile dp = mDp;
-        if (dp == null) {
+        if (dp == null || mDownPos == null) {
             // We probably never received an animation controller, skip logging.
             return;
         }
@@ -1106,7 +1120,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         setStateOnUiThread(STATE_HANDLER_INVALIDATED);
     }
 
-    public void cancel() {
+    /**
+     * Cancels any running animation so that the active target can be overriden by a new swipe
+     * handle (in case of quick switch).
+     */
+    public void cancelCurrentAnimation() {
         mCurrentShift.cancelAnimation();
         if (mLauncherTransitionController != null && mLauncherTransitionController
                 .getAnimationPlayer().isStarted()) {
