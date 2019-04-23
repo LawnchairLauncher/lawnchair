@@ -9,7 +9,7 @@
     <string name="in_smartspace">Στο γραφικό στοιχείο ‘Με μια Ματιά’</string>
     <string name="smartspace_time">Ώρα</string>
     <string name="smartspace_date">Ημερομηνία</string>
-    <string name="customize">Επεξεργασία</string>
+    <string name="customize">Προσαρμογή</string>
     <string name="smartspace_preferences_in_settings">Με μια Ματιά</string>
     <string name="smartspace_preferences_in_settings_desc">Ημερομηνία, ώρα, πάροχος καιρού</string>
     <string name="search">Αναζήτηση</string>
@@ -18,7 +18,7 @@
     <string name="home_widget">Γραφικό στοιχείο αρχικής οθόνης</string>
     <string name="title_show_google_app">%1$s στα αριστερά</string>
     <string name="msg_minus_one_on_left">Τροφοδοσία Google στα αριστερά της αρχικής οθόνης</string>
-    <string name="about">Σχετικά με</string>
+    <string name="about">Σχετικά</string>
     <string name="google_app">Εφαρμογή Google</string>
     <string name="about_app_version">Έκδοση</string>
     <string name="app_name_pixel_launcher">Εκκινητής Pixel</string>
@@ -30,7 +30,7 @@
     <string name="about_summary_title">Σύνοψη</string>
     <string name="action_edit">Επεξεργασία</string>
     <string name="hide_app_sum">Απόκρυψη από το συρτάρι εφαρμογών</string>
-    <string name="hide_app">Κρυφές εφαρμογές</string>
+    <string name="hide_app">Απόκρυψη εφαρμογής</string>
     <string name="icon_shape_rounded_square">Στρογγυλεμένο τετράγωνο</string>
     <string name="pixel_ui_pref_summary">Πακέτα εικονιδίων, θόλωμα, χρώματα</string>
     <string name="app_drawer_pref_title">Συρτάρι εφαρμογών</string>
@@ -39,7 +39,7 @@
     <string name="general_pref_title">Αρχική οθόνη</string>
     <string name="general_pref_summary">Πλέγμα, διάταξη εικονιδίων, γραμμή κατάστασης</string>
     <string name="about_pref_summary">Ομάδα, σύνδεσμοι, άδειες χρήσης</string>
-    <string name="hide_app_selected">&#160; έχετε αποκρύψει</string>
+    <string name="hide_app_selected">&#160; αποκρυμμένη</string>
     <string name="hide_app_apply">Εφαρμογή</string>
     <string name="hide_dock_gradient">Απενεργοποίηση βαθμιδωτού εφέ</string>
     <string name="dock_pref_summary">Στυλ, ορατότητα, ένδειξη σελίδας</string>
@@ -58,14 +58,14 @@
     <string name="backup_error_blank_location">Επιλογή τοποθεσίας αντίγραφου ασφαλείας</string>
     <string name="backup_error_blank_contents">Προσθήκη περιεχομένου στο αντίγραφο ασφαλείας</string>
     <string name="backup_creating">Δημιουργία αντιγράφου ασφαλείας</string>
-    <string name="no_recent_backups">Τίποτα για προβολή</string>
+    <string name="no_recent_backups">Δεν υπάρχει τίποτα για προβολή</string>
     <string name="backup_loading">Φόρτωση...</string>
     <string name="backup_invalid">Εσφαλμένο αρχείο αντιγράφου ασφαλείας</string>
     <string name="backup_share">Κοινοποίηση</string>
     <string name="backup_pref_summary">Αποθήκευση αρχικής οθόνης, επαναφορά αντιγράφων ασφαλείας</string>
     <string name="backup_timestamp">Ημερομηνία δημιουργίας</string>
     <string name="backup_restoring">Επαναφορά…</string>
-    <string name="backup_restarting">Επανεκκίνηση</string>
+    <string name="backup_restarting">Γίνεται επανεκκίνηση</string>
     <string name="restore_contents">Επαναφορά περιεχομένου</string>
     <string name="restore_success">Η επαναφορά ολοκληρώθηκε</string>
     <string name="failed">Κάτι πήγε στραβά</string>
@@ -150,9 +150,9 @@
     <string name="about_role_special_snowflake">Κοινωνικά Δίκτυα/Δημόσιες Σχέχεις (PR) &amp; συγγένειες Κατασκευαστή Πρωτότυπου Εξοπλισμού (OEM)</string>
     <string name="about_role_mod_support">Συντονιστής/Υποστήριξη</string>
     <string name="about_role_family_member">Μέλος Οικογενείας</string>
-    <string name="about_role_magisk_maintainer">Διαχειριστής εφαρμογής Magisk</string>
-    <string name="about_bio_deletescape">Προγραμματιστής Android &amp; ενθουσιώδης, αγαπά τα μιμίδια (λίγο παραπάνω απ\' όσο πρέπει βασικά). Ιδρυτής του προγράμματος εκκίνησης Lawnchair.</string>
-    <string name="about_bio_divadsn">19 χρονών, μετατρέπει την καφεΐνη και την πίτσα σε κώδικα, παρέχει φιλοξενία και 24/7 υποστήριξη ανάπτυξης εάν κάτι πάει στραβά. Συμβάλλει σε έργα ανοιχτού κώδικα κατά την διάρκεια του ελεύθερου χρόνου του. Επίσης γνωστός στο παρελθόν ως Codebucket...</string>
+    <string name="about_role_magisk_maintainer">Διαχειριστής προσθέτων Magisk</string>
+    <string name="about_bio_deletescape">Προγραμματιστής Android &amp; ενθουσιώδης, αγαπά τα μιμίδια (λίγο παραπάνω απ\' όσο πρέπει). Ιδρυτής του Lawnchair.</string>
+    <string name="about_bio_divadsn">19 χρονών, μετατρέπει την καφεΐνη και την πίτσα σε κώδικα, παρέχει hosting και 24/7 υποστήριξη ανάπτυξης εάν κάτι πάει στραβά. Συμβάλλει σε έργα ανοιχτού κώδικα στον ελεύθερό του χρόνο. Επίσης παρελθοντικά γνωστός ως Codebucket.</string>
     <string name="about_bio_recoded">Ήπιος προγραμματιστής και σχεδιαστής γραφικών.</string>
     <string name="about_bio_josh">Ανεξάρτητος σχεδιαστής γραφικών.</string>
     <string name="about_bio_chris">Δημιουργικό μυαλό, ασκεί επιρροή &amp; συμβάλλει στη δημιουργία περιεχομένου. Μάνατζερ των κοινωνικών δικτύων και δημοσίων σχέσεων. Προτείνει να αράξουμε όλοι μαζί στο @lawnchairapp γκρουπ ✨</string>
@@ -160,7 +160,7 @@
     <!--Marker E-->
     <string name="debug_crash_launcher">Κρασάρισμα εκκινητή</string>
     <string name="gestures_pref_title">Χειρονομίες αφής</string>
-    <string name="gestures_pref_summary">Διπλό πάτημα, κουμπί αρχικής οθόνης, σύρσιμο προς τα κάτω</string>
+    <string name="gestures_pref_summary">Διπλό πάτημα, κουμπί αρχικής οθόνης, σύρσιμο κάτω</string>
     <string name="action_open_drawer">Άνοιγμα συρταριού εφαρμογών</string>
     <string name="action_last_task">Άνοιγμα τελευταίας εφαρμογής</string>
     <string name="action_open_widgets">Άνοιγμα συρταριού γραφικών στοιχείων</string>
@@ -168,7 +168,7 @@
     <string name="action_open_overview">Άνοιγμα αναδυόμενου παράθυρου αρχικής οθόνης</string>
     <string name="action_global_search">Άνοιγμα παγκόσμιας αναζήτησης</string>
     <string name="action_app_search">Άνοιγμα αναζήτησης εφαρμογών</string>
-    <string name="action_overlay">Άνοιγμα πλαϊνής τροφοδοσίας Google</string>
+    <string name="action_overlay">Άνοιγμα τροφοδοσίας Google</string>
     <string name="action_assistant">Άνοιγμα βοηθού Google</string>
     <string name="action_open_notifications">Άνοιγμα ειδοποιήσεων</string>
     <string name="action_close_notifications">Κλείσιμο ειδοποιήσεων</string>
@@ -176,20 +176,20 @@
     <string name="action_open_app">Άνοιγμα εφαρμογής</string>
     <string name="action_open_app_with_target">Άνοιγμα %s</string>
     <string name="action_open_app_select_app">Επιλογή εφαρμογής</string>
-    <string name="action_none">Να μη γίνει καμία ενέργεια</string>
+    <string name="action_none">Καμία ενέργεια</string>
     <string name="action_despacito">Αναπαραγωγή βίντεο YouTube Rewind 2018 (βιασμός αφτιών)</string>
     <string name="gesture_press_home">Πλήκτρο αρχικής οθόνης</string>
     <string name="gesture_press_back">Πλήκτρο επιστροφής</string>
     <string name="gesture_double_tap">Διπλό πάτημα</string>
     <string name="gesture_long_press">Πάτημα &amp; κράτημα</string>
-    <string name="gesture_swipe_down">Σύρσιμο προς τα κάτω</string>
-    <string name="gesture_swipe_up">Σύρσιμο προς τα επάνω</string>
+    <string name="gesture_swipe_down">Σύρσιμο κάτω</string>
+    <string name="gesture_swipe_up">Σύρσιμο πάνω</string>
     <string name="gesture_dock_swipe_up">Σύρσιμο προς τα επάνω στην μπάρα εφαρμογών</string>
     <string name="pref_show_assistant_title">Πλήκτρο αναζήτησης φωνής</string>
-    <string name="pref_show_assistant_summary">Εμφάνιση πλήκτρου φωνητικής αναζήτησης εάν υποστηρίζεται</string>
+    <string name="pref_show_assistant_summary">Εμφάνιση πλήκτρου φωνητικής αναζήτησης εφόσον υποστηρίζεται</string>
     <string name="pref_show_as_assistant_summary">Εμφάνιση πλήκτρου βοηθού Google αντί της φωνητικής αναζήτησης</string>
     <string name="smartspace_time_24_h">24-ωρη μορφή</string>
-    <string name="weather_provider_disabled">Απενεργοποιημένο</string>
+    <string name="weather_provider_disabled">Απενεργοποιημένος</string>
     <string name="weather_provider_owm">Πηγή OpenWeatherMap</string>
     <string name="weather_provider_pe">PixelExperience</string>
     <string name="pref_smartspace_widget_provider">Πάροχος καιρού</string>
@@ -198,8 +198,8 @@
     <string name="smartspace_widget_provider_not_found">Εγκαταστήστε ή ενημερώστε την εφαρμογή Google.</string>
     <string name="apps_label">Εφαρμογές</string>
     <string name="all_apps_label">Όλες οι εφαρμογές</string>
-    <string name="all_apps_label_pref_title">Εμφάνιση τίτλου ‘Όλες οι εφαρμογές’</string>
-    <string name="separate_work_apps_pref_title">Δεύτερη καρτέλα για Εφαρμογές Εργασίας</string>
+    <string name="all_apps_label_pref_title">Εμφάνιση ετικέτας \"Όλες οι εφαρμογές\"</string>
+    <string name="separate_work_apps_pref_title">Δεύτερη καρτέλα για εφαρμογές εργασίας</string>
     <string name="title_search_hidden_apps">Εύρεση κρυφών εφαρμογών</string>
     <string name="summary_search_hidden_apps">Εμφάνιση κρυφών εφαρμογών στα αποτελέσματα</string>
     <!--Marker F-->
@@ -249,7 +249,7 @@
     <string name="bridge_missing_title">Lawnfeed</string>
     <string name="bridge_missing_message">Εγκαταστήστε ή ενημερώστε το Lawnfeed</string>
     <string name="quickstep_pref_title">Πρόσφατα</string>
-    <string name="quickstep_pref_summary">Χειρονομίες αφής, γωνίες, θολώτητα</string>
+    <string name="quickstep_pref_summary">Χειρονομίες αφής, γωνίες, θολότητα</string>
     <string name="swipe_up_to_switch_apps_title">Σύρσιμο προς τα επάνω για εναλλαγή εφαρμογών</string>
     <string name="swipe_left_to_go_back_title">Σύρσιμο αριστερά για επιστροφή</string>
     <string name="pref_category_nav_swipe_up_gestures">Ενέργειες άνω συρσίματος</string>
@@ -349,8 +349,8 @@
     <!--Marker J-->
     <string name="shortcut_sesame">Συντομεύσεις</string>
     <string name="pref_integrations">Ενσωματώσεις</string>
-    <string name="pref_integrations_summary">Αναζήτηση, εφαρμογή Sesame, εφαρμογή Google</string>
-    <string name="sesame">Εφαρμογή Sesame</string>
+    <string name="pref_integrations_summary">Αναζήτηση, Sesame, Google</string>
+    <string name="sesame">Sesame</string>
     <string name="sesame_data_integration">Ενσωμάτωση δεδομένων</string>
     <string name="sesame_upsell">Πατήστε για εγκατάσταση της εφαρμογής Sesame</string>
     <string name="sesame_search_upsell_on">Η εφαρμογή Sesame ορίστηκε ως πάροχος αναζήτησης</string>
@@ -368,16 +368,16 @@
     <string name="pref_sesame_sync_icon_pack_summary">Συγχρονισμός πακέτου εικονιδίων εκκινητή Lawnchair με την εφαρμογή Sesame</string>
     <string name="font_variant_italic">Πλάγια</string>
     <string name="font_weight_thin">Λεπτή</string>
-    <string name="font_weight_extra_light">Έξτρα Ημι-Κανονική</string>
-    <string name="font_weight_light">Ημι-Κανονική</string>
+    <string name="font_weight_extra_light">Έξτρα Ημικανονική</string>
+    <string name="font_weight_light">Ημικανονική</string>
     <string name="font_weight_regular">Κανονική</string>
     <string name="font_weight_medium">Μέτρια</string>
-    <string name="font_weight_semi_bold">Ημι-Έντονη</string>
+    <string name="font_weight_semi_bold">Ημιέντονη</string>
     <string name="font_weight_bold">Έντονη</string>
     <string name="font_weight_extra_bold">Έξτρα Έντονη</string>
     <string name="font_weight_extra_black">Παχιά</string>
     <!--Marker K-->
-    <string name="search_provider_firefox">Mozilla Firefox</string>
+    <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
     <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">Καιρός OnePlus</string>
