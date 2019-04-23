@@ -213,6 +213,7 @@ public class LauncherModel extends BroadcastReceiver
         synchronized (mLock) {
             Preconditions.assertUIThread();
             mCallbacks = new WeakReference<>(callbacks);
+            android.util.Log.d("b/131170582", "mCallbacks = " + mCallbacks);
         }
     }
 
@@ -330,6 +331,7 @@ public class LauncherModel extends BroadcastReceiver
             // Stop any existing loaders first, so they don't set mModelLoaded to true later
             stopLoader();
             mModelLoaded = false;
+            android.util.Log.d("b/131170582", "1 mModelLoaded = " + mModelLoaded);
         }
 
         // Start the loader if launcher is already running, otherwise the loader will run,
@@ -390,6 +392,7 @@ public class LauncherModel extends BroadcastReceiver
         synchronized (mLock) {
             LoaderTask oldTask = mLoaderTask;
             mLoaderTask = null;
+            android.util.Log.d("b/131170582", "1 mLoaderTask = " + mLoaderTask);
             if (oldTask != null) {
                 oldTask.stopLocked();
             }
@@ -400,6 +403,7 @@ public class LauncherModel extends BroadcastReceiver
         synchronized (mLock) {
             stopLoader();
             mLoaderTask = new LoaderTask(mApp, mBgAllAppsList, sBgDataModel, results);
+            android.util.Log.d("b/131170582", "2 mLoaderTask = " + mLoaderTask);
             runOnWorkerThread(mLoaderTask);
         }
     }
@@ -444,6 +448,7 @@ public class LauncherModel extends BroadcastReceiver
                 mTask = task;
                 mIsLoaderTaskRunning = true;
                 mModelLoaded = false;
+                android.util.Log.d("b/131170582", "2 mModelLoaded = " + mModelLoaded);
             }
         }
 
@@ -451,6 +456,7 @@ public class LauncherModel extends BroadcastReceiver
             synchronized (mLock) {
                 // Everything loaded bind the data.
                 mModelLoaded = true;
+                android.util.Log.d("b/131170582", "3 mModelLoaded = " + mModelLoaded);
             }
         }
 
@@ -460,6 +466,7 @@ public class LauncherModel extends BroadcastReceiver
                 // If we are still the last one to be scheduled, remove ourselves.
                 if (mLoaderTask == mTask) {
                     mLoaderTask = null;
+                    android.util.Log.d("b/131170582", "3 mLoaderTask = " + mLoaderTask);
                 }
                 mIsLoaderTaskRunning = false;
             }
