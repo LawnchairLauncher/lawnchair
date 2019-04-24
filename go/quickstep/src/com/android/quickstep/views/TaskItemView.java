@@ -18,9 +18,8 @@ package com.android.quickstep.views;
 import static com.android.quickstep.views.TaskLayoutUtils.getTaskHeight;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
@@ -33,6 +32,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
+import com.android.quickstep.ThumbnailDrawable;
+import com.android.systemui.shared.recents.model.ThumbnailData;
 
 /**
  * View representing an individual task item with the icon + thumbnail adjacent to the task label.
@@ -132,10 +133,10 @@ public final class TaskItemView extends LinearLayout {
     /**
      * Set the task thumbnail for the task. Sets to a default thumbnail if null.
      *
-     * @param thumbnail task thumbnail for the task
+     * @param thumbnailData task thumbnail data for the task
      */
-    public void setThumbnail(@Nullable Bitmap thumbnail) {
-        mThumbnailDrawable.setCurrentDrawable(getSafeThumbnail(thumbnail));
+    public void setThumbnail(@Nullable ThumbnailData thumbnailData) {
+        mThumbnailDrawable.setCurrentDrawable(getSafeThumbnail(thumbnailData));
     }
 
     public View getThumbnailView() {
@@ -151,8 +152,8 @@ public final class TaskItemView extends LinearLayout {
      * @param endThumbnail the thumbnail to animate to
      * @param endLabel the label to animate to
      */
-    public void startContentAnimation(@Nullable Drawable endIcon, @Nullable Bitmap endThumbnail,
-            @Nullable String endLabel) {
+    public void startContentAnimation(@Nullable Drawable endIcon,
+            @Nullable ThumbnailData endThumbnail, @Nullable String endLabel) {
         mIconDrawable.startNewTransition(getSafeIcon(endIcon));
         mThumbnailDrawable.startNewTransition(getSafeThumbnail(endThumbnail));
         // TODO: Animation for label
@@ -171,12 +172,27 @@ public final class TaskItemView extends LinearLayout {
         return (icon != null) ? icon : mDefaultIcon;
     }
 
-    private @NonNull Drawable getSafeThumbnail(@Nullable Bitmap thumbnail) {
-        return (thumbnail != null) ? new BitmapDrawable(getResources(), thumbnail)
-                                   : mDefaultThumbnail;
+    private @NonNull Drawable getSafeThumbnail(@Nullable ThumbnailData thumbnailData) {
+        if (thumbnailData == null || thumbnailData.thumbnail == null) {
+            return mDefaultThumbnail;
+        }
+        int orientation = getResources().getConfiguration().orientation;
+        return new ThumbnailDrawable(thumbnailData,  orientation /* requestedOrientation */);
     }
 
     private @NonNull String getSafeLabel(@Nullable String label) {
         return (label != null) ? label : DEFAULT_LABEL;
+    }
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        int layerCount = mThumbnailDrawable.getNumberOfLayers();
+        for (int i = 0; i < layerCount; i++) {
+            Drawable drawable = mThumbnailDrawable.getDrawable(i);
+            if (drawable instanceof ThumbnailDrawable) {
+                ((ThumbnailDrawable) drawable).setRequestedOrientation(newConfig.orientation);
+            }
+        }
     }
 }
