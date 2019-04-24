@@ -15,8 +15,6 @@
  */
 package com.android.quickstep;
 
-import android.graphics.Bitmap;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -58,12 +56,11 @@ public final class TaskHolder extends ViewHolder {
      */
     public void bindTask(@NonNull Task task, boolean willAnimate) {
         mTask = task;
-        Bitmap thumbnail = (task.thumbnail != null) ? task.thumbnail.thumbnail : null;
         if (willAnimate) {
-            mTaskItemView.startContentAnimation(task.icon, thumbnail, task.titleDescription);
+            mTaskItemView.startContentAnimation(task.icon, task.thumbnail, task.titleDescription);
         } else {
             mTaskItemView.setIcon(task.icon);
-            mTaskItemView.setThumbnail(thumbnail);
+            mTaskItemView.setThumbnail(task.thumbnail);
             mTaskItemView.setLabel(task.titleDescription);
         }
     }

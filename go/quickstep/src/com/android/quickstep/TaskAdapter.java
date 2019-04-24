@@ -146,7 +146,7 @@ public final class TaskAdapter extends Adapter<ViewHolder> {
                 });
                 mLoader.loadTaskThumbnail(task, () -> {
                     if (Objects.equals(Optional.of(task), taskHolder.getTask())) {
-                        taskHolder.getTaskItemView().setThumbnail(task.thumbnail.thumbnail);
+                        taskHolder.getTaskItemView().setThumbnail(task.thumbnail);
                     }
                 });
                 break;

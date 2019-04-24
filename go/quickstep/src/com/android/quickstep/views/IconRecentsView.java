@@ -125,7 +125,7 @@ public final class IconRecentsView extends FrameLayout {
                 Task task = optTask.get();
                 // Update thumbnail on the task.
                 task.thumbnail = thumbnailData;
-                taskView.setThumbnail(thumbnailData.thumbnail);
+                taskView.setThumbnail(thumbnailData);
                 return task;
             }
         }
