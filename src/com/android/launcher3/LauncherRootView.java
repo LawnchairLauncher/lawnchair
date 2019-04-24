@@ -211,4 +211,14 @@ public class LauncherRootView extends InsettableFrameLayout {
 
         void onWindowVisibilityChanged(int visibility);
     }
+
+    @Override
+    public void requestLayout() {
+        super.requestLayout();
+        if (com.android.launcher3.TestProtocol.sDebugTracing) {
+            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                    "requestLayout @ " + android.util.Log.getStackTraceString(
+                            new Throwable()));
+        }
+    }
 }
