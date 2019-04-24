@@ -41,7 +41,6 @@ import java.lang.reflect.Modifier;
 /**
  * Helper methods for logging.
  */
-@Deprecated
 public class LoggerUtils {
     private static final ArrayMap<Class, SparseArray<String>> sNameCache = new ArrayMap<>();
     private static final String UNKNOWN = "UNKNOWN";
@@ -77,10 +76,17 @@ public class LoggerUtils {
                 if (action.touch == Action.Touch.SWIPE || action.touch == Action.Touch.FLING) {
                     str += " direction=" + getFieldName(action.dir, Action.Direction.class);
                 }
-                return str;
-            case Action.Type.COMMAND: return getFieldName(action.command, Action.Command.class);
+                break;
+            case Action.Type.COMMAND:
+                str += getFieldName(action.command, Action.Command.class);
+                break;
             default: return getFieldName(action.type, Action.Type.class);
         }
+        if (action.touch == Action.Touch.SWIPE || action.touch == Action.Touch.FLING ||
+                (action.command == Action.Command.BACK && action.dir != Action.Direction.NONE)) {
+            str += " direction=" + getFieldName(action.dir, Action.Direction.class);
+        }
+        return str;
     }
 
     public static String getTargetStr(Target t) {
@@ -102,11 +108,15 @@ public class LoggerUtils {
                         t.containerType == NAVBAR) {
                     str += " id=" + t.pageIndex;
                 } else if (t.containerType == ContainerType.FOLDER) {
-                    str += " grid(" + t.gridX + "," + t.gridY+ ")";
+                    str += " grid(" + t.gridX + "," + t.gridY + ")";
                 }
                 break;
             default:
                 str += "UNKNOWN TARGET TYPE";
+        }
+
+        if (t.spanX != 1 || t.spanY != 1) {
+            str += " span(" + t.spanX + "," + t.spanY + ")";
         }
 
         if (t.tipType != TipType.DEFAULT_NONE) {
