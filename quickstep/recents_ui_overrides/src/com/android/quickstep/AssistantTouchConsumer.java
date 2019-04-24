@@ -28,6 +28,7 @@ import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direc
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType.NAVBAR;
 
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PointF;
@@ -35,7 +36,10 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
+
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.systemui.shared.recents.ISystemUiProxy;
@@ -76,6 +80,7 @@ public class AssistantTouchConsumer implements InputConsumer {
     private float mLastProgress;
     private int mState;
     private int mDirection;
+    private ActivityControlHelper mActivityControlHelper;
 
     private final float mDistThreshold;
     private final long mTimeThreshold;
@@ -89,7 +94,8 @@ public class AssistantTouchConsumer implements InputConsumer {
 
 
     public AssistantTouchConsumer(Context context, ISystemUiProxy systemUiProxy,
-            InputConsumer delegate, InputMonitorCompat inputMonitorCompat) {
+            InputConsumer delegate, InputMonitorCompat inputMonitorCompat,
+            ActivityControlHelper activityControlHelper) {
         final Resources res = context.getResources();
         mContext = context;
         mSysUiProxy = systemUiProxy;
@@ -99,6 +105,7 @@ public class AssistantTouchConsumer implements InputConsumer {
         mAngleThreshold = res.getInteger(R.integer.assistant_gesture_corner_deg_threshold);
         mSlop = NavigationBarCompat.getQuickStepDragSlopPx();
         mInputMonitorCompat = inputMonitorCompat;
+        mActivityControlHelper = activityControlHelper;
         mState = STATE_INACTIVE;
     }
 
@@ -241,6 +248,13 @@ public class AssistantTouchConsumer implements InputConsumer {
                             SWIPE, mDirection, NAVBAR);
                     Bundle args = new Bundle();
                     args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
+
+                    BaseDraggingActivity launcherActivity = mActivityControlHelper.getCreatedActivity();
+                    if (launcherActivity != null) {
+                        launcherActivity.getRootView().
+                                performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+                                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                    }
 
                     mSysUiProxy.startAssistant(args);
                     mLaunchedAssistant = true;
