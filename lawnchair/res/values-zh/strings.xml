@@ -102,7 +102,7 @@
     <string name="dock_search_bar">底栏搜索框</string>
     <string name="opacity">不透明度</string>
     <string name="title_all_apps_google_search">全局搜索</string>
-    <string name="summary_all_apps_google_search">查找网络结果和应用</string>
+    <string name="summary_all_apps_google_search">查找网络结果和应用程序</string>
     <string name="num_hotseat_icons_pref_title">图标数</string>
     <string name="icon_scale_pref_title">图标大小</string>
     <string name="add_settings_shortcut_title">将设置图标添加到主屏幕</string>
@@ -121,20 +121,20 @@
     <string name="pref_category_aag">速览</string>
     <string name="pref_category_pixel_searchbar">Pixel 搜索栏</string>
     <string name="pref_category_weather">天气</string>
-    <string name="pref_category_misc">其他</string>
+    <string name="pref_category_misc">其它</string>
     <string name="pref_category_layout">布局</string>
     <string name="pref_category_theme">样式</string>
     <string name="pref_category_searchbar">搜索栏</string>
     <!--Marker D-->
-    <string name="title_attribouter_licenses">开放源代码许可</string>
+    <string name="title_attribouter_licenses">开源代码许可</string>
     <string name="title_attribouter_email">邮件</string>
     <string name="title_attribouter_website">网站</string>
     <string name="title_attribouter_rate">评分</string>
     <string name="title_attribouter_version">版本号 %1$s</string>
-    <string name="title_attribouter_license">许可证</string>
-    <string name="title_attribouter_license_permissions">权限</string>
-    <string name="title_attribouter_license_conditions">许可条件</string>
-    <string name="title_attribouter_license_limitations">限制</string>
+    <string name="title_attribouter_license">许可</string>
+    <string name="title_attribouter_license_permissions">许可权限</string>
+    <string name="title_attribouter_license_conditions">许可状态</string>
+    <string name="title_attribouter_license_limitations">许可限制</string>
     <string name="title_attribouter_more_info">更多信息</string>
     <string name="title_attribouter_translators">翻译人员</string>
     <string name="about_our_team">团队信息</string>
@@ -162,7 +162,7 @@
     <string name="gestures_pref_summary">双击、主屏按钮、向下滑动</string>
     <string name="action_open_drawer">打开应用抽屉</string>
     <string name="action_last_task">打开上一个应用</string>
-    <string name="action_open_widgets">打开小部件抽屉</string>
+    <string name="action_open_widgets">打开微件抽屉</string>
     <string name="action_open_settings">打开启动器设置</string>
     <string name="action_open_overview">打开主屏幕弹出菜单</string>
     <string name="action_global_search">打开全局搜索</string>
@@ -176,14 +176,14 @@
     <string name="action_open_app_with_target">打开 %s</string>
     <string name="action_open_app_select_app">选择应用</string>
     <string name="action_none">无操作</string>
-    <string name="action_despacito">播放 YouTube Rewind 2018 (earrape)</string>
+    <string name="action_despacito">播放 YouTube Rewind 2018 (高能预警)</string>
     <string name="gesture_press_home">主页键</string>
     <string name="gesture_press_back">返回键</string>
     <string name="gesture_double_tap">双击</string>
     <string name="gesture_long_press">触摸并按住</string>
     <string name="gesture_swipe_down">向下滑动</string>
     <string name="gesture_swipe_up">向上滑动</string>
-    <string name="gesture_dock_swipe_up">底栏处上滑</string>
+    <string name="gesture_dock_swipe_up">Dock 栏处上滑</string>
     <string name="pref_show_assistant_title">语音搜索按钮</string>
     <string name="pref_show_assistant_summary">如果支持则显示语音搜索按钮</string>
     <string name="pref_show_as_assistant_summary">显示助理按钮而不是语音搜索</string>
@@ -191,16 +191,16 @@
     <string name="weather_provider_disabled">禁用</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
     <string name="weather_provider_pe">PixelExperience</string>
-    <string name="pref_smartspace_widget_provider">天气数据来源</string>
+    <string name="pref_smartspace_widget_provider">天气数据源</string>
     <string name="pref_smartspace_event_provider">日历数据来源</string>
     <string name="title_all_apps_search">抽屉搜索栏</string>
-    <string name="smartspace_widget_provider_not_found">发生了某些错误。请安装或更新 Google 应用。</string>
+    <string name="smartspace_widget_provider_not_found">请安装或更新 Google 应用。</string>
     <string name="apps_label">应用程序</string>
     <string name="all_apps_label">所有应用</string>
     <string name="all_apps_label_pref_title">显示“所有应用”标签</string>
     <string name="separate_work_apps_pref_title">工作应用分离至第二标签页</string>
-    <string name="title_search_hidden_apps">查找隐藏的应用</string>
-    <string name="summary_search_hidden_apps">结果中显示隐藏的应用</string>
+    <string name="title_search_hidden_apps">查找隐藏应用</string>
+    <string name="summary_search_hidden_apps">在搜索结果中显示隐藏的应用</string>
     <!--Marker F-->
     <string name="default_city">Beijing, CN</string>
     <string name="pref_weather_api_key_title">API 密钥</string>
@@ -209,9 +209,9 @@
     <string name="pref_weather_units">温度单位</string>
     <string name="units_metric">摄氏度</string>
     <string name="units_imperial">华氏度</string>
-    <string name="units_kelvin">开氏度</string>
+    <string name="units_kelvin">开尔文</string>
     <string name="all_icons">所有图标</string>
-    <string name="error_no_browser">没有找到处理此 URL 的活动</string>
+    <string name="error_no_browser">没有找到处理此 URL 的 Activity</string>
     <string name="no_icon_found">找不到图标</string>
     <string name="icon_pack_external_picker">打开外部选择器</string>
     <string name="week_day_format">%1$s，%2$s</string>
@@ -269,16 +269,16 @@
     <string name="search_provider_cool_search">酷搜</string>
     <string name="recent_task_option_force_stop">强行停止</string>
     <string name="pref_icon_packs">图标包</string>
-    <string name="drag_to_enable_packs">向上拖动以启用</string>
-    <string name="drag_to_disable_packs">向下拖动以禁用</string>
+    <string name="drag_to_enable_packs">拖动至上方以启用</string>
+    <string name="drag_to_disable_packs">拖动至下方以禁用</string>
     <string name="get_more_icon_packs">获取更多</string>
     <string name="enabled_icon_packs">已启用</string>
     <string name="pref_icon_pack_masking">图标遮罩</string>
     <string name="pref_icon_pack_masking_summary">使未应用主题的图标适应已应用的图标包</string>
     <string name="pref_legacy_colored_backgrounds">彩色背景</string>
-    <string name="pref_legacy_colored_backgrounds_summary">为自适应图标生成彩色背景</string>
+    <string name="pref_legacy_colored_backgrounds_summary">生成的自适应图标均使用彩色背景</string>
     <string name="pref_white_only_treatment">替换白色背景</string>
-    <string name="pref_white_only_treatment_summary">使所有自适应图标均使用彩色背景</string>
+    <string name="pref_white_only_treatment_summary">所有的自适应图标均使用彩色背景</string>
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <!--Marker H-->
     <string name="dismiss_drop_target_label">"不显示"</string>
@@ -407,5 +407,5 @@
     <string name="pref_show_dev_options">在设置中显示</string>
     <string name="about_app_description">一个可自定义的 Pixel Launcher 替代品。</string>
     <string name="about_bio_paphonb">18岁的学生，Android 开发者，Lawnchair 启动器首席开发者之一。</string>
-    <string name="dock_scale">底栏大小</string>
+    <string name="dock_scale">Dock 栏大小</string>
 </resources>
