@@ -347,7 +347,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                             : velocityY;
 
             mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
-            mInteractionHandler.onGestureEnded(velocity, new PointF(velocityX, velocityY));
+            mInteractionHandler.onGestureEnded(velocity, new PointF(velocityX, velocityY),
+                    mDownPos);
         } else {
             // Since we start touch tracking on DOWN, we may reach this state without actually
             // starting the gesture. In that case, just cleanup immediately.
