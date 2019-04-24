@@ -455,6 +455,7 @@ public class TouchInteractionService extends Service implements
 
         final ActivityControlHelper activityControl =
                 mOverviewComponentObserver.getActivityControlHelper();
+
         if (runningTaskInfo == null && !mSwipeSharedState.goingToLauncher) {
             return InputConsumer.NO_OP;
         } else if (mAssistantAvailable
@@ -464,7 +465,7 @@ public class TouchInteractionService extends Service implements
             boolean addDelegate = !activityControl.isResumed();
             return new AssistantTouchConsumer(this, mISystemUiProxy, addDelegate ?
                     createOtherActivityInputConsumer(event, runningTaskInfo) : null,
-                    mInputMonitorCompat);
+                    mInputMonitorCompat, activityControl);
 
         } else if (mSwipeSharedState.goingToLauncher || activityControl.isResumed()) {
             return OverviewInputConsumer.newInstance(activityControl, false);
