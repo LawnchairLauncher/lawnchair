@@ -26,11 +26,13 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.RecentsView;
@@ -38,9 +40,6 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * {@link ActivityControlHelper} for recents when the default launcher is different than the
@@ -72,7 +71,9 @@ public final class FallbackActivityControllerHelper implements
 
     @Override
     public void onSwipeUpComplete(RecentsActivity activity) {
-        // TODO:
+        RecentsView recentsView = activity.getOverviewPanel();
+        recentsView.getClearAllButton().setVisibilityAlpha(1);
+        recentsView.setDisallowScrollToClearAll(false);
     }
 
     @Override
@@ -121,6 +122,8 @@ public final class FallbackActivityControllerHelper implements
 
         RecentsView rv = activity.getOverviewPanel();
         rv.setContentAlpha(0);
+        rv.getClearAllButton().setVisibilityAlpha(0);
+        rv.setDisallowScrollToClearAll(true);
 
         return new AnimationFactory() {
 
