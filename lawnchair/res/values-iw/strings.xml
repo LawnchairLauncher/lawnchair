@@ -5,6 +5,7 @@
     <string name="smartspace_time">זמן</string>
     <string name="smartspace_date">תאריך</string>
     <string name="customize">התאמה אישית</string>
+    <string name="smartspace_preferences_in_settings">להעיף מבט</string>
     <string name="smartspace_preferences_in_settings_desc">מקור תאריך, זמן, מזג אוויר</string>
     <string name="search">חיפוש</string>
     <string name="label_voice_search">חיפוש קולי</string>
@@ -15,6 +16,7 @@
     <string name="google_app">יישום Google</string>
     <string name="about_app_version">גרסה</string>
     <string name="title_disable_suggestions_prompt">ביטול הצעות יישומים</string>
+    <string name="msg_disable_suggestions_prompt">"נתוני השימוש ינוקו"</string>
     <string name="label_turn_off_suggestions">השבת</string>
     <string name="pixel_style_pref_title">סגנון Pixel</string>
     <string name="about_summary_title">סיכום</string>
@@ -24,9 +26,11 @@
     <string name="icon_shape_rounded_square">ריבוע מעוגל</string>
     <string name="pixel_ui_pref_summary">ערכת סמלים, טשטוש, צבעים</string>
     <string name="app_drawer_pref_title">מגירת יישומים</string>
+    <string name="app_drawer_pref_summary">קהות, הצעות, החבא יישומונים</string>
     <string name="search_pref_summary">צבע, מנוע חיפוש, סמלים</string>
     <string name="general_pref_title">כללי</string>
     <string name="general_pref_summary">רשת, פריסת סמלים, שורת מצב</string>
+    <string name="about_pref_summary">הצוות, קישורים, התרים</string>
     <string name="hide_app_selected">&#160; מוסתר</string>
     <string name="hide_app_apply">החל</string>
     <string name="hide_dock_gradient">בטל מעבר צבע</string>
@@ -66,6 +70,8 @@
     <string name="developer_options_enabled">אפשרויות מפתח מופעלות</string>
     <string name="restart_lawnchair_pref_title">הפעל מחדש</string>
     <string name="restart_lawnchair_pref_summary">החל הגדרות שוב</string>
+    <string name="show_debug_info_pref_title">הראה את שמות המרכיבים</string>
+    <string name="debug_component_name">שם המרכיב</string>
     <string name="debug_component_name_copied">הועתק</string>
     <string name="read_external_storage_required">כדי לשמור גיבוי, הענק גישה לאחסון</string>
     <string name="local_backups">גיבויים באחסון</string>
@@ -103,6 +109,7 @@
     <string name="gradient">מעבר צבע</string>
     <!--Marker C-->
     <string name="pref_category_icons">סמלים</string>
+    <string name="pref_category_aag">במבט</string>
     <string name="pref_category_pixel_searchbar">סרגל חיפוש בסגנון Pixel</string>
     <string name="pref_category_weather">מזג אוויר</string>
     <string name="pref_category_misc">אחר</string>
@@ -139,6 +146,8 @@
     <string name="action_open_drawer">פתיחת מגירת אפליקציות</string>
     <string name="action_last_task">פתח את היישום האחרון</string>
     <string name="action_open_widgets">פתח מגירת ווידג\'טים</string>
+    <string name="action_open_settings">פתח הגדרות מסך בית</string>
+    <string name="action_global_search">פתח חיפוש כללי</string>
     <string name="action_app_search">פתח חיפוש אפליקציות</string>
     <string name="action_assistant">פתח את העוזר הקולי</string>
     <string name="action_open_notifications">פתח התראות</string>
