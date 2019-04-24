@@ -253,6 +253,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private boolean mGestureStarted;
     private int mLogAction = Touch.SWIPE;
     private int mLogDirection = Direction.UP;
+    private PointF mDownPos;
 
     private final RecentsAnimationWrapper mRecentsAnimationWrapper;
 
@@ -703,9 +704,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     /**
      * @param endVelocity The velocity in the direction of the nav bar to the middle of the screen.
      * @param velocity The x and y components of the velocity when the gesture ends.
+     * @param downPos The x and y value of where the gesture started.
      */
     @UiThread
-    public void onGestureEnded(float endVelocity, PointF velocity) {
+    public void onGestureEnded(float endVelocity, PointF velocity, PointF downPos) {
         float flingThreshold = mContext.getResources()
                 .getDimension(R.dimen.quickstep_fling_threshold_velocity);
         boolean isFling = mGestureStarted && Math.abs(endVelocity) > flingThreshold;
@@ -718,6 +720,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         } else {
             mLogDirection = velocity.x < 0 ? Direction.LEFT : Direction.RIGHT;
         }
+        mDownPos = downPos;
         handleNormalGestureEnd(endVelocity, isFling, velocity);
     }
 
@@ -856,6 +859,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 : mRecentsView.getNextPage();
         UserEventDispatcher.newInstance(mContext).logStateChangeAction(
                 mLogAction, mLogDirection,
+                (int) mDownPos.x, (int) mDownPos.y,
                 ContainerType.NAVBAR, ContainerType.APP,
                 endTarget.containerType,
                 pageIndex);
