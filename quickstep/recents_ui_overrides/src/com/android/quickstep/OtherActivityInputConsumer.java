@@ -413,7 +413,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     @Override
-    public boolean isActive() {
+    public boolean useSharedSwipeState() {
         return mInteractionHandler != null;
     }
 }
