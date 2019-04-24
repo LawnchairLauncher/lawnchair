@@ -422,7 +422,7 @@ public class TouchInteractionService extends Service implements
         if (event.getAction() == ACTION_DOWN) {
             if (isInValidSystemUiState()
                     && mSwipeTouchRegion.contains(event.getX(), event.getY())) {
-                boolean useSharedState = mConsumer.isActive();
+                boolean useSharedState = mConsumer.useSharedSwipeState();
                 mConsumer.onConsumerAboutToBeSwitched();
                 mConsumer = newConsumer(useSharedState, event);
                 TOUCH_INTERACTION_LOG.addLog("setInputConsumer", mConsumer.getType());
@@ -460,8 +460,12 @@ public class TouchInteractionService extends Service implements
         } else if (mAssistantAvailable
                 && SysUINavigationMode.INSTANCE.get(this).getMode() == Mode.NO_BUTTON
                 && AssistantTouchConsumer.withinTouchRegion(this, event)) {
-            return new AssistantTouchConsumer(this, mISystemUiProxy, !activityControl.isResumed()
-                            ? createOtherActivityInputConsumer(event, runningTaskInfo) : null, mInputMonitorCompat);
+
+            boolean addDelegate = !activityControl.isResumed();
+            return new AssistantTouchConsumer(this, mISystemUiProxy, addDelegate ?
+                    createOtherActivityInputConsumer(event, runningTaskInfo) : null,
+                    mInputMonitorCompat);
+
         } else if (mSwipeSharedState.goingToLauncher || activityControl.isResumed()) {
             return OverviewInputConsumer.newInstance(activityControl, false);
         } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() &&
