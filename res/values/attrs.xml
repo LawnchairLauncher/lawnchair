@@ -123,7 +123,7 @@
         <attr name="minWidthDps" format="float" />
         <attr name="minHeightDps" format="float" />
 
-        <attr name="iconSize" format="float" />
+        <attr name="iconImageSize" format="float" />
         <!-- landscapeIconSize defaults to iconSize, if not specified -->
         <attr name="landscapeIconSize" format="float" />
         <attr name="iconTextSize" format="float" />
