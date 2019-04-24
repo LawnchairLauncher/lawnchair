@@ -14,7 +14,7 @@
     <string name="smartspace_preferences_in_settings_desc">Datum, Zeit, Wetterdienst</string>
     <string name="search">Suchen</string>
     <string name="label_voice_search">Sprachsuche</string>
-    <string name="icon_pack">Icon Pack</string>
+    <string name="icon_pack">Icon-Paket</string>
     <string name="home_widget">Startbildschirm Widget</string>
     <string name="title_show_google_app">%1$s auf der linken Seite</string>
     <string name="msg_minus_one_on_left">Feed links vom Startbildschirm</string>
@@ -30,12 +30,12 @@
     <string name="hide_app_sum">In der App-Liste ausblenden</string>
     <string name="hide_app">App ausblenden</string>
     <string name="icon_shape_rounded_square">Abgerundetes Quadrat</string>
-    <string name="pixel_ui_pref_summary">Icon Pack, Unschärfe, Farben</string>
+    <string name="pixel_ui_pref_summary">Icon-Paket, Unschärfe, Farben</string>
     <string name="app_drawer_pref_title">App-Liste</string>
     <string name="app_drawer_pref_summary">Deckkraft, Vorschläge, Apps ausblenden</string>
-    <string name="search_pref_summary">Farbe, Suchmaschine, Symbole</string>
+    <string name="search_pref_summary">Farbe, Suchmaschine, Icons</string>
     <string name="general_pref_title">Startbildschirm</string>
-    <string name="general_pref_summary">Anordnung, Symbol Layout, Statusleiste</string>
+    <string name="general_pref_summary">Raster, Icon-Layout, Statusleiste</string>
     <string name="about_pref_summary">Team, Links, Lizenzen</string>
     <string name="hide_app_selected">&#160; ausgeblendet</string>
     <string name="hide_app_apply">Anwenden</string>
@@ -82,7 +82,7 @@
     <string name="debug_component_name_copied">Kopiert</string>
     <string name="read_external_storage_required">Akzeptiere die Speicherberechtigung, um die Sicherung zu speichern</string>
     <string name="local_backups">Sicherungen im Speicher</string>
-    <string name="backup_location_device_storage">Lawnchair Ordner</string>
+    <string name="backup_location_device_storage">Lawnchair-Ordner</string>
     <string name="grid_size_height">Höhe</string>
     <string name="grid_size_width">Breite</string>
     <string name="launcher_theme_override_label">Dunkles Design erzwingen</string>
@@ -101,10 +101,10 @@
     <string name="dock_search_bar">Dock Suchleiste</string>
     <string name="opacity">Deckkraft</string>
     <string name="title_all_apps_google_search">Globale Suche</string>
-    <string name="summary_all_apps_google_search">Finde Webergebnisse und Apps</string>
+    <string name="summary_all_apps_google_search">Web- und App-Suche</string>
     <string name="num_hotseat_icons_pref_title">Anzahl der Icons</string>
     <string name="icon_scale_pref_title">Icongröße</string>
-    <string name="add_settings_shortcut_title">Füge Einstellungssymbol zum Startbildschirm hinzu</string>
+    <string name="add_settings_shortcut_title">Füge Einstellungs-Icon zum Startbildschirm hinzu</string>
     <string name="icon_pack_default">Systemicons</string>
     <string name="loading">Lade…</string>
     <string name="low_performance_mode_pref_title">Geringe-Leistung Modus</string>
@@ -116,16 +116,16 @@
     <string name="radius">Eckenrundung</string>
     <string name="gradient">Farbverlauf</string>
     <!--Marker C-->
-    <string name="pref_category_icons">Symbole</string>
+    <string name="pref_category_icons">Icons</string>
     <string name="pref_category_aag">Auf einen Blick</string>
-    <string name="pref_category_pixel_searchbar">Pixel Suchleiste</string>
+    <string name="pref_category_pixel_searchbar">Pixel-Suchleiste</string>
     <string name="pref_category_weather">Wetter</string>
     <string name="pref_category_misc">Andere</string>
-    <string name="pref_category_layout">Layout</string>
+    <string name="pref_category_layout">Anordnung</string>
     <string name="pref_category_theme">Stil</string>
     <string name="pref_category_searchbar">Suchleiste</string>
     <!--Marker D-->
-    <string name="title_attribouter_licenses">Open-Source Lizenzen</string>
+    <string name="title_attribouter_licenses">Open-Source-Lizenzen</string>
     <string name="title_attribouter_email">E-Mail</string>
     <string name="title_attribouter_website">Webseite</string>
     <string name="title_attribouter_rate">Bewerten</string>
@@ -145,10 +145,10 @@
     <string name="about_role_dev_mod">Entwickler/Moderator</string>
     <string name="about_role_designer">Designer</string>
     <string name="about_role_ui_ux_designer">UI/UX-Designer</string>
-    <string name="about_role_special_snowflake">Soziale Medien/PR &amp; OEM Beziehungen</string>
-    <string name="about_role_mod_support">Moderator / Support</string>
+    <string name="about_role_special_snowflake">Soziale Medien/PR &amp; OEM-Beziehungen</string>
+    <string name="about_role_mod_support">Moderator/Support</string>
     <string name="about_role_family_member">Familienmitglied</string>
-    <string name="about_role_magisk_maintainer">Magisk-Modul Entwickler</string>
+    <string name="about_role_magisk_maintainer">Magisk-Modul-Entwickler</string>
     <string name="about_bio_deletescape">Android-Entwickler &amp; -Enthusiast. Mag Memes (fast ein bisschen zu sehr, um ehrlich zu sein). Gründer des Lawnchair Projekts.</string>
     <string name="about_bio_divadsn">19 Jahre alt, verwandelt Koffein und Pizza in Code, bietet 24/7 Entwicklungsunterstützung an falls etwas schief geht. Trägt zu open-source Projekten in seiner Freizeit bei. Früher auch bekannt als Codebucket.</string>
     <string name="about_bio_recoded">Milder Programmierer und Grafikdesigner.</string>
@@ -170,7 +170,7 @@
     <string name="action_assistant">Assistent öffnen</string>
     <string name="action_open_notifications">Benachrichtigungen anzeigen</string>
     <string name="action_close_notifications">Benachrichtigungen schließen</string>
-    <string name="action_sleep_timeout">Schlafen (Nutzung von timeout)</string>
+    <string name="action_sleep_timeout">Schlafen (mit Timer-Nutzung)</string>
     <string name="action_open_app">App öffnen</string>
     <string name="action_open_app_with_target">Öffne %s</string>
     <string name="action_open_app_select_app">Wähle eine App</string>
@@ -211,7 +211,7 @@
     <string name="units_kelvin">Kelvin</string>
     <string name="all_icons">Alle Icons</string>
     <string name="error_no_browser">Keine Aktivität gefunden, um URLs zu behandeln</string>
-    <string name="no_icon_found">Kein Symbol gefunden</string>
+    <string name="no_icon_found">Kein Icon gefunden</string>
     <string name="icon_pack_external_picker">Externe Quelle öffnen</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="full_wday_month_day_no_year">EEEE, d. MMMM</string>
@@ -230,8 +230,8 @@
     <string name="theme_default">Standard</string>
     <string name="transparent">Transparent</string>
     <string name="pref_open_source_licenses_title">Lizenzen</string>
-    <string name="pref_legacy_treatment_title">Adaptive Symbole erzeugen</string>
-    <string name="pref_legacy_treatment_summary">Automatische adaptive Symbole für alle Apps</string>
+    <string name="pref_legacy_treatment_title">Adaptive Icons erzeugen</string>
+    <string name="pref_legacy_treatment_summary">Automatische adaptive Icons für alle Apps</string>
     <string name="dt2s_admin_hint">Um Doppel tippen zum Sperren zu nutzen, Administratorberechtigung geben</string>
     <string name="dt2s_admin_warning">Doppel tippen zum Sperren wird deaktiviert</string>
     <string name="icon_pack_applied_toast">%s angewendet</string>
@@ -267,17 +267,17 @@
     <string name="search_provider_search_lite">Suche Lite</string>
     <string name="search_provider_cool_search">Cool Search</string>
     <string name="recent_task_option_force_stop">Beenden erzwingen</string>
-    <string name="pref_icon_packs">Icon packs</string>
+    <string name="pref_icon_packs">Icon-Pakete</string>
     <string name="drag_to_enable_packs">Nach oben ziehen für Ein</string>
     <string name="drag_to_disable_packs">Nach unten ziehen für Aus</string>
     <string name="get_more_icon_packs">Mehr Icon packs suchen</string>
     <string name="enabled_icon_packs">Aktiviert</string>
     <string name="pref_icon_pack_masking">Icon-Maskierung</string>
-    <string name="pref_icon_pack_masking_summary">Passe nicht unterschützte Icons an das Icon Pack an</string>
+    <string name="pref_icon_pack_masking_summary">Passe nicht unterschützte Icons an das Icon-Paket an</string>
     <string name="pref_legacy_colored_backgrounds">Farbiger Hintergrund</string>
-    <string name="pref_legacy_colored_backgrounds_summary">Gefärbte Hintergründe für generierte adaptive Symbole</string>
+    <string name="pref_legacy_colored_backgrounds_summary">Gefärbte Hintergründe für generierte adaptive Icons</string>
     <string name="pref_white_only_treatment">Ersetze weiße Hintergründe</string>
-    <string name="pref_white_only_treatment_summary">Gefärbte Hintergründe für alle adaptiven Symbole</string>
+    <string name="pref_white_only_treatment_summary">Gefärbte Hintergründe für alle adaptiven Icons</string>
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <!--Marker H-->
     <string name="dismiss_drop_target_label">"Nicht anzeigen"</string>
@@ -320,7 +320,7 @@
     <string name="feed_theme_pref_title">Hintergrundfarbe</string>
     <string name="recents_not_connected">Dienst nicht verbunden</string>
     <string name="advanced_settings">Weitere %s Einstellungen</string>
-    <string name="adaptive_icon">Adaptive Icon</string>
+    <string name="adaptive_icon">Adaptives Icon</string>
     <string name="drawer_tabs">Tabs</string>
     <string name="add_new_tab">Hinzufügen</string>
     <string name="rename_tab">Umbenennen</string>
@@ -362,8 +362,8 @@
     <string name="sesame_enable_integration_description"><![CDATA[Aktiviert das Teilen der Daten zwischen Lawnchair und Sesame. Du kannst das in den Lawnchair oder Sesame Einstellungen ändern.]]></string>
     <string name="sesame_version">Integrationsversion</string>
     <string name="sesame_shortcut_disabled">Sesame shortcuts nicht verfügbar</string>
-    <string name="pref_sesame_sync_icon_pack">Icon Pack teilen</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Das Icon Pack von Lawnchair mit Sesame synchronisieren</string>
+    <string name="pref_sesame_sync_icon_pack">Icon-Paket teilen</string>
+    <string name="pref_sesame_sync_icon_pack_summary">Das Icon-Paket von Lawnchair mit Sesame synchronisieren</string>
     <string name="font_variant_italic">Kursiv</string>
     <string name="font_weight_thin">Dünn</string>
     <string name="font_weight_extra_light">Extradünn</string>
@@ -380,7 +380,7 @@
     <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">OnePlus Wetter</string>
     <string name="overlap_placement">Überlappende Platzierung</string>
-    <string name="overlap_placement_summary">Erlaube Symbolen und Widgets sich zu überlappen.</string>
+    <string name="overlap_placement_summary">Erlaube Überlappung von Icons und Widgets.</string>
     <string name="units_rakine">Rankine</string>
     <string name="units_newton">Newton</string>
     <string name="units_delisle">Delisle</string>
