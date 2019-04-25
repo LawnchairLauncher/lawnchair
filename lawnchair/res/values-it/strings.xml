@@ -391,7 +391,7 @@
     <string name="pref_smartspace_time_above">Visualizza orologio grande</string>
     <string name="pref_smartspace_time_above_summary">Visualizza l\'orologio sopra il widget</string>
     <string name="pref_fonts_title">Caratteri</string>
-    <string name="pref_fonts_summary">Cambia lo stile caratteri di diversi elementi</string>
+    <string name="pref_fonts_summary">Cambia lo stile dei caratteri di elementi diversi</string>
     <string name="pref_fonts_global_font">Carattere generale</string>
     <string name="pref_fonts_change_global_font">Modifica</string>
     <string name="pref_fonts_home_icons">Nomi di app &amp; cartelle</string>
