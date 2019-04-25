@@ -18,6 +18,7 @@ package com.android.quickstep.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Property;
 import android.widget.Button;
 
 import com.android.launcher3.Utilities;
@@ -26,8 +27,22 @@ import com.android.quickstep.views.RecentsView.ScrollState;
 
 public class ClearAllButton extends Button implements PageCallbacks {
 
+    public static final Property<ClearAllButton, Float> VISIBILITY_ALPHA =
+            new Property<ClearAllButton, Float>(Float.class, "visibilityAlpha") {
+                @Override
+                public Float get(ClearAllButton view) {
+                    return view.mVisibilityAlpha;
+                }
+
+                @Override
+                public void set(ClearAllButton view, Float visibilityAlpha) {
+                    view.setVisibilityAlpha(visibilityAlpha);
+                }
+            };
+
     private float mScrollAlpha = 1;
     private float mContentAlpha = 1;
+    private float mVisibilityAlpha = 1;
 
     private final boolean mIsRtl;
 
@@ -58,6 +73,13 @@ public class ClearAllButton extends Button implements PageCallbacks {
         }
     }
 
+    public void setVisibilityAlpha(float alpha) {
+        if (mVisibilityAlpha != alpha) {
+            mVisibilityAlpha = alpha;
+            updateAlpha();
+        }
+    }
+
     @Override
     public void onPageScroll(ScrollState scrollState) {
         float width = getWidth();
@@ -72,7 +94,7 @@ public class ClearAllButton extends Button implements PageCallbacks {
     }
 
     private void updateAlpha() {
-        final float alpha = mScrollAlpha * mContentAlpha;
+        final float alpha = mScrollAlpha * mContentAlpha * mVisibilityAlpha;
         setAlpha(alpha);
         setClickable(alpha == 1);
     }

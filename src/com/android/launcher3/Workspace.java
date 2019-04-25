@@ -956,7 +956,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     private boolean isScrollingOverlay() {
         return mLauncherOverlay != null &&
-                ((mIsRtl && getUnboundedScrollX() > mMaxScrollX) || (!mIsRtl && getUnboundedScrollX() < 0));
+                ((mIsRtl && getUnboundedScrollX() > mMaxScrollX)
+                        || (!mIsRtl && getUnboundedScrollX() < mMinScrollX));
     }
 
     @Override
