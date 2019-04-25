@@ -75,7 +75,7 @@ public class MotionPauseDetector {
      */
     public void setDisallowPause(boolean disallowPause) {
         mDisallowPause = disallowPause;
-        updatePaused(false);
+        updatePaused(mIsPaused);
     }
 
     /**
