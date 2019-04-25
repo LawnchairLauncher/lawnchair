@@ -169,7 +169,7 @@
     <string name="action_app_search">打開應用程式搜尋</string>
     <string name="action_overlay">打開 Google feed</string>
     <string name="action_assistant">打開助理</string>
-    <string name="action_open_notifications">打开通知</string>
+    <string name="action_open_notifications">打開通知</string>
     <string name="action_close_notifications">關閉通知</string>
     <string name="action_sleep_timeout">休眠（使用延時）</string>
     <string name="action_open_app">開啟應用程式</string>
