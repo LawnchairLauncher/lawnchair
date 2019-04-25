@@ -21,6 +21,7 @@ import static androidx.test.InstrumentationRegistry.getInstrumentation;
 import static com.android.quickstep.NavigationModeSwitchRule.Mode.ALL;
 import static com.android.quickstep.NavigationModeSwitchRule.Mode.THREE_BUTTON;
 import static com.android.quickstep.NavigationModeSwitchRule.Mode.TWO_BUTTON;
+import static com.android.quickstep.NavigationModeSwitchRule.Mode.ZERO_BUTTON;
 import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_2BUTTON_OVERLAY;
 import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_3BUTTON_OVERLAY;
 import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_GESTURAL_OVERLAY;
@@ -85,9 +86,9 @@ public class NavigationModeSwitchRule implements TestRule {
                     final LauncherInstrumentation.NavigationModel originalMode =
                             mLauncher.getNavigationModel();
                     try {
-//                        if (mode == ZERO_BUTTON || mode == ALL) {
-//                            evaluateWithZeroButtons();
-//                        }
+                        if (mode == ZERO_BUTTON || mode == ALL) {
+                            evaluateWithZeroButtons();
+                        }
                         if (mode == TWO_BUTTON || mode == ALL) {
                             evaluateWithTwoButtons();
                         }
@@ -131,7 +132,10 @@ public class NavigationModeSwitchRule implements TestRule {
                             overlayPackage == NAV_BAR_MODE_GESTURAL_OVERLAY);
 
                     for (int i = 0; i != 100; ++i) {
-                        if (mLauncher.getNavigationModel() == expectedMode) return;
+                        if (mLauncher.getNavigationModel() == expectedMode) {
+                            Thread.sleep(1000);
+                            return;
+                        }
                         Thread.sleep(100);
                     }
                     Assert.fail("Couldn't switch to " + overlayPackage);

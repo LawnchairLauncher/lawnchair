@@ -3,6 +3,7 @@ package com.android.launcher3.popup;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -20,7 +21,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -159,9 +160,8 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
             return (view) -> {
                 dismissTaskMenuView(activity);
                 Rect sourceBounds = activity.getViewBounds(view);
-                Bundle opts = activity.getActivityLaunchOptionsAsBundle(view);
                 new PackageManagerHelper(activity).startDetailsActivityForInfo(
-                        itemInfo, sourceBounds, opts);
+                        itemInfo, sourceBounds, ActivityOptions.makeBasic().toBundle());
                 activity.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
                         ControlType.APPINFO_TARGET, view);
             };
@@ -176,8 +176,8 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         @Override
         public View.OnClickListener getOnClickListener(
                 BaseDraggingActivity activity, ItemInfo itemInfo) {
-            boolean supportsWebUI = (itemInfo instanceof ShortcutInfo) &&
-                    ((ShortcutInfo) itemInfo).hasStatusFlag(ShortcutInfo.FLAG_SUPPORTS_WEB_UI);
+            boolean supportsWebUI = (itemInfo instanceof WorkspaceItemInfo) &&
+                    ((WorkspaceItemInfo) itemInfo).hasStatusFlag(WorkspaceItemInfo.FLAG_SUPPORTS_WEB_UI);
             boolean isInstantApp = false;
             if (itemInfo instanceof com.android.launcher3.AppInfo) {
                 com.android.launcher3.AppInfo appInfo = (com.android.launcher3.AppInfo) itemInfo;

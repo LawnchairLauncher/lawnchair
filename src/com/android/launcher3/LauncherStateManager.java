@@ -140,6 +140,10 @@ public class LauncherStateManager {
         return mState;
     }
 
+    public LauncherState getCurrentStableState() {
+        return mCurrentStableState;
+    }
+
     public StateHandler[] getStateHandlers() {
         if (mStateHandlers == null) {
             mStateHandlers = UiFactory.getStateHandler(mLauncher);
@@ -218,6 +222,7 @@ public class LauncherStateManager {
 
     private void goToState(LauncherState state, boolean animated, long delay,
             final Runnable onCompleteRunnable) {
+        animated &= Utilities.areAnimationsEnabled(mLauncher);
         if (mLauncher.isInState(state)) {
             if (mConfig.mCurrentAnimation == null) {
                 // Run any queued runnable
@@ -320,8 +325,12 @@ public class LauncherStateManager {
             if (!isWorkspaceVisible) {
                 workspace.setScaleX(0.92f);
                 workspace.setScaleY(0.92f);
-                workspace.getHotseat().setScaleX(0.92f);
-                workspace.getHotseat().setScaleY(0.92f);
+            }
+            Hotseat hotseat = workspace.getHotseat();
+            boolean isHotseatVisible = hotseat.getVisibility() == VISIBLE && hotseat.getAlpha() > 0;
+            if (!isHotseatVisible) {
+                hotseat.setScaleX(0.92f);
+                hotseat.setScaleY(0.92f);
             }
         } else if (fromState == NORMAL && toState == OVERVIEW_PEEK) {
             builder.setInterpolator(ANIM_OVERVIEW_FADE, INSTANT);

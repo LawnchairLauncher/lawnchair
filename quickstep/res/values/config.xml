@@ -29,5 +29,5 @@
 
     <!-- Assistant Gesture -->
     <integer name="assistant_gesture_min_time_threshold">200</integer>
-    <integer name="assistant_gesture_corner_deg_threshold">30</integer>
+    <integer name="assistant_gesture_corner_deg_threshold">20</integer>
 </resources>

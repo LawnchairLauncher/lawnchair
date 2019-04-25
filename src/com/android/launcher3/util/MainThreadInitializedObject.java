@@ -22,6 +22,8 @@ import com.android.launcher3.MainThreadExecutor;
 
 import java.util.concurrent.ExecutionException;
 
+import androidx.annotation.VisibleForTesting;
+
 /**
  * Utility class for defining singletons which are initiated on main thread.
  */
@@ -51,6 +53,11 @@ public class MainThreadInitializedObject<T> {
 
     public T getNoCreate() {
         return mValue;
+    }
+
+    @VisibleForTesting
+    public void initializeForTesting(T value) {
+        mValue = value;
     }
 
     public interface ObjectProvider<T> {

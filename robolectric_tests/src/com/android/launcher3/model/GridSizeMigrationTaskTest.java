@@ -10,8 +10,8 @@ import android.graphics.Point;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.FlagOverrideRule;
-import com.android.launcher3.config.FlagOverrideRule.FlagOverride;
 import com.android.launcher3.model.GridSizeMigrationTask.MultiStepMigrationTask;
 import com.android.launcher3.util.IntArray;
 
@@ -210,9 +210,11 @@ public class GridSizeMigrationTaskTest extends BaseGridChangesTestCase {
         }});
     }
 
-    @FlagOverride(key = "QSB_ON_FIRST_SCREEN", value = true)
     @Test
     public void testWorkspace_first_row_blocked() throws Exception {
+        if (!FeatureFlags.QSB_ON_FIRST_SCREEN) {
+            return;
+        }
         // The first screen has one item on the 4th column which needs moving, as the first row
         // will be kept empty.
         int[][][] ids = createGrid(new int[][][]{{
@@ -236,9 +238,11 @@ public class GridSizeMigrationTaskTest extends BaseGridChangesTestCase {
         }});
     }
 
-    @FlagOverride(key = "QSB_ON_FIRST_SCREEN", value = true)
     @Test
     public void testWorkspace_items_moved_to_empty_first_row() throws Exception {
+        if (!FeatureFlags.QSB_ON_FIRST_SCREEN) {
+            return;
+        }
         // Items will get moved to the next screen to keep the first screen empty.
         int[][][] ids = createGrid(new int[][][]{{
                 { -1, -1, -1, -1},

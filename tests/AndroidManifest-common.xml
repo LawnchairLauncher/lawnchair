@@ -18,39 +18,39 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.launcher3.tests">
 
-    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"/>
 
     <application android:debuggable="true">
-        <uses-library android:name="android.test.runner" />
+        <uses-library android:name="android.test.runner"/>
 
         <receiver
             android:name="com.android.launcher3.testcomponent.AppWidgetNoConfig"
             android:label="No Config">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
-                       android:resource="@xml/appwidget_no_config" />
+                       android:resource="@xml/appwidget_no_config"/>
         </receiver>
 
         <receiver
             android:name="com.android.launcher3.testcomponent.AppWdigetHidden"
             android:label="Hidden widget">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
-                android:resource="@xml/appwidget_hidden" />
+                       android:resource="@xml/appwidget_hidden"/>
         </receiver>
 
         <receiver
             android:name="com.android.launcher3.testcomponent.AppWidgetWithConfig"
             android:label="With Config">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
-                       android:resource="@xml/appwidget_with_config" />
+                       android:resource="@xml/appwidget_with_config"/>
         </receiver>
 
         <activity
@@ -61,8 +61,8 @@
         </activity>
         <activity
             android:name="com.android.launcher3.testcomponent.RequestPinItemActivity"
-            android:label="Test Pin Item"
-            android:icon="@drawable/test_drawable_pin_item">
+            android:icon="@drawable/test_drawable_pin_item"
+            android:label="Test Pin Item">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -73,28 +73,28 @@
         <provider
             android:name="com.android.launcher3.testcomponent.TestCommandReceiver"
             android:authorities="${packageName}.commands"
-            android:exported="true" />
+            android:exported="true"/>
 
         <activity
             android:name="com.android.launcher3.testcomponent.TestLauncherActivity"
-            android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
-            android:label="Test launcher"
-            android:stateNotNeeded="true"
-            android:theme="@android:style/Theme.DeviceDefault.Light"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="unspecified"
             android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
-            android:resizeableActivity="true"
-            android:taskAffinity=""
+            android:enabled="false"
+            android:label="Test launcher"
+            android:launchMode="singleTask"
             android:process=":testLauncherProcess"
-            android:enabled="false">
+            android:resizeableActivity="true"
+            android:screenOrientation="unspecified"
+            android:stateNotNeeded="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.DeviceDefault.Light"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.HOME" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.HOME"/>
+                <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.MONKEY"/>
-                <category android:name="android.intent.category.LAUNCHER_APP" />
+                <category android:name="android.intent.category.LAUNCHER_APP"/>
             </intent-filter>
         </activity>
         <activity
@@ -104,6 +104,12 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <intent-filter>
+                <action android:name="com.android.launcher3.intent.action.test_shortcut"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <meta-data android:name="android.app.shortcuts"
+                       android:resource="@xml/shortcuts"/>
         </activity>
     </application>
 </manifest>

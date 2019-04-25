@@ -93,7 +93,8 @@ public class CheckLongPressHelper {
         if (mPendingCheckForLongPress != null) {
             if (com.android.launcher3.TestProtocol.sDebugTracing) {
                 android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
-                        "cancelLongPress");
+                        "cancelLongPress @ " + android.util.Log.getStackTraceString(
+                                new Throwable()));
             }
             mView.removeCallbacks(mPendingCheckForLongPress);
             mPendingCheckForLongPress = null;
