@@ -49,8 +49,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.views.RecentsView;
 
-import java.io.PrintWriter;
-
 /**
  * Handles swiping up on the nav bar to go home from launcher, e.g. overview or all apps.
  */
@@ -224,7 +222,4 @@ public class NavBarToHomeTouchController implements TouchController, SwipeDetect
                 mEndState.containerType,
                 mLauncher.getWorkspace().getCurrentPage());
     }
-
-    @Override
-    public void dump(String prefix, PrintWriter writer) { }
 }

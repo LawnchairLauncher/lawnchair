@@ -50,8 +50,6 @@ import com.android.launcher3.util.FlingBlockCheck;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.TouchController;
 
-import java.io.PrintWriter;
-
 /**
  * TouchController for handling state changes
  */
@@ -583,7 +581,4 @@ public abstract class AbstractStateChangeTouchController
             this.endTime = duration + SystemClock.elapsedRealtime();
         }
     }
-
-    @Override
-    public void dump(String prefix, PrintWriter writer) { }
 }
