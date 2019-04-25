@@ -41,6 +41,7 @@ import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 
+import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -251,4 +252,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             @FloatingViewType int type) {
         return getOpenView(activity, type);
     }
+
+    @Override
+    public void dump(String prefix, PrintWriter writer) { }
 }
