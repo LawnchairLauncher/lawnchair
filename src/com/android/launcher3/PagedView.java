@@ -98,6 +98,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     @ViewDebug.ExportedProperty(category = "launcher")
     protected int mNextPage = INVALID_PAGE;
+    protected int mMinScrollX;
     protected int mMaxScrollX;
     protected OverScroller mScroller;
     private Interpolator mDefaultInterpolator;
@@ -266,8 +267,37 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     private int validateNewPage(int newPage) {
+        newPage = ensureWithinScrollBounds(newPage);
         // Ensure that it is clamped by the actual set of children in all cases
         return Utilities.boundToRange(newPage, 0, getPageCount() - 1);
+    }
+
+    /**
+     * @return The closest page to the provided page that is within mMinScrollX and mMaxScrollX.
+     */
+    private int ensureWithinScrollBounds(int page) {
+        int dir = !mIsRtl ? 1 : - 1;
+        int currScroll = getScrollForPage(page);
+        int prevScroll;
+        while (currScroll < mMinScrollX) {
+            page += dir;
+            prevScroll = currScroll;
+            currScroll = getScrollForPage(page);
+            if (currScroll <= prevScroll) {
+                Log.e(TAG, "validateNewPage: failed to find a page > mMinScrollX");
+                break;
+            }
+        }
+        while (currScroll > mMaxScrollX) {
+            page -= dir;
+            prevScroll = currScroll;
+            currScroll = getScrollForPage(page);
+            if (currScroll >= prevScroll) {
+                Log.e(TAG, "validateNewPage: failed to find a page < mMaxScrollX");
+                break;
+            }
+        }
+        return page;
     }
 
     /**
@@ -348,29 +378,29 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     public void scrollTo(int x, int y) {
         mUnboundedScrollX = x;
 
-        boolean isXBeforeFirstPage = mIsRtl ? (x > mMaxScrollX) : (x < 0);
-        boolean isXAfterLastPage = mIsRtl ? (x < 0) : (x > mMaxScrollX);
+        boolean isXBeforeFirstPage = mIsRtl ? (x > mMaxScrollX) : (x < mMinScrollX);
+        boolean isXAfterLastPage = mIsRtl ? (x < mMinScrollX) : (x > mMaxScrollX);
 
         if (!isXBeforeFirstPage && !isXAfterLastPage) {
             mSpringOverScrollX = 0;
         }
 
         if (isXBeforeFirstPage) {
-            super.scrollTo(mIsRtl ? mMaxScrollX : 0, y);
+            super.scrollTo(mIsRtl ? mMaxScrollX : mMinScrollX, y);
             if (mAllowOverScroll) {
                 mWasInOverscroll = true;
                 if (mIsRtl) {
                     overScroll(x - mMaxScrollX);
                 } else {
-                    overScroll(x);
+                    overScroll(x - mMinScrollX);
                 }
             }
         } else if (isXAfterLastPage) {
-            super.scrollTo(mIsRtl ? 0 : mMaxScrollX, y);
+            super.scrollTo(mIsRtl ? mMinScrollX : mMaxScrollX, y);
             if (mAllowOverScroll) {
                 mWasInOverscroll = true;
                 if (mIsRtl) {
-                    overScroll(x);
+                    overScroll(x - mMinScrollX);
                 } else {
                     overScroll(x - mMaxScrollX);
                 }
@@ -557,12 +587,12 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                     // Wait until all transitions are complete.
                     if (!transition.isRunning()) {
                         transition.removeTransitionListener(this);
-                        updateMaxScrollX();
+                        updateMinAndMaxScrollX();
                     }
                 }
             });
         } else {
-            updateMaxScrollX();
+            updateMinAndMaxScrollX();
         }
 
         if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < childCount) {
@@ -627,12 +657,13 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         return 0;
     }
 
-    private void updateMaxScrollX() {
+    protected void updateMinAndMaxScrollX() {
+        mMinScrollX = computeMinScrollX();
         mMaxScrollX = computeMaxScrollX();
     }
 
-    public int getMaxScrollX() {
-        return mMaxScrollX;
+    protected int computeMinScrollX() {
+        return 0;
     }
 
     protected int computeMaxScrollX() {
@@ -1010,12 +1041,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             return;
         }
 
-        if (overScrollAmount < 0) {
-            super.scrollTo(overScrollAmount, getScrollY());
-        } else {
-            int x = Math.max(0, Math.min(getScrollX(), mMaxScrollX));
-            super.scrollTo(x + overScrollAmount, getScrollY());
-        }
+        int x = Utilities.boundToRange(getScrollX(), mMinScrollX, mMaxScrollX);
+        super.scrollTo(x + overScrollAmount, getScrollY());
         invalidate();
     }
 
@@ -1030,7 +1057,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
         if (mFreeScroll && !mScroller.isFinished()) {
             if (amount < 0) {
-                super.scrollTo(amount, getScrollY());
+                super.scrollTo(mMinScrollX + amount, getScrollY());
             } else {
                 super.scrollTo(mMaxScrollX + amount, getScrollY());
             }
@@ -1169,12 +1196,12 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                     int initialScrollX = getScrollX();
 
                     if (((initialScrollX >= mMaxScrollX) && (isVelocityXLeft || !isFling)) ||
-                            ((initialScrollX <= 0) && (!isVelocityXLeft || !isFling))) {
-                        mScroller.springBack(getScrollX(), 0, mMaxScrollX);
+                            ((initialScrollX <= mMinScrollX) && (!isVelocityXLeft || !isFling))) {
+                        mScroller.springBack(getScrollX(), mMinScrollX, mMaxScrollX);
                     } else {
                         mScroller.setInterpolator(mDefaultInterpolator);
                         mScroller.fling(initialScrollX, -velocityX,
-                                0, mMaxScrollX,
+                                mMinScrollX, mMaxScrollX,
                                 Math.round(getWidth() * 0.5f * OVERSCROLL_DAMP_FACTOR));
 
                         int finalX = mScroller.getFinalPos();
@@ -1182,12 +1209,13 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
                         int firstPageScroll = getScrollForPage(!mIsRtl ? 0 : getPageCount() - 1);
                         int lastPageScroll = getScrollForPage(!mIsRtl ? getPageCount() - 1 : 0);
-                        if (finalX > 0 && finalX < mMaxScrollX) {
+                        if (finalX > mMinScrollX && finalX < mMaxScrollX) {
                             // If scrolling ends in the half of the added space that is closer to
                             // the end, settle to the end. Otherwise snap to the nearest page.
                             // If flinging past one of the ends, don't change the velocity as it
                             // will get stopped at the end anyway.
-                            int pageSnappedX = finalX < firstPageScroll / 2 ? 0
+                            int pageSnappedX = finalX < (firstPageScroll + mMinScrollX) / 2
+                                    ? mMinScrollX
                                     : finalX > (lastPageScroll + mMaxScrollX) / 2
                                             ? mMaxScrollX
                                             : getScrollForPage(mNextPage);
@@ -1347,7 +1375,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     protected boolean isInOverScroll() {
-        return (getScrollX() > mMaxScrollX || getScrollX() < 0);
+        return (getScrollX() > mMaxScrollX || getScrollX() < mMinScrollX);
     }
 
     protected int getPageSnapDuration() {

@@ -747,14 +747,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         float endShift;
         final float startShift;
         Interpolator interpolator = DEACCEL;
-        int nextPage = 0;
-        int taskToLaunch = 0;
         final boolean goingToNewTask;
         if (mRecentsView != null) {
-            nextPage = mRecentsView.getNextPage();
-            final int lastTaskIndex = mRecentsView.getTaskViewCount() - 1;
             final int runningTaskIndex = mRecentsView.getRunningTaskIndex();
-            taskToLaunch = nextPage <= lastTaskIndex ? nextPage : lastTaskIndex;
+            final int taskToLaunch = mRecentsView.getNextPage();
             goingToNewTask = runningTaskIndex >= 0 && taskToLaunch != runningTaskIndex;
         } else {
             goingToNewTask = false;
@@ -818,11 +814,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                     duration = Math.min(MAX_SWIPE_DURATION, 2 * baseDuration);
                 }
             }
-        }
-
-        if (mRecentsView != null && !endTarget.isLauncher && taskToLaunch != nextPage) {
-            // Scrolled to Clear all button, snap back to last task and launch it.
-            mRecentsView.snapToPage(taskToLaunch, Math.toIntExact(duration), interpolator);
         }
 
         if (endTarget == HOME) {
