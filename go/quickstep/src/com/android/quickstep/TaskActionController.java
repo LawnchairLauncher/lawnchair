@@ -20,6 +20,8 @@ import static com.android.quickstep.TaskAdapter.TASKS_START_POSITION;
 import android.app.ActivityOptions;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import com.android.quickstep.views.TaskItemView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -39,11 +41,11 @@ public final class TaskActionController {
     }
 
     /**
-     * Launch the task associated with the task holder, animating into the app.
+     * Launch the task associated with the task holder, animating into the app from the task view.
      *
      * @param viewHolder the task view holder to launch
      */
-    public void launchTask(TaskHolder viewHolder) {
+    public void launchTaskFromView(@NonNull TaskHolder viewHolder) {
         if (!viewHolder.getTask().isPresent()) {
             return;
         }
@@ -58,6 +60,17 @@ public final class TaskActionController {
         ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(
                 viewHolder.getTask().get().key, opts, null /* resultCallback */,
                 null /* resultCallbackHandler */);
+    }
+
+    /**
+     * Launch the task directly with a basic animation.
+     *
+     * @param task the task to launch
+     */
+    public void launchTask(@NonNull Task task) {
+        ActivityOptions opts = ActivityOptions.makeBasic();
+        ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(task.key, opts,
+                null /* resultCallback */, null /* resultCallbackHandler */);
     }
 
     /**

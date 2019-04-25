@@ -83,7 +83,8 @@ public final class TaskAdapter extends Adapter<ViewHolder> {
                 TaskItemView itemView = (TaskItemView) LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.task_item_view, parent, false);
                 TaskHolder taskHolder = new TaskHolder(itemView);
-                itemView.setOnClickListener(view -> mTaskActionController.launchTask(taskHolder));
+                itemView.setOnClickListener(
+                        view -> mTaskActionController.launchTaskFromView(taskHolder));
                 return taskHolder;
             case ITEM_TYPE_CLEAR_ALL:
                 View clearView = LayoutInflater.from(parent.getContext())
