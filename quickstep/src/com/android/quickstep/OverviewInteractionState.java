@@ -15,38 +15,25 @@
  */
 package com.android.quickstep;
 
-import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_DISABLE_QUICK_SCRUB;
-import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_DISABLE_SWIPE_UP;
-import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_SHOW_OVERVIEW_BUTTON;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.android.launcher3.Utilities;
-import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 
 import androidx.annotation.WorkerThread;
+import com.android.systemui.shared.system.QuickStepContract;
 
 /**
- * Sets overview interaction flags, such as:
- *
- *   - FLAG_DISABLE_QUICK_SCRUB
- *   - FLAG_DISABLE_SWIPE_UP
- *   - FLAG_SHOW_OVERVIEW_BUTTON
- *
- * @see com.android.systemui.shared.system.NavigationBarCompat.InteractionType and associated flags.
+ * Sets alpha for the back button
  */
 public class OverviewInteractionState {
 
     private static final String TAG = "OverviewFlags";
-
-    private static final String HAS_ENABLED_QUICKSTEP_ONCE = "launcher.has_enabled_quickstep_once";
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<OverviewInteractionState> INSTANCE =
@@ -54,7 +41,6 @@ public class OverviewInteractionState {
 
     private static final int MSG_SET_PROXY = 200;
     private static final int MSG_SET_BACK_BUTTON_ALPHA = 201;
-    private static final int MSG_APPLY_FLAGS = 202;
 
     private final Context mContext;
     private final Handler mUiHandler;
@@ -62,7 +48,6 @@ public class OverviewInteractionState {
 
     // These are updated on the background thread
     private ISystemUiProxy mISystemUiProxy;
-    private boolean mSwipeUpEnabled;
     private float mBackButtonAlpha = 1;
 
     private OverviewInteractionState(Context context) {
@@ -73,9 +58,6 @@ public class OverviewInteractionState {
         // For example, send back alpha on uihandler to avoid flickering when setting its visibility
         mUiHandler = new Handler(this::handleUiMessage);
         mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleBgMessage);
-
-        onNavigationModeChanged(SysUINavigationMode.INSTANCE.get(context)
-                .addModeChangeListener(this::onNavigationModeChanged));
     }
 
     public float getBackButtonAlpha() {
@@ -83,7 +65,7 @@ public class OverviewInteractionState {
     }
 
     public void setBackButtonAlpha(float alpha, boolean animate) {
-        if (!mSwipeUpEnabled) {
+        if (QuickStepContract.isLegacyMode(SysUINavigationMode.getMode(mContext).resValue)) {
             alpha = 1;
         }
         mUiHandler.removeMessages(MSG_SET_BACK_BUTTON_ALPHA);
@@ -111,28 +93,8 @@ public class OverviewInteractionState {
             case MSG_SET_BACK_BUTTON_ALPHA:
                 applyBackButtonAlpha((float) msg.obj, msg.arg1 == 1);
                 return true;
-            case MSG_APPLY_FLAGS:
-                break;
         }
-        applyFlags();
         return true;
-    }
-
-    @WorkerThread
-    private void applyFlags() {
-        if (mISystemUiProxy == null) {
-            return;
-        }
-
-        int flags = FLAG_DISABLE_QUICK_SCRUB;
-        if (!mSwipeUpEnabled) {
-            flags = FLAG_DISABLE_SWIPE_UP | FLAG_DISABLE_QUICK_SCRUB | FLAG_SHOW_OVERVIEW_BUTTON;
-        }
-        try {
-            mISystemUiProxy.setInteractionState(flags);
-        } catch (RemoteException e) {
-            Log.w(TAG, "Unable to update overview interaction flags", e);
-        }
     }
 
     @WorkerThread
@@ -144,22 +106,6 @@ public class OverviewInteractionState {
             mISystemUiProxy.setBackButtonAlpha(alpha, animate);
         } catch (RemoteException e) {
             Log.w(TAG, "Unable to update overview back button alpha", e);
-        }
-    }
-
-    private void onNavigationModeChanged(SysUINavigationMode.Mode mode) {
-        mSwipeUpEnabled = mode.hasGestures;
-        resetHomeBounceSeenOnQuickstepEnabledFirstTime();
-        mBgHandler.obtainMessage(MSG_APPLY_FLAGS).sendToTarget();
-    }
-
-    private void resetHomeBounceSeenOnQuickstepEnabledFirstTime() {
-        if (mSwipeUpEnabled && !Utilities.getPrefs(mContext).getBoolean(
-                HAS_ENABLED_QUICKSTEP_ONCE, true)) {
-            Utilities.getPrefs(mContext).edit()
-                    .putBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)
-                    .putBoolean(DiscoveryBounce.HOME_BOUNCE_SEEN, false)
-                    .apply();
         }
     }
 }
