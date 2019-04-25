@@ -301,7 +301,7 @@
     <string name="bubble_searchbar">Thanh tìm kiếm bong bóng kép</string>
     <string name="search_clear_history">Xóa lịch sử</string>
     <string name="search_no_results">Không tìm thấy gì</string>
-    <string name="search_menu">Cài đặt tìm kiếm</string>
+    <string name="search_menu">Tìm kiếm cài đặt</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Màu nhấn</string>
     <string name="theme_based">Theo giao diện</string>
@@ -344,7 +344,7 @@
     <!--Marker J-->
     <string name="shortcut_sesame">Lối tắt</string>
     <string name="pref_integrations">Tích hợp</string>
-    <string name="pref_integrations_summary">Search, Sesame, Google</string>
+    <string name="pref_integrations_summary">Tìm kiếm, Sesame, Google</string>
     <string name="sesame">Sesame</string>
     <string name="sesame_data_integration">Tích hợp dữ liệu</string>
     <string name="sesame_upsell">Nhấn để cài đặt Sesame</string>
