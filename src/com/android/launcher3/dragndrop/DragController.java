@@ -46,7 +46,6 @@ import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
 /**
@@ -697,8 +696,4 @@ public class DragController implements DragDriver.EventListener, TouchController
     public void removeDropTarget(DropTarget target) {
         mDropTargets.remove(target);
     }
-
-    @Override
-    public void dump(String prefix, PrintWriter writer) { }
-
 }

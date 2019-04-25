@@ -42,8 +42,6 @@ import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
-import java.io.PrintWriter;
-
 /**
  * Touch controller for handling task view card swipes
  */
@@ -307,7 +305,4 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             mPendingAnimation = null;
         }
     }
-
-    @Override
-    public void dump(String prefix, PrintWriter writer) { }
 }
