@@ -276,6 +276,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
         mMode = SysUINavigationMode.getMode(context);
         initStateCallbacks();
+
+        DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(mContext).getDeviceProfile(mContext);
+        initTransitionEndpoints(dp);
     }
 
     private void initStateCallbacks() {
