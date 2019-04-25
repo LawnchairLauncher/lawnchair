@@ -88,7 +88,6 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
     }
 
     @Test
-    @Ignore // b/129723135
     @NavigationModeSwitch
     public void testStressSwipeToOverview() {
         for (int i = 0; i < STRESS_REPEAT_COUNT; ++i) {
