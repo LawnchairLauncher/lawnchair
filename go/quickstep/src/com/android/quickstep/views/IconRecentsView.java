@@ -59,6 +59,8 @@ import com.android.quickstep.TaskSwipeCallback;
 import com.android.systemui.shared.recents.model.Task;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -263,23 +265,33 @@ public final class IconRecentsView extends FrameLayout {
      * the app. In that case, we launch the next most recent.
      */
     public void handleOverviewCommand() {
-        // TODO(130735711): Need to address case where most recent task is off screen/unattached.
-        ArrayList<TaskItemView> taskViews = getTaskViews();
-        int taskViewsSize = taskViews.size();
-        if (taskViewsSize <= 1) {
+        List<Task> tasks = mTaskLoader.getCurrentTaskList();
+        int tasksSize = tasks.size();
+        if (tasksSize == 0) {
             // Do nothing
             return;
         }
-        TaskHolder taskToLaunch;
-        if (mTransitionedFromApp && taskViewsSize > 1) {
+        Task taskToLaunch;
+        if (mTransitionedFromApp && tasksSize > 1) {
             // Launch the next most recent app
-            TaskItemView itemView = taskViews.get(1);
-            taskToLaunch = (TaskHolder) mTaskRecyclerView.getChildViewHolder(itemView);
+            taskToLaunch = tasks.get(1);
         } else {
             // Launch the most recent app
-            TaskItemView itemView = taskViews.get(0);
-            taskToLaunch = (TaskHolder) mTaskRecyclerView.getChildViewHolder(itemView);
+            taskToLaunch = tasks.get(0);
         }
+
+        // See if view for this task is attached, and if so, animate launch from that view.
+        ArrayList<TaskItemView> itemViews = getTaskViews();
+        for (int i = 0, size = itemViews.size(); i < size; i++) {
+            TaskItemView taskView = itemViews.get(i);
+            TaskHolder holder = (TaskHolder) mTaskRecyclerView.getChildViewHolder(taskView);
+            if (Objects.equals(holder.getTask(), Optional.of(taskToLaunch))) {
+                mTaskActionController.launchTaskFromView(holder);
+                return;
+            }
+        }
+
+        // Otherwise, just use a basic launch animation.
         mTaskActionController.launchTask(taskToLaunch);
     }
 
