@@ -21,14 +21,14 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.SWIPE;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.SWIPE_NOOP;
+
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction.UPLEFT;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction.UPRIGHT;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.SWIPE;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.SWIPE_NOOP;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType.NAVBAR;
 
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PointF;
@@ -40,10 +40,10 @@ import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.systemui.shared.recents.ISystemUiProxy;
-import com.android.launcher3.R;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.NavigationBarCompat;
 
