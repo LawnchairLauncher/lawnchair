@@ -382,7 +382,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             mSwipeSharedState.canGestureBeContinued = endTarget != null && endTarget.canBeContinued;
             mSwipeSharedState.goingToLauncher = endTarget != null && endTarget.isLauncher;
             if (mSwipeSharedState.canGestureBeContinued) {
-                mInteractionHandler.cancelCurrentAnimation();
+                mInteractionHandler.cancelCurrentAnimation(mSwipeSharedState);
             } else {
                 mInteractionHandler.reset();
             }

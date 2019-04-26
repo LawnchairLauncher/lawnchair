@@ -59,6 +59,10 @@ public class RecentsAnimationWrapper {
         mInputProxySupplier = inputProxySupplier;
     }
 
+    public boolean hasTargets() {
+        return targetSet != null && targetSet.hasTargets();
+    }
+
     @UiThread
     public synchronized void setController(SwipeAnimationTargetSet targetSet) {
         Preconditions.assertUIThread();
