@@ -215,7 +215,6 @@ public final class IconRecentsView extends FrameLayout {
                     updateContentViewVisibility();
                 }
             });
-            // TODO: Move layout param logic into onMeasure
         }
     }
 
