@@ -92,9 +92,12 @@ public class NavigationModeSwitchRule implements TestRule {
                         if (mode == TWO_BUTTON || mode == ALL) {
                             evaluateWithTwoButtons();
                         }
+                        /*
+                        b/131419978
                         if (mode == THREE_BUTTON || mode == ALL) {
                             evaluateWithThreeButtons();
                         }
+                        */
                     } finally {
                         setActiveOverlay(prevOverlayPkg, originalMode);
                     }
