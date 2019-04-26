@@ -24,7 +24,8 @@
         android:layout_width="@dimen/recents_list_width"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:scrollbars="none"/>
+        android:scrollbars="none"
+        android:clipToPadding="false"/>
     <TextView
         android:id="@+id/recent_task_empty_view"
         android:layout_width="match_parent"
