@@ -12,21 +12,29 @@ import android.app.PendingIntent;
 import android.app.usage.UsageStatsManager;
 import android.content.Intent;
 
+import androidx.test.filters.LargeTest;
+import androidx.test.runner.AndroidJUnit4;
+
 import com.android.launcher3.Launcher;
 import com.android.quickstep.views.DigitalWellBeingToast;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.time.Duration;
 
+@LargeTest
+@RunWith(AndroidJUnit4.class)
 public class DigitalWellBeingToastTest extends AbstractQuickStepTest {
     private static final String CALCULATOR_PACKAGE =
             resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR);
 
     @Test
     public void testToast() throws Exception {
+        startAppFast(CALCULATOR_PACKAGE);
+
         final UsageStatsManager usageStatsManager =
                 mTargetContext.getSystemService(UsageStatsManager.class);
         final int observerId = 0;
