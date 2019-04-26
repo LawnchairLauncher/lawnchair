@@ -738,7 +738,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             setTargetAlphaProvider(WindowTransformSwipeHandler::getHiddenTargetAlpha);
         }
 
-        return OverviewInputConsumer.newInstance(mActivityControlHelper, true);
+        return OverviewInputConsumer.newInstance(mActivityControlHelper, null, true);
     }
 
     @UiThread
