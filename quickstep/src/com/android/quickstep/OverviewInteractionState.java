@@ -21,12 +21,13 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.android.launcher3.Utilities;
+import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 
 import androidx.annotation.WorkerThread;
-import com.android.systemui.shared.system.QuickStepContract;
 
 /**
  * Sets alpha for the back button
@@ -35,9 +36,11 @@ public class OverviewInteractionState {
 
     private static final String TAG = "OverviewFlags";
 
+    private static final String HAS_ENABLED_QUICKSTEP_ONCE = "launcher.has_enabled_quickstep_once";
+
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<OverviewInteractionState> INSTANCE =
-            new MainThreadInitializedObject<>((c) -> new OverviewInteractionState(c));
+            new MainThreadInitializedObject<>(OverviewInteractionState::new);
 
     private static final int MSG_SET_PROXY = 200;
     private static final int MSG_SET_BACK_BUTTON_ALPHA = 201;
@@ -58,6 +61,9 @@ public class OverviewInteractionState {
         // For example, send back alpha on uihandler to avoid flickering when setting its visibility
         mUiHandler = new Handler(this::handleUiMessage);
         mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleBgMessage);
+
+        onNavigationModeChanged(SysUINavigationMode.INSTANCE.get(context)
+                .addModeChangeListener(this::onNavigationModeChanged));
     }
 
     public float getBackButtonAlpha() {
@@ -65,7 +71,7 @@ public class OverviewInteractionState {
     }
 
     public void setBackButtonAlpha(float alpha, boolean animate) {
-        if (QuickStepContract.isLegacyMode(SysUINavigationMode.getMode(mContext).resValue)) {
+        if (!modeSupportsGestures()) {
             alpha = 1;
         }
         mUiHandler.removeMessages(MSG_SET_BACK_BUTTON_ALPHA);
@@ -107,5 +113,23 @@ public class OverviewInteractionState {
         } catch (RemoteException e) {
             Log.w(TAG, "Unable to update overview back button alpha", e);
         }
+    }
+
+    private void onNavigationModeChanged(SysUINavigationMode.Mode mode) {
+        resetHomeBounceSeenOnQuickstepEnabledFirstTime();
+    }
+
+    private void resetHomeBounceSeenOnQuickstepEnabledFirstTime() {
+        if (modeSupportsGestures() && !Utilities.getPrefs(mContext).getBoolean(
+                HAS_ENABLED_QUICKSTEP_ONCE, true)) {
+            Utilities.getPrefs(mContext).edit()
+                .putBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)
+                .putBoolean(DiscoveryBounce.HOME_BOUNCE_SEEN, false)
+                .apply();
+        }
+    }
+
+    private boolean modeSupportsGestures() {
+        return SysUINavigationMode.getMode(mContext).hasGestures;
     }
 }
