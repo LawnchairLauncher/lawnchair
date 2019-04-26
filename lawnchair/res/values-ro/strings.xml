@@ -8,11 +8,11 @@
     <string name="icu_abbrev_date"> dd MMMM</string>
     <string name="in_smartspace">În widget-ul \"Pe scurt\"</string>
     <string name="smartspace_time">Ora</string>
-    <string name="smartspace_date">Data</string>
+    <string name="smartspace_date">Dată</string>
     <string name="customize">Personalizează</string>
     <string name="smartspace_preferences_in_settings">Pe scurt</string>
-    <string name="smartspace_preferences_in_settings_desc">Dată, oră, sursă meteo</string>
-    <string name="search">Căutați</string>
+    <string name="smartspace_preferences_in_settings_desc">Dată, oră, sursă date meteo</string>
+    <string name="search">Căutare</string>
     <string name="label_voice_search">Căutare vocală</string>
     <string name="icon_pack">Set de pictograme</string>
     <string name="home_widget">Widget-ul de pe desktop</string>
@@ -171,7 +171,7 @@
     <string name="action_assistant">Deschide asistent</string>
     <string name="action_open_notifications">Deschide notificările</string>
     <string name="action_close_notifications">Închide notificările</string>
-    <string name="action_sleep_timeout">Somn (pauză de utilizare)</string>
+    <string name="action_sleep_timeout">Somn (folosind pauza)</string>
     <string name="action_open_app">Deschide aplicația</string>
     <string name="action_open_app_with_target">Deschide %s</string>
     <string name="action_open_app_select_app">Alege aplicația</string>
@@ -332,6 +332,11 @@
         <item quantity="one">%1$d aplicație</item>
         <item quantity="few">%1$d aplicație</item>
         <item quantity="other">%1$d aplicații</item>
+    </plurals>
+    <plurals name="hidden_apps_count">
+        <item quantity="one">%1$d ascuns</item>
+        <item quantity="few">%1$d ascuns</item>
+        <item quantity="other">%1$d ascunse</item>
     </plurals>
     <string name="selected_count">%1$d selectat</string>
     <string name="tab_manage_apps">Administrează aplicații</string>
