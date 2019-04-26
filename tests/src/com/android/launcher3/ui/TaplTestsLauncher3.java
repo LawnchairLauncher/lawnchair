@@ -239,12 +239,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         // Test starting a workspace app.
         final AppIcon app = workspace.tryGetWorkspaceAppIcon("Chrome");
         assertNotNull("No Chrome app in workspace", app);
-        assertNotNull("AppIcon.launch returned null",
-                app.launch(resolveSystemApp(Intent.CATEGORY_APP_BROWSER)));
-        executeOnLauncher(launcher -> assertTrue(
-                "Launcher activity is the top activity; expecting another activity to be the top "
-                        + "one",
-                isInBackground(launcher)));
     }
 
     public static void runIconLaunchFromAllAppsTest(AbstractLauncherUiTest test, AllApps allApps) {
@@ -340,6 +334,10 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                     dragToWorkspace().
                     getWorkspaceAppIcon(APP_NAME).
                     launch(getAppPackageName());
+            executeOnLauncher(launcher -> assertTrue(
+                    "Launcher activity is the top activity; expecting another activity to be the "
+                            + "top one",
+                    isInBackground(launcher)));
         } finally {
             TestProtocol.sDebugTracing = false;
         }
