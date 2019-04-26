@@ -267,6 +267,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         mMotionPauseDetector.setDisallowPause(upDist < mMotionPauseMinDisplacement
                                 || isLikelyToStartNewTask);
                         mMotionPauseDetector.addPosition(displacement, ev.getEventTime());
+                        mInteractionHandler.setIsLikelyToStartNewTask(isLikelyToStartNewTask);
                     }
                 }
                 break;
