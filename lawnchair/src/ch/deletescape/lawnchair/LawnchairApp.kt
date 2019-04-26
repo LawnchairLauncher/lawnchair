@@ -30,6 +30,7 @@ import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
 import ch.deletescape.lawnchair.theme.ThemeManager
+import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -147,15 +148,32 @@ class LawnchairApp : Application() {
 
     @Keep
     fun checkRecentsComponent(): Boolean {
-        if (!Utilities.ATLEAST_P) return false
-        if (!Utilities.HIDDEN_APIS_ALLOWED) return false
+        if (!Utilities.ATLEAST_P) {
+            d("API < P, disabling recents")
+            return false
+        }
+        if (!Utilities.HIDDEN_APIS_ALLOWED) {
+            d("Hidden APIs not allowed, disabling recents")
+            return false
+        }
 
         val resId = resources.getIdentifier("config_recentsComponentName", "string", "android")
-        if (resId == 0) return false
+        if (resId == 0) {
+            d("config_recentsComponentName not found, disabling recents")
+            return false
+        }
         val recentsComponent = ComponentName.unflattenFromString(resources.getString(resId))
-                ?: return false
-        return recentsComponent.packageName == packageName
+        if (recentsComponent == null) {
+            d("config_recentsComponentName is empty, disabling recents")
+            return false
+        }
+        val isRecentsComponent = recentsComponent.packageName == packageName
                 && recentsComponent.className == RecentsActivity::class.java.name
+        if (!isRecentsComponent) {
+            d("config_recentsComponentName ($recentsComponent) is not Lawnchair, disabling recents")
+            return false
+        }
+        return true
     }
 }
 
