@@ -37,6 +37,7 @@ import com.android.launcher3.model.AppLaunchTracker;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -49,7 +50,6 @@ import androidx.test.runner.AndroidJUnit4;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class AppPredictionsUITests  extends AbstractQuickStepTest {
-    private static final int DEFAULT_APP_LAUNCH_TIMES = 3;
     private static final String TAG = "AppPredictionsUITests";
 
     private LauncherActivityInfo mSampleApp1;
@@ -86,6 +86,7 @@ public class AppPredictionsUITests  extends AbstractQuickStepTest {
      * Test that prediction UI is updated as soon as we get predictions from the system
      */
     @Test
+    @Ignore // b/131188880
     public void testPredictionExistsInAllApps() {
         mActivityMonitor.startLauncher();
         mLauncher.pressHome().switchToAllApps();
@@ -106,6 +107,7 @@ public class AppPredictionsUITests  extends AbstractQuickStepTest {
      * Test tat prediction update is deferred if it is already visible
      */
     @Test
+    @Ignore // b/131188880
     public void testPredictionsDeferredUntilHome() {
         mActivityMonitor.startLauncher();
         sendPredictionUpdate(mSampleApp1, mSampleApp2);
