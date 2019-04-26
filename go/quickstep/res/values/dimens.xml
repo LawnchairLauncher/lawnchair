@@ -14,9 +14,6 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<shape
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <solid android:color="@android:color/darker_gray"/>
-    <corners android:radius="@dimen/task_thumbnail_corner_radius"/>
-</shape>
+<resources>
+    <dimen name="task_thumbnail_corner_radius">3dp</dimen>
+</resources>
