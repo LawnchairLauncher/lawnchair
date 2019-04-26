@@ -17,6 +17,7 @@
 package com.android.quickstep;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import android.app.prediction.AppPredictor;
 import android.app.prediction.AppTarget;
@@ -25,7 +26,6 @@ import android.content.ComponentName;
 import android.content.pm.LauncherActivityInfo;
 import android.os.Process;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
@@ -49,8 +49,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class AppPredictionsUITests  extends AbstractQuickStepTest {
-    private static final String TAG = "AppPredictionsUITests";
+public class AppPredictionsUITests extends AbstractQuickStepTest {
 
     private LauncherActivityInfo mSampleApp1;
     private LauncherActivityInfo mSampleApp2;
@@ -91,20 +90,15 @@ public class AppPredictionsUITests  extends AbstractQuickStepTest {
         mActivityMonitor.startLauncher();
         mLauncher.pressHome().switchToAllApps();
 
-        // There has not been any update, verify that progress bar is showing
-        waitForLauncherCondition("Prediction is not in loading state", launcher -> {
-            ProgressBar p = findLoadingBar(launcher);
-            return p != null && p.isShown();
-        });
-
         // Dispatch an update
         sendPredictionUpdate(mSampleApp1, mSampleApp2);
+        // The first update should apply immediately.
         waitForLauncherCondition("Predictions were not updated in loading state",
                 launcher -> getPredictedApp(launcher).size() == 2);
     }
 
     /**
-     * Test tat prediction update is deferred if it is already visible
+     * Test that prediction update is deferred if it is already visible
      */
     @Test
     @Ignore // b/131188880
@@ -124,6 +118,19 @@ public class AppPredictionsUITests  extends AbstractQuickStepTest {
         assertEquals(3, getFromLauncher(this::getPredictedApp).size());
     }
 
+    @Test
+    public void testPredictionsDisabled() {
+        mActivityMonitor.startLauncher();
+        sendPredictionUpdate();
+        mLauncher.pressHome().switchToAllApps();
+
+        waitForLauncherCondition("Predictions were not updated in loading state",
+                launcher -> launcher.getAppsView().getFloatingHeaderView()
+                        .findFixedRowByType(PredictionRowView.class).getVisibility() == View.GONE);
+        assertFalse(PredictionUiStateManager.INSTANCE.get(mTargetContext)
+                .getCurrentState().isEnabled);
+    }
+
     public ArrayList<BubbleTextView> getPredictedApp(Launcher launcher) {
         PredictionRowView container = launcher.getAppsView().getFloatingHeaderView()
                 .findFixedRowByType(PredictionRowView.class);
@@ -137,20 +144,6 @@ public class AppPredictionsUITests  extends AbstractQuickStepTest {
         }
         return predictedAppViews;
     }
-
-    private ProgressBar findLoadingBar(Launcher launcher) {
-        PredictionRowView container = launcher.getAppsView().getFloatingHeaderView()
-                .findFixedRowByType(PredictionRowView.class);
-
-        for (int i = 0; i < container.getChildCount(); i++) {
-            View view = container.getChildAt(i);
-            if (view instanceof ProgressBar) {
-                return (ProgressBar) view;
-            }
-        }
-        return null;
-    }
-
 
     private void sendPredictionUpdate(LauncherActivityInfo... activities) {
         getOnUiThread(() -> {
