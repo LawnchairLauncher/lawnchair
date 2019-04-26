@@ -124,7 +124,7 @@
     <string name="pref_category_misc">Другое</string>
     <string name="pref_category_layout">Макет</string>
     <string name="pref_category_theme">Стиль</string>
-    <string name="pref_category_searchbar">Строка поиска</string>
+    <string name="pref_category_searchbar">Панель поиска </string>
     <!--Marker D-->
     <string name="title_attribouter_licenses">Open Source лицензии</string>
     <string name="title_attribouter_email">Адрес электронной почты</string>
