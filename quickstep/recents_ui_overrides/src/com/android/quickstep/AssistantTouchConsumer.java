@@ -45,7 +45,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.InputMonitorCompat;
-import com.android.systemui.shared.system.NavigationBarCompat;
+import com.android.systemui.shared.system.QuickStepContract;
 
 /**
  * Touch consumer for handling events to launch assistant from launcher
@@ -103,7 +103,7 @@ public class AssistantTouchConsumer implements InputConsumer {
         mDistThreshold = res.getDimension(R.dimen.gestures_assistant_drag_threshold);
         mTimeThreshold = res.getInteger(R.integer.assistant_gesture_min_time_threshold);
         mAngleThreshold = res.getInteger(R.integer.assistant_gesture_corner_deg_threshold);
-        mSlop = NavigationBarCompat.getQuickStepDragSlopPx();
+        mSlop = QuickStepContract.getQuickStepDragSlopPx();
         mInputMonitorCompat = inputMonitorCompat;
         mActivityControlHelper = activityControlHelper;
         mState = STATE_INACTIVE;

@@ -16,14 +16,15 @@
 package com.android.quickstep;
 
 import static android.view.View.TRANSLATION_Y;
-
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_DAMPING_RATIO;
 import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_STIFFNESS;
+import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.quickstep.WindowTransformSwipeHandler.RECENTS_ATTACH_DURATION;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -177,6 +178,8 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         return new AnimationFactory() {
             private Animator mShelfAnim;
             private ShelfAnimState mShelfState;
+            private Animator mAttachToWindowAnim;
+            private boolean mIsAttachedToWindow;
 
             @Override
             public void createActivityController(long transitionLength) {
@@ -220,6 +223,28 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                 mShelfAnim.setInterpolator(interpolator);
                 mShelfAnim.setDuration(duration);
                 mShelfAnim.start();
+            }
+
+            @Override
+            public void setRecentsAttachedToAppWindow(boolean attached, boolean animate) {
+                if (mIsAttachedToWindow == attached && animate) {
+                    return;
+                }
+                mIsAttachedToWindow = attached;
+                if (mAttachToWindowAnim != null) {
+                    mAttachToWindowAnim.cancel();
+                }
+                mAttachToWindowAnim = ObjectAnimator.ofFloat(activity.getOverviewPanel(),
+                        RecentsView.CONTENT_ALPHA, attached ? 1 : 0);
+                mAttachToWindowAnim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mAttachToWindowAnim = null;
+                    }
+                });
+                mAttachToWindowAnim.setInterpolator(ACCEL_DEACCEL);
+                mAttachToWindowAnim.setDuration(animate ? RECENTS_ATTACH_DURATION : 0);
+                mAttachToWindowAnim.start();
             }
         };
     }

@@ -71,6 +71,7 @@ enum ItemType {
   NOTIFICATION = 8;
   TASK = 9;         // Each page of Recents UI (QuickStep)
   WEB_APP = 10;
+  TASK_ICON = 11;
 }
 
 // Used to define what type of container a Target would represent.
@@ -115,6 +116,7 @@ enum ControlType {
   REMOTE_ACTION_SHORTCUT = 17;
   APP_USAGE_SETTINGS = 18;
   BACK_GESTURE = 19;
+  UNDO = 20;
 }
 
 enum TipType {

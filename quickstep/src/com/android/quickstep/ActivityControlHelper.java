@@ -27,6 +27,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -36,10 +40,6 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
 
 /**
  * Utility class which abstracts out the logical differences between Launcher and RecentsActivity.
@@ -122,6 +122,13 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         default void setShelfState(ShelfAnimState animState, Interpolator interpolator,
                 long duration) { }
+
+        /**
+         * @param attached Whether to show RecentsView alongside the app window. If false, recents
+         *                 will be hidden by some property we can animate, e.g. alpha.
+         * @param animate Whether to animate recents to/from its new attached state.
+         */
+        default void setRecentsAttachedToAppWindow(boolean attached, boolean animate) { }
     }
 
     interface HomeAnimationFactory {

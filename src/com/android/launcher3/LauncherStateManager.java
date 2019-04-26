@@ -50,6 +50,7 @@ import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.PropertySetter.AnimatedPropertySetter;
 import com.android.launcher3.uioverrides.UiFactory;
 
+import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -142,6 +143,15 @@ public class LauncherStateManager {
 
     public LauncherState getCurrentStableState() {
         return mCurrentStableState;
+    }
+
+    public void dump(String prefix, PrintWriter writer) {
+        writer.println(prefix + "LauncherState");
+        writer.println(prefix + "\tmLastStableState:" + mLastStableState);
+        writer.println(prefix + "\tmCurrentStableState:" + mCurrentStableState);
+        writer.println(prefix + "\tmState:" + mState);
+        writer.println(prefix + "\tmRestState:" + mRestState);
+        writer.println(prefix + "\tisInTransition:" + (mConfig.mCurrentAnimation != null));
     }
 
     public StateHandler[] getStateHandlers() {

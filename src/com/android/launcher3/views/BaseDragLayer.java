@@ -383,8 +383,13 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
         return mMultiValueAlpha.getProperty(index);
     }
 
-    public void dumpAlpha(PrintWriter writer) {
-        writer.println(" dragLayerAlpha : " + mMultiValueAlpha );
+    public void dump(String prefix, PrintWriter writer) {
+        writer.println(prefix + "DragLayer");
+        if (mActiveController != null) {
+            writer.println(prefix + "\tactiveController: " + mActiveController);
+            mActiveController.dump(prefix + "\t", writer);
+        }
+        writer.println(prefix + "\tdragLayerAlpha : " + mMultiValueAlpha );
     }
 
     public static class LayoutParams extends InsettableFrameLayout.LayoutParams {
