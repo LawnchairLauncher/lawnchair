@@ -29,7 +29,7 @@
     <string name="about_summary_title">Résumé</string>
     <string name="action_edit">Éditer</string>
     <string name="hide_app_sum">Masquer du tiroir d\'application</string>
-    <string name="hide_app">Masquer app</string>
+    <string name="hide_app">Masquer l\'appli</string>
     <string name="icon_shape_rounded_square">Carré arrondi</string>
     <string name="pixel_ui_pref_summary">Pack d\'icônes, flou, couleurs</string>
     <string name="app_drawer_pref_title">Tiroir des applications</string>
