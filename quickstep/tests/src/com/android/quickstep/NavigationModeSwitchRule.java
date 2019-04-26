@@ -71,7 +71,8 @@ public class NavigationModeSwitchRule implements TestRule {
 
     @Override
     public Statement apply(Statement base, Description description) {
-        if (TestHelpers.isInLauncherProcess() &&
+        // b/130558787; b/131419978
+        if (false && TestHelpers.isInLauncherProcess() &&
                 description.getAnnotation(NavigationModeSwitch.class) != null) {
             Mode mode = description.getAnnotation(NavigationModeSwitch.class).mode();
             return new Statement() {
@@ -92,12 +93,9 @@ public class NavigationModeSwitchRule implements TestRule {
                         if (mode == TWO_BUTTON || mode == ALL) {
                             evaluateWithTwoButtons();
                         }
-                        /*
-                        b/131419978
                         if (mode == THREE_BUTTON || mode == ALL) {
                             evaluateWithThreeButtons();
                         }
-                        */
                     } finally {
                         setActiveOverlay(prevOverlayPkg, originalMode);
                     }
