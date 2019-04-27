@@ -47,14 +47,21 @@ import org.json.JSONObject
 
 typealias GroupCreator<T> = (Context) -> T?
 
-abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: String) {
+abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsManager,
+                                              private val type: AppGroupsManager.CategorizationType) {
 
+    private val prefs = manager.prefs
     private val context = prefs.context
 
-    private var groupsDataJson by prefs.StringPref(key, "{}", prefs.withChangeCallback {
+    private var groupsDataJson by prefs.StringPref(type.prefsKey, "{}", prefs.withChangeCallback {
         onGroupsChanged(it)
     })
     private val groups = ArrayList<T>()
+
+    private val isEnabled get() = manager.categorizationType == type
+    private var _isEnabled = isEnabled
+
+    private val defaultGroups by lazy { getDefaultCreators().mapNotNull { it(context) } }
 
     init {
         loadGroups()
@@ -89,14 +96,22 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
                     used.add(creator)
                     creator(context)?.apply { loadCustomizations(context, group.asMap()) }
                 }
-        getDefaultGroups().asReversed().forEach { creator ->
+        getDefaultCreators().asReversed().forEach { creator ->
             if (creator !in used) {
                 creator(context)?.let { groups.add(0, it) }
             }
         }
     }
 
-    abstract fun getDefaultGroups(): List<GroupCreator<T>>
+    fun checkIsEnabled(changeCallback: LawnchairPreferencesChangeCallback) {
+        val enabled = manager.categorizationEnabled && isEnabled
+        if (_isEnabled != enabled) {
+            _isEnabled = enabled
+            onGroupsChanged(changeCallback)
+        }
+    }
+
+    abstract fun getDefaultCreators(): List<GroupCreator<T>>
 
     abstract fun getGroupCreator(type: Int): GroupCreator<T>
 
@@ -106,6 +121,9 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
     abstract fun onGroupsChanged(changeCallback: LawnchairPreferencesChangeCallback)
 
     fun getGroups(): List<T> {
+        if (!_isEnabled) {
+            return defaultGroups
+        }
         return groups
     }
 
@@ -118,7 +136,7 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
             val creator = getGroupCreator(it.type)
             used.add(creator)
         }
-        getDefaultGroups().asReversed().forEach { creator ->
+        getDefaultCreators().asReversed().forEach { creator ->
             if (creator !in used) {
                 creator(context)?.let { this.groups.add(0, it) }
             }
