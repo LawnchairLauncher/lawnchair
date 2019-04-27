@@ -118,12 +118,12 @@ public abstract class AbstractLauncherUiTest {
                 int apiLevel = (int) getInt.invoke(null, "ro.product.first_api_level", 0);
 
                 if (apiLevel >= Build.VERSION_CODES.P) {
-                    setActiveOverlay(NAV_BAR_MODE_GESTURAL_OVERLAY,
-                            LauncherInstrumentation.NavigationModel.ZERO_BUTTON);
-                }
-                if (apiLevel >= Build.VERSION_CODES.O && apiLevel < Build.VERSION_CODES.P) {
                     setActiveOverlay(NAV_BAR_MODE_2BUTTON_OVERLAY,
                             LauncherInstrumentation.NavigationModel.TWO_BUTTON);
+                }
+                if (apiLevel >= Build.VERSION_CODES.O && apiLevel < Build.VERSION_CODES.P) {
+                    setActiveOverlay(NAV_BAR_MODE_GESTURAL_OVERLAY,
+                            LauncherInstrumentation.NavigationModel.ZERO_BUTTON);
                 }
                 if (apiLevel < Build.VERSION_CODES.O) {
                     setActiveOverlay(NAV_BAR_MODE_3BUTTON_OVERLAY,
