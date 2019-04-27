@@ -14,7 +14,7 @@
     <string name="smartspace_preferences_in_settings_desc">Dato, tid, værleverandør</string>
     <string name="search">Søk</string>
     <string name="label_voice_search">Talesøk</string>
-    <string name="icon_pack">Ikon-pakke</string>
+    <string name="icon_pack">Ikonpakke</string>
     <string name="home_widget">Startskjermmodul</string>
     <string name="title_show_google_app">%1$s til venstre</string>
     <string name="msg_minus_one_on_left">Nyhetsstrøm til venstre for startskjerm</string>
@@ -203,7 +203,7 @@
     <!--Marker F-->
     <string name="default_city">Oslo, NO</string>
     <string name="pref_weather_api_key_title">API-nøkkel</string>
-    <string name="pref_weather_city_summary">Inkluder landskode for beste resultat</string>
+    <string name="pref_weather_city_summary">Inkluder landskode for best resultat</string>
     <string name="pref_weather_city_title">Poststed</string>
     <string name="pref_weather_units">Temperaturenhet</string>
     <string name="units_metric">Celsius</string>
@@ -319,7 +319,7 @@
     <string name="feed_theme_pref_title">Bakgrunnsfarge</string>
     <string name="recents_not_connected">Tjeneste ikke tilkoblet</string>
     <string name="advanced_settings">Flere %s-innstillinger</string>
-    <string name="adaptive_icon">Adaptivt ikon</string>
+    <string name="adaptive_icon">adaptivt ikon</string>
     <string name="drawer_tabs">Faner</string>
     <string name="add_new_tab">Legg til</string>
     <string name="rename_tab">Gi nytt navn</string>
