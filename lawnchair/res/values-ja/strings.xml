@@ -13,7 +13,7 @@
     <string name="label_voice_search">音声検索</string>
     <string name="icon_pack">アイコンパック</string>
     <string name="home_widget">ホームウィジェット</string>
-    <string name="title_show_google_app">左側に %1$s つの項目</string>
+    <string name="title_show_google_app">%1$s をホームの左に表示</string>
     <string name="msg_minus_one_on_left">デスクトップの左にフィードを表示</string>
     <string name="about">アプリについて</string>
     <string name="google_app">Google アプリ</string>
@@ -53,7 +53,7 @@
     <string name="backup_error_blank_location">バックアップ場所を選択</string>
     <string name="backup_error_blank_contents">バックアップを追加</string>
     <string name="backup_creating">バックアップを作成中</string>
-    <string name="no_recent_backups">表示するものがありません</string>
+    <string name="no_recent_backups">バックアップがありません</string>
     <string name="backup_loading">読み込んでいます…</string>
     <string name="backup_invalid">バックアップファイルが不正です</string>
     <string name="backup_share">共有</string>
@@ -66,7 +66,7 @@
     <string name="failed">何らかのエラーが発生しました</string>
     <string name="backup_share_text">Lawnchairのバックアップ</string>
     <string name="full_width_widgets_pref_summary">ウィジェットを画面の端まで広げられるようにします</string>
-    <string name="full_width_width_widgets_pref_title">幅の広いウィジェット</string>
+    <string name="full_width_width_widgets_pref_title">全画面ウィジェット</string>
     <string name="hide_apps">アプリを隠す</string>
     <string name="hide_apps_sum">アプリドロワーからアイコンを削除</string>
     <string name="grid_size">グリッドの大きさ</string>
@@ -100,7 +100,7 @@
     <string name="title_all_apps_google_search">グローバル検索</string>
     <string name="summary_all_apps_google_search">Webの検索結果とアプリを表示</string>
     <string name="num_hotseat_icons_pref_title">アイコンの数</string>
-    <string name="icon_scale_pref_title">アイコンサイズ</string>
+    <string name="icon_scale_pref_title">アイコンの大きさ</string>
     <string name="add_settings_shortcut_title">設定アイコンをホーム画面に追加</string>
     <string name="icon_pack_default">システムアイコン</string>
     <string name="loading">読み込んでいます…</string>
@@ -196,7 +196,7 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="all_apps_label">全てのアプリ</string>
     <string name="all_apps_label_pref_title">\"すべてのアプリ\" のラベルを表示</string>
     <string name="separate_work_apps_pref_title">仕事用アプリのためのタブを表示</string>
-    <string name="title_search_hidden_apps">非表示のアプリを検索</string>
+    <string name="title_search_hidden_apps">非表示のアプリも検索する</string>
     <string name="summary_search_hidden_apps">非表示のアプリを結果に含める</string>
     <!--Marker F-->
     <string name="default_city">Tokyo, JP</string>
@@ -309,7 +309,7 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="title_app_suggestions_in_search">アプリの候補</string>
     <string name="summary_app_suggestions">最近使ったアプリ</string>
     <string name="summary_app_suggestions_lawnstep">最近のアプリの画面とアプリの引き出し</string>
-    <string name="app_actions_pref_title">動作</string>
+    <string name="app_actions_pref_title">アクション</string>
     <string name="app_actions_pref_title_in_search">アクションの候補</string>
     <string name="app_actions_pref_desc">頻繁に開かれているショートカット</string>
     <string name="change_default_home">ホーム画面に設定</string>
@@ -330,10 +330,10 @@ Lawnchairプロジェクトの創始者です。</string>
     <plurals name="hidden_apps_count">
         <item quantity="other">%1$d 個の非表示のアプリ</item>
     </plurals>
-    <string name="selected_count">%1$d個選択済み</string>
+    <string name="selected_count">%1$d個選択しています</string>
     <string name="tab_manage_apps">アプリを管理</string>
     <string name="tab_bottom_sheet_save">保存</string>
-    <string name="tab_hide_from_main">アプリ一覧から隠す</string>
+    <string name="tab_hide_from_main">\"アプリ\"タブに表示しない</string>
     <string name="tab_color">タブの色</string>
     <string name="delete">削除</string>
     <string name="none">無し</string>
