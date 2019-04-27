@@ -21,10 +21,11 @@ import ch.deletescape.lawnchair.LawnchairPreferences
 
 class AppGroupsManager(val prefs: LawnchairPreferences) {
 
-    val categorizationEnabled by prefs.BooleanPref("pref_appsCategorizationEnabled", true, ::onPrefsChanged)
-    val categorizationType by prefs.EnumPref("pref_appsCategorizationType", CategorizationType.Tabs, ::onPrefsChanged)
+    var categorizationEnabled by prefs.BooleanPref("pref_appsCategorizationEnabled", true, ::onPrefsChanged)
+    var categorizationType by prefs.EnumPref("pref_appsCategorizationType", CategorizationType.Tabs, ::onPrefsChanged)
 
     val drawerTabs by lazy { DrawerTabs(this) }
+    val drawerFolders by lazy { DrawerFolders(this) }
 
     private fun onPrefsChanged() {
         prefs.getOnChangeCallback()?.let {
@@ -32,8 +33,20 @@ class AppGroupsManager(val prefs: LawnchairPreferences) {
         }
     }
 
+    fun getEnabledType(): CategorizationType? {
+        return CategorizationType.values().firstOrNull { getModel(it).isEnabled }
+    }
+
+    private fun getModel(type: CategorizationType): AppGroups<*> {
+        return when (type) {
+            CategorizationType.Tabs -> drawerTabs
+            CategorizationType.Folders -> drawerFolders
+        }
+    }
+
     enum class CategorizationType(val prefsKey: String) {
 
-        Tabs("pref_drawerTabs")
+        Tabs("pref_drawerTabs"),
+        Folders("pref_drawerFolders")
     }
 }

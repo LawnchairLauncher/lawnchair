@@ -17,8 +17,8 @@
 
 package ch.deletescape.lawnchair.preferences
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Parcelable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -27,13 +27,13 @@ import android.widget.TextView
 import ch.deletescape.lawnchair.applyColor
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.groups.AppGroups
-import ch.deletescape.lawnchair.groups.DrawerTabs
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheet
 import ch.deletescape.lawnchair.views.BaseBottomSheet
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
 
+@SuppressLint("ViewConstructor")
 class DrawerTabEditBottomSheet(context: Context, config: AppGroups.Group.CustomizationMap,
                                private val callback: (Boolean) -> Unit) : FrameLayout(context), View.OnClickListener {
 
@@ -85,8 +85,8 @@ class DrawerTabEditBottomSheet(context: Context, config: AppGroups.Group.Customi
             }, animate)
         }
 
-        fun newTab(context: Context, callback: (AppGroups.Group.CustomizationMap) -> Unit) {
-            val config = DrawerTabs.CustomTab(context).customizations
+        fun newGroup(context: Context, emptyGroup: AppGroups.Group, callback: (AppGroups.Group.CustomizationMap) -> Unit) {
+            val config = emptyGroup.customizations
             show(context, config) {
                 callback(config)
             }

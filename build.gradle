@@ -268,6 +268,7 @@ dependencies {
     implementation 'eu.chainfire:libsuperuser:1.0.0.201704021214'
     implementation 'eu.chainfire:librootjava:1.0.0'
     implementation 'com.luckycatlabs:SunriseSunsetCalculator:1.2'
+    implementation 'me.mvdw.recyclerviewmergeadapter:recyclerviewmergeadapter:2.1.0'
 
     quickstepImplementation fileTree(dir: "quickstep/libs", include: 'sysui_shared.jar')
     lawnchairImplementation files('lawnchair/libs/sesame-lib.aar')

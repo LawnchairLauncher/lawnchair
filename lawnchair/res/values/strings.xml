@@ -557,4 +557,16 @@
     <string name="about_bio_paphonb">A 18-year-old student, Android Developer and one of the top developers at Lawnchair Launcher.</string>
 
     <string name="dock_scale">Dock scale</string>
+
+    <string name="pref_appcategorization_enable_title">Categorize Apps</string>
+    <string name="pref_appcategorization_enable_summary">Fix my messy drawer.</string>
+    <string name="pref_appcategorization_style_text">Style</string>
+    <string name="pref_app_groups_edit_tip">Tap to edit, drag to reorder.</string>
+    <string name="pref_app_groups_create">Create</string>
+    <string name="pref_appcategorization_folders_title">Folder</string>
+    <string name="pref_appcategorization_folders_summary">Tap to open pop-up.</string>
+    <string name="pref_appcategorization_tabs_title">Tabs</string>
+    <string name="pref_appcategorization_tabs_summary">Swipe between groups.</string>
+    <string name="default_folder_name">New folder</string>
+    <string name="drawer_folders">Folders</string>
 </resources>

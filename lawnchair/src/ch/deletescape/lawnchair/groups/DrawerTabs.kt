@@ -54,7 +54,6 @@ class DrawerTabs(manager: AppGroupsManager) : AppGroups<DrawerTabs.Tab>(manager,
 
     private fun createAllAppsTab(context: Context) = AllAppsTab(context)
 
-    @Suppress("UNUSED_PARAMETER")
     private fun createCustomTab(context: Context) = CustomTab(context)
 
     override fun onGroupsChanged(changeCallback: LawnchairPreferencesChangeCallback) {
@@ -68,8 +67,6 @@ class DrawerTabs(manager: AppGroupsManager) : AppGroups<DrawerTabs.Tab>(manager,
         init {
             addCustomization(colorResolver)
         }
-
-        open fun getSummary(context: Context): String? = null
     }
 
     class CustomTab(context: Context) : Tab(context, TYPE_CUSTOM, R.string.default_tab_name) {

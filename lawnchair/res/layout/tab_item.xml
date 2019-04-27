@@ -4,38 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
     android:background="?selectableItemBackground"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
     android:orientation="horizontal">
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_gravity="center_vertical"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textAlignment="viewStart"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/summary"
-        app:layout_constraintEnd_toStartOf="@+id/delete"
-        app:layout_constraintStart_toEndOf="@+id/drag_handle"
-        app:layout_constraintTop_toTopOf="parent"
-        app:customFontType="preferenceTitle"
-        tools:text="Tab 1"/>
 
     <ImageView
         android:id="@+id/drag_handle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:background="@android:color/transparent"
         android:clickable="false"
         android:duplicateParentState="true"
@@ -43,30 +23,9 @@
         android:gravity="center_vertical|end"
         android:src="@drawable/deep_shortcuts_drag_handle"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-    <TextView
-        android:id="@+id/summary"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textAlignment="viewStart"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/title"
-        app:layout_constraintStart_toStartOf="@+id/title"
-        app:layout_constraintTop_toBottomOf="@+id/title"
-        tools:text="0 apps"
-        tools:visibility="visible"/>
-    <ImageView
-        android:id="@+id/edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:tint="?android:attr/colorAccent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_edit_no_shadow"/>
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <ImageView
         android:id="@+id/delete"
         android:layout_width="wrap_content"
@@ -75,7 +34,36 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:tint="?android:attr/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/edit"
+        app:layout_constraintEnd_toStartOf="@+id/drag_handle"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_uninstall_no_shadow"/>
+    <TextView
+        android:id="@+id/summary"
+        android:layout_width="0dp"
+        android:layout_height="17dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="24dp"
+        android:textAlignment="viewStart"
+        app:layout_constraintBaseline_toBaselineOf="@+id/title"
+        app:layout_constraintEnd_toStartOf="@+id/delete"
+        app:layout_constraintStart_toEndOf="@+id/title"
+        tools:text="0 apps"
+        tools:visibility="visible"/>
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="72dp"
+        android:layout_gravity="center_vertical"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAlignment="viewStart"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="18sp"
+        app:customFontType="preferenceTitle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Tab 1"/>
 </android.support.constraint.ConstraintLayout>

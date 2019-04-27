@@ -58,8 +58,7 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
     })
     private val groups = ArrayList<T>()
 
-    private val isEnabled get() = manager.categorizationType == type
-    private var _isEnabled = isEnabled
+    var isEnabled = manager.categorizationType == type
 
     private val defaultGroups by lazy { getDefaultCreators().mapNotNull { it(context) } }
 
@@ -104,9 +103,9 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
     }
 
     fun checkIsEnabled(changeCallback: LawnchairPreferencesChangeCallback) {
-        val enabled = manager.categorizationEnabled && isEnabled
-        if (_isEnabled != enabled) {
-            _isEnabled = enabled
+        val enabled = manager.categorizationEnabled && manager.categorizationType == type
+        if (isEnabled != enabled) {
+            isEnabled = enabled
             onGroupsChanged(changeCallback)
         }
     }
@@ -121,7 +120,7 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
     abstract fun onGroupsChanged(changeCallback: LawnchairPreferencesChangeCallback)
 
     fun getGroups(): List<T> {
-        if (!_isEnabled) {
+        if (!isEnabled) {
             return defaultGroups
         }
         return groups
@@ -183,6 +182,10 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
 
         fun getTitle(): String {
             return title.value ?: defaultTitle
+        }
+
+        open fun getSummary(context: Context): String? {
+            return null
         }
 
         fun addCustomization(customization: Customization<*, *>) {

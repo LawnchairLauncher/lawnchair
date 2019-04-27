@@ -457,10 +457,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     inline fun <reified T : Enum<T>> EnumPref(key: String, defaultValue: T,
                                               noinline onChange: () -> Unit = doNothing): PrefDelegate<T> {
-        val toEnum = { value: Int ->
+        return IntBasedPref(key, defaultValue, onChange, { value ->
             enumValues<T>().firstOrNull { item -> item.ordinal == value } ?: defaultValue
-        }
-        return IntBasedPref(key, defaultValue, onChange, toEnum, { it.ordinal }, { })
+        }, { it.ordinal }, { })
     }
 
     open inner class IntBasedPref<T : Any>(key: String, defaultValue: T, onChange: () -> Unit = doNothing,
