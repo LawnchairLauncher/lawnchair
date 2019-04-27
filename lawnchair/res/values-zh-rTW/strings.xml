@@ -31,7 +31,7 @@
     <string name="hide_app_sum">從應用程式抽屜隱藏</string>
     <string name="hide_app">隱藏應用程式</string>
     <string name="icon_shape_rounded_square">圓角方形</string>
-    <string name="pixel_ui_pref_summary">圖示包、模糊、顏色</string>
+    <string name="pixel_ui_pref_summary">圖示套件、模糊效果、主題色彩</string>
     <string name="app_drawer_pref_title">應用程式抽屜</string>
     <string name="app_drawer_pref_summary">不透明度、建議、隱藏應用程式</string>
     <string name="search_pref_summary">色彩、搜尋引擎、圖示</string>
@@ -143,7 +143,7 @@
     <string name="about_role_lead">領導開發人員</string>
     <string name="about_role_devops">DevOps</string>
     <string name="about_role_dev">開發人員</string>
-    <string name="about_role_dev_mod">開發人員/仲裁者</string>
+    <string name="about_role_dev_mod">開發人員 / 仲裁者</string>
     <string name="about_role_designer">設計師</string>
     <string name="about_role_ui_ux_designer">UI/UX 設計師</string>
     <string name="about_role_special_snowflake">社群媒體 / 公關及 OEM 相關人員</string>
@@ -151,8 +151,8 @@
     <string name="about_role_family_member">家族成員</string>
     <string name="about_role_magisk_maintainer">Magisk 模組維護人員</string>
     <string name="about_bio_deletescape">Android 開發人員與愛好者，喜歡迷因（玩得有點多）。Lawnchair 專案的創始人。</string>
-    <string name="about_bio_divadsn">19 years old, turns caffeine and pizza into code, provides hosting and 24/7 development support if something goes wrong. Contributes to open-source projects during his free time. Also previously known as Codebucket. .</string>
-    <string name="about_bio_recoded">溫和的編碼師和圖形設計師。</string>
+    <string name="about_bio_divadsn">19 歲，將咖啡因和披薩變成了程式碼，提供寄管服務，且在發生問題之時提供 24/7 的開發協助。在他的空閒時間貢獻開源專案。此前也稱為 Codebucket。</string>
+    <string name="about_bio_recoded">溫和的編碼師和平面設計師。</string>
     <string name="about_bio_josh">獨立的的平面設計師</string>
     <string name="about_bio_chris">擁有創造性思的影響者、內容創造者&amp; 社交媒體和公關經理。</string>
     <string name="about_bio_msfjarvis">HalogenOS 的核心開發人員和 substratum 的應用程式開發人員。</string>
@@ -168,9 +168,9 @@
     <string name="action_global_search">啟動通用搜尋</string>
     <string name="action_app_search">啟動應用程式搜尋</string>
     <string name="action_overlay">顯示 Google Feed</string>
-    <string name="action_assistant">顯示 Google Feed</string>
-    <string name="action_open_notifications">啟動語音助理</string>
-    <string name="action_close_notifications">顯示通知</string>
+    <string name="action_assistant">啟動助理</string>
+    <string name="action_open_notifications">開啟通知</string>
+    <string name="action_close_notifications">關閉通知</string>
     <string name="action_sleep_timeout">關閉螢幕（等待螢幕關閉）</string>
     <string name="action_open_app">開啟應用程式</string>
     <string name="action_open_app_with_target">開啟 %s</string>
@@ -207,9 +207,9 @@
     <string name="pref_weather_city_summary">為求最佳查詢結果，請輸入國家地區代碼</string>
     <string name="pref_weather_city_title">城市</string>
     <string name="pref_weather_units">溫度單位</string>
-    <string name="units_metric">攝氏溫標（Celsius）</string>
-    <string name="units_imperial">華氏溫標（Fahrenheit）</string>
-    <string name="units_kelvin">絕對溫邊（Kelvin）</string>
+    <string name="units_metric">攝氏度（Celsius）</string>
+    <string name="units_imperial">華氏度（Fahrenheit）</string>
+    <string name="units_kelvin">絕對溫標（Kelvin）</string>
     <string name="all_icons">所有圖示</string>
     <string name="error_no_browser">找不到開啟 URL 的活動</string>
     <string name="no_icon_found">找不到圖示</string>
