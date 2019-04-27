@@ -308,7 +308,10 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         SCALE_PROPERTY.set(recentsView, targetRvScale);
         recentsView.setTranslationY(0);
         ClipAnimationHelper clipHelper = new ClipAnimationHelper(launcher);
+        float tmpCurveScale = v.getCurveScale();
+        v.setCurveScale(1f);
         clipHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(), null);
+        v.setCurveScale(tmpCurveScale);
         SCALE_PROPERTY.set(recentsView, prevRvScale);
         recentsView.setTranslationY(prevRvTransY);
 

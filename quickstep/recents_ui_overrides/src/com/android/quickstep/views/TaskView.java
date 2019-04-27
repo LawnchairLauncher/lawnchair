@@ -492,7 +492,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         return 1 - curveInterpolation * EDGE_SCALE_DOWN_FACTOR;
     }
 
-    private void setCurveScale(float curveScale) {
+    public void setCurveScale(float curveScale) {
         mCurveScale = curveScale;
         onScaleChanged();
     }
