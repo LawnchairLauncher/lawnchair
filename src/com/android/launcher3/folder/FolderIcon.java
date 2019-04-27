@@ -50,7 +50,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.Utilities;
@@ -226,15 +226,15 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         return !mFolder.isDestroyed() && willAcceptItem(dragInfo);
     }
 
-    public void addItem(ShortcutInfo item) {
+    public void addItem(WorkspaceItemInfo item) {
         addItem(item, true);
     }
 
-    public void addItem(ShortcutInfo item, boolean animate) {
+    public void addItem(WorkspaceItemInfo item, boolean animate) {
         mInfo.add(item, animate);
     }
 
-    public void removeItem(ShortcutInfo item, boolean animate) {
+    public void removeItem(WorkspaceItemInfo item, boolean animate) {
         mInfo.remove(item, animate);
     }
 
@@ -247,7 +247,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mOpenAlarm.setOnAlarmListener(mOnOpenListener);
         if (SPRING_LOADING_ENABLED &&
                 ((dragInfo instanceof AppInfo)
-                        || (dragInfo instanceof ShortcutInfo)
+                        || (dragInfo instanceof WorkspaceItemInfo)
                         || (dragInfo instanceof PendingAddShortcutInfo))) {
             mOpenAlarm.setAlarm(ON_OPEN_DELAY);
         }
@@ -264,8 +264,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         return mPreviewItemManager.prepareCreateAnimation(destView);
     }
 
-    public void performCreateAnimation(final ShortcutInfo destInfo, final View destView,
-            final ShortcutInfo srcInfo, final DragView srcView, Rect dstRect,
+    public void performCreateAnimation(final WorkspaceItemInfo destInfo, final View destView,
+            final WorkspaceItemInfo srcInfo, final DragView srcView, Rect dstRect,
             float scaleRelativeToDragLayer) {
         prepareCreateAnimation(destView);
         addItem(destInfo);
@@ -290,7 +290,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mOpenAlarm.cancelAlarm();
     }
 
-    private void onDrop(final ShortcutInfo item, DragView animateView, Rect finalRect,
+    private void onDrop(final WorkspaceItemInfo item, DragView animateView, Rect finalRect,
             float scaleRelativeToDragLayer, int index,
             boolean itemReturnedOnFailedDrop) {
         item.cellX = -1;
@@ -382,15 +382,15 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public void onDrop(DragObject d, boolean itemReturnedOnFailedDrop) {
-        ShortcutInfo item;
+        WorkspaceItemInfo item;
         if (d.dragInfo instanceof AppInfo) {
             // Came from all apps -- make a copy
-            item = ((AppInfo) d.dragInfo).makeShortcut();
+            item = ((AppInfo) d.dragInfo).makeWorkspaceItem();
         } else if (d.dragSource instanceof BaseItemDragListener){
             // Came from a different window -- make a copy
-            item = new ShortcutInfo((ShortcutInfo) d.dragInfo);
+            item = new WorkspaceItemInfo((WorkspaceItemInfo) d.dragInfo);
         } else {
-            item = (ShortcutInfo) d.dragInfo;
+            item = (WorkspaceItemInfo) d.dragInfo;
         }
         mFolder.notifyDrop();
         onDrop(item, d.dragView, null, 1.0f, mInfo.contents.size(),
@@ -581,7 +581,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     @Override
-    public void onAdd(ShortcutInfo item, int rank) {
+    public void onAdd(WorkspaceItemInfo item, int rank) {
         boolean wasDotted = mDotInfo.hasDot();
         mDotInfo.addDotInfo(mLauncher.getDotInfoForItem(item));
         boolean isDotted = mDotInfo.hasDot();
@@ -591,7 +591,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     @Override
-    public void onRemove(ShortcutInfo item) {
+    public void onRemove(WorkspaceItemInfo item) {
         boolean wasDotted = mDotInfo.hasDot();
         mDotInfo.subtractDotInfo(mLauncher.getDotInfoForItem(item));
         boolean isDotted = mDotInfo.hasDot();

@@ -163,10 +163,12 @@ public abstract class AbstractLauncherUiTest {
     public void setUp() throws Exception {
         mTargetContext = InstrumentationRegistry.getTargetContext();
         mTargetPackage = mTargetContext.getPackageName();
+        // Unlock the phone
+        mDevice.executeShellCommand("input keyevent 82");
     }
 
     @After
-    public void tearDown() {
+    public void verifyLauncherState() {
         try {
             // Limits UI tests affecting tests running after them.
             waitForModelLoaded();
@@ -232,12 +234,8 @@ public abstract class AbstractLauncherUiTest {
 
     protected void resetLoaderState() {
         try {
-            mMainThreadExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    LauncherAppState.getInstance(mTargetContext).getModel().forceReload();
-                }
-            });
+            mMainThreadExecutor.execute(
+                    () -> LauncherAppState.getInstance(mTargetContext).getModel().forceReload());
         } catch (Throwable t) {
             throw new IllegalArgumentException(t);
         }
@@ -278,7 +276,7 @@ public abstract class AbstractLauncherUiTest {
     // the results of that gesture because the wait can hide flakeness.
     protected void waitForState(String message, LauncherState state) {
         waitForLauncherCondition(message,
-                launcher -> launcher.getStateManager().getState() == state);
+                launcher -> launcher.getStateManager().getCurrentStableState() == state);
     }
 
     protected void waitForResumed(String message) {
@@ -297,6 +295,19 @@ public abstract class AbstractLauncherUiTest {
             String message, Function<Launcher, Boolean> condition, long timeout) {
         if (!TestHelpers.isInLauncherProcess()) return;
         Wait.atMost(message, () -> getFromLauncher(condition), timeout);
+    }
+
+    // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide
+    // flakiness.
+    protected void waitForLauncherCondition(
+            String message,
+            Runnable testThreadAction, Function<Launcher, Boolean> condition,
+            long timeout) {
+        if (!TestHelpers.isInLauncherProcess()) return;
+        Wait.atMost(message, () -> {
+            testThreadAction.run();
+            return getFromLauncher(condition);
+        }, timeout);
     }
 
     protected LauncherActivityInfo getSettingsApp() {
@@ -346,7 +357,7 @@ public abstract class AbstractLauncherUiTest {
                 mDevice.wait(Until.hasObject(By.pkg(packageName).depth(0)), LONG_WAIT_TIME_MS));
     }
 
-    protected String resolveSystemApp(String category) {
+    protected static String resolveSystemApp(String category) {
         return getInstrumentation().getContext().getPackageManager().resolveActivity(
                 new Intent(Intent.ACTION_MAIN).addCategory(category),
                 PackageManager.MATCH_SYSTEM_ONLY).

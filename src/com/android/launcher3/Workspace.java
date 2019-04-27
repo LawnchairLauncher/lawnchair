@@ -956,7 +956,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     private boolean isScrollingOverlay() {
         return mLauncherOverlay != null &&
-                ((mIsRtl && getUnboundedScrollX() > mMaxScrollX) || (!mIsRtl && getUnboundedScrollX() < 0));
+                ((mIsRtl && getUnboundedScrollX() > mMaxScrollX)
+                        || (!mIsRtl && getUnboundedScrollX() < mMinScrollX));
     }
 
     @Override
@@ -1609,7 +1610,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             return false;
         }
 
-        boolean aboveShortcut = (dropOverView.getTag() instanceof ShortcutInfo);
+        boolean aboveShortcut = (dropOverView.getTag() instanceof WorkspaceItemInfo);
         boolean willBecomeShortcut =
                 (info.itemType == ITEM_TYPE_APPLICATION ||
                         info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT ||
@@ -1658,12 +1659,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mCreateUserFolderOnDrop = false;
         final int screenId = getIdForScreen(target);
 
-        boolean aboveShortcut = (v.getTag() instanceof ShortcutInfo);
-        boolean willBecomeShortcut = (newView.getTag() instanceof ShortcutInfo);
+        boolean aboveShortcut = (v.getTag() instanceof WorkspaceItemInfo);
+        boolean willBecomeShortcut = (newView.getTag() instanceof WorkspaceItemInfo);
 
         if (aboveShortcut && willBecomeShortcut) {
-            ShortcutInfo sourceInfo = (ShortcutInfo) newView.getTag();
-            ShortcutInfo destInfo = (ShortcutInfo) v.getTag();
+            WorkspaceItemInfo sourceInfo = (WorkspaceItemInfo) newView.getTag();
+            WorkspaceItemInfo destInfo = (WorkspaceItemInfo) v.getTag();
             // if the drag started here, we need to remove it from the workspace
             if (!external) {
                 getParentCellLayoutForView(mDragInfo.cell).removeView(mDragInfo.cell);
@@ -2418,8 +2419,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      */
     private void onDropExternal(final int[] touchXY, final CellLayout cellLayout, DragObject d) {
         if (d.dragInfo instanceof PendingAddShortcutInfo) {
-            ShortcutInfo si = ((PendingAddShortcutInfo) d.dragInfo)
-                    .activityInfo.createShortcutInfo();
+            WorkspaceItemInfo si = ((PendingAddShortcutInfo) d.dragInfo)
+                    .activityInfo.createWorkspaceItemInfo();
             if (si != null) {
                 d.dragInfo = si;
             }
@@ -2524,10 +2525,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                 if (info.container == NO_ID && info instanceof AppInfo) {
                     // Came from all apps -- make a copy
-                    info = ((AppInfo) info).makeShortcut();
+                    info = ((AppInfo) info).makeWorkspaceItem();
                     d.dragInfo = info;
                 }
-                view = mLauncher.createShortcut(cellLayout, (ShortcutInfo) info);
+                view = mLauncher.createShortcut(cellLayout, (WorkspaceItemInfo) info);
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                 view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher, cellLayout,
@@ -2916,7 +2917,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         final Workspace.ItemOperator packageAndUserInFolder = (info, view) -> {
             if (info instanceof FolderInfo) {
                 FolderInfo folderInfo = (FolderInfo) info;
-                for (ShortcutInfo shortcutInfo : folderInfo.contents) {
+                for (WorkspaceItemInfo shortcutInfo : folderInfo.contents) {
                     if (packageAndUser.evaluate(shortcutInfo, view)) {
                         return true;
                     }
@@ -3045,7 +3046,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     if (parent != null) {
                         FolderInfo folderInfo = (FolderInfo) parent.getTag();
                         folderInfo.prepareAutoUpdate();
-                        folderInfo.remove((ShortcutInfo) itemToRemove, false);
+                        folderInfo.remove((WorkspaceItemInfo) itemToRemove, false);
                     }
                 }
             }
@@ -3112,13 +3113,13 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         return false;
     }
 
-    void updateShortcuts(ArrayList<ShortcutInfo> shortcuts) {
+    void updateShortcuts(ArrayList<WorkspaceItemInfo> shortcuts) {
         int total  = shortcuts.size();
-        final HashSet<ShortcutInfo> updates = new HashSet<>(total);
+        final HashSet<WorkspaceItemInfo> updates = new HashSet<>(total);
         final IntSet folderIds = new IntSet();
 
         for (int i = 0; i < total; i++) {
-            ShortcutInfo s = shortcuts.get(i);
+            WorkspaceItemInfo s = shortcuts.get(i);
             updates.add(s);
             folderIds.add(s.container);
         }
@@ -3126,14 +3127,14 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mapOverItems(MAP_RECURSE, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View v) {
-                if (info instanceof ShortcutInfo && v instanceof BubbleTextView &&
+                if (info instanceof WorkspaceItemInfo && v instanceof BubbleTextView &&
                         updates.contains(info)) {
-                    ShortcutInfo si = (ShortcutInfo) info;
+                    WorkspaceItemInfo si = (WorkspaceItemInfo) info;
                     BubbleTextView shortcut = (BubbleTextView) v;
                     Drawable oldIcon = shortcut.getIcon();
                     boolean oldPromiseState = (oldIcon instanceof PreloadIconDrawable)
                             && ((PreloadIconDrawable) oldIcon).hasNotCompleted();
-                    shortcut.applyFromShortcutInfo(si, si.isPromise() != oldPromiseState);
+                    shortcut.applyFromWorkspaceItem(si, si.isPromise() != oldPromiseState);
                 }
                 // process all the shortcuts
                 return false;
@@ -3159,7 +3160,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mapOverItems(MAP_RECURSE, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View v) {
-                if (info instanceof ShortcutInfo && v instanceof BubbleTextView) {
+                if (info instanceof WorkspaceItemInfo && v instanceof BubbleTextView) {
                     if (!packageUserKey.updateFromItemInfo(info)
                             || updatedDots.test(packageUserKey)) {
                         ((BubbleTextView) v).applyDotState(info, true /* animate */);
@@ -3178,7 +3179,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 if (info instanceof FolderInfo && folderIds.contains(info.id)
                         && v instanceof FolderIcon) {
                     FolderDotInfo folderDotInfo = new FolderDotInfo();
-                    for (ShortcutInfo si : ((FolderInfo) info).contents) {
+                    for (WorkspaceItemInfo si : ((FolderInfo) info).contents) {
                         folderDotInfo.addDotInfo(mLauncher.getDotInfoForItem(si));
                     }
                     ((FolderIcon) v).setDotInfo(folderDotInfo);
@@ -3201,7 +3202,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mapOverItems(MAP_RECURSE, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View v) {
-                if (info instanceof ShortcutInfo && v instanceof BubbleTextView
+                if (info instanceof WorkspaceItemInfo && v instanceof BubbleTextView
                         && updates.contains(info)) {
                     ((BubbleTextView) v).applyPromiseState(false /* promiseStateChanged */);
                 } else if (v instanceof PendingAppWidgetHostView

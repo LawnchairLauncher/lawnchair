@@ -8,7 +8,7 @@ import static org.junit.Assert.assertNull;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -41,7 +41,7 @@ public class CacheDataUpdatedTaskTest extends BaseModelUpdateTaskTestCase {
     }
 
     @Test
-    @Ignore("This test fails with resource errors")
+    @Ignore("This test fails with resource errors") // b/131115553
     public void testCacheUpdate_update_apps() throws Exception {
         // Clear all icons from apps list so that its easy to check what was updated
         for (AppInfo info : allAppsList.data) {
@@ -66,7 +66,7 @@ public class CacheDataUpdatedTaskTest extends BaseModelUpdateTaskTestCase {
     }
 
     @Test
-    @Ignore("This test fails with resource errors")
+    @Ignore("This test fails with resource errors") // b/131115553
     public void testSessionUpdate_ignores_normal_apps() throws Exception {
         executeTaskForTest(newTask(CacheDataUpdatedTask.OP_SESSION_UPDATE, "app1"));
 
@@ -75,7 +75,7 @@ public class CacheDataUpdatedTaskTest extends BaseModelUpdateTaskTestCase {
     }
 
     @Test
-    @Ignore("This test fails with resource errors")
+    @Ignore("This test fails with resource errors") // b/131115553
     public void testSessionUpdate_updates_pending_apps() throws Exception {
         executeTaskForTest(newTask(CacheDataUpdatedTask.OP_SESSION_UPDATE, "app3"));
 
@@ -89,10 +89,10 @@ public class CacheDataUpdatedTaskTest extends BaseModelUpdateTaskTestCase {
         for (ItemInfo info : bgDataModel.itemsIdMap) {
             if (updates.contains(info.id)) {
                 assertEquals(NEW_LABEL_PREFIX + info.id, info.title);
-                assertNotNull(((ShortcutInfo) info).iconBitmap);
+                assertNotNull(((WorkspaceItemInfo) info).iconBitmap);
             } else {
                 assertNotSame(NEW_LABEL_PREFIX + info.id, info.title);
-                assertNull(((ShortcutInfo) info).iconBitmap);
+                assertNull(((WorkspaceItemInfo) info).iconBitmap);
             }
         }
     }

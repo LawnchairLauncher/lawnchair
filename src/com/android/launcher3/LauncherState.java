@@ -18,6 +18,7 @@ package com.android.launcher3;
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
+
 import static com.android.launcher3.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.NORMAL_STATE_ORDINAL;
@@ -30,7 +31,6 @@ import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 
 import android.view.animation.Interpolator;
 
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.uioverrides.states.AllAppsState;
@@ -58,6 +58,7 @@ public class LauncherState {
     public static final int ALL_APPS_HEADER_EXTRA = 1 << 3; // e.g. app predictions
     public static final int ALL_APPS_CONTENT = 1 << 4;
     public static final int VERTICAL_SWIPE_INDICATOR = 1 << 5;
+    public static final int RECENTS_CLEAR_ALL_BUTTON = 1 << 6;
 
     protected static final int FLAG_MULTI_PAGE = 1 << 0;
     protected static final int FLAG_DISABLE_ACCESSIBILITY = 1 << 1;

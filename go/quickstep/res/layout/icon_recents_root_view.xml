@@ -19,31 +19,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <LinearLayout
-        android:id="@+id/recent_task_content_view"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recent_task_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recent_task_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:scrollbars="none"/>
-        <Button
-            android:id="@+id/clear_all_button"
-            android:layout_width="@dimen/clear_all_button_width"
-            android:layout_height="@dimen/clear_all_button_height"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginVertical="@dimen/task_item_half_vert_margin"
-            android:background="@drawable/clear_all_button"
-            android:gravity="center"
-            android:text="@string/recents_clear_all"
-            android:textAllCaps="false"
-            android:textColor="@color/clear_all_button_text"
-            android:textSize="14sp"/>
-    </LinearLayout>
+        android:scrollbars="none"/>
     <TextView
         android:id="@+id/recent_task_empty_view"
         android:layout_width="match_parent"

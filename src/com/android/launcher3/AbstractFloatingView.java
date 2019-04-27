@@ -58,6 +58,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             TYPE_ON_BOARD_POPUP,
             TYPE_DISCOVERY_BOUNCE,
             TYPE_SNACKBAR,
+            TYPE_LISTENER,
 
             TYPE_TASK_MENU,
             TYPE_OPTIONS_POPUP
@@ -72,15 +73,16 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_ON_BOARD_POPUP = 1 << 5;
     public static final int TYPE_DISCOVERY_BOUNCE = 1 << 6;
     public static final int TYPE_SNACKBAR = 1 << 7;
+    public static final int TYPE_LISTENER = 1 << 8;
 
     // Popups related to quickstep UI
-    public static final int TYPE_TASK_MENU = 1 << 8;
-    public static final int TYPE_OPTIONS_POPUP = 1 << 9;
+    public static final int TYPE_TASK_MENU = 1 << 9;
+    public static final int TYPE_OPTIONS_POPUP = 1 << 10;
 
     public static final int TYPE_ALL = TYPE_FOLDER | TYPE_ACTION_POPUP
             | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_WIDGETS_FULL_SHEET
             | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU
-            | TYPE_OPTIONS_POPUP | TYPE_SNACKBAR;
+            | TYPE_OPTIONS_POPUP | TYPE_SNACKBAR | TYPE_LISTENER;
 
     // Type of popups which should be kept open during launcher rebind
     public static final int TYPE_REBIND_SAFE = TYPE_WIDGETS_FULL_SHEET
@@ -90,7 +92,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_HIDE_BACK_BUTTON = TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE
             | TYPE_SNACKBAR;
 
-    public static final int TYPE_ACCESSIBLE = TYPE_ALL & ~TYPE_DISCOVERY_BOUNCE;
+    public static final int TYPE_ACCESSIBLE = TYPE_ALL & ~TYPE_DISCOVERY_BOUNCE & ~TYPE_LISTENER;
 
     // These view all have particular operation associated with swipe down interaction.
     public static final int TYPE_STATUS_BAR_SWIPE_DOWN_DISALLOW = TYPE_WIDGETS_BOTTOM_SHEET |
@@ -117,7 +119,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     public final void close(boolean animate) {
-        animate &= !Utilities.isPowerSaverPreventingAnimation(getContext());
+        animate &= Utilities.areAnimationsEnabled(getContext());
         if (mIsOpen) {
             BaseActivity.fromContext(getContext()).getUserEventDispatcher()
                     .resetElapsedContainerMillis("container closed");

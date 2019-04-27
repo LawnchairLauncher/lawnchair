@@ -18,6 +18,7 @@ package com.android.quickstep.views;
 
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
+import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
@@ -25,9 +26,10 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController.SUCCESS_TRANSITION_PROGRESS;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.CLEAR_ALL_BUTTON;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
-import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.quickstep.util.ClipAnimationHelper.TransformParams;
 
 import android.animation.Animator;
@@ -46,6 +48,7 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
@@ -89,7 +92,6 @@ import com.android.launcher3.util.OverScroller;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.ViewPool;
-import com.android.quickstep.OverviewCallbacks;
 import com.android.quickstep.RecentsAnimationWrapper;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RecentsModel.TaskThumbnailChangeListener;
@@ -169,6 +171,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private final ViewPool<TaskView> mTaskViewPool;
 
     private boolean mDwbToastShown;
+    private boolean mDisallowScrollToClearAll;
 
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
@@ -322,6 +325,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mEmptyMessagePaint.setColor(Themes.getAttrColor(context, android.R.attr.textColorPrimary));
         mEmptyMessagePaint.setTextSize(getResources()
                 .getDimension(R.dimen.recents_empty_message_text_size));
+        mEmptyMessagePaint.setTypeface(Typeface.create(Themes.getDefaultBodyFont(context),
+                Typeface.NORMAL));
         mEmptyMessagePadding = getResources()
                 .getDimensionPixelSize(R.dimen.recents_empty_message_text_padding);
         setWillNotDraw(false);
@@ -748,8 +753,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
         unloadVisibleTaskData();
         setCurrentPage(0);
-
-        OverviewCallbacks.get(getContext()).onResetOverview();
     }
 
     /**
@@ -1159,6 +1162,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     @SuppressWarnings("unused")
     private void dismissAllTasks(View view) {
         runDismissAnimation(createAllTasksDismissAnimation(DISMISS_TASK_DURATION));
+        mActivity.getUserEventDispatcher().logActionOnControl(TAP, CLEAR_ALL_BUTTON);
     }
 
     private void dismissCurrentTask() {
@@ -1605,5 +1609,34 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
 
         mRecentsAnimationWrapper.finish(toRecents, onFinishComplete);
+    }
+
+    public void setDisallowScrollToClearAll(boolean disallowScrollToClearAll) {
+        if (mDisallowScrollToClearAll != disallowScrollToClearAll) {
+            mDisallowScrollToClearAll = disallowScrollToClearAll;
+            updateMinAndMaxScrollX();
+        }
+    }
+
+    @Override
+    protected int computeMinScrollX() {
+        if (mIsRtl && mDisallowScrollToClearAll) {
+            // We aren't showing the clear all button, so use the leftmost task as the min scroll.
+            return getScrollForPage(getTaskViewCount() - 1);
+        }
+        return super.computeMinScrollX();
+    }
+
+    @Override
+    protected int computeMaxScrollX() {
+        if (!mIsRtl && mDisallowScrollToClearAll) {
+            // We aren't showing the clear all button, so use the rightmost task as the max scroll.
+            return getScrollForPage(getTaskViewCount() - 1);
+        }
+        return super.computeMaxScrollX();
+    }
+
+    public ClearAllButton getClearAllButton() {
+        return mClearAllButton;
     }
 }

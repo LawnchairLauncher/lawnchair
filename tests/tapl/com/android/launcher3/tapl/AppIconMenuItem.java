@@ -32,4 +32,9 @@ public class AppIconMenuItem extends Launchable {
     public String getText() {
         return mObject.getText();
     }
+
+    @Override
+    protected String getLongPressIndicator() {
+        return "drop_target_bar";
+    }
 }

@@ -33,6 +33,7 @@ import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,6 +71,7 @@ public class DefaultLayoutProviderTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @Ignore // Convert test to TAPL and enable them; b/131116002
     public void testCustomProfileLoaded_with_icon_on_hotseat() throws Exception {
         writeLayout(new LauncherLayoutBuilder().atHotseat(0).putApp(SETTINGS_APP, SETTINGS_APP));
 
@@ -84,6 +86,7 @@ public class DefaultLayoutProviderTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @Ignore // Convert test to TAPL and enable them; b/131116002
     public void testCustomProfileLoaded_with_widget() throws Exception {
         // A non-restored widget with no config screen gets restored automatically.
         LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
@@ -103,6 +106,7 @@ public class DefaultLayoutProviderTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @Ignore // Convert test to TAPL and enable them; b/131116002
     public void testCustomProfileLoaded_with_folder() throws Exception {
         writeLayout(new LauncherLayoutBuilder().atHotseat(0).putFolder(android.R.string.copy)
                 .addApp(SETTINGS_APP, SETTINGS_APP)

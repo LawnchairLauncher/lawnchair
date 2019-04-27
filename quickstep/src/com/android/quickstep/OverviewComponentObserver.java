@@ -20,8 +20,8 @@ import static android.content.Intent.ACTION_PACKAGE_ADDED;
 import static android.content.Intent.ACTION_PACKAGE_CHANGED;
 import static android.content.Intent.ACTION_PACKAGE_REMOVED;
 
-import static com.android.systemui.shared.system.PackageManagerWrapper
-        .ACTION_PREFERRED_ACTIVITY_CHANGED;
+import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
+import static com.android.systemui.shared.system.PackageManagerWrapper.ACTION_PREFERRED_ACTIVITY_CHANGED;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -29,7 +29,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ResolveInfo;
-import android.os.PatternMatcher;
 
 import com.android.systemui.shared.system.PackageManagerWrapper;
 
@@ -109,13 +108,9 @@ public final class OverviewComponentObserver {
                 }
 
                 mUpdateRegisteredPackage = defaultHome.getPackageName();
-                IntentFilter updateReceiver = new IntentFilter(ACTION_PACKAGE_ADDED);
-                updateReceiver.addAction(ACTION_PACKAGE_CHANGED);
-                updateReceiver.addAction(ACTION_PACKAGE_REMOVED);
-                updateReceiver.addDataScheme("package");
-                updateReceiver.addDataSchemeSpecificPart(mUpdateRegisteredPackage,
-                        PatternMatcher.PATTERN_LITERAL);
-                mContext.registerReceiver(mOtherHomeAppUpdateReceiver, updateReceiver);
+                mContext.registerReceiver(mOtherHomeAppUpdateReceiver, getPackageFilter(
+                        mUpdateRegisteredPackage, ACTION_PACKAGE_ADDED, ACTION_PACKAGE_CHANGED,
+                        ACTION_PACKAGE_REMOVED));
             }
         }
 

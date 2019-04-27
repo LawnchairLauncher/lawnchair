@@ -87,7 +87,7 @@ public class TouchInteractionService extends Service implements
             new LooperExecutor(UiThreadHelper.getBackgroundLooper());
 
     private static final String NAVBAR_VERTICAL_SIZE = "navigation_bar_frame_height";
-    private static final String NAVBAR_HORIZONTAL_SIZE = "navigation_bar_frame_width";
+    private static final String NAVBAR_HORIZONTAL_SIZE = "navigation_bar_width";
 
     public static final EventLogArray TOUCH_INTERACTION_LOG =
             new EventLogArray("touch_interaction_log", 40);
@@ -422,7 +422,7 @@ public class TouchInteractionService extends Service implements
         if (event.getAction() == ACTION_DOWN) {
             if (isInValidSystemUiState()
                     && mSwipeTouchRegion.contains(event.getX(), event.getY())) {
-                boolean useSharedState = mConsumer.isActive();
+                boolean useSharedState = mConsumer.useSharedSwipeState();
                 mConsumer.onConsumerAboutToBeSwitched();
                 mConsumer = newConsumer(useSharedState, event);
                 TOUCH_INTERACTION_LOG.addLog("setInputConsumer", mConsumer.getType());
@@ -455,13 +455,18 @@ public class TouchInteractionService extends Service implements
 
         final ActivityControlHelper activityControl =
                 mOverviewComponentObserver.getActivityControlHelper();
+
         if (runningTaskInfo == null && !mSwipeSharedState.goingToLauncher) {
             return InputConsumer.NO_OP;
         } else if (mAssistantAvailable
                 && SysUINavigationMode.INSTANCE.get(this).getMode() == Mode.NO_BUTTON
                 && AssistantTouchConsumer.withinTouchRegion(this, event)) {
-            return new AssistantTouchConsumer(this, mISystemUiProxy, !activityControl.isResumed()
-                            ? createOtherActivityInputConsumer(event, runningTaskInfo) : null);
+
+            boolean addDelegate = !activityControl.isResumed();
+            return new AssistantTouchConsumer(this, mISystemUiProxy, addDelegate ?
+                    createOtherActivityInputConsumer(event, runningTaskInfo) : null,
+                    mInputMonitorCompat, activityControl);
+
         } else if (mSwipeSharedState.goingToLauncher || activityControl.isResumed()) {
             return OverviewInputConsumer.newInstance(activityControl, false);
         } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() &&

@@ -33,12 +33,12 @@ import android.util.Log;
 import android.util.LongSparseArray;
 
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -145,8 +145,8 @@ public class LoaderCursor extends CursorWrapper {
         }
     }
 
-    public ShortcutInfo loadSimpleShortcut() {
-        final ShortcutInfo info = new ShortcutInfo();
+    public WorkspaceItemInfo loadSimpleWorkspaceItem() {
+        final WorkspaceItemInfo info = new WorkspaceItemInfo();
         // Non-app shortcuts are only supported for current user.
         info.user = user;
         info.itemType = itemType;
@@ -164,7 +164,7 @@ public class LoaderCursor extends CursorWrapper {
     /**
      * Loads the icon from the cursor and updates the {@param info} if the icon is an app resource.
      */
-    protected boolean loadIcon(ShortcutInfo info) {
+    protected boolean loadIcon(WorkspaceItemInfo info) {
         try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
             return loadIcon(info, li);
         }
@@ -173,7 +173,7 @@ public class LoaderCursor extends CursorWrapper {
     /**
      * Loads the icon from the cursor and updates the {@param info} if the icon is an app resource.
      */
-    protected boolean loadIcon(ShortcutInfo info, LauncherIcons li) {
+    protected boolean loadIcon(WorkspaceItemInfo info, LauncherIcons li) {
         if (itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
             String packageName = getString(iconPackageIndex);
             String resourceName = getString(iconResourceIndex);
@@ -209,11 +209,11 @@ public class LoaderCursor extends CursorWrapper {
     }
 
     /**
-     * Make an ShortcutInfo object for a restored application or shortcut item that points
+     * Make an WorkspaceItemInfo object for a restored application or shortcut item that points
      * to a package that is not yet installed on the system.
      */
-    public ShortcutInfo getRestoredItemInfo(Intent intent) {
-        final ShortcutInfo info = new ShortcutInfo();
+    public WorkspaceItemInfo getRestoredItemInfo(Intent intent) {
+        final WorkspaceItemInfo info = new WorkspaceItemInfo();
         info.user = user;
         info.intent = intent;
 
@@ -222,12 +222,12 @@ public class LoaderCursor extends CursorWrapper {
             mIconCache.getTitleAndIcon(info, false /* useLowResIcon */);
         }
 
-        if (hasRestoreFlag(ShortcutInfo.FLAG_RESTORED_ICON)) {
+        if (hasRestoreFlag(WorkspaceItemInfo.FLAG_RESTORED_ICON)) {
             String title = getTitle();
             if (!TextUtils.isEmpty(title)) {
                 info.title = Utilities.trim(title);
             }
-        } else if  (hasRestoreFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)) {
+        } else if  (hasRestoreFlag(WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON)) {
             if (TextUtils.isEmpty(info.title)) {
                 info.title = getTitle();
             }
@@ -242,9 +242,9 @@ public class LoaderCursor extends CursorWrapper {
     }
 
     /**
-     * Make an ShortcutInfo object for a shortcut that is an application.
+     * Make an WorkspaceItemInfo object for a shortcut that is an application.
      */
-    public ShortcutInfo getAppShortcutInfo(
+    public WorkspaceItemInfo getAppShortcutInfo(
             Intent intent, boolean allowMissingTarget, boolean useLowResIcon) {
         if (user == null) {
             Log.d(TAG, "Null user found in getShortcutInfo");
@@ -267,7 +267,7 @@ public class LoaderCursor extends CursorWrapper {
             return null;
         }
 
-        final ShortcutInfo info = new ShortcutInfo();
+        final WorkspaceItemInfo info = new WorkspaceItemInfo();
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
         info.user = user;
         info.intent = newIntent;

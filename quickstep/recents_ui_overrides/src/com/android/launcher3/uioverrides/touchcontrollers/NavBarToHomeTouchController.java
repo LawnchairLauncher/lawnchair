@@ -17,8 +17,6 @@ package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static android.view.View.TRANSLATION_X;
 
-import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
-import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -44,9 +42,9 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Command;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.views.RecentsView;
@@ -212,11 +210,13 @@ public class NavBarToHomeTouchController implements TouchController, SwipeDetect
     private void onSwipeInteractionCompleted(LauncherState targetState) {
         clearState();
         mLauncher.getStateManager().goToState(targetState, false /* animated */);
+        AccessibilityManagerCompat.sendStateEventToTest(mLauncher, targetState.ordinal);
     }
 
     private void logStateChange(int startContainerType, int logAction) {
         mLauncher.getUserEventDispatcher().logStateChangeAction(logAction,
                 LauncherLogProto.Action.Direction.UP,
+                mSwipeDetector.getDownX(), mSwipeDetector.getDownY(),
                 LauncherLogProto.ContainerType.NAVBAR,
                 startContainerType,
                 mEndState.containerType,
