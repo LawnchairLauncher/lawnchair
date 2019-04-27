@@ -111,25 +111,27 @@ public abstract class AbstractLauncherUiTest {
         mLauncher = new LauncherInstrumentation(instrumentation);
 
         // b/130558787; b/131419978
-        try {
-            Class systemProps = Class.forName("android.os.SystemProperties");
-            Method getInt = systemProps.getMethod("getInt", String.class, int.class);
-            int apiLevel = (int) getInt.invoke(null, "ro.product.first_api_level", 0);
+        if (TestHelpers.isInLauncherProcess()) {
+            try {
+                Class systemProps = Class.forName("android.os.SystemProperties");
+                Method getInt = systemProps.getMethod("getInt", String.class, int.class);
+                int apiLevel = (int) getInt.invoke(null, "ro.product.first_api_level", 0);
 
-            if (apiLevel >= Build.VERSION_CODES.P) {
-                setActiveOverlay(NAV_BAR_MODE_GESTURAL_OVERLAY,
-                        LauncherInstrumentation.NavigationModel.ZERO_BUTTON);
+                if (apiLevel >= Build.VERSION_CODES.P) {
+                    setActiveOverlay(NAV_BAR_MODE_GESTURAL_OVERLAY,
+                            LauncherInstrumentation.NavigationModel.ZERO_BUTTON);
+                }
+                if (apiLevel >= Build.VERSION_CODES.O && apiLevel < Build.VERSION_CODES.P) {
+                    setActiveOverlay(NAV_BAR_MODE_2BUTTON_OVERLAY,
+                            LauncherInstrumentation.NavigationModel.TWO_BUTTON);
+                }
+                if (apiLevel < Build.VERSION_CODES.O) {
+                    setActiveOverlay(NAV_BAR_MODE_3BUTTON_OVERLAY,
+                            LauncherInstrumentation.NavigationModel.THREE_BUTTON);
+                }
+            } catch (Throwable e) {
+                e.printStackTrace();
             }
-            if (apiLevel >= Build.VERSION_CODES.O && apiLevel < Build.VERSION_CODES.P) {
-                setActiveOverlay(NAV_BAR_MODE_2BUTTON_OVERLAY,
-                        LauncherInstrumentation.NavigationModel.TWO_BUTTON);
-            }
-            if (apiLevel < Build.VERSION_CODES.O) {
-                setActiveOverlay(NAV_BAR_MODE_3BUTTON_OVERLAY,
-                        LauncherInstrumentation.NavigationModel.THREE_BUTTON);
-            }
-        } catch (Throwable e) {
-            e.printStackTrace();
         }
     }
 
