@@ -21,6 +21,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
@@ -92,6 +93,11 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
         activity.dragLayer.addView(this)
         isOpen = false
         animateOpen(animate)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        return true
     }
 
     override fun onControllerInterceptTouchEvent(ev: MotionEvent): Boolean {
