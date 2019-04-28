@@ -28,7 +28,7 @@ abstract class Filter<T>(val context: Context) {
 
     abstract val matches: Set<T>?
 
-    open val size = matches?.size ?: 0
+    open val size get() = matches?.size ?: 0
 
     abstract val matcher: ItemInfoMatcher
 }
