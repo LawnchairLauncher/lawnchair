@@ -540,7 +540,7 @@ public abstract class AbstractStateChangeTouchController
     private void logReachedState(int logAction, LauncherState targetState) {
         // Transition complete. log the action
         mLauncher.getUserEventDispatcher().logStateChangeAction(logAction,
-                getDirectionForLog(),
+                getDirectionForLog(), mDetector.getDownX(), mDetector.getDownY(),
                 mStartContainerType,
                 mStartState.containerType,
                 targetState.containerType,

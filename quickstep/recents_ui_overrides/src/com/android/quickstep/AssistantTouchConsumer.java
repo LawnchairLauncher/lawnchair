@@ -21,10 +21,11 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.SWIPE;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.SWIPE_NOOP;
+
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction.UPLEFT;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction.UPRIGHT;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.SWIPE;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.SWIPE_NOOP;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType.NAVBAR;
 
 import android.animation.ValueAnimator;
@@ -35,12 +36,15 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
+
+import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.quickstep.util.MotionPauseDetector;
 import com.android.systemui.shared.recents.ISystemUiProxy;
-import com.android.launcher3.R;
+import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.NavigationBarCompat;
 
 /**
@@ -76,27 +80,32 @@ public class AssistantTouchConsumer implements InputConsumer {
     private float mLastProgress;
     private int mState;
     private int mDirection;
+    private ActivityControlHelper mActivityControlHelper;
 
     private final float mDistThreshold;
     private final long mTimeThreshold;
     private final int mAngleThreshold;
     private final float mSlop;
-    private final MotionPauseDetector mMotionPauseDetector;
     private final ISystemUiProxy mSysUiProxy;
     private final InputConsumer mConsumerDelegate;
     private final Context mContext;
 
+    private final InputMonitorCompat mInputMonitorCompat;
+
+
     public AssistantTouchConsumer(Context context, ISystemUiProxy systemUiProxy,
-            InputConsumer delegate) {
+            InputConsumer delegate, InputMonitorCompat inputMonitorCompat,
+            ActivityControlHelper activityControlHelper) {
         final Resources res = context.getResources();
         mContext = context;
         mSysUiProxy = systemUiProxy;
         mConsumerDelegate = delegate;
-        mMotionPauseDetector = new MotionPauseDetector(context);
         mDistThreshold = res.getDimension(R.dimen.gestures_assistant_drag_threshold);
         mTimeThreshold = res.getInteger(R.integer.assistant_gesture_min_time_threshold);
         mAngleThreshold = res.getInteger(R.integer.assistant_gesture_corner_deg_threshold);
-        mSlop = NavigationBarCompat.getQuickScrubTouchSlopPx();
+        mSlop = NavigationBarCompat.getQuickStepDragSlopPx();
+        mInputMonitorCompat = inputMonitorCompat;
+        mActivityControlHelper = activityControlHelper;
         mState = STATE_INACTIVE;
     }
 
@@ -106,8 +115,18 @@ public class AssistantTouchConsumer implements InputConsumer {
     }
 
     @Override
-    public boolean isActive() {
-        return mState != STATE_INACTIVE;
+    public boolean useSharedSwipeState() {
+        if (mConsumerDelegate != null) {
+            return mConsumerDelegate.useSharedSwipeState();
+        }
+        return false;
+    }
+
+    @Override
+    public void onConsumerAboutToBeSwitched() {
+        if (mConsumerDelegate != null) {
+            mConsumerDelegate.onConsumerAboutToBeSwitched();
+        }
     }
 
     @Override
@@ -120,14 +139,6 @@ public class AssistantTouchConsumer implements InputConsumer {
                 mDownPos.set(ev.getX(), ev.getY());
                 mLastPos.set(mDownPos);
                 mTimeFraction = 0;
-
-                // Detect when the gesture decelerates to start the assistant
-                mMotionPauseDetector.setOnMotionPauseListener(isPaused -> {
-                    if (isPaused && mState == STATE_ASSISTANT_ACTIVE) {
-                        mTimeFraction = 1;
-                        updateAssistantProgress();
-                    }
-                });
                 break;
             }
             case ACTION_POINTER_UP: {
@@ -156,6 +167,10 @@ public class AssistantTouchConsumer implements InputConsumer {
                 if (!mPassedSlop) {
                     // Normal gesture, ensure we pass the slop before we start tracking the gesture
                     if (Math.hypot(mLastPos.x - mDownPos.x, mLastPos.y - mDownPos.y) > mSlop) {
+
+                        // Cancel touches to other windows (intercept)
+                        mInputMonitorCompat.pilferPointers();
+
                         mPassedSlop = true;
                         mStartDragPos.set(mLastPos.x, mLastPos.y);
                         mDragTime = SystemClock.uptimeMillis();
@@ -165,7 +180,8 @@ public class AssistantTouchConsumer implements InputConsumer {
                                 Math.atan2(mDownPos.y - mLastPos.y, mDownPos.x - mLastPos.x));
                         mDirection = angle > 90 ? UPLEFT : UPRIGHT;
                         angle = angle > 90 ? 180 - angle : angle;
-                        if (angle > mAngleThreshold) {
+
+                        if (angle > mAngleThreshold && angle < 90) {
                             mState = STATE_ASSISTANT_ACTIVE;
 
                             if (mConsumerDelegate != null) {
@@ -183,7 +199,6 @@ public class AssistantTouchConsumer implements InputConsumer {
                     // Movement
                     mDistance = (float) Math.hypot(mLastPos.x - mStartDragPos.x,
                             mLastPos.y - mStartDragPos.y);
-                    mMotionPauseDetector.addPosition(mDistance, 0, ev.getEventTime());
                     if (mDistance >= 0) {
                         final long diff = SystemClock.uptimeMillis() - mDragTime;
                         mTimeFraction = Math.min(diff * 1f / mTimeThreshold, 1);
@@ -212,7 +227,8 @@ public class AssistantTouchConsumer implements InputConsumer {
                     animator.setInterpolator(Interpolators.DEACCEL_2);
                     animator.start();
                 }
-                mMotionPauseDetector.clear();
+                mPassedSlop = false;
+                mState = STATE_INACTIVE;
                 break;
         }
 
@@ -232,6 +248,14 @@ public class AssistantTouchConsumer implements InputConsumer {
                             SWIPE, mDirection, NAVBAR);
                     Bundle args = new Bundle();
                     args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
+
+                    BaseDraggingActivity launcherActivity = mActivityControlHelper.getCreatedActivity();
+                    if (launcherActivity != null) {
+                        launcherActivity.getRootView().
+                                performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+                                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                    }
+
                     mSysUiProxy.startAssistant(args);
                     mLaunchedAssistant = true;
                 }

@@ -19,6 +19,7 @@ package com.android.launcher3;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 
+import android.animation.ValueAnimator;
 import android.app.ActivityManager;
 import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
@@ -32,6 +33,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.content.pm.ShortcutInfo;
 import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -66,7 +68,6 @@ import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutView;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
@@ -517,12 +518,10 @@ public final class Utilities {
                 LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
-    public static boolean isPowerSaverPreventingAnimation(Context context) {
-        if (ATLEAST_P) {
-            // Battery saver mode no longer prevents animations.
-            return false;
-        }
-        return context.getSystemService(PowerManager.class).isPowerSaveMode();
+    public static boolean areAnimationsEnabled(Context context) {
+        return ATLEAST_OREO
+                ? ValueAnimator.areAnimatorsEnabled()
+                : !context.getSystemService(PowerManager.class).isPowerSaveMode();
     }
 
     public static boolean isWallpaperAllowed(Context context) {
@@ -626,7 +625,7 @@ public final class Utilities {
     /**
      * Returns the full drawable for {@param info}.
      * @param outObj this is set to the internal data associated with {@param info},
-     *               eg {@link LauncherActivityInfo} or {@link ShortcutInfoCompat}.
+     *               eg {@link LauncherActivityInfo} or {@link ShortcutInfo}.
      */
     public static Drawable getFullDrawable(Launcher launcher, ItemInfo info, int width, int height,
             boolean flattenDrawable, Object[] outObj) {
@@ -646,7 +645,7 @@ public final class Utilities {
             }
             ShortcutKey key = ShortcutKey.fromItemInfo(info);
             DeepShortcutManager sm = DeepShortcutManager.getInstance(launcher);
-            List<ShortcutInfoCompat> si = sm.queryForFullDetails(
+            List<ShortcutInfo> si = sm.queryForFullDetails(
                     key.componentName.getPackageName(), Arrays.asList(key.getId()), key.user);
             if (si.isEmpty()) {
                 return null;

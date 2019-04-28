@@ -61,7 +61,7 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
     }
 
     @Test
-    @Ignore // Ignoring until gestural navigation event sequence settles
+    @Ignore // Ignoring until race condition repro framework is changes for multi-process case.
     @NavigationModeSwitch(mode = Mode.TWO_BUTTON)
     public void testPressHome() {
         runTest(enterEvt(Launcher.ON_CREATE_EVT),
@@ -73,14 +73,6 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
                 exitEvt(OtherActivityInputConsumer.DOWN_EVT),
                 enterEvt(Launcher.ON_CREATE_EVT),
                 exitEvt(Launcher.ON_CREATE_EVT));
-    }
-
-    @Test
-    @Ignore // Ignoring until gestural navigation event sequence settles
-    @NavigationModeSwitch(mode = Mode.TWO_BUTTON)
-    public void testSwipeToOverview() {
-        closeLauncherActivity();
-        mLauncher.getBackground().switchToOverview();
     }
 
     @Test

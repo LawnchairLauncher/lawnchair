@@ -31,7 +31,7 @@ import android.util.SparseLongArray;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherProvider.DatabaseHelper;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
@@ -110,8 +110,8 @@ public class RestoreDbTask {
         // Mark all items as restored.
         boolean keepAllIcons = Utilities.isPropertyEnabled(LogConfig.KEEP_ALL_ICONS);
         ContentValues values = new ContentValues();
-        values.put(Favorites.RESTORED, ShortcutInfo.FLAG_RESTORED_ICON
-                | (keepAllIcons ? ShortcutInfo.FLAG_RESTORE_STARTED : 0));
+        values.put(Favorites.RESTORED, WorkspaceItemInfo.FLAG_RESTORED_ICON
+                | (keepAllIcons ? WorkspaceItemInfo.FLAG_RESTORE_STARTED : 0));
         db.update(Favorites.TABLE_NAME, values, null, null);
 
         // Mark widgets with appropriate restore flag.

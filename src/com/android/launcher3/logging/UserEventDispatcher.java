@@ -96,7 +96,6 @@ public class UserEventDispatcher implements ResourceBasedOverride {
      * Fills in the container data on the given event if the given view is not null.
      * @return whether container data was added.
      */
-    @Deprecated
     public static boolean fillInLogContainerData(LauncherLogProto.LauncherEvent event, @Nullable View v) {
         // Fill in grid(x,y), pageIndex of the child and container type of the parent
         LogContainerProvider provider = StatsLogUtils.getLaunchProviderRecursive(v);
@@ -293,7 +292,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
      * (1) WORKSPACE: if the launcher is the foreground activity
      * (2) APP: if another app was the foreground activity
      */
-    public void logStateChangeAction(int action, int dir, int srcChildTargetType,
+    public void logStateChangeAction(int action, int dir, int downX, int downY, int srcChildTargetType,
                                      int srcParentContainerType, int dstContainerType,
                                      int pageIndex) {
         LauncherEvent event;
@@ -311,6 +310,8 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         event.action.dir = dir;
         event.action.isStateChange = true;
         event.srcTarget[0].pageIndex = pageIndex;
+        event.srcTarget[0].spanX = downX;
+        event.srcTarget[0].spanY = downY;
         dispatchUserEvent(event, null);
         resetElapsedContainerMillis("state changed");
     }
@@ -325,7 +326,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
 
     public void logDeepShortcutsOpen(View icon) {
         LogContainerProvider provider = StatsLogUtils.getLaunchProviderRecursive(icon);
-        if (icon == null || !(icon.getTag() instanceof ItemInfo)) {
+        if (icon == null || !(icon.getTag() instanceof ItemInfo || provider == null)) {
             return;
         }
         ItemInfo info = (ItemInfo) icon.getTag();

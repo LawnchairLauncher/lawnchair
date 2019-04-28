@@ -32,7 +32,6 @@ import android.os.UserHandle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -59,7 +58,6 @@ public final class DigitalWellBeingToast extends LinearLayout {
     private static final String TAG = DigitalWellBeingToast.class.getSimpleName();
 
     private Task mTask;
-    private ImageView mImage;
     private TextView mText;
 
     public DigitalWellBeingToast(Context context, AttributeSet attrs) {
@@ -70,12 +68,15 @@ public final class DigitalWellBeingToast extends LinearLayout {
         mLauncherApps = context.getSystemService(LauncherApps.class);
     }
 
+    public TextView getTextView() {
+        return mText;
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
 
         mText = findViewById(R.id.digital_well_being_remaining_time);
-        mImage = findViewById(R.id.digital_well_being_hourglass);
     }
 
     public void initialize(Task task, InitializeCallback callback) {
@@ -103,8 +104,6 @@ public final class DigitalWellBeingToast extends LinearLayout {
                 } else {
                     setVisibility(VISIBLE);
                     mText.setText(getText(appRemainingTimeMs));
-                    mImage.setImageResource(appRemainingTimeMs > 0 ?
-                            R.drawable.hourglass_top : R.drawable.hourglass_bottom);
                 }
 
                 callback.call(getContentDescriptionForTask(

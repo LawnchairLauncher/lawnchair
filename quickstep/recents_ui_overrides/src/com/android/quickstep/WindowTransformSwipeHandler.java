@@ -64,6 +64,9 @@ import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.view.animation.Interpolator;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
+
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
@@ -102,9 +105,6 @@ import com.android.systemui.shared.system.WindowCallbacksCompat;
 
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.UiThread;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
@@ -253,6 +253,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private boolean mGestureStarted;
     private int mLogAction = Touch.SWIPE;
     private int mLogDirection = Direction.UP;
+    private PointF mDownPos;
 
     private final RecentsAnimationWrapper mRecentsAnimationWrapper;
 
@@ -429,8 +430,19 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         // If we've already ended the gesture and are going home, don't prepare recents UI,
         // as that will set the state as BACKGROUND_APP, overriding the animation to NORMAL.
         if (mGestureEndTarget != HOME) {
-            mAnimationFactory = mActivityControlHelper.prepareRecentsUI(mActivity,
-                    mWasLauncherAlreadyVisible, true, this::onAnimatorPlaybackControllerCreated);
+            Runnable initAnimFactory = () -> {
+                mAnimationFactory = mActivityControlHelper.prepareRecentsUI(mActivity,
+                        mWasLauncherAlreadyVisible, true,
+                        this::onAnimatorPlaybackControllerCreated);
+            };
+            if (mWasLauncherAlreadyVisible) {
+                // Launcher is visible, but might be about to stop. Thus, if we prepare recents
+                // now, it might get overridden by moveToRestState() in onStop(). To avoid this,
+                // wait until the next gesture (and possibly launcher) starts.
+                mStateCallback.addCallback(STATE_GESTURE_STARTED, initAnimFactory);
+            } else {
+                initAnimFactory.run();
+            }
         }
         AbstractFloatingView.closeAllOpenViews(activity, mWasLauncherAlreadyVisible);
 
@@ -692,9 +704,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     /**
      * @param endVelocity The velocity in the direction of the nav bar to the middle of the screen.
      * @param velocity The x and y components of the velocity when the gesture ends.
+     * @param downPos The x and y value of where the gesture started.
      */
     @UiThread
-    public void onGestureEnded(float endVelocity, PointF velocity) {
+    public void onGestureEnded(float endVelocity, PointF velocity, PointF downPos) {
         float flingThreshold = mContext.getResources()
                 .getDimension(R.dimen.quickstep_fling_threshold_velocity);
         boolean isFling = mGestureStarted && Math.abs(endVelocity) > flingThreshold;
@@ -707,6 +720,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         } else {
             mLogDirection = velocity.x < 0 ? Direction.LEFT : Direction.RIGHT;
         }
+        mDownPos = downPos;
         handleNormalGestureEnd(endVelocity, isFling, velocity);
     }
 
@@ -733,14 +747,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         float endShift;
         final float startShift;
         Interpolator interpolator = DEACCEL;
-        int nextPage = 0;
-        int taskToLaunch = 0;
         final boolean goingToNewTask;
         if (mRecentsView != null) {
-            nextPage = mRecentsView.getNextPage();
-            final int lastTaskIndex = mRecentsView.getTaskViewCount() - 1;
             final int runningTaskIndex = mRecentsView.getRunningTaskIndex();
-            taskToLaunch = nextPage <= lastTaskIndex ? nextPage : lastTaskIndex;
+            final int taskToLaunch = mRecentsView.getNextPage();
             goingToNewTask = runningTaskIndex >= 0 && taskToLaunch != runningTaskIndex;
         } else {
             goingToNewTask = false;
@@ -806,11 +816,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             }
         }
 
-        if (mRecentsView != null && !endTarget.isLauncher && taskToLaunch != nextPage) {
-            // Scrolled to Clear all button, snap back to last task and launch it.
-            mRecentsView.snapToPage(taskToLaunch, Math.toIntExact(duration), interpolator);
-        }
-
         if (endTarget == HOME) {
             setShelfState(ShelfAnimState.CANCEL, LINEAR, 0);
             duration = Math.max(MIN_OVERSHOOT_DURATION, duration);
@@ -845,6 +850,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 : mRecentsView.getNextPage();
         UserEventDispatcher.newInstance(mContext).logStateChangeAction(
                 mLogAction, mLogDirection,
+                (int) mDownPos.x, (int) mDownPos.y,
                 ContainerType.NAVBAR, ContainerType.APP,
                 endTarget.containerType,
                 pageIndex);
@@ -1044,7 +1050,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void invalidateHandlerWithLauncher() {
-        mLauncherTransitionController = null;
+        if (mLauncherTransitionController != null) {
+            if (mLauncherTransitionController.getAnimationPlayer().isStarted()) {
+                mLauncherTransitionController.getAnimationPlayer().cancel();
+            }
+            mLauncherTransitionController = null;
+        }
 
         mRecentsView.setEnableFreeScroll(true);
         mRecentsView.setRunningTaskIconScaledDown(false);

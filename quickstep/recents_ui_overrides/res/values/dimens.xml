@@ -12,4 +12,13 @@
     <dimen name="chip_text_top_padding">4dp</dimen>
     <dimen name="chip_text_start_padding">10dp</dimen>
     <dimen name="chip_text_size">14sp</dimen>
+
+    <dimen name="all_apps_prediction_row_divider_height">17dp</dimen>
+    <dimen name="all_apps_label_top_padding">16dp</dimen>
+    <dimen name="all_apps_label_bottom_padding">8dp</dimen>
+    <dimen name="all_apps_label_text_size">14sp</dimen>
+    <dimen name="all_apps_tip_bottom_margin">8dp</dimen>
+    <!-- The size of corner radius of the arrow in the arrow toast. -->
+    <dimen name="arrow_toast_corner_radius">2dp</dimen>
+
 </resources>

@@ -131,10 +131,11 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
             return anim;
         }
 
-        View thumbnailView = mRecentsView.getThumbnailViewForTask(mTargetTaskId);
+        View thumbnailView = mRecentsView.getBottomThumbnailView();
         if (thumbnailView == null) {
-            // TODO: We should either 1) guarantee the view is loaded before attempting this
-            // or 2) have a backup animation.
+            // This can be null if there were previously 0 tasks and the recycler view has not had
+            // enough time to take in the data change, bind a new view, and lay out the new view.
+            // TODO: Have a fallback to animate to
             if (Log.isLoggable(TAG, Log.WARN)) {
                 Log.w(TAG, "No thumbnail view for running task. Using stub animation.");
             }
