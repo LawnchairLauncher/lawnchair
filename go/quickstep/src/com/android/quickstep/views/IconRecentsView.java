@@ -20,6 +20,8 @@ import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
 
 import static com.android.quickstep.TaskAdapter.CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT;
+import static com.android.quickstep.TaskAdapter.ITEM_TYPE_CLEAR_ALL;
+import static com.android.quickstep.TaskAdapter.ITEM_TYPE_TASK;
 import static com.android.quickstep.TaskAdapter.TASKS_START_POSITION;
 
 import android.animation.Animator;
@@ -29,6 +31,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.ArraySet;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
@@ -44,6 +47,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration;
 import androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener;
 
 import com.android.launcher3.BaseActivity;
@@ -174,7 +178,29 @@ public final class IconRecentsView extends FrameLayout {
             mTaskRecyclerView.setItemAnimator(mDefaultItemAnimator);
             mLoadingContentItemAnimator.setOnAnimationFinishedRunnable(
                     () -> mTaskRecyclerView.setItemAnimator(new DefaultItemAnimator()));
-            // TODO: Add item decorator for vertical item margins
+            ItemDecoration marginDecorator = new ItemDecoration() {
+                @Override
+                public void getItemOffsets(@NonNull Rect outRect, @NonNull View view,
+                        @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                    // TODO: Determine if current margins cause off screen item to be fully off
+                    // screen and if so, modify them so that it is partially off screen.
+                    int itemType = parent.getChildViewHolder(view).getItemViewType();
+                    switch (itemType) {
+                        case ITEM_TYPE_CLEAR_ALL:
+                            outRect.top = (int) getResources().getDimension(
+                                    R.dimen.clear_all_item_view_top_margin);
+                            // TODO: In landscape, add bottom margin as well since we won't have
+                            // nav bar to buffer things nicely.
+                            break;
+                        case ITEM_TYPE_TASK:
+                            outRect.top = (int) getResources().getDimension(
+                                    R.dimen.task_item_top_margin);
+                            break;
+                        default:
+                    }
+                }
+            };
+            mTaskRecyclerView.addItemDecoration(marginDecorator);
 
             mEmptyView = findViewById(R.id.recent_task_empty_view);
             mContentView = mTaskRecyclerView;
