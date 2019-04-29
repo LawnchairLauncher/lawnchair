@@ -21,6 +21,7 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
+
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
@@ -345,18 +346,21 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
      */
     private void finishTouchTracking(MotionEvent ev) {
         if (mPassedDragSlop && mInteractionHandler != null) {
+            if (ev.getActionMasked() == ACTION_CANCEL) {
+                mInteractionHandler.onGestureCancelled();
+            } else {
+                mVelocityTracker.computeCurrentVelocity(1000,
+                        ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
+                float velocityX = mVelocityTracker.getXVelocity(mActivePointerId);
+                float velocityY = mVelocityTracker.getYVelocity(mActivePointerId);
+                float velocity = isNavBarOnRight() ? velocityX
+                        : isNavBarOnLeft() ? -velocityX
+                                : velocityY;
 
-            mVelocityTracker.computeCurrentVelocity(1000,
-                    ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
-            float velocityX = mVelocityTracker.getXVelocity(mActivePointerId);
-            float velocityY = mVelocityTracker.getYVelocity(mActivePointerId);
-            float velocity = isNavBarOnRight() ? velocityX
-                    : isNavBarOnLeft() ? -velocityX
-                            : velocityY;
-
-            mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
-            mInteractionHandler.onGestureEnded(velocity, new PointF(velocityX, velocityY),
-                    mDownPos);
+                mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
+                mInteractionHandler.onGestureEnded(velocity, new PointF(velocityX, velocityY),
+                        mDownPos);
+            }
         } else {
             // Since we start touch tracking on DOWN, we may reach this state without actually
             // starting the gesture. In that case, just cleanup immediately.
@@ -387,7 +391,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             mSwipeSharedState.canGestureBeContinued = endTarget != null && endTarget.canBeContinued;
             mSwipeSharedState.goingToLauncher = endTarget != null && endTarget.isLauncher;
             if (mSwipeSharedState.canGestureBeContinued) {
-                mInteractionHandler.cancel();
+                mInteractionHandler.cancelCurrentAnimation();
             } else {
                 mInteractionHandler.reset();
             }
@@ -424,5 +428,10 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     @Override
     public boolean useSharedSwipeState() {
         return mInteractionHandler != null;
+    }
+
+    @Override
+    public boolean allowInterceptByParent() {
+        return !mPassedTouchSlop;
     }
 }
