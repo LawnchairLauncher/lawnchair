@@ -174,6 +174,7 @@ public final class IconRecentsView extends FrameLayout {
             mTaskRecyclerView.setItemAnimator(mDefaultItemAnimator);
             mLoadingContentItemAnimator.setOnAnimationFinishedRunnable(
                     () -> mTaskRecyclerView.setItemAnimator(new DefaultItemAnimator()));
+            // TODO: Add item decorator for vertical item margins
 
             mEmptyView = findViewById(R.id.recent_task_empty_view);
             mContentView = mTaskRecyclerView;
