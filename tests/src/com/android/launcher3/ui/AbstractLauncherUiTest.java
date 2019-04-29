@@ -111,7 +111,7 @@ public abstract class AbstractLauncherUiTest {
         mLauncher = new LauncherInstrumentation(instrumentation);
 
         // b/130558787; b/131419978
-        if (TestHelpers.isInLauncherProcess()) {
+        if (TestHelpers.isInLauncherProcess() && !LauncherInstrumentation.needSlowGestures()) {
             try {
                 Class systemProps = Class.forName("android.os.SystemProperties");
                 Method getInt = systemProps.getMethod("getInt", String.class, int.class);
