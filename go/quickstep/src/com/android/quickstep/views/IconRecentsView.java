@@ -16,6 +16,7 @@
 package com.android.quickstep.views;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 
 import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
 
@@ -31,6 +32,8 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.util.ArraySet;
 import android.util.AttributeSet;
@@ -185,16 +188,18 @@ public final class IconRecentsView extends FrameLayout {
                     // TODO: Determine if current margins cause off screen item to be fully off
                     // screen and if so, modify them so that it is partially off screen.
                     int itemType = parent.getChildViewHolder(view).getItemViewType();
+                    Resources res = getResources();
                     switch (itemType) {
                         case ITEM_TYPE_CLEAR_ALL:
-                            outRect.top = (int) getResources().getDimension(
+                            outRect.top = (int) res.getDimension(
                                     R.dimen.clear_all_item_view_top_margin);
-                            // TODO: In landscape, add bottom margin as well since we won't have
-                            // nav bar to buffer things nicely.
+                            if (res.getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
+                                outRect.bottom = (int) res.getDimension(
+                                        R.dimen.clear_all_item_view_landscape_bottom_margin);
+                            }
                             break;
                         case ITEM_TYPE_TASK:
-                            outRect.top = (int) getResources().getDimension(
-                                    R.dimen.task_item_top_margin);
+                            outRect.top = (int) res.getDimension(R.dimen.task_item_top_margin);
                             break;
                         default:
                     }
@@ -225,6 +230,11 @@ public final class IconRecentsView extends FrameLayout {
         for (int i = 0; i < childCount; i++) {
             mTaskRecyclerView.getChildAt(i).setEnabled(enabled);
         }
+    }
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        mTaskRecyclerView.invalidateItemDecorations();
     }
 
     /**
