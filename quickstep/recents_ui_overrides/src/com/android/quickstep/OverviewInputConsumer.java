@@ -65,6 +65,11 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
     }
 
     @Override
+    public boolean allowInterceptByParent() {
+        return !mTargetHandledTouch;
+    }
+
+    @Override
     public void onMotionEvent(MotionEvent ev) {
         if (!mProxyTouch) {
             return;
