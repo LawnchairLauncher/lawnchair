@@ -21,6 +21,7 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
+
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
@@ -34,18 +35,14 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
-
-import androidx.annotation.UiThread;
 
 import com.android.launcher3.R;
 import com.android.launcher3.util.Preconditions;
@@ -61,9 +58,10 @@ import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.QuickStepContract;
-import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.function.Consumer;
+
+import androidx.annotation.UiThread;
 
 /**
  * Input consumer for handling events originating from an activity other than Launcher
@@ -80,14 +78,12 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private final Intent mHomeIntent;
     private final ActivityControlHelper mActivityControlHelper;
     private final OverviewCallbacks mOverviewCallbacks;
-    private final TaskOverlayFactory mTaskOverlayFactory;
     private final InputConsumerController mInputConsumer;
     private final SwipeSharedState mSwipeSharedState;
     private final InputMonitorCompat mInputMonitorCompat;
     private final SysUINavigationMode.Mode mMode;
 
     private final int mDisplayRotation;
-    private final Rect mStableInsets = new Rect();
 
     private final Consumer<OtherActivityInputConsumer> mOnCompleteCallback;
     private final MotionPauseDetector mMotionPauseDetector;
@@ -122,7 +118,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     public OtherActivityInputConsumer(Context base, RunningTaskInfo runningTaskInfo,
             RecentsModel recentsModel, Intent homeIntent, ActivityControlHelper activityControl,
             boolean isDeferredDownTarget, OverviewCallbacks overviewCallbacks,
-            TaskOverlayFactory taskOverlayFactory, InputConsumerController inputConsumer,
+            InputConsumerController inputConsumer,
             Consumer<OtherActivityInputConsumer> onCompleteCallback,
             SwipeSharedState swipeSharedState, InputMonitorCompat inputMonitorCompat) {
         super(base);
@@ -144,14 +140,10 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         boolean continuingPreviousGesture = swipeSharedState.getActiveListener() != null;
         mIsDeferredDownTarget = !continuingPreviousGesture && isDeferredDownTarget;
         mOverviewCallbacks = overviewCallbacks;
-        mTaskOverlayFactory = taskOverlayFactory;
         mInputConsumer = inputConsumer;
         mSwipeSharedState = swipeSharedState;
 
-        Display display = getSystemService(WindowManager.class).getDefaultDisplay();
-        mDisplayRotation = display.getRotation();
-        WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
-
+        mDisplayRotation = getSystemService(WindowManager.class).getDefaultDisplay().getRotation();
         mDragSlop = QuickStepContract.getQuickStepDragSlopPx();
         mTouchSlop = QuickStepContract.getQuickStepTouchSlopPx();
 
@@ -170,16 +162,15 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         }
 
         // Proxy events to recents view
-        if (!isNavBarOnLeft() && !isNavBarOnRight()) {
-            if (mPassedDragSlop && mInteractionHandler != null
-                    && !mRecentsViewDispatcher.hasConsumer()) {
-                mRecentsViewDispatcher.setConsumer(mInteractionHandler.getRecentsViewDispatcher());
-            }
-            int edgeFlags = ev.getEdgeFlags();
-            ev.setEdgeFlags(edgeFlags | EDGE_NAV_BAR);
-            mRecentsViewDispatcher.dispatchEvent(ev);
-            ev.setEdgeFlags(edgeFlags);
+        if (mPassedDragSlop && mInteractionHandler != null
+                && !mRecentsViewDispatcher.hasConsumer()) {
+            mRecentsViewDispatcher.setConsumer(mInteractionHandler
+                    .getRecentsViewDispatcher(isNavBarOnLeft() || isNavBarOnRight()));
         }
+        int edgeFlags = ev.getEdgeFlags();
+        ev.setEdgeFlags(edgeFlags | EDGE_NAV_BAR);
+        mRecentsViewDispatcher.dispatchEvent(ev);
+        ev.setEdgeFlags(edgeFlags);
 
         mVelocityTracker.addMovement(ev);
         if (ev.getActionMasked() == ACTION_POINTER_UP) {
@@ -301,13 +292,11 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private boolean isNavBarOnRight() {
-        return SysUINavigationMode.INSTANCE.get(getBaseContext()).getMode() != NO_BUTTON
-                && mDisplayRotation == Surface.ROTATION_90 && mStableInsets.right > 0;
+        return mMode != NO_BUTTON && mDisplayRotation == Surface.ROTATION_90;
     }
 
     private boolean isNavBarOnLeft() {
-        return SysUINavigationMode.INSTANCE.get(getBaseContext()).getMode() != NO_BUTTON
-                && mDisplayRotation == Surface.ROTATION_270 && mStableInsets.left > 0;
+        return mMode != NO_BUTTON && mDisplayRotation == Surface.ROTATION_270;
     }
 
     private void startTouchTrackingForWindowAnimation(long touchTimeMs) {
@@ -410,13 +399,13 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private float getDisplacement(MotionEvent ev) {
-        float eventX = ev.getX();
-        float eventY = ev.getY();
-        float displacement = eventY - mDownPos.y;
+        final float displacement;
         if (isNavBarOnRight()) {
-            displacement = eventX - mDownPos.x;
+            displacement = ev.getX() - mDownPos.x;
         } else if (isNavBarOnLeft()) {
-            displacement = mDownPos.x - eventX;
+            displacement = mDownPos.x - ev.getX();
+        } else {
+            displacement = ev.getY() - mDownPos.y;
         }
         return displacement;
     }
