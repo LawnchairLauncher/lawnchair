@@ -468,10 +468,10 @@ public class TouchInteractionService extends Service implements
                     mInputMonitorCompat, activityControl);
 
         } else if (mSwipeSharedState.goingToLauncher || activityControl.isResumed()) {
-            return OverviewInputConsumer.newInstance(activityControl, false);
+            return OverviewInputConsumer.newInstance(activityControl, mInputMonitorCompat, false);
         } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() &&
                 activityControl.isInLiveTileMode()) {
-            return OverviewInputConsumer.newInstance(activityControl, false);
+            return OverviewInputConsumer.newInstance(activityControl, mInputMonitorCompat, false);
         } else {
             return createOtherActivityInputConsumer(event, runningTaskInfo);
         }
