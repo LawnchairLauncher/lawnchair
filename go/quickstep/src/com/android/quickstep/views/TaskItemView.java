@@ -44,6 +44,7 @@ public final class TaskItemView extends LinearLayout {
     private final Drawable mDefaultThumbnail;
     private final TaskLayerDrawable mIconDrawable;
     private final TaskLayerDrawable mThumbnailDrawable;
+    private View mTaskIconThumbnailView;
     private TextView mLabelView;
     private ImageView mIconView;
     private ImageView mThumbnailView;
@@ -79,6 +80,7 @@ public final class TaskItemView extends LinearLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mLabelView = findViewById(R.id.task_label);
+        mTaskIconThumbnailView = findViewById(R.id.task_icon_and_thumbnail);
         mThumbnailView = findViewById(R.id.task_thumbnail);
         mIconView = findViewById(R.id.task_icon);
 
@@ -186,5 +188,6 @@ public final class TaskItemView extends LinearLayout {
                 ((ThumbnailDrawable) drawable).setRequestedOrientation(newConfig.orientation);
             }
         }
+        mTaskIconThumbnailView.forceLayout();
     }
 }
