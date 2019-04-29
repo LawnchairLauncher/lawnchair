@@ -54,6 +54,7 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration;
 import androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener;
 
 import com.android.launcher3.BaseActivity;
+import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.quickstep.ContentFillItemAnimator;
 import com.android.quickstep.RecentsModel;
@@ -74,7 +75,7 @@ import java.util.Optional;
  * Root view for the icon recents view. Acts as the main interface to the rest of the Launcher code
  * base.
  */
-public final class IconRecentsView extends FrameLayout {
+public final class IconRecentsView extends FrameLayout implements Insettable {
 
     public static final FloatProperty<IconRecentsView> CONTENT_ALPHA =
             new FloatProperty<IconRecentsView>("contentAlpha") {
@@ -517,5 +518,10 @@ public final class IconRecentsView extends FrameLayout {
             }
         });
         mLayoutAnimation.start();
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        mTaskRecyclerView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
     }
 }
