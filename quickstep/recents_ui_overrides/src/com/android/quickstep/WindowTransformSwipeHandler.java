@@ -1076,7 +1076,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             @Override
             public void onAnimationStart(Animator animation) {
                 homeAnim.dispatchOnStart();
-                mActivity.getRootView().getOverlay().remove(mLiveTileOverlay);
+                if (mActivity != null) {
+                    mActivity.getRootView().getOverlay().remove(mLiveTileOverlay);
+                }
             }
 
             @Override
