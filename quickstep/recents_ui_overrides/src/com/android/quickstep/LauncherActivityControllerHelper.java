@@ -117,9 +117,11 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
             workspaceView = null;
         }
         final Rect iconLocation = new Rect();
-        final FloatingIconView floatingView = workspaceView == null ? null
-                : FloatingIconView.getFloatingIconView(activity, workspaceView,
-                true /* hideOriginal */, iconLocation, false /* isOpening */, null /* recycle */);
+        boolean canUseWorkspaceView = workspaceView != null && workspaceView.isAttachedToWindow();
+        final FloatingIconView floatingView = canUseWorkspaceView
+                ? FloatingIconView.getFloatingIconView(activity, workspaceView,
+                true /* hideOriginal */, iconLocation, false /* isOpening */, null /* recycle */)
+                : null;
 
         return new HomeAnimationFactory() {
             @Nullable
@@ -135,7 +137,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                 final float targetCenterX = dp.availableWidthPx / 2f;
                 final float targetCenterY = dp.availableHeightPx - dp.hotseatBarSizePx;
 
-                if (workspaceView != null) {
+                if (canUseWorkspaceView) {
                     return new RectF(iconLocation);
                 } else {
                     // Fallback to animate to center of screen.
