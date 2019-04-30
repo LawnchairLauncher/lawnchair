@@ -17,7 +17,9 @@ package com.android.quickstep;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PointF;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 
 /**
  * A dummy input consumer used when the device is still locked, e.g. from secure camera.
@@ -25,9 +27,13 @@ import android.view.MotionEvent;
 public class DeviceLockedInputConsumer implements InputConsumer {
 
     private final Context mContext;
+    private final float mTouchSlopSquared;
+    private final PointF mTouchDown = new PointF();
 
     public DeviceLockedInputConsumer(Context context) {
         mContext = context;
+        float touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+        mTouchSlopSquared = touchSlop * touchSlop;
     }
 
     @Override
@@ -37,11 +43,19 @@ public class DeviceLockedInputConsumer implements InputConsumer {
 
     @Override
     public void onMotionEvent(MotionEvent ev) {
-        // For now, just start the home intent so user is prompted to unlock the device.
+        float x = ev.getX();
+        float y = ev.getY();
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            mContext.startActivity(new Intent(Intent.ACTION_MAIN)
-                    .addCategory(Intent.CATEGORY_HOME)
-                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            mTouchDown.set(x, y);
+        } else if (ev.getAction() == MotionEvent.ACTION_MOVE) {
+            float xSquared = (x - mTouchDown.x) * (x - mTouchDown.x);
+            float ySquared = (y - mTouchDown.y) * (y - mTouchDown.y);
+            if (xSquared + ySquared > mTouchSlopSquared) {
+                // For now, just start the home intent so user is prompted to unlock the device.
+                mContext.startActivity(new Intent(Intent.ACTION_MAIN)
+                        .addCategory(Intent.CATEGORY_HOME)
+                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            }
         }
     }
 }

@@ -61,7 +61,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.config.FeatureFlags;
@@ -236,8 +236,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     public boolean startDrag(View v, DragOptions options) {
         Object tag = v.getTag();
-        if (tag instanceof ShortcutInfo) {
-            ShortcutInfo item = (ShortcutInfo) tag;
+        if (tag instanceof WorkspaceItemInfo) {
+            WorkspaceItemInfo item = (WorkspaceItemInfo) tag;
 
             mEmptyCellRank = item.rank;
             mCurrentDragView = v;
@@ -269,13 +269,13 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
 
         mContent.removeItem(mCurrentDragView);
-        if (dragObject.dragInfo instanceof ShortcutInfo) {
+        if (dragObject.dragInfo instanceof WorkspaceItemInfo) {
             mItemsInvalidated = true;
 
             // We do not want to get events for the item being removed, as they will get handled
             // when the drop completes
             try (SuppressInfoChanges s = new SuppressInfoChanges()) {
-                mInfo.remove((ShortcutInfo) dragObject.dragInfo, true);
+                mInfo.remove((WorkspaceItemInfo) dragObject.dragInfo, true);
             }
         }
         mDragInProgress = true;
@@ -379,7 +379,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     void bind(FolderInfo info) {
         mInfo = info;
-        ArrayList<ShortcutInfo> children = info.contents;
+        ArrayList<WorkspaceItemInfo> children = info.contents;
         Collections.sort(children, ITEM_POS_COMPARATOR);
         mContent.bindItems(children);
 
@@ -800,7 +800,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             }
         } else {
             // The drag failed, we need to return the item to the folder
-            ShortcutInfo info = (ShortcutInfo) d.dragInfo;
+            WorkspaceItemInfo info = (WorkspaceItemInfo) d.dragInfo;
             View icon = (mCurrentDragView != null && mCurrentDragView.getTag() == info)
                     ? mCurrentDragView : mContent.createNewView(info);
             ArrayList<View> views = getItemsInReadingOrder();
@@ -1023,7 +1023,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                         // folder
                         CellLayout cellLayout = mLauncher.getCellLayout(mInfo.container,
                                 mInfo.screenId);
-                        ShortcutInfo finalItem = mInfo.contents.remove(0);
+                        WorkspaceItemInfo finalItem = mInfo.contents.remove(0);
                         newIcon = mLauncher.createShortcut(cellLayout, finalItem);
                         mLauncher.getModelWriter().addOrMoveItemInDatabase(finalItem,
                                 mInfo.container, mInfo.screenId, mInfo.cellX, mInfo.cellY);
@@ -1111,9 +1111,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
         PendingAddShortcutInfo pasi = d.dragInfo instanceof PendingAddShortcutInfo
                 ? (PendingAddShortcutInfo) d.dragInfo : null;
-        ShortcutInfo pasiSi = pasi != null ? pasi.activityInfo.createShortcutInfo() : null;
+        WorkspaceItemInfo pasiSi = pasi != null ? pasi.activityInfo.createWorkspaceItemInfo() : null;
         if (pasi != null && pasiSi == null) {
-            // There is no ShortcutInfo, so we have to go through a configuration activity.
+            // There is no WorkspaceItemInfo, so we have to go through a configuration activity.
             pasi.container = mInfo.id;
             pasi.rank = mEmptyCellRank;
 
@@ -1122,15 +1122,15 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             d.deferDragViewCleanupPostAnimation = false;
             mRearrangeOnClose = true;
         } else {
-            final ShortcutInfo si;
+            final WorkspaceItemInfo si;
             if (pasiSi != null) {
                 si = pasiSi;
             } else if (d.dragInfo instanceof AppInfo) {
                 // Came from all apps -- make a copy.
-                si = ((AppInfo) d.dragInfo).makeShortcut();
+                si = ((AppInfo) d.dragInfo).makeWorkspaceItem();
             } else {
-                // ShortcutInfo
-                si = (ShortcutInfo) d.dragInfo;
+                // WorkspaceItemInfo
+                si = (WorkspaceItemInfo) d.dragInfo;
             }
 
             View currentDragView;
@@ -1138,7 +1138,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 currentDragView = mContent.createAndAddViewForRank(si, mEmptyCellRank);
 
                 // Actually move the item in the database if it was an external drag. Call this
-                // before creating the view, so that ShortcutInfo is updated appropriately.
+                // before creating the view, so that WorkspaceItemInfo is updated appropriately.
                 mLauncher.getModelWriter().addOrMoveItemInDatabase(
                         si, mInfo.id, 0, si.cellX, si.cellY);
 
@@ -1194,17 +1194,17 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     // This is used so the item doesn't immediately appear in the folder when added. In one case
     // we need to create the illusion that the item isn't added back to the folder yet, to
     // to correspond to the animation of the icon back into the folder. This is
-    public void hideItem(ShortcutInfo info) {
+    public void hideItem(WorkspaceItemInfo info) {
         View v = getViewForInfo(info);
         v.setVisibility(INVISIBLE);
     }
-    public void showItem(ShortcutInfo info) {
+    public void showItem(WorkspaceItemInfo info) {
         View v = getViewForInfo(info);
         v.setVisibility(VISIBLE);
     }
 
     @Override
-    public void onAdd(ShortcutInfo item, int rank) {
+    public void onAdd(WorkspaceItemInfo item, int rank) {
         View view = mContent.createAndAddViewForRank(item, rank);
         mLauncher.getModelWriter().addOrMoveItemInDatabase(item, mInfo.id, 0, item.cellX,
                 item.cellY);
@@ -1215,7 +1215,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mItemsInvalidated = true;
     }
 
-    public void onRemove(ShortcutInfo item) {
+    public void onRemove(WorkspaceItemInfo item) {
         mItemsInvalidated = true;
         View v = getViewForInfo(item);
         mContent.removeItem(v);
@@ -1233,7 +1233,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
     }
 
-    private View getViewForInfo(final ShortcutInfo item) {
+    private View getViewForInfo(final WorkspaceItemInfo item) {
         return mContent.iterateOverItems(new ItemOperator() {
 
             @Override

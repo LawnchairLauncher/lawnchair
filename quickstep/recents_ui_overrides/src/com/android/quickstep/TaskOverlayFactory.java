@@ -36,6 +36,8 @@ import java.util.List;
  */
 public class TaskOverlayFactory implements ResourceBasedOverride {
 
+    public static final String AIAI_PACKAGE = "com.google.android.as";
+
     /** Note that these will be shown in order from top to bottom, if available for the task. */
     private static final TaskSystemShortcut[] MENU_OPTIONS = new TaskSystemShortcut[]{
             new TaskSystemShortcut.AppInfo(),

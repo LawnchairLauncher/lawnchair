@@ -16,15 +16,15 @@
 
 package com.android.quickstep;
 
+import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.util.Log;
 
 import com.android.launcher3.util.MainThreadInitializedObject;
-import com.android.systemui.shared.system.QuickStepContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,8 +70,6 @@ public class SysUINavigationMode {
         mContext = context;
         initializeMode();
 
-        IntentFilter filter = new IntentFilter(ACTION_OVERLAY_CHANGED);
-        filter.addDataScheme("package");
         mContext.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -81,7 +79,7 @@ public class SysUINavigationMode {
                     dispatchModeChange();
                 }
             }
-        }, filter);
+        }, getPackageFilter("android", ACTION_OVERLAY_CHANGED));
     }
 
     private void initializeMode() {

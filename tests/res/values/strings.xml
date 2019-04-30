@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shortcut1" translatable="false">Shortcut 1</string>
+    <string name="shortcut2" translatable="false">Shortcut 2</string>
+    <string name="shortcut3" translatable="false">Shortcut 3</string>
+</resources>

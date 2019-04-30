@@ -17,6 +17,9 @@ package com.android.quickstep;
 
 import static androidx.recyclerview.widget.ItemTouchHelper.RIGHT;
 
+import static com.android.quickstep.TaskAdapter.ITEM_TYPE_CLEAR_ALL;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -44,5 +47,15 @@ public final class TaskSwipeCallback extends ItemTouchHelper.SimpleCallback {
         if (direction == RIGHT) {
             mTaskActionController.removeTask((TaskHolder) viewHolder);
         }
+    }
+
+    @Override
+    public int getSwipeDirs(@NonNull RecyclerView recyclerView,
+            @NonNull ViewHolder viewHolder) {
+        if (viewHolder.getItemViewType() == ITEM_TYPE_CLEAR_ALL) {
+            // Clear all button should not be swipable.
+            return 0;
+        }
+        return super.getSwipeDirs(recyclerView, viewHolder);
     }
 }

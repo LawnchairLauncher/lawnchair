@@ -24,6 +24,7 @@ import android.animation.FloatArrayEvaluator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.TargetApi;
+import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -54,7 +55,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.FirstFrameAnimatorHelper;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.icons.LauncherIcons;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 
@@ -321,11 +321,11 @@ public class DragView extends View {
             boolean iconBadged = (info instanceof ItemInfoWithIcon)
                     && (((ItemInfoWithIcon) info).runtimeStatusFlags & FLAG_ICON_BADGED) > 0;
             if ((info.id == ItemInfo.NO_ID && !iconBadged)
-                    || !(obj instanceof ShortcutInfoCompat)) {
+                    || !(obj instanceof ShortcutInfo)) {
                 // The item is not yet added on home screen.
                 return new FixedSizeEmptyDrawable(iconSize);
             }
-            ShortcutInfoCompat si = (ShortcutInfoCompat) obj;
+            ShortcutInfo si = (ShortcutInfo) obj;
             LauncherIcons li = LauncherIcons.obtain(appState.getContext());
             Bitmap badge = li.getShortcutInfoBadge(si, appState.getIconCache()).iconBitmap;
             li.recycle();

@@ -7,19 +7,14 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 
 import android.content.ComponentName;
-import android.content.ContentProviderOperation;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.util.Pair;
 
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
@@ -103,7 +98,7 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
 
     @Test
     public void testAddItem_existing_item_ignored() throws Exception {
-        ShortcutInfo info = new ShortcutInfo();
+        WorkspaceItemInfo info = new WorkspaceItemInfo();
         info.intent = new Intent().setComponent(mComponent1);
 
         // Setup a screen with a hole
@@ -115,10 +110,10 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
 
     @Test
     public void testAddItem_some_items_added() throws Exception {
-        ShortcutInfo info = new ShortcutInfo();
+        WorkspaceItemInfo info = new WorkspaceItemInfo();
         info.intent = new Intent().setComponent(mComponent1);
 
-        ShortcutInfo info2 = new ShortcutInfo();
+        WorkspaceItemInfo info2 = new WorkspaceItemInfo();
         info2.intent = new Intent().setComponent(mComponent2);
 
         // Setup a screen with a hole
@@ -155,7 +150,7 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
                     continue;
                 }
 
-                ShortcutInfo info = new ShortcutInfo();
+                WorkspaceItemInfo info = new WorkspaceItemInfo();
                 info.intent = new Intent().setComponent(mComponent1);
                 info.id = startId++;
                 info.screenId = screenId;

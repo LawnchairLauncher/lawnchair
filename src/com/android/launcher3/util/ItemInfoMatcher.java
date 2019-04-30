@@ -23,7 +23,7 @@ import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 
 import java.util.HashSet;
@@ -41,15 +41,15 @@ public interface ItemInfoMatcher {
     default HashSet<ItemInfo> filterItemInfos(Iterable<ItemInfo> infos) {
         HashSet<ItemInfo> filtered = new HashSet<>();
         for (ItemInfo i : infos) {
-            if (i instanceof ShortcutInfo) {
-                ShortcutInfo info = (ShortcutInfo) i;
+            if (i instanceof WorkspaceItemInfo) {
+                WorkspaceItemInfo info = (WorkspaceItemInfo) i;
                 ComponentName cn = info.getTargetComponent();
                 if (cn != null && matches(info, cn)) {
                     filtered.add(info);
                 }
             } else if (i instanceof FolderInfo) {
                 FolderInfo info = (FolderInfo) i;
-                for (ShortcutInfo s : info.contents) {
+                for (WorkspaceItemInfo s : info.contents) {
                     ComponentName cn = s.getTargetComponent();
                     if (cn != null && matches(s, cn)) {
                         filtered.add(s);

@@ -32,11 +32,11 @@ import android.os.UserHandle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
 
 /**
  * Wrapper class for representing a shortcut configure activity.
@@ -70,10 +70,10 @@ public abstract class ShortcutConfigActivityInfo implements ComponentWithLabel {
     public abstract Drawable getFullResIcon(IconCache cache);
 
     /**
-     * Return a shortcut info, if it can be created directly on drop, without requiring any
+     * Return a WorkspaceItemInfo, if it can be created directly on drop, without requiring any
      * {@link #startConfigActivity(Activity, int)}.
      */
-    public ShortcutInfo createShortcutInfo() {
+    public WorkspaceItemInfo createWorkspaceItemInfo() {
         return null;
     }
 

@@ -30,7 +30,7 @@ import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
@@ -77,7 +77,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
                 if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                     if (item instanceof AppInfo) {
-                        item = ((AppInfo) item).makeShortcut();
+                        item = ((AppInfo) item).makeWorkspaceItem();
                     }
                 }
                 if (item != null) {
@@ -92,11 +92,11 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                 int screenId = coords[0];
 
                 ItemInfo itemInfo;
-                if (item instanceof ShortcutInfo || item instanceof FolderInfo ||
+                if (item instanceof WorkspaceItemInfo || item instanceof FolderInfo ||
                         item instanceof LauncherAppWidgetInfo) {
                     itemInfo = item;
                 } else if (item instanceof AppInfo) {
-                    itemInfo = ((AppInfo) item).makeShortcut();
+                    itemInfo = ((AppInfo) item).makeWorkspaceItem();
                 } else {
                     throw new RuntimeException("Unexpected info type");
                 }
@@ -106,7 +106,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                         LauncherSettings.Favorites.CONTAINER_DESKTOP, screenId,
                         coords[1], coords[2]);
 
-                // Save the ShortcutInfo for binding in the workspace
+                // Save the WorkspaceItemInfo for binding in the workspace
                 addedItemsFinal.add(itemInfo);
             }
         }
@@ -165,8 +165,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
         boolean isLauncherAppTarget = Utilities.isLauncherAppTarget(intent);
         synchronized (dataModel) {
             for (ItemInfo item : dataModel.itemsIdMap) {
-                if (item instanceof ShortcutInfo) {
-                    ShortcutInfo info = (ShortcutInfo) item;
+                if (item instanceof WorkspaceItemInfo) {
+                    WorkspaceItemInfo info = (WorkspaceItemInfo) item;
                     if (item.getIntent() != null && info.user.equals(user)) {
                         Intent copyIntent = new Intent(item.getIntent());
                         copyIntent.setSourceBounds(intent.getSourceBounds());
@@ -178,7 +178,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                         // checking for existing promise icon with same package name
                         if (isLauncherAppTarget
                                 && info.isPromise()
-                                && info.hasStatusFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)
+                                && info.hasStatusFlag(WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON)
                                 && info.getTargetComponent() != null
                                 && compPkgName != null
                                 && compPkgName.equals(info.getTargetComponent().getPackageName())) {

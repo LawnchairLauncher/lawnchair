@@ -31,7 +31,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Utilities;
 
 import java.util.ArrayList;
@@ -301,7 +301,7 @@ public class PreviewItemManager {
      * @param dropped The item that was dropped onto the FolderIcon.
      */
     public void onDrop(List<BubbleTextView> oldParams, List<BubbleTextView> newParams,
-            ShortcutInfo dropped) {
+            WorkspaceItemInfo dropped) {
         int numItems = newParams.size();
         final ArrayList<PreviewItemDrawingParams> params = mFirstPageParams;
         buildParamsForPage(0, params, false);

@@ -16,8 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.model.AppLaunchTracker.CONTAINER_SEARCH;
-
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -169,10 +167,10 @@ public abstract class BaseDraggingActivity extends BaseActivity
             intent.setSourceBounds(getViewBounds(v));
         }
         try {
-            boolean isShortcut = (item instanceof ShortcutInfo)
+            boolean isShortcut = (item instanceof WorkspaceItemInfo)
                     && (item.itemType == Favorites.ITEM_TYPE_SHORTCUT
                     || item.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
-                    && !((ShortcutInfo) item).isPromise();
+                    && !((WorkspaceItemInfo) item).isPromise();
             if (isShortcut) {
                 // Shortcuts need some special checks due to legacy reasons.
                 startShortcutIntentSafely(intent, optsBundle, item, sourceContainer);
@@ -209,7 +207,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
                         .penaltyLog().build());
 
                 if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-                    String id = ((ShortcutInfo) info).getDeepShortcutId();
+                    String id = ((WorkspaceItemInfo) info).getDeepShortcutId();
                     String packageName = intent.getPackage();
                     DeepShortcutManager.getInstance(this).startShortcut(
                             packageName, id, intent.getSourceBounds(), optsBundle, info.user);

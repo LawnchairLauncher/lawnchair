@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.tapl.LauncherInstrumentation.NavigationModel.ZERO_BUTTON;
+
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
@@ -47,6 +49,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
     private boolean hasClickableIcon(UiObject2 allAppsContainer, BySelector appIconSelector) {
         final UiObject2 icon = allAppsContainer.findObject(appIconSelector);
         if (icon == null) return false;
+        if (mLauncher.getNavigationModel() == ZERO_BUTTON) return true;
         final UiObject2 navBar = mLauncher.waitForSystemUiObject("navigation_bar_frame");
         return icon.getVisibleBounds().bottom < navBar.getVisibleBounds().top;
     }
@@ -63,8 +66,10 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to get app icon on all apps")) {
             final UiObject2 allAppsContainer = verifyActiveContainer();
-            final UiObject2 navBar = mLauncher.waitForSystemUiObject("navigation_bar_frame");
-            allAppsContainer.setGestureMargins(0, 0, 0, navBar.getVisibleBounds().height() + 1);
+            if (mLauncher.getNavigationModel() != ZERO_BUTTON) {
+                final UiObject2 navBar = mLauncher.waitForSystemUiObject("navigation_bar_frame");
+                allAppsContainer.setGestureMargins(0, 0, 0, navBar.getVisibleBounds().height() + 1);
+            }
             final BySelector appIconSelector = AppIcon.getAppIconSelector(appName, mLauncher);
             if (!hasClickableIcon(allAppsContainer, appIconSelector)) {
                 scrollBackToBeginning();

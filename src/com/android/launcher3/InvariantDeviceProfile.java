@@ -16,8 +16,9 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
 import static com.android.launcher3.Utilities.getDevicePrefs;
+import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
+import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 
 import android.annotation.TargetApi;
 import android.appwidget.AppWidgetHostView;
@@ -25,7 +26,6 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -543,7 +543,7 @@ public class InvariantDeviceProfile {
             canBeDefault = a.getBoolean(
                     R.styleable.ProfileDisplayOption_canBeDefault, false);
 
-            iconSize = a.getFloat(R.styleable.ProfileDisplayOption_iconSize, 0);
+            iconSize = a.getFloat(R.styleable.ProfileDisplayOption_iconImageSize, 0);
             landscapeIconSize = a.getFloat(R.styleable.ProfileDisplayOption_landscapeIconSize,
                     iconSize);
             iconTextSize = a.getFloat(R.styleable.ProfileDisplayOption_iconTextSize, 0);
@@ -578,9 +578,7 @@ public class InvariantDeviceProfile {
         private final String ACTION_OVERLAY_CHANGED = "android.intent.action.OVERLAY_CHANGED";
 
         OverlayMonitor(Context context) {
-            IntentFilter filter = new IntentFilter(ACTION_OVERLAY_CHANGED);
-            filter.addDataScheme("package");
-            context.registerReceiver(this, filter);
+            context.registerReceiver(this, getPackageFilter("android", ACTION_OVERLAY_CHANGED));
         }
 
         @Override

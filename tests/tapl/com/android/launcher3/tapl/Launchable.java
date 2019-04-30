@@ -27,7 +27,7 @@ import androidx.test.uiautomator.Until;
 /**
  * Ancestor for AppIcon and AppMenuItem.
  */
-class Launchable {
+abstract class Launchable {
     protected final LauncherInstrumentation mLauncher;
 
     protected final UiObject2 mObject;
@@ -45,24 +45,17 @@ class Launchable {
      * Clicks the object to launch its app.
      */
     public Background launch(String expectedPackageName) {
-        return launch(expectedPackageName, By.pkg(expectedPackageName).depth(0));
+        return launch(By.pkg(expectedPackageName));
     }
 
-    /**
-     * Clicks the object to launch its app.
-     */
-    public Background launch(String expectedPackageName, String expectedAppText) {
-        return launch(expectedPackageName, By.pkg(expectedPackageName).text(expectedAppText));
-    }
-
-    private Background launch(String errorMessage, BySelector selector) {
+    private Background launch(BySelector selector) {
         LauncherInstrumentation.log("Launchable.launch before click " +
                 mObject.getVisibleCenter());
         mLauncher.assertTrue(
                 "Launching an app didn't open a new window: " + mObject.getText(),
                 mObject.clickAndWait(Until.newWindow(), LauncherInstrumentation.WAIT_TIME_MS));
         mLauncher.assertTrue(
-                "App didn't start: " + errorMessage,
+                "App didn't start: " + selector,
                 mLauncher.getDevice().wait(Until.hasObject(selector),
                         LauncherInstrumentation.WAIT_TIME_MS));
         return new Background(mLauncher);
@@ -76,10 +69,13 @@ class Launchable {
         Workspace.dragIconToWorkspace(
                 mLauncher,
                 this,
-                new Point(device.getDisplayWidth() / 2, device.getDisplayHeight() / 2));
+                new Point(device.getDisplayWidth() / 2, device.getDisplayHeight() / 2),
+                getLongPressIndicator());
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "dragged launchable to workspace")) {
             return new Workspace(mLauncher);
         }
     }
+
+    protected abstract String getLongPressIndicator();
 }

@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 
@@ -58,9 +58,9 @@ public class PackageInstallStateChangedTaskTest extends BaseModelUpdateTaskTestC
     private void verifyProgressUpdate(int progress, Integer... idsUpdated) {
         HashSet<Integer> updates = new HashSet<>(Arrays.asList(idsUpdated));
         for (ItemInfo info : bgDataModel.itemsIdMap) {
-            if (info instanceof ShortcutInfo) {
+            if (info instanceof WorkspaceItemInfo) {
                 assertEquals(updates.contains(info.id) ? progress: 0,
-                        ((ShortcutInfo) info).getInstallProgress());
+                        ((WorkspaceItemInfo) info).getInstallProgress());
             } else {
                 assertEquals(updates.contains(info.id) ? progress: -1,
                         ((LauncherAppWidgetInfo) info).installProgress);

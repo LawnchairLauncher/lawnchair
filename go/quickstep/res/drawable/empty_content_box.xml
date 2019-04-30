@@ -14,13 +14,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
-    <dimen name="task_item_half_vert_margin">8dp</dimen>
-    <dimen name="task_thumbnail_and_icon_view_size">60dp</dimen>
-    <dimen name="task_thumbnail_height">60dp</dimen>
-    <dimen name="task_thumbnail_width">36dp</dimen>
-    <dimen name="task_icon_size">36dp</dimen>
-
-    <dimen name="clear_all_button_width">106dp</dimen>
-    <dimen name="clear_all_button_height">36dp</dimen>
-</resources>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@android:color/transparent"/>
+    <stroke android:color="@android:color/white" android:width="4px"/>
+    <corners android:radius="2dp"/>
+</shape>

@@ -52,7 +52,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompatVO;
 import com.android.launcher3.model.WidgetItem;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.InstantAppResolver;
@@ -250,8 +249,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
      */
     public void onPlaceAutomaticallyClick(View v) {
         if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
-            InstallShortcutReceiver.queueShortcut(
-                    new ShortcutInfoCompat(mRequest.getShortcutInfo()), this);
+            InstallShortcutReceiver.queueShortcut(mRequest.getShortcutInfo(), this);
             logCommand(Action.Command.CONFIRM);
             mRequest.accept();
             finish();
