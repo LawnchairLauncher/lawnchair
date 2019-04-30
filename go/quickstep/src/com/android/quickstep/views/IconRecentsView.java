@@ -16,7 +16,6 @@
 package com.android.quickstep.views;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
-import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 
 import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
 
@@ -32,7 +31,6 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.util.ArraySet;
@@ -125,6 +123,7 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
     private boolean mTransitionedFromApp;
     private AnimatorSet mLayoutAnimation;
     private final ArraySet<View> mLayingOutViews = new ArraySet<>();
+    private Rect mInsets;
     private final RecentsModel.TaskThumbnailChangeListener listener = (taskId, thumbnailData) -> {
         ArrayList<TaskItemView> itemViews = getTaskViews();
         for (int i = 0, size = itemViews.size(); i < size; i++) {
@@ -194,13 +193,25 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
                         case ITEM_TYPE_CLEAR_ALL:
                             outRect.top = (int) res.getDimension(
                                     R.dimen.clear_all_item_view_top_margin);
-                            if (res.getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
-                                outRect.bottom = (int) res.getDimension(
-                                        R.dimen.clear_all_item_view_landscape_bottom_margin);
+                            int desiredBottomMargin = (int) res.getDimension(
+                                    R.dimen.clear_all_item_view_bottom_margin);
+                            // Only add bottom margin if insets aren't enough.
+                            if (mInsets.bottom < desiredBottomMargin) {
+                                outRect.bottom = desiredBottomMargin - mInsets.bottom;
                             }
                             break;
                         case ITEM_TYPE_TASK:
-                            outRect.top = (int) res.getDimension(R.dimen.task_item_top_margin);
+                            int desiredTopMargin = (int) res.getDimension(
+                                    R.dimen.task_item_top_margin);
+                            if (mTaskRecyclerView.getChildAdapterPosition(view) ==
+                                    state.getItemCount() - 1) {
+                                // Only add top margin to top task view if insets aren't enough.
+                                if (mInsets.top < desiredTopMargin) {
+                                    outRect.top = desiredTopMargin - mInsets.bottom;
+                                }
+                                return;
+                            }
+                            outRect.top = desiredTopMargin;
                             break;
                         default:
                     }
@@ -231,11 +242,6 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
         for (int i = 0; i < childCount; i++) {
             mTaskRecyclerView.getChildAt(i).setEnabled(enabled);
         }
-    }
-
-    @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
-        mTaskRecyclerView.invalidateItemDecorations();
     }
 
     /**
@@ -522,6 +528,8 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
 
     @Override
     public void setInsets(Rect insets) {
+        mInsets = insets;
         mTaskRecyclerView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+        mTaskRecyclerView.invalidateItemDecorations();
     }
 }
