@@ -36,7 +36,8 @@ import com.android.launcher3.TestProtocol;
  * Operations on the workspace screen.
  */
 public final class Workspace extends Home {
-    private static final float FLING_SPEED = 3500.0F;
+    private static final float FLING_SPEED =
+            LauncherInstrumentation.needSlowGestures() ? 1500.0F : 3500.0F;
     private static final int DRAG_DURACTION = 2000;
     private final UiObject2 mHotseat;
 
