@@ -28,6 +28,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -44,12 +45,14 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
     private static final long PEEK_ANIM_DURATION = 100;
 
     private final MotionPauseDetector mMotionPauseDetector;
+    private final float mMotionPauseMinDisplacement;
 
     private AnimatorSet mPeekAnim;
 
     public FlingAndHoldTouchController(Launcher l) {
         super(l, false /* allowDragToOverview */);
         mMotionPauseDetector = new MotionPauseDetector(l);
+        mMotionPauseMinDisplacement = ViewConfiguration.get(l).getScaledTouchSlop();
     }
 
     @Override
@@ -98,7 +101,8 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
 
     @Override
     public boolean onDrag(float displacement, MotionEvent event) {
-        mMotionPauseDetector.addPosition(displacement, 0, event.getEventTime());
+        mMotionPauseDetector.setDisallowPause(-displacement < mMotionPauseMinDisplacement);
+        mMotionPauseDetector.addPosition(displacement, event.getEventTime());
         return super.onDrag(displacement, event);
     }
 
@@ -111,6 +115,7 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
 
             AnimatorSetBuilder builder = new AnimatorSetBuilder();
             builder.setInterpolator(AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS, OVERSHOOT_1_2);
+            builder.setInterpolator(AnimatorSetBuilder.ANIM_WORKSPACE_TRANSLATE, OVERSHOOT_1_2);
             AnimatorSet overviewAnim = mLauncher.getStateManager().createAtomicAnimation(
                     NORMAL, OVERVIEW, builder, ANIM_ALL, ATOMIC_DURATION);
             overviewAnim.addListener(new AnimatorListenerAdapter() {

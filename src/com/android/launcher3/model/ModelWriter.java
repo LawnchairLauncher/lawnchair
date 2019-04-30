@@ -36,7 +36,7 @@ import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ContentWriter;
@@ -114,7 +114,7 @@ public class ModelWriter {
         if (modelItem != null && item != modelItem) {
             // check all the data is consistent
             if (!Utilities.IS_DEBUG_DEVICE && !FeatureFlags.IS_DOGFOOD_BUILD &&
-                    modelItem instanceof ShortcutInfo && item instanceof ShortcutInfo) {
+                    modelItem instanceof WorkspaceItemInfo && item instanceof WorkspaceItemInfo) {
                 if (modelItem.title.toString().equals(item.title.toString()) &&
                         modelItem.getIntent().filterEquals(item.getIntent()) &&
                         modelItem.id == item.id &&

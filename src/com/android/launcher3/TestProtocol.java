@@ -66,4 +66,6 @@ public final class TestProtocol {
 
     public static boolean sDebugTracing = false;
     public static final String NO_DRAG_TAG = "b/129434166";
+    public static final String REQUEST_ENABLE_DRAG_LOGGING = "enable-drag-logging";
+    public static final String REQUEST_DISABLE_DRAG_LOGGING = "disable-drag-logging";
 }

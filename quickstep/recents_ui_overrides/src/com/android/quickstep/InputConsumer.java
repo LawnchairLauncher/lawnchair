@@ -34,7 +34,7 @@ public interface InputConsumer {
 
     int getType();
 
-    default boolean isActive() {
+    default boolean useSharedSwipeState() {
         return false;
     }
 

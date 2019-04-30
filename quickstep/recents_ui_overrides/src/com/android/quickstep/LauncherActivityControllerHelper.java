@@ -38,10 +38,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherInitListener;
+import com.android.launcher3.LauncherInitListenerEx;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -58,10 +62,6 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
 
 /**
  * {@link ActivityControlHelper} for the in-launcher recents.
@@ -163,21 +163,16 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         }
         activity.getStateManager().setRestState(resetState);
 
-        final LauncherState fromState;
-        if (!activityVisible) {
-            // Since the launcher is not visible, we can safely reset the scroll position.
-            // This ensures then the next swipe up to all-apps starts from scroll 0.
-            activity.getAppsView().reset(false /* animate */);
-            fromState = animateActivity ? BACKGROUND_APP : OVERVIEW;
-            activity.getStateManager().goToState(fromState, false);
+        final LauncherState fromState = animateActivity ? BACKGROUND_APP : OVERVIEW;
+        activity.getStateManager().goToState(fromState, false);
+        // Since all apps is not visible, we can safely reset the scroll position.
+        // This ensures then the next swipe up to all-apps starts from scroll 0.
+        activity.getAppsView().reset(false /* animate */);
 
-            // Optimization, hide the all apps view to prevent layout while initializing
-            activity.getAppsView().getContentView().setVisibility(View.GONE);
+        // Optimization, hide the all apps view to prevent layout while initializing
+        activity.getAppsView().getContentView().setVisibility(View.GONE);
 
-            AccessibilityManagerCompat.sendStateEventToTest(activity, fromState.ordinal);
-        } else {
-            fromState = startState;
-        }
+        AccessibilityManagerCompat.sendStateEventToTest(activity, fromState.ordinal);
 
         return new AnimationFactory() {
             private Animator mShelfAnim;
@@ -185,8 +180,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
 
             @Override
             public void createActivityController(long transitionLength) {
-                createActivityControllerInternal(activity, activityVisible, fromState,
-                        transitionLength, callback);
+                createActivityControllerInternal(activity, fromState, transitionLength, callback);
             }
 
             @Override
@@ -230,18 +224,9 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         };
     }
 
-    private void createActivityControllerInternal(Launcher activity, boolean wasVisible,
-            LauncherState fromState, long transitionLength,
-            Consumer<AnimatorPlaybackController> callback) {
+    private void createActivityControllerInternal(Launcher activity, LauncherState fromState,
+            long transitionLength, Consumer<AnimatorPlaybackController> callback) {
         LauncherState endState = OVERVIEW;
-        if (wasVisible && fromState != BACKGROUND_APP) {
-            // If a translucent app was launched fom launcher, animate launcher states.
-            DeviceProfile dp = activity.getDeviceProfile();
-            long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
-            callback.accept(activity.getStateManager()
-                    .createAnimationToNewWorkspace(fromState, endState, accuracy));
-            return;
-        }
         if (fromState == endState) {
             return;
         }
@@ -319,7 +304,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     @Override
     public ActivityInitListener createActivityInitListener(
             BiPredicate<Launcher, Boolean> onInitListener) {
-        return new LauncherInitListener(onInitListener);
+        return new LauncherInitListenerEx(onInitListener);
     }
 
     @Nullable

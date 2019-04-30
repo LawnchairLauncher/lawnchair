@@ -19,6 +19,8 @@
     <dimen name="task_thumbnail_top_margin">24dp</dimen>
     <dimen name="task_thumbnail_half_top_margin">12dp</dimen>
     <dimen name="task_thumbnail_icon_size">48dp</dimen>
+    <!-- For screens without rounded corners -->
+    <dimen name="task_corner_radius_small">2dp</dimen>
 
     <dimen name="recents_page_spacing">10dp</dimen>
     <dimen name="recents_clear_all_deadzone_vertical_margin">70dp</dimen>
@@ -36,7 +38,7 @@
     <dimen name="motion_pause_detector_speed_very_slow">0.0285dp</dimen>
     <dimen name="motion_pause_detector_speed_somewhat_fast">0.285dp</dimen>
     <dimen name="motion_pause_detector_speed_fast">0.5dp</dimen>
-    <dimen name="motion_pause_detector_min_displacement">48dp</dimen>
+    <dimen name="motion_pause_detector_min_displacement_from_app">36dp</dimen>
 
     <!-- Launcher app transition -->
     <dimen name="content_trans_y">50dp</dimen>
@@ -63,8 +65,8 @@
     <dimen name="shelf_surface_offset">24dp</dimen>
 
     <!-- Assistant Gestures -->
-    <dimen name="gestures_assistant_size">28dp</dimen>
-    <dimen name="gestures_assistant_drag_threshold">70dp</dimen>
+    <dimen name="gestures_assistant_size">48dp</dimen>
+    <dimen name="gestures_assistant_drag_threshold">55dp</dimen>
 
     <!-- Distance to move elements when swiping up to go home from launcher -->
     <dimen name="home_pullback_distance">28dp</dimen>

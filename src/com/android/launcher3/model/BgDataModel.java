@@ -16,6 +16,7 @@
 package com.android.launcher3.model;
 
 import android.content.Context;
+import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,7 +27,7 @@ import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.DumpTargetWrapper;
@@ -34,7 +35,6 @@ import com.android.launcher3.model.nano.LauncherDumpProto;
 import com.android.launcher3.model.nano.LauncherDumpProto.ContainerType;
 import com.android.launcher3.model.nano.LauncherDumpProto.DumpTarget;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
@@ -185,7 +185,7 @@ public class BgDataModel {
             FolderInfo fInfo = folders.valueAt(i);
             dtw = new DumpTargetWrapper(ContainerType.FOLDER, folders.size());
             dtw.writeToDumpTarget(fInfo);
-            for(ShortcutInfo sInfo: fInfo.contents) {
+            for(WorkspaceItemInfo sInfo: fInfo.contents) {
                 DumpTargetWrapper child = new DumpTargetWrapper(sInfo);
                 child.writeToDumpTarget(sInfo);
                 dtw.add(child);
@@ -335,7 +335,7 @@ public class BgDataModel {
                             Log.e(TAG, msg);
                         }
                     } else {
-                        findOrMakeFolder(item.container).add((ShortcutInfo) item, false);
+                        findOrMakeFolder(item.container).add((WorkspaceItemInfo) item, false);
                     }
 
                 }
@@ -366,7 +366,7 @@ public class BgDataModel {
      * Clear all the deep shortcut counts for the given package, and re-add the new shortcut counts.
      */
     public synchronized void updateDeepShortcutCounts(
-            String packageName, UserHandle user, List<ShortcutInfoCompat> shortcuts) {
+            String packageName, UserHandle user, List<ShortcutInfo> shortcuts) {
         if (packageName != null) {
             Iterator<ComponentKey> keysIter = deepShortcutMap.keySet().iterator();
             while (keysIter.hasNext()) {
@@ -379,7 +379,7 @@ public class BgDataModel {
         }
 
         // Now add the new shortcuts to the map.
-        for (ShortcutInfoCompat shortcut : shortcuts) {
+        for (ShortcutInfo shortcut : shortcuts) {
             boolean shouldShowInContainer = shortcut.isEnabled()
                     && (shortcut.isDeclaredInManifest() || shortcut.isDynamic());
             if (shouldShowInContainer) {

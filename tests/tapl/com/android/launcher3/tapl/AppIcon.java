@@ -50,4 +50,9 @@ public final class AppIcon extends Launchable {
                 downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, iconCenter);
         return new AppIconMenu(mLauncher, deepShortcutsContainer);
     }
+
+    @Override
+    protected String getLongPressIndicator() {
+        return "deep_shortcuts_container";
+    }
 }

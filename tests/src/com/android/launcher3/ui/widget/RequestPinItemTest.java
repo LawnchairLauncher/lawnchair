@@ -34,7 +34,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.shortcuts.ShortcutKey;
@@ -80,7 +80,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
     @Test
     public void testEmpty() throws Throwable { /* needed while the broken tests are being fixed */ }
 
-    @Test @Ignore
+    @Test @Ignore // b/131116593
     public void testPinWidgetNoConfig() throws Throwable {
         runTest("pinWidgetNoConfig", true, new ItemOperator() {
             @Override
@@ -93,7 +93,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         });
     }
 
-    @Test @Ignore
+        @Test @Ignore // b/131116593
     public void testPinWidgetNoConfig_customPreview() throws Throwable {
         // Command to set custom preview
         Intent command =  RequestPinItemActivity.getCommandIntent(
@@ -111,7 +111,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         }, command);
     }
 
-    @Test @Ignore
+    @Test @Ignore // b/131116593
     public void testPinWidgetWithConfig() throws Throwable {
         runTest("pinWidgetWithConfig", true, new ItemOperator() {
             @Override
@@ -124,7 +124,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         });
     }
 
-    @Test @Ignore
+    @Test @Ignore // b/131116593
     public void testPinShortcut() throws Throwable {
         // Command to set the shortcut id
         Intent command = RequestPinItemActivity.getCommandIntent(
@@ -134,7 +134,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         runTest("pinShortcut", false, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View view) {
-                return info instanceof ShortcutInfo &&
+                return info instanceof WorkspaceItemInfo &&
                         info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
                         ShortcutKey.fromItemInfo(info).getId().equals(mShortcutId);
             }

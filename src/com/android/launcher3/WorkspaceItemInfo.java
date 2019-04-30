@@ -19,17 +19,18 @@ package com.android.launcher3;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ShortcutInfo;
 import android.text.TextUtils;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
+import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ContentWriter;
 
 /**
  * Represents a launchable icon on the workspaces and in folders.
  */
-public class ShortcutInfo extends ItemInfoWithIcon {
+public class WorkspaceItemInfo extends ItemInfoWithIcon {
 
     public static final int DEFAULT = 0;
 
@@ -86,11 +87,11 @@ public class ShortcutInfo extends ItemInfoWithIcon {
      */
     private int mInstallProgress;
 
-    public ShortcutInfo() {
+    public WorkspaceItemInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
     }
 
-    public ShortcutInfo(ShortcutInfo info) {
+    public WorkspaceItemInfo(WorkspaceItemInfo info) {
         super(info);
         title = info.title;
         intent = new Intent(info.intent);
@@ -99,17 +100,17 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         mInstallProgress = info.mInstallProgress;
     }
 
-    /** TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut. */
-    public ShortcutInfo(AppInfo info) {
+    /** TODO: Remove this.  It's only called by ApplicationInfo.makeWorkspaceItem. */
+    public WorkspaceItemInfo(AppInfo info) {
         super(info);
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
     }
 
     /**
-     * Creates a {@link ShortcutInfo} from a {@link ShortcutInfoCompat}.
+     * Creates a {@link WorkspaceItemInfo} from a {@link ShortcutInfo}.
      */
-    public ShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
+    public WorkspaceItemInfo(ShortcutInfo shortcutInfo, Context context) {
         user = shortcutInfo.getUserHandle();
         itemType = Favorites.ITEM_TYPE_DEEP_SHORTCUT;
         updateFromDeepShortcutInfo(shortcutInfo, context);
@@ -158,9 +159,9 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         status |= FLAG_INSTALL_SESSION_ACTIVE;
     }
 
-    public void updateFromDeepShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
-        // {@link ShortcutInfoCompat#getActivity} can change during an update. Recreate the intent
-        intent = shortcutInfo.makeIntent();
+    public void updateFromDeepShortcutInfo(ShortcutInfo shortcutInfo, Context context) {
+        // {@link ShortcutInfo#getActivity} can change during an update. Recreate the intent
+        intent = ShortcutKey.makeIntent(shortcutInfo);
         title = shortcutInfo.getShortLabel();
 
         CharSequence label = shortcutInfo.getLongLabel();
@@ -176,10 +177,10 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         disabledMessage = shortcutInfo.getDisabledMessage();
     }
 
-    /** Returns the ShortcutInfo id associated with the deep shortcut. */
+    /** Returns the WorkspaceItemInfo id associated with the deep shortcut. */
     public String getDeepShortcutId() {
         return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT ?
-                getIntent().getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID) : null;
+                getIntent().getStringExtra(ShortcutKey.EXTRA_SHORTCUT_ID) : null;
     }
 
     @Override

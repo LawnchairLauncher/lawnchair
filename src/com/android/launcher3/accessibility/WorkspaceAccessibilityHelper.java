@@ -27,7 +27,7 @@ import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.DragType;
 import com.android.launcher3.dragndrop.DragLayer;
 
@@ -106,7 +106,7 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
                 // For icons, we can consider cells that have another icon or a folder.
                 ItemInfo info = (ItemInfo) child.getTag();
                 if (info instanceof AppInfo || info instanceof FolderInfo ||
-                        info instanceof ShortcutInfo) {
+                        info instanceof WorkspaceItemInfo) {
                     return id;
                 }
             }
@@ -125,7 +125,7 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
             return mContext.getString(R.string.item_moved);
         } else {
             ItemInfo info = (ItemInfo) child.getTag();
-            if (info instanceof AppInfo || info instanceof ShortcutInfo) {
+            if (info instanceof AppInfo || info instanceof WorkspaceItemInfo) {
                 return mContext.getString(R.string.folder_created);
 
             } else if (info instanceof FolderInfo) {
@@ -170,14 +170,14 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
 
     public static String getDescriptionForDropOver(View overChild, Context context) {
         ItemInfo info = (ItemInfo) overChild.getTag();
-        if (info instanceof ShortcutInfo) {
+        if (info instanceof WorkspaceItemInfo) {
             return context.getString(R.string.create_folder_with, info.title);
         } else if (info instanceof FolderInfo) {
             if (TextUtils.isEmpty(info.title)) {
                 // Find the first item in the folder.
                 FolderInfo folder = (FolderInfo) info;
-                ShortcutInfo firstItem = null;
-                for (ShortcutInfo shortcut : folder.contents) {
+                WorkspaceItemInfo firstItem = null;
+                for (WorkspaceItemInfo shortcut : folder.contents) {
                     if (firstItem == null || firstItem.rank > shortcut.rank) {
                         firstItem = shortcut;
                     }

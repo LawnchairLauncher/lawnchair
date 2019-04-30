@@ -109,6 +109,6 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
     }
 
     protected int getSwipeStartY() {
-        return mLauncher.waitForSystemUiObject("navigation_bar_frame").getVisibleBounds().centerY();
+        return mLauncher.getRealDisplaySize().y - 1;
     }
 }
