@@ -492,8 +492,8 @@ public class TouchInteractionService extends Service implements
         boolean shouldDefer = activityControl.deferStartingActivity(mActiveNavBarRegion, event);
         return new OtherActivityInputConsumer(this, runningTaskInfo, mRecentsModel,
                 mOverviewComponentObserver.getOverviewIntent(), activityControl,
-                shouldDefer, mOverviewCallbacks, mTaskOverlayFactory, mInputConsumer,
-                this::onConsumerInactive, mSwipeSharedState, mInputMonitorCompat);
+                shouldDefer, mOverviewCallbacks, mInputConsumer, this::onConsumerInactive,
+                mSwipeSharedState, mInputMonitorCompat);
     }
 
     /**
