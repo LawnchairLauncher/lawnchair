@@ -729,7 +729,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         if (runningTaskTarget != null) {
             mClipAnimationHelper.updateSource(overviewStackBounds, runningTaskTarget);
         }
-        mClipAnimationHelper.prepareAnimation(false /* isOpening */);
+        mClipAnimationHelper.prepareAnimation(dp, false /* isOpening */);
         initTransitionEndpoints(dp);
 
         mRecentsAnimationWrapper.setController(targetSet);

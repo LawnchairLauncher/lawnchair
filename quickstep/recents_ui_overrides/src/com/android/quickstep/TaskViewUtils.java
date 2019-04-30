@@ -24,8 +24,11 @@ import android.content.ComponentName;
 import android.graphics.RectF;
 import android.view.View;
 
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.MultiValueUpdateListener;
@@ -128,7 +131,9 @@ public final class TaskViewUtils {
                 mTargetSet = new RemoteAnimationTargetSet(targets, MODE_OPENING);
                 inOutHelper.setTaskAlphaCallback((t, alpha) -> mTaskAlpha.value);
 
-                inOutHelper.prepareAnimation(true /* isOpening */);
+                inOutHelper.prepareAnimation(
+                        BaseActivity.fromContext(v.getContext()).getDeviceProfile(),
+                        true /* isOpening */);
                 inOutHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(),
                         mTargetSet.apps.length == 0 ? null : mTargetSet.apps[0]);
 
