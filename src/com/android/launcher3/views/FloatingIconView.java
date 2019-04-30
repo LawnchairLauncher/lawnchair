@@ -78,6 +78,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
 
     private final int mBlurSizeOutline;
 
+    private boolean mIsVerticalBarLayout = false;
     private boolean mIsAdaptiveIcon = false;
 
     private @Nullable Drawable mForeground;
@@ -273,7 +274,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
                 }
 
                 float aspectRatio = launcher.getDeviceProfile().aspectRatio;
-                if (launcher.getDeviceProfile().isVerticalBarLayout()) {
+                if (mIsVerticalBarLayout) {
                     lp.width = (int) Math.max(lp.width, lp.height * aspectRatio);
                 } else {
                     lp.height = (int) Math.max(lp.height, lp.width * aspectRatio);
@@ -318,8 +319,13 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         mBgDrawableBounds.set(mFinalDrawableBounds);
         Utilities.scaleRectAboutCenter(mBgDrawableBounds, scale);
         // Since the drawable is at the top of the view, we need to offset to keep it centered.
-        mBgDrawableBounds.offsetTo(mBgDrawableBounds.left,
-                (int) (mFinalDrawableBounds.top * scale));
+        if (mIsVerticalBarLayout) {
+            mBgDrawableBounds.offsetTo((int) (mFinalDrawableBounds.left  * scale),
+                    mBgDrawableBounds.top);
+        } else {
+            mBgDrawableBounds.offsetTo(mBgDrawableBounds.left,
+                    (int) (mFinalDrawableBounds.top * scale));
+        }
         mBackground.setBounds(mBgDrawableBounds);
     }
 
@@ -410,6 +416,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
             recycle.recycle();
         }
         FloatingIconView view = recycle != null ? recycle : new FloatingIconView(launcher);
+        view.mIsVerticalBarLayout = launcher.getDeviceProfile().isVerticalBarLayout();
 
         // Match the position of the original view.
         view.matchPositionOf(launcher, originalView, positionOut);
