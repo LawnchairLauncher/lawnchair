@@ -531,8 +531,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         return TaskView.getCurveScaleForInterpolation(interpolation);
     }
 
-    public Consumer<MotionEvent> getRecentsViewDispatcher() {
-        return mRecentsView != null ? mRecentsView::dispatchTouchEvent : null;
+    public Consumer<MotionEvent> getRecentsViewDispatcher(boolean isTransposed) {
+        return mRecentsView != null ? mRecentsView.getEventDispatcher(isTransposed) : null;
     }
 
     @UiThread
