@@ -20,13 +20,13 @@ import android.os.UserHandle;
 
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.ShortcutInfo;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -55,11 +55,11 @@ public class CacheDataUpdatedTask extends BaseModelUpdateTask {
 
         final ArrayList<AppInfo> updatedApps = new ArrayList<>();
 
-        ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<>();
+        ArrayList<WorkspaceItemInfo> updatedShortcuts = new ArrayList<>();
         synchronized (dataModel) {
             for (ItemInfo info : dataModel.itemsIdMap) {
-                if (info instanceof ShortcutInfo && mUser.equals(info.user)) {
-                    ShortcutInfo si = (ShortcutInfo) info;
+                if (info instanceof WorkspaceItemInfo && mUser.equals(info.user)) {
+                    WorkspaceItemInfo si = (WorkspaceItemInfo) info;
                     ComponentName cn = si.getTargetComponent();
                     if (si.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
                             && isValidShortcut(si) && cn != null
@@ -71,7 +71,7 @@ public class CacheDataUpdatedTask extends BaseModelUpdateTask {
             }
             apps.updateIconsAndLabels(mPackages, mUser, updatedApps);
         }
-        bindUpdatedShortcuts(updatedShortcuts, mUser);
+        bindUpdatedWorkspaceItems(updatedShortcuts);
 
         if (!updatedApps.isEmpty()) {
             scheduleCallbackTask(new CallbackTask() {
@@ -83,7 +83,7 @@ public class CacheDataUpdatedTask extends BaseModelUpdateTask {
         }
     }
 
-    public boolean isValidShortcut(ShortcutInfo si) {
+    public boolean isValidShortcut(WorkspaceItemInfo si) {
         switch (mOp) {
             case OP_CACHE_UPDATE:
                 return true;

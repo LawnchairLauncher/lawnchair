@@ -114,12 +114,16 @@ public final class Workspace extends Home {
     public void ensureWorkspaceIsScrollable() {
         final UiObject2 workspace = verifyActiveContainer();
         if (!isWorkspaceScrollable(workspace)) {
-            dragIconToWorkspace(
-                    mLauncher,
-                    getHotseatAppIcon("Chrome"),
-                    new Point(mLauncher.getDevice().getDisplayWidth(),
-                            workspace.getVisibleBounds().centerY()));
-            verifyActiveContainer();
+            try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                    "dragging icon to a second page of workspace to make it scrollable")) {
+                dragIconToWorkspace(
+                        mLauncher,
+                        getHotseatAppIcon("Chrome"),
+                        new Point(mLauncher.getDevice().getDisplayWidth(),
+                                workspace.getVisibleBounds().centerY()),
+                        "deep_shortcuts_container");
+                verifyActiveContainer();
+            }
         }
         assertTrue("Home screen workspace didn't become scrollable",
                 isWorkspaceScrollable(workspace));
@@ -136,17 +140,23 @@ public final class Workspace extends Home {
     }
 
     static void dragIconToWorkspace(
-            LauncherInstrumentation launcher, Launchable launchable, Point dest) {
+            LauncherInstrumentation launcher, Launchable launchable, Point dest,
+            String longPressIndicator) {
+        launcher.getTestInfo(TestProtocol.REQUEST_ENABLE_DRAG_LOGGING);
         LauncherInstrumentation.log("dragIconToWorkspace: begin");
         final Point launchableCenter = launchable.getObject().getVisibleCenter();
         final long downTime = SystemClock.uptimeMillis();
         launcher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, launchableCenter);
-        launcher.waitForLauncherObject("deep_shortcuts_container");
+        LauncherInstrumentation.log("dragIconToWorkspace: sent down");
+        launcher.waitForLauncherObject(longPressIndicator);
+        LauncherInstrumentation.log("dragIconToWorkspace: indicator");
         launcher.movePointer(downTime, DRAG_DURACTION, launchableCenter, dest);
+        LauncherInstrumentation.log("dragIconToWorkspace: moved pointer");
         launcher.sendPointer(
                 downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, dest);
         LauncherInstrumentation.log("dragIconToWorkspace: end");
         launcher.waitUntilGone("drop_target_bar");
+        launcher.getTestInfo(TestProtocol.REQUEST_DISABLE_DRAG_LOGGING);
     }
 
     /**

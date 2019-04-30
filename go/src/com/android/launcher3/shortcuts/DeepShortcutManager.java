@@ -18,6 +18,7 @@ package com.android.launcher3.shortcuts;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.ShortcutInfo;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -55,7 +56,7 @@ public class DeepShortcutManager {
         return false;
     }
 
-    public void onShortcutsChanged(List<ShortcutInfoCompat> shortcuts) {
+    public void onShortcutsChanged(List<ShortcutInfo> shortcuts) {
     }
 
     /**
@@ -64,7 +65,7 @@ public class DeepShortcutManager {
      * This method is intended to get the full details for shortcuts when they are added or updated,
      * because we only get "key" fields in onShortcutsChanged().
      */
-    public List<ShortcutInfoCompat> queryForFullDetails(String packageName,
+    public List<ShortcutInfo> queryForFullDetails(String packageName,
             List<String> shortcutIds, UserHandle user) {
         return Collections.emptyList();
     }
@@ -73,7 +74,7 @@ public class DeepShortcutManager {
      * Gets all the manifest and dynamic shortcuts associated with the given package and user,
      * to be displayed in the shortcuts container on long press.
      */
-    public List<ShortcutInfoCompat> queryForShortcutsContainer(ComponentName activity,
+    public List<ShortcutInfo> queryForShortcutsContainer(ComponentName activity,
             UserHandle user) {
         return Collections.emptyList();
     }
@@ -96,7 +97,7 @@ public class DeepShortcutManager {
             Bundle startActivityOptions, UserHandle user) {
     }
 
-    public Drawable getShortcutIconDrawable(ShortcutInfoCompat shortcutInfo, int density) {
+    public Drawable getShortcutIconDrawable(ShortcutInfo shortcutInfo, int density) {
         return null;
     }
 
@@ -105,16 +106,16 @@ public class DeepShortcutManager {
      *
      * If packageName is null, returns all pinned shortcuts regardless of package.
      */
-    public List<ShortcutInfoCompat> queryForPinnedShortcuts(String packageName, UserHandle user) {
+    public List<ShortcutInfo> queryForPinnedShortcuts(String packageName, UserHandle user) {
         return Collections.emptyList();
     }
 
-    public List<ShortcutInfoCompat> queryForPinnedShortcuts(String packageName,
+    public List<ShortcutInfo> queryForPinnedShortcuts(String packageName,
             List<String> shortcutIds, UserHandle user) {
         return Collections.emptyList();
     }
 
-    public List<ShortcutInfoCompat> queryForAllShortcuts(UserHandle user) {
+    public List<ShortcutInfo> queryForAllShortcuts(UserHandle user) {
         return Collections.emptyList();
     }
 

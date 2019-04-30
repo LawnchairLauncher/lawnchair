@@ -180,6 +180,13 @@ public class SwipeDetector {
         return mState == ScrollState.DRAGGING || mState == ScrollState.SETTLING;
     }
 
+    public int getDownX() {
+        return (int) mDownPos.x;
+    }
+
+    public int getDownY() {
+        return (int) mDownPos.y;
+    }
     /**
      * There's no touch and there's no animation.
      */

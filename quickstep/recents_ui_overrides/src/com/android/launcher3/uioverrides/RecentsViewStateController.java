@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.LauncherState.RECENTS_CLEAR_ALL_BUTTON;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 
 import android.animation.ValueAnimator;
@@ -22,14 +24,16 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.util.FloatProperty;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.PropertySetter;
+import com.android.quickstep.views.ClearAllButton;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
-
-import androidx.annotation.NonNull;
 
 /**
  * State handler for handling UI changes for {@link LauncherRecentsView}. In addition to managing
@@ -49,10 +53,8 @@ public final class RecentsViewStateController extends
         if (state.overviewUi) {
             mRecentsView.updateEmptyMessage();
             mRecentsView.resetTaskVisuals();
-            mRecentsView.setHintVisibility(1);
-        } else {
-            mRecentsView.setHintVisibility(0);
         }
+        setAlphas(PropertySetter.NO_ANIM_PROPERTY_SETTER, state.getVisibleElements(mLauncher));
     }
 
     @Override
@@ -62,7 +64,6 @@ public final class RecentsViewStateController extends
 
         if (!toState.overviewUi) {
             builder.addOnFinishRunnable(mRecentsView::resetTaskVisuals);
-            mRecentsView.setHintVisibility(0);
         }
 
         if (toState.overviewUi) {
@@ -74,8 +75,15 @@ public final class RecentsViewStateController extends
             updateAnim.setDuration(config.duration);
             builder.play(updateAnim);
             mRecentsView.updateEmptyMessage();
-            builder.addOnFinishRunnable(() -> mRecentsView.setHintVisibility(1));
         }
+
+        setAlphas(config.getPropertySetter(builder), toState.getVisibleElements(mLauncher));
+    }
+
+    private void setAlphas(PropertySetter propertySetter, int visibleElements) {
+        boolean hasClearAllButton = (visibleElements & RECENTS_CLEAR_ALL_BUTTON) != 0;
+        propertySetter.setFloat(mRecentsView.getClearAllButton(), ClearAllButton.VISIBILITY_ALPHA,
+                hasClearAllButton ? 1f : 0f, LINEAR);
     }
 
     @Override

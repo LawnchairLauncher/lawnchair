@@ -36,7 +36,7 @@ import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.MainThreadExecutor;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
@@ -130,7 +130,7 @@ public class IconCache extends BaseIconCache {
         IconLoadRequest request = new IconLoadRequest(mWorkerHandler, this::onIconRequestEnd) {
             @Override
             public void run() {
-                if (info instanceof AppInfo || info instanceof ShortcutInfo) {
+                if (info instanceof AppInfo || info instanceof WorkspaceItemInfo) {
                     getTitleAndIcon(info, false);
                 } else if (info instanceof PackageItemInfo) {
                     getTitleAndIconForApp((PackageItemInfo) info, false);
@@ -199,7 +199,7 @@ public class IconCache extends BaseIconCache {
     }
 
     /**
-     * Fill in {@param shortcutInfo} with the icon and label for {@param info}
+     * Fill in {@param mWorkspaceItemInfo} with the icon and label for {@param info}
      */
     private synchronized void getTitleAndIcon(
             @NonNull ItemInfoWithIcon infoInOut,

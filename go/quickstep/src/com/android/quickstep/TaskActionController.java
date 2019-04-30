@@ -15,8 +15,12 @@
  */
 package com.android.quickstep;
 
+import static com.android.quickstep.TaskAdapter.TASKS_START_POSITION;
+
 import android.app.ActivityOptions;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 
 import com.android.quickstep.views.TaskItemView;
 import com.android.systemui.shared.recents.model.Task;
@@ -37,12 +41,12 @@ public final class TaskActionController {
     }
 
     /**
-     * Launch the task associated with the task holder, animating into the app.
+     * Launch the task associated with the task holder, animating into the app from the task view.
      *
      * @param viewHolder the task view holder to launch
      */
-    public void launchTask(TaskHolder viewHolder) {
-        if (viewHolder.getTask() == null) {
+    public void launchTaskFromView(@NonNull TaskHolder viewHolder) {
+        if (!viewHolder.getTask().isPresent()) {
             return;
         }
         TaskItemView itemView = (TaskItemView) (viewHolder.itemView);
@@ -53,8 +57,20 @@ public final class TaskActionController {
         int height = v.getMeasuredHeight();
 
         ActivityOptions opts = ActivityOptions.makeClipRevealAnimation(v, left, top, width, height);
-        ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(viewHolder.getTask().key,
-                opts, null /* resultCallback */, null /* resultCallbackHandler */);
+        ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(
+                viewHolder.getTask().get().key, opts, null /* resultCallback */,
+                null /* resultCallbackHandler */);
+    }
+
+    /**
+     * Launch the task directly with a basic animation.
+     *
+     * @param task the task to launch
+     */
+    public void launchTask(@NonNull Task task) {
+        ActivityOptions opts = ActivityOptions.makeBasic();
+        ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(task.key, opts,
+                null /* resultCallback */, null /* resultCallbackHandler */);
     }
 
     /**
@@ -63,11 +79,11 @@ public final class TaskActionController {
      * @param viewHolder the task view holder to remove
      */
     public void removeTask(TaskHolder viewHolder) {
-        if (viewHolder.getTask() == null) {
+        if (!viewHolder.getTask().isPresent()) {
             return;
         }
         int position = viewHolder.getAdapterPosition();
-        Task task = viewHolder.getTask();
+        Task task = viewHolder.getTask().get();
         ActivityManagerWrapper.getInstance().removeTask(task.key.id);
         mLoader.removeTask(task);
         mAdapter.notifyItemRemoved(position);
@@ -80,6 +96,6 @@ public final class TaskActionController {
         int count = mAdapter.getItemCount();
         ActivityManagerWrapper.getInstance().removeAllRecentTasks();
         mLoader.clearAllTasks();
-        mAdapter.notifyItemRangeRemoved(0 /* positionStart */, count);
+        mAdapter.notifyItemRangeRemoved(TASKS_START_POSITION /* positionStart */, count);
     }
 }

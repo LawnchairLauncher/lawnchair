@@ -44,7 +44,7 @@
         android:layout_marginEnd="12dp"
         android:layout_gravity="right"
         android:contentDescription="@string/bottom_work_tab_user_education_close_button"
-        android:src="@drawable/ic_close"/>
+        android:src="@drawable/ic_remove_no_shadow"/>
 
     <TextView
         android:layout_width="wrap_content"

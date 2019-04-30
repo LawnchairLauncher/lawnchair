@@ -38,7 +38,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.InstantAppResolver;
@@ -86,7 +86,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
     public View.OnClickListener getOnClickListener(BaseDraggingActivity activity, TaskView view) {
         Task task = view.getTask();
 
-        ShortcutInfo dummyInfo = new ShortcutInfo();
+        WorkspaceItemInfo dummyInfo = new WorkspaceItemInfo();
         dummyInfo.intent = new Intent();
         ComponentName component = task.getTopComponent();
         dummyInfo.intent.setComponent(component);
