@@ -422,10 +422,9 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
 
         // Scale the app icon to take up the entire screen. This simplifies the math when
         // animating the app window position / scale.
-        float maxScaleX = windowTargetBounds.width() / (float) bounds.width();
-        // We use windowTargetBounds.width for scaleY too since we start off the animation where the
-        // window is clipped to a square.
-        float maxScaleY = windowTargetBounds.width() / (float) bounds.height();
+        float smallestSize = Math.min(windowTargetBounds.height(), windowTargetBounds.width());
+        float maxScaleX = smallestSize / (float) bounds.width();
+        float maxScaleY = smallestSize / (float) bounds.height();
         float scale = Math.max(maxScaleX, maxScaleY);
         float startScale = 1f;
         if (v instanceof BubbleTextView && !(v.getParent() instanceof DeepShortcutView)) {
