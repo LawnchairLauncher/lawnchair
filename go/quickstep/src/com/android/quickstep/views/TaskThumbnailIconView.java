@@ -56,7 +56,6 @@ final class TaskThumbnailIconView extends ViewGroup {
         int width = height;
         setMeasuredDimension(width, height);
 
-
         int subItemSize = (int) (SUBITEM_FRAME_RATIO * height);
         if (mThumbnailView.getVisibility() != GONE) {
             boolean isPortrait =
