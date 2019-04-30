@@ -9,9 +9,8 @@
     <string name="dock_style_n">ফ্লেট</string>
     <string name="pref_category_misc">অন্যান্য</string>
     <string name="title_attribouter_email">ইমেইল</string>
-    <string name="iconpack_none">হাল্লা</string>
     <string name="theme_automatic">স্বয়ংক্ৰিয়</string>
     <string name="theme_dark">আন্ধাৰ</string>
-    <string name="tabs_none_selected">হাল্লা</string>
     <string name="tab_bottom_sheet_save">ছেভ কৰা</string>
+    <string name="none">হাল্লা</string>
 </resources>

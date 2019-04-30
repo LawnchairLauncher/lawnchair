@@ -4,25 +4,20 @@
     <string name="smartspace_time">સમય</string>
     <string name="about_app_version">સંસ્કરણ</string>
     <string name="action_edit">સંપાદિત કરો</string>
-    <string name="hide_app_reset">રીસેટ કરો</string>
     <string name="hide_app_apply">લાગુ કરો</string>
     <string name="backup_location">સ્થાન</string>
-    <string name="backup_location_documents_storage">કસ્ટમ</string>
     <string name="grid_size_height">ઊંચાઇ</string>
     <string name="grid_size_width">પહોળાઇ</string>
     <string name="dock_style_n">સપાટ</string>
-    <string name="dock_style_custom">કસ્ટમ</string>
     <string name="pref_category_misc">અન્ય</string>
     <string name="pref_category_theme">શૈલી</string>
     <string name="title_attribouter_email">ઇમેઇલ</string>
-    <string name="iconpack_none">કોઈ નહીં</string>
     <string name="reset">રીસેટ કરો</string>
     <string name="theme_automatic">સ્વચલિત</string>
-    <string name="color_custom">કસ્ટમ</string>
+    <string name="custom">કસ્ટમ</string>
     <string name="theme_dark">ઘાટું</string>
-    <string name="tabs_none_selected">કોઈ નહીં</string>
     <string name="tab_bottom_sheet_save">સાચવો</string>
+    <string name="none">કોઈ નહીં</string>
     <string name="undo">પૂર્વવત્ કરો</string>
     <string name="shortcut_sesame">શૉર્ટકટ્સ</string>
-    <string name="font_reset">રીસેટ કરો</string>
 </resources>
