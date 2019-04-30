@@ -419,6 +419,10 @@ public class DeviceProfile {
         updateWorkspacePadding();
     }
 
+    /**
+     * The current device insets. This is generally same as the insets being dispatched to
+     * {@link Insettable} elements, but can differ if the element is using a different profile.
+     */
     public Rect getInsets() {
         return mInsets;
     }
@@ -579,45 +583,6 @@ public class DeviceProfile {
             default:
                 // ??
                 return 0;
-        }
-    }
-
-    /**
-     * Gets an item's location on the home screen. This is useful if the home screen
-     * is animating, otherwise use {@link View#getLocationOnScreen(int[])}.
-     * @param pageDiff The page difference relative to the current page.
-     */
-    public void getItemLocation(int cellX, int cellY, int spanX, int spanY, int container,
-            int pageDiff, Rect outBounds) {
-        outBounds.setEmpty();
-        if (container == CONTAINER_HOTSEAT) {
-            final int actualHotseatCellHeight;
-            if (isVerticalBarLayout()) {
-                actualHotseatCellHeight = availableHeightPx / inv.numRows;
-                if (mIsSeascape) {
-                    outBounds.left = mHotseatPadding.left;
-                } else {
-                    outBounds.left = availableWidthPx - hotseatBarSizePx + mHotseatPadding.left;
-                }
-                outBounds.right = outBounds.left + iconSizePx;
-                outBounds.top = mHotseatPadding.top
-                        + actualHotseatCellHeight * (inv.numRows - cellX - 1);
-                outBounds.bottom = outBounds.top + actualHotseatCellHeight;
-            } else {
-                actualHotseatCellHeight = hotseatBarSizePx - hotseatBarBottomPaddingPx
-                        - hotseatBarTopPaddingPx;
-                outBounds.left = mInsets.left + workspacePadding.left + cellLayoutPaddingLeftRightPx
-                        + (cellX * getCellSize().x);
-                outBounds.right = outBounds.left + getCellSize().x;
-                outBounds.top = mInsets.top + availableHeightPx - hotseatBarSizePx;
-                outBounds.bottom = outBounds.top + actualHotseatCellHeight;
-            }
-        } else {
-            outBounds.left = mInsets.left + workspacePadding.left + cellLayoutPaddingLeftRightPx
-                    + (cellX * getCellSize().x) + (pageDiff * availableWidthPx);
-            outBounds.right = outBounds.left + (getCellSize().x * spanX);
-            outBounds.top = mInsets.top + workspacePadding.top + (cellY * getCellSize().y);
-            outBounds.bottom = outBounds.top + (getCellSize().y * spanY);
         }
     }
 

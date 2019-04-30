@@ -81,7 +81,7 @@ public class LauncherRootView extends InsettableFrameLayout {
                 UI_STATE_ROOT_VIEW, drawInsetBar ? FLAG_DARK_NAV : 0);
 
         // Update device profile before notifying th children.
-        mLauncher.getDeviceProfile().updateInsets(insets);
+        mLauncher.updateInsets(insets);
         boolean resetState = !insets.equals(mInsets);
         setInsets(insets);
 
@@ -114,7 +114,7 @@ public class LauncherRootView extends InsettableFrameLayout {
     }
 
     public void dispatchInsets() {
-        mLauncher.getDeviceProfile().updateInsets(mInsets);
+        mLauncher.updateInsets(mInsets);
         super.setInsets(mInsets);
     }
 

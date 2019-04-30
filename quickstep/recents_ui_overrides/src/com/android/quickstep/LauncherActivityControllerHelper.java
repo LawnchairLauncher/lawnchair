@@ -116,7 +116,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         } else {
             workspaceView = null;
         }
-        final Rect iconLocation = new Rect();
+        final RectF iconLocation = new RectF();
         boolean canUseWorkspaceView = workspaceView != null && workspaceView.isAttachedToWindow();
         final FloatingIconView floatingView = canUseWorkspaceView
                 ? FloatingIconView.getFloatingIconView(activity, workspaceView,
@@ -138,7 +138,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                 final float targetCenterY = dp.availableHeightPx - dp.hotseatBarSizePx;
 
                 if (canUseWorkspaceView) {
-                    return new RectF(iconLocation);
+                    return iconLocation;
                 } else {
                     // Fallback to animate to center of screen.
                     return new RectF(targetCenterX - halfIconSize, targetCenterY - halfIconSize,

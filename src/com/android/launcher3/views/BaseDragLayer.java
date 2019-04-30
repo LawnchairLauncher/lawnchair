@@ -88,7 +88,8 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     // Touch is being dispatched through a proxy from InputMonitor
     private static final int TOUCH_DISPATCHING_PROXY = 1 << 2;
 
-    protected final int[] mTmpXY = new int[2];
+    protected final float[] mTmpXY = new float[2];
+    protected final float[] mTmpRectPoints = new float[4];
     protected final Rect mHitRect = new Rect();
 
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -306,14 +307,16 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
      * @return The factor by which this descendant is scaled relative to this DragLayer.
      */
     public float getDescendantRectRelativeToSelf(View descendant, Rect r) {
-        mTmpXY[0] = 0;
-        mTmpXY[1] = 0;
-        float scale = getDescendantCoordRelativeToSelf(descendant, mTmpXY);
-
-        r.set(mTmpXY[0], mTmpXY[1],
-                (int) (mTmpXY[0] + scale * descendant.getMeasuredWidth()),
-                (int) (mTmpXY[1] + scale * descendant.getMeasuredHeight()));
-        return scale;
+        mTmpRectPoints[0] = 0;
+        mTmpRectPoints[1] = 0;
+        mTmpRectPoints[2] = descendant.getWidth();
+        mTmpRectPoints[3] = descendant.getHeight();
+        float s = getDescendantCoordRelativeToSelf(descendant, mTmpRectPoints);
+        r.left = Math.round(Math.min(mTmpRectPoints[0], mTmpRectPoints[2]));
+        r.top = Math.round(Math.min(mTmpRectPoints[1], mTmpRectPoints[3]));
+        r.right = Math.round(Math.max(mTmpRectPoints[0], mTmpRectPoints[2]));
+        r.bottom = Math.round(Math.max(mTmpRectPoints[1], mTmpRectPoints[3]));
+        return s;
     }
 
     public float getLocationInDragLayer(View child, int[] loc) {
@@ -323,6 +326,14 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     }
 
     public float getDescendantCoordRelativeToSelf(View descendant, int[] coord) {
+        mTmpXY[0] = coord[0];
+        mTmpXY[1] = coord[1];
+        float scale = getDescendantCoordRelativeToSelf(descendant, mTmpXY);
+        Utilities.roundArray(mTmpXY, coord);
+        return scale;
+    }
+
+    public float getDescendantCoordRelativeToSelf(View descendant, float[] coord) {
         return getDescendantCoordRelativeToSelf(descendant, coord, false);
     }
 
@@ -338,17 +349,27 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
      *         this scale factor is assumed to be equal in X and Y, and so if at any point this
      *         assumption fails, we will need to return a pair of scale factors.
      */
-    public float getDescendantCoordRelativeToSelf(View descendant, int[] coord,
+    public float getDescendantCoordRelativeToSelf(View descendant, float[] coord,
             boolean includeRootScroll) {
         return Utilities.getDescendantCoordRelativeToAncestor(descendant, this,
                 coord, includeRootScroll);
     }
 
     /**
+     * Inverse of {@link #getDescendantCoordRelativeToSelf(View, float[])}.
+     */
+    public void mapCoordInSelfToDescendant(View descendant, float[] coord) {
+        Utilities.mapCoordInSelfToDescendant(descendant, this, coord);
+    }
+
+    /**
      * Inverse of {@link #getDescendantCoordRelativeToSelf(View, int[])}.
      */
     public void mapCoordInSelfToDescendant(View descendant, int[] coord) {
-        Utilities.mapCoordInSelfToDescendant(descendant, this, coord);
+        mTmpXY[0] = coord[0];
+        mTmpXY[1] = coord[1];
+        Utilities.mapCoordInSelfToDescendant(descendant, this, mTmpXY);
+        Utilities.roundArray(mTmpXY, coord);
     }
 
     public void getViewRectRelativeToSelf(View v, Rect r) {
