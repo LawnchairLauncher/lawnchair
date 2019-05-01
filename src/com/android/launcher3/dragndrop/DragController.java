@@ -696,5 +696,4 @@ public class DragController implements DragDriver.EventListener, TouchController
     public void removeDropTarget(DropTarget target) {
         mDropTargets.remove(target);
     }
-
 }

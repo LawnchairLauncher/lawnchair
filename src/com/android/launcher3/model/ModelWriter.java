@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.function.Supplier;
 
 /**
  * Class for handling model updates.
@@ -151,15 +152,13 @@ public class ModelWriter {
     public void moveItemInDatabase(final ItemInfo item,
             int container, int screenId, int cellX, int cellY) {
         updateItemInfoProps(item, container, screenId, cellX, cellY);
-
-        final ContentWriter writer = new ContentWriter(mContext)
-                .put(Favorites.CONTAINER, item.container)
-                .put(Favorites.CELLX, item.cellX)
-                .put(Favorites.CELLY, item.cellY)
-                .put(Favorites.RANK, item.rank)
-                .put(Favorites.SCREEN, item.screenId);
-
-        enqueueDeleteRunnable(new UpdateItemRunnable(item, writer));
+        enqueueDeleteRunnable(new UpdateItemRunnable(item, () ->
+                new ContentWriter(mContext)
+                        .put(Favorites.CONTAINER, item.container)
+                        .put(Favorites.CELLX, item.cellX)
+                        .put(Favorites.CELLY, item.cellY)
+                        .put(Favorites.RANK, item.rank)
+                        .put(Favorites.SCREEN, item.screenId)));
     }
 
     /**
@@ -195,25 +194,26 @@ public class ModelWriter {
         item.spanX = spanX;
         item.spanY = spanY;
 
-        final ContentWriter writer = new ContentWriter(mContext)
-                .put(Favorites.CONTAINER, item.container)
-                .put(Favorites.CELLX, item.cellX)
-                .put(Favorites.CELLY, item.cellY)
-                .put(Favorites.RANK, item.rank)
-                .put(Favorites.SPANX, item.spanX)
-                .put(Favorites.SPANY, item.spanY)
-                .put(Favorites.SCREEN, item.screenId);
-
-        mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
+        mWorkerExecutor.execute(new UpdateItemRunnable(item, () ->
+                new ContentWriter(mContext)
+                        .put(Favorites.CONTAINER, item.container)
+                        .put(Favorites.CELLX, item.cellX)
+                        .put(Favorites.CELLY, item.cellY)
+                        .put(Favorites.RANK, item.rank)
+                        .put(Favorites.SPANX, item.spanX)
+                        .put(Favorites.SPANY, item.spanY)
+                        .put(Favorites.SCREEN, item.screenId)));
     }
 
     /**
      * Update an item to the database in a specified container.
      */
     public void updateItemInDatabase(ItemInfo item) {
-        ContentWriter writer = new ContentWriter(mContext);
-        item.onAddToDatabase(writer);
-        mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
+        mWorkerExecutor.execute(new UpdateItemRunnable(item, () -> {
+            ContentWriter writer = new ContentWriter(mContext);
+            item.onAddToDatabase(writer);
+            return writer;
+        }));
     }
 
     /**
@@ -224,17 +224,18 @@ public class ModelWriter {
             int container, int screenId, int cellX, int cellY) {
         updateItemInfoProps(item, container, screenId, cellX, cellY);
 
-        final ContentWriter writer = new ContentWriter(mContext);
         final ContentResolver cr = mContext.getContentResolver();
-        item.onAddToDatabase(writer);
-
         item.id = Settings.call(cr, Settings.METHOD_NEW_ITEM_ID).getInt(Settings.EXTRA_VALUE);
-        writer.put(Favorites._ID, item.id);
 
         ModelVerifier verifier = new ModelVerifier();
-
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         mWorkerExecutor.execute(() -> {
+            // Write the item on background thread, as some properties might have been updated in
+            // the background.
+            final ContentWriter writer = new ContentWriter(mContext);
+            item.onAddToDatabase(writer);
+            writer.put(Favorites._ID, item.id);
+
             cr.insert(Favorites.CONTENT_URI, writer.getValues(mContext));
 
             synchronized (mBgDataModel) {
@@ -354,10 +355,10 @@ public class ModelWriter {
 
     private class UpdateItemRunnable extends UpdateItemBaseRunnable {
         private final ItemInfo mItem;
-        private final ContentWriter mWriter;
+        private final Supplier<ContentWriter> mWriter;
         private final int mItemId;
 
-        UpdateItemRunnable(ItemInfo item, ContentWriter writer) {
+        UpdateItemRunnable(ItemInfo item, Supplier<ContentWriter> writer) {
             mItem = item;
             mWriter = writer;
             mItemId = item.id;
@@ -366,7 +367,8 @@ public class ModelWriter {
         @Override
         public void run() {
             Uri uri = Favorites.getContentUri(mItemId);
-            mContext.getContentResolver().update(uri, mWriter.getValues(mContext), null, null);
+            mContext.getContentResolver().update(uri, mWriter.get().getValues(mContext),
+                    null, null);
             updateItemArrays(mItem, mItemId);
         }
     }
