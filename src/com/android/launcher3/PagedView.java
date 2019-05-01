@@ -300,10 +300,14 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         return page;
     }
 
+    public void setCurrentPage(int currentPage) {
+        setCurrentPage(currentPage, INVALID_PAGE);
+    }
+
     /**
      * Sets the current page.
      */
-    public void setCurrentPage(int currentPage) {
+    public void setCurrentPage(int currentPage, int overridePrevPage) {
         if (!mScroller.isFinished()) {
             abortScrollerAnimation(true);
         }
@@ -312,7 +316,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (getChildCount() == 0) {
             return;
         }
-        int prevPage = mCurrentPage;
+        int prevPage = overridePrevPage != INVALID_PAGE ? overridePrevPage : mCurrentPage;
         mCurrentPage = validateNewPage(currentPage);
         updateCurrentPageScroll();
         notifyPageSwitchListener(prevPage);
