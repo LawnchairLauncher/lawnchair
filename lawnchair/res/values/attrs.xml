@@ -89,4 +89,16 @@
             <enum name="w900" value="900" />
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="IndexablePreference">
+        <attr name="android:key" />
+        <attr name="android:defaultValue" />
+        <attr name="android:icon" />
+        <attr name="android:title" />
+        <attr name="android:summary" />
+        <attr name="searchTitle" />
+        <attr name="controllerClass" />
+        <attr name="content" />
+        <attr name="hasPreview" />
+    </declare-styleable>
 </resources>

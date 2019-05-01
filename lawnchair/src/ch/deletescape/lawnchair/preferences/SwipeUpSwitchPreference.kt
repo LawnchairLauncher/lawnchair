@@ -3,16 +3,18 @@ package ch.deletescape.lawnchair.preferences
 import android.content.Context
 import android.content.pm.PackageManager
 import android.provider.Settings
+import android.support.annotation.Keep
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Switch
+import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.settings.ui.search.SearchIndex
 import com.android.quickstep.OverviewInteractionState
 import com.android.systemui.shared.system.SettingsCompat
 
-class SwipeUpSwitchPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : StyledSwitchPreferenceCompat(context, attrs) {
+class SwipeUpSwitchPreference(context: Context, attrs: AttributeSet? = null) : StyledSwitchPreferenceCompat(context, attrs) {
 
-    private val securePrefName = SettingsCompat.SWIPE_UP_SETTING_NAME
     private val secureOverrideMode = OverviewInteractionState.isSwipeUpSettingsAvailable()
     private val hasWriteSecurePermission = ContextCompat.checkSelfPermission(context,
             android.Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED
@@ -28,13 +30,7 @@ class SwipeUpSwitchPreference @JvmOverloads constructor(context: Context, attrs:
     }
 
     override fun getPersistedBoolean(defaultReturnValue: Boolean): Boolean {
-        if (secureOverrideMode) {
-            try {
-                return Settings.Secure.getInt(context.contentResolver, securePrefName) == 1
-            } catch (ignored: Settings.SettingNotFoundException) {
-            }
-        }
-        return super.getPersistedBoolean(defaultReturnValue)
+        return OverviewInteractionState.getInstance(context).isSwipeUpGestureEnabled
     }
 
     override fun persistBoolean(value: Boolean): Boolean {
@@ -47,13 +43,39 @@ class SwipeUpSwitchPreference @JvmOverloads constructor(context: Context, attrs:
         return super.persistBoolean(value)
     }
 
-    override fun getSlice(context: Context, key: String): View {
-        this.key = key
-        return (super.getSlice(context, key) as Switch).apply {
-            isChecked = getPersistedBoolean(true)
-            setOnCheckedChangeListener { _, isChecked ->
-                persistBoolean(isChecked)
+    class SwipeUpSwitchSlice(context: Context, attrs: AttributeSet) : SwitchSlice(context, attrs) {
+
+        private val secureOverrideMode = OverviewInteractionState.isSwipeUpSettingsAvailable()
+        private val hasWriteSecurePermission = ContextCompat.checkSelfPermission(context,
+                android.Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED
+
+        override fun createSliceView(): View {
+            return (super.createSliceView() as Switch).apply {
+                isChecked = OverviewInteractionState.getInstance(context).isSwipeUpGestureEnabled
+                setOnCheckedChangeListener { _, isChecked ->
+                    persistBoolean(isChecked)
+                }
             }
         }
+
+        private fun persistBoolean(value: Boolean): Boolean {
+            if (hasWriteSecurePermission && secureOverrideMode) {
+                try {
+                    return Settings.Secure.putInt(context.contentResolver, securePrefName, if (value) 1 else 0)
+                } catch (ignored: Exception) {
+                }
+            }
+            context.lawnchairPrefs.swipeUpToSwitchApps = value
+            return true
+        }
+    }
+
+    companion object {
+
+        private const val securePrefName = SettingsCompat.SWIPE_UP_SETTING_NAME
+
+        @Keep
+        @JvmStatic
+        val sliceProvider = SearchIndex.SliceProvider.fromLambda(::SwipeUpSwitchSlice)
     }
 }
