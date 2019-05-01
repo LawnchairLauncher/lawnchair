@@ -879,7 +879,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         super.onPause();
         mDragController.cancelDrag();
         mDragController.resetLastGestureUpTime();
-
+        mDropTargetBar.animateToVisibility(false);
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onPause();
         }
