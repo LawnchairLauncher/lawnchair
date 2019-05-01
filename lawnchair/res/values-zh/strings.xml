@@ -168,7 +168,7 @@
     <string name="action_global_search">打开全局搜索</string>
     <string name="action_app_search">打开应用搜索</string>
     <string name="action_overlay">打开 Google Feed</string>
-    <string name="action_assistant">打开助理</string>
+    <string name="action_assistant">打开谷歌助理</string>
     <string name="action_open_notifications">打开通知</string>
     <string name="action_close_notifications">关闭通知</string>
     <string name="action_sleep_timeout">睡眠  (使用超时)</string>
@@ -186,7 +186,7 @@
     <string name="gesture_dock_swipe_up">Dock 栏处上滑</string>
     <string name="pref_show_assistant_title">语音搜索按钮</string>
     <string name="pref_show_assistant_summary">如果支持则显示语音搜索按钮</string>
-    <string name="pref_show_as_assistant_summary">显示助理按钮而不是语音搜索</string>
+    <string name="pref_show_as_assistant_summary">显示谷歌助理按钮而不是语音搜索</string>
     <string name="smartspace_time_24_h">24 小时制</string>
     <string name="weather_provider_disabled">禁用</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
