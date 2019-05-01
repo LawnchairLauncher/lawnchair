@@ -27,6 +27,9 @@ import android.content.pm.LauncherActivityInfo;
 import android.os.Process;
 import android.view.View;
 
+import androidx.test.filters.LargeTest;
+import androidx.test.runner.AndroidJUnit4;
+
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.appprediction.PredictionRowView;
@@ -37,15 +40,11 @@ import com.android.launcher3.model.AppLaunchTracker;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.test.filters.LargeTest;
-import androidx.test.runner.AndroidJUnit4;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -85,7 +84,6 @@ public class AppPredictionsUITests extends AbstractQuickStepTest {
      * Test that prediction UI is updated as soon as we get predictions from the system
      */
     @Test
-    @Ignore // b/131188880
     public void testPredictionExistsInAllApps() {
         mActivityMonitor.startLauncher();
         mLauncher.pressHome().switchToAllApps();
@@ -101,7 +99,6 @@ public class AppPredictionsUITests extends AbstractQuickStepTest {
      * Test that prediction update is deferred if it is already visible
      */
     @Test
-    @Ignore // b/131188880
     public void testPredictionsDeferredUntilHome() {
         mActivityMonitor.startLauncher();
         sendPredictionUpdate(mSampleApp1, mSampleApp2);
