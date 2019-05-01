@@ -17,6 +17,7 @@ package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_2BUTTON_OVERLAY;
 import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_3BUTTON_OVERLAY;
 import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_GESTURAL_OVERLAY;
@@ -28,6 +29,7 @@ import static java.lang.System.exit;
 
 import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -424,6 +426,22 @@ public abstract class AbstractLauncherUiTest {
         instrumentation.getTargetContext().startActivity(intent);
         assertTrue(packageName + " didn't start",
                 mDevice.wait(Until.hasObject(By.pkg(packageName).depth(0)), LONG_WAIT_TIME_MS));
+    }
+
+    protected void startTestActivity(int activityNumber) {
+        final String packageName = getAppPackageName();
+        final Instrumentation instrumentation = getInstrumentation();
+        final Intent intent = instrumentation.getContext().getPackageManager().
+                getLaunchIntentForPackage(packageName);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setComponent(new ComponentName(packageName,
+                "com.android.launcher3.tests.Activity" + activityNumber));
+        instrumentation.getTargetContext().startActivity(intent);
+        assertTrue(packageName + " didn't start",
+                mDevice.wait(
+                        Until.hasObject(By.pkg(packageName).text("TestActivity" + activityNumber)),
+                        LONG_WAIT_TIME_MS));
     }
 
     protected static String resolveSystemApp(String category) {
