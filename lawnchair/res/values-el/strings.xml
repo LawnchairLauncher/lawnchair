@@ -110,19 +110,19 @@
     <string name="icon_pack_default">Εικονίδια συστήματος</string>
     <string name="loading">Φόρτωση…</string>
     <string name="low_performance_mode_pref_title">Λειτουργία χαμηλής απόδοσης</string>
-    <string name="title_storage_permission_required">Απαιτείται άδεια εγγραφής μνήμης αποθήκευσης</string>
-    <string name="content_storage_permission_required">Χορήγηση άδειας εγγραφής μνήμης αποθήκευσης για ορισμό ταπετσαρίας</string>
+    <string name="title_storage_permission_required">Απαιτείται άδεια πρόσβασης αποθηκευτικού χώρου</string>
+    <string name="content_storage_permission_required">Απαιτείται η χορήγηση άδειας πρόσβασης για τον ορισμό της ταπετσαρίας</string>
     <string name="reset_to_default">Επαναφορά προεπιλογών</string>
     <string name="dock_shadow">Σκιά</string>
-    <string name="dock_fill">Φόντο</string>
+    <string name="dock_fill">Ταπετσαρία</string>
     <string name="radius">Στρογγυλοποίηση γωνιών</string>
     <string name="gradient">Διαβάθμιση</string>
     <!--Marker C-->
     <string name="pref_category_icons">Εικονίδια</string>
     <string name="pref_category_aag">Με μια Ματιά</string>
-    <string name="pref_category_pixel_searchbar">Γραφικό αναζήτησης Pixel</string>
+    <string name="pref_category_pixel_searchbar">Μπάρα αναζήτησης Pixel</string>
     <string name="pref_category_weather">Καιρός</string>
-    <string name="pref_category_misc">Άλλα</string>
+    <string name="pref_category_misc">Άλλo</string>
     <string name="pref_category_layout">Διάταξη</string>
     <string name="pref_category_theme">Στυλ</string>
     <string name="pref_category_searchbar">Μπάρα αναζήτησης</string>
@@ -147,7 +147,7 @@
     <string name="about_role_dev_mod">Προγραμματιστής/Συντονιστής</string>
     <string name="about_role_designer">Σχεδιαστής</string>
     <string name="about_role_ui_ux_designer">Σχεδιαστής Διεπαφής/Εμπειρίας χρήστη (UI/UX)</string>
-    <string name="about_role_special_snowflake">Κοινωνικά Δίκτυα/Δημόσιες Σχέχεις (PR) &amp; συγγένειες Κατασκευαστή Πρωτότυπου Εξοπλισμού (OEM)</string>
+    <string name="about_role_special_snowflake">Κοινωνικά Δίκτυα/Δημόσιες Σχέχεις &amp; Σχέσεις με KAE</string>
     <string name="about_role_mod_support">Συντονιστής/Υποστήριξη</string>
     <string name="about_role_family_member">Μέλος Οικογενείας</string>
     <string name="about_role_magisk_maintainer">Διαχειριστής προσθέτων Magisk</string>
