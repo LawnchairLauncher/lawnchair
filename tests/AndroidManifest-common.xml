@@ -99,7 +99,8 @@
         </activity>
         <activity
             android:name="com.android.launcher3.testcomponent.BaseTestingActivity"
-            android:label="LauncherTestApp">
+            android:label="LauncherTestApp"
+            android:taskAffinity="com.android.launcher3.testcomponent.Affinity1">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
