@@ -33,7 +33,6 @@ import androidx.test.uiautomator.UiDevice;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.TestProtocol;
 import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.tapl.AllApps;
 import com.android.launcher3.tapl.AppIcon;
@@ -323,24 +322,19 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     public void testDragAppIcon() throws Throwable {
-        try {
-            TestProtocol.sDebugTracing = true;
-            // 1. Open all apps and wait for load complete.
-            // 2. Drag icon to homescreen.
-            // 3. Verify that the icon works on homescreen.
-            mLauncher.getWorkspace().
-                    switchToAllApps().
-                    getAppIcon(APP_NAME).
-                    dragToWorkspace().
-                    getWorkspaceAppIcon(APP_NAME).
-                    launch(getAppPackageName());
-            executeOnLauncher(launcher -> assertTrue(
-                    "Launcher activity is the top activity; expecting another activity to be the "
-                            + "top one",
-                    isInBackground(launcher)));
-        } finally {
-            TestProtocol.sDebugTracing = false;
-        }
+        // 1. Open all apps and wait for load complete.
+        // 2. Drag icon to homescreen.
+        // 3. Verify that the icon works on homescreen.
+        mLauncher.getWorkspace().
+                switchToAllApps().
+                getAppIcon(APP_NAME).
+                dragToWorkspace().
+                getWorkspaceAppIcon(APP_NAME).
+                launch(getAppPackageName());
+        executeOnLauncher(launcher -> assertTrue(
+                "Launcher activity is the top activity; expecting another activity to be the top "
+                        + "one",
+                isInBackground(launcher)));
     }
 
     @Test

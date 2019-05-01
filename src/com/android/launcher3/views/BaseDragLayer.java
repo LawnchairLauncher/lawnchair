@@ -148,23 +148,13 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     }
 
     protected boolean findActiveController(MotionEvent ev) {
-        if (com.android.launcher3.TestProtocol.sDebugTracing) {
-            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
-                    "mActiveController = null");
-        }
         mActiveController = null;
         if ((mTouchDispatchState & (TOUCH_DISPATCHING_GESTURE | TOUCH_DISPATCHING_PROXY)) == 0) {
             // Only look for controllers if we are not dispatching from gesture area and proxy is
             // not active
             mActiveController = findControllerToHandleTouch(ev);
 
-            if (mActiveController != null) {
-                if (com.android.launcher3.TestProtocol.sDebugTracing) {
-                    android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
-                            "setting controller1: " + mActiveController.getClass().getSimpleName());
-                }
-                return true;
-            }
+            if (mActiveController != null) return true;
         }
         return false;
     }
@@ -231,17 +221,8 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
         }
 
         if (mActiveController != null) {
-            if (com.android.launcher3.TestProtocol.sDebugTracing) {
-                android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
-                        "BaseDragLayer before onControllerTouchEvent " +
-                                mActiveController.getClass().getSimpleName());
-            }
             return mActiveController.onControllerTouchEvent(ev);
         } else {
-            if (com.android.launcher3.TestProtocol.sDebugTracing) {
-                android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
-                        "BaseDragLayer no controller");
-            }
             // In case no child view handled the touch event, we may not get onIntercept anymore
             return findActiveController(ev);
         }
