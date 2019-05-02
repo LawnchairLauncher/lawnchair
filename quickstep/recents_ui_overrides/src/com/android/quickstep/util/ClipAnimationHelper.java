@@ -31,11 +31,12 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.os.RemoteException;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.views.RecentsView;
@@ -49,8 +50,6 @@ import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.function.BiFunction;
-
-import androidx.annotation.Nullable;
 
 /**
  * Utility class to handle window clip animation
@@ -327,12 +326,14 @@ public class ClipAnimationHelper {
 
         float scale = mTargetRect.width() / mSourceRect.width();
         float insetProgress = (1 - progress);
+        float windowCornerRadius = mUseRoundedCornersOnWindows
+                ? mWindowCornerRadius : 0;
         ttv.drawOnCanvas(canvas,
                 -mSourceWindowClipInsets.left * insetProgress,
                 -mSourceWindowClipInsets.top * insetProgress,
                 ttv.getMeasuredWidth() + mSourceWindowClipInsets.right * insetProgress,
                 ttv.getMeasuredHeight() + mSourceWindowClipInsets.bottom * insetProgress,
-                Utilities.mapRange(progress, mWindowCornerRadius * scale, ttv.getCornerRadius()));
+                Utilities.mapRange(progress, windowCornerRadius * scale, ttv.getCornerRadius()));
     }
 
     public RectF getTargetRect() {
