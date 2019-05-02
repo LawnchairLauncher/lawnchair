@@ -162,7 +162,12 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
             mTaskRecyclerView.setAdapter(mTaskAdapter);
             mTaskRecyclerView.setLayoutManager(mTaskLayoutManager);
             ItemTouchHelper helper = new ItemTouchHelper(
-                    new TaskSwipeCallback(mTaskActionController));
+                    new TaskSwipeCallback(holder -> {
+                        mTaskActionController.removeTask(holder);
+                        if (mTaskLoader.getCurrentTaskList().isEmpty()) {
+                            mActivityHelper.leaveRecents();
+                        }
+                    }));
             helper.attachToRecyclerView(mTaskRecyclerView);
             mTaskRecyclerView.addOnChildAttachStateChangeListener(
                     new OnChildAttachStateChangeListener() {
@@ -438,7 +443,6 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
         if (mShowingContentView != mEmptyView && taskListSize == 0) {
             mShowingContentView = mEmptyView;
             crossfadeViews(mEmptyView, mContentView);
-            mActivityHelper.leaveRecents();
         }
         if (mShowingContentView != mContentView && taskListSize > 0) {
             mShowingContentView = mContentView;
