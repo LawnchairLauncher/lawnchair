@@ -74,6 +74,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
     public static final float SHAPE_PROGRESS_DURATION = 0.15f;
     private static final int FADE_DURATION_MS = 200;
     private static final Rect sTmpRect = new Rect();
+    private static final Object[] sTmpObjArray = new Object[1];
 
     private Runnable mEndRunnable;
     private CancellationSignal mLoadIconSignal;
@@ -263,10 +264,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         Drawable drawable = null;
         boolean supportsAdaptiveIcons = ADAPTIVE_ICON_WINDOW_ANIM.get()
                 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
-        if (!supportsAdaptiveIcons && v instanceof BubbleTextView) {
-            // Similar to DragView, we simply use the BubbleTextView icon here.
-            drawable = ((BubbleTextView) v).getIcon();
-        }
+        Drawable btvIcon = v instanceof BubbleTextView ? ((BubbleTextView) v).getIcon() : null;
         if (info instanceof SystemShortcut) {
             if (v instanceof ImageView) {
                 drawable = ((ImageView) v).getDrawable();
@@ -275,10 +273,24 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
             } else {
                 drawable = v.getBackground();
             }
-        }
-        if (drawable == null) {
-            drawable = Utilities.getFullDrawable(launcher, info, lp.width, lp.height,
-                    false, new Object[1]);
+        } else {
+            if (supportsAdaptiveIcons) {
+                drawable = Utilities.getFullDrawable(launcher, info, lp.width, lp.height,
+                        false, sTmpObjArray);
+                if (!(drawable instanceof AdaptiveIconDrawable)) {
+                    // The drawable we get back is not an adaptive icon, so we need to use the
+                    // BubbleTextView icon that is already legacy treated.
+                    drawable = btvIcon;
+                }
+            } else {
+                if (v instanceof BubbleTextView) {
+                    // Similar to DragView, we simply use the BubbleTextView icon here.
+                    drawable = btvIcon;
+                } else {
+                    drawable = Utilities.getFullDrawable(launcher, info, lp.width, lp.height,
+                            false, sTmpObjArray);
+                }
+            }
         }
 
         Drawable finalDrawable = drawable == null ? null
