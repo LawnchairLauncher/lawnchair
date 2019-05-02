@@ -142,7 +142,7 @@
     <string name="about_role_dev_mod">Програмист/Модератор</string>
     <string name="about_role_designer">Дизайнер</string>
     <string name="about_role_ui_ux_designer">UI/UX дизайнер</string>
-    <string name="about_role_special_snowflake">Социални Медии/PR &amp; OEM отношения</string>
+    <string name="about_role_special_snowflake">Социални Мрежи/PR &amp; OEM отношения</string>
     <string name="about_role_mod_support">Модератор/Поддръжка</string>
     <string name="about_role_family_member">Член на семейството</string>
     <string name="about_role_magisk_maintainer">Разработчик на Magisk модула</string>
@@ -150,7 +150,7 @@
     <string name="about_bio_divadsn">На 19 години, превръща кофеин и пица в код. Също така по-рано известен като Codebucket.</string>
     <string name="about_bio_recoded">Лек програмист и графичен дизайнер.</string>
     <string name="about_bio_josh">Графичен дизайнер на свободна практика.</string>
-    <string name="about_bio_chris">Millenial af, idk и idc. Нещо с дизайн и социална мрежа. Хайде да се мотаем заедно на @lawnchairapp ✨</string>
+    <string name="about_bio_chris">Millenial af, idk и idc. Нещо с дизайн и социални мрежи. Хайде да се мотаем заедно на @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">Основен програмист в halogenOS и разработчик на приложения за Substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Сриване на лаунчъра</string>
