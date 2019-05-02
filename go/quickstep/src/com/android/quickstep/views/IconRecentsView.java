@@ -33,6 +33,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.ArraySet;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
@@ -54,6 +55,7 @@ import androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListene
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.util.Themes;
 import com.android.quickstep.ContentFillItemAnimator;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RecentsToActivityHelper;
@@ -114,6 +116,8 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
     private final DefaultItemAnimator mDefaultItemAnimator = new DefaultItemAnimator();
     private final ContentFillItemAnimator mLoadingContentItemAnimator =
             new ContentFillItemAnimator();
+    private final BaseActivity mActivity;
+    private final Drawable mStatusBarForegroundScrim;
 
     private RecentsToActivityHelper mActivityHelper;
     private RecyclerView mTaskRecyclerView;
@@ -143,8 +147,10 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
 
     public IconRecentsView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        BaseActivity activity = BaseActivity.fromContext(context);
+        mActivity = BaseActivity.fromContext(context);
         mContext = context;
+        mStatusBarForegroundScrim  =
+                Themes.getAttrDrawable(mContext, R.attr.workspaceStatusBarScrim);
         mTaskLoader = new TaskListLoader(mContext);
         mTaskAdapter = new TaskAdapter(mTaskLoader);
         mTaskAdapter.setOnClearAllClickListener(view -> animateClearAllTasks());
@@ -336,6 +342,21 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
 
         // Otherwise, just use a basic launch animation.
         mTaskActionController.launchTask(taskToLaunch);
+    }
+
+    /**
+     * Set whether or not to show the scrim in between the view and the top insets. This only works
+     * if the view is being insetted in the first place.
+     *
+     * The scrim is added to the activity's root view to prevent animations on this view
+     * affecting the scrim. As a result, it is the activity's responsibility to show/hide this
+     * scrim as appropriate.
+     *
+     * @param showStatusBarForegroundScrim true to show the scrim, false to hide
+     */
+    public void setShowStatusBarForegroundScrim(boolean showStatusBarForegroundScrim) {
+        boolean shouldShow = mInsets.top != 0 && showStatusBarForegroundScrim;
+        mActivity.getDragLayer().setForeground(shouldShow ? mStatusBarForegroundScrim : null);
     }
 
     /**
