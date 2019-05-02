@@ -79,8 +79,8 @@ public class TaskThumbnailView extends View {
     private final BaseActivity mActivity;
     private final TaskOverlay mOverlay;
     private final boolean mIsDarkTextTheme;
-    private final Paint mPaint = new Paint();
-    private final Paint mBackgroundPaint = new Paint();
+    private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mClearPaint = new Paint();
     private final Paint mDimmingPaintAfterClearing = new Paint();
 
