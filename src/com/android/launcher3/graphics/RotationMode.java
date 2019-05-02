@@ -15,14 +15,17 @@
  */
 package com.android.launcher3.graphics;
 
+import android.content.Context;
 import android.graphics.Rect;
 
 public abstract class RotationMode {
 
+    public static RotationMode NORMAL = new RotationMode(0) { };
+
     public final float surfaceRotation;
     public final boolean isTransposed;
 
-    private RotationMode(float surfaceRotation) {
+    public RotationMode(float surfaceRotation) {
         this.surfaceRotation = surfaceRotation;
         isTransposed = surfaceRotation != 0;
     }
@@ -35,25 +38,11 @@ public abstract class RotationMode {
         out.set(left, top, right, bottom);
     }
 
-    public static RotationMode NORMAL = new RotationMode(0) { };
+    public void mapInsets(Context context, Rect insets, Rect out) {
+        out.set(insets);
+    }
 
-    public static RotationMode LANDSCAPE = new RotationMode(-90) {
-        @Override
-        public void mapRect(int left, int top, int right, int bottom, Rect out) {
-            out.left = top;
-            out.top = right;
-            out.right = bottom;
-            out.bottom = left;
-        }
-    };
-
-    public static RotationMode SEASCAPE = new RotationMode(90) {
-        @Override
-        public void mapRect(int left, int top, int right, int bottom, Rect out) {
-            out.left = bottom;
-            out.top = left;
-            out.right = top;
-            out.bottom = right;
-        }
-    };
+    public int toNaturalGravity(int absoluteGravity) {
+        return absoluteGravity;
+    }
 }

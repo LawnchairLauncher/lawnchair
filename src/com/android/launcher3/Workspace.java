@@ -302,7 +302,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         rotationMode.mapRect(padding, mTempRect);
         setPadding(mTempRect.left, mTempRect.top, mTempRect.right, mTempRect.bottom);
-        rotationMode.mapRect(insets, mInsets);
+        rotationMode.mapRect(stableGrid.getInsets(), mInsets);
 
         if (mWorkspaceFadeInAdjacentScreens) {
             // In landscape mode the page spacing is set to the default.
