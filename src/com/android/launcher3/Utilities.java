@@ -16,9 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
-import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
-
 import android.animation.ValueAnimator;
 import android.app.ActivityManager;
 import android.app.WallpaperManager;
@@ -63,13 +60,12 @@ import android.view.animation.Interpolator;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
-import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.views.Transposable;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.io.Closeable;
@@ -97,7 +93,6 @@ public final class Utilities {
 
     private static final int[] sLoc0 = new int[2];
     private static final int[] sLoc1 = new int[2];
-    private static final float[] sPoint = new float[2];
     private static final Matrix sMatrix = new Matrix();
     private static final Matrix sInverseMatrix = new Matrix();
 
@@ -143,7 +138,7 @@ public final class Utilities {
      */
     public static final Executor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(
             CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
-            TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+            TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 
     public static boolean IS_RUNNING_IN_TEST_HARNESS =
                     ActivityManager.isRunningInTestHarness();
@@ -170,37 +165,60 @@ public final class Utilities {
      *         assumption fails, we will need to return a pair of scale factors.
      */
     public static float getDescendantCoordRelativeToAncestor(
-            View descendant, View ancestor, int[] coord, boolean includeRootScroll) {
-        sPoint[0] = coord[0];
-        sPoint[1] = coord[1];
+            View descendant, View ancestor, float[] coord, boolean includeRootScroll) {
+        return getDescendantCoordRelativeToAncestor(descendant, ancestor, coord, includeRootScroll,
+                false);
+    }
 
+    /**
+     * Given a coordinate relative to the descendant, find the coordinate in a parent view's
+     * coordinates.
+     *
+     * @param descendant The descendant to which the passed coordinate is relative.
+     * @param ancestor The root view to make the coordinates relative to.
+     * @param coord The coordinate that we want mapped.
+     * @param includeRootScroll Whether or not to account for the scroll of the descendant:
+     *          sometimes this is relevant as in a child's coordinates within the descendant.
+     * @param ignoreTransform If true, view transform is ignored
+     * @return The factor by which this descendant is scaled relative to this DragLayer. Caution
+     *         this scale factor is assumed to be equal in X and Y, and so if at any point this
+     *         assumption fails, we will need to return a pair of scale factors.
+     */
+    public static float getDescendantCoordRelativeToAncestor(View descendant, View ancestor,
+            float[] coord, boolean includeRootScroll, boolean ignoreTransform) {
         float scale = 1.0f;
         View v = descendant;
         while(v != ancestor && v != null) {
             // For TextViews, scroll has a meaning which relates to the text position
             // which is very strange... ignore the scroll.
             if (v != descendant || includeRootScroll) {
-                sPoint[0] -= v.getScrollX();
-                sPoint[1] -= v.getScrollY();
+                offsetPoints(coord, -v.getScrollX(), -v.getScrollY());
             }
 
-            v.getMatrix().mapPoints(sPoint);
-            sPoint[0] += v.getLeft();
-            sPoint[1] += v.getTop();
+            if (ignoreTransform) {
+                if (v instanceof Transposable) {
+                    RotationMode m = ((Transposable) v).getRotationMode();
+                    if (m.isTransposed) {
+                        sMatrix.setRotate(m.surfaceRotation, v.getPivotX(), v.getPivotY());
+                        sMatrix.mapPoints(coord);
+                    }
+                }
+            } else {
+                v.getMatrix().mapPoints(coord);
+            }
+            offsetPoints(coord, v.getLeft(), v.getTop());
             scale *= v.getScaleX();
 
             v = (View) v.getParent();
         }
-
-        coord[0] = Math.round(sPoint[0]);
-        coord[1] = Math.round(sPoint[1]);
         return scale;
     }
 
+
     /**
-     * Inverse of {@link #getDescendantCoordRelativeToAncestor(View, View, int[], boolean)}.
+     * Inverse of {@link #getDescendantCoordRelativeToAncestor(View, View, float[], boolean)}.
      */
-    public static void mapCoordInSelfToDescendant(View descendant, View root, int[] coord) {
+    public static void mapCoordInSelfToDescendant(View descendant, View root, float[] coord) {
         sMatrix.reset();
         View v = descendant;
         while(v != root) {
@@ -211,12 +229,23 @@ public final class Utilities {
         }
         sMatrix.postTranslate(-v.getScrollX(), -v.getScrollY());
         sMatrix.invert(sInverseMatrix);
+        sInverseMatrix.mapPoints(coord);
+    }
 
-        sPoint[0] = coord[0];
-        sPoint[1] = coord[1];
-        sInverseMatrix.mapPoints(sPoint);
-        coord[0] = Math.round(sPoint[0]);
-        coord[1] = Math.round(sPoint[1]);
+    /**
+     * Sets {@param out} to be same as {@param in} by rounding individual values
+     */
+    public static void roundArray(float[] in, int[] out) {
+       for (int i = 0; i < in.length; i++) {
+           out[i] = Math.round(in[i]);
+       }
+    }
+
+    public static void offsetPoints(float[] points, float offsetX, float offsetY) {
+        for (int i = 0; i < points.length; i += 2) {
+            points[i] += offsetX;
+            points[i + 1] += offsetY;
+        }
     }
 
     /**
@@ -567,53 +596,6 @@ public final class Utilities {
      */
     public static String getPointString(int x, int y) {
         return String.format(Locale.ENGLISH, "%d,%d", x, y);
-    }
-
-    /**
-     * Returns the location bounds of a view.
-     * - For DeepShortcutView, we return the bounds of the icon view.
-     * - For BubbleTextView, we return the icon bounds.
-     */
-    public static void getLocationBoundsForView(Launcher launcher, View v, Rect outRect) {
-        final DragLayer dragLayer = launcher.getDragLayer();
-        final boolean isBubbleTextView = v instanceof BubbleTextView;
-        final boolean isFolderIcon = v instanceof FolderIcon;
-        final Rect rect = new Rect();
-
-        // Deep shortcut views have their icon drawn in a separate view.
-        final boolean fromDeepShortcutView = v.getParent() instanceof DeepShortcutView;
-        if (v instanceof DeepShortcutView) {
-            dragLayer.getDescendantRectRelativeToSelf(((DeepShortcutView) v).getIconView(), rect);
-        } else if (fromDeepShortcutView) {
-            DeepShortcutView view = (DeepShortcutView) v.getParent();
-            dragLayer.getDescendantRectRelativeToSelf(view.getIconView(), rect);
-        } else if ((isBubbleTextView || isFolderIcon) && v.getTag() instanceof ItemInfo
-                && (((ItemInfo) v.getTag()).container == CONTAINER_DESKTOP
-                || ((ItemInfo) v.getTag()).container == CONTAINER_HOTSEAT)) {
-            CellLayout pageViewIsOn = ((CellLayout) v.getParent().getParent());
-            int pageNum = launcher.getWorkspace().indexOfChild(pageViewIsOn);
-
-            DeviceProfile dp = launcher.getDeviceProfile();
-            ItemInfo info = ((ItemInfo) v.getTag());
-            dp.getItemLocation(info.cellX, info.cellY, info.spanX, info.spanY,
-                    info.container, pageNum - launcher.getCurrentWorkspaceScreen(), rect);
-        } else {
-            dragLayer.getDescendantRectRelativeToSelf(v, rect);
-        }
-        int viewLocationLeft = rect.left;
-        int viewLocationTop = rect.top;
-
-        if (isBubbleTextView && !fromDeepShortcutView) {
-            ((BubbleTextView) v).getIconBounds(rect);
-        } else if (isFolderIcon) {
-            ((FolderIcon) v).getPreviewBounds(rect);
-        } else {
-            rect.set(0, 0, rect.width(), rect.height());
-        }
-        viewLocationLeft += rect.left;
-        viewLocationTop += rect.top;
-        outRect.set(viewLocationLeft, viewLocationTop, viewLocationLeft + rect.width(),
-                viewLocationTop + rect.height());
     }
 
     public static void unregisterReceiverSafely(Context context, BroadcastReceiver receiver) {

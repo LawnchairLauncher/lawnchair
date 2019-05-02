@@ -869,7 +869,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         DeviceProfile grid = mLauncher.getDeviceProfile();
 
         DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
-        DragLayer parent = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
+        DragLayer parent = mLauncher.getDragLayer();
         int width = getFolderWidth();
         int height = getFolderHeight();
 
@@ -881,8 +881,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
         // We need to bound the folder to the currently visible workspace area
         if (mLauncher.getStateManager().getState().overviewUi) {
-            mLauncher.getDragLayer().getDescendantRectRelativeToSelf(mLauncher.getOverviewPanel(),
-                    sTempRect);
+            parent.getDescendantRectRelativeToSelf(mLauncher.getOverviewPanel(), sTempRect);
         } else {
             mLauncher.getWorkspace().getPageAreaRelativeToDragLayer(sTempRect);
         }

@@ -57,12 +57,14 @@ import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
+import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.util.CellAndSpan;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.ParcelableSparseArray;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.Transposable;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 import java.lang.annotation.Retention;
@@ -76,7 +78,7 @@ import java.util.Stack;
 import androidx.annotation.IntDef;
 import androidx.core.view.ViewCompat;
 
-public class CellLayout extends ViewGroup {
+public class CellLayout extends ViewGroup implements Transposable {
     public static final int WORKSPACE_ACCESSIBILITY_DRAG = 2;
     public static final int FOLDER_ACCESSIBILITY_DRAG = 1;
 
@@ -182,6 +184,7 @@ public class CellLayout extends ViewGroup {
     // Related to accessible drag and drop
     private DragAndDropAccessibilityDelegate mTouchHelper;
     private boolean mUseTouchHelper = false;
+    private RotationMode mRotationMode = RotationMode.NORMAL;
 
     public CellLayout(Context context) {
         this(context, null);
@@ -203,7 +206,7 @@ public class CellLayout extends ViewGroup {
         setClipToPadding(false);
         mActivity = ActivityContext.lookupContext(context);
 
-        DeviceProfile grid = mActivity.getDeviceProfile();
+        DeviceProfile grid = mActivity.getWallpaperDeviceProfile();
 
         mCellWidth = mCellHeight = -1;
         mFixedCellWidth = mFixedCellHeight = -1;
@@ -315,6 +318,24 @@ public class CellLayout extends ViewGroup {
             getParent().notifySubtreeAccessibilityStateChanged(
                     this, this, AccessibilityEvent.CONTENT_CHANGE_TYPE_SUBTREE);
         }
+    }
+
+    public void setRotationMode(RotationMode mode) {
+        if (mRotationMode != mode) {
+            mRotationMode = mode;
+            requestLayout();
+        }
+    }
+
+    @Override
+    public RotationMode getRotationMode() {
+        return mRotationMode;
+    }
+
+    @Override
+    public void setPadding(int left, int top, int right, int bottom) {
+        mRotationMode.mapRect(left, top, right, bottom, mTempRect);
+        super.setPadding(mTempRect.left, mTempRect.top, mTempRect.right, mTempRect.bottom);
     }
 
     @Override
@@ -745,6 +766,14 @@ public class CellLayout extends ViewGroup {
         int heightSize =  MeasureSpec.getSize(heightMeasureSpec);
         int childWidthSize = widthSize - (getPaddingLeft() + getPaddingRight());
         int childHeightSize = heightSize - (getPaddingTop() + getPaddingBottom());
+
+        mShortcutsAndWidgets.setRotation(mRotationMode.surfaceRotation);
+        if (mRotationMode.isTransposed) {
+            int tmp = childWidthSize;
+            childWidthSize = childHeightSize;
+            childHeightSize = tmp;
+        }
+
         if (mFixedCellWidth < 0 || mFixedCellHeight < 0) {
             int cw = DeviceProfile.calculateCellWidth(childWidthSize, mCountX);
             int ch = DeviceProfile.calculateCellHeight(childHeightSize, mCountY);
@@ -787,7 +816,6 @@ public class CellLayout extends ViewGroup {
         int top = getPaddingTop();
         int bottom = b - t - getPaddingBottom();
 
-        mShortcutsAndWidgets.layout(left, top, right, bottom);
         // Expand the background drawing bounds by the padding baked into the background drawable
         mBackground.getPadding(mTempRect);
         mBackground.setBounds(
@@ -795,6 +823,16 @@ public class CellLayout extends ViewGroup {
                 top - mTempRect.top - getPaddingTop(),
                 right + mTempRect.right + getPaddingRight(),
                 bottom + mTempRect.bottom + getPaddingBottom());
+
+        if (mRotationMode.isTransposed) {
+            int halfW = mShortcutsAndWidgets.getMeasuredWidth() / 2;
+            int halfH = mShortcutsAndWidgets.getMeasuredHeight() / 2;
+            int cX = (left + right) / 2;
+            int cY = (top + bottom) / 2;
+            mShortcutsAndWidgets.layout(cX - halfW, cY - halfH, cX + halfW, cY + halfH);
+        } else {
+            mShortcutsAndWidgets.layout(left, top, right, bottom);
+        }
     }
 
     /**
@@ -929,7 +967,7 @@ public class CellLayout extends ViewGroup {
             if (resize) {
                 cellToRect(cellX, cellY, spanX, spanY, r);
                 if (v instanceof LauncherAppWidgetHostView) {
-                    DeviceProfile profile = mActivity.getDeviceProfile();
+                    DeviceProfile profile = mActivity.getWallpaperDeviceProfile();
                     Utilities.shrinkRect(r, profile.appWidgetScale.x, profile.appWidgetScale.y);
                 }
             } else {

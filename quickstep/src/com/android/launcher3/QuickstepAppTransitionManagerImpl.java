@@ -408,7 +408,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
      */
     private ValueAnimator getOpeningWindowAnimators(View v, RemoteAnimationTargetCompat[] targets,
             Rect windowTargetBounds, boolean toggleVisibility) {
-        Rect bounds = new Rect();
+        RectF bounds = new RectF();
         mFloatingView = FloatingIconView.getFloatingIconView(mLauncher, v, toggleVisibility,
                 bounds, true /* isOpening */, mFloatingView);
         Rect crop = new Rect();
@@ -423,8 +423,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         // Scale the app icon to take up the entire screen. This simplifies the math when
         // animating the app window position / scale.
         float smallestSize = Math.min(windowTargetBounds.height(), windowTargetBounds.width());
-        float maxScaleX = smallestSize / (float) bounds.width();
-        float maxScaleY = smallestSize / (float) bounds.height();
+        float maxScaleX = smallestSize / bounds.width();
+        float maxScaleY = smallestSize / bounds.height();
         float scale = Math.max(maxScaleX, maxScaleY);
         float startScale = 1f;
         if (v instanceof BubbleTextView && !(v.getParent() instanceof DeepShortcutView)) {

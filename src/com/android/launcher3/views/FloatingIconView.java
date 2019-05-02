@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.views;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
 
@@ -23,6 +26,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -61,12 +65,10 @@ import com.android.launcher3.shortcuts.DeepShortcutView;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
-import static com.android.launcher3.Utilities.mapToRange;
-
 /**
  * A view that is created to look like another view with the purpose of creating fluid animations.
  */
-
+@TargetApi(Build.VERSION_CODES.Q)
 public class FloatingIconView extends View implements Animator.AnimatorListener, ClipPathView {
 
     public static final float SHAPE_PROGRESS_DURATION = 0.15f;
@@ -186,19 +188,72 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
      * @param v The view to copy
      * @param positionOut Rect that will hold the size and position of v.
      */
-    private void matchPositionOf(Launcher launcher, View v, Rect positionOut) {
-        Utilities.getLocationBoundsForView(launcher, v, positionOut);
-        final LayoutParams lp = new LayoutParams(positionOut.width(), positionOut.height());
+    private void matchPositionOf(Launcher launcher, View v, RectF positionOut) {
+        getLocationBoundsForView(launcher, v, positionOut);
+        final LayoutParams lp = new LayoutParams(
+                Math.round(positionOut.width()),
+                Math.round(positionOut.height()));
         lp.ignoreInsets = true;
 
         // Position the floating view exactly on top of the original
-        lp.leftMargin = positionOut.left;
-        lp.topMargin = positionOut.top;
+        lp.leftMargin = Math.round(positionOut.left);
+        lp.topMargin = Math.round(positionOut.top);
         setLayoutParams(lp);
         // Set the properties here already to make sure they are available when running the first
         // animation frame.
         layout(lp.leftMargin, lp.topMargin, lp.leftMargin + lp.width, lp.topMargin
                 + lp.height);
+    }
+
+    /**
+     * Returns the location bounds of a view.
+     * - For DeepShortcutView, we return the bounds of the icon view.
+     * - For BubbleTextView, we return the icon bounds.
+     */
+    private void getLocationBoundsForView(Launcher launcher, View v, RectF outRect) {
+        final boolean isBubbleTextView = v instanceof BubbleTextView;
+        final boolean isFolderIcon = v instanceof FolderIcon;
+
+        // Deep shortcut views have their icon drawn in a separate view.
+        final boolean fromDeepShortcutView = v.getParent() instanceof DeepShortcutView;
+
+        final View targetView;
+        boolean ignoreTransform = false;
+
+        if (v instanceof DeepShortcutView) {
+            targetView = ((DeepShortcutView) v).getIconView();
+        } else if (fromDeepShortcutView) {
+            DeepShortcutView view = (DeepShortcutView) v.getParent();
+            targetView = view.getIconView();
+        } else if ((isBubbleTextView || isFolderIcon) && v.getTag() instanceof ItemInfo
+                && (((ItemInfo) v.getTag()).container == CONTAINER_DESKTOP
+                || ((ItemInfo) v.getTag()).container == CONTAINER_HOTSEAT)) {
+            targetView = v;
+            ignoreTransform = true;
+        } else {
+            targetView = v;
+        }
+
+        float[] points = new float[] {0, 0, targetView.getWidth(), targetView.getHeight()};
+        Utilities.getDescendantCoordRelativeToAncestor(targetView, launcher.getDragLayer(), points,
+                false, ignoreTransform);
+
+        float viewLocationLeft = Math.min(points[0], points[2]);
+        float viewLocationTop = Math.min(points[1], points[3]);
+
+        final Rect iconRect = new Rect();
+        if (isBubbleTextView && !fromDeepShortcutView) {
+            ((BubbleTextView) v).getIconBounds(iconRect);
+        } else if (isFolderIcon) {
+            ((FolderIcon) v).getPreviewBounds(iconRect);
+        } else {
+            iconRect.set(0, 0, Math.abs(Math.round(points[2] - points[0])),
+                    Math.abs(Math.round(points[3] - points[1])));
+        }
+        viewLocationLeft += iconRect.left;
+        viewLocationTop += iconRect.top;
+        outRect.set(viewLocationLeft, viewLocationTop, viewLocationLeft + iconRect.width(),
+                viewLocationTop + iconRect.height());
     }
 
     @WorkerThread
@@ -411,7 +466,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
      * @param isOpening True if this view replaces the icon for app open animation.
      */
     public static FloatingIconView getFloatingIconView(Launcher launcher, View originalView,
-            boolean hideOriginal, Rect positionOut, boolean isOpening, FloatingIconView recycle) {
+            boolean hideOriginal, RectF positionOut, boolean isOpening, FloatingIconView recycle) {
         if (recycle != null) {
             recycle.recycle();
         }

@@ -52,7 +52,7 @@ public class TaskViewDrawable extends Drawable {
 
     private final RecentsView mParent;
     private final View mIconView;
-    private final int[] mIconPos;
+    private final float[] mIconPos;
     private final TaskView mTaskView;
 
     private final TaskThumbnailView mThumbnailView;
@@ -68,7 +68,7 @@ public class TaskViewDrawable extends Drawable {
         mParent = parent;
         mTaskView = tv;
         mIconView = tv.getIconView();
-        mIconPos = new int[2];
+        mIconPos = new float[2];
         mIconScale = mIconView.getScaleX();
         Utilities.getDescendantCoordRelativeToAncestor(mIconView, parent, mIconPos, true);
 
