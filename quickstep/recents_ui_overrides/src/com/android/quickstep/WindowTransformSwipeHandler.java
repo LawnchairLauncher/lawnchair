@@ -906,12 +906,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             }
         }
 
+        if (endTarget.isLauncher) {
+            mRecentsAnimationWrapper.enableInputProxy();
+        }
+
         if (endTarget == HOME) {
             setShelfState(ShelfAnimState.CANCEL, LINEAR, 0);
             duration = Math.max(MIN_OVERSHOOT_DURATION, duration);
         } else if (endTarget == RECENTS) {
             mLiveTileOverlay.startIconAnimation();
-            mRecentsAnimationWrapper.enableInputProxy();
             if (mRecentsView != null) {
                 duration = Math.max(duration, mRecentsView.getScroller().getDuration());
             }
