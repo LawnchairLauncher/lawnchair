@@ -210,9 +210,9 @@ public class TaskThumbnailView extends View {
                 mCurrentDrawnCornerRadius);
     }
 
-    public Rect getInsetsToDrawInFullscreen() {
-        // Don't show insets in the wrong orientation.
-        return mIsRotated ? EMPTY_RECT : mScaledInsets;
+    public Rect getInsetsToDrawInFullscreen(boolean isMultiWindowMode) {
+        // Don't show insets in the wrong orientation or in multi window mode.
+        return mIsRotated || isMultiWindowMode ? EMPTY_RECT : mScaledInsets;
     }
 
     public void setCurrentDrawnInsetsAndRadius(Rect insets, float radius) {
