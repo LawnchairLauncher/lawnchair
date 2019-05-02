@@ -37,6 +37,7 @@ public final class RecentsActivity extends BaseRecentsActivity {
         mRecentsRootView = findViewById(R.id.drag_layer);
         mIconRecentsView = findViewById(R.id.overview_panel);
         mIconRecentsView.setRecentsToActivityHelper(new FallbackRecentsToActivityHelper(this));
+        mIconRecentsView.setShowStatusBarForegroundScrim(true);
     }
 
     @Override
