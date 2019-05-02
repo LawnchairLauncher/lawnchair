@@ -22,13 +22,15 @@ import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SY
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
-import androidx.annotation.Nullable;
+import java.util.function.Predicate;
 
 /**
  * Input consumer for handling touch on the recents/Launcher activity.
@@ -42,6 +44,7 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
 
     private final int[] mLocationOnScreen = new int[2];
     private final boolean mProxyTouch;
+    private final Predicate<MotionEvent> mEventReceiver;
 
     private final boolean mStartingInActivityBounds;
     private boolean mTargetHandledTouch;
@@ -53,10 +56,15 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
         mStartingInActivityBounds = startingInActivityBounds;
 
         mTarget = activity.getDragLayer();
-        if (!startingInActivityBounds) {
+        if (startingInActivityBounds) {
+            mEventReceiver = mTarget::dispatchTouchEvent;
+            mProxyTouch = true;
+        } else {
+            // Only proxy touches to controllers if we are starting touch from nav bar.
+            mEventReceiver = mTarget::proxyTouchEvent;
             mTarget.getLocationOnScreen(mLocationOnScreen);
+            mProxyTouch = mTarget.prepareProxyEventStarting();
         }
-        mProxyTouch = mTarget.prepareProxyEventStarting();
     }
 
     @Override
@@ -80,7 +88,7 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
             ev.setEdgeFlags(flags | Utilities.EDGE_NAV_BAR);
         }
         ev.offsetLocation(-mLocationOnScreen[0], -mLocationOnScreen[1]);
-        boolean handled = mTarget.proxyTouchEvent(ev);
+        boolean handled = mEventReceiver.test(ev);
         ev.offsetLocation(mLocationOnScreen[0], mLocationOnScreen[1]);
         ev.setEdgeFlags(flags);
 
