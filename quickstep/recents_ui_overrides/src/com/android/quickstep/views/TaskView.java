@@ -17,7 +17,6 @@
 package com.android.quickstep.views;
 
 import static android.widget.Toast.LENGTH_SHORT;
-
 import static com.android.launcher3.BaseActivity.fromContext;
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
@@ -32,6 +31,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Outline;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -47,6 +47,7 @@ import android.widget.Toast;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
@@ -68,6 +69,7 @@ import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -95,6 +97,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     public static final long SCALE_ICON_DURATION = 120;
     private static final long DIM_ANIM_DURATION = 700;
+
+    private static final List<Rect> SYSTEM_GESTURE_EXCLUSION_RECT =
+            Collections.singletonList(new Rect());
 
     public static final Property<TaskView, Float> ZOOM_SCALE =
             new FloatProperty<TaskView>("zoomScale") {
@@ -481,6 +486,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         super.onLayout(changed, left, top, right, bottom);
         setPivotX((right - left) * 0.5f);
         setPivotY(mSnapshotView.getTop() + mSnapshotView.getHeight() * 0.5f);
+        if (Utilities.ATLEAST_Q) {
+            SYSTEM_GESTURE_EXCLUSION_RECT.get(0).set(0, 0, getWidth(), getHeight());
+            setSystemGestureExclusionRects(SYSTEM_GESTURE_EXCLUSION_RECT);
+        }
     }
 
     public static float getCurveScaleForInterpolation(float linearInterpolation) {
