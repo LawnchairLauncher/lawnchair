@@ -17,7 +17,7 @@
 package com.android.quickstep.views;
 
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.android.launcher3.BaseActivity.fromContext;
+
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -167,8 +167,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private float mZoomScale;
     private float mFullscreenProgress;
     private final Rect mCurrentDrawnInsets = new Rect();
-    private float mCornerRadius;
-    private float mWindowCornerRadius;
+    private final float mCornerRadius;
+    private final float mWindowCornerRadius;
+    private final BaseDraggingActivity mActivity;
 
     private ObjectAnimator mIconAndDimAnimator;
     private float mIconScaleAnimStartProgress = 0;
@@ -190,6 +191,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     public TaskView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mActivity = BaseDraggingActivity.fromContext(context);
         setOnClickListener((view) -> {
             if (getTask() == null) {
                 return;
@@ -204,10 +206,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 launchTask(true /* animate */);
             }
 
-            fromContext(context).getUserEventDispatcher().logTaskLaunchOrDismiss(
+            mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
                     Touch.TAP, Direction.NONE, getRecentsView().indexOfChild(this),
                     TaskUtils.getLaunchComponentKeyForTask(getTask().key));
-            fromContext(context).getStatsLogManager().logTaskLaunch(getRecentsView(),
+            mActivity.getStatsLogManager().logTaskLaunch(getRecentsView(),
                     TaskUtils.getLaunchComponentKeyForTask(getTask().key));
         });
         mCornerRadius = TaskCornerRadius.get(context);
@@ -306,8 +308,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         if (mTask != null) {
             final ActivityOptions opts;
             if (animate) {
-                opts = ((BaseDraggingActivity) fromContext(getContext()))
-                        .getActivityLaunchOptions(this);
+                opts = mActivity.getActivityLaunchOptions(this);
                 if (freezeTaskList) {
                     ActivityOptionsCompat.setFreezeRecentTasksList(opts);
                 }
@@ -571,13 +572,12 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                         getContext().getText(R.string.accessibility_close_task)));
 
         final Context context = getContext();
-        final BaseDraggingActivity activity = fromContext(context);
         final List<TaskSystemShortcut> shortcuts =
                 mSnapshotView.getTaskOverlay().getEnabledShortcuts(this);
         final int count = shortcuts.size();
         for (int i = 0; i < count; ++i) {
             final TaskSystemShortcut menuOption = shortcuts.get(i);
-            OnClickListener onClickListener = menuOption.getOnClickListener(activity, this);
+            OnClickListener onClickListener = menuOption.getOnClickListener(mActivity, this);
             if (onClickListener != null) {
                 info.addAction(menuOption.createAccessibilityAction(context));
             }
@@ -617,8 +617,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         for (int i = 0; i < count; ++i) {
             final TaskSystemShortcut menuOption = shortcuts.get(i);
             if (menuOption.hasHandlerForAction(action)) {
-                OnClickListener onClickListener = menuOption.getOnClickListener(
-                        fromContext(getContext()), this);
+                OnClickListener onClickListener = menuOption.getOnClickListener(mActivity, this);
                 if (onClickListener != null) {
                     onClickListener.onClick(this);
                 }
@@ -658,13 +657,15 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         setClipToPadding(!isFullscreen);
 
         TaskThumbnailView thumbnail = getThumbnail();
-        Rect insets = thumbnail.getInsetsToDrawInFullscreen();
+        boolean isMultiWindowMode = mActivity.getDeviceProfile().isMultiWindowMode;
+        Rect insets = thumbnail.getInsetsToDrawInFullscreen(isMultiWindowMode);
         mCurrentDrawnInsets.set((int) (insets.left * mFullscreenProgress),
                 (int) (insets.top * mFullscreenProgress),
                 (int) (insets.right * mFullscreenProgress),
                 (int) (insets.bottom * mFullscreenProgress));
+        float fullscreenCornerRadius = isMultiWindowMode ? 0 : mWindowCornerRadius;
         float cornerRadius = Utilities.mapRange(mFullscreenProgress, mCornerRadius,
-                mWindowCornerRadius) / getRecentsView().getScaleX();
+                fullscreenCornerRadius) / getRecentsView().getScaleX();
 
         thumbnail.setCurrentDrawnInsetsAndRadius(mCurrentDrawnInsets, cornerRadius);
         mOutlineProvider.setCurrentDrawnInsetsAndRadius(mCurrentDrawnInsets, cornerRadius);
