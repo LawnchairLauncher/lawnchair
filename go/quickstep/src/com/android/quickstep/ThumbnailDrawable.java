@@ -16,17 +16,23 @@
 
 package com.android.quickstep;
 
+import static android.graphics.Shader.TileMode.CLAMP;
+
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.R;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
 /**
@@ -39,11 +45,18 @@ public final class ThumbnailDrawable extends Drawable {
     private final Paint mPaint = new Paint();
     private final Matrix mMatrix = new Matrix();
     private final ThumbnailData mThumbnailData;
+    private final BitmapShader mShader;
+    private final RectF mDestRect = new RectF();
+    private final int mCornerRadius;
     private int mRequestedOrientation;
 
-    public ThumbnailDrawable(@NonNull ThumbnailData thumbnailData, int requestedOrientation) {
+    public ThumbnailDrawable(Resources res, @NonNull ThumbnailData thumbnailData,
+            int requestedOrientation) {
         mThumbnailData = thumbnailData;
         mRequestedOrientation = requestedOrientation;
+        mCornerRadius = (int) res.getDimension(R.dimen.task_thumbnail_corner_radius);
+        mShader = new BitmapShader(mThumbnailData.thumbnail, CLAMP, CLAMP);
+        mPaint.setShader(mShader);
         updateMatrix();
     }
 
@@ -64,12 +77,13 @@ public final class ThumbnailDrawable extends Drawable {
         if (mThumbnailData.thumbnail == null) {
             return;
         }
-        canvas.drawBitmap(mThumbnailData.thumbnail, mMatrix, mPaint);
+        canvas.drawRoundRect(mDestRect, mCornerRadius, mCornerRadius, mPaint);
     }
 
     @Override
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
+        mDestRect.set(bounds);
         updateMatrix();
     }
 
@@ -125,5 +139,6 @@ public final class ThumbnailDrawable extends Drawable {
         }
         // Scale to fill.
         mMatrix.postScale(scaleX, scaleY);
+        mShader.setLocalMatrix(mMatrix);
     }
 }
