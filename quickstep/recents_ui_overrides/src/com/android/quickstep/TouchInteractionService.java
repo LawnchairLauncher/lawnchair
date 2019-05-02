@@ -30,6 +30,7 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.app.KeyguardManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -45,6 +46,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Process;
 import android.os.RemoteException;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Choreographer;
 import android.view.Display;
@@ -54,6 +56,7 @@ import android.view.Surface;
 import android.view.WindowManager;
 
 import com.android.launcher3.MainThreadExecutor;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.logging.EventLogArray;
@@ -78,7 +81,7 @@ import java.util.List;
 /**
  * Service connected by system-UI for handling touch interaction.
  */
-@TargetApi(Build.VERSION_CODES.O)
+@TargetApi(Build.VERSION_CODES.Q)
 public class TouchInteractionService extends Service implements
         NavigationModeChangeListener, DisplayListener {
 
@@ -229,6 +232,7 @@ public class TouchInteractionService extends Service implements
     private Mode mMode = Mode.THREE_BUTTONS;
     private int mDefaultDisplayId;
     private final RectF mSwipeTouchRegion = new RectF();
+    private ComponentName mGestureBlockingActivity;
 
     @Override
     public void onCreate() {
@@ -250,6 +254,10 @@ public class TouchInteractionService extends Service implements
 
         mDefaultDisplayId = getSystemService(WindowManager.class).getDefaultDisplay()
                 .getDisplayId();
+
+        String blockingActivity = getString(R.string.gesture_blocking_activity);
+        mGestureBlockingActivity = TextUtils.isEmpty(blockingActivity) ? null :
+                ComponentName.unflattenFromString(blockingActivity);
         sConnected = true;
     }
 
@@ -464,6 +472,9 @@ public class TouchInteractionService extends Service implements
         } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() &&
                 activityControl.isInLiveTileMode()) {
             base = OverviewInputConsumer.newInstance(activityControl, mInputMonitorCompat, false);
+        } else if (mGestureBlockingActivity != null && runningTaskInfo != null
+                && mGestureBlockingActivity.equals(runningTaskInfo.topActivity)) {
+            base = InputConsumer.NO_OP;
         } else {
             base = createOtherActivityInputConsumer(event, runningTaskInfo);
         }
