@@ -2907,14 +2907,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 && info.user.equals(user);
         final Workspace.ItemOperator packageAndUserAndApp = (ItemInfo info, View view) ->
                 packageAndUser.evaluate(info, view) && info.itemType == ITEM_TYPE_APPLICATION;
-        final Workspace.ItemOperator packageAndUserAndShortcut = (ItemInfo info, View view) ->
-                packageAndUser.evaluate(info, view) && (info.itemType == ITEM_TYPE_SHORTCUT
-                        || info.itemType == ITEM_TYPE_DEEP_SHORTCUT);
-        final Workspace.ItemOperator packageAndUserInFolder = (info, view) -> {
+        final Workspace.ItemOperator packageAndUserAndAppInFolder = (info, view) -> {
             if (info instanceof FolderInfo) {
                 FolderInfo folderInfo = (FolderInfo) info;
                 for (WorkspaceItemInfo shortcutInfo : folderInfo.contents) {
-                    if (packageAndUser.evaluate(shortcutInfo, view)) {
+                    if (packageAndUserAndApp.evaluate(shortcutInfo, view)) {
                         return true;
                     }
                 }
@@ -2922,15 +2919,15 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             return false;
         };
 
-        // Order: App icons, shortcuts, app/shortcut in folder. Items in hotseat get returned first.
+        // Order: App icons, app in folder. Items in hotseat get returned first.
         if (ADAPTIVE_ICON_WINDOW_ANIM.get()) {
             return getFirstMatch(new CellLayout[] { getHotseat(), currentPage },
-                    packageAndUserAndApp, packageAndUserAndShortcut, packageAndUserInFolder);
+                    packageAndUserAndApp, packageAndUserAndAppInFolder);
         } else {
             // Do not use Folder as a criteria, since it'll cause a crash when trying to draw
             // FolderAdaptiveIcon as the background.
             return getFirstMatch(new CellLayout[] { getHotseat(), currentPage },
-                    packageAndUserAndApp, packageAndUserAndShortcut);
+                    packageAndUserAndApp);
         }
     }
 
