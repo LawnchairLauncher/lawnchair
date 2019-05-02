@@ -26,16 +26,18 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import java.util.function.Consumer;
+
 /**
  * Callback for swipe input on {@link TaskHolder} views in the recents view.
  */
 public final class TaskSwipeCallback extends ItemTouchHelper.SimpleCallback {
 
-    private final TaskActionController mTaskActionController;
+    private final Consumer<TaskHolder> mOnTaskSwipeCallback;
 
-    public TaskSwipeCallback(TaskActionController taskActionController) {
+    public TaskSwipeCallback(Consumer<TaskHolder> onTaskSwipeCallback) {
         super(0 /* dragDirs */, RIGHT);
-        mTaskActionController = taskActionController;
+        mOnTaskSwipeCallback = onTaskSwipeCallback;
     }
 
     @Override
@@ -47,7 +49,7 @@ public final class TaskSwipeCallback extends ItemTouchHelper.SimpleCallback {
     @Override
     public void onSwiped(ViewHolder viewHolder, int direction) {
         if (direction == RIGHT) {
-            mTaskActionController.removeTask((TaskHolder) viewHolder);
+            mOnTaskSwipeCallback.accept((TaskHolder) viewHolder);
         }
     }
 
