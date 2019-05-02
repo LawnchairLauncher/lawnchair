@@ -77,6 +77,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -533,8 +534,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         return TaskView.getCurveScaleForInterpolation(interpolation);
     }
 
-    public Consumer<MotionEvent> getRecentsViewDispatcher(boolean isTransposed) {
-        return mRecentsView != null ? mRecentsView.getEventDispatcher(isTransposed) : null;
+    public Consumer<MotionEvent> getRecentsViewDispatcher(RotationMode rotationMode) {
+        return mRecentsView != null ? mRecentsView.getEventDispatcher(rotationMode) : null;
     }
 
     @UiThread

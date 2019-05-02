@@ -45,6 +45,7 @@ import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
 import com.android.launcher3.R;
+import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RaceConditionTracker;
 import com.android.launcher3.util.TraceHelper;
@@ -164,8 +165,10 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         // Proxy events to recents view
         if (mPassedDragSlop && mInteractionHandler != null
                 && !mRecentsViewDispatcher.hasConsumer()) {
-            mRecentsViewDispatcher.setConsumer(mInteractionHandler
-                    .getRecentsViewDispatcher(isNavBarOnLeft() || isNavBarOnRight()));
+            mRecentsViewDispatcher.setConsumer(mInteractionHandler.getRecentsViewDispatcher(
+                    isNavBarOnLeft()
+                            ? RotationMode.SEASCAPE
+                            : (isNavBarOnRight() ? RotationMode.LANDSCAPE : RotationMode.NORMAL)));
         }
         int edgeFlags = ev.getEdgeFlags();
         ev.setEdgeFlags(edgeFlags | EDGE_NAV_BAR);
@@ -402,15 +405,13 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private float getDisplacement(MotionEvent ev) {
-        final float displacement;
         if (isNavBarOnRight()) {
-            displacement = ev.getX() - mDownPos.x;
+            return ev.getX() - mDownPos.x;
         } else if (isNavBarOnLeft()) {
-            displacement = mDownPos.x - ev.getX();
+            return mDownPos.x - ev.getX();
         } else {
-            displacement = ev.getY() - mDownPos.y;
+            return ev.getY() - mDownPos.y;
         }
-        return displacement;
     }
 
     @Override
