@@ -61,7 +61,7 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
         performTest();
     }
 
-    // b/131116002
+    // Convert to TAPL b/131116002
     private void performTest() throws Throwable {
         clearHomescreen();
         mActivityMonitor.startLauncher();
