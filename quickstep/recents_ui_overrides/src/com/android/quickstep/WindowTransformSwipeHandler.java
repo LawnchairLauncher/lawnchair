@@ -220,6 +220,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     protected Runnable mGestureEndCallback;
     protected GestureEndTarget mGestureEndTarget;
+    // Either RectFSpringAnim (if animating home) or ObjectAnimator (from mCurrentShift) otherwise
+    private RunningWindowAnim mRunningWindowAnim;
     private boolean mIsShelfPeeking;
     private DeviceProfile mDp;
     private int mTransitionDragLength;
@@ -805,7 +807,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     @UiThread
     private InputConsumer createNewInputProxyHandler() {
-        mCurrentShift.finishAnimation();
+        endRunningWindowAnim();
         if (mLauncherTransitionController != null) {
             mLauncherTransitionController.getAnimationPlayer().end();
         }
@@ -815,6 +817,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         }
 
         return OverviewInputConsumer.newInstance(mActivityControlHelper, null, true);
+    }
+
+    private void endRunningWindowAnim() {
+        if (mRunningWindowAnim != null) {
+            mRunningWindowAnim.end();
+        }
     }
 
     @UiThread
@@ -898,12 +906,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             }
         }
 
+        if (endTarget.isLauncher) {
+            mRecentsAnimationWrapper.enableInputProxy();
+        }
+
         if (endTarget == HOME) {
             setShelfState(ShelfAnimState.CANCEL, LINEAR, 0);
             duration = Math.max(MIN_OVERSHOOT_DURATION, duration);
         } else if (endTarget == RECENTS) {
             mLiveTileOverlay.startIconAnimation();
-            mRecentsAnimationWrapper.enableInputProxy();
             if (mRecentsView != null) {
                 duration = Math.max(duration, mRecentsView.getScroller().getDuration());
             }
@@ -984,6 +995,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 }
             });
             windowAnim.start(velocityPxPerMs);
+            mRunningWindowAnim = RunningWindowAnim.wrap(windowAnim);
             mLauncherTransitionController = null;
         } else {
             ValueAnimator windowAnim = mCurrentShift.animateToValue(start, end);
@@ -1002,6 +1014,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 }
             });
             windowAnim.start();
+            mRunningWindowAnim = RunningWindowAnim.wrap(windowAnim);
         }
         // Always play the entire launcher animation when going home, since it is separate from
         // the animation that has been controlled thus far.
@@ -1113,7 +1126,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                         false /* animate */, true /* freezeTaskList */);
             });
         }
-        TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", false);
+        TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", true);
         doLogGesture(NEW_TASK);
         reset();
     }
@@ -1135,7 +1148,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void invalidateHandler() {
-        mCurrentShift.finishAnimation();
+        endRunningWindowAnim();
 
         if (mGestureEndCallback != null) {
             mGestureEndCallback.run();
@@ -1282,5 +1295,17 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private static boolean isNotInRecents(RemoteAnimationTargetCompat app) {
         return app.isNotInRecents
                 || app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
+    }
+
+    private interface RunningWindowAnim {
+        void end();
+
+        static RunningWindowAnim wrap(Animator animator) {
+            return animator::end;
+        }
+
+        static RunningWindowAnim wrap(RectFSpringAnim rectFSpringAnim) {
+            return rectFSpringAnim::end;
+        }
     }
 }
