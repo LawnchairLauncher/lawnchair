@@ -48,6 +48,9 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 
+import androidx.annotation.IntDef;
+import androidx.core.view.ViewCompat;
+
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
@@ -74,9 +77,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Stack;
-
-import androidx.annotation.IntDef;
-import androidx.core.view.ViewCompat;
 
 public class CellLayout extends ViewGroup implements Transposable {
     public static final int WORKSPACE_ACCESSIBILITY_DRAG = 2;
@@ -358,6 +358,10 @@ public class CellLayout extends ViewGroup implements Transposable {
 
     public void enableHardwareLayer(boolean hasLayer) {
         mShortcutsAndWidgets.setLayerType(hasLayer ? LAYER_TYPE_HARDWARE : LAYER_TYPE_NONE, sPaint);
+    }
+
+    public boolean isHardwareLayerEnabled() {
+        return mShortcutsAndWidgets.getLayerType() == LAYER_TYPE_HARDWARE;
     }
 
     public void setCellDimensions(int width, int height) {
