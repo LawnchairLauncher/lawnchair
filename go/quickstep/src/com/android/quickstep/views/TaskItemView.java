@@ -49,6 +49,7 @@ public final class TaskItemView extends LinearLayout {
     private ImageView mIconView;
     private ImageView mThumbnailView;
     private float mContentTransitionProgress;
+    private int mDisplayedOrientation;
 
     /**
      * Property representing the content transition progress of the view. 1.0f represents that the
@@ -179,13 +180,27 @@ public final class TaskItemView extends LinearLayout {
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        onOrientationChanged(getResources().getConfiguration().orientation);
+    }
+
+    @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        onOrientationChanged(newConfig.orientation);
+    }
+
+    private void onOrientationChanged(int newOrientation) {
+        if (mDisplayedOrientation == newOrientation) {
+            return;
+        }
+        mDisplayedOrientation = newOrientation;
         int layerCount = mThumbnailDrawable.getNumberOfLayers();
         for (int i = 0; i < layerCount; i++) {
             Drawable drawable = mThumbnailDrawable.getDrawable(i);
             if (drawable instanceof ThumbnailDrawable) {
-                ((ThumbnailDrawable) drawable).setRequestedOrientation(newConfig.orientation);
+                ((ThumbnailDrawable) drawable).setRequestedOrientation(newOrientation);
             }
         }
         mTaskIconThumbnailView.forceLayout();
