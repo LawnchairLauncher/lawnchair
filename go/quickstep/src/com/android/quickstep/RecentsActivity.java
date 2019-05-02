@@ -42,7 +42,7 @@ public final class RecentsActivity extends BaseRecentsActivity {
 
     @Override
     protected void reapplyUi() {
-        //TODO: Implement this depending on how insets will affect the view.
+        // No-op. Insets are automatically re-applied in the root view.
     }
 
     @Override
