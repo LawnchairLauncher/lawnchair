@@ -32,6 +32,7 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.RemoteException;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -65,10 +66,11 @@ public class FallbackRecentsTest {
 
     @Rule public final TestRule mSetLauncherCommand;
 
-    public FallbackRecentsTest() {
+    public FallbackRecentsTest() throws RemoteException {
         Instrumentation instrumentation = getInstrumentation();
         Context context = instrumentation.getContext();
         mDevice = UiDevice.getInstance(instrumentation);
+        mDevice.setOrientationNatural();
         mLauncher = new LauncherInstrumentation(instrumentation);
 
         mQuickstepOnOffExecutor = new NavigationModeSwitchRule(mLauncher);
