@@ -83,6 +83,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -1641,10 +1642,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return mClearAllButton;
     }
 
-    public Consumer<MotionEvent> getEventDispatcher(boolean isTransposed) {
-        if (isTransposed) {
+    public Consumer<MotionEvent> getEventDispatcher(RotationMode rotationMode) {
+        if (rotationMode.isTransposed) {
             Matrix transform = new Matrix();
-            transform.setRotate(90);
+            transform.setRotate(-rotationMode.surfaceRotation);
 
             if (getWidth() > 0 && getHeight() > 0) {
                 float scale = ((float) getWidth()) / getHeight();
