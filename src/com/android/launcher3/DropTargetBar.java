@@ -204,7 +204,7 @@ public class DropTargetBar extends FrameLayout
         return visibleCount;
     }
 
-    private void animateToVisibility(boolean isVisible) {
+    public void animateToVisibility(boolean isVisible) {
         if (mVisible != isVisible) {
             mVisible = isVisible;
 
