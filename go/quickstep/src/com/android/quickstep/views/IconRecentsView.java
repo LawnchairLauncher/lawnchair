@@ -23,6 +23,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.quickstep.TaskAdapter.CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT;
 import static com.android.quickstep.TaskAdapter.ITEM_TYPE_CLEAR_ALL;
 import static com.android.quickstep.TaskAdapter.ITEM_TYPE_TASK;
+import static com.android.quickstep.TaskAdapter.MAX_TASKS_TO_DISPLAY;
 import static com.android.quickstep.TaskAdapter.TASKS_START_POSITION;
 import static com.android.quickstep.util.RemoteAnimationProvider.getLayer;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
@@ -112,6 +113,7 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
     private static final long CLEAR_ALL_FADE_DELAY = 120;
 
     private static final long REMOTE_TO_RECENTS_APP_SCALE_DOWN_DURATION = 300;
+    private static final long REMOTE_TO_RECENTS_VERTICAL_EASE_IN_DURATION = 400;
 
     private static final PathInterpolator FAST_OUT_SLOW_IN_1 =
             new PathInterpolator(.4f, 0f, 0f, 1f);
@@ -119,7 +121,7 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
             new PathInterpolator(.5f, 0f, 0f, 1f);
 
     public static final long REMOTE_APP_TO_OVERVIEW_DURATION =
-            REMOTE_TO_RECENTS_APP_SCALE_DOWN_DURATION;
+            REMOTE_TO_RECENTS_VERTICAL_EASE_IN_DURATION;
 
     /**
      * A ratio representing the view's relative placement within its padded space. For example, 0
@@ -398,17 +400,19 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
     }
 
     /**
-     * Get the bottom most thumbnail view to animate to.
+     * Get the bottom most task view to animate to.
      *
-     * @return the thumbnail view if laid out
+     * @return the task view
      */
-    private @Nullable View getBottomThumbnailView() {
-        ArrayList<TaskItemView> taskViews = getTaskViews();
-        if (taskViews.isEmpty()) {
-            return null;
+    private @Nullable TaskItemView getBottomTaskView() {
+        int childCount = mTaskRecyclerView.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View view = mTaskRecyclerView.getChildAt(i);
+            if (mTaskRecyclerView.getChildViewHolder(view).getItemViewType() == ITEM_TYPE_TASK) {
+                return (TaskItemView) view;
+            }
         }
-        TaskItemView view = taskViews.get(0);
-        return view.getThumbnailView();
+        return null;
     }
 
     /**
@@ -595,16 +599,55 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
     public void playRemoteAppToRecentsAnimation(@NonNull AnimatorSet anim,
             @NonNull RemoteAnimationTargetCompat appTarget,
             @NonNull RemoteAnimationTargetCompat recentsTarget) {
-        View thumbnailView = getBottomThumbnailView();
-        if (thumbnailView == null) {
+        TaskItemView bottomView = getBottomTaskView();
+        if (bottomView == null) {
             // This can be null if there were previously 0 tasks and the recycler view has not had
             // enough time to take in the data change, bind a new view, and lay out the new view.
             // TODO: Have a fallback to animate to
             anim.play(ValueAnimator.ofInt(0, 1).setDuration(REMOTE_APP_TO_OVERVIEW_DURATION));
         }
+        final Matrix appMatrix = new Matrix();
+        playRemoteTransYAnim(anim, appMatrix);
+        playRemoteAppScaleDownAnim(anim, appMatrix, appTarget, recentsTarget,
+                bottomView.getThumbnailView());
+    }
 
-        // TODO: Play other animations in app => recents
-        playRemoteAppScaleDownAnim(anim, appTarget, recentsTarget, thumbnailView);
+    /**
+     * Play translation Y animation for the remote app to recents animation. Animates over all task
+     * views as well as the closing app, easing them into their final vertical positions.
+     *
+     * @param anim animator set to play on
+     * @param appMatrix transformation matrix for the closing app surface
+     */
+    private void playRemoteTransYAnim(@NonNull AnimatorSet anim, @NonNull Matrix appMatrix) {
+        final ArrayList<TaskItemView> views = getTaskViews();
+
+        // Start Y translation from about halfway through the tasks list to the bottom thumbnail.
+        float taskHeight = getResources().getDimension(R.dimen.task_item_height);
+        float totalTransY = -(MAX_TASKS_TO_DISPLAY / 2.0f - 1) * taskHeight;
+        for (int i = 0, size = views.size(); i < size; i++) {
+            views.get(i).setTranslationY(totalTransY);
+        }
+
+        ValueAnimator transYAnim = ValueAnimator.ofFloat(totalTransY, 0);
+        transYAnim.setDuration(REMOTE_TO_RECENTS_VERTICAL_EASE_IN_DURATION);
+        transYAnim.setInterpolator(FAST_OUT_SLOW_IN_2);
+        transYAnim.addUpdateListener(valueAnimator -> {
+            float transY = (float) valueAnimator.getAnimatedValue();
+            for (int i = 0, size = views.size(); i < size; i++) {
+                views.get(i).setTranslationY(transY);
+            }
+            appMatrix.postTranslate(0, transY - totalTransY);
+        });
+        transYAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                for (int i = 0, size = views.size(); i < size; i++) {
+                    views.get(i).setTranslationY(0);
+                }
+            }
+        });
+        anim.play(transYAnim);
     }
 
     /**
@@ -612,11 +655,12 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
      * scales down to where the thumbnail is.
      *
      * @param anim animator set to play on
+     * @param appMatrix transformation matrix for the app surface
      * @param appTarget closing app target
      * @param recentsTarget opening recents target
      * @param thumbnailView thumbnail view to animate to
      */
-    private void playRemoteAppScaleDownAnim(@NonNull AnimatorSet anim,
+    private void playRemoteAppScaleDownAnim(@NonNull AnimatorSet anim, @NonNull Matrix appMatrix,
             @NonNull RemoteAnimationTargetCompat appTarget,
             @NonNull RemoteAnimationTargetCompat recentsTarget,
             @NonNull View thumbnailView) {
@@ -626,7 +670,7 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
         Rect appBounds = appTarget.sourceContainerBounds;
 
         SyncRtSurfaceTransactionApplierCompat surfaceApplier =
-                new SyncRtSurfaceTransactionApplierCompat(thumbnailView);
+                new SyncRtSurfaceTransactionApplierCompat(this);
 
         // Keep recents visible throughout the animation.
         SurfaceParams[] params = new SurfaceParams[2];
@@ -636,7 +680,7 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
                 null /* windowCrop */, getLayer(recentsTarget, boostedMode), 0 /* cornerRadius */);
 
         ValueAnimator remoteAppAnim = ValueAnimator.ofInt(0, 1);
-        remoteAppAnim.setDuration(REMOTE_TO_RECENTS_APP_SCALE_DOWN_DURATION);
+        remoteAppAnim.setDuration(REMOTE_TO_RECENTS_VERTICAL_EASE_IN_DURATION);
         remoteAppAnim.addUpdateListener(new MultiValueUpdateListener() {
             private final FloatProp mScaleX;
             private final FloatProp mScaleY;
@@ -666,15 +710,15 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
 
             @Override
             public void onUpdate(float percent) {
-                Matrix m = new Matrix();
-                m.preScale(mScaleX.value, mScaleY.value,
+                appMatrix.preScale(mScaleX.value, mScaleY.value,
                         appBounds.width() / 2.0f, appBounds.height() / 2.0f);
-                m.postTranslate(mTranslationX.value, mTranslationY.value);
+                appMatrix.postTranslate(mTranslationX.value, mTranslationY.value);
 
-                params[1] = new SurfaceParams(appTarget.leash, mAlpha.value, m,
+                params[1] = new SurfaceParams(appTarget.leash, mAlpha.value, appMatrix,
                         null /* windowCrop */, getLayer(appTarget, boostedMode),
                         0 /* cornerRadius */);
                 surfaceApplier.scheduleApply(params);
+                appMatrix.reset();
             }
         });
         anim.play(remoteAppAnim);
