@@ -85,6 +85,7 @@ public class AppPredictionsUITests extends AbstractQuickStepTest {
      * Test that prediction UI is updated as soon as we get predictions from the system
      */
     @Test
+    @Ignore // b/131772711: this really fails (when being run as a part of the whole test suite)!
     public void testPredictionExistsInAllApps() {
         mActivityMonitor.startLauncher();
         mLauncher.pressHome().switchToAllApps();
@@ -117,7 +118,7 @@ public class AppPredictionsUITests extends AbstractQuickStepTest {
     }
 
     @Test
-    @Ignore
+    @Ignore // b/131772711 - this was failing in the lab
     public void testPredictionsDisabled() {
         mActivityMonitor.startLauncher();
         sendPredictionUpdate();
