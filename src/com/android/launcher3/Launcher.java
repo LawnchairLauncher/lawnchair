@@ -75,6 +75,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
@@ -149,9 +151,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Predicate;
-
-import androidx.annotation.IdRes;
-import androidx.annotation.Nullable;
 
 /**
  * Default launcher application.
@@ -2198,7 +2197,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 InstallShortcutReceiver.FLAG_LOADER_RUNNING, this);
 
         // When undoing the removal of the last item on a page, return to that page.
-        mWorkspace.setCurrentPage(pageBoundFirst);
+        // Since we are just resetting the current page without user interaction,
+        // override the previous page so we don't log the page switch.
+        mWorkspace.setCurrentPage(pageBoundFirst, pageBoundFirst /* overridePrevPage */);
 
         TraceHelper.endSection("finishBindingItems");
     }
@@ -2345,7 +2346,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         writer.println(" mPendingActivityResult=" + mPendingActivityResult);
         writer.println(" mRotationHelper: " + mRotationHelper);
         // Extra logging for b/116853349
-        mDragLayer.dumpAlpha(writer);
+        mDragLayer.dump(prefix, writer);
+        mStateManager.dump(prefix, writer);
         dumpMisc(writer);
 
         try {

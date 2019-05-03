@@ -177,7 +177,8 @@ public final class TaskItemView extends LinearLayout {
             return mDefaultThumbnail;
         }
         int orientation = getResources().getConfiguration().orientation;
-        return new ThumbnailDrawable(thumbnailData,  orientation /* requestedOrientation */);
+        return new ThumbnailDrawable(getResources(), thumbnailData,
+                orientation /* requestedOrientation */);
     }
 
     private @NonNull String getSafeLabel(@Nullable String label) {

@@ -60,7 +60,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
-import com.android.systemui.shared.system.NavigationBarCompat;
+import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.function.Consumer;
@@ -152,8 +152,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mDisplayRotation = display.getRotation();
         WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
 
-        mDragSlop = NavigationBarCompat.getQuickStepDragSlopPx();
-        mTouchSlop = NavigationBarCompat.getQuickStepTouchSlopPx();
+        mDragSlop = QuickStepContract.getQuickStepDragSlopPx();
+        mTouchSlop = QuickStepContract.getQuickStepTouchSlopPx();
 
         mPassedTouchSlop = mPassedDragSlop = continuingPreviousGesture;
     }
@@ -267,6 +267,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         mMotionPauseDetector.setDisallowPause(upDist < mMotionPauseMinDisplacement
                                 || isLikelyToStartNewTask);
                         mMotionPauseDetector.addPosition(displacement, ev.getEventTime());
+                        mInteractionHandler.setIsLikelyToStartNewTask(isLikelyToStartNewTask);
                     }
                 }
                 break;

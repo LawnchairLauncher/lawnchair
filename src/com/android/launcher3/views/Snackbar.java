@@ -16,6 +16,9 @@
 
 package com.android.launcher3.views;
 
+import static android.view.accessibility.AccessibilityManager.FLAG_CONTENT_CONTROLS;
+import static android.view.accessibility.AccessibilityManager.FLAG_CONTENT_TEXT;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
@@ -29,6 +32,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.dragndrop.DragLayer;
 
 /**
@@ -38,7 +42,7 @@ public class Snackbar extends AbstractFloatingView {
 
     private static final long SHOW_DURATION_MS = 180;
     private static final long HIDE_DURATION_MS = 180;
-    private static final long TIMEOUT_DURATION_MS = 4000;
+    private static final int TIMEOUT_DURATION_MS = 4000;
 
     private final Launcher mLauncher;
     private Runnable mOnDismissed;
@@ -131,7 +135,9 @@ public class Snackbar extends AbstractFloatingView {
                 .setDuration(SHOW_DURATION_MS)
                 .setInterpolator(Interpolators.ACCEL_DEACCEL)
                 .start();
-        snackbar.postDelayed(() -> snackbar.close(true), TIMEOUT_DURATION_MS);
+        int timeout = AccessibilityManagerCompat.getRecommendedTimeoutMillis(launcher,
+                TIMEOUT_DURATION_MS, FLAG_CONTENT_TEXT | FLAG_CONTENT_CONTROLS);
+        snackbar.postDelayed(() -> snackbar.close(true), timeout);
     }
 
     @Override

@@ -16,6 +16,9 @@
 
 package com.android.quickstep.views;
 
+import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
+import static android.view.View.MeasureSpec.makeMeasureSpec;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -53,15 +56,20 @@ final class TaskThumbnailIconView extends ViewGroup {
         int width = height;
         setMeasuredDimension(width, height);
 
+
         int subItemSize = (int) (SUBITEM_FRAME_RATIO * height);
         if (mThumbnailView.getVisibility() != GONE) {
-            int thumbnailHeightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
-            int thumbnailWidthSpec = MeasureSpec.makeMeasureSpec(subItemSize, MeasureSpec.EXACTLY);
+            boolean isPortrait =
+                    (getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT);
+            int thumbnailHeightSpec =
+                    makeMeasureSpec(isPortrait ? height : subItemSize, MeasureSpec.EXACTLY);
+            int thumbnailWidthSpec =
+                    makeMeasureSpec(isPortrait ? subItemSize : width, MeasureSpec.EXACTLY);
             measureChild(mThumbnailView, thumbnailWidthSpec, thumbnailHeightSpec);
         }
         if (mIconView.getVisibility() != GONE) {
-            int iconHeightSpec = MeasureSpec.makeMeasureSpec(subItemSize, MeasureSpec.EXACTLY);
-            int iconWidthSpec = MeasureSpec.makeMeasureSpec(subItemSize, MeasureSpec.EXACTLY);
+            int iconHeightSpec = makeMeasureSpec(subItemSize, MeasureSpec.EXACTLY);
+            int iconWidthSpec = makeMeasureSpec(subItemSize, MeasureSpec.EXACTLY);
             measureChild(mIconView, iconWidthSpec, iconHeightSpec);
         }
     }

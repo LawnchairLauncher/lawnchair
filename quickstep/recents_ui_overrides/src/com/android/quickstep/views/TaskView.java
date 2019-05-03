@@ -48,6 +48,8 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.PendingAnimation;
@@ -365,9 +367,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
     }
 
-    private boolean showTaskMenu() {
+    private boolean showTaskMenu(int action) {
         getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
         mMenuView = TaskMenuView.showForTask(this);
+        UserEventDispatcher.newInstance(getContext()).logActionOnItem(action, Direction.NONE,
+                LauncherLogProto.ItemType.TASK_ICON);
         if (mMenuView != null) {
             mMenuView.addOnAttachStateChangeListener(mTaskMenuStateListener);
         }
@@ -377,10 +381,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private void setIcon(Drawable icon) {
         if (icon != null) {
             mIconView.setDrawable(icon);
-            mIconView.setOnClickListener(v -> showTaskMenu());
+            mIconView.setOnClickListener(v -> showTaskMenu(Touch.TAP));
             mIconView.setOnLongClickListener(v -> {
                 requestDisallowInterceptTouchEvent(true);
-                return showTaskMenu();
+                return showTaskMenu(Touch.LONGPRESS);
             });
         } else {
             mIconView.setDrawable(null);

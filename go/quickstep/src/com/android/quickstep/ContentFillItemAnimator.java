@@ -161,6 +161,13 @@ public final class ContentFillItemAnimator extends SimpleItemAnimator {
 
     private void animateChangeImpl(ViewHolder viewHolder, long startDelay) {
         TaskItemView itemView = (TaskItemView) viewHolder.itemView;
+        if (itemView.getAlpha() == 0) {
+            // View is still not visible, so we can finish the change immediately.
+            CONTENT_TRANSITION_PROGRESS.set(itemView, 1.0f);
+            dispatchChangeFinished(viewHolder, true /* oldItem */);
+            dispatchFinishedWhenDone();
+            return;
+        }
         final ObjectAnimator anim =
                 ObjectAnimator.ofFloat(itemView, CONTENT_TRANSITION_PROGRESS, 0.0f, 1.0f);
         anim.setDuration(ITEM_CHANGE_DURATION).setStartDelay(startDelay);
