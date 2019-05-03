@@ -23,7 +23,6 @@ import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MOD
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.util.Log;
-import android.view.View;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.quickstep.util.RemoteAnimationProvider;
@@ -119,7 +118,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
             return anim;
         }
 
-        mRecentsView.playAppScaleDownAnim(anim, closingAppTarget, recentsTarget);
+        mRecentsView.playRemoteAppToRecentsAnimation(anim, closingAppTarget, recentsTarget);
 
         return anim;
     }
