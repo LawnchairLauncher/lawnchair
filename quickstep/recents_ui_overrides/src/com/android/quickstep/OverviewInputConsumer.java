@@ -15,24 +15,22 @@
  */
 package com.android.quickstep;
 
-import static android.view.MotionEvent.ACTION_CANCEL;
-import static android.view.MotionEvent.ACTION_DOWN;
-import static android.view.MotionEvent.ACTION_MOVE;
-import static android.view.MotionEvent.ACTION_UP;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
-import android.graphics.PointF;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.ViewConfiguration;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.InputMonitorCompat;
+
+import java.util.function.Predicate;
 
 /**
  * Input consumer for handling touch on the recents/Launcher activity.
@@ -40,24 +38,33 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 public class OverviewInputConsumer<T extends BaseDraggingActivity>
         implements InputConsumer {
 
-    private final CachedEventDispatcher mCachedEventDispatcher = new CachedEventDispatcher();
     private final T mActivity;
     private final BaseDragLayer mTarget;
+    private final InputMonitorCompat mInputMonitor;
+
     private final int[] mLocationOnScreen = new int[2];
-    private final PointF mDownPos = new PointF();
-    private final int mTouchSlopSquared;
+    private final boolean mProxyTouch;
+    private final Predicate<MotionEvent> mEventReceiver;
 
     private final boolean mStartingInActivityBounds;
+    private boolean mTargetHandledTouch;
 
-    private boolean mTrackingStarted = false;
-    private boolean mInvalidated = false;
-
-    OverviewInputConsumer(T activity, boolean startingInActivityBounds) {
+    OverviewInputConsumer(T activity, @Nullable InputMonitorCompat inputMonitor,
+            boolean startingInActivityBounds) {
         mActivity = activity;
-        mTarget = activity.getDragLayer();
-        int touchSlop = ViewConfiguration.get(mActivity).getScaledTouchSlop();
-        mTouchSlopSquared = touchSlop * touchSlop;
+        mInputMonitor = inputMonitor;
         mStartingInActivityBounds = startingInActivityBounds;
+
+        mTarget = activity.getDragLayer();
+        if (startingInActivityBounds) {
+            mEventReceiver = mTarget::dispatchTouchEvent;
+            mProxyTouch = true;
+        } else {
+            // Only proxy touches to controllers if we are starting touch from nav bar.
+            mEventReceiver = mTarget::proxyTouchEvent;
+            mTarget.getLocationOnScreen(mLocationOnScreen);
+            mProxyTouch = mTarget.prepareProxyEventStarting();
+        }
     }
 
     @Override
@@ -66,46 +73,35 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
     }
 
     @Override
+    public boolean allowInterceptByParent() {
+        return !mTargetHandledTouch;
+    }
+
+    @Override
     public void onMotionEvent(MotionEvent ev) {
-        if (mInvalidated) {
+        if (!mProxyTouch) {
             return;
         }
-        mCachedEventDispatcher.dispatchEvent(ev);
-        int action = ev.getActionMasked();
-        if (action == ACTION_DOWN) {
-            if (mStartingInActivityBounds) {
-                startTouchTracking(ev, false /* updateLocationOffset */,
-                        false /* closeActiveWindows */);
-                return;
-            }
-            mTrackingStarted = false;
-            mDownPos.set(ev.getX(), ev.getY());
-        } else if (!mTrackingStarted) {
-            switch (action) {
-                case ACTION_CANCEL:
-                case ACTION_UP:
-                    startTouchTracking(ev, true /* updateLocationOffset */,
-                            false /* closeActiveWindows */);
-                    break;
-                case ACTION_MOVE: {
-                    float x = ev.getX() - mDownPos.x;
-                    float y = ev.getY() - mDownPos.y;
-                    double hypotSquared = x * x + y * y;
-                    if (hypotSquared >= mTouchSlopSquared) {
-                        // Start tracking only when touch slop is crossed.
-                        startTouchTracking(ev, true /* updateLocationOffset */,
-                                true /* closeActiveWindows */);
-                    }
-                }
-            }
+
+        int flags = ev.getEdgeFlags();
+        if (!mStartingInActivityBounds) {
+            ev.setEdgeFlags(flags | Utilities.EDGE_NAV_BAR);
         }
+        ev.offsetLocation(-mLocationOnScreen[0], -mLocationOnScreen[1]);
+        boolean handled = mEventReceiver.test(ev);
+        ev.offsetLocation(mLocationOnScreen[0], mLocationOnScreen[1]);
+        ev.setEdgeFlags(flags);
 
-        if (action == ACTION_UP || action == ACTION_CANCEL) {
-            mInvalidated = true;
-
-            // Set an empty consumer to that all the cached events are cleared
-            if (!mCachedEventDispatcher.hasConsumer()) {
-                mCachedEventDispatcher.setConsumer(motionEvent -> { });
+        if (!mTargetHandledTouch && handled) {
+            mTargetHandledTouch = true;
+            if (!mStartingInActivityBounds) {
+                OverviewCallbacks.get(mActivity).closeAllWindows();
+                ActivityManagerWrapper.getInstance()
+                        .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
+                TOUCH_INTERACTION_LOG.addLog("startQuickstep");
+            }
+            if (mInputMonitor != null) {
+                mInputMonitor.pilferPointers();
             }
         }
     }
@@ -117,42 +113,12 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
         }
     }
 
-    private void startTouchTracking(MotionEvent ev, boolean updateLocationOffset,
-            boolean closeActiveWindows) {
-        if (updateLocationOffset) {
-            mTarget.getLocationOnScreen(mLocationOnScreen);
-        }
-
-        if (closeActiveWindows) {
-            OverviewCallbacks.get(mActivity).closeAllWindows();
-            ActivityManagerWrapper.getInstance()
-                    .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-            TOUCH_INTERACTION_LOG.addLog("startQuickstep");
-        }
-
-        mTrackingStarted = true;
-        mCachedEventDispatcher.setConsumer(this::sendEvent);
-
-    }
-
-    private void sendEvent(MotionEvent ev) {
-        if (mInvalidated) {
-            return;
-        }
-        int flags = ev.getEdgeFlags();
-        ev.setEdgeFlags(flags | Utilities.EDGE_NAV_BAR);
-        ev.offsetLocation(-mLocationOnScreen[0], -mLocationOnScreen[1]);
-        mInvalidated = !mTarget.dispatchTouchEvent(this, ev);
-        ev.offsetLocation(mLocationOnScreen[0], mLocationOnScreen[1]);
-        ev.setEdgeFlags(flags);
-    }
-
     public static InputConsumer newInstance(ActivityControlHelper activityHelper,
-            boolean startingInActivityBounds) {
+            @Nullable InputMonitorCompat inputMonitor, boolean startingInActivityBounds) {
         BaseDraggingActivity activity = activityHelper.getCreatedActivity();
         if (activity == null) {
             return InputConsumer.NO_OP;
         }
-        return new OverviewInputConsumer(activity, startingInActivityBounds);
+        return new OverviewInputConsumer(activity, inputMonitor, startingInActivityBounds);
     }
 }

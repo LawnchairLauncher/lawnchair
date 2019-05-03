@@ -51,9 +51,16 @@ public class SwipeSharedState implements SwipeAnimationListener {
         mLastAnimationRunning = true;
     }
 
+    private void clearAnimationTarget() {
+        if (mLastAnimationTarget != null) {
+            mLastAnimationTarget.release();
+            mLastAnimationTarget = null;
+        }
+    }
+
     @Override
     public final void onRecentsAnimationCanceled() {
-        mLastAnimationTarget = null;
+        clearAnimationTarget();
 
         mLastAnimationCancelled = true;
         mLastAnimationRunning = false;
@@ -64,7 +71,7 @@ public class SwipeSharedState implements SwipeAnimationListener {
             mRecentsAnimationListener.removeListener(this);
         }
         mRecentsAnimationListener = null;
-        mLastAnimationTarget = null;
+        clearAnimationTarget();
         mLastAnimationCancelled = false;
         mLastAnimationRunning = false;
     }

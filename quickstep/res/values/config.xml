@@ -18,6 +18,9 @@
 
     <string name="overview_callbacks_class" translatable="false"></string>
 
+    <!-- Activity which blocks home gesture -->
+    <string name="gesture_blocking_activity" translatable="false"></string>
+
     <string name="user_event_dispatcher_class" translatable="false">com.android.quickstep.logging.UserEventDispatcherExtension</string>
 
     <string name="stats_log_manager_class" translatable="false">com.android.quickstep.logging.StatsLogCompatManager</string>

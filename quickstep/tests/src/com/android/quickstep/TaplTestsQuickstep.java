@@ -64,7 +64,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     private void startTestApps() throws Exception {
         startAppFast(getAppPackageName());
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
-        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CONTACTS));
+        startTestActivity(2);
 
         executeOnLauncher(launcher -> assertTrue(
                 "Launcher activity is the top activity; expecting another activity to be the top "
@@ -130,8 +130,8 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         OverviewTask task = mLauncher.pressHome().switchToOverview().getCurrentTask();
         assertNotNull("overview.getCurrentTask() returned null (1)", task);
         assertNotNull("OverviewTask.open returned null", task.open());
-        assertTrue("Contacts app didn't open from Overview", mDevice.wait(Until.hasObject(
-                By.pkg(resolveSystemApp(Intent.CATEGORY_APP_CONTACTS)).depth(0)),
+        assertTrue("Test activity didn't open from Overview", mDevice.wait(Until.hasObject(
+                By.pkg(getAppPackageName()).text("TestActivity2")),
                 LONG_WAIT_TIME_MS));
         executeOnLauncher(launcher -> assertTrue(
                 "Launcher activity is the top activity; expecting another activity to be the top "

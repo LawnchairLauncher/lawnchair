@@ -17,7 +17,7 @@
 package com.android.quickstep.views;
 
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.android.launcher3.BaseActivity.fromContext;
+
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -31,6 +31,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Outline;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -46,6 +47,7 @@ import android.widget.Toast;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
@@ -53,7 +55,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.PendingAnimation;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskIconCache;
@@ -61,12 +62,15 @@ import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskSystemShortcut;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
+import com.android.quickstep.util.TaskCornerRadius;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
 import com.android.quickstep.views.RecentsView.ScrollState;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
+import com.android.systemui.shared.system.QuickStepContract;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -94,6 +98,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     public static final long SCALE_ICON_DURATION = 120;
     private static final long DIM_ANIM_DURATION = 700;
+
+    private static final List<Rect> SYSTEM_GESTURE_EXCLUSION_RECT =
+            Collections.singletonList(new Rect());
 
     public static final Property<TaskView, Float> ZOOM_SCALE =
             new FloatProperty<TaskView>("zoomScale") {
@@ -149,6 +156,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 }
             };
 
+    private final TaskOutlineProvider mOutlineProvider;
+
     private Task mTask;
     private TaskThumbnailView mSnapshotView;
     private TaskMenuView mMenuView;
@@ -157,6 +166,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private float mCurveScale;
     private float mZoomScale;
     private float mFullscreenProgress;
+    private final Rect mCurrentDrawnInsets = new Rect();
+    private final float mCornerRadius;
+    private final float mWindowCornerRadius;
+    private final BaseDraggingActivity mActivity;
 
     private ObjectAnimator mIconAndDimAnimator;
     private float mIconScaleAnimStartProgress = 0;
@@ -178,6 +191,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     public TaskView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mActivity = BaseDraggingActivity.fromContext(context);
         setOnClickListener((view) -> {
             if (getTask() == null) {
                 return;
@@ -192,13 +206,16 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 launchTask(true /* animate */);
             }
 
-            fromContext(context).getUserEventDispatcher().logTaskLaunchOrDismiss(
+            mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
                     Touch.TAP, Direction.NONE, getRecentsView().indexOfChild(this),
                     TaskUtils.getLaunchComponentKeyForTask(getTask().key));
-            fromContext(context).getStatsLogManager().logTaskLaunch(getRecentsView(),
+            mActivity.getStatsLogManager().logTaskLaunch(getRecentsView(),
                     TaskUtils.getLaunchComponentKeyForTask(getTask().key));
         });
-        setOutlineProvider(new TaskOutlineProvider(context, getResources()));
+        mCornerRadius = TaskCornerRadius.get(context);
+        mWindowCornerRadius = QuickStepContract.getWindowCornerRadius(context.getResources());
+        mOutlineProvider = new TaskOutlineProvider(getResources(), mCornerRadius);
+        setOutlineProvider(mOutlineProvider);
     }
 
     @Override
@@ -291,8 +308,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         if (mTask != null) {
             final ActivityOptions opts;
             if (animate) {
-                opts = ((BaseDraggingActivity) fromContext(getContext()))
-                        .getActivityLaunchOptions(this);
+                opts = mActivity.getActivityLaunchOptions(this);
                 if (freezeTaskList) {
                     ActivityOptionsCompat.setFreezeRecentTasksList(opts);
                 }
@@ -480,6 +496,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         super.onLayout(changed, left, top, right, bottom);
         setPivotX((right - left) * 0.5f);
         setPivotY(mSnapshotView.getTop() + mSnapshotView.getHeight() * 0.5f);
+        if (Utilities.ATLEAST_Q) {
+            SYSTEM_GESTURE_EXCLUSION_RECT.get(0).set(0, 0, getWidth(), getHeight());
+            setSystemGestureExclusionRects(SYSTEM_GESTURE_EXCLUSION_RECT);
+        }
     }
 
     public static float getCurveScaleForInterpolation(float linearInterpolation) {
@@ -491,7 +511,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         return 1 - curveInterpolation * EDGE_SCALE_DOWN_FACTOR;
     }
 
-    private void setCurveScale(float curveScale) {
+    public void setCurveScale(float curveScale) {
         mCurveScale = curveScale;
         onScaleChanged();
     }
@@ -520,17 +540,26 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private static final class TaskOutlineProvider extends ViewOutlineProvider {
 
         private final int mMarginTop;
-        private final float mRadius;
+        private final Rect mInsets = new Rect();
+        private float mRadius;
 
-        TaskOutlineProvider(Context context, Resources res) {
+        TaskOutlineProvider(Resources res, float radius) {
             mMarginTop = res.getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
-            mRadius = Themes.getDialogCornerRadius(context);
+            mRadius = radius;
+        }
+
+        public void setCurrentDrawnInsetsAndRadius(Rect insets, float radius) {
+            mInsets.set(insets);
+            mRadius = radius;
         }
 
         @Override
         public void getOutline(View view, Outline outline) {
-            outline.setRoundRect(0, mMarginTop, view.getWidth(),
-                    view.getHeight(), mRadius);
+            outline.setRoundRect(-mInsets.left,
+                    mMarginTop - mInsets.top,
+                    view.getWidth() + mInsets.right,
+                    view.getHeight() + mInsets.bottom,
+                    mRadius);
         }
     }
 
@@ -543,13 +572,12 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                         getContext().getText(R.string.accessibility_close_task)));
 
         final Context context = getContext();
-        final BaseDraggingActivity activity = fromContext(context);
         final List<TaskSystemShortcut> shortcuts =
                 mSnapshotView.getTaskOverlay().getEnabledShortcuts(this);
         final int count = shortcuts.size();
         for (int i = 0; i < count; ++i) {
             final TaskSystemShortcut menuOption = shortcuts.get(i);
-            OnClickListener onClickListener = menuOption.getOnClickListener(activity, this);
+            OnClickListener onClickListener = menuOption.getOnClickListener(mActivity, this);
             if (onClickListener != null) {
                 info.addAction(menuOption.createAccessibilityAction(context));
             }
@@ -589,8 +617,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         for (int i = 0; i < count; ++i) {
             final TaskSystemShortcut menuOption = shortcuts.get(i);
             if (menuOption.hasHandlerForAction(action)) {
-                OnClickListener onClickListener = menuOption.getOnClickListener(
-                        fromContext(getContext()), this);
+                OnClickListener onClickListener = menuOption.getOnClickListener(mActivity, this);
                 if (onClickListener != null) {
                     onClickListener.onClick(this);
                 }
@@ -628,11 +655,21 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mIconView.setVisibility(progress < 1 ? VISIBLE : INVISIBLE);
         setClipChildren(!isFullscreen);
         setClipToPadding(!isFullscreen);
-        getThumbnail().invalidate();
-    }
 
-    public float getFullscreenProgress() {
-        return mFullscreenProgress;
+        TaskThumbnailView thumbnail = getThumbnail();
+        boolean isMultiWindowMode = mActivity.getDeviceProfile().isMultiWindowMode;
+        Rect insets = thumbnail.getInsetsToDrawInFullscreen(isMultiWindowMode);
+        mCurrentDrawnInsets.set((int) (insets.left * mFullscreenProgress),
+                (int) (insets.top * mFullscreenProgress),
+                (int) (insets.right * mFullscreenProgress),
+                (int) (insets.bottom * mFullscreenProgress));
+        float fullscreenCornerRadius = isMultiWindowMode ? 0 : mWindowCornerRadius;
+        float cornerRadius = Utilities.mapRange(mFullscreenProgress, mCornerRadius,
+                fullscreenCornerRadius) / getRecentsView().getScaleX();
+
+        thumbnail.setCurrentDrawnInsetsAndRadius(mCurrentDrawnInsets, cornerRadius);
+        mOutlineProvider.setCurrentDrawnInsetsAndRadius(mCurrentDrawnInsets, cornerRadius);
+        invalidateOutline();
     }
 
     public boolean isRunningTask() {

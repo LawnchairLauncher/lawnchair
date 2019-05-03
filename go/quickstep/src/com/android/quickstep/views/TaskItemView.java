@@ -15,8 +15,6 @@
  */
 package com.android.quickstep.views;
 
-import static com.android.quickstep.views.TaskLayoutUtils.getTaskHeight;
-
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -46,10 +44,12 @@ public final class TaskItemView extends LinearLayout {
     private final Drawable mDefaultThumbnail;
     private final TaskLayerDrawable mIconDrawable;
     private final TaskLayerDrawable mThumbnailDrawable;
+    private View mTaskIconThumbnailView;
     private TextView mLabelView;
     private ImageView mIconView;
     private ImageView mThumbnailView;
     private float mContentTransitionProgress;
+    private int mDisplayedOrientation;
 
     /**
      * Property representing the content transition progress of the view. 1.0f represents that the
@@ -81,6 +81,7 @@ public final class TaskItemView extends LinearLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mLabelView = findViewById(R.id.task_label);
+        mTaskIconThumbnailView = findViewById(R.id.task_icon_and_thumbnail);
         mThumbnailView = findViewById(R.id.task_thumbnail);
         mIconView = findViewById(R.id.task_icon);
 
@@ -89,13 +90,6 @@ public final class TaskItemView extends LinearLayout {
 
         resetToEmptyUi();
         CONTENT_TRANSITION_PROGRESS.setValue(this, 1.0f);
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int taskHeight = getTaskHeight(getContext());
-        int newHeightSpec = MeasureSpec.makeMeasureSpec(taskHeight,MeasureSpec.EXACTLY);
-        super.onMeasure(widthMeasureSpec, newHeightSpec);
     }
 
     /**
@@ -186,14 +180,29 @@ public final class TaskItemView extends LinearLayout {
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        onOrientationChanged(getResources().getConfiguration().orientation);
+    }
+
+    @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        onOrientationChanged(newConfig.orientation);
+    }
+
+    private void onOrientationChanged(int newOrientation) {
+        if (mDisplayedOrientation == newOrientation) {
+            return;
+        }
+        mDisplayedOrientation = newOrientation;
         int layerCount = mThumbnailDrawable.getNumberOfLayers();
         for (int i = 0; i < layerCount; i++) {
             Drawable drawable = mThumbnailDrawable.getDrawable(i);
             if (drawable instanceof ThumbnailDrawable) {
-                ((ThumbnailDrawable) drawable).setRequestedOrientation(newConfig.orientation);
+                ((ThumbnailDrawable) drawable).setRequestedOrientation(newOrientation);
             }
         }
+        mTaskIconThumbnailView.forceLayout();
     }
 }

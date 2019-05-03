@@ -42,7 +42,6 @@ import android.view.View;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 
 /**
@@ -135,7 +134,7 @@ public class PreviewBackground {
         mBgColor = ta.getColor(R.styleable.FolderIconPreview_android_colorPrimary, 0);
         ta.recycle();
 
-        DeviceProfile grid = activity.getDeviceProfile();
+        DeviceProfile grid = activity.getWallpaperDeviceProfile();
         previewSize = grid.folderIconSizePx;
 
         basePreviewOffsetX = (availableSpaceX - previewSize) / 2;

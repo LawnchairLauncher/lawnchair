@@ -93,14 +93,16 @@ public class WorkspaceStateTransitionAnimation {
             Interpolator scaleInterpolator = builder.getInterpolator(ANIM_WORKSPACE_SCALE, ZOOM_OUT);
             propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale, scaleInterpolator);
 
-            // Set the hotseat's pivot point to match the workspace's, so that it scales together.
-            DragLayer dragLayer = mLauncher.getDragLayer();
-            int[] workspacePivot = new int[]{(int) mWorkspace.getPivotX(),
-                    (int) mWorkspace.getPivotY()};
-            dragLayer.getDescendantCoordRelativeToSelf(mWorkspace, workspacePivot);
-            dragLayer.mapCoordInSelfToDescendant(hotseat, workspacePivot);
-            hotseat.setPivotX(workspacePivot[0]);
-            hotseat.setPivotY(workspacePivot[1]);
+            if (!hotseat.getRotationMode().isTransposed) {
+                // Set the hotseat's pivot point to match the workspace's, so that it scales together.
+                DragLayer dragLayer = mLauncher.getDragLayer();
+                float[] workspacePivot =
+                        new float[]{ mWorkspace.getPivotX(), mWorkspace.getPivotY() };
+                dragLayer.getDescendantCoordRelativeToSelf(mWorkspace, workspacePivot);
+                dragLayer.mapCoordInSelfToDescendant(hotseat, workspacePivot);
+                hotseat.setPivotX(workspacePivot[0]);
+                hotseat.setPivotY(workspacePivot[1]);
+            }
             float hotseatScale = hotseatScaleAndTranslation.scale;
             propertySetter.setFloat(hotseat, SCALE_PROPERTY, hotseatScale, scaleInterpolator);
 

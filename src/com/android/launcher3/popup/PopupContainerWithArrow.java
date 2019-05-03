@@ -22,7 +22,6 @@ import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS_IF_NOTIFI
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 
 import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
@@ -173,8 +172,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             BaseDragLayer dl = getPopupContainer();
-            final boolean cameFromNavBar = (ev.getEdgeFlags() & EDGE_NAV_BAR) != 0;
-            if (!cameFromNavBar && !dl.isEventOverView(this, ev)) {
+            if (!dl.isEventOverView(this, ev)) {
                 mLauncher.getUserEventDispatcher().logActionTapOutside(
                         LoggerUtils.newContainerTarget(ContainerType.DEEPSHORTCUTS));
                 close(true);
@@ -192,10 +190,6 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
      * @return the container if shown or null.
      */
     public static PopupContainerWithArrow showForIcon(BubbleTextView icon) {
-        if (com.android.launcher3.TestProtocol.sDebugTracing) {
-            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
-                    "PopupContainerWithArrow.showForIcon");
-        }
         Launcher launcher = Launcher.getLauncher(icon.getContext());
         if (getOpen(launcher) != null) {
             // There is already an items container open, so don't open this one.

@@ -52,9 +52,16 @@ public class OverviewState extends LauncherState {
     public void onStateEnabled(Launcher launcher) {
         IconRecentsView recentsView = launcher.getOverviewPanel();
         recentsView.onBeginTransitionToOverview();
+        recentsView.setShowStatusBarForegroundScrim(true);
         // Request orientation be set to unspecified, letting the system decide the best
         // orientation.
         launcher.getRotationHelper().setCurrentStateRequest(REQUEST_ROTATE);
+    }
+
+    @Override
+    public void onStateDisabled(Launcher launcher) {
+        IconRecentsView recentsView = launcher.getOverviewPanel();
+        recentsView.setShowStatusBarForegroundScrim(false);
     }
 
     @Override

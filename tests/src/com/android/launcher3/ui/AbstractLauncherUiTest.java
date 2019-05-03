@@ -17,6 +17,11 @@ package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
+import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_2BUTTON_OVERLAY;
+import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_3BUTTON_OVERLAY;
+import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_GESTURAL_OVERLAY;
+
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -24,11 +29,13 @@ import static java.lang.System.exit;
 
 import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Process;
 import android.os.RemoteException;
 import android.util.Log;
@@ -57,6 +64,7 @@ import com.android.launcher3.util.rule.LauncherActivityRule;
 import com.android.launcher3.util.rule.ShellCommandRule;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestRule;
@@ -67,6 +75,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -102,6 +111,68 @@ public abstract class AbstractLauncherUiTest {
         }
         if (TestHelpers.isInLauncherProcess()) Utilities.enableRunningInTestHarnessForTests();
         mLauncher = new LauncherInstrumentation(instrumentation);
+
+        // b/130558787; b/131419978
+        if (TestHelpers.isInLauncherProcess() && !LauncherInstrumentation.needSlowGestures()) {
+            try {
+                Class systemProps = Class.forName("android.os.SystemProperties");
+                Method getInt = systemProps.getMethod("getInt", String.class, int.class);
+                int apiLevel = (int) getInt.invoke(null, "ro.product.first_api_level", 0);
+
+                if (apiLevel >= Build.VERSION_CODES.P) {
+                    setActiveOverlay(NAV_BAR_MODE_2BUTTON_OVERLAY,
+                            LauncherInstrumentation.NavigationModel.TWO_BUTTON);
+                }
+                if (apiLevel >= Build.VERSION_CODES.O && apiLevel < Build.VERSION_CODES.P) {
+                    setActiveOverlay(NAV_BAR_MODE_GESTURAL_OVERLAY,
+                            LauncherInstrumentation.NavigationModel.ZERO_BUTTON);
+                }
+                if (apiLevel < Build.VERSION_CODES.O) {
+                    setActiveOverlay(NAV_BAR_MODE_3BUTTON_OVERLAY,
+                            LauncherInstrumentation.NavigationModel.THREE_BUTTON);
+                }
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void setActiveOverlay(String overlayPackage,
+            LauncherInstrumentation.NavigationModel expectedMode) {
+        setOverlayPackageEnabled(NAV_BAR_MODE_3BUTTON_OVERLAY,
+                overlayPackage == NAV_BAR_MODE_3BUTTON_OVERLAY);
+        setOverlayPackageEnabled(NAV_BAR_MODE_2BUTTON_OVERLAY,
+                overlayPackage == NAV_BAR_MODE_2BUTTON_OVERLAY);
+        setOverlayPackageEnabled(NAV_BAR_MODE_GESTURAL_OVERLAY,
+                overlayPackage == NAV_BAR_MODE_GESTURAL_OVERLAY);
+
+        for (int i = 0; i != 100; ++i) {
+            if (mLauncher.getNavigationModel() == expectedMode) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        Assert.fail("Couldn't switch to " + overlayPackage);
+    }
+
+    private void setOverlayPackageEnabled(String overlayPackage, boolean enable) {
+        Log.d(TAG, "setOverlayPackageEnabled: " + overlayPackage + " " + enable);
+        final String action = enable ? "enable" : "disable";
+        try {
+            UiDevice.getInstance(getInstrumentation()).executeShellCommand(
+                    "cmd overlay " + action + " " + overlayPackage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Rule
@@ -355,6 +426,22 @@ public abstract class AbstractLauncherUiTest {
         instrumentation.getTargetContext().startActivity(intent);
         assertTrue(packageName + " didn't start",
                 mDevice.wait(Until.hasObject(By.pkg(packageName).depth(0)), LONG_WAIT_TIME_MS));
+    }
+
+    protected void startTestActivity(int activityNumber) {
+        final String packageName = getAppPackageName();
+        final Instrumentation instrumentation = getInstrumentation();
+        final Intent intent = instrumentation.getContext().getPackageManager().
+                getLaunchIntentForPackage(packageName);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setComponent(new ComponentName(packageName,
+                "com.android.launcher3.tests.Activity" + activityNumber));
+        instrumentation.getTargetContext().startActivity(intent);
+        assertTrue(packageName + " didn't start",
+                mDevice.wait(
+                        Until.hasObject(By.pkg(packageName).text("TestActivity" + activityNumber)),
+                        LONG_WAIT_TIME_MS));
     }
 
     protected static String resolveSystemApp(String category) {

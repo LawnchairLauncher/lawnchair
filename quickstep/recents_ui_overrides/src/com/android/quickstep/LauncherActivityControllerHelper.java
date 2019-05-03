@@ -116,10 +116,12 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         } else {
             workspaceView = null;
         }
-        final Rect iconLocation = new Rect();
-        final FloatingIconView floatingView = workspaceView == null ? null
-                : FloatingIconView.getFloatingIconView(activity, workspaceView,
-                true /* hideOriginal */, iconLocation, false /* isOpening */, null /* recycle */);
+        final RectF iconLocation = new RectF();
+        boolean canUseWorkspaceView = workspaceView != null && workspaceView.isAttachedToWindow();
+        final FloatingIconView floatingView = canUseWorkspaceView
+                ? FloatingIconView.getFloatingIconView(activity, workspaceView,
+                true /* hideOriginal */, iconLocation, false /* isOpening */, null /* recycle */)
+                : null;
 
         return new HomeAnimationFactory() {
             @Nullable
@@ -135,8 +137,8 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                 final float targetCenterX = dp.availableWidthPx / 2f;
                 final float targetCenterY = dp.availableHeightPx - dp.hotseatBarSizePx;
 
-                if (workspaceView != null) {
-                    return new RectF(iconLocation);
+                if (canUseWorkspaceView) {
+                    return iconLocation;
                 } else {
                     // Fallback to animate to center of screen.
                     return new RectF(targetCenterX - halfIconSize, targetCenterY - halfIconSize,
@@ -308,7 +310,10 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         SCALE_PROPERTY.set(recentsView, targetRvScale);
         recentsView.setTranslationY(0);
         ClipAnimationHelper clipHelper = new ClipAnimationHelper(launcher);
+        float tmpCurveScale = v.getCurveScale();
+        v.setCurveScale(1f);
         clipHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(), null);
+        v.setCurveScale(tmpCurveScale);
         SCALE_PROPERTY.set(recentsView, prevRvScale);
         recentsView.setTranslationY(prevRvTransY);
 

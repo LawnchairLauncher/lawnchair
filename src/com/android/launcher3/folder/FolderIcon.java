@@ -159,7 +159,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                     "is dependent on this");
         }
 
-        DeviceProfile grid = launcher.getDeviceProfile();
+        DeviceProfile grid = launcher.getWallpaperDeviceProfile();
         FolderIcon icon = (FolderIcon) LayoutInflater.from(group.getContext())
                 .inflate(resId, group, false);
 
@@ -174,7 +174,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         icon.setOnClickListener(ItemClickHandler.INSTANCE);
         icon.mInfo = folderInfo;
         icon.mLauncher = launcher;
-        icon.mDotRenderer = launcher.getDeviceProfile().mDotRenderer;
+        icon.mDotRenderer = grid.mDotRenderer;
         icon.setContentDescription(launcher.getString(R.string.folder_name_format, folderInfo.title));
         Folder folder = Folder.fromXml(launcher);
         folder.setDragController(launcher.getDragController());
@@ -508,7 +508,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     public void drawDot(Canvas canvas) {
         if ((mDotInfo != null && mDotInfo.hasDot()) || mDotScale > 0) {
             Rect iconBounds = mDotParams.iconBounds;
-            BubbleTextView.getIconBounds(this, iconBounds, mLauncher.getDeviceProfile().iconSizePx);
+            BubbleTextView.getIconBounds(this, iconBounds,
+                    mLauncher.getWallpaperDeviceProfile().iconSizePx);
 
             // If we are animating to the accepting state, animate the dot out.
             mDotParams.scale = Math.max(0, mDotScale - mBackground.getScaleProgress());
