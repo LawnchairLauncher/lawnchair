@@ -70,7 +70,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                 final UiObject2 navBar = mLauncher.waitForSystemUiObject("navigation_bar_frame");
                 allAppsContainer.setGestureMargins(0, 0, 0, navBar.getVisibleBounds().height() + 1);
             } else {
-                allAppsContainer.setGestureMargins(0, 0, 0, 100);
+                allAppsContainer.setGestureMargins(0, 0, 0, 200);
             }
             final BySelector appIconSelector = AppIcon.getAppIconSelector(appName, mLauncher);
             if (!hasClickableIcon(allAppsContainer, appIconSelector)) {

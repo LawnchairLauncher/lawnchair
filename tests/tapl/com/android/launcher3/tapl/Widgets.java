@@ -38,7 +38,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 "want to fling forward in widgets")) {
             LauncherInstrumentation.log("Widgets.flingForward enter");
             final UiObject2 widgetsContainer = verifyActiveContainer();
-            widgetsContainer.setGestureMargin(100);
+            widgetsContainer.setGestureMargins(0, 0, 0, 200);
             widgetsContainer.fling(Direction.DOWN,
                     (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("flung forward")) {
