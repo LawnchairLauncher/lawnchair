@@ -167,7 +167,7 @@ public final class Utilities {
     public static float getDescendantCoordRelativeToAncestor(
             View descendant, View ancestor, float[] coord, boolean includeRootScroll) {
         return getDescendantCoordRelativeToAncestor(descendant, ancestor, coord, includeRootScroll,
-                false);
+                false, null);
     }
 
     /**
@@ -180,12 +180,15 @@ public final class Utilities {
      * @param includeRootScroll Whether or not to account for the scroll of the descendant:
      *          sometimes this is relevant as in a child's coordinates within the descendant.
      * @param ignoreTransform If true, view transform is ignored
+     * @param outRotation If not null, and {@param ignoreTransform} is true, this is set to the
+     *                   overall rotation of the view in degrees.
      * @return The factor by which this descendant is scaled relative to this DragLayer. Caution
      *         this scale factor is assumed to be equal in X and Y, and so if at any point this
      *         assumption fails, we will need to return a pair of scale factors.
      */
     public static float getDescendantCoordRelativeToAncestor(View descendant, View ancestor,
-            float[] coord, boolean includeRootScroll, boolean ignoreTransform) {
+            float[] coord, boolean includeRootScroll, boolean ignoreTransform,
+            float[] outRotation) {
         float scale = 1.0f;
         View v = descendant;
         while(v != ancestor && v != null) {
@@ -201,6 +204,10 @@ public final class Utilities {
                     if (m.isTransposed) {
                         sMatrix.setRotate(m.surfaceRotation, v.getPivotX(), v.getPivotY());
                         sMatrix.mapPoints(coord);
+
+                        if (outRotation != null) {
+                            outRotation[0] += m.surfaceRotation;
+                        }
                     }
                 }
             } else {
