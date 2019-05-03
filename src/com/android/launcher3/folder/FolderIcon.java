@@ -36,6 +36,8 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.Alarm;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
@@ -50,11 +52,11 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.R;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
@@ -67,8 +69,6 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
@@ -510,10 +510,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             Rect iconBounds = mDotParams.iconBounds;
             BubbleTextView.getIconBounds(this, iconBounds,
                     mLauncher.getWallpaperDeviceProfile().iconSizePx);
+            float iconScale = (float) mBackground.previewSize / iconBounds.width();
+            Utilities.scaleRectAboutCenter(iconBounds, iconScale);
 
             // If we are animating to the accepting state, animate the dot out.
             mDotParams.scale = Math.max(0, mDotScale - mBackground.getScaleProgress());
-            mDotParams.spaceForOffset.set(getWidth() - iconBounds.right, iconBounds.top);
             mDotParams.color = mBackground.getDotColor();
             mDotRenderer.draw(canvas, mDotParams);
         }
