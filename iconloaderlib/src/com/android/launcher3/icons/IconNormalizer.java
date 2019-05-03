@@ -16,14 +16,18 @@
 
 package com.android.launcher3.icons;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Region;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 
 import java.nio.ByteBuffer;
 
@@ -57,7 +61,7 @@ public class IconNormalizer {
     private final Canvas mCanvas;
     private final byte[] mPixels;
 
-    private final Rect mAdaptiveIconBounds;
+    private final RectF mAdaptiveIconBounds;
     private float mAdaptiveIconScale;
 
     // for each y, stores the position of the leftmost x and the rightmost x
@@ -66,7 +70,7 @@ public class IconNormalizer {
     private final Rect mBounds;
 
     /** package private **/
-    IconNormalizer(Context context, int iconBitmapSize) {
+    IconNormalizer(int iconBitmapSize) {
         // Use twice the icon size as maximum size to avoid scaling down twice.
         mMaxSize = iconBitmapSize * 2;
         mBitmap = Bitmap.createBitmap(mMaxSize, mMaxSize, Bitmap.Config.ALPHA_8);
@@ -75,9 +79,51 @@ public class IconNormalizer {
         mLeftBorder = new float[mMaxSize];
         mRightBorder = new float[mMaxSize];
         mBounds = new Rect();
-        mAdaptiveIconBounds = new Rect();
+        mAdaptiveIconBounds = new RectF();
 
         mAdaptiveIconScale = SCALE_NOT_INITIALIZED;
+    }
+
+    private static float getScale(float hullArea, float boundingArea, float fullArea) {
+        float hullByRect = hullArea / boundingArea;
+        float scaleRequired;
+        if (hullByRect < CIRCLE_AREA_BY_RECT) {
+            scaleRequired = MAX_CIRCLE_AREA_FACTOR;
+        } else {
+            scaleRequired = MAX_SQUARE_AREA_FACTOR + LINEAR_SCALE_SLOPE * (1 - hullByRect);
+        }
+
+        float areaScale = hullArea / fullArea;
+        // Use sqrt of the final ratio as the images is scaled across both width and height.
+        return areaScale > scaleRequired ? (float) Math.sqrt(scaleRequired / areaScale) : 1;
+    }
+
+    /**
+     * @param d Should be AdaptiveIconDrawable
+     * @param size Canvas size to use
+     */
+    @TargetApi(Build.VERSION_CODES.O)
+    public static float normalizeAdaptiveIcon(Drawable d, int size, @Nullable RectF outBounds) {
+        Rect tmpBounds = new Rect(d.getBounds());
+        d.setBounds(0, 0, size, size);
+
+        Path path = ((AdaptiveIconDrawable) d).getIconMask();
+        Region region = new Region();
+        region.setPath(path, new Region(0, 0, size, size));
+
+        Rect hullBounds = region.getBounds();
+        int hullArea = GraphicsUtils.getArea(region);
+
+        if (outBounds != null) {
+            float sizeF = size;
+            outBounds.set(
+                    hullBounds.left / sizeF,
+                    hullBounds.top / sizeF,
+                    1 - (hullBounds.right / sizeF),
+                    1 - (hullBounds.bottom / sizeF));
+        }
+        d.setBounds(tmpBounds);
+        return getScale(hullArea, hullArea, size * size);
     }
 
     /**
@@ -96,12 +142,13 @@ public class IconNormalizer {
      */
     public synchronized float getScale(@NonNull Drawable d, @Nullable RectF outBounds) {
         if (BaseIconFactory.ATLEAST_OREO && d instanceof AdaptiveIconDrawable) {
-            if (mAdaptiveIconScale != SCALE_NOT_INITIALIZED) {
-                if (outBounds != null) {
-                    outBounds.set(mAdaptiveIconBounds);
-                }
-                return mAdaptiveIconScale;
+            if (mAdaptiveIconScale == SCALE_NOT_INITIALIZED) {
+                mAdaptiveIconScale = normalizeAdaptiveIcon(d, mMaxSize, mAdaptiveIconBounds);
             }
+            if (outBounds != null) {
+                outBounds.set(mAdaptiveIconBounds);
+            }
+            return mAdaptiveIconScale;
         }
         int width = d.getIntrinsicWidth();
         int height = d.getIntrinsicHeight();
@@ -184,16 +231,6 @@ public class IconNormalizer {
             area += mRightBorder[y] - mLeftBorder[y] + 1;
         }
 
-        // Area of the rectangle required to fit the convex hull
-        float rectArea = (bottomY + 1 - topY) * (rightX + 1 - leftX);
-        float hullByRect = area / rectArea;
-
-        float scaleRequired;
-        if (hullByRect < CIRCLE_AREA_BY_RECT) {
-            scaleRequired = MAX_CIRCLE_AREA_FACTOR;
-        } else {
-            scaleRequired = MAX_SQUARE_AREA_FACTOR + LINEAR_SCALE_SLOPE * (1 - hullByRect);
-        }
         mBounds.left = leftX;
         mBounds.right = rightX;
 
@@ -205,15 +242,10 @@ public class IconNormalizer {
                     1 - ((float) mBounds.right) / width,
                     1 - ((float) mBounds.bottom) / height);
         }
-        float areaScale = area / (width * height);
-        // Use sqrt of the final ratio as the images is scaled across both width and height.
-        float scale = areaScale > scaleRequired ? (float) Math.sqrt(scaleRequired / areaScale) : 1;
-        if (BaseIconFactory.ATLEAST_OREO && d instanceof AdaptiveIconDrawable &&
-                mAdaptiveIconScale == SCALE_NOT_INITIALIZED) {
-            mAdaptiveIconScale = scale;
-            mAdaptiveIconBounds.set(mBounds);
-        }
-        return scale;
+
+        // Area of the rectangle required to fit the convex hull
+        float rectArea = (bottomY + 1 - topY) * (rightX + 1 - leftX);
+        return getScale(area, rectArea, width * height);
     }
 
     /**

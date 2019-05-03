@@ -16,7 +16,7 @@
 
 package com.android.launcher3.folder;
 
-import static com.android.launcher3.folder.FolderShape.getShape;
+import static com.android.launcher3.graphics.IconShape.getShape;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.animation.Animator;
@@ -311,7 +311,7 @@ public class PreviewBackground {
 
     public Path getClipPath() {
         mPath.reset();
-        getShape().addShape(mPath, getOffsetX(), getOffsetY(), getScaledRadius());
+        getShape().addToPath(mPath, getOffsetX(), getOffsetY(), getScaledRadius());
         return mPath;
     }
 

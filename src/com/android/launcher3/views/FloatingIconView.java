@@ -54,7 +54,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.folder.FolderShape;
+import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.graphics.ShiftedBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.popup.SystemShortcut;
@@ -144,7 +144,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         mTaskCornerRadius = cornerRadius;
         if (mIsAdaptiveIcon && shapeRevealProgress >= 0) {
             if (mRevealAnimator == null) {
-                mRevealAnimator = (ValueAnimator) FolderShape.getShape().createRevealAnimator(this,
+                mRevealAnimator = (ValueAnimator) IconShape.getShape().createRevealAnimator(this,
                         mStartRevealRect, mEndRevealRect, mTaskCornerRadius / scale, !isOpening);
                 mRevealAnimator.addListener(new AnimatorListenerAdapter() {
                     @Override
