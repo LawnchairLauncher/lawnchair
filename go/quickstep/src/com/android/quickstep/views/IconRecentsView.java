@@ -50,6 +50,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -114,11 +115,16 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
 
     private static final long REMOTE_TO_RECENTS_APP_SCALE_DOWN_DURATION = 300;
     private static final long REMOTE_TO_RECENTS_VERTICAL_EASE_IN_DURATION = 400;
+    private static final long REMOTE_TO_RECENTS_ITEM_FADE_START_DELAY = 200;
+    private static final long REMOTE_TO_RECENTS_ITEM_FADE_DURATION = 217;
+    private static final long REMOTE_TO_RECENTS_ITEM_FADE_BETWEEN_DELAY = 33;
 
     private static final PathInterpolator FAST_OUT_SLOW_IN_1 =
             new PathInterpolator(.4f, 0f, 0f, 1f);
     private static final PathInterpolator FAST_OUT_SLOW_IN_2 =
             new PathInterpolator(.5f, 0f, 0f, 1f);
+    private static final LinearOutSlowInInterpolator OUT_SLOW_IN =
+            new LinearOutSlowInInterpolator();
 
     public static final long REMOTE_APP_TO_OVERVIEW_DURATION =
             REMOTE_TO_RECENTS_VERTICAL_EASE_IN_DURATION;
@@ -610,6 +616,7 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
         playRemoteTransYAnim(anim, appMatrix);
         playRemoteAppScaleDownAnim(anim, appMatrix, appTarget, recentsTarget,
                 bottomView.getThumbnailView());
+        playRemoteTaskListFadeIn(anim, bottomView);
     }
 
     /**
@@ -722,6 +729,68 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
             }
         });
         anim.play(remoteAppAnim);
+    }
+
+    /**
+     * Play task list fade in animation as part of remote app to recents animation. This animation
+     * ensures that the task views in the recents list fade in from bottom to top.
+     *
+     * @param anim animator set to play on
+     * @param appTaskView the task view associated with the remote app closing
+     */
+    private void playRemoteTaskListFadeIn(@NonNull AnimatorSet anim,
+            @NonNull TaskItemView appTaskView) {
+        long delay = REMOTE_TO_RECENTS_ITEM_FADE_START_DELAY;
+        int childCount = mTaskRecyclerView.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            ValueAnimator fadeAnim = ValueAnimator.ofFloat(0, 1.0f);
+            fadeAnim.setDuration(REMOTE_TO_RECENTS_ITEM_FADE_DURATION).setInterpolator(OUT_SLOW_IN);
+            fadeAnim.setStartDelay(delay);
+            View view = mTaskRecyclerView.getChildAt(i);
+            if (Objects.equals(view, appTaskView)) {
+                // Only animate icon and text for the view with snapshot animating in
+                final View icon = appTaskView.getIconView();
+                final View label = appTaskView.getLabelView();
+
+                icon.setAlpha(0.0f);
+                label.setAlpha(0.0f);
+
+                fadeAnim.addUpdateListener(alphaVal -> {
+                    float val = alphaVal.getAnimatedFraction();
+
+                    icon.setAlpha(val);
+                    label.setAlpha(val);
+                });
+                fadeAnim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        icon.setAlpha(1.0f);
+                        label.setAlpha(1.0f);
+                    }
+                });
+            } else {
+                // Otherwise, fade in the entire view.
+                view.setAlpha(0.0f);
+                fadeAnim.addUpdateListener(alphaVal -> {
+                    float val = alphaVal.getAnimatedFraction();
+                    view.setAlpha(val);
+                });
+                fadeAnim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        view.setAlpha(1.0f);
+                    }
+                });
+            }
+            anim.play(fadeAnim);
+
+            int itemType = mTaskRecyclerView.getChildViewHolder(view).getItemViewType();
+            if (itemType == ITEM_TYPE_CLEAR_ALL) {
+                // Don't add delay. Clear all should animate at same time as next view.
+                continue;
+            }
+            delay += REMOTE_TO_RECENTS_ITEM_FADE_BETWEEN_DELAY;
+        }
     }
 
     @Override
