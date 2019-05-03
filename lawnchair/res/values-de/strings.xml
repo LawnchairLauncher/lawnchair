@@ -9,7 +9,7 @@
     <string name="in_smartspace">Im \'Auf einen Blick\' Widget</string>
     <string name="smartspace_time">Zeit</string>
     <string name="smartspace_date">Datum</string>
-    <string name="customize">Personalisieren</string>
+    <string name="customize">Anpassen</string>
     <string name="smartspace_preferences_in_settings">Auf einen Blick</string>
     <string name="smartspace_preferences_in_settings_desc">Datum, Zeit, Wetterdienst</string>
     <string name="search">Suchen</string>
@@ -61,7 +61,7 @@
     <string name="backup_invalid">Falsche Sicherungsdatei</string>
     <string name="backup_share">Teilen</string>
     <string name="backup_pref_summary">Startseite sichern, Sicherungen wiederherstellen</string>
-    <string name="backup_timestamp">Datum erstellt</string>
+    <string name="backup_timestamp">Erstellungsdatum</string>
     <string name="backup_restoring">Wird wiederhergestellt</string>
     <string name="backup_restarting">Starte neu</string>
     <string name="restore_contents">Inhalt wiederherstellen</string>
@@ -70,7 +70,7 @@
     <string name="backup_share_text">Lawnchair Sicherung</string>
     <string name="full_width_widgets_pref_summary">Erlaube Widgets bis zum Bildschirmrand</string>
     <string name="full_width_width_widgets_pref_title">Breite Widgets</string>
-    <string name="hide_apps">Apps ausblenden</string>
+    <string name="hide_apps">Apps verstecken</string>
     <string name="hide_apps_sum">Apps aus App-Liste entfernen</string>
     <string name="grid_size">Rastergröße</string>
     <string name="developer_options_title">Entwickleroptionen</string>
@@ -198,10 +198,10 @@
     <string name="all_apps_label">Alle Apps</string>
     <string name="all_apps_label_pref_title">Zeige \"Alle Apps\" Beschriftung</string>
     <string name="separate_work_apps_pref_title">Zweite Spalte für Arbeitsapps</string>
-    <string name="title_search_hidden_apps">Ausgeblendete Apps durchsuchen</string>
-    <string name="summary_search_hidden_apps">Ausgeblendete Apps in den Suchergebnissen anzeigen</string>
+    <string name="title_search_hidden_apps">Versteckte Apps berücksichtigen</string>
+    <string name="summary_search_hidden_apps">Versteckte Apps in den Suchergebnissen anzeigen</string>
     <!--Marker F-->
-    <string name="default_city">Luzern, CH</string>
+    <string name="default_city">Berlin, Deutschland</string>
     <string name="pref_weather_api_key_title">API-Schlüssel</string>
     <string name="pref_weather_city_summary">Für bessere Ergebnisse das Länderkürzel einfügen</string>
     <string name="pref_weather_city_title">Stadt</string>
@@ -350,7 +350,7 @@
     <string name="pref_integrations_summary">Suche, Sesame, Google</string>
     <string name="sesame">Sesame</string>
     <string name="sesame_data_integration">Datenintegration</string>
-    <string name="sesame_upsell">Tippen um Sesame zu installieren</string>
+    <string name="sesame_upsell">Tippen, um Sesame zu installieren</string>
     <string name="sesame_search_upsell_on">Sesame ist als Suchanbieter festgelegt</string>
     <string name="sesame_search_upsell_off">Sesame ist nicht als Suchanbieter festgelegt</string>
     <string name="pref_sesame_enabled">Sesame shortcut Daten geteilt</string>
@@ -365,12 +365,12 @@
     <string name="pref_sesame_sync_icon_pack">Icon-Paket teilen</string>
     <string name="pref_sesame_sync_icon_pack_summary">Das Icon-Paket von Lawnchair mit Sesame synchronisieren</string>
     <string name="font_variant_italic">Kursiv</string>
-    <string name="font_weight_thin">Dünn</string>
+    <string name="font_weight_thin">Schmal</string>
     <string name="font_weight_extra_light">Extradünn</string>
-    <string name="font_weight_light">Hell</string>
-    <string name="font_weight_regular">Standard</string>
+    <string name="font_weight_light">Dünn</string>
+    <string name="font_weight_regular">Normal</string>
     <string name="font_weight_medium">Mittel</string>
-    <string name="font_weight_semi_bold">Leicht fett</string>
+    <string name="font_weight_semi_bold">Halbfett</string>
     <string name="font_weight_bold">Fett</string>
     <string name="font_weight_extra_bold">Extrafett</string>
     <string name="font_weight_extra_black">Schwarz</string>
@@ -387,7 +387,7 @@
     <string name="units_reaumur">Réaumur</string>
     <string name="units_romer">Rømer</string>
     <string name="owm_get_your_own_key">Bitte hole deinen eigenen API Schlüssel von api.openweathermap.org</string>
-    <string name="pref_smartspace_time_above">Zeige große Uhr</string>
+    <string name="pref_smartspace_time_above">Uhr groß anzeigen</string>
     <string name="pref_smartspace_time_above_summary">Uhrzeit über dem Widget anzeigen</string>
     <string name="pref_fonts_title">Schriftarten</string>
     <string name="pref_fonts_summary">Ändere die Schriftart diverser Elemente</string>
@@ -401,12 +401,12 @@
     <string name="pref_fonts_drawer_app_actions_icons">App Action Namen</string>
     <string name="pref_fonts_drawer_tabs">Reiternamen</string>
     <string name="pref_fonts_find_fonts">Schriftart suchen</string>
-    <string name="pref_fonts_add_fonts">Schriftart hinzufügen</string>
+    <string name="pref_fonts_add_fonts">Schriftart(en) hinzufügen</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF unterstützt</string>
     <string name="pref_fonts_missing_font">Schriftart fehlt</string>
     <string name="about_translate">Übersetzungen</string>
     <string name="pref_show_dev_options">Zeige in Einstellungen</string>
     <string name="about_app_description">Eine personalisierbare Pixel Launcher alternative.</string>
-    <string name="about_bio_paphonb">Ein 18 Jahre alter Schüler, Android Entwickler und einer der top Entwickler des Lawnchair Launchers.</string>
-    <string name="dock_scale">Dock Skalierung</string>
+    <string name="about_bio_paphonb">Ein 18 Jahre alter Schüler, Android-Entwickler und einer der top Entwickler von Lawnchair.</string>
+    <string name="dock_scale">Dock-Skalierung</string>
 </resources>
