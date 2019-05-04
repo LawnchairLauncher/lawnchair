@@ -1061,7 +1061,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
         RectFSpringAnim anim = new RectFSpringAnim(startRect, targetRect);
         if (isFloatingIconView) {
-            anim.addAnimatorListener((FloatingIconView) floatingView);
+            FloatingIconView fiv = (FloatingIconView) floatingView;
+            anim.addAnimatorListener(fiv);
+            fiv.setOnTargetChangeListener(anim::onTargetPositionChanged);
         }
 
         AnimatorPlaybackController homeAnim = homeAnimationFactory.createActivityAnimationToHome();

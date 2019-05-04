@@ -25,7 +25,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Outline;
@@ -42,6 +41,7 @@ import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageView;
 
 import com.android.launcher3.BubbleTextView;
@@ -67,16 +67,19 @@ import androidx.annotation.WorkerThread;
  * A view that is created to look like another view with the purpose of creating fluid animations.
  */
 @TargetApi(Build.VERSION_CODES.Q)
-public class FloatingIconView extends View implements Animator.AnimatorListener, ClipPathView {
+public class FloatingIconView extends View implements
+        Animator.AnimatorListener, ClipPathView, OnGlobalLayoutListener {
 
     public static final float SHAPE_PROGRESS_DURATION = 0.15f;
     private static final int FADE_DURATION_MS = 200;
     private static final Rect sTmpRect = new Rect();
+    private static final RectF sTmpRectF = new RectF();
     private static final Object[] sTmpObjArray = new Object[1];
 
     private Runnable mEndRunnable;
     private CancellationSignal mLoadIconSignal;
 
+    private final Launcher mLauncher;
     private final int mBlurSizeOutline;
 
     private boolean mIsVerticalBarLayout = false;
@@ -91,6 +94,10 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
     private Path mClipPath;
     private float mTaskCornerRadius;
 
+    private View mOriginalIcon;
+    private RectF mPositionOut;
+    private Runnable mOnTargetChangeRunnable;
+
     private final Rect mFinalDrawableBounds = new Rect();
     private final Rect mBgDrawableBounds = new Rect();
     private float mBgDrawableStartScale = 1f;
@@ -99,12 +106,24 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
     private AnimatorSet mFadeAnimatorSet;
     private ListenerView mListenerView;
 
-    private FloatingIconView(Context context) {
-        super(context);
-
-        mBlurSizeOutline = context.getResources().getDimensionPixelSize(
+    private FloatingIconView(Launcher launcher) {
+        super(launcher);
+        mLauncher = launcher;
+        mBlurSizeOutline = getResources().getDimensionPixelSize(
                 R.dimen.blur_size_medium_outline);
-        mListenerView = new ListenerView(context, null);
+        mListenerView = new ListenerView(launcher, null);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        getViewTreeObserver().addOnGlobalLayoutListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        getViewTreeObserver().removeOnGlobalLayoutListener(this);
+        super.onDetachedFromWindow();
     }
 
     /**
@@ -188,21 +207,28 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
      * @param v The view to copy
      * @param positionOut Rect that will hold the size and position of v.
      */
-    private void matchPositionOf(Launcher launcher, View v, RectF positionOut) {
-        mRotation = getLocationBoundsForView(launcher, v, positionOut);
+    private void matchPositionOf(View v, RectF positionOut) {
+        float rotation = getLocationBoundsForView(v, positionOut);
         final LayoutParams lp = new LayoutParams(
                 Math.round(positionOut.width()),
                 Math.round(positionOut.height()));
-        lp.ignoreInsets = true;
-
-        // Position the floating view exactly on top of the original
-        lp.leftMargin = Math.round(positionOut.left);
-        lp.topMargin = Math.round(positionOut.top);
+        updatePosition(rotation, positionOut, lp);
         setLayoutParams(lp);
+    }
+
+    private void updatePosition(float rotation, RectF position, LayoutParams lp) {
+        mRotation = rotation;
+        mPositionOut.set(position);
+        lp.ignoreInsets = true;
+        // Position the floating view exactly on top of the original
+        lp.leftMargin = Math.round(position.left);
+        lp.topMargin = Math.round(position.top);
+
         // Set the properties here already to make sure they are available when running the first
         // animation frame.
         layout(lp.leftMargin, lp.topMargin, lp.leftMargin + lp.width, lp.topMargin
                 + lp.height);
+
     }
 
     /**
@@ -210,7 +236,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
      * - For DeepShortcutView, we return the bounds of the icon view.
      * - For BubbleTextView, we return the icon bounds.
      */
-    private float getLocationBoundsForView(Launcher launcher, View v, RectF outRect) {
+    private float getLocationBoundsForView(View v, RectF outRect) {
         boolean ignoreTransform = true;
         if (v instanceof DeepShortcutView) {
             v = ((DeepShortcutView) v).getBubbleText();
@@ -235,7 +261,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         float[] points = new float[] {iconBounds.left, iconBounds.top, iconBounds.right,
                 iconBounds.bottom};
         float[] rotation = new float[] {0};
-        Utilities.getDescendantCoordRelativeToAncestor(v, launcher.getDragLayer(), points,
+        Utilities.getDescendantCoordRelativeToAncestor(v, mLauncher.getDragLayer(), points,
                 false, ignoreTransform, rotation);
         outRect.set(
                 Math.min(points[0], points[2]),
@@ -246,7 +272,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
     }
 
     @WorkerThread
-    private void getIcon(Launcher launcher, View v, ItemInfo info, boolean isOpening,
+    private void getIcon(View v, ItemInfo info, boolean isOpening,
             Runnable onIconLoadedRunnable, CancellationSignal loadIconSignal) {
         final LayoutParams lp = (LayoutParams) getLayoutParams();
         Drawable drawable = null;
@@ -263,7 +289,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
             }
         } else {
             if (supportsAdaptiveIcons) {
-                drawable = Utilities.getFullDrawable(launcher, info, lp.width, lp.height,
+                drawable = Utilities.getFullDrawable(mLauncher, info, lp.width, lp.height,
                         false, sTmpObjArray);
                 if (!(drawable instanceof AdaptiveIconDrawable)) {
                     // The drawable we get back is not an adaptive icon, so we need to use the
@@ -275,7 +301,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
                     // Similar to DragView, we simply use the BubbleTextView icon here.
                     drawable = btvIcon;
                 } else {
-                    drawable = Utilities.getFullDrawable(launcher, info, lp.width, lp.height,
+                    drawable = Utilities.getFullDrawable(mLauncher, info, lp.width, lp.height,
                             false, sTmpObjArray);
                 }
             }
@@ -328,7 +354,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
                     mStartRevealRect.inset(mBlurSizeOutline, mBlurSizeOutline);
                 }
 
-                float aspectRatio = launcher.getDeviceProfile().aspectRatio;
+                float aspectRatio = mLauncher.getDeviceProfile().aspectRatio;
                 if (mIsVerticalBarLayout) {
                     lp.width = (int) Math.max(lp.width, lp.height * aspectRatio);
                 } else {
@@ -395,7 +421,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         Rect bounds = new Rect(0, 0, lp.width + mBlurSizeOutline, lp.height + mBlurSizeOutline);
         bounds.inset(mBlurSizeOutline / 2, mBlurSizeOutline / 2);
 
-        try (LauncherIcons li = LauncherIcons.obtain(Launcher.fromContext(getContext()))) {
+        try (LauncherIcons li = LauncherIcons.obtain(getContext())) {
             Utilities.scaleRectAboutCenter(bounds, li.getNormalizer().getScale(drawable, null));
         }
 
@@ -452,6 +478,23 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
     @Override
     public void onAnimationRepeat(Animator animator) {}
 
+    @Override
+    public void onGlobalLayout() {
+        if (mOriginalIcon.isAttachedToWindow() && mPositionOut != null) {
+            float rotation = getLocationBoundsForView(mOriginalIcon, sTmpRectF);
+            if (rotation != mRotation || !sTmpRectF.equals(mPositionOut)) {
+                updatePosition(rotation, sTmpRectF, (LayoutParams) getLayoutParams());
+                if (mOnTargetChangeRunnable != null) {
+                    mOnTargetChangeRunnable.run();
+                }
+            }
+        }
+    }
+
+    public void setOnTargetChangeListener(Runnable onTargetChangeListener) {
+        mOnTargetChangeRunnable = onTargetChangeListener;
+    }
+
     /**
      * Creates a floating icon view for {@param originalView}.
      * @param originalView The view to copy
@@ -468,8 +511,10 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         FloatingIconView view = recycle != null ? recycle : new FloatingIconView(launcher);
         view.mIsVerticalBarLayout = launcher.getDeviceProfile().isVerticalBarLayout();
 
+        view.mOriginalIcon = originalView;
+        view.mPositionOut = positionOut;
         // Match the position of the original view.
-        view.matchPositionOf(launcher, originalView, positionOut);
+        view.matchPositionOf(originalView, positionOut);
 
         // Get the drawable on the background thread
         // Must be called after matchPositionOf so that we know what size to load.
@@ -482,7 +527,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
             };
             CancellationSignal loadIconSignal = view.mLoadIconSignal;
             new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(() -> {
-                view.getIcon(launcher, originalView, (ItemInfo) originalView.getTag(), isOpening,
+                view.getIcon(originalView, (ItemInfo) originalView.getTag(), isOpening,
                         onIconLoaded, loadIconSignal);
             });
         }
@@ -580,7 +625,10 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         if (mFadeAnimatorSet != null) {
             mFadeAnimatorSet.cancel();
         }
+        mPositionOut = null;
         mFadeAnimatorSet = null;
         mListenerView.setListener(null);
+        mOriginalIcon = null;
+        mOnTargetChangeRunnable = null;
     }
 }
