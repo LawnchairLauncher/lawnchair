@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.views;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
 
@@ -23,6 +26,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -61,23 +65,23 @@ import com.android.launcher3.shortcuts.DeepShortcutView;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
-import static com.android.launcher3.Utilities.mapToRange;
-
 /**
  * A view that is created to look like another view with the purpose of creating fluid animations.
  */
-
+@TargetApi(Build.VERSION_CODES.Q)
 public class FloatingIconView extends View implements Animator.AnimatorListener, ClipPathView {
 
     public static final float SHAPE_PROGRESS_DURATION = 0.15f;
     private static final int FADE_DURATION_MS = 200;
     private static final Rect sTmpRect = new Rect();
+    private static final Object[] sTmpObjArray = new Object[1];
 
     private Runnable mEndRunnable;
     private CancellationSignal mLoadIconSignal;
 
     private final int mBlurSizeOutline;
 
+    private boolean mIsVerticalBarLayout = false;
     private boolean mIsAdaptiveIcon = false;
 
     private @Nullable Drawable mForeground;
@@ -185,19 +189,72 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
      * @param v The view to copy
      * @param positionOut Rect that will hold the size and position of v.
      */
-    private void matchPositionOf(Launcher launcher, View v, Rect positionOut) {
-        Utilities.getLocationBoundsForView(launcher, v, positionOut);
-        final LayoutParams lp = new LayoutParams(positionOut.width(), positionOut.height());
+    private void matchPositionOf(Launcher launcher, View v, RectF positionOut) {
+        getLocationBoundsForView(launcher, v, positionOut);
+        final LayoutParams lp = new LayoutParams(
+                Math.round(positionOut.width()),
+                Math.round(positionOut.height()));
         lp.ignoreInsets = true;
 
         // Position the floating view exactly on top of the original
-        lp.leftMargin = positionOut.left;
-        lp.topMargin = positionOut.top;
+        lp.leftMargin = Math.round(positionOut.left);
+        lp.topMargin = Math.round(positionOut.top);
         setLayoutParams(lp);
         // Set the properties here already to make sure they are available when running the first
         // animation frame.
         layout(lp.leftMargin, lp.topMargin, lp.leftMargin + lp.width, lp.topMargin
                 + lp.height);
+    }
+
+    /**
+     * Returns the location bounds of a view.
+     * - For DeepShortcutView, we return the bounds of the icon view.
+     * - For BubbleTextView, we return the icon bounds.
+     */
+    private void getLocationBoundsForView(Launcher launcher, View v, RectF outRect) {
+        final boolean isBubbleTextView = v instanceof BubbleTextView;
+        final boolean isFolderIcon = v instanceof FolderIcon;
+
+        // Deep shortcut views have their icon drawn in a separate view.
+        final boolean fromDeepShortcutView = v.getParent() instanceof DeepShortcutView;
+
+        final View targetView;
+        boolean ignoreTransform = false;
+
+        if (v instanceof DeepShortcutView) {
+            targetView = ((DeepShortcutView) v).getIconView();
+        } else if (fromDeepShortcutView) {
+            DeepShortcutView view = (DeepShortcutView) v.getParent();
+            targetView = view.getIconView();
+        } else if ((isBubbleTextView || isFolderIcon) && v.getTag() instanceof ItemInfo
+                && (((ItemInfo) v.getTag()).container == CONTAINER_DESKTOP
+                || ((ItemInfo) v.getTag()).container == CONTAINER_HOTSEAT)) {
+            targetView = v;
+            ignoreTransform = true;
+        } else {
+            targetView = v;
+        }
+
+        float[] points = new float[] {0, 0, targetView.getWidth(), targetView.getHeight()};
+        Utilities.getDescendantCoordRelativeToAncestor(targetView, launcher.getDragLayer(), points,
+                false, ignoreTransform);
+
+        float viewLocationLeft = Math.min(points[0], points[2]);
+        float viewLocationTop = Math.min(points[1], points[3]);
+
+        final Rect iconRect = new Rect();
+        if (isBubbleTextView && !fromDeepShortcutView) {
+            ((BubbleTextView) v).getIconBounds(iconRect);
+        } else if (isFolderIcon) {
+            ((FolderIcon) v).getPreviewBounds(iconRect);
+        } else {
+            iconRect.set(0, 0, Math.abs(Math.round(points[2] - points[0])),
+                    Math.abs(Math.round(points[3] - points[1])));
+        }
+        viewLocationLeft += iconRect.left;
+        viewLocationTop += iconRect.top;
+        outRect.set(viewLocationLeft, viewLocationTop, viewLocationLeft + iconRect.width(),
+                viewLocationTop + iconRect.height());
     }
 
     @WorkerThread
@@ -207,10 +264,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         Drawable drawable = null;
         boolean supportsAdaptiveIcons = ADAPTIVE_ICON_WINDOW_ANIM.get()
                 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
-        if (!supportsAdaptiveIcons && v instanceof BubbleTextView) {
-            // Similar to DragView, we simply use the BubbleTextView icon here.
-            drawable = ((BubbleTextView) v).getIcon();
-        }
+        Drawable btvIcon = v instanceof BubbleTextView ? ((BubbleTextView) v).getIcon() : null;
         if (info instanceof SystemShortcut) {
             if (v instanceof ImageView) {
                 drawable = ((ImageView) v).getDrawable();
@@ -219,10 +273,24 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
             } else {
                 drawable = v.getBackground();
             }
-        }
-        if (drawable == null) {
-            drawable = Utilities.getFullDrawable(launcher, info, lp.width, lp.height,
-                    false, new Object[1]);
+        } else {
+            if (supportsAdaptiveIcons) {
+                drawable = Utilities.getFullDrawable(launcher, info, lp.width, lp.height,
+                        false, sTmpObjArray);
+                if (!(drawable instanceof AdaptiveIconDrawable)) {
+                    // The drawable we get back is not an adaptive icon, so we need to use the
+                    // BubbleTextView icon that is already legacy treated.
+                    drawable = btvIcon;
+                }
+            } else {
+                if (v instanceof BubbleTextView) {
+                    // Similar to DragView, we simply use the BubbleTextView icon here.
+                    drawable = btvIcon;
+                } else {
+                    drawable = Utilities.getFullDrawable(launcher, info, lp.width, lp.height,
+                            false, sTmpObjArray);
+                }
+            }
         }
 
         Drawable finalDrawable = drawable == null ? null
@@ -273,7 +341,7 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
                 }
 
                 float aspectRatio = launcher.getDeviceProfile().aspectRatio;
-                if (launcher.getDeviceProfile().isVerticalBarLayout()) {
+                if (mIsVerticalBarLayout) {
                     lp.width = (int) Math.max(lp.width, lp.height * aspectRatio);
                 } else {
                     lp.height = (int) Math.max(lp.height, lp.width * aspectRatio);
@@ -318,8 +386,13 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
         mBgDrawableBounds.set(mFinalDrawableBounds);
         Utilities.scaleRectAboutCenter(mBgDrawableBounds, scale);
         // Since the drawable is at the top of the view, we need to offset to keep it centered.
-        mBgDrawableBounds.offsetTo(mBgDrawableBounds.left,
-                (int) (mFinalDrawableBounds.top * scale));
+        if (mIsVerticalBarLayout) {
+            mBgDrawableBounds.offsetTo((int) (mFinalDrawableBounds.left  * scale),
+                    mBgDrawableBounds.top);
+        } else {
+            mBgDrawableBounds.offsetTo(mBgDrawableBounds.left,
+                    (int) (mFinalDrawableBounds.top * scale));
+        }
         mBackground.setBounds(mBgDrawableBounds);
     }
 
@@ -405,11 +478,12 @@ public class FloatingIconView extends View implements Animator.AnimatorListener,
      * @param isOpening True if this view replaces the icon for app open animation.
      */
     public static FloatingIconView getFloatingIconView(Launcher launcher, View originalView,
-            boolean hideOriginal, Rect positionOut, boolean isOpening, FloatingIconView recycle) {
+            boolean hideOriginal, RectF positionOut, boolean isOpening, FloatingIconView recycle) {
         if (recycle != null) {
             recycle.recycle();
         }
         FloatingIconView view = recycle != null ? recycle : new FloatingIconView(launcher);
+        view.mIsVerticalBarLayout = launcher.getDeviceProfile().isVerticalBarLayout();
 
         // Match the position of the original view.
         view.matchPositionOf(launcher, originalView, positionOut);

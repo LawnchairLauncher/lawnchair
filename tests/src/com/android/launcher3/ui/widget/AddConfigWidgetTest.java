@@ -71,25 +71,25 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
     }
 
     @Test
-    @Ignore // Convert test to TAPL and enable them; b/131116002
+    // Convert test to TAPL b/131116002
     public void testWidgetConfig() throws Throwable {
         runTest(false, true);
     }
 
     @Test
-    @Ignore // Convert test to TAPL and enable them; b/131116002
+    @Ignore // b/121280703
     public void testWidgetConfig_rotate() throws Throwable {
         runTest(true, true);
     }
 
     @Test
-    @Ignore // Convert test to TAPL and enable them; b/131116002
+    // Convert test to TAPL b/131116002
     public void testConfigCancelled() throws Throwable {
         runTest(false, false);
     }
 
     @Test
-    @Ignore // Convert test to TAPL and enable them; b/131116002
+    @Ignore // b/121280703
     public void testConfigCancelled_rotate() throws Throwable {
         runTest(true, false);
     }

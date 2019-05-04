@@ -57,6 +57,7 @@ public final class ThumbnailDrawable extends Drawable {
         mCornerRadius = (int) res.getDimension(R.dimen.task_thumbnail_corner_radius);
         mShader = new BitmapShader(mThumbnailData.thumbnail, CLAMP, CLAMP);
         mPaint.setShader(mShader);
+        mPaint.setAntiAlias(true);
         updateMatrix();
     }
 

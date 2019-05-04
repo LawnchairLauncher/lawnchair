@@ -44,6 +44,7 @@ import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -97,6 +98,7 @@ public class FallbackRecentsTest {
 
     @NavigationModeSwitch(mode = THREE_BUTTON)
     @Test
+    @Ignore // b/131630813
     public void goToOverviewFromHome() {
         mDevice.pressHome();
         assertTrue("Fallback Launcher not visible", mDevice.wait(Until.hasObject(By.pkg(
@@ -107,6 +109,7 @@ public class FallbackRecentsTest {
 
     @NavigationModeSwitch(mode = THREE_BUTTON)
     @Test
+    @Ignore // b/131630813
     public void goToOverviewFromApp() {
         startAppFast("com.android.settings");
 
