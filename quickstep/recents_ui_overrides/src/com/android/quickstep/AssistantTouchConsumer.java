@@ -50,19 +50,9 @@ import com.android.systemui.shared.system.QuickStepContract;
 /**
  * Touch consumer for handling events to launch assistant from launcher
  */
-public class AssistantTouchConsumer implements InputConsumer {
+public class AssistantTouchConsumer extends DelegateInputConsumer {
     private static final String TAG = "AssistantTouchConsumer";
     private static final long RETRACT_ANIMATION_DURATION_MS = 300;
-
-    /* The assistant touch consume competes with quick switch InputConsumer gesture. The delegate
-     * can be chosen to run if the angle passing the slop is lower than the threshold angle. When
-     * this occurs, the state changes to {@link #STATE_DELEGATE_ACTIVE} where the next incoming
-     * motion events are handled by the delegate instead of the assistant touch consumer. If the
-     * angle is higher than the threshold, the state will change to {@link #STATE_ASSISTANT_ACTIVE}.
-     */
-    private static final int STATE_INACTIVE = 0;
-    private static final int STATE_ASSISTANT_ACTIVE = 1;
-    private static final int STATE_DELEGATE_ACTIVE = 2;
 
     private static final String INVOCATION_TYPE_KEY = "invocation_type";
     private static final int INVOCATION_TYPE_GESTURE = 1;
@@ -78,7 +68,6 @@ public class AssistantTouchConsumer implements InputConsumer {
     private float mTimeFraction;
     private long mDragTime;
     private float mLastProgress;
-    private int mState;
     private int mDirection;
     private ActivityControlHelper mActivityControlHelper;
 
@@ -87,46 +76,25 @@ public class AssistantTouchConsumer implements InputConsumer {
     private final int mAngleThreshold;
     private final float mSlop;
     private final ISystemUiProxy mSysUiProxy;
-    private final InputConsumer mConsumerDelegate;
     private final Context mContext;
 
-    private final InputMonitorCompat mInputMonitorCompat;
-
-
     public AssistantTouchConsumer(Context context, ISystemUiProxy systemUiProxy,
-            InputConsumer delegate, InputMonitorCompat inputMonitorCompat,
-            ActivityControlHelper activityControlHelper) {
+            ActivityControlHelper activityControlHelper, InputConsumer delegate,
+            InputMonitorCompat inputMonitor) {
+        super(delegate, inputMonitor);
         final Resources res = context.getResources();
         mContext = context;
         mSysUiProxy = systemUiProxy;
-        mConsumerDelegate = delegate;
         mDistThreshold = res.getDimension(R.dimen.gestures_assistant_drag_threshold);
         mTimeThreshold = res.getInteger(R.integer.assistant_gesture_min_time_threshold);
         mAngleThreshold = res.getInteger(R.integer.assistant_gesture_corner_deg_threshold);
         mSlop = QuickStepContract.getQuickStepDragSlopPx();
-        mInputMonitorCompat = inputMonitorCompat;
         mActivityControlHelper = activityControlHelper;
-        mState = STATE_INACTIVE;
     }
 
     @Override
     public int getType() {
-        return TYPE_ASSISTANT;
-    }
-
-    @Override
-    public boolean useSharedSwipeState() {
-        if (mConsumerDelegate != null) {
-            return mConsumerDelegate.useSharedSwipeState();
-        }
-        return false;
-    }
-
-    @Override
-    public void onConsumerAboutToBeSwitched() {
-        if (mConsumerDelegate != null) {
-            mConsumerDelegate.onConsumerAboutToBeSwitched();
-        }
+        return TYPE_ASSISTANT | mDelegate.getType();
     }
 
     @Override
@@ -158,6 +126,10 @@ public class AssistantTouchConsumer implements InputConsumer {
                 if (mState == STATE_DELEGATE_ACTIVE) {
                     break;
                 }
+                if (!mDelegate.allowInterceptByParent()) {
+                    mState = STATE_DELEGATE_ACTIVE;
+                    break;
+                }
                 int pointerIndex = ev.findPointerIndex(mActivePointerId);
                 if (pointerIndex == -1) {
                     break;
@@ -167,9 +139,6 @@ public class AssistantTouchConsumer implements InputConsumer {
                 if (!mPassedSlop) {
                     // Normal gesture, ensure we pass the slop before we start tracking the gesture
                     if (Math.hypot(mLastPos.x - mDownPos.x, mLastPos.y - mDownPos.y) > mSlop) {
-
-                        // Cancel touches to other windows (intercept)
-                        mInputMonitorCompat.pilferPointers();
 
                         mPassedSlop = true;
                         mStartDragPos.set(mLastPos.x, mLastPos.y);
@@ -182,15 +151,7 @@ public class AssistantTouchConsumer implements InputConsumer {
                         angle = angle > 90 ? 180 - angle : angle;
 
                         if (angle > mAngleThreshold && angle < 90) {
-                            mState = STATE_ASSISTANT_ACTIVE;
-
-                            if (mConsumerDelegate != null) {
-                                // Send cancel event
-                                MotionEvent event = MotionEvent.obtain(ev);
-                                event.setAction(MotionEvent.ACTION_CANCEL);
-                                mConsumerDelegate.onMotionEvent(event);
-                                event.recycle();
-                            }
+                            setActive(ev);
                         } else {
                             mState = STATE_DELEGATE_ACTIVE;
                         }
@@ -232,8 +193,8 @@ public class AssistantTouchConsumer implements InputConsumer {
                 break;
         }
 
-        if (mState != STATE_ASSISTANT_ACTIVE && mConsumerDelegate != null) {
-            mConsumerDelegate.onMotionEvent(ev);
+        if (mState != STATE_ACTIVE) {
+            mDelegate.onMotionEvent(ev);
         }
     }
 
@@ -249,7 +210,8 @@ public class AssistantTouchConsumer implements InputConsumer {
                     Bundle args = new Bundle();
                     args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
 
-                    BaseDraggingActivity launcherActivity = mActivityControlHelper.getCreatedActivity();
+                    BaseDraggingActivity launcherActivity =
+                            mActivityControlHelper.getCreatedActivity();
                     if (launcherActivity != null) {
                         launcherActivity.getRootView().
                                 performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,

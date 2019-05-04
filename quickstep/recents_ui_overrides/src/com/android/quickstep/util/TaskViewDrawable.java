@@ -25,6 +25,7 @@ import android.graphics.drawable.Drawable;
 import android.util.FloatProperty;
 import android.view.View;
 
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.Utilities;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
@@ -52,7 +53,7 @@ public class TaskViewDrawable extends Drawable {
 
     private final RecentsView mParent;
     private final View mIconView;
-    private final int[] mIconPos;
+    private final float[] mIconPos;
     private final TaskView mTaskView;
 
     private final TaskThumbnailView mThumbnailView;
@@ -68,13 +69,15 @@ public class TaskViewDrawable extends Drawable {
         mParent = parent;
         mTaskView = tv;
         mIconView = tv.getIconView();
-        mIconPos = new int[2];
+        mIconPos = new float[2];
         mIconScale = mIconView.getScaleX();
         Utilities.getDescendantCoordRelativeToAncestor(mIconView, parent, mIconPos, true);
 
         mThumbnailView = tv.getThumbnail();
         mClipAnimationHelper = new ClipAnimationHelper(parent.getContext());
         mClipAnimationHelper.fromTaskThumbnailView(mThumbnailView, parent);
+        mClipAnimationHelper.prepareAnimation(
+                BaseActivity.fromContext(tv.getContext()).getDeviceProfile(), true /* isOpening */);
     }
 
     public void setProgress(float progress) {

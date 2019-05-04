@@ -18,12 +18,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:clipChildren="false">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recent_task_recycler_view"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/recents_list_width"
         android:layout_height="match_parent"
-        android:scrollbars="none"/>
+        android:layout_gravity="center_horizontal"
+        android:scrollbars="none"
+        android:clipToPadding="false"
+        android:clipChildren="false"/>
     <TextView
         android:id="@+id/recent_task_empty_view"
         android:layout_width="match_parent"
