@@ -24,6 +24,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
+import android.appwidget.AppWidgetHostView;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -61,8 +62,10 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
-import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.ShortcutAndWidgetContainer;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.Workspace.ItemOperator;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
@@ -121,6 +124,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     private static final int REORDER_DELAY = 250;
     private static final int ON_EXIT_CLOSE_DELAY = 400;
     private static final Rect sTempRect = new Rect();
+    private static final int MIN_FOLDERS_FOR_HARDWARE_OPTIMIZATION = 10;
 
     private static String sDefaultFolderName;
     private static String sHintText;
@@ -430,19 +434,42 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         if (mCurrentAnimator != null && mCurrentAnimator.isRunning()) {
             mCurrentAnimator.cancel();
         }
+        final Workspace workspace = mLauncher.getWorkspace();
+        final CellLayout currentCellLayout =
+                (CellLayout) workspace.getChildAt(workspace.getCurrentPage());
+        final boolean useHardware = shouldUseHardwareLayerForAnimation(currentCellLayout);
+        final boolean wasHardwareAccelerated = currentCellLayout.isHardwareLayerEnabled();
+
         a.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
+                if (useHardware) {
+                    currentCellLayout.enableHardwareLayer(true);
+                }
                 mState = STATE_ANIMATING;
                 mCurrentAnimator = a;
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                if (useHardware) {
+                    currentCellLayout.enableHardwareLayer(wasHardwareAccelerated);
+                }
                 mCurrentAnimator = null;
             }
         });
         a.start();
+    }
+
+    private boolean shouldUseHardwareLayerForAnimation(CellLayout currentCellLayout) {
+        int folderCount = 0;
+        final ShortcutAndWidgetContainer container = currentCellLayout.getShortcutsAndWidgets();
+        for (int i = container.getChildCount() - 1; i >= 0; --i) {
+            final View child = container.getChildAt(i);
+            if (child instanceof AppWidgetHostView) return false;
+            if (child instanceof FolderIcon) ++folderCount;
+        }
+        return folderCount >= MIN_FOLDERS_FOR_HARDWARE_OPTIMIZATION;
     }
 
     /**
@@ -869,7 +896,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         DeviceProfile grid = mLauncher.getDeviceProfile();
 
         DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
-        DragLayer parent = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
+        DragLayer parent = mLauncher.getDragLayer();
         int width = getFolderWidth();
         int height = getFolderHeight();
 
@@ -881,8 +908,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
         // We need to bound the folder to the currently visible workspace area
         if (mLauncher.getStateManager().getState().overviewUi) {
-            mLauncher.getDragLayer().getDescendantRectRelativeToSelf(mLauncher.getOverviewPanel(),
-                    sTempRect);
+            parent.getDescendantRectRelativeToSelf(mLauncher.getOverviewPanel(), sTempRect);
         } else {
             mLauncher.getWorkspace().getPageAreaRelativeToDragLayer(sTempRect);
         }

@@ -20,6 +20,8 @@ import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
 
 import static com.android.quickstep.TaskAdapter.CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT;
+import static com.android.quickstep.TaskAdapter.ITEM_TYPE_CLEAR_ALL;
+import static com.android.quickstep.TaskAdapter.ITEM_TYPE_TASK;
 import static com.android.quickstep.TaskAdapter.TASKS_START_POSITION;
 
 import android.animation.Animator;
@@ -29,6 +31,9 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.ArraySet;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
@@ -44,10 +49,13 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration;
 import androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener;
 
 import com.android.launcher3.BaseActivity;
+import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.util.Themes;
 import com.android.quickstep.ContentFillItemAnimator;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RecentsToActivityHelper;
@@ -67,7 +75,7 @@ import java.util.Optional;
  * Root view for the icon recents view. Acts as the main interface to the rest of the Launcher code
  * base.
  */
-public final class IconRecentsView extends FrameLayout {
+public final class IconRecentsView extends FrameLayout implements Insettable {
 
     public static final FloatProperty<IconRecentsView> CONTENT_ALPHA =
             new FloatProperty<IconRecentsView>("contentAlpha") {
@@ -108,6 +116,8 @@ public final class IconRecentsView extends FrameLayout {
     private final DefaultItemAnimator mDefaultItemAnimator = new DefaultItemAnimator();
     private final ContentFillItemAnimator mLoadingContentItemAnimator =
             new ContentFillItemAnimator();
+    private final BaseActivity mActivity;
+    private final Drawable mStatusBarForegroundScrim;
 
     private RecentsToActivityHelper mActivityHelper;
     private RecyclerView mTaskRecyclerView;
@@ -117,6 +127,7 @@ public final class IconRecentsView extends FrameLayout {
     private boolean mTransitionedFromApp;
     private AnimatorSet mLayoutAnimation;
     private final ArraySet<View> mLayingOutViews = new ArraySet<>();
+    private Rect mInsets;
     private final RecentsModel.TaskThumbnailChangeListener listener = (taskId, thumbnailData) -> {
         ArrayList<TaskItemView> itemViews = getTaskViews();
         for (int i = 0, size = itemViews.size(); i < size; i++) {
@@ -136,8 +147,10 @@ public final class IconRecentsView extends FrameLayout {
 
     public IconRecentsView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        BaseActivity activity = BaseActivity.fromContext(context);
+        mActivity = BaseActivity.fromContext(context);
         mContext = context;
+        mStatusBarForegroundScrim  =
+                Themes.getAttrDrawable(mContext, R.attr.workspaceStatusBarScrim);
         mTaskLoader = new TaskListLoader(mContext);
         mTaskAdapter = new TaskAdapter(mTaskLoader);
         mTaskAdapter.setOnClearAllClickListener(view -> animateClearAllTasks());
@@ -155,7 +168,12 @@ public final class IconRecentsView extends FrameLayout {
             mTaskRecyclerView.setAdapter(mTaskAdapter);
             mTaskRecyclerView.setLayoutManager(mTaskLayoutManager);
             ItemTouchHelper helper = new ItemTouchHelper(
-                    new TaskSwipeCallback(mTaskActionController));
+                    new TaskSwipeCallback(holder -> {
+                        mTaskActionController.removeTask(holder);
+                        if (mTaskLoader.getCurrentTaskList().isEmpty()) {
+                            mActivityHelper.leaveRecents();
+                        }
+                    }));
             helper.attachToRecyclerView(mTaskRecyclerView);
             mTaskRecyclerView.addOnChildAttachStateChangeListener(
                     new OnChildAttachStateChangeListener() {
@@ -174,6 +192,43 @@ public final class IconRecentsView extends FrameLayout {
             mTaskRecyclerView.setItemAnimator(mDefaultItemAnimator);
             mLoadingContentItemAnimator.setOnAnimationFinishedRunnable(
                     () -> mTaskRecyclerView.setItemAnimator(new DefaultItemAnimator()));
+            ItemDecoration marginDecorator = new ItemDecoration() {
+                @Override
+                public void getItemOffsets(@NonNull Rect outRect, @NonNull View view,
+                        @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                    // TODO: Determine if current margins cause off screen item to be fully off
+                    // screen and if so, modify them so that it is partially off screen.
+                    int itemType = parent.getChildViewHolder(view).getItemViewType();
+                    Resources res = getResources();
+                    switch (itemType) {
+                        case ITEM_TYPE_CLEAR_ALL:
+                            outRect.top = (int) res.getDimension(
+                                    R.dimen.clear_all_item_view_top_margin);
+                            int desiredBottomMargin = (int) res.getDimension(
+                                    R.dimen.clear_all_item_view_bottom_margin);
+                            // Only add bottom margin if insets aren't enough.
+                            if (mInsets.bottom < desiredBottomMargin) {
+                                outRect.bottom = desiredBottomMargin - mInsets.bottom;
+                            }
+                            break;
+                        case ITEM_TYPE_TASK:
+                            int desiredTopMargin = (int) res.getDimension(
+                                    R.dimen.task_item_top_margin);
+                            if (mTaskRecyclerView.getChildAdapterPosition(view) ==
+                                    state.getItemCount() - 1) {
+                                // Only add top margin to top task view if insets aren't enough.
+                                if (mInsets.top < desiredTopMargin) {
+                                    outRect.top = desiredTopMargin - mInsets.bottom;
+                                }
+                                return;
+                            }
+                            outRect.top = desiredTopMargin;
+                            break;
+                        default:
+                    }
+                }
+            };
+            mTaskRecyclerView.addItemDecoration(marginDecorator);
 
             mEmptyView = findViewById(R.id.recent_task_empty_view);
             mContentView = mTaskRecyclerView;
@@ -188,7 +243,6 @@ public final class IconRecentsView extends FrameLayout {
                     updateContentViewVisibility();
                 }
             });
-            // TODO: Move layout param logic into onMeasure
         }
     }
 
@@ -296,6 +350,21 @@ public final class IconRecentsView extends FrameLayout {
     }
 
     /**
+     * Set whether or not to show the scrim in between the view and the top insets. This only works
+     * if the view is being insetted in the first place.
+     *
+     * The scrim is added to the activity's root view to prevent animations on this view
+     * affecting the scrim. As a result, it is the activity's responsibility to show/hide this
+     * scrim as appropriate.
+     *
+     * @param showStatusBarForegroundScrim true to show the scrim, false to hide
+     */
+    public void setShowStatusBarForegroundScrim(boolean showStatusBarForegroundScrim) {
+        boolean shouldShow = mInsets.top != 0 && showStatusBarForegroundScrim;
+        mActivity.getDragLayer().setForeground(shouldShow ? mStatusBarForegroundScrim : null);
+    }
+
+    /**
      * Get the bottom most thumbnail view to animate to.
      *
      * @return the thumbnail view if laid out
@@ -395,7 +464,6 @@ public final class IconRecentsView extends FrameLayout {
         if (mShowingContentView != mEmptyView && taskListSize == 0) {
             mShowingContentView = mEmptyView;
             crossfadeViews(mEmptyView, mContentView);
-            mActivityHelper.leaveRecents();
         }
         if (mShowingContentView != mContentView && taskListSize > 0) {
             mShowingContentView = mContentView;
@@ -481,5 +549,12 @@ public final class IconRecentsView extends FrameLayout {
             }
         });
         mLayoutAnimation.start();
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        mInsets = insets;
+        mTaskRecyclerView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+        mTaskRecyclerView.invalidateItemDecorations();
     }
 }

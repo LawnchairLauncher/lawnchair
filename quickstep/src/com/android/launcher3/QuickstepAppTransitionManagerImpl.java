@@ -408,7 +408,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
      */
     private ValueAnimator getOpeningWindowAnimators(View v, RemoteAnimationTargetCompat[] targets,
             Rect windowTargetBounds, boolean toggleVisibility) {
-        Rect bounds = new Rect();
+        RectF bounds = new RectF();
         mFloatingView = FloatingIconView.getFloatingIconView(mLauncher, v, toggleVisibility,
                 bounds, true /* isOpening */, mFloatingView);
         Rect crop = new Rect();
@@ -416,17 +416,15 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
 
         RemoteAnimationTargetSet openingTargets = new RemoteAnimationTargetSet(targets,
                 MODE_OPENING);
-        RemoteAnimationTargetSet closingTargets = new RemoteAnimationTargetSet(targets,
-                MODE_CLOSING);
         SyncRtSurfaceTransactionApplierCompat surfaceApplier =
                 new SyncRtSurfaceTransactionApplierCompat(mFloatingView);
+        openingTargets.addDependentTransactionApplier(surfaceApplier);
 
         // Scale the app icon to take up the entire screen. This simplifies the math when
         // animating the app window position / scale.
-        float maxScaleX = windowTargetBounds.width() / (float) bounds.width();
-        // We use windowTargetBounds.width for scaleY too since we start off the animation where the
-        // window is clipped to a square.
-        float maxScaleY = windowTargetBounds.width() / (float) bounds.height();
+        float smallestSize = Math.min(windowTargetBounds.height(), windowTargetBounds.width());
+        float maxScaleX = smallestSize / bounds.width();
+        float maxScaleY = smallestSize / bounds.height();
         float scale = Math.max(maxScaleX, maxScaleY);
         float startScale = 1f;
         if (v instanceof BubbleTextView && !(v.getParent() instanceof DeepShortcutView)) {
@@ -470,6 +468,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 if (v instanceof BubbleTextView) {
                     ((BubbleTextView) v).setStayPressed(false);
                 }
+                openingTargets.release();
             }
         });
 

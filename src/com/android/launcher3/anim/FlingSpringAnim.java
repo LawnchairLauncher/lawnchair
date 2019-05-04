@@ -34,6 +34,7 @@ public class FlingSpringAnim {
     private static final float SPRING_DAMPING = SpringForce.DAMPING_RATIO_LOW_BOUNCY;
 
     private final FlingAnimation mFlingAnim;
+    private SpringAnimation mSpringAnim;
 
     public <K> FlingSpringAnim(K object, FloatPropertyCompat<K> property, float startPosition,
             float targetPosition, float startVelocity, OnAnimationEndListener onEndListener) {
@@ -44,17 +45,24 @@ public class FlingSpringAnim {
                 .setMinValue(Math.min(startPosition, targetPosition))
                 .setMaxValue(Math.max(startPosition, targetPosition));
         mFlingAnim.addEndListener(((animation, canceled, value, velocity) -> {
-            SpringAnimation springAnim = new SpringAnimation(object, property)
+            mSpringAnim = new SpringAnimation(object, property)
                     .setStartVelocity(velocity)
                     .setSpring(new SpringForce(targetPosition)
                             .setStiffness(SPRING_STIFFNESS)
                             .setDampingRatio(SPRING_DAMPING));
-            springAnim.addEndListener(onEndListener);
-            springAnim.start();
+            mSpringAnim.addEndListener(onEndListener);
+            mSpringAnim.start();
         }));
     }
 
     public void start() {
         mFlingAnim.start();
+    }
+
+    public void end() {
+        mFlingAnim.cancel();
+        if (mSpringAnim.canSkipToEnd()) {
+            mSpringAnim.skipToEnd();
+        }
     }
 }

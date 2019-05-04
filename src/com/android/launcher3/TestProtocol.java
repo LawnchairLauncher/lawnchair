@@ -63,9 +63,4 @@ public final class TestProtocol {
             "all-apps-to-overview-swipe-height";
     public static final String REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT =
             "home-to-all-apps-swipe-height";
-
-    public static boolean sDebugTracing = false;
-    public static final String NO_DRAG_TAG = "b/129434166";
-    public static final String REQUEST_ENABLE_DRAG_LOGGING = "enable-drag-logging";
-    public static final String REQUEST_DISABLE_DRAG_LOGGING = "disable-drag-logging";
 }

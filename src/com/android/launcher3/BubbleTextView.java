@@ -142,7 +142,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     public BubbleTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mActivity = ActivityContext.lookupContext(context);
-        DeviceProfile grid = mActivity.getDeviceProfile();
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
 
         TypedArray a = context.obtainStyledAttributes(attrs,
@@ -150,18 +149,24 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mLayoutHorizontal = a.getBoolean(R.styleable.BubbleTextView_layoutHorizontal, false);
 
         int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
-        int defaultIconSize = grid.iconSizePx;
+        final int defaultIconSize;
         if (display == DISPLAY_WORKSPACE) {
+            DeviceProfile grid = mActivity.getWallpaperDeviceProfile();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
+            defaultIconSize = grid.iconSizePx;
         } else if (display == DISPLAY_ALL_APPS) {
+            DeviceProfile grid = mActivity.getDeviceProfile();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
         } else if (display == DISPLAY_FOLDER) {
+            DeviceProfile grid = mActivity.getDeviceProfile();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.folderChildTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
             defaultIconSize = grid.folderChildIconSizePx;
+        } else {
+            defaultIconSize = mActivity.getDeviceProfile().iconSizePx;
         }
         mCenterVertically = a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
 

@@ -21,4 +21,6 @@
     <!-- The size of corner radius of the arrow in the arrow toast. -->
     <dimen name="arrow_toast_corner_radius">2dp</dimen>
 
+    <!-- Minimum distance to swipe to trigger accessibility gesture -->
+    <dimen name="accessibility_gesture_min_swipe_distance">80dp</dimen>
 </resources>

@@ -80,7 +80,8 @@ public final class TaskListLoader {
             return;
         }
         // TODO: Look into error checking / more robust handling for when things go wrong.
-        mTaskListChangeId = mRecentsModel.getTasks(tasks -> {
+        mTaskListChangeId = mRecentsModel.getTasks(loadedTasks -> {
+            ArrayList<Task> tasks = new ArrayList<>(loadedTasks);
             // Reverse tasks to put most recent at the bottom of the view
             Collections.reverse(tasks);
             // Load task content

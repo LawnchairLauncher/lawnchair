@@ -16,13 +16,19 @@
 package com.android.quickstep.util;
 
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Queue;
 
 /**
  * Holds a collection of RemoteAnimationTargets, filtered by different properties.
  */
 public class RemoteAnimationTargetSet {
+
+    private final Queue<SyncRtSurfaceTransactionApplierCompat> mDependentTransactionAppliers =
+            new ArrayDeque<>(1);
 
     public final RemoteAnimationTargetCompat[] unfilteredApps;
     public final RemoteAnimationTargetCompat[] apps;
@@ -59,5 +65,20 @@ public class RemoteAnimationTargetSet {
             }
         }
         return false;
+    }
+
+    public void addDependentTransactionApplier(SyncRtSurfaceTransactionApplierCompat delay) {
+        mDependentTransactionAppliers.add(delay);
+    }
+
+    public void release() {
+        SyncRtSurfaceTransactionApplierCompat applier = mDependentTransactionAppliers.poll();
+        if (applier == null) {
+            for (RemoteAnimationTargetCompat target : unfilteredApps) {
+                target.release();
+            }
+        } else {
+            applier.addAfterApplyCallback(this::release);
+        }
     }
 }

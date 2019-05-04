@@ -8,13 +8,10 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Insets;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.WindowInsets;
@@ -30,9 +27,6 @@ public class LauncherRootView extends InsettableFrameLayout {
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private final Rect mConsumedInsets = new Rect();
-
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private final RectF mTouchExcludeRegion = new RectF();
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private static final List<Rect> SYSTEM_GESTURE_EXCLUSION_RECT =
@@ -87,7 +81,7 @@ public class LauncherRootView extends InsettableFrameLayout {
                 UI_STATE_ROOT_VIEW, drawInsetBar ? FLAG_DARK_NAV : 0);
 
         // Update device profile before notifying th children.
-        mLauncher.getDeviceProfile().updateInsets(insets);
+        mLauncher.updateInsets(insets);
         boolean resetState = !insets.equals(mInsets);
         setInsets(insets);
 
@@ -120,7 +114,7 @@ public class LauncherRootView extends InsettableFrameLayout {
     }
 
     public void dispatchInsets() {
-        mLauncher.getDeviceProfile().updateInsets(mInsets);
+        mLauncher.updateInsets(mInsets);
         super.setInsets(mInsets);
     }
 
@@ -164,27 +158,8 @@ public class LauncherRootView extends InsettableFrameLayout {
 
     @Override
     public WindowInsets dispatchApplyWindowInsets(WindowInsets insets) {
-        if (Utilities.ATLEAST_Q) {
-            Insets gestureInsets = insets.getMandatorySystemGestureInsets();
-            mTouchExcludeRegion.set(gestureInsets.left, gestureInsets.top,
-                    gestureInsets.right, gestureInsets.bottom);
-        }
+        mLauncher.getDragLayer().updateTouchExcludeRegion(insets);
         return super.dispatchApplyWindowInsets(insets);
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            float x = ev.getX();
-            float y = ev.getY();
-            if (y < mTouchExcludeRegion.top
-                    || x < mTouchExcludeRegion.left
-                    || x > (getWidth() - mTouchExcludeRegion.right)
-                    || y > (getHeight() - mTouchExcludeRegion.bottom)) {
-                return false;
-            }
-        }
-        return super.dispatchTouchEvent(ev);
     }
 
     @Override
@@ -210,15 +185,5 @@ public class LauncherRootView extends InsettableFrameLayout {
         void onWindowFocusChanged(boolean hasFocus);
 
         void onWindowVisibilityChanged(int visibility);
-    }
-
-    @Override
-    public void requestLayout() {
-        super.requestLayout();
-        if (com.android.launcher3.TestProtocol.sDebugTracing) {
-            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
-                    "requestLayout @ " + android.util.Log.getStackTraceString(
-                            new Throwable()));
-        }
     }
 }
