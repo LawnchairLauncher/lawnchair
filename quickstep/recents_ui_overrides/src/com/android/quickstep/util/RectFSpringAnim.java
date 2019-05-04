@@ -113,6 +113,15 @@ public class RectFSpringAnim {
         mCurrentCenterY = mStartRect.centerY();
     }
 
+    public void onTargetPositionChanged() {
+        if (mRectXAnim != null && mRectXAnim.getTargetPosition() != mTargetRect.centerX()) {
+            mRectXAnim.updatePosition(mCurrentCenterX, mTargetRect.centerX());
+        }
+        if (mRectYAnim != null && mRectYAnim.getTargetPosition() != mTargetRect.centerY()) {
+            mRectYAnim.updatePosition(mCurrentCenterY, mTargetRect.centerY());
+        }
+    }
+
     public void addOnUpdateListener(OnUpdateListener onUpdateListener) {
         mOnUpdateListeners.add(onUpdateListener);
     }

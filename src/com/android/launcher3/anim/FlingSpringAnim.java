@@ -36,6 +36,8 @@ public class FlingSpringAnim {
     private final FlingAnimation mFlingAnim;
     private SpringAnimation mSpringAnim;
 
+    private float mTargetPosition;
+
     public <K> FlingSpringAnim(K object, FloatPropertyCompat<K> property, float startPosition,
             float targetPosition, float startVelocity, OnAnimationEndListener onEndListener) {
         mFlingAnim = new FlingAnimation(object, property)
@@ -44,15 +46,30 @@ public class FlingSpringAnim {
                 .setStartVelocity(startVelocity)
                 .setMinValue(Math.min(startPosition, targetPosition))
                 .setMaxValue(Math.max(startPosition, targetPosition));
+        mTargetPosition = targetPosition;
+
         mFlingAnim.addEndListener(((animation, canceled, value, velocity) -> {
             mSpringAnim = new SpringAnimation(object, property)
                     .setStartVelocity(velocity)
-                    .setSpring(new SpringForce(targetPosition)
+                    .setSpring(new SpringForce(mTargetPosition)
                             .setStiffness(SPRING_STIFFNESS)
                             .setDampingRatio(SPRING_DAMPING));
             mSpringAnim.addEndListener(onEndListener);
             mSpringAnim.start();
         }));
+    }
+
+    public float getTargetPosition() {
+        return mTargetPosition;
+    }
+
+    public void updatePosition(float startPosition, float targetPosition) {
+        mFlingAnim.setMinValue(Math.min(startPosition, targetPosition))
+                .setMaxValue(Math.max(startPosition, targetPosition));
+        mTargetPosition = targetPosition;
+        if (mSpringAnim != null) {
+            mSpringAnim.animateToFinalPosition(mTargetPosition);
+        }
     }
 
     public void start() {
