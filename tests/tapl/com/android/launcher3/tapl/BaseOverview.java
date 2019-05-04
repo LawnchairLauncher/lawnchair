@@ -28,7 +28,7 @@ import java.util.List;
  * Common overview pane for both Launcher and fallback recents
  */
 public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
-    private static final int FLING_SPEED = 1500;
+    private static final int FLING_SPEED = LauncherInstrumentation.needSlowGestures() ? 500 : 1500;
     private static final int FLINGS_FOR_DISMISS_LIMIT = 40;
 
     BaseOverview(LauncherInstrumentation launcher) {

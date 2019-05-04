@@ -31,11 +31,12 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.os.RemoteException;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.views.RecentsView;
@@ -49,8 +50,6 @@ import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.function.BiFunction;
-
-import androidx.annotation.Nullable;
 
 /**
  * Utility class to handle window clip animation
@@ -81,6 +80,7 @@ public class ClipAnimationHelper {
     private final RectF mClipRectF = new RectF();
     private final RectFEvaluator mRectFEvaluator = new RectFEvaluator();
     private final Matrix mTmpMatrix = new Matrix();
+    private final Rect mTmpRect = new Rect();
     private final RectF mTmpRectF = new RectF();
     private final RectF mCurrentRectWithInsets = new RectF();
     // Corner radius of windows, in pixels
@@ -89,6 +89,8 @@ public class ClipAnimationHelper {
     private final float mTaskCornerRadius;
     // If windows can have real time rounded corners.
     private final boolean mSupportsRoundedCornersOnWindows;
+    // Whether or not to actually use the rounded cornders on windows
+    private boolean mUseRoundedCornersOnWindows;
 
     // Corner radius currently applied to transformed window.
     private float mCurrentCornerRadius;
@@ -103,6 +105,7 @@ public class ClipAnimationHelper {
         mWindowCornerRadius = getWindowCornerRadius(context.getResources());
         mSupportsRoundedCornersOnWindows = supportsRoundedCornersOnWindows(context.getResources());
         mTaskCornerRadius = TaskCornerRadius.get(context);
+        mUseRoundedCornersOnWindows = mSupportsRoundedCornersOnWindows;
     }
 
     private void updateSourceStack(RemoteAnimationTargetCompat target) {
@@ -144,8 +147,9 @@ public class ClipAnimationHelper {
         mSourceRect.set(scaledTargetRect);
     }
 
-    public void prepareAnimation(boolean isOpening) {
+    public void prepareAnimation(DeviceProfile dp, boolean isOpening) {
         mBoostModeTargetLayers = isOpening ? MODE_OPENING : MODE_CLOSING;
+        mUseRoundedCornersOnWindows = mSupportsRoundedCornersOnWindows && !dp.isMultiWindowMode;
     }
 
     public RectF applyTransform(RemoteAnimationTargetSet targetSet, TransformParams params) {
@@ -177,7 +181,9 @@ public class ClipAnimationHelper {
         for (int i = 0; i < targetSet.unfilteredApps.length; i++) {
             RemoteAnimationTargetCompat app = targetSet.unfilteredApps[i];
             mTmpMatrix.setTranslate(app.position.x, app.position.y);
-            Rect crop = app.sourceContainerBounds;
+            Rect crop = mTmpRect;
+            crop.set(app.sourceContainerBounds);
+            crop.offsetTo(0, 0);
             float alpha = 1f;
             int layer = RemoteAnimationProvider.getLayer(app, mBoostModeTargetLayers);
             float cornerRadius = 0f;
@@ -188,7 +194,9 @@ public class ClipAnimationHelper {
                     mTmpMatrix.postTranslate(app.position.x, app.position.y);
                     mClipRectF.roundOut(crop);
                     if (mSupportsRoundedCornersOnWindows) {
-                        cornerRadius = Utilities.mapRange(params.progress, mWindowCornerRadius,
+                        float windowCornerRadius = mUseRoundedCornersOnWindows
+                                ? mWindowCornerRadius : 0;
+                        cornerRadius = Utilities.mapRange(params.progress, windowCornerRadius,
                                 mTaskCornerRadius);
                         mCurrentCornerRadius = cornerRadius;
                     }
@@ -318,12 +326,14 @@ public class ClipAnimationHelper {
 
         float scale = mTargetRect.width() / mSourceRect.width();
         float insetProgress = (1 - progress);
+        float windowCornerRadius = mUseRoundedCornersOnWindows
+                ? mWindowCornerRadius : 0;
         ttv.drawOnCanvas(canvas,
                 -mSourceWindowClipInsets.left * insetProgress,
                 -mSourceWindowClipInsets.top * insetProgress,
                 ttv.getMeasuredWidth() + mSourceWindowClipInsets.right * insetProgress,
                 ttv.getMeasuredHeight() + mSourceWindowClipInsets.bottom * insetProgress,
-                Utilities.mapRange(progress, mWindowCornerRadius * scale, ttv.getCornerRadius()));
+                Utilities.mapRange(progress, windowCornerRadius * scale, ttv.getCornerRadius()));
     }
 
     public RectF getTargetRect() {

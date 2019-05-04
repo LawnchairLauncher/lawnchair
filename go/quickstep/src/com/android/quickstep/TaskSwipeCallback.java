@@ -19,21 +19,25 @@ import static androidx.recyclerview.widget.ItemTouchHelper.RIGHT;
 
 import static com.android.quickstep.TaskAdapter.ITEM_TYPE_CLEAR_ALL;
 
+import android.graphics.Canvas;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
+
+import java.util.function.Consumer;
 
 /**
  * Callback for swipe input on {@link TaskHolder} views in the recents view.
  */
 public final class TaskSwipeCallback extends ItemTouchHelper.SimpleCallback {
 
-    private final TaskActionController mTaskActionController;
+    private final Consumer<TaskHolder> mOnTaskSwipeCallback;
 
-    public TaskSwipeCallback(TaskActionController taskActionController) {
+    public TaskSwipeCallback(Consumer<TaskHolder> onTaskSwipeCallback) {
         super(0 /* dragDirs */, RIGHT);
-        mTaskActionController = taskActionController;
+        mOnTaskSwipeCallback = onTaskSwipeCallback;
     }
 
     @Override
@@ -45,8 +49,20 @@ public final class TaskSwipeCallback extends ItemTouchHelper.SimpleCallback {
     @Override
     public void onSwiped(ViewHolder viewHolder, int direction) {
         if (direction == RIGHT) {
-            mTaskActionController.removeTask((TaskHolder) viewHolder);
+            mOnTaskSwipeCallback.accept((TaskHolder) viewHolder);
         }
+    }
+
+    @Override
+    public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
+            @NonNull ViewHolder viewHolder, float dX, float dY, int actionState,
+            boolean isCurrentlyActive) {
+        if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+            float alpha = 1.0f - dX / (float) viewHolder.itemView.getWidth();
+            viewHolder.itemView.setAlpha(alpha);
+        }
+        super.onChildDraw(c, recyclerView, viewHolder, dX, dY,
+                    actionState, isCurrentlyActive);
     }
 
     @Override

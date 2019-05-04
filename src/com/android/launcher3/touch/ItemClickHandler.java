@@ -66,14 +66,6 @@ public class ItemClickHandler {
     }
 
     private static void onClick(View v, String sourceContainer) {
-        if (com.android.launcher3.TestProtocol.sDebugTracing) {
-            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
-                    "onClick() called with: v = [" + v.getClass().getSimpleName() +
-                            "], sourceContainer = [" +
-                            (sourceContainer != null ?
-                                    sourceContainer.getClass().getSimpleName() : "null")
-                            + "]");
-        }
         // Make sure that rogue clicks don't get through while allapps is launching, or after the
         // view has detached (it's possible for this to happen if the view is removed mid touch).
         if (v.getWindowToken() == null) {

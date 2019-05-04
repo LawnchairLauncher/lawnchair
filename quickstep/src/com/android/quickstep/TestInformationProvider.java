@@ -111,14 +111,6 @@ public class TestInformationProvider extends ContentProvider {
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, (int) distance);
                     break;
                 }
-
-                case TestProtocol.REQUEST_ENABLE_DRAG_LOGGING:
-                    TestProtocol.sDebugTracing = true;
-                    break;
-
-                case TestProtocol.REQUEST_DISABLE_DRAG_LOGGING:
-                    TestProtocol.sDebugTracing = false;
-                    break;
             }
             return response;
         }

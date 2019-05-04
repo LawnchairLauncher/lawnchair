@@ -45,6 +45,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -70,9 +71,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ListView;
 
-import androidx.annotation.Nullable;
-import androidx.dynamicanimation.animation.SpringForce;
-
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
@@ -85,6 +83,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -110,6 +109,9 @@ import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
+
+import androidx.annotation.Nullable;
+import androidx.dynamicanimation.animation.SpringForce;
 
 /**
  * A list of recent tasks.
@@ -1638,5 +1640,27 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     public ClearAllButton getClearAllButton() {
         return mClearAllButton;
+    }
+
+    public Consumer<MotionEvent> getEventDispatcher(RotationMode rotationMode) {
+        if (rotationMode.isTransposed) {
+            Matrix transform = new Matrix();
+            transform.setRotate(-rotationMode.surfaceRotation);
+
+            if (getWidth() > 0 && getHeight() > 0) {
+                float scale = ((float) getWidth()) / getHeight();
+                transform.postScale(scale, 1 / scale);
+            }
+
+            Matrix inverse = new Matrix();
+            transform.invert(inverse);
+            return e -> {
+                e.transform(transform);
+                super.onTouchEvent(e);
+                e.transform(inverse);
+            };
+        } else {
+            return super::onTouchEvent;
+        }
     }
 }

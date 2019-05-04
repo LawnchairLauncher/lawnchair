@@ -95,9 +95,4 @@ public class SwipeAnimationTargetSet extends RemoteAnimationTargetSet {
 
         void onRecentsAnimationCanceled();
     }
-
-    public interface SwipeAnimationFinishListener {
-
-        void onSwipeAnimationFinished(SwipeAnimationTargetSet targetSet);
-    }
 }

@@ -82,6 +82,7 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.PreloadIconDrawable;
+import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
@@ -175,7 +176,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     @Thunk final Launcher mLauncher;
     @Thunk DragController mDragController;
 
+    private final Rect mTempRect = new Rect();
     private final int[] mTempXY = new int[2];
+    private final float[] mTempFXY = new float[2];
     @Thunk float[] mDragViewVisualCenter = new float[2];
     private final float[] mTempTouchCoordinates = new float[2];
 
@@ -285,18 +288,23 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     @Override
     public void setInsets(Rect insets) {
-        mInsets.set(insets);
-
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        mMaxDistanceForFolderCreation = grid.isTablet
-                ? 0.75f * grid.iconSizePx
-                : 0.55f * grid.iconSizePx;
+        DeviceProfile stableGrid = mLauncher.getWallpaperDeviceProfile();
+
+        mMaxDistanceForFolderCreation = stableGrid.isTablet
+                ? 0.75f * stableGrid.iconSizePx
+                : 0.55f * stableGrid.iconSizePx;
         mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
 
-        Rect padding = grid.workspacePadding;
-        setPadding(padding.left, padding.top, padding.right, padding.bottom);
+        Rect padding = stableGrid.workspacePadding;
 
-        if (grid.shouldFadeAdjacentWorkspaceScreens()) {
+        RotationMode rotationMode = mLauncher.getRotationMode();
+
+        rotationMode.mapRect(padding, mTempRect);
+        setPadding(mTempRect.left, mTempRect.top, mTempRect.right, mTempRect.bottom);
+        rotationMode.mapRect(insets, mInsets);
+
+        if (mWorkspaceFadeInAdjacentScreens) {
             // In landscape mode the page spacing is set to the default.
             setPageSpacing(grid.edgeMarginPx);
         } else {
@@ -306,11 +314,13 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             setPageSpacing(Math.max(grid.edgeMarginPx, padding.left + 1));
         }
 
-        int paddingLeftRight = grid.cellLayoutPaddingLeftRightPx;
-        int paddingBottom = grid.cellLayoutBottomPaddingPx;
+
+        int paddingLeftRight = stableGrid.cellLayoutPaddingLeftRightPx;
+        int paddingBottom = stableGrid.cellLayoutBottomPaddingPx;
         for (int i = mWorkspaceScreens.size() - 1; i >= 0; i--) {
-            mWorkspaceScreens.valueAt(i)
-                    .setPadding(paddingLeftRight, 0, paddingLeftRight, paddingBottom);
+            CellLayout page = mWorkspaceScreens.valueAt(i);
+            page.setRotationMode(rotationMode);
+            page.setPadding(paddingLeftRight, 0, paddingLeftRight, paddingBottom);
         }
     }
 
@@ -330,7 +340,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
             float scale = 1;
             if (isWidget) {
-                DeviceProfile profile = mLauncher.getDeviceProfile();
+                DeviceProfile profile = mLauncher.getWallpaperDeviceProfile();
                 scale = Utilities.shrinkRect(r, profile.appWidgetScale.x, profile.appWidgetScale.y);
             }
             size[0] = r.width();
@@ -550,8 +560,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // created CellLayout.
         CellLayout newScreen = (CellLayout) LayoutInflater.from(getContext()).inflate(
                         R.layout.workspace_screen, this, false /* attachToRoot */);
-        int paddingLeftRight = mLauncher.getDeviceProfile().cellLayoutPaddingLeftRightPx;
-        int paddingBottom = mLauncher.getDeviceProfile().cellLayoutBottomPaddingPx;
+        DeviceProfile grid = mLauncher.getWallpaperDeviceProfile();
+        int paddingLeftRight = grid.cellLayoutPaddingLeftRightPx;
+        int paddingBottom = grid.cellLayoutBottomPaddingPx;
+        newScreen.setRotationMode(mLauncher.getRotationMode());
         newScreen.setPadding(paddingLeftRight, 0, paddingLeftRight, paddingBottom);
 
         mWorkspaceScreens.put(screenId, newScreen);
@@ -1440,10 +1452,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     public DragView beginDragShared(View child, DragSource source, ItemInfo dragObject,
             DragPreviewProvider previewProvider, DragOptions dragOptions) {
-        if (com.android.launcher3.TestProtocol.sDebugTracing) {
-            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
-                    "beginDragShared");
-        }
         float iconScale = 1f;
         if (child instanceof BubbleTextView) {
             Drawable icon = ((BubbleTextView) child).getIcon();
@@ -1934,18 +1942,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (child == null) {
             return;
         }
+
         ShortcutAndWidgetContainer boundingLayout = child.getShortcutsAndWidgets();
-
-        // Use the absolute left instead of the child left, as we want the visible area
-        // irrespective of the visible child. Since the view can only scroll horizontally, the
-        // top position is not affected.
-        mTempXY[0] = getPaddingLeft() + boundingLayout.getLeft();
-        mTempXY[1] = child.getTop() + boundingLayout.getTop();
-
-        float scale = mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempXY);
-        outArea.set(mTempXY[0], mTempXY[1],
-                (int) (mTempXY[0] + scale * boundingLayout.getMeasuredWidth()),
-                (int) (mTempXY[1] + scale * boundingLayout.getMeasuredHeight()));
+        mLauncher.getDragLayer().getDescendantRectRelativeToSelf(boundingLayout, outArea);
     }
 
     @Override
@@ -2098,14 +2097,14 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
    }
 
    boolean isPointInSelfOverHotseat(int x, int y) {
-       mTempXY[0] = x;
-       mTempXY[1] = y;
-       mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempXY, true);
+       mTempFXY[0] = x;
+       mTempFXY[1] = y;
+       mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempFXY, true);
        View hotseat = mLauncher.getHotseat();
-       return mTempXY[0] >= hotseat.getLeft() &&
-               mTempXY[0] <= hotseat.getRight() &&
-               mTempXY[1] >= hotseat.getTop() &&
-               mTempXY[1] <= hotseat.getBottom();
+       return mTempFXY[0] >= hotseat.getLeft() &&
+               mTempFXY[0] <= hotseat.getRight() &&
+               mTempFXY[1] >= hotseat.getTop() &&
+               mTempFXY[1] <= hotseat.getBottom();
    }
 
     /**
@@ -2115,13 +2114,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      */
    private void mapPointFromDropLayout(CellLayout layout, float[] xy) {
        if (mLauncher.isHotseatLayout(layout)) {
-           mTempXY[0] = (int) xy[0];
-           mTempXY[1] = (int) xy[1];
-           mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempXY, true);
-           mLauncher.getDragLayer().mapCoordInSelfToDescendant(layout, mTempXY);
-
-           xy[0] = mTempXY[0];
-           xy[1] = mTempXY[1];
+           mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, xy, true);
+           mLauncher.getDragLayer().mapCoordInSelfToDescendant(layout, xy);
        } else {
            mapPointFromSelfToChild(layout, xy);
        }
@@ -2612,13 +2606,14 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             DeviceProfile profile = mLauncher.getDeviceProfile();
             Utilities.shrinkRect(r, profile.appWidgetScale.x, profile.appWidgetScale.y);
         }
-        loc[0] = r.left;
-        loc[1] = r.top;
 
+        mTempFXY[0] = r.left;
+        mTempFXY[1] = r.top;
         setFinalTransitionTransform();
         float cellLayoutScale =
-                mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(layout, loc, true);
+                mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(layout, mTempFXY, true);
         resetTransitionTransform();
+        Utilities.roundArray(mTempFXY, loc);
 
         if (scale) {
             float dragViewScaleX = (1.0f * r.width()) / dragView.getMeasuredWidth();
@@ -2911,14 +2906,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 && info.user.equals(user);
         final Workspace.ItemOperator packageAndUserAndApp = (ItemInfo info, View view) ->
                 packageAndUser.evaluate(info, view) && info.itemType == ITEM_TYPE_APPLICATION;
-        final Workspace.ItemOperator packageAndUserAndShortcut = (ItemInfo info, View view) ->
-                packageAndUser.evaluate(info, view) && (info.itemType == ITEM_TYPE_SHORTCUT
-                        || info.itemType == ITEM_TYPE_DEEP_SHORTCUT);
-        final Workspace.ItemOperator packageAndUserInFolder = (info, view) -> {
+        final Workspace.ItemOperator packageAndUserAndAppInFolder = (info, view) -> {
             if (info instanceof FolderInfo) {
                 FolderInfo folderInfo = (FolderInfo) info;
                 for (WorkspaceItemInfo shortcutInfo : folderInfo.contents) {
-                    if (packageAndUser.evaluate(shortcutInfo, view)) {
+                    if (packageAndUserAndApp.evaluate(shortcutInfo, view)) {
                         return true;
                     }
                 }
@@ -2926,15 +2918,15 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             return false;
         };
 
-        // Order: App icons, shortcuts, app/shortcut in folder. Items in hotseat get returned first.
+        // Order: App icons, app in folder. Items in hotseat get returned first.
         if (ADAPTIVE_ICON_WINDOW_ANIM.get()) {
             return getFirstMatch(new CellLayout[] { getHotseat(), currentPage },
-                    packageAndUserAndApp, packageAndUserAndShortcut, packageAndUserInFolder);
+                    packageAndUserAndApp, packageAndUserAndAppInFolder);
         } else {
             // Do not use Folder as a criteria, since it'll cause a crash when trying to draw
             // FolderAdaptiveIcon as the background.
             return getFirstMatch(new CellLayout[] { getHotseat(), currentPage },
-                    packageAndUserAndApp, packageAndUserAndShortcut);
+                    packageAndUserAndApp);
         }
     }
 

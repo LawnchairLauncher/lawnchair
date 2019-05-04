@@ -19,13 +19,18 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.graphics.RectF;
 import android.view.View;
 
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.MultiValueUpdateListener;
@@ -109,8 +114,14 @@ public final class TaskViewUtils {
      */
     public static ValueAnimator getRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
             RemoteAnimationTargetCompat[] targets, final ClipAnimationHelper inOutHelper) {
+        SyncRtSurfaceTransactionApplierCompat applier =
+                new SyncRtSurfaceTransactionApplierCompat(v);
         ClipAnimationHelper.TransformParams params = new ClipAnimationHelper.TransformParams()
-                .setSyncTransactionApplier(new SyncRtSurfaceTransactionApplierCompat(v));
+                .setSyncTransactionApplier(applier);
+
+        final RemoteAnimationTargetSet targetSet =
+                new RemoteAnimationTargetSet(targets, MODE_OPENING);
+        targetSet.addDependentTransactionApplier(applier);
 
         final ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
         appAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
@@ -120,17 +131,17 @@ public final class TaskViewUtils {
             final FloatProp mViewAlpha = new FloatProp(1f, 0f, 75, 75, LINEAR);
             final FloatProp mTaskAlpha = new FloatProp(0f, 1f, 0, 75, LINEAR);
 
-            final RemoteAnimationTargetSet mTargetSet;
 
             final RectF mThumbnailRect;
 
             {
-                mTargetSet = new RemoteAnimationTargetSet(targets, MODE_OPENING);
                 inOutHelper.setTaskAlphaCallback((t, alpha) -> mTaskAlpha.value);
 
-                inOutHelper.prepareAnimation(true /* isOpening */);
+                inOutHelper.prepareAnimation(
+                        BaseActivity.fromContext(v.getContext()).getDeviceProfile(),
+                        true /* isOpening */);
                 inOutHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(),
-                        mTargetSet.apps.length == 0 ? null : mTargetSet.apps[0]);
+                        targetSet.apps.length == 0 ? null : targetSet.apps[0]);
 
                 mThumbnailRect = new RectF(inOutHelper.getTargetRect());
                 mThumbnailRect.offset(-v.getTranslationX(), -v.getTranslationY());
@@ -140,7 +151,7 @@ public final class TaskViewUtils {
             @Override
             public void onUpdate(float percent) {
                 params.setProgress(1 - percent);
-                RectF taskBounds = inOutHelper.applyTransform(mTargetSet, params);
+                RectF taskBounds = inOutHelper.applyTransform(targetSet, params);
                 if (!skipViewChanges) {
                     float scale = taskBounds.width() / mThumbnailRect.width();
                     v.setScaleX(scale);
@@ -149,6 +160,12 @@ public final class TaskViewUtils {
                     v.setTranslationY(taskBounds.centerY() - mThumbnailRect.centerY());
                     v.setAlpha(mViewAlpha.value);
                 }
+            }
+        });
+        appAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                targetSet.release();
             }
         });
         return appAnimator;
