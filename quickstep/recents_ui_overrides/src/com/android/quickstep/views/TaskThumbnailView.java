@@ -51,7 +51,6 @@ import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.quickstep.util.TaskCornerRadius;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
-import com.android.systemui.shared.system.QuickStepContract;
 
 /**
  * A task in the Recents view.
@@ -60,6 +59,7 @@ public class TaskThumbnailView extends View {
 
     private final static ColorMatrix COLOR_MATRIX = new ColorMatrix();
     private final static ColorMatrix SATURATION_COLOR_MATRIX = new ColorMatrix();
+    private final static Rect EMPTY_RECT = new Rect();
 
     public static final Property<TaskThumbnailView, Float> DIM_ALPHA =
             new FloatProperty<TaskThumbnailView>("dimAlpha") {
@@ -79,16 +79,17 @@ public class TaskThumbnailView extends View {
     private final BaseActivity mActivity;
     private final TaskOverlay mOverlay;
     private final boolean mIsDarkTextTheme;
-    private final Paint mPaint = new Paint();
-    private final Paint mBackgroundPaint = new Paint();
+    private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mClearPaint = new Paint();
     private final Paint mDimmingPaintAfterClearing = new Paint();
-    private final float mWindowCornerRadius;
 
     private final Matrix mMatrix = new Matrix();
 
     private float mClipBottom = -1;
     private Rect mScaledInsets = new Rect();
+    private Rect mCurrentDrawnInsets = new Rect();
+    private float mCurrentDrawnCornerRadius;
     private boolean mIsRotated;
 
     private Task mTask;
@@ -117,7 +118,7 @@ public class TaskThumbnailView extends View {
         mDimmingPaintAfterClearing.setColor(Color.BLACK);
         mActivity = BaseActivity.fromContext(context);
         mIsDarkTextTheme = Themes.getAttrBoolean(mActivity, R.attr.isWorkspaceDarkText);
-        mWindowCornerRadius = QuickStepContract.getWindowCornerRadius(context.getResources());
+        setCurrentDrawnInsetsAndRadius(EMPTY_RECT, mCornerRadius);
     }
 
     public void bind(Task task) {
@@ -200,25 +201,24 @@ public class TaskThumbnailView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        TaskView taskView = (TaskView) getParent();
-        float fullscreenProgress = taskView.getFullscreenProgress();
-        if (mIsRotated) {
-            // Don't show insets in the wrong orientation.
-            fullscreenProgress = 0;
-        }
-        if (fullscreenProgress > 0) {
-            // Draw the insets if we're being drawn fullscreen (we do this for quick switch).
-            float cornerRadius = Utilities.mapRange(fullscreenProgress, mCornerRadius,
-                    mWindowCornerRadius);
-            drawOnCanvas(canvas,
-                    -mScaledInsets.left * fullscreenProgress,
-                    -mScaledInsets.top * fullscreenProgress,
-                    getMeasuredWidth() + mScaledInsets.right * fullscreenProgress,
-                    getMeasuredHeight() + mScaledInsets.bottom * fullscreenProgress,
-                    cornerRadius / taskView.getRecentsView().getScaleX());
-        } else {
-            drawOnCanvas(canvas, 0, 0, getMeasuredWidth(), getMeasuredHeight(), mCornerRadius);
-        }
+        // Draw the insets if we're being drawn fullscreen (we do this for quick switch).
+        drawOnCanvas(canvas,
+                -mCurrentDrawnInsets.left,
+                -mCurrentDrawnInsets.top,
+                getMeasuredWidth() + mCurrentDrawnInsets.right,
+                getMeasuredHeight() + mCurrentDrawnInsets.bottom,
+                mCurrentDrawnCornerRadius);
+    }
+
+    public Rect getInsetsToDrawInFullscreen(boolean isMultiWindowMode) {
+        // Don't show insets in the wrong orientation or in multi window mode.
+        return mIsRotated || isMultiWindowMode ? EMPTY_RECT : mScaledInsets;
+    }
+
+    public void setCurrentDrawnInsetsAndRadius(Rect insets, float radius) {
+        mCurrentDrawnInsets.set(insets);
+        mCurrentDrawnCornerRadius = radius;
+        invalidate();
     }
 
     public float getCornerRadius() {

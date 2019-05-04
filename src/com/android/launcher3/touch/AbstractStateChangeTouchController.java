@@ -233,11 +233,6 @@ public abstract class AbstractStateChangeTouchController
 
     @Override
     public void onDragStart(boolean start) {
-        if (com.android.launcher3.TestProtocol.sDebugTracing) {
-            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
-                    "AbstractStateChangeTouchController.onDragStart() called with: start = [" +
-                            start + "]");
-        }
         mStartState = mLauncher.getStateManager().getState();
         if (mStartState == ALL_APPS) {
             mStartContainerType = LauncherLogProto.ContainerType.ALLAPPS;
@@ -269,11 +264,6 @@ public abstract class AbstractStateChangeTouchController
     public boolean onDrag(float displacement) {
         float deltaProgress = mProgressMultiplier * (displacement - mDisplacementShift);
         float progress = deltaProgress + mStartProgress;
-        if (com.android.launcher3.TestProtocol.sDebugTracing) {
-            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
-                    "AbstractStateChangeTouchController.onDrag() called with: displacement = [" +
-                            displacement + "], progress = [" + progress + "]");
-        }
         updateProgress(progress);
         boolean isDragTowardPositive = mSwipeDirection.isPositive(
                 displacement - mDisplacementShift);
@@ -392,12 +382,6 @@ public abstract class AbstractStateChangeTouchController
             float successProgress = mToState == ALL_APPS
                     ? MIN_PROGRESS_TO_ALL_APPS : SUCCESS_TRANSITION_PROGRESS;
             targetState = (interpolatedProgress > successProgress) ? mToState : mFromState;
-        }
-        if (com.android.launcher3.TestProtocol.sDebugTracing) {
-            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
-                    "AbstractStateChangeTouchController.onDragEnd() called with: velocity = [" +
-                            velocity + "], fling = [" + fling + "], target state: " +
-                            targetState.getClass().getSimpleName());
         }
 
         final float endProgress;

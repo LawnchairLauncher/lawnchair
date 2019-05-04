@@ -23,15 +23,15 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.FloatProperty;
 
+import androidx.dynamicanimation.animation.DynamicAnimation.OnAnimationEndListener;
+import androidx.dynamicanimation.animation.FloatPropertyCompat;
+
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.FlingSpringAnim;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.dynamicanimation.animation.DynamicAnimation.OnAnimationEndListener;
-import androidx.dynamicanimation.animation.FloatPropertyCompat;
 
 /**
  * Applies spring forces to animate from a starting rect to a target rect,
@@ -98,6 +98,10 @@ public class RectFSpringAnim {
     private float mCurrentCenterX;
     private float mCurrentCenterY;
     private float mCurrentScaleProgress;
+    private FlingSpringAnim mRectXAnim;
+    private FlingSpringAnim mRectYAnim;
+    private ValueAnimator mRectScaleAnim;
+    private boolean mAnimsStarted;
     private boolean mRectXAnimEnded;
     private boolean mRectYAnimEnded;
     private boolean mRectScaleAnimEnded;
@@ -127,15 +131,15 @@ public class RectFSpringAnim {
             mRectYAnimEnded = true;
             maybeOnEnd();
         });
-        FlingSpringAnim rectXAnim = new FlingSpringAnim(this, RECT_CENTER_X, mCurrentCenterX,
+        mRectXAnim = new FlingSpringAnim(this, RECT_CENTER_X, mCurrentCenterX,
                 mTargetRect.centerX(), velocityPxPerMs.x * 1000, onXEndListener);
-        FlingSpringAnim rectYAnim = new FlingSpringAnim(this, RECT_CENTER_Y, mCurrentCenterY,
+        mRectYAnim = new FlingSpringAnim(this, RECT_CENTER_Y, mCurrentCenterY,
                 mTargetRect.centerY(), velocityPxPerMs.y * 1000, onYEndListener);
 
-        ValueAnimator rectScaleAnim = ObjectAnimator.ofPropertyValuesHolder(this,
+        mRectScaleAnim = ObjectAnimator.ofPropertyValuesHolder(this,
                 PropertyValuesHolder.ofFloat(RECT_SCALE_PROGRESS, 1))
                 .setDuration(RECT_SCALE_DURATION);
-        rectScaleAnim.addListener(new AnimationSuccessListener() {
+        mRectScaleAnim.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationSuccess(Animator animator) {
                 mRectScaleAnimEnded = true;
@@ -143,11 +147,20 @@ public class RectFSpringAnim {
             }
         });
 
-        rectXAnim.start();
-        rectYAnim.start();
-        rectScaleAnim.start();
+        mRectXAnim.start();
+        mRectYAnim.start();
+        mRectScaleAnim.start();
+        mAnimsStarted = true;
         for (Animator.AnimatorListener animatorListener : mAnimatorListeners) {
             animatorListener.onAnimationStart(null);
+        }
+    }
+
+    public void end() {
+        if (mAnimsStarted) {
+            mRectXAnim.end();
+            mRectYAnim.end();
+            mRectScaleAnim.end();
         }
     }
 
@@ -166,7 +179,8 @@ public class RectFSpringAnim {
     }
 
     private void maybeOnEnd() {
-        if (mRectXAnimEnded && mRectYAnimEnded && mRectScaleAnimEnded) {
+        if (mAnimsStarted && mRectXAnimEnded && mRectYAnimEnded && mRectScaleAnimEnded) {
+            mAnimsStarted = false;
             for (Animator.AnimatorListener animatorListener : mAnimatorListeners) {
                 animatorListener.onAnimationEnd(null);
             }

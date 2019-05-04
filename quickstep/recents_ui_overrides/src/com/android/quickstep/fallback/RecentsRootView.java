@@ -17,18 +17,13 @@ package com.android.quickstep.fallback;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Insets;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.ViewDebug;
 import android.view.WindowInsets;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
@@ -38,9 +33,6 @@ public class RecentsRootView extends BaseDragLayer<RecentsActivity> {
 
     private static final int MIN_SIZE = 10;
     private final RecentsActivity mActivity;
-
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private final RectF mTouchExcludeRegion = new RectF();
 
     private final Point mLastKnownSize = new Point(MIN_SIZE, MIN_SIZE);
 
@@ -100,26 +92,7 @@ public class RecentsRootView extends BaseDragLayer<RecentsActivity> {
 
     @Override
     public WindowInsets dispatchApplyWindowInsets(WindowInsets insets) {
-        if (Utilities.ATLEAST_Q) {
-            Insets gestureInsets = insets.getMandatorySystemGestureInsets();
-            mTouchExcludeRegion.set(gestureInsets.left, gestureInsets.top,
-                    gestureInsets.right, gestureInsets.bottom);
-        }
+        updateTouchExcludeRegion(insets);
         return super.dispatchApplyWindowInsets(insets);
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            float x = ev.getX();
-            float y = ev.getY();
-            if (y < mTouchExcludeRegion.top
-                    || x < mTouchExcludeRegion.left
-                    || x > (getWidth() - mTouchExcludeRegion.right)
-                    || y > (getHeight() - mTouchExcludeRegion.bottom)) {
-                return false;
-            }
-        }
-        return super.dispatchTouchEvent(ev);
     }
 }

@@ -20,15 +20,17 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_INPUT_MONITOR;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NAV_BAR_HIDDEN;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.KeyguardManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -44,6 +46,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Process;
 import android.os.RemoteException;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Choreographer;
 import android.view.Display;
@@ -53,6 +56,7 @@ import android.view.Surface;
 import android.view.WindowManager;
 
 import com.android.launcher3.MainThreadExecutor;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.logging.EventLogArray;
@@ -67,9 +71,8 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
-
-import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
+
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -78,7 +81,7 @@ import java.util.List;
 /**
  * Service connected by system-UI for handling touch interaction.
  */
-@TargetApi(Build.VERSION_CODES.O)
+@TargetApi(Build.VERSION_CODES.Q)
 public class TouchInteractionService extends Service implements
         NavigationModeChangeListener, DisplayListener {
 
@@ -229,6 +232,7 @@ public class TouchInteractionService extends Service implements
     private Mode mMode = Mode.THREE_BUTTONS;
     private int mDefaultDisplayId;
     private final RectF mSwipeTouchRegion = new RectF();
+    private ComponentName mGestureBlockingActivity;
 
     @Override
     public void onCreate() {
@@ -250,6 +254,10 @@ public class TouchInteractionService extends Service implements
 
         mDefaultDisplayId = getSystemService(WindowManager.class).getDefaultDisplay()
                 .getDisplayId();
+
+        String blockingActivity = getString(R.string.gesture_blocking_activity);
+        mGestureBlockingActivity = TextUtils.isEmpty(blockingActivity) ? null :
+                ComponentName.unflattenFromString(blockingActivity);
         sConnected = true;
     }
 
@@ -435,9 +443,9 @@ public class TouchInteractionService extends Service implements
     }
 
     private boolean isInValidSystemUiState() {
-        return (mSystemUiStateFlags & SYSUI_STATE_SCREEN_PINNING) == 0
-                && (mSystemUiStateFlags & SYSUI_STATE_NAV_BAR_HIDDEN) == 0
-                && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0;
+        return (mSystemUiStateFlags & SYSUI_STATE_NAV_BAR_HIDDEN) == 0
+                && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0
+                && !ActivityManagerWrapper.getInstance().isLockToAppActive();
     }
 
     private InputConsumer newConsumer(boolean useSharedState, MotionEvent event) {
@@ -456,25 +464,35 @@ public class TouchInteractionService extends Service implements
         final ActivityControlHelper activityControl =
                 mOverviewComponentObserver.getActivityControlHelper();
 
+        InputConsumer base;
         if (runningTaskInfo == null && !mSwipeSharedState.goingToLauncher) {
-            return InputConsumer.NO_OP;
-        } else if (mAssistantAvailable
-                && SysUINavigationMode.INSTANCE.get(this).getMode() == Mode.NO_BUTTON
-                && AssistantTouchConsumer.withinTouchRegion(this, event)) {
-
-            boolean addDelegate = !activityControl.isResumed();
-            return new AssistantTouchConsumer(this, mISystemUiProxy, addDelegate ?
-                    createOtherActivityInputConsumer(event, runningTaskInfo) : null,
-                    mInputMonitorCompat, activityControl);
-
+            base = InputConsumer.NO_OP;
         } else if (mSwipeSharedState.goingToLauncher || activityControl.isResumed()) {
-            return OverviewInputConsumer.newInstance(activityControl, false);
+            base = OverviewInputConsumer.newInstance(activityControl, mInputMonitorCompat, false);
         } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() &&
                 activityControl.isInLiveTileMode()) {
-            return OverviewInputConsumer.newInstance(activityControl, false);
+            base = OverviewInputConsumer.newInstance(activityControl, mInputMonitorCompat, false);
+        } else if (mGestureBlockingActivity != null && runningTaskInfo != null
+                && mGestureBlockingActivity.equals(runningTaskInfo.topActivity)) {
+            base = InputConsumer.NO_OP;
         } else {
-            return createOtherActivityInputConsumer(event, runningTaskInfo);
+            base = createOtherActivityInputConsumer(event, runningTaskInfo);
         }
+
+        if (mMode == Mode.NO_BUTTON) {
+            if (mAssistantAvailable && AssistantTouchConsumer.withinTouchRegion(this, event)) {
+                base = new AssistantTouchConsumer(this, mISystemUiProxy, activityControl, base,
+                        mInputMonitorCompat);
+            }
+
+            if ((mSystemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_CLICKABLE) != 0) {
+                base = new AccessibilityInputConsumer(this, mISystemUiProxy,
+                        (mSystemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE) != 0, base,
+                        mInputMonitorCompat);
+            }
+        }
+
+        return base;
     }
 
     private OtherActivityInputConsumer createOtherActivityInputConsumer(MotionEvent event,
@@ -484,8 +502,8 @@ public class TouchInteractionService extends Service implements
         boolean shouldDefer = activityControl.deferStartingActivity(mActiveNavBarRegion, event);
         return new OtherActivityInputConsumer(this, runningTaskInfo, mRecentsModel,
                 mOverviewComponentObserver.getOverviewIntent(), activityControl,
-                shouldDefer, mOverviewCallbacks, mTaskOverlayFactory, mInputConsumer,
-                this::onConsumerInactive, mSwipeSharedState, mInputMonitorCompat);
+                shouldDefer, mOverviewCallbacks, mInputConsumer, this::onConsumerInactive,
+                mSwipeSharedState, mInputMonitorCompat);
     }
 
     /**

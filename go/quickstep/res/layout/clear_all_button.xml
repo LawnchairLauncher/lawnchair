@@ -14,22 +14,20 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.quickstep.views.ClearAllItemView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/clear_all_item_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="@dimen/clear_all_item_view_height">
     <Button
         android:id="@+id/clear_all_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="16dp"
+        android:layout_width="@dimen/clear_all_button_width"
+        android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:paddingHorizontal="32dp"
         android:background="@drawable/clear_all_button"
         android:gravity="center"
         android:text="@string/recents_clear_all"
         android:textAllCaps="false"
         android:textColor="@color/clear_all_button_text"
         android:textSize="14sp"/>
-</com.android.quickstep.views.ClearAllItemView>
+</FrameLayout>

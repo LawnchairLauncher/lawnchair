@@ -110,6 +110,10 @@ abstract class BaseFlags {
             "ENABLE_HINTS_IN_OVERVIEW", false,
             "Show chip hints and gleams on the overview screen");
 
+    public static final TogglableFlag FAKE_LANDSCAPE_UI = new TogglableFlag(
+            "FAKE_LANDSCAPE_UI", false,
+            "Rotate launcher UI instead of using transposed layout");
+
     public static void initialize(Context context) {
         // Avoid the disk read for user builds
         if (Utilities.IS_DEBUG_DEVICE) {

@@ -53,6 +53,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -71,6 +72,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
@@ -93,6 +95,7 @@ import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.FolderIconPreviewVerifier;
+import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.keyboard.CustomActionsPopup;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
@@ -272,6 +275,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     private float mCurrentAssistantVisibility = 0f;
 
+    private DeviceProfile mStableDeviceProfile;
+    private RotationMode mRotationMode = RotationMode.NORMAL;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         RaceConditionTracker.onEvent(ON_CREATE_EVT, ENTER);
@@ -390,6 +396,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 }
             }
         });
+
+        if (FeatureFlags.FAKE_LANDSCAPE_UI.get()) {
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            lp.rotationAnimation = WindowManager.LayoutParams.ROTATION_ANIMATION_SEAMLESS;
+            getWindow().setAttributes(lp);
+        }
     }
 
     @Override
@@ -418,6 +430,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void reapplyUi() {
+        if (FeatureFlags.FAKE_LANDSCAPE_UI.get()) {
+            mRotationMode = mStableDeviceProfile == null ? RotationMode.NORMAL :
+                    (mDeviceProfile.isSeascape() ? RotationMode.SEASCAPE : RotationMode.LANDSCAPE);
+        }
         getRootView().dispatchInsets();
         getStateManager().reapplyState(true /* cancelCurrentAnimation */);
     }
@@ -469,8 +485,41 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             display.getSize(mwSize);
             mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
         }
+
+        if (FeatureFlags.FAKE_LANDSCAPE_UI.get() && mDeviceProfile.isVerticalBarLayout()
+                && !mDeviceProfile.isMultiWindowMode) {
+            mStableDeviceProfile = mDeviceProfile.inv.portraitProfile;
+            mRotationMode = mDeviceProfile.isSeascape()
+                    ? RotationMode.SEASCAPE : RotationMode.LANDSCAPE;
+        } else {
+            mStableDeviceProfile = null;
+            mRotationMode = RotationMode.NORMAL;
+        }
+
         onDeviceProfileInitiated();
-        mModelWriter = mModel.getWriter(mDeviceProfile.isVerticalBarLayout(), true);
+        mModelWriter = mModel.getWriter(getWallpaperDeviceProfile().isVerticalBarLayout(), true);
+    }
+
+    public void updateInsets(Rect insets) {
+        mDeviceProfile.updateInsets(insets);
+        if (mStableDeviceProfile != null) {
+            mStableDeviceProfile.updateInsets(insets);
+        }
+    }
+
+    @Override
+    public RotationMode getRotationMode() {
+        return mRotationMode;
+    }
+
+    /**
+     * Device profile to be used by UI elements which are shown directly on top of the wallpaper
+     * and whose presentation is tied to the wallpaper (and physical device) and not the activity
+     * configuration.
+     */
+    @Override
+    public DeviceProfile getWallpaperDeviceProfile() {
+        return mStableDeviceProfile == null ? mDeviceProfile : mStableDeviceProfile;
     }
 
     public RotationHelper getRotationHelper() {
@@ -879,7 +928,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         super.onPause();
         mDragController.cancelDrag();
         mDragController.resetLastGestureUpTime();
-
+        mDropTargetBar.animateToVisibility(false);
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onPause();
         }
@@ -1812,7 +1861,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mAppWidgetHost.clearViews();
 
         if (mHotseat != null) {
-            mHotseat.resetLayout(mDeviceProfile.isVerticalBarLayout());
+            mHotseat.resetLayout(getWallpaperDeviceProfile().isVerticalBarLayout());
         }
         TraceHelper.endSection("startBinding");
     }
