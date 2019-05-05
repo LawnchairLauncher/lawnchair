@@ -189,11 +189,11 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     }
 
     private fun rebuildColors() {
-        val hasDockBackground = !prefs.dockGradientStyle
-        val hasRecents = Utilities.isRecentsEnabled()
-
         val homeProgress = LauncherState.NORMAL.getScrimProgress(mLauncher)
         val recentsProgress = LauncherState.OVERVIEW.getScrimProgress(mLauncher)
+
+        val hasDockBackground = !prefs.dockGradientStyle
+        val hasRecents = Utilities.isRecentsEnabled() && recentsProgress < 1f
 
         val alphas = ArrayList<Pair<Float, Int>>()
         alphas.add(Pair(Float.NEGATIVE_INFINITY, mEndAlpha))
@@ -208,7 +208,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             }
         } else if (hasDockBackground) {
             alphas.add(Pair(homeProgress, midAlpha))
-        } else {
+        } else if (hasRecents) {
             alphas.add(Pair(recentsProgress, super.getMidAlpha()))
         }
         alphas.add(Pair(1f, 0))
