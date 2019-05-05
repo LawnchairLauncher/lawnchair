@@ -47,6 +47,7 @@ class LawnchairApp : Application() {
     var accessibilityService: LawnchairAccessibilityService? = null
 
     init {
+        d("Hidden APIs allowed: ${Utilities.HIDDEN_APIS_ALLOWED}")
         Thread.setDefaultUncaughtExceptionHandler(bugReporter)
         registerActivityLifecycleCallbacks(activityHandler)
     }

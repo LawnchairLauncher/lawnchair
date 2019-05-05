@@ -149,7 +149,7 @@ public final class Utilities {
     public static final boolean ATLEAST_LOLLIPOP_MR1 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1;
 
-    public static boolean HIDDEN_APIS_ALLOWED = !ATLEAST_P || HiddenApiCompat.tryAccess();
+    public static boolean HIDDEN_APIS_ALLOWED = !ATLEAST_P || HiddenApiCompat.checkIfAllowed();
 
     public static final int SINGLE_FRAME_MS = 16;
 
