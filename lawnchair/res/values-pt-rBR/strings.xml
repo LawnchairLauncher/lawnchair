@@ -12,7 +12,7 @@
     <string name="customize">Personalizar</string>
     <string name="smartspace_preferences_in_settings">Resumo</string>
     <string name="smartspace_preferences_in_settings_desc">Data, hora, fonte do clima</string>
-    <string name="search">Busca</string>
+    <string name="search">Pesquisa</string>
     <string name="label_voice_search">Pesquisa por voz</string>
     <string name="icon_pack">Pacote de ícones</string>
     <string name="home_widget">Widget da tela principal</string>
