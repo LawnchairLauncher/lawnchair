@@ -39,13 +39,9 @@
             launcher:pageIndicator="@+id/page_indicator" />
 
         <!-- DO NOT CHANGE THE ID -->
-        <com.android.launcher3.Hotseat
+        <include
             android:id="@+id/hotseat"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:theme="@style/HomeScreenElementTheme"
-            android:importantForAccessibility="no"
-            launcher:containerType="hotseat" />
+            layout="@layout/hotseat" />
 
         <include
             android:id="@+id/overview_panel"
