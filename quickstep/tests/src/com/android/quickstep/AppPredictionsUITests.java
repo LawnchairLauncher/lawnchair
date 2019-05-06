@@ -40,7 +40,6 @@ import com.android.launcher3.model.AppLaunchTracker;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -70,6 +69,8 @@ public class AppPredictionsUITests extends AbstractQuickStepTest {
         // Disable app tracker
         AppLaunchTracker.INSTANCE.initializeForTesting(new AppLaunchTracker());
 
+        PredictionUiStateManager.INSTANCE.initializeForTesting(null);
+
         mCallback = PredictionUiStateManager.INSTANCE.get(mTargetContext).appPredictorCallback(
                 Client.HOME);
 
@@ -85,7 +86,6 @@ public class AppPredictionsUITests extends AbstractQuickStepTest {
      * Test that prediction UI is updated as soon as we get predictions from the system
      */
     @Test
-    @Ignore // b/131772711: this really fails (when being run as a part of the whole test suite)!
     public void testPredictionExistsInAllApps() {
         mActivityMonitor.startLauncher();
         mLauncher.pressHome().switchToAllApps();
@@ -118,7 +118,6 @@ public class AppPredictionsUITests extends AbstractQuickStepTest {
     }
 
     @Test
-    @Ignore // b/131772711 - this was failing in the lab
     public void testPredictionsDisabled() {
         mActivityMonitor.startLauncher();
         sendPredictionUpdate();
