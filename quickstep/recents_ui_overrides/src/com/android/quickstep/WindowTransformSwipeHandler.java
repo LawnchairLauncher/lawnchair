@@ -256,7 +256,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private AnimationFactory mAnimationFactory = (t) -> { };
     private LiveTileOverlay mLiveTileOverlay = new LiveTileOverlay();
 
+    private boolean mCanceled;
     private boolean mWasLauncherAlreadyVisible;
+    private int mFinishingRecentsAnimationForNewTaskId = -1;
 
     private boolean mPassedOverviewThreshold;
     private boolean mGestureStarted;
@@ -412,7 +414,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             mRecentsAnimationWrapper.runOnInit(() ->
                     mRecentsAnimationWrapper.targetSet.addDependentTransactionApplier(applier));
             });
-        mRecentsView.setEnableFreeScroll(false);
 
         mRecentsView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             if (mGestureEndTarget != HOME) {
@@ -500,10 +501,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         if (mContinuingLastGesture) {
             return;
         }
-        mRecentsView.setEnableDrawingLiveTile(false);
-        mRecentsView.showTask(mRunningTaskId);
-        mRecentsView.setRunningTaskHidden(true);
-        mRecentsView.setRunningTaskIconScaledDown(true);
+        mRecentsView.onGestureAnimationStart(mRunningTaskId);
     }
 
     private void launcherFrameDrawn() {
@@ -679,7 +677,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         int runningTaskIndex = mRecentsView == null ? -1 : mRecentsView.getRunningTaskIndex();
         if (runningTaskIndex >= 0) {
             for (int i = 0; i < mRecentsView.getTaskViewCount(); i++) {
-                if (i != runningTaskIndex) {
+                if (i != runningTaskIndex || !mRecentsAnimationWrapper.hasTargets()) {
                     mRecentsView.getTaskViewAt(i).setFullscreenProgress(1 - mCurrentShift.value);
                 }
             }
@@ -838,9 +836,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         Interpolator interpolator = DEACCEL;
         final boolean goingToNewTask;
         if (mRecentsView != null) {
-            final int runningTaskIndex = mRecentsView.getRunningTaskIndex();
-            final int taskToLaunch = mRecentsView.getNextPage();
-            goingToNewTask = runningTaskIndex >= 0 && taskToLaunch != runningTaskIndex;
+            if (!mRecentsAnimationWrapper.hasTargets()) {
+                // If there are no running tasks, then we can assume that this is a continuation of
+                // the last gesture, but after the recents animation has finished
+                goingToNewTask = true;
+            } else {
+                final int runningTaskIndex = mRecentsView.getRunningTaskIndex();
+                final int taskToLaunch = mRecentsView.getNextPage();
+                goingToNewTask = runningTaskIndex >= 0 && taskToLaunch != runningTaskIndex;
+            }
         } else {
             goingToNewTask = false;
         }
@@ -1124,14 +1128,22 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             mRecentsView.getTaskViewAt(mRecentsView.getNextPage()).launchTask(false /* animate */,
                     true /* freezeTaskList */);
         } else {
+            int taskId = mRecentsView.getTaskViewAt(mRecentsView.getNextPage()).getTask().key.id;
+            mFinishingRecentsAnimationForNewTaskId = taskId;
             mRecentsAnimationWrapper.finish(true /* toRecents */, () -> {
-                mRecentsView.getTaskViewAt(mRecentsView.getNextPage()).launchTask(
-                        false /* animate */, true /* freezeTaskList */);
+                if (!mCanceled) {
+                    TaskView nextTask = mRecentsView.getTaskView(taskId);
+                    if (nextTask != null) {
+                        nextTask.launchTask(false /* animate */, true /* freezeTaskList */);
+                        doLogGesture(NEW_TASK);
+                    }
+                    reset();
+                }
+                mCanceled = false;
+                mFinishingRecentsAnimationForNewTaskId = -1;
             });
         }
         TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", true);
-        doLogGesture(NEW_TASK);
-        reset();
     }
 
     public void reset() {
@@ -1142,11 +1154,25 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
      * Cancels any running animation so that the active target can be overriden by a new swipe
      * handle (in case of quick switch).
      */
-    public void cancelCurrentAnimation() {
+    public void cancelCurrentAnimation(SwipeSharedState sharedState) {
+        mCanceled = true;
         mCurrentShift.cancelAnimation();
         if (mLauncherTransitionController != null && mLauncherTransitionController
                 .getAnimationPlayer().isStarted()) {
             mLauncherTransitionController.getAnimationPlayer().cancel();
+        }
+
+        if (mFinishingRecentsAnimationForNewTaskId != -1) {
+            // If we are canceling mid-starting a new task, switch to the screenshot since the
+            // recents animation has finished
+            switchToScreenshot();
+            TaskView newRunningTaskView = mRecentsView.getTaskView(
+                    mFinishingRecentsAnimationForNewTaskId);
+            int newRunningTaskId = newRunningTaskView != null
+                    ? newRunningTaskView.getTask().key.id
+                    : -1;
+            mRecentsView.setCurrentTask(newRunningTaskId);
+            sharedState.setRecentsAnimationFinishInterrupted(newRunningTaskId);
         }
     }
 
@@ -1169,11 +1195,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             mLauncherTransitionController = null;
         }
 
-        mRecentsView.setEnableFreeScroll(true);
-        mRecentsView.setRunningTaskIconScaledDown(false);
-        mRecentsView.setOnScrollChangeListener(null);
-        mRecentsView.setRunningTaskHidden(false);
-        mRecentsView.setEnableDrawingLiveTile(true);
+        mRecentsView.onGestureAnimationEnd();
 
         mActivity.getRootView().setOnApplyWindowInsetsListener(null);
         mActivity.getRootView().getOverlay().remove(mLiveTileOverlay);
@@ -1193,6 +1215,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private void switchToScreenshot() {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
+        } else if (!mRecentsAnimationWrapper.hasTargets()) {
+            // If there are no targets, then we don't need to capture anything
             setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
         } else {
             boolean finishTransitionPosted = false;
@@ -1241,6 +1266,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private void finishCurrentTransitionToRecents() {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
+        } else if (!mRecentsAnimationWrapper.hasTargets()) {
+            // If there are no targets, then there is nothing to finish
+            setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
         } else {
             synchronized (mRecentsAnimationWrapper) {
                 mRecentsAnimationWrapper.finish(true /* toRecents */,
@@ -1267,10 +1295,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         }
         mActivityControlHelper.onSwipeUpComplete(mActivity);
         mRecentsAnimationWrapper.setCancelWithDeferredScreenshot(true);
-
-        // Animate the first icon.
-        mRecentsView.animateUpRunningTaskIconScale(mLiveTileOverlay.cancelIconAnimation());
-        mRecentsView.setSwipeDownShouldLaunchApp(true);
+        mRecentsView.onSwipeUpAnimationSuccess();
 
         RecentsModel.INSTANCE.get(mContext).onOverviewShown(false, TAG);
 

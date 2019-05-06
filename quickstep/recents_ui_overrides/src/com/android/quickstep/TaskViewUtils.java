@@ -150,6 +150,7 @@ public final class TaskViewUtils {
 
             @Override
             public void onUpdate(float percent) {
+                // TODO: Take into account the current fullscreen progress for animating the insets
                 params.setProgress(1 - percent);
                 RectF taskBounds = inOutHelper.applyTransform(targetSet, params);
                 if (!skipViewChanges) {

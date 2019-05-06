@@ -53,6 +53,20 @@ public class SwipeAnimationTargetSet extends RemoteAnimationTargetSet {
         this.mOnFinishListener = onFinishListener;
     }
 
+    public boolean hasTargets() {
+        return unfilteredApps.length != 0;
+    }
+
+    /**
+     * Clones the target set without any actual targets. Used only when continuing a gesture after
+     * the actual recents animation has finished.
+     */
+    public SwipeAnimationTargetSet cloneWithoutTargets() {
+        return new SwipeAnimationTargetSet(controller, new RemoteAnimationTargetCompat[0],
+                homeContentInsets, minimizedHomeBounds, mShouldMinimizeSplitScreen,
+                mOnFinishListener);
+    }
+
     public void finishController(boolean toRecents, Runnable callback, boolean sendUserLeaveHint) {
         mOnFinishListener.accept(this);
         BACKGROUND_EXECUTOR.execute(() -> {

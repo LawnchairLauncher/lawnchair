@@ -26,6 +26,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_N
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.KeyguardManager;
 import android.app.Service;
@@ -456,7 +457,7 @@ public class TouchInteractionService extends Service implements
             return new DeviceLockedInputConsumer(this);
         }
 
-        RunningTaskInfo runningTaskInfo = mAM.getRunningTask(0);
+        final RunningTaskInfo runningTaskInfo = mAM.getRunningTask(0);
         if (!useSharedState) {
             mSwipeSharedState.clearAllState();
         }
@@ -465,8 +466,15 @@ public class TouchInteractionService extends Service implements
                 mOverviewComponentObserver.getActivityControlHelper();
 
         InputConsumer base;
-        if (runningTaskInfo == null && !mSwipeSharedState.goingToLauncher) {
+        if (runningTaskInfo == null && !mSwipeSharedState.goingToLauncher
+                && !mSwipeSharedState.recentsAnimationFinishInterrupted) {
             base = InputConsumer.NO_OP;
+        } else if (mSwipeSharedState.recentsAnimationFinishInterrupted) {
+            // If the finish animation was interrupted, then continue using the other activity input
+            // consumer but with the next task as the running task
+            RunningTaskInfo info = new ActivityManager.RunningTaskInfo();
+            info.id = mSwipeSharedState.nextRunningTaskId;
+            base = createOtherActivityInputConsumer(event, info);
         } else if (mSwipeSharedState.goingToLauncher || activityControl.isResumed()) {
             base = OverviewInputConsumer.newInstance(activityControl, mInputMonitorCompat, false);
         } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() &&
