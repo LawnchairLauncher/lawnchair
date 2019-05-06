@@ -27,6 +27,7 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TI
 import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
+import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState.HIDE;
 import static com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState.PEEK;
@@ -654,8 +655,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             mTransformParams.setProgress(shift).setOffsetX(offsetX).setOffsetScale(offsetScale);
             mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet,
                     mTransformParams);
-            mRecentsAnimationWrapper.setWindowThresholdCrossed(
-                    shift > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD);
+            updateSysUiFlags(shift);
         }
 
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
@@ -698,6 +698,18 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         mLauncherTransitionController.setPlayFraction(
                 progress <= mShiftAtGestureStart || mShiftAtGestureStart >= 1
                         ? 0 : (progress - mShiftAtGestureStart) / (1 - mShiftAtGestureStart));
+    }
+
+    private void updateSysUiFlags(float windowProgress) {
+        if (mRecentsView != null) {
+            // We will handle the sysui flags based on the centermost task view.
+            mRecentsAnimationWrapper.setWindowThresholdCrossed(true);
+            int sysuiFlags = windowProgress > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD
+                    ? 0
+                    : mRecentsView.getTaskViewAt(mRecentsView.getPageNearestToCenterOfScreen())
+                            .getThumbnail().getSysUiStatusNavFlags();
+            mActivity.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, sysuiFlags);
+        }
     }
 
     @Override
@@ -1091,6 +1103,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                         windowAlphaThreshold, mClipAnimationHelper.getCurrentCornerRadius(), false);
             }
 
+            updateSysUiFlags(Math.max(progress, mCurrentShift.value));
         });
         anim.addAnimatorListener(new AnimationSuccessListener() {
             @Override
