@@ -132,7 +132,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     private final DragLayer mDragLayer;
     private final AlphaProperty mDragLayerAlpha;
 
-    private final Handler mHandler;
+    final Handler mHandler;
     private final boolean mIsRtl;
 
     private final float mContentTransY;
@@ -573,70 +573,9 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
      * @return Runner that plays when user goes to Launcher
      *         ie. pressing home, swiping up from nav bar.
      */
-    private RemoteAnimationRunnerCompat getWallpaperOpenRunner(boolean fromUnlock) {
-        return new LauncherAnimationRunner(mHandler, false /* startAtFrontOfQueue */) {
-            @Override
-            public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
-                    AnimationResult result) {
-                if (!mLauncher.hasBeenResumed()) {
-                    // If launcher is not resumed, wait until new async-frame after resume
-                    mLauncher.setOnResumeCallback(() ->
-                            postAsyncCallback(mHandler, () ->
-                                    onCreateAnimation(targetCompats, result)));
-                    return;
-                }
-
-                if (mLauncher.hasSomeInvisibleFlag(PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION)) {
-                    mLauncher.addForceInvisibleFlag(INVISIBLE_BY_PENDING_FLAGS);
-                    mLauncher.getStateManager().moveToRestState();
-                }
-
-                AnimatorSet anim = null;
-                RemoteAnimationProvider provider = mRemoteAnimationProvider;
-                if (provider != null) {
-                    anim = provider.createWindowAnimation(targetCompats);
-                }
-
-                if (anim == null) {
-                    anim = new AnimatorSet();
-                    anim.play(fromUnlock
-                            ? getUnlockWindowAnimator(targetCompats)
-                            : getClosingWindowAnimators(targetCompats));
-
-                    // Normally, we run the launcher content animation when we are transitioning
-                    // home, but if home is already visible, then we don't want to animate the
-                    // contents of launcher unless we know that we are animating home as a result
-                    // of the home button press with quickstep, which will result in launcher being
-                    // started on touch down, prior to the animation home (and won't be in the
-                    // targets list because it is already visible). In that case, we force
-                    // invisibility on touch down, and only reset it after the animation to home
-                    // is initialized.
-                    if (launcherIsATargetWithMode(targetCompats, MODE_OPENING)
-                            || mLauncher.isForceInvisible()) {
-                        // Only register the content animation for cancellation when state changes
-                        mLauncher.getStateManager().setCurrentAnimation(anim);
-                        if (fromUnlock) {
-                            Pair<AnimatorSet, Runnable> contentAnimator =
-                                    getLauncherContentAnimator(false /* isAppOpening */,
-                                            new float[] {mContentTransY, 0});
-                            contentAnimator.first.setStartDelay(0);
-                            anim.play(contentAnimator.first);
-                            anim.addListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    contentAnimator.second.run();
-                                }
-                            });
-                        } else {
-                            createLauncherResumeAnimation(anim);
-                        }
-                    }
-                }
-
-                mLauncher.clearForceInvisibleFlag(INVISIBLE_ALL);
-                result.setAnimation(anim);
-            }
-        };
+    RemoteAnimationRunnerCompat getWallpaperOpenRunner(boolean fromUnlock) {
+        return new WallpaperOpenLauncherAnimationRunner(mHandler, false /* startAtFrontOfQueue */,
+                fromUnlock);
     }
 
     /**
@@ -772,5 +711,80 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     private boolean hasControlRemoteAppTransitionPermission() {
         return mLauncher.checkSelfPermission(CONTROL_REMOTE_APP_TRANSITION_PERMISSION)
                 == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /**
+     * Remote animation runner for animation from the app to Launcher, including recents.
+     */
+    class WallpaperOpenLauncherAnimationRunner extends LauncherAnimationRunner {
+        private final boolean mFromUnlock;
+
+        public WallpaperOpenLauncherAnimationRunner(Handler handler, boolean startAtFrontOfQueue,
+                boolean fromUnlock) {
+            super(handler, startAtFrontOfQueue);
+            mFromUnlock = fromUnlock;
+        }
+
+        @Override
+        public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
+                LauncherAnimationRunner.AnimationResult result) {
+            if (!mLauncher.hasBeenResumed()) {
+                // If launcher is not resumed, wait until new async-frame after resume
+                mLauncher.setOnResumeCallback(() ->
+                        postAsyncCallback(mHandler, () ->
+                                onCreateAnimation(targetCompats, result)));
+                return;
+            }
+
+            if (mLauncher.hasSomeInvisibleFlag(PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION)) {
+                mLauncher.addForceInvisibleFlag(INVISIBLE_BY_PENDING_FLAGS);
+                mLauncher.getStateManager().moveToRestState();
+            }
+
+            AnimatorSet anim = null;
+            RemoteAnimationProvider provider = mRemoteAnimationProvider;
+            if (provider != null) {
+                anim = provider.createWindowAnimation(targetCompats);
+            }
+
+            if (anim == null) {
+                anim = new AnimatorSet();
+                anim.play(mFromUnlock
+                        ? getUnlockWindowAnimator(targetCompats)
+                        : getClosingWindowAnimators(targetCompats));
+
+                // Normally, we run the launcher content animation when we are transitioning
+                // home, but if home is already visible, then we don't want to animate the
+                // contents of launcher unless we know that we are animating home as a result
+                // of the home button press with quickstep, which will result in launcher being
+                // started on touch down, prior to the animation home (and won't be in the
+                // targets list because it is already visible). In that case, we force
+                // invisibility on touch down, and only reset it after the animation to home
+                // is initialized.
+                if (launcherIsATargetWithMode(targetCompats, MODE_OPENING)
+                        || mLauncher.isForceInvisible()) {
+                    // Only register the content animation for cancellation when state changes
+                    mLauncher.getStateManager().setCurrentAnimation(anim);
+                    if (mFromUnlock) {
+                        Pair<AnimatorSet, Runnable> contentAnimator =
+                                getLauncherContentAnimator(false /* isAppOpening */,
+                                        new float[] {mContentTransY, 0});
+                        contentAnimator.first.setStartDelay(0);
+                        anim.play(contentAnimator.first);
+                        anim.addListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                contentAnimator.second.run();
+                            }
+                        });
+                    } else {
+                        createLauncherResumeAnimation(anim);
+                    }
+                }
+            }
+
+            mLauncher.clearForceInvisibleFlag(INVISIBLE_ALL);
+            result.setAnimation(anim);
+        }
     }
 }

@@ -379,6 +379,36 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
     }
 
     /**
+     * Whether this view has processed all data changes and is ready to animate from the app to
+     * the overview.
+     *
+     * @return true if ready to animate app to overview, false otherwise
+     */
+    public boolean isReadyForRemoteAnim() {
+        return !mTaskRecyclerView.hasPendingAdapterUpdates();
+    }
+
+    /**
+     * Set a callback for whenever this view is ready to do a remote animation from the app to
+     * overview. See {@link #isReadyForRemoteAnim()}.
+     *
+     * @param callback callback to run when view is ready to animate
+     */
+    public void setOnReadyForRemoteAnimCallback(onReadyForRemoteAnimCallback callback) {
+        mTaskRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        if (isReadyForRemoteAnim()) {
+                            callback.onReadyForRemoteAnim();
+                            mTaskRecyclerView.getViewTreeObserver().
+                                    removeOnGlobalLayoutListener(this);
+                        }
+                    }
+                });
+    }
+
+    /**
      * Clear all tasks and animate out.
      */
     private void animateClearAllTasks() {
@@ -556,5 +586,13 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
         mInsets = insets;
         mTaskRecyclerView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
         mTaskRecyclerView.invalidateItemDecorations();
+    }
+
+    /**
+     * Callback for when this view is ready for a remote animation from app to overview.
+     */
+    public interface onReadyForRemoteAnimCallback {
+
+        void onReadyForRemoteAnim();
     }
 }
