@@ -429,8 +429,7 @@ public class TouchInteractionService extends Service implements
         MotionEvent event = (MotionEvent) ev;
         TOUCH_INTERACTION_LOG.addLog("onMotionEvent", event.getActionMasked());
         if (event.getAction() == ACTION_DOWN) {
-            if (isInValidSystemUiState()
-                    && mSwipeTouchRegion.contains(event.getX(), event.getY())) {
+            if (mSwipeTouchRegion.contains(event.getX(), event.getY())) {
                 boolean useSharedState = mConsumer.useSharedSwipeState();
                 mConsumer.onConsumerAboutToBeSwitched();
                 mConsumer = newConsumer(useSharedState, event);
@@ -443,15 +442,45 @@ public class TouchInteractionService extends Service implements
         mUncheckedConsumer.onMotionEvent(event);
     }
 
-    private boolean isInValidSystemUiState() {
-        return (mSystemUiStateFlags & SYSUI_STATE_NAV_BAR_HIDDEN) == 0
-                && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0
-                && !ActivityManagerWrapper.getInstance().isLockToAppActive();
-    }
 
     private InputConsumer newConsumer(boolean useSharedState, MotionEvent event) {
-        // TODO: this makes a binder call every touch down. we should move to a listener pattern.
-        if (!mIsUserUnlocked || mKM.isDeviceLocked()) {
+        boolean validSystemUIFlags = (mSystemUiStateFlags & SYSUI_STATE_NAV_BAR_HIDDEN) == 0
+                && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0;
+        boolean topTaskLocked = ActivityManagerWrapper.getInstance().isLockToAppActive();
+        boolean isInValidSystemUiState = validSystemUIFlags && !topTaskLocked;
+
+        if (!mIsUserUnlocked) {
+            if (isInValidSystemUiState) {
+                // This handles apps launched in direct boot mode (e.g. dialer) as well as apps
+                // launched while device is locked even after exiting direct boot mode (e.g. camera).
+                return new DeviceLockedInputConsumer(this);
+            } else {
+                return InputConsumer.NO_OP;
+            }
+        }
+
+        InputConsumer base = isInValidSystemUiState
+                ? newBaseConsumer(useSharedState, event) : InputConsumer.NO_OP;
+        if (mMode == Mode.NO_BUTTON) {
+            final ActivityControlHelper activityControl =
+                    mOverviewComponentObserver.getActivityControlHelper();
+            if (mAssistantAvailable && !topTaskLocked
+                    && AssistantTouchConsumer.withinTouchRegion(this, event)) {
+                base = new AssistantTouchConsumer(this, mISystemUiProxy, activityControl, base,
+                        mInputMonitorCompat);
+            }
+
+            if ((mSystemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_CLICKABLE) != 0) {
+                base = new AccessibilityInputConsumer(this, mISystemUiProxy,
+                        (mSystemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE) != 0, base,
+                        mInputMonitorCompat);
+            }
+        }
+        return base;
+    }
+
+    private InputConsumer newBaseConsumer(boolean useSharedState, MotionEvent event) {
+        if (mKM.isDeviceLocked()) {
             // This handles apps launched in direct boot mode (e.g. dialer) as well as apps launched
             // while device is locked even after exiting direct boot mode (e.g. camera).
             return new DeviceLockedInputConsumer(this);
@@ -465,42 +494,26 @@ public class TouchInteractionService extends Service implements
         final ActivityControlHelper activityControl =
                 mOverviewComponentObserver.getActivityControlHelper();
 
-        InputConsumer base;
         if (runningTaskInfo == null && !mSwipeSharedState.goingToLauncher
                 && !mSwipeSharedState.recentsAnimationFinishInterrupted) {
-            base = InputConsumer.NO_OP;
+            return InputConsumer.NO_OP;
         } else if (mSwipeSharedState.recentsAnimationFinishInterrupted) {
             // If the finish animation was interrupted, then continue using the other activity input
             // consumer but with the next task as the running task
             RunningTaskInfo info = new ActivityManager.RunningTaskInfo();
             info.id = mSwipeSharedState.nextRunningTaskId;
-            base = createOtherActivityInputConsumer(event, info);
+            return createOtherActivityInputConsumer(event, info);
         } else if (mSwipeSharedState.goingToLauncher || activityControl.isResumed()) {
-            base = OverviewInputConsumer.newInstance(activityControl, mInputMonitorCompat, false);
+            return OverviewInputConsumer.newInstance(activityControl, mInputMonitorCompat, false);
         } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() &&
                 activityControl.isInLiveTileMode()) {
-            base = OverviewInputConsumer.newInstance(activityControl, mInputMonitorCompat, false);
+            return OverviewInputConsumer.newInstance(activityControl, mInputMonitorCompat, false);
         } else if (mGestureBlockingActivity != null && runningTaskInfo != null
                 && mGestureBlockingActivity.equals(runningTaskInfo.topActivity)) {
-            base = InputConsumer.NO_OP;
+            return InputConsumer.NO_OP;
         } else {
-            base = createOtherActivityInputConsumer(event, runningTaskInfo);
+            return createOtherActivityInputConsumer(event, runningTaskInfo);
         }
-
-        if (mMode == Mode.NO_BUTTON) {
-            if (mAssistantAvailable && AssistantTouchConsumer.withinTouchRegion(this, event)) {
-                base = new AssistantTouchConsumer(this, mISystemUiProxy, activityControl, base,
-                        mInputMonitorCompat);
-            }
-
-            if ((mSystemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_CLICKABLE) != 0) {
-                base = new AccessibilityInputConsumer(this, mISystemUiProxy,
-                        (mSystemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE) != 0, base,
-                        mInputMonitorCompat);
-            }
-        }
-
-        return base;
     }
 
     private OtherActivityInputConsumer createOtherActivityInputConsumer(MotionEvent event,
