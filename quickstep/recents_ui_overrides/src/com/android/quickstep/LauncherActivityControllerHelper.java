@@ -270,9 +270,9 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         playScaleDownAnim(anim, activity, endState);
 
         anim.setDuration(transitionLength * 2);
-        activity.getStateManager().setCurrentAnimation(anim);
         AnimatorPlaybackController controller =
                 AnimatorPlaybackController.wrap(anim, transitionLength * 2);
+        activity.getStateManager().setCurrentUserControlledAnimation(controller);
 
         // Since we are changing the start position of the UI, reapply the state, at the end
         controller.setEndAction(() -> {
