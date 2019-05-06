@@ -374,16 +374,6 @@ public final class LauncherInstrumentation {
                     event -> true,
                     "Pressing Home didn't produce any events");
             mDevice.waitForIdle();
-
-            // Temporarily press home twice as the first click sometimes gets ignored  (b/124239413)
-            executeAndWaitForEvent(
-                    () -> {
-                        log("LauncherInstrumentation.pressHome before clicking");
-                        waitForSystemUiObject("home").click();
-                    },
-                    event -> true,
-                    "Pressing Home didn't produce any events");
-            mDevice.waitForIdle();
         }
         try (LauncherInstrumentation.Closable c = addContextLayer(
                 "performed action to switch to Home - " + action)) {
