@@ -21,7 +21,6 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
-
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
@@ -44,6 +43,8 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
+import androidx.annotation.UiThread;
+
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.util.Preconditions;
@@ -61,8 +62,6 @@ import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.QuickStepContract;
 
 import java.util.function.Consumer;
-
-import androidx.annotation.UiThread;
 
 /**
  * Input consumer for handling events originating from an activity other than Launcher
@@ -108,7 +107,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
     // Might be displacement in X or Y, depending on the direction we are swiping from the nav bar.
     private float mStartDisplacement;
-    private float mStartDisplacementX;
 
     private Handler mMainThreadHandler;
     private Runnable mCancelRecentsAnimationRunnable = () -> {
@@ -227,7 +225,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         if (Math.abs(displacement) > mDragSlop) {
                             mPassedDragSlop = true;
                             mStartDisplacement = displacement;
-                            mStartDisplacementX = displacementX;
                         }
                     }
                 }
@@ -244,19 +241,20 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         if (!mPassedDragSlop) {
                             mPassedDragSlop = true;
                             mStartDisplacement = displacement;
-                            mStartDisplacementX = displacementX;
                         }
                         notifyGestureStarted();
                     }
                 }
 
-                if (mPassedDragSlop && mInteractionHandler != null) {
-                    // Move
-                    mInteractionHandler.updateDisplacement(displacement - mStartDisplacement);
+                if (mInteractionHandler != null) {
+                    if (mPassedDragSlop) {
+                        // Move
+                        mInteractionHandler.updateDisplacement(displacement - mStartDisplacement);
+                    }
 
                     if (mMode == Mode.NO_BUTTON) {
-                        float horizontalDist = Math.abs(displacementX - mStartDisplacementX);
-                        float upDist = -(displacement - mStartDisplacement);
+                        float horizontalDist = Math.abs(displacementX);
+                        float upDist = -displacement;
                         boolean isLikelyToStartNewTask = horizontalDist > upDist;
                         mMotionPauseDetector.setDisallowPause(upDist < mMotionPauseMinDisplacement
                                 || isLikelyToStartNewTask);
