@@ -213,9 +213,9 @@ public class AssistantTouchConsumer extends DelegateInputConsumer {
                     BaseDraggingActivity launcherActivity =
                             mActivityControlHelper.getCreatedActivity();
                     if (launcherActivity != null) {
-                        launcherActivity.getRootView().
-                                performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
-                                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                        launcherActivity.getRootView().performHapticFeedback(
+                            13, // HapticFeedbackConstants.GESTURE_END
+                            HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     }
 
                     mSysUiProxy.startAssistant(args);
