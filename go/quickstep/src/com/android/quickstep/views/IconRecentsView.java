@@ -125,6 +125,7 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
     private View mEmptyView;
     private View mContentView;
     private boolean mTransitionedFromApp;
+    private boolean mUsingRemoteAnimation;
     private AnimatorSet mLayoutAnimation;
     private final ArraySet<View> mLayingOutViews = new ArraySet<>();
     private Rect mInsets;
@@ -276,7 +277,9 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
             // not be scrollable.
             mTaskLayoutManager.scrollToPositionWithOffset(TASKS_START_POSITION, 0 /* offset */);
         }
-        scheduleFadeInLayoutAnimation();
+        if (!mUsingRemoteAnimation) {
+            scheduleFadeInLayoutAnimation();
+        }
         // Load any task changes
         if (!mTaskLoader.needsToLoad()) {
             return;
@@ -312,6 +315,17 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
      */
     public void setTransitionedFromApp(boolean transitionedFromApp) {
         mTransitionedFromApp = transitionedFromApp;
+    }
+
+    /**
+     * Set whether we're using a custom remote animation. If so, we will not do the default layout
+     * animation when entering recents and instead wait for the remote app surface to be ready to
+     * use.
+     *
+     * @param usingRemoteAnimation true if doing a remote animation, false o/w
+     */
+    public void setUsingRemoteAnimation(boolean usingRemoteAnimation) {
+        mUsingRemoteAnimation = usingRemoteAnimation;
     }
 
     /**

@@ -45,6 +45,7 @@ public final class FallbackActivityControllerHelper extends
     @Override
     public AnimationFactory prepareRecentsUI(RecentsActivity activity, boolean activityVisible,
             boolean animateActivity, Consumer<AnimatorPlaybackController> callback) {
+        // TODO: Logic for setting remote animation
         if (activityVisible) {
             return (transitionLength) -> { };
         }
