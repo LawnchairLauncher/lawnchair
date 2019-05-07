@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -438,11 +439,15 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     private float getCornerRadius() {
+        return getCornerRadius(getResources(), Utilities.pxFromDp(100, getResources().getDisplayMetrics()));
+    }
+
+    public static float getCornerRadius(Resources resources, float defaultRadius) {
         TypedValue edgeRadius = FolderShape.sInstance.mAttrs.get(R.attr.qsbEdgeRadius);
         if (edgeRadius != null) {
-            return edgeRadius.getDimension(getResources().getDisplayMetrics());
+            return edgeRadius.getDimension(resources.getDisplayMetrics());
         } else {
-            return Utilities.pxFromDp(100, getResources().getDisplayMetrics());
+            return defaultRadius;
         }
     }
 

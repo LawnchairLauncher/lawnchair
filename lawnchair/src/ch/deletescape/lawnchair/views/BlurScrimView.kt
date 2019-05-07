@@ -125,7 +125,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         val searchBox = mLauncher.hotseatSearchBox
         return if (searchBox?.isVisible == true && BlurWallpaperProvider.isEnabled) {
             val height = searchBox.height - searchBox.paddingTop - searchBox.paddingBottom
-            provider.createDrawable(height / 2f, false).apply {
+            provider.createDrawable(AbstractQsbLayout.getCornerRadius(resources, height / 2f), false).apply {
                 callback = blurDrawableCallback
                 setBounds(left, top, right, bottom)
                 if (isAttachedToWindow) startListening()
