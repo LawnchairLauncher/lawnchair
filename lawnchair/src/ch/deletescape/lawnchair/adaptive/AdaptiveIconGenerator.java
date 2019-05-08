@@ -169,8 +169,8 @@ public class AdaptiveIconGenerator {
             float bottom = bounds.bottom * height * width;
             int addPixels = Math.round(l + top + r + bottom);
 
-            // Any icon with less than 2% transparent pixels (padding excluded) is considered "full-bleed-ish"
-            final int maxTransparent = (int) (round(size * .035) + addPixels);
+            // Any icon with less than 13% transparent pixels (padding excluded) is considered "full-bleed-ish"
+            final int maxTransparent = (int) (round(size * .13) + addPixels);
 
             int highScore = 0;
             int bestRGB = 0;
