@@ -250,7 +250,7 @@ public final class ContentFillItemAnimator extends SimpleItemAnimator {
             }
             mPendingAnims.remove(i);
         }
-        for (int i = 0; i < mRunningAnims.size(); i++) {
+        for (int i = mRunningAnims.size() - 1; i >= 0; i--) {
             ObjectAnimator anim = mRunningAnims.get(i);
             anim.end();
         }
