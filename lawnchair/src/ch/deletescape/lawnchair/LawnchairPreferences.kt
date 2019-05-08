@@ -104,6 +104,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", context.resources.getBoolean(R.bool.config_enable_white_only_treatment), reloadIcons)
     val hideStatusBar by BooleanPref("pref_hideStatusBar", context.resources.getBoolean(R.bool.config_hide_statusbar), doNothing)
     val iconPackMasking by BooleanPref("pref_iconPackMasking", true, reloadIcons)
+    val adaptifyIconPacks by BooleanPref("pref_generateAdaptiveForIconPack", false, reloadIcons)
     //val showAssistantIcon by BooleanPref("opa_enabled")
 
     // Desktop
