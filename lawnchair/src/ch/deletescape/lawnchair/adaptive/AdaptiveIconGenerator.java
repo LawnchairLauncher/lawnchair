@@ -114,16 +114,16 @@ public class AdaptiveIconGenerator {
 
             tmp = (AdaptiveIconDrawable) context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
             tmp.setBounds(0, 0, 1, 1);
-            scale = normalizer.getScale(icon, bounds, tmp.getIconMask(), outShape);
+            scale = normalizer.getScale(extractee, bounds, tmp.getIconMask(), outShape);
             matchesMaskShape = outShape[0];
 
-            if (icon instanceof ColorDrawable) {
+            if (extractee instanceof ColorDrawable) {
                 isFullBleed = true;
                 fullBleedChecked = true;
             }
 
-            width = icon.getIntrinsicWidth();
-            height = icon.getIntrinsicHeight();
+            width = extractee.getIntrinsicWidth();
+            height = extractee.getIntrinsicHeight();
             aWidth = width * (1 - (bounds.left + bounds.right));
             aHeight = height * (1 - (bounds.top + bounds.bottom));
 
@@ -200,11 +200,14 @@ public class AdaptiveIconGenerator {
                 }
             }
 
+            // add back the alpha channel
+            bestRGB |= 0xff << 24;
+
             // return early if a mix-in isnt needed
             if (isFullBleed || !fullBleedChecked) {
                 // not yet checked = not set to false = has to be full bleed
                 isFullBleed = true;
-                backgroundColor = bestRGB | 0xff << 24;
+                backgroundColor = bestRGB;
                 onExitLoop();
                 return;
             }
@@ -231,8 +234,8 @@ public class AdaptiveIconGenerator {
             }
 
             // Vary color mix-in based on lightness and amount of colors
-            int fill = (light && !veryLight) ||  veryDark? 0xFFFFFFFF : 0xFF333333;
-            backgroundColor = ColorUtils.blendARGB(bestRGB | 0xff << 24, fill, mixRatio);
+            int fill = (light && !veryLight) || veryDark ? 0xFFFFFFFF : 0xFF333333;
+            backgroundColor = ColorUtils.blendARGB(bestRGB, fill, mixRatio);
         }
         onExitLoop();
     }
