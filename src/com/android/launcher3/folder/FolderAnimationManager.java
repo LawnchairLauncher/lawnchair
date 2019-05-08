@@ -39,6 +39,7 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PropertyResetListener;
@@ -165,7 +166,7 @@ public class FolderAnimationManager {
                 Math.round((totalOffsetX + initialSize) / initialScale),
                 Math.round((paddingOffsetY + initialSize) / initialScale));
         Rect endRect = new Rect(0, 0, lp.width, lp.height);
-        float finalRadius = Utilities.pxFromDp(2, mContext.getResources().getDisplayMetrics());
+        float finalRadius = ResourceUtils.pxFromDp(2, mContext.getResources().getDisplayMetrics());
 
         // Create the animators.
         AnimatorSet a = new AnimatorSet();

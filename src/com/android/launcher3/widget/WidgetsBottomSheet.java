@@ -36,7 +36,7 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.PackageUserKey;
@@ -126,7 +126,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
             // Otherwise, add an empty view to the start as padding (but still scroll edge to edge).
             View leftPaddingView = LayoutInflater.from(getContext()).inflate(
                     R.layout.widget_list_divider, widgetRow, false);
-            leftPaddingView.getLayoutParams().width = Utilities.pxFromDp(
+            leftPaddingView.getLayoutParams().width = ResourceUtils.pxFromDp(
                     16, getResources().getDisplayMetrics());
             widgetCells.addView(leftPaddingView, 0);
         }
