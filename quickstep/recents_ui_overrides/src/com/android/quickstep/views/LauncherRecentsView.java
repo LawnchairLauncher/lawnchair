@@ -34,6 +34,8 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -41,8 +43,11 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
+import com.android.launcher3.util.PendingAnimation;
+import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.SysUINavigationMode;
+import com.android.quickstep.hints.ProactiveHintsContainer;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.ClipAnimationHelper.TransformParams;
 import com.android.quickstep.util.LayoutUtils;
@@ -54,6 +59,8 @@ import com.android.quickstep.util.LayoutUtils;
 public class LauncherRecentsView extends RecentsView<Launcher> {
 
     private final TransformParams mTransformParams = new TransformParams();
+    private final int mChipOverhang;
+    @Nullable private ProactiveHintsContainer mProactiveHintsContainer;
 
     public LauncherRecentsView(Context context) {
         this(context, null);
@@ -66,6 +73,16 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     public LauncherRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setContentAlpha(0);
+        mChipOverhang = (int) context.getResources().getDimension(R.dimen.chip_hint_overhang);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        View hintContainer = mActivity.findViewById(R.id.hints);
+        mProactiveHintsContainer =
+                hintContainer instanceof ProactiveHintsContainer
+                        ? (ProactiveHintsContainer) hintContainer : null;
     }
 
     @Override
@@ -82,6 +99,11 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
                 redrawLiveTile(false);
             }
         }
+    }
+
+    @Nullable
+    public ProactiveHintsContainer getProactiveHintsContainer() {
+        return mProactiveHintsContainer;
     }
 
     @Override
@@ -137,6 +159,48 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     @Override
     protected void getTaskSize(DeviceProfile dp, Rect outRect) {
         LayoutUtils.calculateLauncherTaskSize(getContext(), dp, outRect);
+        if (mProactiveHintsContainer != null) {
+            BaseDragLayer.LayoutParams params = (BaseDragLayer.LayoutParams) mProactiveHintsContainer.getLayoutParams();
+            params.bottomMargin = getHeight() - outRect.bottom - mChipOverhang;
+            params.width = outRect.width();
+        }
+    }
+
+    @Override
+    public PendingAnimation createTaskLauncherAnimation(TaskView tv, long duration) {
+        PendingAnimation anim = super.createTaskLauncherAnimation(tv, duration);
+
+        if (mProactiveHintsContainer != null) {
+            anim.anim.play(ObjectAnimator.ofFloat(
+                    mProactiveHintsContainer, ProactiveHintsContainer.HINT_VISIBILITY, 0));
+        }
+
+        return anim;
+    }
+
+    @Override
+    public PendingAnimation createTaskDismissAnimation(TaskView taskView, boolean animateTaskView,
+            boolean shouldRemoveTask, long duration) {
+        PendingAnimation anim = super.createTaskDismissAnimation(taskView, animateTaskView,
+                shouldRemoveTask, duration);
+
+        if (mProactiveHintsContainer != null) {
+            anim.anim.play(ObjectAnimator.ofFloat(
+                    mProactiveHintsContainer, ProactiveHintsContainer.HINT_VISIBILITY, 0));
+            anim.addEndListener(onEndListener -> {
+                if (!onEndListener.isSuccess) {
+                    mProactiveHintsContainer.setHintVisibility(1);
+                }
+            });
+        }
+
+        return anim;
+    }
+
+    public void setHintVisibility(float v) {
+        if (mProactiveHintsContainer != null) {
+            mProactiveHintsContainer.setHintVisibility(v);
+        }
     }
 
     @Override
