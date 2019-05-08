@@ -39,10 +39,14 @@ import com.android.launcher3.graphics.FixedScaleDrawable;
 import com.android.launcher3.graphics.IconNormalizer;
 import com.android.launcher3.graphics.LauncherIcons;
 
+// TODO: Make this thing async somehow (maybe using some drawable wrappers?)
 public class AdaptiveIconGenerator {
 
     // Average number of derived colors (based on averages with ~100 icons and performance testing)
     private static final int NUMBER_OF_COLORS_GUESSTIMATION = 45;
+
+    // Found after some experimenting, might be improved with some more testing
+    private static final float FULL_BLEED_ICON_SCALE = 1.44f;
 
     private Context context;
     private Drawable icon;
@@ -71,8 +75,8 @@ public class AdaptiveIconGenerator {
     public AdaptiveIconGenerator(Context context, @NonNull Drawable icon, String identifier) {
         this.context = context;
         this.icon = icon;
+        // useful for caching or dirty hacks
         this.identifier = identifier;
-        result = icon;
         prefs = Utilities.getLawnchairPrefs(context);
         shouldWrap = prefs.getEnableLegacyTreatment();
         extractColor = shouldWrap && prefs.getColorizedLegacyTreatment();
@@ -118,10 +122,10 @@ public class AdaptiveIconGenerator {
                 fullBleedChecked = true;
             }
 
-            height = icon.getIntrinsicHeight();
-            aHeight = height * (1 - (bounds.top + bounds.bottom));
             width = icon.getIntrinsicWidth();
+            height = icon.getIntrinsicHeight();
             aWidth = width * (1 - (bounds.left + bounds.right));
+            aHeight = height * (1 - (bounds.top + bounds.bottom));
 
             // Check if the icon is squareish
             final float ratio = aHeight / aWidth;
@@ -141,19 +145,29 @@ public class AdaptiveIconGenerator {
                 fullBleedChecked = true;
             }
 
-            final int height = bitmap.getHeight();
-            final int width = bitmap.getWidth();
             final int size = height * width;
-
-
             SparseIntArray rgbScoreHistogram = new SparseIntArray(NUMBER_OF_COLORS_GUESSTIMATION);
             final int[] pixels = new int[size];
             bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
 
-            // Calculate number of padding pixels
-            // TODO: make this calculation a bit more readable
+            /*
+             *   Calculate the number of padding pixels around the actual icon (i)
+             *   +----------------+
+             *   |      top       |
+             *   +---+--------+---+
+             *   |   |        |   |
+             *   | l |    i   | r |
+             *   |   |        |   |
+             *   +---+--------+---+
+             *   |     bottom     |
+             *   +----------------+
+             */
             float adjHeight = height - bounds.top - bounds.bottom;
-            int addPixels = Math.round(bounds.left * width * adjHeight + bounds.top * height * width + bounds.right * width * adjHeight + bounds.bottom * height * width);
+            float l = bounds.left * width * adjHeight;
+            float top = bounds.top * height * width;
+            float r = bounds.right * width * adjHeight;
+            float bottom = bounds.bottom * height * width;
+            int addPixels = Math.round(l + top + r + bottom);
 
             // Any icon with less than 2% transparent pixels (padding excluded) is considered "full-bleed-ish"
             final int maxTransparent = (int) (round(size * .035) + addPixels);
@@ -188,7 +202,9 @@ public class AdaptiveIconGenerator {
 
             // return early if a mix-in isnt needed
             if (isFullBleed || !fullBleedChecked) {
-                backgroundColor = bestRGB;
+                // not yet checked = not set to false = has to be full bleed
+                isFullBleed = true;
+                backgroundColor = bestRGB | 0xff << 24;
                 onExitLoop();
                 return;
             }
@@ -244,7 +260,7 @@ public class AdaptiveIconGenerator {
         ((FixedScaleDrawable) tmp.getForeground()).setDrawable(icon);
         if (matchesMaskShape || isFullBleed) {
             float upScale = max(width / aWidth, height / aHeight);
-            ((FixedScaleDrawable) tmp.getForeground()).setScale(upScale * scale);
+            ((FixedScaleDrawable) tmp.getForeground()).setScale(FULL_BLEED_ICON_SCALE * upScale);
         } else {
             ((FixedScaleDrawable) tmp.getForeground()).setScale(scale);
         }

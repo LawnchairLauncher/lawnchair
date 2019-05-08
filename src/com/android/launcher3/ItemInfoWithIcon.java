@@ -34,11 +34,6 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     public int iconColor;
 
     /**
-     * Actual dominant color in the {@link #iconBitmap} without hue bias
-     */
-    public int actualIconColor;
-
-    /**
      * Indicates whether we're using a low res icon
      */
     public boolean usingLowResIcon;

@@ -351,7 +351,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                 lastSectionName = sectionName;
                 int color = 0;
                 if (prefs.getSortDrawerByColors()) {
-                    color = info.actualIconColor;
+                    color = info.iconColor;
                 }
                 lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName, color);
                 mFastScrollerSections.add(lastFastScrollerSectionInfo);
@@ -481,7 +481,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         if (sectionName == null) {
             if (prefs.getSortDrawerByColors()) {
                 float[] hsl = new float[3];
-                ColorUtils.colorToHSL(info.actualIconColor, hsl);
+                ColorUtils.colorToHSL(info.iconColor, hsl);
                 sectionName = String.format("%d:%d:%d", AppColorComparator.remapHue(hsl[0]), AppColorComparator.remap(hsl[2]), AppColorComparator.remap(hsl[1]));
             } else {
                 sectionName = mIndexer.computeSectionName(info.title);

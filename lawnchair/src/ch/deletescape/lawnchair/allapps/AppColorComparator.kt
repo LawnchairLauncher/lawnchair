@@ -31,8 +31,8 @@ class AppColorComparator(context: Context) : AppInfoComparator(context) {
         val hslA = FloatArray(3)
         val hslB = FloatArray(3)
 
-        ColorUtils.colorToHSL(a.actualIconColor, hslA)
-        ColorUtils.colorToHSL(b.actualIconColor, hslB)
+        ColorUtils.colorToHSL(a.iconColor, hslA)
+        ColorUtils.colorToHSL(b.iconColor, hslB)
 
         val h2A = remapHue(hslA[0])
         val h2B = remapHue(hslB[0])
