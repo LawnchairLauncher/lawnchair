@@ -19,10 +19,14 @@ import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
 
+import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.quickstep.TaskAdapter.CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT;
 import static com.android.quickstep.TaskAdapter.ITEM_TYPE_CLEAR_ALL;
 import static com.android.quickstep.TaskAdapter.ITEM_TYPE_TASK;
 import static com.android.quickstep.TaskAdapter.TASKS_START_POSITION;
+import static com.android.quickstep.util.RemoteAnimationProvider.getLayer;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -32,6 +36,7 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.ArraySet;
@@ -64,7 +69,11 @@ import com.android.quickstep.TaskAdapter;
 import com.android.quickstep.TaskHolder;
 import com.android.quickstep.TaskListLoader;
 import com.android.quickstep.TaskSwipeCallback;
+import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +110,11 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
     private static final long ITEM_ANIMATE_OUT_DELAY_BETWEEN = 40;
     private static final float ITEM_ANIMATE_OUT_TRANSLATION_X_RATIO = .25f;
     private static final long CLEAR_ALL_FADE_DELAY = 120;
+
+    private static final long APP_TO_THUMBNAIL_FADE_DURATION = 50;
+    private static final long APP_SCALE_DOWN_DURATION = 400;
+
+    public static final long REMOTE_APP_TO_OVERVIEW_DURATION = APP_SCALE_DOWN_DURATION;
 
     /**
      * A ratio representing the view's relative placement within its padded space. For example, 0
@@ -563,6 +577,95 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
             }
         });
         mLayoutAnimation.start();
+    }
+
+    /**
+     * Animate a closing app to scale down to the location of the thumbnail view in recents.
+     *
+     * @param anim animator set
+     * @param appTarget the app surface thats closing
+     * @param recentsTarget the surface containing recents
+     */
+    public void playAppScaleDownAnim(@NonNull AnimatorSet anim,
+            @NonNull RemoteAnimationTargetCompat appTarget,
+            @NonNull RemoteAnimationTargetCompat recentsTarget) {
+
+        View thumbnailView = getBottomThumbnailView();
+
+        if (thumbnailView == null) {
+            // This can be null if there were previously 0 tasks and the recycler view has not had
+            // enough time to take in the data change, bind a new view, and lay out the new view.
+            // TODO: Have a fallback to animate to
+            anim.play(ValueAnimator.ofInt(0, 1).setDuration(REMOTE_APP_TO_OVERVIEW_DURATION));
+        }
+
+        // Identify where the entering remote app should animate to.
+        Rect endRect = new Rect();
+        thumbnailView.getGlobalVisibleRect(endRect);
+
+        Rect appBounds = appTarget.sourceContainerBounds;
+
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(0, 1);
+        valueAnimator.setDuration(APP_SCALE_DOWN_DURATION);
+
+        SyncRtSurfaceTransactionApplierCompat surfaceApplier =
+                new SyncRtSurfaceTransactionApplierCompat(thumbnailView);
+
+        // Keep recents visible throughout the animation.
+        SurfaceParams[] params = new SurfaceParams[2];
+        // Closing app should stay on top.
+        int boostedMode = MODE_CLOSING;
+        params[0] = new SurfaceParams(recentsTarget.leash, 1f, null /* matrix */,
+                null /* windowCrop */, getLayer(recentsTarget, boostedMode), 0 /* cornerRadius */);
+
+        valueAnimator.addUpdateListener(new MultiValueUpdateListener() {
+            private final FloatProp mScaleX;
+            private final FloatProp mScaleY;
+            private final FloatProp mTranslationX;
+            private final FloatProp mTranslationY;
+            private final FloatProp mAlpha;
+
+            {
+                // Scale down and move to view location.
+                float endScaleX = ((float) endRect.width()) / appBounds.width();
+                mScaleX = new FloatProp(1f, endScaleX, 0, APP_SCALE_DOWN_DURATION,
+                        ACCEL_DEACCEL);
+                float endScaleY = ((float) endRect.height()) / appBounds.height();
+                mScaleY = new FloatProp(1f, endScaleY, 0, APP_SCALE_DOWN_DURATION,
+                        ACCEL_DEACCEL);
+                float endTranslationX = endRect.left -
+                        (appBounds.width() - thumbnailView.getWidth()) / 2.0f;
+                mTranslationX = new FloatProp(0, endTranslationX, 0, APP_SCALE_DOWN_DURATION,
+                        ACCEL_DEACCEL);
+                float endTranslationY = endRect.top -
+                        (appBounds.height() - thumbnailView.getHeight()) / 2.0f;
+                mTranslationY = new FloatProp(0, endTranslationY, 0, APP_SCALE_DOWN_DURATION,
+                        ACCEL_DEACCEL);
+
+                // Fade out quietly near the end to be replaced by the real view.
+                mAlpha = new FloatProp(1.0f, 0,
+                        APP_SCALE_DOWN_DURATION - APP_TO_THUMBNAIL_FADE_DURATION,
+                        APP_TO_THUMBNAIL_FADE_DURATION, ACCEL_2);
+            }
+
+            @Override
+            public void onUpdate(float percent) {
+                Matrix m = new Matrix();
+                m.setScale(mScaleX.value, mScaleY.value,
+                        appBounds.width() / 2.0f, appBounds.height() / 2.0f);
+                m.postTranslate(mTranslationX.value, mTranslationY.value);
+
+                params[1] = new SurfaceParams(appTarget.leash, mAlpha.value, m,
+                        null /* windowCrop */, getLayer(appTarget, boostedMode),
+                        0 /* cornerRadius */);
+                surfaceApplier.scheduleApply(params);
+            }
+        });
+        anim.play(valueAnimator);
+    }
+
+    public long getAppToOverviewAnimationDuration() {
+        return APP_SCALE_DOWN_DURATION;
     }
 
     @Override
