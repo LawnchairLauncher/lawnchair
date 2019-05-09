@@ -151,7 +151,6 @@
     <string name="about_role_family_member">Anggota keluarga</string>
     <string name="about_role_magisk_maintainer">Pemelihara Modul Magisk</string>
     <string name="about_bio_deletescape">Pengembang Android &amp; penggemar android, pecinta meme (terlalu banyak sebenarnya). Pendiri proyek Lawnchair.</string>
-    <string name="about_bio_divadsn">19 tahun, pengubah kafein dan pizza menjadi kode. Sebelumnya juga dikenal sebagai Codebucket.</string>
     <string name="about_bio_recoded">Desainer grafis dan coder ringan.</string>
     <string name="about_bio_josh">Pereka grafik freelance.</string>
     <string name="about_bio_chris">Para millennial yang tidak saya tahu. Yang punya desain dan sosial media. Mari bergaul bersama di @lawnchairapp✨</string>
@@ -408,4 +407,6 @@
     <string name="about_app_description">Sebuah alternatif Pixel Launcher yang dapat dikostumisasi.</string>
     <string name="about_bio_paphonb">Seorang pelajar dengan umur 18 tahun, Pengembang Android dan salah satu pengembang teratas di Peluncur Lawnchair.</string>
     <string name="dock_scale">Ukuran bilah bar</string>
+    <string name="adaptify_pack_title">Buat adaptif ikon untuk paket ikon</string>
+    <string name="adaptify_pack_summary">Buat adaptif ikon untuk ikon dari paket ikon</string>
 </resources>
