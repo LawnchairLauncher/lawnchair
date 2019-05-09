@@ -104,6 +104,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", context.resources.getBoolean(R.bool.config_enable_white_only_treatment), reloadIcons)
     val hideStatusBar by BooleanPref("pref_hideStatusBar", context.resources.getBoolean(R.bool.config_hide_statusbar), doNothing)
     val iconPackMasking by BooleanPref("pref_iconPackMasking", true, reloadIcons)
+    val adaptifyIconPacks by BooleanPref("pref_generateAdaptiveForIconPack", false, reloadIcons)
     //val showAssistantIcon by BooleanPref("opa_enabled")
 
     // Desktop
@@ -137,7 +138,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     // Dock
     val dockStyles = DockStyle.StyleManager(this, restart, resetAllApps)
     val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", false, doNothing)
-    val dockSearchBar by BooleanPref("pref_dockSearchBar", Utilities.ATLEAST_MARSHMALLOW, restart)
+    val dockSearchBarPref by BooleanPref("pref_dockSearchBar", Utilities.ATLEAST_MARSHMALLOW, restart)
+    inline val dockSearchBar get() = !dockHide && dockSearchBarPref
     val dockRadius get() = dockStyles.currentStyle.radius
     val dockShadow get() = dockStyles.currentStyle.enableShadow
     val dockShowArrow get() = dockStyles.currentStyle.enableArrow
@@ -174,6 +176,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val drawerLabelRows get() = if(drawerMultilineLabel) 2 else 1
     val drawerTabs by lazy { DrawerTabs(this) }
     val showActions by BooleanPref("pref_show_suggested_actions", true, doNothing)
+    val sortDrawerByColors by BooleanPref("pref_allAppsColorSorted", false, reloadAll)
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_showDevOptions", false, doNothing)
@@ -205,7 +208,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, doNothing)
 
     // Quickstep
-    val swipeUpToSwitchApps by BooleanPref("pref_swipe_up_to_switch_apps_enabled", true, doNothing)
+    var swipeUpToSwitchApps by BooleanPref("pref_swipe_up_to_switch_apps_enabled", true, doNothing)
     val recentsRadius by DimensionPref("pref_recents_radius", context.resources.getInteger(R.integer.task_corner_radius).toFloat(), doNothing)
     val swipeLeftToGoBack by BooleanPref("pref_swipe_left_to_go_back", false) {
         OverviewInteractionState.getInstance(context).setBackButtonAlpha(1f, true)

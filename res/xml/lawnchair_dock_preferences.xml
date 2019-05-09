@@ -42,7 +42,7 @@
         <ch.deletescape.lawnchair.preferences.DockAutoModeSeekbarPreference
             android:key="opacityPref"
             android:title="@string/opacity"
-            android:dependency="pref_dockPreset"
+            android:dependency="enableGradient"
             app:minValue="0"
             app:maxValue="1"
             app:summaryFormat="%.0f%%"
@@ -89,7 +89,8 @@
     
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_dockSearchbar"
-        android:title="@string/pref_category_searchbar">
+        android:title="@string/pref_category_searchbar"
+        android:dependency="pref_dockPreset">
         
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_dockSearchBar"

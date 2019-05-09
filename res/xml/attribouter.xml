@@ -37,19 +37,19 @@
                 url="https://twitter.com/deletescape" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
 
-        <!-- DevOps: divadsn -->
+        <!-- Special snowflake: chriskardas -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^David Sn"
-            avatar="https://avatars.githubusercontent.com/u/28547847"
-            bio="^@string/about_bio_divadsn"
-            blog="https://www.codebucket.de"
-            login="divadsn"
+            name="^Christopher Kardas"
+            avatar="https://avatars.githubusercontent.com/u/15703840"
+            bio="^@string/about_bio_chris"
+            blog="https://christopherkardas.me/"
+            login="chriskardas"
             position="2"
-            task="^@string/about_role_devops">
+            task="^@string/about_role_special_snowflake">
             <me.jfenn.attribouter.wedges.link.LinkWedge
                 name="@string/about_twitter"
                 icon="@drawable/ic_twitter"
-                url="https://twitter.com/divadsn" />
+                url="https://twitter.com/chris_kardas" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
 
         <!-- Developer: paphonb -->
@@ -118,20 +118,6 @@
                 name="@string/about_twitter"
                 icon="@drawable/ic_twitter"
                 url="https://twitter.com/lumiqcreative" />
-        </me.jfenn.attribouter.wedges.ContributorWedge>
-
-        <!-- Public relations: chriskardas -->
-        <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Christopher Kardas"
-            avatar="https://avatars.githubusercontent.com/u/15703840"
-            bio="^@string/about_bio_chris"
-            blog="https://christopherkardas.me/"
-            login="chriskardas"
-            task="^@string/about_role_special_snowflake">
-            <me.jfenn.attribouter.wedges.link.LinkWedge
-                name="@string/about_twitter"
-                icon="@drawable/ic_twitter"
-                url="https://twitter.com/chris_kardas" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
 
         <!-- Supporter: rickkode -->
@@ -249,7 +235,8 @@
         <!-- OpenWeatherMap-Android-Library -->
         <me.jfenn.attribouter.wedges.LicenseWedge
             title="^OpenWeatherMap-Android-Library"
-            repo="KwabenBerko/OpenWeatherMap-Android-Library" />
+            repo="KwabenBerko/OpenWeatherMap-Android-Library"
+            license="mit" />
 
         <!-- Sunrise/SunsetLib -->
         <me.jfenn.attribouter.wedges.LicenseWedge

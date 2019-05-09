@@ -28,8 +28,6 @@ public class NexusLauncherActivity extends Launcher {
         if (!FeedBridge.Companion.getInstance(this).isInstalled()) {
             prefs.edit().putBoolean(SettingsActivity.ENABLE_MINUS_ONE_PREF, false).apply();
         }
-
-        super.onCreate(savedInstanceState);
     }
 
     @Override

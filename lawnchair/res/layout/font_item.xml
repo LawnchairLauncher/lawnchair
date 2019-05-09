@@ -30,8 +30,8 @@
     <FrameLayout
         android:layout_width="@dimen/dashboard_tile_image_size"
         android:layout_height="@dimen/dashboard_tile_image_size"
-        android:layout_marginStart="@dimen/dashboard_tile_image_margin"
-        android:layout_marginEnd="@dimen/dashboard_tile_image_margin">
+        android:layout_marginStart="@dimen/dashboard_tile_image_margin_start"
+        android:layout_marginEnd="@dimen/dashboard_tile_image_margin_end">
 
         <RadioButton
             android:id="@+id/radio_button"

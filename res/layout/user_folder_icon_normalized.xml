@@ -16,11 +16,12 @@
 -->
 <com.android.launcher3.folder.Folder xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/round_rect_primary"
     android:elevation="5dp"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <com.android.launcher3.folder.FolderPagedView
         android:id="@+id/folder_content"
@@ -48,8 +49,6 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:fontFamily="sans-serif-condensed"
-            android:textStyle="bold"
             android:gravity="center_horizontal"
             android:hint="@string/folder_hint_text"
             android:imeOptions="flagNoExtractUi"
@@ -59,7 +58,9 @@
             android:textColor="?android:attr/textColorTertiary"
             android:textColorHighlight="?android:attr/colorControlHighlight"
             android:textColorHint="?android:attr/textColorHint"
-            android:textSize="@dimen/folder_label_text_size" />
+            android:textSize="@dimen/folder_label_text_size"
+            app:customFontType="workspaceIcon"
+            app:customFontWeight="w700" />
 
         <com.android.launcher3.pageindicators.PageIndicatorDots
             android:id="@+id/folder_page_indicator"

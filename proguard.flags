@@ -226,3 +226,8 @@
 -keep class com.google.protobuf.nano.WireFormatNano {
   static java.lang.String[] EMPTY_STRING_ARRAY;
 }
+
+-keep class android.support.v4.widget.mEdgeGlowTop {
+  EdgeEffect mEdgeGlowTop;
+  EdgeEffect mEdgeGlowBottom;
+}

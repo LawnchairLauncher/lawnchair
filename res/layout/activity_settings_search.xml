@@ -25,7 +25,7 @@
         android:id="@+id/layout_results"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="24dp"
         android:orientation="vertical">
 
         <!-- Padding is included in the background -->
@@ -80,13 +80,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/search_bar_margin"
-            app:cardCornerRadius="24dp"
-            app:cardBackgroundColor="?android:attr/colorBackground"
+            app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="?attr/settingsSearchBackground"
             app:cardElevation="2dp">
             <android.support.v7.widget.Toolbar
                 android:id="@+id/search_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/search_bar_height"
+                android:layout_marginStart="-2dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:theme="?android:attr/actionBarTheme"
                 app:contentInsetStartWithNavigation="0dp">
@@ -94,7 +95,7 @@
                     android:id="@+id/search_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingStart="-2dp"
+                    android:paddingStart="-4dp"
                     android:paddingEnd="0dp"
                     android:iconifiedByDefault="false"
                     android:imeOptions="actionSearch|flagNoExtractUi"

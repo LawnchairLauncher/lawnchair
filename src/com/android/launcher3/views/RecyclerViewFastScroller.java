@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -32,14 +33,14 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.TextView;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.BaseRecyclerView;
+import com.android.launcher3.BaseRecyclerView.PositionThumbInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.FastScrollThumbDrawable;
 import com.android.launcher3.util.Themes;
-
-import ch.deletescape.lawnchair.colors.ColorEngine;
 
 /**
  * The track and scrollbar that shows when you scroll the list.
@@ -111,6 +112,8 @@ public class RecyclerViewFastScroller extends View {
     private int mDownY;
     private int mLastY;
 
+    private LawnchairPreferences prefs;
+
     public RecyclerViewFastScroller(Context context) {
         this(context, null);
     }
@@ -145,6 +148,8 @@ public class RecyclerViewFastScroller extends View {
                         defStyleAttr, 0);
         mCanThumbDetach = ta.getBoolean(R.styleable.RecyclerViewFastScroller_canThumbDetach, false);
         ta.recycle();
+
+        prefs = Utilities.getLawnchairPrefs(context);
     }
 
     public void setRecyclerView(BaseRecyclerView rv, TextView popupView) {
@@ -280,12 +285,22 @@ public class RecyclerViewFastScroller extends View {
         // Update the fastscroller section name at this touch position
         int bottom = mRv.getScrollbarTrackHeight() - mThumbHeight;
         float boundedY = (float) Math.max(0, Math.min(bottom, y - mTouchOffsetY));
-        String sectionName = mRv.scrollToPositionAtProgress(boundedY / bottom);
+        PositionThumbInfo thumbInfo = mRv.scrollToPositionAtProgress(boundedY / bottom);
+        String sectionName = thumbInfo.name;
         if (!sectionName.equals(mPopupSectionName)) {
             mPopupSectionName = sectionName;
             mPopupView.setText(sectionName);
         }
-        animatePopupVisibility(!sectionName.isEmpty());
+        int color = thumbInfo.color;
+        if (color != 0 && prefs.getSortDrawerByColors()) {
+            setColor(color, Color.WHITE);
+            if (!prefs.getShowDebugInfo()) {
+                mPopupSectionName = "";
+                mPopupView.setText("");
+            }
+        } else {
+            animatePopupVisibility(!sectionName.isEmpty());
+        }
         updatePopupY(lastY);
         mLastTouchY = boundedY;
         setThumbOffsetY((int) mLastTouchY);

@@ -15,23 +15,12 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.deletescape.lawnchair.views
+package ch.deletescape.lawnchair.util
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.graphics.Rect
-import android.support.v7.widget.CardView
-import android.util.AttributeSet
-import ch.deletescape.lawnchair.folder.FolderShape
-import com.android.launcher3.InsettableFrameLayout
-import com.android.launcher3.R
-import com.android.launcher3.Utilities
-import com.android.launcher3.graphics.IconShapeOverride
+import java.lang.reflect.Field
 
-class SettingsSearchLayout(context: Context, attrs: AttributeSet?) : InsettableFrameLayout(context, attrs) {
-
-    override fun setInsets(insets: Rect) {
-        setPadding(0, insets.top, 0, 0)
-        super.setInsets(Rect(insets.left, 0, insets.right, insets.bottom))
+inline fun <reified T> getField(name: String): Field {
+    return T::class.java.getDeclaredField(name).apply {
+        isAccessible = true
     }
 }

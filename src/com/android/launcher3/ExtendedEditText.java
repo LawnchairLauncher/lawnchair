@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import ch.deletescape.lawnchair.font.CustomFontManager;
 import com.android.launcher3.util.UiThreadHelper;
 
 
@@ -52,10 +53,12 @@ public class ExtendedEditText extends EditText {
     public ExtendedEditText(Context context, AttributeSet attrs) {
         // ctor chaining breaks the touch handling
         super(context, attrs);
+        CustomFontManager.Companion.getInstance(context).loadCustomFont(this, attrs);
     }
 
     public ExtendedEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        CustomFontManager.Companion.getInstance(context).loadCustomFont(this, attrs);
     }
 
     public void setOnBackKeyListener(OnBackKeyListener listener) {

@@ -18,13 +18,10 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
-import android.content.res.ColorStateList
+import android.support.annotation.Keep
 import android.support.v14.preference.SwitchPreference
-import android.support.v4.graphics.ColorUtils
-import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.preference.AndroidResources
 import android.support.v7.preference.PreferenceViewHolder
-import android.support.v7.widget.SwitchCompat
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Switch
@@ -34,11 +31,10 @@ import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.ControlledPreference
 import ch.deletescape.lawnchair.settings.ui.search.SearchIndex
-import com.android.launcher3.util.Themes
 
-open class StyledSwitchPreferenceCompat @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+open class StyledSwitchPreferenceCompat(context: Context, attrs: AttributeSet? = null) :
         SwitchPreference(context, attrs), ColorEngine.OnColorChangeListener,
-        ControlledPreference by ControlledPreference.Delegate(context, attrs), SearchIndex.Slice {
+        ControlledPreference by ControlledPreference.Delegate(context, attrs) {
 
     protected var checkableView: View? = null
         private set
@@ -60,20 +56,38 @@ open class StyledSwitchPreferenceCompat @JvmOverloads constructor(context: Conte
         ColorEngine.getInstance(context).removeColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
-    override fun getSlice(context: Context, key: String): View {
-        val color = ColorEngine.getInstance(context).accent
-        val prefs = context.lawnchairPrefs
-        var pref by prefs.BooleanPref(key)
-        return Switch(context).apply {
-            applyColor(color)
-            prefs.addOnPreferenceChangeListener(key, object : LawnchairPreferences.OnPreferenceChangeListener {
-                override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
-                    isChecked = pref
+    open class SwitchSlice(context: Context, attrs: AttributeSet) : SearchIndex.Slice(context, attrs) {
+
+        private val defaultValue: Boolean
+
+        init {
+            val ta = context.obtainStyledAttributes(attrs, intArrayOf(android.R.attr.defaultValue))
+            defaultValue = ta.getBoolean(0, false)
+            ta.recycle()
+        }
+
+        override fun createSliceView(): View {
+            val color = ColorEngine.getInstance(context).accent
+            val prefs = context.lawnchairPrefs
+            var pref by prefs.BooleanPref(key, defaultValue)
+            return Switch(context).apply {
+                applyColor(color)
+                prefs.addOnPreferenceChangeListener(key, object : LawnchairPreferences.OnPreferenceChangeListener {
+                    override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
+                        isChecked = pref
+                    }
+                })
+                setOnCheckedChangeListener { _, isChecked ->
+                    pref = isChecked
                 }
-            })
-            setOnCheckedChangeListener { _, isChecked ->
-                pref = isChecked
             }
         }
+    }
+
+    companion object {
+
+        @Keep
+        @JvmStatic
+        val sliceProvider = SearchIndex.SliceProvider.fromLambda(::SwitchSlice)
     }
 }

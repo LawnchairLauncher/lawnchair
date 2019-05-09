@@ -28,9 +28,9 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Looper
 import android.text.TextUtils
-import android.util.Log
 import android.util.Xml
 import android.widget.Toast
+import ch.deletescape.lawnchair.adaptive.AdaptiveIconGenerator
 import ch.deletescape.lawnchair.get
 import ch.deletescape.lawnchair.toTitleCase
 import ch.deletescape.lawnchair.util.extensions.d
@@ -233,6 +233,10 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 } else if (packDynamicDrawables.containsKey(drawableId)) {
                     drawable = DynamicDrawable.getIcon(context, drawable, packDynamicDrawables[drawableId]!!, iconDpi)
                 }
+                if (prefs.adaptifyIconPacks) {
+                    val gen = AdaptiveIconGenerator(context, drawable.mutate(), "$packPackageName#$drawableId")
+                    return gen.result
+                }
                 return drawable.mutate()
             } catch (ex: Resources.NotFoundException) {
                 e("Can't get drawable for name $name ($drawableId)", ex)
@@ -263,6 +267,10 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 } else if (packDynamicDrawables.containsKey(drawableId)) {
                     drawable = DynamicDrawable.getIcon(context, drawable, packDynamicDrawables[drawableId]!!, iconDpi)
                 }
+                if (prefs.adaptifyIconPacks) {
+                    val gen = AdaptiveIconGenerator(context, drawable.mutate(), "$packPackageName#$drawableId")
+                    return gen.result
+                }
                 return drawable.mutate()
             } catch (ex: Resources.NotFoundException) {
                 e("Can't get drawable for $component ($drawableId)", ex)
@@ -272,7 +280,12 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         if (prefs.iconPackMasking && packMask.hasMask) {
             val baseIcon = defaultPack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable,
                     customIconEntry, iconProvider)
-            return packMask.getIcon(context, baseIcon)
+            val icon = packMask.getIcon(context, baseIcon)
+            if (prefs.adaptifyIconPacks) {
+                val gen = AdaptiveIconGenerator(context, icon, "$packPackageName#${component.flattenToString()}")
+                return gen.result
+            }
+            return icon
         }
 
         return null
@@ -284,7 +297,12 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         if (prefs.iconPackMasking && packMask.hasMask) {
             val baseIcon = defaultPack.getIcon(shortcutInfo, iconDpi)
             if (baseIcon != null) {
-                return packMask.getIcon(context, baseIcon)
+                val icon = packMask.getIcon(context, baseIcon)
+                if (prefs.adaptifyIconPacks) {
+                    val gen = AdaptiveIconGenerator(context, icon, "$packPackageName#${shortcutInfo.id}")
+                    return gen.result
+                }
+                return icon
             }
         }
 

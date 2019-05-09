@@ -18,20 +18,26 @@
 package ch.deletescape.lawnchair.views
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.graphics.Rect
-import android.support.v7.widget.CardView
 import android.util.AttributeSet
-import ch.deletescape.lawnchair.folder.FolderShape
-import com.android.launcher3.InsettableFrameLayout
-import com.android.launcher3.R
-import com.android.launcher3.Utilities
-import com.android.launcher3.graphics.IconShapeOverride
+import ch.deletescape.lawnchair.settings.ui.DecorLayout
 
-class SettingsSearchLayout(context: Context, attrs: AttributeSet?) : InsettableFrameLayout(context, attrs) {
+class PreferenceNestedScrollView @JvmOverloads constructor(
+        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : InsettableNestedScrollView(context, attrs, defStyleAttr) {
 
-    override fun setInsets(insets: Rect) {
-        setPadding(0, insets.top, 0, 0)
-        super.setInsets(Rect(insets.left, 0, insets.right, insets.bottom))
+    private var elevationHelper: DecorLayout.ToolbarElevationHelper? = null
+        set(value) {
+            field?.destroy()
+            field = value
+        }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        elevationHelper = DecorLayout.ToolbarElevationHelper(this)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        elevationHelper = null
     }
 }

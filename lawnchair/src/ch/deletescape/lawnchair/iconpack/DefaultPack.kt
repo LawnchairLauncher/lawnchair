@@ -31,6 +31,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.text.TextUtils
+import ch.deletescape.lawnchair.adaptive.AdaptiveIconGenerator
 import ch.deletescape.lawnchair.getLauncherActivityInfo
 import ch.deletescape.lawnchair.toBitmap
 import com.android.launcher3.*
@@ -97,10 +98,8 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         getRoundIcon(component, iconDpi)?.let {
             roundIcon = it.apply { mutate() }
         }
-        if (Utilities.ATLEAST_OREO && shouldWrapToAdaptive(originalIcon)) {
-            return wrapToAdaptiveIcon(roundIcon ?: originalIcon)
-        }
-        return roundIcon
+        val gen = AdaptiveIconGenerator(context, roundIcon ?: originalIcon, name)
+        return gen.result
     }
 
     override fun getIcon(launcherActivityInfo: LauncherActivityInfo,
@@ -126,38 +125,18 @@ class DefaultPack(context: Context) : IconPack(context, "") {
             getRoundIcon(component, iconDpi)?.let {
                 roundIcon = it.apply { mutate() }
             }
-            if (Utilities.ATLEAST_OREO && ((roundIcon != null && shouldWrapToAdaptive(roundIcon)) || shouldWrapToAdaptive(originalIcon))) {
-                return wrapToAdaptiveIcon(roundIcon ?: originalIcon)
-            }
-            if (roundIcon != null) return roundIcon as Drawable
+            val gen = AdaptiveIconGenerator(context, roundIcon ?: originalIcon, key.toString())
+            return gen.result
         }
-        return iconProvider?.getDynamicIcon(info, iconDpi, flattenDrawable) ?: originalIcon
+        return iconProvider.getDynamicIcon(info, iconDpi, flattenDrawable)
     }
 
     override fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
         ensureInitialLoadComplete()
 
         val drawable = DeepShortcutManager.getInstance(context).getShortcutIconDrawable(shortcutInfo, iconDpi)
-        if (Utilities.ATLEAST_OREO && shouldWrapToAdaptive(drawable)) {
-            return wrapToAdaptiveIcon(drawable)
-        }
-        return drawable
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun shouldWrapToAdaptive(icon: Drawable?): Boolean {
-        if (icon == null) return false
-        val ipm = IconPackManager.getInstance(context)
-        if (!prefs.enableLegacyTreatment || (prefs.iconPackMasking && ipm.maskSupported())) {
-            return false
-        }
-        return if (icon is AdaptiveIconDrawable) {
-            prefs.colorizedLegacyTreatment &&
-                    prefs.enableWhiteOnlyTreatment &&
-                    ColorExtractor.isSingleColor(icon.background, Color.WHITE) &&
-                    icon.foreground != null
-        } else true
-
+        val gen = AdaptiveIconGenerator(context, drawable, shortcutInfo.id)
+        return gen.result
     }
 
     override fun newIcon(icon: Bitmap, itemInfo: ItemInfo,
@@ -226,57 +205,6 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         }
 
         return null
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun wrapToAdaptiveIcon(icon: Drawable): Drawable {
-        return if (icon is AdaptiveIconDrawable && icon.foreground != null) {
-            if (icon.background is ColorDrawable)
-                icon.apply {
-                    (background as? ColorDrawable)?.color = extractColor(foreground)
-                }
-            else
-                AdaptiveIconDrawable(ColorDrawable(extractColor(icon.foreground)), icon.foreground)
-        } else {
-            val dr = (wrapperIcon as AdaptiveIconDrawable).apply {
-                mutate()
-                setBounds(0, 0, 1, 1)
-            }
-            val outShape = BooleanArray(1)
-            val outBounds = RectF()
-            val scale = normalizer.getScale(icon, outBounds, dr.iconMask, outShape)
-            dr.apply {
-                // Scale up full-bleed icons as well as icons matching the current mask
-                val zoomAndMask = outShape[0] || ColorExtractor.isFullBleed(icon, outBounds)
-                (dr.foreground as FixedScaleDrawable).apply {
-                    drawable = icon
-                    if (zoomAndMask) {
-
-                        // Scale up to remove any padding an icon may have
-                        val width = icon.intrinsicWidth
-                        val height = icon.intrinsicHeight
-                        val aWidth = width * (1 - (outBounds.left + outBounds.right))
-                        val aHeight = height * (1 - (outBounds.top + outBounds.bottom))
-                        val addScale = max(width / aWidth, height / aHeight)
-
-                        setScale(FULL_BLEED_ICON_SCALE * addScale)
-                    } else {
-                        setScale(scale)
-                    }
-                }
-                (dr.background as ColorDrawable).color = extractColor(icon, zoomAndMask)
-            }
-        }
-    }
-
-    private fun extractColor(drawable: Drawable, zoomAndMask: Boolean = false): Int = if (prefs.colorizedLegacyTreatment || zoomAndMask) {
-        ColorExtractor.generateBackgroundColor(drawable.toBitmap(), !zoomAndMask)
-    } else {
-        Color.WHITE
-    }
-
-    companion object {
-        const val FULL_BLEED_ICON_SCALE = 1.44f;
     }
 
     class Entry(private val app: LauncherActivityInfo) : IconPack.Entry() {

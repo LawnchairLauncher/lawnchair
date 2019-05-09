@@ -248,7 +248,10 @@ public class DeepShortcutManager {
             List<SesameShortcut> shortcuts = SesameFrontend
                     .getRecentAppShortcuts(packageName, false, PopupPopulator.MAX_SHORTCUTS);
             for (SesameShortcut shortcut : shortcuts) {
-                shortcutInfoCompats.add(new SesameShortcutInfo(mContext, shortcut));
+                SesameShortcutInfo info = new SesameShortcutInfo(mContext, shortcut);
+                if (shortcutIds == null || shortcutIds.contains(info.getId())) {
+                    shortcutInfoCompats.add(info);
+                }
             }
             // TODO: I have no idea why I added this. investigate
             if (!shortcuts.isEmpty()) {

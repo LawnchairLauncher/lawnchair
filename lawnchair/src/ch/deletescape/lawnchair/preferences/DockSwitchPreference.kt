@@ -19,14 +19,15 @@ package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
 import android.support.annotation.Keep
-import android.support.v14.preference.SwitchPreference
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Switch
+import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.settings.ui.search.SearchIndex
 import com.android.launcher3.Utilities
 import kotlin.reflect.KMutableProperty1
 
-class DockSwitchPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : StyledSwitchPreferenceCompat(context, attrs) {
+class DockSwitchPreference(context: Context, attrs: AttributeSet? = null) : StyledSwitchPreferenceCompat(context, attrs) {
 
     private val prefs = Utilities.getLawnchairPrefs(context)
     private val currentStyle get() = prefs.dockStyles.currentStyle
@@ -65,16 +66,42 @@ class DockSwitchPreference @JvmOverloads constructor(context: Context, attrs: At
         return property != null
     }
 
-    override fun getSlice(context: Context, key: String): View {
-        this.key = key
-        return (super.getSlice(context, key) as Switch).apply {
-            prefs.dockStyles.addListener {
-                isChecked = getPersistedBoolean(false)
-            }
-            isChecked = getPersistedBoolean(false)
-            setOnCheckedChangeListener { _, isChecked ->
-                persistBoolean(isChecked)
+    class DockSwitchSlice(context: Context, attrs: AttributeSet) : SwitchSlice(context, attrs) {
+
+        private val prefs = Utilities.getLawnchairPrefs(context)
+        private val currentStyle get() = prefs.dockStyles.currentStyle
+        private val inverted get() = key == "enableGradient"
+
+        @Suppress("UNCHECKED_CAST")
+        private val property get() = DockStyle.properties[key] as? KMutableProperty1<DockStyle, Boolean>
+
+        override fun createSliceView(): View {
+            return (super.createSliceView() as Switch).apply {
+                context.lawnchairPrefs.dockStyles.addListener {
+                    isChecked = getPersistedBoolean()
+                }
+                isChecked = getPersistedBoolean()
+                setOnCheckedChangeListener { _, isChecked ->
+                    persistBoolean(isChecked)
+                }
             }
         }
+
+        private fun getPersistedBoolean(): Boolean {
+            if (inverted) return property?.get(currentStyle) != true
+            return property?.get(currentStyle) == true
+        }
+
+        private fun persistBoolean(value: Boolean): Boolean {
+            property?.set(currentStyle, if (inverted) !value else value)
+            return property != null
+        }
+    }
+
+    companion object {
+
+        @Keep
+        @JvmStatic
+        val sliceProvider = SearchIndex.SliceProvider.fromLambda(::DockSwitchSlice)
     }
 }

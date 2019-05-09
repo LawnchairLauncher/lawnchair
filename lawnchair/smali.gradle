@@ -45,14 +45,12 @@ task 'buildLawnchairSmali' {
     }
 }
 
-def mergeSmaliLibToDex(fileName) {
-    def dxJar = "${android.sdkDirectory}/build-tools/${android.buildToolsVersion}/lib/dx.jar"
+def copySmaliLibDex(dirName) {
     def libDex = 'build/lawnchairsmali/lawnchair.dex'
-    def merger = 'com.android.dx.merge.DexMerger'
-    println "merge $libDex into $fileName"
+    println "copy $libDex into $dirName"
     exec {
         workingDir '.'
-        commandLine 'java', '-cp', dxJar, merger, fileName, libDex, fileName
+        commandLine 'cp', libDex, dirName
     }
 }
 
@@ -69,18 +67,18 @@ tasks.whenTaskAdded { task ->
         def split = dashSeparated(variantName).split('-')
         def buildType = split[split.length - 1]
         variantName = variantName.substring(0, variantName.length() - buildType.length())
-        def fileName = "./build/intermediates/transforms/dexMerger/${variantName}/${buildType}/0/classes.dex"
+        def dirName = "./build/intermediates/transforms/dexMerger/${variantName}/${buildType}/0/"
         task.doLast {
-            mergeSmaliLibToDex(fileName)
+            copySmaliLibDex(dirName)
         }
     } else if (name.startsWith('transformClassesAndResourcesWithR8For') && !name.endsWith('Test')) {
         def variantName = name.substring(37).uncapitalize()
         def split = dashSeparated(variantName).split('-')
         def buildType = split[split.length - 1]
         variantName = variantName.substring(0, variantName.length() - buildType.length())
-        def fileName = "./build/intermediates/transforms/r8/${variantName}/${buildType}/0/classes.dex"
+        def dirName = "./build/intermediates/transforms/r8/${variantName}/${buildType}/0/"
         task.doLast {
-            mergeSmaliLibToDex(fileName)
+            copySmaliLibDex(dirName)
         }
     }
 }

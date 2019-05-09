@@ -21,16 +21,13 @@ import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.ColorUtils;
-import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 import com.android.launcher3.Utilities;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import kotlin.collections.ArraysKt;
 
-import static java.lang.Math.abs;
 import static java.lang.Math.min;
 import static java.lang.Math.max;
 import static java.lang.Math.round;
@@ -130,83 +127,6 @@ public class ColorExtractor {
         return bestColor;
     }
 
-    // Average number of derived colors (based on averages with ~100 icons and performance testing)
-    private static final int NUMBER_OF_COLORS_GUESSTIMATION = 45;
-
-    /**
-     * This picks a dominant color judging by how often it appears and modifies it to provide
-     * sufficient contrast to the pbitmap.
-     *
-     * @param bitmap The bitmap to scan
-     */
-    public static int generateBackgroundColor(Bitmap bitmap, boolean addFillIn) {
-        if (bitmap == null) {
-            return Color.WHITE;
-        }
-        final int height = bitmap.getHeight();
-        final int width = bitmap.getWidth();
-        final int size = height * width;
-
-        SparseIntArray rgbScoreHistogram = new SparseIntArray(NUMBER_OF_COLORS_GUESSTIMATION);
-        final int[] pixels = new int[size];
-        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
-
-        int highScore = 0;
-        int bestRGB = 0;
-        int transparentScore = 0;
-        for (int pixel : pixels) {
-            int alpha = 0xFF & (pixel >> 24);
-            if (alpha < 0xDD) {
-                // Drop mostly-transparent pixels.
-                transparentScore++;
-                continue;
-            }
-            // Reduce color complexity.
-            int rgb = posterize(pixel);
-            if (rgb < 0) {
-                // Defensively avoid array bounds violations.
-                continue;
-            }
-            int currentScore = rgbScoreHistogram.get(rgb) + 1;
-            rgbScoreHistogram.append(rgb, currentScore);
-            if (currentScore > highScore) {
-                highScore = currentScore;
-                bestRGB = rgb;
-            }
-        }
-
-        // return early if a mix-in isnt needed
-        if (!addFillIn) {
-            return bestRGB | 0xff << 24;
-        }
-
-        // Convert to HSL to get the lightness
-        final float[] hsl = new float[3];
-        ColorUtils.colorToHSL(bestRGB, hsl);
-        float lightness = hsl[2];
-
-        // "single color"
-        boolean singleColor = rgbScoreHistogram.size() <= 2;
-        boolean light = lightness > .5;
-        // Apply dark background to mostly white icons
-        boolean veryLight = lightness > .75 && singleColor;
-        // Apply light background to mostly dark icons
-        boolean veryDark = lightness < .30 && singleColor;
-
-        // Adjust color to reach suitable contrast depending on the relationship between the colors
-        float ratio = min(max(1f - (highScore / (float) (size - transparentScore)), .2f), .8f);
-
-        if (singleColor) {
-            // Invert ratio for "single color" foreground
-            ratio = 1f - ratio;
-        }
-
-        // Vary color mix-in based on lightness and amount of colors
-        int fill = (light && !veryLight) ||  veryDark? 0xFFFFFFFF : 0xFF333333;
-        int background = ColorUtils.blendARGB(bestRGB | 0xff << 24, fill, ratio);
-        return background | 0xff << 24;
-    }
-
     public static boolean isSingleColor(Drawable drawable, int color) {
         if (drawable == null) return true;
         final int testColor = posterize(color);
@@ -241,7 +161,7 @@ public class ColorExtractor {
      * https://www.cs.umb.edu/~jreyes/csit114-fall-2007/project4/filters.html#posterize
      * https://github.com/gitgraghu/image-processing/blob/master/src/Effects/Posterize.java
      */
-    private static int posterize(int rgb) {
+    public static int posterize(int rgb) {
         int red = (0xff & (rgb >> 16));
         int green = (0xff & (rgb >> 8));
         int blue = (0xff & rgb);
@@ -258,58 +178,5 @@ public class ColorExtractor {
             blue = 0;
         }
         return red << 16 | green << 8 | blue;
-    }
-
-    /**
-     * Checks if a given icon can be considered "full-bleed-ish"
-     * @param drawable the icon
-     * @param bounds actual bounds (derived from IconNormalizer)
-     * @return
-     */
-    public static boolean isFullBleed(Drawable drawable, RectF bounds) {
-        if (drawable == null) return false;
-        if (drawable instanceof ColorDrawable) return true;
-
-        // Check if the icon is squareish
-        final float ratio = (drawable.getIntrinsicHeight() * (1 - (bounds.top + bounds.bottom)) /
-                (drawable.getIntrinsicWidth() * (1 - (bounds.left + bounds.right))));
-        if (ratio < 0.99 || ratio > 1.01) return false;
-
-        final Bitmap bitmap = Utilities.drawableToBitmap(drawable);
-        if (bitmap == null) {
-            return false;
-        }
-        if (!bitmap.hasAlpha()) {
-            return true;
-        }
-
-        final int height = bitmap.getHeight();
-        final int width = bitmap.getWidth();
-        final int size = height * width;
-
-        int[] pixels = new int[height * width];
-        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
-
-        // Calculate number of padding pixels
-        // TODO: make this calculation a bit more readable
-        float adjHeight = height - bounds.top - bounds.bottom;
-        int addPixels = Math.round(bounds.left * width * adjHeight + bounds.top * height * width + bounds.right * width * adjHeight + bounds.bottom * height * width);
-
-
-        // Any icon with less than 2% transparent pixels (padding excluded) is considered "full-bleed-ish"
-        final int maxTransparent = (int) (round(size * .02) + addPixels);
-        int count = 0;
-
-        for (int pixel : pixels) {
-            int alpha = 0xFF & (pixel >> 24);
-            if (alpha < 0xDD) {
-                count++;
-                // return as soon as we pass the limit of transparent pixels
-                if (count > maxTransparent) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 }

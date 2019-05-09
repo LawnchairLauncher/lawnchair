@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.support.annotation.Keep
 import android.support.v7.preference.Preference
 import android.util.AttributeSet
 import android.view.View
@@ -34,7 +35,7 @@ import ch.deletescape.lawnchair.settings.ui.search.SearchIndex
 import com.android.launcher3.R
 import java.lang.IllegalStateException
 
-class IconPackPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : Preference(context, attrs), SearchIndex.Slice {
+class IconPackPreference(context: Context, attrs: AttributeSet? = null) : Preference(context, attrs) {
     private val ipm = IconPackManager.getInstance(context)
     private val packList = ipm.packList
 
@@ -70,20 +71,30 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
         }
     }
 
-    override fun getSlice(context: Context, key: String): View {
-        return (View.inflate(context, R.layout.preview_icon, null) as ImageView).apply {
-            IconPackManager.getInstance(context).addListener {
-                setImageDrawable(packList.currentPack().displayIcon)
-            }
-            setOnClickListener {
-                context.startActivity(Intent()
-                        .setClass(context, SettingsActivity::class.java)
-                        .putExtra(SettingsActivity.EXTRA_FRAGMENT, fragment)
-                        .putExtra(SettingsActivity.EXTRA_FRAGMENT_ARGS, Bundle().apply {
-                            putString(SettingsActivity.SubSettingsFragment.TITLE, context.getString(R.string.icon_pack))
-                        })
-                )
+    class IconPackSlice(context: Context, attrs: AttributeSet) : SearchIndex.Slice(context, attrs) {
+
+        override fun createSliceView(): View {
+            return (View.inflate(context, R.layout.preview_icon, null) as ImageView).apply {
+                IconPackManager.getInstance(context).addListener {
+                    setImageDrawable(IconPackManager.getInstance(context).packList.currentPack().displayIcon)
+                }
+                setOnClickListener {
+                    context.startActivity(Intent()
+                            .setClass(context, SettingsActivity::class.java)
+                            .putExtra(SettingsActivity.EXTRA_FRAGMENT, IconPackFragment::class.java.name)
+                            .putExtra(SettingsActivity.EXTRA_FRAGMENT_ARGS, Bundle().apply {
+                                putString(SettingsActivity.SubSettingsFragment.TITLE, context.getString(R.string.icon_pack))
+                            })
+                    )
+                }
             }
         }
+    }
+
+    companion object {
+
+        @Keep
+        @JvmStatic
+        val sliceProvider = SearchIndex.SliceProvider.fromLambda(::IconPackSlice)
     }
 }

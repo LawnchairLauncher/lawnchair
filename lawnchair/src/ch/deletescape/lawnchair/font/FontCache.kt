@@ -30,6 +30,7 @@ import ch.deletescape.lawnchair.uiWorkerHandler
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.R
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.lang.Exception
@@ -71,6 +72,10 @@ class FontCache(private val context: Context) {
 
         open fun saveToJson(obj: JSONObject) {
             obj.put(KEY_CLASS_NAME, this::class.java.name)
+        }
+
+        open fun createWithWeight(weight: Int): Font {
+            return this
         }
 
         fun toJsonString(): String {
@@ -206,6 +211,13 @@ class FontCache(private val context: Context) {
             return hashCode
         }
 
+        override fun createWithWeight(weight: Int): Font {
+            if (weight >= 700) {
+                return SystemFont(family, Typeface.BOLD)
+            }
+            return super.createWithWeight(weight)
+        }
+
         companion object {
 
             @Keep
@@ -238,7 +250,8 @@ class FontCache(private val context: Context) {
     class GoogleFont(
             private val context: Context,
             private val family: String,
-            private val variant: String = "regular") : Font() {
+            private val variant: String = "regular",
+            private val variants: Array<String> = emptyArray()) : Font() {
 
         private val hashCode = "GoogleFont|$family|$variant".hashCode()
 
@@ -278,6 +291,9 @@ class FontCache(private val context: Context) {
             super.saveToJson(obj)
             obj.put(KEY_FAMILY_NAME, family)
             obj.put(KEY_VARIANT, variant)
+            val variantsArray = JSONArray()
+            variants.forEach { variantsArray.put(it) }
+            obj.put(KEY_VARIANTS, variantsArray)
         }
 
         override fun equals(other: Any?): Boolean {
@@ -288,6 +304,40 @@ class FontCache(private val context: Context) {
             return hashCode
         }
 
+        override fun createWithWeight(weight: Int): Font {
+            if (weight == -1) return this
+            val currentWeight = GoogleFontsListing.getWeight(variant).toInt()
+            if (weight == currentWeight) return this
+            val newVariant = if (weight > currentWeight)
+                findHeavier(weight, currentWeight, GoogleFontsListing.isItalic(variant))
+            else
+                findLighter(weight, currentWeight, GoogleFontsListing.isItalic(variant))
+            if (newVariant != null) {
+                return GoogleFont(context, family, newVariant, variants)
+            }
+            return super.createWithWeight(weight)
+        }
+
+        private fun findHeavier(weight: Int, minWeight: Int, italic: Boolean): String? {
+            val variants = variants.filter { it.contains("italic") == italic }
+            return variants.lastOrNull {
+                val variantWeight = GoogleFontsListing.getWeight(it).toInt()
+                variantWeight in minWeight..weight
+            } ?: variants.firstOrNull {
+                GoogleFontsListing.getWeight(it).toInt() >= minWeight
+            }
+        }
+
+        private fun findLighter(weight: Int, maxWeight: Int, italic: Boolean): String? {
+            val variants = variants.filter { it.contains("italic") == italic }
+            return variants.firstOrNull {
+                val variantWeight = GoogleFontsListing.getWeight(it).toInt()
+                variantWeight in weight..maxWeight
+            } ?: variants.lastOrNull {
+                GoogleFontsListing.getWeight(it).toInt() <= maxWeight
+            }
+        }
+
         companion object {
 
             @Keep
@@ -295,7 +345,9 @@ class FontCache(private val context: Context) {
             fun fromJson(context: Context, obj: JSONObject): Font {
                 val family = obj.getString(KEY_FAMILY_NAME)
                 val variant = obj.getString(KEY_VARIANT)
-                return GoogleFont(context, family, variant)
+                val variantsArray = obj.optJSONArray(KEY_VARIANTS) ?: JSONArray()
+                val variants = Array<String>(variantsArray.length()) { variantsArray.getString(it) }
+                return GoogleFont(context, family, variant, variants)
             }
         }
     }
@@ -307,6 +359,7 @@ class FontCache(private val context: Context) {
         private const val KEY_FAMILY_NAME = "family"
         private const val KEY_STYLE = "style"
         private const val KEY_VARIANT = "variant"
+        private const val KEY_VARIANTS = "variants"
         private const val KEY_FONT_NAME = "font"
     }
 }

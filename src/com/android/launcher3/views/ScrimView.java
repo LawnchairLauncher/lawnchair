@@ -111,7 +111,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
 
     protected final int mDragHandleSize;
     protected float mDragHandleOffset;
-    private final Rect mDragHandleBounds;
+    protected final Rect mDragHandleBounds;
     private final RectF mHitRect = new RectF();
 
     private final AccessibilityHelper mAccessibilityHelper;

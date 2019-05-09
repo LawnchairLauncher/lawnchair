@@ -88,7 +88,8 @@ class OWMWeatherDataProvider(controller: LawnchairSmartspaceController) :
 
     override fun onFailure(throwable: Throwable?) {
         Log.w("OWM", "Updating weather data failed", throwable)
-        if (prefs.weatherApiKey == context.getString(R.string.default_owm_key)) {
+        if (prefs.weatherApiKey == context.getString(R.string.default_owm_key)
+                || throwable?.message == apiKeyError) {
             Toast.makeText(context, R.string.owm_get_your_own_key, Toast.LENGTH_LONG).show()
         } else if (throwable != null) {
             Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
@@ -114,5 +115,11 @@ class OWMWeatherDataProvider(controller: LawnchairSmartspaceController) :
             }
             if (!force) updateNow()
         }
+    }
+
+    companion object {
+
+        private const val apiKeyError = "UnAuthorized. Please set a valid OpenWeatherMap API KEY" +
+                " by using the setApiKey method."
     }
 }

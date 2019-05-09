@@ -50,6 +50,7 @@
     <attr name="bottomSheetNavBarColor" format="color" />
     <attr name="useLightSystemBars" format="boolean" />
     <attr name="settingsBackground" format="color" />
+    <attr name="settingsSearchBackground" format="color" />
     <attr name="bottomSheetScrimColor" format="color" />
     <attr name="qsbEdgeRadius" format="dimension" />
     <attr name="folderIconRadius" format="float" />
@@ -76,5 +77,28 @@
             <enum name="taskOption" value="16" />
             <enum name="drawerTab" value="17" />
         </attr>
+        <attr name="customFontWeight" format="enum">
+            <enum name="w100" value="100" />
+            <enum name="w200" value="200" />
+            <enum name="w300" value="300" />
+            <enum name="w400" value="400" />
+            <enum name="w500" value="500" />
+            <enum name="w600" value="600" />
+            <enum name="w700" value="700" />
+            <enum name="w800" value="800" />
+            <enum name="w900" value="900" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="IndexablePreference">
+        <attr name="android:key" />
+        <attr name="android:defaultValue" />
+        <attr name="android:icon" />
+        <attr name="android:title" />
+        <attr name="android:summary" />
+        <attr name="searchTitle" />
+        <attr name="controllerClass" />
+        <attr name="content" />
+        <attr name="hasPreview" />
     </declare-styleable>
 </resources>

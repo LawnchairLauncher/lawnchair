@@ -31,8 +31,8 @@
     <!-- The following two margins need to match, with the caveat that
      the second should be negative. The second one ensures that the icons and text
      align despite the additional padding caused by the search bar's card background. -->
-    <dimen name="search_bar_margin">16dp</dimen>
-    <dimen name="search_bar_negative_margin">-16dp</dimen>
+    <dimen name="search_bar_margin">8dp</dimen>
+    <dimen name="search_bar_negative_margin">-8dp</dimen>
 
     <dimen name="search_bar_height">48dp</dimen>
     <dimen name="search_bar_text_size">16dp</dimen>
@@ -41,7 +41,8 @@
     <dimen name="dashboard_tile_image_size">38dp</dimen>
 
     <!-- Dashboard tile image margin start / end -->
-    <dimen name="dashboard_tile_image_margin">24dp</dimen>
+    <dimen name="dashboard_tile_image_margin_start">16dp</dimen>
+    <dimen name="dashboard_tile_image_margin_end">20dp</dimen>
 
     <!-- search_bar_margin + search_bar_height -->
     <dimen name="search_results_top_margin">64dp</dimen>

@@ -18,20 +18,25 @@
 package ch.deletescape.lawnchair.views
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Rect
-import android.support.v7.widget.CardView
 import android.util.AttributeSet
-import ch.deletescape.lawnchair.folder.FolderShape
-import com.android.launcher3.InsettableFrameLayout
-import com.android.launcher3.R
-import com.android.launcher3.Utilities
-import com.android.launcher3.graphics.IconShapeOverride
+import android.view.View
+import android.view.ViewGroup
+import com.android.launcher3.Insettable
 
-class SettingsSearchLayout(context: Context, attrs: AttributeSet?) : InsettableFrameLayout(context, attrs) {
+open class InsettableNestedScrollView @JvmOverloads constructor(
+        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : SpringNestedScrollView(context, attrs, defStyleAttr), Insettable {
+
+    private val currentInsets = Rect()
 
     override fun setInsets(insets: Rect) {
-        setPadding(0, insets.top, 0, 0)
-        super.setInsets(Rect(insets.left, 0, insets.right, insets.bottom))
+        currentInsets.set(insets)
+        (getChildAt(0) as Insettable).setInsets(insets)
+    }
+
+    override fun onViewAdded(child: View?) {
+        super.onViewAdded(child)
+        (child as Insettable).setInsets(currentInsets)
     }
 }

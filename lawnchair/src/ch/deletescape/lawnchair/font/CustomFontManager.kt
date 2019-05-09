@@ -97,36 +97,39 @@ class CustomFontManager(private val context: Context) {
     }
 
     fun loadCustomFont(textView: TextView, attrs: AttributeSet?) {
-        val fontType = getFontType(textView, attrs)
-
-        if (fontType != -1) {
-            setCustomFont(textView, fontType)
-        }
-    }
-
-    private fun getFontType(textView: TextView, attrs: AttributeSet?): Int {
         val context = textView.context
         var a = context.obtainStyledAttributes(attrs, R.styleable.CustomFont)
         var fontType = a.getInt(R.styleable.CustomFont_customFontType, -1)
+        var fontWeight = a.getInt(R.styleable.CustomFont_customFontWeight, -1)
         val ap = a.getResourceId(R.styleable.CustomFont_android_textAppearance, -1)
         a.recycle()
 
-        if (fontType == -1 && ap != -1) {
+        if (ap != -1) {
             a = context.obtainStyledAttributes(ap, R.styleable.CustomFont)
-            fontType = a.getInt(R.styleable.CustomFont_customFontType, -1)
+            if (fontType == -1) {
+                fontType = a.getInt(R.styleable.CustomFont_customFontType, -1)
+            }
+            if (fontWeight == -1) {
+                fontWeight = a.getInt(R.styleable.CustomFont_customFontWeight, -1)
+            }
             a.recycle()
         }
-        return fontType
+
+        if (fontType != -1) {
+            setCustomFont(textView, fontType, fontWeight)
+        }
     }
 
-    fun setCustomFont(textView: TextView, type: Int) {
+    @JvmOverloads
+    fun setCustomFont(textView: TextView, type: Int, style: Int = -1) {
         val spec = specMap[type] ?: return
-        loaderManager.loadFont(spec.font).into(textView, spec.fallback)
+        loaderManager.loadFont(spec.font.createWithWeight(style)).into(textView, spec.fallback)
     }
 
-    fun setCustomFont(receiver: FontLoader.FontReceiver, type: Int) {
+    @JvmOverloads
+    fun setCustomFont(receiver: FontLoader.FontReceiver, type: Int, style: Int = -1) {
         val spec = specMap[type] ?: return
-        loaderManager.loadFont(spec.font).into(receiver, spec.fallback)
+        loaderManager.loadFont(spec.font.createWithWeight(style)).into(receiver, spec.fallback)
     }
 
     class FontSpec(val loader: () -> FontCache.Font, val fallback: Typeface) {

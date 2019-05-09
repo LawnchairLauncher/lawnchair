@@ -26,15 +26,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import ch.deletescape.lawnchair.isVisible
 import com.android.launcher3.R
 import kotlinx.android.synthetic.main.activity_settings_search.*
 import android.support.v7.util.DiffUtil
 import android.text.TextUtils
 import android.view.MenuItem
 import android.widget.*
-import ch.deletescape.lawnchair.LawnchairPreferences
-import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity.SubSettingsFragment.*
@@ -172,7 +170,7 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
                     summaryView.text = entry.summary
                     summaryView.isVisible = true
                 }
-                val slice = entry.getSlice(activity)
+                val slice = entry.getSliceView()
                 if (slice != null && !entry.sliceIsHorizontal) {
                     (slice.parent as? ViewGroup)?.removeView(slice)
                     sliceView.removeAllViews()
@@ -191,9 +189,10 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
                     horizontalSliceView.isVisible = false
                 }
 
-                // TODO: implement displaying icons
-                // Valid even when result.icon is null.
-                // iconView.setImageDrawable(result.icon)
+                if (entry.iconRes != 0) {
+                    iconView.setImageResource(entry.iconRes)
+                    iconView.tintDrawable(activity.getColorEngineAccent())
+                }
                 bindBreadcrumbView(entry)
                 if (itemView.context.lawnchairPrefs.showDebugInfo) {
                     itemView.setOnLongClickListener {

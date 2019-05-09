@@ -26,7 +26,7 @@
         android:id="@+id/content"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_marginTop="40dp" />
+        android:layout_marginTop="24dp" />
 
     <FrameLayout
         android:id="@+id/search_bar_container"
@@ -37,8 +37,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/search_bar_margin"
-            app:cardCornerRadius="24dp"
-            app:cardBackgroundColor="?android:attr/colorBackground"
+            app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="?settingsSearchBackground"
             app:cardElevation="2dp">
             <android.support.v7.widget.Toolbar
                 android:id="@+id/search_action_bar"
@@ -52,7 +52,7 @@
                 <!-- TODO: Figure out proper way to align text to preference titles -->
                 <TextView
                     android:id="@+id/search_action_bar_title"
-                    android:layout_marginStart="14dp"
+                    android:layout_marginStart="10dp"
                     style="@style/TextAppearance.Settings.SearchBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

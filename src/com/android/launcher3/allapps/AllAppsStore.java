@@ -108,9 +108,9 @@ public class AllAppsStore {
             mUpdatePending = true;
             return;
         }
-        int count = mUpdateListeners.size();
-        for (int i = 0; i < count; i++) {
-            mUpdateListeners.get(i).onAppsUpdated();
+        List<OnUpdateListener> listeners = new ArrayList<>(mUpdateListeners);
+        for (OnUpdateListener listener : listeners) {
+            listener.onAppsUpdated();
         }
     }
 

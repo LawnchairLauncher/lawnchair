@@ -25,6 +25,7 @@ import android.util.Log;
 
 import ch.deletescape.lawnchair.popup.SesameSettings;
 import ch.deletescape.lawnchair.sesame.Sesame;
+import ch.deletescape.lawnchair.sesame.SesameShortcutInfo;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -183,7 +184,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             List<SesameShortcut> shortcuts = SesameFrontend
                     .getRecentAppShortcuts(component.getPackageName(), false, PopupPopulator.MAX_SHORTCUTS);
             for (SesameShortcut shortcut : shortcuts) {
-                ids.add(shortcut.id);
+                ids.add(new SesameShortcutInfo(mLauncher, shortcut).getId());
             }
         } else if (!Utilities.ATLEAST_NOUGAT_MR1) {
             for (ShortcutInfoCompat compat : DeepShortcutManagerBackport.getForPackage(mLauncher,

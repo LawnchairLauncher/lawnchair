@@ -1,5 +1,7 @@
 package com.google.android.apps.nexuslauncher.qsb;
 
+import static java.lang.Math.round;
+
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -9,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -212,7 +215,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         DeviceProfile deviceProfile = this.mActivity.getDeviceProfile();
         int aA = aA(MeasureSpec.getSize(i));
         int i3 = aA / deviceProfile.inv.numHotseatIcons;
-        int round = Math.round(0.92f * ((float) deviceProfile.iconSizePx));
+        int round = round(0.92f * ((float) deviceProfile.iconSizePx));
         setMeasuredDimension(((aA - (i3 - round)) + getPaddingLeft()) + getPaddingRight(), MeasureSpec.getSize(i2));
         for (aA = getChildCount() - 1; aA >= 0; aA--) {
             View childAt = getChildAt(aA);
@@ -273,20 +276,20 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
             mShadowHelper.draw(bitmap2, canvas2, (float) paddingLeft, (float) paddingTop, (float) (paddingLeft2 + i));
         }
         if (micStrokeWidth > 0.0f && mMicIconView.getVisibility() == View.VISIBLE) {
-            int i2;
+            float i2;
             i = mIsRtl ? getPaddingLeft() : (getWidth() - getPaddingRight()) - dG();
             int paddingTop2 = getPaddingTop();
             int paddingLeft3 = mIsRtl ? getPaddingLeft() + dG() : getWidth() - getPaddingRight();
             int paddingBottom = LauncherAppState.getInstance(getContext()).getInvariantDeviceProfile().iconBitmapSize - getPaddingBottom();
             float f = ((float) (paddingBottom - paddingTop2)) * 0.5f;
-            int i3 = (int) (micStrokeWidth / 2.0f);
+            float i3 = micStrokeWidth / 2.0f;
             if (mUseTwoBubbles) {
                 i2 = i3;
             } else {
                 i2 = i3;
-                canvas2.drawRoundRect((float) (i + i3), (float) (paddingTop2 + i3), (float) (paddingLeft3 - i3), (float) ((paddingBottom - i3) + 1), f, f, CV);
+                canvas2.drawRoundRect(i + i3, paddingTop2 + i3, paddingLeft3 - i3, (paddingBottom - i3) + 1, f, f, CV);
             }
-            canvas2.drawRoundRect((float) (i + i2), (float) (paddingTop2 + i2), (float) (paddingLeft3 - i2), (float) ((paddingBottom - i2) + 1), f, f, mMicStrokePaint);
+            canvas2.drawRoundRect(i + i2, paddingTop2 + i2, paddingLeft3 - i2, (paddingBottom - i2) + 1, f, f, mMicStrokePaint);
         }
         super.draw(canvas);
     }
@@ -384,7 +387,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         if (!this.mUseTwoBubbles || TextUtils.isEmpty(this.Dg)) {
             return this.Da;
         }
-        return (((int) this.CT.measureText(this.Dg)) + this.CY) + this.Da;
+        return (Math.round(this.CT.measureText(this.Dg)) + this.CY) + this.Da;
     }
 
     protected final void dH() {
@@ -436,11 +439,15 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     private float getCornerRadius() {
+        return getCornerRadius(getResources(), Utilities.pxFromDp(100, getResources().getDisplayMetrics()));
+    }
+
+    public static float getCornerRadius(Resources resources, float defaultRadius) {
         TypedValue edgeRadius = FolderShape.sInstance.mAttrs.get(R.attr.qsbEdgeRadius);
         if (edgeRadius != null) {
-            return edgeRadius.getDimension(getResources().getDisplayMetrics());
+            return edgeRadius.getDimension(resources.getDisplayMetrics());
         } else {
-            return Utilities.pxFromDp(100, getResources().getDisplayMetrics());
+            return defaultRadius;
         }
     }
 
