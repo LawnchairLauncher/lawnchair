@@ -24,7 +24,7 @@
     <string name="app_name_pixel_launcher">Пиксел Лаунчер</string>
     <string name="title_disable_suggestions_prompt">Искључивање предлога апликација</string>
     <string name="msg_disable_suggestions_prompt">"Подаци о коришћењу ће се уклонити."</string>
-    <string name="label_turn_off_suggestions">Онемогући</string>
+    <string name="label_turn_off_suggestions">Искључи</string>
     <string name="pixel_style_pref_title">Стил Pixel-а</string>
     <string name="about_summary_title">Резиме</string>
     <string name="action_edit">Уреди</string>
@@ -151,7 +151,6 @@
     <string name="about_role_family_member">члан породице</string>
     <string name="about_role_magisk_maintainer">програмер Magisk модула</string>
     <string name="about_bio_deletescape">Android програмер и ентузијаста, воли мимове (и превише). Оснивач пројекта Lawnchair.</string>
-    <string name="about_bio_divadsn">Деветнаестогодишњак, кодира црпећи снагу из кофеина и пице, пружа хостинг и свакодневну подршку у случају да дође до проблема. У слободно време даје допринос пројектима отвореног кода. Раније познат као Codebucket.</string>
     <string name="about_bio_recoded">Благи програмер и графички дизајнер.</string>
     <string name="about_bio_josh">Независни графички дизајнер.</string>
     <string name="about_bio_chris">Миленијалац до сржи. Занима ме све везано за дизајн и друштвене мреже. Дођите да блејимо на @lawnchairapp. ✨</string>
@@ -411,4 +410,6 @@
     <string name="about_app_description">Прилагодљива алтернатива Pixel Launcher-у.</string>
     <string name="about_bio_paphonb">Осамнаестогодишњи студент и један од водећих програмера Lawnchair-а.</string>
     <string name="dock_scale">Размера дока</string>
+    <string name="adaptify_pack_title">Направи прилагодљиве иконе за пакет икона</string>
+    <string name="adaptify_pack_summary">Примењује прилагодљиве иконе и на пакете икона</string>
 </resources>
