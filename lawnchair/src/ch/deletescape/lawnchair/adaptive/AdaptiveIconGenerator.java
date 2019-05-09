@@ -100,10 +100,6 @@ public class AdaptiveIconGenerator {
                 isBackgroundWhite = true;
                 extractee = aid.getForeground();
             }
-            if (!extractColor) {
-                onExitLoop();
-                return;
-            }
 
             LauncherIcons li = LauncherIcons.obtain(context);
             IconNormalizer normalizer = li.getNormalizer();
@@ -182,6 +178,9 @@ public class AdaptiveIconGenerator {
                     if (transparentScore > maxTransparent) {
                         isFullBleed = false;
                         fullBleedChecked = true;
+                        if (!extractColor) {
+                            break;
+                        }
                     }
                     continue;
                 }
@@ -207,6 +206,12 @@ public class AdaptiveIconGenerator {
                 // not yet checked = not set to false = has to be full bleed
                 isFullBleed = true;
                 backgroundColor = bestRGB;
+                onExitLoop();
+                return;
+            }
+
+            if (!extractColor) {
+                backgroundColor = Color.WHITE;
                 onExitLoop();
                 return;
             }
