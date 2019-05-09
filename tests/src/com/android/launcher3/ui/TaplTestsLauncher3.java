@@ -24,7 +24,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import android.content.Intent;
 import android.util.Log;
 
 import androidx.test.filters.LargeTest;
@@ -241,9 +240,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     public static void runIconLaunchFromAllAppsTest(AbstractLauncherUiTest test, AllApps allApps) {
-        final AppIcon app = allApps.getAppIcon("Calculator");
-        assertNotNull("AppIcon.launch returned null", app.launch(
-                test.resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR)));
+        final AppIcon app = allApps.getAppIcon("TestActivity7");
+        assertNotNull("AppIcon.launch returned null", app.launch(getAppPackageName()));
         test.executeOnLauncher(launcher -> assertTrue(
                 "Launcher activity is the top activity; expecting another activity to be the top "
                         + "one",
