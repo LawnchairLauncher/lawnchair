@@ -151,10 +151,8 @@
     <string name="about_role_family_member">Membru al familiei</string>
     <string name="about_role_magisk_maintainer">Responsabil modul Magisk</string>
     <string name="about_bio_deletescape">Dezvoltator și entuziast Android, iubeşte memele (un pic prea mult de fapt). Fondator al proiectului Lawnchair.</string>
-    <string name="about_bio_divadsn">19 ani, transformă pizza și cofeina în cod. Cunoscut și sub numele de Codebucket.</string>
     <string name="about_bio_recoded">Coder mediu și designer grafic.</string>
     <string name="about_bio_josh">Freelance graphic designer.</string>
-    <string name="about_bio_chris">Minte creativă, Influențator și Creator de conținut. Social Media și PR Manager.</string>
     <string name="about_bio_msfjarvis">Dezvoltator principal al halogenOS și dezvoltator al substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Închidere forțată a lansatorului</string>
