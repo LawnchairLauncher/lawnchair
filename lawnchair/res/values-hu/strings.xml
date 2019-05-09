@@ -10,7 +10,7 @@
     <string name="smartspace_time">Idő</string>
     <string name="smartspace_date">Dátum</string>
     <string name="customize">Testreszabás</string>
-    <string name="smartspace_preferences_in_settings">Belepillantás</string>
+    <string name="smartspace_preferences_in_settings">Betekintő</string>
     <string name="smartspace_preferences_in_settings_desc">Dátum-, idő-, időjárásforrás</string>
     <string name="search">Keresés</string>
     <string name="label_voice_search">Hangalapú keresés</string>
@@ -28,11 +28,11 @@
     <string name="pixel_style_pref_title">Pixel stílus</string>
     <string name="about_summary_title">Összegzés</string>
     <string name="action_edit">Szerkesztés</string>
-    <string name="hide_app_sum">Elrejtés az alkalmazásfiókból</string>
+    <string name="hide_app_sum">Elrejtés az alkalmazáslistából</string>
     <string name="hide_app">Alkalmazás elrejtése</string>
     <string name="icon_shape_rounded_square">Lekerekített négyzet</string>
     <string name="pixel_ui_pref_summary">Ikoncsomag, homályosítás, színek</string>
-    <string name="app_drawer_pref_title">Alkalmazásfiók</string>
+    <string name="app_drawer_pref_title">Alkalmazáslista</string>
     <string name="app_drawer_pref_summary">Átlátszóság, ajánlások, alkalmazás-elrejtés</string>
     <string name="search_pref_summary">Szín, keresőmotor, ikonok</string>
     <string name="general_pref_title">Asztal</string>
@@ -151,10 +151,8 @@
     <string name="about_role_family_member">Családtag</string>
     <string name="about_role_magisk_maintainer">Magisk-modul felelős</string>
     <string name="about_bio_deletescape">Android fejlesztő és rajongó, (egy kicsit túlságosan is) szereti a mémeket. A Lawnchair projekt alapítója.</string>
-    <string name="about_bio_divadsn">19 éves, a koffeint és a pizzát is kódolja, a hét minden napján 24 órás tárhely- és fejlesztési szolgáltatást biztosít, ha valami hiba történne. Szabadidejében nyílt forráskódú projekteket támogat. Korábban Codebucket néven volt ismert.</string>
     <string name="about_bio_recoded">Könnyűprogramozó és grafikai dizájner.</string>
     <string name="about_bio_josh">Független grafikai tervező.</string>
-    <string name="about_bio_chris">Kreatív elme, Ötletadó és Tartalomkészítő. Közösségi média és PR menedzser.</string>
     <string name="about_bio_msfjarvis">A HalogenOS fő fejlesztője és a Substratum alkalmazásfejlesztője.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Launcher-összeomlás</string>
