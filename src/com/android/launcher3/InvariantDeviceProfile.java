@@ -210,7 +210,7 @@ public class InvariantDeviceProfile {
         iconSize = interpolatedDisplayOption.iconSize;
         iconShapePath = getIconShapePath(context);
         landscapeIconSize = interpolatedDisplayOption.landscapeIconSize;
-        iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
+        iconBitmapSize = ResourceUtils.pxFromDp(iconSize, dm);
         iconTextSize = interpolatedDisplayOption.iconTextSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 

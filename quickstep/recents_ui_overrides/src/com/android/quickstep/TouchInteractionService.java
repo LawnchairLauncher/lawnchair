@@ -35,7 +35,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.Region;
@@ -58,6 +57,7 @@ import android.view.WindowManager;
 
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
+import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.logging.EventLogArray;
@@ -89,9 +89,6 @@ public class TouchInteractionService extends Service implements
     public static final MainThreadExecutor MAIN_THREAD_EXECUTOR = new MainThreadExecutor();
     public static final LooperExecutor BACKGROUND_EXECUTOR =
             new LooperExecutor(UiThreadHelper.getBackgroundLooper());
-
-    private static final String NAVBAR_VERTICAL_SIZE = "navigation_bar_frame_height";
-    private static final String NAVBAR_HORIZONTAL_SIZE = "navigation_bar_width";
 
     public static final EventLogArray TOUCH_INTERACTION_LOG =
             new EventLogArray("touch_interaction_log", 40);
@@ -291,15 +288,7 @@ public class TouchInteractionService extends Service implements
     }
 
     private int getNavbarSize(String resName) {
-        int frameSize;
-        Resources res = getResources();
-        int frameSizeResID = res.getIdentifier(resName, "dimen", "android");
-        if (frameSizeResID != 0) {
-            frameSize = res.getDimensionPixelSize(frameSizeResID);
-        } else {
-            frameSize = Utilities.pxFromDp(48, res.getDisplayMetrics());
-        }
-        return frameSize;
+        return ResourceUtils.getNavbarSize(resName, getResources());
     }
 
     private void initTouchBounds() {
@@ -312,20 +301,21 @@ public class TouchInteractionService extends Service implements
         defaultDisplay.getRealSize(realSize);
         mSwipeTouchRegion.set(0, 0, realSize.x, realSize.y);
         if (mMode == Mode.NO_BUTTON) {
-            mSwipeTouchRegion.top = mSwipeTouchRegion.bottom - getNavbarSize(NAVBAR_VERTICAL_SIZE);
+            mSwipeTouchRegion.top = mSwipeTouchRegion.bottom - getNavbarSize(
+                    ResourceUtils.NAVBAR_VERTICAL_SIZE);
         } else {
             switch (defaultDisplay.getRotation()) {
                 case Surface.ROTATION_90:
                     mSwipeTouchRegion.left = mSwipeTouchRegion.right
-                            - getNavbarSize(NAVBAR_HORIZONTAL_SIZE);
+                            - getNavbarSize(ResourceUtils.NAVBAR_HORIZONTAL_SIZE);
                     break;
                 case Surface.ROTATION_270:
                     mSwipeTouchRegion.right = mSwipeTouchRegion.left
-                            + getNavbarSize(NAVBAR_HORIZONTAL_SIZE);
+                            + getNavbarSize(ResourceUtils.NAVBAR_HORIZONTAL_SIZE);
                     break;
                 default:
                     mSwipeTouchRegion.top = mSwipeTouchRegion.bottom
-                            - getNavbarSize(NAVBAR_VERTICAL_SIZE);
+                            - getNavbarSize(ResourceUtils.NAVBAR_VERTICAL_SIZE);
             }
         }
     }
