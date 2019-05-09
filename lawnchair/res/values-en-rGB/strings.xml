@@ -146,10 +146,8 @@
     <string name="about_role_family_member">Family member</string>
     <string name="about_role_magisk_maintainer">Magisk Module Maintainer</string>
     <string name="about_bio_deletescape">Android developer &amp; enthusiast, loves memes (a bit too much actually). Founder of the Lawnchair project.</string>
-    <string name="about_bio_divadsn">19 years old, turns caffeine and pizza into code, provides hosting and 24/7 development support if something goes wrong. Contributes to open-source projects during his free time. Also previously known as Codebucket. .</string>
     <string name="about_bio_recoded">Mild coder and graphics designer.</string>
     <string name="about_bio_josh">Freelance graphic designer.</string>
-    <string name="about_bio_chris">Millenial af, idk and idc. Something with design and social media. Let\'s hang out together over at @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">Core developer at halogenOS and application developer at substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Crash launcher</string>
