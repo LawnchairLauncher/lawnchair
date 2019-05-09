@@ -148,10 +148,8 @@
     <string name="about_role_magisk_maintainer">Magiskモジュールメンテナ</string>
     <string name="about_bio_deletescape">Android開発者でファンですが、実はちょっとバイオ系の方が好きです。
 Lawnchairプロジェクトの創始者です。</string>
-    <string name="about_bio_divadsn">19 歳で、カフェインとピザをコードに変えます。なにか問題が起こったら、休み無しに開発サポートとホスティングを行います。自由時間にオープンソースプロジェクトに貢献しています。以前は人に Codebucket と呼ばれていました。</string>
     <string name="about_bio_recoded">温和なコーダーで、グラフィックデザイナー</string>
     <string name="about_bio_josh">フリーランスのグラフィックデザイナー</string>
-    <string name="about_bio_chris">クリエイティブマインド、インフルエンサー &amp; コンテンツクリエータ。ソーシャルメディアとPRマネージャ。</string>
     <string name="about_bio_msfjarvis">中心部の開発はhalogenOSが、アプリケーションの開発はsubstratumが行いました</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">ランチャーをクラッシュさせる</string>
