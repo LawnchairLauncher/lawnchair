@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.quickstep;
+package com.android.quickstep.inputconsumers;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
@@ -27,6 +27,8 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.quickstep.ActivityControlHelper;
+import com.android.quickstep.OverviewCallbacks;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 

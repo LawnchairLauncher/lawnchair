@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.quickstep;
+package com.android.quickstep.inputconsumers;
 
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
@@ -50,7 +50,13 @@ import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RaceConditionTracker;
 import com.android.launcher3.util.TraceHelper;
+import com.android.quickstep.ActivityControlHelper;
+import com.android.quickstep.OverviewCallbacks;
+import com.android.quickstep.RecentsModel;
+import com.android.quickstep.SwipeSharedState;
+import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
+import com.android.quickstep.WindowTransformSwipeHandler;
 import com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget;
 import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
@@ -376,7 +382,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             // The consumer is being switched while we are active. Set up the shared state to be
             // used by the next animation
             removeListener();
-            GestureEndTarget endTarget = mInteractionHandler.mGestureEndTarget;
+            GestureEndTarget endTarget = mInteractionHandler.getGestureEndTarget();
             mSwipeSharedState.canGestureBeContinued = endTarget != null && endTarget.canBeContinued;
             mSwipeSharedState.goingToLauncher = endTarget != null && endTarget.isLauncher;
             if (mSwipeSharedState.canGestureBeContinued) {

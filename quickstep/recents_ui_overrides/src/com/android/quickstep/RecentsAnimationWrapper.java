@@ -24,6 +24,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.android.launcher3.util.Preconditions;
+import com.android.quickstep.inputconsumers.InputConsumer;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
 import com.android.systemui.shared.system.InputConsumerController;
 

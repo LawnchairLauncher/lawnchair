@@ -67,6 +67,7 @@ import android.view.WindowManager;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -91,6 +92,8 @@ import com.android.quickstep.ActivityControlHelper.AnimationFactory;
 import com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState;
 import com.android.quickstep.ActivityControlHelper.HomeAnimationFactory;
 import com.android.quickstep.SysUINavigationMode.Mode;
+import com.android.quickstep.inputconsumers.InputConsumer;
+import com.android.quickstep.inputconsumers.OverviewInputConsumer;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
@@ -166,7 +169,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private static final int LAUNCHER_UI_STATES =
             STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_LAUNCHER_STARTED;
 
-    enum GestureEndTarget {
+    public enum GestureEndTarget {
         HOME(1, STATE_SCALED_CONTROLLER_HOME, true, false, ContainerType.WORKSPACE, false),
 
         RECENTS(1, STATE_SCALED_CONTROLLER_RECENTS | STATE_CAPTURE_SCREENSHOT
@@ -220,8 +223,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private final ClipAnimationHelper mClipAnimationHelper;
     private final ClipAnimationHelper.TransformParams mTransformParams;
 
-    protected Runnable mGestureEndCallback;
-    protected GestureEndTarget mGestureEndTarget;
+    private Runnable mGestureEndCallback;
+    private GestureEndTarget mGestureEndTarget;
     // Either RectFSpringAnim (if animating home) or ObjectAnimator (from mCurrentShift) otherwise
     private RunningWindowAnim mRunningWindowAnim;
     private boolean mIsShelfPeeking;
@@ -273,7 +276,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private final long mTouchTimeMs;
     private long mLauncherFrameDrawnTime;
 
-    WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context,
+    public WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context,
             long touchTimeMs, ActivityControlHelper<T> controller, boolean continuingLastGesture,
             InputConsumerController inputConsumer) {
         mContext = context;
@@ -1123,6 +1126,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             }
         });
         return anim;
+    }
+
+    /**
+     * @return The GestureEndTarget if the gesture has ended, else null.
+     */
+    public @Nullable GestureEndTarget getGestureEndTarget() {
+        return mGestureEndTarget;
     }
 
     @UiThread
