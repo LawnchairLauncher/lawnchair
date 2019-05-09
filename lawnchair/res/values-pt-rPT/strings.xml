@@ -150,11 +150,9 @@
     <string name="about_role_mod_support">Moderador/Suporte</string>
     <string name="about_role_family_member">Membro da família</string>
     <string name="about_role_magisk_maintainer">Responsável pelo módulo Magisk</string>
-    <string name="about_bio_deletescape">Programador e entusiasta de sistemas Android, adora memes (demasiado). Criador do projeto Lawnchair.</string>
-    <string name="about_bio_divadsn">19 anos, transforma cafeína e pizza em código. Disponibiliza o alojamento e suporte ao desenvolvimento 24/7 se algo errado acontecer. Participa em projetos de código aberto durante os seus tempos livres. Também conhecido como Codebucket.</string>
+    <string name="about_bio_deletescape">Desenvolvedor e entusiasta de sistemas Android, adora memes (demasiado). Criador do projeto Lawnchair.</string>
     <string name="about_bio_recoded">Programador e designer.</string>
     <string name="about_bio_josh">Designer como trabalhador independente.</string>
-    <string name="about_bio_chris">Millenial como tudo, não sei e não quero saber. Algo relacionado com redes sociais. Partilhemos experiências em @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">Principal desenvolvedor do halogenOS e desenvolvedor de aplicativos em substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Erro no launcher</string>
