@@ -99,7 +99,7 @@
     <string name="dock_style_p">دائري</string>
     <string name="dock_style_n">مسطح</string>
     <string name="dock_style_hidden">مخفي</string>
-    <string name="dock_search_bar">شريط البحث في الشريط السُفلي</string>
+    <string name="dock_search_bar">مربع البحث في الشريط السُفلي</string>
     <string name="opacity">الشفافية</string>
     <string name="title_all_apps_google_search">بحث عام</string>
     <string name="summary_all_apps_google_search">البحث في الويب والتطبيقات</string>
@@ -151,8 +151,6 @@
     <string name="about_role_family_member">فرد من الاسرة</string>
     <string name="about_role_magisk_maintainer">مشرف أدوات Magisk</string>
     <string name="about_bio_deletescape">مطور اندرويد متحمس، يحب الميمات (كثيراً). مؤسس مشروع Lawnchair.</string>
-    <string name="about_bio_divadsn">١٩ عاماً، يحول الكافيين والبيتزا إلى اكواد برمجية. يوفر الاستضافة و ٢٤\٧ دعم البرمجه إذا حدث شئ ما خاطئ. يساهم في المشاريع المصدر المفتوح خلال 
-وقته الحر. أيضا يعرف سابقاً باسم codebucket.</string>
     <string name="about_bio_recoded">مبرمج خفيف و مصمم جرافيكس.</string>
     <string name="about_bio_josh">مصمم جرافيك مستقل.</string>
     <string name="about_bio_chris">الالفيه كاللعنة، أنا لا أعرف وأنا لا اهتم. شيء ما مع التصميم ووسائل التواصل الاجتماعي. دعنا نجلس سوياً مع @lawnchairapp ✨</string>
@@ -362,7 +360,7 @@
     <string name="sesame_data_integration">دمج البيانات</string>
     <string name="sesame_upsell">انقر لتثبيت Sesame</string>
     <string name="sesame_search_upsell_on">تعيين Sesame كمزود البحث</string>
-    <string name="sesame_search_upsell_off">لم يتم تعيين Sesame كمزود بحث</string>
+    <string name="sesame_search_upsell_off">لم يتم تعيين Sesame كموفر بحث</string>
     <string name="pref_sesame_enabled">بيانات اختصارات Sesame المشتركة</string>
     <string name="pref_sesame_disabled">لا توجد بيانات مشتركة</string>
     <string name="pref_sesame_show_shortcuts">اختصارات التطبيق</string>
@@ -419,4 +417,6 @@
     <string name="about_app_description">بديل لمشغل Pixel القابل للتخصيص.</string>
     <string name="about_bio_paphonb">طالب ١٨ سنة، مبرمج اندرويد وواحد من أبرز المبرمجين في مشغل Lawnchair.</string>
     <string name="dock_scale">حجم المنصة السفلية</string>
+    <string name="adaptify_pack_title">انشئ أيقونات مكيفة لحزمة الأيقونات</string>
+    <string name="adaptify_pack_summary">انشئ أيقونات مكيفة للأيقونات من حزمة الأيقونات</string>
 </resources>
