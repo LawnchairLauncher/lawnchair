@@ -151,10 +151,8 @@
     <string name="about_role_family_member">Członek rodziny</string>
     <string name="about_role_magisk_maintainer">Opiekun Modułu Magisk</string>
     <string name="about_bio_deletescape">Programista Androida &amp; entuzjasta, uwielbia memy (troche za bardzo). Założyciel projektu Lawnchair.</string>
-    <string name="about_bio_divadsn">Dziewiętnastolatek, zamienia kofeinę i pizzę w kod, zapewnia hosting i wsparcie programistyczne 24/7, jeśli coś pójdzie nie tak. Przyczynia się do projektów open-source\'owych w czasie wolnym od pracy. Wcześniej znany również jako Codebucket.</string>
     <string name="about_bio_recoded">Spokojny programista oraz grafik.</string>
     <string name="about_bio_josh">Niezależny grafik.</string>
-    <string name="about_bio_chris">Twórczy umysł, influencer oraz twórca contentu. Zarządca mediów społecznościowych oraz PR.</string>
     <string name="about_bio_msfjarvis">Główny programista w halogenOS oraz twórca aplikacji w substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Crash launchera</string>
