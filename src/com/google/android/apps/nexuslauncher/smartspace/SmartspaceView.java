@@ -386,10 +386,13 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             return false;
         }
         Rect rect = new Rect();
+        float tmp = 0f;
         Launcher launcher = Launcher.getLauncher(getContext());
         launcher.getDragLayer().getDescendantRectRelativeToSelf(view, rect);
-        Paint.FontMetrics fontMetrics = textView.getPaint().getFontMetrics();
-        float tmp = (((float) view.getHeight()) - (fontMetrics.bottom - fontMetrics.top)) / 2.0f;
+        if (textView != null) {
+            Paint.FontMetrics fontMetrics = textView.getPaint().getFontMetrics();
+            tmp = (((float) view.getHeight()) - (fontMetrics.bottom - fontMetrics.top)) / 2.0f;
+        }
         RectF rectF = new RectF();
         float exactCenterX = rect.exactCenterX();
         rectF.right = exactCenterX;
