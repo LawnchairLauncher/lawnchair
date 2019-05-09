@@ -30,6 +30,7 @@ public interface InputConsumer {
     int TYPE_ASSISTANT = 1 << 3;
     int TYPE_DEVICE_LOCKED = 1 << 4;
     int TYPE_ACCESSIBILITY = 1 << 5;
+    int TYPE_SCREEN_PINNED = 1 << 6;
 
     InputConsumer NO_OP = () -> TYPE_NO_OP;
 
