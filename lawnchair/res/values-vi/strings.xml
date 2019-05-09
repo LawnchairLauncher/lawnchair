@@ -151,7 +151,6 @@
     <string name="about_role_family_member">Thành viên trong gia đình</string>
     <string name="about_role_magisk_maintainer">Người duy trì Magisk Module</string>
     <string name="about_bio_deletescape">Nhà phát triển Android &amp; người đam mê, yêu thích meme (hơi nhiều một chút). Người sáng lập dự án Lawnchair.</string>
-    <string name="about_bio_divadsn">19 tuổi, biến cafe và pizza thành các dòng mã, cung cấp dịch vụ lưu trữ và hỗ trợ phát triển 24/7 nếu có sự cố. Đóng góp vào các dự án mã nguồn mở trong thời gian rảnh. Anh còn được biết đến với cái tên Codebucket.</string>
     <string name="about_bio_recoded">Coder và nhà thiết kế đồ họa.</string>
     <string name="about_bio_josh">Nhà thiết kế đồ hoạ tự do.</string>
     <string name="about_bio_msfjarvis">Nhà phát triển cốt lõi của halogenOS và nhà phát triển ứng dụng của substratum.</string>
