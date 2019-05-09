@@ -152,10 +152,8 @@
     <string name="about_role_family_member">Μέλος Οικογενείας</string>
     <string name="about_role_magisk_maintainer">Διαχειριστής προσθέτων Magisk</string>
     <string name="about_bio_deletescape">Προγραμματιστής Android &amp; ενθουσιώδης, αγαπά τα μιμίδια (λίγο παραπάνω απ\' όσο πρέπει). Ιδρυτής του Lawnchair.</string>
-    <string name="about_bio_divadsn">19 χρονών, μετατρέπει την καφεΐνη και την πίτσα σε κώδικα, παρέχει hosting και 24/7 υποστήριξη ανάπτυξης εάν κάτι πάει στραβά. Συμβάλλει σε έργα ανοιχτού κώδικα στον ελεύθερό του χρόνο. Επίσης παρελθοντικά γνωστός ως Codebucket.</string>
     <string name="about_bio_recoded">Ήπιος προγραμματιστής και σχεδιαστής γραφικών.</string>
     <string name="about_bio_josh">Ανεξάρτητος σχεδιαστής γραφικών.</string>
-    <string name="about_bio_chris">Δημιουργικό μυαλό, ασκεί επιρροή &amp; συμβάλλει στη δημιουργία περιεχομένου. Μάνατζερ των κοινωνικών δικτύων και δημοσίων σχέσεων. Προτείνει να αράξουμε όλοι μαζί στο @lawnchairapp γκρουπ ✨</string>
     <string name="about_bio_msfjarvis">Βασικός προγραμματιστής στο halogenOS και προγραμματιστής στην εφαρμογή substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Κρασάρισμα εκκινητή</string>
