@@ -150,10 +150,9 @@
     <string name="about_role_family_member">Familienmitglied</string>
     <string name="about_role_magisk_maintainer">Magisk-Modul-Entwickler</string>
     <string name="about_bio_deletescape">Android-Entwickler &amp; -Enthusiast. Mag Memes (fast ein bisschen zu sehr, um ehrlich zu sein). Gründer des Lawnchair-Projekts.</string>
-    <string name="about_bio_divadsn">19 Jahre alt, verwandelt Koffein und Pizza in Code, bietet 24/7 Entwicklungsunterstützung an, falls etwas schief geht. Trägt zu Open Source-Projekten in seiner Freizeit bei. Früher auch bekannt als Codebucket.</string>
     <string name="about_bio_recoded">Einfacher Coder und Grafikdesigner.</string>
     <string name="about_bio_josh">Freiberuflicher Grafikdesigner.</string>
-    <string name="about_bio_chris">Millennial, ich weiß es nicht und es interessiert mich nicht. Irgendwas mit Design und sozialen Medien. Lass uns zusammen abhängen bei @lawnchairapp ✨</string>
+    <string name="about_bio_chris">Extremer Millennial, keine Ahnung und juckt mich nicht. Irgendwas mit Design und social Media. Lass uns zusammen bei @lawnchairapp abhängen ✨</string>
     <string name="about_bio_msfjarvis">Hauptentwickler von halogenOS und App-Entwickler bei substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Launcher abstürzen lassen</string>
@@ -409,4 +408,5 @@
     <string name="about_app_description">Eine anpassbare Alternative zum Pixel Launcher.</string>
     <string name="about_bio_paphonb">Ein 18 Jahre alter Schüler, Android-Entwickler und einer der top Entwickler von Lawnchair.</string>
     <string name="dock_scale">Dock-Skalierung</string>
+    <string name="adaptify_pack_title">Erstelle anpassende Icons für das Icon Pack</string>
 </resources>
