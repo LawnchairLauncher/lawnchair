@@ -74,7 +74,7 @@
     <string name="hide_apps">Masquer les applications</string>
     <string name="hide_apps_sum">Retirer des applications du tiroir d\'applications</string>
     <string name="grid_size">Taille de la grille</string>
-    <string name="developer_options_title">Options pour les développeurs</string>
+    <string name="developer_options_title">Options de développeur</string>
     <string name="developer_options_enabled">Options de développeur activées</string>
     <string name="restart_lawnchair_pref_title">Redémarrer</string>
     <string name="restart_lawnchair_pref_summary">Réappliquer les paramètres</string>
@@ -88,7 +88,7 @@
     <string name="grid_size_width">Largeur</string>
     <string name="launcher_theme_override_label">Forcer le thème sombre</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
-    <string name="blur_pref_title">Activer le flou</string>
+    <string name="blur_pref_title">Flou</string>
     <string name="blur_pref_summary">Effet de flou pour le tiroir d\'applications, le dock et les arrière-plans de paramètres</string>
     <string name="blur_radius_pref_title">Intensité du flou</string>
     <!--Marker B-->
@@ -151,10 +151,8 @@
     <string name="about_role_family_member">Membre de la famille</string>
     <string name="about_role_magisk_maintainer">Responsable du module Magisk</string>
     <string name="about_bio_deletescape">Développeur Android &amp; passionné, adore les memes (un peu trop en fait). Fondateur du projet Lawnchair.</string>
-    <string name="about_bio_divadsn">19 ans, transforme la caféine et la pizza en code, fournit un soutien en matière d\'hébergement et de développement 24 heures sur 24 en cas de problème Contribue à des projets open-source pendant son temps libre. Également connu précédemment sous le nom de Codebucket.</string>
     <string name="about_bio_recoded">Programmeur et designer graphique.</string>
     <string name="about_bio_josh">Designer graphique indépendant.</string>
-    <string name="about_bio_chris">Esprit créatif, influenceur et créateur de contenu. Responsable des médias sociaux et des relations publiques.</string>
     <string name="about_bio_msfjarvis">Développeur principal chez halogenOS et développeur d\'application pour Substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Arrêt soudain du launcher</string>
