@@ -151,10 +151,8 @@
     <string name="about_role_family_member">परिवार का सदस्य</string>
     <string name="about_role_magisk_maintainer">मैजिस्क ‎मॉड्यूल अनुरक्षक</string>
     <string name="about_bio_deletescape">एंड्रॉयड डेवलपर और ‎उत्साही, मीम्स प्रेमी (वास्तविकता में कुछ ज़्यादा ही) लॉन्चेयर परियोजना के संस्थापक।</string>
-    <string name="about_bio_divadsn">19 साल का, कैफीन और पिज्जा को कोड में बदल देता है। इसे पहले कोडबकेट के रूप में भी जाना जाता था।</string>
     <string name="about_bio_recoded">हल्के कोडर और ग्राफिक्स डिजाइनर।</string>
     <string name="about_bio_josh">फ्रीलांस ग्राफिक डिजाइनर।</string>
-    <string name="about_bio_chris">Millenial af, idk and idc. Something with design and social media. Let\'s hang out together over at @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">halogenOS के मूल विकाशक एवं substratum के विकाशक</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">क्रैश लॉन्चर</string>
