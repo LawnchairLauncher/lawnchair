@@ -151,10 +151,8 @@
     <string name="about_role_family_member">Familielid</string>
     <string name="about_role_magisk_maintainer">Magisk module-onderhouder</string>
     <string name="about_bio_deletescape">Android ontwikkelaar &amp; enthousiast, houdt van memes (iets te veel eigenlijk). Oprichter van het Lawnchair project.</string>
-    <string name="about_bio_divadsn">19 jaar oud, verandert cafeïne en pizza in code, verzorgt hosting en staat 24/7 klaar voor ontwikkelingsondersteuning als iets mis gaat. Draagt bij aan open-bron projecten in zijn vrije tijd. Voorheen ook bekent als Codebucket.</string>
     <string name="about_bio_recoded">Milde codeur en grafisch ontwerper.</string>
     <string name="about_bio_josh">Freelance grafisch ontwerper.</string>
-    <string name="about_bio_chris">Millennial af, idk en idc. Iets met design en sociale media. Laten we samenkomen bij @lawnchairapp</string>
     <string name="about_bio_msfjarvis">Kernontwikkelaar bij halogenOS en applicatieontwikkelaar bij substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Crash launcher</string>
