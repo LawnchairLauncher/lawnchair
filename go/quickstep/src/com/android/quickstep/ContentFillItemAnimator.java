@@ -235,6 +235,9 @@ public final class ContentFillItemAnimator extends SimpleItemAnimator {
 
     @Override
     public void endAnimations() {
+        if (!isRunning()) {
+            return;
+        }
         for (int i = mPendingAnims.size() - 1; i >= 0; i--) {
             PendingAnimation pendAnim = mPendingAnims.get(i);
             ViewHolder item = pendAnim.viewHolder;
@@ -254,7 +257,7 @@ public final class ContentFillItemAnimator extends SimpleItemAnimator {
             ObjectAnimator anim = mRunningAnims.get(i);
             anim.end();
         }
-        dispatchAnimationsFinished();
+        dispatchFinishedWhenDone();
     }
 
     @Override
