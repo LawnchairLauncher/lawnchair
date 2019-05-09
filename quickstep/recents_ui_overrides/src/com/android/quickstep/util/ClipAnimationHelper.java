@@ -35,12 +35,14 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
+import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.utilities.RectFEvaluator;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -278,6 +280,21 @@ public class ClipAnimationHelper {
             mSourceWindowClipInsets.right = mSourceWindowClipInsets.right * scale;
             mSourceWindowClipInsets.bottom = mSourceWindowClipInsets.bottom * scale;
         }
+    }
+
+    /**
+     * Compute scale and translation y such that the specified task view fills the screen.
+     */
+    public LauncherState.ScaleAndTranslation getOverviewFullscreenScaleAndTranslation(TaskView v) {
+        TaskThumbnailView thumbnailView = v.getThumbnail();
+        RecentsView recentsView = v.getRecentsView();
+        fromTaskThumbnailView(thumbnailView, recentsView);
+        Rect taskSize = new Rect();
+        recentsView.getTaskSize(taskSize);
+        updateTargetRect(taskSize);
+        float scale = mSourceRect.width() / mTargetRect.width();
+        float translationY = mSourceRect.centerY() - mSourceRect.top - mTargetRect.centerY();
+        return new LauncherState.ScaleAndTranslation(scale, 0, translationY);
     }
 
     private void updateStackBoundsToMultiWindowTaskSize(BaseDraggingActivity activity) {
