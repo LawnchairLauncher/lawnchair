@@ -151,10 +151,8 @@
     <string name="about_role_family_member">家族成員</string>
     <string name="about_role_magisk_maintainer">Magisk 模組維護人員</string>
     <string name="about_bio_deletescape">Android 開發人員與愛好者，喜歡迷因（玩得有點多）。Lawnchair 專案的創始人。</string>
-    <string name="about_bio_divadsn">19 歲，將咖啡因和披薩變成了程式碼，提供寄管服務，且在發生問題之時提供 24/7 的開發協助。在他的空閒時間貢獻開源專案。此前也稱為 Codebucket。</string>
     <string name="about_bio_recoded">溫和的編碼師和平面設計師。</string>
     <string name="about_bio_josh">獨立的的平面設計師</string>
-    <string name="about_bio_chris">擁有創造性思的影響者、內容創造者&amp; 社交媒體和公關經理。</string>
     <string name="about_bio_msfjarvis">HalogenOS 的核心開發人員和 substratum 的應用程式開發人員。</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">強制停止啟動器</string>
