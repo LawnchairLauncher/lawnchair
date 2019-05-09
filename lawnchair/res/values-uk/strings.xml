@@ -150,10 +150,8 @@
     <string name="about_role_family_member">Член сім\'ї</string>
     <string name="about_role_magisk_maintainer">Підтримка Magisk Module</string>
     <string name="about_bio_deletescape">Android-розробник та ентузіаст, любить меми (можливо аж занадто). Засновник проекту Lawnchair.</string>
-    <string name="about_bio_divadsn">19 років, перктворює кофеїн та піцу в код. Також, в минулому відомий як Codebucket.</string>
     <string name="about_bio_recoded">Кодер та графічний дизайнер.</string>
     <string name="about_bio_josh">Позаштатний графічний дизайнер.</string>
-    <string name="about_bio_chris">Креативний розум, впливає &amp; Створює контент. Соціальні засоби комунікації та PR менеджер.</string>
     <string name="about_bio_msfjarvis">Розробник коду в halogenOS і розробник додатків в substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Виліт лаунчера</string>
