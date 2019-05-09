@@ -13,6 +13,7 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Process;
+import android.provider.AlarmClock;
 import android.provider.CalendarContract;
 import android.text.TextPaint;
 import android.text.TextUtils;
@@ -58,6 +59,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     private boolean ds;
     private boolean mDoubleLine;
     private final OnClickListener mCalendarClickListener;
+    private final OnClickListener mClockClickListener;
     private final OnClickListener mWeatherClickListener;
     private ImageView mSubtitleIcon;
     private TextView mSubtitleText;
@@ -98,12 +100,17 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
                     .setData(appendPath.build())
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             try {
-                final Context context1 = getContext();
-                Launcher.getLauncher(context1).startActivitySafely(v, addFlags, null);
+                Launcher.getLauncher(getContext()).startActivitySafely(v, addFlags, null);
             } catch (ActivityNotFoundException ex) {
                 LauncherAppsCompat.getInstance(getContext()).showAppDetailsForProfile(
                         new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle());
             }
+        };
+
+        mClockClickListener = v -> {
+            Launcher.getLauncher(getContext()).startActivitySafely(v,
+                    new Intent(AlarmClock.ACTION_SHOW_ALARMS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED), null);
         };
 
         mWeatherClickListener = v -> {
@@ -225,8 +232,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     private void bindClockAbove(boolean forced) {
         if(mPrefs.getSmartspaceTime() && mPrefs.getSmartspaceTimeAbove()) {
             mClockAboveView.setVisibility(View.VISIBLE);
-            // TODO: Create click listener opening clock
-            mClockAboveView.setOnClickListener(mCalendarClickListener);
+            mClockAboveView.setOnClickListener(mClockClickListener);
             mClockAboveView.setOnLongClickListener(co());
             if (forced)
                 mClockAboveView.reloadDateFormat(true);
