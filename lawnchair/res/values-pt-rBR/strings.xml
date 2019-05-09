@@ -151,10 +151,8 @@
     <string name="about_role_family_member">Membro da família</string>
     <string name="about_role_magisk_maintainer">Mantenedor no módulo do Magisk</string>
     <string name="about_bio_deletescape">Desenvolvedor Android &amp; entusiasta, adora memes (um pouco demais na verdade). Fundador do projeto Lawnchair.</string>
-    <string name="about_bio_divadsn">19 anos, transforma cafeína e pizza em código. Também conhecido anteriormente como Codebucket.</string>
     <string name="about_bio_recoded">Programador e designer gráfico.</string>
     <string name="about_bio_josh">Designer gráfico independente.</string>
-    <string name="about_bio_chris">Muito millenial, ou sei lá. Coisas com design e mídia social. Vamos sair juntos no @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">Desenvolvedor principal em halogenOS e desenvolvedor no aplicativo do Substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Travar launcher</string>
@@ -410,4 +408,5 @@
     <string name="about_app_description">Uma alternativa customizável do Pixel Launcher.</string>
     <string name="about_bio_paphonb">Um estudante de 18 anos, desenvolvedor Android e um dos principais desenvolvedores do Launcher Lawnchair.</string>
     <string name="dock_scale">Escala da Dock</string>
+    <string name="adaptify_pack_title">Crie ícones adaptáveis ​​para o pacote de ícones</string>
 </resources>
