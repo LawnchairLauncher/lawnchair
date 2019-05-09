@@ -16,7 +16,7 @@ public class BaseClientService implements ServiceConnection {
         mContext = context;
         mFlags = flags;
         mBridge = LauncherClient.BRIDGE_USE
-                ? new LauncherClientBridge(this)
+                ? new LauncherClientBridge(this, flags)
                 : this;
     }
 
