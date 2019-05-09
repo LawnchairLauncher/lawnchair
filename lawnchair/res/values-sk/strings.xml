@@ -150,10 +150,8 @@
     <string name="about_role_family_member">Člen rodiny</string>
     <string name="about_role_magisk_maintainer">Údržba Magisk modulu</string>
     <string name="about_bio_deletescape">Vývojár Androidu &amp; nadšenec, milujúci memes (trochu priveľa). Zakladateľ projektu Lawnchair.</string>
-    <string name="about_bio_divadsn">18 ročný, mení kávu a pizzu na kód. Predtým známy tiež ako Codebucket.</string>
     <string name="about_bio_recoded">Kóder a grafický dizajnér.</string>
     <string name="about_bio_josh">Grafický dizajnér na voľnej nohe.</string>
-    <string name="about_bio_chris">Tvorca myšlienky, vplyvná osoba &amp; tvorca obsahu. Vedúci sociálnych médií a PR manažér.</string>
     <string name="about_bio_msfjarvis">Hlavný vývojár HalogenOS a vývojár aplikácie Substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Crash launcher</string>
