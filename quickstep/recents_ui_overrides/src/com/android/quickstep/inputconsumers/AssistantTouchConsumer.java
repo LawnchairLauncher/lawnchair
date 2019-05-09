@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.quickstep;
+package com.android.quickstep.inputconsumers;
 
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
@@ -43,6 +43,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.touch.SwipeDetector;
+import com.android.quickstep.ActivityControlHelper;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -236,7 +237,7 @@ public class AssistantTouchConsumer extends DelegateInputConsumer
         }
     }
 
-    static boolean withinTouchRegion(Context context, MotionEvent ev) {
+    public static boolean withinTouchRegion(Context context, MotionEvent ev) {
         final Resources res = context.getResources();
         final int width = res.getDisplayMetrics().widthPixels;
         final int height = res.getDisplayMetrics().heightPixels;
