@@ -151,10 +151,9 @@
     <string name="about_role_family_member">Aile üyesi</string>
     <string name="about_role_magisk_maintainer">Magisk modülü sorumlusu</string>
     <string name="about_bio_deletescape">Android geliştiricisi &amp; meraklısı. Lawnchair projesinin kurucusu.</string>
-    <string name="about_bio_divadsn">19 yaşında, kafeini ve pizzayı koda dönüştürüyor, bir şeyler yanlış giderse barındırma ve 7 gün 24 saat destek sağlıyor. Boş zamanlarında açık kaynaklı projelere katkıda bulunur. Ayrıca daha önce Codebucket olarak da bilinirdi.</string>
     <string name="about_bio_recoded">Hafif kodlayıcı ve grafik tasarımcısı.</string>
     <string name="about_bio_josh">Serbest grafik tasarımcısı.</string>
-    <string name="about_bio_chris">Yaratıcı Zihin, Etkileyici ve İçerik Oluşturucu. Sosyal Medya ve Halkla İlişkiler Yöneticisi. @lawnchairapp\'ta birlikte takılalım ✨</string>
+    <string name="about_bio_chris">Yaratıcı zihin, etkileyici ve içerik oluşturucu. Sosyal medya ve halkla ilişkiler yöneticisi. @lawnchairapp\'ta birlikte takılalım ✨</string>
     <string name="about_bio_msfjarvis">HalogenOS\'ta çekirdek geliştirici ve substratum da ki uygulama geliştiricisi.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Başlatıcı çöktü</string>
@@ -410,4 +409,6 @@
     <string name="about_app_description">Özelleştirilebilir bir Pixel Launcher alternatifi.</string>
     <string name="about_bio_paphonb">18 yaşında bir öğrenci, Android Geliştirici ve Lawnchair Launcher\'ın en iyi geliştiricilerinden biri.</string>
     <string name="dock_scale">Alt panel boyutu</string>
+    <string name="adaptify_pack_title">Simge paketleri için uyarlanabilir simgeler oluştur</string>
+    <string name="adaptify_pack_summary">Simge paketlerinden simgeler için uyarlanabilir simgeler oluştur</string>
 </resources>
