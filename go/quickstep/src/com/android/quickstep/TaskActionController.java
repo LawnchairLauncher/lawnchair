@@ -16,14 +16,17 @@
 package com.android.quickstep;
 
 import static com.android.quickstep.TaskAdapter.TASKS_START_POSITION;
+import static com.android.quickstep.TaskUtils.getLaunchComponentKeyForTask;
 
 import android.app.ActivityOptions;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.quickstep.views.TaskItemView;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 /**
@@ -34,10 +37,13 @@ public final class TaskActionController {
 
     private final TaskListLoader mLoader;
     private final TaskAdapter mAdapter;
+    private final StatsLogManager mStatsLogManager;
 
-    public TaskActionController(TaskListLoader loader, TaskAdapter adapter) {
+    public TaskActionController(TaskListLoader loader, TaskAdapter adapter,
+            StatsLogManager logManager) {
         mLoader = loader;
         mAdapter = adapter;
+        mStatsLogManager = logManager;
     }
 
     /**
@@ -56,10 +62,11 @@ public final class TaskActionController {
         int width = v.getMeasuredWidth();
         int height = v.getMeasuredHeight();
 
+        TaskKey key = viewHolder.getTask().get().key;
         ActivityOptions opts = ActivityOptions.makeClipRevealAnimation(v, left, top, width, height);
-        ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(
-                viewHolder.getTask().get().key, opts, null /* resultCallback */,
-                null /* resultCallbackHandler */);
+        ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(key, opts,
+                null /* resultCallback */, null /* resultCallbackHandler */);
+        mStatsLogManager.logTaskLaunch(null /* view */, getLaunchComponentKeyForTask(key));
     }
 
     /**
@@ -71,6 +78,7 @@ public final class TaskActionController {
         ActivityOptions opts = ActivityOptions.makeBasic();
         ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(task.key, opts,
                 null /* resultCallback */, null /* resultCallbackHandler */);
+        mStatsLogManager.logTaskLaunch(null /* view */, getLaunchComponentKeyForTask(task.key));
     }
 
     /**
@@ -87,6 +95,7 @@ public final class TaskActionController {
         ActivityManagerWrapper.getInstance().removeTask(task.key.id);
         mLoader.removeTask(task);
         mAdapter.notifyItemRemoved(position);
+        // TODO(b/131840601): Add logging point for removal.
     }
 
     /**

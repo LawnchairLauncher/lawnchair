@@ -154,7 +154,8 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
         mTaskLoader = new TaskListLoader(mContext);
         mTaskAdapter = new TaskAdapter(mTaskLoader);
         mTaskAdapter.setOnClearAllClickListener(view -> animateClearAllTasks());
-        mTaskActionController = new TaskActionController(mTaskLoader, mTaskAdapter);
+        mTaskActionController = new TaskActionController(mTaskLoader, mTaskAdapter,
+                mActivity.getStatsLogManager());
         mTaskAdapter.setActionController(mTaskActionController);
         mTaskLayoutManager = new LinearLayoutManager(mContext, VERTICAL, true /* reverseLayout */);
         RecentsModel.INSTANCE.get(context).addThumbnailChangeListener(listener);
