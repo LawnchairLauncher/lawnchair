@@ -150,10 +150,9 @@
     <string name="about_role_family_member">สมาชิก</string>
     <string name="about_role_magisk_maintainer">ผู้ดูแลโมดูล Magisk</string>
     <string name="about_bio_deletescape">นักพัฒนาและผู้ที่ชื่นชอบ Android, ชอบมีม (มากเกินไปหน่อยจริงๆ), ผู้ก่อตั้งโปรเจค Lawnchair</string>
-    <string name="about_bio_divadsn">อายุ 19, แปลงกาแฟและพิซซ่าเป็นโค้ด, มีอีกชื่อคือ Codebucket</string>
     <string name="about_bio_recoded">โค้ดเดอร์, นักออกแบบ</string>
     <string name="about_bio_josh">นักออกแบบฟรีแลนซ์</string>
-    <string name="about_bio_chris">ผู้สร้างเนื้อหา, ประชาสัมพันธ์</string>
+    <string name="about_bio_chris">ออกแบบ, ประชาสัมพันธ์ มาคุยกันได้ที่ @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">นักพัฒนาหลัก halogenOS, นักพัฒนาแอป substratum</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">แครช Lawnchair</string>
@@ -406,4 +405,6 @@
     <string name="about_app_description">ทางเลือกที่ปรับแต่งได้แทน Pixel Launcher</string>
     <string name="about_bio_paphonb">นักเรียนอายุ 18 ปี นักพัฒนา Android และหนึ่งในนักพัฒนา Lawnchair</string>
     <string name="dock_scale">ขนาดแถบรายการโปรด</string>
+    <string name="adaptify_pack_title">สร้างสำหรับชุดไอคอน</string>
+    <string name="adaptify_pack_summary">สร้างไอคอนแบบปรับอัตโนมัติสำหรับไอคอนจากชุดไอคอน</string>
 </resources>
