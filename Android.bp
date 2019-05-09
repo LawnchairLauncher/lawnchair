@@ -24,6 +24,7 @@ android_library {
     srcs: [
         "tests/tapl/**/*.java",
         "src/com/android/launcher3/util/SecureSettingsObserver.java",
+        "src/com/android/launcher3/ResourceUtils.java",
         "src/com/android/launcher3/TestProtocol.java",
     ],
     manifest: "tests/tapl/AndroidManifest.xml",

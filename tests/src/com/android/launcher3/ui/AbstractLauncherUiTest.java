@@ -51,6 +51,7 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.MainThreadExecutor;
+import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.tapl.LauncherInstrumentation;
@@ -208,7 +209,9 @@ public abstract class AbstractLauncherUiTest {
      * @return the matching object.
      */
     protected UiObject2 scrollAndFind(UiObject2 container, BySelector condition) {
-        container.setGestureMargins(0, 0, 0, 200);
+        final int margin = ResourceUtils.getNavbarSize(
+                ResourceUtils.NAVBAR_VERTICAL_SIZE, mLauncher.getResources()) + 1;
+        container.setGestureMargins(0, 0, 0, margin);
 
         int i = 0;
         for (; ; ) {
@@ -216,7 +219,8 @@ public abstract class AbstractLauncherUiTest {
             mDevice.wait(Until.findObject(condition), SHORT_UI_TIMEOUT);
             UiObject2 widget = container.findObject(condition);
             if (widget != null && widget.getVisibleBounds().intersects(
-                    0, 0, mDevice.getDisplayWidth(), mDevice.getDisplayHeight() - 200)) {
+                    0, 0, mDevice.getDisplayWidth(),
+                    mDevice.getDisplayHeight() - margin)) {
                 return widget;
             }
             if (++i > 40) fail("Too many attempts");

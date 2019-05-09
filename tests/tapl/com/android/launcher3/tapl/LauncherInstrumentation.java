@@ -586,6 +586,10 @@ public final class LauncherInstrumentation {
         return ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 
+    public Resources getResources() {
+        return getContext().getResources();
+    }
+
     private static MotionEvent getMotionEvent(long downTime, long eventTime, int action,
             float x, float y) {
         MotionEvent.PointerProperties properties = new MotionEvent.PointerProperties();
