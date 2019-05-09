@@ -151,10 +151,8 @@
     <string name="about_role_family_member">团队成员</string>
     <string name="about_role_magisk_maintainer">Magisk 模块维护者</string>
     <string name="about_bio_deletescape">Android 开发者及爱好者，喜欢玩梗 (其实有点过火了)。Lawnchair 项目创始人。</string>
-    <string name="about_bio_divadsn">原名 Codebucket，19 岁，能把咖啡因和披萨变成代码。服务器托管提供者，能在开发出现问题时提供 7*24 小时协助，在空闲时间给开源项目添砖加瓦。</string>
     <string name="about_bio_recoded">温和的程序员和图形设计师。</string>
     <string name="about_bio_josh">独立图像设计师。</string>
-    <string name="about_bio_chris">拥有创造性思维的影响者、内容创造者。社交媒体和公关总监。</string>
     <string name="about_bio_msfjarvis">HalogenOS 的核心开发者和 Substratum 的应用程序开发者。</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">模拟启动器崩溃</string>
