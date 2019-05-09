@@ -72,6 +72,7 @@ import com.android.quickstep.inputconsumers.DeviceLockedInputConsumer;
 import com.android.quickstep.inputconsumers.InputConsumer;
 import com.android.quickstep.inputconsumers.OtherActivityInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
+import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -464,6 +465,12 @@ public class TouchInteractionService extends Service implements
                     && AssistantTouchConsumer.withinTouchRegion(this, event)) {
                 base = new AssistantTouchConsumer(this, mISystemUiProxy, activityControl, base,
                         mInputMonitorCompat);
+            }
+
+            if (ActivityManagerWrapper.getInstance().isScreenPinningActive()) {
+                // Note: we only allow accessibility to wrap this, and it replaces the previous
+                // base input consumer (which should be NO_OP anyway since topTaskLocked == true).
+                base = new ScreenPinnedInputConsumer(this, mISystemUiProxy, activityControl);
             }
 
             if ((mSystemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_CLICKABLE) != 0) {
