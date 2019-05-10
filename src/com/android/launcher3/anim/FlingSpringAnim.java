@@ -30,8 +30,8 @@ public class FlingSpringAnim {
     private static final float FLING_FRICTION = 1.5f;
     // Have the spring pull towards the target if we've slowed down too much before reaching it.
     private static final float FLING_END_THRESHOLD_PX = 50f;
-    private static final float SPRING_STIFFNESS = 350f;
-    private static final float SPRING_DAMPING = SpringForce.DAMPING_RATIO_LOW_BOUNCY;
+    private static final float SPRING_STIFFNESS = 200;
+    private static final float SPRING_DAMPING = 0.85f;
 
     private final FlingAnimation mFlingAnim;
     private SpringAnimation mSpringAnim;

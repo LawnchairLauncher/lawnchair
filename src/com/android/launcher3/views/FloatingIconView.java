@@ -98,10 +98,9 @@ public class FloatingIconView extends View implements
     private RectF mPositionOut;
     private Runnable mOnTargetChangeRunnable;
 
+    private final Rect mOutline = new Rect();
     private final Rect mFinalDrawableBounds = new Rect();
     private final Rect mBgDrawableBounds = new Rect();
-    private float mBgDrawableStartScale = 1f;
-    private float mBgDrawableEndScale = 1f;
 
     private AnimatorSet mFadeAnimatorSet;
     private ListenerView mListenerView;
@@ -143,11 +142,10 @@ public class FloatingIconView extends View implements
         setTranslationX(dX);
         setTranslationY(dY);
 
-        float scaleX = rect.width() / (float) lp.width;
-        float scaleY = rect.height() / (float) lp.height;
-        float scale = mIsAdaptiveIcon && !isOpening ? Math.max(scaleX, scaleY)
-                : Math.min(scaleX, scaleY);
-        scale = Math.max(1f, scale);
+        float minSize = Math.min(lp.width, lp.height);
+        float scaleX = rect.width() / minSize;
+        float scaleY = rect.height() / minSize;
+        float scale = Math.max(1f, Math.min(scaleX, scaleY));
 
         setPivotX(0);
         setPivotY(0);
@@ -160,27 +158,27 @@ public class FloatingIconView extends View implements
                 Math.max(shapeProgressStart, progress), shapeProgressStart, 1f, 0, toMax,
                 LINEAR), 0, 1);
 
-        mTaskCornerRadius = cornerRadius;
-        if (mIsAdaptiveIcon && shapeRevealProgress >= 0) {
-            if (mRevealAnimator == null) {
-                mRevealAnimator = (ValueAnimator) IconShape.getShape().createRevealAnimator(this,
-                        mStartRevealRect, mEndRevealRect, mTaskCornerRadius / scale, !isOpening);
-                mRevealAnimator.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mRevealAnimator = null;
-                    }
-                });
-                mRevealAnimator.start();
-                // We pause here so we can set the current fraction ourselves.
-                mRevealAnimator.pause();
+        mOutline.bottom = (int) (rect.height() / scale);
+        mTaskCornerRadius = cornerRadius / scale;
+        if (mIsAdaptiveIcon) {
+            if (!isOpening && shapeRevealProgress >= 0) {
+                if (mRevealAnimator == null) {
+                    mRevealAnimator = (ValueAnimator) IconShape.getShape().createRevealAnimator(
+                            this, mStartRevealRect, mOutline, mTaskCornerRadius, !isOpening);
+                    mRevealAnimator.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mRevealAnimator = null;
+                        }
+                    });
+                    mRevealAnimator.start();
+                    // We pause here so we can set the current fraction ourselves.
+                    mRevealAnimator.pause();
+                }
+                mRevealAnimator.setCurrentFraction(shapeRevealProgress);
             }
 
-            mRevealAnimator.setCurrentFraction(shapeRevealProgress);
-
-            float bgScale = (mBgDrawableEndScale * shapeRevealProgress) + mBgDrawableStartScale
-                    * (1 - shapeRevealProgress);
-            setBackgroundDrawableBounds(bgScale);
+            setBackgroundDrawableBounds(mOutline.height() / minSize);
         }
         invalidate();
         invalidateOutline();
@@ -363,24 +361,22 @@ public class FloatingIconView extends View implements
                 layout(lp.leftMargin, lp.topMargin, lp.leftMargin + lp.width, lp.topMargin
                         + lp.height);
 
-                Rect rectOutline = new Rect();
                 float scale = Math.max((float) lp.height / originalHeight,
                         (float) lp.width / originalWidth);
+                float bgDrawableStartScale;
                 if (isOpening) {
-                    mBgDrawableStartScale = 1f;
-                    mBgDrawableEndScale = scale;
-                    rectOutline.set(0, 0, originalWidth, originalHeight);
+                    bgDrawableStartScale = 1f;
+                    mOutline.set(0, 0, originalWidth, originalHeight);
                 } else {
-                    mBgDrawableStartScale = scale;
-                    mBgDrawableEndScale = 1f;
-                    rectOutline.set(0, 0, lp.width, lp.height);
+                    bgDrawableStartScale = scale;
+                    mOutline.set(0, 0, lp.width, lp.height);
                 }
+                setBackgroundDrawableBounds(bgDrawableStartScale);
                 mEndRevealRect.set(0, 0, lp.width, lp.height);
-                setBackgroundDrawableBounds(mBgDrawableStartScale);
                 setOutlineProvider(new ViewOutlineProvider() {
                     @Override
                     public void getOutline(View view, Outline outline) {
-                        outline.setRoundRect(rectOutline, mTaskCornerRadius);
+                        outline.setRoundRect(mOutline, mTaskCornerRadius);
                     }
                 });
                 setClipToOutline(true);
@@ -630,5 +626,7 @@ public class FloatingIconView extends View implements
         mListenerView.setListener(null);
         mOriginalIcon = null;
         mOnTargetChangeRunnable = null;
+        mTaskCornerRadius = 0;
+        mOutline.setEmpty();
     }
 }
