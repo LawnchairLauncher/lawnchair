@@ -1095,14 +1095,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
             homeAnim.setPlayFraction(progress);
 
-            float iconAlpha = Utilities.mapToRange(interpolatedProgress, 0,
-                    windowAlphaThreshold, 0f, 1f, Interpolators.LINEAR);
-            mTransformParams.setCurrentRectAndTargetAlpha(currentRect, 1f - iconAlpha);
+            float windowAlpha = Utilities.mapToRange(interpolatedProgress, 0,
+                    windowAlphaThreshold, 1f, 0f, Interpolators.LINEAR);
+            mTransformParams.setProgress(progress)
+                    .setCurrentRectAndTargetAlpha(currentRect, windowAlpha);
             mClipAnimationHelper.applyTransform(targetSet, mTransformParams,
                     false /* launcherOnTop */);
 
             if (isFloatingIconView) {
-                ((FloatingIconView) floatingView).update(currentRect, iconAlpha, progress,
+                ((FloatingIconView) floatingView).update(currentRect, 1f, progress,
                         windowAlphaThreshold, mClipAnimationHelper.getCurrentCornerRadius(), false);
             }
 

@@ -104,16 +104,18 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     private static final String CONTROL_REMOTE_APP_TRANSITION_PERMISSION =
             "android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS";
 
-    private static final long APP_LAUNCH_DURATION = 500;
+    private static final long APP_LAUNCH_DURATION = 450;
     // Use a shorter duration for x or y translation to create a curve effect
-    private static final long APP_LAUNCH_CURVED_DURATION = APP_LAUNCH_DURATION / 2;
+    private static final long APP_LAUNCH_CURVED_DURATION = 250;
     private static final long APP_LAUNCH_ALPHA_DURATION = 50;
+    private static final long APP_LAUNCH_ALPHA_START_DELAY = 50;
 
     // We scale the durations for the downward app launch animations (minus the scale animation).
     private static final float APP_LAUNCH_DOWN_DUR_SCALE_FACTOR = 0.8f;
     private static final long APP_LAUNCH_DOWN_DURATION =
             (long) (APP_LAUNCH_DURATION * APP_LAUNCH_DOWN_DUR_SCALE_FACTOR);
-    private static final long APP_LAUNCH_DOWN_CURVED_DURATION = APP_LAUNCH_DOWN_DURATION / 2;
+    private static final long APP_LAUNCH_DOWN_CURVED_DURATION =
+            (long) (APP_LAUNCH_CURVED_DURATION * APP_LAUNCH_DOWN_DUR_SCALE_FACTOR);
     private static final long APP_LAUNCH_ALPHA_DOWN_DURATION =
             (long) (APP_LAUNCH_ALPHA_DURATION * APP_LAUNCH_DOWN_DUR_SCALE_FACTOR);
 
@@ -475,17 +477,18 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         float shapeRevealDuration = APP_LAUNCH_DURATION * SHAPE_PROGRESS_DURATION;
 
         final float windowRadius = mDeviceProfile.isMultiWindowMode
-                ? 0 :  getWindowCornerRadius(mLauncher.getResources());
-
+                ? 0 : getWindowCornerRadius(mLauncher.getResources());
         appAnimator.addUpdateListener(new MultiValueUpdateListener() {
             FloatProp mDx = new FloatProp(0, dX, 0, xDuration, AGGRESSIVE_EASE);
             FloatProp mDy = new FloatProp(0, dY, 0, yDuration, AGGRESSIVE_EASE);
             FloatProp mIconScale = new FloatProp(initialStartScale, scale, 0, APP_LAUNCH_DURATION,
                     EXAGGERATED_EASE);
-            FloatProp mIconAlpha = new FloatProp(1f, 0f, shapeRevealDuration, alphaDuration,
-                    LINEAR);
+            FloatProp mIconAlpha = new FloatProp(1f, 0f, APP_LAUNCH_ALPHA_START_DELAY,
+                    alphaDuration, LINEAR);
             FloatProp mCropHeight = new FloatProp(windowTargetBounds.width(),
-                    windowTargetBounds.height(), 0, shapeRevealDuration, AGGRESSIVE_EASE);
+                    windowTargetBounds.height(), 0, APP_LAUNCH_DURATION, EXAGGERATED_EASE);
+            FloatProp mWindowRadius = new FloatProp(windowTargetBounds.width() / 2f,
+                    windowRadius, 0, APP_LAUNCH_DURATION, EXAGGERATED_EASE);
 
             @Override
             public void onUpdate(float percent) {
@@ -518,6 +521,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 float transX0 = temp.left - offsetX;
                 float transY0 = temp.top - offsetY;
 
+                float croppedHeight = (windowTargetBounds.height() - crop.height()) * scale;
                 SurfaceParams[] params = new SurfaceParams[targets.length];
                 for (int i = targets.length - 1; i >= 0; i--) {
                     RemoteAnimationTargetCompat target = targets[i];
@@ -529,8 +533,9 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                         matrix.postTranslate(transX0, transY0);
                         targetCrop = crop;
                         alpha = 1f - mIconAlpha.value;
-                        cornerRadius = windowRadius;
+                        cornerRadius = mWindowRadius.value;
                         matrix.mapRect(currentBounds, targetBounds);
+                        currentBounds.bottom -= croppedHeight;
                         mFloatingView.update(currentBounds, mIconAlpha.value, percent, 0f,
                                 cornerRadius * scale, true /* isOpening */);
                     } else {
