@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.quickstep.views.IconRecentsView.REMOTE_APP_TO_OVERVIEW_DURATION;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
@@ -22,12 +23,17 @@ import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MOD
 
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
+import android.app.ActivityOptions;
+import android.os.Handler;
 import android.util.Log;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.LauncherAnimationRunner;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.IconRecentsView;
+import com.android.systemui.shared.system.ActivityOptionsCompat;
+import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 /**
@@ -137,6 +143,29 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
         mRecentsView.playRemoteAppToRecentsAnimation(anim, closingAppTarget, recentsTarget);
 
         return anim;
+    }
+
+    @Override
+    public ActivityOptions toActivityOptions(Handler handler, long duration) {
+        LauncherAnimationRunner runner = new LauncherAnimationRunner(handler,
+                false /* startAtFrontOfQueue */) {
+
+            @Override
+            public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
+                    AnimationResult result) {
+                IconRecentsView recentsView = mRecentsView;
+                if (!recentsView.isReadyForRemoteAnim()) {
+                    recentsView.setOnReadyForRemoteAnimCallback(() -> postAsyncCallback(handler,
+                            () -> onCreateAnimation(targetCompats, result))
+                    );
+                    return;
+                }
+                result.setAnimation(createWindowAnimation(targetCompats));
+            }
+        };
+        return ActivityOptionsCompat.makeRemoteAnimation(
+                new RemoteAnimationAdapterCompat(runner, duration,
+                        0 /* statusBarTransitionDelay */));
     }
 
     /**
