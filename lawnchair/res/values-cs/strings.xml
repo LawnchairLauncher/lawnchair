@@ -152,6 +152,7 @@
     <string name="about_bio_deletescape">Vývojář androidu &amp; nadšenec, milující memy (vlastně přespříliš). Zakladatel projektu Lawnchair.</string>
     <string name="about_bio_recoded">Kodér a grafický designér.</string>
     <string name="about_bio_josh">Grafický návrhář na volné noze.</string>
+    <string name="about_bio_chris">Tvůrce myšlenky, vlivná osoba &amp; tvůrce obsahu. Vedoucí sociálních médií a PR manažer ✨</string>
     <string name="about_bio_msfjarvis">Hlavní vývojář HalogenOS a vývojář aplikace Substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Shoď launcher</string>
@@ -410,4 +411,6 @@
     <string name="about_app_description">Přizpůsobitelná alternativa Pixel launcheru.</string>
     <string name="about_bio_paphonb">18-letý student, vývojář androidu a jeden z nejlepších vývojářů Lawnchair Launcher.</string>
     <string name="dock_scale">Měřítko doku</string>
+    <string name="adaptify_pack_title">Vytvořit adaptivní ikony pro balíček ikon</string>
+    <string name="adaptify_pack_summary">Vytvořit adaptivní ikony pro ikony z balíčků ikon</string>
 </resources>
