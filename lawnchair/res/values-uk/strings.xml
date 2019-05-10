@@ -6,18 +6,18 @@
     <string name="icu_abbrev_time">HH:mm</string>
     <string name="icu_abbrev_time_12h">hh:mm aa</string>
     <string name="icu_abbrev_date"> dd MMMM</string>
-    <string name="in_smartspace">В віджеті гугл</string>
+    <string name="in_smartspace">У віджеті \‘At a glance\’</string>
     <string name="smartspace_time">Час</string>
     <string name="smartspace_date">Дата</string>
     <string name="customize">Персоналізувати</string>
-    <string name="smartspace_preferences_in_settings">Віджет At a Glance</string>
-    <string name="smartspace_preferences_in_settings_desc">Дата, час, постачальник погоди</string>
-    <string name="search">Шукати</string>
+    <string name="smartspace_preferences_in_settings">Найголовніше</string>
+    <string name="smartspace_preferences_in_settings_desc">Дата, час, джерело даних про погоду</string>
+    <string name="search">Пошук</string>
     <string name="label_voice_search">Голосовий пошук</string>
-    <string name="icon_pack">Набір значків</string>
-    <string name="home_widget">Віджет</string>
+    <string name="icon_pack">Набір іконок</string>
+    <string name="home_widget">Віджет на головному екрані</string>
     <string name="title_show_google_app">%1$s залишилось</string>
-    <string name="msg_minus_one_on_left">Стрічка новин зліва на робочому столі</string>
+    <string name="msg_minus_one_on_left">Стрічка новин зліва робочого столу</string>
     <string name="about">Про додаток</string>
     <string name="google_app">Додаток Google</string>
     <string name="about_app_version">Версія</string>
@@ -411,4 +411,6 @@
     <string name="about_app_description">Альтернатива Pixel Launcher з широкими можливостями налаштування.</string>
     <string name="about_bio_paphonb">18-річний студент, Android-програміст та один з основних розробників Lawnchair Launcher.</string>
     <string name="dock_scale">Масштаб док-бару</string>
+    <string name="adaptify_pack_title">Створити адаптивні іконки для набору іконок</string>
+    <string name="adaptify_pack_summary">Створити адаптивні іконки для іконок з наборів іконок</string>
 </resources>
