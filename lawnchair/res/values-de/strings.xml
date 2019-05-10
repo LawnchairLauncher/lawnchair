@@ -152,7 +152,7 @@
     <string name="about_bio_deletescape">Android-Entwickler &amp; -Enthusiast. Mag Memes (fast ein bisschen zu sehr, um ehrlich zu sein). Gründer des Lawnchair-Projekts.</string>
     <string name="about_bio_recoded">Einfacher Coder und Grafikdesigner.</string>
     <string name="about_bio_josh">Freiberuflicher Grafikdesigner.</string>
-    <string name="about_bio_chris">Extremer Millennial, keine Ahnung und juckt mich nicht. Irgendwas mit Design und social Media. Lass uns zusammen bei @lawnchairapp abhängen ✨</string>
+    <string name="about_bio_chris">Extremer Millennial, keine Ahnung und juckt mich nicht. Irgendwas mit Design und Social Media. Lass uns zusammen bei @lawnchairapp abhängen ✨</string>
     <string name="about_bio_msfjarvis">Hauptentwickler von halogenOS und App-Entwickler bei substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Launcher abstürzen lassen</string>
@@ -408,5 +408,6 @@
     <string name="about_app_description">Eine anpassbare Alternative zum Pixel Launcher.</string>
     <string name="about_bio_paphonb">Ein 18 Jahre alter Schüler, Android-Entwickler und einer der top Entwickler von Lawnchair.</string>
     <string name="dock_scale">Dock-Skalierung</string>
-    <string name="adaptify_pack_title">Erstelle anpassende Icons für das Icon Pack</string>
+    <string name="adaptify_pack_title">Erstelle adaptive Icons für das Icon-Paket</string>
+    <string name="adaptify_pack_summary">Erstelle adaptive Icons für Icons aus Icon-Paketen</string>
 </resources>
