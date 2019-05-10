@@ -153,6 +153,7 @@
     <string name="about_bio_deletescape">Android 開發人員與愛好者，喜歡迷因（玩得有點多）。Lawnchair 專案的創始人。</string>
     <string name="about_bio_recoded">溫和的編碼師和平面設計師。</string>
     <string name="about_bio_josh">獨立的的平面設計師</string>
+    <string name="about_bio_chris">擁有創造性思的影響者、內容創造者和社交媒體和公關經理。</string>
     <string name="about_bio_msfjarvis">HalogenOS 的核心開發人員和 substratum 的應用程式開發人員。</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">強制停止啟動器</string>
@@ -406,4 +407,6 @@
     <string name="about_app_description">可自訂的另類 Pixel 啟動器</string>
     <string name="about_bio_paphonb">18 歲學生、Android 開發者且是 Lawnchair 啟動器的首席開發者之一。</string>
     <string name="dock_scale">底欄尺寸</string>
+    <string name="adaptify_pack_title">為圖示包建立自適應圖示</string>
+    <string name="adaptify_pack_summary">從圖示包中為圖示建立自適應圖示</string>
 </resources>
