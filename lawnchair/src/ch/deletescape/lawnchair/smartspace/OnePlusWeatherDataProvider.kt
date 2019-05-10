@@ -79,13 +79,13 @@ class OnePlusWeatherDataProvider(controller: LawnchairSmartspaceController) :
         val c = Calendar.getInstance().apply { timeInMillis = TimeUnit.SECONDS.toMillis(data.timestamp) }
         var isDay = c.get(HOUR_OF_DAY) in 6 until 20
         if (locationAccess) {
-            val locationProvider = locationManager?.getBestProvider(Criteria(), true)
-            val location = locationManager?.getLastKnownLocation(locationProvider)
-            if (location != null) {
-                val calc = SunriseSunsetCalculator(Location(location.latitude, location.longitude), c.timeZone)
-                val sunrise = calc.getOfficialSunriseCalendarForDate(c)
-                val sunset = calc.getOfficialSunsetCalendarForDate(c)
-                isDay = sunrise.before(c) && sunset.after(c)
+            locationManager?.getBestProvider(Criteria(), true)?.let { provider ->
+                locationManager?.getLastKnownLocation(provider)?.let { location ->
+                    val calc = SunriseSunsetCalculator(Location(location.latitude, location.longitude), c.timeZone)
+                    val sunrise = calc.getOfficialSunriseCalendarForDate(c)
+                    val sunset = calc.getOfficialSunsetCalendarForDate(c)
+                    isDay = sunrise.before(c) && sunset.after(c)
+                }
             }
         }
 

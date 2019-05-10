@@ -100,10 +100,6 @@ public class AdaptiveIconGenerator {
                 isBackgroundWhite = true;
                 extractee = aid.getForeground();
             }
-            if (!extractColor) {
-                onExitLoop();
-                return;
-            }
 
             LauncherIcons li = LauncherIcons.obtain(context);
             IconNormalizer normalizer = li.getNormalizer();
@@ -112,8 +108,7 @@ public class AdaptiveIconGenerator {
             boolean[] outShape = new boolean[1];
             RectF bounds = new RectF();
 
-            tmp = (AdaptiveIconDrawable) context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
-            tmp.setBounds(0, 0, 1, 1);
+            initTmpIfNeeded();
             scale = normalizer.getScale(extractee, bounds, tmp.getIconMask(), outShape);
             matchesMaskShape = outShape[0];
 
@@ -183,6 +178,9 @@ public class AdaptiveIconGenerator {
                     if (transparentScore > maxTransparent) {
                         isFullBleed = false;
                         fullBleedChecked = true;
+                        if (!extractColor) {
+                            break;
+                        }
                     }
                     continue;
                 }
@@ -208,6 +206,12 @@ public class AdaptiveIconGenerator {
                 // not yet checked = not set to false = has to be full bleed
                 isFullBleed = true;
                 backgroundColor = bestRGB;
+                onExitLoop();
+                return;
+            }
+
+            if (!extractColor) {
+                backgroundColor = Color.WHITE;
                 onExitLoop();
                 return;
             }
@@ -260,6 +264,7 @@ public class AdaptiveIconGenerator {
             }
             return new AdaptiveIconDrawable(new ColorDrawable(backgroundColor), ((AdaptiveIconDrawable) icon).getForeground());
         }
+        initTmpIfNeeded();
         ((FixedScaleDrawable) tmp.getForeground()).setDrawable(icon);
         if (matchesMaskShape || isFullBleed) {
             float upScale = max(width / aWidth, height / aHeight);
@@ -269,6 +274,13 @@ public class AdaptiveIconGenerator {
         }
         ((ColorDrawable) tmp.getBackground()).setColor(backgroundColor);
         return tmp;
+    }
+
+    private void initTmpIfNeeded() {
+        if (tmp == null) {
+            tmp = (AdaptiveIconDrawable) context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
+            tmp.setBounds(0, 0, 1, 1);
+        }
     }
 
     public Drawable getResult() {
