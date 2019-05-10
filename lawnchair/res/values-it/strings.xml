@@ -153,6 +153,7 @@
     <string name="about_bio_deletescape">Sviluppatore Android &amp; appassionato, adora i meme (effettivamente un po\' troppo). Fondatore del progetto Lawnchair.</string>
     <string name="about_bio_recoded">Mite programmatore e designer grafico.</string>
     <string name="about_bio_josh">Designer grafico indipendente.</string>
+    <string name="about_bio_chris">Millennial af, idk e idc. Pratico con il design e con i social. Passiamo un po’ di tempo insieme @lawnchairapp✨</string>
     <string name="about_bio_msfjarvis">Sviluppatore principale di halogenOS e sviluppatore di applicazioni di substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Crash launcher</string>
@@ -408,4 +409,6 @@
     <string name="about_app_description">Un\'alternativa personalizzabile al Pixel Launcher.</string>
     <string name="about_bio_paphonb">Studente di 18 anni, Sviluppatore Android e uno dei maggiori sviluppatori di Lawnchair Launcher.</string>
     <string name="dock_scale">Grandezza dock</string>
+    <string name="adaptify_pack_title">Crea icone adattive per i pacchetti icone</string>
+    <string name="adaptify_pack_summary">Crea icone adattive per icone di un icon pack</string>
 </resources>
