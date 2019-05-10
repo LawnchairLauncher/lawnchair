@@ -216,20 +216,8 @@ public final class ContentFillItemAnimator extends SimpleItemAnimator {
     @Override
     public void endAnimation(@NonNull ViewHolder item) {
         for (int i = mPendingAnims.size() - 1; i >= 0; i--) {
-            PendingAnimation pendAnim = mPendingAnims.get(i);
-            if (pendAnim.viewHolder == item) {
-                mPendingAnims.remove(i);
-                switch (pendAnim.animType) {
-                    case ANIM_TYPE_REMOVE:
-                        dispatchRemoveFinished(item);
-                        break;
-                    case ANIM_TYPE_CHANGE:
-                        dispatchChangeFinished(item, true /* oldItem */);
-                        break;
-                    default:
-                        break;
-                }
-            }
+            endPendingAnimation(mPendingAnims.get(i));
+            mPendingAnims.remove(i);
         }
         dispatchFinishedWhenDone();
     }
@@ -237,18 +225,7 @@ public final class ContentFillItemAnimator extends SimpleItemAnimator {
     @Override
     public void endAnimations() {
         for (int i = mPendingAnims.size() - 1; i >= 0; i--) {
-            PendingAnimation pendAnim = mPendingAnims.get(i);
-            ViewHolder item = pendAnim.viewHolder;
-            switch (pendAnim.animType) {
-                case ANIM_TYPE_REMOVE:
-                    dispatchRemoveFinished(item);
-                    break;
-                case ANIM_TYPE_CHANGE:
-                    dispatchChangeFinished(item, true /* oldItem */);
-                    break;
-                default:
-                    break;
-            }
+            endPendingAnimation(mPendingAnims.get(i));
             mPendingAnims.remove(i);
         }
         for (int i = mRunningAnims.size() - 1; i >= 0; i--) {
@@ -257,6 +234,20 @@ public final class ContentFillItemAnimator extends SimpleItemAnimator {
             anim.cancel();
         }
         dispatchAnimationsFinished();
+    }
+
+    private void endPendingAnimation(PendingAnimation pendAnim) {
+        ViewHolder item = pendAnim.viewHolder;
+        switch (pendAnim.animType) {
+            case ANIM_TYPE_REMOVE:
+                dispatchRemoveFinished(item);
+                break;
+            case ANIM_TYPE_CHANGE:
+                dispatchChangeFinished(item, true /* oldItem */);
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
