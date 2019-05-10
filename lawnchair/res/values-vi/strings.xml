@@ -405,4 +405,6 @@
     <string name="about_app_description">Một thay thế Pixel Launcher có thể tùy chỉnh.</string>
     <string name="about_bio_paphonb">Một sinh viên 18 tuổi, Nhà phát triển Android và là một trong những nhà phát triển hàng đầu tại Lawnsheet Launcher.</string>
     <string name="dock_scale">Khoảng cách Dock</string>
+    <string name="adaptify_pack_title">Tạo biểu tượng thích ứng cho gói biểu tượng</string>
+    <string name="adaptify_pack_summary">Tạo biểu tượng thích ứng cho các biểu tượng từ gói biểu tượng</string>
 </resources>
