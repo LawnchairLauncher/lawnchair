@@ -148,6 +148,7 @@
     <string name="about_bio_deletescape">Desenvolupador i entusiasta d\'Android, enamorat dels memes (en realitat una mica massa). Fundador del projecte Lawnchair.</string>
     <string name="about_bio_recoded">Programador i dissenyador.</string>
     <string name="about_bio_josh">Dissenyador autònom.</string>
+    <string name="about_bio_chris">Mil·lènial, no ho sé i no m\'interessa. Alguna cosa sobre disseny i xarxes socials. Anem a passar l\'estona junts a @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">Desenvolupador principal en halogenOS i desenvolupador d\'aplicacions en substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">El llançador ha fallat</string>
@@ -402,4 +403,6 @@
     <string name="about_app_description">Un Pixel Launcher personalitzable alternatiu.</string>
     <string name="about_bio_paphonb">Estudiant de 18 anys, desenvolupador d\'Android i un dels principals desenvolupadors de Lawnchair Launcher.</string>
     <string name="dock_scale">Escala del caixó d\'aplicacions</string>
+    <string name="adaptify_pack_title">Crea icones adaptatives per al paquet d\'icones</string>
+    <string name="adaptify_pack_summary">Creeu icones adaptatives per a icones a partir de paquets d\'icones</string>
 </resources>
