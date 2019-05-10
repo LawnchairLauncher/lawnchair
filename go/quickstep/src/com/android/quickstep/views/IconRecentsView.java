@@ -153,6 +153,7 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
     private View mContentView;
     private boolean mTransitionedFromApp;
     private boolean mUsingRemoteAnimation;
+    private boolean mStartedEnterAnimation;
     private AnimatorSet mLayoutAnimation;
     private final ArraySet<View> mLayingOutViews = new ArraySet<>();
     private Rect mInsets;
@@ -298,6 +299,7 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
      * becomes visible.
      */
     public void onBeginTransitionToOverview() {
+        mStartedEnterAnimation = false;
         if (mContext.getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
             // Scroll to bottom of task in landscape mode. This is a non-issue in portrait mode as
             // all tasks should be visible to fill up the screen in portrait mode and the view will
@@ -322,16 +324,22 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
                         + "of items to animate to.");
             }
             // Possible that task list loads faster than adapter changes propagate to layout so
-            // only start content fill animation if there aren't any pending adapter changes.
-            if (!mTaskRecyclerView.hasPendingAdapterUpdates()) {
+            // only start content fill animation if there aren't any pending adapter changes and
+            // we've started the on enter layout animation.
+            boolean needsContentFillAnimation =
+                    !mTaskRecyclerView.hasPendingAdapterUpdates() && mStartedEnterAnimation;
+            if (needsContentFillAnimation) {
                 // Set item animator for content filling animation. The item animator will switch
                 // back to the default on completion
                 mTaskRecyclerView.setItemAnimator(mLoadingContentItemAnimator);
+                mTaskAdapter.notifyItemRangeRemoved(TASKS_START_POSITION + numActualItems,
+                        numEmptyItems - numActualItems);
+                mTaskAdapter.notifyItemRangeChanged(TASKS_START_POSITION, numActualItems,
+                        CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT);
+            } else {
+                // Notify change without animating.
+                mTaskAdapter.notifyDataSetChanged();
             }
-            mTaskAdapter.notifyItemRangeRemoved(TASKS_START_POSITION + numActualItems,
-                    numEmptyItems - numActualItems);
-            mTaskAdapter.notifyItemRangeChanged(TASKS_START_POSITION, numActualItems,
-                    CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT);
         });
     }
 
@@ -622,6 +630,7 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
             }
         });
         mLayoutAnimation.start();
+        mStartedEnterAnimation = true;
     }
 
     /**
@@ -647,6 +656,7 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
         playRemoteAppScaleDownAnim(anim, appMatrix, appTarget, recentsTarget,
                 bottomView.getThumbnailView());
         playRemoteTaskListFadeIn(anim, bottomView);
+        mStartedEnterAnimation = true;
     }
 
     /**
