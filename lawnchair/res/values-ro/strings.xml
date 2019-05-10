@@ -410,4 +410,6 @@
     <string name="about_app_description">O alternativă personalizabilă pentru lansatorul Pixel.</string>
     <string name="about_bio_paphonb">Un student în vârstă de 18 ani, dezvoltator Android și unul dintre dezvoltatorii de top ai lansatorului Lawnchair.</string>
     <string name="dock_scale">Scară zonă de andocare</string>
+    <string name="adaptify_pack_title">Creare pictograme adaptive pentru pachetul cu pictograme</string>
+    <string name="adaptify_pack_summary">Creare pictograme adaptive pentru pictograme din pachete cu pictograme</string>
 </resources>
