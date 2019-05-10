@@ -67,8 +67,8 @@ public final class RecentsActivity extends BaseRecentsActivity {
     }
 
     @Override
-    protected void onStart() {
+    protected void onResume() {
         mIconRecentsView.onBeginTransitionToOverview();
-        super.onStart();
+        super.onResume();
     }
 }
