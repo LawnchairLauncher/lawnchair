@@ -407,4 +407,5 @@
     <string name="about_app_description">Une alternative paramétrable du \"Pixel Launcher\"</string>
     <string name="about_bio_paphonb">Un étudiant de 18ans, Développeur Android et l\'un des meilleurs développeurs de Lawnchair launcher.</string>
     <string name="dock_scale">Taille du Dock</string>
+    <string name="adaptify_pack_title">Créer des icônes adaptative pour les pack d\'icônes</string>
 </resources>
