@@ -658,6 +658,7 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
             // enough time to take in the data change, bind a new view, and lay out the new view.
             // TODO: Have a fallback to animate to
             anim.play(ValueAnimator.ofInt(0, 1).setDuration(REMOTE_APP_TO_OVERVIEW_DURATION));
+            return;
         }
         final Matrix appMatrix = new Matrix();
         playRemoteTransYAnim(anim, appMatrix);
