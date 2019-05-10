@@ -42,10 +42,20 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
     private final ActivityControlHelper<T> mHelper;
     private final int mTargetTaskId;
     private IconRecentsView mRecentsView;
+    private AppToOverviewAnimationListener mAnimationReadyListener;
 
     AppToOverviewAnimationProvider(ActivityControlHelper<T> helper, int targetTaskId) {
         mHelper = helper;
         mTargetTaskId = targetTaskId;
+    }
+
+    /**
+     * Set listener to various points in the animation preparing to animate.
+     *
+     * @param listener listener
+     */
+    void setAnimationListener(AppToOverviewAnimationListener listener) {
+        mAnimationReadyListener = listener;
     }
 
     /**
@@ -55,6 +65,9 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
      * @param wasVisible true if it was visible before
      */
     boolean onActivityReady(T activity, Boolean wasVisible) {
+        if (mAnimationReadyListener != null) {
+            mAnimationReadyListener.onActivityReady(activity);
+        }
         ActivityControlHelper.AnimationFactory factory =
                 mHelper.prepareRecentsUI(activity, wasVisible,
                         false /* animate activity */, (controller) -> {
@@ -79,6 +92,9 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
      */
     @Override
     public AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] targetCompats) {
+        if (mAnimationReadyListener != null) {
+            mAnimationReadyListener.onWindowAnimationCreated();
+        }
         AnimatorSet anim = new AnimatorSet();
         if (mRecentsView == null) {
             if (Log.isLoggable(TAG, Log.WARN)) {
@@ -130,5 +146,22 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
      */
     long getRecentsLaunchDuration() {
         return REMOTE_APP_TO_OVERVIEW_DURATION;
+    }
+
+    /**
+     * Listener for various points in the app to overview animation preparing to animate.
+     */
+    interface AppToOverviewAnimationListener {
+        /**
+         * Logic for when activity we're animating to is ready
+         *
+         * @param activity activity to animate to
+         */
+        void onActivityReady(BaseDraggingActivity activity);
+
+        /**
+         * Logic for when we've created the app to recents animation.
+         */
+        void onWindowAnimationCreated();
     }
 }

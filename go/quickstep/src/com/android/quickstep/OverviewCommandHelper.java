@@ -18,7 +18,6 @@ package com.android.quickstep;
 import static com.android.systemui.shared.system.ActivityManagerWrapper
         .CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
-import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
@@ -30,10 +29,10 @@ import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
+import com.android.quickstep.AppToOverviewAnimationProvider.AppToOverviewAnimationListener;
 import com.android.quickstep.views.IconRecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 /**
  * Helper class to handle various atomic commands for switching between Overview.
@@ -105,7 +104,6 @@ public class OverviewCommandHelper {
 
         protected final ActivityControlHelper<T> mHelper;
         private final long mCreateTime;
-        private final AppToOverviewAnimationProvider<T> mAnimationProvider;
 
         private final long mToggleClickedTime = SystemClock.uptimeMillis();
         private boolean mUserEventLogged;
@@ -114,8 +112,6 @@ public class OverviewCommandHelper {
         public RecentsActivityCommand() {
             mHelper = mOverviewComponentObserver.getActivityControlHelper();
             mCreateTime = SystemClock.elapsedRealtime();
-            mAnimationProvider =
-                    new AppToOverviewAnimationProvider<>(mHelper, RecentsModel.getRunningTaskId());
 
             // Preload the plan
             mRecentsModel.getTasks(null);
@@ -136,11 +132,37 @@ public class OverviewCommandHelper {
                 return;
             }
 
+            AppToOverviewAnimationProvider<T> provider =
+                    new AppToOverviewAnimationProvider<>(mHelper, RecentsModel.getRunningTaskId());
+            provider.setAnimationListener(
+                    new AppToOverviewAnimationListener() {
+                        @Override
+                        public void onActivityReady(BaseDraggingActivity activity) {
+                            if (!mUserEventLogged) {
+                                activity.getUserEventDispatcher().logActionCommand(
+                                        LauncherLogProto.Action.Command.RECENTS_BUTTON,
+                                        mHelper.getContainerType(),
+                                        LauncherLogProto.ContainerType.TASKSWITCHER);
+                                mUserEventLogged = true;
+                            }
+                        }
+
+                        @Override
+                        public void onWindowAnimationCreated() {
+                            if (LatencyTrackerCompat.isEnabled(mContext)) {
+                                LatencyTrackerCompat.logToggleRecents(
+                                        (int) (SystemClock.uptimeMillis() - mToggleClickedTime));
+                            }
+
+                            mListener.unregister();
+                        }
+                    });
+
             // Otherwise, start overview.
-            mListener = mHelper.createActivityInitListener(this::onActivityReady);
+            mListener = mHelper.createActivityInitListener(provider::onActivityReady);
             mListener.registerAndStartActivity(mOverviewComponentObserver.getOverviewIntent(),
-                    this::createWindowAnimation, mContext, mMainThreadExecutor.getHandler(),
-                    mAnimationProvider.getRecentsLaunchDuration());
+                    provider, mContext, mMainThreadExecutor.getHandler(),
+                    provider.getRecentsLaunchDuration());
         }
 
         protected boolean handleCommand(long elapsedTime) {
@@ -154,28 +176,6 @@ public class OverviewCommandHelper {
                 return true;
             }
             return false;
-        }
-
-        private boolean onActivityReady(T activity, Boolean wasVisible) {
-            if (!mUserEventLogged) {
-                activity.getUserEventDispatcher().logActionCommand(
-                        LauncherLogProto.Action.Command.RECENTS_BUTTON,
-                        mHelper.getContainerType(),
-                        LauncherLogProto.ContainerType.TASKSWITCHER);
-                mUserEventLogged = true;
-            }
-            return mAnimationProvider.onActivityReady(activity, wasVisible);
-        }
-
-        private AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] targetCompats) {
-            if (LatencyTrackerCompat.isEnabled(mContext)) {
-                LatencyTrackerCompat.logToggleRecents(
-                        (int) (SystemClock.uptimeMillis() - mToggleClickedTime));
-            }
-
-            mListener.unregister();
-
-            return mAnimationProvider.createWindowAnimation(targetCompats);
         }
     }
 }
