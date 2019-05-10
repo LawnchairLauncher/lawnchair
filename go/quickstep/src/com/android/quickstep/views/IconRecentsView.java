@@ -19,10 +19,14 @@ import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 import static androidx.recyclerview.widget.LinearLayoutManager.VERTICAL;
 
+import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.quickstep.TaskAdapter.CHANGE_EVENT_TYPE_EMPTY_TO_CONTENT;
 import static com.android.quickstep.TaskAdapter.ITEM_TYPE_CLEAR_ALL;
 import static com.android.quickstep.TaskAdapter.ITEM_TYPE_TASK;
+import static com.android.quickstep.TaskAdapter.MAX_TASKS_TO_DISPLAY;
 import static com.android.quickstep.TaskAdapter.TASKS_START_POSITION;
+import static com.android.quickstep.util.RemoteAnimationProvider.getLayer;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -32,6 +36,7 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.ArraySet;
@@ -40,10 +45,12 @@ import android.util.FloatProperty;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewTreeObserver;
+import android.view.animation.PathInterpolator;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -64,7 +71,11 @@ import com.android.quickstep.TaskAdapter;
 import com.android.quickstep.TaskHolder;
 import com.android.quickstep.TaskListLoader;
 import com.android.quickstep.TaskSwipeCallback;
+import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,6 +113,22 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
     private static final float ITEM_ANIMATE_OUT_TRANSLATION_X_RATIO = .25f;
     private static final long CLEAR_ALL_FADE_DELAY = 120;
 
+    private static final long REMOTE_TO_RECENTS_APP_SCALE_DOWN_DURATION = 300;
+    private static final long REMOTE_TO_RECENTS_VERTICAL_EASE_IN_DURATION = 400;
+    private static final long REMOTE_TO_RECENTS_ITEM_FADE_START_DELAY = 200;
+    private static final long REMOTE_TO_RECENTS_ITEM_FADE_DURATION = 217;
+    private static final long REMOTE_TO_RECENTS_ITEM_FADE_BETWEEN_DELAY = 33;
+
+    private static final PathInterpolator FAST_OUT_SLOW_IN_1 =
+            new PathInterpolator(.4f, 0f, 0f, 1f);
+    private static final PathInterpolator FAST_OUT_SLOW_IN_2 =
+            new PathInterpolator(.5f, 0f, 0f, 1f);
+    private static final LinearOutSlowInInterpolator OUT_SLOW_IN =
+            new LinearOutSlowInInterpolator();
+
+    public static final long REMOTE_APP_TO_OVERVIEW_DURATION =
+            REMOTE_TO_RECENTS_VERTICAL_EASE_IN_DURATION;
+
     /**
      * A ratio representing the view's relative placement within its padded space. For example, 0
      * is top aligned and 0.5 is centered vertically.
@@ -125,6 +152,7 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
     private View mEmptyView;
     private View mContentView;
     private boolean mTransitionedFromApp;
+    private boolean mUsingRemoteAnimation;
     private AnimatorSet mLayoutAnimation;
     private final ArraySet<View> mLayingOutViews = new ArraySet<>();
     private Rect mInsets;
@@ -276,7 +304,9 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
             // not be scrollable.
             mTaskLayoutManager.scrollToPositionWithOffset(TASKS_START_POSITION, 0 /* offset */);
         }
-        scheduleFadeInLayoutAnimation();
+        if (!mUsingRemoteAnimation) {
+            scheduleFadeInLayoutAnimation();
+        }
         // Load any task changes
         if (!mTaskLoader.needsToLoad()) {
             return;
@@ -312,6 +342,17 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
      */
     public void setTransitionedFromApp(boolean transitionedFromApp) {
         mTransitionedFromApp = transitionedFromApp;
+    }
+
+    /**
+     * Set whether we're using a custom remote animation. If so, we will not do the default layout
+     * animation when entering recents and instead wait for the remote app surface to be ready to
+     * use.
+     *
+     * @param usingRemoteAnimation true if doing a remote animation, false o/w
+     */
+    public void setUsingRemoteAnimation(boolean usingRemoteAnimation) {
+        mUsingRemoteAnimation = usingRemoteAnimation;
     }
 
     /**
@@ -365,17 +406,19 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
     }
 
     /**
-     * Get the bottom most thumbnail view to animate to.
+     * Get the bottom most task view to animate to.
      *
-     * @return the thumbnail view if laid out
+     * @return the task view
      */
-    public @Nullable View getBottomThumbnailView() {
-        ArrayList<TaskItemView> taskViews = getTaskViews();
-        if (taskViews.isEmpty()) {
-            return null;
+    private @Nullable TaskItemView getBottomTaskView() {
+        int childCount = mTaskRecyclerView.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View view = mTaskRecyclerView.getChildAt(i);
+            if (mTaskRecyclerView.getChildViewHolder(view).getItemViewType() == ITEM_TYPE_TASK) {
+                return (TaskItemView) view;
+            }
         }
-        TaskItemView view = taskViews.get(0);
-        return view.getThumbnailView();
+        return null;
     }
 
     /**
@@ -579,6 +622,205 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
             }
         });
         mLayoutAnimation.start();
+    }
+
+    /**
+     * Play remote animation from app to recents. This should scale the currently closing app down
+     * to the recents thumbnail.
+     *
+     * @param anim animator set
+     * @param appTarget the app surface thats closing
+     * @param recentsTarget the surface containing recents
+     */
+    public void playRemoteAppToRecentsAnimation(@NonNull AnimatorSet anim,
+            @NonNull RemoteAnimationTargetCompat appTarget,
+            @NonNull RemoteAnimationTargetCompat recentsTarget) {
+        TaskItemView bottomView = getBottomTaskView();
+        if (bottomView == null) {
+            // This can be null if there were previously 0 tasks and the recycler view has not had
+            // enough time to take in the data change, bind a new view, and lay out the new view.
+            // TODO: Have a fallback to animate to
+            anim.play(ValueAnimator.ofInt(0, 1).setDuration(REMOTE_APP_TO_OVERVIEW_DURATION));
+        }
+        final Matrix appMatrix = new Matrix();
+        playRemoteTransYAnim(anim, appMatrix);
+        playRemoteAppScaleDownAnim(anim, appMatrix, appTarget, recentsTarget,
+                bottomView.getThumbnailView());
+        playRemoteTaskListFadeIn(anim, bottomView);
+    }
+
+    /**
+     * Play translation Y animation for the remote app to recents animation. Animates over all task
+     * views as well as the closing app, easing them into their final vertical positions.
+     *
+     * @param anim animator set to play on
+     * @param appMatrix transformation matrix for the closing app surface
+     */
+    private void playRemoteTransYAnim(@NonNull AnimatorSet anim, @NonNull Matrix appMatrix) {
+        final ArrayList<TaskItemView> views = getTaskViews();
+
+        // Start Y translation from about halfway through the tasks list to the bottom thumbnail.
+        float taskHeight = getResources().getDimension(R.dimen.task_item_height);
+        float totalTransY = -(MAX_TASKS_TO_DISPLAY / 2.0f - 1) * taskHeight;
+        for (int i = 0, size = views.size(); i < size; i++) {
+            views.get(i).setTranslationY(totalTransY);
+        }
+
+        ValueAnimator transYAnim = ValueAnimator.ofFloat(totalTransY, 0);
+        transYAnim.setDuration(REMOTE_TO_RECENTS_VERTICAL_EASE_IN_DURATION);
+        transYAnim.setInterpolator(FAST_OUT_SLOW_IN_2);
+        transYAnim.addUpdateListener(valueAnimator -> {
+            float transY = (float) valueAnimator.getAnimatedValue();
+            for (int i = 0, size = views.size(); i < size; i++) {
+                views.get(i).setTranslationY(transY);
+            }
+            appMatrix.postTranslate(0, transY - totalTransY);
+        });
+        transYAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                for (int i = 0, size = views.size(); i < size; i++) {
+                    views.get(i).setTranslationY(0);
+                }
+            }
+        });
+        anim.play(transYAnim);
+    }
+
+    /**
+     * Play the scale down animation for the remote app to recents animation where the app surface
+     * scales down to where the thumbnail is.
+     *
+     * @param anim animator set to play on
+     * @param appMatrix transformation matrix for the app surface
+     * @param appTarget closing app target
+     * @param recentsTarget opening recents target
+     * @param thumbnailView thumbnail view to animate to
+     */
+    private void playRemoteAppScaleDownAnim(@NonNull AnimatorSet anim, @NonNull Matrix appMatrix,
+            @NonNull RemoteAnimationTargetCompat appTarget,
+            @NonNull RemoteAnimationTargetCompat recentsTarget,
+            @NonNull View thumbnailView) {
+        // Identify where the entering remote app should animate to.
+        Rect endRect = new Rect();
+        thumbnailView.getGlobalVisibleRect(endRect);
+        Rect appBounds = appTarget.sourceContainerBounds;
+
+        SyncRtSurfaceTransactionApplierCompat surfaceApplier =
+                new SyncRtSurfaceTransactionApplierCompat(this);
+
+        // Keep recents visible throughout the animation.
+        SurfaceParams[] params = new SurfaceParams[2];
+        // Closing app should stay on top.
+        int boostedMode = MODE_CLOSING;
+        params[0] = new SurfaceParams(recentsTarget.leash, 1f, null /* matrix */,
+                null /* windowCrop */, getLayer(recentsTarget, boostedMode), 0 /* cornerRadius */);
+
+        ValueAnimator remoteAppAnim = ValueAnimator.ofInt(0, 1);
+        remoteAppAnim.setDuration(REMOTE_TO_RECENTS_VERTICAL_EASE_IN_DURATION);
+        remoteAppAnim.addUpdateListener(new MultiValueUpdateListener() {
+            private final FloatProp mScaleX;
+            private final FloatProp mScaleY;
+            private final FloatProp mTranslationX;
+            private final FloatProp mTranslationY;
+            private final FloatProp mAlpha;
+
+            {
+                // Scale down and move to view location.
+                float endScaleX = ((float) endRect.width()) / appBounds.width();
+                mScaleX = new FloatProp(1f, endScaleX, 0, REMOTE_TO_RECENTS_APP_SCALE_DOWN_DURATION,
+                        FAST_OUT_SLOW_IN_1);
+                float endScaleY = ((float) endRect.height()) / appBounds.height();
+                mScaleY = new FloatProp(1f, endScaleY, 0, REMOTE_TO_RECENTS_APP_SCALE_DOWN_DURATION,
+                        FAST_OUT_SLOW_IN_1);
+                float endTranslationX = endRect.left -
+                        (appBounds.width() - thumbnailView.getWidth()) / 2.0f;
+                mTranslationX = new FloatProp(0, endTranslationX, 0,
+                        REMOTE_TO_RECENTS_APP_SCALE_DOWN_DURATION, FAST_OUT_SLOW_IN_1);
+                float endTranslationY = endRect.top -
+                        (appBounds.height() - thumbnailView.getHeight()) / 2.0f;
+                mTranslationY = new FloatProp(0, endTranslationY, 0,
+                        REMOTE_TO_RECENTS_APP_SCALE_DOWN_DURATION, FAST_OUT_SLOW_IN_2);
+                mAlpha = new FloatProp(1.0f, 0, 0, REMOTE_TO_RECENTS_APP_SCALE_DOWN_DURATION,
+                        ACCEL_2);
+            }
+
+            @Override
+            public void onUpdate(float percent) {
+                appMatrix.preScale(mScaleX.value, mScaleY.value,
+                        appBounds.width() / 2.0f, appBounds.height() / 2.0f);
+                appMatrix.postTranslate(mTranslationX.value, mTranslationY.value);
+
+                params[1] = new SurfaceParams(appTarget.leash, mAlpha.value, appMatrix,
+                        null /* windowCrop */, getLayer(appTarget, boostedMode),
+                        0 /* cornerRadius */);
+                surfaceApplier.scheduleApply(params);
+                appMatrix.reset();
+            }
+        });
+        anim.play(remoteAppAnim);
+    }
+
+    /**
+     * Play task list fade in animation as part of remote app to recents animation. This animation
+     * ensures that the task views in the recents list fade in from bottom to top.
+     *
+     * @param anim animator set to play on
+     * @param appTaskView the task view associated with the remote app closing
+     */
+    private void playRemoteTaskListFadeIn(@NonNull AnimatorSet anim,
+            @NonNull TaskItemView appTaskView) {
+        long delay = REMOTE_TO_RECENTS_ITEM_FADE_START_DELAY;
+        int childCount = mTaskRecyclerView.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            ValueAnimator fadeAnim = ValueAnimator.ofFloat(0, 1.0f);
+            fadeAnim.setDuration(REMOTE_TO_RECENTS_ITEM_FADE_DURATION).setInterpolator(OUT_SLOW_IN);
+            fadeAnim.setStartDelay(delay);
+            View view = mTaskRecyclerView.getChildAt(i);
+            if (Objects.equals(view, appTaskView)) {
+                // Only animate icon and text for the view with snapshot animating in
+                final View icon = appTaskView.getIconView();
+                final View label = appTaskView.getLabelView();
+
+                icon.setAlpha(0.0f);
+                label.setAlpha(0.0f);
+
+                fadeAnim.addUpdateListener(alphaVal -> {
+                    float val = alphaVal.getAnimatedFraction();
+
+                    icon.setAlpha(val);
+                    label.setAlpha(val);
+                });
+                fadeAnim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        icon.setAlpha(1.0f);
+                        label.setAlpha(1.0f);
+                    }
+                });
+            } else {
+                // Otherwise, fade in the entire view.
+                view.setAlpha(0.0f);
+                fadeAnim.addUpdateListener(alphaVal -> {
+                    float val = alphaVal.getAnimatedFraction();
+                    view.setAlpha(val);
+                });
+                fadeAnim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        view.setAlpha(1.0f);
+                    }
+                });
+            }
+            anim.play(fadeAnim);
+
+            int itemType = mTaskRecyclerView.getChildViewHolder(view).getItemViewType();
+            if (itemType == ITEM_TYPE_CLEAR_ALL) {
+                // Don't add delay. Clear all should animate at same time as next view.
+                continue;
+            }
+            delay += REMOTE_TO_RECENTS_ITEM_FADE_BETWEEN_DELAY;
+        }
     }
 
     @Override

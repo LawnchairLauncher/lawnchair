@@ -40,6 +40,7 @@ public final class LauncherActivityControllerHelper extends GoActivityControlHel
             boolean activityVisible, boolean animateActivity,
             Consumer<AnimatorPlaybackController> callback) {
         LauncherState fromState = activity.getStateManager().getState();
+        activity.<IconRecentsView>getOverviewPanel().setUsingRemoteAnimation(true);
         //TODO: Implement this based off where the recents view needs to be for app => recents anim.
         return new AnimationFactory() {
             @Override
@@ -87,6 +88,7 @@ public final class LauncherActivityControllerHelper extends GoActivityControlHel
         if (launcher == null) {
             return false;
         }
+        launcher.<IconRecentsView>getOverviewPanel().setUsingRemoteAnimation(false);
         launcher.getUserEventDispatcher().logActionCommand(
                 LauncherLogProto.Action.Command.RECENTS_BUTTON,
                 getContainerType(),
