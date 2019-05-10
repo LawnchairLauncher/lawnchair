@@ -642,6 +642,53 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
     }
 
     /**
+     * Play remote app to recents animation when the app is the home activity. We use a simple
+     * cross-fade here. Note this is only used if the home activity is a separate app than the
+     * recents activity.
+     *
+     * @param anim animator set
+     * @param homeTarget the home surface thats closing
+     * @param recentsTarget the surface containing recents
+     */
+    public void playRemoteHomeToRecentsAnimation(@NonNull AnimatorSet anim,
+            @NonNull RemoteAnimationTargetCompat homeTarget,
+            @NonNull RemoteAnimationTargetCompat recentsTarget) {
+        SyncRtSurfaceTransactionApplierCompat surfaceApplier =
+                new SyncRtSurfaceTransactionApplierCompat(this);
+
+        SurfaceParams[] params = new SurfaceParams[2];
+        int boostedMode = MODE_CLOSING;
+
+        ValueAnimator remoteHomeAnim = ValueAnimator.ofFloat(0, 1);
+        remoteHomeAnim.setDuration(REMOTE_APP_TO_OVERVIEW_DURATION);
+
+        remoteHomeAnim.addUpdateListener(valueAnimator -> {
+            float val = (float) valueAnimator.getAnimatedValue();
+            float alpha;
+            RemoteAnimationTargetCompat visibleTarget;
+            RemoteAnimationTargetCompat invisibleTarget;
+            if (val < .5f) {
+                visibleTarget = homeTarget;
+                invisibleTarget = recentsTarget;
+                alpha = 1 - (val * 2);
+            } else {
+                visibleTarget = recentsTarget;
+                invisibleTarget = homeTarget;
+                alpha = (val - .5f) * 2;
+            }
+            params[0] = new SurfaceParams(visibleTarget.leash, alpha, null /* matrix */,
+                    null /* windowCrop */, getLayer(visibleTarget, boostedMode),
+                    0 /* cornerRadius */);
+            params[1] = new SurfaceParams(invisibleTarget.leash, 0.0f, null /* matrix */,
+                    null /* windowCrop */, getLayer(invisibleTarget, boostedMode),
+                    0 /* cornerRadius */);
+            surfaceApplier.scheduleApply(params);
+        });
+        anim.play(remoteHomeAnim);
+        animateFadeInLayoutAnimation();
+    }
+
+    /**
      * Play remote animation from app to recents. This should scale the currently closing app down
      * to the recents thumbnail.
      *

@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.quickstep.views.IconRecentsView.REMOTE_APP_TO_OVERVIEW_DURATION;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
@@ -134,7 +135,11 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
             return anim;
         }
 
-        mRecentsView.playRemoteAppToRecentsAnimation(anim, closingAppTarget, recentsTarget);
+        if (closingAppTarget.activityType == ACTIVITY_TYPE_HOME) {
+            mRecentsView.playRemoteHomeToRecentsAnimation(anim, closingAppTarget, recentsTarget);
+        } else {
+            mRecentsView.playRemoteAppToRecentsAnimation(anim, closingAppTarget, recentsTarget);
+        }
 
         return anim;
     }
