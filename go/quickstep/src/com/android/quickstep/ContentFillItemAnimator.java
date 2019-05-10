@@ -224,6 +224,9 @@ public final class ContentFillItemAnimator extends SimpleItemAnimator {
 
     @Override
     public void endAnimations() {
+        if (!isRunning()) {
+            return;
+        }
         for (int i = mPendingAnims.size() - 1; i >= 0; i--) {
             endPendingAnimation(mPendingAnims.get(i));
             mPendingAnims.remove(i);
@@ -233,7 +236,7 @@ public final class ContentFillItemAnimator extends SimpleItemAnimator {
             // This calls the on end animation callback which will set values to their end target.
             anim.cancel();
         }
-        dispatchAnimationsFinished();
+        dispatchFinishedWhenDone();
     }
 
     private void endPendingAnimation(PendingAnimation pendAnim) {
