@@ -154,6 +154,7 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
     private boolean mTransitionedFromApp;
     private boolean mUsingRemoteAnimation;
     private boolean mStartedEnterAnimation;
+    private boolean mShowStatusBarForegroundScrim;
     private AnimatorSet mLayoutAnimation;
     private final ArraySet<View> mLayingOutViews = new ArraySet<>();
     private Rect mInsets;
@@ -409,7 +410,14 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
      * @param showStatusBarForegroundScrim true to show the scrim, false to hide
      */
     public void setShowStatusBarForegroundScrim(boolean showStatusBarForegroundScrim) {
-        boolean shouldShow = mInsets.top != 0 && showStatusBarForegroundScrim;
+        mShowStatusBarForegroundScrim = showStatusBarForegroundScrim;
+        if (mShowStatusBarForegroundScrim != showStatusBarForegroundScrim) {
+            updateStatusBarScrim();
+        }
+    }
+
+    private void updateStatusBarScrim() {
+        boolean shouldShow = mInsets.top != 0 && mShowStatusBarForegroundScrim;
         mActivity.getDragLayer().setForeground(shouldShow ? mStatusBarForegroundScrim : null);
     }
 
@@ -838,6 +846,9 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
         mInsets = insets;
         mTaskRecyclerView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
         mTaskRecyclerView.invalidateItemDecorations();
+        if (mInsets.top != 0) {
+            updateStatusBarScrim();
+        }
     }
 
     /**
