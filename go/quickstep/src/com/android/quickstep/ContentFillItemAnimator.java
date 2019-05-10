@@ -240,9 +240,11 @@ public final class ContentFillItemAnimator extends SimpleItemAnimator {
         ViewHolder item = pendAnim.viewHolder;
         switch (pendAnim.animType) {
             case ANIM_TYPE_REMOVE:
+                item.itemView.setAlpha(1.0f);
                 dispatchRemoveFinished(item);
                 break;
             case ANIM_TYPE_CHANGE:
+                CONTENT_TRANSITION_PROGRESS.set(item.itemView, 1.0f);
                 dispatchChangeFinished(item, true /* oldItem */);
                 break;
             default:
