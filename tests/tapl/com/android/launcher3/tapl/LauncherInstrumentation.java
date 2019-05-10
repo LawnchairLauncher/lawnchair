@@ -176,17 +176,19 @@ public final class LauncherInstrumentation {
             // Workaround, use constructed context because both the instrumentation context and the
             // app context are not constructed with resources that take overlays into account
             final Context ctx = baseContext.createPackageContext("android", 0);
-            log("Interaction mode = " + getCurrentInteractionMode(ctx));
-            if (isGesturalMode(ctx)) {
-                return NavigationModel.ZERO_BUTTON;
-            } else if (isSwipeUpMode(ctx)) {
-                return NavigationModel.TWO_BUTTON;
-            } else if (isLegacyMode(ctx)) {
-                return NavigationModel.THREE_BUTTON;
-            } else {
-                fail("Can't detect navigation mode");
+            for (int i = 0; i < 100; ++i) {
+                log("Interaction mode = " + getCurrentInteractionMode(ctx));
+                if (isGesturalMode(ctx)) {
+                    return NavigationModel.ZERO_BUTTON;
+                } else if (isSwipeUpMode(ctx)) {
+                    return NavigationModel.TWO_BUTTON;
+                } else if (isLegacyMode(ctx)) {
+                    return NavigationModel.THREE_BUTTON;
+                }
+                Thread.sleep(100);
             }
-        } catch (PackageManager.NameNotFoundException e) {
+            fail("Can't detect navigation mode");
+        } catch (Exception e) {
             fail(e.toString());
         }
         return NavigationModel.THREE_BUTTON;
