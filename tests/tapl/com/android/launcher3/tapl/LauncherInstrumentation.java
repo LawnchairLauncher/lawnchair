@@ -18,6 +18,7 @@ package com.android.launcher3.tapl;
 
 import static com.android.launcher3.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.NORMAL_STATE_ORDINAL;
+import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 
 import android.app.ActivityManager;
 import android.app.Instrumentation;
@@ -294,13 +295,13 @@ public final class LauncherInstrumentation {
                     } else {
                         waitUntilGone(APPS_RES_ID);
                     }
-                    // Fall through
-                }
-                case BASE_OVERVIEW: {
                     waitUntilGone(WORKSPACE_RES_ID);
                     waitUntilGone(WIDGETS_RES_ID);
 
                     return waitForLauncherObject(OVERVIEW_RES_ID);
+                }
+                case BASE_OVERVIEW: {
+                    return waitForFallbackLauncherObject(OVERVIEW_RES_ID);
                 }
                 case BACKGROUND: {
                     waitUntilGone(WORKSPACE_RES_ID);
@@ -526,8 +527,20 @@ public final class LauncherInstrumentation {
         return object;
     }
 
+    @NonNull
+    UiObject2 waitForFallbackLauncherObject(String resName) {
+        final BySelector selector = getFallbackLauncherObjectSelector(resName);
+        final UiObject2 object = mDevice.wait(Until.findObject(selector), WAIT_TIME_MS);
+        assertNotNull("Can't find a fallback launcher object; selector: " + selector, object);
+        return object;
+    }
+
     BySelector getLauncherObjectSelector(String resName) {
         return By.res(getLauncherPackageName(), resName);
+    }
+
+    BySelector getFallbackLauncherObjectSelector(String resName) {
+        return By.res(getOverviewPackageName(), resName);
     }
 
     String getLauncherPackageName() {

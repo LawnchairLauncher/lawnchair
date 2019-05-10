@@ -17,16 +17,12 @@
 package com.android.launcher3.tapl;
 
 import static com.android.launcher3.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
-import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
-import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 
 import android.graphics.Point;
 import android.os.SystemClock;
 import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
-import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.TestProtocol;
 
@@ -59,8 +55,6 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                 "want to switch from background to overview")) {
             verifyActiveContainer();
             goToOverviewUnchecked(BACKGROUND_APP_STATE_ORDINAL);
-            mLauncher.assertTrue("Overview not visible", mLauncher.getDevice().wait(
-                    Until.hasObject(By.pkg(getOverviewPackageName())), WAIT_TIME_MS));
             return new BaseOverview(mLauncher);
         }
     }
