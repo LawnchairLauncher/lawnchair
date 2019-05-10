@@ -318,7 +318,12 @@ public class SmartspaceCard {
                                 "com.google.android.apps.gsa.velour.DynamicActivityTrampoline"));
                     }
 
-                    launcher.startActivitySafely(view, internal, null);
+                    Intent forward = new Intent();
+                    forward.setPackage("com.google.android.apps.nexuslauncher");
+                    forward.setComponent(new ComponentName(forward.getPackage(), "amirz.aidlbridge.GoogleDestForwarder"));
+                    forward.putExtra("launch", internal.toUri(Intent.URI_INTENT_SCHEME));
+                    forward.putExtra("launchOptions", launcher.getActivityLaunchOptions(view));
+                    launcher.sendBroadcast(forward);
                 } catch (URISyntaxException | NullPointerException | SecurityException e) {
                     e.printStackTrace();
                     launcher.startActivitySafely(view, intent, null);
