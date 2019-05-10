@@ -285,6 +285,7 @@
     <string name="theme_dark_dark_text">어두운 배경에 흰색 글자</string>
     <string name="theme_black">검은색</string>
     <string name="pref_qsb_color">색상</string>
+    <string name="bubble_searchbar">듀얼 버블 검색 바</string>
     <string name="search_menu">설정 검색</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">액센트</string>
