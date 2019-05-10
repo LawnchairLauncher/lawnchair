@@ -153,6 +153,7 @@
     <string name="about_bio_deletescape">Desenvolvedor e entusiasta de sistemas Android, adora memes (demasiado). Criador do projeto Lawnchair.</string>
     <string name="about_bio_recoded">Programador e designer.</string>
     <string name="about_bio_josh">Designer como trabalhador independente.</string>
+    <string name="about_bio_chris">Millenial como tudo, não sei e não quero saber. Algo relacionado com redes sociais. Partilhemos experiências em @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">Principal desenvolvedor do halogenOS e desenvolvedor de aplicativos em substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Erro no launcher</string>
@@ -408,4 +409,6 @@
     <string name="about_app_description">Uma alternativa personalizável ao Pixel Launcher.</string>
     <string name="about_bio_paphonb">Um estudante de 18 anos, Desenvolvedor Android e um dos principais desenvolvedores desta aplicação.</string>
     <string name="dock_scale">Escala da doca</string>
+    <string name="adaptify_pack_title">Criar ícones adaptativos para o pacote de ícones</string>
+    <string name="adaptify_pack_summary">Criar ícones adaptativos a partir do pacote de ícones</string>
 </resources>
