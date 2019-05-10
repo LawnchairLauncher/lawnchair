@@ -153,6 +153,7 @@
     <string name="about_bio_deletescape">Android fejlesztő és rajongó, (egy kicsit túlságosan is) szereti a mémeket. A Lawnchair projekt alapítója.</string>
     <string name="about_bio_recoded">Könnyűprogramozó és grafikai dizájner.</string>
     <string name="about_bio_josh">Független grafikai tervező.</string>
+    <string name="about_bio_chris">Nagyon új évezredbeli, laza arc vagyok. A design és a közösségi média az asztalom. Lógjunk együtt itt: @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">A HalogenOS fő fejlesztője és a Substratum alkalmazásfejlesztője.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Launcher-összeomlás</string>
@@ -407,4 +408,6 @@
     <string name="about_app_description">Egy testreszabható Pixel Launcher-alternatíva.</string>
     <string name="about_bio_paphonb">18 éves tanulósrác, Android-fejlesztő és egyike a Lawnchair Launcher vezető-fejlesztőinek.</string>
     <string name="dock_scale">Dokkméretezés</string>
+    <string name="adaptify_pack_title">Alkalmazkodó ikonok készítése az ikoncsomagokhoz</string>
+    <string name="adaptify_pack_summary">Alkalmazkodó ikonok készítése az ikoncsomagok ikonjaihoz</string>
 </resources>
