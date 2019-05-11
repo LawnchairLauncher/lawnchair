@@ -58,9 +58,13 @@ public final class Workspace extends Home {
             verifyActiveContainer();
             final UiObject2 hotseat = mHotseat;
             final Point start = hotseat.getVisibleCenter();
+            start.y = hotseat.getVisibleBounds().bottom - 1;
             final int swipeHeight = mLauncher.getTestInfo(
                     TestProtocol.REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT).
                     getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+            LauncherInstrumentation.log(
+                    "switchToAllApps: swipeHeight = " + swipeHeight + ", slop = "
+                            + mLauncher.getTouchSlop());
             mLauncher.swipe(
                     start.x,
                     start.y,
