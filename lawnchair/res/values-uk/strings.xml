@@ -391,7 +391,7 @@
     <string name="owm_get_your_own_key">Будь ласка отримайте власний APIтключ з api.openweathermap.org</string>
     <string name="pref_smartspace_time_above">Показати великий годинник</string>
     <string name="pref_smartspace_time_above_summary">Показати годинник над віджетом</string>
-    <string name="pref_fonts_title">Шрифт</string>
+    <string name="pref_fonts_title">Шрифти</string>
     <string name="pref_fonts_summary">Змінити шрифт різних елементів</string>
     <string name="pref_fonts_global_font">Глобальний шрифт</string>
     <string name="pref_fonts_change_global_font">Змінити</string>
