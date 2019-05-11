@@ -406,4 +406,6 @@
     <string name="about_app_description">一个可自定义的 Pixel Launcher 替代品。</string>
     <string name="about_bio_paphonb">18岁的学生，Android 开发者，Lawnchair 启动器首席开发者之一。</string>
     <string name="dock_scale">Dock 栏大小</string>
+    <string name="adaptify_pack_title">为图标包创建自适应图标</string>
+    <string name="adaptify_pack_summary">为出自图标包的图标创建自适应图标</string>
 </resources>
