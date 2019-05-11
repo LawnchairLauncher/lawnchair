@@ -149,6 +149,7 @@
     <string name="about_bio_deletescape">Android програмист &amp; ентусиаст, обича мемета (всъщност твърде много). Основател на проекта Lawnchair.</string>
     <string name="about_bio_recoded">Лек програмист и графичен дизайнер.</string>
     <string name="about_bio_josh">Графичен дизайнер на свободна практика.</string>
+    <string name="about_bio_chris">Millenial af, idk и idc. Нещо с дизайн и социални мрежи. Хайде да се мотаем заедно на @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">Основен програмист в halogenOS и разработчик на приложения за Substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Сриване на лаунчъра</string>
@@ -403,4 +404,6 @@
     <string name="about_app_description">Персонализируема алтернатива на Pixel Launcher.</string>
     <string name="about_bio_paphonb">18-годишен студент, Android разработчик и един от основните разработчици на Lawnchair Launcher.</string>
     <string name="dock_scale">Размер на дока</string>
+    <string name="adaptify_pack_title">Създай адаптивни икони за пакета с икони</string>
+    <string name="adaptify_pack_summary">Създай адаптивни икони за иконите от пакета с икони</string>
 </resources>
