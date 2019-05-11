@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -46,6 +47,7 @@ import androidx.annotation.Nullable;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Configurator;
+import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
@@ -360,7 +362,7 @@ public final class LauncherInstrumentation {
                         ? NORMAL_STATE_ORDINAL : BACKGROUND_APP_STATE_ORDINAL;
                 final Point displaySize = getRealDisplaySize();
 
-                swipeViaMovePointer(
+                swipeWithModelTime(
                         displaySize.x / 2, displaySize.y - 1,
                         displaySize.x / 2, 0,
                         finalState, ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
@@ -548,18 +550,65 @@ public final class LauncherInstrumentation {
                 () -> mDevice.swipe(startX, startY, endX, endY, steps));
     }
 
-    void swipeViaMovePointer(
+    void swipeWithModelTime(
             int startX, int startY, int endX, int endY, int expectedState, int steps) {
-        changeStateViaGesture(startX, startY, endX, endY, expectedState, () -> {
-            final long downTime = SystemClock.uptimeMillis();
-            final Point start = new Point(startX, startY);
-            final Point end = new Point(endX, endY);
-            sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start);
-            final long endTime = movePointer(downTime, downTime, steps * GESTURE_STEP_MS, start,
-                    end);
-            sendPointer(
-                    downTime, endTime, MotionEvent.ACTION_UP, end);
-        });
+        changeStateViaGesture(startX, startY, endX, endY, expectedState,
+                () -> swipeWithModelTime(startX, startY, endX, endY, steps));
+    }
+
+    void scrollWithModelTime(
+            UiObject2 container, Direction direction, float percent, Rect margins, int steps) {
+        final Rect rect = container.getVisibleBounds();
+        if (margins != null) {
+            rect.left += margins.left;
+            rect.top += margins.top;
+            rect.right -= margins.right;
+            rect.bottom -= margins.bottom;
+        }
+
+        final int startX;
+        final int startY;
+        final int endX;
+        final int endY;
+
+        switch (direction) {
+            case UP: {
+                startX = endX = rect.centerX();
+                final int vertCenter = rect.centerY();
+                final float halfGestureHeight = rect.height() * percent / 2.0f;
+                startY = (int) (vertCenter - halfGestureHeight);
+                endY = (int) (vertCenter + halfGestureHeight);
+            }
+            break;
+            case DOWN: {
+                startX = endX = rect.centerX();
+                final int vertCenter = rect.centerY();
+                final float halfGestureHeight = rect.height() * percent / 2.0f;
+                startY = (int) (vertCenter + halfGestureHeight);
+                endY = (int) (vertCenter - halfGestureHeight);
+            }
+            break;
+            default:
+                fail("Unsupported direction");
+                return;
+        }
+
+        executeAndWaitForEvent(
+                () -> swipeWithModelTime(startX, startY, endX, endY, steps),
+                event -> TestProtocol.SCROLL_FINISHED_MESSAGE.equals(event.getClassName()),
+                "Didn't receive a scroll end message: " + startX + ", " + startY
+                        + ", " + endX + ", " + endY);
+    }
+
+    // Inject a swipe gesture. Inject exactly 'steps' motion points, incrementing event time by a
+    // fixed interval each time.
+    private void swipeWithModelTime(int startX, int startY, int endX, int endY, int steps) {
+        final long downTime = SystemClock.uptimeMillis();
+        final Point start = new Point(startX, startY);
+        final Point end = new Point(endX, endY);
+        sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start);
+        final long endTime = movePointer(downTime, downTime, steps * GESTURE_STEP_MS, start, end);
+        sendPointer(downTime, endTime, MotionEvent.ACTION_UP, end);
     }
 
     private void changeStateViaGesture(int startX, int startY, int endX, int endY,
@@ -673,10 +722,7 @@ public final class LauncherInstrumentation {
     }
 
     static void sleep(int duration) {
-        try {
-            Thread.sleep(duration);
-        } catch (InterruptedException e) {
-        }
+        SystemClock.sleep(duration);
     }
 
     int getEdgeSensitivityWidth() {
