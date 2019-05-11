@@ -27,6 +27,7 @@ import com.android.launcher3.touch.SwipeDetector
 import java.lang.reflect.InvocationTargetException
 import android.annotation.SuppressLint
 import ch.deletescape.lawnchair.gestures.handlers.VerticalSwipeGestureHandler
+import ch.deletescape.lawnchair.util.extensions.d
 
 class VerticalSwipeGestureController(private val launcher: Launcher) : TouchController, SwipeDetector.Listener {
 
@@ -51,6 +52,7 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     private var state = GestureState.Free
     private var downTime = 0L
     private var downSent = false
+    private var pointerCount = 0
 
     override fun onControllerInterceptTouchEvent(ev: MotionEvent): Boolean {
         downTime = ev.downTime
@@ -68,8 +70,6 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
                 return false
             }
             detector.setDetectableScrollConditions(getSwipeDirection(ev), false)
-        } else if (ev.pointerCount > 1) {
-            noIntercept = true
         }
         if (noIntercept) {
             return false
@@ -85,6 +85,7 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     }
 
     override fun onControllerTouchEvent(ev: MotionEvent): Boolean {
+        pointerCount = ev.pointerCount
         return detector.onTouchEvent(ev)
     }
 
@@ -129,7 +130,7 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
             } else {
                 if (velocity > triggerVelocity &&
                         (state == GestureState.Free || state == GestureState.NotificationClosed)) {
-                    state = if (openNotifications()) GestureState.NotificationOpened else GestureState.Locked
+                    state = if (openNotificationsOrQuickSettings()) GestureState.NotificationOpened else GestureState.Locked
                 } else if (velocity < -notificationsCloseVelocity && state == GestureState.NotificationOpened) {
                     state = if (closeNotifications()) GestureState.NotificationClosed else GestureState.Locked
                 }
@@ -156,11 +157,33 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
         (swipeUpOverride as? VerticalSwipeGestureHandler)?.onDragEnd(velocity, fling)
     }
 
+    private fun openNotificationsOrQuickSettings(): Boolean {
+        return if (pointerCount > 1) openQuickSettings() else openNotifications()
+    }
+
     @SuppressLint("WrongConstant", "PrivateApi")
     private fun openNotifications(): Boolean {
         return try {
             Class.forName("android.app.StatusBarManager")
                     .getMethod("expandNotificationsPanel")
+                    .invoke(launcher.getSystemService("statusbar"))
+            true
+        } catch (ex: ClassNotFoundException) {
+            false
+        } catch (ex: NoSuchMethodException) {
+            false
+        } catch (ex: IllegalAccessException) {
+            false
+        } catch (ex: InvocationTargetException) {
+            false
+        }
+    }
+
+    @SuppressLint("WrongConstant", "PrivateApi")
+    private fun openQuickSettings(): Boolean {
+        return try {
+            Class.forName("android.app.StatusBarManager")
+                    .getMethod("expandSettingsPanel")
                     .invoke(launcher.getSystemService("statusbar"))
             true
         } catch (ex: ClassNotFoundException) {
