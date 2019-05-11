@@ -410,6 +410,6 @@
     <string name="about_app_description">Ένας εναλλακτικός, παραμετροποιήσιμος, εκκινητής Pixel.</string>
     <string name="about_bio_paphonb">Ένας 18-χρονος μαθητής, Προγραμματιστής στην πλατφόρμα Android καθώς και ένας από τους κορυφαίους προγραμματιστές του εκκινητή Lawnchair.</string>
     <string name="dock_scale">Κλίμακα μπάρας εφαρμογών</string>
-    <string name="adaptify_pack_title">Δημιουργία προσαρμοσμένων εικονιδίων για το πακέτο εικονιδίων</string>
-    <string name="adaptify_pack_summary">Δημιουργία προσαρμοσμένων εικονιδίων για εικονίδια από πακέτα εικονιδίων</string>
+    <string name="adaptify_pack_title">Δημιουργία προσαρμοζόμενων εικονιδίων για το πακέτο εικονιδίων</string>
+    <string name="adaptify_pack_summary">Δημιουργία προσαρμοζόμενων εικονιδίων για εικονίδια από πακέτα εικονιδίων</string>
 </resources>
