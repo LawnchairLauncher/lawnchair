@@ -142,6 +142,19 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 }
             };
 
+    public static final FloatProperty<RecentsView> FULLSCREEN_PROGRESS =
+            new FloatProperty<RecentsView>("fullscreenProgress") {
+                @Override
+                public void setValue(RecentsView recentsView, float v) {
+                    recentsView.setFullscreenProgress(v);
+                }
+
+                @Override
+                public Float get(RecentsView recentsView) {
+                    return recentsView.mFullscreenProgress;
+                }
+            };
+
     protected RecentsAnimationWrapper mRecentsAnimationWrapper;
     protected ClipAnimationHelper mClipAnimationHelper;
     protected SyncRtSurfaceTransactionApplierCompat mSyncTransactionApplier;
@@ -165,6 +178,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private final ClearAllButton mClearAllButton;
     private final Rect mClearAllButtonDeadZoneRect = new Rect();
     private final Rect mTaskViewDeadZoneRect = new Rect();
+    protected final ClipAnimationHelper mTempClipAnimationHelper;
 
     private final ScrollState mScrollState = new ScrollState();
     // Keeps track of the previously known visible tasks for purposes of loading/unloading task data
@@ -276,6 +290,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private float mContentAlpha = 1;
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private float mFullscreenProgress = 0;
 
     // Keeps track of task id whose visual state should not be reset
     private int mIgnoreResetTaskId = -1;
@@ -310,6 +326,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mActivity = (T) BaseActivity.fromContext(context);
         mModel = RecentsModel.INSTANCE.get(context);
         mIdp = InvariantDeviceProfile.INSTANCE.get(context);
+        mTempClipAnimationHelper = new ClipAnimationHelper(context);
 
         mClearAllButton = (ClearAllButton) LayoutInflater.from(context)
                 .inflate(R.layout.overview_clear_all_button, this, false);
@@ -596,6 +613,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         updateCurveProperties();
         // Update the set of visible task's data
         loadVisibleTaskData();
+    }
+
+    public void setFullscreenProgress(float fullscreenProgress) {
+        mFullscreenProgress = fullscreenProgress;
+        int taskCount = getTaskViewCount();
+        for (int i = 0; i < taskCount; i++) {
+            getTaskViewAt(i).setFullscreenProgress(mFullscreenProgress);
+        }
     }
 
     private void updateTaskStackListenerState() {
@@ -1713,5 +1738,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mFloatingIconView = FloatingIconView.getFloatingIconView(launcher, view,
                 true /* hideOriginal */, iconLocation, false /* isOpening */, mFloatingIconView);
         return  mFloatingIconView;
+    }
+
+    public ClipAnimationHelper getTempClipAnimationHelper() {
+        return mTempClipAnimationHelper;
     }
 }

@@ -504,6 +504,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private void setupRecentsViewUi() {
         if (mContinuingLastGesture) {
+            updateSysUiFlags(mCurrentShift.value);
             return;
         }
         mRecentsView.onGestureAnimationStart(mRunningTaskId);
@@ -675,15 +676,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             if (mRecentsView != null && mMode != Mode.NO_BUTTON) {
                 mRecentsView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
                     HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-            }
-        }
-        // Update insets of the non-running tasks, as we might switch to them.
-        int runningTaskIndex = mRecentsView == null ? -1 : mRecentsView.getRunningTaskIndex();
-        if (runningTaskIndex >= 0) {
-            for (int i = 0; i < mRecentsView.getTaskViewCount(); i++) {
-                if (i != runningTaskIndex || !mRecentsAnimationWrapper.hasTargets()) {
-                    mRecentsView.getTaskViewAt(i).setFullscreenProgress(1 - mCurrentShift.value);
-                }
             }
         }
 
