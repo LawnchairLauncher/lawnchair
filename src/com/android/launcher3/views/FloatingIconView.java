@@ -568,6 +568,17 @@ public class FloatingIconView extends View implements
             }
         });
 
+        if (originalView instanceof BubbleTextView) {
+            BubbleTextView btv = (BubbleTextView) originalView;
+            btv.forceHideDot(true);
+            fade.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    btv.forceHideDot(false);
+                }
+            });
+        }
+
         if (originalView instanceof FolderIcon) {
             FolderIcon folderIcon = (FolderIcon) originalView;
             folderIcon.setBackgroundVisible(false);
