@@ -153,6 +153,7 @@
     <string name="about_bio_deletescape">Desenvolvedor Android &amp; entusiasta, adora memes (um pouco demais na verdade). Fundador do projeto Lawnchair.</string>
     <string name="about_bio_recoded">Programador e designer gráfico.</string>
     <string name="about_bio_josh">Designer gráfico independente.</string>
+    <string name="about_bio_chris">Millennial pra caramba, não sei e não me importo, Algo com design e mídias sociais. Vamos se encontrar no @lawnchairapp</string>
     <string name="about_bio_msfjarvis">Desenvolvedor principal em halogenOS e desenvolvedor no aplicativo do Substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Travar launcher</string>
@@ -409,4 +410,5 @@
     <string name="about_bio_paphonb">Um estudante de 18 anos, desenvolvedor Android e um dos principais desenvolvedores do Launcher Lawnchair.</string>
     <string name="dock_scale">Escala da Dock</string>
     <string name="adaptify_pack_title">Crie ícones adaptáveis ​​para o pacote de ícones</string>
+    <string name="adaptify_pack_summary">Criar ícones adaptativos a partir do pacote de ícones</string>
 </resources>
