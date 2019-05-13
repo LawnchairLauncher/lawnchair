@@ -165,7 +165,7 @@
     <string name="action_open_settings">Launcher instellingen openen</string>
     <string name="action_open_overview">Startscherm pop-up openen</string>
     <string name="action_global_search">Globaal zoeken openen</string>
-    <string name="action_app_search">App-zoeken openen</string>
+    <string name="action_app_search">App zoeken openen</string>
     <string name="action_overlay">Google feed openen</string>
     <string name="action_assistant">Assistent openen</string>
     <string name="action_open_notifications">Meldingen openen</string>
@@ -410,5 +410,5 @@
     <string name="about_bio_paphonb">Een 18-jarige student, Android ontwikkelaar en één van de top ontwikkelaars bij Lawnchair Launcher.</string>
     <string name="dock_scale">Dock schaal</string>
     <string name="adaptify_pack_title">Adaptieve pictogrammen genereren voor pictogrampakket</string>
-    <string name="adaptify_pack_summary">Adaptieve pictogrammen genereren voor pictogrammen uit pictogrampakketen</string>
+    <string name="adaptify_pack_summary">Adaptieve pictogrammen genereren voor pictogrammen uit pictogrampakketten</string>
 </resources>
