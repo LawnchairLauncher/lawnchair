@@ -1,4 +1,4 @@
-# Lawnchair - [![Crowdin](https://d322cqt584bo4o.cloudfront.net/lawnchairandroid/localized.svg)](http://translate.lawnchair.info)
+# Lawnchair - [![Crowdin](https://d322cqt584bo4o.cloudfront.net/lawnchairandroid/localized.svg)](https://translate.lawnchair.app)
 
 ![Lawnchair](banner.png)
 
@@ -24,7 +24,7 @@ from the "Build Variants" menu in Android Studio. Our team is usually always on 
 
 ## Translations
 
-Wanna help us by translating Lawnchair to your own language? Just take a look at [our Crowdin page](https://crowdin.com/project/lawnchairandroid).
+Wanna help us by translating Lawnchair to your own language? Just take a look at [our Crowdin page](https://translate.lawnchair.app/).
 
 ## Source releases
 
@@ -52,4 +52,4 @@ make sure to inform yourself before creating your own project based on Lawnchair
 ## Useful links
 
 [Website](https://lawnchair.app) - [Twitter](https://twitter.com/lawnchairapp) - [Telegram](https://t.me/lawnchair) - 
-[XDA Thread](https://forum.xda-developers.com/android/apps-games/lawnchair-customizable-pixel-launcher-t3627137)
+[XDA Thread](https://forum.xda-developers.com/android/apps-games/lawnchair-customizable-pixel-launcher-t3627137) - [APK Mirror](https://www.apkmirror.com/apk/deletescape/lawnchair/)
