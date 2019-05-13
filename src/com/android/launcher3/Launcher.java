@@ -431,8 +431,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     protected void reapplyUi() {
         if (FeatureFlags.FAKE_LANDSCAPE_UI.get()) {
-            mRotationMode = mStableDeviceProfile == null ? RotationMode.NORMAL :
-                    (mDeviceProfile.isSeascape() ? RotationMode.SEASCAPE : RotationMode.LANDSCAPE);
+            mRotationMode = mStableDeviceProfile == null
+                    ? RotationMode.NORMAL : UiFactory.getRotationMode(mDeviceProfile);
         }
         getRootView().dispatchInsets();
         getStateManager().reapplyState(true /* cancelCurrentAnimation */);
@@ -489,8 +489,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (FeatureFlags.FAKE_LANDSCAPE_UI.get() && mDeviceProfile.isVerticalBarLayout()
                 && !mDeviceProfile.isMultiWindowMode) {
             mStableDeviceProfile = mDeviceProfile.inv.portraitProfile;
-            mRotationMode = mDeviceProfile.isSeascape()
-                    ? RotationMode.SEASCAPE : RotationMode.LANDSCAPE;
+            mRotationMode = UiFactory.getRotationMode(mDeviceProfile);
         } else {
             mStableDeviceProfile = null;
             mRotationMode = RotationMode.NORMAL;
@@ -503,7 +502,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public void updateInsets(Rect insets) {
         mDeviceProfile.updateInsets(insets);
         if (mStableDeviceProfile != null) {
-            mStableDeviceProfile.updateInsets(insets);
+            Rect r = mStableDeviceProfile.getInsets();
+            mRotationMode.mapInsets(this, insets, r);
+            mStableDeviceProfile.updateInsets(r);
         }
     }
 
