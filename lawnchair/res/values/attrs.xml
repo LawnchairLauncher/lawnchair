@@ -51,6 +51,7 @@
     <attr name="useLightSystemBars" format="boolean" />
     <attr name="settingsBackground" format="color" />
     <attr name="settingsSearchBackground" format="color" />
+    <attr name="settingsPopupBackground" format="color" />
     <attr name="bottomSheetScrimColor" format="color" />
     <attr name="qsbEdgeRadius" format="dimension" />
     <attr name="folderIconRadius" format="float" />

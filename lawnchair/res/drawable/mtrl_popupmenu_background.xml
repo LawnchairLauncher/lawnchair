@@ -15,7 +15,7 @@
   limitations under the License.
   -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="?android:attr/colorBackground"/>
+    <solid android:color="?attr/settingsPopupBackground"/>
 
     <corners
         android:bottomLeftRadius="4dp"

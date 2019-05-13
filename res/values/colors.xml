@@ -73,7 +73,13 @@
     <color name="qsb_background">#ffffffff</color>
     <color name="qsb_connector_gradient_end_color">#66ffffff</color>
 
-    <color name="settings_background_dark">#ff303030</color>
+    <color name="settings_background_dark">#ff151618</color>
+    <color name="settings_background_dark_2dp">#ff252628</color>
+    <color name="settings_background_dark_8dp">#ff303133</color>
+
+    <color name="settings_background_black">#ff000000</color>
+    <color name="settings_background_black_2dp">#ff121212</color>
+    <color name="settings_background_black_8dp">#ff1e1e1e</color>
 
     <color name="all_apps_label_text">#61000000</color>
     <color name="all_apps_label_text_dark">#61ffffff</color>
