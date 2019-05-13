@@ -17,13 +17,10 @@ package com.android.launcher3.uioverrides.states;
 
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 
-import android.graphics.Rect;
-
 import com.android.launcher3.Launcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
 
 /**
@@ -45,18 +42,9 @@ public class QuickSwitchState extends OverviewState {
         if (recentsView.getTaskViewCount() == 0) {
             return super.getOverviewScaleAndTranslation(launcher);
         }
-        // Compute scale and translation y such that the most recent task view fills the screen.
-        TaskThumbnailView dummyThumbnail = recentsView.getTaskViewAt(0).getThumbnail();
+        TaskView dummyTask = recentsView.getTaskViewAt(0);
         ClipAnimationHelper clipAnimationHelper = new ClipAnimationHelper(launcher);
-        clipAnimationHelper.fromTaskThumbnailView(dummyThumbnail, recentsView);
-        Rect targetRect = new Rect();
-        recentsView.getTaskSize(targetRect);
-        clipAnimationHelper.updateTargetRect(targetRect);
-        float toScale = clipAnimationHelper.getSourceRect().width()
-                / clipAnimationHelper.getTargetRect().width();
-        float toTranslationY = clipAnimationHelper.getSourceRect().centerY()
-                - clipAnimationHelper.getTargetRect().centerY();
-        return new ScaleAndTranslation(toScale, 0, toTranslationY);
+        return clipAnimationHelper.getOverviewFullscreenScaleAndTranslation(dummyTask);
     }
 
     @Override
