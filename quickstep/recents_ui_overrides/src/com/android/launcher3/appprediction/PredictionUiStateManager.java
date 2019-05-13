@@ -67,8 +67,8 @@ public class PredictionUiStateManager implements OnGlobalLayoutListener, ItemInf
 
     // TODO (b/129421797): Update the client constants
     public enum Client {
-        HOME("GEL"),
-        OVERVIEW("OVERVIEW_GEL");
+        HOME("home"),
+        OVERVIEW("overview");
 
         public final String id;
 
