@@ -10,8 +10,8 @@
     <string name="smartspace_time">時間</string>
     <string name="smartspace_date">日期</string>
     <string name="customize">自訂</string>
-    <string name="smartspace_preferences_in_settings">「快速查看」小工具中</string>
-    <string name="smartspace_preferences_in_settings_desc">日期、時間、天氣資料來源</string>
+    <string name="smartspace_preferences_in_settings">快速查看</string>
+    <string name="smartspace_preferences_in_settings_desc">日期、時間、天氣資訊來源</string>
     <string name="search">搜尋</string>
     <string name="label_voice_search">語音搜尋</string>
     <string name="icon_pack">圖示套件</string>
@@ -32,7 +32,7 @@
     <string name="hide_app">隱藏應用程式</string>
     <string name="icon_shape_rounded_square">圓角方形</string>
     <string name="pixel_ui_pref_summary">圖示套件、模糊效果、主題色彩</string>
-    <string name="app_drawer_pref_title">應用程式抽屜</string>
+    <string name="app_drawer_pref_title">應用程式列表</string>
     <string name="app_drawer_pref_summary">不透明度、建議、隱藏應用程式</string>
     <string name="search_pref_summary">色彩、搜尋引擎、圖示</string>
     <string name="general_pref_title">桌面</string>
@@ -140,21 +140,21 @@
     <string name="about_our_team">我們的團隊</string>
     <string name="about_our_contributors">主要貢獻者</string>
     <string name="about_our_family">我們的大家族</string>
-    <string name="about_role_lead">領導開發人員</string>
+    <string name="about_role_lead">領導開發者</string>
     <string name="about_role_devops">DevOps</string>
-    <string name="about_role_dev">開發人員</string>
-    <string name="about_role_dev_mod">開發人員 / 仲裁者</string>
+    <string name="about_role_dev">開發者</string>
+    <string name="about_role_dev_mod">開發者/仲裁者</string>
     <string name="about_role_designer">設計師</string>
     <string name="about_role_ui_ux_designer">UI/UX 設計師</string>
-    <string name="about_role_special_snowflake">社群媒體 / 公關及 OEM 相關人員</string>
+    <string name="about_role_special_snowflake">社群媒體 / 公關及 OEM 相關</string>
     <string name="about_role_mod_support">仲裁者 / 支援</string>
     <string name="about_role_family_member">家族成員</string>
-    <string name="about_role_magisk_maintainer">Magisk 模組維護人員</string>
-    <string name="about_bio_deletescape">Android 開發人員與愛好者，喜歡迷因（玩得有點多）。Lawnchair 專案的創始人。</string>
-    <string name="about_bio_recoded">溫和的編碼師和平面設計師。</string>
-    <string name="about_bio_josh">獨立的的平面設計師</string>
-    <string name="about_bio_chris">擁有創造性思的影響者、內容創造者和社交媒體和公關經理。</string>
-    <string name="about_bio_msfjarvis">HalogenOS 的核心開發人員和 substratum 的應用程式開發人員。</string>
+    <string name="about_role_magisk_maintainer">Magisk 模組維護者</string>
+    <string name="about_bio_deletescape">Android 開發者 &amp; 愛好者，喜愛迷因（但有點過度）。Lawnchair 專案創始人。</string>
+    <string name="about_bio_recoded">偶爾寫寫程式的平面設計師。</string>
+    <string name="about_bio_josh">自由業平面設計師。</string>
+    <string name="about_bio_chris">00 後屁孩，爽啦。愛好設計及社群媒體。快來 @lawnchairapp 看看吧 ✨</string>
+    <string name="about_bio_msfjarvis">halogenOS 核心開發者及 substratum 應用程式開發者。</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">強制停止啟動器</string>
     <string name="gestures_pref_title">手勢</string>
@@ -167,9 +167,9 @@
     <string name="action_global_search">啟動通用搜尋</string>
     <string name="action_app_search">啟動應用程式搜尋</string>
     <string name="action_overlay">顯示 Google Feed</string>
-    <string name="action_assistant">啟動助理</string>
-    <string name="action_open_notifications">開啟通知</string>
-    <string name="action_close_notifications">關閉通知</string>
+    <string name="action_assistant">顯示 Google Feed</string>
+    <string name="action_open_notifications">啟動語音助理</string>
+    <string name="action_close_notifications">顯示通知</string>
     <string name="action_sleep_timeout">關閉螢幕（等待螢幕關閉）</string>
     <string name="action_open_app">開啟應用程式</string>
     <string name="action_open_app_with_target">開啟 %s</string>
@@ -206,9 +206,9 @@
     <string name="pref_weather_city_summary">為求最佳查詢結果，請輸入國家地區代碼</string>
     <string name="pref_weather_city_title">城市</string>
     <string name="pref_weather_units">溫度單位</string>
-    <string name="units_metric">攝氏度（Celsius）</string>
-    <string name="units_imperial">華氏度（Fahrenheit）</string>
-    <string name="units_kelvin">絕對溫標（Kelvin）</string>
+    <string name="units_metric">攝氏溫標（Celsius）</string>
+    <string name="units_imperial">華氏溫標（Fahrenheit）</string>
+    <string name="units_kelvin">絕對溫邊（Kelvin）</string>
     <string name="all_icons">所有圖示</string>
     <string name="error_no_browser">找不到開啟 URL 的活動</string>
     <string name="no_icon_found">找不到圖示</string>
@@ -228,7 +228,7 @@
     <string name="theme_automatic">自動</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">預設</string>
-    <string name="transparent">透明度</string>
+    <string name="transparent">透明</string>
     <string name="pref_open_source_licenses_title">授權條款</string>
     <string name="pref_legacy_treatment_title">建立自動調整圖示</string>
     <string name="pref_legacy_treatment_summary">自動為所有應用程式產生自動調整圖示</string>
@@ -236,7 +236,7 @@
     <string name="dt2s_admin_warning">輕觸兩下以關閉螢幕將被關閉</string>
     <string name="icon_pack_applied_toast">已套用 %s</string>
     <string name="color_system_accent">系統強調色</string>
-    <string name="color_pixel_accent">像素藍</string>
+    <string name="color_pixel_accent">Pixel 藍色</string>
     <string name="color_presets">預設集</string>
     <string name="custom">自訂</string>
     <string name="color_wallpaper_main">桌布－主色</string>
@@ -405,8 +405,8 @@
     <string name="about_translate">翻譯</string>
     <string name="pref_show_dev_options">在設定中顯示</string>
     <string name="about_app_description">可自訂的另類 Pixel 啟動器</string>
-    <string name="about_bio_paphonb">18 歲學生、Android 開發者且是 Lawnchair 啟動器的首席開發者之一。</string>
+    <string name="about_bio_paphonb">18 歲的學生及 Android 開發者，Lawnchair 啟動器的領導開發人員之一。</string>
     <string name="dock_scale">底欄尺寸</string>
-    <string name="adaptify_pack_title">為圖示包建立自適應圖示</string>
-    <string name="adaptify_pack_summary">從圖示包中為圖示建立自適應圖示</string>
+    <string name="adaptify_pack_title">在圖示套件上套用自動調整圖示</string>
+    <string name="adaptify_pack_summary">使用圖示套件時，仍建立自動調整圖示</string>
 </resources>
