@@ -235,12 +235,8 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
                         case ITEM_TYPE_CLEAR_ALL:
                             outRect.top = (int) res.getDimension(
                                     R.dimen.clear_all_item_view_top_margin);
-                            int desiredBottomMargin = (int) res.getDimension(
+                            outRect.bottom = (int) res.getDimension(
                                     R.dimen.clear_all_item_view_bottom_margin);
-                            // Only add bottom margin if insets aren't enough.
-                            if (mInsets.bottom < desiredBottomMargin) {
-                                outRect.bottom = desiredBottomMargin - mInsets.bottom;
-                            }
                             break;
                         case ITEM_TYPE_TASK:
                             int desiredTopMargin = (int) res.getDimension(
