@@ -92,11 +92,6 @@ public class TouchInteractionService extends Service {
             // To be implemented
         }
 
-        @Override
-        public void onScrimColorsChanged(int color, int type) {
-
-        }
-
         /** Deprecated methods **/
         public void onQuickStep(MotionEvent motionEvent) { }
 
