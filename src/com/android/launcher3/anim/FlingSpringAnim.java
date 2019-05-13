@@ -28,8 +28,6 @@ import androidx.dynamicanimation.animation.SpringForce;
 public class FlingSpringAnim {
 
     private static final float FLING_FRICTION = 1.5f;
-    // Have the spring pull towards the target if we've slowed down too much before reaching it.
-    private static final float FLING_END_THRESHOLD_PX = 50f;
     private static final float SPRING_STIFFNESS = 200;
     private static final float SPRING_DAMPING = 0.85f;
 
@@ -39,23 +37,27 @@ public class FlingSpringAnim {
     private float mTargetPosition;
 
     public <K> FlingSpringAnim(K object, FloatPropertyCompat<K> property, float startPosition,
-            float targetPosition, float startVelocity, OnAnimationEndListener onEndListener) {
+            float targetPosition, float startVelocity, float minVisChange, float minValue,
+            float maxValue, float springVelocityFactor, OnAnimationEndListener onEndListener) {
         mFlingAnim = new FlingAnimation(object, property)
                 .setFriction(FLING_FRICTION)
-                .setMinimumVisibleChange(FLING_END_THRESHOLD_PX)
+                // Have the spring pull towards the target if we've slowed down too much before
+                // reaching it.
+                .setMinimumVisibleChange(minVisChange)
                 .setStartVelocity(startVelocity)
-                .setMinValue(Math.min(startPosition, targetPosition))
-                .setMaxValue(Math.max(startPosition, targetPosition));
+                .setMinValue(minValue)
+                .setMaxValue(maxValue);
         mTargetPosition = targetPosition;
 
         mFlingAnim.addEndListener(((animation, canceled, value, velocity) -> {
             mSpringAnim = new SpringAnimation(object, property)
-                    .setStartVelocity(velocity)
+                    .setStartValue(value)
+                    .setStartVelocity(velocity * springVelocityFactor)
                     .setSpring(new SpringForce(mTargetPosition)
                             .setStiffness(SPRING_STIFFNESS)
                             .setDampingRatio(SPRING_DAMPING));
             mSpringAnim.addEndListener(onEndListener);
-            mSpringAnim.start();
+            mSpringAnim.animateToFinalPosition(mTargetPosition);
         }));
     }
 
