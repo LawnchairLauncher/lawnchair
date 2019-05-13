@@ -20,10 +20,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.CancellationSignal;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.util.TouchController;
 
 import java.io.PrintWriter;
@@ -72,5 +74,9 @@ public class UiFactory {
 
     public static ScaleAndTranslation getOverviewScaleAndTranslationForNormalState(Launcher l) {
         return new ScaleAndTranslation(1.1f, 0f, 0f);
+    }
+
+    public static RotationMode getRotationMode(DeviceProfile dp) {
+        return RotationMode.NORMAL;
     }
 }

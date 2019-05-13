@@ -22,6 +22,8 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
+import static com.android.launcher3.uioverrides.RecentsUiFactory.ROTATION_LANDSCAPE;
+import static com.android.launcher3.uioverrides.RecentsUiFactory.ROTATION_SEASCAPE;
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
@@ -171,8 +173,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 && !mRecentsViewDispatcher.hasConsumer()) {
             mRecentsViewDispatcher.setConsumer(mInteractionHandler.getRecentsViewDispatcher(
                     isNavBarOnLeft()
-                            ? RotationMode.SEASCAPE
-                            : (isNavBarOnRight() ? RotationMode.LANDSCAPE : RotationMode.NORMAL)));
+                            ? ROTATION_SEASCAPE
+                            : (isNavBarOnRight() ? ROTATION_LANDSCAPE : RotationMode.NORMAL)));
         }
         int edgeFlags = ev.getEdgeFlags();
         ev.setEdgeFlags(edgeFlags | EDGE_NAV_BAR);
