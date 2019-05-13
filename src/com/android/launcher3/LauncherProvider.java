@@ -158,7 +158,8 @@ public class LauncherProvider extends ContentProvider {
             mOpenHelper = new DatabaseHelper(getContext(), mListenerHandler);
 
             if (RestoreDbTask.isPending(getContext())) {
-                if (!RestoreDbTask.performRestore(mOpenHelper, new BackupManager(getContext()))) {
+                if (!RestoreDbTask.performRestore(getContext(), mOpenHelper,
+                        new BackupManager(getContext()))) {
                     mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
                 }
                 // Set is pending to false irrespective of the result, so that it doesn't get

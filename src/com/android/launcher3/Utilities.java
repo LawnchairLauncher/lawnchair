@@ -74,6 +74,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.StringTokenizer;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -651,5 +652,24 @@ public final class Utilities {
         } else {
             return null;
         }
+    }
+
+    public static int[] getIntArrayFromString(String tokenized) {
+        StringTokenizer tokenizer = new StringTokenizer(tokenized, ",");
+        int[] array = new int[tokenizer.countTokens()];
+        int count = 0;
+        while (tokenizer.hasMoreTokens()) {
+            array[count] = Integer.parseInt(tokenizer.nextToken());
+            count++;
+        }
+        return array;
+    }
+
+    public static String getStringFromIntArray(int[] array) {
+        StringBuilder str = new StringBuilder();
+        for (int value : array) {
+            str.append(value).append(",");
+        }
+        return str.toString();
     }
 }
