@@ -617,7 +617,7 @@ public final class LauncherInstrumentation {
 
     // Inject a swipe gesture. Inject exactly 'steps' motion points, incrementing event time by a
     // fixed interval each time.
-    private void swipeWithModelTime(int startX, int startY, int endX, int endY, int steps) {
+    void swipeWithModelTime(int startX, int startY, int endX, int endY, int steps) {
         final long downTime = SystemClock.uptimeMillis();
         final Point start = new Point(startX, startY);
         final Point end = new Point(endX, endY);
