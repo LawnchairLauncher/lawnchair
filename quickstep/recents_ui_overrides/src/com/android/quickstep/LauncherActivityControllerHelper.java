@@ -118,16 +118,15 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         }
         final RectF iconLocation = new RectF();
         boolean canUseWorkspaceView = workspaceView != null && workspaceView.isAttachedToWindow();
-        final FloatingIconView floatingView = canUseWorkspaceView
-                ? FloatingIconView.getFloatingIconView(activity, workspaceView,
-                true /* hideOriginal */, iconLocation, false /* isOpening */, null /* recycle */)
+        FloatingIconView floatingIconView = canUseWorkspaceView
+                ? recentsView.getFloatingIconView(activity, workspaceView, iconLocation)
                 : null;
 
         return new HomeAnimationFactory() {
             @Nullable
             @Override
             public View getFloatingView() {
-                return floatingView;
+                return floatingIconView;
             }
 
             @NonNull
