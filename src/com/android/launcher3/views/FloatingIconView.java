@@ -81,8 +81,8 @@ public class FloatingIconView extends View implements
 
     // We spring the foreground drawable relative to the icon's movement in the DragLayer.
     // We then use these two factor values to scale the movement of the fg within this view.
-    private static final int FG_TRANS_X_FACTOR = 200;
-    private static final int FG_TRANS_Y_FACTOR = 300;
+    private static final int FG_TRANS_X_FACTOR = 80;
+    private static final int FG_TRANS_Y_FACTOR = 100;
 
     private static final FloatPropertyCompat<FloatingIconView> mFgTransYProperty
             = new FloatPropertyCompat<FloatingIconView>("FloatingViewFgTransY") {
