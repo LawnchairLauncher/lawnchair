@@ -124,7 +124,7 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
     @Override
     protected void updateProgress(float progress) {
         super.updateProgress(progress);
-        updateFullscreenProgress(progress);
+        updateFullscreenProgress(Utilities.boundToRange(progress, 0, 1));
     }
 
     private void updateFullscreenProgress(float progress) {
