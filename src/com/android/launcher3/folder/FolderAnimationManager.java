@@ -152,7 +152,7 @@ public class FolderAnimationManager {
         final float yDistance = initialY - lp.y;
 
         // Set up the Folder background.
-        final int finalColor = Themes.getAttrColor(mContext, android.R.attr.colorPrimary);
+        final int finalColor = Themes.getAttrColor(mContext, R.attr.folderFillColor);
         final int initialColor = setColorAlphaBound(
                 finalColor, mPreviewBackground.getBackgroundAlpha());
         mFolderBackground.mutate();

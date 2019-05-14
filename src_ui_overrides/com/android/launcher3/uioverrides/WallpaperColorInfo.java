@@ -30,6 +30,10 @@ import static android.app.WallpaperManager.FLAG_SYSTEM;
 
 public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChangedListenerCompat {
 
+    private static final int MAIN_COLOR_LIGHT = 0xffdadce0;
+    private static final int MAIN_COLOR_DARK = 0xff202124;
+    private static final int MAIN_COLOR_REGULAR = 0xff000000;
+
     private static final int FALLBACK_COLOR = Color.WHITE;
     private static final Object sInstanceLock = new Object();
     private static WallpaperColorInfo sInstance;
@@ -74,6 +78,10 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
 
     public boolean supportsDarkText() {
         return mSupportsDarkText;
+    }
+
+    public boolean isMainColorDark() {
+        return mMainColor == MAIN_COLOR_DARK;
     }
 
     @Override
