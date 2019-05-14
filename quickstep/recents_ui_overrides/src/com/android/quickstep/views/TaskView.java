@@ -476,6 +476,12 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     public void onRecycle() {
         resetViewTransforms();
         setFullscreenProgress(0);
+        // Clear any references to the thumbnail (it will be re-read either from the cache or the
+        // system on next bind)
+        mSnapshotView.setThumbnail(mTask, null);
+        if (mTask != null) {
+            mTask.thumbnail = null;
+        }
     }
 
     @Override
