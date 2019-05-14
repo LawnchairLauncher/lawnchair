@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
@@ -32,12 +33,16 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
@@ -62,6 +67,7 @@ import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
 import com.android.launcher3.graphics.RotationMode;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.IntArray;
@@ -81,6 +87,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_ICON_BADGED;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -654,6 +662,40 @@ public final class Utilities {
         }
     }
 
+    /**
+     * For apps icons and shortcut icons that have badges, this method creates a drawable that can
+     * later on be rendered on top of the layers for the badges. For app icons, work profile badges
+     * can only be applied. For deep shortcuts, when dragged from the pop up container, there's no
+     * badge. When dragged from workspace or folder, it may contain app AND/OR work profile badge
+     **/
+    @TargetApi(Build.VERSION_CODES.O)
+    public static Drawable getBadge(Launcher launcher, ItemInfo info, Object obj) {
+        LauncherAppState appState = LauncherAppState.getInstance(launcher);
+        int iconSize = appState.getInvariantDeviceProfile().iconBitmapSize;
+        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+            boolean iconBadged = (info instanceof ItemInfoWithIcon)
+                    && (((ItemInfoWithIcon) info).runtimeStatusFlags & FLAG_ICON_BADGED) > 0;
+            if ((info.id == ItemInfo.NO_ID && !iconBadged)
+                    || !(obj instanceof ShortcutInfo)) {
+                // The item is not yet added on home screen.
+                return new FixedSizeEmptyDrawable(iconSize);
+            }
+            ShortcutInfo si = (ShortcutInfo) obj;
+            LauncherIcons li = LauncherIcons.obtain(appState.getContext());
+            Bitmap badge = li.getShortcutInfoBadge(si, appState.getIconCache()).iconBitmap;
+            li.recycle();
+            float badgeSize = launcher.getResources().getDimension(R.dimen.profile_badge_size);
+            float insetFraction = (iconSize - badgeSize) / iconSize;
+            return new InsetDrawable(new FastBitmapDrawable(badge),
+                    insetFraction, insetFraction, 0, 0);
+        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+            return ((FolderAdaptiveIcon) obj).getBadge();
+        } else {
+            return launcher.getPackageManager()
+                    .getUserBadgedIcon(new FixedSizeEmptyDrawable(iconSize), info.user);
+        }
+    }
+
     public static int[] getIntArrayFromString(String tokenized) {
         StringTokenizer tokenizer = new StringTokenizer(tokenized, ",");
         int[] array = new int[tokenizer.countTokens()];
@@ -671,5 +713,25 @@ public final class Utilities {
             str.append(value).append(",");
         }
         return str.toString();
+    }
+
+    private static class FixedSizeEmptyDrawable extends ColorDrawable {
+
+        private final int mSize;
+
+        public FixedSizeEmptyDrawable(int size) {
+            super(Color.TRANSPARENT);
+            mSize = size;
+        }
+
+        @Override
+        public int getIntrinsicHeight() {
+            return mSize;
+        }
+
+        @Override
+        public int getIntrinsicWidth() {
+            return mSize;
+        }
     }
 }

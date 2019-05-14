@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.views;
 
+import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
+import static com.android.launcher3.Utilities.getBadge;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
@@ -121,6 +123,7 @@ public class FloatingIconView extends View implements
     private boolean mIsVerticalBarLayout = false;
     private boolean mIsAdaptiveIcon = false;
 
+    private @Nullable Drawable mBadge;
     private @Nullable Drawable mForeground;
     private @Nullable Drawable mBackground;
     private float mRotation;
@@ -362,7 +365,9 @@ public class FloatingIconView extends View implements
             if (supportsAdaptiveIcons) {
                 drawable = Utilities.getFullDrawable(mLauncher, info, lp.width, lp.height,
                         false, sTmpObjArray);
-                if (!(drawable instanceof AdaptiveIconDrawable)) {
+                if ((drawable instanceof AdaptiveIconDrawable)) {
+                    mBadge = getBadge(mLauncher, info, sTmpObjArray[0]);
+                } else {
                     // The drawable we get back is not an adaptive icon, so we need to use the
                     // BubbleTextView icon that is already legacy treated.
                     drawable = btvIcon;
@@ -420,6 +425,14 @@ public class FloatingIconView extends View implements
                 mBackground.setBounds(mFinalDrawableBounds);
 
                 mStartRevealRect.set(0, 0, originalWidth, originalHeight);
+
+                if (mBadge != null) {
+                    mBadge.setBounds(mStartRevealRect);
+                    if (!isOpening) {
+                        DRAWABLE_ALPHA.set(mBadge, 0);
+                    }
+
+                }
 
                 if (!isFolderIcon) {
                     mStartRevealRect.inset(mBlurSizeOutline, mBlurSizeOutline);
@@ -523,6 +536,9 @@ public class FloatingIconView extends View implements
             canvas.translate(mFgTransX, mFgTransY);
             mForeground.draw(canvas);
             canvas.restoreToCount(count2);
+        }
+        if (mBadge != null) {
+            mBadge.draw(canvas);
         }
         canvas.restoreToCount(count);
     }
@@ -642,6 +658,12 @@ public class FloatingIconView extends View implements
             }
         });
 
+        if (mBadge != null) {
+            ObjectAnimator badgeFade = ObjectAnimator.ofInt(mBadge, DRAWABLE_ALPHA, 255);
+            badgeFade.addUpdateListener(valueAnimator -> invalidate());
+            fade.play(badgeFade);
+        }
+
         if (originalView instanceof BubbleTextView) {
             BubbleTextView btv = (BubbleTextView) originalView;
             btv.forceHideDot(true);
@@ -716,5 +738,6 @@ public class FloatingIconView extends View implements
         mFgSpringX.cancel();
         mFgTransX = 0;
         mFgSpringY.cancel();
+        mBadge = null;
     }
 }
