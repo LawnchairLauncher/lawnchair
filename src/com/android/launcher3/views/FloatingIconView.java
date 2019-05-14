@@ -62,6 +62,9 @@ import com.android.launcher3.shortcuts.DeepShortcutView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
+import androidx.dynamicanimation.animation.FloatPropertyCompat;
+import androidx.dynamicanimation.animation.SpringAnimation;
+import androidx.dynamicanimation.animation.SpringForce;
 
 /**
  * A view that is created to look like another view with the purpose of creating fluid animations.
@@ -75,6 +78,39 @@ public class FloatingIconView extends View implements
     private static final Rect sTmpRect = new Rect();
     private static final RectF sTmpRectF = new RectF();
     private static final Object[] sTmpObjArray = new Object[1];
+
+    // We spring the foreground drawable relative to the icon's movement in the DragLayer.
+    // We then use these two factor values to scale the movement of the fg within this view.
+    private static final int FG_TRANS_X_FACTOR = 200;
+    private static final int FG_TRANS_Y_FACTOR = 300;
+
+    private static final FloatPropertyCompat<FloatingIconView> mFgTransYProperty
+            = new FloatPropertyCompat<FloatingIconView>("FloatingViewFgTransY") {
+        @Override
+        public float getValue(FloatingIconView view) {
+            return view.mFgTransY;
+        }
+
+        @Override
+        public void setValue(FloatingIconView view, float transY) {
+            view.mFgTransY = transY;
+            view.invalidate();
+        }
+    };
+
+    private static final FloatPropertyCompat<FloatingIconView> mFgTransXProperty
+            = new FloatPropertyCompat<FloatingIconView>("FloatingViewFgTransX") {
+        @Override
+        public float getValue(FloatingIconView view) {
+            return view.mFgTransX;
+        }
+
+        @Override
+        public void setValue(FloatingIconView view, float transX) {
+            view.mFgTransX = transX;
+            view.invalidate();
+        }
+    };
 
     private Runnable mEndRunnable;
     private CancellationSignal mLoadIconSignal;
@@ -100,10 +136,14 @@ public class FloatingIconView extends View implements
 
     private final Rect mOutline = new Rect();
     private final Rect mFinalDrawableBounds = new Rect();
-    private final Rect mBgDrawableBounds = new Rect();
 
     private AnimatorSet mFadeAnimatorSet;
     private ListenerView mListenerView;
+
+    private final SpringAnimation mFgSpringY;
+    private float mFgTransY;
+    private final SpringAnimation mFgSpringX;
+    private float mFgTransX;
 
     private FloatingIconView(Launcher launcher) {
         super(launcher);
@@ -111,6 +151,15 @@ public class FloatingIconView extends View implements
         mBlurSizeOutline = getResources().getDimensionPixelSize(
                 R.dimen.blur_size_medium_outline);
         mListenerView = new ListenerView(launcher, null);
+
+        mFgSpringX = new SpringAnimation(this, mFgTransXProperty)
+                .setSpring(new SpringForce()
+                .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY)
+                .setStiffness(SpringForce.STIFFNESS_LOW));
+        mFgSpringY = new SpringAnimation(this, mFgTransYProperty)
+                .setSpring(new SpringForce()
+                        .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY)
+                        .setStiffness(SpringForce.STIFFNESS_LOW));
     }
 
     @Override
@@ -178,7 +227,31 @@ public class FloatingIconView extends View implements
                 mRevealAnimator.setCurrentFraction(shapeRevealProgress);
             }
 
-            setBackgroundDrawableBounds(mOutline.height() / minSize);
+            float drawableScale = mOutline.height() / minSize;
+            setBackgroundDrawableBounds(drawableScale);
+            if (isOpening) {
+                // Center align foreground
+                int height = mFinalDrawableBounds.height();
+                int width = mFinalDrawableBounds.width();
+                int diffY = mIsVerticalBarLayout ? 0
+                        : (int) (((height * drawableScale) - height) / 2);
+                int diffX = mIsVerticalBarLayout ? (int) (((width * drawableScale) - width) / 2)
+                        : 0;
+                sTmpRect.set(mFinalDrawableBounds);
+                sTmpRect.offset(diffX, diffY);
+                mForeground.setBounds(sTmpRect);
+            } else {
+                // Spring the foreground relative to the icon's movement within the DragLayer.
+                int diffX = (int) (dX / mLauncher.getDeviceProfile().availableWidthPx
+                        * FG_TRANS_X_FACTOR);
+                int diffY = (int) (dY / mLauncher.getDeviceProfile().availableHeightPx
+                        * FG_TRANS_Y_FACTOR);
+
+                mFgSpringX.animateToFinalPosition(diffX);
+                mFgSpringY.animateToFinalPosition(diffY);
+            }
+
+
         }
         invalidate();
         invalidateOutline();
@@ -393,17 +466,15 @@ public class FloatingIconView extends View implements
     }
 
     private void setBackgroundDrawableBounds(float scale) {
-        mBgDrawableBounds.set(mFinalDrawableBounds);
-        Utilities.scaleRectAboutCenter(mBgDrawableBounds, scale);
+        sTmpRect.set(mFinalDrawableBounds);
+        Utilities.scaleRectAboutCenter(sTmpRect, scale);
         // Since the drawable is at the top of the view, we need to offset to keep it centered.
         if (mIsVerticalBarLayout) {
-            mBgDrawableBounds.offsetTo((int) (mFinalDrawableBounds.left  * scale),
-                    mBgDrawableBounds.top);
+            sTmpRect.offsetTo((int) (mFinalDrawableBounds.left * scale), sTmpRect.top);
         } else {
-            mBgDrawableBounds.offsetTo(mBgDrawableBounds.left,
-                    (int) (mFinalDrawableBounds.top * scale));
+            sTmpRect.offsetTo(sTmpRect.left, (int) (mFinalDrawableBounds.top * scale));
         }
-        mBackground.setBounds(mBgDrawableBounds);
+        mBackground.setBounds(sTmpRect);
     }
 
     @WorkerThread
@@ -448,7 +519,10 @@ public class FloatingIconView extends View implements
             mBackground.draw(canvas);
         }
         if (mForeground != null) {
+            int count2 = canvas.save();
+            canvas.translate(mFgTransX, mFgTransY);
             mForeground.draw(canvas);
+            canvas.restoreToCount(count2);
         }
         canvas.restoreToCount(count);
     }
@@ -624,7 +698,6 @@ public class FloatingIconView extends View implements
         mBackground = null;
         mClipPath = null;
         mFinalDrawableBounds.setEmpty();
-        mBgDrawableBounds.setEmpty();
         if (mRevealAnimator != null) {
             mRevealAnimator.cancel();
         }
@@ -639,5 +712,9 @@ public class FloatingIconView extends View implements
         mOnTargetChangeRunnable = null;
         mTaskCornerRadius = 0;
         mOutline.setEmpty();
+        mFgTransY = 0;
+        mFgSpringX.cancel();
+        mFgTransX = 0;
+        mFgSpringY.cancel();
     }
 }
