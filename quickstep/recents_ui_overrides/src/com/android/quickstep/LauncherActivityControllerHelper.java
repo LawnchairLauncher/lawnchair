@@ -270,9 +270,9 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         playScaleDownAnim(anim, activity, endState);
 
         anim.setDuration(transitionLength * 2);
-        activity.getStateManager().setCurrentAnimation(anim);
         AnimatorPlaybackController controller =
                 AnimatorPlaybackController.wrap(anim, transitionLength * 2);
+        activity.getStateManager().setCurrentUserControlledAnimation(controller);
 
         // Since we are changing the start position of the UI, reapply the state, at the end
         controller.setEndAction(() -> {
@@ -301,34 +301,19 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
             return;
         }
 
-        // Setup the clip animation helper source/target rects in the final transformed state
-        // of the recents view (a scale/translationY may be applied prior to this animation
-        // starting to line up the side pages during swipe up)
-        float prevRvScale = recentsView.getScaleX();
-        float prevRvTransY = recentsView.getTranslationY();
-        float targetRvScale = endState.getOverviewScaleAndTranslation(launcher).scale;
-        SCALE_PROPERTY.set(recentsView, targetRvScale);
-        recentsView.setTranslationY(0);
         ClipAnimationHelper clipHelper = new ClipAnimationHelper(launcher);
-        float tmpCurveScale = v.getCurveScale();
-        v.setCurveScale(1f);
-        clipHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(), null);
-        v.setCurveScale(tmpCurveScale);
-        SCALE_PROPERTY.set(recentsView, prevRvScale);
-        recentsView.setTranslationY(prevRvTransY);
+        LauncherState.ScaleAndTranslation fromScaleAndTranslation
+                = clipHelper.getOverviewFullscreenScaleAndTranslation(v);
+        LauncherState.ScaleAndTranslation endScaleAndTranslation
+                = endState.getOverviewScaleAndTranslation(launcher);
 
-        if (!clipHelper.getSourceRect().isEmpty() && !clipHelper.getTargetRect().isEmpty()) {
-            float fromScale = clipHelper.getSourceRect().width()
-                    / clipHelper.getTargetRect().width();
-            float fromTranslationY = clipHelper.getSourceRect().centerY()
-                    - clipHelper.getTargetRect().centerY();
-            Animator scale = ObjectAnimator.ofFloat(recentsView, SCALE_PROPERTY, fromScale, 1);
-            Animator translateY = ObjectAnimator.ofFloat(recentsView, TRANSLATION_Y,
-                    fromTranslationY, 0);
-            scale.setInterpolator(LINEAR);
-            translateY.setInterpolator(LINEAR);
-            anim.playTogether(scale, translateY);
-        }
+        Animator scale = ObjectAnimator.ofFloat(recentsView, SCALE_PROPERTY,
+                fromScaleAndTranslation.scale, endScaleAndTranslation.scale);
+        Animator translateY = ObjectAnimator.ofFloat(recentsView, TRANSLATION_Y,
+                fromScaleAndTranslation.translationY, endScaleAndTranslation.translationY);
+        scale.setInterpolator(LINEAR);
+        translateY.setInterpolator(LINEAR);
+        anim.playTogether(scale, translateY);
     }
 
     @Override

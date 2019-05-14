@@ -194,7 +194,7 @@ public class UiFactory extends RecentsUiFactory {
 
     public static ScaleAndTranslation getOverviewScaleAndTranslationForNormalState(Launcher l) {
         if (SysUINavigationMode.getMode(l) == Mode.NO_BUTTON) {
-            float offscreenTranslationX = l.getDragLayer().getWidth()
+            float offscreenTranslationX = l.getDeviceProfile().widthPx
                     - l.getOverviewPanel().getPaddingStart();
             return new ScaleAndTranslation(1f, offscreenTranslationX, 0f);
         }

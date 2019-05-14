@@ -20,6 +20,11 @@ import static android.view.View.VISIBLE;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
+
+import android.content.Context;
+import android.graphics.Rect;
+import android.view.Gravity;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -28,6 +33,7 @@ import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.uioverrides.touchcontrollers.FlingAndHoldTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.LandscapeEdgeSwipeController;
 import com.android.launcher3.uioverrides.touchcontrollers.NavBarToHomeTouchController;
@@ -58,12 +64,83 @@ public abstract class RecentsUiFactory {
     // Scale recents takes before animating in
     private static final float RECENTS_PREPARE_SCALE = 1.33f;
 
+    public static RotationMode ROTATION_LANDSCAPE = new RotationMode(-90) {
+        @Override
+        public void mapRect(int left, int top, int right, int bottom, Rect out) {
+            out.left = top;
+            out.top = right;
+            out.right = bottom;
+            out.bottom = left;
+        }
+
+        @Override
+        public void mapInsets(Context context, Rect insets, Rect out) {
+            if (SysUINavigationMode.getMode(context) == NO_BUTTON) {
+                out.set(insets);
+            } else {
+                out.top = Math.max(insets.top, insets.left);
+                out.bottom = insets.right;
+                out.left = insets.bottom;
+                out.right = 0;
+            }
+        }
+    };
+
+    public static RotationMode ROTATION_SEASCAPE = new RotationMode(90) {
+        @Override
+        public void mapRect(int left, int top, int right, int bottom, Rect out) {
+            out.left = bottom;
+            out.top = left;
+            out.right = top;
+            out.bottom = right;
+        }
+
+        @Override
+        public void mapInsets(Context context, Rect insets, Rect out) {
+            if (SysUINavigationMode.getMode(context) == NO_BUTTON) {
+                out.set(insets);
+            } else {
+                out.top = Math.max(insets.top, insets.right);
+                out.bottom = insets.left;
+                out.right = insets.bottom;
+                out.left = 0;
+            }
+        }
+
+        @Override
+        public int toNaturalGravity(int absoluteGravity) {
+            int horizontalGravity = absoluteGravity & Gravity.HORIZONTAL_GRAVITY_MASK;
+            int verticalGravity = absoluteGravity & Gravity.VERTICAL_GRAVITY_MASK;
+
+            if (horizontalGravity == Gravity.RIGHT) {
+                horizontalGravity = Gravity.LEFT;
+            } else if (horizontalGravity == Gravity.LEFT) {
+                horizontalGravity = Gravity.RIGHT;
+            }
+
+            if (verticalGravity == Gravity.TOP) {
+                verticalGravity = Gravity.BOTTOM;
+            } else if (verticalGravity == Gravity.BOTTOM) {
+                verticalGravity = Gravity.TOP;
+            }
+
+            return ((absoluteGravity & ~Gravity.HORIZONTAL_GRAVITY_MASK)
+                    & ~Gravity.VERTICAL_GRAVITY_MASK)
+                    | horizontalGravity | verticalGravity;
+        }
+    };
+
+    public static RotationMode getRotationMode(DeviceProfile dp) {
+        return !dp.isVerticalBarLayout() ? RotationMode.NORMAL
+                : (dp.isSeascape() ? ROTATION_SEASCAPE : ROTATION_LANDSCAPE);
+    }
+
     public static TouchController[] createTouchControllers(Launcher launcher) {
         Mode mode = SysUINavigationMode.getMode(launcher);
 
         ArrayList<TouchController> list = new ArrayList<>();
         list.add(launcher.getDragController());
-        if (mode == Mode.NO_BUTTON) {
+        if (mode == NO_BUTTON) {
             list.add(new QuickSwitchTouchController(launcher));
             list.add(new NavBarToHomeTouchController(launcher));
             list.add(new FlingAndHoldTouchController(launcher));
@@ -106,7 +183,7 @@ public abstract class RecentsUiFactory {
      * @param launcher the launcher activity
      */
     public static void prepareToShowOverview(Launcher launcher) {
-        if (SysUINavigationMode.getMode(launcher) == Mode.NO_BUTTON) {
+        if (SysUINavigationMode.getMode(launcher) == NO_BUTTON) {
             // Overview lives on the side, so doesn't scale in from above.
             return;
         }

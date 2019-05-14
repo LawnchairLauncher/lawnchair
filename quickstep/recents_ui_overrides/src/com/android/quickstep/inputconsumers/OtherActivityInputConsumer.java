@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.quickstep;
+package com.android.quickstep.inputconsumers;
 
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
@@ -21,8 +21,9 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
-
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
+import static com.android.launcher3.uioverrides.RecentsUiFactory.ROTATION_LANDSCAPE;
+import static com.android.launcher3.uioverrides.RecentsUiFactory.ROTATION_SEASCAPE;
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
@@ -44,12 +45,20 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
+import androidx.annotation.UiThread;
+
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RaceConditionTracker;
 import com.android.launcher3.util.TraceHelper;
+import com.android.quickstep.ActivityControlHelper;
+import com.android.quickstep.OverviewCallbacks;
+import com.android.quickstep.RecentsModel;
+import com.android.quickstep.SwipeSharedState;
+import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
+import com.android.quickstep.WindowTransformSwipeHandler;
 import com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget;
 import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
@@ -61,8 +70,6 @@ import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.QuickStepContract;
 
 import java.util.function.Consumer;
-
-import androidx.annotation.UiThread;
 
 /**
  * Input consumer for handling events originating from an activity other than Launcher
@@ -108,7 +115,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
     // Might be displacement in X or Y, depending on the direction we are swiping from the nav bar.
     private float mStartDisplacement;
-    private float mStartDisplacementX;
 
     private Handler mMainThreadHandler;
     private Runnable mCancelRecentsAnimationRunnable = () -> {
@@ -167,8 +173,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 && !mRecentsViewDispatcher.hasConsumer()) {
             mRecentsViewDispatcher.setConsumer(mInteractionHandler.getRecentsViewDispatcher(
                     isNavBarOnLeft()
-                            ? RotationMode.SEASCAPE
-                            : (isNavBarOnRight() ? RotationMode.LANDSCAPE : RotationMode.NORMAL)));
+                            ? ROTATION_SEASCAPE
+                            : (isNavBarOnRight() ? ROTATION_LANDSCAPE : RotationMode.NORMAL)));
         }
         int edgeFlags = ev.getEdgeFlags();
         ev.setEdgeFlags(edgeFlags | EDGE_NAV_BAR);
@@ -227,7 +233,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         if (Math.abs(displacement) > mDragSlop) {
                             mPassedDragSlop = true;
                             mStartDisplacement = displacement;
-                            mStartDisplacementX = displacementX;
                         }
                     }
                 }
@@ -244,19 +249,20 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         if (!mPassedDragSlop) {
                             mPassedDragSlop = true;
                             mStartDisplacement = displacement;
-                            mStartDisplacementX = displacementX;
                         }
                         notifyGestureStarted();
                     }
                 }
 
-                if (mPassedDragSlop && mInteractionHandler != null) {
-                    // Move
-                    mInteractionHandler.updateDisplacement(displacement - mStartDisplacement);
+                if (mInteractionHandler != null) {
+                    if (mPassedDragSlop) {
+                        // Move
+                        mInteractionHandler.updateDisplacement(displacement - mStartDisplacement);
+                    }
 
                     if (mMode == Mode.NO_BUTTON) {
-                        float horizontalDist = Math.abs(displacementX - mStartDisplacementX);
-                        float upDist = -(displacement - mStartDisplacement);
+                        float horizontalDist = Math.abs(displacementX);
+                        float upDist = -displacement;
                         boolean isLikelyToStartNewTask = horizontalDist > upDist;
                         mMotionPauseDetector.setDisallowPause(upDist < mMotionPauseMinDisplacement
                                 || isLikelyToStartNewTask);
@@ -378,11 +384,11 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             // The consumer is being switched while we are active. Set up the shared state to be
             // used by the next animation
             removeListener();
-            GestureEndTarget endTarget = mInteractionHandler.mGestureEndTarget;
+            GestureEndTarget endTarget = mInteractionHandler.getGestureEndTarget();
             mSwipeSharedState.canGestureBeContinued = endTarget != null && endTarget.canBeContinued;
             mSwipeSharedState.goingToLauncher = endTarget != null && endTarget.isLauncher;
             if (mSwipeSharedState.canGestureBeContinued) {
-                mInteractionHandler.cancelCurrentAnimation();
+                mInteractionHandler.cancelCurrentAnimation(mSwipeSharedState);
             } else {
                 mInteractionHandler.reset();
             }

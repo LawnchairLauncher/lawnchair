@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
+import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
@@ -198,6 +199,11 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
             }
         }
         return result;
+    }
+
+    @Override
+    public List<PackageInstaller.SessionInfo> getAllPackageInstallerSessions() {
+        return mContext.getPackageManager().getPackageInstaller().getAllSessions();
     }
 }
 

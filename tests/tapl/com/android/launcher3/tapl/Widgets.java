@@ -19,6 +19,8 @@ package com.android.launcher3.tapl;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
+import com.android.launcher3.ResourceUtils;
+
 /**
  * All widgets container.
  */
@@ -38,7 +40,9 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 "want to fling forward in widgets")) {
             LauncherInstrumentation.log("Widgets.flingForward enter");
             final UiObject2 widgetsContainer = verifyActiveContainer();
-            widgetsContainer.setGestureMargin(100);
+            widgetsContainer.setGestureMargins(0, 0, 0,
+                    ResourceUtils.getNavbarSize(ResourceUtils.NAVBAR_VERTICAL_SIZE,
+                            mLauncher.getResources()) + 1);
             widgetsContainer.fling(Direction.DOWN,
                     (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("flung forward")) {

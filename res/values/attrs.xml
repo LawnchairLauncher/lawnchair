@@ -36,8 +36,10 @@
     <attr name="loadingIconColor" format="color" />
 
     <attr name="folderDotColor" format="color" />
+    <attr name="folderFillColor" format="color" />
     <attr name="folderIconRadius" format="float" />
     <attr name="folderIconBorderColor" format="color" />
+    <attr name="folderTextColor" format="color" />
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">
@@ -55,7 +57,7 @@
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="FolderIconPreview">
-        <attr name="android:colorPrimary" />
+        <attr name="folderFillColor" />
         <attr name="folderIconBorderColor" />
         <attr name="folderDotColor" />
     </declare-styleable>

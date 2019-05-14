@@ -48,10 +48,12 @@ public class Themes {
 
         if (darkTheme) {
             return wallpaperColorInfo.supportsDarkText() ?
-                    R.style.AppTheme_Dark_DarkText : R.style.AppTheme_Dark;
+                    R.style.AppTheme_Dark_DarkText : wallpaperColorInfo.isMainColorDark() ?
+                            R.style.AppTheme_Dark_DarkMainColor : R.style.AppTheme_Dark;
         } else {
             return wallpaperColorInfo.supportsDarkText() ?
-                    R.style.AppTheme_DarkText : R.style.AppTheme;
+                    R.style.AppTheme_DarkText : wallpaperColorInfo.isMainColorDark() ?
+                            R.style.AppTheme_DarkMainColor : R.style.AppTheme;
         }
     }
 
