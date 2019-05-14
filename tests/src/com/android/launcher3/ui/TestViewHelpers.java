@@ -27,6 +27,7 @@ import android.graphics.Point;
 import android.os.Process;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -186,10 +187,8 @@ public class TestViewHelpers {
      */
     public static UiObject2 openWidgetsTray() {
         final UiDevice device = getDevice();
-        device.pressMenu(); // Enter overview mode.
-        device.wait(Until.findObject(
-                By.text(getTargetContext().getString(R.string.widget_button_text))),
-                AbstractLauncherUiTest.DEFAULT_UI_TIMEOUT).click();
+        device.pressKeyCode(KeyEvent.KEYCODE_W, KeyEvent.META_CTRL_ON);
+        device.waitForIdle();
         return findViewById(R.id.widgets_list_view);
     }
 
