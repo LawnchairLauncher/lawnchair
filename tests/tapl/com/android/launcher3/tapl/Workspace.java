@@ -65,7 +65,8 @@ public final class Workspace extends Home {
             LauncherInstrumentation.log(
                     "switchToAllApps: swipeHeight = " + swipeHeight + ", slop = "
                             + mLauncher.getTouchSlop());
-            mLauncher.swipe(
+
+            mLauncher.swipeWithModelTime(
                     start.x,
                     start.y,
                     start.x,
