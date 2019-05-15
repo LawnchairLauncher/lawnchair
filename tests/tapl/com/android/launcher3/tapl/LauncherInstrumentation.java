@@ -532,6 +532,14 @@ public final class LauncherInstrumentation {
     }
 
     @NonNull
+    UiObject2 waitForLauncherObjectByClass(String clazz) {
+        final BySelector selector = getLauncherObjectSelectorByClass(clazz);
+        final UiObject2 object = mDevice.wait(Until.findObject(selector), WAIT_TIME_MS);
+        assertNotNull("Can't find a launcher object; selector: " + selector, object);
+        return object;
+    }
+
+    @NonNull
     UiObject2 waitForFallbackLauncherObject(String resName) {
         final BySelector selector = getFallbackLauncherObjectSelector(resName);
         final UiObject2 object = mDevice.wait(Until.findObject(selector), WAIT_TIME_MS);
@@ -541,6 +549,10 @@ public final class LauncherInstrumentation {
 
     BySelector getLauncherObjectSelector(String resName) {
         return By.res(getLauncherPackageName(), resName);
+    }
+
+    BySelector getLauncherObjectSelectorByClass(String clazz) {
+        return By.pkg(getLauncherPackageName()).clazz(clazz);
     }
 
     BySelector getFallbackLauncherObjectSelector(String resName) {
