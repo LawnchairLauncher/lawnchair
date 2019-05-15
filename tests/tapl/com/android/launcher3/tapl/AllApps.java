@@ -114,7 +114,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                         "Exceeded max scroll attempts: " + MAX_SCROLL_ATTEMPTS,
                         ++attempts <= MAX_SCROLL_ATTEMPTS);
 
-                mLauncher.scrollWithModelTime(allAppsContainer, Direction.UP, 1, margins, 50);
+                mLauncher.scroll(allAppsContainer, Direction.UP, 1, margins, 50);
             }
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("scrolled up")) {
@@ -134,7 +134,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
             // Try to figure out how much percentage of the container needs to be scrolled in order
             // to reveal the app icon to have the MIN_INTERACT_SIZE
             final float pct = Math.max(((float) (MIN_INTERACT_SIZE - appHeight)) / mHeight, 0.2f);
-            mLauncher.scrollWithModelTime(allAppsContainer, Direction.DOWN, pct, null, 10);
+            mLauncher.scroll(allAppsContainer, Direction.DOWN, pct, null, 10);
             try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                     "scrolled an icon in all apps to make it visible - and then")) {
                 mLauncher.waitForIdle();
@@ -151,7 +151,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                      mLauncher.addContextLayer("want to fling forward in all apps")) {
             final UiObject2 allAppsContainer = verifyActiveContainer();
             // Start the gesture in the center to avoid starting at elements near the top.
-            mLauncher.scrollWithModelTime(
+            mLauncher.scroll(
                     allAppsContainer, Direction.DOWN, 1, new Rect(0, 0, 0, mHeight / 2), 10);
             verifyActiveContainer();
         }
@@ -165,7 +165,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                      mLauncher.addContextLayer("want to fling backward in all apps")) {
             final UiObject2 allAppsContainer = verifyActiveContainer();
             // Start the gesture in the center, for symmetry with forward.
-            mLauncher.scrollWithModelTime(
+            mLauncher.scroll(
                     allAppsContainer, Direction.UP, 1, new Rect(0, mHeight / 2, 0, 0), 10);
             verifyActiveContainer();
         }

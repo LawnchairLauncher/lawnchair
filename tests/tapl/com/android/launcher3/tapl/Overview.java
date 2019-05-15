@@ -52,10 +52,10 @@ public final class Overview extends BaseOverview {
             // Swipe from the prediction row to the top.
             LauncherInstrumentation.log("Overview.switchToAllApps before swipe");
             final UiObject2 predictionRow = mLauncher.waitForLauncherObject("prediction_row");
-            mLauncher.swipe(mLauncher.getDevice().getDisplayWidth() / 2,
+            mLauncher.swipeToState(mLauncher.getDevice().getDisplayWidth() / 2,
                     predictionRow.getVisibleBounds().centerY(),
                     mLauncher.getDevice().getDisplayWidth() / 2,
-                    0, ALL_APPS_STATE_ORDINAL);
+                    0, 50, ALL_APPS_STATE_ORDINAL);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "swiped all way up from overview")) {

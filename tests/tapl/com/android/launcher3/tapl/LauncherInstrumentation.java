@@ -365,10 +365,10 @@ public final class LauncherInstrumentation {
                         ? NORMAL_STATE_ORDINAL : BACKGROUND_APP_STATE_ORDINAL;
                 final Point displaySize = getRealDisplaySize();
 
-                swipeWithModelTime(
+                swipeToState(
                         displaySize.x / 2, displaySize.y - 1,
                         displaySize.x / 2, 0,
-                        finalState, ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
+                        ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, finalState);
             }
         } else {
             log(action = "clicking home button");
@@ -565,14 +565,12 @@ public final class LauncherInstrumentation {
                 () -> mDevice.swipe(startX, startY, endX, endY, steps));
     }
 
-    void swipeWithModelTime(
-            int startX, int startY, int endX, int endY, int expectedState, int steps) {
+    void swipeToState(int startX, int startY, int endX, int endY, int steps, int expectedState) {
         changeStateViaGesture(startX, startY, endX, endY, expectedState,
-                () -> swipeWithModelTime(startX, startY, endX, endY, steps));
+                () -> linearGesture(startX, startY, endX, endY, steps));
     }
 
-    void scrollWithModelTime(
-            UiObject2 container, Direction direction, float percent, Rect margins, int steps) {
+    void scroll(UiObject2 container, Direction direction, float percent, Rect margins, int steps) {
         final Rect rect = container.getVisibleBounds();
         if (margins != null) {
             rect.left += margins.left;
@@ -609,7 +607,7 @@ public final class LauncherInstrumentation {
         }
 
         executeAndWaitForEvent(
-                () -> swipeWithModelTime(startX, startY, endX, endY, steps),
+                () -> linearGesture(startX, startY, endX, endY, steps),
                 event -> TestProtocol.SCROLL_FINISHED_MESSAGE.equals(event.getClassName()),
                 "Didn't receive a scroll end message: " + startX + ", " + startY
                         + ", " + endX + ", " + endY);
@@ -617,7 +615,7 @@ public final class LauncherInstrumentation {
 
     // Inject a swipe gesture. Inject exactly 'steps' motion points, incrementing event time by a
     // fixed interval each time.
-    void swipeWithModelTime(int startX, int startY, int endX, int endY, int steps) {
+    private void linearGesture(int startX, int startY, int endX, int endY, int steps) {
         final long downTime = SystemClock.uptimeMillis();
         final Point start = new Point(startX, startY);
         final Point end = new Point(endX, endY);

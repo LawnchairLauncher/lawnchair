@@ -66,13 +66,13 @@ public final class Workspace extends Home {
                     "switchToAllApps: swipeHeight = " + swipeHeight + ", slop = "
                             + mLauncher.getTouchSlop());
 
-            mLauncher.swipeWithModelTime(
+            mLauncher.swipeToState(
                     start.x,
                     start.y,
                     start.x,
                     start.y - swipeHeight - mLauncher.getTouchSlop(),
-                    ALL_APPS_STATE_ORDINAL
-            );
+                    60,
+                    ALL_APPS_STATE_ORDINAL);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "swiped to all apps")) {
