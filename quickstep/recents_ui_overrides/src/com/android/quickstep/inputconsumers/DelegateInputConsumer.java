@@ -1,4 +1,4 @@
-package com.android.quickstep;
+package com.android.quickstep.inputconsumers;
 
 import android.view.MotionEvent;
 

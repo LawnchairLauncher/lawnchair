@@ -744,9 +744,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public abstract void startHome();
 
     public void reset() {
-        setRunningTaskViewShowScreenshot(false);
-        mRunningTaskId = -1;
-        mRunningTaskTileHidden = false;
+        setCurrentTask(-1);
         mIgnoreResetTaskId = -1;
         mTaskListChangeId = -1;
 
@@ -755,6 +753,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
         unloadVisibleTaskData();
         setCurrentPage(0);
+    }
+
+    public @Nullable TaskView getRunningTaskView() {
+        return getTaskView(mRunningTaskId);
+    }
+
+    public int getRunningTaskIndex() {
+        TaskView tv = getRunningTaskView();
+        return tv == null ? -1 : indexOfChild(tv);
     }
 
     /**
@@ -767,14 +774,50 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     /**
-     * Ensures that the first task in the view represents {@param task} and reloads the view
-     * if needed. This allows the swipe-up gesture to assume that the first tile always
-     * corresponds to the correct task.
-     * All subsequent calls to reload will keep the task as the first item until {@link #reset()}
-     * is called.
-     * Also scrolls the view to this task
+     * Called when a gesture from an app is starting.
      */
-    public void showTask(int runningTaskId) {
+    public void onGestureAnimationStart(int runningTaskId) {
+        // This needs to be called before the other states are set since it can create the task view
+        showCurrentTask(runningTaskId);
+        setEnableFreeScroll(false);
+        setEnableDrawingLiveTile(false);
+        setRunningTaskHidden(true);
+        setRunningTaskIconScaledDown(true);
+    }
+
+    /**
+     * Called only when a swipe-up gesture from an app has completed. Only called after
+     * {@link #onGestureAnimationStart} and {@link #onGestureAnimationEnd()}.
+     */
+    public void onSwipeUpAnimationSuccess() {
+        if (getRunningTaskView() != null) {
+            float startProgress = ENABLE_QUICKSTEP_LIVE_TILE.get()
+                    ? mLiveTileOverlay.cancelIconAnimation()
+                    : 0f;
+            animateUpRunningTaskIconScale(startProgress);
+        }
+        setSwipeDownShouldLaunchApp(true);
+    }
+
+    /**
+     * Called when a gesture from an app has finished.
+     */
+    public void onGestureAnimationEnd() {
+        setEnableFreeScroll(true);
+        setEnableDrawingLiveTile(true);
+        setOnScrollChangeListener(null);
+        setRunningTaskViewShowScreenshot(true);
+        setRunningTaskHidden(false);
+        animateUpRunningTaskIconScale();
+    }
+
+    /**
+     * Creates a task view (if necessary) to represent the task with the {@param runningTaskId}.
+     *
+     * All subsequent calls to reload will keep the task as the first item until {@link #reset()}
+     * is called.  Also scrolls the view to this task.
+     */
+    public void showCurrentTask(int runningTaskId) {
         if (getChildCount() == 0) {
             // Add an empty view for now until the task plan is loaded and applied
             final TaskView taskView = mTaskViewPool.getView();
@@ -789,16 +832,33 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                     new ComponentName("", ""), false);
             taskView.bind(mTmpRunningTask);
         }
+
+        boolean runningTaskTileHidden = mRunningTaskTileHidden;
         setCurrentTask(runningTaskId);
+        setCurrentPage(getRunningTaskIndex());
+        setRunningTaskViewShowScreenshot(false);
+        setRunningTaskHidden(runningTaskTileHidden);
+
+        // Reload the task list
+        mTaskListChangeId = mModel.getTasks(this::applyLoadPlan);
     }
 
-    public @Nullable TaskView getRunningTaskView() {
-        return getTaskView(mRunningTaskId);
-    }
+    /**
+     * Sets the running task id, cleaning up the old running task if necessary.
+     * @param runningTaskId
+     */
+    public void setCurrentTask(int runningTaskId) {
+        if (mRunningTaskId == runningTaskId) {
+            return;
+        }
 
-    public int getRunningTaskIndex() {
-        TaskView tv = getRunningTaskView();
-        return tv == null ? -1 : indexOfChild(tv);
+        if (mRunningTaskId != -1) {
+            // Reset the state on the old running task view
+            setRunningTaskIconScaledDown(false);
+            setRunningTaskViewShowScreenshot(true);
+            setRunningTaskHidden(false);
+        }
+        mRunningTaskId = runningTaskId;
     }
 
     /**
@@ -810,27 +870,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (runningTask != null) {
             runningTask.setAlpha(isHidden ? 0 : mContentAlpha);
         }
-    }
-
-    /**
-     * Similar to {@link #showTask(int)} but does not put any restrictions on the first tile.
-     */
-    public void setCurrentTask(int runningTaskId) {
-        boolean runningTaskTileHidden = mRunningTaskTileHidden;
-        boolean runningTaskIconScaledDown = mRunningTaskIconScaledDown;
-
-        setRunningTaskIconScaledDown(false);
-        setRunningTaskHidden(false);
-        setRunningTaskViewShowScreenshot(true);
-        mRunningTaskId = runningTaskId;
-        setRunningTaskViewShowScreenshot(false);
-        setRunningTaskIconScaledDown(runningTaskIconScaledDown);
-        setRunningTaskHidden(runningTaskTileHidden);
-
-        setCurrentPage(getRunningTaskIndex());
-
-        // Load the tasks (if the loading is already
-        mTaskListChangeId = mModel.getTasks(this::applyLoadPlan);
     }
 
     private void setRunningTaskViewShowScreenshot(boolean showScreenshot) {
@@ -1520,7 +1559,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public abstract boolean shouldUseMultiWindowTaskSizeStrategy();
 
     protected void onTaskLaunched(boolean success) {
-        resetTaskVisuals();
+        if (success) {
+            resetTaskVisuals();
+        }
     }
 
     @Override

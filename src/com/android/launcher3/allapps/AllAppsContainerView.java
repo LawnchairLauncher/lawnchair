@@ -604,4 +604,18 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
         return super.performAccessibilityAction(action, arguments);
     }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        switch (ev.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                mAllAppsStore.setDeferUpdates(true);
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                mAllAppsStore.setDeferUpdates(false);
+                break;
+        }
+        return super.dispatchTouchEvent(ev);
+    }
 }

@@ -74,6 +74,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.StringTokenizer;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -167,7 +168,7 @@ public final class Utilities {
     public static float getDescendantCoordRelativeToAncestor(
             View descendant, View ancestor, float[] coord, boolean includeRootScroll) {
         return getDescendantCoordRelativeToAncestor(descendant, ancestor, coord, includeRootScroll,
-                false);
+                false, null);
     }
 
     /**
@@ -180,12 +181,15 @@ public final class Utilities {
      * @param includeRootScroll Whether or not to account for the scroll of the descendant:
      *          sometimes this is relevant as in a child's coordinates within the descendant.
      * @param ignoreTransform If true, view transform is ignored
+     * @param outRotation If not null, and {@param ignoreTransform} is true, this is set to the
+     *                   overall rotation of the view in degrees.
      * @return The factor by which this descendant is scaled relative to this DragLayer. Caution
      *         this scale factor is assumed to be equal in X and Y, and so if at any point this
      *         assumption fails, we will need to return a pair of scale factors.
      */
     public static float getDescendantCoordRelativeToAncestor(View descendant, View ancestor,
-            float[] coord, boolean includeRootScroll, boolean ignoreTransform) {
+            float[] coord, boolean includeRootScroll, boolean ignoreTransform,
+            float[] outRotation) {
         float scale = 1.0f;
         View v = descendant;
         while(v != ancestor && v != null) {
@@ -201,6 +205,10 @@ public final class Utilities {
                     if (m.isTransposed) {
                         sMatrix.setRotate(m.surfaceRotation, v.getPivotX(), v.getPivotY());
                         sMatrix.mapPoints(coord);
+
+                        if (outRotation != null) {
+                            outRotation[0] += m.surfaceRotation;
+                        }
                     }
                 }
             } else {
@@ -470,10 +478,7 @@ public final class Utilities {
         float densityRatio = (float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT;
         return (size / densityRatio);
     }
-    public static int pxFromDp(float size, DisplayMetrics metrics) {
-        return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                size, metrics));
-    }
+
     public static int pxFromSp(float size, DisplayMetrics metrics) {
         return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 size, metrics));
@@ -647,5 +652,24 @@ public final class Utilities {
         } else {
             return null;
         }
+    }
+
+    public static int[] getIntArrayFromString(String tokenized) {
+        StringTokenizer tokenizer = new StringTokenizer(tokenized, ",");
+        int[] array = new int[tokenizer.countTokens()];
+        int count = 0;
+        while (tokenizer.hasMoreTokens()) {
+            array[count] = Integer.parseInt(tokenizer.nextToken());
+            count++;
+        }
+        return array;
+    }
+
+    public static String getStringFromIntArray(int[] array) {
+        StringBuilder str = new StringBuilder();
+        for (int value : array) {
+            str.append(value).append(",");
+        }
+        return str.toString();
     }
 }

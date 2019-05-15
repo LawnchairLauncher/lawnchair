@@ -24,14 +24,12 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.view.Surface;
-import android.view.View;
 import android.view.WindowManager;
 
 import com.android.launcher3.CellLayout.ContainerType;
+import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconNormalizer;
-
-import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 
 public class DeviceProfile {
 
@@ -215,7 +213,7 @@ public class DeviceProfile {
         // Add a bit of space between nav bar and hotseat in multi-window vertical bar layout.
         hotseatBarSidePaddingStartPx = isMultiWindowMode && isVerticalBarLayout()
                 ? edgeMarginPx : 0;
-        hotseatBarSizePx = Utilities.pxFromDp(inv.iconSize, dm) + (isVerticalBarLayout()
+        hotseatBarSizePx = ResourceUtils.pxFromDp(inv.iconSize, dm) + (isVerticalBarLayout()
                 ? (hotseatBarSidePaddingStartPx + hotseatBarSidePaddingEndPx)
                 : (res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_extra_vertical_size)
                         + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx));
@@ -240,7 +238,8 @@ public class DeviceProfile {
         updateWorkspacePadding();
 
         // This is done last, after iconSizePx is calculated above.
-        mDotRenderer = new DotRenderer(iconSizePx);
+        mDotRenderer = new DotRenderer(iconSizePx, IconShape.getShapePath(),
+                IconShape.DEFAULT_PATH_SIZE);
     }
 
     public DeviceProfile copy(Context context) {
@@ -320,7 +319,7 @@ public class DeviceProfile {
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
         float invIconSizePx = isVerticalLayout ? inv.landscapeIconSize : inv.iconSize;
-        iconSizePx = Math.max(1, (int) (Utilities.pxFromDp(invIconSizePx, dm) * scale));
+        iconSizePx = Math.max(1, (int) (ResourceUtils.pxFromDp(invIconSizePx, dm) * scale));
         iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
         iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
 
@@ -400,7 +399,7 @@ public class DeviceProfile {
     }
 
     private void updateFolderCellSize(float scale, DisplayMetrics dm, Resources res) {
-        folderChildIconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * scale);
+        folderChildIconSizePx = (int) (ResourceUtils.pxFromDp(inv.iconSize, dm) * scale);
         folderChildTextSizePx =
                 (int) (res.getDimensionPixelSize(R.dimen.folder_child_text_size) * scale);
 

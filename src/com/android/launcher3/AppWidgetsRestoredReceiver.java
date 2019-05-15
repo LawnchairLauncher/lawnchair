@@ -8,7 +8,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.Handler;
 import android.util.Log;
 
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -34,16 +33,8 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
 
             final int[] oldIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_OLD_IDS);
             final int[] newIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
-            if (oldIds.length == newIds.length) {
-                final PendingResult asyncResult = goAsync();
-                new Handler(LauncherModel.getWorkerLooper())
-                        .postAtFrontOfQueue(new Runnable() {
-                            @Override
-                            public void run() {
-                                restoreAppWidgetIds(context, oldIds, newIds);
-                                asyncResult.finish();
-                            }
-                        });
+            if (oldIds != null && newIds != null && oldIds.length == newIds.length) {
+                RestoreDbTask.setRestoredAppWidgetIds(context, oldIds, newIds);
             } else {
                 Log.e(TAG, "Invalid host restored received");
             }
@@ -54,7 +45,7 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
      * Updates the app widgets whose id has changed during the restore process.
      */
     @WorkerThread
-    static void restoreAppWidgetIds(Context context, int[] oldWidgetIds, int[] newWidgetIds) {
+    public static void restoreAppWidgetIds(Context context, int[] oldWidgetIds, int[] newWidgetIds) {
         AppWidgetHost appWidgetHost = new LauncherAppWidgetHost(context);
         if (FeatureFlags.GO_DISABLE_WIDGETS) {
             Log.e(TAG, "Skipping widget ID remap as widgets not supported");
