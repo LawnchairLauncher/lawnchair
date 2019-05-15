@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.quickstep;
+package com.android.quickstep.inputconsumers;
 
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -30,6 +30,7 @@ public interface InputConsumer {
     int TYPE_ASSISTANT = 1 << 3;
     int TYPE_DEVICE_LOCKED = 1 << 4;
     int TYPE_ACCESSIBILITY = 1 << 5;
+    int TYPE_SCREEN_PINNED = 1 << 6;
 
     InputConsumer NO_OP = () -> TYPE_NO_OP;
 

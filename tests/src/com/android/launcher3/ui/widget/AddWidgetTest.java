@@ -82,7 +82,8 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
             @Override
             public boolean evaluate(ItemInfo info, View view) {
                 return info instanceof LauncherAppWidgetInfo &&
-                        ((LauncherAppWidgetInfo) info).providerName.equals(widgetInfo.provider);
+                        ((LauncherAppWidgetInfo) info).providerName.getClassName().equals(
+                                widgetInfo.provider.getClassName());
             }
         }).call());
     }

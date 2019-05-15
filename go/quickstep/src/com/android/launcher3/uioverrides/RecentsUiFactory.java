@@ -21,10 +21,12 @@ import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 
 import android.view.View;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.uioverrides.touchcontrollers.LandscapeEdgeSwipeController;
 import com.android.launcher3.uioverrides.touchcontrollers.LandscapeStatesTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
@@ -102,4 +104,8 @@ public abstract class RecentsUiFactory {
      * @param launcher the launcher activity
      */
     public static void onLauncherStateOrResumeChanged(Launcher launcher) {}
+
+    public static RotationMode getRotationMode(DeviceProfile dp) {
+        return RotationMode.NORMAL;
+    }
 }

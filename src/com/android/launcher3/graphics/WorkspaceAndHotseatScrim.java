@@ -43,7 +43,7 @@ import android.view.View;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
@@ -148,7 +148,7 @@ public class WorkspaceAndHotseatScrim implements
         mLauncher = Launcher.getLauncher(view.getContext());
         mWallpaperColorInfo = WallpaperColorInfo.getInstance(mLauncher);
 
-        mMaskHeight = Utilities.pxFromDp(ALPHA_MASK_BITMAP_DP,
+        mMaskHeight = ResourceUtils.pxFromDp(ALPHA_MASK_BITMAP_DP,
                 view.getResources().getDisplayMetrics());
         mTopScrim = Themes.getAttrDrawable(view.getContext(), R.attr.workspaceStatusBarScrim);
         mBottomMask = mTopScrim == null ? null : createDitheredAlphaMask();
@@ -297,8 +297,8 @@ public class WorkspaceAndHotseatScrim implements
 
     public Bitmap createDitheredAlphaMask() {
         DisplayMetrics dm = mLauncher.getResources().getDisplayMetrics();
-        int width = Utilities.pxFromDp(ALPHA_MASK_WIDTH_DP, dm);
-        int gradientHeight = Utilities.pxFromDp(ALPHA_MASK_HEIGHT_DP, dm);
+        int width = ResourceUtils.pxFromDp(ALPHA_MASK_WIDTH_DP, dm);
+        int gradientHeight = ResourceUtils.pxFromDp(ALPHA_MASK_HEIGHT_DP, dm);
         Bitmap dst = Bitmap.createBitmap(width, mMaskHeight, Bitmap.Config.ALPHA_8);
         Canvas c = new Canvas(dst);
         Paint paint = new Paint(Paint.DITHER_FLAG);

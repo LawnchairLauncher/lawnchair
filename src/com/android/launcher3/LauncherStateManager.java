@@ -553,6 +553,8 @@ public class LauncherStateManager {
         cancelAnimation();
         if (reapplyNeeded) {
             reapplyState();
+            // Dispatch on transition end, so that any transient property is cleared.
+            onStateTransitionEnd(mState);
         }
         mConfig.setAnimation(anim, null);
     }
