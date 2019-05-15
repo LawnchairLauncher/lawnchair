@@ -79,6 +79,8 @@ public class AppPredictionsUITests extends AbstractQuickStepTest {
 
     @After
     public void tearDown() throws Throwable {
+        AppLaunchTracker.INSTANCE.initializeForTesting(null);
+        PredictionUiStateManager.INSTANCE.initializeForTesting(null);
         mDevice.unfreezeRotation();
     }
 
