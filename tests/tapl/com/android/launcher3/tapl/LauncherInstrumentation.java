@@ -58,6 +58,7 @@ import com.android.systemui.shared.system.QuickStepContract;
 
 import org.junit.Assert;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Deque;
@@ -214,7 +215,22 @@ public final class LauncherInstrumentation {
         };
     }
 
+    private void dumpViewHierarchy() {
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        try {
+            mDevice.dumpWindowHierarchy(stream);
+            stream.flush();
+            stream.close();
+            for (String line : stream.toString().split("\\r?\\n")) {
+                Log.e(TAG, line.trim());
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "error dumping XML to logcat", e);
+        }
+    }
+
     private void fail(String message) {
+        dumpViewHierarchy();
         Assert.fail("http://go/tapl : " + getContextDescription() + message);
     }
 
