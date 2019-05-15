@@ -303,6 +303,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         LauncherAppState app = LauncherAppState.getInstance(this);
         mOldConfig = new Configuration(getResources().getConfiguration());
         mModel = app.setLauncher(this);
+        mRotationHelper = new RotationHelper(this);
         InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
         initDeviceProfile(idp);
         idp.addOnChangeListener(this);
@@ -325,7 +326,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         setupViews();
         mPopupDataProvider = new PopupDataProvider(this);
 
-        mRotationHelper = new RotationHelper(this);
         mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
 
         boolean internalStateHandled = InternalStateHandler.handleCreate(this, getIntent());
@@ -396,12 +396,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 }
             }
         });
-
-        if (FeatureFlags.FAKE_LANDSCAPE_UI.get()) {
-            WindowManager.LayoutParams lp = getWindow().getAttributes();
-            lp.rotationAnimation = WindowManager.LayoutParams.ROTATION_ANIMATION_SEAMLESS;
-            getWindow().setAttributes(lp);
-        }
     }
 
     @Override
@@ -428,9 +422,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         super.onConfigurationChanged(newConfig);
     }
 
+    private boolean supportsFakeLandscapeUI() {
+        return FeatureFlags.FAKE_LANDSCAPE_UI.get() && !mRotationHelper.homeScreenCanRotate();
+    }
+
     @Override
-    protected void reapplyUi() {
-        if (FeatureFlags.FAKE_LANDSCAPE_UI.get()) {
+    public void reapplyUi() {
+        if (supportsFakeLandscapeUI()) {
             mRotationMode = mStableDeviceProfile == null
                     ? RotationMode.NORMAL : UiFactory.getRotationMode(mDeviceProfile);
         }
@@ -486,7 +484,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
         }
 
-        if (FeatureFlags.FAKE_LANDSCAPE_UI.get() && mDeviceProfile.isVerticalBarLayout()
+        if (supportsFakeLandscapeUI()
+                && mDeviceProfile.isVerticalBarLayout()
                 && !mDeviceProfile.isMultiWindowMode) {
             mStableDeviceProfile = mDeviceProfile.inv.portraitProfile;
             mRotationMode = UiFactory.getRotationMode(mDeviceProfile);
