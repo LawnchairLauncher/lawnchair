@@ -210,7 +210,12 @@ public class FloatingIconView extends View implements
                 Math.max(shapeProgressStart, progress), shapeProgressStart, 1f, 0, toMax,
                 LINEAR), 0, 1);
 
-        mOutline.bottom = (int) (rect.height() / scale);
+        if (mIsVerticalBarLayout) {
+            mOutline.right = (int) (rect.width() / scale);
+        } else {
+            mOutline.bottom = (int) (rect.height() / scale);
+        }
+
         mTaskCornerRadius = cornerRadius / scale;
         if (mIsAdaptiveIcon) {
             if (!isOpening && shapeRevealProgress >= 0) {
@@ -230,7 +235,8 @@ public class FloatingIconView extends View implements
                 mRevealAnimator.setCurrentFraction(shapeRevealProgress);
             }
 
-            float drawableScale = mOutline.height() / minSize;
+            float drawableScale = (mIsVerticalBarLayout ? mOutline.width() : mOutline.height())
+                    / minSize;
             setBackgroundDrawableBounds(drawableScale);
             if (isOpening) {
                 // Center align foreground
