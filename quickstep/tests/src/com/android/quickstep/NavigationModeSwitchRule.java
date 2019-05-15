@@ -71,8 +71,7 @@ public class NavigationModeSwitchRule implements TestRule {
 
     @Override
     public Statement apply(Statement base, Description description) {
-        // b/130558787; b/131419978
-        if (false && TestHelpers.isInLauncherProcess() &&
+        if (TestHelpers.isInLauncherProcess() &&
                 description.getAnnotation(NavigationModeSwitch.class) != null) {
             Mode mode = description.getAnnotation(NavigationModeSwitch.class).mode();
             return new Statement() {

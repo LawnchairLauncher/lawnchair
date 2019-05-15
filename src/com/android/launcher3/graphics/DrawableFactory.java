@@ -16,15 +16,15 @@
 
 package com.android.launcher3.graphics;
 
+import static com.android.launcher3.graphics.IconShape.getShapePath;
+
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Path;
 import android.graphics.Rect;
-import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Process;
@@ -34,7 +34,6 @@ import android.util.ArrayMap;
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.ResourceBasedOverride;
@@ -47,16 +46,8 @@ import androidx.annotation.UiThread;
 public class DrawableFactory implements ResourceBasedOverride {
 
     public static final MainThreadInitializedObject<DrawableFactory> INSTANCE =
-            new MainThreadInitializedObject<>(c -> {
-                DrawableFactory factory = Overrides.getObject(DrawableFactory.class,
-                        c.getApplicationContext(), R.string.drawable_factory_class);
-                factory.mContext = c;
-                return factory;
-            });
-
-
-    private Context mContext;
-    private Path mPreloadProgressPath;
+            new MainThreadInitializedObject<>(c -> Overrides.getObject(DrawableFactory.class,
+                        c.getApplicationContext(), R.string.drawable_factory_class));
 
     protected final UserHandle mMyUser = Process.myUserHandle();
     protected final ArrayMap<UserHandle, Bitmap> mUserBadges = new ArrayMap<>();
@@ -66,7 +57,7 @@ public class DrawableFactory implements ResourceBasedOverride {
      */
     public FastBitmapDrawable newIcon(Context context, ItemInfoWithIcon info) {
         FastBitmapDrawable drawable = info.usingLowResIcon()
-                ? new PlaceHolderIconDrawable(info, getPreloadProgressPath(), context)
+                ? new PlaceHolderIconDrawable(info, getShapePath(), context)
                 : new FastBitmapDrawable(info);
         drawable.setIsDisabled(info.isDisabled());
         return drawable;
@@ -74,7 +65,7 @@ public class DrawableFactory implements ResourceBasedOverride {
 
     public FastBitmapDrawable newIcon(Context context, BitmapInfo info, ActivityInfo target) {
         return info.isLowRes()
-                ? new PlaceHolderIconDrawable(info, getPreloadProgressPath(), context)
+                ? new PlaceHolderIconDrawable(info, getShapePath(), context)
                 : new FastBitmapDrawable(info);
     }
 
@@ -82,29 +73,7 @@ public class DrawableFactory implements ResourceBasedOverride {
      * Returns a FastBitmapDrawable with the icon.
      */
     public PreloadIconDrawable newPendingIcon(Context context, ItemInfoWithIcon info) {
-        return new PreloadIconDrawable(info, getPreloadProgressPath(), context);
-    }
-
-    protected Path getPreloadProgressPath() {
-        if (mPreloadProgressPath != null) {
-            return mPreloadProgressPath;
-        }
-        if (Utilities.ATLEAST_OREO) {
-            // Load the path from Mask Icon
-            AdaptiveIconDrawable icon = (AdaptiveIconDrawable)
-                    mContext.getDrawable(R.drawable.adaptive_icon_drawable_wrapper);
-            icon.setBounds(0, 0,
-                    PreloadIconDrawable.PATH_SIZE, PreloadIconDrawable.PATH_SIZE);
-            mPreloadProgressPath = icon.getIconMask();
-        } else {
-
-            // Create a circle static from top center and going clockwise.
-            Path p = new Path();
-            p.moveTo(PreloadIconDrawable.PATH_SIZE / 2, 0);
-            p.addArc(0, 0, PreloadIconDrawable.PATH_SIZE, PreloadIconDrawable.PATH_SIZE, -90, 360);
-            mPreloadProgressPath = p;
-        }
-        return mPreloadProgressPath;
+        return new PreloadIconDrawable(info, getShapePath(), context);
     }
 
     /**

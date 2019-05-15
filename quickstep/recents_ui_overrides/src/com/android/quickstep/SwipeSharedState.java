@@ -38,6 +38,8 @@ public class SwipeSharedState implements SwipeAnimationListener {
 
     public boolean canGestureBeContinued;
     public boolean goingToLauncher;
+    public boolean recentsAnimationFinishInterrupted;
+    public int nextRunningTaskId = -1;
 
     public SwipeSharedState(OverviewComponentObserver overviewComponentObserver) {
         mOverviewComponentObserver = overviewComponentObserver;
@@ -114,9 +116,22 @@ public class SwipeSharedState implements SwipeAnimationListener {
         }
     }
 
+    /**
+     * Called when a recents animation has finished, but was interrupted before the next task was
+     * launched. The given {@param runningTaskId} should be used as the running task for the
+     * continuing input consumer.
+     */
+    public void setRecentsAnimationFinishInterrupted(int runningTaskId) {
+        recentsAnimationFinishInterrupted = true;
+        nextRunningTaskId = runningTaskId;
+        mLastAnimationTarget = mLastAnimationTarget.cloneWithoutTargets();
+    }
+
     public void clearAllState() {
         clearListenerState();
         canGestureBeContinued = false;
+        recentsAnimationFinishInterrupted = false;
+        nextRunningTaskId = -1;
         goingToLauncher = false;
     }
 }

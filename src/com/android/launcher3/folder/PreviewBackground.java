@@ -16,7 +16,7 @@
 
 package com.android.launcher3.folder;
 
-import static com.android.launcher3.folder.FolderShape.getShape;
+import static com.android.launcher3.graphics.IconShape.getShape;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.animation.Animator;
@@ -131,7 +131,7 @@ public class PreviewBackground {
         TypedArray ta = context.getTheme().obtainStyledAttributes(R.styleable.FolderIconPreview);
         mDotColor = ta.getColor(R.styleable.FolderIconPreview_folderDotColor, 0);
         mStrokeColor = ta.getColor(R.styleable.FolderIconPreview_folderIconBorderColor, 0);
-        mBgColor = ta.getColor(R.styleable.FolderIconPreview_android_colorPrimary, 0);
+        mBgColor = ta.getColor(R.styleable.FolderIconPreview_folderFillColor, 0);
         ta.recycle();
 
         DeviceProfile grid = activity.getWallpaperDeviceProfile();
@@ -311,7 +311,7 @@ public class PreviewBackground {
 
     public Path getClipPath() {
         mPath.reset();
-        getShape().addShape(mPath, getOffsetX(), getOffsetY(), getScaledRadius());
+        getShape().addToPath(mPath, getOffsetX(), getOffsetY(), getScaledRadius());
         return mPath;
     }
 

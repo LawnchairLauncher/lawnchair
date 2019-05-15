@@ -27,6 +27,7 @@ import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
@@ -49,6 +50,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     private final Handler mWorker;
     private final Context mAppContext;
     private final HashMap<String,Boolean> mSessionVerifiedMap = new HashMap<>();
+    private final LauncherAppsCompat mLauncherApps;
 
     PackageInstallerCompatVL(Context context) {
         mAppContext = context.getApplicationContext();
@@ -56,6 +58,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         mCache = LauncherAppState.getInstance(context).getIconCache();
         mWorker = new Handler(LauncherModel.getWorkerLooper());
         mInstaller.registerSessionCallback(mCallback, mWorker);
+        mLauncherApps = LauncherAppsCompat.getInstance(context);
     }
 
     @Override
@@ -171,7 +174,9 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
     @Override
     public List<SessionInfo> getAllVerifiedSessions() {
-        List<SessionInfo> list = new ArrayList<>(mInstaller.getAllSessions());
+        List<SessionInfo> list = new ArrayList<>(Utilities.ATLEAST_Q
+                ? mLauncherApps.getAllPackageInstallerSessions()
+                : mInstaller.getAllSessions());
         Iterator<SessionInfo> it = list.iterator();
         while (it.hasNext()) {
             if (verify(it.next()) == null) {

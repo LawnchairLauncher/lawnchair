@@ -28,6 +28,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.util.RaceConditionReproducer;
 import com.android.quickstep.NavigationModeSwitchRule.Mode;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
+import com.android.quickstep.inputconsumers.OtherActivityInputConsumer;
 
 import org.junit.Before;
 import org.junit.Ignore;

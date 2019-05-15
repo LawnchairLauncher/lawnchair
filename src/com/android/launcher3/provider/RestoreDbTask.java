@@ -16,18 +16,23 @@
 
 package com.android.launcher3.provider;
 
+import static com.android.launcher3.Utilities.getIntArrayFromString;
+import static com.android.launcher3.Utilities.getStringFromIntArray;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 
 import android.app.backup.BackupManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.os.UserHandle;
 import android.util.LongSparseArray;
 import android.util.SparseLongArray;
 
+import androidx.annotation.NonNull;
+
+import com.android.launcher3.AppWidgetsRestoredReceiver;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherProvider.DatabaseHelper;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -53,10 +58,16 @@ public class RestoreDbTask {
     private static final String INFO_COLUMN_NAME = "name";
     private static final String INFO_COLUMN_DEFAULT_VALUE = "dflt_value";
 
-    public static boolean performRestore(DatabaseHelper helper, BackupManager backupManager) {
+    private static final String APPWIDGET_OLD_IDS = "appwidget_old_ids";
+    private static final String APPWIDGET_IDS = "appwidget_ids";
+
+    public static boolean performRestore(Context context, DatabaseHelper helper,
+            BackupManager backupManager) {
         SQLiteDatabase db = helper.getWritableDatabase();
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
-            new RestoreDbTask().sanitizeDB(helper, db, backupManager);
+            RestoreDbTask task = new RestoreDbTask();
+            task.sanitizeDB(helper, db, backupManager);
+            task.restoreAppWidgetIdsIfExists(context);
             t.commit();
             return true;
         } catch (Exception e) {
@@ -201,7 +212,7 @@ public class RestoreDbTask {
      */
     private UserHandle getUserForAncestralSerialNumber(BackupManager backupManager,
             long ancestralSerialNumber) {
-        if (Build.VERSION.SDK_INT < 29) {
+        if (!Utilities.ATLEAST_Q) {
             return null;
         }
         return backupManager.getUserForAncestralSerialNumber(ancestralSerialNumber);
@@ -230,4 +241,27 @@ public class RestoreDbTask {
         FileLog.d(TAG, "Restore data received through full backup " + isPending);
         Utilities.getPrefs(context).edit().putBoolean(RESTORE_TASK_PENDING, isPending).commit();
     }
+
+    private void restoreAppWidgetIdsIfExists(Context context) {
+        SharedPreferences prefs = Utilities.getPrefs(context);
+        if (prefs.contains(APPWIDGET_OLD_IDS) && prefs.contains(APPWIDGET_IDS)) {
+            AppWidgetsRestoredReceiver.restoreAppWidgetIds(context,
+                    getIntArrayFromString(prefs.getString(APPWIDGET_OLD_IDS, "")),
+                    getIntArrayFromString(prefs.getString(APPWIDGET_IDS, "")));
+        } else {
+            FileLog.d(TAG, "No app widget ids to restore.");
+        }
+
+        prefs.edit().remove(APPWIDGET_OLD_IDS)
+                .remove(APPWIDGET_IDS).apply();
+    }
+
+    public static void setRestoredAppWidgetIds(Context context, @NonNull int[] oldIds,
+            @NonNull int[] newIds) {
+        Utilities.getPrefs(context).edit()
+                .putString(APPWIDGET_OLD_IDS, getStringFromIntArray(oldIds))
+                .putString(APPWIDGET_IDS, getStringFromIntArray(newIds))
+                .commit();
+    }
+
 }

@@ -90,7 +90,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
 
     // Usually we show the back button when a floating view is open. Instead, hide for these types.
     public static final int TYPE_HIDE_BACK_BUTTON = TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE
-            | TYPE_SNACKBAR;
+            | TYPE_SNACKBAR | TYPE_WIDGET_RESIZE_FRAME | TYPE_LISTENER;
 
     public static final int TYPE_ACCESSIBLE = TYPE_ALL & ~TYPE_DISCOVERY_BOUNCE & ~TYPE_LISTENER;
 
