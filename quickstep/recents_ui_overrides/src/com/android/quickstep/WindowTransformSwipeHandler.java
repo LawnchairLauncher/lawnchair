@@ -170,8 +170,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_LAUNCHER_STARTED;
 
     public enum GestureEndTarget {
-        HOME(1, STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT, true, false,
-                ContainerType.WORKSPACE, false),
+        HOME(1, STATE_SCALED_CONTROLLER_HOME, true, false, ContainerType.WORKSPACE, false),
 
         RECENTS(1, STATE_SCALED_CONTROLLER_RECENTS | STATE_CAPTURE_SCREENSHOT
                 | STATE_SCREENSHOT_VIEW_SHOWN, true, false, ContainerType.TASKSWITCHER, true),
@@ -331,8 +330,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                         | STATE_SCALED_CONTROLLER_RECENTS,
                 this::finishCurrentTransitionToRecents);
 
-        mStateCallback.addCallback(STATE_SCREENSHOT_CAPTURED | STATE_GESTURE_COMPLETED
-                        | STATE_SCALED_CONTROLLER_HOME,
+        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_GESTURE_COMPLETED
+                        | STATE_SCALED_CONTROLLER_HOME | STATE_APP_CONTROLLER_RECEIVED
+                        | STATE_LAUNCHER_DRAWN,
                 this::finishCurrentTransitionToHome);
         mStateCallback.addCallback(STATE_SCALED_CONTROLLER_HOME | STATE_CURRENT_TASK_FINISHED,
                 this::reset);
