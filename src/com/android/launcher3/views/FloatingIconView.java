@@ -441,7 +441,8 @@ public class FloatingIconView extends View implements
                 }
 
                 if (!isFolderIcon) {
-                    mStartRevealRect.inset(mBlurSizeOutline, mBlurSizeOutline);
+                    Utilities.scaleRectAboutCenter(mStartRevealRect,
+                            IconShape.getNormalizationScale());
                 }
 
                 float aspectRatio = mLauncher.getDeviceProfile().aspectRatio;
