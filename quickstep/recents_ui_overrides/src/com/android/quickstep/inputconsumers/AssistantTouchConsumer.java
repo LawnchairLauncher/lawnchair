@@ -257,7 +257,7 @@ public class AssistantTouchConsumer extends DelegateInputConsumer
 
     @Override
     public void onDragEnd(float velocity, boolean fling) {
-        if (fling) {
+        if (fling && !mLaunchedAssistant) {
             mLastProgress = 1;
             updateAssistant(FLING);
         }
