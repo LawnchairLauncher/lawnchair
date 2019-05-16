@@ -19,6 +19,7 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
+import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.FloatProperty;
@@ -26,12 +27,15 @@ import android.util.FloatProperty;
 import androidx.dynamicanimation.animation.DynamicAnimation.OnAnimationEndListener;
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
 
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.FlingSpringAnim;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.android.launcher3.anim.Interpolators.DEACCEL;
 
 /**
  * Applies spring forces to animate from a starting rect to a target rect,
@@ -45,7 +49,7 @@ public class RectFSpringAnim {
      * can be done in parallel at a fixed duration. Update callbacks are sent based on the progress
      * of this animation, while the end callback is sent after all animations finish.
      */
-    private static final long RECT_SCALE_DURATION = 180;
+    private static final long RECT_SCALE_DURATION = 250;
 
     private static final FloatPropertyCompat<RectFSpringAnim> RECT_CENTER_X =
             new FloatPropertyCompat<RectFSpringAnim>("rectCenterXSpring") {
@@ -61,16 +65,16 @@ public class RectFSpringAnim {
                 }
             };
 
-    private static final FloatPropertyCompat<RectFSpringAnim> RECT_CENTER_Y =
-            new FloatPropertyCompat<RectFSpringAnim>("rectCenterYSpring") {
+    private static final FloatPropertyCompat<RectFSpringAnim> RECT_Y =
+            new FloatPropertyCompat<RectFSpringAnim>("rectYSpring") {
                 @Override
                 public float getValue(RectFSpringAnim anim) {
-                    return anim.mCurrentCenterY;
+                    return anim.mCurrentY;
                 }
 
                 @Override
-                public void setValue(RectFSpringAnim anim, float currentCenterY) {
-                    anim.mCurrentCenterY = currentCenterY;
+                public void setValue(RectFSpringAnim anim, float y) {
+                    anim.mCurrentY = y;
                     anim.onUpdate();
                 }
             };
@@ -96,7 +100,9 @@ public class RectFSpringAnim {
     private final List<Animator.AnimatorListener> mAnimatorListeners = new ArrayList<>();
 
     private float mCurrentCenterX;
-    private float mCurrentCenterY;
+    private float mCurrentY;
+    // If true, tracking the bottom of the rects, else tracking the top.
+    private boolean mTrackingBottomY;
     private float mCurrentScaleProgress;
     private FlingSpringAnim mRectXAnim;
     private FlingSpringAnim mRectYAnim;
@@ -106,11 +112,33 @@ public class RectFSpringAnim {
     private boolean mRectYAnimEnded;
     private boolean mRectScaleAnimEnded;
 
-    public RectFSpringAnim(RectF startRect, RectF targetRect) {
+    private float mMinVisChange;
+    private float mYOvershoot;
+
+    public RectFSpringAnim(RectF startRect, RectF targetRect, Resources resources) {
         mStartRect = startRect;
         mTargetRect = targetRect;
         mCurrentCenterX = mStartRect.centerX();
-        mCurrentCenterY = mStartRect.centerY();
+
+        mTrackingBottomY = startRect.bottom < targetRect.bottom;
+        mCurrentY = mTrackingBottomY ? mStartRect.bottom : mStartRect.top;
+
+        mMinVisChange = resources.getDimensionPixelSize(R.dimen.swipe_up_fling_min_visible_change);
+        mYOvershoot = resources.getDimensionPixelSize(R.dimen.swipe_up_y_overshoot);
+    }
+
+    public void onTargetPositionChanged() {
+        if (mRectXAnim != null && mRectXAnim.getTargetPosition() != mTargetRect.centerX()) {
+            mRectXAnim.updatePosition(mCurrentCenterX, mTargetRect.centerX());
+        }
+
+        if (mRectYAnim != null) {
+            if (mTrackingBottomY && mRectYAnim.getTargetPosition() != mTargetRect.bottom) {
+                mRectYAnim.updatePosition(mCurrentY, mTargetRect.bottom);
+            } else if (!mTrackingBottomY && mRectYAnim.getTargetPosition() != mTargetRect.top) {
+                mRectYAnim.updatePosition(mCurrentY, mTargetRect.top);
+            }
+        }
     }
 
     public void addOnUpdateListener(OnUpdateListener onUpdateListener) {
@@ -131,14 +159,28 @@ public class RectFSpringAnim {
             mRectYAnimEnded = true;
             maybeOnEnd();
         });
-        mRectXAnim = new FlingSpringAnim(this, RECT_CENTER_X, mCurrentCenterX,
-                mTargetRect.centerX(), velocityPxPerMs.x * 1000, onXEndListener);
-        mRectYAnim = new FlingSpringAnim(this, RECT_CENTER_Y, mCurrentCenterY,
-                mTargetRect.centerY(), velocityPxPerMs.y * 1000, onYEndListener);
+
+        float startX = mCurrentCenterX;
+        float endX = mTargetRect.centerX();
+        float minXValue = Math.min(startX, endX);
+        float maxXValue = Math.max(startX, endX);
+        mRectXAnim = new FlingSpringAnim(this, RECT_CENTER_X, startX, endX,
+                velocityPxPerMs.x * 1000, mMinVisChange, minXValue, maxXValue, 1f, onXEndListener);
+
+        float startVelocityY = velocityPxPerMs.y * 1000;
+        // Scale the Y velocity based on the initial velocity to tune the curves.
+        float springVelocityFactor = 0.1f + 0.9f * Math.abs(startVelocityY) / 20000.0f;
+        float startY = mCurrentY;
+        float endY = mTrackingBottomY ? mTargetRect.bottom : mTargetRect.top;
+        float minYValue = Math.min(startY, endY - mYOvershoot);
+        float maxYValue = Math.max(startY, endY);
+        mRectYAnim = new FlingSpringAnim(this, RECT_Y, startY, endY, startVelocityY,
+                mMinVisChange, minYValue, maxYValue, springVelocityFactor, onYEndListener);
 
         mRectScaleAnim = ObjectAnimator.ofPropertyValuesHolder(this,
                 PropertyValuesHolder.ofFloat(RECT_SCALE_PROGRESS, 1))
                 .setDuration(RECT_SCALE_DURATION);
+        mRectScaleAnim.setInterpolator(DEACCEL);
         mRectScaleAnim.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationSuccess(Animator animator) {
@@ -170,8 +212,13 @@ public class RectFSpringAnim {
                     mTargetRect.width());
             float currentHeight = Utilities.mapRange(mCurrentScaleProgress, mStartRect.height(),
                     mTargetRect.height());
-            mCurrentRect.set(mCurrentCenterX - currentWidth / 2, mCurrentCenterY - currentHeight / 2,
-                    mCurrentCenterX + currentWidth / 2, mCurrentCenterY + currentHeight / 2);
+            if (mTrackingBottomY) {
+                mCurrentRect.set(mCurrentCenterX - currentWidth / 2, mCurrentY - currentHeight,
+                        mCurrentCenterX + currentWidth / 2, mCurrentY);
+            } else {
+                mCurrentRect.set(mCurrentCenterX - currentWidth / 2, mCurrentY,
+                        mCurrentCenterX + currentWidth / 2, mCurrentY + currentHeight);
+            }
             for (OnUpdateListener onUpdateListener : mOnUpdateListeners) {
                 onUpdateListener.onUpdate(mCurrentRect, mCurrentScaleProgress);
             }

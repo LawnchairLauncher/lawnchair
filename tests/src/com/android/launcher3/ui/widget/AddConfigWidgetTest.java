@@ -156,7 +156,8 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
         @Override
         public boolean evaluate(ItemInfo info, View view) {
             return info instanceof LauncherAppWidgetInfo &&
-                    ((LauncherAppWidgetInfo) info).providerName.equals(mWidgetInfo.provider) &&
+                    ((LauncherAppWidgetInfo) info).providerName.getClassName().equals(
+                            mWidgetInfo.provider.getClassName()) &&
                     ((LauncherAppWidgetInfo) info).appWidgetId == mWidgetId;
         }
     }

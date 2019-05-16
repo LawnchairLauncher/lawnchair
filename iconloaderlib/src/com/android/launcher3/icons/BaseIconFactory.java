@@ -78,7 +78,7 @@ public class BaseIconFactory implements AutoCloseable {
 
     public IconNormalizer getNormalizer() {
         if (mNormalizer == null) {
-            mNormalizer = new IconNormalizer(mContext, mIconBitmapSize);
+            mNormalizer = new IconNormalizer(mIconBitmapSize);
         }
         return mNormalizer;
     }

@@ -50,6 +50,7 @@ public final class FallbackActivityControllerHelper extends
         }
 
         IconRecentsView rv = activity.getOverviewPanel();
+        rv.setUsingRemoteAnimation(true);
         rv.setAlpha(0);
 
         return new AnimationFactory() {

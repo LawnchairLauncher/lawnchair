@@ -180,6 +180,7 @@ public final class ContentFillItemAnimator extends SimpleItemAnimator {
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
+                        CONTENT_TRANSITION_PROGRESS.set(itemView, 1.0f);
                         dispatchChangeFinished(viewHolder, true /* oldItem */);
                         mRunningAnims.remove(anim);
                         dispatchFinishedWhenDone();
@@ -215,46 +216,43 @@ public final class ContentFillItemAnimator extends SimpleItemAnimator {
     @Override
     public void endAnimation(@NonNull ViewHolder item) {
         for (int i = mPendingAnims.size() - 1; i >= 0; i--) {
-            PendingAnimation pendAnim = mPendingAnims.get(i);
-            if (pendAnim.viewHolder == item) {
-                mPendingAnims.remove(i);
-                switch (pendAnim.animType) {
-                    case ANIM_TYPE_REMOVE:
-                        dispatchRemoveFinished(item);
-                        break;
-                    case ANIM_TYPE_CHANGE:
-                        dispatchChangeFinished(item, true /* oldItem */);
-                        break;
-                    default:
-                        break;
-                }
-            }
+            endPendingAnimation(mPendingAnims.get(i));
+            mPendingAnims.remove(i);
         }
         dispatchFinishedWhenDone();
     }
 
     @Override
     public void endAnimations() {
+        if (!isRunning()) {
+            return;
+        }
         for (int i = mPendingAnims.size() - 1; i >= 0; i--) {
-            PendingAnimation pendAnim = mPendingAnims.get(i);
-            ViewHolder item = pendAnim.viewHolder;
-            switch (pendAnim.animType) {
-                case ANIM_TYPE_REMOVE:
-                    dispatchRemoveFinished(item);
-                    break;
-                case ANIM_TYPE_CHANGE:
-                    dispatchChangeFinished(item, true /* oldItem */);
-                    break;
-                default:
-                    break;
-            }
+            endPendingAnimation(mPendingAnims.get(i));
             mPendingAnims.remove(i);
         }
-        for (int i = 0; i < mRunningAnims.size(); i++) {
+        for (int i = mRunningAnims.size() - 1; i >= 0; i--) {
             ObjectAnimator anim = mRunningAnims.get(i);
-            anim.end();
+            // This calls the on end animation callback which will set values to their end target.
+            anim.cancel();
         }
-        dispatchAnimationsFinished();
+        dispatchFinishedWhenDone();
+    }
+
+    private void endPendingAnimation(PendingAnimation pendAnim) {
+        ViewHolder item = pendAnim.viewHolder;
+        switch (pendAnim.animType) {
+            case ANIM_TYPE_REMOVE:
+                item.itemView.setAlpha(1.0f);
+                dispatchRemoveFinished(item);
+                break;
+            case ANIM_TYPE_CHANGE:
+                CONTENT_TRANSITION_PROGRESS.set(item.itemView, 1.0f);
+                dispatchChangeFinished(item, true /* oldItem */);
+                break;
+            default:
+                break;
+        }
     }
 
     @Override

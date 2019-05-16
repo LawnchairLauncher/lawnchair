@@ -16,7 +16,10 @@
 package com.android.quickstep.fallback;
 
 import android.content.Context;
+import android.graphics.Insets;
+import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.WindowInsets;
 
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
@@ -30,5 +33,23 @@ public final class GoRecentsActivityRootView extends BaseDragLayer<RecentsActivi
         super(context, attrs, 1 /* alphaChannelCount */);
         // Go leaves touch control to the view itself.
         mControllers = new TouchController[0];
+        setSystemUiVisibility(SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | SYSTEM_UI_FLAG_LAYOUT_STABLE);
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        if (insets.equals(mInsets)) {
+            return;
+        }
+        super.setInsets(insets);
+    }
+
+    @Override
+    public WindowInsets onApplyWindowInsets(WindowInsets insets) {
+        Insets sysInsets = insets.getSystemWindowInsets();
+        setInsets(new Rect(sysInsets.left, sysInsets.top, sysInsets.right, sysInsets.bottom));
+        return insets.consumeSystemWindowInsets();
     }
 }

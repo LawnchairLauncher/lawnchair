@@ -35,10 +35,18 @@ public class MotionPauseDetector {
     /** If no motion is added for this amount of time, assume the motion has paused. */
     private static final long FORCE_PAUSE_TIMEOUT = 300;
 
+    /**
+     * After {@link #makePauseHarderToTrigger()}, must
+     * move slowly for this long to trigger a pause.
+     */
+    private static final long HARDER_TRIGGER_TIMEOUT = 400;
+
     private final float mSpeedVerySlow;
+    private final float mSpeedSlow;
     private final float mSpeedSomewhatFast;
     private final float mSpeedFast;
     private final Alarm mForcePauseTimeout;
+    private final boolean mMakePauseHarderToTrigger;
 
     private Long mPreviousTime = null;
     private Float mPreviousPosition = null;
@@ -52,19 +60,29 @@ public class MotionPauseDetector {
     private boolean mHasEverBeenPaused;
     /** @see #setDisallowPause(boolean) */
     private boolean mDisallowPause;
+    // Time at which speed became < mSpeedSlow (only used if mMakePauseHarderToTrigger == true).
+    private long mSlowStartTime;
 
     public MotionPauseDetector(Context context) {
+        this(context, false);
+    }
+
+    /**
+     * @param makePauseHarderToTrigger Used for gestures that require a more explicit pause.
+     */
+    public MotionPauseDetector(Context context, boolean makePauseHarderToTrigger) {
         Resources res = context.getResources();
         mSpeedVerySlow = res.getDimension(R.dimen.motion_pause_detector_speed_very_slow);
+        mSpeedSlow = res.getDimension(R.dimen.motion_pause_detector_speed_slow);
         mSpeedSomewhatFast = res.getDimension(R.dimen.motion_pause_detector_speed_somewhat_fast);
         mSpeedFast = res.getDimension(R.dimen.motion_pause_detector_speed_fast);
         mForcePauseTimeout = new Alarm();
         mForcePauseTimeout.setOnAlarmListener(alarm -> updatePaused(true /* isPaused */));
+        mMakePauseHarderToTrigger = makePauseHarderToTrigger;
     }
 
     /**
-     * Get callbacks for when motion pauses and resumes, including an
-     * immediate callback with the current pause state.
+     * Get callbacks for when motion pauses and resumes.
      */
     public void setOnMotionPauseListener(OnMotionPauseListener listener) {
         mOnMotionPauseListener = listener;
@@ -88,13 +106,15 @@ public class MotionPauseDetector {
         if (mFirstPosition == null) {
             mFirstPosition = position;
         }
-        mForcePauseTimeout.setAlarm(FORCE_PAUSE_TIMEOUT);
+        mForcePauseTimeout.setAlarm(mMakePauseHarderToTrigger
+                ? HARDER_TRIGGER_TIMEOUT
+                : FORCE_PAUSE_TIMEOUT);
         if (mPreviousTime != null && mPreviousPosition != null) {
             long changeInTime = Math.max(1, time - mPreviousTime);
             float changeInPosition = position - mPreviousPosition;
             float velocity = changeInPosition / changeInTime;
             if (mPreviousVelocity != null) {
-                checkMotionPaused(velocity, mPreviousVelocity);
+                checkMotionPaused(velocity, mPreviousVelocity, time);
             }
             mPreviousVelocity = velocity;
         }
@@ -102,7 +122,7 @@ public class MotionPauseDetector {
         mPreviousPosition = position;
     }
 
-    private void checkMotionPaused(float velocity, float prevVelocity) {
+    private void checkMotionPaused(float velocity, float prevVelocity, long time) {
         float speed = Math.abs(velocity);
         float previousSpeed = Math.abs(prevVelocity);
         boolean isPaused;
@@ -121,6 +141,17 @@ public class MotionPauseDetector {
                     // takes too long, so also check for a rapid deceleration.
                     boolean isRapidDeceleration = speed < previousSpeed * RAPID_DECELERATION_FACTOR;
                     isPaused = isRapidDeceleration && speed < mSpeedSomewhatFast;
+                }
+                if (mMakePauseHarderToTrigger) {
+                    if (speed < mSpeedSlow) {
+                        if (mSlowStartTime == 0) {
+                            mSlowStartTime = time;
+                        }
+                        isPaused = time - mSlowStartTime >= HARDER_TRIGGER_TIMEOUT;
+                    } else {
+                        mSlowStartTime = 0;
+                        isPaused = false;
+                    }
                 }
             }
         }
@@ -149,6 +180,7 @@ public class MotionPauseDetector {
         mFirstPosition = null;
         setOnMotionPauseListener(null);
         mIsPaused = mHasEverBeenPaused = false;
+        mSlowStartTime = 0;
         mForcePauseTimeout.cancelAlarm();
     }
 
