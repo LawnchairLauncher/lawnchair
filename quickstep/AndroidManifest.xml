@@ -85,6 +85,13 @@
             android:name="com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL$ColorExtractionService"
             tools:node="remove" />
 
+        <activity
+            android:name="com.android.launcher3.proxy.ProxyActivityStarter"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+            android:launchMode="singleTask"
+            android:clearTaskOnLaunch="true"
+            android:exported="false" />
+
     </application>
 
 </manifest>

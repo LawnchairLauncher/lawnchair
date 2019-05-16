@@ -46,6 +46,8 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.FirstFrameAnimatorHelper;
@@ -60,7 +62,7 @@ import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
-public class DragView extends View {
+public class DragView extends View implements LauncherStateManager.StateListener {
     private static final ColorMatrix sTempMatrix1 = new ColorMatrix();
     private static final ColorMatrix sTempMatrix2 = new ColorMatrix();
 
@@ -170,6 +172,27 @@ public class DragView extends View {
 
         mBlurSizeOutline = getResources().getDimensionPixelSize(R.dimen.blur_size_medium_outline);
         setElevation(getResources().getDimension(R.dimen.drag_elevation));
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mLauncher.getStateManager().addStateListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mLauncher.getStateManager().removeStateListener(this);
+    }
+
+    @Override
+    public void onStateTransitionStart(LauncherState toState) { }
+
+    @Override
+    public void onStateTransitionComplete(LauncherState finalState) {
+        setVisibility((finalState == LauncherState.NORMAL
+                || finalState == LauncherState.SPRING_LOADED) ? VISIBLE : INVISIBLE);
     }
 
     /**
