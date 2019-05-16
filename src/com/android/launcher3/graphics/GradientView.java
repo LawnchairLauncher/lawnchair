@@ -167,7 +167,7 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
     protected void onDraw(Canvas canvas) {
         Paint paint = mShowScrim ? mPaintWithScrim : mPaintNoScrim;
 
-        float head = 0.29f;
+        float head = 0f;
         float linearProgress = head + (mProgress * (mShiftScrim ? 0.85f : 1f) * (1f - head));
         float startMaskY = (1f - linearProgress) * mHeight - mMaskHeight * linearProgress;
         float interpolatedAlpha = (255 - mAlphaStart) * mAccelerator.getInterpolation(mProgress);
