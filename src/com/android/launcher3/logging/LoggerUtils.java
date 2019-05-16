@@ -144,6 +144,10 @@ public class LoggerUtils {
                     + "), pageIdx=" + t.pageIndex;
 
         }
+        if (t.searchQueryLength != 0) {
+            typeStr += ", searchQueryLength=" + t.searchQueryLength;
+        }
+
         if (t.itemType == ItemType.TASK) {
             typeStr += ", pageIdx=" + t.pageIndex;
         }

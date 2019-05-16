@@ -27,6 +27,7 @@ import android.graphics.Point;
 import android.os.Process;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,7 +115,8 @@ public class TestViewHelpers {
         Point center = icon.getVisibleCenter();
 
         // Action Down
-        sendPointer(MotionEvent.ACTION_DOWN, center);
+        final long downTime = SystemClock.uptimeMillis();
+        sendPointer(downTime, MotionEvent.ACTION_DOWN, center);
 
         UiObject2 dragLayer = findViewById(R.id.drag_layer);
 
@@ -131,7 +133,7 @@ public class TestViewHelpers {
             } else {
                 moveLocation.y += distanceToMove;
             }
-            movePointer(center, moveLocation);
+            movePointer(downTime, center, moveLocation);
 
             assertNull(findViewById(R.id.deep_shortcuts_container));
         }
@@ -142,19 +144,24 @@ public class TestViewHelpers {
         Point moveLocation = dragLayer.getVisibleCenter();
 
         // Move to center
-        movePointer(center, moveLocation);
-        sendPointer(MotionEvent.ACTION_UP, center);
+        movePointer(downTime, center, moveLocation);
+        sendPointer(downTime, MotionEvent.ACTION_UP, moveLocation);
 
         // Wait until remove target is gone.
         getDevice().wait(Until.gone(getSelectorForId(R.id.delete_target_text)),
                 AbstractLauncherUiTest.DEFAULT_UI_TIMEOUT);
     }
 
-    private static void movePointer(Point from, Point to) {
+    private static void movePointer(long downTime, Point from, Point to) {
         while (!from.equals(to)) {
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             from.x = getNextMoveValue(to.x, from.x);
             from.y = getNextMoveValue(to.y, from.y);
-            sendPointer(MotionEvent.ACTION_MOVE, from);
+            sendPointer(downTime, MotionEvent.ACTION_MOVE, from);
         }
     }
 
@@ -168,8 +175,8 @@ public class TestViewHelpers {
         }
     }
 
-    public static void sendPointer(int action, Point point) {
-        MotionEvent event = MotionEvent.obtain(SystemClock.uptimeMillis(),
+    public static void sendPointer(long downTime, int action, Point point) {
+        MotionEvent event = MotionEvent.obtain(downTime,
                 SystemClock.uptimeMillis(), action, point.x, point.y, 0);
         getInstrumentation().sendPointerSync(event);
         event.recycle();
@@ -180,10 +187,8 @@ public class TestViewHelpers {
      */
     public static UiObject2 openWidgetsTray() {
         final UiDevice device = getDevice();
-        device.pressMenu(); // Enter overview mode.
-        device.wait(Until.findObject(
-                By.text(getTargetContext().getString(R.string.widget_button_text))),
-                AbstractLauncherUiTest.DEFAULT_UI_TIMEOUT).click();
+        device.pressKeyCode(KeyEvent.KEYCODE_W, KeyEvent.META_CTRL_ON);
+        device.waitForIdle();
         return findViewById(R.id.widgets_list_view);
     }
 

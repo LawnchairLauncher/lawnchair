@@ -18,13 +18,13 @@
     <dimen name="recents_list_width">480dp</dimen>
 
     <dimen name="task_item_height">90dp</dimen>
-    <dimen name="task_item_top_margin">16dp</dimen>
-    <dimen name="task_thumbnail_icon_horiz_margin">20dp</dimen>
+    <dimen name="task_item_top_margin">24dp</dimen>
+    <dimen name="task_thumbnail_icon_horiz_margin">24dp</dimen>
 
     <dimen name="task_thumbnail_corner_radius">4dp</dimen>
 
-    <dimen name="clear_all_item_view_height">48dp</dimen>
+    <dimen name="clear_all_item_view_height">52dp</dimen>
     <dimen name="clear_all_item_view_top_margin">28dp</dimen>
     <dimen name="clear_all_item_view_bottom_margin">28dp</dimen>
-    <dimen name="clear_all_button_width">140dp</dimen>
+    <dimen name="clear_all_button_width">160dp</dimen>
 </resources>

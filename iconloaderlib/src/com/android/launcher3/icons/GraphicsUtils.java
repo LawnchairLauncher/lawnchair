@@ -16,6 +16,9 @@
 package com.android.launcher3.icons;
 
 import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.graphics.Region;
+import android.graphics.RegionIterator;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -59,5 +62,15 @@ public class GraphicsUtils {
             Log.w(TAG, "Could not write bitmap");
             return null;
         }
+    }
+
+    public static int getArea(Region r) {
+        RegionIterator itr = new RegionIterator(r);
+        int area = 0;
+        Rect tempRect = new Rect();
+        while (itr.next(tempRect)) {
+            area += tempRect.width() * tempRect.height();
+        }
+        return area;
     }
 }

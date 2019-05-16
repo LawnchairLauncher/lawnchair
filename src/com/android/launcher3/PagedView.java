@@ -1072,6 +1072,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
 
     public void setEnableFreeScroll(boolean freeScroll) {
+        if (mFreeScroll == freeScroll) {
+            return;
+        }
+
         boolean wasFreeScroll = mFreeScroll;
         mFreeScroll = freeScroll;
 
