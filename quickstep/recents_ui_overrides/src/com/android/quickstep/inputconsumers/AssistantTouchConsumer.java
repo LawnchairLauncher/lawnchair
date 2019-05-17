@@ -19,8 +19,10 @@ package com.android.quickstep.inputconsumers;
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
+import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
+
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction.UPLEFT;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction.UPRIGHT;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.FLING;
@@ -38,6 +40,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
+
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
@@ -116,6 +119,12 @@ public class AssistantTouchConsumer extends DelegateInputConsumer
                 mLastPos.set(mDownPos);
                 mTimeFraction = 0;
                 break;
+            }
+            case ACTION_POINTER_DOWN: {
+                if (mState != STATE_ACTIVE) {
+                    mState = STATE_DELEGATE_ACTIVE;
+                    break;
+                }
             }
             case ACTION_POINTER_UP: {
                 int ptrIdx = ev.getActionIndex();

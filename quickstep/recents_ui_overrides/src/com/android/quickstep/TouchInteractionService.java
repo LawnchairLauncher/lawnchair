@@ -505,7 +505,7 @@ public class TouchInteractionService extends Service implements
             if ((mSystemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_CLICKABLE) != 0) {
                 base = new AccessibilityInputConsumer(this, mISystemUiProxy,
                         (mSystemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE) != 0, base,
-                        mInputMonitorCompat);
+                        mInputMonitorCompat, mSwipeTouchRegion);
             }
         }
         return base;
@@ -556,7 +556,7 @@ public class TouchInteractionService extends Service implements
         return new OtherActivityInputConsumer(this, runningTaskInfo, mRecentsModel,
                 mOverviewComponentObserver.getOverviewIntent(), activityControl,
                 shouldDefer, mOverviewCallbacks, mInputConsumer, this::onConsumerInactive,
-                mSwipeSharedState, mInputMonitorCompat);
+                mSwipeSharedState, mInputMonitorCompat, mSwipeTouchRegion);
     }
 
     /**
