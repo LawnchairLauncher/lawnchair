@@ -184,6 +184,12 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
             @Override
             public void createActivityController(long transitionLength) {
                 createActivityControllerInternal(activity, fromState, transitionLength, callback);
+                // Creating the activity controller animation sometimes reapplies the launcher state
+                // (because we set the animation as the current state animation), so we reapply the
+                // attached state here as well to ensure recents is shown/hidden appropriately.
+                if (SysUINavigationMode.getMode(activity) == Mode.NO_BUTTON) {
+                    setRecentsAttachedToAppWindow(mIsAttachedToWindow, false);
+                }
             }
 
             @Override
