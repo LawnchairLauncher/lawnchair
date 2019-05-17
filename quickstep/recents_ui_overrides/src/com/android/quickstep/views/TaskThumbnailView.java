@@ -75,8 +75,6 @@ public class TaskThumbnailView extends View {
                 }
             };
 
-    private final float mCornerRadius;
-
     private final BaseActivity mActivity;
     private final TaskOverlay mOverlay;
     private final boolean mIsDarkTextTheme;
@@ -110,7 +108,6 @@ public class TaskThumbnailView extends View {
 
     public TaskThumbnailView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mCornerRadius = TaskCornerRadius.get(context);
         mOverlay = TaskOverlayFactory.INSTANCE.get(context).createOverlay(this);
         mPaint.setFilterBitmap(true);
         mBackgroundPaint.setColor(Color.WHITE);
@@ -118,7 +115,7 @@ public class TaskThumbnailView extends View {
         mDimmingPaintAfterClearing.setColor(Color.BLACK);
         mActivity = BaseActivity.fromContext(context);
         mIsDarkTextTheme = Themes.getAttrBoolean(mActivity, R.attr.isWorkspaceDarkText);
-        mFullscreenParams = new TaskView.FullscreenDrawParams(mCornerRadius);
+        mFullscreenParams = new TaskView.FullscreenDrawParams(TaskCornerRadius.get(context));
     }
 
     public void bind(Task task) {
@@ -223,10 +220,6 @@ public class TaskThumbnailView extends View {
     public void setFullscreenParams(TaskView.FullscreenDrawParams fullscreenParams) {
         mFullscreenParams = fullscreenParams;
         invalidate();
-    }
-
-    public float getCornerRadius() {
-        return mCornerRadius;
     }
 
     public void drawOnCanvas(Canvas canvas, float x, float y, float width, float height,

@@ -20,6 +20,7 @@ import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -61,8 +62,8 @@ public class BackgroundAppState extends OverviewState {
             return super.getOverviewScaleAndTranslation(launcher);
         }
         TaskView dummyTask = recentsView.getTaskViewAt(recentsView.getCurrentPage());
-        return recentsView.getTempClipAnimationHelper()
-                .getOverviewFullscreenScaleAndTranslation(dummyTask);
+        return recentsView.getTempClipAnimationHelper().updateForFullscreenOverview(dummyTask)
+                .getScaleAndTranslation();
     }
 
     @Override
