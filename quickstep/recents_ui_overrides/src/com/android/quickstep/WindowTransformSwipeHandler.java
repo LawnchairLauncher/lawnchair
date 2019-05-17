@@ -698,12 +698,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private void updateSysUiFlags(float windowProgress) {
         if (mRecentsView != null) {
+            TaskView centermostTask = mRecentsView.getTaskViewAt(mRecentsView
+                    .getPageNearestToCenterOfScreen());
+            int centermostTaskFlags = centermostTask == null ? 0
+                    : centermostTask.getThumbnail().getSysUiStatusNavFlags();
+            boolean useHomeScreenFlags = windowProgress > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD;
             // We will handle the sysui flags based on the centermost task view.
-            mRecentsAnimationWrapper.setWindowThresholdCrossed(true);
-            int sysuiFlags = windowProgress > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD
-                    ? 0
-                    : mRecentsView.getTaskViewAt(mRecentsView.getPageNearestToCenterOfScreen())
-                            .getThumbnail().getSysUiStatusNavFlags();
+            mRecentsAnimationWrapper.setWindowThresholdCrossed(centermostTaskFlags != 0
+                    || useHomeScreenFlags);
+            int sysuiFlags = useHomeScreenFlags ? 0 : centermostTaskFlags;
             mActivity.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, sysuiFlags);
         }
     }
