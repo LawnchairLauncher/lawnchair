@@ -198,7 +198,7 @@ public final class LauncherInstrumentation {
         return NavigationModel.THREE_BUTTON;
     }
 
-    public static boolean needSlowGestures() {
+    public static boolean isAvd() {
         return Build.MODEL.contains("Cuttlefish");
     }
 
