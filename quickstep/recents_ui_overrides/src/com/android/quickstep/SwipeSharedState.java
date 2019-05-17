@@ -22,6 +22,7 @@ import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.util.RecentsAnimationListenerSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet.SwipeAnimationListener;
+import java.io.PrintWriter;
 
 /**
  * Utility class used to store state information shared across multiple transitions.
@@ -133,5 +134,14 @@ public class SwipeSharedState implements SwipeAnimationListener {
         recentsAnimationFinishInterrupted = false;
         nextRunningTaskId = -1;
         goingToLauncher = false;
+    }
+
+    public void dump(String prefix, PrintWriter pw) {
+        pw.println(prefix + "goingToLauncher=" + goingToLauncher);
+        pw.println(prefix + "canGestureBeContinued=" + canGestureBeContinued);
+        pw.println(prefix + "recentsAnimationFinishInterrupted=" + recentsAnimationFinishInterrupted);
+        pw.println(prefix + "nextRunningTaskId=" + nextRunningTaskId);
+        pw.println(prefix + "lastAnimationCancelled=" + mLastAnimationCancelled);
+        pw.println(prefix + "lastAnimationRunning=" + mLastAnimationRunning);
     }
 }
