@@ -18,6 +18,7 @@ package com.android.launcher3.uioverrides;
 import static com.android.launcher3.LauncherState.RECENTS_CLEAR_ALL_BUTTON;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
+import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
@@ -64,6 +65,7 @@ public final class RecentsViewStateController extends
             }
         }
         setAlphas(PropertySetter.NO_ANIM_PROPERTY_SETTER, state.getVisibleElements(mLauncher));
+        mRecentsView.setFullscreenProgress(state.getOverviewFullscreenProgress());
     }
 
     @Override
@@ -95,7 +97,10 @@ public final class RecentsViewStateController extends
             builder.addOnFinishRunnable(() -> mRecentsView.setHintVisibility(1f));
         }
 
-        setAlphas(config.getPropertySetter(builder), toState.getVisibleElements(mLauncher));
+        PropertySetter propertySetter = config.getPropertySetter(builder);
+        setAlphas(propertySetter, toState.getVisibleElements(mLauncher));
+        float fullscreenProgress = toState.getOverviewFullscreenProgress();
+        propertySetter.setFloat(mRecentsView, FULLSCREEN_PROGRESS, fullscreenProgress, LINEAR);
     }
 
     private void setAlphas(PropertySetter propertySetter, int visibleElements) {

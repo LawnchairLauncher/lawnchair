@@ -18,7 +18,6 @@ package com.android.launcher3;
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
-
 import static com.android.launcher3.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 import static com.android.launcher3.TestProtocol.NORMAL_STATE_ORDINAL;
@@ -201,6 +200,10 @@ public class LauncherState {
 
     public ScaleAndTranslation getOverviewScaleAndTranslation(Launcher launcher) {
         return UiFactory.getOverviewScaleAndTranslationForNormalState(launcher);
+    }
+
+    public float getOverviewFullscreenProgress() {
+        return 0;
     }
 
     public void onStateEnabled(Launcher launcher) {
