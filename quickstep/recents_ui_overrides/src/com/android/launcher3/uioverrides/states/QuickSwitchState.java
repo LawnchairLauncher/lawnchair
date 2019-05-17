@@ -15,11 +15,8 @@
  */
 package com.android.launcher3.uioverrides.states;
 
-import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
-
 import com.android.launcher3.Launcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
@@ -28,23 +25,10 @@ import com.android.quickstep.views.TaskView;
  * quick switching from launcher; quick switching from an app uses WindowTransformSwipeHelper.
  * @see com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget#NEW_TASK
  */
-public class QuickSwitchState extends OverviewState {
-    private static final int STATE_FLAGS =
-            FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_DISABLE_ACCESSIBILITY;
+public class QuickSwitchState extends BackgroundAppState {
 
     public QuickSwitchState(int id) {
-        super(id, LauncherLogProto.ContainerType.APP, OVERVIEW_TRANSITION_MS, STATE_FLAGS);
-    }
-
-    @Override
-    public ScaleAndTranslation getOverviewScaleAndTranslation(Launcher launcher) {
-        RecentsView recentsView = launcher.getOverviewPanel();
-        if (recentsView.getTaskViewCount() == 0) {
-            return super.getOverviewScaleAndTranslation(launcher);
-        }
-        TaskView dummyTask = recentsView.getTaskViewAt(0);
-        ClipAnimationHelper clipAnimationHelper = new ClipAnimationHelper(launcher);
-        return clipAnimationHelper.getOverviewFullscreenScaleAndTranslation(dummyTask);
+        super(id, LauncherLogProto.ContainerType.APP);
     }
 
     @Override
@@ -53,11 +37,6 @@ public class QuickSwitchState extends OverviewState {
         float shiftProgress = getVerticalProgress(launcher) - NORMAL.getVerticalProgress(launcher);
         float translationY = shiftProgress * shiftRange;
         return new ScaleAndTranslation(1, 0, translationY);
-    }
-
-    @Override
-    public float getVerticalProgress(Launcher launcher) {
-        return BACKGROUND_APP.getVerticalProgress(launcher);
     }
 
     @Override
