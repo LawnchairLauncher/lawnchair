@@ -30,6 +30,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
@@ -176,6 +177,21 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
         }
 
         return anim;
+    }
+
+    @Override
+    protected void onTaskLaunchAnimationUpdate(float progress, TaskView tv) {
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            if (mRecentsAnimationWrapper.targetSet != null && tv.isRunningTask()) {
+                mTransformParams.setProgress(1 - progress)
+                        .setSyncTransactionApplier(mSyncTransactionApplier)
+                        .setForLiveTile(true);
+                mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet,
+                        mTransformParams);
+            } else {
+                redrawLiveTile(true);
+            }
+        }
     }
 
     @Override
