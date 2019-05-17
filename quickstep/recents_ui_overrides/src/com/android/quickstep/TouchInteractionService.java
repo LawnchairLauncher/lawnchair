@@ -84,7 +84,30 @@ import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+
+/**
+ * Wrapper around a list for processing arguments.
+ */
+class ArgList extends LinkedList<String> {
+    public ArgList(List<String> l) {
+        super(l);
+    }
+
+    public String peekArg() {
+        return peekFirst();
+    }
+
+    public String nextArg() {
+        return pollFirst().toLowerCase();
+    }
+
+    public String nextArgExact() {
+        return pollFirst();
+    }
+}
 
 /**
  * Service connected by system-UI for handling touch interaction.
@@ -439,12 +462,18 @@ public class TouchInteractionService extends Service implements
         mUncheckedConsumer.onMotionEvent(event);
     }
 
+    private boolean validSystemUiFlags() {
+        return (mSystemUiStateFlags & SYSUI_STATE_NAV_BAR_HIDDEN) == 0
+                && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0;
+    }
+
+    private boolean topTaskLocked() {
+        return ActivityManagerWrapper.getInstance().isLockToAppActive();
+    }
 
     private InputConsumer newConsumer(boolean useSharedState, MotionEvent event) {
-        boolean validSystemUIFlags = (mSystemUiStateFlags & SYSUI_STATE_NAV_BAR_HIDDEN) == 0
-                && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0;
-        boolean topTaskLocked = ActivityManagerWrapper.getInstance().isLockToAppActive();
-        boolean isInValidSystemUiState = validSystemUIFlags && !topTaskLocked;
+        boolean topTaskLocked = topTaskLocked();
+        boolean isInValidSystemUiState = validSystemUiFlags() && !topTaskLocked;
 
         if (!mIsUserUnlocked) {
             if (isInValidSystemUiState) {
@@ -540,7 +569,55 @@ public class TouchInteractionService extends Service implements
     }
 
     @Override
-    protected void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
-        TOUCH_INTERACTION_LOG.dump("", pw);
+    protected void dump(FileDescriptor fd, PrintWriter pw, String[] rawArgs) {
+        if (rawArgs.length > 0 && Utilities.IS_DEBUG_DEVICE) {
+            ArgList args = new ArgList(Arrays.asList(rawArgs));
+            switch (args.nextArg()) {
+                case "cmd":
+                    if (args.peekArg() == null) {
+                        printAvailableCommands(pw);
+                    } else {
+                        onCommand(pw, args);
+                    }
+                    break;
+            }
+        } else {
+            // Dump everything
+            pw.println("TouchState:");
+            pw.println("  navMode=" + mMode);
+            pw.println("  validSystemUiFlags=" + validSystemUiFlags()
+                    + " flags=" + mSystemUiStateFlags);
+            pw.println("  topTaskLocked=" + topTaskLocked());
+            pw.println("  isDeviceLocked=" + mKM.isDeviceLocked());
+            pw.println("  screenPinned=" +
+                    ActivityManagerWrapper.getInstance().isScreenPinningActive());
+            pw.println("  assistantAvailable=" + mAssistantAvailable);
+            pw.println("  a11yClickable="
+                    + ((mSystemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_CLICKABLE) != 0));
+            pw.println("  a11yLongClickable="
+                    + ((mSystemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE) != 0));
+            pw.println("  resumed="
+                    + mOverviewComponentObserver.getActivityControlHelper().isResumed());
+            pw.println("  useSharedState=" + mConsumer.useSharedSwipeState());
+            if (mConsumer.useSharedSwipeState()) {
+                mSwipeSharedState.dump("    ", pw);
+            }
+            pw.println("  mConsumer=" + mConsumer.getName());
+            TOUCH_INTERACTION_LOG.dump("", pw);
+
+        }
+    }
+
+    private void printAvailableCommands(PrintWriter pw) {
+        pw.println("Available commands:");
+        pw.println("  clear-touch-log: Clears the touch interaction log");
+    }
+
+    private void onCommand(PrintWriter pw, ArgList args) {
+        switch (args.nextArg()) {
+            case "clear-touch-log":
+                TOUCH_INTERACTION_LOG.clear();
+                break;
+        }
     }
 }
