@@ -487,12 +487,14 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
         }
     }
 
+    @Override
     @TargetApi(Build.VERSION_CODES.Q)
-    public void updateTouchExcludeRegion(WindowInsets insets) {
+    public WindowInsets dispatchApplyWindowInsets(WindowInsets insets) {
         if (Utilities.ATLEAST_Q) {
             Insets gestureInsets = insets.getMandatorySystemGestureInsets();
             mSystemGestureRegion.set(gestureInsets.left, gestureInsets.top,
                     gestureInsets.right, gestureInsets.bottom);
         }
+        return super.dispatchApplyWindowInsets(insets);
     }
 }
