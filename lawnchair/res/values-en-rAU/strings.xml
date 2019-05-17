@@ -7,6 +7,7 @@
     <string name="weather_provider_disabled">Disabled</string>
     <string name="theme_default">Default</string>
     <string name="custom">Customise</string>
+    <string name="pref_qsb_color">Colour</string>
     <string name="tab_bottom_sheet_save">Save</string>
     <string name="shortcut_sesame">Short cuts</string>
 </resources>

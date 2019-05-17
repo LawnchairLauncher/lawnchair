@@ -16,6 +16,7 @@
     <string name="theme_automatic">स्वयंचलित</string>
     <string name="custom">सानुकूल</string>
     <string name="theme_dark">गडद</string>
+    <string name="pref_qsb_color">रंग</string>
     <string name="tab_bottom_sheet_save">जतन करा</string>
     <string name="none">काहीही नाही</string>
     <string name="undo">पूर्ववत करा</string>

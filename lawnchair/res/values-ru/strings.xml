@@ -153,10 +153,9 @@
     <string name="about_role_family_member">Член семьи</string>
     <string name="about_role_magisk_maintainer">Разработчик модуля Magisk</string>
     <string name="about_bio_deletescape">Разработчик Android и энтузиаст, любит мемы (даже очень). Основатель проекта Lawnchair.</string>
-    <string name="about_bio_divadsn">19 лет, умеет превращать кофеин и пиццу в код, занимается хостингом и ежедневной помощью в разработке, если что-то сломалось. Помогает проектам с открытым исходным кодом в свободнее время. Ранее был известен как Codebucket.</string>
     <string name="about_bio_recoded">Кодер и графический дизайнер.</string>
     <string name="about_bio_josh">Внештатный графический дизайнер.</string>
-    <string name="about_bio_chris">Что-то связанное с дизайном и социальными сетями. Давайте пообщаемся вместе на @lawnchairapp ✨</string>
+    <string name="about_bio_chris">Миллениал до мозга костей. Занимается чем-то связанным с дизайном и СМИ. Приходи потусоваться к нам @lawnchairapp</string>
     <string name="about_bio_msfjarvis">Главный разработчик halogenOS и приложения для Substratum.</string>
     <string name="debug_crash_launcher">Ошибка лаунчера</string>
     <string name="gestures_pref_title">Жесты</string>
@@ -408,4 +407,6 @@
     <string name="about_app_description">Кастомизируемая альтернатива Pixel Launcher.</string>
     <string name="about_bio_paphonb">18-летний студент, разработчик Android и один из лучших разработчиков Lawnchair Launcher.</string>
     <string name="dock_scale">Размер док-бара</string>
+    <string name="adaptify_pack_title">Создать адаптивные иконки для набора иконок</string>
+    <string name="adaptify_pack_summary">Создать адаптивные иконки для иконок из наборов иконок</string>
 </resources>

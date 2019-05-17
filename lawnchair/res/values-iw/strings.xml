@@ -60,6 +60,7 @@
     <string name="theme_light">בהיר</string>
     <string name="theme_dark">חשכה</string>
     <string name="theme_black">שחור</string>
+    <string name="pref_qsb_color">צבע</string>
     <string name="title_app_suggestions">יישומים</string>
     <string name="add_new_tab">הוסף</string>
     <string name="rename_tab">שנה שם</string>

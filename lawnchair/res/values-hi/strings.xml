@@ -37,6 +37,7 @@
     <string name="pref_drawer_columns">स्तंभों की संख्या</string>
     <string name="theme_light">हल्का</string>
     <string name="theme_black">काली</string>
+    <string name="pref_qsb_color">रंग</string>
     <string name="add_new_tab">जोड़ें</string>
     <string name="tab_bottom_sheet_save">सहेजें</string>
     <string name="delete">हटाएं</string>

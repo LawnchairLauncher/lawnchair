@@ -87,6 +87,7 @@
     <string name="theme_light">Светлая</string>
     <string name="theme_dark">Цемра</string>
     <string name="theme_black">Чорны</string>
+    <string name="pref_qsb_color">Колер</string>
     <string name="title_app_suggestions">Дадаткі</string>
     <string name="add_new_tab">Дадаць</string>
     <string name="rename_tab">Перайменаваць</string>

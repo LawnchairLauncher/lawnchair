@@ -63,7 +63,9 @@
     <string name="theme_light">Φωτεινό</string>
     <string name="theme_dark">Σκοτάδι</string>
     <string name="theme_black">Μαύρο</string>
+    <string name="pref_qsb_color">Χρώμα</string>
     <string name="title_app_suggestions">Εφαρμογές</string>
+    <string name="feed_theme_pref_title">Χρώμα φόντου</string>
     <string name="add_new_tab">Προσθήκη</string>
     <string name="rename_tab">Μετονομασία</string>
     <string name="selected_count">%1$d נבחר</string>

@@ -15,6 +15,7 @@
     <string name="reset">Weka upya</string>
     <string name="custom">Maalum</string>
     <string name="automatic_short">Kiotomatiki</string>
+    <string name="pref_qsb_color">Rangi</string>
     <string name="tab_bottom_sheet_save">Hifadhi</string>
     <string name="delete">Futa</string>
     <string name="none">Hamna</string>

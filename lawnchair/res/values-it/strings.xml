@@ -91,8 +91,10 @@
     <string name="theme_light">Chiaro</string>
     <string name="theme_dark">Scuro</string>
     <string name="theme_black">Nero</string>
+    <string name="pref_qsb_color">Colore</string>
     <string name="search_clear_history">Cancella cronologia</string>
     <string name="title_app_suggestions">Applicazioni</string>
+    <string name="feed_theme_pref_title">Colore di sfondo</string>
     <string name="add_new_tab">Aggiungi</string>
     <string name="rename_tab">Rinomina</string>
     <string name="selected_count">%1$d selezionati</string>

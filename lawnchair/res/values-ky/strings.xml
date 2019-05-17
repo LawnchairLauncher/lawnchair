@@ -6,6 +6,7 @@
     <string name="pref_category_theme">Стиль</string>
     <string name="reset">Кайтаруу</string>
     <string name="custom">Өздүк</string>
+    <string name="pref_qsb_color">Түс</string>
     <string name="none">Эч нерсе жок</string>
     <string name="undo">Кайтаруу</string>
     <string name="shortcut_sesame">Кыска жолдор</string>

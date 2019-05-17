@@ -11,7 +11,7 @@
     <string name="in_smartspace">在 「快速查看」小工具中</string>
     <string name="smartspace_time">時間</string>
     <string name="smartspace_date">日期</string>
-    <string name="customize">定制</string>
+    <string name="customize">自訂</string>
     <string name="smartspace_preferences_in_settings">快速查看</string>
     <string name="smartspace_preferences_in_settings_desc">日期、時間、天氣來源</string>
     <string name="search">搜尋</string>
@@ -34,10 +34,10 @@
     <string name="hide_app_sum">從應用程式清單中隱藏</string>
     <string name="hide_app">隱藏應用程式</string>
     <string name="icon_shape_rounded_square">圓角方形</string>
-    <string name="pixel_ui_pref_summary">圖示包、模糊、顏色</string>
+    <string name="pixel_ui_pref_summary">圖示套件、模糊效果和主題色彩</string>
     <string name="app_drawer_pref_title">應用程式清單</string>
     <string name="app_drawer_pref_summary">不透明度、建議、隱藏應用程式</string>
-    <string name="search_pref_summary">顏色，搜尋引擎，圖示</string>
+    <string name="search_pref_summary">色彩、搜尋引擎和圖示</string>
     <string name="general_pref_title">桌面</string>
     <string name="general_pref_summary">柵、圖示布局、狀態列</string>
     <string name="about_pref_summary">團隊、連結、許可證</string>
@@ -94,7 +94,7 @@
     <string name="blur_pref_title">開啟模糊</string>
     <string name="blur_pref_summary">應用抽屜，底座，設置背景的模糊效果</string>
     <string name="blur_radius_pref_title">模糊強度：</string>
-    <string name="dock_colored_google">彩色的圖示</string>
+    <string name="dock_colored_google">彩色圖示</string>
     <string name="hotseat_show_arrow">箭號</string>
     <string name="hotseat_show_page_indicator">頁面指示</string>
     <string name="dock_style_pref_title">Dock 欄樣式</string>
@@ -152,7 +152,6 @@
     <string name="about_role_family_member">家庭成員</string>
     <string name="about_role_magisk_maintainer">Magisk 模組的維護者</string>
     <string name="about_bio_deletescape">Android 開發人員與愛好者，喜歡迷因 (玩得有點多)。Lawnchair 專案的創始人。</string>
-    <string name="about_bio_divadsn">19 歲，將咖啡因和披薩變成了程式碼，提供寄管服務，且在發生問題之時提供 24/7 的開發協助。在他的空閒時間貢獻開源專案。此前也稱為 Codebucket。</string>
     <string name="about_bio_recoded">溫和的編碼器和圖形設計師。</string>
     <string name="about_bio_josh">自由的平面設計師。</string>
     <string name="about_bio_chris">擁有創造性思的影響者、內容創造者和社交媒體和公關經理。</string>
@@ -272,9 +271,9 @@
     <string name="pref_icon_pack_masking">圖示遮罩</string>
     <string name="pref_icon_pack_masking_summary">使沒有匹配的圖示應用圖示包</string>
     <string name="pref_legacy_colored_backgrounds">彩色背景</string>
-    <string name="pref_legacy_colored_backgrounds_summary">生成自適應圖示的彩色背景</string>
+    <string name="pref_legacy_colored_backgrounds_summary">在產生的自動調整圖示後方填上背景色</string>
     <string name="pref_white_only_treatment">替換白色背景</string>
-    <string name="pref_white_only_treatment_summary">所有自適應圖示的彩色背景</string>
+    <string name="pref_white_only_treatment_summary">在所有自動調整圖示後方填上被景色</string>
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="dismiss_drop_target_label">"不要顯示"</string>
     <string name="suggested_action_content_description">%1$s 在 %2$s 打開</string>
@@ -292,7 +291,7 @@
     <string name="theme_dark_dark_text">暗色暗字</string>
     <string name="theme_black">黑色</string>
     <string name="theme_black_dark_text">黑色暗字</string>
-    <string name="pref_qsb_color">色彩</string>
+    <string name="pref_qsb_color">顏色</string>
     <string name="hide_from_predictions">隱藏建議</string>
     <string name="hide_from_predictions_summary">不要再於抽屜中顯示建議</string>
     <string name="bubble_searchbar">雙氣泡搜索欄</string>
@@ -332,7 +331,7 @@
     <string name="tab_manage_apps">管理應用程式</string>
     <string name="tab_bottom_sheet_save">儲存</string>
     <string name="tab_hide_from_main">從抽屜隱藏</string>
-    <string name="tab_color">標籤顏色</string>
+    <string name="tab_color">分頁色彩</string>
     <string name="delete">刪除</string>
     <string name="none">無</string>
     <string name="undo">復原</string>
@@ -400,4 +399,6 @@
     <string name="about_app_description">可自訂的另類 Pixel 啟動器</string>
     <string name="about_bio_paphonb">18 歲學生、Android 開發者且是 Lawnchair 啟動器的首席開發者之一。</string>
     <string name="dock_scale">底欄尺寸</string>
+    <string name="adaptify_pack_title">在圖示套件上套用自動調整圖示</string>
+    <string name="adaptify_pack_summary">使用圖示套件時，仍建立自動調整圖示</string>
 </resources>

@@ -61,7 +61,9 @@
     <string name="theme_light">Vaalea</string>
     <string name="theme_dark">Tumma</string>
     <string name="theme_black">Musta</string>
+    <string name="pref_qsb_color">Väri</string>
     <string name="title_app_suggestions">Sovellukset</string>
+    <string name="feed_theme_pref_title">Taustaväri</string>
     <string name="add_new_tab">Lisää</string>
     <string name="rename_tab">Nimeä uudelleen</string>
     <string name="selected_count">%1$d valittu</string>

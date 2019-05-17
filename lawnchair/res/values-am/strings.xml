@@ -15,6 +15,7 @@
     <string name="reset">ዳግም አስጀምር</string>
     <string name="custom">ብጁ</string>
     <string name="automatic_short">ራስ ሰር</string>
+    <string name="pref_qsb_color">ቀለም</string>
     <string name="tab_bottom_sheet_save">አስቀምጥ</string>
     <string name="delete">ሰርዝ</string>
     <string name="none">ምንም</string>

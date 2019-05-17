@@ -153,8 +153,6 @@
     <string name="about_role_family_member">فرد من الاسرة</string>
     <string name="about_role_magisk_maintainer">مشرفة صيانة وحدة Magisk</string>
     <string name="about_bio_deletescape">مطور الاندرويد المتحمس، يحب الميمات (قليلا جداً في الواقع). مؤسس مشروع Lawnchair.</string>
-    <string name="about_bio_divadsn">١٩ عاماً، يحول الكافيين والبيتزا إلى اكواد برمجية. يوفر الاستضافة و ٢٤\٧ دعم البرمجه إذا حدث شئ ما خاطئ. يساهم في المشاريع المصدر المفتوح خلال 
-وقته الحر. أيضا يعرف سابقاً باسم codebucket.</string>
     <string name="about_bio_recoded">مصمم البرامج والرسومات الخفيفة.</string>
     <string name="about_bio_josh">مصمم جرافيك حر.</string>
     <string name="about_bio_chris">الألفي af ، Idk و Idc. شيء مع التصميم و وسائل التواصل الاجتماعي. دعنا نجلس معاً علىlawnchairapp ✨</string>
@@ -413,4 +411,6 @@
     <string name="about_app_description">بديل لمشغل Pixel القابل للتخصيص.</string>
     <string name="about_bio_paphonb">طالب ١٨ سنة، مبرمج اندرويد وواحد من أبرز المبرمجين في مشغل Lawnchair.</string>
     <string name="dock_scale">مقياس الشريط السفلي</string>
+    <string name="adaptify_pack_title">انشاء أيقونات مكيفة لحزمة الأيقونات</string>
+    <string name="adaptify_pack_summary">انشاء رمز متكيفة للأيقونات من حزمة الأيقونات</string>
 </resources>

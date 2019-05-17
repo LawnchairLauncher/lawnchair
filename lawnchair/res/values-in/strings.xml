@@ -91,7 +91,9 @@
     <string name="theme_light">Terang</string>
     <string name="theme_dark">Gelap</string>
     <string name="theme_black">Hitam</string>
+    <string name="pref_qsb_color">Warna</string>
     <string name="title_app_suggestions">Apl</string>
+    <string name="feed_theme_pref_title">Warna latar belakang</string>
     <string name="add_new_tab">Tambah</string>
     <string name="rename_tab">Ganti nama</string>
     <string name="selected_count">%1$d terpilih</string>

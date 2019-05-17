@@ -15,6 +15,7 @@
     <string name="reset">საწყის პრამეტრებზე დაბრუნება</string>
     <string name="custom">მორგებული</string>
     <string name="automatic_short">ავტომატურად</string>
+    <string name="pref_qsb_color">ფერი</string>
     <string name="tab_bottom_sheet_save">შენახვა</string>
     <string name="delete">წაშლა</string>
     <string name="none">არც ერთი</string>

@@ -38,7 +38,9 @@
     <string name="searchbar_appearance_title">Izgled</string>
     <string name="enabled_icon_packs">Omogućeno</string>
     <string name="theme_dark">Tamno</string>
+    <string name="pref_qsb_color">Boja</string>
     <string name="title_app_suggestions">Aplikacije</string>
+    <string name="feed_theme_pref_title">Boja pozadine</string>
     <string name="add_new_tab">Dodaj</string>
     <string name="rename_tab">Preimenuj</string>
     <string name="selected_count">%1$d odabrano</string>

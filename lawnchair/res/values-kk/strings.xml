@@ -6,6 +6,7 @@
     <string name="pref_category_theme">Стиль</string>
     <string name="reset">Қайта реттеу</string>
     <string name="custom">Қалыпты</string>
+    <string name="pref_qsb_color">Түс</string>
     <string name="none">Ешқандай</string>
     <string name="undo">Кері орындау</string>
     <string name="shortcut_sesame">Таңбашалар</string>

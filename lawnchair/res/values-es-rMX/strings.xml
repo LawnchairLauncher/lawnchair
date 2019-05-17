@@ -85,7 +85,9 @@
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>
     <string name="theme_black">Negro</string>
+    <string name="pref_qsb_color">Color</string>
     <string name="title_app_suggestions">Aplicaciones</string>
+    <string name="feed_theme_pref_title">Color del fondo</string>
     <string name="add_new_tab">Añadir</string>
     <string name="rename_tab">Renombrar</string>
     <string name="tab_bottom_sheet_save">Guardar</string>

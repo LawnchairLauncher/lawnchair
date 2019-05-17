@@ -15,6 +15,7 @@
     <string name="reset">पुनःसेट गर्नुहोस्</string>
     <string name="custom">अनुकूलन</string>
     <string name="automatic_short">स्वतः</string>
+    <string name="pref_qsb_color">रङ्ग</string>
     <string name="tab_bottom_sheet_save">बचत गर्नुहोस्</string>
     <string name="delete">मेट्नुहोस्</string>
     <string name="none">कुनै पनि होइन</string>

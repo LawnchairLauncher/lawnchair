@@ -21,6 +21,7 @@
     <string name="theme_default">Vaikimisi</string>
     <string name="custom">Kohandatud</string>
     <string name="automatic_short">Autom.</string>
+    <string name="pref_qsb_color">Värv</string>
     <string name="search_clear_history">Puhasta ajalugu</string>
     <string name="tab_bottom_sheet_save">Salvesta</string>
     <string name="delete">Kustuta</string>

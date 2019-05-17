@@ -18,6 +18,7 @@
     <string name="theme_default">இயல்புநிலை</string>
     <string name="custom">தனிப்பயன்</string>
     <string name="theme_dark">அடர்</string>
+    <string name="pref_qsb_color">நிறம்</string>
     <string name="tab_bottom_sheet_save">சேமி</string>
     <string name="none">ஏதுமில்லை</string>
     <string name="undo">செயல்தவிர்</string>

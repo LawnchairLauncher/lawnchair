@@ -21,6 +21,7 @@
     <string name="custom">กำหนดเอง</string>
     <string name="automatic_short">อัตโนมัติ</string>
     <string name="theme_dark">มืด</string>
+    <string name="pref_qsb_color">สี</string>
     <string name="tab_bottom_sheet_save">บันทึก</string>
     <string name="delete">ลบ</string>
     <string name="none">ไม่มี</string>

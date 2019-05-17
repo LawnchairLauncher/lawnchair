@@ -15,6 +15,7 @@
     <string name="reset">পুনরায় সেট করুন</string>
     <string name="theme_default">Default</string>
     <string name="custom">কাস্টম</string>
+    <string name="pref_qsb_color">রঙ</string>
     <string name="none">কোনো কিছুই নয়</string>
     <string name="undo">পূর্বাবস্থায় ফিরুন</string>
     <string name="shortcut_sesame">শর্টকাট</string>

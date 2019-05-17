@@ -91,7 +91,9 @@
     <string name="theme_light">Hell</string>
     <string name="theme_dark">Dunkel</string>
     <string name="theme_black">Schwarz</string>
+    <string name="pref_qsb_color">Farbe</string>
     <string name="title_app_suggestions">Anwendungen</string>
+    <string name="feed_theme_pref_title">Hintergrundfarbe</string>
     <string name="add_new_tab">Hinzufügen</string>
     <string name="rename_tab">Umbenennen</string>
     <string name="selected_count">%1$d ausgewählt</string>

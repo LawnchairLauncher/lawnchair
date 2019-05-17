@@ -34,6 +34,7 @@
     <string name="pref_hide_statusbar">Ezkutatu egoera-barra</string>
     <string name="enabled_icon_packs">Gaituta</string>
     <string name="theme_dark">Iluna</string>
+    <string name="pref_qsb_color">Kolorea</string>
     <string name="title_app_suggestions">Aplikazioak</string>
     <string name="add_new_tab">Gehitu</string>
     <string name="rename_tab">Aldatu izena</string>

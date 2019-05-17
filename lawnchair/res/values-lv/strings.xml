@@ -16,6 +16,7 @@
     <string name="reset">Atiestatīt</string>
     <string name="custom">Pielāgots</string>
     <string name="automatic_short">Automātiski</string>
+    <string name="pref_qsb_color">Krāsa</string>
     <string name="tab_bottom_sheet_save">Saglabāt</string>
     <string name="delete">Dzēst</string>
     <string name="none">Nav</string>

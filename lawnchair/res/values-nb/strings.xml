@@ -35,7 +35,9 @@
     <string name="pref_hide_statusbar">Skjul statuslinjen</string>
     <string name="enabled_icon_packs">Aktivert</string>
     <string name="theme_dark">Mørkt</string>
+    <string name="pref_qsb_color">Farge</string>
     <string name="title_app_suggestions">Apper</string>
+    <string name="feed_theme_pref_title">Bakgrunnsfarge</string>
     <string name="add_new_tab">Legg til</string>
     <string name="rename_tab">Gi nytt navn</string>
     <string name="tab_bottom_sheet_save">Lagre</string>

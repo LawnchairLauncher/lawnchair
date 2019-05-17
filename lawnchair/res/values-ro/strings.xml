@@ -72,6 +72,7 @@
     <string name="theme_light">Luminoasă</string>
     <string name="theme_dark">Întunecat</string>
     <string name="theme_black">Neagră</string>
+    <string name="pref_qsb_color">Culoare</string>
     <string name="title_app_suggestions">Aplicații</string>
     <string name="add_new_tab">Adăugați</string>
     <string name="rename_tab">Redenumiți</string>

@@ -15,6 +15,7 @@
     <string name="reset">កំណត់​ឡើងវិញ</string>
     <string name="custom">តាម​តម្រូវ​ការ</string>
     <string name="automatic_short">ស្វ័យប្រវត្តិ</string>
+    <string name="pref_qsb_color">ពណ៌</string>
     <string name="tab_bottom_sheet_save">រក្សាទុក</string>
     <string name="delete">លុប</string>
     <string name="none">គ្មាន</string>

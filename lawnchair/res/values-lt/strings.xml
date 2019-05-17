@@ -24,6 +24,8 @@
     <string name="custom">Tinkintas</string>
     <string name="automatic_short">Automobiliai</string>
     <string name="theme_black">Juodas</string>
+    <string name="pref_qsb_color">Spalva</string>
+    <string name="feed_theme_pref_title">Fono spalva</string>
     <string name="add_new_tab">Pridėti</string>
     <string name="rename_tab">Pervardinti</string>
     <string name="tab_bottom_sheet_save">Išsaugoti</string>

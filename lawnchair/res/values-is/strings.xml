@@ -6,6 +6,7 @@
     <string name="pref_category_theme">Stíll</string>
     <string name="reset">Endurstilla</string>
     <string name="custom">Sérsniðinn</string>
+    <string name="pref_qsb_color">Litur</string>
     <string name="none">Engin</string>
     <string name="undo">Afturkalla</string>
     <string name="shortcut_sesame">Flýtileiðir</string>

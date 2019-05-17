@@ -17,6 +17,7 @@
     <string name="theme_automatic">യാന്ത്രികമായി</string>
     <string name="custom">ഇഷ്‌ടാനുസൃതം</string>
     <string name="theme_dark">ഇരുണ്ട</string>
+    <string name="pref_qsb_color">വർണ്ണം</string>
     <string name="tab_bottom_sheet_save">സംരക്ഷിക്കുക</string>
     <string name="none">ആരിൽ നിന്നും വേണ്ട</string>
     <string name="undo">പഴയപടിയാക്കുക</string>

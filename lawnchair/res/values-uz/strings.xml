@@ -6,6 +6,7 @@
     <string name="pref_category_theme">Uslub</string>
     <string name="reset">Tiklash</string>
     <string name="custom">Maxsus</string>
+    <string name="pref_qsb_color">Rang</string>
     <string name="none">Asl</string>
     <string name="undo">Bekor qilish</string>
     <string name="shortcut_sesame">Tezkor tugmalar</string>

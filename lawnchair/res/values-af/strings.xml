@@ -36,6 +36,7 @@
     <string name="automatic_short">Outo</string>
     <string name="enabled_icon_packs">Geaktiveer</string>
     <string name="theme_dark">Donker</string>
+    <string name="pref_qsb_color">Kleur</string>
     <string name="title_app_suggestions">Toeps</string>
     <string name="add_new_tab">Voeg by</string>
     <string name="rename_tab">Hernoem</string>

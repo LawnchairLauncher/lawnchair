@@ -3,5 +3,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="theme_default">Default</string>
     <string name="custom">Customise</string>
+    <string name="pref_qsb_color">Colour</string>
     <string name="shortcut_sesame">Short cuts</string>
 </resources>

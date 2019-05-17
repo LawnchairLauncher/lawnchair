@@ -21,6 +21,8 @@
     <string name="theme_default">İlkin</string>
     <string name="custom">Fərdi</string>
     <string name="automatic_short">Avto</string>
+    <string name="pref_qsb_color">Rəng</string>
+    <string name="feed_theme_pref_title">Arxaplan rəngi</string>
     <string name="tab_bottom_sheet_save">Yadda saxla</string>
     <string name="delete">Silin</string>
     <string name="none">Heç biri</string>

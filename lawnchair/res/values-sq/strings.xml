@@ -32,6 +32,7 @@
     <string name="custom">E personalizuar</string>
     <string name="pref_hide_statusbar">Fshih shiritin e statusit</string>
     <string name="enabled_icon_packs">E aktivizuar</string>
+    <string name="pref_qsb_color">Ngjyra</string>
     <string name="title_app_suggestions">Aplikacionet</string>
     <string name="add_new_tab">Shto</string>
     <string name="rename_tab">Riemërto</string>

@@ -21,6 +21,7 @@
     <string name="theme_default">ຄ່າເລີ່ມຕົ້ນ</string>
     <string name="custom">ກຳນົດເອງ</string>
     <string name="automatic_short">ອັດຕະໂນມັດ</string>
+    <string name="pref_qsb_color">ສີ</string>
     <string name="tab_bottom_sheet_save">ບັນທຶກ</string>
     <string name="delete">ລຶບ</string>
     <string name="none">ບໍ່ມີ</string>

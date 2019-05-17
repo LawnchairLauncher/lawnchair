@@ -20,6 +20,7 @@
     <string name="custom">Personaliséiert</string>
     <string name="automatic_short">Automatesch</string>
     <string name="theme_dark">Däischter</string>
+    <string name="pref_qsb_color">Faarf</string>
     <string name="tab_bottom_sheet_save">Späicheren</string>
     <string name="delete">Läschen</string>
     <string name="none">Keen</string>

@@ -17,6 +17,7 @@
     <string name="theme_automatic">స్వయంచాలకం</string>
     <string name="custom">అనుకూలం</string>
     <string name="theme_dark">ముదురు రంగు</string>
+    <string name="pref_qsb_color">రంగు</string>
     <string name="tab_bottom_sheet_save">సేవ్ చేయి</string>
     <string name="none">ఏదీ లేదు</string>
     <string name="undo">చర్య రద్దు చేయి</string>

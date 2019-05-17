@@ -36,6 +36,7 @@
     <string name="automatic_short">ಸ್ವಯಂ</string>
     <string name="enabled_icon_packs">ಸಕ್ರಿಯ</string>
     <string name="theme_dark">ಗಾಢ ಹಿನ್ನೆಲೆ</string>
+    <string name="pref_qsb_color">ಬಣ್ಣ</string>
     <string name="title_app_suggestions">ತಂತ್ರಾಂಶಗಳು</string>
     <string name="add_new_tab">ಸೇರಿಸಿ</string>
     <string name="rename_tab">ಮರುಹೆಸರಿಸಿ</string>

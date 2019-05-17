@@ -10,6 +10,7 @@
     <string name="title_attribouter_email">အီးမေးလ်</string>
     <string name="reset">ပြန်လည်စတင်စေရန်</string>
     <string name="custom">မိမိစိတ်ကြိုက်</string>
+    <string name="pref_qsb_color">ရောင်စုံ</string>
     <string name="none">တစ်ခုမှမဟုတ်ပါ</string>
     <string name="undo">နောက်ပြန်လုပ်ပါ</string>
     <string name="shortcut_sesame">ဖြတ်လမ်းများ</string>

@@ -57,6 +57,7 @@
     <string name="theme_dark">Fosca</string>
     <string name="theme_black">Negre</string>
     <string name="title_app_suggestions">Aplicacions</string>
+    <string name="feed_theme_pref_title">Color del fons</string>
     <string name="add_new_tab">Afegeix</string>
     <string name="rename_tab">Reanomena</string>
     <string name="tab_bottom_sheet_save">Desa</string>

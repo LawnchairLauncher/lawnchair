@@ -91,7 +91,9 @@
     <string name="theme_light">明るい</string>
     <string name="theme_dark">暗闇</string>
     <string name="theme_black">黒</string>
+    <string name="pref_qsb_color">色</string>
     <string name="title_app_suggestions">アプリ</string>
+    <string name="feed_theme_pref_title">背景色</string>
     <string name="add_new_tab">追加</string>
     <string name="rename_tab">名前の変更</string>
     <string name="selected_count">%1$d個選択済み</string>

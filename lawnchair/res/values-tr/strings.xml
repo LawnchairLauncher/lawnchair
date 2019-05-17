@@ -11,7 +11,6 @@
     <string name="in_smartspace">Bir bakışta widget\'ta</string>
     <string name="smartspace_time">Saat</string>
     <string name="smartspace_date">Tarih</string>
-    <string name="customize">Özelleştirme</string>
     <string name="smartspace_preferences_in_settings">Bir bakışta</string>
     <string name="smartspace_preferences_in_settings_desc">Tarih, saat, hava kaynağı</string>
     <string name="search">Ara</string>
@@ -35,10 +34,8 @@
     <string name="hide_app_sum">Uygulama çekmecesinden gizle</string>
     <string name="hide_app">Uygulama gizle</string>
     <string name="icon_shape_rounded_square">Yuvarlak kare</string>
-    <string name="pixel_ui_pref_summary">Simge paketi, bulanıklık, renkler</string>
     <string name="app_drawer_pref_title">Uygulama çekmecesi</string>
     <string name="app_drawer_pref_summary">Opaklık, öneriler, uygulamaları gizle</string>
-    <string name="search_pref_summary">Renk, arama motoru, simgeler</string>
     <string name="general_pref_title">Masaüstü</string>
     <string name="general_pref_summary">Izgara, simge düzeni, durum çubuğu</string>
     <string name="about_pref_summary">Takım, bağlantılar, lisanslar</string>
@@ -95,7 +92,6 @@
     <string name="blur_pref_title">Bulanıklığı etkinleştir</string>
     <string name="blur_pref_summary">Uygulama çekmecesi, yuva, ayar arka planları için bulanıklık efekti</string>
     <string name="blur_radius_pref_title">Bulanıklık seviyesi</string>
-    <string name="dock_colored_google">Renkli simgeler</string>
     <string name="hotseat_show_arrow">Ok</string>
     <string name="hotseat_show_page_indicator">Sayfa göstergesi</string>
     <string name="dock_style_pref_title">Dock stili</string>
@@ -153,10 +149,8 @@
     <string name="about_role_family_member">Aile üyesi</string>
     <string name="about_role_magisk_maintainer">Magisk modül sorumlusu</string>
     <string name="about_bio_deletescape">Android geliştiricisi &amp; meraklısı memleri seviyor (aslında biraz fazla). Lawnchair projesinin kurucusu.</string>
-    <string name="about_bio_divadsn">19 yaşında, kafeini ve pizzayı koda dönüştürüyor, bir şeyler yanlış giderse barındırma ve 7 gün 24 saat destek sağlıyor. Boş zamanlarında açık kaynaklı projelere katkıda bulunur. Ayrıca daha önce Codebucket olarak da bilinirdi.</string>
     <string name="about_bio_recoded">Hafif kodlayıcı ve grafik tasarımcısı.</string>
     <string name="about_bio_josh">Serbest grafik tasarımcısı.</string>
-    <string name="about_bio_chris">Bin yıllık af, idk ve idc. Tasarım ve sosyal medya ile bir şey. Hadi birlikte @lawnchairapp ✨\'da takılalım</string>
     <string name="about_bio_msfjarvis">Halojenlerde çekirdek geliştirici ve substratumda uygulama geliştiricisi.</string>
     <string name="debug_crash_launcher">Crash launcher</string>
     <string name="gestures_pref_title">Hareketler</string>
@@ -273,10 +267,7 @@
     <string name="enabled_icon_packs">Etkin</string>
     <string name="pref_icon_pack_masking">Simge maskesi</string>
     <string name="pref_icon_pack_masking_summary">Başsız simgelerin uygulanan simge paketiyle eşleşmesini sağlayın</string>
-    <string name="pref_legacy_colored_backgrounds">Renkli arka planlar</string>
-    <string name="pref_legacy_colored_backgrounds_summary">Oluşturulan uyarlanabilir simgeler için renkli arka planlar</string>
     <string name="pref_white_only_treatment">Beyaz arka planları değiştir</string>
-    <string name="pref_white_only_treatment_summary">Tüm uyarlanabilir simgeler için renkli arka planlar</string>
     <string name="smartspace_provider_bridge">Rootless pixel bridge</string>
     <string name="dismiss_drop_target_label">"Tekrar gösterme"</string>
     <string name="suggested_action_content_description">%1$s içinde açılıyor %2$s</string>
@@ -336,7 +327,6 @@
     <string name="tab_manage_apps">Uygulamaları yönet</string>
     <string name="tab_bottom_sheet_save">Kaydet</string>
     <string name="tab_hide_from_main">Çekmeceden gizle</string>
-    <string name="tab_color">Sekme rengi</string>
     <string name="delete">Sil</string>
     <string name="none">Yok</string>
     <string name="undo">Geri al</string>

@@ -34,7 +34,9 @@
     <string name="pref_hide_statusbar">Agochar barra de estado</string>
     <string name="enabled_icon_packs">Habilitar</string>
     <string name="theme_dark">Escuro</string>
+    <string name="pref_qsb_color">Cor</string>
     <string name="title_app_suggestions">Aplicacións</string>
+    <string name="feed_theme_pref_title">Color del fondo</string>
     <string name="add_new_tab">Engadir</string>
     <string name="rename_tab">Cambiar de nome</string>
     <string name="tab_bottom_sheet_save">Gardar</string>

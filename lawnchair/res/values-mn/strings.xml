@@ -15,6 +15,7 @@
     <string name="reset">Бүгдийг цэвэрлэх</string>
     <string name="custom">Тусгай</string>
     <string name="automatic_short">Автомат</string>
+    <string name="pref_qsb_color">Өнгө</string>
     <string name="tab_bottom_sheet_save">Хадгалах</string>
     <string name="delete">Устгах</string>
     <string name="none">Хоосон</string>

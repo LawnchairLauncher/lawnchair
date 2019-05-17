@@ -6,6 +6,7 @@
     <string name="pref_category_theme">طرز</string>
     <string name="reset">دوبارہ ترتیب دیں</string>
     <string name="custom">حسب ضرورت</string>
+    <string name="pref_qsb_color">رنگ</string>
     <string name="none">کوئی نہیں</string>
     <string name="undo">کالعدم کریں</string>
     <string name="shortcut_sesame">شارٹ کٹس</string>

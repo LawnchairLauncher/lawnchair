@@ -64,7 +64,9 @@
     <string name="theme_light">Licht</string>
     <string name="theme_dark">Donker</string>
     <string name="theme_black">Zwart</string>
+    <string name="pref_qsb_color">Kleur</string>
     <string name="title_app_suggestions">Apps</string>
+    <string name="feed_theme_pref_title">Achtergrondkleur</string>
     <string name="add_new_tab">Toevoegen</string>
     <string name="rename_tab">Naam wijzigen</string>
     <string name="selected_count">%1$d geselecteerd</string>

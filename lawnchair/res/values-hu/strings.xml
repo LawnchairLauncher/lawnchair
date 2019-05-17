@@ -153,7 +153,6 @@
     <string name="about_role_family_member">\"Családtag\"</string>
     <string name="about_role_magisk_maintainer">Magisk-modulfelelős</string>
     <string name="about_bio_deletescape">Android fejlesztő és rajongó, (egy kicsit túlságosan is) szereti a mémeket. A Lawnchair projekt alapítója.</string>
-    <string name="about_bio_divadsn">19 éves, a koffeint és a pizzát is kódolja, a hét minden napján 24 órás tárhely- és fejlesztési szolgáltatást biztosít, ha valami hiba történne. Szabadidejében nyílt forráskódú projekteket támogat. Korábban Codebucket néven volt ismert. .</string>
     <string name="about_bio_recoded">Könnyűprogramozó és grafikai dizájner.</string>
     <string name="about_bio_josh">Független grafikai dizájner.</string>
     <string name="about_bio_chris">Nagyon új évezredbeli, laza arc vagyok. A design és a közösségi média az asztalom. Lógjunk együtt itt: @lawnchairapp ✨</string>
@@ -404,4 +403,6 @@
     <string name="about_app_description">Egy testreszabható Pixel Launcher-alternatíva.</string>
     <string name="about_bio_paphonb">18 éves tanulósrác, Android-fejlesztő és egyike a Lawnchair Launcher vezető-fejlesztőinek.</string>
     <string name="dock_scale">Dokkméretezés</string>
+    <string name="adaptify_pack_title">Alkalmazkodó ikonok készítése az ikoncsomagokhoz</string>
+    <string name="adaptify_pack_summary">Alkalmazkodó ikonok készítése az ikoncsomagok ikonjaihoz</string>
 </resources>
