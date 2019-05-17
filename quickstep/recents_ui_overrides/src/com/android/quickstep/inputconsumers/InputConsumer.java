@@ -63,4 +63,23 @@ public interface InputConsumer {
             onKeyEvent((KeyEvent) ev);
         }
     }
+
+    default String getName() {
+        switch (getType()) {
+            case TYPE_OVERVIEW:
+                return "OVERVIEW";
+            case TYPE_OTHER_ACTIVITY:
+                return "OTHER_ACTIVITY";
+            case TYPE_ASSISTANT:
+                return "ASSISTANT";
+            case TYPE_DEVICE_LOCKED:
+                return "DEVICE_LOCKED";
+            case TYPE_ACCESSIBILITY:
+                return "ACCESSIBILITY";
+            case TYPE_SCREEN_PINNED:
+                return "SCREEN_PINNED";
+            default:
+                return "NO_OP";
+        }
+    }
 }
