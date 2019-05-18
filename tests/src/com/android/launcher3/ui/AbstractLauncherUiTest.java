@@ -64,8 +64,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -89,23 +93,22 @@ public abstract class AbstractLauncherUiTest {
     public static final long DEFAULT_UI_TIMEOUT = 10000;
     protected static final int LONG_WAIT_TIME_MS = 60000;
     private static final String TAG = "AbstractLauncherUiTest";
+    private static int sScreenshotCount = 0;
 
     protected MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
-    protected final UiDevice mDevice;
+    protected final UiDevice mDevice = UiDevice.getInstance(getInstrumentation());
     protected final LauncherInstrumentation mLauncher;
     protected Context mTargetContext;
     protected String mTargetPackage;
 
     protected AbstractLauncherUiTest() {
-        final Instrumentation instrumentation = getInstrumentation();
-        mDevice = UiDevice.getInstance(instrumentation);
         try {
             mDevice.setOrientationNatural();
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
         if (TestHelpers.isInLauncherProcess()) Utilities.enableRunningInTestHarnessForTests();
-        mLauncher = new LauncherInstrumentation(instrumentation);
+        mLauncher = new LauncherInstrumentation(getInstrumentation());
     }
 
     @Rule
@@ -162,6 +165,36 @@ public abstract class AbstractLauncherUiTest {
                     base.evaluate();
                 }
             } : base;
+
+    @Rule
+    public TestWatcher mFailureWatcher = new TestWatcher() {
+        private void dumpViewHierarchy() {
+            final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            try {
+                mDevice.dumpWindowHierarchy(stream);
+                stream.flush();
+                stream.close();
+                for (String line : stream.toString().split("\\r?\\n")) {
+                    Log.e(TAG, line.trim());
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "error dumping XML to logcat", e);
+            }
+        }
+
+        @Override
+        protected void failed(Throwable e, Description description) {
+            if (mDevice == null) return;
+            final String pathname = getInstrumentation().getTargetContext().
+                    getFilesDir().getPath() + "/TaplTestScreenshot" + sScreenshotCount++ + ".png";
+            Log.e(TAG, "Failed test " + description.getMethodName() +
+                    ", screenshot will be saved to " + pathname +
+                    ", track trace is below, UI object dump is further below:\n" +
+                    Log.getStackTraceString(e));
+            dumpViewHierarchy();
+            mDevice.takeScreenshot(new File(pathname));
+        }
+    };
 
     @Before
     public void setUp() throws Exception {
