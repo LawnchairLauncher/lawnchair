@@ -33,6 +33,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
 
     BaseOverview(LauncherInstrumentation launcher) {
         super(launcher);
+        verifyActiveContainer();
     }
 
     @Override

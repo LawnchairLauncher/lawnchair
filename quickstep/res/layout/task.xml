@@ -61,4 +61,14 @@
             android:gravity="center_vertical"
         />
     </com.android.quickstep.views.DigitalWellBeingToast>
+
+    <FrameLayout
+        android:id="@+id/proactive_suggest_container"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:gravity="center"
+        android:layout_gravity="bottom|center"
+        android:translationY="20dp"
+        android:elevation="4dp"
+     />
 </com.android.quickstep.views.TaskView>

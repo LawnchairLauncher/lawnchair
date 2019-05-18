@@ -638,25 +638,11 @@ public class DragLayer extends BaseDragLayer<Launcher> {
             final int layoutDirection = getLayoutDirection();
 
             int absoluteGravity = Gravity.getAbsoluteGravity(gravity, layoutDirection);
-            int horizontalGravity = absoluteGravity & Gravity.HORIZONTAL_GRAVITY_MASK;
-            int verticalGravity = absoluteGravity & Gravity.VERTICAL_GRAVITY_MASK;
 
             if (child instanceof Transposable) {
-                if (rotation == RotationMode.SEASCAPE) {
-                    if (horizontalGravity == Gravity.RIGHT) {
-                        horizontalGravity = Gravity.LEFT;
-                    } else if (horizontalGravity == Gravity.LEFT) {
-                        horizontalGravity = Gravity.RIGHT;
-                    }
+                absoluteGravity = rotation.toNaturalGravity(absoluteGravity);
 
-                    if (verticalGravity == Gravity.TOP) {
-                        verticalGravity = Gravity.BOTTOM;
-                    } else if (verticalGravity == Gravity.BOTTOM) {
-                        verticalGravity = Gravity.TOP;
-                    }
-                }
-
-                switch (horizontalGravity) {
+                switch (absoluteGravity & Gravity.HORIZONTAL_GRAVITY_MASK) {
                     case Gravity.CENTER_HORIZONTAL:
                         childTop = (parentHeight - height) / 2 +
                                 lp.topMargin - lp.bottomMargin;
@@ -669,7 +655,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
                         childTop = parentHeight - lp.leftMargin - width / 2 - height / 2;
                 }
 
-                switch (verticalGravity) {
+                switch (absoluteGravity & Gravity.VERTICAL_GRAVITY_MASK) {
                     case Gravity.CENTER_VERTICAL:
                         childLeft = (parentWidth - width) / 2 +
                                 lp.leftMargin - lp.rightMargin;
@@ -682,7 +668,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
                         childLeft = height / 2 - width / 2 + lp.topMargin;
                 }
             } else {
-                switch (horizontalGravity) {
+                switch (absoluteGravity & Gravity.HORIZONTAL_GRAVITY_MASK) {
                     case Gravity.CENTER_HORIZONTAL:
                         childLeft = (parentWidth - width) / 2 +
                                 lp.leftMargin - lp.rightMargin;
@@ -695,7 +681,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
                         childLeft = lp.leftMargin;
                 }
 
-                switch (verticalGravity) {
+                switch (absoluteGravity & Gravity.VERTICAL_GRAVITY_MASK) {
                     case Gravity.TOP:
                         childTop = lp.topMargin;
                         break;

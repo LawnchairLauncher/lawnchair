@@ -80,7 +80,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
     @Test
     public void testEmpty() throws Throwable { /* needed while the broken tests are being fixed */ }
 
-    @Test @Ignore // b/131116593
+    @Test
     public void testPinWidgetNoConfig() throws Throwable {
         runTest("pinWidgetNoConfig", true, new ItemOperator() {
             @Override
@@ -93,7 +93,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         });
     }
 
-        @Test @Ignore // b/131116593
+        @Test
     public void testPinWidgetNoConfig_customPreview() throws Throwable {
         // Command to set custom preview
         Intent command =  RequestPinItemActivity.getCommandIntent(
@@ -111,7 +111,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         }, command);
     }
 
-    @Test @Ignore // b/131116593
+    @Test
     public void testPinWidgetWithConfig() throws Throwable {
         runTest("pinWidgetWithConfig", true, new ItemOperator() {
             @Override
@@ -124,7 +124,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         });
     }
 
-    @Test @Ignore // b/131116593
+    @Test
     public void testPinShortcut() throws Throwable {
         // Command to set the shortcut id
         Intent command = RequestPinItemActivity.getCommandIntent(
@@ -181,8 +181,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
         // Accept confirmation:
         BlockingBroadcastReceiver resultReceiver = new BlockingBroadcastReceiver(mCallbackAction);
-        mDevice.wait(Until.findObject(By.text(mTargetContext.getString(
-                R.string.place_automatically).toUpperCase())), DEFAULT_UI_TIMEOUT).click();
+        mDevice.wait(Until.findObject(By.text("Add automatically")), DEFAULT_UI_TIMEOUT).click();
         Intent result = resultReceiver.blockingGetIntent();
         assertNotNull(result);
         mAppWidgetId = result.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);

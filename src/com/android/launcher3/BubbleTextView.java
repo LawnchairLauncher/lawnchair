@@ -46,10 +46,12 @@ import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.IconPalette;
+import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconCache.IconLoadRequest;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.views.ActivityContext;
 
@@ -388,7 +390,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     protected void drawDotIfNecessary(Canvas canvas) {
         if (!mForceHideDot && (hasDot() || mDotParams.scale > 0)) {
             getIconBounds(mDotParams.iconBounds);
-            mDotParams.spaceForOffset.set((getWidth() - mIconSize) / 2, getPaddingTop());
+            Utilities.scaleRectAboutCenter(mDotParams.iconBounds, IconShape.getNormalizationScale());
             final int scrollX = getScrollX();
             final int scrollY = getScrollY();
             canvas.translate(scrollX, scrollY);

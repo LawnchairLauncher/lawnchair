@@ -42,7 +42,7 @@ import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
 
-import com.android.launcher3.folder.FolderShape;
+import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.MainThreadInitializedObject;
@@ -210,7 +210,7 @@ public class InvariantDeviceProfile {
         iconSize = interpolatedDisplayOption.iconSize;
         iconShapePath = getIconShapePath(context);
         landscapeIconSize = interpolatedDisplayOption.landscapeIconSize;
-        iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
+        iconBitmapSize = ResourceUtils.pxFromDp(iconSize, dm);
         iconTextSize = interpolatedDisplayOption.iconTextSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
@@ -304,7 +304,7 @@ public class InvariantDeviceProfile {
             changeFlags |= CHANGE_FLAG_ICON_PARAMS;
         }
         if (!iconShapePath.equals(oldProfile.iconShapePath)) {
-            FolderShape.init(context);
+            IconShape.init(context);
         }
 
         apply(context, changeFlags);

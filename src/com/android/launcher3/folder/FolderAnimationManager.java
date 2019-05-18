@@ -19,7 +19,7 @@ package com.android.launcher3.folder;
 import static com.android.launcher3.BubbleTextView.TEXT_ALPHA_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
-import static com.android.launcher3.folder.FolderShape.getShape;
+import static com.android.launcher3.graphics.IconShape.getShape;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.animation.Animator;
@@ -39,6 +39,7 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PropertyResetListener;
@@ -151,7 +152,7 @@ public class FolderAnimationManager {
         final float yDistance = initialY - lp.y;
 
         // Set up the Folder background.
-        final int finalColor = Themes.getAttrColor(mContext, android.R.attr.colorPrimary);
+        final int finalColor = Themes.getAttrColor(mContext, R.attr.folderFillColor);
         final int initialColor = setColorAlphaBound(
                 finalColor, mPreviewBackground.getBackgroundAlpha());
         mFolderBackground.mutate();
@@ -165,7 +166,7 @@ public class FolderAnimationManager {
                 Math.round((totalOffsetX + initialSize) / initialScale),
                 Math.round((paddingOffsetY + initialSize) / initialScale));
         Rect endRect = new Rect(0, 0, lp.width, lp.height);
-        float finalRadius = Utilities.pxFromDp(2, mContext.getResources().getDisplayMetrics());
+        float finalRadius = ResourceUtils.pxFromDp(2, mContext.getResources().getDisplayMetrics());
 
         // Create the animators.
         AnimatorSet a = new AnimatorSet();
