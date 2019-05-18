@@ -30,6 +30,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.ColorUtils;
+import android.util.Log;
 import android.util.SparseIntArray;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.R;
@@ -99,6 +100,12 @@ public class AdaptiveIconGenerator {
                 }
                 isBackgroundWhite = true;
                 extractee = aid.getForeground();
+            }
+
+            if (extractee == null) {
+                Log.e("AdaptiveIconGenerator", "extractee is null, skipping.");
+                onExitLoop();
+                return;
             }
 
             LauncherIcons li = LauncherIcons.obtain(context);
