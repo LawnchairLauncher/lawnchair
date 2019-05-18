@@ -53,7 +53,14 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         if (icon == null) return false;
         if (mLauncher.getNavigationModel() == ZERO_BUTTON) return true;
         final UiObject2 navBar = mLauncher.waitForSystemUiObject("navigation_bar_frame");
-        return icon.getVisibleBounds().bottom < navBar.getVisibleBounds().top;
+        if (icon.getVisibleBounds().bottom >= navBar.getVisibleBounds().top) return false;
+        if (iconIntersectsWithSearchBox(allAppsContainer, icon)) return false;
+        return true;
+    }
+
+    private boolean iconIntersectsWithSearchBox(UiObject2 allAppsContainer, UiObject2 icon) {
+        return Rect.intersects(icon.getVisibleBounds(),
+                getSearchBox(allAppsContainer).getVisibleBounds());
     }
 
     /**
@@ -68,7 +75,10 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to get app icon on all apps")) {
             final UiObject2 allAppsContainer = verifyActiveContainer();
-            allAppsContainer.setGestureMargins(0, 0, 0,
+            allAppsContainer.setGestureMargins(
+                    0,
+                    getSearchBox(allAppsContainer).getVisibleBounds().bottom + 1,
+                    0,
                     ResourceUtils.getNavbarSize(ResourceUtils.NAVBAR_PORTRAIT_BOTTOM_SIZE,
                             mLauncher.getResources()) + 1);
             final BySelector appIconSelector = AppIcon.getAppIconSelector(appName, mLauncher);
@@ -98,9 +108,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to scroll back in all apps")) {
             final UiObject2 allAppsContainer = verifyActiveContainer();
-            final UiObject2 searchBox =
-                    mLauncher.waitForObjectInContainer(allAppsContainer,
-                            "search_container_all_apps");
+            final UiObject2 searchBox = getSearchBox(allAppsContainer);
 
             int attempts = 0;
             final Rect margins = new Rect(0, searchBox.getVisibleBounds().bottom + 1, 0, 5);
@@ -141,6 +149,12 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                 verifyActiveContainer();
             }
         }
+        mLauncher.assertTrue("Couldn't scroll app icon to not intersect with the search box",
+                !iconIntersectsWithSearchBox(allAppsContainer, appIcon));
+    }
+
+    private UiObject2 getSearchBox(UiObject2 allAppsContainer) {
+        return mLauncher.waitForObjectInContainer(allAppsContainer, "search_container_all_apps");
     }
 
     /**
