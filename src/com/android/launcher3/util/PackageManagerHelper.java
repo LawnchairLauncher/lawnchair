@@ -172,6 +172,11 @@ public class PackageManagerHelper {
         }
     }
 
+    public static Intent getStyleWallpapersIntent(Context context) {
+        return new Intent(Intent.ACTION_SET_WALLPAPER).setComponent(
+                new ComponentName(context.getString(R.string.wallpaper_picker_package),
+                "com.android.customization.picker.CustomizationPickerActivity"));
+    }
 
     /**
      * Starts the details activity for {@code info}

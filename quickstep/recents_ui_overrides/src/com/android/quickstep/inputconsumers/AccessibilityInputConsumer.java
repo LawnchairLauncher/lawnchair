@@ -23,6 +23,7 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
 import android.content.Context;
+import android.graphics.RectF;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.Display;
@@ -46,6 +47,7 @@ public class AccessibilityInputConsumer extends DelegateInputConsumer {
     private final VelocityTracker mVelocityTracker;
     private final MotionPauseDetector mMotionPauseDetector;
     private final boolean mAllowLongClick;
+    private final RectF mSwipeTouchRegion;
 
     private final float mMinGestureDistance;
     private final float mMinFlingVelocity;
@@ -55,13 +57,15 @@ public class AccessibilityInputConsumer extends DelegateInputConsumer {
     private float mTotalY;
 
     public AccessibilityInputConsumer(Context context, ISystemUiProxy systemUiProxy,
-            boolean allowLongClick, InputConsumer delegate, InputMonitorCompat inputMonitor) {
+            boolean allowLongClick, InputConsumer delegate, InputMonitorCompat inputMonitor,
+            RectF swipeTouchRegion) {
         super(delegate, inputMonitor);
         mSystemUiProxy = systemUiProxy;
         mVelocityTracker = VelocityTracker.obtain();
         mMinGestureDistance = context.getResources()
                 .getDimension(R.dimen.accessibility_gesture_min_swipe_distance);
         mMinFlingVelocity = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
+        mSwipeTouchRegion = swipeTouchRegion;
 
         mMotionPauseDetector = new MotionPauseDetector(context);
         mAllowLongClick = allowLongClick;
@@ -98,10 +102,11 @@ public class AccessibilityInputConsumer extends DelegateInputConsumer {
             }
             case ACTION_POINTER_DOWN: {
                 if (mState == STATE_INACTIVE) {
-                    if (mDelegate.allowInterceptByParent()) {
+                    int pointerIndex = ev.getActionIndex();
+                    if (mSwipeTouchRegion.contains(ev.getX(pointerIndex), ev.getY(pointerIndex))
+                            && mDelegate.allowInterceptByParent()) {
                         setActive(ev);
 
-                        int pointerIndex = ev.getActionIndex();
                         mActivePointerId = ev.getPointerId(pointerIndex);
                         mDownY = ev.getY(pointerIndex);
                     } else {

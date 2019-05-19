@@ -27,11 +27,13 @@ import android.app.prediction.AppTargetId;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.UserHandle;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
 import com.android.launcher3.model.AppLaunchTracker;
@@ -97,11 +99,21 @@ public class PredictionAppTracker extends AppLaunchTracker {
                 new AppPredictionContext.Builder(mContext)
                         .setUiSurface(client.id)
                         .setPredictedTargetCount(count)
+                        .setExtras(getAppPredictionContextExtras(client))
                         .build());
         predictor.registerPredictionUpdates(mContext.getMainExecutor(),
                 PredictionUiStateManager.INSTANCE.get(mContext).appPredictorCallback(client));
         predictor.requestPredictionUpdate();
         return predictor;
+    }
+
+    /**
+     * Override to add custom extras.
+     */
+    @WorkerThread
+    @Nullable
+    public Bundle getAppPredictionContextExtras(Client client){
+        return null;
     }
 
     @WorkerThread

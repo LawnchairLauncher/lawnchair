@@ -16,7 +16,7 @@
 
 package com.android.launcher3.dragndrop;
 
-import static com.android.launcher3.ItemInfoWithIcon.FLAG_ICON_BADGED;
+import static com.android.launcher3.Utilities.getBadge;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -24,7 +24,6 @@ import android.animation.FloatArrayEvaluator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.TargetApi;
-import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -37,7 +36,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -45,11 +43,11 @@ import android.view.View;
 
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.FirstFrameAnimatorHelper;
@@ -64,7 +62,7 @@ import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
-public class DragView extends View {
+public class DragView extends View implements LauncherStateManager.StateListener {
     private static final ColorMatrix sTempMatrix1 = new ColorMatrix();
     private static final ColorMatrix sTempMatrix2 = new ColorMatrix();
 
@@ -176,6 +174,27 @@ public class DragView extends View {
         setElevation(getResources().getDimension(R.dimen.drag_elevation));
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mLauncher.getStateManager().addStateListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mLauncher.getStateManager().removeStateListener(this);
+    }
+
+    @Override
+    public void onStateTransitionStart(LauncherState toState) { }
+
+    @Override
+    public void onStateTransitionComplete(LauncherState finalState) {
+        setVisibility((finalState == LauncherState.NORMAL
+                || finalState == LauncherState.SPRING_LOADED) ? VISIBLE : INVISIBLE);
+    }
+
     /**
      * Initialize {@code #mIconDrawable} if the item can be represented using
      * an {@link AdaptiveIconDrawable} or {@link FolderAdaptiveIcon}.
@@ -195,7 +214,6 @@ public class DragView extends View {
         new Handler(workerLooper).postAtFrontOfQueue(new Runnable() {
             @Override
             public void run() {
-                LauncherAppState appState = LauncherAppState.getInstance(mLauncher);
                 Object[] outObj = new Object[1];
                 int w = mBitmap.getWidth();
                 int h = mBitmap.getHeight();
@@ -211,7 +229,7 @@ public class DragView extends View {
                     // Badge is applied after icon normalization so the bounds for badge should not
                     // be scaled down due to icon normalization.
                     Rect badgeBounds = new Rect(bounds);
-                    mBadge = getBadge(info, appState, outObj[0]);
+                    mBadge = getBadge(mLauncher, info, outObj[0]);
                     mBadge.setBounds(badgeBounds);
 
                     // Do not draw the background in case of folder as its translucent
@@ -305,40 +323,6 @@ public class DragView extends View {
         }
 
         invalidate();
-    }
-
-    /**
-     * For apps icons and shortcut icons that have badges, this method creates a drawable that can
-     * later on be rendered on top of the layers for the badges. For app icons, work profile badges
-     * can only be applied. For deep shortcuts, when dragged from the pop up container, there's no
-     * badge. When dragged from workspace or folder, it may contain app AND/OR work profile badge
-     **/
-
-    @TargetApi(Build.VERSION_CODES.O)
-    private Drawable getBadge(ItemInfo info, LauncherAppState appState, Object obj) {
-        int iconSize = appState.getInvariantDeviceProfile().iconBitmapSize;
-        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-            boolean iconBadged = (info instanceof ItemInfoWithIcon)
-                    && (((ItemInfoWithIcon) info).runtimeStatusFlags & FLAG_ICON_BADGED) > 0;
-            if ((info.id == ItemInfo.NO_ID && !iconBadged)
-                    || !(obj instanceof ShortcutInfo)) {
-                // The item is not yet added on home screen.
-                return new FixedSizeEmptyDrawable(iconSize);
-            }
-            ShortcutInfo si = (ShortcutInfo) obj;
-            LauncherIcons li = LauncherIcons.obtain(appState.getContext());
-            Bitmap badge = li.getShortcutInfoBadge(si, appState.getIconCache()).iconBitmap;
-            li.recycle();
-            float badgeSize = mLauncher.getResources().getDimension(R.dimen.profile_badge_size);
-            float insetFraction = (iconSize - badgeSize) / iconSize;
-            return new InsetDrawable(new FastBitmapDrawable(badge),
-                    insetFraction, insetFraction, 0, 0);
-        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
-            return ((FolderAdaptiveIcon) obj).getBadge();
-        } else {
-            return mLauncher.getPackageManager()
-                    .getUserBadgedIcon(new FixedSizeEmptyDrawable(iconSize), info.user);
-        }
     }
 
     @Override
@@ -624,26 +608,6 @@ public class DragView extends View {
 
         public void animateToPos(float value) {
             mSpring.animateToFinalPosition(Utilities.boundToRange(value, -mDelta, mDelta));
-        }
-    }
-
-    private static class FixedSizeEmptyDrawable extends ColorDrawable {
-
-        private final int mSize;
-
-        public FixedSizeEmptyDrawable(int size) {
-            super(Color.TRANSPARENT);
-            mSize = size;
-        }
-
-        @Override
-        public int getIntrinsicHeight() {
-            return mSize;
-        }
-
-        @Override
-        public int getIntrinsicWidth() {
-            return mSize;
         }
     }
 }

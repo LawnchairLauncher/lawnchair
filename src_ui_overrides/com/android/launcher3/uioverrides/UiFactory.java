@@ -18,6 +18,9 @@ package com.android.launcher3.uioverrides;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentSender;
+import android.os.Bundle;
 import android.os.CancellationSignal;
 
 import com.android.launcher3.DeviceProfile;
@@ -79,4 +82,18 @@ public class UiFactory {
     public static RotationMode getRotationMode(DeviceProfile dp) {
         return RotationMode.NORMAL;
     }
+
+    public static boolean startIntentSenderForResult(Activity activity, IntentSender intent,
+            int requestCode, Intent fillInIntent, int flagsMask, int flagsValues, int extraFlags,
+            Bundle options) {
+        return false;
+    }
+
+    public static boolean startActivityForResult(Activity activity, Intent intent, int requestCode,
+            Bundle options) {
+        return false;
+    }
+
+    public static void resetPendingActivityResults(Launcher launcher, int requestCode) { }
+
 }

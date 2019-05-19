@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -47,6 +48,7 @@ import androidx.annotation.Nullable;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Configurator;
+import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
@@ -56,6 +58,7 @@ import com.android.systemui.shared.system.QuickStepContract;
 
 import org.junit.Assert;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Deque;
@@ -195,7 +198,7 @@ public final class LauncherInstrumentation {
         return NavigationModel.THREE_BUTTON;
     }
 
-    public static boolean needSlowGestures() {
+    public static boolean isAvd() {
         return Build.MODEL.contains("Cuttlefish");
     }
 
@@ -212,7 +215,22 @@ public final class LauncherInstrumentation {
         };
     }
 
+    private void dumpViewHierarchy() {
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        try {
+            mDevice.dumpWindowHierarchy(stream);
+            stream.flush();
+            stream.close();
+            for (String line : stream.toString().split("\\r?\\n")) {
+                Log.e(TAG, line.trim());
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "error dumping XML to logcat", e);
+        }
+    }
+
     private void fail(String message) {
+        dumpViewHierarchy();
         Assert.fail("http://go/tapl : " + getContextDescription() + message);
     }
 
@@ -363,10 +381,10 @@ public final class LauncherInstrumentation {
                         ? NORMAL_STATE_ORDINAL : BACKGROUND_APP_STATE_ORDINAL;
                 final Point displaySize = getRealDisplaySize();
 
-                swipeViaMovePointer(
+                swipeToState(
                         displaySize.x / 2, displaySize.y - 1,
                         displaySize.x / 2, 0,
-                        finalState, ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
+                        ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, finalState);
             }
         } else {
             log(action = "clicking home button");
@@ -530,6 +548,14 @@ public final class LauncherInstrumentation {
     }
 
     @NonNull
+    UiObject2 waitForLauncherObjectByClass(String clazz) {
+        final BySelector selector = getLauncherObjectSelectorByClass(clazz);
+        final UiObject2 object = mDevice.wait(Until.findObject(selector), WAIT_TIME_MS);
+        assertNotNull("Can't find a launcher object; selector: " + selector, object);
+        return object;
+    }
+
+    @NonNull
     UiObject2 waitForFallbackLauncherObject(String resName) {
         final BySelector selector = getFallbackLauncherObjectSelector(resName);
         final UiObject2 object = mDevice.wait(Until.findObject(selector), WAIT_TIME_MS);
@@ -539,6 +565,10 @@ public final class LauncherInstrumentation {
 
     BySelector getLauncherObjectSelector(String resName) {
         return By.res(getLauncherPackageName(), resName);
+    }
+
+    BySelector getLauncherObjectSelectorByClass(String clazz) {
+        return By.pkg(getLauncherPackageName()).clazz(clazz);
     }
 
     BySelector getFallbackLauncherObjectSelector(String resName) {
@@ -563,18 +593,63 @@ public final class LauncherInstrumentation {
                 () -> mDevice.swipe(startX, startY, endX, endY, steps));
     }
 
-    void swipeViaMovePointer(
-            int startX, int startY, int endX, int endY, int expectedState, int steps) {
-        changeStateViaGesture(startX, startY, endX, endY, expectedState, () -> {
-            final long downTime = SystemClock.uptimeMillis();
-            final Point start = new Point(startX, startY);
-            final Point end = new Point(endX, endY);
-            sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start);
-            final long endTime = movePointer(downTime, downTime, steps * GESTURE_STEP_MS, start,
-                    end);
-            sendPointer(
-                    downTime, endTime, MotionEvent.ACTION_UP, end);
-        });
+    void swipeToState(int startX, int startY, int endX, int endY, int steps, int expectedState) {
+        changeStateViaGesture(startX, startY, endX, endY, expectedState,
+                () -> linearGesture(startX, startY, endX, endY, steps));
+    }
+
+    void scroll(UiObject2 container, Direction direction, float percent, Rect margins, int steps) {
+        final Rect rect = container.getVisibleBounds();
+        if (margins != null) {
+            rect.left += margins.left;
+            rect.top += margins.top;
+            rect.right -= margins.right;
+            rect.bottom -= margins.bottom;
+        }
+
+        final int startX;
+        final int startY;
+        final int endX;
+        final int endY;
+
+        switch (direction) {
+            case UP: {
+                startX = endX = rect.centerX();
+                final int vertCenter = rect.centerY();
+                final float halfGestureHeight = rect.height() * percent / 2.0f;
+                startY = (int) (vertCenter - halfGestureHeight);
+                endY = (int) (vertCenter + halfGestureHeight);
+            }
+            break;
+            case DOWN: {
+                startX = endX = rect.centerX();
+                final int vertCenter = rect.centerY();
+                final float halfGestureHeight = rect.height() * percent / 2.0f;
+                startY = (int) (vertCenter + halfGestureHeight);
+                endY = (int) (vertCenter - halfGestureHeight);
+            }
+            break;
+            default:
+                fail("Unsupported direction");
+                return;
+        }
+
+        executeAndWaitForEvent(
+                () -> linearGesture(startX, startY, endX, endY, steps),
+                event -> TestProtocol.SCROLL_FINISHED_MESSAGE.equals(event.getClassName()),
+                "Didn't receive a scroll end message: " + startX + ", " + startY
+                        + ", " + endX + ", " + endY);
+    }
+
+    // Inject a swipe gesture. Inject exactly 'steps' motion points, incrementing event time by a
+    // fixed interval each time.
+    private void linearGesture(int startX, int startY, int endX, int endY, int steps) {
+        final long downTime = SystemClock.uptimeMillis();
+        final Point start = new Point(startX, startY);
+        final Point end = new Point(endX, endY);
+        sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start);
+        final long endTime = movePointer(downTime, downTime, steps * GESTURE_STEP_MS, start, end);
+        sendPointer(downTime, endTime, MotionEvent.ACTION_UP, end);
     }
 
     private void changeStateViaGesture(int startX, int startY, int endX, int endY,
@@ -688,10 +763,7 @@ public final class LauncherInstrumentation {
     }
 
     static void sleep(int duration) {
-        try {
-            Thread.sleep(duration);
-        } catch (InterruptedException e) {
-        }
+        SystemClock.sleep(duration);
     }
 
     int getEdgeSensitivityWidth() {

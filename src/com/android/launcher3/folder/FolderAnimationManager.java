@@ -35,6 +35,8 @@ import android.util.Property;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 
+import androidx.core.graphics.ColorUtils;
+
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Launcher;
@@ -152,7 +154,8 @@ public class FolderAnimationManager {
         final float yDistance = initialY - lp.y;
 
         // Set up the Folder background.
-        final int finalColor = Themes.getAttrColor(mContext, R.attr.folderFillColor);
+        final int finalColor = ColorUtils.setAlphaComponent(
+                Themes.getAttrColor(mContext, R.attr.folderFillColor), 255);
         final int initialColor = setColorAlphaBound(
                 finalColor, mPreviewBackground.getBackgroundAlpha());
         mFolderBackground.mutate();
