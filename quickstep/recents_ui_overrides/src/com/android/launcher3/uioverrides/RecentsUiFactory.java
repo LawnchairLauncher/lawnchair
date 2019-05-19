@@ -42,6 +42,7 @@ import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchCon
 import com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.QuickSwitchTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.TransposedQuickSwitchTouchController;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
@@ -148,6 +149,9 @@ public abstract class RecentsUiFactory {
             if (launcher.getDeviceProfile().isVerticalBarLayout()) {
                 list.add(new OverviewToAllAppsTouchController(launcher));
                 list.add(new LandscapeEdgeSwipeController(launcher));
+                if (mode.hasGestures) {
+                    list.add(new TransposedQuickSwitchTouchController(launcher));
+                }
             } else {
                 list.add(new PortraitStatesTouchController(launcher,
                         mode.hasGestures /* allowDragToOverview */));

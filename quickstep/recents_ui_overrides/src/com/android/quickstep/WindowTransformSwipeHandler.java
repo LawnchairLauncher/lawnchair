@@ -175,7 +175,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         RECENTS(1, STATE_SCALED_CONTROLLER_RECENTS | STATE_CAPTURE_SCREENSHOT
                 | STATE_SCREENSHOT_VIEW_SHOWN, true, false, ContainerType.TASKSWITCHER, true),
 
-        NEW_TASK(0, STATE_START_NEW_TASK, false, true, ContainerType.APP, true),
+        NEW_TASK(0, STATE_START_NEW_TASK | STATE_CAPTURE_SCREENSHOT, false, true,
+                ContainerType.APP, true),
 
         LAST_TASK(0, STATE_RESUME_LAST_TASK, false, true, ContainerType.APP, false);
 
@@ -319,7 +320,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
         mStateCallback.addCallback(STATE_RESUME_LAST_TASK | STATE_APP_CONTROLLER_RECEIVED,
                 this::resumeLastTask);
-        mStateCallback.addCallback(STATE_START_NEW_TASK | STATE_APP_CONTROLLER_RECEIVED,
+        mStateCallback.addCallback(STATE_START_NEW_TASK | STATE_SCREENSHOT_CAPTURED,
                 this::startNewTask);
 
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_APP_CONTROLLER_RECEIVED
@@ -503,6 +504,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private void setupRecentsViewUi() {
         if (mContinuingLastGesture) {
+            updateSysUiFlags(mCurrentShift.value);
             return;
         }
         mRecentsView.onGestureAnimationStart(mRunningTaskId);
@@ -676,15 +678,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                     HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
             }
         }
-        // Update insets of the non-running tasks, as we might switch to them.
-        int runningTaskIndex = mRecentsView == null ? -1 : mRecentsView.getRunningTaskIndex();
-        if (runningTaskIndex >= 0) {
-            for (int i = 0; i < mRecentsView.getTaskViewCount(); i++) {
-                if (i != runningTaskIndex || !mRecentsAnimationWrapper.hasTargets()) {
-                    mRecentsView.getTaskViewAt(i).setFullscreenProgress(1 - mCurrentShift.value);
-                }
-            }
-        }
 
         if (mLauncherTransitionController == null || mLauncherTransitionController
                 .getAnimationPlayer().isStarted()) {
@@ -705,12 +698,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private void updateSysUiFlags(float windowProgress) {
         if (mRecentsView != null) {
+            TaskView centermostTask = mRecentsView.getTaskViewAt(mRecentsView
+                    .getPageNearestToCenterOfScreen());
+            int centermostTaskFlags = centermostTask == null ? 0
+                    : centermostTask.getThumbnail().getSysUiStatusNavFlags();
+            boolean useHomeScreenFlags = windowProgress > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD;
             // We will handle the sysui flags based on the centermost task view.
-            mRecentsAnimationWrapper.setWindowThresholdCrossed(true);
-            int sysuiFlags = windowProgress > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD
-                    ? 0
-                    : mRecentsView.getTaskViewAt(mRecentsView.getPageNearestToCenterOfScreen())
-                            .getThumbnail().getSysUiStatusNavFlags();
+            mRecentsAnimationWrapper.setWindowThresholdCrossed(centermostTaskFlags != 0
+                    || useHomeScreenFlags);
+            int sysuiFlags = useHomeScreenFlags ? 0 : centermostTaskFlags;
             mActivity.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, sysuiFlags);
         }
     }

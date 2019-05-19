@@ -72,7 +72,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
@@ -191,6 +190,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private static final String RUNTIME_STATE = "launcher.state";
     // Type: PendingRequestArgs
     private static final String RUNTIME_STATE_PENDING_REQUEST_ARGS = "launcher.request_args";
+    // Type: int
+    private static final String RUNTIME_STATE_PENDING_REQUEST_CODE = "launcher.request_code";
     // Type: ActivityResultInfo
     private static final String RUNTIME_STATE_PENDING_ACTIVITY_RESULT = "launcher.activity_result";
     // Type: SparseArray<Parcelable>
@@ -264,6 +265,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * {@link #startActivityForResult(Intent, int)} or {@link #requestPermissions(String[], int)}
      */
     private PendingRequestArgs mPendingRequestArgs;
+    // Request id for any pending activity result
+    private int mPendingActivityRequestCode = -1;
 
     public ViewGroupFocusHelper mFocusHandler;
 
@@ -303,6 +306,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         LauncherAppState app = LauncherAppState.getInstance(this);
         mOldConfig = new Configuration(getResources().getConfiguration());
         mModel = app.setLauncher(this);
+        mRotationHelper = new RotationHelper(this);
         InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
         initDeviceProfile(idp);
         idp.addOnChangeListener(this);
@@ -325,7 +329,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         setupViews();
         mPopupDataProvider = new PopupDataProvider(this);
 
-        mRotationHelper = new RotationHelper(this);
         mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
 
         boolean internalStateHandled = InternalStateHandler.handleCreate(this, getIntent());
@@ -396,12 +399,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 }
             }
         });
-
-        if (FeatureFlags.FAKE_LANDSCAPE_UI.get()) {
-            WindowManager.LayoutParams lp = getWindow().getAttributes();
-            lp.rotationAnimation = WindowManager.LayoutParams.ROTATION_ANIMATION_SEAMLESS;
-            getWindow().setAttributes(lp);
-        }
     }
 
     @Override
@@ -428,9 +425,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         super.onConfigurationChanged(newConfig);
     }
 
+    private boolean supportsFakeLandscapeUI() {
+        return FeatureFlags.FAKE_LANDSCAPE_UI.get() && !mRotationHelper.homeScreenCanRotate();
+    }
+
     @Override
-    protected void reapplyUi() {
-        if (FeatureFlags.FAKE_LANDSCAPE_UI.get()) {
+    public void reapplyUi() {
+        if (supportsFakeLandscapeUI()) {
             mRotationMode = mStableDeviceProfile == null
                     ? RotationMode.NORMAL : UiFactory.getRotationMode(mDeviceProfile);
         }
@@ -486,7 +487,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
         }
 
-        if (FeatureFlags.FAKE_LANDSCAPE_UI.get() && mDeviceProfile.isVerticalBarLayout()
+        if (supportsFakeLandscapeUI()
+                && mDeviceProfile.isVerticalBarLayout()
                 && !mDeviceProfile.isMultiWindowMode) {
             mStableDeviceProfile = mDeviceProfile.inv.portraitProfile;
             mRotationMode = UiFactory.getRotationMode(mDeviceProfile);
@@ -763,6 +765,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     public void onActivityResult(
             final int requestCode, final int resultCode, final Intent data) {
+        mPendingActivityRequestCode = -1;
         handleActivityResult(requestCode, resultCode, data);
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onActivityResult(requestCode, resultCode, data);
@@ -891,7 +894,19 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
             UiFactory.onLauncherStateOrResumeChanged(this);
             AppLaunchTracker.INSTANCE.get(this).onReturnedToHome();
+            resetPendingActivityResultIfNeeded();
         }
+    }
+
+    private void resetPendingActivityResultIfNeeded() {
+        if (hasBeenResumed() && mPendingActivityRequestCode != -1 && isInState(NORMAL)) {
+            UiFactory.resetPendingActivityResults(this, mPendingActivityRequestCode);
+        }
+    }
+
+    protected void onStateSet(LauncherState state) {
+        getAppWidgetHost().setResumed(state == LauncherState.NORMAL);
+        resetPendingActivityResultIfNeeded();
     }
 
     @Override
@@ -1010,6 +1025,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (requestArgs != null) {
             setWaitingForResult(requestArgs);
         }
+        mPendingActivityRequestCode = savedState.getInt(RUNTIME_STATE_PENDING_REQUEST_CODE);
 
         mPendingActivityResult = savedState.getParcelable(RUNTIME_STATE_PENDING_ACTIVITY_RESULT);
 
@@ -1393,6 +1409,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (mPendingRequestArgs != null) {
             outState.putParcelable(RUNTIME_STATE_PENDING_REQUEST_ARGS, mPendingRequestArgs);
         }
+        outState.putInt(RUNTIME_STATE_PENDING_REQUEST_CODE, mPendingActivityRequestCode);
+
         if (mPendingActivityResult != null) {
             outState.putParcelable(RUNTIME_STATE_PENDING_ACTIVITY_RESULT, mPendingActivityResult);
         }
@@ -1449,17 +1467,29 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public void startActivityForResult(Intent intent, int requestCode, Bundle options) {
-        super.startActivityForResult(intent, requestCode, options);
+        if (requestCode != -1) {
+            mPendingActivityRequestCode = requestCode;
+        }
+        if (requestCode == -1
+                || !UiFactory.startActivityForResult(this, intent, requestCode, options)) {
+            super.startActivityForResult(intent, requestCode, options);
+        }
     }
 
     @Override
-    public void startIntentSenderForResult (IntentSender intent, int requestCode,
+    public void startIntentSenderForResult(IntentSender intent, int requestCode,
             Intent fillInIntent, int flagsMask, int flagsValues, int extraFlags, Bundle options) {
-        try {
-            super.startIntentSenderForResult(intent, requestCode,
-                fillInIntent, flagsMask, flagsValues, extraFlags, options);
-        } catch (IntentSender.SendIntentException e) {
-            throw new ActivityNotFoundException();
+        if (requestCode != -1) {
+            mPendingActivityRequestCode = requestCode;
+        }
+        if (requestCode == -1 || !UiFactory.startIntentSenderForResult(this, intent, requestCode,
+                fillInIntent, flagsMask, flagsValues, extraFlags, options)) {
+            try {
+                super.startIntentSenderForResult(intent, requestCode,
+                        fillInIntent, flagsMask, flagsValues, extraFlags, options);
+            } catch (IntentSender.SendIntentException e) {
+                throw new ActivityNotFoundException();
+            }
         }
     }
 
