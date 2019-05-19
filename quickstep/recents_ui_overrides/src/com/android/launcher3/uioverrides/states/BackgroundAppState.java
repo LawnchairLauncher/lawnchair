@@ -17,14 +17,13 @@ package com.android.launcher3.uioverrides.states;
 
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 
-import android.os.RemoteException;
-
 import com.android.launcher3.Launcher;
 import com.android.launcher3.allapps.AllAppsTransitionController;
-import com.android.quickstep.RecentsModel;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
-import com.android.systemui.shared.recents.ISystemUiProxy;
+import com.android.quickstep.views.TaskView;
 
 /**
  * State indicating that the Launcher is behind an app
@@ -35,7 +34,11 @@ public class BackgroundAppState extends OverviewState {
             FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_DISABLE_ACCESSIBILITY;
 
     public BackgroundAppState(int id) {
-        super(id, OVERVIEW_TRANSITION_MS, STATE_FLAGS);
+        this(id, LauncherLogProto.ContainerType.TASKSWITCHER);
+    }
+
+    protected BackgroundAppState(int id, int logContainer) {
+        super(id, logContainer, OVERVIEW_TRANSITION_MS, STATE_FLAGS);
     }
 
     @Override
@@ -55,23 +58,17 @@ public class BackgroundAppState extends OverviewState {
     public ScaleAndTranslation getOverviewScaleAndTranslation(Launcher launcher) {
         // Initialize the recents view scale to what it would be when starting swipe up
         RecentsView recentsView = launcher.getOverviewPanel();
-        recentsView.getTaskSize(sTempRect);
-        int appWidth = launcher.getDragLayer().getWidth();
-        if (recentsView.shouldUseMultiWindowTaskSizeStrategy()) {
-            ISystemUiProxy sysUiProxy = RecentsModel.INSTANCE.get(launcher).getSystemUiProxy();
-            if (sysUiProxy != null) {
-                try {
-                    // Try to use the actual non-minimized app width (launcher will be resized to
-                    // the non-minimized bounds, which differs from the app width in landscape
-                    // multi-window mode
-                    appWidth = sysUiProxy.getNonMinimizedSplitScreenSecondaryBounds().width();
-                } catch (RemoteException e) {
-                    // Ignore, fall back to just using the drag layer width
-                }
-            }
+        if (recentsView.getTaskViewCount() == 0) {
+            return super.getOverviewScaleAndTranslation(launcher);
         }
-        float scale = (float) appWidth / sTempRect.width();
-        return new ScaleAndTranslation(scale, 0f, 0f);
+        TaskView dummyTask = recentsView.getTaskViewAt(recentsView.getCurrentPage());
+        return recentsView.getTempClipAnimationHelper().updateForFullscreenOverview(dummyTask)
+                .getScaleAndTranslation();
+    }
+
+    @Override
+    public float getOverviewFullscreenProgress() {
+        return 1;
     }
 
     @Override
