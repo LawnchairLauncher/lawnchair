@@ -38,6 +38,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.ArraySet;
 import android.util.AttributeSet;
@@ -768,6 +769,7 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
         Rect endRect = new Rect();
         thumbnailView.getGlobalVisibleRect(endRect);
         Rect appBounds = appTarget.sourceContainerBounds;
+        RectF currentAppRect = new RectF();
 
         SyncRtSurfaceTransactionApplierCompat surfaceApplier =
                 new SyncRtSurfaceTransactionApplierCompat(this);
@@ -810,15 +812,28 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
 
             @Override
             public void onUpdate(float percent) {
-                appMatrix.preScale(mScaleX.value, mScaleY.value,
+                Matrix m = new Matrix();
+                m.preScale(mScaleX.value, mScaleY.value,
                         appBounds.width() / 2.0f, appBounds.height() / 2.0f);
-                appMatrix.postTranslate(mTranslationX.value, mTranslationY.value);
-
+                m.postTranslate(mTranslationX.value, mTranslationY.value);
+                appMatrix.preConcat(m);
                 params[1] = new SurfaceParams(appTarget.leash, mAlpha.value, appMatrix,
                         null /* windowCrop */, getLayer(appTarget, boostedMode),
                         0 /* cornerRadius */);
                 surfaceApplier.scheduleApply(params);
+
+                m.mapRect(currentAppRect, new RectF(appBounds));
+                setViewToRect(thumbnailView, new RectF(endRect), currentAppRect);
                 appMatrix.reset();
+            }
+        });
+        remoteAppAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                thumbnailView.setTranslationY(0);
+                thumbnailView.setTranslationX(0);
+                thumbnailView.setScaleX(1);
+                thumbnailView.setScaleY(1);
             }
         });
         anim.play(remoteAppAnim);
@@ -884,6 +899,27 @@ public final class IconRecentsView extends FrameLayout implements Insettable {
             }
             delay += REMOTE_TO_RECENTS_ITEM_FADE_BETWEEN_DELAY;
         }
+    }
+
+    /**
+     * Set view properties so that the view fits to the target rect.
+     *
+     * @param view view to set
+     * @param origRect original rect that view was located
+     * @param targetRect rect to set to
+     */
+    private void setViewToRect(View view, RectF origRect, RectF targetRect) {
+        float dX = targetRect.left - origRect.left;
+        float dY = targetRect.top - origRect.top;
+        view.setTranslationX(dX);
+        view.setTranslationY(dY);
+
+        float scaleX = targetRect.width() / origRect.width();
+        float scaleY = targetRect.height() / origRect.height();
+        view.setPivotX(0);
+        view.setPivotY(0);
+        view.setScaleX(scaleX);
+        view.setScaleY(scaleY);
     }
 
     @Override

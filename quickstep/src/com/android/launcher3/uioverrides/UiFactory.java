@@ -16,6 +16,8 @@
 
 package com.android.launcher3.uioverrides;
 
+import static android.app.Activity.RESULT_CANCELED;
+
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.ALL_APPS;
@@ -31,6 +33,9 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentSender;
+import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.util.Base64;
 
@@ -43,6 +48,8 @@ import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.QuickstepAppTransitionManagerImpl;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.proxy.ProxyActivityStarter;
+import com.android.launcher3.proxy.StartActivityParams;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SysUINavigationMode;
@@ -190,6 +197,40 @@ public class UiFactory extends RecentsUiFactory {
         writer.println(Base64.encodeToString(
                 out.toByteArray(), Base64.NO_WRAP | Base64.NO_PADDING));
         return true;
+    }
+
+    public static boolean startIntentSenderForResult(Activity activity, IntentSender intent,
+            int requestCode, Intent fillInIntent, int flagsMask, int flagsValues, int extraFlags,
+            Bundle options) {
+        StartActivityParams params = new StartActivityParams(activity, requestCode);
+        params.intentSender = intent;
+        params.fillInIntent = fillInIntent;
+        params.flagsMask = flagsMask;
+        params.flagsValues = flagsValues;
+        params.extraFlags = extraFlags;
+        params.options = options;
+        ((Context) activity).startActivity(ProxyActivityStarter.getLaunchIntent(activity, params));
+        return true;
+    }
+
+    public static boolean startActivityForResult(Activity activity, Intent intent, int requestCode,
+            Bundle options) {
+        StartActivityParams params = new StartActivityParams(activity, requestCode);
+        params.intent = intent;
+        params.options = options;
+        activity.startActivity(ProxyActivityStarter.getLaunchIntent(activity, params));
+        return true;
+    }
+
+    /**
+     * Removes any active ProxyActivityStarter task and sends RESULT_CANCELED to Launcher.
+     *
+     * ProxyActivityStarter is started with clear task to reset the task after which it removes the
+     * task itself.
+     */
+    public static void resetPendingActivityResults(Launcher launcher, int requestCode) {
+        launcher.onActivityResult(requestCode, RESULT_CANCELED, null);
+        launcher.startActivity(ProxyActivityStarter.getLaunchIntent(launcher, null));
     }
 
     public static ScaleAndTranslation getOverviewScaleAndTranslationForNormalState(Launcher l) {

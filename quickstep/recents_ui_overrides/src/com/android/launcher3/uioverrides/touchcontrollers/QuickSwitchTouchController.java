@@ -57,7 +57,11 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
     private @Nullable TaskView mTaskToLaunch;
 
     public QuickSwitchTouchController(Launcher launcher) {
-        super(launcher, SwipeDetector.HORIZONTAL);
+        this(launcher, SwipeDetector.HORIZONTAL);
+    }
+
+    protected QuickSwitchTouchController(Launcher l, SwipeDetector.Direction dir) {
+        super(l, dir);
     }
 
     @Override

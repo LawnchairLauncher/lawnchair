@@ -103,19 +103,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private static final List<Rect> SYSTEM_GESTURE_EXCLUSION_RECT =
             Collections.singletonList(new Rect());
 
-    public static final Property<TaskView, Float> ZOOM_SCALE =
-            new FloatProperty<TaskView>("zoomScale") {
-                @Override
-                public void setValue(TaskView taskView, float v) {
-                    taskView.setZoomScale(v);
-                }
-
-                @Override
-                public Float get(TaskView taskView) {
-                    return taskView.mZoomScale;
-                }
-            };
-
     public static final FloatProperty<TaskView> FULLSCREEN_PROGRESS =
             new FloatProperty<TaskView>("fullscreenProgress") {
                 @Override
@@ -165,7 +152,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private IconView mIconView;
     private DigitalWellBeingToast mDigitalWellBeingToast;
     private float mCurveScale;
-    private float mZoomScale;
     private float mFullscreenProgress;
     private final FullscreenDrawParams mCurrentFullscreenParams;
     private final float mCornerRadius;
@@ -459,7 +445,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     private void resetViewTransforms() {
         setCurveScale(1);
-        setZoomScale(1);
         setTranslationX(0f);
         setTranslationY(0f);
         setTranslationZ(0);
@@ -475,7 +460,12 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     @Override
     public void onRecycle() {
         resetViewTransforms();
-        setFullscreenProgress(0);
+        // Clear any references to the thumbnail (it will be re-read either from the cache or the
+        // system on next bind)
+        mSnapshotView.setThumbnail(mTask, null);
+        if (mTask != null) {
+            mTask.thumbnail = null;
+        }
     }
 
     @Override
@@ -522,13 +512,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         return mCurveScale;
     }
 
-    public void setZoomScale(float adjacentScale) {
-        mZoomScale = adjacentScale;
-        onScaleChanged();
-    }
-
     private void onScaleChanged() {
-        float scale = mCurveScale * mZoomScale;
+        float scale = mCurveScale;
         setScaleX(scale);
         setScaleY(scale);
     }
