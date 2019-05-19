@@ -28,5 +28,7 @@
         <item name="android:windowShowWallpaper">true</item>
         <item name="folderTextColor">?attr/workspaceTextColor</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <item name="android:enforceStatusBarContrast">false</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
     </style>
 </resources>
