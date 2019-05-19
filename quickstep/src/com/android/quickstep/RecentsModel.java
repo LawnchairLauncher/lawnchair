@@ -166,6 +166,12 @@ public class RecentsModel extends TaskStackChangeListener {
         }
     }
 
+    @Override
+    public void onTaskRemoved(int taskId) {
+        Task.TaskKey dummyKey = new Task.TaskKey(taskId, 0, null, null, 0, 0);
+        mThumbnailCache.remove(dummyKey);
+    }
+
     public void setSystemUiProxy(ISystemUiProxy systemUiProxy) {
         mSystemUiProxy = systemUiProxy;
     }
