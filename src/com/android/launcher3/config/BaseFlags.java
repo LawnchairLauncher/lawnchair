@@ -58,9 +58,7 @@ abstract class BaseFlags {
     }
 
     public static boolean showFlagTogglerUi(Context context) {
-        return Utilities.IS_DEBUG_DEVICE &&
-                Settings.Global.getInt(context.getApplicationContext().getContentResolver(),
-                        Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0;
+        return Utilities.IS_DEBUG_DEVICE && Utilities.isDevelopersOptionsEnabled(context);
     }
 
     public static final boolean IS_DOGFOOD_BUILD = false;
@@ -111,7 +109,7 @@ abstract class BaseFlags {
             "Show chip hints and gleams on the overview screen");
 
     public static final TogglableFlag FAKE_LANDSCAPE_UI = new TogglableFlag(
-            "FAKE_LANDSCAPE_UI", false,
+            "FAKE_LANDSCAPE_UI", true,
             "Rotate launcher UI instead of using transposed layout");
 
     public static void initialize(Context context) {

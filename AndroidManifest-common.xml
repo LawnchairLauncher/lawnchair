@@ -154,13 +154,13 @@
 
         <!--
         The content provider for exposing various launcher grid options.
-        TODO: Enable when all apps columns are correct
         TODO: Add proper permissions
+        -->
         <provider
             android:name="com.android.launcher3.graphics.GridOptionsProvider"
             android:authorities="${packageName}.grid_control"
+            android:enabled="false"
             android:exported="true" />
-        -->
 
         <!--
         The settings activity. To extend point settings_fragment_name to appropriate fragment class

@@ -24,7 +24,6 @@ import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerTyp
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
-import android.app.ActivityManager;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -32,6 +31,7 @@ import android.view.MotionEvent;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.states.InternalStateHandler;
 
@@ -134,7 +134,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
                 && !shouldShowForWorkProfile(launcher))
                 || AbstractFloatingView.getTopOpenView(launcher) != null
                 || UserManagerCompat.getInstance(launcher).isDemoUser()
-                || ActivityManager.isRunningInTestHarness()) {
+                || Utilities.IS_RUNNING_IN_TEST_HARNESS) {
             return;
         }
 
@@ -159,7 +159,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
                 || (launcher.getSharedPrefs().getBoolean(SHELF_BOUNCE_SEEN, false)
                 && !shouldShowForWorkProfile(launcher))
                 || UserManagerCompat.getInstance(launcher).isDemoUser()
-                || ActivityManager.isRunningInTestHarness()) {
+                || Utilities.IS_RUNNING_IN_TEST_HARNESS) {
             return;
         }
 

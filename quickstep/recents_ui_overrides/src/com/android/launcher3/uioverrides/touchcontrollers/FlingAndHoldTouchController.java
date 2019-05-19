@@ -43,9 +43,11 @@ import com.android.quickstep.views.RecentsView;
 public class FlingAndHoldTouchController extends PortraitStatesTouchController {
 
     private static final long PEEK_ANIM_DURATION = 100;
+    private static final float MAX_DISPLACEMENT_PERCENT = 0.75f;
 
     private final MotionPauseDetector mMotionPauseDetector;
     private final float mMotionPauseMinDisplacement;
+    private final float mMotionPauseMaxDisplacement;
 
     private AnimatorSet mPeekAnim;
 
@@ -53,6 +55,7 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
         super(l, false /* allowDragToOverview */);
         mMotionPauseDetector = new MotionPauseDetector(l);
         mMotionPauseMinDisplacement = ViewConfiguration.get(l).getScaledTouchSlop();
+        mMotionPauseMaxDisplacement = getShiftRange() * MAX_DISPLACEMENT_PERCENT;
     }
 
     @Override
@@ -101,7 +104,9 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
 
     @Override
     public boolean onDrag(float displacement, MotionEvent event) {
-        mMotionPauseDetector.setDisallowPause(-displacement < mMotionPauseMinDisplacement);
+        float upDisplacement = -displacement;
+        mMotionPauseDetector.setDisallowPause(upDisplacement < mMotionPauseMinDisplacement
+                || upDisplacement > mMotionPauseMaxDisplacement);
         mMotionPauseDetector.addPosition(displacement, event.getEventTime());
         return super.onDrag(displacement, event);
     }

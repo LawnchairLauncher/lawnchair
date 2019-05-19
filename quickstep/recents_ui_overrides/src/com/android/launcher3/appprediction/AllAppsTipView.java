@@ -19,7 +19,6 @@ package com.android.launcher3.appprediction;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.quickstep.logging.UserEventDispatcherExtension.ALL_APPS_PREDICTION_TIPS;
 
-import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.CornerPathEffect;
 import android.graphics.Paint;
@@ -39,6 +38,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.FloatingHeaderView;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.compat.UserManagerCompat;
@@ -152,7 +152,7 @@ public class AllAppsTipView extends AbstractFloatingView {
                 || !launcher.isInState(ALL_APPS)
                 || hasSeenAllAppsTip(launcher)
                 || UserManagerCompat.getInstance(launcher).isDemoUser()
-                || ActivityManager.isRunningInTestHarness()) {
+                || Utilities.IS_RUNNING_IN_TEST_HARNESS) {
             return false;
         }
 

@@ -18,8 +18,8 @@ package com.android.launcher3.uioverrides.touchcontrollers;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ACCESSIBLE;
 import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
-import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -231,7 +231,8 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         } else {
             mFlingBlockCheck.onEvent();
         }
-        mCurrentAnimation.setPlayFraction(totalDisplacement * mProgressMultiplier);
+        mCurrentAnimation.setPlayFraction(Utilities.boundToRange(
+                totalDisplacement * mProgressMultiplier, 0, 1));
 
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             if (mRecentsView.getCurrentPage() != 0 || isGoingUp) {

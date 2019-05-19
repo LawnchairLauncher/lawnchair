@@ -226,7 +226,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
             // TODO(b/118266305): Temporarily disable splitscreen for secondary display while new
             // implementation is enabled
             return !activity.getDeviceProfile().isMultiWindowMode
-                    && displayId == DEFAULT_DISPLAY;
+                    && (displayId == -1 || displayId == DEFAULT_DISPLAY);
         }
 
         @Override
