@@ -37,7 +37,7 @@ import com.android.launcher3.TestProtocol;
  */
 public final class Workspace extends Home {
     private static final float FLING_SPEED =
-            LauncherInstrumentation.needSlowGestures() ? 1500.0F : 3500.0F;
+            LauncherInstrumentation.isAvd() ? 1500.0F : 3500.0F;
     private static final int DRAG_DURACTION = 2000;
     private final UiObject2 mHotseat;
 
@@ -65,13 +65,14 @@ public final class Workspace extends Home {
             LauncherInstrumentation.log(
                     "switchToAllApps: swipeHeight = " + swipeHeight + ", slop = "
                             + mLauncher.getTouchSlop());
-            mLauncher.swipe(
+
+            mLauncher.swipeToState(
                     start.x,
                     start.y,
                     start.x,
                     start.y - swipeHeight - mLauncher.getTouchSlop(),
-                    ALL_APPS_STATE_ORDINAL
-            );
+                    60,
+                    ALL_APPS_STATE_ORDINAL);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "swiped to all apps")) {

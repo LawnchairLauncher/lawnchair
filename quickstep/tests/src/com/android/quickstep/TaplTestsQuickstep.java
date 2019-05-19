@@ -44,17 +44,12 @@ import com.android.quickstep.views.RecentsView;
 
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestWatcher;
 import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class TaplTestsQuickstep extends AbstractQuickStepTest {
-    @Rule
-    public TestWatcher mFailureWatcher = new TaplTestsLauncher3.FailureWatcher(mDevice);
-
     @Before
     public void setUp() throws Exception {
         super.setUp();

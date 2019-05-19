@@ -18,6 +18,7 @@ package com.android.launcher3.logging;
 
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -76,8 +77,12 @@ public class EventLogArray {
         nextIndex = (nextIndex + 1) % logs.length;
     }
 
+    public void clear() {
+        Arrays.setAll(logs, (i) -> null);
+    }
+
     public void dump(String prefix, PrintWriter writer) {
-        writer.println(prefix + name + " event history:");
+        writer.println(prefix + "EventLog (" + name + ") history:");
         SimpleDateFormat sdf = new SimpleDateFormat("  HH:mm:ss.SSSZ  ", Locale.US);
         Date date = new Date();
 
