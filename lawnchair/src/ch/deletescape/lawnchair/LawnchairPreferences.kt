@@ -91,9 +91,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val blurRadius by FloatPref("pref_blurRadius", lawnchairConfig.defaultBlurStrength, updateBlur)
 
     // Theme
-    private var iconPack by StringPref("pref_icon_pack", lawnchairConfig.defaultIconPack, reloadIconPacks)
+    private var iconPack by StringPref("pref_icon_pack", "", reloadIconPacks)
     val iconPacks = object : MutableListPref<String>("pref_iconPacks", reloadIconPacks,
-            if (!TextUtils.isEmpty(iconPack)) listOf(iconPack) else emptyList()) {
+            if (!TextUtils.isEmpty(iconPack)) listOf(iconPack) else lawnchairConfig.defaultIconPacks.asList()) {
 
         override fun unflattenValue(value: String) = value
     }

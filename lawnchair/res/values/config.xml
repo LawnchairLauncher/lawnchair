@@ -21,7 +21,7 @@
     <bool name="config_default_enable_blur">false</bool>
     <!-- The default blur strength -->
     <item format="float" type="dimen" name="config_default_blur_strength">75</item>
-    <!-- The default icon pack to use; empty = system icons -->
+    <!-- (Deprecated) The default icon pack to use; empty = system icons -->
     <string name="config_default_icon_pack" translatable="false"/>
     <!-- Wether or not adaptive icons should be generated for legacy icons -->
     <bool name="config_enable_legacy_treatment">true</bool>
@@ -43,4 +43,8 @@
     ch.deletescape.lawnchair.colors.WallpaperSecondaryColorResolver
     ch.deletescape.lawnchair.colors.WallpaperTertiaryColorResolver -->
     <string name="config_default_color_resolver" translatable="false">ch.deletescape.lawnchair.colors.PixelAccentResolver</string>
+    <!-- The default icon packs to use -->
+    <string-array name="config_default_icon_packs">
+        <item>@string/config_default_icon_pack</item>
+    </string-array>
 </resources>
