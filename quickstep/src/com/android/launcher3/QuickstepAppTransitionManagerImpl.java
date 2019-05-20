@@ -476,6 +476,16 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
 
         float shapeRevealDuration = APP_LAUNCH_DURATION * SHAPE_PROGRESS_DURATION;
 
+        final float startCrop;
+        final float endCrop;
+        if (mDeviceProfile.isVerticalBarLayout()) {
+            startCrop = windowTargetBounds.height();
+            endCrop = windowTargetBounds.width();
+        } else {
+            startCrop = windowTargetBounds.width();
+            endCrop = windowTargetBounds.height();
+        }
+
         final float windowRadius = mDeviceProfile.isMultiWindowMode
                 ? 0 : getWindowCornerRadius(mLauncher.getResources());
         appAnimator.addUpdateListener(new MultiValueUpdateListener() {
@@ -485,10 +495,10 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                     EXAGGERATED_EASE);
             FloatProp mIconAlpha = new FloatProp(1f, 0f, APP_LAUNCH_ALPHA_START_DELAY,
                     alphaDuration, LINEAR);
-            FloatProp mCropHeight = new FloatProp(windowTargetBounds.width(),
-                    windowTargetBounds.height(), 0, APP_LAUNCH_DURATION, EXAGGERATED_EASE);
-            FloatProp mWindowRadius = new FloatProp(windowTargetBounds.width() / 2f,
-                    windowRadius, 0, APP_LAUNCH_DURATION, EXAGGERATED_EASE);
+            FloatProp mCroppedSize = new FloatProp(startCrop, endCrop, 0, APP_LAUNCH_DURATION,
+                    EXAGGERATED_EASE);
+            FloatProp mWindowRadius = new FloatProp(startCrop / 2f, windowRadius, 0,
+                    APP_LAUNCH_DURATION, EXAGGERATED_EASE);
 
             @Override
             public void onUpdate(float percent) {
@@ -496,10 +506,16 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 float iconWidth = bounds.width() * mIconScale.value;
                 float iconHeight = bounds.height() * mIconScale.value;
 
-                // Animate the window crop so that it starts off as a square, and then reveals
-                // horizontally.
-                int windowWidth = windowTargetBounds.width();
-                int windowHeight = (int) mCropHeight.value;
+                // Animate the window crop so that it starts off as a square.
+                final int windowWidth;
+                final int windowHeight;
+                if (mDeviceProfile.isVerticalBarLayout()) {
+                    windowWidth = (int) mCroppedSize.value;
+                    windowHeight = windowTargetBounds.height();
+                } else {
+                    windowWidth = windowTargetBounds.width();
+                    windowHeight = (int) mCroppedSize.value;
+                }
                 crop.set(0, 0, windowWidth, windowHeight);
 
                 // Scale the app window to match the icon size.
@@ -522,6 +538,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 float transY0 = temp.top - offsetY;
 
                 float croppedHeight = (windowTargetBounds.height() - crop.height()) * scale;
+                float croppedWidth = (windowTargetBounds.width() - crop.width()) * scale;
                 SurfaceParams[] params = new SurfaceParams[targets.length];
                 for (int i = targets.length - 1; i >= 0; i--) {
                     RemoteAnimationTargetCompat target = targets[i];
@@ -535,7 +552,11 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                         alpha = 1f - mIconAlpha.value;
                         cornerRadius = mWindowRadius.value;
                         matrix.mapRect(currentBounds, targetBounds);
-                        currentBounds.bottom -= croppedHeight;
+                        if (mDeviceProfile.isVerticalBarLayout()) {
+                            currentBounds.right -= croppedWidth;
+                        } else {
+                            currentBounds.bottom -= croppedHeight;
+                        }
                         mFloatingView.update(currentBounds, mIconAlpha.value, percent, 0f,
                                 cornerRadius * scale, true /* isOpening */);
                     } else {
