@@ -593,6 +593,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     protected void handleClose(boolean animate) {
         mIsOpen = false;
 
+        if (!animate && mCurrentAnimator != null && mCurrentAnimator.isRunning()) {
+            mCurrentAnimator.cancel();
+        }
+
         if (isEditingName()) {
             mFolderName.dispatchBackKey();
         }

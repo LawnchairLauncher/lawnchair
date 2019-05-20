@@ -17,6 +17,7 @@ package com.android.launcher3.uioverrides.states;
 
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -39,6 +40,13 @@ public class BackgroundAppState extends OverviewState {
 
     protected BackgroundAppState(int id, int logContainer) {
         super(id, logContainer, OVERVIEW_TRANSITION_MS, STATE_FLAGS);
+    }
+
+    @Override
+    public void onStateEnabled(Launcher launcher) {
+        RecentsView rv = launcher.getOverviewPanel();
+        rv.setOverviewStateEnabled(true);
+        AbstractFloatingView.closeAllOpenViews(launcher, false);
     }
 
     @Override
