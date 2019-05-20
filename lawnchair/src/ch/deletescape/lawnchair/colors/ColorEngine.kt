@@ -140,8 +140,8 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
                     ALLAPPS_QSB_BG -> {
                         DrawerQsbAutoResolver(ColorResolver.Config(key, engine, engine::onColorChanged))
                     }
-                    ACCENT -> engine.createColorResolver(key, context.resources.getString(R.string.config_default_color_resolver))
-                    else -> engine.createColorResolver(key, context.resources.getString(R.string.config_default_color_resolver))
+                    ACCENT -> engine.createColorResolver(key, LawnchairConfig.getInstance(context).defaultColorResolver)
+                    else -> engine.createColorResolver(key, LawnchairConfig.getInstance(context).defaultColorResolver)
                 }
             }
         }
