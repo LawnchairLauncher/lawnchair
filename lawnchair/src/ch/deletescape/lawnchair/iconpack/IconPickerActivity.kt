@@ -37,6 +37,7 @@ import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.iconpack.EditIconActivity.Companion.EXTRA_ENTRY
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
+import ch.deletescape.lawnchair.views.FadingImageView
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
 import com.android.launcher3.compat.LauncherAppsCompat
@@ -308,8 +309,8 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
             private var iconLoader: IconItem? = null
                 set(value) {
                     field?.callback = null
-                    value?.callback = this
                     field = value
+                    field?.callback = this
                 }
             private var name = "Unknown"
 
@@ -328,18 +329,13 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
             }
 
             fun bind(item: IconItem) {
+                (itemView as FadingImageView).image = null
                 iconLoader = item
                 iconLoader?.loadIcon()
-                itemView.clearAnimation()
-                itemView.alpha = 0f
-                (itemView as ImageView).setImageDrawable(null)
-                // We're just being optimistic here, but starting the animation in the callback
-                // results in empty view holders in some cases and places.
-                itemView.animate().alpha(1f).setDuration(125).start()
             }
 
             override fun onIconLoaded(drawable: Drawable, name: String) {
-                (itemView as ImageView).setImageDrawable(drawable)
+                (itemView as FadingImageView).image = drawable
                 this.name = name
             }
 
