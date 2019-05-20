@@ -203,6 +203,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mBackground.getBounds(outBounds);
     }
 
+    public float getBackgroundStrokeWidth() {
+        return mBackground.getStrokeWidth();
+    }
+
     public Folder getFolder() {
         return mFolder;
     }

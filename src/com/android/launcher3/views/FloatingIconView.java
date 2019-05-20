@@ -259,8 +259,6 @@ public class FloatingIconView extends View implements
                 mFgSpringX.animateToFinalPosition(diffX);
                 mFgSpringY.animateToFinalPosition(diffY);
             }
-
-
         }
         invalidate();
         invalidateOutline();
@@ -368,10 +366,13 @@ public class FloatingIconView extends View implements
                 drawable = v.getBackground();
             }
         } else {
+            boolean isFolderIcon = v instanceof FolderIcon;
+            int width = isFolderIcon ? v.getWidth() : lp.width;
+            int height = isFolderIcon ? v.getHeight() : lp.height;
             if (supportsAdaptiveIcons) {
-                drawable = Utilities.getFullDrawable(mLauncher, info, lp.width, lp.height,
-                        false, sTmpObjArray);
-                if ((drawable instanceof AdaptiveIconDrawable)) {
+                drawable = Utilities.getFullDrawable(mLauncher, info, width, height, false,
+                        sTmpObjArray);
+                if (drawable instanceof AdaptiveIconDrawable) {
                     mBadge = getBadge(mLauncher, info, sTmpObjArray[0]);
                 } else {
                     // The drawable we get back is not an adaptive icon, so we need to use the
@@ -383,8 +384,8 @@ public class FloatingIconView extends View implements
                     // Similar to DragView, we simply use the BubbleTextView icon here.
                     drawable = btvIcon;
                 } else {
-                    drawable = Utilities.getFullDrawable(mLauncher, info, lp.width, lp.height,
-                            false, sTmpObjArray);
+                    drawable = Utilities.getFullDrawable(mLauncher, info, width, height, false,
+                            sTmpObjArray);
                 }
             }
         }
@@ -412,13 +413,6 @@ public class FloatingIconView extends View implements
                 }
                 mForeground = foreground;
 
-                if (mForeground instanceof ShiftedBitmapDrawable && v instanceof FolderIcon) {
-                    ShiftedBitmapDrawable sbd = (ShiftedBitmapDrawable) mForeground;
-                    ((FolderIcon) v).getPreviewBounds(sTmpRect);
-                    sbd.setShiftX(sbd.getShiftX() - sTmpRect.left);
-                    sbd.setShiftY(sbd.getShiftY() - sTmpRect.top);
-                }
-
                 final int originalHeight = lp.height;
                 final int originalWidth = lp.width;
 
@@ -434,13 +428,25 @@ public class FloatingIconView extends View implements
 
                 if (mBadge != null) {
                     mBadge.setBounds(mStartRevealRect);
-                    if (!isOpening) {
+                    if (!isOpening && !isFolderIcon) {
                         DRAWABLE_ALPHA.set(mBadge, 0);
                     }
-
                 }
 
-                if (!isFolderIcon) {
+                if (isFolderIcon) {
+                    ((FolderIcon) v).getPreviewBounds(sTmpRect);
+                    float bgStroke = ((FolderIcon) v).getBackgroundStrokeWidth();
+                    if (mForeground instanceof ShiftedBitmapDrawable) {
+                        ShiftedBitmapDrawable sbd = (ShiftedBitmapDrawable) mForeground;
+                        sbd.setShiftX(sbd.getShiftX() - sTmpRect.left - bgStroke);
+                        sbd.setShiftY(sbd.getShiftY() - sTmpRect.top - bgStroke);
+                    }
+                    if (mBadge instanceof ShiftedBitmapDrawable) {
+                        ShiftedBitmapDrawable sbd = (ShiftedBitmapDrawable) mBadge;
+                        sbd.setShiftX(sbd.getShiftX() - sTmpRect.left - bgStroke);
+                        sbd.setShiftY(sbd.getShiftY() - sTmpRect.top - bgStroke);
+                    }
+                } else {
                     Utilities.scaleRectAboutCenter(mStartRevealRect,
                             IconShape.getNormalizationScale());
                 }
@@ -665,7 +671,7 @@ public class FloatingIconView extends View implements
             }
         });
 
-        if (mBadge != null) {
+        if (mBadge != null && !(mOriginalIcon instanceof FolderIcon)) {
             ObjectAnimator badgeFade = ObjectAnimator.ofInt(mBadge, DRAWABLE_ALPHA, 255);
             badgeFade.addUpdateListener(valueAnimator -> invalidate());
             fade.play(badgeFade);
@@ -691,7 +697,6 @@ public class FloatingIconView extends View implements
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     folderIcon.setBackgroundVisible(true);
-                    folderIcon.animateBgShadowAndStroke();
                     if (folderIcon.hasDot()) {
                         folderIcon.animateDotScale(0, 1f);
                     }
