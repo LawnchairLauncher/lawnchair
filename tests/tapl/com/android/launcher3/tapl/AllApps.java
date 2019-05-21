@@ -18,6 +18,7 @@ package com.android.launcher3.tapl;
 
 import static com.android.launcher3.tapl.LauncherInstrumentation.NavigationModel.ZERO_BUTTON;
 
+import android.graphics.Point;
 import android.graphics.Rect;
 
 import androidx.annotation.NonNull;
@@ -54,13 +55,14 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         if (mLauncher.getNavigationModel() == ZERO_BUTTON) return true;
         final UiObject2 navBar = mLauncher.waitForSystemUiObject("navigation_bar_frame");
         if (icon.getVisibleBounds().bottom >= navBar.getVisibleBounds().top) return false;
-        if (iconIntersectsWithSearchBox(allAppsContainer, icon)) return false;
+        if (iconCenterInSearchBox(allAppsContainer, icon)) return false;
         return true;
     }
 
-    private boolean iconIntersectsWithSearchBox(UiObject2 allAppsContainer, UiObject2 icon) {
-        return Rect.intersects(icon.getVisibleBounds(),
-                getSearchBox(allAppsContainer).getVisibleBounds());
+    private boolean iconCenterInSearchBox(UiObject2 allAppsContainer, UiObject2 icon) {
+        final Point iconCenter = icon.getVisibleCenter();
+        return getSearchBox(allAppsContainer).getVisibleBounds().contains(
+                iconCenter.x, iconCenter.y);
     }
 
     /**
@@ -150,7 +152,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
             }
         }
         mLauncher.assertTrue("Couldn't scroll app icon to not intersect with the search box",
-                !iconIntersectsWithSearchBox(allAppsContainer, appIcon));
+                !iconCenterInSearchBox(allAppsContainer, appIcon));
     }
 
     private UiObject2 getSearchBox(UiObject2 allAppsContainer) {
