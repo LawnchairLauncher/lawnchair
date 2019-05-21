@@ -322,4 +322,11 @@
     <string name="pref_fonts_change_global_font">שנה</string>
     <string name="pref_fonts_category_drawer">מגירת היישומים</string>
     <string name="pref_fonts_drawer_icons">שמות אפליקציות</string>
+    <string name="pref_fonts_drawer_tabs">שמות כרטיסיות</string>
+    <string name="pref_fonts_find_fonts">מצא גופנים</string>
+    <string name="pref_fonts_add_fonts">הוספת גופנים</string>
+    <string name="pref_fonts_add_fonts_summary">OTF ו-TTF נתמכים</string>
+    <string name="pref_fonts_missing_font">גופן לא נמצא</string>
+    <string name="about_translate">תרגומים</string>
+    <string name="pref_show_dev_options">הצג בהגדרות</string>
 </resources>
