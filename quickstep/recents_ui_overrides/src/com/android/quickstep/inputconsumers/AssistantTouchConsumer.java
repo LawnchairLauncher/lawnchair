@@ -221,31 +221,35 @@ public class AssistantTouchConsumer extends DelegateInputConsumer
     private void updateAssistantProgress() {
         if (!mLaunchedAssistant) {
             mLastProgress = Math.min(mDistance * 1f / mDistThreshold, 1) * mTimeFraction;
-            updateAssistant(SWIPE);
+            try {
+                if (mDistance >= mDistThreshold && mTimeFraction >= 1) {
+                    mSysUiProxy.onAssistantGestureCompletion(0);
+                    startAssistantInternal(SWIPE);
+
+                    Bundle args = new Bundle();
+                    args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
+                    mSysUiProxy.startAssistant(args);
+                    mLaunchedAssistant = true;
+                } else {
+                    mSysUiProxy.onAssistantProgress(mLastProgress);
+                }
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed to send SysUI start/send assistant progress: " + mLastProgress,
+                    e);
+            }
         }
     }
 
-    private void updateAssistant(int gestureType) {
-        try {
-            mSysUiProxy.onAssistantProgress(mLastProgress);
-            if (gestureType == FLING || (mDistance >= mDistThreshold && mTimeFraction >= 1)) {
-                UserEventDispatcher.newInstance(mContext)
-                    .logActionOnContainer(gestureType, mDirection, NAVBAR);
-                Bundle args = new Bundle();
-                args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
+    private void startAssistantInternal(int gestureType) {
+        UserEventDispatcher.newInstance(mContext)
+            .logActionOnContainer(gestureType, mDirection, NAVBAR);
 
-                BaseDraggingActivity launcherActivity = mActivityControlHelper.getCreatedActivity();
-                if (launcherActivity != null) {
-                    launcherActivity.getRootView().performHapticFeedback(
-                        13, // HapticFeedbackConstants.GESTURE_END
-                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                }
-
-                mSysUiProxy.startAssistant(args);
-                mLaunchedAssistant = true;
-            }
-        } catch (RemoteException e) {
-            Log.w(TAG, "Failed to send SysUI start/send assistant progress: " + mLastProgress, e);
+        BaseDraggingActivity launcherActivity = mActivityControlHelper
+            .getCreatedActivity();
+        if (launcherActivity != null) {
+            launcherActivity.getRootView().performHapticFeedback(
+                13, // HapticFeedbackConstants.GESTURE_END
+                HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
         }
     }
 
@@ -271,7 +275,18 @@ public class AssistantTouchConsumer extends DelegateInputConsumer
     public void onDragEnd(float velocity, boolean fling) {
         if (fling && !mLaunchedAssistant) {
             mLastProgress = 1;
-            updateAssistant(FLING);
+            try {
+                mSysUiProxy.onAssistantGestureCompletion(velocity);
+                startAssistantInternal(FLING);
+
+                Bundle args = new Bundle();
+                args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
+                mSysUiProxy.startAssistant(args);
+                mLaunchedAssistant = true;
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed to send SysUI start/send assistant progress: " + mLastProgress,
+                    e);
+            }
         }
     }
 }
