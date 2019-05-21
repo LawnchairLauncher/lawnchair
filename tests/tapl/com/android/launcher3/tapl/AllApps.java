@@ -52,11 +52,24 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
     private boolean hasClickableIcon(
             UiObject2 allAppsContainer, UiObject2 appListRecycler, BySelector appIconSelector) {
         final UiObject2 icon = appListRecycler.findObject(appIconSelector);
-        if (icon == null) return false;
-        if (mLauncher.getNavigationModel() == ZERO_BUTTON) return true;
-        final UiObject2 navBar = mLauncher.waitForSystemUiObject("navigation_bar_frame");
-        if (icon.getVisibleBounds().bottom >= navBar.getVisibleBounds().top) return false;
-        if (iconCenterInSearchBox(allAppsContainer, icon)) return false;
+        if (icon == null) {
+            LauncherInstrumentation.log("hasClickableIcon: icon not visible");
+            return false;
+        }
+        final Rect iconBounds = icon.getVisibleBounds();
+        LauncherInstrumentation.log("hasClickableIcon: icon bounds: " + iconBounds);
+        if (mLauncher.getNavigationModel() != ZERO_BUTTON) {
+            final UiObject2 navBar = mLauncher.waitForSystemUiObject("navigation_bar_frame");
+            if (iconBounds.bottom >= navBar.getVisibleBounds().top) {
+                LauncherInstrumentation.log("hasClickableIcon: icon intersects with nav bar");
+                return false;
+            }
+        }
+        if (iconCenterInSearchBox(allAppsContainer, icon)) {
+            LauncherInstrumentation.log("hasClickableIcon: icon center is under search box");
+            return false;
+        }
+        LauncherInstrumentation.log("hasClickableIcon: icon is clickable");
         return true;
     }
 
@@ -76,7 +89,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
     @NonNull
     public AppIcon getAppIcon(String appName) {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to get app icon on all apps")) {
+                "want to get app icon " + appName + " on all apps")) {
             final UiObject2 allAppsContainer = verifyActiveContainer();
             final UiObject2 appListRecycler = mLauncher.waitForObjectInContainer(allAppsContainer,
                     "apps_list_view");
@@ -112,6 +125,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
     private void scrollBackToBeginning() {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to scroll back in all apps")) {
+            LauncherInstrumentation.log("Scrolling to the beginning");
             final UiObject2 allAppsContainer = verifyActiveContainer();
             final UiObject2 searchBox = getSearchBox(allAppsContainer);
 
