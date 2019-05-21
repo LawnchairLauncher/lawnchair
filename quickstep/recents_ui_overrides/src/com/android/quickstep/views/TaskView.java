@@ -633,6 +633,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
      * @param progress: 0 = show icon and no insets; 1 = don't show icon and show full insets.
      */
     public void setFullscreenProgress(float progress) {
+        progress = Utilities.boundToRange(progress, 0, 1);
         if (progress == mFullscreenProgress) {
             return;
         }
