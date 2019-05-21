@@ -23,6 +23,7 @@ import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
+import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction.UPLEFT;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction.UPRIGHT;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.FLING;
@@ -81,7 +82,7 @@ public class AssistantTouchConsumer extends DelegateInputConsumer
     private final float mDistThreshold;
     private final long mTimeThreshold;
     private final int mAngleThreshold;
-    private final float mSlop;
+    private final float mSquaredSlop;
     private final ISystemUiProxy mSysUiProxy;
     private final Context mContext;
     private final SwipeDetector mSwipeDetector;
@@ -96,7 +97,8 @@ public class AssistantTouchConsumer extends DelegateInputConsumer
         mDistThreshold = res.getDimension(R.dimen.gestures_assistant_drag_threshold);
         mTimeThreshold = res.getInteger(R.integer.assistant_gesture_min_time_threshold);
         mAngleThreshold = res.getInteger(R.integer.assistant_gesture_corner_deg_threshold);
-        mSlop = QuickStepContract.getQuickStepDragSlopPx();
+        float slop = QuickStepContract.getQuickStepDragSlopPx();
+        mSquaredSlop = slop * slop;
         mActivityControlHelper = activityControlHelper;
         mSwipeDetector = new SwipeDetector(mContext, this, SwipeDetector.VERTICAL);
         mSwipeDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_POSITIVE, false);
@@ -155,7 +157,8 @@ public class AssistantTouchConsumer extends DelegateInputConsumer
 
                 if (!mPassedSlop) {
                     // Normal gesture, ensure we pass the slop before we start tracking the gesture
-                    if (Math.hypot(mLastPos.x - mDownPos.x, mLastPos.y - mDownPos.y) > mSlop) {
+                    if (squaredHypot(mLastPos.x - mDownPos.x, mLastPos.y - mDownPos.y)
+                            > mSquaredSlop) {
 
                         mPassedSlop = true;
                         mStartDragPos.set(mLastPos.x, mLastPos.y);

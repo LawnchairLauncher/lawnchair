@@ -20,6 +20,8 @@ import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAG
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
+import static com.android.launcher3.Utilities.squaredHypot;
+import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
@@ -281,7 +283,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private boolean mHandleTaskStackChanges;
     private boolean mSwipeDownShouldLaunchApp;
     private boolean mTouchDownToStartHome;
-    private final int mTouchSlop;
+    private final float mSquaredTouchSlop;
     private int mDownX;
     private int mDownY;
 
@@ -339,7 +341,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
         mTaskTopMargin = getResources()
                 .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
-        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+        mSquaredTouchSlop = squaredTouchSlop(context);
 
         mEmptyIcon = context.getDrawable(R.drawable.ic_empty_recents);
         mEmptyIcon.setCallback(this);
@@ -496,7 +498,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             case MotionEvent.ACTION_MOVE:
                 // Passing the touch slop will not allow dismiss to home
                 if (mTouchDownToStartHome &&
-                        (isHandlingTouch() || Math.hypot(mDownX - x, mDownY - y) > mTouchSlop)) {
+                        (isHandlingTouch() ||
+                                squaredHypot(mDownX - x, mDownY - y) > mSquaredTouchSlop)) {
                     mTouchDownToStartHome = false;
                 }
                 break;
