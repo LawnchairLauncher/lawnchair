@@ -187,6 +187,13 @@ public class TaskThumbnailCache {
     }
 
     /**
+     * Removes the cached thumbnail for the given task.
+     */
+    public void remove(Task.TaskKey key) {
+        mCache.remove(key);
+    }
+
+    /**
      * @return The cache size.
      */
     public int getCacheSize() {

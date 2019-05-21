@@ -18,7 +18,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/task_item_height"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:clipChildren="false">
     <com.android.quickstep.views.TaskThumbnailIconView
         android:id="@+id/task_icon_and_thumbnail"
         android:layout_width="match_parent"
