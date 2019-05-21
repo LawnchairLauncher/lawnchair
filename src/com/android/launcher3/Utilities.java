@@ -61,6 +61,7 @@ import android.util.Pair;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -724,6 +725,15 @@ public final class Utilities {
             str.append(value).append(",");
         }
         return str.toString();
+    }
+
+    public static float squaredHypot(float x, float y) {
+        return x * x + y * y;
+    }
+
+    public static float squaredTouchSlop(Context context) {
+        float slop = ViewConfiguration.get(context).getScaledTouchSlop();
+        return slop * slop;
     }
 
     private static class FixedSizeEmptyDrawable extends ColorDrawable {
