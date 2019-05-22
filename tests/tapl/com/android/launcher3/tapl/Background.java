@@ -86,9 +86,10 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                 final int swipeHeight = mLauncher.getTestInfo(getSwipeHeightRequestName()).
                         getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
 
-                mLauncher.swipe(
+                mLauncher.swipeToState(
                         centerX, startY, centerX,
                         startY - swipeHeight - mLauncher.getTouchSlop(),
+                        60,
                         expectedState);
                 break;
             }
