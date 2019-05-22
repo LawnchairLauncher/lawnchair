@@ -481,6 +481,7 @@ public class FloatingIconView extends View implements
                 setClipToOutline(true);
             } else {
                 setBackground(finalDrawable);
+                setClipToOutline(false);
             }
 
             if (!loadIconSignal.isCanceled()) {
@@ -751,5 +752,6 @@ public class FloatingIconView extends View implements
         mFgTransX = 0;
         mFgSpringY.cancel();
         mBadge = null;
+        sTmpObjArray[0] = null;
     }
 }
