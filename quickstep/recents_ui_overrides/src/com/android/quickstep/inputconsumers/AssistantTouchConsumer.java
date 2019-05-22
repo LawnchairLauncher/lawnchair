@@ -41,6 +41,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
@@ -97,7 +98,9 @@ public class AssistantTouchConsumer extends DelegateInputConsumer
         mDistThreshold = res.getDimension(R.dimen.gestures_assistant_drag_threshold);
         mTimeThreshold = res.getInteger(R.integer.assistant_gesture_min_time_threshold);
         mAngleThreshold = res.getInteger(R.integer.assistant_gesture_corner_deg_threshold);
-        float slop = QuickStepContract.getQuickStepDragSlopPx();
+
+        float slop = ViewConfiguration.get(context).getScaledTouchSlop();
+
         mSquaredSlop = slop * slop;
         mActivityControlHelper = activityControlHelper;
         mSwipeDetector = new SwipeDetector(mContext, this, SwipeDetector.VERTICAL);
@@ -273,7 +276,7 @@ public class AssistantTouchConsumer extends DelegateInputConsumer
 
     @Override
     public void onDragEnd(float velocity, boolean fling) {
-        if (fling && !mLaunchedAssistant) {
+        if (fling && !mLaunchedAssistant && mState != STATE_DELEGATE_ACTIVE) {
             mLastProgress = 1;
             try {
                 mSysUiProxy.onAssistantGestureCompletion(velocity);
