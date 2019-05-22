@@ -29,6 +29,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.logging.LoggerUtils.newTarget;
+import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
 
@@ -75,8 +76,6 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
-
-import androidx.annotation.Nullable;
 
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
@@ -153,6 +152,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Predicate;
+
+import androidx.annotation.Nullable;
 
 /**
  * Default launcher application.
@@ -406,6 +407,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         super.onEnterAnimationComplete();
         UiFactory.onEnterAnimationComplete(this);
         mAllAppsController.highlightWorkTabIfNecessary();
+        mRotationHelper.setCurrentTransitionRequest(REQUEST_NONE);
     }
 
     @Override

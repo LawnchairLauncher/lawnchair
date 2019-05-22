@@ -20,6 +20,7 @@ import static com.android.launcher3.Utilities.getBadge;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
+import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -169,6 +170,7 @@ public class FloatingIconView extends View implements
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         getViewTreeObserver().addOnGlobalLayoutListener(this);
+        mLauncher.getRotationHelper().setCurrentTransitionRequest(REQUEST_LOCK);
     }
 
     @Override
