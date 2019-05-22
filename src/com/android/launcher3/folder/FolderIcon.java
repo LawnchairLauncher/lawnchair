@@ -102,7 +102,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private List<BubbleTextView> mCurrentPreviewItems = new ArrayList<>();
 
     boolean mAnimating = false;
-    private Rect mTempBounds = new Rect();
 
     private float mSlop;
 
