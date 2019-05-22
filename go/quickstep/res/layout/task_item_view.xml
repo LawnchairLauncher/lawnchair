@@ -41,5 +41,6 @@
         android:layout_gravity="center_vertical"
         android:singleLine="true"
         android:textColor="@android:color/white"
-        android:textSize="24sp"/>
+        android:textSize="24sp"
+        style="@style/TextTitle"/>
 </com.android.quickstep.views.TaskItemView>
