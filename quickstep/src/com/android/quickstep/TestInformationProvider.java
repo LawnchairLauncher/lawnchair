@@ -112,11 +112,11 @@ public class TestInformationProvider extends ContentProvider {
                     break;
                 }
 
-                case TestProtocol.REQUEST_ENABLE_DRAG_LOGGING:
+                case TestProtocol.REQUEST_ENABLE_DEBUG_TRACING:
                     TestProtocol.sDebugTracing = true;
                     break;
 
-                case TestProtocol.REQUEST_DISABLE_DRAG_LOGGING:
+                case TestProtocol.REQUEST_DISABLE_DEBUG_TRACING:
                     TestProtocol.sDebugTracing = false;
                     break;
             }
