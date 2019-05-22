@@ -41,6 +41,7 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.TestProtocol;
 import com.android.launcher3.Utilities;
@@ -193,11 +194,18 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+
+        // The AllAppsContainerView houses the QSB and is hence visible from the Workspace
+        // Overview states. We shouldn't intercept for the scrubber in these cases.
+        if (!mLauncher.isInState(LauncherState.ALL_APPS)) return false;
+
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             AllAppsRecyclerView rv = getActiveRecyclerView();
             if (rv != null &&
                     rv.getScrollbar().isHitInParent(ev.getX(), ev.getY(), mFastScrollerOffset)) {
                 mTouchHandler = rv.getScrollbar();
+            } else {
+                mTouchHandler = null;
             }
         }
         if (mTouchHandler != null) {
