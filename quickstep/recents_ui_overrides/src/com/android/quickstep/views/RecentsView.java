@@ -66,7 +66,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
@@ -77,7 +76,6 @@ import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils.ViewProgressProperty;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.PagedView;
@@ -95,7 +93,6 @@ import com.android.launcher3.util.OverScroller;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.ViewPool;
-import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.RecentsAnimationWrapper;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RecentsModel.TaskThumbnailChangeListener;
@@ -307,8 +304,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private boolean mShowEmptyMessage;
     private Layout mEmptyTextLayout;
     private LiveTileOverlay mLiveTileOverlay;
-
-    private FloatingIconView mFloatingIconView;
 
     private BaseActivity.MultiWindowModeChangedListener mMultiWindowModeChangedListener =
             (inMultiWindowMode) -> {
@@ -1685,12 +1680,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         } else {
             return super::onTouchEvent;
         }
-    }
-
-    public FloatingIconView getFloatingIconView(Launcher launcher, View view, RectF iconLocation) {
-        mFloatingIconView = FloatingIconView.getFloatingIconView(launcher, view,
-                true /* hideOriginal */, iconLocation, false /* isOpening */, mFloatingIconView);
-        return  mFloatingIconView;
     }
 
     public ClipAnimationHelper getTempClipAnimationHelper() {

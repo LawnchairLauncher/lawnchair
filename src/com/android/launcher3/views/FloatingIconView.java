@@ -27,6 +27,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Outline;
@@ -40,6 +41,7 @@ import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
@@ -61,6 +63,7 @@ import com.android.launcher3.graphics.ShiftedBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.shortcuts.DeepShortcutView;
+import com.android.launcher3.util.UiThreadHelper;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
@@ -148,12 +151,20 @@ public class FloatingIconView extends View implements
     private final SpringAnimation mFgSpringX;
     private float mFgTransX;
 
-    private FloatingIconView(Launcher launcher) {
-        super(launcher);
-        mLauncher = launcher;
+    public FloatingIconView(Context context) {
+        this(context, null);
+    }
+
+    public FloatingIconView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public FloatingIconView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        mLauncher = Launcher.getLauncher(context);
         mBlurSizeOutline = getResources().getDimensionPixelSize(
                 R.dimen.blur_size_medium_outline);
-        mListenerView = new ListenerView(launcher, null);
+        mListenerView = new ListenerView(context, attrs);
 
         mFgSpringX = new SpringAnimation(this, mFgTransXProperty)
                 .setSpring(new SpringForce()
@@ -350,6 +361,7 @@ public class FloatingIconView extends View implements
     }
 
     @WorkerThread
+    @SuppressWarnings("WrongThread")
     private void getIcon(View v, ItemInfo info, boolean isOpening,
             Runnable onIconLoadedRunnable, CancellationSignal loadIconSignal) {
         final LayoutParams lp = (LayoutParams) getLayoutParams();
@@ -396,7 +408,7 @@ public class FloatingIconView extends View implements
                 && finalDrawable instanceof AdaptiveIconDrawable;
         int iconOffset = getOffsetForIconBounds(finalDrawable);
 
-        new Handler(Looper.getMainLooper()).post(() -> {
+        mLauncher.getMainExecutor().execute(() -> {
             if (isAdaptiveIcon) {
                 mIsAdaptiveIcon = true;
                 boolean isFolderIcon = finalDrawable instanceof FolderAdaptiveIcon;
@@ -505,6 +517,7 @@ public class FloatingIconView extends View implements
     }
 
     @WorkerThread
+    @SuppressWarnings("WrongThread")
     private int getOffsetForIconBounds(Drawable drawable) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O ||
                 !(drawable instanceof AdaptiveIconDrawable)) {
@@ -515,7 +528,7 @@ public class FloatingIconView extends View implements
         Rect bounds = new Rect(0, 0, lp.width + mBlurSizeOutline, lp.height + mBlurSizeOutline);
         bounds.inset(mBlurSizeOutline / 2, mBlurSizeOutline / 2);
 
-        try (LauncherIcons li = LauncherIcons.obtain(getContext())) {
+        try (LauncherIcons li = LauncherIcons.obtain(mLauncher)) {
             Utilities.scaleRectAboutCenter(bounds, li.getNormalizer().getScale(drawable, null));
         }
 
@@ -604,11 +617,14 @@ public class FloatingIconView extends View implements
      * @param isOpening True if this view replaces the icon for app open animation.
      */
     public static FloatingIconView getFloatingIconView(Launcher launcher, View originalView,
-            boolean hideOriginal, RectF positionOut, boolean isOpening, FloatingIconView recycle) {
-        if (recycle != null) {
-            recycle.recycle();
-        }
-        FloatingIconView view = recycle != null ? recycle : new FloatingIconView(launcher);
+            boolean hideOriginal, RectF positionOut, boolean isOpening) {
+        final DragLayer dragLayer = launcher.getDragLayer();
+        ViewGroup parent = (ViewGroup) dragLayer.getParent();
+
+        FloatingIconView view = launcher.getViewCache().getView(R.layout.floating_icon_view,
+                launcher, parent);
+        view.recycle();
+
         view.mIsVerticalBarLayout = launcher.getDeviceProfile().isVerticalBarLayout();
 
         view.mOriginalIcon = originalView;
@@ -626,16 +642,15 @@ public class FloatingIconView extends View implements
                 originalView.setVisibility(INVISIBLE);
             };
             CancellationSignal loadIconSignal = view.mLoadIconSignal;
-            new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(() -> {
+            new Handler(UiThreadHelper.getBackgroundLooper()).postAtFrontOfQueue(() -> {
                 view.getIcon(originalView, (ItemInfo) originalView.getTag(), isOpening,
                         onIconLoaded, loadIconSignal);
             });
         }
 
         // We need to add it to the overlay, but keep it invisible until animation starts..
-        final DragLayer dragLayer = launcher.getDragLayer();
         view.setVisibility(INVISIBLE);
-        ((ViewGroup) dragLayer.getParent()).addView(view);
+        parent.addView(view);
         dragLayer.addView(view.mListenerView);
         view.mListenerView.setListener(view::onListenerViewClosed);
 
@@ -714,6 +729,7 @@ public class FloatingIconView extends View implements
         ((ViewGroup) dragLayer.getParent()).removeView(this);
         dragLayer.removeView(mListenerView);
         recycle();
+        mLauncher.getViewCache().recycleView(R.layout.floating_icon_view, this);
     }
 
     private void recycle() {
