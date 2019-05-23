@@ -15,11 +15,13 @@
  */
 package com.android.quickstep.inputconsumers;
 
+import static com.android.launcher3.Utilities.squaredHypot;
+import static com.android.launcher3.Utilities.squaredTouchSlop;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.view.MotionEvent;
-import android.view.ViewConfiguration;
 
 /**
  * A dummy input consumer used when the device is still locked, e.g. from secure camera.
@@ -32,8 +34,7 @@ public class DeviceLockedInputConsumer implements InputConsumer {
 
     public DeviceLockedInputConsumer(Context context) {
         mContext = context;
-        float touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-        mTouchSlopSquared = touchSlop * touchSlop;
+        mTouchSlopSquared = squaredTouchSlop(context);
     }
 
     @Override
@@ -48,9 +49,7 @@ public class DeviceLockedInputConsumer implements InputConsumer {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mTouchDown.set(x, y);
         } else if (ev.getAction() == MotionEvent.ACTION_MOVE) {
-            float xSquared = (x - mTouchDown.x) * (x - mTouchDown.x);
-            float ySquared = (y - mTouchDown.y) * (y - mTouchDown.y);
-            if (xSquared + ySquared > mTouchSlopSquared) {
+            if (squaredHypot(x - mTouchDown.x, y - mTouchDown.y) > mTouchSlopSquared) {
                 // For now, just start the home intent so user is prompted to unlock the device.
                 mContext.startActivity(new Intent(Intent.ACTION_MAIN)
                         .addCategory(Intent.CATEGORY_HOME)

@@ -331,21 +331,29 @@ public class TouchInteractionService extends Service implements
         defaultDisplay.getRealSize(realSize);
         mSwipeTouchRegion.set(0, 0, realSize.x, realSize.y);
         if (mMode == Mode.NO_BUTTON) {
-            mSwipeTouchRegion.top = mSwipeTouchRegion.bottom - getNavbarSize(
-                    ResourceUtils.NAVBAR_VERTICAL_SIZE);
+            switch (defaultDisplay.getRotation()) {
+                case Surface.ROTATION_90:
+                case Surface.ROTATION_270:
+                    mSwipeTouchRegion.top = mSwipeTouchRegion.bottom - getNavbarSize(
+                            ResourceUtils.NAVBAR_LANDSCAPE_BOTTOM_SIZE);
+                    break;
+                default:
+                    mSwipeTouchRegion.top = mSwipeTouchRegion.bottom - getNavbarSize(
+                            ResourceUtils.NAVBAR_PORTRAIT_BOTTOM_SIZE);
+            }
         } else {
             switch (defaultDisplay.getRotation()) {
                 case Surface.ROTATION_90:
                     mSwipeTouchRegion.left = mSwipeTouchRegion.right
-                            - getNavbarSize(ResourceUtils.NAVBAR_HORIZONTAL_SIZE);
+                            - getNavbarSize(ResourceUtils.NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE);
                     break;
                 case Surface.ROTATION_270:
                     mSwipeTouchRegion.right = mSwipeTouchRegion.left
-                            + getNavbarSize(ResourceUtils.NAVBAR_HORIZONTAL_SIZE);
+                            + getNavbarSize(ResourceUtils.NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE);
                     break;
                 default:
                     mSwipeTouchRegion.top = mSwipeTouchRegion.bottom
-                            - getNavbarSize(ResourceUtils.NAVBAR_VERTICAL_SIZE);
+                            - getNavbarSize(ResourceUtils.NAVBAR_PORTRAIT_BOTTOM_SIZE);
             }
         }
     }

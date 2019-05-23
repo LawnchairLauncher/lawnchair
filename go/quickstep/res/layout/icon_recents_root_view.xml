@@ -36,5 +36,6 @@
         android:text="@string/recents_empty_message"
         android:textColor="@android:color/white"
         android:textSize="25sp"
+        style="@style/TextTitle"
         android:visibility="gone"/>
 </com.android.quickstep.views.IconRecentsView>

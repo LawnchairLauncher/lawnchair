@@ -148,6 +148,7 @@ public final class Workspace extends Home {
     static void dragIconToWorkspace(
             LauncherInstrumentation launcher, Launchable launchable, Point dest,
             String longPressIndicator) {
+        launcher.getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
         LauncherInstrumentation.log("dragIconToWorkspace: begin");
         final Point launchableCenter = launchable.getObject().getVisibleCenter();
         final long downTime = SystemClock.uptimeMillis();
@@ -162,6 +163,7 @@ public final class Workspace extends Home {
                 downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, dest);
         LauncherInstrumentation.log("dragIconToWorkspace: end");
         launcher.waitUntilGone("drop_target_bar");
+        launcher.getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
     }
 
     /**
