@@ -936,8 +936,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         } else if (endTarget == RECENTS) {
             mLiveTileOverlay.startIconAnimation();
             if (mRecentsView != null) {
-                duration = Utilities.boundToRange(mRecentsView.getScroller().getDuration(),
-                        duration, MAX_SWIPE_DURATION);
+                if (mRecentsView.getScroller().getDuration() > MAX_SWIPE_DURATION) {
+                    mRecentsView.snapToPage(mRecentsView.getNextPage(), (int) MAX_SWIPE_DURATION);
+                }
+                duration = Math.max(duration, mRecentsView.getScroller().getDuration());
             }
             if (mMode == Mode.NO_BUTTON) {
                 setShelfState(ShelfAnimState.OVERVIEW, interpolator, duration);
