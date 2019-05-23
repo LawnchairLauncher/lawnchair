@@ -197,7 +197,10 @@ public class PredictionUiStateManager implements OnGlobalLayoutListener, ItemInf
         }
     }
 
+    public boolean mDebugHadStateUpdate;
+
     private void updatePredictionStateAfterCallback() {
+        mDebugHadStateUpdate = true;
         boolean validResults = false;
         for (List l : mPredictionServicePredictions) {
             validResults |= l != null && !l.isEmpty();
