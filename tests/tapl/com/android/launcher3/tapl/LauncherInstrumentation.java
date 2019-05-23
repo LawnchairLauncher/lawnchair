@@ -16,16 +16,23 @@
 
 package com.android.launcher3.tapl;
 
-import static com.android.launcher3.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
-import static com.android.launcher3.TestProtocol.NORMAL_STATE_ORDINAL;
+import static android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
+import static android.content.pm.PackageManager.DONT_KILL_APP;
+import static android.content.pm.PackageManager.MATCH_ALL;
+import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
+
+import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
 import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 
 import android.app.ActivityManager;
 import android.app.Instrumentation;
 import android.app.UiAutomation;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.pm.ProviderInfo;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -53,7 +60,7 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
-import com.android.launcher3.TestProtocol;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.systemui.shared.system.QuickStepContract;
 
 import org.junit.Assert;
@@ -149,9 +156,10 @@ public final class LauncherInstrumentation {
                 getLauncherPackageName() :
                 targetPackage;
 
+        String testProviderAuthority = authorityPackage + ".TestInfo";
         mTestProviderUri = new Uri.Builder()
                 .scheme(ContentResolver.SCHEME_CONTENT)
-                .authority(authorityPackage + ".TestInfo")
+                .authority(testProviderAuthority)
                 .build();
 
         try {
@@ -159,6 +167,25 @@ public final class LauncherInstrumentation {
                     " android.permission.WRITE_SECURE_SETTINGS");
         } catch (IOException e) {
             fail(e.toString());
+        }
+
+
+        PackageManager pm = getContext().getPackageManager();
+        ProviderInfo pi = pm.resolveContentProvider(
+                testProviderAuthority, MATCH_ALL | MATCH_DISABLED_COMPONENTS);
+        ComponentName cn = new ComponentName(pi.packageName, pi.name);
+
+        if (pm.getComponentEnabledSetting(cn) != COMPONENT_ENABLED_STATE_ENABLED) {
+            if (TestHelpers.isInLauncherProcess()) {
+                getContext().getPackageManager().setComponentEnabledSetting(
+                        cn, COMPONENT_ENABLED_STATE_ENABLED, DONT_KILL_APP);
+            } else {
+                try {
+                    mDevice.executeShellCommand("pm enable " + cn.flattenToString());
+                } catch (IOException e) {
+                    fail(e.toString());
+                }
+            }
         }
     }
 

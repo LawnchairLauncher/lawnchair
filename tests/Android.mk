@@ -32,7 +32,7 @@ else
     LOCAL_SRC_FILES := $(call all-java-files-under, tapl) \
         ../src/com/android/launcher3/ResourceUtils.java \
         ../src/com/android/launcher3/util/SecureSettingsObserver.java \
-        ../src/com/android/launcher3/TestProtocol.java
+        ../src/com/android/launcher3/testing/TestProtocol.java
 endif
 
 LOCAL_MODULE := ub-launcher-aosp-tapl

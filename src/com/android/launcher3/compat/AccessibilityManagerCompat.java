@@ -23,7 +23,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.android.launcher3.TestProtocol;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.Utilities;
 
 import java.util.function.Consumer;

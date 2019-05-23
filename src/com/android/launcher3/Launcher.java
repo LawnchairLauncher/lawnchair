@@ -110,6 +110,7 @@ import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.states.RotationHelper;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -1782,8 +1783,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item,
             @Nullable String sourceContainer) {
-        if (com.android.launcher3.TestProtocol.sDebugTracing) {
-            android.util.Log.d(com.android.launcher3.TestProtocol.NO_START_TAG,
+        if (TestProtocol.sDebugTracing) {
+            android.util.Log.d(TestProtocol.NO_START_TAG,
                     "startActivitySafely outer");
         }
         boolean success = super.startActivitySafely(v, intent, item, sourceContainer);
