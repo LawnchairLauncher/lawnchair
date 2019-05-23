@@ -902,7 +902,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             float minFlingVelocity = mContext.getResources()
                     .getDimension(R.dimen.quickstep_fling_min_velocity);
             if (Math.abs(endVelocity) > minFlingVelocity && mTransitionDragLength > 0) {
-                if (endTarget == RECENTS) {
+                if (endTarget == RECENTS && mMode != Mode.NO_BUTTON) {
                     Interpolators.OvershootParams overshoot = new Interpolators.OvershootParams(
                             startShift, endShift, endShift, velocityPxPerMs.y,
                             mTransitionDragLength);
@@ -918,6 +918,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                     // derivative of the scroll interpolator at zero, ie. 2.
                     long baseDuration = Math.round(Math.abs(distanceToTravel / velocityPxPerMs.y));
                     duration = Math.min(MAX_SWIPE_DURATION, 2 * baseDuration);
+
+                    if (endTarget == RECENTS) {
+                        interpolator = OVERSHOOT_1_2;
+                    }
                 }
             }
         }
@@ -932,7 +936,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         } else if (endTarget == RECENTS) {
             mLiveTileOverlay.startIconAnimation();
             if (mRecentsView != null) {
-                duration = Math.max(duration, mRecentsView.getScroller().getDuration());
+                duration = Utilities.boundToRange(mRecentsView.getScroller().getDuration(),
+                        duration, MAX_SWIPE_DURATION);
             }
             if (mMode == Mode.NO_BUTTON) {
                 setShelfState(ShelfAnimState.OVERVIEW, interpolator, duration);
