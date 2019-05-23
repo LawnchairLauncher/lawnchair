@@ -24,6 +24,7 @@ import android.view.MotionEvent;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.views.RecentsView;
@@ -52,7 +53,7 @@ public class OverviewToAllAppsTouchController extends PortraitStatesTouchControl
             // In all-apps only listen if the container cannot scroll itself
             return mLauncher.getAppsView().shouldContainerScroll(ev);
         } else if (mLauncher.isInState(NORMAL)) {
-            return true;
+            return (ev.getEdgeFlags() & Utilities.EDGE_NAV_BAR) == 0;
         } else if (mLauncher.isInState(OVERVIEW)) {
             RecentsView rv = mLauncher.getOverviewPanel();
             return ev.getY() > (rv.getBottom() - rv.getPaddingBottom());

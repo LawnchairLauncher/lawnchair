@@ -845,7 +845,8 @@ public class CellLayout extends ViewGroup implements Transposable {
      * width in {@link DeviceProfile#calculateCellWidth(int, int)}.
      */
     public int getUnusedHorizontalSpace() {
-        return getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - (mCountX * mCellWidth);
+        return (mRotationMode.isTransposed ? getMeasuredHeight() : getMeasuredWidth())
+                - getPaddingLeft() - getPaddingRight() - (mCountX * mCellWidth);
     }
 
     public Drawable getScrimBackground() {
