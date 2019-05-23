@@ -127,7 +127,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         assertNotNull("OverviewTask.open returned null", task.open());
         assertTrue("Test activity didn't open from Overview", mDevice.wait(Until.hasObject(
                 By.pkg(getAppPackageName()).text("TestActivity2")),
-                LONG_WAIT_TIME_MS));
+                DEFAULT_UI_TIMEOUT));
         executeOnLauncher(launcher -> assertTrue(
                 "Launcher activity is the top activity; expecting another activity to be the top "
                         + "one",
