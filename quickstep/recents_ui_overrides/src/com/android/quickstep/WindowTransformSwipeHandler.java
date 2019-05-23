@@ -170,7 +170,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_LAUNCHER_STARTED;
 
     public enum GestureEndTarget {
-        HOME(1, STATE_SCALED_CONTROLLER_HOME, true, false, ContainerType.WORKSPACE, false),
+        HOME(1, STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT, true, false,
+                ContainerType.WORKSPACE, false),
 
         RECENTS(1, STATE_SCALED_CONTROLLER_RECENTS | STATE_CAPTURE_SCREENSHOT
                 | STATE_SCREENSHOT_VIEW_SHOWN, true, false, ContainerType.TASKSWITCHER, true),
@@ -331,9 +332,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                         | STATE_SCALED_CONTROLLER_RECENTS,
                 this::finishCurrentTransitionToRecents);
 
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_GESTURE_COMPLETED
-                        | STATE_SCALED_CONTROLLER_HOME | STATE_APP_CONTROLLER_RECEIVED
-                        | STATE_LAUNCHER_DRAWN,
+        mStateCallback.addCallback(STATE_SCREENSHOT_CAPTURED | STATE_GESTURE_COMPLETED
+                        | STATE_SCALED_CONTROLLER_HOME,
                 this::finishCurrentTransitionToHome);
         mStateCallback.addCallback(STATE_SCALED_CONTROLLER_HOME | STATE_CURRENT_TASK_FINISHED,
                 this::reset);
@@ -1251,7 +1251,14 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 if (mTaskSnapshot == null) {
                     mTaskSnapshot = controller.screenshotTask(mRunningTaskId);
                 }
-                TaskView taskView = mRecentsView.updateThumbnail(mRunningTaskId, mTaskSnapshot);
+                final TaskView taskView;
+                if (mGestureEndTarget == HOME) {
+                    // Capture the screenshot before finishing the transition to home to ensure it's
+                    // taken in the correct orientation, but no need to update the thumbnail.
+                    taskView = null;
+                } else {
+                    taskView = mRecentsView.updateThumbnail(mRunningTaskId, mTaskSnapshot);
+                }
                 if (taskView != null) {
                     // Defer finishing the animation until the next launcher frame with the
                     // new thumbnail
