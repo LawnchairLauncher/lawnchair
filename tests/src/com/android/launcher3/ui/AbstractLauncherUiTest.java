@@ -91,7 +91,6 @@ public abstract class AbstractLauncherUiTest {
 
     public static final long SHORT_UI_TIMEOUT = 300;
     public static final long DEFAULT_UI_TIMEOUT = 10000;
-    protected static final int LONG_WAIT_TIME_MS = 60000;
     private static final String TAG = "AbstractLauncherUiTest";
     private static int sScreenshotCount = 0;
 
@@ -394,7 +393,7 @@ public abstract class AbstractLauncherUiTest {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         instrumentation.getTargetContext().startActivity(intent);
         assertTrue(packageName + " didn't start",
-                mDevice.wait(Until.hasObject(By.pkg(packageName).depth(0)), LONG_WAIT_TIME_MS));
+                mDevice.wait(Until.hasObject(By.pkg(packageName).depth(0)), DEFAULT_UI_TIMEOUT));
     }
 
     protected void startTestActivity(int activityNumber) {
@@ -410,7 +409,7 @@ public abstract class AbstractLauncherUiTest {
         assertTrue(packageName + " didn't start",
                 mDevice.wait(
                         Until.hasObject(By.pkg(packageName).text("TestActivity" + activityNumber)),
-                        LONG_WAIT_TIME_MS));
+                        DEFAULT_UI_TIMEOUT));
     }
 
     protected static String resolveSystemApp(String category) {
