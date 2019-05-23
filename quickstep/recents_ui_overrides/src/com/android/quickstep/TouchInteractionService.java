@@ -22,8 +22,11 @@ import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_INP
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NAV_BAR_HIDDEN;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
@@ -79,6 +82,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
+import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 
 import java.io.FileDescriptor;
@@ -197,6 +201,8 @@ public class TouchInteractionService extends Service implements
 
         public void onSystemUiStateChanged(int stateFlags) {
             mSystemUiStateFlags = stateFlags;
+            mOverviewInteractionState.setSystemUiStateFlags(stateFlags);
+            mOverviewComponentObserver.onSystemUiStateChanged(stateFlags);
         }
 
         /** Deprecated methods **/
@@ -472,16 +478,13 @@ public class TouchInteractionService extends Service implements
 
     private boolean validSystemUiFlags() {
         return (mSystemUiStateFlags & SYSUI_STATE_NAV_BAR_HIDDEN) == 0
-                && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0;
-    }
-
-    private boolean topTaskLocked() {
-        return ActivityManagerWrapper.getInstance().isLockToAppActive();
+                && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0
+                && ((mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED) == 0
+                        || (mSystemUiStateFlags & SYSUI_STATE_OVERVIEW_DISABLED) == 0);
     }
 
     private InputConsumer newConsumer(boolean useSharedState, MotionEvent event) {
-        boolean topTaskLocked = topTaskLocked();
-        boolean isInValidSystemUiState = validSystemUiFlags() && !topTaskLocked;
+        boolean isInValidSystemUiState = validSystemUiFlags();
 
         if (!mIsUserUnlocked) {
             if (isInValidSystemUiState) {
@@ -498,13 +501,15 @@ public class TouchInteractionService extends Service implements
         if (mMode == Mode.NO_BUTTON) {
             final ActivityControlHelper activityControl =
                     mOverviewComponentObserver.getActivityControlHelper();
-            if (mAssistantAvailable && !topTaskLocked
-                    && AssistantTouchConsumer.withinTouchRegion(this, event)) {
+            if (mAssistantAvailable
+                    && !QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags)
+                    && AssistantTouchConsumer.withinTouchRegion(this, event)
+                    && !ActivityManagerWrapper.getInstance().isLockToAppActive()) {
                 base = new AssistantTouchConsumer(this, mISystemUiProxy, activityControl, base,
                         mInputMonitorCompat);
             }
 
-            if (ActivityManagerWrapper.getInstance().isScreenPinningActive()) {
+            if ((mSystemUiStateFlags & SYSUI_STATE_SCREEN_PINNING) != 0) {
                 // Note: we only allow accessibility to wrap this, and it replaces the previous
                 // base input consumer (which should be NO_OP anyway since topTaskLocked == true).
                 base = new ScreenPinnedInputConsumer(this, mISystemUiProxy, activityControl);
@@ -593,17 +598,14 @@ public class TouchInteractionService extends Service implements
             // Dump everything
             pw.println("TouchState:");
             pw.println("  navMode=" + mMode);
-            pw.println("  validSystemUiFlags=" + validSystemUiFlags()
-                    + " flags=" + mSystemUiStateFlags);
-            pw.println("  topTaskLocked=" + topTaskLocked());
+            pw.println("  validSystemUiFlags=" + validSystemUiFlags());
+            pw.println("  systemUiFlags=" + mSystemUiStateFlags);
+            pw.println("  systemUiFlagsDesc="
+                    + QuickStepContract.getSystemUiStateString(mSystemUiStateFlags));
             pw.println("  isDeviceLocked=" + mKM.isDeviceLocked());
-            pw.println("  screenPinned=" +
-                    ActivityManagerWrapper.getInstance().isScreenPinningActive());
             pw.println("  assistantAvailable=" + mAssistantAvailable);
-            pw.println("  a11yClickable="
-                    + ((mSystemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_CLICKABLE) != 0));
-            pw.println("  a11yLongClickable="
-                    + ((mSystemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE) != 0));
+            pw.println("  assistantDisabled="
+                    + QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags));
             pw.println("  resumed="
                     + mOverviewComponentObserver.getActivityControlHelper().isResumed());
             pw.println("  useSharedState=" + mConsumer.useSharedSwipeState());
