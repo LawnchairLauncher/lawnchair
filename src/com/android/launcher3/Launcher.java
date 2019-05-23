@@ -2553,4 +2553,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         void onLauncherResume();
     }
+
+    public boolean debugIsPredictionInitialized() {
+        return true;
+    }
 }

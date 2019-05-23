@@ -64,6 +64,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
             test.mDevice.pressHome();
         }
         test.waitForLauncherCondition("Launcher didn't start", launcher -> launcher != null);
+        test.waitForLauncherCondition("Prediction never had state update",
+                launcher -> launcher.debugIsPredictionInitialized());
         test.waitForState("Launcher internal state didn't switch to Home", LauncherState.NORMAL);
         test.waitForResumed("Launcher internal state is still Background");
         // Check that we switched to home.
