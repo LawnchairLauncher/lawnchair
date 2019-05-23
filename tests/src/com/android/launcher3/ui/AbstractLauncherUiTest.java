@@ -242,7 +242,7 @@ public abstract class AbstractLauncherUiTest {
      */
     protected UiObject2 scrollAndFind(UiObject2 container, BySelector condition) {
         final int margin = ResourceUtils.getNavbarSize(
-                ResourceUtils.NAVBAR_PORTRAIT_BOTTOM_SIZE, mLauncher.getResources()) + 1;
+                ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, mLauncher.getResources()) + 1;
         container.setGestureMargins(0, 0, 0, margin);
 
         int i = 0;
