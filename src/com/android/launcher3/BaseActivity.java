@@ -36,6 +36,7 @@ import com.android.launcher3.logging.UserEventDispatcher.UserEventDelegate;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.SystemUiController;
+import com.android.launcher3.util.ViewCache;
 import com.android.launcher3.views.ActivityContext;
 
 import java.io.FileDescriptor;
@@ -101,6 +102,12 @@ public abstract class BaseActivity extends Activity
     // When the recents animation is running, the visibility of the Launcher is managed by the
     // animation
     @InvisibilityFlags private int mForceInvisible;
+
+    private final ViewCache mViewCache = new ViewCache();
+
+    public ViewCache getViewCache() {
+        return mViewCache;
+    }
 
     @Override
     public DeviceProfile getDeviceProfile() {

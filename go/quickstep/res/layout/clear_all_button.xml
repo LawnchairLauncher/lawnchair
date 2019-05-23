@@ -29,5 +29,6 @@
         android:text="@string/recents_clear_all"
         android:textAllCaps="false"
         android:textColor="@color/clear_all_button_text"
-        android:textSize="14sp"/>
+        android:textSize="14sp"
+        style="@style/TextTitle"/>
 </FrameLayout>

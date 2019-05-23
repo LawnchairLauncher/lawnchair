@@ -23,6 +23,7 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
+import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.uioverrides.RecentsUiFactory.ROTATION_LANDSCAPE;
 import static com.android.launcher3.uioverrides.RecentsUiFactory.ROTATION_SEASCAPE;
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
@@ -109,7 +110,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private int mActivePointerId = INVALID_POINTER_ID;
 
     private final float mDragSlop;
-    private final float mTouchSlop;
+    private final float mSquaredTouchSlop;
 
     // Slop used to check when we start moving window.
     private boolean mPassedDragSlop;
@@ -157,7 +158,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
         mDisplayRotation = getSystemService(WindowManager.class).getDefaultDisplay().getRotation();
         mDragSlop = QuickStepContract.getQuickStepDragSlopPx();
-        mTouchSlop = QuickStepContract.getQuickStepTouchSlopPx();
+        float slop = QuickStepContract.getQuickStepTouchSlopPx();
+        mSquaredTouchSlop = slop * slop;
 
         mPassedTouchSlop = mPassedDragSlop = continuingPreviousGesture;
     }
@@ -256,7 +258,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 }
 
                 if (!mPassedTouchSlop) {
-                    if (Math.hypot(displacementX, mLastPos.y - mDownPos.y) >= mTouchSlop) {
+                    if (squaredHypot(displacementX, mLastPos.y - mDownPos.y) >= mSquaredTouchSlop) {
                         mPassedTouchSlop = true;
 
                         if (mIsDeferredDownTarget) {

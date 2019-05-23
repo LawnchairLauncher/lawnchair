@@ -27,6 +27,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Outline;
@@ -40,6 +41,7 @@ import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
@@ -61,6 +63,7 @@ import com.android.launcher3.graphics.ShiftedBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.shortcuts.DeepShortcutView;
+import com.android.launcher3.util.UiThreadHelper;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
@@ -148,12 +151,20 @@ public class FloatingIconView extends View implements
     private final SpringAnimation mFgSpringX;
     private float mFgTransX;
 
-    private FloatingIconView(Launcher launcher) {
-        super(launcher);
-        mLauncher = launcher;
+    public FloatingIconView(Context context) {
+        this(context, null);
+    }
+
+    public FloatingIconView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public FloatingIconView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        mLauncher = Launcher.getLauncher(context);
         mBlurSizeOutline = getResources().getDimensionPixelSize(
                 R.dimen.blur_size_medium_outline);
-        mListenerView = new ListenerView(launcher, null);
+        mListenerView = new ListenerView(context, attrs);
 
         mFgSpringX = new SpringAnimation(this, mFgTransXProperty)
                 .setSpring(new SpringForce()
@@ -259,8 +270,6 @@ public class FloatingIconView extends View implements
                 mFgSpringX.animateToFinalPosition(diffX);
                 mFgSpringY.animateToFinalPosition(diffY);
             }
-
-
         }
         invalidate();
         invalidateOutline();
@@ -352,6 +361,7 @@ public class FloatingIconView extends View implements
     }
 
     @WorkerThread
+    @SuppressWarnings("WrongThread")
     private void getIcon(View v, ItemInfo info, boolean isOpening,
             Runnable onIconLoadedRunnable, CancellationSignal loadIconSignal) {
         final LayoutParams lp = (LayoutParams) getLayoutParams();
@@ -368,10 +378,13 @@ public class FloatingIconView extends View implements
                 drawable = v.getBackground();
             }
         } else {
+            boolean isFolderIcon = v instanceof FolderIcon;
+            int width = isFolderIcon ? v.getWidth() : lp.width;
+            int height = isFolderIcon ? v.getHeight() : lp.height;
             if (supportsAdaptiveIcons) {
-                drawable = Utilities.getFullDrawable(mLauncher, info, lp.width, lp.height,
-                        false, sTmpObjArray);
-                if ((drawable instanceof AdaptiveIconDrawable)) {
+                drawable = Utilities.getFullDrawable(mLauncher, info, width, height, false,
+                        sTmpObjArray);
+                if (drawable instanceof AdaptiveIconDrawable) {
                     mBadge = getBadge(mLauncher, info, sTmpObjArray[0]);
                 } else {
                     // The drawable we get back is not an adaptive icon, so we need to use the
@@ -383,8 +396,8 @@ public class FloatingIconView extends View implements
                     // Similar to DragView, we simply use the BubbleTextView icon here.
                     drawable = btvIcon;
                 } else {
-                    drawable = Utilities.getFullDrawable(mLauncher, info, lp.width, lp.height,
-                            false, sTmpObjArray);
+                    drawable = Utilities.getFullDrawable(mLauncher, info, width, height, false,
+                            sTmpObjArray);
                 }
             }
         }
@@ -395,7 +408,7 @@ public class FloatingIconView extends View implements
                 && finalDrawable instanceof AdaptiveIconDrawable;
         int iconOffset = getOffsetForIconBounds(finalDrawable);
 
-        new Handler(Looper.getMainLooper()).post(() -> {
+        mLauncher.getMainExecutor().execute(() -> {
             if (isAdaptiveIcon) {
                 mIsAdaptiveIcon = true;
                 boolean isFolderIcon = finalDrawable instanceof FolderAdaptiveIcon;
@@ -412,13 +425,6 @@ public class FloatingIconView extends View implements
                 }
                 mForeground = foreground;
 
-                if (mForeground instanceof ShiftedBitmapDrawable && v instanceof FolderIcon) {
-                    ShiftedBitmapDrawable sbd = (ShiftedBitmapDrawable) mForeground;
-                    ((FolderIcon) v).getPreviewBounds(sTmpRect);
-                    sbd.setShiftX(sbd.getShiftX() - sTmpRect.left);
-                    sbd.setShiftY(sbd.getShiftY() - sTmpRect.top);
-                }
-
                 final int originalHeight = lp.height;
                 final int originalWidth = lp.width;
 
@@ -434,13 +440,25 @@ public class FloatingIconView extends View implements
 
                 if (mBadge != null) {
                     mBadge.setBounds(mStartRevealRect);
-                    if (!isOpening) {
+                    if (!isOpening && !isFolderIcon) {
                         DRAWABLE_ALPHA.set(mBadge, 0);
                     }
-
                 }
 
-                if (!isFolderIcon) {
+                if (isFolderIcon) {
+                    ((FolderIcon) v).getPreviewBounds(sTmpRect);
+                    float bgStroke = ((FolderIcon) v).getBackgroundStrokeWidth();
+                    if (mForeground instanceof ShiftedBitmapDrawable) {
+                        ShiftedBitmapDrawable sbd = (ShiftedBitmapDrawable) mForeground;
+                        sbd.setShiftX(sbd.getShiftX() - sTmpRect.left - bgStroke);
+                        sbd.setShiftY(sbd.getShiftY() - sTmpRect.top - bgStroke);
+                    }
+                    if (mBadge instanceof ShiftedBitmapDrawable) {
+                        ShiftedBitmapDrawable sbd = (ShiftedBitmapDrawable) mBadge;
+                        sbd.setShiftX(sbd.getShiftX() - sTmpRect.left - bgStroke);
+                        sbd.setShiftY(sbd.getShiftY() - sTmpRect.top - bgStroke);
+                    }
+                } else {
                     Utilities.scaleRectAboutCenter(mStartRevealRect,
                             IconShape.getNormalizationScale());
                 }
@@ -475,6 +493,7 @@ public class FloatingIconView extends View implements
                 setClipToOutline(true);
             } else {
                 setBackground(finalDrawable);
+                setClipToOutline(false);
             }
 
             if (!loadIconSignal.isCanceled()) {
@@ -498,6 +517,7 @@ public class FloatingIconView extends View implements
     }
 
     @WorkerThread
+    @SuppressWarnings("WrongThread")
     private int getOffsetForIconBounds(Drawable drawable) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O ||
                 !(drawable instanceof AdaptiveIconDrawable)) {
@@ -508,7 +528,7 @@ public class FloatingIconView extends View implements
         Rect bounds = new Rect(0, 0, lp.width + mBlurSizeOutline, lp.height + mBlurSizeOutline);
         bounds.inset(mBlurSizeOutline / 2, mBlurSizeOutline / 2);
 
-        try (LauncherIcons li = LauncherIcons.obtain(getContext())) {
+        try (LauncherIcons li = LauncherIcons.obtain(mLauncher)) {
             Utilities.scaleRectAboutCenter(bounds, li.getNormalizer().getScale(drawable, null));
         }
 
@@ -597,11 +617,14 @@ public class FloatingIconView extends View implements
      * @param isOpening True if this view replaces the icon for app open animation.
      */
     public static FloatingIconView getFloatingIconView(Launcher launcher, View originalView,
-            boolean hideOriginal, RectF positionOut, boolean isOpening, FloatingIconView recycle) {
-        if (recycle != null) {
-            recycle.recycle();
-        }
-        FloatingIconView view = recycle != null ? recycle : new FloatingIconView(launcher);
+            boolean hideOriginal, RectF positionOut, boolean isOpening) {
+        final DragLayer dragLayer = launcher.getDragLayer();
+        ViewGroup parent = (ViewGroup) dragLayer.getParent();
+
+        FloatingIconView view = launcher.getViewCache().getView(R.layout.floating_icon_view,
+                launcher, parent);
+        view.recycle();
+
         view.mIsVerticalBarLayout = launcher.getDeviceProfile().isVerticalBarLayout();
 
         view.mOriginalIcon = originalView;
@@ -619,16 +642,15 @@ public class FloatingIconView extends View implements
                 originalView.setVisibility(INVISIBLE);
             };
             CancellationSignal loadIconSignal = view.mLoadIconSignal;
-            new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(() -> {
+            new Handler(UiThreadHelper.getBackgroundLooper()).postAtFrontOfQueue(() -> {
                 view.getIcon(originalView, (ItemInfo) originalView.getTag(), isOpening,
                         onIconLoaded, loadIconSignal);
             });
         }
 
         // We need to add it to the overlay, but keep it invisible until animation starts..
-        final DragLayer dragLayer = launcher.getDragLayer();
         view.setVisibility(INVISIBLE);
-        ((ViewGroup) dragLayer.getParent()).addView(view);
+        parent.addView(view);
         dragLayer.addView(view.mListenerView);
         view.mListenerView.setListener(view::onListenerViewClosed);
 
@@ -665,7 +687,7 @@ public class FloatingIconView extends View implements
             }
         });
 
-        if (mBadge != null) {
+        if (mBadge != null && !(mOriginalIcon instanceof FolderIcon)) {
             ObjectAnimator badgeFade = ObjectAnimator.ofInt(mBadge, DRAWABLE_ALPHA, 255);
             badgeFade.addUpdateListener(valueAnimator -> invalidate());
             fade.play(badgeFade);
@@ -691,7 +713,6 @@ public class FloatingIconView extends View implements
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     folderIcon.setBackgroundVisible(true);
-                    folderIcon.animateBgShadowAndStroke();
                     if (folderIcon.hasDot()) {
                         folderIcon.animateDotScale(0, 1f);
                     }
@@ -708,6 +729,7 @@ public class FloatingIconView extends View implements
         ((ViewGroup) dragLayer.getParent()).removeView(this);
         dragLayer.removeView(mListenerView);
         recycle();
+        mLauncher.getViewCache().recycleView(R.layout.floating_icon_view, this);
     }
 
     private void recycle() {
@@ -746,5 +768,6 @@ public class FloatingIconView extends View implements
         mFgTransX = 0;
         mFgSpringY.cancel();
         mBadge = null;
+        sTmpObjArray[0] = null;
     }
 }
