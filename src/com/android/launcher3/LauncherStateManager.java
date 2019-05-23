@@ -447,6 +447,10 @@ public class LauncherStateManager {
     }
 
     private void onStateTransitionStart(LauncherState state) {
+        if (com.android.launcher3.TestProtocol.sDebugTracing) {
+            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                    "onStateTransitionStart");
+        }
         if (mState != state) {
             mState.onStateDisabled(mLauncher);
         }
@@ -572,6 +576,10 @@ public class LauncherStateManager {
         private final AnimatorSet mAnim;
 
         public StartAnimRunnable(AnimatorSet anim) {
+            if (com.android.launcher3.TestProtocol.sDebugTracing) {
+                android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                        "StartAnimRunnable");
+            }
             mAnim = anim;
         }
 

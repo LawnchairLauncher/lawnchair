@@ -142,7 +142,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     private final float mClosingWindowTransY;
 
     private DeviceProfile mDeviceProfile;
-    private FloatingIconView mFloatingView;
 
     private RemoteAnimationProvider mRemoteAnimationProvider;
 
@@ -411,15 +410,15 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     private ValueAnimator getOpeningWindowAnimators(View v, RemoteAnimationTargetCompat[] targets,
             Rect windowTargetBounds, boolean toggleVisibility) {
         RectF bounds = new RectF();
-        mFloatingView = FloatingIconView.getFloatingIconView(mLauncher, v, toggleVisibility,
-                bounds, true /* isOpening */, mFloatingView);
+        FloatingIconView floatingView = FloatingIconView.getFloatingIconView(mLauncher, v,
+                toggleVisibility, bounds, true /* isOpening */);
         Rect crop = new Rect();
         Matrix matrix = new Matrix();
 
         RemoteAnimationTargetSet openingTargets = new RemoteAnimationTargetSet(targets,
                 MODE_OPENING);
         SyncRtSurfaceTransactionApplierCompat surfaceApplier =
-                new SyncRtSurfaceTransactionApplierCompat(mFloatingView);
+                new SyncRtSurfaceTransactionApplierCompat(floatingView);
         openingTargets.addDependentTransactionApplier(surfaceApplier);
 
         // Scale the app icon to take up the entire screen. This simplifies the math when
@@ -463,7 +462,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
         appAnimator.setDuration(APP_LAUNCH_DURATION);
         appAnimator.setInterpolator(LINEAR);
-        appAnimator.addListener(mFloatingView);
+        appAnimator.addListener(floatingView);
         appAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -557,7 +556,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                         } else {
                             currentBounds.bottom -= croppedHeight;
                         }
-                        mFloatingView.update(currentBounds, mIconAlpha.value, percent, 0f,
+                        floatingView.update(currentBounds, mIconAlpha.value, percent, 0f,
                                 cornerRadius * scale, true /* isOpening */);
                     } else {
                         matrix.setTranslate(target.position.x, target.position.y);

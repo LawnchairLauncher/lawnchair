@@ -16,6 +16,8 @@
 
 package com.android.launcher3.popup;
 
+import static com.android.launcher3.Utilities.squaredHypot;
+import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.launcher3.notification.NotificationMainView.NOTIFICATION_ITEM_INFO;
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS;
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS_IF_NOTIFICATIONS;
@@ -37,7 +39,6 @@ import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -51,6 +52,7 @@ import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
 import com.android.launcher3.dot.DotInfo;
@@ -136,8 +138,8 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
             return true;
         }
         // Stop sending touch events to deep shortcut views if user moved beyond touch slop.
-        return Math.hypot(mInterceptTouchDown.x - ev.getX(), mInterceptTouchDown.y - ev.getY())
-                > ViewConfiguration.get(getContext()).getScaledTouchSlop();
+        return squaredHypot(mInterceptTouchDown.x - ev.getX(), mInterceptTouchDown.y - ev.getY())
+                > squaredTouchSlop(getContext());
     }
 
     @Override

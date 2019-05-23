@@ -371,6 +371,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     @Override
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
+        if (com.android.launcher3.TestProtocol.sDebugTracing) {
+            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                    "onDragStart 1");
+        }
         if (ENFORCE_DRAG_EVENT_ORDER) {
             enforceDragParity("onDragStart", 0, 0);
         }
@@ -421,6 +425,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         // Always enter the spring loaded mode
+        if (com.android.launcher3.TestProtocol.sDebugTracing) {
+            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+                    "onDragStart 2");
+        }
         mLauncher.getStateManager().goToState(SPRING_LOADED);
     }
 
