@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.android.quickstep;
+package com.android.quickstep.inputconsumers;
 
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
-
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction.UPLEFT;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction.UPRIGHT;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.FLING;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.SWIPE;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.SWIPE_NOOP;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType.NAVBAR;
@@ -38,11 +38,12 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
-
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.touch.SwipeDetector;
+import com.android.quickstep.ActivityControlHelper;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -50,12 +51,15 @@ import com.android.systemui.shared.system.QuickStepContract;
 /**
  * Touch consumer for handling events to launch assistant from launcher
  */
-public class AssistantTouchConsumer extends DelegateInputConsumer {
+public class AssistantTouchConsumer extends DelegateInputConsumer
+    implements SwipeDetector.Listener {
+
     private static final String TAG = "AssistantTouchConsumer";
     private static final long RETRACT_ANIMATION_DURATION_MS = 300;
 
     private static final String INVOCATION_TYPE_KEY = "invocation_type";
     private static final int INVOCATION_TYPE_GESTURE = 1;
+    private static final int INVOCATION_TYPE_FLING = 6;
 
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
@@ -77,6 +81,7 @@ public class AssistantTouchConsumer extends DelegateInputConsumer {
     private final float mSlop;
     private final ISystemUiProxy mSysUiProxy;
     private final Context mContext;
+    private final SwipeDetector mSwipeDetector;
 
     public AssistantTouchConsumer(Context context, ISystemUiProxy systemUiProxy,
             ActivityControlHelper activityControlHelper, InputConsumer delegate,
@@ -90,6 +95,8 @@ public class AssistantTouchConsumer extends DelegateInputConsumer {
         mAngleThreshold = res.getInteger(R.integer.assistant_gesture_corner_deg_threshold);
         mSlop = QuickStepContract.getQuickStepDragSlopPx();
         mActivityControlHelper = activityControlHelper;
+        mSwipeDetector = new SwipeDetector(mContext, this, SwipeDetector.VERTICAL);
+        mSwipeDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_POSITIVE, false);
     }
 
     @Override
@@ -100,6 +107,7 @@ public class AssistantTouchConsumer extends DelegateInputConsumer {
     @Override
     public void onMotionEvent(MotionEvent ev) {
         // TODO add logging
+        mSwipeDetector.onTouchEvent(ev);
 
         switch (ev.getActionMasked()) {
             case ACTION_DOWN: {
@@ -146,7 +154,7 @@ public class AssistantTouchConsumer extends DelegateInputConsumer {
 
                         // Determine if angle is larger than threshold for assistant detection
                         float angle = (float) Math.toDegrees(
-                                Math.atan2(mDownPos.y - mLastPos.y, mDownPos.x - mLastPos.x));
+                            Math.atan2(mDownPos.y - mLastPos.y, mDownPos.x - mLastPos.x));
                         mDirection = angle > 90 ? UPLEFT : UPRIGHT;
                         angle = angle > 90 ? 180 - angle : angle;
 
@@ -159,7 +167,7 @@ public class AssistantTouchConsumer extends DelegateInputConsumer {
                 } else {
                     // Movement
                     mDistance = (float) Math.hypot(mLastPos.x - mStartDragPos.x,
-                            mLastPos.y - mStartDragPos.y);
+                        mLastPos.y - mStartDragPos.y);
                     if (mDistance >= 0) {
                         final long diff = SystemClock.uptimeMillis() - mDragTime;
                         mTimeFraction = Math.min(diff * 1f / mTimeThreshold, 1);
@@ -172,18 +180,18 @@ public class AssistantTouchConsumer extends DelegateInputConsumer {
             case ACTION_UP:
                 if (mState != STATE_DELEGATE_ACTIVE && !mLaunchedAssistant) {
                     ValueAnimator animator = ValueAnimator.ofFloat(mLastProgress, 0)
-                            .setDuration(RETRACT_ANIMATION_DURATION_MS);
+                        .setDuration(RETRACT_ANIMATION_DURATION_MS);
                     UserEventDispatcher.newInstance(mContext).logActionOnContainer(
-                            SWIPE_NOOP, mDirection, NAVBAR);
+                        SWIPE_NOOP, mDirection, NAVBAR);
                     animator.addUpdateListener(valueAnimator -> {
-                            float progress = (float) valueAnimator.getAnimatedValue();
-                            try {
+                        float progress = (float) valueAnimator.getAnimatedValue();
+                        try {
 
-                                mSysUiProxy.onAssistantProgress(progress);
-                            } catch (RemoteException e) {
-                                Log.w(TAG, "Failed to send SysUI start/send assistant progress: "
-                                        + progress, e);
-                            }
+                            mSysUiProxy.onAssistantProgress(progress);
+                        } catch (RemoteException e) {
+                            Log.w(TAG, "Failed to send SysUI start/send assistant progress: "
+                                + progress, e);
+                        }
                     });
                     animator.setInterpolator(Interpolators.DEACCEL_2);
                     animator.start();
@@ -200,38 +208,58 @@ public class AssistantTouchConsumer extends DelegateInputConsumer {
 
     private void updateAssistantProgress() {
         if (!mLaunchedAssistant) {
-            float progress = Math.min(mDistance * 1f / mDistThreshold, 1) * mTimeFraction;
-            mLastProgress = progress;
-            try {
-                mSysUiProxy.onAssistantProgress(progress);
-                if (mDistance >= mDistThreshold && mTimeFraction >= 1) {
-                    UserEventDispatcher.newInstance(mContext).logActionOnContainer(
-                            SWIPE, mDirection, NAVBAR);
-                    Bundle args = new Bundle();
-                    args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
-
-                    BaseDraggingActivity launcherActivity =
-                            mActivityControlHelper.getCreatedActivity();
-                    if (launcherActivity != null) {
-                        launcherActivity.getRootView().
-                                performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
-                                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                    }
-
-                    mSysUiProxy.startAssistant(args);
-                    mLaunchedAssistant = true;
-                }
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed to send SysUI start/send assistant progress: " + progress, e);
-            }
+            mLastProgress = Math.min(mDistance * 1f / mDistThreshold, 1) * mTimeFraction;
+            updateAssistant(SWIPE);
         }
     }
 
-    static boolean withinTouchRegion(Context context, MotionEvent ev) {
+    private void updateAssistant(int gestureType) {
+        try {
+            mSysUiProxy.onAssistantProgress(mLastProgress);
+            if (gestureType == FLING || (mDistance >= mDistThreshold && mTimeFraction >= 1)) {
+                UserEventDispatcher.newInstance(mContext)
+                    .logActionOnContainer(gestureType, mDirection, NAVBAR);
+                Bundle args = new Bundle();
+                args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
+
+                BaseDraggingActivity launcherActivity = mActivityControlHelper.getCreatedActivity();
+                if (launcherActivity != null) {
+                    launcherActivity.getRootView().performHapticFeedback(
+                        13, // HapticFeedbackConstants.GESTURE_END
+                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                }
+
+                mSysUiProxy.startAssistant(args);
+                mLaunchedAssistant = true;
+            }
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed to send SysUI start/send assistant progress: " + mLastProgress, e);
+        }
+    }
+
+    public static boolean withinTouchRegion(Context context, MotionEvent ev) {
         final Resources res = context.getResources();
         final int width = res.getDisplayMetrics().widthPixels;
         final int height = res.getDisplayMetrics().heightPixels;
         final int size = res.getDimensionPixelSize(R.dimen.gestures_assistant_size);
         return (ev.getX() > width - size || ev.getX() < size) && ev.getY() > height - size;
+    }
+
+    @Override
+    public void onDragStart(boolean start) {
+        // do nothing
+    }
+
+    @Override
+    public boolean onDrag(float displacement) {
+        return false;
+    }
+
+    @Override
+    public void onDragEnd(float velocity, boolean fling) {
+        if (fling) {
+            mLastProgress = 1;
+            updateAssistant(FLING);
+        }
     }
 }

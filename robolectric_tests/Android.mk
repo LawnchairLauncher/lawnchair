@@ -46,6 +46,8 @@ LOCAL_SDK_VERSION := current
 LOCAL_JAVA_LIBRARIES := \
     LauncherRoboTests
 
+LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res
+
 LOCAL_TEST_PACKAGE := Launcher3
 
 LOCAL_INSTRUMENT_SOURCE_DIRS := $(dir $(LOCAL_PATH))../src \

@@ -68,7 +68,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
      * @param wasVisible true if it was visible before
      */
     boolean onActivityReady(T activity, Boolean wasVisible) {
-        activity.<RecentsView>getOverviewPanel().setCurrentTask(mTargetTaskId);
+        activity.<RecentsView>getOverviewPanel().showCurrentTask(mTargetTaskId);
         AbstractFloatingView.closeAllOpenViews(activity, wasVisible);
         ActivityControlHelper.AnimationFactory factory =
                 mHelper.prepareRecentsUI(activity, wasVisible,

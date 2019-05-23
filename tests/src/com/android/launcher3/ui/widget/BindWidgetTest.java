@@ -123,7 +123,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         verifyWidgetPresent(info);
     }
 
-    @Test @Ignore // b/131116593
+    @Test
     public void testUnboundWidget_removed() {
         LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
         LauncherAppWidgetInfo item = createWidgetInfo(info, false);
@@ -143,7 +143,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         assertFalse(mDevice.findObject(new UiSelector().description(info.label)).exists());
     }
 
-    @Test @Ignore // b/131116593
+    @Test
     public void testPendingWidget_autoRestored() {
         // A non-restored widget with no config screen gets restored automatically.
         LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
@@ -181,7 +181,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
                         LauncherSettings.Favorites.APPWIDGET_ID))));
     }
 
-    @Test @Ignore // b/131116593
+    @Test
     public void testPendingWidget_notRestored_removed() {
         LauncherAppWidgetInfo item = getInvalidWidgetInfo();
         item.restoreStatus = LauncherAppWidgetInfo.FLAG_ID_NOT_VALID

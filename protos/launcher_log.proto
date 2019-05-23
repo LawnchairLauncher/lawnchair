@@ -56,6 +56,7 @@ message Target {
   optional int32 predictedRank = 15;
   optional TargetExtension extension = 16;
   optional TipType tip_type = 17;
+  optional int32 search_query_length = 18;
 }
 
 // Used to define what type of item a Target would represent.

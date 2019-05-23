@@ -23,4 +23,8 @@
 
     <!-- Minimum distance to swipe to trigger accessibility gesture -->
     <dimen name="accessibility_gesture_min_swipe_distance">80dp</dimen>
+
+    <!-- Swipe up to home related -->
+    <dimen name="swipe_up_fling_min_visible_change">18dp</dimen>
+    <dimen name="swipe_up_y_overshoot">10dp</dimen>
 </resources>

@@ -137,6 +137,14 @@ public final class TaskItemView extends LinearLayout {
         return mThumbnailView;
     }
 
+    public View getIconView() {
+        return mIconView;
+    }
+
+    public View getLabelView() {
+        return mLabelView;
+    }
+
     /**
      * Start a new animation from the current task content to the specified new content. The caller
      * is responsible for the actual animation control via the property
