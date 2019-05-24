@@ -102,7 +102,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private List<BubbleTextView> mCurrentPreviewItems = new ArrayList<>();
 
     boolean mAnimating = false;
-    private Rect mTempBounds = new Rect();
 
     private float mSlop;
 
@@ -201,6 +200,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     public void getPreviewBounds(Rect outBounds) {
         mPreviewItemManager.recomputePreviewDrawingParams();
         mBackground.getBounds(outBounds);
+    }
+
+    public float getBackgroundStrokeWidth() {
+        return mBackground.getStrokeWidth();
     }
 
     public Folder getFolder() {

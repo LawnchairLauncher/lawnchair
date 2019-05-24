@@ -76,8 +76,13 @@ public abstract class RecentsUiFactory {
 
         @Override
         public void mapInsets(Context context, Rect insets, Rect out) {
+            // If there is a display cutout, the top insets in portrait would also include the
+            // cutout, which we will get as the left inset in landscape. Using the max of left and
+            // top allows us to cover both cases (with or without cutout).
             if (SysUINavigationMode.getMode(context) == NO_BUTTON) {
-                out.set(insets);
+                out.top = Math.max(insets.top, insets.left);
+                out.bottom = Math.max(insets.right, insets.bottom);
+                out.left = out.right = 0;
             } else {
                 out.top = Math.max(insets.top, insets.left);
                 out.bottom = insets.right;
@@ -99,7 +104,9 @@ public abstract class RecentsUiFactory {
         @Override
         public void mapInsets(Context context, Rect insets, Rect out) {
             if (SysUINavigationMode.getMode(context) == NO_BUTTON) {
-                out.set(insets);
+                out.top = Math.max(insets.top, insets.right);
+                out.bottom = Math.max(insets.left, insets.bottom);
+                out.left = out.right = 0;
             } else {
                 out.top = Math.max(insets.top, insets.right);
                 out.bottom = insets.left;

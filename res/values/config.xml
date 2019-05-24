@@ -86,7 +86,6 @@
 
     <!-- View IDs to store item highlight information -->
     <item type="id" name="view_unhighlight_background" />
-    <item type="id" name="view_highlighted" />
 
     <!-- Menu id for feature flags -->
     <item type="id" name="menu_apply_flags" />

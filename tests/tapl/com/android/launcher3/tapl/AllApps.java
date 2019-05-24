@@ -18,6 +18,7 @@ package com.android.launcher3.tapl;
 
 import static com.android.launcher3.tapl.LauncherInstrumentation.NavigationModel.ZERO_BUTTON;
 
+import android.graphics.Point;
 import android.graphics.Rect;
 
 import androidx.annotation.NonNull;
@@ -48,12 +49,34 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         return LauncherInstrumentation.ContainerType.ALL_APPS;
     }
 
-    private boolean hasClickableIcon(UiObject2 allAppsContainer, BySelector appIconSelector) {
-        final UiObject2 icon = allAppsContainer.findObject(appIconSelector);
-        if (icon == null) return false;
-        if (mLauncher.getNavigationModel() == ZERO_BUTTON) return true;
-        final UiObject2 navBar = mLauncher.waitForSystemUiObject("navigation_bar_frame");
-        return icon.getVisibleBounds().bottom < navBar.getVisibleBounds().top;
+    private boolean hasClickableIcon(
+            UiObject2 allAppsContainer, UiObject2 appListRecycler, BySelector appIconSelector) {
+        final UiObject2 icon = appListRecycler.findObject(appIconSelector);
+        if (icon == null) {
+            LauncherInstrumentation.log("hasClickableIcon: icon not visible");
+            return false;
+        }
+        final Rect iconBounds = icon.getVisibleBounds();
+        LauncherInstrumentation.log("hasClickableIcon: icon bounds: " + iconBounds);
+        if (mLauncher.getNavigationModel() != ZERO_BUTTON) {
+            final UiObject2 navBar = mLauncher.waitForSystemUiObject("navigation_bar_frame");
+            if (iconBounds.bottom >= navBar.getVisibleBounds().top) {
+                LauncherInstrumentation.log("hasClickableIcon: icon intersects with nav bar");
+                return false;
+            }
+        }
+        if (iconCenterInSearchBox(allAppsContainer, icon)) {
+            LauncherInstrumentation.log("hasClickableIcon: icon center is under search box");
+            return false;
+        }
+        LauncherInstrumentation.log("hasClickableIcon: icon is clickable");
+        return true;
+    }
+
+    private boolean iconCenterInSearchBox(UiObject2 allAppsContainer, UiObject2 icon) {
+        final Point iconCenter = icon.getVisibleCenter();
+        return getSearchBox(allAppsContainer).getVisibleBounds().contains(
+                iconCenter.x, iconCenter.y);
     }
 
     /**
@@ -66,17 +89,22 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
     @NonNull
     public AppIcon getAppIcon(String appName) {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to get app icon on all apps")) {
+                "want to get app icon " + appName + " on all apps")) {
             final UiObject2 allAppsContainer = verifyActiveContainer();
-            allAppsContainer.setGestureMargins(0, 0, 0,
-                    ResourceUtils.getNavbarSize(ResourceUtils.NAVBAR_VERTICAL_SIZE,
+            final UiObject2 appListRecycler = mLauncher.waitForObjectInContainer(allAppsContainer,
+                    "apps_list_view");
+            allAppsContainer.setGestureMargins(
+                    0,
+                    getSearchBox(allAppsContainer).getVisibleBounds().bottom + 1,
+                    0,
+                    ResourceUtils.getNavbarSize(ResourceUtils.NAVBAR_PORTRAIT_BOTTOM_SIZE,
                             mLauncher.getResources()) + 1);
             final BySelector appIconSelector = AppIcon.getAppIconSelector(appName, mLauncher);
-            if (!hasClickableIcon(allAppsContainer, appIconSelector)) {
+            if (!hasClickableIcon(allAppsContainer, appListRecycler, appIconSelector)) {
                 scrollBackToBeginning();
                 int attempts = 0;
                 try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("scrolled")) {
-                    while (!hasClickableIcon(allAppsContainer, appIconSelector) &&
+                    while (!hasClickableIcon(allAppsContainer, appListRecycler, appIconSelector) &&
                             allAppsContainer.scroll(Direction.DOWN, 0.8f)) {
                         mLauncher.assertTrue(
                                 "Exceeded max scroll attempts: " + MAX_SCROLL_ATTEMPTS,
@@ -89,7 +117,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
 
             final UiObject2 appIcon = mLauncher.getObjectInContainer(allAppsContainer,
                     appIconSelector);
-            ensureIconVisible(appIcon, allAppsContainer);
+            ensureIconVisible(appIcon, allAppsContainer, appListRecycler);
             return new AppIcon(mLauncher, appIcon);
         }
     }
@@ -97,10 +125,9 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
     private void scrollBackToBeginning() {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to scroll back in all apps")) {
+            LauncherInstrumentation.log("Scrolling to the beginning");
             final UiObject2 allAppsContainer = verifyActiveContainer();
-            final UiObject2 searchBox =
-                    mLauncher.waitForObjectInContainer(allAppsContainer,
-                            "search_container_all_apps");
+            final UiObject2 searchBox = getSearchBox(allAppsContainer);
 
             int attempts = 0;
             final Rect margins = new Rect(0, searchBox.getVisibleBounds().bottom + 1, 0, 5);
@@ -128,19 +155,26 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                 getInt(TestProtocol.SCROLL_Y_FIELD, -1);
     }
 
-    private void ensureIconVisible(UiObject2 appIcon, UiObject2 allAppsContainer) {
+    private void ensureIconVisible(
+            UiObject2 appIcon, UiObject2 allAppsContainer, UiObject2 appListRecycler) {
         final int appHeight = appIcon.getVisibleBounds().height();
         if (appHeight < MIN_INTERACT_SIZE) {
             // Try to figure out how much percentage of the container needs to be scrolled in order
             // to reveal the app icon to have the MIN_INTERACT_SIZE
             final float pct = Math.max(((float) (MIN_INTERACT_SIZE - appHeight)) / mHeight, 0.2f);
-            mLauncher.scroll(allAppsContainer, Direction.DOWN, pct, null, 10);
+            mLauncher.scroll(appListRecycler, Direction.DOWN, pct, null, 10);
             try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                     "scrolled an icon in all apps to make it visible - and then")) {
                 mLauncher.waitForIdle();
                 verifyActiveContainer();
             }
         }
+        mLauncher.assertTrue("Couldn't scroll app icon to not intersect with the search box",
+                !iconCenterInSearchBox(allAppsContainer, appIcon));
+    }
+
+    private UiObject2 getSearchBox(UiObject2 allAppsContainer) {
+        return mLauncher.waitForObjectInContainer(allAppsContainer, "search_container_all_apps");
     }
 
     /**

@@ -23,6 +23,7 @@ import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
+import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction.UPLEFT;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction.UPRIGHT;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.FLING;
@@ -40,6 +41,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
@@ -81,7 +83,7 @@ public class AssistantTouchConsumer extends DelegateInputConsumer
     private final float mDistThreshold;
     private final long mTimeThreshold;
     private final int mAngleThreshold;
-    private final float mSlop;
+    private final float mSquaredSlop;
     private final ISystemUiProxy mSysUiProxy;
     private final Context mContext;
     private final SwipeDetector mSwipeDetector;
@@ -96,7 +98,10 @@ public class AssistantTouchConsumer extends DelegateInputConsumer
         mDistThreshold = res.getDimension(R.dimen.gestures_assistant_drag_threshold);
         mTimeThreshold = res.getInteger(R.integer.assistant_gesture_min_time_threshold);
         mAngleThreshold = res.getInteger(R.integer.assistant_gesture_corner_deg_threshold);
-        mSlop = QuickStepContract.getQuickStepDragSlopPx();
+
+        float slop = ViewConfiguration.get(context).getScaledTouchSlop();
+
+        mSquaredSlop = slop * slop;
         mActivityControlHelper = activityControlHelper;
         mSwipeDetector = new SwipeDetector(mContext, this, SwipeDetector.VERTICAL);
         mSwipeDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_POSITIVE, false);
@@ -155,7 +160,8 @@ public class AssistantTouchConsumer extends DelegateInputConsumer
 
                 if (!mPassedSlop) {
                     // Normal gesture, ensure we pass the slop before we start tracking the gesture
-                    if (Math.hypot(mLastPos.x - mDownPos.x, mLastPos.y - mDownPos.y) > mSlop) {
+                    if (squaredHypot(mLastPos.x - mDownPos.x, mLastPos.y - mDownPos.y)
+                            > mSquaredSlop) {
 
                         mPassedSlop = true;
                         mStartDragPos.set(mLastPos.x, mLastPos.y);
@@ -218,31 +224,35 @@ public class AssistantTouchConsumer extends DelegateInputConsumer
     private void updateAssistantProgress() {
         if (!mLaunchedAssistant) {
             mLastProgress = Math.min(mDistance * 1f / mDistThreshold, 1) * mTimeFraction;
-            updateAssistant(SWIPE);
+            try {
+                if (mDistance >= mDistThreshold && mTimeFraction >= 1) {
+                    mSysUiProxy.onAssistantGestureCompletion(0);
+                    startAssistantInternal(SWIPE);
+
+                    Bundle args = new Bundle();
+                    args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
+                    mSysUiProxy.startAssistant(args);
+                    mLaunchedAssistant = true;
+                } else {
+                    mSysUiProxy.onAssistantProgress(mLastProgress);
+                }
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed to send SysUI start/send assistant progress: " + mLastProgress,
+                    e);
+            }
         }
     }
 
-    private void updateAssistant(int gestureType) {
-        try {
-            mSysUiProxy.onAssistantProgress(mLastProgress);
-            if (gestureType == FLING || (mDistance >= mDistThreshold && mTimeFraction >= 1)) {
-                UserEventDispatcher.newInstance(mContext)
-                    .logActionOnContainer(gestureType, mDirection, NAVBAR);
-                Bundle args = new Bundle();
-                args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
+    private void startAssistantInternal(int gestureType) {
+        UserEventDispatcher.newInstance(mContext)
+            .logActionOnContainer(gestureType, mDirection, NAVBAR);
 
-                BaseDraggingActivity launcherActivity = mActivityControlHelper.getCreatedActivity();
-                if (launcherActivity != null) {
-                    launcherActivity.getRootView().performHapticFeedback(
-                        13, // HapticFeedbackConstants.GESTURE_END
-                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                }
-
-                mSysUiProxy.startAssistant(args);
-                mLaunchedAssistant = true;
-            }
-        } catch (RemoteException e) {
-            Log.w(TAG, "Failed to send SysUI start/send assistant progress: " + mLastProgress, e);
+        BaseDraggingActivity launcherActivity = mActivityControlHelper
+            .getCreatedActivity();
+        if (launcherActivity != null) {
+            launcherActivity.getRootView().performHapticFeedback(
+                13, // HapticFeedbackConstants.GESTURE_END
+                HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
         }
     }
 
@@ -266,9 +276,20 @@ public class AssistantTouchConsumer extends DelegateInputConsumer
 
     @Override
     public void onDragEnd(float velocity, boolean fling) {
-        if (fling && !mLaunchedAssistant) {
+        if (fling && !mLaunchedAssistant && mState != STATE_DELEGATE_ACTIVE) {
             mLastProgress = 1;
-            updateAssistant(FLING);
+            try {
+                mSysUiProxy.onAssistantGestureCompletion(velocity);
+                startAssistantInternal(FLING);
+
+                Bundle args = new Bundle();
+                args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
+                mSysUiProxy.startAssistant(args);
+                mLaunchedAssistant = true;
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed to send SysUI start/send assistant progress: " + mLastProgress,
+                    e);
+            }
         }
     }
 }
