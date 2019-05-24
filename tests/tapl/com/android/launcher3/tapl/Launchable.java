@@ -53,7 +53,7 @@ abstract class Launchable {
 
     private Background launch(BySelector selector) {
         LauncherInstrumentation.log("Launchable.launch before click " +
-                mObject.getVisibleCenter());
+                mObject.getVisibleCenter() + " in " + mObject.getVisibleBounds());
         mLauncher.getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
         mLauncher.assertTrue(
                 "Launching an app didn't open a new window: " + mObject.getText(),
