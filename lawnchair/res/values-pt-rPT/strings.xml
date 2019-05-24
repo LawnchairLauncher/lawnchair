@@ -28,11 +28,11 @@
     <string name="pixel_style_pref_title">Estilo Pixel</string>
     <string name="about_summary_title">Resumo</string>
     <string name="action_edit">Editar</string>
-    <string name="hide_app_sum">Ocultar do menu de aplicativos</string>
+    <string name="hide_app_sum">Ocultar do menu de aplicações</string>
     <string name="hide_app">Ocultar aplicação</string>
     <string name="icon_shape_rounded_square">Quadrado arredondado</string>
     <string name="pixel_ui_pref_summary">Pacote de ícones, desfoque, cores</string>
-    <string name="app_drawer_pref_title">Gaveta de aplicativos</string>
+    <string name="app_drawer_pref_title">Gaveta de aplicações</string>
     <string name="app_drawer_pref_summary">Opacidade, sugestões, ocultar aplicações</string>
     <string name="search_pref_summary">Cor, motor de pesquisa e ícones</string>
     <string name="general_pref_title">Ambiente de trabalho</string>
@@ -43,7 +43,7 @@
     <string name="hide_dock_gradient">Desativar gradiente</string>
     <string name="dock_pref_summary">Estilo, opacidade, indicador de página</string>
     <string name="dock_pref_title">Doca</string>
-    <string name="hide_icon_labels_pref_title">Ocultar nomes dos aplicativos</string>
+    <string name="hide_icon_labels_pref_title">Ocultar nomes das aplicações</string>
     <string name="backups">Cópias de Segurança</string>
     <string name="new_backup">Criar</string>
     <string name="restore_backup">Restaurar</string>
@@ -159,13 +159,13 @@
     <string name="debug_crash_launcher">Erro no launcher</string>
     <string name="gestures_pref_title">Gestos</string>
     <string name="gestures_pref_summary">Duplo clique, botão home, deslizar para baixo</string>
-    <string name="action_open_drawer">Abrir menu de aplicativos</string>
+    <string name="action_open_drawer">Abrir menu de aplicações</string>
     <string name="action_last_task">Abrir a última aplicação</string>
     <string name="action_open_widgets">Abrir o menu de widgets</string>
     <string name="action_open_settings">Abrir definições do launcher</string>
     <string name="action_open_overview">Abrir pop-up do ecrã principal</string>
     <string name="action_global_search">Abrir pesquisa global</string>
-    <string name="action_app_search">Abrir pesquisa de aplicativos</string>
+    <string name="action_app_search">Abrir pesquisa de aplicações</string>
     <string name="action_overlay">Abrir o Google feed</string>
     <string name="action_assistant">Abrir assistente</string>
     <string name="action_open_notifications">Abrir notificações</string>
@@ -193,13 +193,13 @@
     <string name="pref_smartspace_widget_provider">Fonte de meteorologia</string>
     <string name="pref_smartspace_event_provider">Fonte do calendário</string>
     <string name="title_all_apps_search">Barra de pesquisa no menu</string>
-    <string name="smartspace_widget_provider_not_found">Instale ou atualize o aplicativo da Google.</string>
+    <string name="smartspace_widget_provider_not_found">Instale ou atualize a aplicação Google.</string>
     <string name="apps_label">Aplicações</string>
-    <string name="all_apps_label">Todos os Aplicativos</string>
-    <string name="all_apps_label_pref_title">Mostrar etiqueta \"Todos aplicativos\"</string>
+    <string name="all_apps_label">Todas as aplicações</string>
+    <string name="all_apps_label_pref_title">Mostrar etiqueta \"Todas as aplicações\"</string>
     <string name="separate_work_apps_pref_title">Separador para aplicativos de trabalho</string>
-    <string name="title_search_hidden_apps">Pesquisar aplicativos ocultos</string>
-    <string name="summary_search_hidden_apps">Mostrar aplicativos ocultos na pesquisa</string>
+    <string name="title_search_hidden_apps">Pesquisar aplicações ocultas</string>
+    <string name="summary_search_hidden_apps">Mostrar aplicações ocultas na pesquisa</string>
     <!--Marker F-->
     <string name="default_city">Lisboa, PT</string>
     <string name="pref_weather_api_key_title">Chave API</string>
@@ -212,7 +212,7 @@
     <string name="all_icons">Todos os ícones</string>
     <string name="error_no_browser">Não existe uma aplicação para manipular URL</string>
     <string name="no_icon_found">Nenhum ícone encontrado</string>
-    <string name="icon_pack_external_picker">Abrir aplicativo externo</string>
+    <string name="icon_pack_external_picker">Abrir aplicação externa</string>
     <string name="week_day_format">%1$s,%2$s</string>
     <string name="full_wday_month_day_no_year">EEEE, d de MMMM</string>
     <string name="title_use_pill_qsb">Usar barra de pesquisa com estilo comprimido</string>
@@ -220,7 +220,7 @@
     <!--Marker G-->
     <string name="backup_generate_report">Criar relatório de erros</string>
     <string name="show_top_shadow_pref_title">Sombra superior</string>
-    <string name="show_top_shadow_pref_summary">Mostrar sombra abaixo da barra de estado</string>
+    <string name="show_top_shadow_pref_summary">Sombra abaixo da barra de estado</string>
     <string name="two_row_dock">Duas linhas</string>
     <string name="keep_scroll_state_pref_title">Lembrar posição de deslocamento</string>
     <string name="reset">Repor</string>
@@ -231,7 +231,7 @@
     <string name="transparent">Transparente</string>
     <string name="pref_open_source_licenses_title">Licenças</string>
     <string name="pref_legacy_treatment_title">Criar ícones adaptativos</string>
-    <string name="pref_legacy_treatment_summary">Ícones adaptativos automáticos para todos os aplicativos</string>
+    <string name="pref_legacy_treatment_summary">Ícones adaptativos automáticos para todas as aplicações</string>
     <string name="dt2s_admin_hint">Para usar o clique duplo para bloquear, conceda permissão de administrador</string>
     <string name="dt2s_admin_warning">Duplo clique para bloquear será desativado</string>
     <string name="icon_pack_applied_toast">%s aplicado</string>
@@ -254,7 +254,7 @@
     <string name="gesture_nav_swipe_up_left">Da esquerda</string>
     <string name="gesture_nav_swipe_up_center">Do centro</string>
     <string name="gesture_nav_swipe_up_right">Da direita</string>
-    <string name="action_switch_apps">Trocar de aplicativo</string>
+    <string name="action_switch_apps">Mudar de aplicação</string>
     <string name="pref_global_search_provider">Motor de pesquisa</string>
     <string name="searchbar_appearance_title">Aparência</string>
     <string name="google">Google</string>
@@ -263,7 +263,7 @@
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
     <string name="search_provider_baidu">Baidu</string>
-    <string name="search_provider_appsearch">Pesquisar aplicativos</string>
+    <string name="search_provider_appsearch">Pesquisar aplicações</string>
     <string name="search_provider_search_lite">Search Lite</string>
     <string name="search_provider_cool_search">Cool Search</string>
     <string name="recent_task_option_force_stop">Forçar paragem</string>
@@ -286,7 +286,7 @@
     <string name="pref_drawer_padding">Altura da linha</string>
     <string name="pref_drawer_columns">Número de colunas</string>
     <string name="pref_prediction_count">Número de sugestões</string>
-    <string name="pref_mutliline_labels">Nome de aplicativos em multi-linha</string>
+    <string name="pref_mutliline_labels">Nome de aplicações multi-linha</string>
     <string name="lawnchair_actions">Ações</string>
     <string name="theme_auto">Seguir imagem de fundo</string>
     <string name="theme_auto_night_mode">Seguir tema do sistema</string>
@@ -309,7 +309,7 @@
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Sugestões</string>
     <string name="title_app_suggestions">Aplicações</string>
-    <string name="title_app_suggestions_in_search">Sugestões de aplicativos</string>
+    <string name="title_app_suggestions_in_search">Sugestões de aplicações</string>
     <string name="summary_app_suggestions">Aplicativos usados recentemente</string>
     <string name="summary_app_suggestions_lawnstep">No ecrã de aplicativos recentes e no menu</string>
     <string name="app_actions_pref_title">Ações</string>
@@ -328,8 +328,8 @@
     <string name="show_in_tabs">Abas</string>
     <string name="tabs_manage">Gerir</string>
     <plurals name="tab_apps_count">
-        <item quantity="one">%1$d aplicativo</item>
-        <item quantity="other">%1$d aplicativos</item>
+        <item quantity="one">%1$d aplicação</item>
+        <item quantity="other">%1$d aplicações</item>
     </plurals>
     <plurals name="hidden_apps_count">
         <item quantity="one">%1$d ocultado</item>
@@ -390,7 +390,7 @@
     <string name="pref_smartspace_time_above">Mostrar relógio largo</string>
     <string name="pref_smartspace_time_above_summary">Mostrar relógio acima do widget</string>
     <string name="pref_fonts_title">Tipos de letra</string>
-    <string name="pref_fonts_summary">Muda o tipo de letra para diferentes elementos</string>
+    <string name="pref_fonts_summary">Alterar tipo de letra para diferentes itens</string>
     <string name="pref_fonts_global_font">Tipo de letra global</string>
     <string name="pref_fonts_change_global_font">Alterar</string>
     <string name="pref_fonts_home_icons">Nomes de aplicativos e das pastas</string>
@@ -398,7 +398,7 @@
     <string name="pref_fonts_home_shortcuts">Bolhas para atalhos</string>
     <string name="pref_fonts_category_drawer">Menu</string>
     <string name="pref_fonts_drawer_icons">Nomes dos aplicativos</string>
-    <string name="pref_fonts_drawer_app_actions_icons">Nomes de ações de aplicativos</string>
+    <string name="pref_fonts_drawer_app_actions_icons">Nomes de ações de aplicações</string>
     <string name="pref_fonts_drawer_tabs">Nome da aba</string>
     <string name="pref_fonts_find_fonts">Pesquisar tipos de letra</string>
     <string name="pref_fonts_add_fonts">Adicionar tipo de letra</string>
