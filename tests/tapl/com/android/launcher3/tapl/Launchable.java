@@ -24,7 +24,7 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
-import com.android.launcher3.TestProtocol;
+import com.android.launcher3.testing.TestProtocol;
 
 /**
  * Ancestor for AppIcon and AppMenuItem.
