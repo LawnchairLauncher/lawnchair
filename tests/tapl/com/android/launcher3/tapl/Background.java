@@ -89,7 +89,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                 mLauncher.swipeToState(
                         centerX, startY, centerX,
                         startY - swipeHeight - mLauncher.getTouchSlop(),
-                        60,
+                        10,
                         expectedState);
                 break;
             }
