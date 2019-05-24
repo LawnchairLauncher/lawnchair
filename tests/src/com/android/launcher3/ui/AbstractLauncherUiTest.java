@@ -54,6 +54,7 @@ import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.util.Wait;
@@ -197,6 +198,9 @@ public abstract class AbstractLauncherUiTest {
 
     @Before
     public void setUp() throws Exception {
+        // Disable app tracker
+        AppLaunchTracker.INSTANCE.initializeForTesting(new AppLaunchTracker());
+
         mTargetContext = InstrumentationRegistry.getTargetContext();
         mTargetPackage = mTargetContext.getPackageName();
         // Unlock the phone
