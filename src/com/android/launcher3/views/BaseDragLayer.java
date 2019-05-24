@@ -41,6 +41,7 @@ import android.widget.FrameLayout;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.TouchController;
@@ -213,8 +214,8 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (com.android.launcher3.TestProtocol.sDebugTracing) {
-            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+        if (TestProtocol.sDebugTracing) {
+            android.util.Log.d(TestProtocol.NO_DRAG_TAG,
                     "onTouchEvent " + ev);
         }
         int action = ev.getAction();
@@ -226,8 +227,8 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
         }
 
         if (mActiveController != null) {
-            if (com.android.launcher3.TestProtocol.sDebugTracing) {
-                android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+            if (TestProtocol.sDebugTracing) {
+                android.util.Log.d(TestProtocol.NO_DRAG_TAG,
                         "onTouchEvent 1");
             }
             return mActiveController.onControllerTouchEvent(ev);

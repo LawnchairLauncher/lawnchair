@@ -16,7 +16,7 @@
 
 package com.android.launcher3.tapl;
 
-import static com.android.launcher3.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 
 import android.graphics.Point;
 import android.os.SystemClock;
@@ -24,7 +24,7 @@ import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
 
-import com.android.launcher3.TestProtocol;
+import com.android.launcher3.testing.TestProtocol;
 
 /**
  * Indicates the base state with a UI other than Overview running as foreground. It can also
