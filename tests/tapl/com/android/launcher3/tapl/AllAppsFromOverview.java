@@ -53,9 +53,9 @@ public final class AllAppsFromOverview extends AllApps {
                     TestProtocol.REQUEST_ALL_APPS_TO_OVERVIEW_SWIPE_HEIGHT).
                     getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
 
-            final int endY = start.y + swipeHeight + mLauncher.getTouchSlop();
+            final int endY = start.y + swipeHeight;
             LauncherInstrumentation.log("AllAppsFromOverview.switchBackToOverview before swipe");
-            mLauncher.swipe(start.x, start.y, start.x, endY, OVERVIEW_STATE_ORDINAL);
+            mLauncher.swipeToState(start.x, start.y, start.x, endY, 60, OVERVIEW_STATE_ORDINAL);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("swiped down")) {
                 return new Overview(mLauncher);
