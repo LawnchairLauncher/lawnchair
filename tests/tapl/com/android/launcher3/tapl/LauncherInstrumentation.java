@@ -364,7 +364,7 @@ public final class LauncherInstrumentation {
         }
     }
 
-    private Parcelable executeAndWaitForEvent(Runnable command,
+    Parcelable executeAndWaitForEvent(Runnable command,
             UiAutomation.AccessibilityEventFilter eventFilter, String message) {
         try {
             final AccessibilityEvent event =

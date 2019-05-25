@@ -25,6 +25,7 @@ public final class TestProtocol {
     public static final String STATE_FIELD = "state";
     public static final String SWITCHED_TO_STATE_MESSAGE = "TAPL_SWITCHED_TO_STATE";
     public static final String SCROLL_FINISHED_MESSAGE = "TAPL_SCROLL_FINISHED";
+    public static final String PAUSE_DETECTED_MESSAGE = "TAPL_PAUSE_DETECTED";
     public static final String RESPONSE_MESSAGE_POSTFIX = "_RESPONSE";
     public static final int NORMAL_STATE_ORDINAL = 0;
     public static final int SPRING_LOADED_STATE_ORDINAL = 1;

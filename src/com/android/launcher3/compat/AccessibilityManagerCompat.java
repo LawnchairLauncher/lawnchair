@@ -69,6 +69,13 @@ public class AccessibilityManagerCompat {
         sendEventToTest(accessibilityManager, TestProtocol.SCROLL_FINISHED_MESSAGE, null);
     }
 
+    public static void sendPauseDetectedEventToTest(Context context) {
+        final AccessibilityManager accessibilityManager = getAccessibilityManagerForTest(context);
+        if (accessibilityManager == null) return;
+
+        sendEventToTest(accessibilityManager, TestProtocol.PAUSE_DETECTED_MESSAGE, null);
+    }
+
     private static void sendEventToTest(
             AccessibilityManager accessibilityManager, String eventTag, Bundle data) {
         final AccessibilityEvent e = AccessibilityEvent.obtain(
