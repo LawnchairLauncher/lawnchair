@@ -25,12 +25,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.os.Process
+import android.support.v7.widget.ActionMenuView
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SearchView
 import android.text.TextUtils
 import android.view.*
-import android.widget.ImageView
+import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
 import ch.deletescape.lawnchair.*
@@ -41,13 +41,14 @@ import ch.deletescape.lawnchair.views.FadingImageView
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
 import com.android.launcher3.compat.LauncherAppsCompat
+import kotlinx.android.synthetic.main.activity_settings_search.*
 import java.text.Collator
 import java.util.*
 import java.util.concurrent.Semaphore
 
-class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, SearchView.OnQueryTextListener, View.OnFocusChangeListener {
+class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, SearchView.OnQueryTextListener {
     private val iconPackManager = IconPackManager.getInstance(this)
-    private val iconGrid by lazy { findViewById<RecyclerView>(R.id.iconGrid) }
+    private val iconGrid by lazy { findViewById<RecyclerView>(R.id.list_results) }
     private val iconPack by lazy { iconPackManager.getIconPack(
             intent.getParcelableExtra<IconPackManager.PackProvider>(EXTRA_ICON_PACK), false) }
     private val items get() = searchItems ?: actualItems
@@ -55,9 +56,7 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
     private val adapter = IconGridAdapter()
     private val layoutManager = GridLayoutManager(this, 1)
     private var canceled = false
-    private var searchView: SearchView? = null
     private val collator = Collator.getInstance()
-    private var closingSearch:Boolean = false
     private val showDebugInfo = lawnchairPrefs.showDebugInfo
 
     private var dynamicPadding = 0
@@ -76,16 +75,21 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_icon_picker)
 
-        title = iconPack.displayName
+        decorLayout.hideToolbar = true
+
+        setContentView(R.layout.activity_settings_search)
 
         getContentFrame().addOnLayoutChangeListener(this)
 
+        setSupportActionBar(search_toolbar)
         supportActionBar?.run {
             setDisplayShowHomeEnabled(true)
             setDisplayHomeAsUpEnabled(true)
         }
+
+        search_view.queryHint = iconPack.displayName
+        search_view.setOnQueryTextListener(this)
 
         items.add(LoadingItem())
 
@@ -134,19 +138,10 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
-        closingSearch = true
-        searchView!!.apply {
-            setQuery("", false)
-            clearFocus()
-        }
         return true
     }
 
     override fun onQueryTextChange(query: String?): Boolean {
-        if (closingSearch) {
-            closingSearch = false
-            return true
-        }
         addToSearchQueue(query)
         return true
     }
@@ -175,31 +170,17 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
         if (pickerComponent == null) {
             menu.removeItem(R.id.action_open_external)
         }
-        val searchItem = menu.findItem(R.id.action_search)
-        searchView = searchItem.actionView as SearchView
-        searchView!!.setOnQueryTextListener(this)
-        searchView!!.setOnQueryTextFocusChangeListener(this)
-        // Unfortunately this is seriously the only way of changing this darn icon that worked for me.
-        val searchIcon = searchView!!.findViewById<ImageView>(android.support.v7.appcompat.R.id.search_button)
-        searchIcon.setImageDrawable(resources.getDrawable(R.drawable.ic_search, null).apply {
-            setTint(ColorEngine.getInstance(applicationContext).accent)
-        })
+
+        search_toolbar.childs.firstOrNull { it is ActionMenuView }?.let {
+            (it as ActionMenuView).overflowIcon?.setTint(ColorEngine.getInstance(this).accent)
+        }
         return true
     }
 
-    override fun onFocusChange(view: View?, hasFocus: Boolean) {
-        if (view == searchView) {
-            if (hasFocus) {
-                title = ""
-            } else {
-                searchView!!.isIconified = true
-                title = iconPack.displayName
-            }
-        }
-    }
-
     override fun onBackPressed() {
-        if (searchView!!.isIconified) {
+        if (!TextUtils.isEmpty(search_view.query)) {
+            search_view.setQuery(null, true)
+        } else {
             super.onBackPressed()
         }
     }
@@ -243,21 +224,21 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
         calculateDynamicGrid(iconGrid.width)
         iconGrid.adapter = adapter
         iconGrid.layoutManager = layoutManager
+        iconGrid.isVerticalScrollBarEnabled = false
     }
 
     private fun calculateDynamicGrid(width: Int) {
         val iconPadding = resources.getDimensionPixelSize(R.dimen.icon_preview_padding)
         val iconSize = resources.getDimensionPixelSize(R.dimen.icon_preview_size)
         val iconSizeWithPadding = iconSize + iconPadding + iconPadding
-        val maxWidth = width - iconPadding - iconPadding
-        val columnCount = maxWidth / iconSizeWithPadding
+        val columnCount = width / iconSizeWithPadding
         val usedWidth = iconSize * columnCount
         dynamicPadding = (width - usedWidth) / (columnCount + 1) / 2
         layoutManager.spanCount = columnCount
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int) = getItemSpan(position)
         }
-        iconGrid.setPadding(dynamicPadding, iconPadding, dynamicPadding, iconPadding)
+        iconGrid.setPadding(iconPadding - dynamicPadding, iconPadding, iconPadding - dynamicPadding, iconPadding)
     }
 
     private fun getItemSpan(position: Int)
@@ -347,6 +328,15 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
         inner class CategoryHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
             private val title: TextView = itemView.findViewById(android.R.id.title)
+
+            init {
+                (title.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                    leftMargin = dynamicPadding
+                    rightMargin = dynamicPadding
+                }
+                val context = itemView.context
+                title.setTextColor(context.getColorEngineAccent())
+            }
 
             fun bind(category: CategoryItem) {
                 title.text = category.title

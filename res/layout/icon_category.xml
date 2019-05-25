@@ -14,6 +14,7 @@
      limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -24,19 +25,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:customFontType="categoryTitle"
         tools:text="Category" />
-
-    <ImageView
-        android:importantForAccessibility="no"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_gravity="center_vertical"
-        android:paddingTop="@dimen/all_apps_divider_margin_vertical"
-        android:paddingBottom="@dimen/all_apps_divider_margin_vertical"
-        android:paddingLeft="@dimen/dynamic_grid_edge_margin"
-        android:paddingRight="@dimen/dynamic_grid_edge_margin"
-        android:src="@drawable/all_apps_divider"
-        android:scaleType="fitXY"
-        android:focusable="false" />
 </LinearLayout>
