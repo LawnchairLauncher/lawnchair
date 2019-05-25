@@ -1261,7 +1261,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 } else {
                     taskView = mRecentsView.updateThumbnail(mRunningTaskId, mTaskSnapshot);
                 }
-                if (taskView != null) {
+                if (taskView != null && !mCanceled) {
                     // Defer finishing the animation until the next launcher frame with the
                     // new thumbnail
                     finishTransitionPosted = new WindowCallbacksCompat(taskView) {
@@ -1271,6 +1271,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
                         @Override
                         public void onPostDraw(Canvas canvas) {
+                            // If we were cancelled after this was attached, do not update
+                            // the state.
+                            if (mCanceled) {
+                                detach();
+                                return;
+                            }
+
                             if (mDeferFrameCount > 0) {
                                 mDeferFrameCount--;
                                 // Workaround, detach and reattach to invalidate the root node for
