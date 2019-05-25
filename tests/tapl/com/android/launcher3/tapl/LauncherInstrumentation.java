@@ -584,18 +584,15 @@ public final class LauncherInstrumentation {
         return mDevice;
     }
 
-    void swipe(int startX, int startY, int endX, int endY, int expectedState) {
-        swipe(startX, startY, endX, endY, expectedState, 60);
-    }
-
-    void swipe(int startX, int startY, int endX, int endY, int expectedState, int steps) {
-        changeStateViaGesture(startX, startY, endX, endY, expectedState,
-                () -> mDevice.swipe(startX, startY, endX, endY, steps));
-    }
-
     void swipeToState(int startX, int startY, int endX, int endY, int steps, int expectedState) {
-        changeStateViaGesture(startX, startY, endX, endY, expectedState,
-                () -> linearGesture(startX, startY, endX, endY, steps));
+        final Bundle parcel = (Bundle) executeAndWaitForEvent(
+                () -> linearGesture(startX, startY, endX, endY, steps),
+                event -> TestProtocol.SWITCHED_TO_STATE_MESSAGE.equals(event.getClassName()),
+                "Swipe failed to receive an event for the swipe end: " + startX + ", " + startY
+                        + ", " + endX + ", " + endY);
+        assertEquals("Swipe switched launcher to a wrong state;",
+                TestProtocol.stateOrdinalToString(expectedState),
+                TestProtocol.stateOrdinalToString(parcel.getInt(TestProtocol.STATE_FIELD)));
     }
 
     void scroll(UiObject2 container, Direction direction, float percent, Rect margins, int steps) {
@@ -650,18 +647,6 @@ public final class LauncherInstrumentation {
         sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start);
         final long endTime = movePointer(downTime, downTime, steps * GESTURE_STEP_MS, start, end);
         sendPointer(downTime, endTime, MotionEvent.ACTION_UP, end);
-    }
-
-    private void changeStateViaGesture(int startX, int startY, int endX, int endY,
-            int expectedState, Runnable gesture) {
-        final Bundle parcel = (Bundle) executeAndWaitForEvent(
-                gesture,
-                event -> TestProtocol.SWITCHED_TO_STATE_MESSAGE.equals(event.getClassName()),
-                "Swipe failed to receive an event for the swipe end: " + startX + ", " + startY
-                        + ", " + endX + ", " + endY);
-        assertEquals("Swipe switched launcher to a wrong state;",
-                TestProtocol.stateOrdinalToString(expectedState),
-                TestProtocol.stateOrdinalToString(parcel.getInt(TestProtocol.STATE_FIELD)));
     }
 
     void waitForIdle() {

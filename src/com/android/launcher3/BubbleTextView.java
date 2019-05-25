@@ -51,7 +51,6 @@ import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconCache.IconLoadRequest;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
-import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.views.ActivityContext;
 
@@ -561,7 +560,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                 }
             }
             if (itemInfo.contentDescription != null) {
-                if (hasDot()) {
+                if (itemInfo.isDisabled()) {
+                    setContentDescription(getContext().getString(R.string.disabled_app_label,
+                            itemInfo.contentDescription));
+                } else if (hasDot()) {
                     int count = mDotInfo.getNotificationCount();
                     setContentDescription(getContext().getResources().getQuantityString(
                             R.plurals.dotted_app_label, count, itemInfo.contentDescription, count));

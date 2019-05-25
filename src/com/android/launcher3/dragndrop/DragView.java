@@ -44,7 +44,6 @@ import android.view.View;
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
@@ -55,6 +54,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.util.UiThreadHelper;
 
 import java.util.Arrays;
 
@@ -210,8 +210,7 @@ public class DragView extends View implements LauncherStateManager.StateListener
             return;
         }
         // Load the adaptive icon on a background thread and add the view in ui thread.
-        final Looper workerLooper = LauncherModel.getWorkerLooper();
-        new Handler(workerLooper).postAtFrontOfQueue(new Runnable() {
+        new Handler(UiThreadHelper.getBackgroundLooper()).postAtFrontOfQueue(new Runnable() {
             @Override
             public void run() {
                 Object[] outObj = new Object[1];
