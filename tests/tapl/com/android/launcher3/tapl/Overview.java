@@ -51,10 +51,9 @@ public final class Overview extends BaseOverview {
 
             // Swipe from an app icon to the top.
             LauncherInstrumentation.log("Overview.switchToAllApps before swipe");
-            final UiObject2 appIcon = mLauncher.waitForLauncherObjectByClass(
-                    "android.widget.TextView");
+            final UiObject2 allApps = mLauncher.waitForLauncherObject("apps_view");
             mLauncher.swipeToState(mLauncher.getDevice().getDisplayWidth() / 2,
-                    appIcon.getVisibleBounds().centerY(),
+                    allApps.getVisibleBounds().top,
                     mLauncher.getDevice().getDisplayWidth() / 2,
                     0, 50, ALL_APPS_STATE_ORDINAL);
 
