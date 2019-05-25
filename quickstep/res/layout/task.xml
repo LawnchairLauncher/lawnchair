@@ -36,6 +36,7 @@
         android:importantForAccessibility="no" />
 
     <LinearLayout
+        android:id="@+id/task_footer_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -43,7 +44,7 @@
         <FrameLayout
             android:id="@+id/proactive_suggest_container"
             android:layout_width="match_parent"
-            android:layout_height="36dp"
+            android:layout_height="48dp"
             android:gravity="center"
             android:visibility="gone"
             />
