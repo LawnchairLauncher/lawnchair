@@ -32,7 +32,6 @@ import com.android.launcher3.testing.TestProtocol;
  */
 public class Background extends LauncherInstrumentation.VisibleContainer {
     private static final int ZERO_BUTTON_SWIPE_UP_GESTURE_DURATION = 500;
-    private static final int ZERO_BUTTON_SWIPE_UP_HOLD_DURATION = 400;
 
     Background(LauncherInstrumentation launcher) {
         super(launcher);
@@ -72,9 +71,15 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
 
                 final long downTime = SystemClock.uptimeMillis();
                 mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start);
-                mLauncher.movePointer(
-                        downTime, downTime, ZERO_BUTTON_SWIPE_UP_GESTURE_DURATION, start, end);
-                LauncherInstrumentation.sleep(ZERO_BUTTON_SWIPE_UP_HOLD_DURATION);
+                mLauncher.executeAndWaitForEvent(
+                        () -> mLauncher.movePointer(
+                                downTime,
+                                downTime,
+                                ZERO_BUTTON_SWIPE_UP_GESTURE_DURATION,
+                                start,
+                                end),
+                        event -> TestProtocol.PAUSE_DETECTED_MESSAGE.equals(event.getClassName()),
+                        "Pause wasn't detected");
                 mLauncher.sendPointer(
                         downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, end);
                 break;
