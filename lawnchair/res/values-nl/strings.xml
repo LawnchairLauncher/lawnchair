@@ -362,8 +362,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Zet delen van gegevens tussen Lawnchair en Sesame aan. Je kunt dit aanpassen in de instellingen van Lawnchair of Sesame.]]></string>
     <string name="sesame_version">Integratieversie</string>
     <string name="sesame_shortcut_disabled">Sesame-snelkoppeling niet beschikbaar</string>
-    <string name="pref_sesame_sync_icon_pack">Pictogrampakket delen</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Lawnchair pictogrampakket synchroniseren met Sesame</string>
     <string name="font_variant_italic">Cursief</string>
     <string name="font_weight_thin">Dun</string>
     <string name="font_weight_extra_light">ExtraLicht</string>
