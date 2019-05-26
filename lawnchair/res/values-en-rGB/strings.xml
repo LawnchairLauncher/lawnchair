@@ -353,8 +353,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Enables data sharing between Lawnchair and Sesame. You can change this in Lawnchair or Sesame settings.]]></string>
     <string name="sesame_version">Integration version</string>
     <string name="sesame_shortcut_disabled">Sesame shortcuts unavailable</string>
-    <string name="pref_sesame_sync_icon_pack">Share icon pack</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Sync Lawnchair icon pack with Sesame</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
     <string name="font_weight_extra_light">ExtraLight</string>
