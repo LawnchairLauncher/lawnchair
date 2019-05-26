@@ -28,6 +28,7 @@ import android.provider.Settings
 import android.support.annotation.Keep
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.iconpack.IconPackManager
+import ch.deletescape.lawnchair.sesame.Sesame
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
 import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.util.extensions.d
@@ -37,6 +38,7 @@ import com.android.launcher3.Utilities
 import com.android.quickstep.RecentsActivity
 import ninja.sesame.lib.bridge.v1.SesameFrontend
 import ninja.sesame.lib.bridge.v1.SesameInitOnComplete
+import ninja.sesame.lib.bridge.v1_1.LookFeelKeys
 
 class LawnchairApp : Application() {
 
@@ -70,7 +72,7 @@ class LawnchairApp : Application() {
                         if (thiz.lawnchairPrefs.syncIconPackWithSesame) {
                             runOnUiWorkerThread {
                                 val pkg = ipm.packList.currentPack().packPackageName
-                                SesameFrontend.setIconPack(thiz, if (pkg == "") null else pkg)
+                                Sesame.LookAndFeel[LookFeelKeys.ICON_PACK_PKG] = if (pkg == "") null else pkg
                             }
                         }
                     }

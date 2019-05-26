@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.sesame
 
 import android.content.Context
+import android.os.Bundle
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.globalsearch.providers.SesameSearchProvider
 import com.android.launcher3.BuildConfig
@@ -37,4 +38,26 @@ object Sesame {
                                         SesameFrontend.getIntegrationState(context)
     @JvmStatic
     var showShortcuts by LawnchairPreferences.getInstanceNoCreate().BooleanPref("pref_sesame_show_shortcuts", true)
+
+    object LookAndFeel {
+        operator fun set(key: String, value: String?) {
+            SesameFrontend.setLookFeelPreferences(Bundle().apply {
+                putString(key, value)
+            })
+        }
+
+        operator fun set(key: String, value: Int) {
+            SesameFrontend.setLookFeelPreferences(Bundle().apply {
+                putInt(key, value)
+            })
+        }
+
+        operator fun set(key: String, value: Boolean) {
+            SesameFrontend.setLookFeelPreferences(Bundle().apply {
+                putBoolean(key, value)
+            })
+        }
+
+        operator fun get(key: String) = SesameFrontend.getLookFeelPreferences()?.get(key)
+    }
 }
