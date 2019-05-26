@@ -360,8 +360,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Autoriser le partage de données entre Lawnchair et Sesame. Vous pouvez modifier cela dans les paramètres Lawnchair ou Sesame.]]></string>
     <string name="sesame_version">Version d\'intégration</string>
     <string name="sesame_shortcut_disabled">Raccourcis Sesame indisponibles</string>
-    <string name="pref_sesame_sync_icon_pack">Partager le pack d\'icône</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Synchroniser le pack d\'icônes de Lawnchair avec Sesame</string>
     <string name="font_variant_italic">Italique</string>
     <string name="font_weight_thin">Fin</string>
     <string name="font_weight_extra_light">Extra-Léger</string>
@@ -408,4 +406,7 @@
     <string name="about_bio_paphonb">Un étudiant de 18ans, Développeur Android et l\'un des meilleurs développeurs de Lawnchair launcher.</string>
     <string name="dock_scale">Taille du Dock</string>
     <string name="adaptify_pack_title">Créer des icônes adaptative pour les pack d\'icônes</string>
+    <string name="adaptify_pack_summary">Créé ds icônes adaptative pour des icônes provenant de pack d\'icônes</string>
+    <string name="pref_sesame_sync_look_and_feel">Partager le Style</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Synchroniser Lawnchair avec les paramètres Sesame</string>
 </resources>
