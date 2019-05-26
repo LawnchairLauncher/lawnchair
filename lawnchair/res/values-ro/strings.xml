@@ -363,8 +363,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Activează distribuirea datelor între Lawnchair și Sesame. Puteți schima acest lucru în setările Lawnchair sau în setările Sesame.]]></string>
     <string name="sesame_version">Versiunea integrării</string>
     <string name="sesame_shortcut_disabled">Scurtăturile Sesame indisponibile</string>
-    <string name="pref_sesame_sync_icon_pack">Distribuie pachetul de pictograme</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Sincronizați pachetul de pictograme din Lawnchair cu Sesame</string>
     <string name="font_variant_italic">Cursiv</string>
     <string name="font_weight_thin">Subțire</string>
     <string name="font_weight_extra_light">Extra subțire</string>
