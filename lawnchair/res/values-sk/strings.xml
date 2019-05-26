@@ -364,8 +364,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Povolí zdieľanie dát medzi Lawnchair a Sesame. Toto nastavenie môžte zmeniť v nastaveniach Lawnchair alebo Sesame.]]></string>
     <string name="sesame_version">Verzia integrácie</string>
     <string name="sesame_shortcut_disabled">Skratky Sesame niesú dostupné</string>
-    <string name="pref_sesame_sync_icon_pack">Poskytnúť balíček ikon</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Synchronizovať balíček ikon Lawnchair so Sesame</string>
     <string name="font_variant_italic">Šikmé</string>
     <string name="font_weight_thin">Tenké</string>
     <string name="font_weight_extra_light">Extra Svetlé</string>
