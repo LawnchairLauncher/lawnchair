@@ -362,8 +362,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Ativa a partilha de dados entre o Lawnchair e o Sesame. Pode alterar esta opção nas definições do Lawnchair ou do Sesame.]]></string>
     <string name="sesame_version">Versão integrada</string>
     <string name="sesame_shortcut_disabled">Atalhos do Sesame indisponíveis</string>
-    <string name="pref_sesame_sync_icon_pack">Partilhar pacote de ícones</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Sincronizar pacote de ícones do Lawnchair com o Sesame</string>
     <string name="font_variant_italic">Itálico</string>
     <string name="font_weight_thin">Fino</string>
     <string name="font_weight_extra_light">Extrafino</string>
