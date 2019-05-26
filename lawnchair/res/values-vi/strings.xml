@@ -358,8 +358,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Cho phép chia sẻ dữ liệu giữa Lawn và Sesame. Bạn có thể thay đổi điều này trong cài đặt Lawn Lawn hoặc Sesame.]]></string>
     <string name="sesame_version">Phiên bản tích hợp</string>
     <string name="sesame_shortcut_disabled">Phím tắt Sesame không có sẵn</string>
-    <string name="pref_sesame_sync_icon_pack">Chia sẻ gói biểu tượng</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Đồng bộ biểu tượng Lawnchair với Sesame</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
     <string name="font_weight_extra_light">ExtraLight</string>
@@ -407,4 +405,5 @@
     <string name="dock_scale">Khoảng cách Dock</string>
     <string name="adaptify_pack_title">Tạo biểu tượng thích ứng cho gói biểu tượng</string>
     <string name="adaptify_pack_summary">Tạo biểu tượng thích ứng cho các biểu tượng từ gói biểu tượng</string>
+    <string name="pref_sesame_sync_look_and_feel">Chia sẻ cái nhìn và cảm nhận</string>
 </resources>
