@@ -318,7 +318,6 @@
     <string name="sesame_upsell">탭하여 Sesame 설치</string>
     <string name="pref_sesame_show_shortcuts">앱 바로가기</string>
     <string name="allow">허용</string>
-    <string name="pref_sesame_sync_icon_pack">아이콘 팩 공유</string>
     <string name="font_variant_italic">이탤릭체</string>
     <string name="font_weight_thin">얇은체</string>
     <string name="font_weight_extra_light">아주옅은체</string>
