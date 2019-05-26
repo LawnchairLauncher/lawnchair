@@ -363,8 +363,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Омогућава дељење података између Lawnchair-а и Sesame-а. Ово можете променити у подешавањима Lawnchair-а или Sesame-а.]]></string>
     <string name="sesame_version">Верзија интеграције</string>
     <string name="sesame_shortcut_disabled">Sesame-ове пречице су недоступне</string>
-    <string name="pref_sesame_sync_icon_pack">Дели пакет икона</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Синхронизује пакет икона из Lawnchair-а са Sesame-ом</string>
     <string name="font_variant_italic">курзив</string>
     <string name="font_weight_thin">танки</string>
     <string name="font_weight_extra_light">веома бледи</string>
