@@ -361,8 +361,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Habilita el compartimiento de datos entre Lawnchair y Sesame. Esto se puede cambiar en la configuración de Lawnchair o Sesame.]]></string>
     <string name="sesame_version">Versión de integración</string>
     <string name="sesame_shortcut_disabled">Accesos directos de Sesame no disponibles</string>
-    <string name="pref_sesame_sync_icon_pack">Compartir paquete de iconos</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Sincronizar paquete de iconos de Lawnchair con Sesame</string>
     <string name="font_variant_italic">Cursiva</string>
     <string name="font_weight_thin">Delgada</string>
     <string name="font_weight_extra_light">Extra clara</string>
@@ -410,4 +408,6 @@
     <string name="dock_scale">Escala del Dock</string>
     <string name="adaptify_pack_title">Crear iconos adaptativos para el paquete de iconos</string>
     <string name="adaptify_pack_summary">Crear iconos adaptativos para iconos de un paquete de iconos</string>
+    <string name="pref_sesame_sync_look_and_feel">Compartir Look and Feel</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Sincronizar los ajustes de búsqueda de Lawnchair con Sesame</string>
 </resources>
