@@ -146,8 +146,8 @@
     <string name="about_role_mod_support">仲介者 / サポート</string>
     <string name="about_role_family_member">仲間たち</string>
     <string name="about_role_magisk_maintainer">Magiskモジュールメンテナ</string>
-    <string name="about_bio_deletescape">"Android開発者でファンですが、実はちょっとバイオ系の方が好きです。
-Lawnchairプロジェクトの創始者です。"</string>
+    <string name="about_bio_deletescape">Android開発者でファンですが、実はちょっとバイオ系の方が好きです。
+Lawnchairプロジェクトの創始者です。</string>
     <string name="about_bio_recoded">温和なコーダーで、グラフィックデザイナー</string>
     <string name="about_bio_josh">フリーランスのグラフィックデザイナー</string>
     <string name="about_bio_chris">クリエイティブマインド、インフルエンサー、コンテンツクリエータ。ソーシャルメディアとPRマネージャ。</string>
@@ -356,8 +356,6 @@ Lawnchairプロジェクトの創始者です。"</string>
     <string name="sesame_enable_integration_description"><![CDATA[Lawnchair と Sesame でデーターを共有します。これは、Lawnchair もしくは Sesame の設定から変更できます。]]></string>
     <string name="sesame_version">統合されているバージョン</string>
     <string name="sesame_shortcut_disabled">Sesame ショートカットは使用できません</string>
-    <string name="pref_sesame_sync_icon_pack">アイコンパックを共有する</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Lawnchair のアイコンパックを Sesame と共有します</string>
     <string name="font_variant_italic">斜体</string>
     <string name="font_weight_thin">細字</string>
     <string name="font_weight_extra_light">極細字</string>
