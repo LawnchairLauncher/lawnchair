@@ -327,7 +327,7 @@
     <string name="show_in_tabs">Вкладки</string>
     <string name="tabs_manage">Керування</string>
     <plurals name="tab_apps_count">
-        <item quantity="one">%1$d додаток</item>
+        <item quantity="one">%1$d додаток%1$d</item>
         <item quantity="few">%1$d додатків</item>
         <item quantity="many">%1$d додатків</item>
         <item quantity="other">%1$d додатків</item>
@@ -365,8 +365,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Дозволити поширювати дані між Lawnchair і Sesame. Ви можете змінити це в налаштуваннях Lawnchair або Sesame.]]></string>
     <string name="sesame_version">Версія інтеграції</string>
     <string name="sesame_shortcut_disabled">Ярлики Sesame недоступні</string>
-    <string name="pref_sesame_sync_icon_pack">Поділитись паком іконок</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Синхронізувати пак іконок Lawnchair з Sesame</string>
     <string name="font_variant_italic">Курсив</string>
     <string name="font_weight_thin">Тонкий</string>
     <string name="font_weight_extra_light">ЕкстраСвітлий</string>
@@ -414,4 +412,6 @@
     <string name="dock_scale">Масштаб док-бару</string>
     <string name="adaptify_pack_title">Створити адаптивні іконки для набору іконок</string>
     <string name="adaptify_pack_summary">Створити адаптивні іконки для іконок з наборів іконок</string>
+    <string name="pref_sesame_sync_look_and_feel">Поділитися оформленням</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Синхронізувати налаштування пошуку Lawnchair з Sesame</string>
 </resources>
