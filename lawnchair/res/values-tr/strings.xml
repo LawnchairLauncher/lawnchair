@@ -362,8 +362,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Lawnchair ve Sesame arasında veri paylaşımını sağlar. Bunu Lawnchair veya Sesame ayarlarında değiştirebilirsiniz.]]></string>
     <string name="sesame_version">Entegrasyon sürümü</string>
     <string name="sesame_shortcut_disabled">Sesame kısayolları kullanılamıyor</string>
-    <string name="pref_sesame_sync_icon_pack">Simge paketini paylaş</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Lawnchair simge paketini Sesame ile eşitle</string>
     <string name="font_variant_italic">İtalik</string>
     <string name="font_weight_thin">İnce</string>
     <string name="font_weight_extra_light">Ekstra hafif</string>
@@ -411,4 +409,6 @@
     <string name="dock_scale">Alt panel boyutu</string>
     <string name="adaptify_pack_title">Simge paketleri için uyarlanabilir simgeler oluştur</string>
     <string name="adaptify_pack_summary">Simge paketlerinden simgeler için uyarlanabilir simgeler oluştur</string>
+    <string name="pref_sesame_sync_look_and_feel">Görünümü paylaş</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Lawnchair arama ayarlarını Sesame ile senkronize et</string>
 </resources>
