@@ -357,8 +357,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Разрешава споделяне на данни между Lawnchair и Sesame. Можете да промените това в настройките на Lawnchair или Sesame.]]></string>
     <string name="sesame_version">Версия на интеграцията</string>
     <string name="sesame_shortcut_disabled">Преките пътища от Sesame са недостъпни</string>
-    <string name="pref_sesame_sync_icon_pack">Споделяне на пакета с икони</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Синхронизиране на пакета с икони на Lawnchair със Sesame</string>
     <string name="font_variant_italic">Наклонени букви</string>
     <string name="font_weight_thin">Тънък</string>
     <string name="font_weight_extra_light">Много светъл</string>
@@ -406,4 +404,6 @@
     <string name="dock_scale">Размер на дока</string>
     <string name="adaptify_pack_title">Създай адаптивни икони за пакета с икони</string>
     <string name="adaptify_pack_summary">Създай адаптивни икони за иконите от пакета с икони</string>
+    <string name="pref_sesame_sync_look_and_feel">Сподели вида и усещането</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Синхронизирай настройките за търсене на Lawnchair със Sesame</string>
 </resources>
