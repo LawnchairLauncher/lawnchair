@@ -361,8 +361,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Lehetővé teszi az adatmegosztást a Lawnchair és a Sesame között. Ezt mindkét alkalmazás beállításában megváltoztathatja.]]></string>
     <string name="sesame_version">Az egységesítés verziója</string>
     <string name="sesame_shortcut_disabled">A Sesame-parancsikonok nem érhetők el</string>
-    <string name="pref_sesame_sync_icon_pack">Ikoncsomag-megosztás</string>
-    <string name="pref_sesame_sync_icon_pack_summary">A Lawnchair-ikoncsomag szinkronizálása a Sesame-mal</string>
     <string name="font_variant_italic">Dőlt</string>
     <string name="font_weight_thin">Keskeny</string>
     <string name="font_weight_extra_light">Extravékony</string>
@@ -410,4 +408,6 @@
     <string name="dock_scale">Dokkméretezés</string>
     <string name="adaptify_pack_title">Alkalmazkodó ikonok készítése az ikoncsomagokhoz</string>
     <string name="adaptify_pack_summary">Alkalmazkodó ikonok készítése az ikoncsomagok ikonjaihoz</string>
+    <string name="pref_sesame_sync_look_and_feel">Ossza meg a kinézetet és az érzést</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">A Lawnchair keresési beállításainak szinkonizálása Sesame-mal</string>
 </resources>
