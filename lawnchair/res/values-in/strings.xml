@@ -360,8 +360,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Mengaktifkan pembagian data antara Lawnchair dan Sesame. Anda dapat mengubah ini pada pengaturan Lawnchair atau Sesame.]]></string>
     <string name="sesame_version">Versi integrasi</string>
     <string name="sesame_shortcut_disabled">Tidak ada pintas Sesame</string>
-    <string name="pref_sesame_sync_icon_pack">Bagikan paket ikon</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Sinkron paket ikon Lawnchair dengan Sesame</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
     <string name="font_weight_extra_light">ExtraLight</string>
@@ -409,4 +407,6 @@
     <string name="dock_scale">Ukuran bilah bar</string>
     <string name="adaptify_pack_title">Buat adaptif ikon untuk paket ikon</string>
     <string name="adaptify_pack_summary">Buat adaptif ikon untuk ikon dari paket ikon</string>
+    <string name="pref_sesame_sync_look_and_feel">Bagikan tampilan dan nuansa</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Sinkronkan setelan Lawnchair dengan Sesame</string>
 </resources>
