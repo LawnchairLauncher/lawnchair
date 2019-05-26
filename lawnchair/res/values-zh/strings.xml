@@ -360,8 +360,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[启用 Lawnchair 与 Sesame 之间的数据共享。 您可以在 Lawnchair 或 Sesame 设置中更改此设置。]]></string>
     <string name="sesame_version">集成版本</string>
     <string name="sesame_shortcut_disabled">Sesame 快捷方式不可用</string>
-    <string name="pref_sesame_sync_icon_pack">分享图标包</string>
-    <string name="pref_sesame_sync_icon_pack_summary">与 Sesame 同步 Lawnchair 图标包</string>
     <string name="font_variant_italic">斜体</string>
     <string name="font_weight_thin">细体</string>
     <string name="font_weight_extra_light">极细体</string>
@@ -409,4 +407,6 @@
     <string name="dock_scale">Dock 栏大小</string>
     <string name="adaptify_pack_title">为图标包创建自适应图标</string>
     <string name="adaptify_pack_summary">为出自图标包的图标创建自适应图标</string>
+    <string name="pref_sesame_sync_look_and_feel">分享外观和风格</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">与 Sesame 同步 Lawnchair 搜索设置</string>
 </resources>
