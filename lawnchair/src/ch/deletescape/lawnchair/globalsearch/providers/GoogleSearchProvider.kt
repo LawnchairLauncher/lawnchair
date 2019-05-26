@@ -43,6 +43,6 @@ class GoogleSearchProvider(context: Context) : SearchProvider(context) {
     override fun getAssistantIcon(): Drawable = context.getDrawable(R.drawable.opa_assistant_logo)!!
 
     companion object {
-        private const val PACKAGE = "com.google.android.googlequicksearchbox"
+        internal const val PACKAGE = "com.google.android.googlequicksearchbox"
     }
 }

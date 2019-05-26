@@ -493,8 +493,6 @@
     
     <string name="sesame_version">Integration version</string>
     <string name="sesame_shortcut_disabled">Sesame shortcuts unavailable</string>
-    <string name="pref_sesame_sync_icon_pack">Share icon pack</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Sync Lawnchair icon pack with Sesame</string>
     
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
@@ -560,4 +558,7 @@
 
     <string name="adaptify_pack_title">Create adaptive icons for icon pack</string>
     <string name="adaptify_pack_summary">Create adaptive icons for icons from icon packs</string>
+
+    <string name="pref_sesame_sync_look_and_feel">Share look and feel</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Sync Lawnchair search settings with Sesame</string>
 </resources>

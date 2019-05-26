@@ -69,13 +69,14 @@ class LawnchairApp : Application() {
                     SesameFrontend.setIntegrationDialog(thiz, R.layout.dialog_sesame_integration, android.R.id.button2, android.R.id.button1)
                     val ipm = IconPackManager.getInstance(thiz)
                     ipm.addListener {
-                        if (thiz.lawnchairPrefs.syncIconPackWithSesame) {
+                        if (thiz.lawnchairPrefs.syncLookNFeelWithSesame) {
                             runOnUiWorkerThread {
                                 val pkg = ipm.packList.currentPack().packPackageName
                                 Sesame.LookAndFeel[LookFeelKeys.ICON_PACK_PKG] = if (pkg == "") null else pkg
                             }
                         }
                     }
+                    Sesame.setupSync(thiz)
                 }
 
                 override fun onDisconnect() {

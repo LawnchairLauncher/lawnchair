@@ -29,6 +29,7 @@ import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.preferences.DockStyle
 import ch.deletescape.lawnchair.groups.DrawerTabs
+import ch.deletescape.lawnchair.sesame.Sesame
 import ch.deletescape.lawnchair.settings.GridSize
 import ch.deletescape.lawnchair.settings.GridSize2D
 import ch.deletescape.lawnchair.smartspace.SmartspaceDataWidget
@@ -104,7 +105,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val hideStatusBar by BooleanPref("pref_hideStatusBar", lawnchairConfig.hideStatusBar, doNothing)
     val iconPackMasking by BooleanPref("pref_iconPackMasking", true, reloadIcons)
     val adaptifyIconPacks by BooleanPref("pref_generateAdaptiveForIconPack", false, reloadIcons)
-    //val showAssistantIcon by BooleanPref("opa_enabled")
+    val showVoiceSearchIcon by BooleanPref("opa_enabled")
+    val showAssistantIcon by BooleanPref("opa_assistant")
 
     // Desktop
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
@@ -217,7 +219,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     }
 
     // Integrations
-    var syncIconPackWithSesame by BooleanPref("pref_sesame_sync_icon_pack", true)
+    var syncLookNFeelWithSesame by BooleanPref("pref_sesame_sync_icon_pack", true) {
+        Sesame.setupSync(context)
+    }
 
     // Misc
     var autoLaunchRoot by BooleanPref("internal_auto_launch_root")

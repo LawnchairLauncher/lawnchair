@@ -49,8 +49,8 @@
             android:dependency="sesame_integration"
             android:defaultValue="true"
             android:key="pref_sesame_sync_icon_pack"
-            android:summary="@string/pref_sesame_sync_icon_pack_summary"
-            android:title="@string/pref_sesame_sync_icon_pack" />
+            android:summary="@string/pref_sesame_sync_look_and_feel_summary"
+            android:title="@string/pref_sesame_sync_look_and_feel" />
 
         <ch.deletescape.lawnchair.sesame.preferences.SesameVersionPreference
             android:key="sesame_version"
