@@ -134,6 +134,10 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     public boolean startActivitySafely(View v, Intent intent, @Nullable ItemInfo item,
             @Nullable String sourceContainer) {
+        if (com.android.launcher3.TestProtocol.sDebugTracing) {
+            android.util.Log.d(com.android.launcher3.TestProtocol.NO_START_TAG,
+                    "startActivitySafely 1");
+        }
         if (mIsSafeModeEnabled && !Utilities.isSystemApp(this, intent)) {
             Toast.makeText(this, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
             return false;
@@ -157,6 +161,10 @@ public abstract class BaseDraggingActivity extends BaseActivity
                 startShortcutIntentSafely(intent, optsBundle, item, sourceContainer);
             } else if (user == null || user.equals(Process.myUserHandle())) {
                 // Could be launching some bookkeeping activity
+                if (com.android.launcher3.TestProtocol.sDebugTracing) {
+                    android.util.Log.d(com.android.launcher3.TestProtocol.NO_START_TAG,
+                            "startActivitySafely 2");
+                }
                 startActivity(intent, optsBundle);
                 AppLaunchTracker.INSTANCE.get(this).onStartApp(intent.getComponent(),
                         Process.myUserHandle(), sourceContainer);
