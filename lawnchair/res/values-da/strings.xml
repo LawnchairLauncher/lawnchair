@@ -407,4 +407,6 @@
     <string name="dock_scale">Dokskalering</string>
     <string name="adaptify_pack_title">Kreerer adaptive ikoner til ikonpakke</string>
     <string name="adaptify_pack_summary">Kreerer adaptive ikoner til ikoner i ikonpakke</string>
+    <string name="pref_sesame_sync_look_and_feel">Del udseende og fonemmelse</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Synk Lawnchair-søgeindstillinger med Sesame</string>
 </resources>
