@@ -319,7 +319,7 @@
     <string name="feed_theme_pref_title">Hintergrundfarbe</string>
     <string name="recents_not_connected">Dienst nicht verbunden</string>
     <string name="advanced_settings">Weitere %s-Einstellungen</string>
-    <string name="adaptive_icon">Adaptives Icon</string>
+    <string name="adaptive_icon">adaptive Icon</string>
     <string name="drawer_tabs">Tabs</string>
     <string name="add_new_tab">Hinzufügen</string>
     <string name="rename_tab">Umbenennen</string>
