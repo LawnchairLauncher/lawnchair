@@ -407,6 +407,8 @@
     <string name="about_app_description">Een aanpasbaar alternatief voor Pixel Launcher.</string>
     <string name="about_bio_paphonb">Een 18-jarige student, Android ontwikkelaar en één van de top ontwikkelaars bij Lawnchair Launcher.</string>
     <string name="dock_scale">Dock schaal</string>
-    <string name="adaptify_pack_title">Adaptieve pictogrammen voor pictogrampakket</string>
+    <string name="adaptify_pack_title">Adaptieve pictogrampakketten</string>
     <string name="adaptify_pack_summary">Adaptieve pictogrammen genereren voor pictogrammen uit pictogrampakketten</string>
+    <string name="pref_sesame_sync_look_and_feel">Uiterlijk en gedrag delen</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Lawnchair zoekinstellingen synchr. met Sesame</string>
 </resources>
