@@ -410,4 +410,6 @@
     <string name="dock_scale">Размера дока</string>
     <string name="adaptify_pack_title">Направи прилагодљиве иконе за пакет икона</string>
     <string name="adaptify_pack_summary">Примењује прилагодљиве иконе и на пакете икона</string>
+    <string name="pref_sesame_sync_look_and_feel">Дели изглед</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Синхронизује Lawnchair-ова подешавања претраге са Sesame-ом</string>
 </resources>
