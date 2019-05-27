@@ -403,4 +403,6 @@
     <string name="dock_scale">Escala del caixó d\'aplicacions</string>
     <string name="adaptify_pack_title">Crea icones adaptatives per al paquet d\'icones</string>
     <string name="adaptify_pack_summary">Creeu icones adaptatives per a icones a partir de paquets d\'icones</string>
+    <string name="pref_sesame_sync_look_and_feel">Comparteix l\'aspecte i el comportament</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Sincronitza la configuració de cerca del Lawnchair amb el Sesame</string>
 </resources>
