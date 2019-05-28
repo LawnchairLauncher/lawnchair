@@ -63,6 +63,10 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
      */
     private int mStateHandlerRequest = REQUEST_NONE;
     /**
+     * Rotation request made by an app transition
+     */
+    private int mCurrentTransitionRequest = REQUEST_NONE;
+    /**
      * Rotation request made by a Launcher State
      */
     private int mCurrentStateRequest = REQUEST_NONE;
@@ -123,6 +127,13 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
         }
     }
 
+    public void setCurrentTransitionRequest(int request) {
+        if (mCurrentTransitionRequest != request) {
+            mCurrentTransitionRequest = request;
+            notifyChange();
+        }
+    }
+
     public void setCurrentStateRequest(int request) {
         if (mCurrentStateRequest != request) {
             mCurrentStateRequest = request;
@@ -162,6 +173,9 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
         final int activityFlags;
         if (mStateHandlerRequest != REQUEST_NONE) {
             activityFlags = mStateHandlerRequest == REQUEST_LOCK ?
+                    SCREEN_ORIENTATION_LOCKED : SCREEN_ORIENTATION_UNSPECIFIED;
+        } else if (mCurrentTransitionRequest != REQUEST_NONE) {
+            activityFlags = mCurrentTransitionRequest == REQUEST_LOCK ?
                     SCREEN_ORIENTATION_LOCKED : SCREEN_ORIENTATION_UNSPECIFIED;
         } else if (mCurrentStateRequest == REQUEST_LOCK) {
             activityFlags = SCREEN_ORIENTATION_LOCKED;
