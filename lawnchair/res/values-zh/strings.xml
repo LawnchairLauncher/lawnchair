@@ -352,7 +352,7 @@
     <string name="sesame_search_upsell_on">设置 Sesame 为搜索提供商</string>
     <string name="sesame_search_upsell_off">未设置 Sesame 为搜索提供商</string>
     <string name="pref_sesame_enabled">已分享 Sesame 快捷方式数据</string>
-    <string name="pref_sesame_disabled">无已分享数据</string>
+    <string name="pref_sesame_disabled">无共享数据</string>
     <string name="pref_sesame_show_shortcuts">应用快捷方式</string>
     <string name="pref_sesame_show_shortcuts_summary">在图标气泡中显示 Sesame 快捷方式</string>
     <string name="allow">允许</string>
