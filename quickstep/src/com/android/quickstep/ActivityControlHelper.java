@@ -118,6 +118,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         void createActivityController(long transitionLength);
 
+        default void adjustActivityControllerInterpolators() { }
+
         default void onTransitionCancelled() { }
 
         default void setShelfState(ShelfAnimState animState, Interpolator interpolator,
