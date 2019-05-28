@@ -479,7 +479,7 @@ public class TouchInteractionService extends Service implements
             if (isInValidSystemUiState) {
                 // This handles apps launched in direct boot mode (e.g. dialer) as well as apps
                 // launched while device is locked even after exiting direct boot mode (e.g. camera).
-                return new DeviceLockedInputConsumer(this);
+                return createDeviceLockedInputConsumer(mAM.getRunningTask(0));
             } else {
                 return InputConsumer.NO_OP;
             }
@@ -512,15 +512,14 @@ public class TouchInteractionService extends Service implements
     }
 
     private InputConsumer newBaseConsumer(boolean useSharedState, MotionEvent event) {
-        if (mKM.isDeviceLocked()) {
-            // This handles apps launched in direct boot mode (e.g. dialer) as well as apps launched
-            // while device is locked even after exiting direct boot mode (e.g. camera).
-            return new DeviceLockedInputConsumer(this);
-        }
-
         final RunningTaskInfo runningTaskInfo = mAM.getRunningTask(0);
         if (!useSharedState) {
             mSwipeSharedState.clearAllState();
+        }
+        if (mKM.isDeviceLocked()) {
+            // This handles apps launched in direct boot mode (e.g. dialer) as well as apps launched
+            // while device is locked even after exiting direct boot mode (e.g. camera).
+            return createDeviceLockedInputConsumer(runningTaskInfo);
         }
 
         final ActivityControlHelper activityControl =
@@ -557,6 +556,15 @@ public class TouchInteractionService extends Service implements
                 mOverviewComponentObserver.getOverviewIntent(), activityControl,
                 shouldDefer, mOverviewCallbacks, mInputConsumer, this::onConsumerInactive,
                 mSwipeSharedState, mInputMonitorCompat, mSwipeTouchRegion);
+    }
+
+    private InputConsumer createDeviceLockedInputConsumer(RunningTaskInfo taskInfo) {
+        if (mMode == Mode.NO_BUTTON && taskInfo != null) {
+            return new DeviceLockedInputConsumer(this, mSwipeSharedState, mInputMonitorCompat,
+                    mSwipeTouchRegion, taskInfo.taskId);
+        } else {
+            return InputConsumer.NO_OP;
+        }
     }
 
     /**

@@ -84,6 +84,11 @@
             android:clearTaskOnLaunch="true"
             android:exported="false" />
 
+        <activity android:name="com.android.quickstep.LockScreenRecentsActivity"
+                  android:theme="@android:style/Theme.NoDisplay"
+                  android:showOnLockScreen="true"
+                  android:directBootAware="true" />
+
     </application>
 
 </manifest>
