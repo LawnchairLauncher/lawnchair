@@ -16,7 +16,7 @@
 
 package com.android.launcher3.tapl;
 
-import static com.android.launcher3.TestProtocol.ALL_APPS_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
 
 import static junit.framework.TestCase.assertTrue;
 
@@ -30,7 +30,7 @@ import androidx.annotation.Nullable;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
-import com.android.launcher3.TestProtocol;
+import com.android.launcher3.testing.TestProtocol;
 
 /**
  * Operations on the workspace screen.
