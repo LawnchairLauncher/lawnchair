@@ -217,6 +217,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private static final long SHELF_ANIM_DURATION = 120;
     public static final long RECENTS_ATTACH_DURATION = 300;
 
+    // Start resisting when swiping past this factor of mTransitionDragLength.
+    private static final float DRAG_LENGTH_FACTOR_START_PULLBACK = 1.4f;
+    // This is how far down we can scale down, where 0f is full screen and 1f is recents.
+    private static final float DRAG_LENGTH_FACTOR_MAX_PULLBACK = 1.8f;
+    private static final Interpolator PULLBACK_INTERPOLATOR = DEACCEL;
+
     /**
      * Used as the page index for logging when we return to the last task at the end of the gesture.
      */
@@ -231,7 +237,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private RunningWindowAnim mRunningWindowAnim;
     private boolean mIsShelfPeeking;
     private DeviceProfile mDp;
+    // The distance needed to drag to reach the task size in recents.
     private int mTransitionDragLength;
+    // How much further we can drag past recents, as a factor of mTransitionDragLength.
+    private float mDragLengthFactor = 1;
 
     // Shift in the range of [0, 1].
     // 0 => preview snapShot is completely visible, and hotseat is completely translated down
@@ -375,6 +384,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         mTransitionDragLength = mActivityControlHelper.getSwipeUpDestinationAndLength(
                 dp, mContext, tempRect);
         mClipAnimationHelper.updateTargetRect(tempRect);
+        if (mMode == Mode.NO_BUTTON) {
+            // We can drag all the way to the top of the screen.
+            mDragLengthFactor = (float) dp.heightPx / mTransitionDragLength;
+        }
     }
 
     private long getFadeInDuration() {
@@ -546,11 +559,18 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     public void updateDisplacement(float displacement) {
         // We are moving in the negative x/y direction
         displacement = -displacement;
-        if (displacement > mTransitionDragLength && mTransitionDragLength > 0) {
-            mCurrentShift.updateValue(1);
+        if (displacement > mTransitionDragLength * mDragLengthFactor && mTransitionDragLength > 0) {
+            mCurrentShift.updateValue(mDragLengthFactor);
         } else {
             float translation = Math.max(displacement, 0);
             float shift = mTransitionDragLength == 0 ? 0 : translation / mTransitionDragLength;
+            if (shift > DRAG_LENGTH_FACTOR_START_PULLBACK) {
+                float pullbackProgress = Utilities.getProgress(shift,
+                        DRAG_LENGTH_FACTOR_START_PULLBACK, mDragLengthFactor);
+                pullbackProgress = PULLBACK_INTERPOLATOR.getInterpolation(pullbackProgress);
+                shift = DRAG_LENGTH_FACTOR_START_PULLBACK + pullbackProgress
+                        * (DRAG_LENGTH_FACTOR_MAX_PULLBACK - DRAG_LENGTH_FACTOR_START_PULLBACK);
+            }
             mCurrentShift.updateValue(shift);
         }
     }
@@ -638,6 +658,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private void onAnimatorPlaybackControllerCreated(AnimatorPlaybackController anim) {
         mLauncherTransitionController = anim;
+        mLauncherTransitionController.dispatchSetInterpolator(t -> t * mDragLengthFactor);
+        mAnimationFactory.adjustActivityControllerInterpolators();
         mLauncherTransitionController.dispatchOnStart();
         updateLauncherTransitionProgress();
     }
@@ -690,7 +712,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         if (mGestureEndTarget == HOME) {
             return;
         }
-        float progress = mCurrentShift.value;
+        // Normalize the progress to 0 to 1, as the animation controller will clamp it to that
+        // anyway. The controller mimics the drag length factor by applying it to its interpolators.
+        float progress = mCurrentShift.value / mDragLengthFactor;
         mLauncherTransitionController.setPlayFraction(
                 progress <= mShiftAtGestureStart || mShiftAtGestureStart >= 1
                         ? 0 : (progress - mShiftAtGestureStart) / (1 - mShiftAtGestureStart));
@@ -898,7 +922,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             }
             endShift = endTarget.endShift;
             startShift = Utilities.boundToRange(currentShift - velocityPxPerMs.y
-                    * SINGLE_FRAME_MS / mTransitionDragLength, 0, 1);
+                    * SINGLE_FRAME_MS / mTransitionDragLength, 0, mDragLengthFactor);
             float minFlingVelocity = mContext.getResources()
                     .getDimension(R.dimen.quickstep_fling_min_velocity);
             if (Math.abs(endVelocity) > minFlingVelocity && mTransitionDragLength > 0) {
@@ -1057,6 +1081,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             mLauncherTransitionController.getAnimationPlayer().end();
         } else {
             mLauncherTransitionController.dispatchSetInterpolator(adjustedInterpolator);
+            mAnimationFactory.adjustActivityControllerInterpolators();
             mLauncherTransitionController.getAnimationPlayer().setDuration(duration);
 
             if (QUICKSTEP_SPRINGS.get()) {
