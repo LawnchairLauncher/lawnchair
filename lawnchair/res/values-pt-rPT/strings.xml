@@ -320,7 +320,7 @@
     <string name="feed_theme_pref_title">Cor de fundo</string>
     <string name="recents_not_connected">Serviço desligado</string>
     <string name="advanced_settings">Mais definições para %s</string>
-    <string name="adaptive_icon">ícone adaptativo</string>
+    <string name="adaptive_icon">ícones adaptativos</string>
     <string name="drawer_tabs">Separadores</string>
     <string name="add_new_tab">Adicionar</string>
     <string name="rename_tab">Renomear</string>
@@ -409,4 +409,6 @@
     <string name="dock_scale">Escala da doca</string>
     <string name="adaptify_pack_title">Criar ícones adaptativos para o tema de ícones</string>
     <string name="adaptify_pack_summary">Criar ícones adaptativos a partir do pacote de ícones</string>
+    <string name="pref_sesame_sync_look_and_feel">Partilhar aspeto e comportamento</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Sincronizar definições de pesquisa de Lawnchair com Sesame</string>
 </resources>
