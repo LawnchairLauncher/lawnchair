@@ -398,4 +398,8 @@
     <string name="pref_show_dev_options">Näytä asetuksissa</string>
     <string name="about_app_description">Muokattavissa oleva Pixel Launcher -vaihtoehto.</string>
     <string name="dock_scale">Telakan koko</string>
+    <string name="adaptify_pack_title">Luo adaptiiviset kuvakkeet kuvakepaketille</string>
+    <string name="adaptify_pack_summary">Luo adaptiiviset kuvakkeet kuvakepaketin kuvakkeille</string>
+    <string name="pref_sesame_sync_look_and_feel">Jaa ulkoasu ja tunnelma</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Synkronoi Lawnchair haun asetukset Sesamen kanssa</string>
 </resources>
