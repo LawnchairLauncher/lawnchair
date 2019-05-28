@@ -21,10 +21,9 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
 public class ResourceUtils {
-    public static final String NAVBAR_PORTRAIT_BOTTOM_SIZE = "navigation_bar_frame_height";
     public static final String NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE = "navigation_bar_width";
-    public static final String NAVBAR_LANDSCAPE_BOTTOM_SIZE
-            = "navigation_bar_frame_height_landscape";
+    public static final String NAVBAR_BOTTOM_GESTURE_SIZE = "navigation_bar_gesture_height";
+
 
     public static int getNavbarSize(String resName, Resources res) {
         return getDimenByName(resName, res, 48);

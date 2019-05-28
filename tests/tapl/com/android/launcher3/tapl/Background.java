@@ -16,7 +16,7 @@
 
 package com.android.launcher3.tapl;
 
-import static com.android.launcher3.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 
 import android.graphics.Point;
 import android.os.SystemClock;
@@ -24,7 +24,7 @@ import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
 
-import com.android.launcher3.TestProtocol;
+import com.android.launcher3.testing.TestProtocol;
 
 /**
  * Indicates the base state with a UI other than Overview running as foreground. It can also
@@ -32,7 +32,6 @@ import com.android.launcher3.TestProtocol;
  */
 public class Background extends LauncherInstrumentation.VisibleContainer {
     private static final int ZERO_BUTTON_SWIPE_UP_GESTURE_DURATION = 500;
-    private static final int ZERO_BUTTON_SWIPE_UP_HOLD_DURATION = 400;
 
     Background(LauncherInstrumentation launcher) {
         super(launcher);
@@ -72,9 +71,15 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
 
                 final long downTime = SystemClock.uptimeMillis();
                 mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start);
-                mLauncher.movePointer(
-                        downTime, downTime, ZERO_BUTTON_SWIPE_UP_GESTURE_DURATION, start, end);
-                LauncherInstrumentation.sleep(ZERO_BUTTON_SWIPE_UP_HOLD_DURATION);
+                mLauncher.executeAndWaitForEvent(
+                        () -> mLauncher.movePointer(
+                                downTime,
+                                downTime,
+                                ZERO_BUTTON_SWIPE_UP_GESTURE_DURATION,
+                                start,
+                                end),
+                        event -> TestProtocol.PAUSE_DETECTED_MESSAGE.equals(event.getClassName()),
+                        "Pause wasn't detected");
                 mLauncher.sendPointer(
                         downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, end);
                 break;
@@ -89,7 +94,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                 mLauncher.swipeToState(
                         centerX, startY, centerX,
                         startY - swipeHeight - mLauncher.getTouchSlop(),
-                        60,
+                        10,
                         expectedState);
                 break;
             }
