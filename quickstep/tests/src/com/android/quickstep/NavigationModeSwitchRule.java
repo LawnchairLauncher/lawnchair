@@ -133,7 +133,7 @@ public class NavigationModeSwitchRule implements TestRule {
 
                     for (int i = 0; i != 100; ++i) {
                         if (mLauncher.getNavigationModel() == expectedMode) {
-                            Thread.sleep(1000);
+                            Thread.sleep(5000);
                             return;
                         }
                         Thread.sleep(100);
