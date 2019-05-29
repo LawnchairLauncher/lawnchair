@@ -373,7 +373,7 @@
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
-    <string name="search_provider_edge">Edge</string>
+    <string name="search_provider_edge">边缘</string>
     <string name="weather_provider_oneplus_weather">一加天气</string>
     <string name="overlap_placement">重叠放置</string>
     <string name="overlap_placement_summary">允许图标和小部件相互重叠。</string>
