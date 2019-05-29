@@ -400,13 +400,22 @@ public final class LauncherInstrumentation {
         // accessibility events prior to pressing Home.
         final String action;
         if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
+            final Point displaySize = getRealDisplaySize();
+
+            if (hasLauncherObject("deep_shortcuts_container")) {
+                linearGesture(
+                        displaySize.x / 2, displaySize.y - 1,
+                        displaySize.x / 2, 0,
+                        ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
+                assertTrue("Context menu is still visible afterswiping up to home",
+                        !hasLauncherObject("deep_shortcuts_container"));
+            }
             if (hasLauncherObject(WORKSPACE_RES_ID)) {
                 log(action = "already at home");
             } else {
                 log(action = "swiping up to home");
                 final int finalState = mDevice.hasObject(By.pkg(getLauncherPackageName()))
                         ? NORMAL_STATE_ORDINAL : BACKGROUND_APP_STATE_ORDINAL;
-                final Point displaySize = getRealDisplaySize();
 
                 swipeToState(
                         displaySize.x / 2, displaySize.y - 1,
