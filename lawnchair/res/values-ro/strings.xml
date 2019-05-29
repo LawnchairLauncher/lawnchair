@@ -410,4 +410,6 @@
     <string name="dock_scale">Scară zonă de andocare</string>
     <string name="adaptify_pack_title">Creare pictograme adaptive pentru pachetul cu pictograme</string>
     <string name="adaptify_pack_summary">Creare pictograme adaptive pentru pictograme din pachete cu pictograme</string>
+    <string name="pref_sesame_sync_look_and_feel">Partajați aspectul</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Sincronizați setările de căutare a Lawnchair cu Sesame</string>
 </resources>
