@@ -39,6 +39,7 @@ import static com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget
 import static com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget.NEW_TASK;
 import static com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget.RECENTS;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -105,6 +106,7 @@ import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
+import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.WindowCallbacksCompat;
@@ -859,16 +861,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         }
     }
 
-    @UiThread
-    private void handleNormalGestureEnd(float endVelocity, boolean isFling, PointF velocity,
+    private GestureEndTarget calculateEndTarget(PointF velocity, float endVelocity, boolean isFling,
             boolean isCancel) {
-        PointF velocityPxPerMs = new PointF(velocity.x / 1000, velocity.y / 1000);
-        long duration = MAX_SWIPE_DURATION;
-        float currentShift = mCurrentShift.value;
         final GestureEndTarget endTarget;
-        float endShift;
-        final float startShift;
-        Interpolator interpolator = DEACCEL;
         final boolean goingToNewTask;
         if (mRecentsView != null) {
             if (!mRecentsAnimationWrapper.hasTargets()) {
@@ -883,7 +878,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         } else {
             goingToNewTask = false;
         }
-        final boolean reachedOverviewThreshold = currentShift >= MIN_PROGRESS_FOR_OVERVIEW;
+        final boolean reachedOverviewThreshold = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW;
         if (!isFling) {
             if (isCancel) {
                 endTarget = LAST_TASK;
@@ -893,7 +888,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 } else if (goingToNewTask) {
                     endTarget = NEW_TASK;
                 } else {
-                    endTarget = currentShift < MIN_PROGRESS_FOR_OVERVIEW ? LAST_TASK : HOME;
+                    endTarget = !reachedOverviewThreshold ? LAST_TASK : HOME;
                 }
             } else {
                 endTarget = reachedOverviewThreshold && mGestureStarted
@@ -902,12 +897,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                                 ? NEW_TASK
                                 : LAST_TASK;
             }
-            endShift = endTarget.endShift;
-            long expectedDuration = Math.abs(Math.round((endShift - currentShift)
-                    * MAX_SWIPE_DURATION * SWIPE_DURATION_MULTIPLIER));
-            duration = Math.min(MAX_SWIPE_DURATION, expectedDuration);
-            startShift = currentShift;
-            interpolator = endTarget == RECENTS ? OVERSHOOT_1_2 : DEACCEL;
         } else {
             if (mMode == Mode.NO_BUTTON && endVelocity < 0 && !mIsShelfPeeking) {
                 // If swiping at a diagonal, base end target on the faster velocity.
@@ -920,7 +909,34 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             } else {
                 endTarget = goingToNewTask ? NEW_TASK : LAST_TASK;
             }
-            endShift = endTarget.endShift;
+        }
+
+        int stateFlags = OverviewInteractionState.INSTANCE.get(mActivity).getSystemUiStateFlags();
+        if ((stateFlags & SYSUI_STATE_OVERVIEW_DISABLED) != 0
+                && (endTarget == RECENTS || endTarget == LAST_TASK)) {
+            return LAST_TASK;
+        }
+        return endTarget;
+    }
+
+    @UiThread
+    private void handleNormalGestureEnd(float endVelocity, boolean isFling, PointF velocity,
+            boolean isCancel) {
+        PointF velocityPxPerMs = new PointF(velocity.x / 1000, velocity.y / 1000);
+        long duration = MAX_SWIPE_DURATION;
+        float currentShift = mCurrentShift.value;
+        final GestureEndTarget endTarget = calculateEndTarget(velocity, endVelocity,
+                isFling, isCancel);
+        float endShift = endTarget.endShift;
+        final float startShift;
+        Interpolator interpolator = DEACCEL;
+        if (!isFling) {
+            long expectedDuration = Math.abs(Math.round((endShift - currentShift)
+                    * MAX_SWIPE_DURATION * SWIPE_DURATION_MULTIPLIER));
+            duration = Math.min(MAX_SWIPE_DURATION, expectedDuration);
+            startShift = currentShift;
+            interpolator = endTarget == RECENTS ? OVERSHOOT_1_2 : DEACCEL;
+        } else {
             startShift = Utilities.boundToRange(currentShift - velocityPxPerMs.y
                     * SINGLE_FRAME_MS / mTransitionDragLength, 0, mDragLengthFactor);
             float minFlingVelocity = mContext.getResources()
