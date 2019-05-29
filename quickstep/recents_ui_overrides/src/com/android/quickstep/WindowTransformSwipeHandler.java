@@ -1057,6 +1057,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                     setStateOnUiThread(target.endState);
                 }
             });
+            homeAnimFactory.playAtomicAnimation(velocityPxPerMs.y);
             windowAnim.start(velocityPxPerMs);
             mRunningWindowAnim = RunningWindowAnim.wrap(windowAnim);
             mLauncherTransitionController = null;
