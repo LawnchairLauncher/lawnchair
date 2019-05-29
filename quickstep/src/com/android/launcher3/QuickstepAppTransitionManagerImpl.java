@@ -278,7 +278,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         if (launcherClosing) {
             Pair<AnimatorSet, Runnable> launcherContentAnimator =
                     getLauncherContentAnimator(true /* isAppOpening */,
-                            new float[] {0, mContentTransY});
+                            new float[] {0, -mContentTransY});
             anim.play(launcherContentAnimator.first);
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
