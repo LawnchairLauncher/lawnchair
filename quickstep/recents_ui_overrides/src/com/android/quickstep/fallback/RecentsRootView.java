@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.WindowInsets;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.R;
@@ -70,7 +71,7 @@ public class RecentsRootView extends BaseDragLayer<RecentsActivity> {
         // Update device profile before notifying the children.
         mActivity.getDeviceProfile().updateInsets(insets);
         setInsets(insets);
-        return false; // Let children get the full insets
+        return true; // I'll take it from here
     }
 
     @Override
@@ -87,5 +88,11 @@ public class RecentsRootView extends BaseDragLayer<RecentsActivity> {
     public void dispatchInsets() {
         mActivity.getDeviceProfile().updateInsets(mInsets);
         super.setInsets(mInsets);
+    }
+
+    @Override
+    public WindowInsets dispatchApplyWindowInsets(WindowInsets insets) {
+        updateTouchExcludeRegion(insets);
+        return super.dispatchApplyWindowInsets(insets);
     }
 }

@@ -23,7 +23,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.TestProtocol;
 import com.android.launcher3.Utilities;
 
 import java.util.function.Consumer;
@@ -67,13 +67,6 @@ public class AccessibilityManagerCompat {
         if (accessibilityManager == null) return;
 
         sendEventToTest(accessibilityManager, TestProtocol.SCROLL_FINISHED_MESSAGE, null);
-    }
-
-    public static void sendPauseDetectedEventToTest(Context context) {
-        final AccessibilityManager accessibilityManager = getAccessibilityManagerForTest(context);
-        if (accessibilityManager == null) return;
-
-        sendEventToTest(accessibilityManager, TestProtocol.PAUSE_DETECTED_MESSAGE, null);
     }
 
     private static void sendEventToTest(

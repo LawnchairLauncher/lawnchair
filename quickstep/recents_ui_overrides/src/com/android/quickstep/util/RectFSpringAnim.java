@@ -16,28 +16,40 @@
 package com.android.quickstep.util;
 
 import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.util.FloatProperty;
 
 import androidx.dynamicanimation.animation.DynamicAnimation.OnAnimationEndListener;
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
-import androidx.dynamicanimation.animation.SpringAnimation;
-import androidx.dynamicanimation.animation.SpringForce;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.FlingSpringAnim;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.android.launcher3.anim.Interpolators.DEACCEL;
 
 /**
  * Applies spring forces to animate from a starting rect to a target rect,
  * while providing update callbacks to the caller.
  */
 public class RectFSpringAnim {
+
+    /**
+     * Although the rect position animation takes an indefinite amount of time since it depends on
+     * the initial velocity and applied forces, scaling from the starting rect to the target rect
+     * can be done in parallel at a fixed duration. Update callbacks are sent based on the progress
+     * of this animation, while the end callback is sent after all animations finish.
+     */
+    private static final long RECT_SCALE_DURATION = 250;
 
     private static final FloatPropertyCompat<RectFSpringAnim> RECT_CENTER_X =
             new FloatPropertyCompat<RectFSpringAnim>("rectCenterXSpring") {
@@ -67,17 +79,17 @@ public class RectFSpringAnim {
                 }
             };
 
-    private static final FloatPropertyCompat<RectFSpringAnim> RECT_SCALE_PROGRESS =
-            new FloatPropertyCompat<RectFSpringAnim>("rectScaleProgress") {
+    private static final FloatProperty<RectFSpringAnim> RECT_SCALE_PROGRESS =
+            new FloatProperty<RectFSpringAnim>("rectScaleProgress") {
                 @Override
-                public float getValue(RectFSpringAnim object) {
-                    return object.mCurrentScaleProgress;
+                public Float get(RectFSpringAnim anim) {
+                    return anim.mCurrentScaleProgress;
                 }
 
                 @Override
-                public void setValue(RectFSpringAnim object, float value) {
-                    object.mCurrentScaleProgress = value;
-                    object.onUpdate();
+                public void setValue(RectFSpringAnim anim, float currentScaleProgress) {
+                    anim.mCurrentScaleProgress = currentScaleProgress;
+                    anim.onUpdate();
                 }
             };
 
@@ -94,7 +106,7 @@ public class RectFSpringAnim {
     private float mCurrentScaleProgress;
     private FlingSpringAnim mRectXAnim;
     private FlingSpringAnim mRectYAnim;
-    private SpringAnimation mRectScaleAnim;
+    private ValueAnimator mRectScaleAnim;
     private boolean mAnimsStarted;
     private boolean mRectXAnimEnded;
     private boolean mRectYAnimEnded;
@@ -165,18 +177,17 @@ public class RectFSpringAnim {
         mRectYAnim = new FlingSpringAnim(this, RECT_Y, startY, endY, startVelocityY,
                 mMinVisChange, minYValue, maxYValue, springVelocityFactor, onYEndListener);
 
-        float minVisibleChange = 1f / mStartRect.height();
-        mRectScaleAnim = new SpringAnimation(this, RECT_SCALE_PROGRESS)
-                .setSpring(new SpringForce(1f)
-                .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY)
-                .setStiffness(SpringForce.STIFFNESS_LOW))
-                .setStartVelocity(velocityPxPerMs.y * minVisibleChange)
-                .setMaxValue(1f)
-                .setMinimumVisibleChange(minVisibleChange)
-                .addEndListener((animation, canceled, value, velocity) -> {
-                    mRectScaleAnimEnded = true;
-                    maybeOnEnd();
-                });
+        mRectScaleAnim = ObjectAnimator.ofPropertyValuesHolder(this,
+                PropertyValuesHolder.ofFloat(RECT_SCALE_PROGRESS, 1))
+                .setDuration(RECT_SCALE_DURATION);
+        mRectScaleAnim.setInterpolator(DEACCEL);
+        mRectScaleAnim.addListener(new AnimationSuccessListener() {
+            @Override
+            public void onAnimationSuccess(Animator animator) {
+                mRectScaleAnimEnded = true;
+                maybeOnEnd();
+            }
+        });
 
         mRectXAnim.start();
         mRectYAnim.start();
@@ -191,9 +202,7 @@ public class RectFSpringAnim {
         if (mAnimsStarted) {
             mRectXAnim.end();
             mRectYAnim.end();
-            if (mRectScaleAnim.canSkipToEnd()) {
-                mRectScaleAnim.skipToEnd();
-            }
+            mRectScaleAnim.end();
         }
     }
 
