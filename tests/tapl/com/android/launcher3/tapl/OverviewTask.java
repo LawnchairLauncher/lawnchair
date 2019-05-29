@@ -25,6 +25,7 @@ import androidx.test.uiautomator.Until;
  */
 public final class OverviewTask {
     static final int FLING_SPEED = 3000;
+    private static final long WAIT_TIME_MS = 60000;
     private final LauncherInstrumentation mLauncher;
     private final UiObject2 mTask;
     private final BaseOverview mOverview;
@@ -60,7 +61,7 @@ public final class OverviewTask {
         verifyActiveContainer();
         mLauncher.assertTrue("Launching task didn't open a new window: " +
                         mTask.getParent().getContentDescription(),
-                mTask.clickAndWait(Until.newWindow(), LauncherInstrumentation.WAIT_TIME_MS));
+                mTask.clickAndWait(Until.newWindow(), WAIT_TIME_MS));
         return new Background(mLauncher);
     }
 }
