@@ -111,6 +111,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
     private final float mDragSlop;
     private final float mSquaredTouchSlop;
+    private final boolean mDisableHorizontalSwipe;
 
     // Slop used to check when we start moving window.
     private boolean mPassedDragSlop;
@@ -132,7 +133,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             InputConsumerController inputConsumer,
             Consumer<OtherActivityInputConsumer> onCompleteCallback,
             SwipeSharedState swipeSharedState, InputMonitorCompat inputMonitorCompat,
-            RectF swipeTouchRegion) {
+            RectF swipeTouchRegion, boolean disableHorizontalSwipe) {
         super(base);
 
         mMainThreadHandler = new Handler(Looper.getMainLooper());
@@ -162,11 +163,19 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mSquaredTouchSlop = slop * slop;
 
         mPassedTouchSlop = mPassedDragSlop = continuingPreviousGesture;
+        mDisableHorizontalSwipe = !mPassedTouchSlop && disableHorizontalSwipe;
     }
 
     @Override
     public int getType() {
         return TYPE_OTHER_ACTIVITY;
+    }
+
+    private void forceCancelGesture(MotionEvent ev) {
+        int action = ev.getAction();
+        ev.setAction(ACTION_CANCEL);
+        finishTouchTracking(ev);
+        ev.setAction(action);
     }
 
     @Override
@@ -216,10 +225,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                     // Cancel interaction in case of multi-touch interaction
                     int ptrIdx = ev.getActionIndex();
                     if (!mSwipeTouchRegion.contains(ev.getX(ptrIdx), ev.getY(ptrIdx))) {
-                        int action = ev.getAction();
-                        ev.setAction(ACTION_CANCEL);
-                        finishTouchTracking(ev);
-                        ev.setAction(action);
+                        forceCancelGesture(ev);
                     }
                 }
                 break;
@@ -258,7 +264,15 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 }
 
                 if (!mPassedTouchSlop) {
-                    if (squaredHypot(displacementX, mLastPos.y - mDownPos.y) >= mSquaredTouchSlop) {
+                    float displacementY = mLastPos.y - mDownPos.y;
+                    if (squaredHypot(displacementX, displacementY) >= mSquaredTouchSlop) {
+                        if (mDisableHorizontalSwipe
+                                && Math.abs(displacementX) > Math.abs(displacementY)) {
+                            // Horizontal gesture is not allowed in this region
+                            forceCancelGesture(ev);
+                            break;
+                        }
+
                         mPassedTouchSlop = true;
 
                         if (mIsDeferredDownTarget) {
