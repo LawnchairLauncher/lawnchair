@@ -57,6 +57,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -151,8 +152,21 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
             @NonNull
             @Override
             public AnimatorPlaybackController createActivityAnimationToHome() {
+                // Return an empty APC here since we have an non-user controlled animation to home.
                 long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
-                return activity.getStateManager().createAnimationToNewWorkspace(NORMAL, accuracy);
+                AnimatorSet as = new AnimatorSet();
+                as.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        activity.getStateManager().goToState(NORMAL, false);
+                    }
+                });
+                return AnimatorPlaybackController.wrap(as, accuracy);
+            }
+
+            @Override
+            public void playAtomicAnimation(float velocity) {
+                new StaggeredWorkspaceAnim(activity, workspaceView, velocity).start();
             }
         };
     }
