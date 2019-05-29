@@ -229,7 +229,7 @@ public class FloatingIconView extends View implements
 
         mTaskCornerRadius = cornerRadius / scale;
         if (mIsAdaptiveIcon) {
-            if (!isOpening && shapeRevealProgress >= 0) {
+            if (!isOpening && progress >= shapeProgressStart) {
                 if (mRevealAnimator == null) {
                     mRevealAnimator = (ValueAnimator) IconShape.getShape().createRevealAnimator(
                             this, mStartRevealRect, mOutline, mTaskCornerRadius, !isOpening);
