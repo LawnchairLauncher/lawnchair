@@ -69,3 +69,5 @@ LOCAL_PACKAGE_NAME := Launcher3Tests
 LOCAL_INSTRUMENTATION_FOR := Launcher3
 
 include $(BUILD_PACKAGE)
+
+include $(call all-makefiles-under,$(LOCAL_PATH))
