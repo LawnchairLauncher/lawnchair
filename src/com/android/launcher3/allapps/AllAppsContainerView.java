@@ -31,7 +31,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowInsets;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.DeviceProfile;
@@ -44,7 +43,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.TestProtocol;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -322,19 +321,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
         setLayoutParams(mlp);
 
+        mNavBarScrimHeight = insets.bottom;
         InsettableFrameLayout.dispatchInsets(this, insets);
         mLauncher.getAllAppsController()
                 .setScrollRangeDelta(mSearchUiManager.getScrollRangeDelta(insets));
-    }
-
-    @Override
-    public WindowInsets dispatchApplyWindowInsets(WindowInsets insets) {
-        if (Utilities.ATLEAST_Q) {
-            mNavBarScrimHeight = insets.getTappableElementInsets().bottom;
-        } else {
-            mNavBarScrimHeight = insets.getStableInsetBottom();
-        }
-        return super.dispatchApplyWindowInsets(insets);
     }
 
     @Override

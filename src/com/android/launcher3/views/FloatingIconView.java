@@ -20,7 +20,6 @@ import static com.android.launcher3.Utilities.getBadge;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
-import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -41,6 +40,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +63,7 @@ import com.android.launcher3.graphics.ShiftedBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.shortcuts.DeepShortcutView;
+import com.android.launcher3.util.UiThreadHelper;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
@@ -179,7 +180,6 @@ public class FloatingIconView extends View implements
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         getViewTreeObserver().addOnGlobalLayoutListener(this);
-        mLauncher.getRotationHelper().setCurrentTransitionRequest(REQUEST_LOCK);
     }
 
     @Override
@@ -642,7 +642,7 @@ public class FloatingIconView extends View implements
                 originalView.setVisibility(INVISIBLE);
             };
             CancellationSignal loadIconSignal = view.mLoadIconSignal;
-            new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(() -> {
+            new Handler(UiThreadHelper.getBackgroundLooper()).postAtFrontOfQueue(() -> {
                 view.getIcon(originalView, (ItemInfo) originalView.getTag(), isOpening,
                         onIconLoaded, loadIconSignal);
             });
