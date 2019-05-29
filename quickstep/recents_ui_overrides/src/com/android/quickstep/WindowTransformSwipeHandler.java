@@ -1134,12 +1134,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         // FolderIconView can be seen morphing into the icon shape.
         final float windowAlphaThreshold = isFloatingIconView ? 1f - SHAPE_PROGRESS_DURATION : 1f;
         anim.addOnUpdateListener((currentRect, progress) -> {
-            float interpolatedProgress = Interpolators.ACCEL_1_5.getInterpolation(progress);
-
             homeAnim.setPlayFraction(progress);
 
-            float windowAlpha = Utilities.mapToRange(interpolatedProgress, 0,
-                    windowAlphaThreshold, 1f, 0f, Interpolators.LINEAR);
+            float windowAlpha = Math.max(0, Utilities.mapToRange(progress, 0,
+                    windowAlphaThreshold, 1f, 0f, Interpolators.LINEAR));
             mTransformParams.setProgress(progress)
                     .setCurrentRectAndTargetAlpha(currentRect, windowAlpha);
             mClipAnimationHelper.applyTransform(targetSet, mTransformParams,
