@@ -100,6 +100,14 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         executeOnLauncher(
                 launcher -> assertTrue("Launcher internal state didn't switch to Showing Menu",
                         OptionsPopupView.getOptionsPopup(launcher) != null));
+        // Check that pressHome works when the menu is shown.
+        mLauncher.pressHome();
+    }
+
+    @Test
+    public void testPressHomeOnAllAppsContextMenu() throws Exception {
+        mLauncher.getWorkspace().switchToAllApps().getAppIcon("TestActivity7").openMenu();
+        mLauncher.pressHome();
     }
 
     public static void runAllAppsTest(AbstractLauncherUiTest test, AllApps allApps) {
