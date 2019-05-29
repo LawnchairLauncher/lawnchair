@@ -73,6 +73,14 @@
             </intent-filter>
         </provider>
 
+        <provider
+            android:name="com.android.quickstep.TestInformationProvider"
+            android:authorities="${packageName}.TestInfo"
+            android:readPermission="android.permission.WRITE_SECURE_SETTINGS"
+            android:writePermission="android.permission.WRITE_SECURE_SETTINGS"
+            android:exported="true">
+        </provider>
+
         <service
             android:name="com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL$ColorExtractionService"
             tools:node="remove" />

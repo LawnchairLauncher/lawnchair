@@ -14,6 +14,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewDebug;
+import android.view.WindowInsets;
 
 import java.util.Collections;
 import java.util.List;
@@ -100,7 +101,7 @@ public class LauncherRootView extends InsettableFrameLayout {
             mLauncher.getStateManager().reapplyState(true /* cancelCurrentAnimation */);
         }
 
-        return false; // Let children get the full insets
+        return true; // I'll take it from here
     }
 
     @Override
@@ -153,6 +154,12 @@ public class LauncherRootView extends InsettableFrameLayout {
         if (mWindowStateListener != null) {
             mWindowStateListener.onWindowVisibilityChanged(visibility);
         }
+    }
+
+    @Override
+    public WindowInsets dispatchApplyWindowInsets(WindowInsets insets) {
+        mLauncher.getDragLayer().updateTouchExcludeRegion(insets);
+        return super.dispatchApplyWindowInsets(insets);
     }
 
     @Override
