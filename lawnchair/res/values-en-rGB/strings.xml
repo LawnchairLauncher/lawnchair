@@ -161,7 +161,7 @@
     <string name="action_global_search">Open global search</string>
     <string name="action_app_search">Open app search</string>
     <string name="action_overlay">Open Google feed</string>
-    <string name="action_assistant">Open Google feed</string>
+    <string name="action_assistant">Open assistant</string>
     <string name="action_open_notifications">Open notifications</string>
     <string name="action_close_notifications">Open notifications</string>
     <string name="action_sleep_timeout">Sleep (using timeout)</string>
