@@ -66,6 +66,7 @@ public final class Workspace extends Home {
                     "switchToAllApps: swipeHeight = " + swipeHeight + ", slop = "
                             + mLauncher.getTouchSlop());
 
+            mLauncher.getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
             mLauncher.swipeToState(
                     start.x,
                     start.y,
@@ -73,6 +74,7 @@ public final class Workspace extends Home {
                     start.y - swipeHeight - mLauncher.getTouchSlop(),
                     60,
                     ALL_APPS_STATE_ORDINAL);
+            mLauncher.getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "swiped to all apps")) {

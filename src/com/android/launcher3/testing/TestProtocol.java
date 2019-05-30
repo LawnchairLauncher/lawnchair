@@ -68,6 +68,7 @@ public final class TestProtocol {
     public static boolean sDebugTracing = false;
     public static final String REQUEST_ENABLE_DEBUG_TRACING = "enable-debug-tracing";
     public static final String REQUEST_DISABLE_DEBUG_TRACING = "disable-debug-tracing";
+    public static final String NO_ALLAPPS_EVENT_TAG = "b/133867119";
     public static final String NO_DRAG_TAG = "b/133009122";
     public static final String NO_START_TAG = "b/132900132";
 }
