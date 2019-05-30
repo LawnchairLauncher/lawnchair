@@ -71,4 +71,5 @@ public final class TestProtocol {
     public static final String NO_ALLAPPS_EVENT_TAG = "b/133867119";
     public static final String NO_DRAG_TAG = "b/133009122";
     public static final String NO_START_TAG = "b/132900132";
+    public static final String NO_START_TASK_TAG = "b/133765434";
 }
