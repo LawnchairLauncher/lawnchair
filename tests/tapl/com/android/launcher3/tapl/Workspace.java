@@ -16,7 +16,7 @@
 
 package com.android.launcher3.tapl;
 
-import static com.android.launcher3.TestProtocol.ALL_APPS_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
 
 import static junit.framework.TestCase.assertTrue;
 
@@ -30,7 +30,7 @@ import androidx.annotation.Nullable;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
-import com.android.launcher3.TestProtocol;
+import com.android.launcher3.testing.TestProtocol;
 
 /**
  * Operations on the workspace screen.
@@ -66,6 +66,7 @@ public final class Workspace extends Home {
                     "switchToAllApps: swipeHeight = " + swipeHeight + ", slop = "
                             + mLauncher.getTouchSlop());
 
+            mLauncher.getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
             mLauncher.swipeToState(
                     start.x,
                     start.y,
@@ -73,6 +74,7 @@ public final class Workspace extends Home {
                     start.y - swipeHeight - mLauncher.getTouchSlop(),
                     60,
                     ALL_APPS_STATE_ORDINAL);
+            mLauncher.getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "swiped to all apps")) {

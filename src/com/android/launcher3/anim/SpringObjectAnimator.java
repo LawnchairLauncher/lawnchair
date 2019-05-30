@@ -22,6 +22,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.util.Property;
 
@@ -139,7 +141,7 @@ public class SpringObjectAnimator<T extends ProgressInterface> extends ValueAnim
     /**
      * Initializes and sets up the spring to take over controlling the object.
      */
-    void startSpring(float end, float velocity, OnAnimationEndListener endListener) {
+    public void startSpring(float end, float velocity, OnAnimationEndListener endListener) {
         // Cancel the spring so we can set new start velocity and final position. We need to remove
         // the listener since the spring is not actually ending.
         mSpring.removeEndListener(endListener);
@@ -149,7 +151,13 @@ public class SpringObjectAnimator<T extends ProgressInterface> extends ValueAnim
         mProperty.switchToSpring();
 
         mSpring.setStartVelocity(velocity);
-        mSpring.animateToFinalPosition(end == 0 ? mValues[0] : mValues[1]);
+
+        float startValue = end == 0 ? mValues[1] : mValues[0];
+        float endValue = end == 0 ? mValues[0] : mValues[1];
+        mSpring.setStartValue(startValue);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            mSpring.animateToFinalPosition(endValue);
+        }, getStartDelay());
     }
 
     @Override
