@@ -490,9 +490,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
         }
 
-        if (supportsFakeLandscapeUI()
-                && mDeviceProfile.isVerticalBarLayout()
-                && !mDeviceProfile.isMultiWindowMode) {
+        if (supportsFakeLandscapeUI() && mDeviceProfile.isVerticalBarLayout()) {
             mStableDeviceProfile = mDeviceProfile.inv.portraitProfile;
             mRotationMode = UiFactory.getRotationMode(mDeviceProfile);
         } else {
@@ -500,6 +498,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mRotationMode = RotationMode.NORMAL;
         }
 
+        mRotationHelper.updateRotationAnimation();
         onDeviceProfileInitiated();
         mModelWriter = mModel.getWriter(getWallpaperDeviceProfile().isVerticalBarLayout(), true);
     }
