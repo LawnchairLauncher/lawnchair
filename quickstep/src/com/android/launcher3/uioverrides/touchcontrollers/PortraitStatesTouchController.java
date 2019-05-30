@@ -26,6 +26,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
@@ -46,9 +47,11 @@ import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.systemui.shared.system.QuickStepContract;
 
 /**
  * Touch controller for handling various state transitions in portrait UI.
@@ -135,7 +138,10 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         } else if (fromState == OVERVIEW) {
             return isDragTowardPositive ? ALL_APPS : NORMAL;
         } else if (fromState == NORMAL && isDragTowardPositive) {
+            int stateFlags = OverviewInteractionState.INSTANCE.get(mLauncher)
+                    .getSystemUiStateFlags();
             return mAllowDragToOverview && TouchInteractionService.isConnected()
+                    && (stateFlags & SYSUI_STATE_OVERVIEW_DISABLED) == 0
                     ? OVERVIEW : ALL_APPS;
         }
         return fromState;
