@@ -644,6 +644,7 @@ public class FloatingIconView extends View implements
             if (!isOpening) {
                 // Hide immediately since the floating view starts at a different location.
                 originalView.setVisibility(INVISIBLE);
+                view.mLoadIconSignal.setOnCancelListener(() -> originalView.setVisibility(VISIBLE));
             }
             CancellationSignal loadIconSignal = view.mLoadIconSignal;
             new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(() -> {
