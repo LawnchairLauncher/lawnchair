@@ -192,6 +192,14 @@ public abstract class AbstractLauncherUiTest {
                     ", track trace is below, UI object dump is further below:\n" +
                     Log.getStackTraceString(e));
             dumpViewHierarchy();
+
+            try {
+                final String dumpsysResult = mDevice.executeShellCommand(
+                                "dumpsys activity service TouchInteractionService");
+                Log.d(TAG, "TouchInteractionService: " + dumpsysResult);
+            } catch (IOException ex) {
+            }
+
             mDevice.takeScreenshot(new File(pathname));
         }
     };
