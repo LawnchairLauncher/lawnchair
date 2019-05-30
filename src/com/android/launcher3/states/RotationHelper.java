@@ -94,16 +94,20 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
 
     public boolean homeScreenCanRotate() {
         return mIgnoreAutoRotateSettings || mAutoRotateEnabled
-                || mStateHandlerRequest != REQUEST_NONE;
+                || mStateHandlerRequest != REQUEST_NONE
+                || mLauncher.getDeviceProfile().isMultiWindowMode;
     }
 
-    private void updateRotationAnimation() {
+    public void updateRotationAnimation() {
         if (FeatureFlags.FAKE_LANDSCAPE_UI.get()) {
             WindowManager.LayoutParams lp = mLauncher.getWindow().getAttributes();
+            int oldAnim = lp.rotationAnimation;
             lp.rotationAnimation = homeScreenCanRotate()
                     ? WindowManager.LayoutParams.ROTATION_ANIMATION_ROTATE
                     : WindowManager.LayoutParams.ROTATION_ANIMATION_SEAMLESS;
-            mLauncher.getWindow().setAttributes(lp);
+            if (oldAnim != lp.rotationAnimation) {
+                mLauncher.getWindow().setAttributes(lp);
+            }
         }
     }
 
@@ -123,6 +127,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
     public void setStateHandlerRequest(int request) {
         if (mStateHandlerRequest != request) {
             mStateHandlerRequest = request;
+            updateRotationAnimation();
             notifyChange();
         }
     }
