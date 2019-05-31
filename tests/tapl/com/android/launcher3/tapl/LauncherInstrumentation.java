@@ -21,9 +21,9 @@ import static android.content.pm.PackageManager.DONT_KILL_APP;
 import static android.content.pm.PackageManager.MATCH_ALL;
 import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 
+import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
-import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 
 import android.app.ActivityManager;
 import android.app.Instrumentation;
@@ -257,6 +257,7 @@ public final class LauncherInstrumentation {
     }
 
     private void fail(String message) {
+        log("Hierarchy dump for: " + getContextDescription() + message);
         dumpViewHierarchy();
         Assert.fail("http://go/tapl : " + getContextDescription() + message);
     }
