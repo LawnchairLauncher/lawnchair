@@ -40,7 +40,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Handler;
-import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,7 +62,6 @@ import com.android.launcher3.graphics.ShiftedBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.shortcuts.DeepShortcutView;
-import com.android.launcher3.util.UiThreadHelper;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
@@ -642,7 +640,7 @@ public class FloatingIconView extends View implements
                 originalView.setVisibility(INVISIBLE);
             };
             CancellationSignal loadIconSignal = view.mLoadIconSignal;
-            new Handler(UiThreadHelper.getBackgroundLooper()).postAtFrontOfQueue(() -> {
+            new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(() -> {
                 view.getIcon(originalView, (ItemInfo) originalView.getTag(), isOpening,
                         onIconLoaded, loadIconSignal);
             });
