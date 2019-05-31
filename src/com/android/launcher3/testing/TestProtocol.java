@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.testing;
 
 /**
  * Protocol for custom accessibility events for communication with UI Automation tests.
@@ -25,6 +25,7 @@ public final class TestProtocol {
     public static final String STATE_FIELD = "state";
     public static final String SWITCHED_TO_STATE_MESSAGE = "TAPL_SWITCHED_TO_STATE";
     public static final String SCROLL_FINISHED_MESSAGE = "TAPL_SCROLL_FINISHED";
+    public static final String PAUSE_DETECTED_MESSAGE = "TAPL_PAUSE_DETECTED";
     public static final String RESPONSE_MESSAGE_POSTFIX = "_RESPONSE";
     public static final int NORMAL_STATE_ORDINAL = 0;
     public static final int SPRING_LOADED_STATE_ORDINAL = 1;
@@ -67,6 +68,8 @@ public final class TestProtocol {
     public static boolean sDebugTracing = false;
     public static final String REQUEST_ENABLE_DEBUG_TRACING = "enable-debug-tracing";
     public static final String REQUEST_DISABLE_DEBUG_TRACING = "disable-debug-tracing";
+    public static final String NO_ALLAPPS_EVENT_TAG = "b/133867119";
     public static final String NO_DRAG_TAG = "b/133009122";
     public static final String NO_START_TAG = "b/132900132";
+    public static final String NO_START_TASK_TAG = "b/133765434";
 }

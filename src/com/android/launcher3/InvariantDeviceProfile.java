@@ -288,7 +288,9 @@ public class InvariantDeviceProfile {
         InvariantDeviceProfile oldProfile = new InvariantDeviceProfile(this);
 
         // Re-init grid
-        initGrid(context, Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null));
+        // TODO(b/131867841): We pass in null here so that we can calculate the closest profile
+        // without the bias of the grid name.
+        initGrid(context, null);
 
         int changeFlags = 0;
         if (numRows != oldProfile.numRows ||

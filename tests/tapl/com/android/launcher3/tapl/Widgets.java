@@ -41,7 +41,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
             LauncherInstrumentation.log("Widgets.flingForward enter");
             final UiObject2 widgetsContainer = verifyActiveContainer();
             widgetsContainer.setGestureMargins(0, 0, 0,
-                    ResourceUtils.getNavbarSize(ResourceUtils.NAVBAR_PORTRAIT_BOTTOM_SIZE,
+                    ResourceUtils.getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE,
                             mLauncher.getResources()) + 1);
             widgetsContainer.fling(Direction.DOWN,
                     (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
