@@ -647,6 +647,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void buildAnimationController() {
+        if (mStateCallback.hasStates(STATE_GESTURE_COMPLETED)) {
+            return;
+        }
         initTransitionEndpoints(mActivity.getDeviceProfile());
         mAnimationFactory.createActivityController(mTransitionDragLength);
     }
