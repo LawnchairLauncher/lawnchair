@@ -19,6 +19,7 @@ import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.Utilities.postAsyncCallback;
+import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -1131,16 +1132,25 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
         AnimatorPlaybackController homeAnim = homeAnimationFactory.createActivityAnimationToHome();
 
+        // End on a "round-enough" radius so that the shape reveal doesn't have to do too much
+        // rounding at the end of the animation.
+        float startRadius = mClipAnimationHelper.getCurrentCornerRadius();
+        float endRadius = startRect.width() / 6f;
         // We want the window alpha to be 0 once this threshold is met, so that the
         // FolderIconView can be seen morphing into the icon shape.
         final float windowAlphaThreshold = isFloatingIconView ? 1f - SHAPE_PROGRESS_DURATION : 1f;
         anim.addOnUpdateListener((currentRect, progress) -> {
             homeAnim.setPlayFraction(progress);
 
-            float windowAlpha = Math.max(0, Utilities.mapToRange(progress, 0,
-                    windowAlphaThreshold, 1f, 0f, Interpolators.LINEAR));
+            float alphaProgress = ACCEL_1_5.getInterpolation(progress);
+            float windowAlpha = Utilities.boundToRange(Utilities.mapToRange(alphaProgress, 0,
+                    windowAlphaThreshold, 1.5f, 0f, Interpolators.LINEAR), 0, 1);
             mTransformParams.setProgress(progress)
                     .setCurrentRectAndTargetAlpha(currentRect, windowAlpha);
+            if (isFloatingIconView) {
+                mTransformParams.setCornerRadius(endRadius * progress + startRadius
+                        * (1f - progress));
+            }
             mClipAnimationHelper.applyTransform(targetSet, mTransformParams,
                     false /* launcherOnTop */);
 
