@@ -353,7 +353,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                         | STATE_LAUNCHER_DRAWN | STATE_SCALED_CONTROLLER_RECENTS
                         | STATE_CURRENT_TASK_FINISHED | STATE_GESTURE_COMPLETED
                         | STATE_GESTURE_STARTED,
-                this::setupLauncherUiAfterSwipeUpAnimation);
+                this::setupLauncherUiAfterSwipeUpToRecentsAnimation);
 
         mStateCallback.addCallback(STATE_HANDLER_INVALIDATED, this::invalidateHandler);
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
@@ -647,7 +647,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void buildAnimationController() {
-        if (mStateCallback.hasStates(STATE_GESTURE_COMPLETED)) {
+        if (mGestureEndTarget == HOME || (mLauncherTransitionController != null
+                && mLauncherTransitionController.getAnimationPlayer().isStarted())) {
+            // We don't want a new mLauncherTransitionController if mGestureEndTarget == HOME (it
+            // has its own animation) or if we're already animating the current controller.
             return;
         }
         initTransitionEndpoints(mActivity.getDeviceProfile());
@@ -1276,17 +1279,19 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void invalidateHandlerWithLauncher() {
-        if (mLauncherTransitionController != null) {
-            if (mLauncherTransitionController.getAnimationPlayer().isStarted()) {
-                mLauncherTransitionController.getAnimationPlayer().cancel();
-            }
-            mLauncherTransitionController = null;
-        }
+        endLauncherTransitionController();
 
         mRecentsView.onGestureAnimationEnd();
 
         mActivity.getRootView().setOnApplyWindowInsetsListener(null);
         mActivity.getRootView().getOverlay().remove(mLiveTileOverlay);
+    }
+
+    private void endLauncherTransitionController() {
+        if (mLauncherTransitionController != null) {
+            mLauncherTransitionController.getAnimationPlayer().end();
+            mLauncherTransitionController = null;
+        }
     }
 
     private void notifyTransitionCancelled() {
@@ -1390,12 +1395,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         doLogGesture(HOME);
     }
 
-    private void setupLauncherUiAfterSwipeUpAnimation() {
-        if (mLauncherTransitionController != null) {
-            mLauncherTransitionController.getAnimationPlayer().end();
-            mLauncherTransitionController = null;
-        }
-        mActivityControlHelper.onSwipeUpComplete(mActivity);
+    private void setupLauncherUiAfterSwipeUpToRecentsAnimation() {
+        endLauncherTransitionController();
+        mActivityControlHelper.onSwipeUpToRecentsComplete(mActivity);
         mRecentsAnimationWrapper.setCancelWithDeferredScreenshot(true);
         mRecentsView.onSwipeUpAnimationSuccess();
 
