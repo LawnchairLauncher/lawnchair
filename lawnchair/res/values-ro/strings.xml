@@ -363,8 +363,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Activează distribuirea datelor între Lawnchair și Sesame. Puteți schima acest lucru în setările Lawnchair sau în setările Sesame.]]></string>
     <string name="sesame_version">Versiunea integrării</string>
     <string name="sesame_shortcut_disabled">Scurtăturile Sesame indisponibile</string>
-    <string name="pref_sesame_sync_icon_pack">Distribuie pachetul de pictograme</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Sincronizați pachetul de pictograme din Lawnchair cu Sesame</string>
     <string name="font_variant_italic">Cursiv</string>
     <string name="font_weight_thin">Subțire</string>
     <string name="font_weight_extra_light">Extra subțire</string>
@@ -412,4 +410,6 @@
     <string name="dock_scale">Scară zonă de andocare</string>
     <string name="adaptify_pack_title">Creare pictograme adaptive pentru pachetul cu pictograme</string>
     <string name="adaptify_pack_summary">Creare pictograme adaptive pentru pictograme din pachete cu pictograme</string>
+    <string name="pref_sesame_sync_look_and_feel">Partajați aspectul</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Sincronizați setările de căutare a Lawnchair cu Sesame</string>
 </resources>
