@@ -105,7 +105,7 @@
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Vidžeti za <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widgets_list" msgid="796804551140113767">"Lista vidžeta"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Lista vidžeta je zatvorena"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"Dodaj na početni ekran"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"Dodajte na početni ekran"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Premesti stavku ovde"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Stavka je dodata na početni ekran"</string>
     <string name="item_removed" msgid="851119963877842327">"Stavka je uklonjena"</string>

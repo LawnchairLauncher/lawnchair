@@ -165,17 +165,6 @@ public class LauncherModel extends BroadcastReceiver
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
     }
 
-    /** Runs the specified runnable immediately if called from the worker thread, otherwise it is
-     * posted on the worker thread handler. */
-    private static void runOnWorkerThread(Runnable r) {
-        if (sWorkerThread.getThreadId() == Process.myTid()) {
-            r.run();
-        } else {
-            // If we are not on the worker thread, then post to the worker handler
-            sWorker.post(r);
-        }
-    }
-
     public void setPackageState(PackageInstallInfo installInfo) {
         enqueueModelUpdateTask(new PackageInstallStateChangedTask(installInfo));
     }
@@ -400,7 +389,10 @@ public class LauncherModel extends BroadcastReceiver
         synchronized (mLock) {
             stopLoader();
             mLoaderTask = new LoaderTask(mApp, mBgAllAppsList, sBgDataModel, results);
-            runOnWorkerThread(mLoaderTask);
+
+            // Always post the loader task, instead of running directly (even on same thread) so
+            // that we exit any nested synchronized blocks
+            sWorker.post(mLoaderTask);
         }
     }
 
@@ -505,7 +497,13 @@ public class LauncherModel extends BroadcastReceiver
 
     public void enqueueModelUpdateTask(ModelUpdateTask task) {
         task.init(mApp, this, sBgDataModel, mBgAllAppsList, mUiExecutor);
-        runOnWorkerThread(task);
+
+        if (sWorkerThread.getThreadId() == Process.myTid()) {
+            task.run();
+        } else {
+            // If we are not on the worker thread, then post to the worker handler
+            sWorker.post(task);
+        }
     }
 
     /**
