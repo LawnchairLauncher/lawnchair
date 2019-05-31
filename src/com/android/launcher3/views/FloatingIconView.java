@@ -77,7 +77,7 @@ import androidx.dynamicanimation.animation.SpringForce;
 public class FloatingIconView extends View implements
         Animator.AnimatorListener, ClipPathView, OnGlobalLayoutListener {
 
-    public static final float SHAPE_PROGRESS_DURATION = 0.15f;
+    public static final float SHAPE_PROGRESS_DURATION = 0.10f;
     private static final int FADE_DURATION_MS = 200;
     private static final Rect sTmpRect = new Rect();
     private static final RectF sTmpRectF = new RectF();
@@ -85,8 +85,8 @@ public class FloatingIconView extends View implements
 
     // We spring the foreground drawable relative to the icon's movement in the DragLayer.
     // We then use these two factor values to scale the movement of the fg within this view.
-    private static final int FG_TRANS_X_FACTOR = 80;
-    private static final int FG_TRANS_Y_FACTOR = 100;
+    private static final int FG_TRANS_X_FACTOR = 60;
+    private static final int FG_TRANS_Y_FACTOR = 75;
 
     private static final FloatPropertyCompat<FloatingIconView> mFgTransYProperty
             = new FloatPropertyCompat<FloatingIconView>("FloatingViewFgTransY") {

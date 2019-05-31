@@ -27,5 +27,5 @@
     <!-- Swipe up to home related -->
     <dimen name="swipe_up_fling_min_visible_change">18dp</dimen>
     <dimen name="swipe_up_y_overshoot">10dp</dimen>
-    <dimen name="swipe_up_max_workspace_trans_y">-80dp</dimen>
+    <dimen name="swipe_up_max_workspace_trans_y">-60dp</dimen>
 </resources>
