@@ -257,6 +257,7 @@ public final class LauncherInstrumentation {
     }
 
     private void fail(String message) {
+        log("Hierarchy dump for: " + getContextDescription() + message);
         dumpViewHierarchy();
         Assert.fail("http://go/tapl : " + getContextDescription() + message);
     }
