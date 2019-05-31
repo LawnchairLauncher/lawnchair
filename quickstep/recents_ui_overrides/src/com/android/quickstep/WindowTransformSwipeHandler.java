@@ -106,7 +106,6 @@ import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
-import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.WindowCallbacksCompat;
@@ -902,10 +901,14 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 // If swiping at a diagonal, base end target on the faster velocity.
                 endTarget = goingToNewTask && Math.abs(velocity.x) > Math.abs(endVelocity)
                         ? NEW_TASK : HOME;
-            } else if (endVelocity < 0 && (!goingToNewTask || reachedOverviewThreshold)) {
-                // If user scrolled to a new task, only go to recents if they already passed
-                // the overview threshold. Otherwise, we'll snap to the new task and launch it.
-                endTarget = RECENTS;
+            } else if (endVelocity < 0) {
+                if (reachedOverviewThreshold) {
+                    endTarget = RECENTS;
+                } else {
+                    // If swiping at a diagonal, base end target on the faster velocity.
+                    endTarget = goingToNewTask && Math.abs(velocity.x) > Math.abs(endVelocity)
+                            ? NEW_TASK : RECENTS;
+                }
             } else {
                 endTarget = goingToNewTask ? NEW_TASK : LAST_TASK;
             }
@@ -976,6 +979,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         } else if (endTarget == RECENTS) {
             mLiveTileOverlay.startIconAnimation();
             if (mRecentsView != null) {
+                int nearestPage = mRecentsView.getPageNearestToCenterOfScreen();
+                if (mRecentsView.getNextPage() != nearestPage) {
+                    // We shouldn't really scroll to the next page when swiping up to recents.
+                    // Only allow settling on the next page if it's nearest to the center.
+                    mRecentsView.snapToPage(nearestPage, Math.toIntExact(duration));
+                }
                 if (mRecentsView.getScroller().getDuration() > MAX_SWIPE_DURATION) {
                     mRecentsView.snapToPage(mRecentsView.getNextPage(), (int) MAX_SWIPE_DURATION);
                 }
