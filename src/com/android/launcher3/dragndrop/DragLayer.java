@@ -130,16 +130,6 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         return mDragController.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
     }
 
-    @Override
-    protected boolean findActiveController(MotionEvent ev) {
-        if (mActivity.getStateManager().getState().disableInteraction) {
-            // You Shall Not Pass!!!
-            mActiveController = null;
-            return true;
-        }
-        return super.findActiveController(ev);
-    }
-
     private boolean isEventOverAccessibleDropTargetBar(MotionEvent ev) {
         return isInAccessibleDrag() && isEventOverView(mActivity.getDropTargetBar(), ev);
     }
