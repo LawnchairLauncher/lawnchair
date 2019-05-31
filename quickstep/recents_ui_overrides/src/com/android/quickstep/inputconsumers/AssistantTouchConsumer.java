@@ -62,6 +62,10 @@ public class AssistantTouchConsumer extends DelegateInputConsumer
     private static final String TAG = "AssistantTouchConsumer";
     private static final long RETRACT_ANIMATION_DURATION_MS = 300;
 
+    // From //java/com/google/android/apps/gsa/search/shared/util/OpaContract.java.
+    private static final String OPA_BUNDLE_TRIGGER = "triggered_by";
+    // From //java/com/google/android/apps/gsa/assistant/shared/proto/opa_trigger.proto.
+    private static final int OPA_BUNDLE_TRIGGER_DIAG_SWIPE_GESTURE = 83;
     private static final String INVOCATION_TYPE_KEY = "invocation_type";
     private static final int INVOCATION_TYPE_GESTURE = 1;
     private static final int INVOCATION_TYPE_FLING = 6;
@@ -230,6 +234,7 @@ public class AssistantTouchConsumer extends DelegateInputConsumer
                     startAssistantInternal(SWIPE);
 
                     Bundle args = new Bundle();
+                    args.putInt(OPA_BUNDLE_TRIGGER, OPA_BUNDLE_TRIGGER_DIAG_SWIPE_GESTURE);
                     args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
                     mSysUiProxy.startAssistant(args);
                     mLaunchedAssistant = true;
