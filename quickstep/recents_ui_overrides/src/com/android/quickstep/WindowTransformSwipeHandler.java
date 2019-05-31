@@ -106,7 +106,6 @@ import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
-import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.WindowCallbacksCompat;
@@ -647,6 +646,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void buildAnimationController() {
+        if (mStateCallback.hasStates(STATE_GESTURE_COMPLETED)) {
+            return;
+        }
         initTransitionEndpoints(mActivity.getDeviceProfile());
         mAnimationFactory.createActivityController(mTransitionDragLength);
     }
