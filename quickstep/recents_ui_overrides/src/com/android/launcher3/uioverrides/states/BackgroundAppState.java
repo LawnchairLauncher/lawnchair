@@ -32,7 +32,8 @@ import com.android.quickstep.views.TaskView;
 public class BackgroundAppState extends OverviewState {
 
     private static final int STATE_FLAGS =
-            FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_DISABLE_ACCESSIBILITY;
+            FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_DISABLE_ACCESSIBILITY
+                    | FLAG_DISABLE_INTERACTION;
 
     public BackgroundAppState(int id) {
         this(id, LauncherLogProto.ContainerType.TASKSWITCHER);
