@@ -78,7 +78,7 @@
     <string name="developer_options_title">Επιλογές για προγραμματιστές</string>
     <string name="developer_options_enabled">Οι επιλογές για προγραμματιστές ενεργοποιήθηκαν</string>
     <string name="restart_lawnchair_pref_title">Επανεκκίνηση</string>
-    <string name="restart_lawnchair_pref_summary">Εφαρμογή ρυθμίσεων ξανά</string>
+    <string name="restart_lawnchair_pref_summary">Επανεφαρμογή ρυθμίσεων</string>
     <string name="show_debug_info_pref_title">Εμφάνιση επιμέρους ονομάτων</string>
     <string name="debug_component_name">Επιμέρους όνομα</string>
     <string name="debug_component_name_copied">Αντιγράφηκε</string>
@@ -176,7 +176,7 @@
     <string name="action_open_app_with_target">Άνοιγμα %s</string>
     <string name="action_open_app_select_app">Επιλογή εφαρμογής</string>
     <string name="action_none">Καμία ενέργεια</string>
-    <string name="action_despacito">Αναπαραγωγή βίντεο YouTube Rewind 2018 (βιασμός αφτιών)</string>
+    <string name="action_despacito">Αναπαραγωγή του YouTube Rewind 2018</string>
     <string name="gesture_press_home">Πλήκτρο αρχικής οθόνης</string>
     <string name="gesture_press_back">Πλήκτρο επιστροφής</string>
     <string name="gesture_double_tap">Διπλό πάτημα</string>
@@ -188,7 +188,7 @@
     <string name="pref_show_assistant_summary">Εμφάνιση πλήκτρου φωνητικής αναζήτησης εφόσον υποστηρίζεται</string>
     <string name="pref_show_as_assistant_summary">Εμφάνιση πλήκτρου βοηθού Google αντί της φωνητικής αναζήτησης</string>
     <string name="smartspace_time_24_h">24-ωρη μορφή</string>
-    <string name="weather_provider_disabled">Απενεργοποιημένος</string>
+    <string name="weather_provider_disabled">Απενεργοποιημένο</string>
     <string name="weather_provider_owm">Πηγή OpenWeatherMap</string>
     <string name="weather_provider_pe">PixelExperience</string>
     <string name="pref_smartspace_widget_provider">Πάροχος καιρού</string>
@@ -204,7 +204,7 @@
     <!--Marker F-->
     <string name="default_city">Athens, GR</string>
     <string name="pref_weather_api_key_title">Κλειδί API</string>
-    <string name="pref_weather_city_summary">Για καλύτερες προβλέψεις, προσθέστε και τον κωδικό της χώρας σας</string>
+    <string name="pref_weather_city_summary">Για βέλτιστα αποτελέσματα, προσθέστε τον κωδικό χώρας σας</string>
     <string name="pref_weather_city_title">Πόλη</string>
     <string name="pref_weather_units">Μονάδα μέτρησης θερμοκρασίας</string>
     <string name="units_metric">Κελσίου (°C)</string>
@@ -363,8 +363,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Επιτρέπει την κοινή χρήση δεδομένων μεταξύ του εκκινητή Lawnchair και της εφαρμογής Sesame. Μπορείτε να το αλλάξετε στις ρυθμίσεις του Lawnchair ή του Sesame.]]></string>
     <string name="sesame_version">Έκδοση ενσωμάτωσης</string>
     <string name="sesame_shortcut_disabled">Οι συντομεύσεις Sesame δεν είναι διαθέσιμες</string>
-    <string name="pref_sesame_sync_icon_pack">Κοινή χρήση εικονιδίων</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Συγχρονισμός πακέτου εικονιδίων εκκινητή Lawnchair με την εφαρμογή Sesame</string>
     <string name="font_variant_italic">Πλάγια</string>
     <string name="font_weight_thin">Λεπτή</string>
     <string name="font_weight_extra_light">Έξτρα Ημικανονική</string>
@@ -412,4 +410,6 @@
     <string name="dock_scale">Κλίμακα μπάρας εφαρμογών</string>
     <string name="adaptify_pack_title">Δημιουργία προσαρμοζόμενων εικονιδίων για το πακέτο εικονιδίων</string>
     <string name="adaptify_pack_summary">Δημιουργία προσαρμοζόμενων εικονιδίων για εικονίδια από πακέτα εικονιδίων</string>
+    <string name="pref_sesame_sync_look_and_feel">Κοινοποίηση εμφάνισης</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Συγχρονισμός ρυθμίσεων αναζήτησης Lawnchair με την εφαρμογή Sesame</string>
 </resources>
