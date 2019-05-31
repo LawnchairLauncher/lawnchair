@@ -425,7 +425,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     public void onScrollStateChanged(int state) {
         super.onScrollStateChanged(state);
 
-        if (state == SCROLL_STATE_IDLE && Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+        if (state == SCROLL_STATE_IDLE) {
             AccessibilityManagerCompat.sendScrollFinishedEventToTest(getContext());
         }
     }

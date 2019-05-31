@@ -33,7 +33,7 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Nhấn đúp và giữ để chọn tiện ích hoặc sử dụng tác vụ tùy chỉnh."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Rộng %1$d x cao %2$d"</string>
-    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Chạm và giữ để đặt theo cách thủ công"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Chạm và giữ để thêm theo cách thủ công"</string>
     <string name="place_automatically" msgid="8064208734425456485">"Tự động thêm"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Tìm kiếm ứng dụng"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Đang tải ứng dụng…"</string>
@@ -78,7 +78,7 @@
     <string name="folder_closed" msgid="4100806530910930934">"Đã đóng thư mục"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Đã đổi tên thư mục thành <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format" msgid="6629239338071103179">"Thư mục: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="widget_button_text" msgid="2880537293434387943">"Tiện ích con"</string>
+    <string name="widget_button_text" msgid="2880537293434387943">"Tiện ích"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Hình nền"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Kiểu và hình nền"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Cài đặt màn hình chính"</string>

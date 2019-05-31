@@ -34,6 +34,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.DisplayRotationListener;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
@@ -134,8 +135,8 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     public boolean startActivitySafely(View v, Intent intent, @Nullable ItemInfo item,
             @Nullable String sourceContainer) {
-        if (com.android.launcher3.TestProtocol.sDebugTracing) {
-            android.util.Log.d(com.android.launcher3.TestProtocol.NO_START_TAG,
+        if (TestProtocol.sDebugTracing) {
+            android.util.Log.d(TestProtocol.NO_START_TAG,
                     "startActivitySafely 1");
         }
         if (mIsSafeModeEnabled && !Utilities.isSystemApp(this, intent)) {
@@ -161,8 +162,8 @@ public abstract class BaseDraggingActivity extends BaseActivity
                 startShortcutIntentSafely(intent, optsBundle, item, sourceContainer);
             } else if (user == null || user.equals(Process.myUserHandle())) {
                 // Could be launching some bookkeeping activity
-                if (com.android.launcher3.TestProtocol.sDebugTracing) {
-                    android.util.Log.d(com.android.launcher3.TestProtocol.NO_START_TAG,
+                if (TestProtocol.sDebugTracing) {
+                    android.util.Log.d(TestProtocol.NO_START_TAG,
                             "startActivitySafely 2");
                 }
                 startActivity(intent, optsBundle);
