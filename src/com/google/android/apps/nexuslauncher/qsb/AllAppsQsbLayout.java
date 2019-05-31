@@ -259,17 +259,19 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     private void ensureFallbackView() {
-        setOnClickListener(null);
-        mFallback = (FallbackAppsSearchView) this.mActivity.getLayoutInflater()
-                .inflate(R.layout.all_apps_google_search_fallback, this, false);
-        AllAppsContainerView allAppsContainerView = this.mAppsView;
-        mFallback.DJ = this;
-        mFallback.mApps = allAppsContainerView.getApps();
-        mFallback.mAppsView = allAppsContainerView;
-        mFallback.DI.initialize(new SearchThread(mFallback.getContext()), mFallback,
-                Launcher.getLauncher(mFallback.getContext()), mFallback);
-        addView(this.mFallback);
-        mFallback.setTextColor(mForegroundColor);
+        if (mFallback == null) {
+            setOnClickListener(null);
+            mFallback = (FallbackAppsSearchView) this.mActivity.getLayoutInflater()
+                    .inflate(R.layout.all_apps_google_search_fallback, this, false);
+            AllAppsContainerView allAppsContainerView = this.mAppsView;
+            mFallback.DJ = this;
+            mFallback.mApps = allAppsContainerView.getApps();
+            mFallback.mAppsView = allAppsContainerView;
+            mFallback.DI.initialize(new SearchThread(mFallback.getContext()), mFallback,
+                    Launcher.getLauncher(mFallback.getContext()), mFallback);
+            addView(this.mFallback);
+            mFallback.setTextColor(mForegroundColor);
+        }
     }
 
     private void removeFallbackView() {
