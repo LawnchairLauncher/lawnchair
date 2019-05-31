@@ -16,14 +16,14 @@
 
 package com.android.launcher3.tapl;
 
-import static com.android.launcher3.TestProtocol.OVERVIEW_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 
 import android.graphics.Point;
 
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
-import com.android.launcher3.TestProtocol;
+import com.android.launcher3.testing.TestProtocol;
 
 /**
  * Operations on AllApps opened from Overview.

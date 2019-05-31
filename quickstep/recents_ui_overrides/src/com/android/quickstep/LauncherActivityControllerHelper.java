@@ -30,6 +30,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -56,6 +57,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -67,6 +69,8 @@ import java.util.function.Consumer;
  * {@link ActivityControlHelper} for the in-launcher recents.
  */
 public final class LauncherActivityControllerHelper implements ActivityControlHelper<Launcher> {
+
+    private Runnable mAdjustInterpolatorsRunnable;
 
     @Override
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
@@ -148,8 +152,21 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
             @NonNull
             @Override
             public AnimatorPlaybackController createActivityAnimationToHome() {
+                // Return an empty APC here since we have an non-user controlled animation to home.
                 long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
-                return activity.getStateManager().createAnimationToNewWorkspace(NORMAL, accuracy);
+                AnimatorSet as = new AnimatorSet();
+                as.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        activity.getStateManager().goToState(NORMAL, false);
+                    }
+                });
+                return AnimatorPlaybackController.wrap(as, accuracy);
+            }
+
+            @Override
+            public void playAtomicAnimation(float velocity) {
+                new StaggeredWorkspaceAnim(activity, workspaceView, velocity).start();
             }
         };
     }
@@ -190,6 +207,13 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                 // attached state here as well to ensure recents is shown/hidden appropriately.
                 if (SysUINavigationMode.getMode(activity) == Mode.NO_BUTTON) {
                     setRecentsAttachedToAppWindow(mIsAttachedToWindow, false);
+                }
+            }
+
+            @Override
+            public void adjustActivityControllerInterpolators() {
+                if (mAdjustInterpolatorsRunnable != null) {
+                    mAdjustInterpolatorsRunnable.run();
                 }
             }
 
@@ -275,6 +299,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         playScaleDownAnim(anim, activity, fromState, endState);
 
         anim.setDuration(transitionLength * 2);
+        anim.setInterpolator(LINEAR);
         AnimatorPlaybackController controller =
                 AnimatorPlaybackController.wrap(anim, transitionLength * 2);
         activity.getStateManager().setCurrentUserControlledAnimation(controller);
@@ -291,7 +316,6 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         Animator shiftAnim = new SpringObjectAnimator<>(activity.getAllAppsController(),
                 "allAppsSpringFromACH", activity.getAllAppsController().getShiftRange(),
                 SPRING_DAMPING_RATIO, SPRING_STIFFNESS, progressValues);
-        shiftAnim.setInterpolator(LINEAR);
         return shiftAnim;
     }
 
@@ -310,19 +334,37 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                 = fromState.getOverviewScaleAndTranslation(launcher);
         LauncherState.ScaleAndTranslation endScaleAndTranslation
                 = endState.getOverviewScaleAndTranslation(launcher);
+        float fromTranslationY = fromScaleAndTranslation.translationY;
+        float endTranslationY = endScaleAndTranslation.translationY;
         float fromFullscreenProgress = fromState.getOverviewFullscreenProgress();
         float endFullscreenProgress = endState.getOverviewFullscreenProgress();
 
         Animator scale = ObjectAnimator.ofFloat(recentsView, SCALE_PROPERTY,
                 fromScaleAndTranslation.scale, endScaleAndTranslation.scale);
         Animator translateY = ObjectAnimator.ofFloat(recentsView, TRANSLATION_Y,
-                fromScaleAndTranslation.translationY, endScaleAndTranslation.translationY);
+                fromTranslationY, endTranslationY);
         Animator applyFullscreenProgress = ObjectAnimator.ofFloat(recentsView,
                 RecentsView.FULLSCREEN_PROGRESS, fromFullscreenProgress, endFullscreenProgress);
-        scale.setInterpolator(LINEAR);
-        translateY.setInterpolator(LINEAR);
-        applyFullscreenProgress.setInterpolator(LINEAR);
         anim.playTogether(scale, translateY, applyFullscreenProgress);
+
+        mAdjustInterpolatorsRunnable = () -> {
+            // Adjust the translateY interpolator to account for the running task's top inset.
+            // When progress <= 1, this is handled by each task view as they set their fullscreen
+            // progress. However, once we go to progress > 1, fullscreen progress stays at 0, so
+            // recents as a whole needs to translate further to keep up with the app window.
+            TaskView runningTaskView = recentsView.getRunningTaskView();
+            if (runningTaskView == null) {
+                runningTaskView = recentsView.getTaskViewAt(recentsView.getCurrentPage());
+            }
+            TimeInterpolator oldInterpolator = translateY.getInterpolator();
+            Rect fallbackInsets = launcher.getDeviceProfile().getInsets();
+            float extraTranslationY = runningTaskView.getThumbnail().getInsets(fallbackInsets).top;
+            float normalizedTranslationY = extraTranslationY / (fromTranslationY - endTranslationY);
+            translateY.setInterpolator(t -> {
+                float newT = oldInterpolator.getInterpolation(t);
+                return newT <= 1f ? newT : newT + normalizedTranslationY * (newT - 1);
+            });
+        };
     }
 
     @Override
