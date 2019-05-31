@@ -277,6 +277,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     final Handler mHandler = new Handler();
     private final Runnable mHandleDeferredResume = this::handleDeferredResume;
+    private boolean mDeferredResumePending;
 
     private float mCurrentAssistantVisibility = 0f;
 
@@ -889,26 +890,40 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     private void handleDeferredResume() {
-        if (hasBeenResumed()) {
+        if (hasBeenResumed() && !mStateManager.getState().disableInteraction) {
             getUserEventDispatcher().logActionCommand(Action.Command.RESUME,
                     mStateManager.getState().containerType, -1);
             getUserEventDispatcher().startSession();
 
             UiFactory.onLauncherStateOrResumeChanged(this);
             AppLaunchTracker.INSTANCE.get(this).onReturnedToHome();
-            resetPendingActivityResultIfNeeded();
-        }
-    }
 
-    private void resetPendingActivityResultIfNeeded() {
-        if (hasBeenResumed() && mPendingActivityRequestCode != -1 && isInState(NORMAL)) {
-            UiFactory.resetPendingActivityResults(this, mPendingActivityRequestCode);
+            // Process any items that were added while Launcher was away.
+            InstallShortcutReceiver.disableAndFlushInstallQueue(
+                    InstallShortcutReceiver.FLAG_ACTIVITY_PAUSED, this);
+
+            // Refresh shortcuts if the permission changed.
+            mModel.refreshShortcutsIfRequired();
+
+            DiscoveryBounce.showForHomeIfNeeded(this);
+
+            if (mPendingActivityRequestCode != -1 && isInState(NORMAL)) {
+                UiFactory.resetPendingActivityResults(this, mPendingActivityRequestCode);
+            }
+            mDeferredResumePending = false;
+        } else {
+            mDeferredResumePending = true;
         }
     }
 
     protected void onStateSet(LauncherState state) {
         getAppWidgetHost().setResumed(state == LauncherState.NORMAL);
-        resetPendingActivityResultIfNeeded();
+        if (mDeferredResumePending) {
+            handleDeferredResume();
+        }
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onStateChanged();
+        }
     }
 
     @Override
@@ -922,14 +937,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         Utilities.postAsyncCallback(mHandler, mHandleDeferredResume);
 
         setOnResumeCallback(null);
-        // Process any items that were added while Launcher was away.
-        InstallShortcutReceiver.disableAndFlushInstallQueue(
-                InstallShortcutReceiver.FLAG_ACTIVITY_PAUSED, this);
 
-        // Refresh shortcuts if the permission changed.
-        mModel.refreshShortcutsIfRequired();
-
-        DiscoveryBounce.showForHomeIfNeeded(this);
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
         }
