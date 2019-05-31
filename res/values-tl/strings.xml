@@ -98,7 +98,7 @@
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Alisin"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Maghanap"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Hindi naka-install ang app na ito"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Hindi naka-install ang app para sa icon na ito. Maaari mo itong alisin, o maaari mong hanapin ang app at i-install ito nang manu-mano."</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Hindi naka-install ang app para sa icon na ito. Puwede mo itong alisin, o maaari mong hanapin ang app at i-install ito nang manual."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Dina-download na ang <xliff:g id="NAME">%1$s</xliff:g>, tapos na ang <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Hinihintay nang mag-install ang <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Mga widget ng <xliff:g id="NAME">%1$s</xliff:g>"</string>

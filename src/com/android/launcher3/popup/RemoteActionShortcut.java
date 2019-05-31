@@ -33,6 +33,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 
 public class RemoteActionShortcut extends SystemShortcut<BaseDraggingActivity> {
     private static final String TAG = "RemoteActionShortcut";
+    private static final boolean DEBUG = false;
 
     private final RemoteAction mAction;
 
@@ -48,7 +49,10 @@ public class RemoteActionShortcut extends SystemShortcut<BaseDraggingActivity> {
         return view -> {
             AbstractFloatingView.closeAllOpenViews(activity);
 
+            final String actionIdentity = mAction.getTitle() + ", " +
+                    itemInfo.getTargetComponent().getPackageName();
             try {
+                if (DEBUG) Log.d(TAG, "Sending action: " + actionIdentity);
                 mAction.getActionIntent().send(
                         activity,
                         0,
@@ -56,15 +60,16 @@ public class RemoteActionShortcut extends SystemShortcut<BaseDraggingActivity> {
                                 Intent.EXTRA_PACKAGE_NAME,
                                 itemInfo.getTargetComponent().getPackageName()),
                         (pendingIntent, intent, resultCode, resultData, resultExtras) -> {
+                            if (DEBUG) Log.d(TAG, "Action is complete: " + actionIdentity);
                             if (resultData != null && !resultData.isEmpty()) {
-                                Log.e(TAG, "Remote action returned result: " + mAction.getTitle()
+                                Log.e(TAG, "Remote action returned result: " + actionIdentity
                                         + " : " + resultData);
                                 Toast.makeText(activity, resultData, Toast.LENGTH_SHORT).show();
                             }
                         },
                         new Handler(Looper.getMainLooper()));
             } catch (PendingIntent.CanceledException e) {
-                Log.e(TAG, "Remote action canceled: " + mAction.getTitle(), e);
+                Log.e(TAG, "Remote action canceled: " + actionIdentity, e);
                 Toast.makeText(activity, activity.getString(
                         R.string.remote_action_failed,
                         mAction.getTitle()),
