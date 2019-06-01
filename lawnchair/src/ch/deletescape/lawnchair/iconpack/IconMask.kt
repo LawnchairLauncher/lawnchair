@@ -50,28 +50,17 @@ class IconMask {
         }
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-        if (iconBack != null && iconBack!!.drawableId != 0) {
-            val drawable = iconBack!!.drawable
-            if (Utilities.ATLEAST_OREO && drawable is AdaptiveIconDrawable) {
-                adaptiveBackground = drawable.background
-            } else {
-                drawable.toBitmap()!!.let {
-                    matrix.setScale(size.toFloat() / it.width, size.toFloat() / it.height)
-                    canvas.drawBitmap(it, matrix, paint)
-                    matrix.reset()
-                }
-            }
-        }
+
+        // Draw the app icon
         var bb = baseIcon.toBitmap()!!
         if (!bb.isMutable) bb = bb.copy(bb.config, true)
+        matrix.setScale((size * scale) / bb.width, (size * scale) / bb.height)
+        matrix.postTranslate((size / 2) * (1 - scale), (size / 2) * (1 - scale))
+        canvas.drawBitmap(bb, matrix, paint)
+        matrix.reset()
+
+        // Mask the app icon
         if (iconMask != null && iconMask!!.drawableId != 0) {
-            val tmp = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-            val saveCount = canvas.save()
-            canvas.setBitmap(tmp)
-            matrix.setScale((size * scale) / bb.width, (size * scale) / bb.height)
-            matrix.postTranslate((size / 2) * (1 - scale), (size / 2) * (1 - scale))
-            canvas.drawBitmap(bb, matrix, paint)
-            matrix.reset()
             iconMask!!.drawable.toBitmap()?.let {
                 paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
                 matrix.setScale(size.toFloat() / it.width, size.toFloat() / it.height)
@@ -79,15 +68,25 @@ class IconMask {
                 matrix.reset()
             }
             paint.reset()
-            canvas.restoreToCount(saveCount)
-            canvas.setBitmap(bitmap)
-            canvas.drawBitmap(tmp, matrix, paint)
-        } else {
-            matrix.setScale((size * scale) / bb.width, (size * scale) / bb.height)
-            matrix.postTranslate((size / 2) * (1 - scale), (size / 2) * (1 - scale))
-            canvas.drawBitmap(bb, matrix, paint)
-            matrix.reset()
         }
+
+        // Draw iconBack
+        if (iconBack != null && iconBack!!.drawableId != 0) {
+            val drawable = iconBack!!.drawable
+            if (Utilities.ATLEAST_OREO && drawable is AdaptiveIconDrawable) {
+                adaptiveBackground = drawable.background
+            } else {
+                drawable.toBitmap()!!.let {
+                    paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OVER)
+                    matrix.setScale(size.toFloat() / it.width, size.toFloat() / it.height)
+                    canvas.drawBitmap(it, matrix, paint)
+                    matrix.reset()
+                }
+                paint.reset()
+            }
+        }
+
+        // Draw iconUpon
         if (iconUpon != null && iconUpon!!.drawableId != 0) {
             iconUpon!!.drawable.toBitmap()!!.let {
                 matrix.setScale(size.toFloat() / it.width, size.toFloat() / it.height)
