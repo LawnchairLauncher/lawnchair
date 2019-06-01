@@ -175,7 +175,6 @@
     <string name="action_open_app_with_target">開啟 %s</string>
     <string name="action_open_app_select_app">選擇應用程式</string>
     <string name="action_none">什麼也不做</string>
-    <string name="action_despacito">播放 YouTube Rewind 2018（音量注意）</string>
     <string name="gesture_press_home">主螢幕按鈕</string>
     <string name="gesture_press_back">返回按鈕</string>
     <string name="gesture_double_tap">輕觸兩下</string>
@@ -319,7 +318,7 @@
     <string name="recent_task_option_popup_window">對話方塊</string>
     <string name="feed_theme_pref_title">背景色彩</string>
     <string name="recents_not_connected">未連線服務</string>
-    <string name="advanced_settings">更多 %s 設定</string>
+    <string name="advanced_settings">%s進階設定</string>
     <string name="adaptive_icon">自動調整圖示</string>
     <string name="drawer_tabs">分頁</string>
     <string name="add_new_tab">新增</string>
@@ -360,8 +359,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[開啟 Lawnchair 和 Sesame 之間的資料分享功能。您可在 Lawnchair 或 Sesame 設定中變更。]]></string>
     <string name="sesame_version">整合版本</string>
     <string name="sesame_shortcut_disabled">Sesame 捷徑無法使用</string>
-    <string name="pref_sesame_sync_icon_pack">分享圖示套件</string>
-    <string name="pref_sesame_sync_icon_pack_summary">同步 Lawnchair 圖示套件至 Sesame</string>
     <string name="font_variant_italic">斜體</string>
     <string name="font_weight_thin">極細</string>
     <string name="font_weight_extra_light">特細</string>
@@ -409,4 +406,6 @@
     <string name="dock_scale">底欄尺寸</string>
     <string name="adaptify_pack_title">在圖示套件上套用自動調整圖示</string>
     <string name="adaptify_pack_summary">使用圖示套件時，仍建立自動調整圖示</string>
+    <string name="pref_sesame_sync_look_and_feel">分享外觀與風格</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">與 Sesame 同步 Lawnchair 搜尋設定</string>
 </resources>
