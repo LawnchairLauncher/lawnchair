@@ -30,6 +30,7 @@ import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
 import android.view.MotionEvent;
 
@@ -44,10 +45,12 @@ import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
+import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
+import com.android.systemui.shared.system.QuickStepContract;
 
 /**
  * Handles quick switching to a recent task from the home screen.
@@ -80,6 +83,10 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
 
     @Override
     protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
+        int stateFlags = OverviewInteractionState.INSTANCE.get(mLauncher).getSystemUiStateFlags();
+        if ((stateFlags & SYSUI_STATE_OVERVIEW_DISABLED) != 0) {
+            return NORMAL;
+        }
         return isDragTowardPositive ? QUICK_SWITCH : NORMAL;
     }
 

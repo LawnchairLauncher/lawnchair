@@ -176,5 +176,12 @@
             </intent-filter>
         </activity>
 
+        <provider
+            android:name="com.android.launcher3.testing.TestInformationProvider"
+            android:authorities="${packageName}.TestInfo"
+            android:readPermission="android.permission.WRITE_SECURE_SETTINGS"
+            android:writePermission="android.permission.WRITE_SECURE_SETTINGS"
+            android:exported="true"
+            android:enabled="false" />
     </application>
 </manifest>

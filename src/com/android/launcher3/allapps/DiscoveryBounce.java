@@ -30,6 +30,9 @@ import android.view.MotionEvent;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager;
+import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
@@ -52,6 +55,16 @@ public class DiscoveryBounce extends AbstractFloatingView {
     private final Launcher mLauncher;
     private final Animator mDiscoBounceAnimation;
 
+    private final StateListener mStateListener = new StateListener() {
+        @Override
+        public void onStateTransitionStart(LauncherState toState) {
+            handleClose(false);
+        }
+
+        @Override
+        public void onStateTransitionComplete(LauncherState finalState) {}
+    };
+
     public DiscoveryBounce(Launcher launcher, float delta) {
         super(launcher, null);
         mLauncher = launcher;
@@ -67,6 +80,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
             }
         });
         mDiscoBounceAnimation.addListener(controller.getProgressAnimatorListener());
+        launcher.getStateManager().addStateListener(mStateListener);
     }
 
     @Override
@@ -105,6 +119,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
             // Reset the all-apps progress to what ever it was previously.
             mLauncher.getAllAppsController().setProgress(mLauncher.getStateManager()
                     .getState().getVerticalProgress(mLauncher));
+            mLauncher.getStateManager().removeStateListener(mStateListener);
         }
     }
 

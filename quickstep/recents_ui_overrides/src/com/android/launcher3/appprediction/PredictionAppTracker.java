@@ -56,7 +56,7 @@ public class PredictionAppTracker extends AppLaunchTracker {
     private static final int MSG_LAUNCH = 2;
     private static final int MSG_PREDICT = 3;
 
-    private final Context mContext;
+    protected final Context mContext;
     private final Handler mMessageHandler;
 
     // Accessed only on worker thread

@@ -23,6 +23,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LabelComparator;
@@ -300,6 +301,11 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     }
 
     private void refreshRecyclerView() {
+        if (TestProtocol.sDebugTracing) {
+            android.util.Log.d(TestProtocol.NO_START_TAG,
+                    "refreshRecyclerView @ " + android.util.Log.getStackTraceString(
+                            new Throwable()));
+        }
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }

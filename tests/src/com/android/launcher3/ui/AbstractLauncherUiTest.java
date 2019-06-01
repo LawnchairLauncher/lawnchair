@@ -54,6 +54,7 @@ import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.util.Wait;
@@ -91,7 +92,6 @@ public abstract class AbstractLauncherUiTest {
 
     public static final long SHORT_UI_TIMEOUT = 300;
     public static final long DEFAULT_UI_TIMEOUT = 10000;
-    protected static final int LONG_WAIT_TIME_MS = 60000;
     private static final String TAG = "AbstractLauncherUiTest";
     private static int sScreenshotCount = 0;
 
@@ -192,12 +192,23 @@ public abstract class AbstractLauncherUiTest {
                     ", track trace is below, UI object dump is further below:\n" +
                     Log.getStackTraceString(e));
             dumpViewHierarchy();
+
+            try {
+                final String dumpsysResult = mDevice.executeShellCommand(
+                                "dumpsys activity service TouchInteractionService");
+                Log.d(TAG, "TouchInteractionService: " + dumpsysResult);
+            } catch (IOException ex) {
+            }
+
             mDevice.takeScreenshot(new File(pathname));
         }
     };
 
     @Before
     public void setUp() throws Exception {
+        // Disable app tracker
+        AppLaunchTracker.INSTANCE.initializeForTesting(new AppLaunchTracker());
+
         mTargetContext = InstrumentationRegistry.getTargetContext();
         mTargetPackage = mTargetContext.getPackageName();
         // Unlock the phone
@@ -243,7 +254,7 @@ public abstract class AbstractLauncherUiTest {
      */
     protected UiObject2 scrollAndFind(UiObject2 container, BySelector condition) {
         final int margin = ResourceUtils.getNavbarSize(
-                ResourceUtils.NAVBAR_PORTRAIT_BOTTOM_SIZE, mLauncher.getResources()) + 1;
+                ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, mLauncher.getResources()) + 1;
         container.setGestureMargins(0, 0, 0, margin);
 
         int i = 0;
@@ -394,7 +405,7 @@ public abstract class AbstractLauncherUiTest {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         instrumentation.getTargetContext().startActivity(intent);
         assertTrue(packageName + " didn't start",
-                mDevice.wait(Until.hasObject(By.pkg(packageName).depth(0)), LONG_WAIT_TIME_MS));
+                mDevice.wait(Until.hasObject(By.pkg(packageName).depth(0)), DEFAULT_UI_TIMEOUT));
     }
 
     protected void startTestActivity(int activityNumber) {
@@ -410,7 +421,7 @@ public abstract class AbstractLauncherUiTest {
         assertTrue(packageName + " didn't start",
                 mDevice.wait(
                         Until.hasObject(By.pkg(packageName).text("TestActivity" + activityNumber)),
-                        LONG_WAIT_TIME_MS));
+                        DEFAULT_UI_TIMEOUT));
     }
 
     protected static String resolveSystemApp(String category) {
