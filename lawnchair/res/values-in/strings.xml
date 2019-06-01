@@ -9,11 +9,11 @@
     <string name="in_smartspace">Di \‘Sekilas\‘ widget</string>
     <string name="smartspace_time">Waktu</string>
     <string name="smartspace_date">Tanggal</string>
-    <string name="customize">Penyesuaian</string>
+    <string name="customize">Kustomisasi</string>
     <string name="smartspace_preferences_in_settings">At a Glance</string>
-    <string name="smartspace_preferences_in_settings_desc">Hari bulan, masa, sumber cuaca</string>
+    <string name="smartspace_preferences_in_settings_desc">Tanggal, waktu, sumber cuaca</string>
     <string name="search">Pencarian</string>
-    <string name="label_voice_search">Telusuri dengan suara</string>
+    <string name="label_voice_search">Pencarian suara</string>
     <string name="icon_pack">Paket Ikon</string>
     <string name="home_widget">Widget Beranda</string>
     <string name="title_show_google_app">%1$s tersisa</string>
@@ -27,7 +27,7 @@
     <string name="label_turn_off_suggestions">Nonaktifkan</string>
     <string name="pixel_style_pref_title">Gaya pixel</string>
     <string name="about_summary_title">Ringkasan</string>
-    <string name="action_edit">Mengubahsuai</string>
+    <string name="action_edit">Sunting</string>
     <string name="hide_app_sum">Sembunyikan dari laci aplikasi</string>
     <string name="hide_app">Sembunyikan aplikasi</string>
     <string name="icon_shape_rounded_square">Persegi membulat</string>
@@ -118,8 +118,8 @@
     <string name="gradient">Gradasi</string>
     <!--Marker C-->
     <string name="pref_category_icons">Ikon</string>
-    <string name="pref_category_aag">At a glance</string>
-    <string name="pref_category_pixel_searchbar">Bar carian Pixel</string>
+    <string name="pref_category_aag">Sekilas</string>
+    <string name="pref_category_pixel_searchbar">Bar pencarian Pixel</string>
     <string name="pref_category_weather">Cuaca</string>
     <string name="pref_category_misc">Lainnya</string>
     <string name="pref_category_layout">Susun atur</string>
@@ -175,7 +175,6 @@
     <string name="action_open_app_with_target">Buka %s</string>
     <string name="action_open_app_select_app">Pilih aplikasi</string>
     <string name="action_none">Biarkan</string>
-    <string name="action_despacito">Putar Youtube Rewind 2018 (earrape)</string>
     <string name="gesture_press_home">Tombol beranda</string>
     <string name="gesture_press_back">Tombol kembali</string>
     <string name="gesture_double_tap">Sentuh dua kali</string>
@@ -299,7 +298,7 @@
     <string name="pref_qsb_color">Warna</string>
     <string name="hide_from_predictions">Sembunyikan dari panel saran</string>
     <string name="hide_from_predictions_summary">Jangan pernah tampilkan di panel saran</string>
-    <string name="bubble_searchbar">Kotak pencarian ganda</string>
+    <string name="bubble_searchbar">Bar pencarian ganda</string>
     <string name="search_clear_history">Bersihkan riwayat</string>
     <string name="search_no_results">Tidak ditemukan</string>
     <string name="search_menu">Mencari Menu Pengaturan</string>
@@ -360,8 +359,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Mengaktifkan pembagian data antara Lawnchair dan Sesame. Anda dapat mengubah ini pada pengaturan Lawnchair atau Sesame.]]></string>
     <string name="sesame_version">Versi integrasi</string>
     <string name="sesame_shortcut_disabled">Tidak ada pintas Sesame</string>
-    <string name="pref_sesame_sync_icon_pack">Bagikan paket ikon</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Sinkron paket ikon Lawnchair dengan Sesame</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
     <string name="font_weight_extra_light">ExtraLight</string>
@@ -392,7 +389,7 @@
     <string name="pref_fonts_global_font">Jenis huruf keseluruhan</string>
     <string name="pref_fonts_change_global_font">Rubah</string>
     <string name="pref_fonts_home_icons">Nama aplikasi &amp; folder</string>
-    <string name="pref_fonts_home_smartspace">Widget \'Lihat Sekilas\'</string>
+    <string name="pref_fonts_home_smartspace">Widget \'Sekilas\'</string>
     <string name="pref_fonts_home_shortcuts">Gelembung pintasan</string>
     <string name="pref_fonts_category_drawer">Laci</string>
     <string name="pref_fonts_drawer_icons">Nama aplikasi</string>
@@ -409,4 +406,6 @@
     <string name="dock_scale">Ukuran bilah bar</string>
     <string name="adaptify_pack_title">Buat adaptif ikon untuk paket ikon</string>
     <string name="adaptify_pack_summary">Buat adaptif ikon untuk ikon dari paket ikon</string>
+    <string name="pref_sesame_sync_look_and_feel">Bagikan tampilan dan nuansa</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Sinkronkan setelan Lawnchair dengan Sesame</string>
 </resources>
