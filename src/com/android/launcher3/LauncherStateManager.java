@@ -48,6 +48,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.PropertySetter.AnimatedPropertySetter;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.UiFactory;
 
 import java.io.PrintWriter;
@@ -447,8 +448,8 @@ public class LauncherStateManager {
     }
 
     private void onStateTransitionStart(LauncherState state) {
-        if (com.android.launcher3.TestProtocol.sDebugTracing) {
-            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+        if (TestProtocol.sDebugTracing) {
+            android.util.Log.d(TestProtocol.NO_DRAG_TAG,
                     "onStateTransitionStart");
         }
         if (mState != state) {
@@ -576,8 +577,8 @@ public class LauncherStateManager {
         private final AnimatorSet mAnim;
 
         public StartAnimRunnable(AnimatorSet anim) {
-            if (com.android.launcher3.TestProtocol.sDebugTracing) {
-                android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
+            if (TestProtocol.sDebugTracing) {
+                android.util.Log.d(TestProtocol.NO_DRAG_TAG,
                         "StartAnimRunnable");
             }
             mAnim = anim;

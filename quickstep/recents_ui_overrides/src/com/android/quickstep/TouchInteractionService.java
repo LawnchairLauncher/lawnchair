@@ -22,8 +22,11 @@ import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_INP
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NAV_BAR_HIDDEN;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
@@ -79,6 +82,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
+import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 
 import java.io.FileDescriptor;
@@ -197,6 +201,8 @@ public class TouchInteractionService extends Service implements
 
         public void onSystemUiStateChanged(int stateFlags) {
             mSystemUiStateFlags = stateFlags;
+            mOverviewInteractionState.setSystemUiStateFlags(stateFlags);
+            mOverviewComponentObserver.onSystemUiStateChanged(stateFlags);
         }
 
         /** Deprecated methods **/
@@ -331,16 +337,8 @@ public class TouchInteractionService extends Service implements
         defaultDisplay.getRealSize(realSize);
         mSwipeTouchRegion.set(0, 0, realSize.x, realSize.y);
         if (mMode == Mode.NO_BUTTON) {
-            switch (defaultDisplay.getRotation()) {
-                case Surface.ROTATION_90:
-                case Surface.ROTATION_270:
-                    mSwipeTouchRegion.top = mSwipeTouchRegion.bottom - getNavbarSize(
-                            ResourceUtils.NAVBAR_LANDSCAPE_BOTTOM_SIZE);
-                    break;
-                default:
-                    mSwipeTouchRegion.top = mSwipeTouchRegion.bottom - getNavbarSize(
-                            ResourceUtils.NAVBAR_PORTRAIT_BOTTOM_SIZE);
-            }
+            mSwipeTouchRegion.top = mSwipeTouchRegion.bottom -
+                    getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
         } else {
             switch (defaultDisplay.getRotation()) {
                 case Surface.ROTATION_90:
@@ -353,7 +351,7 @@ public class TouchInteractionService extends Service implements
                     break;
                 default:
                     mSwipeTouchRegion.top = mSwipeTouchRegion.bottom
-                            - getNavbarSize(ResourceUtils.NAVBAR_PORTRAIT_BOTTOM_SIZE);
+                            - getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
             }
         }
     }
@@ -472,22 +470,19 @@ public class TouchInteractionService extends Service implements
 
     private boolean validSystemUiFlags() {
         return (mSystemUiStateFlags & SYSUI_STATE_NAV_BAR_HIDDEN) == 0
-                && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0;
-    }
-
-    private boolean topTaskLocked() {
-        return ActivityManagerWrapper.getInstance().isLockToAppActive();
+                && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0
+                && ((mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED) == 0
+                        || (mSystemUiStateFlags & SYSUI_STATE_OVERVIEW_DISABLED) == 0);
     }
 
     private InputConsumer newConsumer(boolean useSharedState, MotionEvent event) {
-        boolean topTaskLocked = topTaskLocked();
-        boolean isInValidSystemUiState = validSystemUiFlags() && !topTaskLocked;
+        boolean isInValidSystemUiState = validSystemUiFlags();
 
         if (!mIsUserUnlocked) {
             if (isInValidSystemUiState) {
                 // This handles apps launched in direct boot mode (e.g. dialer) as well as apps
                 // launched while device is locked even after exiting direct boot mode (e.g. camera).
-                return new DeviceLockedInputConsumer(this);
+                return createDeviceLockedInputConsumer(mAM.getRunningTask(0));
             } else {
                 return InputConsumer.NO_OP;
             }
@@ -498,13 +493,15 @@ public class TouchInteractionService extends Service implements
         if (mMode == Mode.NO_BUTTON) {
             final ActivityControlHelper activityControl =
                     mOverviewComponentObserver.getActivityControlHelper();
-            if (mAssistantAvailable && !topTaskLocked
-                    && AssistantTouchConsumer.withinTouchRegion(this, event)) {
+            if (mAssistantAvailable
+                    && !QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags)
+                    && AssistantTouchConsumer.withinTouchRegion(this, event)
+                    && !ActivityManagerWrapper.getInstance().isLockToAppActive()) {
                 base = new AssistantTouchConsumer(this, mISystemUiProxy, activityControl, base,
                         mInputMonitorCompat);
             }
 
-            if (ActivityManagerWrapper.getInstance().isScreenPinningActive()) {
+            if ((mSystemUiStateFlags & SYSUI_STATE_SCREEN_PINNING) != 0) {
                 // Note: we only allow accessibility to wrap this, and it replaces the previous
                 // base input consumer (which should be NO_OP anyway since topTaskLocked == true).
                 base = new ScreenPinnedInputConsumer(this, mISystemUiProxy, activityControl);
@@ -520,15 +517,14 @@ public class TouchInteractionService extends Service implements
     }
 
     private InputConsumer newBaseConsumer(boolean useSharedState, MotionEvent event) {
-        if (mKM.isDeviceLocked()) {
-            // This handles apps launched in direct boot mode (e.g. dialer) as well as apps launched
-            // while device is locked even after exiting direct boot mode (e.g. camera).
-            return new DeviceLockedInputConsumer(this);
-        }
-
         final RunningTaskInfo runningTaskInfo = mAM.getRunningTask(0);
         if (!useSharedState) {
             mSwipeSharedState.clearAllState();
+        }
+        if (mKM.isDeviceLocked()) {
+            // This handles apps launched in direct boot mode (e.g. dialer) as well as apps launched
+            // while device is locked even after exiting direct boot mode (e.g. camera).
+            return createDeviceLockedInputConsumer(runningTaskInfo);
         }
 
         final ActivityControlHelper activityControl =
@@ -567,6 +563,15 @@ public class TouchInteractionService extends Service implements
                 mSwipeSharedState, mInputMonitorCompat, mSwipeTouchRegion);
     }
 
+    private InputConsumer createDeviceLockedInputConsumer(RunningTaskInfo taskInfo) {
+        if (mMode == Mode.NO_BUTTON && taskInfo != null) {
+            return new DeviceLockedInputConsumer(this, mSwipeSharedState, mInputMonitorCompat,
+                    mSwipeTouchRegion, taskInfo.taskId);
+        } else {
+            return InputConsumer.NO_OP;
+        }
+    }
+
     /**
      * To be called by the consumer when it's no longer active.
      */
@@ -593,17 +598,14 @@ public class TouchInteractionService extends Service implements
             // Dump everything
             pw.println("TouchState:");
             pw.println("  navMode=" + mMode);
-            pw.println("  validSystemUiFlags=" + validSystemUiFlags()
-                    + " flags=" + mSystemUiStateFlags);
-            pw.println("  topTaskLocked=" + topTaskLocked());
+            pw.println("  validSystemUiFlags=" + validSystemUiFlags());
+            pw.println("  systemUiFlags=" + mSystemUiStateFlags);
+            pw.println("  systemUiFlagsDesc="
+                    + QuickStepContract.getSystemUiStateString(mSystemUiStateFlags));
             pw.println("  isDeviceLocked=" + mKM.isDeviceLocked());
-            pw.println("  screenPinned=" +
-                    ActivityManagerWrapper.getInstance().isScreenPinningActive());
             pw.println("  assistantAvailable=" + mAssistantAvailable);
-            pw.println("  a11yClickable="
-                    + ((mSystemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_CLICKABLE) != 0));
-            pw.println("  a11yLongClickable="
-                    + ((mSystemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE) != 0));
+            pw.println("  assistantDisabled="
+                    + QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags));
             pw.println("  resumed="
                     + mOverviewComponentObserver.getActivityControlHelper().isResumed());
             pw.println("  useSharedState=" + mConsumer.useSharedSwipeState());

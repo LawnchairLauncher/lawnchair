@@ -23,7 +23,6 @@ import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MOD
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Rect;
@@ -160,14 +159,16 @@ public class ClipAnimationHelper {
 
     public RectF applyTransform(RemoteAnimationTargetSet targetSet, TransformParams params,
             boolean launcherOnTop) {
+        float progress = params.progress;
         if (params.currentRect == null) {
             RectF currentRect;
             mTmpRectF.set(mTargetRect);
             Utilities.scaleRectFAboutCenter(mTmpRectF, params.offsetScale);
-            float progress = params.progress;
             currentRect = mRectFEvaluator.evaluate(progress, mSourceRect, mTmpRectF);
             currentRect.offset(params.offsetX, 0);
 
+            // Don't clip past progress > 1.
+            progress = Math.min(1, progress);
             final RectF sourceWindowClipInsets = params.forLiveTile
                     ? mSourceWindowClipInsetsForLiveTile : mSourceWindowClipInsets;
             mClipRectF.left = sourceWindowClipInsets.left * progress;
@@ -189,7 +190,7 @@ public class ClipAnimationHelper {
             float alpha = 1f;
             int layer = RemoteAnimationProvider.getLayer(app, mBoostModeTargetLayers);
             float cornerRadius = 0f;
-            float scale = params.currentRect.width() / crop.width();
+            float scale = Math.max(params.currentRect.width(), mTargetRect.width()) / crop.width();
             if (app.mode == targetSet.targetMode) {
                 if (app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
                     mTmpMatrix.setRectToRect(mSourceRect, params.currentRect, ScaleToFit.FILL);
@@ -198,7 +199,7 @@ public class ClipAnimationHelper {
                     if (mSupportsRoundedCornersOnWindows) {
                         float windowCornerRadius = mUseRoundedCornersOnWindows
                                 ? mWindowCornerRadius : 0;
-                        cornerRadius = Utilities.mapRange(params.progress, windowCornerRadius,
+                        cornerRadius = Utilities.mapRange(progress, windowCornerRadius,
                                 mTaskCornerRadius);
                         mCurrentCornerRadius = cornerRadius;
                     }
