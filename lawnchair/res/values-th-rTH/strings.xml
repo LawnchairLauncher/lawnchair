@@ -358,8 +358,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[เปิดการแชร์ข้อมูลระหว่าง Lawnchair กับ Sesame]]></string>
     <string name="sesame_version">เวอร์ชันการผสาน</string>
     <string name="sesame_shortcut_disabled">Sesame shortcut ไม่สามารถใช้ได้</string>
-    <string name="pref_sesame_sync_icon_pack">แชร์ชุดไอคอน</string>
-    <string name="pref_sesame_sync_icon_pack_summary">ใช้ชุดไอคอนเดียวกันใน Sesame</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
     <string name="font_weight_extra_light">ExtraLight</string>
@@ -407,4 +405,6 @@
     <string name="dock_scale">ขนาดแถบรายการโปรด</string>
     <string name="adaptify_pack_title">สร้างสำหรับชุดไอคอน</string>
     <string name="adaptify_pack_summary">สร้างไอคอนแบบปรับอัตโนมัติสำหรับไอคอนจากชุดไอคอน</string>
+    <string name="pref_sesame_sync_look_and_feel">แชร์รูปแบบ</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">ซิงค์การตั้งค่าการค้นหากับ Sesame</string>
 </resources>
