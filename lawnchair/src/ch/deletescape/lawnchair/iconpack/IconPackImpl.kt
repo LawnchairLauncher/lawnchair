@@ -133,44 +133,22 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                             }
                         }
                         name == "scale" -> {
-                            packMask.scale = parseXml["factor"]!!.toFloat()
-                            if (packMask.scale > 0x7f070000) {
-                                packMask.scale = packResources.getDimension(packMask.scale.toInt())
+                            val scale = parseXml["factor"]!!.toFloat()
+                            if (scale > 0x7f070000) {
+                                packMask.iconScale = packResources.getDimension(scale.toInt())
+                            } else {
+                                packMask.iconScale = scale
                             }
                         }
                         name == "iconback" -> {
                             // TODO: handle packs with multiple masks
-                            val drawableName = parseXml["img1"]
-                            if (drawableName != null && !TextUtils.isEmpty(drawableName)) {
-                                // Try if we can actually load the drawable. (Some icon packs define
-                                // a resource for this which doesn't actually exist
-                                // TODO: actually handle this in mask code
-                                // entry.drawable
-                                packMask.hasMask = true
-                                packMask.iconBack =  Entry(drawableName)
-                            }
+                            addImgsTo(parseXml, packMask.iconBackEntries)
                         }
                         name == "iconmask" -> {
-                            val drawableName = parseXml["img1"]
-                            if (drawableName != null && !TextUtils.isEmpty(drawableName)) {
-                                // Try if we can actually load the drawable. (Some icon packs define
-                                // a resource for this which doesn't actually exist
-                                // TODO: actually handle this in mask code
-                                // entry.drawable
-                                packMask.hasMask = true
-                                packMask.iconMask =  Entry(drawableName)
-                            }
+                            addImgsTo(parseXml, packMask.iconMaskEntries)
                         }
                         name == "iconupon" -> {
-                            val drawableName = parseXml["img1"]
-                            if (drawableName != null && !TextUtils.isEmpty(drawableName)) {
-                                // Try if we can actually load the drawable. (Some icon packs define
-                                // a resource for this which doesn't actually exist
-                                // TODO: actually handle this in mask code
-                                // entry.drawable
-                                packMask.hasMask = true
-                                packMask.iconUpon = Entry(drawableName)
-                            }
+                            addImgsTo(parseXml, packMask.iconUponEntries)
                         }
                         name == "config" -> {
                             val onlyMaskLegacy = parseXml["onlyMaskLegacy"]
@@ -215,6 +193,17 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
             e.printStackTrace()
         }
         Toast.makeText(context, "Failed to parse AppFilter", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun addImgsTo(parseXml: XmlPullParser, collection: MutableCollection<Entry>) {
+        for (i in (0 until parseXml.attributeCount)) {
+            if (parseXml.getAttributeName(i).startsWith("img")) {
+                val drawableName = parseXml.getAttributeValue(i)
+                if (!TextUtils.isEmpty(drawableName)) {
+                    collection.add(Entry(drawableName))
+                }
+            }
+        }
     }
 
     override fun getEntryForComponent(key: ComponentKey): Entry? {
@@ -280,7 +269,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         if (prefs.iconPackMasking && packMask.hasMask) {
             val baseIcon = defaultPack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable,
                     customIconEntry, iconProvider)
-            val icon = packMask.getIcon(context, baseIcon)
+            val icon = packMask.getIcon(context, baseIcon, launcherActivityInfo.componentName)
             if (prefs.adaptifyIconPacks) {
                 val gen = AdaptiveIconGenerator(context, icon, "$packPackageName#${component.flattenToString()}")
                 return gen.result
@@ -297,7 +286,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         if (prefs.iconPackMasking && packMask.hasMask) {
             val baseIcon = defaultPack.getIcon(shortcutInfo, iconDpi)
             if (baseIcon != null) {
-                val icon = packMask.getIcon(context, baseIcon)
+                val icon = packMask.getIcon(context, baseIcon, shortcutInfo.activity)
                 if (prefs.adaptifyIconPacks) {
                     val gen = AdaptiveIconGenerator(context, icon, "$packPackageName#${shortcutInfo.id}")
                     return gen.result
