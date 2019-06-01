@@ -62,6 +62,7 @@
     <string name="restore_success">השחזור הושלם</string>
     <string name="failed">משהו השתבש</string>
     <string name="backup_share_text">גיבוי של Lawnchair</string>
+    <string name="full_width_widgets_pref_summary">אפשר לווידג\'טים להתרחב לקצוות המסך</string>
     <string name="full_width_width_widgets_pref_title">ווידג\'טים רחבים</string>
     <string name="hide_apps">הסתר יישומים</string>
     <string name="hide_apps_sum">הסר אפליקציות ממגירת האפליקציות</string>
@@ -162,9 +163,13 @@
     <string name="gesture_long_press">גע והחזק</string>
     <string name="gesture_swipe_down">החלק למטה</string>
     <string name="gesture_swipe_up">החלק למעלה</string>
+    <string name="gesture_dock_swipe_up">החלק מעלה מה-Dock</string>
     <string name="pref_show_assistant_title">כפתור חיפוש קולי</string>
     <string name="pref_show_assistant_summary">הצג כפתור חיפוש קולי אם נתמך</string>
+    <string name="pref_show_as_assistant_summary">הצג את כפתור ה-Assistant במקום חיפוש קולי</string>
+    <string name="smartspace_time_24_h">פורמט 24 שעות</string>
     <string name="weather_provider_disabled">מבוטל</string>
+    <string name="weather_provider_pe">PixelExperience</string>
     <string name="pref_smartspace_widget_provider">מקור למזג אוויר</string>
     <string name="pref_smartspace_event_provider">מקור ללוח שנה</string>
     <string name="title_all_apps_search">סרגל חיפוש במגירת האפליקציות</string>
@@ -174,6 +179,7 @@
     <string name="all_apps_label_pref_title">הצג תווית \"כל האפליקציות\"</string>
     <string name="separate_work_apps_pref_title">כרטיסייה שנייה לאפליקציות עבודה</string>
     <string name="title_search_hidden_apps">מצא יישומים מוסתרים</string>
+    <string name="summary_search_hidden_apps">הצג אפליקציות מוסתרות בתוצאות</string>
     <!--Marker F-->
     <string name="default_city">תל אביב, ישראל</string>
     <string name="pref_weather_api_key_title">מפתח API</string>
@@ -191,6 +197,11 @@
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
     <string name="weather_provider_testing">תיקון שגיאות</string>
     <!--Marker G-->
+    <string name="backup_generate_report">צור דיווח על באג</string>
+    <string name="show_top_shadow_pref_title">צל עליון</string>
+    <string name="show_top_shadow_pref_summary">צל מתחת לשורת המצב</string>
+    <string name="two_row_dock">שתי שורות</string>
+    <string name="keep_scroll_state_pref_title">זכור את מיקום הגלילה</string>
     <string name="reset">איפוס</string>
     <string name="theme_title">ערכת נושא</string>
     <string name="theme_automatic">אוטומטי</string>
@@ -202,6 +213,7 @@
     <string name="pref_legacy_treatment_summary">יצירת סמלים מותאמים באופן אוטומטי לכל האפליקציות</string>
     <string name="dt2s_admin_hint">כדי להשתמש בהקשה כפולה לנעילה, הענק הרשאת מנהל</string>
     <string name="dt2s_admin_warning">הקשה כפולה לנעילה תבוטל</string>
+    <string name="icon_pack_applied_toast">%s הוחל</string>
     <string name="color_pixel_accent">כחול Pixel</string>
     <string name="color_presets">קבועים מראש</string>
     <string name="custom">מותאם אישית</string>
@@ -218,6 +230,9 @@
     <string name="gesture_nav_swipe_up_left">מצד שמאל</string>
     <string name="gesture_nav_swipe_up_center">מהמרכז</string>
     <string name="gesture_nav_swipe_up_right">מצד ימין</string>
+    <string name="action_switch_apps">החלף אפליקציות</string>
+    <string name="pref_global_search_provider">מנוע חיפוש</string>
+    <string name="searchbar_appearance_title">מראה</string>
     <string name="google">Google</string>
     <string name="search_provider_google_go">Google Go</string>
     <string name="search_provider_yandex">Yandex</string>
@@ -226,12 +241,18 @@
     <string name="search_provider_baidu">Baidu</string>
     <string name="search_provider_appsearch">חיפוש יישומים</string>
     <string name="search_provider_search_lite">Search Lite</string>
+    <string name="search_provider_cool_search">Cool Search</string>
     <string name="recent_task_option_force_stop">אלץ עצירה</string>
     <string name="pref_icon_packs">ערכות סמלים</string>
     <string name="drag_to_enable_packs">גרור למעלה כדי להפעיל</string>
     <string name="drag_to_disable_packs">גרור למטה כדי לבטל</string>
     <string name="get_more_icon_packs">קבל עוד</string>
     <string name="enabled_icon_packs">פעיל</string>
+    <string name="pref_icon_pack_masking">יצירת מסכה לסמלים</string>
+    <string name="pref_legacy_colored_backgrounds">רקעים צבעוניים</string>
+    <string name="pref_legacy_colored_backgrounds_summary">רקעים בצבעים לסמלים מותאמים שנוצרים</string>
+    <string name="pref_white_only_treatment">החלף רקעים לבנים</string>
+    <string name="pref_white_only_treatment_summary">רקעים בצבעים לכל הסמלים המותאמים</string>
     <!--Marker H-->
     <string name="dismiss_drop_target_label">"אל תציג"</string>
     <string name="suggested_action_content_description">%1$s נפתח ב-%2$s</string>
@@ -268,6 +289,11 @@
     <string name="feed_theme_pref_title">צבע רקע</string>
     <string name="recents_not_connected">שירות לא מחובר</string>
     <string name="advanced_settings">הגדרות %s נוספות</string>
+    <string name="adaptive_icon">סמל מותאם</string>
+    <string name="drawer_tabs">כרטיסיות</string>
+    <string name="add_new_tab">הוסף</string>
+    <string name="rename_tab">שנה שם</string>
+    <string name="default_tab_name">כרטיסייה חדשה</string>
     <string name="selected_count">‏%1$d נבחרו</string>
     <string name="delete">מחק</string>
     <string name="none">ללא</string>
@@ -277,6 +303,7 @@
     <string name="pref_sesame_show_shortcuts">קיצורי דרך של אפליקציות</string>
     <string name="allow">אפשר</string>
     <string name="sesame_enable_integration_title">הפעל שילוב</string>
+    <string name="font_weight_extra_light">קל מאוד</string>
     <string name="font_weight_light">בהיר</string>
     <string name="font_weight_regular">רגיל</string>
     <string name="font_weight_medium">בינוני</string>
@@ -289,5 +316,17 @@
     <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">מזג אוויר של OnePlus</string>
     <string name="overlap_placement_summary">אפשר לסמלים ולווידג\'טים להיות ממוקמים אחד מעל השני.</string>
+    <string name="pref_smartspace_time_above">הצג שעון גדול</string>
+    <string name="pref_smartspace_time_above_summary">הצג את השעון מעל הווידג\'ט</string>
+    <string name="pref_fonts_title">גופנים</string>
+    <string name="pref_fonts_change_global_font">שנה</string>
     <string name="pref_fonts_category_drawer">מגירת היישומים</string>
+    <string name="pref_fonts_drawer_icons">שמות אפליקציות</string>
+    <string name="pref_fonts_drawer_tabs">שמות כרטיסיות</string>
+    <string name="pref_fonts_find_fonts">מצא גופנים</string>
+    <string name="pref_fonts_add_fonts">הוספת גופנים</string>
+    <string name="pref_fonts_add_fonts_summary">OTF ו-TTF נתמכים</string>
+    <string name="pref_fonts_missing_font">גופן לא נמצא</string>
+    <string name="about_translate">תרגומים</string>
+    <string name="pref_show_dev_options">הצג בהגדרות</string>
 </resources>
