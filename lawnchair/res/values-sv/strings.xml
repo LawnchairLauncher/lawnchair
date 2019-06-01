@@ -169,7 +169,6 @@
     <string name="action_open_app_with_target">Öppna %s</string>
     <string name="action_open_app_select_app">Välj app</string>
     <string name="action_none">Gör ingenting</string>
-    <string name="action_despacito">Spela YouTube Rewind 2018 (öronvåld)</string>
     <string name="gesture_press_home">Hemknapp</string>
     <string name="gesture_press_back">Bakåtknapp</string>
     <string name="gesture_double_tap">Dubbeltryck</string>
@@ -355,8 +354,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Tillåter att data delas mellan Lawnchair och Sesame. Du kan ändra detta i Lawnchair eller Sesame inställningarna.]]></string>
     <string name="sesame_version">Integrationsversion</string>
     <string name="sesame_shortcut_disabled">Inga Sesame genvägar finns tillgängliga</string>
-    <string name="pref_sesame_sync_icon_pack">Dela ikonpaket</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Synkronisera Lawnchair ikonpaket med Sesame</string>
     <string name="font_variant_italic">Kursiv</string>
     <string name="font_weight_thin">Tunn</string>
     <string name="font_weight_extra_light">Extra lätt</string>
