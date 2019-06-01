@@ -161,15 +161,14 @@
     <string name="action_global_search">Open global search</string>
     <string name="action_app_search">Open app search</string>
     <string name="action_overlay">Open Google feed</string>
-    <string name="action_assistant">Open Google feed</string>
-    <string name="action_open_notifications">Open assistant</string>
-    <string name="action_close_notifications">Open notifications</string>
+    <string name="action_assistant">Open assistant</string>
+    <string name="action_open_notifications">Open notifications</string>
+    <string name="action_close_notifications">Close notifications</string>
     <string name="action_sleep_timeout">Sleep (using timeout)</string>
     <string name="action_open_app">Open app</string>
     <string name="action_open_app_with_target">Open %s</string>
     <string name="action_open_app_select_app">Pick app</string>
     <string name="action_none">Do nothing</string>
-    <string name="action_despacito">Play YouTube Rewind 2018 (earrape)</string>
     <string name="gesture_press_home">Home button</string>
     <string name="gesture_press_back">Back button</string>
     <string name="gesture_double_tap">Double tap</string>
@@ -353,8 +352,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Enables data sharing between Lawnchair and Sesame. You can change this in Lawnchair or Sesame settings.]]></string>
     <string name="sesame_version">Integration version</string>
     <string name="sesame_shortcut_disabled">Sesame shortcuts unavailable</string>
-    <string name="pref_sesame_sync_icon_pack">Share icon pack</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Sync Lawnchair icon pack with Sesame</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
     <string name="font_weight_extra_light">ExtraLight</string>
