@@ -401,12 +401,21 @@
     <string name="theme_auto_night_mode">Follow system theme</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark_text">Light with dark text</string>
-    
+    <string name="theme_with_dark_text">dark text</string>
+
     <string name="theme_dark">Dark</string>
     <string name="theme_dark_dark_text">Dark with dark text</string>
     <string name="theme_black">Black</string>
     <string name="theme_black_dark_text">Black with dark text</string>
-    
+
+    <string name="theme_dark_theme_mode">Dark theme</string>
+    <string name="theme_dark_theme_mode_on">On</string>
+    <string name="theme_dark_theme_mode_off">Off</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
+    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
+    <string name="theme_use_black">Use pure black</string>
+    <string name="theme_use_dark_text">Use dark text</string>
+
     <string name="pref_qsb_color">Color</string>
     <string name="hide_from_predictions">Hide from suggestions</string>
     <string name="hide_from_predictions_summary">Never show in drawer suggestions</string>

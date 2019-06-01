@@ -21,8 +21,8 @@ import android.content.Context
 import android.content.res.Configuration
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.util.SingletonHolder
+import ch.deletescape.lawnchair.util.hasFlag
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
 import com.android.launcher3.uioverrides.WallpaperColorInfo
 
 /*
@@ -91,19 +91,20 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener {
 
     override fun onExtractedColorsChanged(ignore: WallpaperColorInfo?) {
         val theme = prefs.launcherTheme
-        val supportsDarkText: Boolean
-        val isDark: Boolean
         val isBlack = isBlack(theme)
-        if ((theme and THEME_AUTO) == 0) {
-            supportsDarkText = isDarkText(theme)
-            isDark = isDark(theme)
-        } else {
-            supportsDarkText = wallpaperColorInfo.supportsDarkText()
-            isDark = if ((theme and THEME_AUTO_NIGHT_MODE == 0))
-                wallpaperColorInfo.isDark
-            else
-                usingNightMode == true
+
+        val isDark = when {
+            theme.hasFlag(THEME_FOLLOW_NIGHT_MODE) -> usingNightMode
+            theme.hasFlag(THEME_FOLLOW_WALLPAPER) -> wallpaperColorInfo.isDark
+            else -> theme.hasFlag(THEME_DARK)
         }
+
+        val supportsDarkText = when {
+            theme.hasFlag(THEME_DARK_TEXT) -> true
+            theme.hasFlag(THEME_FOLLOW_WALLPAPER) -> wallpaperColorInfo.supportsDarkText()
+            else -> false
+        }
+
         var newFlags = 0
         if (supportsDarkText) newFlags = newFlags or THEME_DARK_TEXT
         if (isDark) newFlags = newFlags or THEME_DARK
@@ -138,11 +139,14 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener {
 
     companion object : SingletonHolder<ThemeManager, Context>(ensureOnMainThread(useApplicationContext(::ThemeManager))) {
 
-        private const val THEME_AUTO = 1                     // 00001
-        private const val THEME_DARK_TEXT = 1 shl 1          // 00010
-        private const val THEME_DARK = 1 shl 2               // 00100
-        private const val THEME_USE_BLACK = 1 shl 3          // 01000
-        private const val THEME_AUTO_NIGHT_MODE = 1 shl 4    // 10000
+        const val THEME_FOLLOW_WALLPAPER = 1         // 00001 = 1
+        const val THEME_DARK_TEXT = 1 shl 1          // 00010 = 2
+        const val THEME_DARK = 1 shl 2               // 00100 = 4
+        const val THEME_USE_BLACK = 1 shl 3          // 01000 = 8
+        const val THEME_FOLLOW_NIGHT_MODE = 1 shl 4  // 10000 = 16
+
+        const val THEME_AUTO_MASK = THEME_FOLLOW_WALLPAPER or THEME_FOLLOW_NIGHT_MODE
+        const val THEME_DARK_MASK = THEME_DARK or THEME_AUTO_MASK
 
         fun isDarkText(flags: Int) = (flags and THEME_DARK_TEXT) != 0
         fun isDark(flags: Int) = (flags and THEME_DARK) != 0

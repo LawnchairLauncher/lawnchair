@@ -72,14 +72,10 @@
         android:key="prefCat_themeStyle"
         android:title="@string/pref_category_theme">
 
-        <ListPreference
-            android:defaultValue="1"
-            android:entries="@array/themes"
-            android:entryValues="@array/themeValues"
+        <ch.deletescape.lawnchair.theme.ui.ThemePreference
             android:key="pref_launcherTheme"
-            android:persistent="true"
-            android:summary="%s"
-            android:title="@string/theme_title" />
+            android:title="@string/theme_title"
+            app:content="@xml/lawnchair_theme_dialog_preference" />
 
         <ch.deletescape.lawnchair.colors.preferences.ColorPickerPreference
             android:key="pref_accentColorResolver"

@@ -425,9 +425,11 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
         public RecyclerView onCreateRecyclerView(LayoutInflater inflater, ViewGroup parent,
                 Bundle savedInstanceState) {
-            SpringRecyclerView recyclerView = (SpringRecyclerView) inflater
+            RecyclerView recyclerView = (RecyclerView) inflater
                     .inflate(getRecyclerViewLayoutRes(), parent, false);
-            recyclerView.setShouldTranslateSelf(false);
+            if (recyclerView instanceof SpringRecyclerView) {
+                ((SpringRecyclerView) recyclerView).setShouldTranslateSelf(false);
+            }
 
             recyclerView.setLayoutManager(onCreateLayoutManager());
             recyclerView.setAccessibilityDelegateCompat(
@@ -595,7 +597,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         @Override
         protected int getRecyclerViewLayoutRes() {
             return BuildConfig.FEATURE_SETTINGS_SEARCH ? R.layout.preference_home_recyclerview
-                    : R.layout.preference_spring_recyclerview;
+                    : R.layout.preference_dialog_recyclerview;
         }
     }
 
@@ -664,7 +666,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         @Override
         public void onResume() {
             super.onResume();
-            getActivity().setTitle(getArguments().getString(TITLE));
+            setActivityTitle();
 
             if (getContent() == R.xml.lawnchair_integration_preferences) {
                 SwitchPreference minusOne = (SwitchPreference) findPreference(
@@ -674,6 +676,10 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     minusOne.setChecked(false);
                 }
             }
+        }
+
+        protected void setActivityTitle() {
+            getActivity().setTitle(getArguments().getString(TITLE));
         }
 
         @Override
@@ -699,6 +705,9 @@ public class SettingsActivity extends SettingsBaseActivity implements
             } else if (preference instanceof SearchProviderPreference) {
                 f = SelectSearchProviderFragment.Companion
                         .newInstance((SearchProviderPreference) preference);
+            } else if (preference instanceof PreferenceDialogPreference) {
+                f = PreferenceScreenDialogFragment.Companion
+                        .newInstance((PreferenceDialogPreference) preference);
             } else if (preference instanceof ListPreference) {
                 Log.d("success", "onDisplayPreferenceDialog: yay");
                 f = ThemedListPreferenceDialogFragment.Companion.newInstance(preference.getKey());
@@ -813,6 +822,28 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
         protected int getRecyclerViewLayoutRes() {
             return R.layout.preference_insettable_recyclerview;
+        }
+    }
+
+    public static class DialogSettingsFragment extends SubSettingsFragment {
+
+        @Override
+        protected void setActivityTitle() {
+
+        }
+
+        @Override
+        protected int getRecyclerViewLayoutRes() {
+            return R.layout.preference_dialog_recyclerview;
+        }
+
+        public static DialogSettingsFragment newInstance(String title, @XmlRes int content) {
+            DialogSettingsFragment fragment = new DialogSettingsFragment();
+            Bundle b = new Bundle(2);
+            b.putString(TITLE, title);
+            b.putInt(CONTENT_RES_ID, content);
+            fragment.setArguments(b);
+            return fragment;
         }
     }
 
