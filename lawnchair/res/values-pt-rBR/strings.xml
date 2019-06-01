@@ -175,7 +175,7 @@
     <string name="action_open_app_with_target">Abrir %s</string>
     <string name="action_open_app_select_app">Escolha o aplicativo</string>
     <string name="action_none">Não fazer nada</string>
-    <string name="action_despacito">Reproduzir o YouTube Rewind 2018 (estupro auditivo)</string>
+    <string name="action_despacito">Reproduzir o YouTube Rewind 2018 (distorcido)</string>
     <string name="gesture_press_home">Botão de início</string>
     <string name="gesture_press_back">Botão de voltar</string>
     <string name="gesture_double_tap">Toque duplo</string>
@@ -362,8 +362,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Permite o compartilhamento de dados entre o Lawnchair e o Sesame. Você pode alterar isso nas configurações do Lawnchair ou Sesame.]]></string>
     <string name="sesame_version">Versão de integração</string>
     <string name="sesame_shortcut_disabled">Atalhos do Sesame indisponíveis</string>
-    <string name="pref_sesame_sync_icon_pack">Compartilhar pacote de ícones</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Sincronizar o pacote de ícones com o Sesame</string>
     <string name="font_variant_italic">Itálico</string>
     <string name="font_weight_thin">Fino</string>
     <string name="font_weight_extra_light">Extra fino</string>
@@ -411,4 +409,6 @@
     <string name="dock_scale">Escala da Dock</string>
     <string name="adaptify_pack_title">Crie ícones adaptáveis ​​para o pacote de ícones</string>
     <string name="adaptify_pack_summary">Criar ícones adaptativos a partir do pacote de ícones</string>
+    <string name="pref_sesame_sync_look_and_feel">Compartilhar aparência</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Sincronizar configurações de busca do Lawnchair com o Sesame</string>
 </resources>
