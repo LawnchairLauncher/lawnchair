@@ -16,7 +16,7 @@
 
 package com.android.launcher3.tapl;
 
-import static com.android.launcher3.TestProtocol.ALL_APPS_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
 
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
@@ -51,10 +51,9 @@ public final class Overview extends BaseOverview {
 
             // Swipe from an app icon to the top.
             LauncherInstrumentation.log("Overview.switchToAllApps before swipe");
-            final UiObject2 appIcon = mLauncher.waitForLauncherObjectByClass(
-                    "android.widget.TextView");
+            final UiObject2 allApps = mLauncher.waitForLauncherObject("apps_view");
             mLauncher.swipeToState(mLauncher.getDevice().getDisplayWidth() / 2,
-                    appIcon.getVisibleBounds().centerY(),
+                    allApps.getVisibleBounds().top,
                     mLauncher.getDevice().getDisplayWidth() / 2,
                     0, 50, ALL_APPS_STATE_ORDINAL);
 

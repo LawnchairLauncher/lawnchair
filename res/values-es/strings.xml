@@ -85,13 +85,13 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Inhabilitado por el administrador"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Permitir rotación de la pantalla de inicio"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Al girar el teléfono"</string>
-    <string name="notification_dots_title" msgid="9062440428204120317">"Burbujas de notificación"</string>
-    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Activadas"</string>
+    <string name="notification_dots_title" msgid="9062440428204120317">"Puntos de notificación"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Activados"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Desactivadas"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Se necesita acceso a las notificaciones"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"Para mostrar burbujas de notificación, activa las notificaciones de <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Para mostrar puntos de notificación, activa las notificaciones de <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Cambiar ajustes"</string>
-    <string name="notification_dots_service_title" msgid="4284221181793592871">"Mostrar burbujas de notificación"</string>
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"Mostrar puntos de notificación"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Añadir icono a la pantalla de inicio"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Para aplicaciones nuevas"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Desconocido"</string>
