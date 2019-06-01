@@ -172,7 +172,6 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="action_open_app_with_target">%s を開く</string>
     <string name="action_open_app_select_app">アプリを選ぶ</string>
     <string name="action_none">何もしない</string>
-    <string name="action_despacito">YouTube Rewind 2018 (earrape) を再生</string>
     <string name="gesture_press_home">ホームボタン</string>
     <string name="gesture_press_back">戻るボタン</string>
     <string name="gesture_double_tap">ダブルタップ</string>
@@ -356,8 +355,6 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="sesame_enable_integration_description"><![CDATA[Lawnchair と Sesame でデーターを共有します。これは、Lawnchair もしくは Sesame の設定から変更できます。]]></string>
     <string name="sesame_version">統合されているバージョン</string>
     <string name="sesame_shortcut_disabled">Sesame ショートカットは使用できません</string>
-    <string name="pref_sesame_sync_icon_pack">アイコンパックを共有する</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Lawnchair のアイコンパックを Sesame と共有します</string>
     <string name="font_variant_italic">斜体</string>
     <string name="font_weight_thin">細字</string>
     <string name="font_weight_extra_light">極細字</string>
