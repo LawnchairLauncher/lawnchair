@@ -118,6 +118,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         void createActivityController(long transitionLength);
 
+        default void adjustActivityControllerInterpolators() { }
+
         default void onTransitionCancelled() { }
 
         default void setShelfState(ShelfAnimState animState, Interpolator interpolator,
@@ -141,5 +143,9 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         @NonNull RectF getWindowTargetRect();
 
         @NonNull AnimatorPlaybackController createActivityAnimationToHome();
+
+        default void playAtomicAnimation(float velocity) {
+            // No-op
+        }
     }
 }

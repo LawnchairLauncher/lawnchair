@@ -20,6 +20,7 @@ import static com.android.launcher3.Utilities.getBadge;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
+import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -178,6 +179,7 @@ public class FloatingIconView extends View implements
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         getViewTreeObserver().addOnGlobalLayoutListener(this);
+        mLauncher.getRotationHelper().setCurrentTransitionRequest(REQUEST_LOCK);
     }
 
     @Override
@@ -227,7 +229,7 @@ public class FloatingIconView extends View implements
 
         mTaskCornerRadius = cornerRadius / scale;
         if (mIsAdaptiveIcon) {
-            if (!isOpening && shapeRevealProgress >= 0) {
+            if (!isOpening && progress >= shapeProgressStart) {
                 if (mRevealAnimator == null) {
                     mRevealAnimator = (ValueAnimator) IconShape.getShape().createRevealAnimator(
                             this, mStartRevealRect, mOutline, mTaskCornerRadius, !isOpening);
@@ -639,6 +641,11 @@ public class FloatingIconView extends View implements
                 view.setVisibility(VISIBLE);
                 originalView.setVisibility(INVISIBLE);
             };
+            if (!isOpening) {
+                // Hide immediately since the floating view starts at a different location.
+                originalView.setVisibility(INVISIBLE);
+                view.mLoadIconSignal.setOnCancelListener(() -> originalView.setVisibility(VISIBLE));
+            }
             CancellationSignal loadIconSignal = view.mLoadIconSignal;
             new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(() -> {
                 view.getIcon(originalView, (ItemInfo) originalView.getTag(), isOpening,
