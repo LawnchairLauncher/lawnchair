@@ -61,7 +61,6 @@ class DrawerQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config),
 class DrawerQsbLightResolver(config: Config) : WallpaperColorResolver(config), LawnchairPreferences.OnPreferenceChangeListener {
 
     private val isDark get() = ThemeManager.getInstance(engine.context).isDark
-    val launcher = LawnchairLauncher.getLauncher(engine.context)
 
     override fun startListening() {
         super.startListening()
@@ -84,7 +83,7 @@ class DrawerQsbLightResolver(config: Config) : WallpaperColorResolver(config), L
                 R.color.qsb_background_drawer_default
     ).let {
         ColorUtils.compositeColors(ColorUtils
-                .compositeColors(it, Themes.getAttrColor(launcher, R.attr.allAppsScrimColor)),
+                .compositeColors(it, Themes.getAttrColor(launcherThemeContext, R.attr.allAppsScrimColor)),
                 colorInfo.mainColor)
     }
 
@@ -95,10 +94,9 @@ class DrawerQsbLightResolver(config: Config) : WallpaperColorResolver(config), L
 class DrawerQsbDarkResolver(config: Config) : WallpaperColorResolver(config) {
 
     val color = engine.context.resources.getColor(R.color.qsb_background_drawer_dark_bar)
-    val launcher = LawnchairLauncher.getLauncher(engine.context)
 
     override fun resolveColor() = ColorUtils.compositeColors(ColorUtils
-            .compositeColors(color, Themes.getAttrColor(launcher, R.attr.allAppsScrimColor)),
+            .compositeColors(color, Themes.getAttrColor(launcherThemeContext, R.attr.allAppsScrimColor)),
             colorInfo.mainColor)
 
     override fun getDisplayName() = engine.context.resources.getString(R.string.theme_dark)

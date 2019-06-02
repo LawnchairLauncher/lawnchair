@@ -21,9 +21,12 @@ import android.content.Context
 import android.support.v4.graphics.ColorUtils
 import android.support.v7.graphics.Palette
 import android.text.TextUtils
+import android.view.ContextThemeWrapper
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.colors.resolvers.DockQsbAutoResolver
 import ch.deletescape.lawnchair.colors.resolvers.DrawerQsbAutoResolver
+import ch.deletescape.lawnchair.theme.ThemeManager
+import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -153,6 +156,9 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
         val engine get() = config.engine
         val args get() = config.args
         open val isCustom = false
+
+        val context get() = engine.context
+        val launcherThemeContext get() = ContextThemeWrapper(context, ThemeOverride.Launcher().getTheme(context))
 
         abstract fun resolveColor(): Int
 

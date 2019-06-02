@@ -22,6 +22,7 @@ import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.colors.WallpaperColorResolver
+import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.theme.ThemeManager
 import com.android.launcher3.R
 import com.google.android.apps.nexuslauncher.qsb.HotseatQsbWidget
@@ -59,9 +60,6 @@ class DockQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config), L
 @Keep
 class DockQsbLightResolver(config: Config) : WallpaperColorResolver(config), LawnchairPreferences.OnPreferenceChangeListener {
 
-    val launcher = LawnchairLauncher.getLauncher(engine.context)
-    val qsb = launcher.hotseatSearchBox as? HotseatQsbWidget
-
     override fun startListening() {
         super.startListening()
         LawnchairPreferences.getInstanceNoCreate().addOnPreferenceChangeListener(this, HotseatQsbWidget.KEY_DOCK_COLORED_GOOGLE)
@@ -77,7 +75,7 @@ class DockQsbLightResolver(config: Config) : WallpaperColorResolver(config), Law
     }
 
     override fun resolveColor() = engine.context.resources.getColor(
-            if (qsb?.isGoogleColored == true)
+            if (HotseatQsbWidget.isGoogleColored(context))
                 R.color.qsb_background_hotseat_white
             else
                 R.color.qsb_background_hotseat_default

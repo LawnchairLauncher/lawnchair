@@ -163,12 +163,16 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     }
 
     public boolean isGoogleColored() {
-        if (Utilities.getLawnchairPrefs(getContext()).getDockColoredGoogle()) {
+        return isGoogleColored(getContext());
+    }
+
+    public static boolean isGoogleColored(Context context) {
+        if (Utilities.getLawnchairPrefs(context).getDockColoredGoogle()) {
             return true;
         }
-        WallpaperInfo wallpaperInfo = WallpaperManager.getInstance(getContext()).getWallpaperInfo();
+        WallpaperInfo wallpaperInfo = WallpaperManager.getInstance(context).getWallpaperInfo();
         return wallpaperInfo != null && wallpaperInfo.getComponent().flattenToString()
-                .equals(getContext().getString(R.string.default_live_wallpaper));
+                .equals(context.getString(R.string.default_live_wallpaper));
     }
 
     protected final int aA(int i) {

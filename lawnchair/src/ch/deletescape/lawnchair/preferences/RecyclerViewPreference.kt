@@ -31,7 +31,7 @@ import com.android.launcher3.R
 
 abstract class RecyclerViewPreference(context: Context, attrs: AttributeSet?) : DialogPreference(context, attrs) {
 
-    private val themeRes = ThemeOverride(ThemeOverride.LauncherDialog(), null).getTheme(context)
+    private val themeRes = ThemeOverride.LauncherDialog().getTheme(context)
     protected val themedContext = ContextThemeWrapper(context, themeRes)
 
     init {
