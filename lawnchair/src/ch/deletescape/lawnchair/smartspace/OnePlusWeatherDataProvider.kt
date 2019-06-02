@@ -16,28 +16,20 @@
  */
 package ch.deletescape.lawnchair.smartspace
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.location.Criteria
 import android.location.LocationManager
-import android.location.LocationProvider
-import android.provider.CalendarContract
 import android.support.annotation.Keep
-import android.support.v4.content.ContextCompat
-import android.util.Log
+import ch.deletescape.lawnchair.checkLocationAccess
+import ch.deletescape.lawnchair.twilight.TwilightManager
 import ch.deletescape.lawnchair.util.Temperature
-import com.android.launcher3.Utilities
 import com.android.launcher3.util.PackageManagerHelper
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator
 import com.luckycatlabs.sunrisesunset.dto.Location
 import net.oneplus.launcher.OPWeatherProvider
-import java.lang.RuntimeException
-import java.time.Instant
 import java.util.*
 import java.util.Calendar.HOUR_OF_DAY
 import java.util.concurrent.TimeUnit
@@ -48,8 +40,7 @@ class OnePlusWeatherDataProvider(controller: LawnchairSmartspaceController) :
 
     private val context = controller.context
     private val provider by lazy { OPWeatherProvider(context) }
-    private val locationAccess by lazy { Utilities.hasPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) ||
-            Utilities.hasPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) }
+    private val locationAccess by lazy { context.checkLocationAccess() }
     private val locationManager: LocationManager? by lazy { if (locationAccess) {
         context.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
     } else null }
@@ -81,10 +72,7 @@ class OnePlusWeatherDataProvider(controller: LawnchairSmartspaceController) :
         if (locationAccess) {
             locationManager?.getBestProvider(Criteria(), true)?.let { provider ->
                 locationManager?.getLastKnownLocation(provider)?.let { location ->
-                    val calc = SunriseSunsetCalculator(Location(location.latitude, location.longitude), c.timeZone)
-                    val sunrise = calc.getOfficialSunriseCalendarForDate(c)
-                    val sunset = calc.getOfficialSunsetCalendarForDate(c)
-                    isDay = sunrise.before(c) && sunset.after(c)
+                    isDay = TwilightManager.calculateTwilightState(location, c.timeInMillis)?.isNight != true
                 }
             }
         }

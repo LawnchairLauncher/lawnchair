@@ -25,6 +25,7 @@ import android.support.annotation.Keep
 import android.util.Log
 import android.widget.Toast
 import ch.deletescape.lawnchair.LawnchairPreferences
+import ch.deletescape.lawnchair.checkLocationAccess
 import ch.deletescape.lawnchair.lawnchairApp
 import ch.deletescape.lawnchair.util.Temperature
 import com.android.launcher3.LauncherAppState
@@ -46,8 +47,7 @@ class OWMWeatherDataProvider(controller: LawnchairSmartspaceController) :
     private val owm by lazy { OpenWeatherMapHelper(prefs.weatherApiKey) }
     private val iconProvider by lazy { WeatherIconProvider(context) }
 
-    private val locationAccess get() =  Utilities.hasPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) ||
-            Utilities.hasPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+    private val locationAccess get() = context.checkLocationAccess()
     private val locationManager: LocationManager? by lazy { if (locationAccess) {
         context.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
     } else null }

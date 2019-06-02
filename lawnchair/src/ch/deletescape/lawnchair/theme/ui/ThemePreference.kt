@@ -75,6 +75,7 @@ class ThemePreference(context: Context, attrs: AttributeSet?) : PreferenceDialog
         val forceDarkText = theme.hasFlag(ThemeManager.THEME_DARK_TEXT)
         val followWallpaper = theme.hasFlag(ThemeManager.THEME_FOLLOW_WALLPAPER)
         val followNightMode = theme.hasFlag(ThemeManager.THEME_FOLLOW_NIGHT_MODE)
+        val followDaylight = theme.hasFlag(ThemeManager.THEME_FOLLOW_DAYLIGHT)
 
         val light = !theme.hasFlag(ThemeManager.THEME_DARK_MASK)
         val useBlack = theme.hasFlags(ThemeManager.THEME_USE_BLACK, ThemeManager.THEME_DARK_MASK)
@@ -83,8 +84,9 @@ class ThemePreference(context: Context, attrs: AttributeSet?) : PreferenceDialog
         when {
             forceDark && useBlack -> themeDesc.add(R.string.theme_black)
             forceDark -> themeDesc.add(R.string.theme_dark)
-            followNightMode -> themeDesc.add(R.string.theme_auto_night_mode)
-            followWallpaper -> themeDesc.add(R.string.theme_auto)
+            followNightMode -> themeDesc.add(R.string.theme_dark_theme_mode_follow_system)
+            followDaylight -> themeDesc.add(R.string.theme_dark_theme_mode_follow_daylight)
+            followWallpaper -> themeDesc.add(R.string.theme_dark_theme_mode_follow_wallpaper)
             light -> themeDesc.add(R.string.theme_light)
         }
         if (useBlack && !forceDark) {

@@ -750,3 +750,8 @@ inline fun avg(vararg of: Float) = of.average()
 inline fun avg(vararg of: Int) = of.average()
 inline fun avg(vararg of: Long) = of.average()
 inline fun avg(vararg of: Double) = of.average()
+
+fun Context.checkLocationAccess(): Boolean {
+    return Utilities.hasPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) ||
+            Utilities.hasPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+}

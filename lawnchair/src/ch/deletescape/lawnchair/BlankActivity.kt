@@ -20,13 +20,16 @@ package ch.deletescape.lawnchair
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.ResultReceiver
+import android.support.v4.app.ActivityCompat
 
 class BlankActivity : Activity() {
 
     private val requestCode by lazy { intent.getIntExtra("requestCode", 0) }
+    private val permissionRequestCode by lazy { intent.getIntExtra("permissionRequestCode", 0) }
     private val resultReceiver by lazy { intent.getParcelableExtra("callback") as ResultReceiver }
     private var resultSent = false
 
@@ -35,9 +38,24 @@ class BlankActivity : Activity() {
 
         if (intent.hasExtra("intent")) {
             startActivityForResult(intent.getParcelableExtra("intent"), requestCode)
+        } else if (intent.hasExtra("permissions")) {
+            ActivityCompat.requestPermissions(this, intent.getStringArrayExtra("permissions"), permissionRequestCode)
         } else {
             finish()
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        if (requestCode == permissionRequestCode) {
+            resultReceiver.send(RESULT_OK, Bundle(2).apply {
+                putStringArray("permissions", permissions)
+                putIntArray("grantResults", grantResults)
+            })
+            resultSent = true
+            finish()
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -70,7 +88,43 @@ class BlankActivity : Activity() {
                     }
                 })
             }
+            start(context, intent)
+        }
+
+        inline fun requestPermission(context: Context, permission: String, requestCode: Int,
+                                     crossinline callback: (Boolean) -> Unit) {
+            requestPermissions(context, arrayOf(permission), requestCode) { _, _, grantResults ->
+                callback(grantResults.all { it == PackageManager.PERMISSION_GRANTED })
+            }
+        }
+
+        fun requestPermissions(context: Context, permissions: Array<String>, requestCode: Int,
+                              callback: (Int, Array<String>, IntArray) -> Unit) {
+            val intent = Intent(context, BlankActivity::class.java).apply {
+                putExtra("permissions", permissions)
+                putExtra("permissionRequestCode", requestCode)
+                putExtra("callback", object : ResultReceiver(Handler()) {
+
+                    override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+                        if (resultCode == RESULT_OK && resultData != null) {
+                            callback(requestCode,
+                                    resultData.getStringArray("permissions")!!,
+                                    resultData.getIntArray("grantResults")!!)
+                        } else {
+                            callback(requestCode, permissions,
+                                    IntArray(permissions.size) { PackageManager.PERMISSION_DENIED })
+                        }
+                    }
+                })
+            }
+            start(context, intent)
+        }
+
+        private fun start(context: Context, intent: Intent) {
             val foreground = context.lawnchairApp.activityHandler.foregroundActivity ?: context
+            if (foreground === context) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
             foreground.startActivity(intent)
         }
     }

@@ -39,6 +39,7 @@ class ThemeDarkModeListPreference(context: Context, attrs: AttributeSet?) : List
         val builder = EntriesBuilder(context)
         builder.addEntry(R.string.theme_dark_theme_mode_follow_wallpaper, ThemeManager.THEME_FOLLOW_WALLPAPER)
         builder.addEntry(R.string.theme_dark_theme_mode_follow_system, ThemeManager.THEME_FOLLOW_NIGHT_MODE)
+        builder.addEntry(R.string.theme_dark_theme_mode_follow_daylight, ThemeManager.THEME_FOLLOW_DAYLIGHT)
         builder.addEntry(R.string.theme_dark_theme_mode_on, ThemeManager.THEME_DARK)
         builder.addEntry(R.string.theme_dark_theme_mode_off, 0)
 
