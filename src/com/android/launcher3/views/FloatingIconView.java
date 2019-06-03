@@ -529,7 +529,8 @@ public class FloatingIconView extends View implements
         bounds.inset(mBlurSizeOutline / 2, mBlurSizeOutline / 2);
 
         try (LauncherIcons li = LauncherIcons.obtain(mLauncher)) {
-            Utilities.scaleRectAboutCenter(bounds, li.getNormalizer().getScale(drawable, null));
+            Utilities.scaleRectAboutCenter(bounds, li.getNormalizer().getScale(drawable, null,
+                    null, null));
         }
 
         bounds.inset(
