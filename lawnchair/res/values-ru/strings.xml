@@ -175,6 +175,7 @@
     <string name="action_open_app_with_target">Открыть %s</string>
     <string name="action_open_app_select_app">Выберите приложение</string>
     <string name="action_none">Ничего не делать</string>
+    <string name="action_despacito">Воспроизвести YouTube Rewind 2018 (distorted)</string>
     <string name="gesture_press_home">Кнопка \"Домой\"</string>
     <string name="gesture_press_back">Кнопка \"Назад\"</string>
     <string name="gesture_double_tap">Двойное нажатие</string>
