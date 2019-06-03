@@ -68,9 +68,6 @@ public class LauncherAppState {
     }
 
     private LauncherAppState(Context context) {
-        if (!UserManagerCompat.getInstance(context).isUserUnlocked(Process.myUserHandle())) {
-            throw new RuntimeException("LauncherAppState should not start in direct boot mode");
-        }
         if (getLocalProvider(context) == null) {
             throw new RuntimeException(
                     "Initializing LauncherAppState in the absence of LauncherProvider");
