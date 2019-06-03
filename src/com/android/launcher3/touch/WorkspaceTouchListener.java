@@ -99,7 +99,6 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
                 handleLongPress = mTempRect.contains((int) ev.getX(), (int) ev.getY());
             }
 
-            cancelLongPress();
             if (handleLongPress) {
                 mLongPressState = STATE_REQUESTED;
                 mTouchDownPoint.set(ev.getX(), ev.getY());
@@ -146,6 +145,10 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
                     mWorkspace.onWallpaperTap(ev);
                 }
             }
+        }
+
+        if (action == ACTION_UP || action == ACTION_CANCEL) {
+            cancelLongPress();
         }
 
         return result;
