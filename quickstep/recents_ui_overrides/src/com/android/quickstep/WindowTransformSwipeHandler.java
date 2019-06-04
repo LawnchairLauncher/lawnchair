@@ -858,7 +858,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             setTargetAlphaProvider(WindowTransformSwipeHandler::getHiddenTargetAlpha);
         }
 
-        return OverviewInputConsumer.newInstance(mActivityControlHelper, null, true);
+        BaseDraggingActivity activity = mActivityControlHelper.getCreatedActivity();
+        return activity == null
+                ? InputConsumer.NO_OP : new OverviewInputConsumer(activity, null, true);
     }
 
     private void endRunningWindowAnim() {
