@@ -58,6 +58,8 @@ import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.WindowManager;
 
+import androidx.annotation.BinderThread;
+
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
@@ -84,6 +86,7 @@ import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
+import com.android.systemui.shared.system.SystemGestureExclusionListenerCompat;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -268,6 +271,9 @@ public class TouchInteractionService extends Service implements
     private final RectF mSwipeTouchRegion = new RectF();
     private ComponentName mGestureBlockingActivity;
 
+    private Region mExclusionRegion;
+    private SystemGestureExclusionListenerCompat mExclusionListener;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -284,14 +290,23 @@ public class TouchInteractionService extends Service implements
             mIsUserUnlocked = false;
             registerReceiver(mUserUnlockedReceiver, new IntentFilter(Intent.ACTION_USER_UNLOCKED));
         }
-        onNavigationModeChanged(SysUINavigationMode.INSTANCE.get(this).addModeChangeListener(this));
 
         mDefaultDisplayId = getSystemService(WindowManager.class).getDefaultDisplay()
                 .getDisplayId();
-
         String blockingActivity = getString(R.string.gesture_blocking_activity);
         mGestureBlockingActivity = TextUtils.isEmpty(blockingActivity) ? null :
                 ComponentName.unflattenFromString(blockingActivity);
+
+        mExclusionListener = new SystemGestureExclusionListenerCompat(mDefaultDisplayId) {
+            @Override
+            @BinderThread
+            public void onExclusionChanged(Region region) {
+                // Assignments are atomic, it should be safe on binder thread
+                mExclusionRegion = region;
+            }
+        };
+
+        onNavigationModeChanged(SysUINavigationMode.INSTANCE.get(this).addModeChangeListener(this));
         sConnected = true;
     }
 
@@ -370,6 +385,12 @@ public class TouchInteractionService extends Service implements
 
         disposeEventHandlers();
         initInputMonitor();
+
+        if (mMode == Mode.NO_BUTTON) {
+            mExclusionListener.register();
+        } else {
+            mExclusionListener.unregister();
+        }
     }
 
     @Override
@@ -437,6 +458,7 @@ public class TouchInteractionService extends Service implements
         sConnected = false;
         Utilities.unregisterReceiverSafely(this, mUserUnlockedReceiver);
         SysUINavigationMode.INSTANCE.get(this).removeModeChangeListener(this);
+        mExclusionListener.unregister();
 
         super.onDestroy();
     }
@@ -557,10 +579,15 @@ public class TouchInteractionService extends Service implements
         final ActivityControlHelper activityControl =
                 mOverviewComponentObserver.getActivityControlHelper();
         boolean shouldDefer = activityControl.deferStartingActivity(mActiveNavBarRegion, event);
+
+        // mExclusionRegion can change on binder thread, use a local instance here.
+        Region exclusionRegion = mExclusionRegion;
+        boolean disableHorizontalSwipe = mMode == Mode.NO_BUTTON && exclusionRegion != null
+                && exclusionRegion.contains((int) event.getX(), (int) event.getY());
         return new OtherActivityInputConsumer(this, runningTaskInfo, mRecentsModel,
                 mOverviewComponentObserver.getOverviewIntent(), activityControl,
                 shouldDefer, mOverviewCallbacks, mInputConsumer, this::onConsumerInactive,
-                mSwipeSharedState, mInputMonitorCompat, mSwipeTouchRegion);
+                mSwipeSharedState, mInputMonitorCompat, mSwipeTouchRegion, disableHorizontalSwipe);
     }
 
     private InputConsumer createDeviceLockedInputConsumer(RunningTaskInfo taskInfo) {
