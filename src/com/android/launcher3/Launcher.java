@@ -80,6 +80,7 @@ import android.widget.Toast;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.PropertyListBuilder;
@@ -2238,8 +2239,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
         mPendingExecutor = executor;
         if (!isInState(ALL_APPS)) {
-            mAppsView.getAppsStore().setDeferUpdates(true);
-            mPendingExecutor.execute(() -> mAppsView.getAppsStore().setDeferUpdates(false));
+            mAppsView.getAppsStore().enableDeferUpdates(AllAppsStore.DEFER_UPDATES_NEXT_DRAW);
+            mPendingExecutor.execute(() -> mAppsView.getAppsStore().disableDeferUpdates(
+                    AllAppsStore.DEFER_UPDATES_NEXT_DRAW));
         }
 
         executor.attachTo(this);

@@ -108,47 +108,63 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @Test
     @Ignore
     public void testPressHomeOnAllAppsContextMenu() throws Exception {
-        mLauncher.getWorkspace().switchToAllApps().getAppIcon("TestActivity7").openMenu();
+        final AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
+        allApps.freeze();
+        try {
+            allApps.getAppIcon("TestActivity7").openMenu();
+        } finally {
+            allApps.unfreeze();
+        }
         mLauncher.pressHome();
     }
 
     public static void runAllAppsTest(AbstractLauncherUiTest test, AllApps allApps) {
-        assertNotNull("allApps parameter is null", allApps);
+        allApps.freeze();
+        try {
+            assertNotNull("allApps parameter is null", allApps);
 
-        assertTrue(
-                "Launcher internal state is not All Apps", test.isInState(LauncherState.ALL_APPS));
+            assertTrue(
+                    "Launcher internal state is not All Apps",
+                    test.isInState(LauncherState.ALL_APPS));
 
-        // Test flinging forward and backward.
-        test.executeOnLauncher(launcher -> assertEquals(
-                "All Apps started in already scrolled state", 0, test.getAllAppsScroll(launcher)));
+            // Test flinging forward and backward.
+            test.executeOnLauncher(launcher -> assertEquals(
+                    "All Apps started in already scrolled state", 0,
+                    test.getAllAppsScroll(launcher)));
 
-        allApps.flingForward();
-        assertTrue("Launcher internal state is not All Apps",
-                test.isInState(LauncherState.ALL_APPS));
-        final Integer flingForwardY = test.getFromLauncher(
-                launcher -> test.getAllAppsScroll(launcher));
-        test.executeOnLauncher(
-                launcher -> assertTrue("flingForward() didn't scroll App Apps", flingForwardY > 0));
+            allApps.flingForward();
+            assertTrue("Launcher internal state is not All Apps",
+                    test.isInState(LauncherState.ALL_APPS));
+            final Integer flingForwardY = test.getFromLauncher(
+                    launcher -> test.getAllAppsScroll(launcher));
+            test.executeOnLauncher(
+                    launcher -> assertTrue("flingForward() didn't scroll App Apps",
+                            flingForwardY > 0));
 
-        allApps.flingBackward();
-        assertTrue(
-                "Launcher internal state is not All Apps", test.isInState(LauncherState.ALL_APPS));
-        final Integer flingBackwardY = test.getFromLauncher(
-                launcher -> test.getAllAppsScroll(launcher));
-        test.executeOnLauncher(launcher -> assertTrue("flingBackward() didn't scroll App Apps",
-                flingBackwardY < flingForwardY));
+            allApps.flingBackward();
+            assertTrue(
+                    "Launcher internal state is not All Apps",
+                    test.isInState(LauncherState.ALL_APPS));
+            final Integer flingBackwardY = test.getFromLauncher(
+                    launcher -> test.getAllAppsScroll(launcher));
+            test.executeOnLauncher(launcher -> assertTrue("flingBackward() didn't scroll App Apps",
+                    flingBackwardY < flingForwardY));
 
-        // Test scrolling down to YouTube.
-        assertNotNull("All apps: can't fine YouTube", allApps.getAppIcon("YouTube"));
-        // Test scrolling up to Camera.
-        assertNotNull("All apps: can't fine Camera", allApps.getAppIcon("Camera"));
-        // Test failing to find a non-existing app.
-        final AllApps allAppsFinal = allApps;
-        expectFail("All apps: could find a non-existing app",
-                () -> allAppsFinal.getAppIcon("NO APP"));
+            // Test scrolling down to YouTube.
+            assertNotNull("All apps: can't fine YouTube", allApps.getAppIcon("YouTube"));
+            // Test scrolling up to Camera.
+            assertNotNull("All apps: can't fine Camera", allApps.getAppIcon("Camera"));
+            // Test failing to find a non-existing app.
+            final AllApps allAppsFinal = allApps;
+            expectFail("All apps: could find a non-existing app",
+                    () -> allAppsFinal.getAppIcon("NO APP"));
 
-        assertTrue(
-                "Launcher internal state is not All Apps", test.isInState(LauncherState.ALL_APPS));
+            assertTrue(
+                    "Launcher internal state is not All Apps",
+                    test.isInState(LauncherState.ALL_APPS));
+        } finally {
+            allApps.unfreeze();
+        }
     }
 
     @Test
@@ -199,12 +215,17 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     public static void runIconLaunchFromAllAppsTest(AbstractLauncherUiTest test, AllApps allApps) {
-        final AppIcon app = allApps.getAppIcon("TestActivity7");
-        assertNotNull("AppIcon.launch returned null", app.launch(getAppPackageName()));
-        test.executeOnLauncher(launcher -> assertTrue(
-                "Launcher activity is the top activity; expecting another activity to be the top "
-                        + "one",
-                test.isInBackground(launcher)));
+        allApps.freeze();
+        try {
+            final AppIcon app = allApps.getAppIcon("TestActivity7");
+            assertNotNull("AppIcon.launch returned null", app.launch(getAppPackageName()));
+            test.executeOnLauncher(launcher -> assertTrue(
+                    "Launcher activity is the top activity; expecting another activity to be the top "
+                            + "one",
+                    test.isInBackground(launcher)));
+        } finally {
+            allApps.unfreeze();
+        }
     }
 
     @Test
@@ -260,20 +281,23 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     public void testLaunchMenuItem() throws Exception {
         if (!TestHelpers.isInLauncherProcess()) return;
 
-        final AppIconMenu menu = mLauncher.
+        final AllApps allApps = mLauncher.
                 getWorkspace().
-                switchToAllApps().
-                getAppIcon(APP_NAME).
-                openMenu();
+                switchToAllApps();
+        allApps.freeze();
+        try {
+            final AppIconMenu menu = allApps.
+                    getAppIcon(APP_NAME).
+                    openMenu();
 
-        executeOnLauncher(
-                launcher -> assertTrue("Launcher internal state didn't switch to Showing Menu",
-                        isOptionsPopupVisible(launcher)));
+            executeOnLauncher(
+                    launcher -> assertTrue("Launcher internal state didn't switch to Showing Menu",
+                            isOptionsPopupVisible(launcher)));
 
-        final AppIconMenuItem menuItem = menu.getMenuItem(1);
-        final String itemName = menuItem.getText();
-
-        menuItem.launch(getAppPackageName());
+            menu.getMenuItem(1).launch(getAppPackageName());
+        } finally {
+            allApps.unfreeze();
+        }
     }
 
     @Test
@@ -282,12 +306,18 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         // 1. Open all apps and wait for load complete.
         // 2. Drag icon to homescreen.
         // 3. Verify that the icon works on homescreen.
-        mLauncher.getWorkspace().
-                switchToAllApps().
-                getAppIcon(APP_NAME).
-                dragToWorkspace().
-                getWorkspaceAppIcon(APP_NAME).
-                launch(getAppPackageName());
+        final AllApps allApps = mLauncher.getWorkspace().
+                switchToAllApps();
+        allApps.freeze();
+        try {
+            allApps.
+                    getAppIcon(APP_NAME).
+                    dragToWorkspace().
+                    getWorkspaceAppIcon(APP_NAME).
+                    launch(getAppPackageName());
+        } finally {
+            allApps.unfreeze();
+        }
         executeOnLauncher(launcher -> assertTrue(
                 "Launcher activity is the top activity; expecting another activity to be the top "
                         + "one",
@@ -302,21 +332,27 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         // 1. Open all apps and wait for load complete.
         // 2. Find the app and long press it to show shortcuts.
         // 3. Press icon center until shortcuts appear
-        final AppIconMenuItem menuItem = mLauncher.
+        final AllApps allApps = mLauncher.
                 getWorkspace().
-                switchToAllApps().
-                getAppIcon(APP_NAME).
-                openMenu().
-                getMenuItem(0);
-        final String shortcutName = menuItem.getText();
+                switchToAllApps();
+        allApps.freeze();
+        try {
+            final AppIconMenuItem menuItem = allApps.
+                    getAppIcon(APP_NAME).
+                    openMenu().
+                    getMenuItem(0);
+            final String shortcutName = menuItem.getText();
 
-        // 4. Drag the first shortcut to the home screen.
-        // 5. Verify that the shortcut works on home screen
-        //    (the app opens and has the same text as the shortcut).
-        menuItem.
-                dragToWorkspace().
-                getWorkspaceAppIcon(shortcutName).
-                launch(getAppPackageName());
+            // 4. Drag the first shortcut to the home screen.
+            // 5. Verify that the shortcut works on home screen
+            //    (the app opens and has the same text as the shortcut).
+            menuItem.
+                    dragToWorkspace().
+                    getWorkspaceAppIcon(shortcutName).
+                    launch(getAppPackageName());
+        } finally {
+            allApps.unfreeze();
+        }
     }
 
     public static String getAppPackageName() {
