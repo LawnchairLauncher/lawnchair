@@ -27,6 +27,8 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_N
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
@@ -543,9 +545,11 @@ public class TouchInteractionService extends Service implements
         if (!useSharedState) {
             mSwipeSharedState.clearAllState();
         }
-        if (mKM.isDeviceLocked()) {
+        if ((mSystemUiStateFlags & SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED) != 0
+                || mKM.isDeviceLocked()) {
             // This handles apps launched in direct boot mode (e.g. dialer) as well as apps launched
-            // while device is locked even after exiting direct boot mode (e.g. camera).
+            // while device is locked after exiting direct boot mode (e.g. camera), or if the
+            // app is showing over the lockscreen (even if not locked)
             return createDeviceLockedInputConsumer(runningTaskInfo);
         }
 
