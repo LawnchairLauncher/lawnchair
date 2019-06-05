@@ -205,15 +205,6 @@ public abstract class RecentsUiFactory {
     }
 
     /**
-     * Clean-up logic that occurs when recents is no longer in use/visible.
-     *
-     * @param launcher the launcher activity
-     */
-    public static void resetOverview(Launcher launcher) {
-        launcher.<RecentsView>getOverviewPanel().reset();
-    }
-
-    /**
      * Recents logic that triggers when launcher state changes or launcher activity stops/resumes.
      *
      * @param launcher the launcher activity
