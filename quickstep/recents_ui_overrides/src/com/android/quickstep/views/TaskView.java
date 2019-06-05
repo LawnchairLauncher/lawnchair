@@ -498,6 +498,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mSnapshotView.setDimAlpha(curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
         setCurveScale(getCurveScaleForCurveInterpolation(curveInterpolation));
 
+        float fade = Utilities.boundToRange(1.0f - 2 * scrollState.linearInterpolation, 0f, 1f);
+        mTaskFooterContainer.setAlpha(fade);
         if (mMenuView != null) {
             mMenuView.setPosition(getX() - getRecentsView().getScrollX(), getY());
             mMenuView.setScaleX(getScaleX());
