@@ -164,13 +164,6 @@ public class PredictionRowView extends LinearLayout implements
         mParent = parent;
     }
 
-    private void setPredictionsEnabled(boolean predictionsEnabled) {
-        if (predictionsEnabled != mPredictionsEnabled) {
-            mPredictionsEnabled = predictionsEnabled;
-            updateVisibility();
-        }
-    }
-
     private void updateVisibility() {
         setVisibility(mPredictionsEnabled ? VISIBLE : GONE);
     }
@@ -220,8 +213,7 @@ public class PredictionRowView extends LinearLayout implements
      * If the number of predicted apps is the same as the previous list of predicted apps,
      * we can optimize by swapping them in place.
      */
-    public void setPredictedApps(boolean predictionsEnabled, List<ComponentKeyMapper> apps) {
-        setPredictionsEnabled(predictionsEnabled);
+    public void setPredictedApps(List<ComponentKeyMapper> apps) {
         mPredictedAppComponents.clear();
         mPredictedAppComponents.addAll(apps);
 
@@ -237,11 +229,6 @@ public class PredictionRowView extends LinearLayout implements
     }
 
     private void applyPredictionApps() {
-        if (!mPredictionsEnabled) {
-            mParent.onHeightUpdated();
-            return;
-        }
-
         if (getChildCount() != mNumPredictedAppsPerRow) {
             while (getChildCount() > mNumPredictedAppsPerRow) {
                 removeViewAt(0);
@@ -282,8 +269,11 @@ public class PredictionRowView extends LinearLayout implements
             }
         }
 
-        if (predictionCount == 0) {
-            setPredictionsEnabled(false);
+        boolean predictionsEnabled = predictionCount > 0;
+        if (predictionsEnabled != mPredictionsEnabled) {
+            mPredictionsEnabled = predictionsEnabled;
+            mLauncher.reapplyUi();
+            updateVisibility();
         }
         mParent.onHeightUpdated();
     }

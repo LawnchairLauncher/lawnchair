@@ -14,6 +14,7 @@ import static com.android.launcher3.util.SystemUiController.UI_STATE_ALL_APPS;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.util.Log;
 import android.util.Property;
 import android.view.animation.Interpolator;
 
@@ -29,6 +30,7 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
@@ -162,6 +164,10 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     @Override
     public void setStateWithAnimation(LauncherState toState,
             AnimatorSetBuilder builder, AnimationConfig config) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_ALLAPPS_EVENT_TAG,
+                    "setStateWithAnimation " + toState.getClass().getSimpleName());
+        }
         float targetProgress = toState.getVerticalProgress(mLauncher);
         if (Float.compare(mProgress, targetProgress) == 0) {
             setAlphas(toState, config, builder);

@@ -19,6 +19,7 @@ import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.Utilities.postAsyncCallback;
+import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -106,7 +107,6 @@ import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
-import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.WindowCallbacksCompat;
@@ -353,7 +353,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                         | STATE_LAUNCHER_DRAWN | STATE_SCALED_CONTROLLER_RECENTS
                         | STATE_CURRENT_TASK_FINISHED | STATE_GESTURE_COMPLETED
                         | STATE_GESTURE_STARTED,
-                this::setupLauncherUiAfterSwipeUpAnimation);
+                this::setupLauncherUiAfterSwipeUpToRecentsAnimation);
 
         mStateCallback.addCallback(STATE_HANDLER_INVALIDATED, this::invalidateHandler);
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
@@ -647,6 +647,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void buildAnimationController() {
+        if (mGestureEndTarget == HOME || (mLauncherTransitionController != null
+                && mLauncherTransitionController.getAnimationPlayer().isStarted())) {
+            // We don't want a new mLauncherTransitionController if mGestureEndTarget == HOME (it
+            // has its own animation) or if we're already animating the current controller.
+            return;
+        }
         initTransitionEndpoints(mActivity.getDeviceProfile());
         mAnimationFactory.createActivityController(mTransitionDragLength);
     }
@@ -902,10 +908,14 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 // If swiping at a diagonal, base end target on the faster velocity.
                 endTarget = goingToNewTask && Math.abs(velocity.x) > Math.abs(endVelocity)
                         ? NEW_TASK : HOME;
-            } else if (endVelocity < 0 && (!goingToNewTask || reachedOverviewThreshold)) {
-                // If user scrolled to a new task, only go to recents if they already passed
-                // the overview threshold. Otherwise, we'll snap to the new task and launch it.
-                endTarget = RECENTS;
+            } else if (endVelocity < 0) {
+                if (reachedOverviewThreshold) {
+                    endTarget = RECENTS;
+                } else {
+                    // If swiping at a diagonal, base end target on the faster velocity.
+                    endTarget = goingToNewTask && Math.abs(velocity.x) > Math.abs(endVelocity)
+                            ? NEW_TASK : RECENTS;
+                }
             } else {
                 endTarget = goingToNewTask ? NEW_TASK : LAST_TASK;
             }
@@ -976,6 +986,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         } else if (endTarget == RECENTS) {
             mLiveTileOverlay.startIconAnimation();
             if (mRecentsView != null) {
+                int nearestPage = mRecentsView.getPageNearestToCenterOfScreen();
+                if (mRecentsView.getNextPage() != nearestPage) {
+                    // We shouldn't really scroll to the next page when swiping up to recents.
+                    // Only allow settling on the next page if it's nearest to the center.
+                    mRecentsView.snapToPage(nearestPage, Math.toIntExact(duration));
+                }
                 if (mRecentsView.getScroller().getDuration() > MAX_SWIPE_DURATION) {
                     mRecentsView.snapToPage(mRecentsView.getNextPage(), (int) MAX_SWIPE_DURATION);
                 }
@@ -1057,8 +1073,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                     setStateOnUiThread(target.endState);
                 }
             });
-            homeAnimFactory.playAtomicAnimation(velocityPxPerMs.y);
             windowAnim.start(velocityPxPerMs);
+            homeAnimFactory.playAtomicAnimation(velocityPxPerMs.y);
             mRunningWindowAnim = RunningWindowAnim.wrap(windowAnim);
             mLauncherTransitionController = null;
         } else {
@@ -1131,16 +1147,25 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
         AnimatorPlaybackController homeAnim = homeAnimationFactory.createActivityAnimationToHome();
 
+        // End on a "round-enough" radius so that the shape reveal doesn't have to do too much
+        // rounding at the end of the animation.
+        float startRadius = mClipAnimationHelper.getCurrentCornerRadius();
+        float endRadius = startRect.width() / 6f;
         // We want the window alpha to be 0 once this threshold is met, so that the
         // FolderIconView can be seen morphing into the icon shape.
         final float windowAlphaThreshold = isFloatingIconView ? 1f - SHAPE_PROGRESS_DURATION : 1f;
         anim.addOnUpdateListener((currentRect, progress) -> {
             homeAnim.setPlayFraction(progress);
 
-            float windowAlpha = Math.max(0, Utilities.mapToRange(progress, 0,
-                    windowAlphaThreshold, 1f, 0f, Interpolators.LINEAR));
+            float alphaProgress = ACCEL_1_5.getInterpolation(progress);
+            float windowAlpha = Utilities.boundToRange(Utilities.mapToRange(alphaProgress, 0,
+                    windowAlphaThreshold, 1.5f, 0f, Interpolators.LINEAR), 0, 1);
             mTransformParams.setProgress(progress)
                     .setCurrentRectAndTargetAlpha(currentRect, windowAlpha);
+            if (isFloatingIconView) {
+                mTransformParams.setCornerRadius(endRadius * progress + startRadius
+                        * (1f - progress));
+            }
             mClipAnimationHelper.applyTransform(targetSet, mTransformParams,
                     false /* launcherOnTop */);
 
@@ -1254,17 +1279,19 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void invalidateHandlerWithLauncher() {
-        if (mLauncherTransitionController != null) {
-            if (mLauncherTransitionController.getAnimationPlayer().isStarted()) {
-                mLauncherTransitionController.getAnimationPlayer().cancel();
-            }
-            mLauncherTransitionController = null;
-        }
+        endLauncherTransitionController();
 
         mRecentsView.onGestureAnimationEnd();
 
         mActivity.getRootView().setOnApplyWindowInsetsListener(null);
         mActivity.getRootView().getOverlay().remove(mLiveTileOverlay);
+    }
+
+    private void endLauncherTransitionController() {
+        if (mLauncherTransitionController != null) {
+            mLauncherTransitionController.getAnimationPlayer().end();
+            mLauncherTransitionController = null;
+        }
     }
 
     private void notifyTransitionCancelled() {
@@ -1368,12 +1395,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         doLogGesture(HOME);
     }
 
-    private void setupLauncherUiAfterSwipeUpAnimation() {
-        if (mLauncherTransitionController != null) {
-            mLauncherTransitionController.getAnimationPlayer().end();
-            mLauncherTransitionController = null;
-        }
-        mActivityControlHelper.onSwipeUpComplete(mActivity);
+    private void setupLauncherUiAfterSwipeUpToRecentsAnimation() {
+        endLauncherTransitionController();
+        mActivityControlHelper.onSwipeUpToRecentsComplete(mActivity);
         mRecentsAnimationWrapper.setCancelWithDeferredScreenshot(true);
         mRecentsView.onSwipeUpAnimationSuccess();
 

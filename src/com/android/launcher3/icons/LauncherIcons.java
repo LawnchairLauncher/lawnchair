@@ -30,6 +30,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.Themes;
@@ -50,11 +51,15 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
     private static LauncherIcons sPool;
     private static int sPoolId = 0;
 
+    public static LauncherIcons obtain(Context context) {
+        return obtain(context, IconShape.getShape().enableShapeDetection());
+    }
+
     /**
      * Return a new Message instance from the global pool. Allows us to
      * avoid allocating new objects in many cases.
      */
-    public static LauncherIcons obtain(Context context) {
+    public static LauncherIcons obtain(Context context, boolean shapeDetection) {
         int poolId;
         synchronized (sPoolSync) {
             if (sPool != null) {
@@ -67,7 +72,8 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
         }
 
         InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
-        return new LauncherIcons(context, idp.fillResIconDpi, idp.iconBitmapSize, poolId);
+        return new LauncherIcons(context, idp.fillResIconDpi, idp.iconBitmapSize, poolId,
+                shapeDetection);
     }
 
     public static void clearPool() {
@@ -81,8 +87,9 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
 
     private LauncherIcons next;
 
-    private LauncherIcons(Context context, int fillResIconDpi, int iconBitmapSize, int poolId) {
-        super(context, fillResIconDpi, iconBitmapSize);
+    private LauncherIcons(Context context, int fillResIconDpi, int iconBitmapSize, int poolId,
+            boolean shapeDetection) {
+        super(context, fillResIconDpi, iconBitmapSize, shapeDetection);
         mPoolId = poolId;
     }
 
