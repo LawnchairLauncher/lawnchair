@@ -177,16 +177,10 @@ public class PredictionUiStateManager implements OnGlobalLayoutListener, ItemInf
     }
 
     private void applyState(PredictionState state) {
-        boolean wasEnabled = mCurrentState.isEnabled;
         mCurrentState = state;
         if (mAppsView != null) {
             mAppsView.getFloatingHeaderView().findFixedRowByType(PredictionRowView.class)
-                    .setPredictedApps(mCurrentState.isEnabled, mCurrentState.apps);
-
-            if (wasEnabled != mCurrentState.isEnabled) {
-                // Reapply state as the State UI might have changed.
-                Launcher.getLauncher(mAppsView.getContext()).getStateManager().reapplyState(true);
-            }
+                    .setPredictedApps(mCurrentState.apps);
         }
     }
 

@@ -91,6 +91,10 @@ public abstract class IconShape {
 
     private SparseArray<TypedValue> mAttrs;
 
+    public boolean enableShapeDetection(){
+        return false;
+    };
+
     public abstract void drawShape(Canvas canvas, float offsetX, float offsetY, float radius,
             Paint paint);
 
@@ -193,6 +197,11 @@ public abstract class IconShape {
         @Override
         protected float getStartRadius(Rect startRect) {
             return startRect.width() / 2f;
+        }
+
+        @Override
+        public boolean enableShapeDetection() {
+            return true;
         }
     }
 
