@@ -53,8 +53,6 @@ public class OverviewInteractionState {
     private ISystemUiProxy mISystemUiProxy;
     private float mBackButtonAlpha = 1;
 
-    private int mSystemUiStateFlags;
-
     private OverviewInteractionState(Context context) {
         mContext = context;
 
@@ -83,14 +81,6 @@ public class OverviewInteractionState {
 
     public void setSystemUiProxy(ISystemUiProxy proxy) {
         mBgHandler.obtainMessage(MSG_SET_PROXY, proxy).sendToTarget();
-    }
-
-    public void setSystemUiStateFlags(int stateFlags) {
-        mSystemUiStateFlags = stateFlags;
-    }
-
-    public int getSystemUiStateFlags() {
-        return mSystemUiStateFlags;
     }
 
     private boolean handleUiMessage(Message msg) {

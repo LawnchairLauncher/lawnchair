@@ -22,7 +22,6 @@ import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
 import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
 import static com.android.launcher3.LauncherStateManager.ATOMIC_OVERVIEW_PEEK_COMPONENT;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -35,10 +34,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.views.RecentsView;
-import com.android.systemui.shared.system.QuickStepContract;
 
 /**
  * Touch controller which handles swipe and hold to go to Overview
@@ -102,8 +99,7 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
      * having it as part of the existing animation to the target state.
      */
     private boolean handlingOverviewAnim() {
-        int stateFlags = OverviewInteractionState.INSTANCE.get(mLauncher).getSystemUiStateFlags();
-        return mStartState == NORMAL && (stateFlags & SYSUI_STATE_OVERVIEW_DISABLED) == 0;
+        return mStartState == NORMAL;
     }
 
     @Override

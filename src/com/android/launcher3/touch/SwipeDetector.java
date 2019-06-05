@@ -25,7 +25,6 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.Utilities;
-import com.android.launcher3.testing.TestProtocol;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
@@ -175,11 +174,6 @@ public class SwipeDetector {
         }
 
         mState = newState;
-        if (com.android.launcher3.testing.TestProtocol.sDebugTracing) {
-            android.util.Log.e(TestProtocol.NO_ALLAPPS_EVENT_TAG,
-                    "setState: " + newState + " @ " + android.util.Log.getStackTraceString(
-                            new Throwable()));
-        }
     }
 
     public boolean isDraggingOrSettling() {

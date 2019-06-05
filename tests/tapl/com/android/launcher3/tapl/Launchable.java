@@ -24,13 +24,12 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.TestProtocol;
 
 /**
  * Ancestor for AppIcon and AppMenuItem.
  */
 abstract class Launchable {
-    private static final int WAIT_TIME_MS = 60000;
     protected final LauncherInstrumentation mLauncher;
 
     protected final UiObject2 mObject;
@@ -53,11 +52,11 @@ abstract class Launchable {
 
     private Background launch(BySelector selector) {
         LauncherInstrumentation.log("Launchable.launch before click " +
-                mObject.getVisibleCenter() + " in " + mObject.getVisibleBounds());
+                mObject.getVisibleCenter());
         mLauncher.getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
         mLauncher.assertTrue(
                 "Launching an app didn't open a new window: " + mObject.getText(),
-                mObject.clickAndWait(Until.newWindow(), WAIT_TIME_MS));
+                mObject.clickAndWait(Until.newWindow(), LauncherInstrumentation.WAIT_TIME_MS));
         mLauncher.getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
         mLauncher.assertTrue(
                 "App didn't start: " + selector,

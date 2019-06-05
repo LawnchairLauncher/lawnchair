@@ -43,7 +43,6 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -364,9 +363,6 @@ public abstract class AbstractStateChangeTouchController
 
     @Override
     public void onDragEnd(float velocity, boolean fling) {
-        if (com.android.launcher3.testing.TestProtocol.sDebugTracing) {
-            android.util.Log.e(TestProtocol.NO_ALLAPPS_EVENT_TAG, "onDragEnd");
-        }
         final int logAction = fling ? Touch.FLING : Touch.SWIPE;
 
         boolean blockedFling = fling && mFlingBlockCheck.isBlocked();
@@ -503,9 +499,6 @@ public abstract class AbstractStateChangeTouchController
     }
 
     protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
-        if (com.android.launcher3.testing.TestProtocol.sDebugTracing) {
-            android.util.Log.e(TestProtocol.NO_ALLAPPS_EVENT_TAG, "onSwipeInteractionCompleted 1");
-        }
         if (mAtomicComponentsController != null) {
             mAtomicComponentsController.getAnimationPlayer().end();
             mAtomicComponentsController = null;
@@ -524,10 +517,6 @@ public abstract class AbstractStateChangeTouchController
             }
             mLauncher.getStateManager().goToState(targetState, false /* animated */);
 
-            if (com.android.launcher3.testing.TestProtocol.sDebugTracing) {
-                android.util.Log.e(
-                        TestProtocol.NO_ALLAPPS_EVENT_TAG, "onSwipeInteractionCompleted 2");
-            }
             AccessibilityManagerCompat.sendStateEventToTest(mLauncher, targetState.ordinal);
         }
     }

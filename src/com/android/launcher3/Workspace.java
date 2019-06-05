@@ -20,6 +20,8 @@ import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
@@ -84,7 +86,6 @@ import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.WorkspaceTouchListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -370,8 +371,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     @Override
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
-        if (TestProtocol.sDebugTracing) {
-            android.util.Log.d(TestProtocol.NO_DRAG_TAG,
+        if (com.android.launcher3.TestProtocol.sDebugTracing) {
+            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
                     "onDragStart 1");
         }
         if (ENFORCE_DRAG_EVENT_ORDER) {
@@ -424,8 +425,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         // Always enter the spring loaded mode
-        if (TestProtocol.sDebugTracing) {
-            android.util.Log.d(TestProtocol.NO_DRAG_TAG,
+        if (com.android.launcher3.TestProtocol.sDebugTracing) {
+            android.util.Log.d(com.android.launcher3.TestProtocol.NO_DRAG_TAG,
                     "onDragStart 2");
         }
         mLauncher.getStateManager().goToState(SPRING_LOADED);

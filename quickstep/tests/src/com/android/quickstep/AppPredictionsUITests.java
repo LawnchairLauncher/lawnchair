@@ -68,6 +68,7 @@ public class AppPredictionsUITests extends AbstractQuickStepTest {
 
         // Disable app tracker
         AppLaunchTracker.INSTANCE.initializeForTesting(new AppLaunchTracker());
+
         PredictionUiStateManager.INSTANCE.initializeForTesting(null);
 
         mCallback = PredictionUiStateManager.INSTANCE.get(mTargetContext).appPredictorCallback(
