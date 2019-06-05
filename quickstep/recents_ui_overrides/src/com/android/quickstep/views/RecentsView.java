@@ -188,6 +188,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private boolean mDwbToastShown;
     private boolean mDisallowScrollToClearAll;
     private boolean mOverlayEnabled;
+    private boolean mFreezeViewVisibility;
 
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
@@ -1302,7 +1303,25 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mEmptyMessagePaint.setAlpha(alphaInt);
         mEmptyIcon.setAlpha(alphaInt);
 
-        setVisibility(alpha > 0 ? VISIBLE : GONE);
+        if (alpha > 0) {
+            setVisibility(VISIBLE);
+        } else if (!mFreezeViewVisibility) {
+            setVisibility(GONE);
+        }
+    }
+
+    /**
+     * Freezes the view visibility change. When frozen, the view will not change its visibility
+     * to gone due to alpha changes.
+     */
+    public void setFreezeViewVisibility(boolean freezeViewVisibility) {
+        if (mFreezeViewVisibility != freezeViewVisibility) {
+            mFreezeViewVisibility = freezeViewVisibility;
+
+            if (!mFreezeViewVisibility) {
+                setVisibility(mContentAlpha > 0 ? VISIBLE : GONE);
+            }
+        }
     }
 
     @Override
