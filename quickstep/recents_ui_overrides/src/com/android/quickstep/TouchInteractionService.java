@@ -62,6 +62,7 @@ import android.view.WindowManager;
 
 import androidx.annotation.BinderThread;
 
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
@@ -79,6 +80,7 @@ import com.android.quickstep.inputconsumers.DeviceLockedInputConsumer;
 import com.android.quickstep.inputconsumers.InputConsumer;
 import com.android.quickstep.inputconsumers.OtherActivityInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
+import com.android.quickstep.inputconsumers.OverviewWithoutFocusInputConsumer;
 import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
@@ -566,10 +568,9 @@ public class TouchInteractionService extends Service implements
             info.id = mSwipeSharedState.nextRunningTaskId;
             return createOtherActivityInputConsumer(event, info);
         } else if (mSwipeSharedState.goingToLauncher || activityControl.isResumed()) {
-            return OverviewInputConsumer.newInstance(activityControl, mInputMonitorCompat, false);
-        } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() &&
-                activityControl.isInLiveTileMode()) {
-            return OverviewInputConsumer.newInstance(activityControl, mInputMonitorCompat, false);
+            return createOverviewInputConsumer(event);
+        } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() && activityControl.isInLiveTileMode()) {
+            return createOverviewInputConsumer(event);
         } else if (mGestureBlockingActivity != null && runningTaskInfo != null
                 && mGestureBlockingActivity.equals(runningTaskInfo.topActivity)) {
             return InputConsumer.NO_OP;
@@ -578,20 +579,24 @@ public class TouchInteractionService extends Service implements
         }
     }
 
+    private boolean disableHorizontalSwipe(MotionEvent event) {
+        // mExclusionRegion can change on binder thread, use a local instance here.
+        Region exclusionRegion = mExclusionRegion;
+        return mMode == Mode.NO_BUTTON && exclusionRegion != null
+                && exclusionRegion.contains((int) event.getX(), (int) event.getY());
+    }
+
     private OtherActivityInputConsumer createOtherActivityInputConsumer(MotionEvent event,
             RunningTaskInfo runningTaskInfo) {
         final ActivityControlHelper activityControl =
                 mOverviewComponentObserver.getActivityControlHelper();
         boolean shouldDefer = activityControl.deferStartingActivity(mActiveNavBarRegion, event);
 
-        // mExclusionRegion can change on binder thread, use a local instance here.
-        Region exclusionRegion = mExclusionRegion;
-        boolean disableHorizontalSwipe = mMode == Mode.NO_BUTTON && exclusionRegion != null
-                && exclusionRegion.contains((int) event.getX(), (int) event.getY());
         return new OtherActivityInputConsumer(this, runningTaskInfo, mRecentsModel,
                 mOverviewComponentObserver.getOverviewIntent(), activityControl,
                 shouldDefer, mOverviewCallbacks, mInputConsumer, this::onConsumerInactive,
-                mSwipeSharedState, mInputMonitorCompat, mSwipeTouchRegion, disableHorizontalSwipe);
+                mSwipeSharedState, mInputMonitorCompat, mSwipeTouchRegion,
+                disableHorizontalSwipe(event));
     }
 
     private InputConsumer createDeviceLockedInputConsumer(RunningTaskInfo taskInfo) {
@@ -600,6 +605,23 @@ public class TouchInteractionService extends Service implements
                     mSwipeTouchRegion, taskInfo.taskId);
         } else {
             return InputConsumer.NO_OP;
+        }
+    }
+
+    public InputConsumer createOverviewInputConsumer(MotionEvent event) {
+        final ActivityControlHelper activityControl =
+                mOverviewComponentObserver.getActivityControlHelper();
+        BaseDraggingActivity activity = activityControl.getCreatedActivity();
+        if (activity == null) {
+            return InputConsumer.NO_OP;
+        }
+
+        if (activity.getRootView().hasWindowFocus()) {
+            return new OverviewInputConsumer(activity, mInputMonitorCompat,
+                    false /* startingInActivityBounds */);
+        } else {
+            return new OverviewWithoutFocusInputConsumer(this, mInputMonitorCompat,
+                    disableHorizontalSwipe(event));
         }
     }
 

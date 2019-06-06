@@ -31,6 +31,7 @@ public interface InputConsumer {
     int TYPE_DEVICE_LOCKED = 1 << 4;
     int TYPE_ACCESSIBILITY = 1 << 5;
     int TYPE_SCREEN_PINNED = 1 << 6;
+    int TYPE_OVERVIEW_WITHOUT_FOCUS = 1 << 7;
 
     InputConsumer NO_OP = () -> TYPE_NO_OP;
 
@@ -78,6 +79,8 @@ public interface InputConsumer {
                 return "ACCESSIBILITY";
             case TYPE_SCREEN_PINNED:
                 return "SCREEN_PINNED";
+            case TYPE_OVERVIEW_WITHOUT_FOCUS:
+                return "TYPE_OVERVIEW_WITHOUT_FOCUS";
             default:
                 return "NO_OP";
         }
