@@ -29,7 +29,7 @@ public class FlingSpringAnim {
 
     private static final float FLING_FRICTION = 1.5f;
     private static final float SPRING_STIFFNESS = 200;
-    private static final float SPRING_DAMPING = 0.85f;
+    private static final float SPRING_DAMPING = 0.8f;
 
     private final FlingAnimation mFlingAnim;
     private SpringAnimation mSpringAnim;

@@ -21,9 +21,9 @@ import static android.content.pm.PackageManager.DONT_KILL_APP;
 import static android.content.pm.PackageManager.MATCH_ALL;
 import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 
+import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
-import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 
 import android.app.ActivityManager;
 import android.app.Instrumentation;
@@ -257,6 +257,7 @@ public final class LauncherInstrumentation {
     }
 
     private void fail(String message) {
+        log("Hierarchy dump for: " + getContextDescription() + message);
         dumpViewHierarchy();
         Assert.fail("http://go/tapl : " + getContextDescription() + message);
     }
@@ -570,6 +571,16 @@ public final class LauncherInstrumentation {
         return object;
     }
 
+    @NonNull
+    UiObject2 waitForObjectInContainer(UiObject2 container, BySelector selector) {
+        final UiObject2 object = container.wait(
+                Until.findObject(selector),
+                WAIT_TIME_MS);
+        assertNotNull("Can't find a launcher object id: " + selector + " in container: " +
+                container.getResourceName(), object);
+        return object;
+    }
+
     @Nullable
     private boolean hasLauncherObject(String resId) {
         return mDevice.hasObject(getLauncherObjectSelector(resId));
@@ -578,11 +589,6 @@ public final class LauncherInstrumentation {
     @NonNull
     UiObject2 waitForLauncherObject(String resName) {
         return waitForObjectBySelector(getLauncherObjectSelector(resName));
-    }
-
-    @NonNull
-    UiObject2 waitForLauncherObjectByClass(String clazz) {
-        return waitForObjectBySelector(getLauncherObjectSelectorByClass(clazz));
     }
 
     @NonNull
@@ -598,10 +604,6 @@ public final class LauncherInstrumentation {
 
     BySelector getLauncherObjectSelector(String resName) {
         return By.res(getLauncherPackageName(), resName);
-    }
-
-    BySelector getLauncherObjectSelectorByClass(String clazz) {
-        return By.pkg(getLauncherPackageName()).clazz(clazz);
     }
 
     BySelector getFallbackLauncherObjectSelector(String resName) {
