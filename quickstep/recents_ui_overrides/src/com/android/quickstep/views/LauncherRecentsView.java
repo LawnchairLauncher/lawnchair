@@ -227,6 +227,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
     @Override
     public void onStateTransitionStart(LauncherState toState) {
         setOverviewStateEnabled(toState.overviewUi);
+        setFreezeViewVisibility(true);
     }
 
     @Override
@@ -236,6 +237,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
             reset();
         }
         setOverlayEnabled(finalState == OVERVIEW);
+        setFreezeViewVisibility(false);
     }
 
     @Override
