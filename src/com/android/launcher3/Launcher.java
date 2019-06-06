@@ -1063,7 +1063,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         // Setup the drag layer
         mDragLayer.setup(mDragController, mWorkspace);
-        mCancelTouchController = UiFactory.enableLiveTouchControllerChanges(mDragLayer);
+        mCancelTouchController = UiFactory.enableLiveUIChanges(this);
 
         mWorkspace.setup(mDragController);
         // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
