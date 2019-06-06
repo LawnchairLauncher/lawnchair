@@ -267,6 +267,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private MultiStateCallback mStateCallback;
     // Used to control launcher components throughout the swipe gesture.
     private AnimatorPlaybackController mLauncherTransitionController;
+    private boolean mHasLauncherTransitionControllerStarted;
 
     private T mActivity;
     private RecentsView mRecentsView;
@@ -647,8 +648,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void buildAnimationController() {
-        if (mGestureEndTarget == HOME || (mLauncherTransitionController != null
-                && mLauncherTransitionController.getAnimationPlayer().isStarted())) {
+        if (mGestureEndTarget == HOME || mHasLauncherTransitionControllerStarted) {
             // We don't want a new mLauncherTransitionController if mGestureEndTarget == HOME (it
             // has its own animation) or if we're already animating the current controller.
             return;
@@ -1122,6 +1122,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             }
             mLauncherTransitionController.getAnimationPlayer().start();
         }
+        mHasLauncherTransitionControllerStarted = true;
     }
 
     /**
