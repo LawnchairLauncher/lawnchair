@@ -65,8 +65,8 @@ import com.android.launcher3.util.rule.ShellCommandRule;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
 import org.junit.runners.model.Statement;
 
 import java.io.IOException;
@@ -164,7 +164,7 @@ public abstract class AbstractLauncherUiTest {
             } : base;
 
     @Rule
-    public RuleChain mOrderSensitiveRules = RuleChain.outerRule(new FailureWatcher(this));
+    public TestWatcher mFailureWatcher = new FailureWatcher(this);
 
     public UiDevice getDevice() {
         return mDevice;
