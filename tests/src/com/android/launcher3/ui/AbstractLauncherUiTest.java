@@ -65,8 +65,8 @@ import com.android.launcher3.util.rule.ShellCommandRule;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
 import org.junit.runners.model.Statement;
 
 import java.io.IOException;
@@ -94,7 +94,8 @@ public abstract class AbstractLauncherUiTest {
 
     protected MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
     protected final UiDevice mDevice = UiDevice.getInstance(getInstrumentation());
-    protected final LauncherInstrumentation mLauncher;
+    protected final LauncherInstrumentation mLauncher =
+            new LauncherInstrumentation(getInstrumentation());
     protected Context mTargetContext;
     protected String mTargetPackage;
 
@@ -105,11 +106,9 @@ public abstract class AbstractLauncherUiTest {
             throw new RuntimeException(e);
         }
         if (TestHelpers.isInLauncherProcess()) Utilities.enableRunningInTestHarnessForTests();
-        mLauncher = new LauncherInstrumentation(getInstrumentation());
     }
 
-    @Rule
-    public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
+    protected final LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
 
     @Rule
     public ShellCommandRule mDefaultLauncherRule =
@@ -163,8 +162,14 @@ public abstract class AbstractLauncherUiTest {
                 }
             } : base;
 
+    protected TestRule getRulesInsideActivityMonitor() {
+        return new FailureWatcher(this);
+    }
+
     @Rule
-    public TestWatcher mFailureWatcher = new FailureWatcher(this);
+    public TestRule mOrderSensitiveRules = RuleChain.
+            outerRule(mActivityMonitor).
+            around(getRulesInsideActivityMonitor());
 
     public UiDevice getDevice() {
         return mDevice;
