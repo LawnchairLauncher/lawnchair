@@ -46,13 +46,15 @@ public class BaseIconFactory implements AutoCloseable {
 
     private IconNormalizer mNormalizer;
     private ShadowGenerator mShadowGenerator;
+    private final boolean mShapeDetection;
 
     private Drawable mWrapperIcon;
     private int mWrapperBackgroundColor = DEFAULT_WRAPPER_BACKGROUND;
 
-    protected BaseIconFactory(Context context, int fillResIconDpi, int iconBitmapSize) {
+    protected BaseIconFactory(Context context, int fillResIconDpi, int iconBitmapSize,
+            boolean shapeDetection) {
         mContext = context.getApplicationContext();
-
+        mShapeDetection = shapeDetection;
         mFillResIconDpi = fillResIconDpi;
         mIconBitmapSize = iconBitmapSize;
 
@@ -62,6 +64,10 @@ public class BaseIconFactory implements AutoCloseable {
         mCanvas = new Canvas();
         mCanvas.setDrawFilter(new PaintFlagsDrawFilter(DITHER_FLAG, FILTER_BITMAP_FLAG));
         clear();
+    }
+
+    protected BaseIconFactory(Context context, int fillResIconDpi, int iconBitmapSize) {
+        this(context, fillResIconDpi, iconBitmapSize, false);
     }
 
     protected void clear() {
@@ -78,7 +84,7 @@ public class BaseIconFactory implements AutoCloseable {
 
     public IconNormalizer getNormalizer() {
         if (mNormalizer == null) {
-            mNormalizer = new IconNormalizer(mIconBitmapSize);
+            mNormalizer = new IconNormalizer(mContext, mIconBitmapSize, mShapeDetection);
         }
         return mNormalizer;
     }
@@ -209,18 +215,19 @@ public class BaseIconFactory implements AutoCloseable {
             }
             AdaptiveIconDrawable dr = (AdaptiveIconDrawable) mWrapperIcon;
             dr.setBounds(0, 0, 1, 1);
-            scale = getNormalizer().getScale(icon, outIconBounds);
-            if (!(icon instanceof AdaptiveIconDrawable)) {
+            boolean[] outShape = new boolean[1];
+            scale = getNormalizer().getScale(icon, outIconBounds, dr.getIconMask(), outShape);
+            if (!(icon instanceof AdaptiveIconDrawable) && !outShape[0]) {
                 FixedScaleDrawable fsd = ((FixedScaleDrawable) dr.getForeground());
                 fsd.setDrawable(icon);
                 fsd.setScale(scale);
                 icon = dr;
-                scale = getNormalizer().getScale(icon, outIconBounds);
+                scale = getNormalizer().getScale(icon, outIconBounds, null, null);
 
                 ((ColorDrawable) dr.getBackground()).setColor(mWrapperBackgroundColor);
             }
         } else {
-            scale = getNormalizer().getScale(icon, outIconBounds);
+            scale = getNormalizer().getScale(icon, outIconBounds, null, null);
         }
 
         outScale[0] = scale;

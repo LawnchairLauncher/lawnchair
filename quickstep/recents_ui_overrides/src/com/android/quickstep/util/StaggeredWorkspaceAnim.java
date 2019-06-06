@@ -44,14 +44,13 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
  */
 public class StaggeredWorkspaceAnim {
 
-    private static final int APP_CLOSE_ROW_START_DELAY_MS = 16;
-    private static final int ALPHA_DURATION_MS = 200;
+    private static final int APP_CLOSE_ROW_START_DELAY_MS = 10;
+    private static final int ALPHA_DURATION_MS = 250;
 
     private static final float MAX_VELOCITY_PX_PER_S = 22f;
 
-    private static final float DAMPING_RATIO =
-            (SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY + SpringForce.DAMPING_RATIO_LOW_BOUNCY) / 2f;
-    private static final float STIFFNESS = SpringForce.STIFFNESS_LOW;
+    private static final float DAMPING_RATIO = 0.7f;
+    private static final float STIFFNESS = 150f;
 
     private final float mVelocity;
     private final float mSpringTransY;
@@ -71,9 +70,9 @@ public class StaggeredWorkspaceAnim {
 
         // Scale the translationY based on the initial velocity to better sync the workspace items
         // with the floating view.
-        float transFactor = 0.1f + 0.9f * Math.abs(velocity) / MAX_VELOCITY_PX_PER_S;
+        float transFactor = 0.2f + 0.9f * Math.abs(velocity) / MAX_VELOCITY_PX_PER_S;
         mSpringTransY = transFactor * launcher.getResources()
-                .getDimensionPixelSize(R.dimen.swipe_up_max_workspace_trans_y);;
+                .getDimensionPixelSize(R.dimen.swipe_up_max_workspace_trans_y);
 
         DeviceProfile grid = launcher.getDeviceProfile();
         ShortcutAndWidgetContainer currentPage = ((CellLayout) launcher.getWorkspace()

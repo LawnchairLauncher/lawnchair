@@ -40,6 +40,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.annotation.IntDef;
 
@@ -474,6 +475,11 @@ public class LauncherStateManager {
         // Only change the stable states after the transitions have finished
         if (state != mCurrentStableState) {
             mLastStableState = state.getHistoryForState(mCurrentStableState);
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.NO_ALLAPPS_EVENT_TAG,
+                        "mCurrentStableState = " + state.getClass().getSimpleName() + " @ " +
+                                android.util.Log.getStackTraceString(new Throwable()));
+            }
             mCurrentStableState = state;
         }
 

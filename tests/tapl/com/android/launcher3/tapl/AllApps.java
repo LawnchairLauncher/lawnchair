@@ -20,8 +20,10 @@ import static com.android.launcher3.tapl.LauncherInstrumentation.NavigationModel
 
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
@@ -42,6 +44,10 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         super(launcher);
         final UiObject2 allAppsContainer = verifyActiveContainer();
         mHeight = allAppsContainer.getVisibleBounds().height();
+        final UiObject2 appListRecycler = mLauncher.waitForObjectInContainer(allAppsContainer,
+                "apps_list_view");
+        // Wait for the recycler to populate.
+        mLauncher.waitForObjectInContainer(appListRecycler, By.clazz(TextView.class));
     }
 
     @Override
@@ -115,7 +121,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                 verifyActiveContainer();
             }
 
-            final UiObject2 appIcon = mLauncher.getObjectInContainer(allAppsContainer,
+            final UiObject2 appIcon = mLauncher.getObjectInContainer(appListRecycler,
                     appIconSelector);
             ensureIconVisible(appIcon, allAppsContainer, appListRecycler);
             return new AppIcon(mLauncher, appIcon);
