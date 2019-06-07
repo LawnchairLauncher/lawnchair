@@ -80,6 +80,7 @@ import android.widget.Toast;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.PropertyListBuilder;
@@ -879,6 +880,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onStart() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_OVERVIEW_EVENT_TAG, "Launcher.onStart");
+        }
         RaceConditionTracker.onEvent(ON_START_EVT, ENTER);
         super.onStart();
         if (mLauncherCallbacks != null) {
@@ -1063,7 +1067,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         // Setup the drag layer
         mDragLayer.setup(mDragController, mWorkspace);
-        mCancelTouchController = UiFactory.enableLiveTouchControllerChanges(mDragLayer);
+        mCancelTouchController = UiFactory.enableLiveUIChanges(this);
 
         mWorkspace.setup(mDragController);
         // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
@@ -2238,8 +2242,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
         mPendingExecutor = executor;
         if (!isInState(ALL_APPS)) {
-            mAppsView.getAppsStore().setDeferUpdates(true);
-            mPendingExecutor.execute(() -> mAppsView.getAppsStore().setDeferUpdates(false));
+            mAppsView.getAppsStore().enableDeferUpdates(AllAppsStore.DEFER_UPDATES_NEXT_DRAW);
+            mPendingExecutor.execute(() -> mAppsView.getAppsStore().disableDeferUpdates(
+                    AllAppsStore.DEFER_UPDATES_NEXT_DRAW));
         }
 
         executor.attachTo(this);

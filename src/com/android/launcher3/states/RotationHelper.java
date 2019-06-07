@@ -73,7 +73,8 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
 
     // This is used to defer setting rotation flags until the activity is being created
     private boolean mInitialized;
-    public boolean mDestroyed;
+    private boolean mDestroyed;
+    private boolean mRotationHasDifferentUI;
 
     private int mLastActivityFlags = -1;
 
@@ -92,8 +93,12 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
         }
     }
 
+    public void setRotationHadDifferentUI(boolean rotationHasDifferentUI) {
+        mRotationHasDifferentUI = rotationHasDifferentUI;
+    }
+
     public boolean homeScreenCanRotate() {
-        return mIgnoreAutoRotateSettings || mAutoRotateEnabled
+        return mRotationHasDifferentUI || mIgnoreAutoRotateSettings || mAutoRotateEnabled
                 || mStateHandlerRequest != REQUEST_NONE
                 || mLauncher.getDeviceProfile().isMultiWindowMode;
     }
