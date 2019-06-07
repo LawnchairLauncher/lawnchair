@@ -292,6 +292,12 @@ public final class LauncherInstrumentation {
         }
     }
 
+    void assertEquals(String message, long expected, long actual) {
+        if (expected != actual) {
+            fail(message + " expected: " + expected + " but was: " + actual);
+        }
+    }
+
     void assertNotEquals(String message, int unexpected, int actual) {
         if (unexpected == actual) {
             failEquals(message, actual);
