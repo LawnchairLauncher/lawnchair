@@ -22,6 +22,7 @@ import static android.content.Intent.ACTION_PACKAGE_REMOVED;
 
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 import static com.android.systemui.shared.system.PackageManagerWrapper.ACTION_PREFERRED_ACTIVITY_CHANGED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -32,6 +33,7 @@ import android.content.pm.ResolveInfo;
 
 import com.android.systemui.shared.system.PackageManagerWrapper;
 
+import com.android.systemui.shared.system.QuickStepContract;
 import java.util.ArrayList;
 
 /**
@@ -56,6 +58,7 @@ public final class OverviewComponentObserver {
     private String mUpdateRegisteredPackage;
     private ActivityControlHelper mActivityControlHelper;
     private Intent mOverviewIntent;
+    private int mSystemUiStateFlags;
 
     public OverviewComponentObserver(Context context) {
         mContext = context;
@@ -71,6 +74,15 @@ public final class OverviewComponentObserver {
         updateOverviewTargets();
     }
 
+    public void onSystemUiStateChanged(int stateFlags) {
+        boolean homeDisabledChanged = (mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED)
+                != (stateFlags & SYSUI_STATE_HOME_DISABLED);
+        mSystemUiStateFlags = stateFlags;
+        if (homeDisabledChanged) {
+            updateOverviewTargets();
+        }
+    }
+
     /**
      * Update overview intent and {@link ActivityControlHelper} based off the current launcher home
      * component.
@@ -81,7 +93,8 @@ public final class OverviewComponentObserver {
 
         final String overviewIntentCategory;
         ComponentName overviewComponent;
-        if (defaultHome == null || mMyHomeComponent.equals(defaultHome)) {
+        if ((mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED) == 0 &&
+                (defaultHome == null || mMyHomeComponent.equals(defaultHome))) {
             // User default home is same as out home app. Use Overview integrated in Launcher.
             overviewComponent = mMyHomeComponent;
             mActivityControlHelper = new LauncherActivityControllerHelper();
