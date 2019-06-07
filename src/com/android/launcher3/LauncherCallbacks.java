@@ -21,7 +21,6 @@ import android.os.Bundle;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 
 /**
  * LauncherCallbacks is an interface used to extend the Launcher activity. It includes many hooks
@@ -52,6 +51,11 @@ public interface LauncherCallbacks {
     void onHomeIntent(boolean internalStateHandled);
     boolean handleBackPressed();
     void onTrimMemory(int level);
+
+    /**
+     * Called when the launcher state changed
+     */
+    default void onStateChanged() { }
 
     /*
      * Extension points for providing custom behavior on certain user interactions.

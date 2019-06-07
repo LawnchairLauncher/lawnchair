@@ -91,7 +91,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     }
 
     @Override
-    public void onSwipeUpComplete(Launcher activity) {
+    public void onSwipeUpToRecentsComplete(Launcher activity) {
         // Re apply state in case we did something funky during the transition.
         activity.getStateManager().reapplyState();
         DiscoveryBounce.showForOverviewIfNeeded(activity);

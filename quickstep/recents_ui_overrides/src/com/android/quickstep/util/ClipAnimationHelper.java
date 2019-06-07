@@ -197,10 +197,15 @@ public class ClipAnimationHelper {
                     mTmpMatrix.postTranslate(app.position.x, app.position.y);
                     mClipRectF.roundOut(crop);
                     if (mSupportsRoundedCornersOnWindows) {
-                        float windowCornerRadius = mUseRoundedCornersOnWindows
-                                ? mWindowCornerRadius : 0;
-                        cornerRadius = Utilities.mapRange(progress, windowCornerRadius,
-                                mTaskCornerRadius);
+                        if (params.cornerRadius > -1) {
+                            cornerRadius = params.cornerRadius;
+                            scale = params.currentRect.width() / crop.width();
+                        } else {
+                            float windowCornerRadius = mUseRoundedCornersOnWindows
+                                    ? mWindowCornerRadius : 0;
+                            cornerRadius = Utilities.mapRange(progress, windowCornerRadius,
+                                    mTaskCornerRadius);
+                        }
                         mCurrentCornerRadius = cornerRadius;
                     }
                 }
@@ -355,6 +360,7 @@ public class ClipAnimationHelper {
         @Nullable RectF currentRect;
         float targetAlpha;
         boolean forLiveTile;
+        float cornerRadius;
 
         SyncRtSurfaceTransactionApplierCompat syncTransactionApplier;
 
@@ -365,11 +371,17 @@ public class ClipAnimationHelper {
             currentRect = null;
             targetAlpha = 0;
             forLiveTile = false;
+            cornerRadius = -1;
         }
 
         public TransformParams setProgress(float progress) {
             this.progress = progress;
             this.currentRect = null;
+            return this;
+        }
+
+        public TransformParams setCornerRadius(float cornerRadius) {
+            this.cornerRadius = cornerRadius;
             return this;
         }
 

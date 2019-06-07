@@ -31,6 +31,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 
@@ -118,6 +119,9 @@ public abstract class AbstractStateChangeTouchController
 
     @Override
     public final boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_ALLAPPS_EVENT_TAG, "onControllerInterceptTouchEvent 1 " + ev);
+        }
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = !canInterceptTouch(ev);
             if (mNoIntercept) {
@@ -147,6 +151,9 @@ public abstract class AbstractStateChangeTouchController
             return false;
         }
 
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_ALLAPPS_EVENT_TAG, "onControllerInterceptTouchEvent 2 ");
+        }
         onControllerTouchEvent(ev);
         return mDetector.isDraggingOrSettling();
     }
@@ -234,6 +241,9 @@ public abstract class AbstractStateChangeTouchController
 
     @Override
     public void onDragStart(boolean start) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_ALLAPPS_EVENT_TAG, "onDragStart 1 " + start);
+        }
         mStartState = mLauncher.getStateManager().getState();
         if (mStartState == ALL_APPS) {
             mStartContainerType = LauncherLogProto.ContainerType.ALLAPPS;
@@ -243,6 +253,9 @@ public abstract class AbstractStateChangeTouchController
             mStartContainerType = LauncherLogProto.ContainerType.TASKSWITCHER;
         }
         if (mCurrentAnimation == null) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.NO_ALLAPPS_EVENT_TAG, "onDragStart 2");
+            }
             mFromState = mStartState;
             mToState = null;
             cancelAnimationControllers();
@@ -552,6 +565,9 @@ public abstract class AbstractStateChangeTouchController
     }
 
     private void cancelAnimationControllers() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_ALLAPPS_EVENT_TAG, "cancelAnimationControllers");
+        }
         mCurrentAnimation = null;
         cancelAtomicComponentsController();
         mDetector.finishedScrolling();
