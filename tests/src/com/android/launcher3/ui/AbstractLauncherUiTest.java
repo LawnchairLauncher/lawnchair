@@ -58,19 +58,17 @@ import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.util.Wait;
+import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.launcher3.util.rule.LauncherActivityRule;
 import com.android.launcher3.util.rule.ShellCommandRule;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -93,11 +91,11 @@ public abstract class AbstractLauncherUiTest {
     public static final long SHORT_UI_TIMEOUT = 300;
     public static final long DEFAULT_UI_TIMEOUT = 10000;
     private static final String TAG = "AbstractLauncherUiTest";
-    private static int sScreenshotCount = 0;
 
     protected MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
     protected final UiDevice mDevice = UiDevice.getInstance(getInstrumentation());
-    protected final LauncherInstrumentation mLauncher;
+    protected final LauncherInstrumentation mLauncher =
+            new LauncherInstrumentation(getInstrumentation());
     protected Context mTargetContext;
     protected String mTargetPackage;
 
@@ -108,11 +106,9 @@ public abstract class AbstractLauncherUiTest {
             throw new RuntimeException(e);
         }
         if (TestHelpers.isInLauncherProcess()) Utilities.enableRunningInTestHarnessForTests();
-        mLauncher = new LauncherInstrumentation(getInstrumentation());
     }
 
-    @Rule
-    public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
+    protected final LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
 
     @Rule
     public ShellCommandRule mDefaultLauncherRule =
@@ -166,43 +162,18 @@ public abstract class AbstractLauncherUiTest {
                 }
             } : base;
 
+    protected TestRule getRulesInsideActivityMonitor() {
+        return new FailureWatcher(this);
+    }
+
     @Rule
-    public TestWatcher mFailureWatcher = new TestWatcher() {
-        private void dumpViewHierarchy() {
-            final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            try {
-                mDevice.dumpWindowHierarchy(stream);
-                stream.flush();
-                stream.close();
-                for (String line : stream.toString().split("\\r?\\n")) {
-                    Log.e(TAG, line.trim());
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "error dumping XML to logcat", e);
-            }
-        }
+    public TestRule mOrderSensitiveRules = RuleChain.
+            outerRule(mActivityMonitor).
+            around(getRulesInsideActivityMonitor());
 
-        @Override
-        protected void failed(Throwable e, Description description) {
-            if (mDevice == null) return;
-            final String pathname = getInstrumentation().getTargetContext().
-                    getFilesDir().getPath() + "/TaplTestScreenshot" + sScreenshotCount++ + ".png";
-            Log.e(TAG, "Failed test " + description.getMethodName() +
-                    ", screenshot will be saved to " + pathname +
-                    ", track trace is below, UI object dump is further below:\n" +
-                    Log.getStackTraceString(e));
-            dumpViewHierarchy();
-
-            try {
-                final String dumpsysResult = mDevice.executeShellCommand(
-                                "dumpsys activity service TouchInteractionService");
-                Log.d(TAG, "TouchInteractionService: " + dumpsysResult);
-            } catch (IOException ex) {
-            }
-
-            mDevice.takeScreenshot(new File(pathname));
-        }
-    };
+    public UiDevice getDevice() {
+        return mDevice;
+    }
 
     @Before
     public void setUp() throws Exception {

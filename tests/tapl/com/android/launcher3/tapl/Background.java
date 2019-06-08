@@ -59,6 +59,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
     }
 
     protected void goToOverviewUnchecked(int expectedState) {
+        mLauncher.getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
         switch (mLauncher.getNavigationModel()) {
             case ZERO_BUTTON: {
                 final int centerX = mLauncher.getDevice().getDisplayWidth() / 2;
@@ -103,6 +104,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                 mLauncher.waitForSystemUiObject("recent_apps").click();
                 break;
         }
+        mLauncher.getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
     }
 
     protected String getSwipeHeightRequestName() {
