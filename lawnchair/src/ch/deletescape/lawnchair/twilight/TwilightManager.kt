@@ -19,6 +19,7 @@ package ch.deletescape.lawnchair.twilight
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -38,11 +39,12 @@ import ch.deletescape.lawnchair.checkLocationAccess
 import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
+import ch.deletescape.lawnchair.util.extensions.d
+import com.android.launcher3.BuildConfig
 import java.util.*
 
 @SuppressLint("MissingPermission")
-class TwilightManager(private val context: Context) :
-        AlarmManager.OnAlarmListener, Handler.Callback, LocationListener {
+class TwilightManager(private val context: Context) : Handler.Callback, LocationListener {
 
     private val handler = Handler(Looper.getMainLooper(), this)
 
@@ -73,6 +75,18 @@ class TwilightManager(private val context: Context) :
         }
 
     val isAvailable get() = context.checkLocationAccess()
+
+    private val updateIntent = Intent(ACTION_UPDATE_TWILIGHT)
+            .setPackage(BuildConfig.APPLICATION_ID)
+
+    init {
+        context.registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                d("onAlarm")
+                updateTwilightState()
+            }
+        }, IntentFilter(ACTION_UPDATE_TWILIGHT))
+    }
 
     fun registerListener(listener: TwilightListener,
                          handler: Handler) {
@@ -153,7 +167,7 @@ class TwilightManager(private val context: Context) :
         }
 
         if (lastTwilightState != null) {
-            alarmManager.cancel(this)
+            alarmManager.cancel(PendingIntent.getBroadcast(context, 0, updateIntent, 0))
         }
 
         locationManager.removeUpdates(this)
@@ -172,13 +186,9 @@ class TwilightManager(private val context: Context) :
         // Schedule an alarm to update the state at the next sunrise or sunset.
         if (state != null) {
             val triggerAtMillis = if (state.isNight) state.sunriseTimeMillis else state.sunsetTimeMillis
-            alarmManager.setExact(AlarmManager.RTC, triggerAtMillis, TAG, this, handler)
+            alarmManager.setExact(AlarmManager.RTC, triggerAtMillis,
+                    PendingIntent.getBroadcast(context, 0, updateIntent, 0))
         }
-    }
-
-    override fun onAlarm() {
-        Log.d(TAG, "onAlarm")
-        updateTwilightState()
     }
 
     override fun onLocationChanged(location: Location?) {
@@ -211,6 +221,8 @@ class TwilightManager(private val context: Context) :
             ensureOnMainThread(useApplicationContext(::TwilightManager))) {
 
         private const val TAG = "TwilightManager"
+
+        private const val ACTION_UPDATE_TWILIGHT = "${BuildConfig.APPLICATION_ID}.action.UPDATE_TWILIGHT"
 
         private const val MSG_START_LISTENING = 1
         private const val MSG_STOP_LISTENING = 2
