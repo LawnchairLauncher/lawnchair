@@ -27,16 +27,17 @@ import android.util.MutableLong;
 import com.android.launcher3.config.FeatureFlags;
 
 /**
- * A wrapper around {@link Trace} to allow easier proguarding for production builds.
+ * A wrapper around {@link Trace} with some utility information.
  *
  * To enable any tracing log, execute the following command:
+ * $ adb shell setprop log.tag.LAUNCHER_TRACE VERBOSE
  * $ adb shell setprop log.tag.TAGNAME VERBOSE
  */
 public class TraceHelper {
 
-    private static final boolean ENABLED = FeatureFlags.IS_DOGFOOD_BUILD;
+    private static final boolean ENABLED = isLoggable("LAUNCHER_TRACE", VERBOSE);
 
-    private static final boolean SYSTEM_TRACE = false;
+    private static final boolean SYSTEM_TRACE = ENABLED;
     private static final ArrayMap<String, MutableLong> sUpTimes = ENABLED ? new ArrayMap<>() : null;
 
     public static void beginSection(String sectionName) {
