@@ -36,6 +36,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.os.UserHandle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -53,6 +54,7 @@ import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -174,6 +176,9 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     @Override
     public AnimationFactory prepareRecentsUI(Launcher activity, boolean activityVisible,
             boolean animateActivity, Consumer<AnimatorPlaybackController> callback) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_OVERVIEW_EVENT_TAG, "prepareRecentsUI");
+        }
         final LauncherState startState = activity.getStateManager().getState();
 
         LauncherState resetState = startState;
