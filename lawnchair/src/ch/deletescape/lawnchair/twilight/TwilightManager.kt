@@ -38,8 +38,6 @@ import ch.deletescape.lawnchair.checkLocationAccess
 import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
-import ch.deletescape.lawnchair.util.extensions.d
-import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator
 import java.util.*
 
 @SuppressLint("MissingPermission")
@@ -58,7 +56,7 @@ class TwilightManager(private val context: Context) :
     private var timeChangedReceiver: BroadcastReceiver? = null
     private var lastLocation: Location? = null
 
-    var lastTwilightState: TwilightState? = null
+    var lastTwilightState: TwilightState? = calculateTwilightState(null, System.currentTimeMillis())
         get() = synchronized(listeners) { field }
         private set(value) {
             synchronized(listeners) {
@@ -218,11 +216,8 @@ class TwilightManager(private val context: Context) :
         private const val MSG_STOP_LISTENING = 2
 
         fun calculateTwilightState(location: Location?, timeMillis: Long): TwilightState? {
-            if (location == null) return null
-
             val c = Calendar.getInstance().apply { timeInMillis = timeMillis }
-            val calc = SunriseSunsetCalculator(com.luckycatlabs.sunrisesunset.dto.Location(
-                    location.latitude, location.longitude), c.timeZone)
+            val calc = SunriseSunsetCalculatorCompat(location, c.timeZone)
             val sunrise = calc.getOfficialSunriseCalendarForDate(c)
             val adjustedSunset: Calendar
             val adjustedSunrise: Calendar
