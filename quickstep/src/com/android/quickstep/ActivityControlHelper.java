@@ -51,7 +51,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect);
 
-    void onSwipeUpComplete(T activity);
+    void onSwipeUpToRecentsComplete(T activity);
 
     void onAssistantVisibilityChanged(float visibility);
 
