@@ -879,6 +879,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onStart() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_OVERVIEW_EVENT_TAG, "Launcher.onStart");
+        }
         RaceConditionTracker.onEvent(ON_START_EVT, ENTER);
         super.onStart();
         if (mLauncherCallbacks != null) {
@@ -1063,7 +1066,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         // Setup the drag layer
         mDragLayer.setup(mDragController, mWorkspace);
-        mCancelTouchController = UiFactory.enableLiveTouchControllerChanges(mDragLayer);
+        mCancelTouchController = UiFactory.enableLiveUIChanges(this);
 
         mWorkspace.setup(mDragController);
         // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the

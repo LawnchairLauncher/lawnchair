@@ -1394,6 +1394,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         builder.play(stepAnimator);
     }
 
+    public WorkspaceStateTransitionAnimation getStateTransitionAnimation() {
+        return mStateTransitionAnimation;
+    }
+
     public void updateAccessibilityFlags() {
         // TODO: Update the accessibility flags appropriately when dragging.
         int accessibilityFlag = mLauncher.getStateManager().getState().workspaceAccessibilityFlag;

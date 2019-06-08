@@ -39,7 +39,6 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Log;
-import android.util.Property;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -251,10 +250,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     public IconView getIconView() {
         return mIconView;
-    }
-
-    public TaskOverlayFactory.TaskOverlay getTaskOverlay() {
-        return mSnapshotView.getTaskOverlay();
     }
 
     public AnimatorPlaybackController createLaunchAnimationForRunningTask() {
@@ -488,6 +483,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         // Clear any references to the thumbnail (it will be re-read either from the cache or the
         // system on next bind)
         mSnapshotView.setThumbnail(mTask, null);
+        setOverlayEnabled(false);
+        onTaskListVisibilityChanged(false);
         if (mTask != null) {
             mTask.thumbnail = null;
         }
@@ -608,7 +605,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
         final Context context = getContext();
         final List<TaskSystemShortcut> shortcuts =
-                mSnapshotView.getTaskOverlay().getEnabledShortcuts(this);
+                TaskOverlayFactory.INSTANCE.get(getContext()).getEnabledShortcuts(this);
         final int count = shortcuts.size();
         for (int i = 0; i < count; ++i) {
             final TaskSystemShortcut menuOption = shortcuts.get(i);
@@ -647,7 +644,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
 
         final List<TaskSystemShortcut> shortcuts =
-                mSnapshotView.getTaskOverlay().getEnabledShortcuts(this);
+                TaskOverlayFactory.INSTANCE.get(getContext()).getEnabledShortcuts(this);
         final int count = shortcuts.size();
         for (int i = 0; i < count; ++i) {
             final TaskSystemShortcut menuOption = shortcuts.get(i);
@@ -731,6 +728,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             return true;
         }
         return mShowScreenshot;
+    }
+
+    public void setOverlayEnabled(boolean overlayEnabled) {
+        mSnapshotView.setOverlayEnabled(overlayEnabled);
     }
 
     /**
