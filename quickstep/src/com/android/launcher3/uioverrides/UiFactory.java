@@ -47,7 +47,6 @@ import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.QuickstepAppTransitionManagerImpl;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.proxy.ProxyActivityStarter;
 import com.android.launcher3.proxy.StartActivityParams;
 import com.android.quickstep.OverviewInteractionState;
@@ -64,10 +63,14 @@ import java.util.zip.Deflater;
 
 public class UiFactory extends RecentsUiFactory {
 
-    public static Runnable enableLiveTouchControllerChanges(DragLayer dl) {
-        NavigationModeChangeListener listener = m -> dl.recreateControllers();
-        SysUINavigationMode mode = SysUINavigationMode.INSTANCE.get(dl.getContext());
-        mode.addModeChangeListener(listener);
+    public static Runnable enableLiveUIChanges(Launcher launcher) {
+        NavigationModeChangeListener listener = m -> {
+            launcher.getDragLayer().recreateControllers();
+            launcher.getRotationHelper().setRotationHadDifferentUI(m != Mode.NO_BUTTON);
+        };
+        SysUINavigationMode mode = SysUINavigationMode.INSTANCE.get(launcher);
+        SysUINavigationMode.Mode m = mode.addModeChangeListener(listener);
+        launcher.getRotationHelper().setRotationHadDifferentUI(m != Mode.NO_BUTTON);
         return () -> mode.removeModeChangeListener(listener);
     }
 
