@@ -72,6 +72,9 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ListView;
 
+import androidx.annotation.Nullable;
+import androidx.dynamicanimation.animation.SpringForce;
+
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
@@ -110,9 +113,6 @@ import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
-
-import androidx.annotation.Nullable;
-import androidx.dynamicanimation.animation.SpringForce;
 
 /**
  * A list of recent tasks.
@@ -168,8 +168,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     // The threshold at which we update the SystemUI flags when animating from the task into the app
     public static final float UPDATE_SYSUI_FLAGS_THRESHOLD = 0.85f;
 
-    private static final float[] sTempFloatArray = new float[3];
-
     protected final T mActivity;
     private final float mFastFlingVelocity;
     private final RecentsModel mModel;
@@ -189,6 +187,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     private boolean mDwbToastShown;
     private boolean mDisallowScrollToClearAll;
+    private boolean mOverlayEnabled;
+    private boolean mFreezeViewVisibility;
 
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
@@ -428,11 +428,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         // Clear the task data for the removed child if it was visible
         if (child != mClearAllButton) {
             TaskView taskView = (TaskView) child;
-            Task task = taskView.getTask();
-            if (mHasVisibleTaskData.get(task.key.id)) {
-                mHasVisibleTaskData.delete(task.key.id);
-                taskView.onTaskListVisibilityChanged(false /* visible */);
-            }
+            mHasVisibleTaskData.delete(taskView.getTask().key.id);
             mTaskViewPool.recycle(taskView);
         }
     }
@@ -455,7 +451,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public void setOverviewStateEnabled(boolean enabled) {
         mOverviewStateEnabled = enabled;
         updateTaskStackListenerState();
-        if (!enabled) mDwbToastShown = false;
     }
 
     public void onDigitalWellbeingToastShown() {
@@ -582,6 +577,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
         resetTaskVisuals();
         onTaskStackUpdated();
+        updateEnabledOverlays();
     }
 
     public int getTaskViewCount() {
@@ -780,6 +776,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
         unloadVisibleTaskData();
         setCurrentPage(0);
+        mDwbToastShown = false;
     }
 
     public @Nullable TaskView getRunningTaskView() {
@@ -1306,7 +1303,25 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mEmptyMessagePaint.setAlpha(alphaInt);
         mEmptyIcon.setAlpha(alphaInt);
 
-        setVisibility(alpha > 0 ? VISIBLE : GONE);
+        if (alpha > 0) {
+            setVisibility(VISIBLE);
+        } else if (!mFreezeViewVisibility) {
+            setVisibility(GONE);
+        }
+    }
+
+    /**
+     * Freezes the view visibility change. When frozen, the view will not change its visibility
+     * to gone due to alpha changes.
+     */
+    public void setFreezeViewVisibility(boolean freezeViewVisibility) {
+        if (mFreezeViewVisibility != freezeViewVisibility) {
+            mFreezeViewVisibility = freezeViewVisibility;
+
+            if (!mFreezeViewVisibility) {
+                setVisibility(mContentAlpha > 0 ? VISIBLE : GONE);
+            }
+        }
     }
 
     @Override
@@ -1545,6 +1560,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     protected void notifyPageSwitchListener(int prevPage) {
         super.notifyPageSwitchListener(prevPage);
         loadVisibleTaskData();
+        updateEnabledOverlays();
     }
 
     @Override
@@ -1684,5 +1700,20 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     public ClipAnimationHelper getTempClipAnimationHelper() {
         return mTempClipAnimationHelper;
+    }
+
+    private void updateEnabledOverlays() {
+        int overlayEnabledPage = mOverlayEnabled ? getNextPage() : -1;
+        int taskCount = getTaskViewCount();
+        for (int i = 0; i < taskCount; i++) {
+            ((TaskView) getChildAt(i)).setOverlayEnabled(i == overlayEnabledPage);
+        }
+    }
+
+    public void setOverlayEnabled(boolean overlayEnabled) {
+        if (mOverlayEnabled != overlayEnabled) {
+            mOverlayEnabled = overlayEnabled;
+            updateEnabledOverlays();
+        }
     }
 }
