@@ -59,6 +59,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
@@ -83,6 +84,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -267,6 +269,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private MultiStateCallback mStateCallback;
     // Used to control launcher components throughout the swipe gesture.
     private AnimatorPlaybackController mLauncherTransitionController;
+    private boolean mHasLauncherTransitionControllerStarted;
 
     private T mActivity;
     private RecentsView mRecentsView;
@@ -457,17 +460,32 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void onLauncherStart(final T activity) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_OVERVIEW_EVENT_TAG, "onLauncherStart");
+        }
         if (mActivity != activity) {
             return;
         }
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_OVERVIEW_EVENT_TAG, "onLauncherStart 1");
+        }
         if (mStateCallback.hasStates(STATE_HANDLER_INVALIDATED)) {
             return;
+        }
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_OVERVIEW_EVENT_TAG, "onLauncherStart 2");
         }
 
         // If we've already ended the gesture and are going home, don't prepare recents UI,
         // as that will set the state as BACKGROUND_APP, overriding the animation to NORMAL.
         if (mGestureEndTarget != HOME) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.NO_OVERVIEW_EVENT_TAG, "onLauncherStart 3");
+            }
             Runnable initAnimFactory = () -> {
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.NO_OVERVIEW_EVENT_TAG, "onLauncherStart 4");
+                }
                 mAnimationFactory = mActivityControlHelper.prepareRecentsUI(mActivity,
                         mWasLauncherAlreadyVisible, true,
                         this::onAnimatorPlaybackControllerCreated);
@@ -477,8 +495,14 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 // Launcher is visible, but might be about to stop. Thus, if we prepare recents
                 // now, it might get overridden by moveToRestState() in onStop(). To avoid this,
                 // wait until the next gesture (and possibly launcher) starts.
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.NO_OVERVIEW_EVENT_TAG, "onLauncherStart 5");
+                }
                 mStateCallback.addCallback(STATE_GESTURE_STARTED, initAnimFactory);
             } else {
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.NO_OVERVIEW_EVENT_TAG, "onLauncherStart 6");
+                }
                 initAnimFactory.run();
             }
         }
@@ -647,8 +671,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void buildAnimationController() {
-        if (mGestureEndTarget == HOME || (mLauncherTransitionController != null
-                && mLauncherTransitionController.getAnimationPlayer().isStarted())) {
+        if (mGestureEndTarget == HOME || mHasLauncherTransitionControllerStarted) {
             // We don't want a new mLauncherTransitionController if mGestureEndTarget == HOME (it
             // has its own animation) or if we're already animating the current controller.
             return;
@@ -858,7 +881,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             setTargetAlphaProvider(WindowTransformSwipeHandler::getHiddenTargetAlpha);
         }
 
-        return OverviewInputConsumer.newInstance(mActivityControlHelper, null, true);
+        BaseDraggingActivity activity = mActivityControlHelper.getCreatedActivity();
+        return activity == null
+                ? InputConsumer.NO_OP : new OverviewInputConsumer(activity, null, true);
     }
 
     private void endRunningWindowAnim() {
@@ -1122,6 +1147,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             }
             mLauncherTransitionController.getAnimationPlayer().start();
         }
+        mHasLauncherTransitionControllerStarted = true;
     }
 
     /**
