@@ -28,13 +28,20 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils.ViewProgressProperty;
+import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager;
+import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
+import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.SpringObjectAnimator;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.android.launcher3.LauncherState.BACKGROUND_APP;
+import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 /**
@@ -56,7 +63,7 @@ public class StaggeredWorkspaceAnim {
     private final float mSpringTransY;
     private final View mViewToIgnore;
 
-    private final List<ValueAnimator> mAnimators = new ArrayList<>();
+    private final List<Animator> mAnimators = new ArrayList<>();
 
     /**
      * @param floatingViewOriginalView The FloatingIconView's original view.
@@ -104,6 +111,9 @@ public class StaggeredWorkspaceAnim {
             View qsb = launcher.findViewById(R.id.search_container_all_apps);
             addStaggeredAnimationForView(qsb, grid.inv.numRows + 2, totalRows);
         }
+
+        addWorkspaceScrimAnimationForState(launcher, BACKGROUND_APP, 0);
+        addWorkspaceScrimAnimationForState(launcher, NORMAL, ALPHA_DURATION_MS);
     }
 
     /**
@@ -149,5 +159,15 @@ public class StaggeredWorkspaceAnim {
         alpha.setDuration(ALPHA_DURATION_MS);
         alpha.setStartDelay(startDelay);
         mAnimators.add(alpha);
+    }
+
+    private void addWorkspaceScrimAnimationForState(Launcher launcher, LauncherState state,
+            long duration) {
+        AnimatorSetBuilder scrimAnimBuilder = new AnimatorSetBuilder();
+        AnimationConfig scrimAnimConfig = new AnimationConfig();
+        scrimAnimConfig.duration = duration;
+        PropertySetter scrimPropertySetter = scrimAnimConfig.getPropertySetter(scrimAnimBuilder);
+        launcher.getWorkspace().getStateTransitionAnimation().setScrim(scrimPropertySetter, state);
+        mAnimators.add(scrimAnimBuilder.build());
     }
 }

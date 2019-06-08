@@ -124,6 +124,7 @@ public class FloatingIconView extends View implements
 
     private boolean mIsVerticalBarLayout = false;
     private boolean mIsAdaptiveIcon = false;
+    private boolean mIsOpening;
 
     private @Nullable Drawable mBadge;
     private @Nullable Drawable mForeground;
@@ -178,8 +179,10 @@ public class FloatingIconView extends View implements
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        getViewTreeObserver().addOnGlobalLayoutListener(this);
-        mLauncher.getRotationHelper().setCurrentTransitionRequest(REQUEST_LOCK);
+        if (!mIsOpening) {
+            getViewTreeObserver().addOnGlobalLayoutListener(this);
+            mLauncher.getRotationHelper().setCurrentTransitionRequest(REQUEST_LOCK);
+        }
     }
 
     @Override
@@ -326,7 +329,7 @@ public class FloatingIconView extends View implements
      * - For BubbleTextView, we return the icon bounds.
      */
     private float getLocationBoundsForView(View v, RectF outRect) {
-        boolean ignoreTransform = true;
+        boolean ignoreTransform = !mIsOpening;
         if (v instanceof DeepShortcutView) {
             v = ((DeepShortcutView) v).getBubbleText();
             ignoreTransform = false;
@@ -627,6 +630,7 @@ public class FloatingIconView extends View implements
         view.recycle();
 
         view.mIsVerticalBarLayout = launcher.getDeviceProfile().isVerticalBarLayout();
+        view.mIsOpening = isOpening;
 
         view.mOriginalIcon = originalView;
         view.mPositionOut = positionOut;
