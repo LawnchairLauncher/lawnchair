@@ -18,17 +18,21 @@
 package ch.deletescape.lawnchair.sesame
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.folder.FolderShape
 import ch.deletescape.lawnchair.globalsearch.providers.SesameSearchProvider
 import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.util.diff.diff
+import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import com.android.launcher3.graphics.IconShapeOverride
 import ninja.sesame.lib.bridge.v1.SesameFrontend
 import ninja.sesame.lib.bridge.v1_1.LookFeelKeys
+import ninja.sesame.lib.bridge.v1_2.LookFeelOnChange
 
 object Sesame : ColorEngine.OnColorChangeListener, LawnchairPreferences.OnPreferenceChangeListener {
     const val PACKAGE = "ninja.sesame.app.edge"
@@ -63,12 +67,31 @@ object Sesame : ColorEngine.OnColorChangeListener, LawnchairPreferences.OnPrefer
     fun setupSync(context: Context) {
         this.context = context
         if (context.lawnchairPrefs.syncLookNFeelWithSesame) {
-            ColorEngine.getInstance(context).addColorChangeListeners(this, *syncedColors)
-            context.lawnchairPrefs.addOnPreferenceChangeListener(this, *syncedPrefs)
+            setListeners(context)
+            val bundle = SesameFrontend.getLookFeelPreferences()
+            if (bundle != null) {
+                SesameFrontend.setLookFeelOnChangeListener(LookFeelSync(context, bundle) {
+                    if (it) {
+                        setListeners(context)
+                    } else {
+                        unsetListeners(context)
+                    }
+                })
+            }
         } else {
-            ColorEngine.getInstance(context).removeColorChangeListeners(this, *syncedColors)
-            context.lawnchairPrefs.removeOnPreferenceChangeListener(this, *syncedPrefs)
+            unsetListeners(context)
+            SesameFrontend.setLookFeelOnChangeListener(null)
         }
+    }
+
+    private fun setListeners(context: Context) {
+        ColorEngine.getInstance(context).addColorChangeListeners(this, *syncedColors)
+        context.lawnchairPrefs.addOnPreferenceChangeListener(this, *syncedPrefs)
+    }
+
+    private fun unsetListeners(context: Context) {
+        ColorEngine.getInstance(context).removeColorChangeListeners(this, *syncedColors)
+        context.lawnchairPrefs.removeOnPreferenceChangeListener(this, *syncedPrefs)
     }
 
     override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
@@ -116,5 +139,26 @@ object Sesame : ColorEngine.OnColorChangeListener, LawnchairPreferences.OnPrefer
         }
 
         operator fun get(key: String) = SesameFrontend.getLookFeelPreferences()?.get(key)
+    }
+
+    class LookFeelSync(private val context: Context, private var previous: Bundle, private val setUnsetListeners: (enable: Boolean) -> Unit): LookFeelOnChange {
+        private val prefs = context.lawnchairPrefs
+        private val colors = ColorEngine.getInstance(context)
+
+        override fun onChange(bundle: Bundle) {
+            // Pause listeners
+            setUnsetListeners(false)
+
+            val diff = previous diff bundle
+            for (key in diff.changed) when (key) {
+                LookFeelKeys.SEARCH_HAS_ASSISTANT_ICON -> prefs.showVoiceSearchIcon = LookAndFeel[key] as Boolean
+                LookFeelKeys.SEARCH_BAR_COLOR -> colors.setColor(ColorEngine.Resolvers.HOTSEAT_QSB_BG, LookAndFeel[key] as Int)
+                LookFeelKeys.SEARCH_ICON_COLOR -> prefs.sesameIconColor = LookAndFeel[key] as Int
+            }
+            previous = bundle
+
+            // Unpause listeners
+            setUnsetListeners(true)
+        }
     }
 }

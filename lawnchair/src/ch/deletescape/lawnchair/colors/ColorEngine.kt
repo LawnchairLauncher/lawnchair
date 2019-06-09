@@ -18,6 +18,8 @@
 package ch.deletescape.lawnchair.colors
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.Color.*
 import android.support.v4.graphics.ColorUtils
 import android.support.v7.graphics.Palette
 import android.text.TextUtils
@@ -119,6 +121,27 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
         return resolverMap[key] ?: createResolverPref(key, defaultValue).also {
             resolverMap[key] = it
         }
+    }
+
+    fun setColor(resolver: String, color: Int) {
+        prefs.sharedPrefs.edit().putString(resolver, (if (alpha(color) < 0xFF) {
+            // ARGB
+            arrayOf(
+                    ARGBColorResolver::class.java.name,
+                    alpha(color).toString(),
+                    red(color).toString(),
+                    green(color).toString(),
+                    blue(color).toString()
+            )
+        } else {
+            // RGB
+            arrayOf(
+                    RGBColorResolver::class.java.name,
+                    red(color).toString(),
+                    green(color).toString(),
+                    blue(color).toString()
+            )
+        }).joinToString("|")).apply()
     }
 
     companion object : SingletonHolder<ColorEngine, Context>(ensureOnMainThread(useApplicationContext(::ColorEngine))) {

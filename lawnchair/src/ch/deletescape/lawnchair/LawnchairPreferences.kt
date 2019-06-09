@@ -105,8 +105,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val hideStatusBar by BooleanPref("pref_hideStatusBar", lawnchairConfig.hideStatusBar, doNothing)
     val iconPackMasking by BooleanPref("pref_iconPackMasking", true, reloadIcons)
     val adaptifyIconPacks by BooleanPref("pref_generateAdaptiveForIconPack", false, reloadIcons)
-    val showVoiceSearchIcon by BooleanPref("opa_enabled")
-    val showAssistantIcon by BooleanPref("opa_assistant")
+    var showVoiceSearchIcon by BooleanPref("opa_enabled")
+    var showAssistantIcon by BooleanPref("opa_assistant")
 
     // Desktop
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
@@ -207,6 +207,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         SearchProviderController.getInstance(context).onSearchProviderChanged()
     }
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, doNothing)
+    // This purely exists to abuse preference change listeners, the value is never actually read.
+    var sesameIconColor by IntPref("pref_sesameIconColor", -1)
 
     // Quickstep
     var swipeUpToSwitchApps by BooleanPref("pref_swipe_up_to_switch_apps_enabled", true, doNothing)
