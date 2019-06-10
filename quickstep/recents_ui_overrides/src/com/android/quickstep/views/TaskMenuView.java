@@ -42,6 +42,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskSystemShortcut;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.views.IconView.OnScaleUpdateListener;
@@ -196,7 +197,7 @@ public class TaskMenuView extends AbstractFloatingView {
 
         final BaseDraggingActivity activity = BaseDraggingActivity.fromContext(getContext());
         final List<TaskSystemShortcut> shortcuts =
-                taskView.getTaskOverlay().getEnabledShortcuts(taskView);
+                TaskOverlayFactory.INSTANCE.get(getContext()).getEnabledShortcuts(taskView);
         final int count = shortcuts.size();
         for (int i = 0; i < count; ++i) {
             final TaskSystemShortcut menuOption = shortcuts.get(i);

@@ -51,7 +51,7 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
     private final boolean mStartingInActivityBounds;
     private boolean mTargetHandledTouch;
 
-    OverviewInputConsumer(T activity, @Nullable InputMonitorCompat inputMonitor,
+    public OverviewInputConsumer(T activity, @Nullable InputMonitorCompat inputMonitor,
             boolean startingInActivityBounds) {
         mActivity = activity;
         mInputMonitor = inputMonitor;
@@ -115,12 +115,12 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
         }
     }
 
-    public static InputConsumer newInstance(ActivityControlHelper activityHelper,
-            @Nullable InputMonitorCompat inputMonitor, boolean startingInActivityBounds) {
+    public static InputConsumer newInstanceWithinActivityBounds(
+            ActivityControlHelper activityHelper) {
         BaseDraggingActivity activity = activityHelper.getCreatedActivity();
         if (activity == null) {
             return InputConsumer.NO_OP;
         }
-        return new OverviewInputConsumer(activity, inputMonitor, startingInActivityBounds);
+        return new OverviewInputConsumer(activity, null, true);
     }
 }

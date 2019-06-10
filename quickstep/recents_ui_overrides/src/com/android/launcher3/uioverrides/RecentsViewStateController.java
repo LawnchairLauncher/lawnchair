@@ -32,7 +32,6 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
-import com.android.quickstep.hints.ProactiveHintsContainer;
 import com.android.quickstep.views.ClearAllButton;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
@@ -55,14 +54,6 @@ public final class RecentsViewStateController extends
         if (state.overviewUi) {
             mRecentsView.updateEmptyMessage();
             mRecentsView.resetTaskVisuals();
-            mRecentsView.setHintVisibility(1f);
-        } else {
-            mRecentsView.setHintVisibility(0f);
-            ProactiveHintsContainer
-                    proactiveHintsContainer = mRecentsView.getProactiveHintsContainer();
-            if (proactiveHintsContainer != null) {
-                proactiveHintsContainer.removeAllViews();
-            }
         }
         setAlphas(PropertySetter.NO_ANIM_PROPERTY_SETTER, state.getVisibleElements(mLauncher));
         mRecentsView.setFullscreenProgress(state.getOverviewFullscreenProgress());
@@ -75,14 +66,6 @@ public final class RecentsViewStateController extends
 
         if (!toState.overviewUi) {
             builder.addOnFinishRunnable(mRecentsView::resetTaskVisuals);
-            mRecentsView.setHintVisibility(0f);
-            builder.addOnFinishRunnable(() -> {
-                ProactiveHintsContainer
-                        proactiveHintsContainer = mRecentsView.getProactiveHintsContainer();
-                if (proactiveHintsContainer != null) {
-                    proactiveHintsContainer.removeAllViews();
-                }
-            });
         }
 
         if (toState.overviewUi) {
@@ -94,7 +77,6 @@ public final class RecentsViewStateController extends
             updateAnim.setDuration(config.duration);
             builder.play(updateAnim);
             mRecentsView.updateEmptyMessage();
-            builder.addOnFinishRunnable(() -> mRecentsView.setHintVisibility(1f));
         }
 
         PropertySetter propertySetter = config.getPropertySetter(builder);

@@ -121,12 +121,16 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
         alpha.setDuration(CONTENT_ALPHA_DURATION);
         alpha.setInterpolator(LINEAR);
         anim.play(alpha);
+        overview.setFreezeViewVisibility(true);
 
         ObjectAnimator transY = ObjectAnimator.ofFloat(overview, View.TRANSLATION_Y, trans);
         transY.setInterpolator(AGGRESSIVE_EASE);
         transY.setDuration(CONTENT_TRANSLATION_DURATION);
         anim.play(transY);
 
-        return mLauncher.getStateManager()::reapplyState;
+        return () -> {
+            overview.setFreezeViewVisibility(false);
+            mLauncher.getStateManager().reapplyState();
+        };
     }
 }

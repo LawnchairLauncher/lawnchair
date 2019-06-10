@@ -108,7 +108,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     // Use a shorter duration for x or y translation to create a curve effect
     private static final long APP_LAUNCH_CURVED_DURATION = 250;
     private static final long APP_LAUNCH_ALPHA_DURATION = 50;
-    private static final long APP_LAUNCH_ALPHA_START_DELAY = 50;
+    private static final long APP_LAUNCH_ALPHA_START_DELAY = 25;
 
     // We scale the durations for the downward app launch animations (minus the scale animation).
     private static final float APP_LAUNCH_DOWN_DUR_SCALE_FACTOR = 0.8f;

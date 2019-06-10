@@ -48,11 +48,6 @@
             layout="@layout/overview_panel"
             android:visibility="gone" />
 
-        <include
-            android:id="@+id/hints"
-            layout="@layout/proactive_hints_container"
-            android:visibility="gone"/>
-
         <!-- Keep these behind the workspace so that they are not visible when
          we go into AllApps -->
         <com.android.launcher3.pageindicators.WorkspacePageIndicator

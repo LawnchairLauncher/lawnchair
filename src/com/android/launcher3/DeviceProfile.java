@@ -99,10 +99,6 @@ public class DeviceProfile {
     public int folderChildTextSizePx;
     public int folderChildDrawablePaddingPx;
 
-    // Hints
-    public int chipHintHeightPx;
-    public int chipHintBottomMarginPx;
-
     // Hotseat
     public int hotseatCellHeightPx;
     // In portrait: size = height, in landscape: size = width
@@ -199,9 +195,6 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_min_spring_loaded_space);
 
         workspaceCellPaddingXPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_padding_x);
-
-        chipHintHeightPx = res.getDimensionPixelSize(R.dimen.chip_hint_height);
-        chipHintBottomMarginPx = res.getDimensionPixelSize(R.dimen.chip_hint_bottom_margin);
 
         hotseatBarTopPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);

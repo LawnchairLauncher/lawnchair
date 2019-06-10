@@ -20,6 +20,7 @@ import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.RECENTS_CLEAR_ALL_BUTTON;
+import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.ALL_APPS_PROGRESS_OFF_SCREEN;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
@@ -30,25 +31,20 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
-import com.android.launcher3.util.PendingAnimation;
-import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.hints.ProactiveHintsContainer;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.ClipAnimationHelper.TransformParams;
 import com.android.quickstep.util.LayoutUtils;
@@ -57,11 +53,9 @@ import com.android.quickstep.util.LayoutUtils;
  * {@link RecentsView} used in Launcher activity
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class LauncherRecentsView extends RecentsView<Launcher> {
+public class LauncherRecentsView extends RecentsView<Launcher> implements StateListener {
 
     private final TransformParams mTransformParams = new TransformParams();
-    private final int mChipOverhang;
-    @Nullable private ProactiveHintsContainer mProactiveHintsContainer;
 
     public LauncherRecentsView(Context context) {
         this(context, null);
@@ -74,16 +68,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     public LauncherRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setContentAlpha(0);
-        mChipOverhang = (int) context.getResources().getDimension(R.dimen.chip_hint_overhang);
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        View hintContainer = mActivity.findViewById(R.id.hints);
-        mProactiveHintsContainer =
-                hintContainer instanceof ProactiveHintsContainer
-                        ? (ProactiveHintsContainer) hintContainer : null;
+        mActivity.getStateManager().addStateListener(this);
     }
 
     @Override
@@ -100,11 +85,6 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
                 redrawLiveTile(false);
             }
         }
-    }
-
-    @Nullable
-    public ProactiveHintsContainer getProactiveHintsContainer() {
-        return mProactiveHintsContainer;
     }
 
     @Override
@@ -160,23 +140,6 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     @Override
     protected void getTaskSize(DeviceProfile dp, Rect outRect) {
         LayoutUtils.calculateLauncherTaskSize(getContext(), dp, outRect);
-        if (mProactiveHintsContainer != null) {
-            BaseDragLayer.LayoutParams params = (BaseDragLayer.LayoutParams) mProactiveHintsContainer.getLayoutParams();
-            params.bottomMargin = getHeight() - outRect.bottom - mChipOverhang;
-            params.width = outRect.width();
-        }
-    }
-
-    @Override
-    public PendingAnimation createTaskLauncherAnimation(TaskView tv, long duration) {
-        PendingAnimation anim = super.createTaskLauncherAnimation(tv, duration);
-
-        if (mProactiveHintsContainer != null) {
-            anim.anim.play(ObjectAnimator.ofFloat(
-                    mProactiveHintsContainer, ProactiveHintsContainer.HINT_VISIBILITY, 0));
-        }
-
-        return anim;
     }
 
     @Override
@@ -191,31 +154,6 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
             } else {
                 redrawLiveTile(true);
             }
-        }
-    }
-
-    @Override
-    public PendingAnimation createTaskDismissAnimation(TaskView taskView, boolean animateTaskView,
-            boolean shouldRemoveTask, long duration) {
-        PendingAnimation anim = super.createTaskDismissAnimation(taskView, animateTaskView,
-                shouldRemoveTask, duration);
-
-        if (mProactiveHintsContainer != null) {
-            anim.anim.play(ObjectAnimator.ofFloat(
-                    mProactiveHintsContainer, ProactiveHintsContainer.HINT_VISIBILITY, 0));
-            anim.addEndListener(onEndListener -> {
-                if (!onEndListener.isSuccess) {
-                    mProactiveHintsContainer.setHintVisibility(1);
-                }
-            });
-        }
-
-        return anim;
-    }
-
-    public void setHintVisibility(float v) {
-        if (mProactiveHintsContainer != null) {
-            mProactiveHintsContainer.setHintVisibility(v);
         }
     }
 
@@ -284,6 +222,22 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
         // We are moving to home or some other UI with no recents. Switch back to the home client,
         // the home predictions should have been updated when the activity was resumed.
         PredictionUiStateManager.INSTANCE.get(getContext()).switchClient(Client.HOME);
+    }
+
+    @Override
+    public void onStateTransitionStart(LauncherState toState) {
+        setOverviewStateEnabled(toState.overviewUi);
+        setFreezeViewVisibility(true);
+    }
+
+    @Override
+    public void onStateTransitionComplete(LauncherState finalState) {
+        if (finalState == NORMAL || finalState == SPRING_LOADED) {
+            // Clean-up logic that occurs when recents is no longer in use/visible.
+            reset();
+        }
+        setOverlayEnabled(finalState == OVERVIEW);
+        setFreezeViewVisibility(false);
     }
 
     @Override

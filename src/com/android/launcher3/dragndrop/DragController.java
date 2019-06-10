@@ -27,6 +27,7 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
@@ -490,6 +491,16 @@ public class DragController implements DragDriver.EventListener, TouchController
         mDistanceSinceScroll += Math.hypot(mLastTouch[0] - x, mLastTouch[1] - y);
         mLastTouch[0] = x;
         mLastTouch[1] = y;
+
+        if (TestProtocol.sDebugTracing) {
+           Log.d(TestProtocol.NO_DRAG_TAG,
+                    "handleMoveEvent Conditions " +
+                            mIsInPreDrag + ", " +
+                            (mIsInPreDrag && mOptions.preDragCondition != null) + ", " +
+                            (mIsInPreDrag && mOptions.preDragCondition != null
+                                    && mOptions.preDragCondition.shouldStartDrag(
+                                    mDistanceSinceScroll)));
+        }
 
         if (mIsInPreDrag && mOptions.preDragCondition != null
                 && mOptions.preDragCondition.shouldStartDrag(mDistanceSinceScroll)) {

@@ -27,7 +27,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.LauncherStateManager.StateHandler;
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.util.TouchController;
 
@@ -40,7 +39,7 @@ public class UiFactory {
                 launcher.getDragController(), new AllAppsSwipeController(launcher)};
     }
 
-    public static Runnable enableLiveTouchControllerChanges(DragLayer dl) {
+    public static Runnable enableLiveUIChanges(Launcher l) {
         return null;
     }
 
