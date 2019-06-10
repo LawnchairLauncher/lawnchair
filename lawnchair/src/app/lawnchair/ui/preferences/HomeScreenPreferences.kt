@@ -59,6 +59,10 @@ fun HomeScreenPreferences() {
                 label = stringResource(id = R.string.smart_space_enable),
             )
             SwitchPreference(
+                prefs.wallpaperScrolling.getAdapter(),
+                label = stringResource(id = R.string.wallpaper_scrolling_label),
+            )
+            SwitchPreference(
                 prefs.workspaceDt2s.getAdapter(),
                 label = stringResource(id = R.string.workspace_dt2s),
                 showDivider = false
