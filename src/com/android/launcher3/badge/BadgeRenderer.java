@@ -113,7 +113,7 @@ public class BadgeRenderer {
         canvas.drawCircle(0, 0, mCircleRadius, mCirclePaint);
 
         // TODO: Add an option to change the text font?
-        if (mDisplayCount) {
+        if (mDisplayCount && numNotifications > 0) {
             mTextPaint.setColor(LawnchairUtilsKt.getForegroundColor(color));
             String text = String.valueOf(Math.min(numNotifications, MAX_COUNT));
             mTextPaint.getTextBounds(text, 0, text.length(), mTmp);

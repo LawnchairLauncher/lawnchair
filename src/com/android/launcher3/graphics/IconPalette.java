@@ -146,8 +146,10 @@ public class IconPalette {
         return ColorUtils.LABToColor(low, a, b);
     }
 
-    public static int getMutedColor(int color, float whiteScrimAlpha) {
-        int whiteScrim = ColorUtils.setAlphaComponent(Color.WHITE, (int) (255 * whiteScrimAlpha));
-        return ColorUtils.compositeColors(whiteScrim, color);
+    public static int getMutedColor(Context context, int color, float scrimAlpha) {
+        boolean isDark = Themes.getAttrBoolean(context, R.attr.isMainColorDark);
+        int baseColor = isDark ? Color.BLACK : Color.WHITE;
+        int scrim = ColorUtils.setAlphaComponent(baseColor, (int) (255 * scrimAlpha));
+        return ColorUtils.compositeColors(scrim, color);
     }
 }

@@ -285,7 +285,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     private void applyIconAndLabel(ItemInfoWithIcon info) {
         FastBitmapDrawable iconDrawable = DrawableFactory.get(getContext()).newIcon(info);
-        mBadgeColor = IconPalette.getMutedColor(info.iconColor, 0.54f);
+        mBadgeColor = IconPalette.getMutedColor(getContext(), info.iconColor, 0.54f);
 
         setIcon(iconDrawable);
         if (!isTextHidden())
@@ -443,7 +443,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             final int scrollY = getScrollY();
             canvas.translate(scrollX, scrollY);
             mBadgeRenderer.draw(canvas, mBadgeColor, mTempIconBounds, mBadgeScale,
-                    mTempSpaceForBadgeOffset, mBadgeInfo.getNotificationCount());
+                    mTempSpaceForBadgeOffset,
+                    mBadgeInfo == null ? -1 : mBadgeInfo.getNotificationCount());
             canvas.translate(-scrollX, -scrollY);
         }
     }
