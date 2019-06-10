@@ -27,7 +27,6 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_N
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
 
 import android.annotation.TargetApi;
@@ -61,6 +60,7 @@ import android.view.Surface;
 import android.view.WindowManager;
 
 import androidx.annotation.BinderThread;
+import androidx.annotation.UiThread;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.MainThreadExecutor;
@@ -94,7 +94,6 @@ import com.android.systemui.shared.system.SystemGestureExclusionListenerCompat;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -146,10 +145,7 @@ public class TouchInteractionService extends Service implements
             mISystemUiProxy = ISystemUiProxy.Stub
                     .asInterface(bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
             MAIN_THREAD_EXECUTOR.execute(TouchInteractionService.this::initInputMonitor);
-            runWhenUserUnlocked(() -> {
-                mRecentsModel.setSystemUiProxy(mISystemUiProxy);
-                mOverviewInteractionState.setSystemUiProxy(mISystemUiProxy);
-            });
+            MAIN_THREAD_EXECUTOR.execute(TouchInteractionService.this::onSystemUiProxySet);
         }
 
         @Override
@@ -182,16 +178,9 @@ public class TouchInteractionService extends Service implements
 
         @Override
         public void onAssistantVisibilityChanged(float visibility) {
-            if (mOverviewComponentObserver == null) {
-                // Save the visibility to be applied when the user is unlocked
-                mPendingAssistantVisibility = visibility;
-                return;
-            }
-
-            MAIN_THREAD_EXECUTOR.execute(() -> {
-                mOverviewComponentObserver.getActivityControlHelper()
-                        .onAssistantVisibilityChanged(visibility);
-            });
+            mLastAssistantVisibility = visibility;
+            MAIN_THREAD_EXECUTOR.execute(
+                    TouchInteractionService.this::onAssistantVisibilityChanged);
         }
 
         public void onBackAction(boolean completed, int downX, int downY, boolean isButton,
@@ -208,8 +197,7 @@ public class TouchInteractionService extends Service implements
 
         public void onSystemUiStateChanged(int stateFlags) {
             mSystemUiStateFlags = stateFlags;
-            mOverviewInteractionState.setSystemUiStateFlags(stateFlags);
-            mOverviewComponentObserver.onSystemUiStateChanged(stateFlags);
+            MAIN_THREAD_EXECUTOR.execute(TouchInteractionService.this::onSystemUiFlagsChanged);
         }
 
         /** Deprecated methods **/
@@ -248,11 +236,10 @@ public class TouchInteractionService extends Service implements
     private InputConsumerController mInputConsumer;
     private SwipeSharedState mSwipeSharedState;
     private boolean mAssistantAvailable;
-    private float mPendingAssistantVisibility = 0;
+    private float mLastAssistantVisibility = 0;
     private @SystemUiStateFlags int mSystemUiStateFlags;
 
     private boolean mIsUserUnlocked;
-    private List<Runnable> mOnUserUnlockedCallbacks;
     private BroadcastReceiver mUserUnlockedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -286,7 +273,6 @@ public class TouchInteractionService extends Service implements
         // Everything else should be initialized in initWhenUserUnlocked() below.
         mKM = getSystemService(KeyguardManager.class);
         mMainChoreographer = Choreographer.getInstance();
-        mOnUserUnlockedCallbacks = new ArrayList<>();
 
         if (UserManagerCompat.getInstance(this).isUserUnlocked(Process.myUserHandle())) {
             initWhenUserUnlocked();
@@ -413,13 +399,9 @@ public class TouchInteractionService extends Service implements
     }
 
     private void initWhenUserUnlocked() {
-        mIsUserUnlocked = true;
-
         mAM = ActivityManagerWrapper.getInstance();
         mRecentsModel = RecentsModel.INSTANCE.get(this);
         mOverviewComponentObserver = new OverviewComponentObserver(this);
-        mOverviewComponentObserver.getActivityControlHelper().onAssistantVisibilityChanged(
-                mPendingAssistantVisibility);
 
         mOverviewCommandHelper = new OverviewCommandHelper(this, mOverviewComponentObserver);
         mOverviewInteractionState = OverviewInteractionState.INSTANCE.get(this);
@@ -427,12 +409,12 @@ public class TouchInteractionService extends Service implements
         mTaskOverlayFactory = TaskOverlayFactory.INSTANCE.get(this);
         mSwipeSharedState = new SwipeSharedState(mOverviewComponentObserver);
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
-        mInputConsumer.registerInputConsumer();
+        mIsUserUnlocked = true;
 
-        for (Runnable callback : mOnUserUnlockedCallbacks) {
-            callback.run();
-        }
-        mOnUserUnlockedCallbacks.clear();
+        mInputConsumer.registerInputConsumer();
+        onSystemUiProxySet();
+        onSystemUiFlagsChanged();
+        onAssistantVisibilityChanged();
 
         // Temporarily disable model preload
         // new ModelPreload().start(this);
@@ -440,11 +422,27 @@ public class TouchInteractionService extends Service implements
         Utilities.unregisterReceiverSafely(this, mUserUnlockedReceiver);
     }
 
-    private void runWhenUserUnlocked(Runnable callback) {
+    @UiThread
+    private void onSystemUiProxySet() {
         if (mIsUserUnlocked) {
-            callback.run();
-        } else {
-            mOnUserUnlockedCallbacks.add(callback);
+            mRecentsModel.setSystemUiProxy(mISystemUiProxy);
+            mOverviewInteractionState.setSystemUiProxy(mISystemUiProxy);
+        }
+    }
+
+    @UiThread
+    private void onSystemUiFlagsChanged() {
+        if (mIsUserUnlocked) {
+            mOverviewInteractionState.setSystemUiStateFlags(mSystemUiStateFlags);
+            mOverviewComponentObserver.onSystemUiStateChanged(mSystemUiStateFlags);
+        }
+    }
+
+    @UiThread
+    private void onAssistantVisibilityChanged() {
+        if (mIsUserUnlocked) {
+            mOverviewComponentObserver.getActivityControlHelper().onAssistantVisibilityChanged(
+                    mLastAssistantVisibility);
         }
     }
 
