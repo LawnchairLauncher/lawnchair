@@ -35,6 +35,11 @@ inline fun v(message: String, t: Throwable) = Log.v(callingClass, message, t)
 
 inline fun v(message: String) = Log.v(callingClass, message)
 
+inline fun <reified T> T.v(): T {
+    Log.v(callingClass, this.toString())
+    return this
+}
+
 inline fun <reified T> T.v(message: String, t: Throwable) = Log.v(TAG, message, t)
 
 inline fun <reified T> T.v(message: String) = Log.v(TAG, message)
@@ -42,6 +47,11 @@ inline fun <reified T> T.v(message: String) = Log.v(TAG, message)
 inline fun d(message: String, t: Throwable) = Log.d(callingClass, message, t)
 
 inline fun d(message: String) = Log.d(callingClass, message)
+
+inline fun <reified T> T.d(): T{
+    Log.d(callingClass, this.toString())
+    return this
+}
 
 inline fun <reified T> T.d(message: String, t: Throwable) = Log.d(TAG, message, t)
 
@@ -51,6 +61,11 @@ inline fun i(message: String, t: Throwable) = Log.i(callingClass, message, t)
 
 inline fun i(message: String) = Log.i(callingClass, message)
 
+inline fun <reified T> T.i(): T {
+    Log.i(callingClass, this.toString())
+    return this
+}
+
 inline fun <reified T> T.i(message: String, t: Throwable) = Log.i(TAG, message, t)
 
 inline fun <reified T> T.i(message: String) = Log.i(TAG, message)
@@ -59,6 +74,11 @@ inline fun w(message: String, t: Throwable) = Log.w(callingClass, message, t)
 
 inline fun w(message: String) = Log.w(callingClass, message)
 
+inline fun <reified T> T.w(): T {
+    Log.w(callingClass, this.toString())
+    return this
+}
+
 inline fun <reified T> T.w(message: String, t: Throwable) = Log.w(TAG, message, t)
 
 inline fun <reified T> T.w(message: String) = Log.w(TAG, message)
@@ -66,6 +86,11 @@ inline fun <reified T> T.w(message: String) = Log.w(TAG, message)
 inline fun e(message: String, t: Throwable) = Log.e(callingClass, message, t)
 
 inline fun e(message: String) = Log.e(callingClass, message)
+
+inline fun <reified T> T.e(): T {
+    Log.e(callingClass, this.toString())
+    return this
+}
 
 inline fun <reified T> T.e(message: String, t: Throwable) = Log.e(TAG, message, t)
 

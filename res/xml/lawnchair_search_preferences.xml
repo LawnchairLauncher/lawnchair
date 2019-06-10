@@ -30,6 +30,15 @@
             android:key="pref_bubbleSearchStyle"
             android:title="@string/bubble_searchbar"
             android:defaultValue="false"/>
+
+        <ch.deletescape.lawnchair.preferences.AutoModeSeekbarPreference
+            android:key="pref_searchbarRadius"
+            android:title="@string/pref_search_bar_radius"
+            app:defaultSeekbarValue="-1.0"
+            app:maxValue="24"
+            app:minValue="0.0"
+            app:steps="24"
+            app:summaryFormat="%.0fdp"/>
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory

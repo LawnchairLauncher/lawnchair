@@ -116,9 +116,9 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {
-        super.onSharedPreferenceChanged(sharedPreferences, str);
-        if (str.equals("pref_allAppsGoogleSearch")) {
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        super.onSharedPreferenceChanged(sharedPreferences, key);
+        if (key.equals("pref_allAppsGoogleSearch")) {
             loadPreferences(sharedPreferences);
         }
     }

@@ -209,6 +209,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, doNothing)
     // This purely exists to abuse preference change listeners, the value is never actually read.
     var sesameIconColor by IntPref("pref_sesameIconColor", -1)
+    var searchBarRadius by DimensionPref("pref_searchbarRadius", -1f)
 
     // Quickstep
     var swipeUpToSwitchApps by BooleanPref("pref_swipe_up_to_switch_apps_enabled", true, doNothing)
@@ -535,7 +536,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         override fun onGetValue(): Float = dpToPx(sharedPrefs.getFloat(getKey(), defaultValue))
 
         override fun onSetValue(value: Float) {
-            TODO("not implemented")
+            edit { putFloat(getKey(), pxToDp(value.toFloat())) }
         }
     }
 

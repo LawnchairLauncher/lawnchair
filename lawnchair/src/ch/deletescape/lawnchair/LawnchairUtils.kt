@@ -438,6 +438,10 @@ fun dpToPx(size: Float): Float {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, Resources.getSystem().displayMetrics)
 }
 
+fun pxToDp(size: Float): Float {
+    return size / dpToPx(1f)
+}
+
 fun Drawable.toBitmap(): Bitmap? {
     return Utilities.drawableToBitmap(this)
 }

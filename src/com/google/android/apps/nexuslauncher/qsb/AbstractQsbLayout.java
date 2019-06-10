@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -39,7 +38,6 @@ import android.view.View.OnLongClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.folder.FolderShape;
 import ch.deletescape.lawnchair.globalsearch.SearchProvider;
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
@@ -86,6 +84,8 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     protected final boolean mIsRtl;
     protected Bitmap mShadowBitmap;
     private boolean mShowAssistant;
+
+    private float mRadius = -1.0f;
 
     public abstract void startSearch(String str, int i);
 
@@ -323,11 +323,16 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         }
         builder.keyShadowAlpha = builder.ambientShadowAlpha;
         Bitmap pill;
-        TypedValue edgeRadius = FolderShape.sInstance.mAttrs.get(R.attr.qsbEdgeRadius);
-        if (edgeRadius != null) {
-            pill = builder.createPill(i2, dC, edgeRadius.getDimension(getResources().getDisplayMetrics()));
+        if (mRadius < 0) {
+            TypedValue edgeRadius = FolderShape.sInstance.mAttrs.get(R.attr.qsbEdgeRadius);
+            if (edgeRadius != null) {
+                pill = builder.createPill(i2, dC,
+                        edgeRadius.getDimension(getResources().getDisplayMetrics()));
+            } else {
+                pill = builder.createPill(i2, dC);
+            }
         } else {
-            pill = builder.createPill(i2, dC);
+            pill = builder.createPill(i2, dC, mRadius);
         }
         if (Utilities.ATLEAST_OREO) {
             return pill.copy(Config.HARDWARE, false);
@@ -439,13 +444,18 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     private float getCornerRadius() {
-        return getCornerRadius(getResources(), Utilities.pxFromDp(100, getResources().getDisplayMetrics()));
+        return getCornerRadius(getContext(),
+                Utilities.pxFromDp(100, getResources().getDisplayMetrics()));
     }
 
-    public static float getCornerRadius(Resources resources, float defaultRadius) {
+    public static float getCornerRadius(Context context, float defaultRadius) {
+        float radius = round(Utilities.getLawnchairPrefs(context).getSearchBarRadius());
+        if (radius > 0f) {
+            return radius;
+        }
         TypedValue edgeRadius = FolderShape.sInstance.mAttrs.get(R.attr.qsbEdgeRadius);
         if (edgeRadius != null) {
-            return edgeRadius.getDimension(resources.getDisplayMetrics());
+            return edgeRadius.getDimension(context.getResources().getDisplayMetrics());
         } else {
             return defaultRadius;
         }
@@ -497,12 +507,16 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         }
     }
 
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {
-        switch (str) {
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        switch (key) {
             case "opa_enabled":
             case "opa_assistant":
             case "pref_bubbleSearchStyle":
                 loadPreferences(sharedPreferences);
+        }
+        if (key.equals("pref_searchbarRadius")) {
+            mShadowBitmap = null;
+            loadPreferences(sharedPreferences);
         }
     }
 
@@ -517,6 +531,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         mMicIconView.setVisibility(sharedPreferences.getBoolean("opa_enabled", true) ? View.VISIBLE : View.GONE);
         mMicIconView.setImageDrawable(getMicIcon());
         mUseTwoBubbles = useTwoBubbles();
+        mRadius = Utilities.getLawnchairPrefs(getContext()).getSearchBarRadius();
         invalidate();
     }
 

@@ -24,11 +24,13 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.ColorUtils
 import android.util.AttributeSet
 import android.view.View
-import ch.deletescape.lawnchair.*
+import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
+import ch.deletescape.lawnchair.dpToPx
+import ch.deletescape.lawnchair.isVisible
+import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.states.HomeState
-import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -65,8 +67,9 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private val key_opacity = "pref_allAppsOpacitySB"
     private val key_dock_opacity = "pref_hotseatCustomOpacity"
     private val key_dock_arrow = "pref_hotseatShowArrow"
+    private val key_search_radius = "pref_searchbarRadius"
 
-    private val prefsToWatch = arrayOf(key_radius, key_opacity, key_dock_opacity, key_dock_arrow)
+    private val prefsToWatch = arrayOf(key_radius, key_opacity, key_dock_opacity, key_dock_arrow, key_search_radius)
 
     private val blurDrawableCallback by lazy {
         object : Drawable.Callback {
@@ -125,7 +128,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         val searchBox = mLauncher.hotseatSearchBox
         return if (searchBox?.isVisible == true && BlurWallpaperProvider.isEnabled) {
             val height = searchBox.height - searchBox.paddingTop - searchBox.paddingBottom
-            provider.createDrawable(AbstractQsbLayout.getCornerRadius(resources, height / 2f), false).apply {
+            provider.createDrawable(AbstractQsbLayout.getCornerRadius(context, height / 2f), false).apply {
                 callback = blurDrawableCallback
                 setBounds(left, top, right, bottom)
                 if (isAttachedToWindow) startListening()
@@ -184,6 +187,12 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             }
             key_dock_arrow -> {
                 updateDragHandleVisibility()
+            }
+            key_search_radius -> {
+                if (searchBlurDrawable != null) {
+                    searchBlurDrawable = createSearchBlurDrawable()
+                    reInitUi()
+                }
             }
         }
     }
