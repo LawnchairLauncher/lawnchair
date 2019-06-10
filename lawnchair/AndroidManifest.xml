@@ -356,6 +356,12 @@
             </intent-filter>
         </service>
 
+        <!-- Kustom 5s support -->
+        <provider
+            android:name="ch.deletescape.lawnchair.FiveSecsProvider"
+            android:authorities="${applicationId}.fivesecsprovider"
+            android:exported="true"
+            android:grantUriPermissions="true"/>
     </application>
 
 </manifest>
