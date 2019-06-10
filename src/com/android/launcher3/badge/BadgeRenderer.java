@@ -52,6 +52,8 @@ public class BadgeRenderer {
 
     private static final int MAX_COUNT = 99;
 
+    private static final boolean DEBUG_CENTER = false;
+
     private final float mDotCenterOffset;
     private final int mOffset;
     private final float mCircleRadius;
@@ -79,7 +81,7 @@ public class BadgeRenderer {
 
         mBitmapOffset = -mBackgroundWithShadow.getHeight() * 0.5f; // Same as width.
 
-        mTextPaint.setTextSize(mSize * 0.8f);
+        mTextPaint.setTextSize(mSize * 0.7f);
         mTextPaint.setTextAlign(Align.LEFT);
     }
 
@@ -117,11 +119,43 @@ public class BadgeRenderer {
             mTextPaint.setColor(LawnchairUtilsKt.getForegroundColor(color));
             String text = String.valueOf(Math.min(numNotifications, MAX_COUNT));
             mTextPaint.getTextBounds(text, 0, text.length(), mTmp);
-            float x = -mTmp.width() / 2f - mTmp.left;
+            float x = (-mTmp.width() / 2f - mTmp.left) * getAdjustment(numNotifications);
             float y = mTmp.height() / 2f - mTmp.bottom;
             canvas.drawText(text, x, y, mTextPaint);
+            if (DEBUG_CENTER) {
+                Paint linePaint = new Paint();
+                linePaint.setColor(Color.YELLOW);
+                linePaint.setStrokeWidth(2f);
+                canvas.drawLine(0, -mSize / 2, 0, mSize / 2, linePaint);
+            }
         }
 
         canvas.restore();
+    }
+
+    /**
+     * An attempt to adjust digits to their perceived center, they were tuned with Roboto but should
+     * (hopefully) work with other OEM fonts as well
+     *
+     * I am probably insane
+     */
+    private float getAdjustment(int number) {
+        switch (number) {
+            case 1:
+                return 1.01f;
+            case 2:
+                return 0.99f;
+            case 3:
+                return 0.98f;
+            case 4:
+                return 0.98f;
+            case 6:
+                return 0.98f;
+            case 7:
+                return 1.02f;
+            case 9:
+                return 0.9f;
+        }
+        return 1f;
     }
 }
