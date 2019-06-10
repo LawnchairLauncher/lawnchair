@@ -50,9 +50,9 @@ class BlurDrawable internal constructor(
     private val mClipPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val mClearPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
     private val mRect = RectF()
-    private var mPositionX: Float = 0.toFloat()
-    private var mPositionY: Float = 0.toFloat()
-    private var mOffset: Float = 0.toFloat()
+    private var mPositionX: Float = 0f
+    private var mPositionY: Float = 0f
+    private var mOffset: Float = 0f
     private var mShouldDraw = true
     private var mUseTransparency: Boolean = false
 

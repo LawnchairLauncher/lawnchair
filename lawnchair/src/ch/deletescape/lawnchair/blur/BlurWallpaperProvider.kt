@@ -50,7 +50,7 @@ class BlurWallpaperProvider(val context: Context) {
                 field = value
             }
         }
-    private var mOffset: Float = 0.5f
+    private var mOffset: Float = 0.6f
     var blurRadius = 25
         private set
     private val mNotifyRunnable = Runnable {

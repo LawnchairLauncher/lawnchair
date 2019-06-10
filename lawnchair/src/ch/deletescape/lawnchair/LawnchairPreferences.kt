@@ -119,6 +119,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val homeLabelRows get() = if(homeMultilineLabel) 2 else 1
     val allowOverlap by BooleanPref("pref_allowOverlap", false, reloadAll)
     val desktopTextScale by FloatPref("pref_iconTextScaleSB", 1f, reloadAll)
+    val centerWallpaper by BooleanPref("pref_centerWallpaper")
 
     // Smartspace
     val enableSmartspace by BooleanPref("pref_smartspace", lawnchairConfig.enableSmartspace)

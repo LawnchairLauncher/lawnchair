@@ -579,4 +579,7 @@
 
     <string name="pref_notification_count_title">Display notification count</string>
     <string name="pref_notification_count_summary">Display notification count inside the dots</string>
+
+    <string name="pref_center_wallpaper">Always center wallpaper</string>
+    <string name="pref_center_wallpaper_summary">This will disable the wallpaper scrolling effect</string>
 </resources>

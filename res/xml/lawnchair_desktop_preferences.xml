@@ -107,6 +107,11 @@
             app:controllerClass=".AllowRotationController"/>
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_centerWallpaper"
+            android:title="@string/pref_center_wallpaper"
+            android:summary="@string/pref_center_wallpaper_summary"/>
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="@bool/config_hide_statusbar"
             android:key="pref_hideStatusBar"
             android:persistent="true"
