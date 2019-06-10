@@ -1676,6 +1676,16 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return mClearAllButton;
     }
 
+    /**
+     * @return How many pixels the running task is offset on the x-axis due to the current scrollX.
+     */
+    public float getScrollOffset() {
+        int startScroll = getScrollForPage(getRunningTaskIndex());
+        int offsetX = startScroll - getScrollX();
+        offsetX *= getScaleX();
+        return offsetX;
+    }
+
     public Consumer<MotionEvent> getEventDispatcher(RotationMode rotationMode) {
         if (rotationMode.isTransposed) {
             Matrix transform = new Matrix();
