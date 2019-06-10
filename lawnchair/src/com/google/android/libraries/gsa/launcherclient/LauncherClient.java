@@ -362,6 +362,12 @@ public class LauncherClient {
         }
     }
 
+    public final void redraw() {
+        if (mLayoutParams != null && apiVersion >= 7) {
+            exchangeConfig();
+        }
+    }
+
     final void setOverlay(ILauncherOverlay overlay) {
         mOverlay = overlay;
         if (mOverlay == null) {
