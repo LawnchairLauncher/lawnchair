@@ -201,9 +201,7 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
 
         override fun toString() = TextUtils.join("|", listOf(this::class.java.name) + args) as String
 
-        open fun computeForegroundColor(): Int {
-            return Palette.Swatch(ColorUtils.setAlphaComponent(resolveColor(), 0xFF), 1).bodyTextColor
-        }
+        open fun computeForegroundColor() = resolveColor().foregroundColor
 
         open fun startListening() {
             listening = true

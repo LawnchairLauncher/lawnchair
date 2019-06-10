@@ -211,7 +211,8 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         prefs = Utilities.getLawnchairPrefs(context);
         prefs.addOnPreferenceChangeListener(this, "pref_fullWidthWidgets", "pref_dockSearchBar",
                 "pref_twoRowDock", "pref_compactDock", "pref_allAppsPaddingScale", "pref_dockScale",
-                "pref_iconTextScaleSB", "pref_allAppsIconTextScale");
+                "pref_iconTextScaleSB", "pref_allAppsIconTextScale",
+                "pref_displayNotificationCount");
     }
 
     public DeviceProfile copy(Context context) {
@@ -358,7 +359,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         updateWorkspacePadding();
 
         // This is done last, after iconSizePx is calculated above.
-        mBadgeRenderer = new BadgeRenderer(iconSizePx);
+        mBadgeRenderer = new BadgeRenderer(iconSizePx, prefs.getDisplayNotificationCount());
     }
 
     /**

@@ -106,6 +106,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val adaptifyIconPacks by BooleanPref("pref_generateAdaptiveForIconPack", false, reloadIcons)
     var showVoiceSearchIcon by BooleanPref("opa_enabled")
     var showAssistantIcon by BooleanPref("opa_assistant")
+    val displayNotificationCount by BooleanPref("pref_displayNotificationCount", false, reloadAll)
 
     // Desktop
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)

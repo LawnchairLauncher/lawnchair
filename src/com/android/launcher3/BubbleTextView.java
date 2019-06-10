@@ -443,7 +443,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             final int scrollY = getScrollY();
             canvas.translate(scrollX, scrollY);
             mBadgeRenderer.draw(canvas, mBadgeColor, mTempIconBounds, mBadgeScale,
-                    mTempSpaceForBadgeOffset);
+                    mTempSpaceForBadgeOffset, mBadgeInfo.getNotificationCount());
             canvas.translate(-scrollX, -scrollY);
         }
     }

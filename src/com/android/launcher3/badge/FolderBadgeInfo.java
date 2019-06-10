@@ -53,7 +53,7 @@ public class FolderBadgeInfo extends BadgeInfo {
     @Override
     public int getNotificationCount() {
         // This forces the folder badge to always show up as a dot.
-        return 0;
+        return mNumNotifications;
     }
 
     public boolean hasBadge() {

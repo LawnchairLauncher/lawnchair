@@ -41,6 +41,7 @@ import android.support.v4.graphics.ColorUtils
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.view.PagerAdapter
 import android.support.v7.app.AlertDialog
+import android.support.v7.graphics.Palette
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceGroup
 import android.text.TextUtils
@@ -759,3 +760,6 @@ fun Context.checkLocationAccess(): Boolean {
     return Utilities.hasPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) ||
             Utilities.hasPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
 }
+
+val Int.foregroundColor
+    get() = Palette.Swatch(ColorUtils.setAlphaComponent(this, 0xFF), 1).bodyTextColor

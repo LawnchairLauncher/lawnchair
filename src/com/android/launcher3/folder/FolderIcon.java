@@ -523,7 +523,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             float badgeScale = Math.max(0, mBadgeScale - mBackground.getScaleProgress());
             mTempSpaceForBadgeOffset.set(getWidth() - mTempBounds.right, mTempBounds.top);
             mBadgeRenderer.draw(canvas, mBackground.getBadgeColor(), mTempBounds,
-                    badgeScale, mTempSpaceForBadgeOffset);
+                    badgeScale, mTempSpaceForBadgeOffset, mBadgeInfo.getNotificationCount());
         }
     }
 
