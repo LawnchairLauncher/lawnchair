@@ -77,6 +77,13 @@
             app:defaultSeekbarValue="1.0"
             app:steps="150"/>
 
+        <ch.deletescape.lawnchair.colors.preferences.ColorPickerPreference
+            android:key="pref_allAppsLabelColorResolver"
+            android:title="@string/text_color"
+            android:dependency="pref_hideAllAppsAppLabels"
+            app:colorMode="RGB"
+            app:resolvers="@array/resolvers_drawer_labels"/>
+
         <Preference
             android:key="pref_drawerTabs"
             android:title="@string/drawer_tabs"

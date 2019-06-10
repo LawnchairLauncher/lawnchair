@@ -42,6 +42,9 @@ import android.widget.TextView;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
+import ch.deletescape.lawnchair.colors.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
+import ch.deletescape.lawnchair.colors.resolvers.DrawerLabelAutoResolver;
 import ch.deletescape.lawnchair.font.CustomFontManager;
 import ch.deletescape.lawnchair.gestures.BlankGestureHandler;
 import ch.deletescape.lawnchair.gestures.GestureController;
@@ -60,13 +63,15 @@ import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.PackageItemInfo;
 
 import java.text.NumberFormat;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
  * because we want to make the bubble taller than the text and TextView's clip is
  * too aggressive.
  */
-public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, OnResumeCallback {
+public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, OnResumeCallback,
+        ColorEngine.OnColorChangeListener {
 
     private boolean mHideText;
 
@@ -141,6 +146,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     private GestureHandler mSwipeUpHandler;
 
+    private ColorEngine colorEngine;
+
     public BubbleTextView(Context context) {
         this(context, null, 0);
     }
@@ -168,6 +175,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                 R.styleable.BubbleTextView, defStyle, 0);
         mLayoutHorizontal = a.getBoolean(R.styleable.BubbleTextView_layoutHorizontal, false);
 
+        colorEngine = ColorEngine.getInstance(context);
+
         int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
         int defaultIconSize = grid.iconSizePx;
         LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
@@ -180,6 +189,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setMaxLines(lines);
             setSingleLine(lines == 1);
             customFontManager.loadCustomFont(this, attrs);
+            colorEngine.addColorChangeListeners(this, Resolvers.WORKSPACE_ICON_LABEL);
         } else if (display == DISPLAY_ALL_APPS) {
             mHideText = prefs.getHideAllAppsAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.allAppsIconTextSizePx);
@@ -189,6 +199,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setMaxLines(lines);
             setSingleLine(lines == 1);
             customFontManager.setCustomFont(this, CustomFontManager.FONT_ALL_APPS_ICON);
+            colorEngine.addColorChangeListeners(this, Resolvers.ALLAPPS_ICON_LABEL);
         } else if (display == DISPLAY_FOLDER) {
             mHideText = prefs.getHideAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.folderChildTextSizePx);
@@ -473,6 +484,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                     getPaddingBottom());
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
+    public void onColorChange(@NotNull String resolver, int color, int foregroundColor) {
+        setTextColor(color);
     }
 
     @Override

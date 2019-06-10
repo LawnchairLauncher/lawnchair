@@ -575,4 +575,5 @@
     <string name="pref_search_bar_radius">Search bar radius</string>
 
     <string name="icon_text_scale_pref_title">Text size</string>
+    <string name="text_color">Text color</string>
 </resources>

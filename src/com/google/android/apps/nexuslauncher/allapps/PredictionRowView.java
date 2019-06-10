@@ -22,6 +22,9 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
+import ch.deletescape.lawnchair.colors.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
+import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
 import ch.deletescape.lawnchair.font.CustomFontManager;
 import ch.deletescape.lawnchair.font.FontLoader.FontReceiver;
 import com.android.launcher3.AppInfo;
@@ -53,7 +56,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 public class PredictionRowView extends LinearLayout implements LogContainerProvider,
-        OnUpdateListener, OnDeviceProfileChangeListener, FontReceiver {
+        OnUpdateListener, OnDeviceProfileChangeListener, FontReceiver, OnColorChangeListener {
     private static final Interpolator ALPHA_FACTOR_INTERPOLATOR = input -> input < 0.8f ? 0.0f : (input - 0.8f) / 0.2f;
     private static final String TAG = "PredictionRowView";
 
@@ -79,8 +82,8 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
     private DividerType mDividerType;
     private final FocusIndicatorHelper mFocusHelper;
     private int mIconCurrentTextAlpha;
-    private final int mIconFullTextAlpha;
-    private final int mIconTextColor;
+    private int mIconFullTextAlpha;
+    private int mIconTextColor;
     private boolean mIsCollapsed;
     private final Launcher mLauncher;
     private View mLoadingProgress;
@@ -131,8 +134,9 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
         mNumPredictedAppsPerRow = LauncherAppState.getIDP(context).numColsDrawer; // TODO: make a separated pref
         mLauncher = Launcher.getLauncher(context);
         mLauncher.addOnDeviceProfileChangeListener(this);
-        mIconTextColor = Themes.getAttrColor(context, 16842808);
-        mIconFullTextAlpha = Color.alpha(this.mIconTextColor);
+        ColorEngine.getInstance(context)
+                .addColorChangeListeners(this, Resolvers.ALLAPPS_ICON_LABEL);
+
         mIconCurrentTextAlpha = this.mIconFullTextAlpha;
         mAllAppsLabelTextPaint.setColor(ContextCompat.getColor(context, isMainColorDark ? R.color.all_apps_label_text_dark : R.color.all_apps_label_text));
         mAllAppsLabelTextColor = this.mAllAppsLabelTextPaint.getColor();
@@ -141,6 +145,12 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
         updateVisibility();
 
         CustomFontManager.Companion.getInstance(context).setCustomFont(this, CustomFontManager.FONT_DRAWER_TAB);
+    }
+
+    @Override
+    public void onColorChange(@NotNull String resolver, int color, int foregroundColor) {
+        mIconTextColor = color;
+        mIconFullTextAlpha = Color.alpha(mIconTextColor);
     }
 
     protected void onAttachedToWindow() {

@@ -48,6 +48,13 @@
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"/>
 
+        <ch.deletescape.lawnchair.colors.preferences.ColorPickerPreference
+            android:key="pref_workspaceLabelColorResolver"
+            android:title="@string/text_color"
+            android:dependency="pref_hideAppLabels"
+            app:colorMode="RGB"
+            app:resolvers="@array/resolvers_workspace_labels"/>
+
         <ch.deletescape.lawnchair.preferences.SeekbarPreference
             android:key="pref_iconSize"
             android:persistent="true"
