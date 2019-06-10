@@ -23,7 +23,7 @@
     <string name="label_turn_off_suggestions">비활성화</string>
     <string name="pixel_style_pref_title">Pixel 스타일</string>
     <string name="about_summary_title">요약</string>
-    <string name="action_edit">편집</string>
+    <string name="action_edit">수정</string>
     <string name="hide_app_sum">앱 서랍에서 앱 숨기기</string>
     <string name="hide_app">앱 숨기기</string>
     <string name="icon_shape_rounded_square">모서리가 둥근 사각형</string>
@@ -324,7 +324,9 @@
     <string name="pref_sesame_enabled">Sesame 숏컷 데이터 공유함</string>
     <string name="pref_sesame_disabled">데이터 공유 안 함</string>
     <string name="pref_sesame_show_shortcuts">앱 바로가기</string>
+    <string name="pref_sesame_show_shortcuts_summary">Sesame 숏컷을 아이콘 버블에 보기</string>
     <string name="allow">허용</string>
+    <string name="sesame_enable_integration_description"><![CDATA[Lawnchair 및 Sesame의 데이터 공유 사용하기. Lawnchair나 Sesame 설정에서 바꿀 수 있습니다.]]></string>
     <string name="font_variant_italic">이탤릭체</string>
     <string name="font_weight_thin">얇은체</string>
     <string name="font_weight_extra_light">아주옅은체</string>
@@ -342,6 +344,7 @@
     <string name="weather_provider_oneplus_weather">OnePlus 런처</string>
     <string name="units_rakine">랭킨</string>
     <string name="units_newton">뉴턴</string>
+    <string name="owm_get_your_own_key">api.openweathermap.org에서 당신 자신의 API 키를 받으세요.</string>
     <string name="pref_smartspace_time_above">큰 시계 보기</string>
     <string name="pref_smartspace_time_above_summary">시계를 위젯 위에 보기</string>
     <string name="pref_fonts_title">글꼴</string>
@@ -349,6 +352,7 @@
     <string name="pref_fonts_change_global_font">바꾸기</string>
     <string name="pref_fonts_home_icons">앱 및 폴더 이름</string>
     <string name="pref_fonts_home_smartspace">\'At a Glance\' 위젯</string>
+    <string name="pref_fonts_home_shortcuts">숏컷 버블</string>
     <string name="pref_fonts_category_drawer">앱 서랍</string>
     <string name="pref_fonts_drawer_icons">앱 이름</string>
     <string name="pref_fonts_drawer_app_actions_icons">앱 액션 이름</string>
@@ -357,4 +361,7 @@
     <string name="pref_fonts_add_fonts">폰트 추가</string>
     <string name="about_translate">번역</string>
     <string name="pref_show_dev_options">설정에서 보이기</string>
+    <string name="about_bio_paphonb">18살 학생 • 안드로이드 개발자 • Lawnchair 시작 관리자 첫번째 위 개발자의 한명</string>
+    <string name="dock_scale">독 스타일</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Lawnchair 검색 설정을 Sesame과 동기화</string>
 </resources>
