@@ -9,6 +9,7 @@ import android.support.v4.graphics.ColorUtils;
 import android.view.View;
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 import com.android.launcher3.*;
+import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
@@ -46,6 +47,7 @@ public class NexusLauncher {
         mExterns = activity;
         mCallbacks = new NexusLauncherCallbacks();
         mExterns.setLauncherCallbacks(mCallbacks);
+        mLauncher.addOnDeviceProfileChangeListener(dp -> mClient.redraw());
     }
 
     class NexusLauncherCallbacks implements LauncherCallbacks, SharedPreferences.OnSharedPreferenceChangeListener, WallpaperColorInfo.OnChangeListener {
