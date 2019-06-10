@@ -37,7 +37,7 @@ import android.widget.TextView;
 
 import androidx.annotation.StringRes;
 
-import com.android.launcher3.Launcher;
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -187,12 +187,12 @@ public final class DigitalWellBeingToast extends LinearLayout {
                         mTask.getTopComponent().getPackageName()).addFlags(
                         Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         try {
-            final Launcher launcher = Launcher.getLauncher(getContext());
+            final BaseActivity activity = BaseActivity.fromContext(getContext());
             final ActivityOptions options = ActivityOptions.makeScaleUpAnimation(
                     this, 0, 0,
                     getWidth(), getHeight());
-            launcher.startActivity(intent, options.toBundle());
-            launcher.getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.Touch.TAP,
+            activity.startActivity(intent, options.toBundle());
+            activity.getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.Touch.TAP,
                     LauncherLogProto.ControlType.APP_USAGE_SETTINGS, this);
         } catch (ActivityNotFoundException e) {
             Log.e(TAG, "Failed to open app usage settings for task "
