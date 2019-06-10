@@ -37,6 +37,18 @@
             android:persistent="true" />
 
         <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_iconTextScaleSB"
+            android:persistent="true"
+            android:title="@string/icon_text_scale_pref_title"
+            android:dependency="pref_hideAppLabels"
+            app:defaultSeekbarValue="1.0"
+            app:maxValue="1.8"
+            app:minValue="0.3"
+            app:steps="150"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"/>
+
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
             android:key="pref_iconSize"
             android:persistent="true"
             android:title="@string/icon_scale_pref_title"

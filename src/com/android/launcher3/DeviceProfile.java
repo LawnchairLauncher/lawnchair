@@ -84,6 +84,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     public int iconSizePx;
     public int iconSizeOriginalPx;
     public int iconTextSizePx;
+    public int iconTextSizeOriginalPx;
     public int iconDrawablePaddingPx;
     public int iconDrawablePaddingOriginalPx;
 
@@ -119,6 +120,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     public int allAppsIconSizePx;
     public int allAppsIconDrawablePaddingPx;
     public float allAppsIconTextSizePx;
+    public float allAppsIconTextSizeOriginalPx;
 
     // Widgets
     public final PointF appWidgetScale = new PointF(1.0f, 1.0f);
@@ -208,7 +210,8 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
 
         prefs = Utilities.getLawnchairPrefs(context);
         prefs.addOnPreferenceChangeListener(this, "pref_fullWidthWidgets", "pref_dockSearchBar",
-                        "pref_twoRowDock", "pref_compactDock", "pref_allAppsPaddingScale", "pref_dockScale");
+                "pref_twoRowDock", "pref_compactDock", "pref_allAppsPaddingScale", "pref_dockScale",
+                "pref_iconTextScaleSB", "pref_allAppsIconTextScale");
     }
 
     public DeviceProfile copy(Context context) {
@@ -303,6 +306,12 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         // Calculate all of the remaining variables.
         updateAvailableDimensions(dm, res);
 
+        iconTextSizePx = (int) (iconTextSizeOriginalPx * prefs.getDesktopTextScale());
+        allAppsIconTextSizePx = (int) (allAppsIconTextSizeOriginalPx * prefs.getDrawerTextScale());
+
+        // Calculate again to apply text size
+        updateAvailableDimensions(dm, res);
+
         // Now that we have all of the variables calculated, we can tune certain sizes.
         if (!isVerticalBarLayout() && isPhone && isTallDevice) {
             // We increase the hotseat size when there is extra space.
@@ -394,8 +403,11 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         float invIconSizePx = isVerticalLayout ? inv.landscapeIconSize : inv.iconSize;
         iconSizeOriginalPx = Utilities.pxFromDp(invIconSizePx, dm);
         iconSizePx = (int) (iconSizeOriginalPx * scale);
-        iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
-        iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
+        iconTextSizeOriginalPx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
+        iconTextSizePx = (int) (iconTextSizePx * scale);
+        iconDrawablePaddingPx =
+                (int) (iconDrawablePaddingOriginalPx * scale) -
+                        (iconTextSizeOriginalPx - iconTextSizePx);
 
         int textHeight = Utilities.calculateTextHeight(iconTextSizePx) * labelRowCount;
         cellHeightPx = iconSizePx + iconDrawablePaddingPx + textHeight;
@@ -412,10 +424,12 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
 
         // All apps
         float invAllAppsIconSizePx = isVerticalLayout ? inv.landscapeAllAppsIconSize : inv.allAppsIconSize;
-        allAppsIconTextSizePx = iconTextSizePx;
-        textHeight = Utilities.calculateTextHeight(iconTextSizePx) * drawerLabelRowCount;
+        allAppsIconTextSizeOriginalPx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
+        allAppsIconTextSizePx = (int) (allAppsIconTextSizePx * scale);
+        textHeight = Utilities.calculateTextHeight(allAppsIconTextSizePx) * drawerLabelRowCount;
         allAppsIconSizePx = (int) (Utilities.pxFromDp(invAllAppsIconSizePx, dm) * scale);
-        allAppsIconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
+        allAppsIconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale) -
+                (int) (allAppsIconTextSizeOriginalPx - allAppsIconTextSizePx);
 
         int additionalPadding = (int) (
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_drawer_additional_padding) * prefs

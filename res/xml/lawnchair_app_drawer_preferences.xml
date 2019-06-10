@@ -66,6 +66,17 @@
             android:defaultValue="false"
             android:persistent="true" />
 
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_allAppsIconTextScale"
+            android:title="@string/icon_text_scale_pref_title"
+            android:dependency="pref_hideAllAppsAppLabels"
+            app:minValue="0.3"
+            app:maxValue="1.8"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"
+            app:defaultSeekbarValue="1.0"
+            app:steps="150"/>
+
         <Preference
             android:key="pref_drawerTabs"
             android:title="@string/drawer_tabs"

@@ -24,11 +24,10 @@ import android.net.Uri
 import android.os.Looper
 import android.provider.Settings
 import android.text.TextUtils
-import android.util.TypedValue
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
+import ch.deletescape.lawnchair.groups.DrawerTabs
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.preferences.DockStyle
-import ch.deletescape.lawnchair.groups.DrawerTabs
 import ch.deletescape.lawnchair.sesame.Sesame
 import ch.deletescape.lawnchair.settings.GridSize
 import ch.deletescape.lawnchair.settings.GridSize2D
@@ -118,6 +117,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val homeMultilineLabel by BooleanPref("pref_homeIconLabelsInTwoLines", false, recreate)
     val homeLabelRows get() = if(homeMultilineLabel) 2 else 1
     val allowOverlap by BooleanPref("pref_allowOverlap", false, reloadAll)
+    val desktopTextScale by FloatPref("pref_iconTextScaleSB", 1f, reloadAll)
 
     // Smartspace
     val enableSmartspace by BooleanPref("pref_smartspace", lawnchairConfig.enableSmartspace)
@@ -178,6 +178,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val drawerTabs by lazy { DrawerTabs(this) }
     val showActions by BooleanPref("pref_show_suggested_actions", true, doNothing)
     val sortDrawerByColors by BooleanPref("pref_allAppsColorSorted", false, reloadAll)
+    val drawerTextScale by FloatPref("pref_allAppsIconTextScale", 1f, recreate)
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_showDevOptions", false, doNothing)
