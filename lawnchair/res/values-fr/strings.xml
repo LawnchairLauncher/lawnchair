@@ -290,10 +290,19 @@
     <string name="theme_auto_night_mode">Suivre le thème du système</string>
     <string name="theme_light">Clair</string>
     <string name="theme_dark_text">Clair avec texte foncé</string>
+    <string name="theme_with_dark_text">Textes sombre</string>
     <string name="theme_dark">Sombre</string>
     <string name="theme_dark_dark_text">Foncé avec texte foncé</string>
     <string name="theme_black">Noir</string>
     <string name="theme_black_dark_text">Noir avec texte foncé</string>
+    <string name="theme_dark_theme_mode">Thème sombre</string>
+    <string name="theme_dark_theme_mode_on">Activé</string>
+    <string name="theme_dark_theme_mode_off">Désactivé</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">Thème automatique suivant le fond d\'écran</string>
+    <string name="theme_dark_theme_mode_follow_system">Thème sombre suivant les paramètres système</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Suivant l\'heure du jour</string>
+    <string name="theme_use_black">Utilise un noir profond</string>
+    <string name="theme_use_dark_text">Utilisez le texte noir</string>
     <string name="pref_qsb_color">Couleur</string>
     <string name="hide_from_predictions">Masquer des suggestions</string>
     <string name="hide_from_predictions_summary">Ne jamais montrer dans les suggestions du tiroir</string>
@@ -373,7 +382,7 @@
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
-    <string name="search_provider_edge">Edge</string>
+    <string name="search_provider_edge">Bords</string>
     <string name="weather_provider_oneplus_weather">Météo OnePlus</string>
     <string name="overlap_placement">Placement superposé</string>
     <string name="overlap_placement_summary">Autoriser les icônes et les widgets à se superposer.</string>
@@ -409,4 +418,11 @@
     <string name="adaptify_pack_summary">Créé ds icônes adaptative pour des icônes provenant de pack d\'icônes</string>
     <string name="pref_sesame_sync_look_and_feel">Partager le Style</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Synchroniser Lawnchair avec les paramètres Sesame</string>
+    <string name="pref_search_bar_radius">Rayon de bar de recherche</string>
+    <string name="icon_text_scale_pref_title">Taille du texte</string>
+    <string name="text_color">Couleur du texte</string>
+    <string name="pref_notification_count_title">Affiche le nombre de notification</string>
+    <string name="pref_notification_count_summary">Afficher le nombre de notification dans le point</string>
+    <string name="pref_center_wallpaper">Toujours centrée le fond d\'écran</string>
+    <string name="pref_center_wallpaper_summary">Cela désactivera l\'effet de défilement du fond d\'écran</string>
 </resources>
