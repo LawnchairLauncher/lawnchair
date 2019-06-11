@@ -353,14 +353,15 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mIconLoadRequest = iconCache.updateIconInBackground(mTask,
                     (task) -> {
                         setIcon(task.icon);
-                        if (isRunningTask()) {
+                        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask()) {
                             getRecentsView().updateLiveTileIcon(task.icon);
                         }
                         mDigitalWellBeingToast.initialize(
                                 mTask,
                                 contentDescription -> {
                                     setContentDescription(contentDescription);
-                                    if (mDigitalWellBeingToast.getVisibility() == VISIBLE) {
+                                    if (mDigitalWellBeingToast.getVisibility() == VISIBLE
+                                            && getRecentsView() != null) {
                                         getRecentsView().onDigitalWellbeingToastShown();
                                     }
                                 });
@@ -718,6 +719,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     public boolean isRunningTask() {
+        if (getRecentsView() == null) {
+            return false;
+        }
         return this == getRecentsView().getRunningTaskView();
     }
 
