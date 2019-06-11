@@ -291,10 +291,19 @@
     <string name="theme_auto_night_mode">Seguir tema del sistema</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark_text">Blanco con texto oscuro</string>
+    <string name="theme_with_dark_text">texto oscuro</string>
     <string name="theme_dark">Oscuro</string>
     <string name="theme_dark_dark_text">Oscuro con texto oscuro</string>
     <string name="theme_black">Negro</string>
     <string name="theme_black_dark_text">Negro con texto oscuro</string>
+    <string name="theme_dark_theme_mode">Tema Oscuro</string>
+    <string name="theme_dark_theme_mode_on">Activado</string>
+    <string name="theme_dark_theme_mode_off">Desactivado</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">Tema automático</string>
+    <string name="theme_dark_theme_mode_follow_system">Tema modo noche automático</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Durante el día</string>
+    <string name="theme_use_black">Usar negro puro</string>
+    <string name="theme_use_dark_text">Usar texto oscuro</string>
     <string name="pref_qsb_color">Color</string>
     <string name="hide_from_predictions">Ocultar sugerencia</string>
     <string name="hide_from_predictions_summary">Nunca mostrar en la caja de sugerencias</string>
@@ -410,4 +419,11 @@
     <string name="adaptify_pack_summary">Crear iconos adaptativos para iconos de un paquete de iconos</string>
     <string name="pref_sesame_sync_look_and_feel">Compartir Look and Feel</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Sincronizar los ajustes de búsqueda de Lawnchair con Sesame</string>
+    <string name="pref_search_bar_radius">Radio barra de búsqueda</string>
+    <string name="icon_text_scale_pref_title">Tamaño del texto</string>
+    <string name="text_color">Color del texto</string>
+    <string name="pref_notification_count_title">Mostrar el contador de notificaciones</string>
+    <string name="pref_notification_count_summary">Mostrar contador de notificaciones dentro de la burbuja</string>
+    <string name="pref_center_wallpaper">Fondo de pantalla siempre centrado</string>
+    <string name="pref_center_wallpaper_summary">Esto deshabilitará el movimiento del fondo de pantalla al cambiar de pantalla</string>
 </resources>
