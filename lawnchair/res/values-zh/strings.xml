@@ -175,6 +175,7 @@
     <string name="action_open_app_with_target">打开 %s</string>
     <string name="action_open_app_select_app">选择应用</string>
     <string name="action_none">无操作</string>
+    <string name="action_despacito">播放 YouTube Rewind 2018 (高能预警)</string>
     <string name="gesture_press_home">主页键</string>
     <string name="gesture_press_back">返回键</string>
     <string name="gesture_double_tap">双击</string>
@@ -291,10 +292,19 @@
     <string name="theme_auto_night_mode">跟随系统主题</string>
     <string name="theme_light">亮色主题</string>
     <string name="theme_dark_text">亮色主题 + 暗色文字</string>
+    <string name="theme_with_dark_text">深色文本</string>
     <string name="theme_dark">暗色主题</string>
     <string name="theme_dark_dark_text">暗色主题 + 暗色文字</string>
     <string name="theme_black">黑色主题</string>
     <string name="theme_black_dark_text">黑色主题 + 暗色文字</string>
+    <string name="theme_dark_theme_mode">暗色主题</string>
+    <string name="theme_dark_theme_mode_on">开启</string>
+    <string name="theme_dark_theme_mode_off">关闭</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
+    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
+    <string name="theme_dark_theme_mode_follow_daylight">随日出日落</string>
+    <string name="theme_use_black">使用纯黑色</string>
+    <string name="theme_use_dark_text">使用暗色文本</string>
     <string name="pref_qsb_color">颜色</string>
     <string name="hide_from_predictions">从建议中隐藏</string>
     <string name="hide_from_predictions_summary">不再显示于抽屉建议中</string>
@@ -408,4 +418,10 @@
     <string name="adaptify_pack_summary">为出自图标包的图标创建自适应图标</string>
     <string name="pref_sesame_sync_look_and_feel">分享外观和风格</string>
     <string name="pref_sesame_sync_look_and_feel_summary">与 Sesame 同步 Lawnchair 搜索设置</string>
+    <string name="icon_text_scale_pref_title">文字大小</string>
+    <string name="text_color">文字颜色</string>
+    <string name="pref_notification_count_title">显示通知数量</string>
+    <string name="pref_notification_count_summary">在点内显示通知数量</string>
+    <string name="pref_center_wallpaper">始终居中壁纸</string>
+    <string name="pref_center_wallpaper_summary">这将禁用壁纸滚动效果</string>
 </resources>
