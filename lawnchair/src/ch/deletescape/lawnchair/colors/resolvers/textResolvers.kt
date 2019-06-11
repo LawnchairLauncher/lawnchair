@@ -18,51 +18,17 @@
 package ch.deletescape.lawnchair.colors.resolvers
 
 import android.support.annotation.Keep
-import ch.deletescape.lawnchair.LawnchairPreferences
-import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.colors.ThemeAttributeColorResolver
 import com.android.launcher3.R
-import com.android.launcher3.util.Themes
 
 @Keep
-class DrawerLabelAutoResolver(config: Config) : ColorEngine.ColorResolver(config), LawnchairPreferences.OnPreferenceChangeListener {
+class DrawerLabelAutoResolver(config: Config) : ThemeAttributeColorResolver(config) {
 
-    override fun getDisplayName() = context.getString(R.string.theme_based)
-
-    override fun startListening() {
-        super.startListening()
-        LawnchairPreferences.getInstanceNoCreate().addOnPreferenceChangeListener(this, "pref_launcherTheme")
-    }
-
-    override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
-        notifyChanged()
-    }
-
-    override fun stopListening() {
-        super.stopListening()
-        LawnchairPreferences.getInstanceNoCreate().removeOnPreferenceChangeListener(this, "pref_launcherTheme")
-    }
-
-    override fun resolveColor() = Themes.getAttrColor(launcherThemeContext, android.R.attr.textColorSecondary)
+    override val colorAttr = android.R.attr.textColorSecondary
 }
 
 @Keep
-class WorkspaceLabelAutoResolver(config: Config) : ColorEngine.ColorResolver(config), LawnchairPreferences.OnPreferenceChangeListener {
+class WorkspaceLabelAutoResolver(config: Config) : ThemeAttributeColorResolver(config) {
 
-    override fun getDisplayName() = context.getString(R.string.theme_based)
-
-    override fun startListening() {
-        super.startListening()
-        LawnchairPreferences.getInstanceNoCreate().addOnPreferenceChangeListener(this, "pref_launcherTheme")
-    }
-
-    override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
-        notifyChanged()
-    }
-
-    override fun stopListening() {
-        super.stopListening()
-        LawnchairPreferences.getInstanceNoCreate().removeOnPreferenceChangeListener(this, "pref_launcherTheme")
-    }
-
-    override fun resolveColor() = Themes.getAttrColor(launcherThemeContext, R.attr.workspaceTextColor)
+    override val colorAttr = R.attr.workspaceTextColor
 }

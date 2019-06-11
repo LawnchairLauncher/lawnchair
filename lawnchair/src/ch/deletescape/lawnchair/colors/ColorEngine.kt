@@ -20,14 +20,13 @@ package ch.deletescape.lawnchair.colors
 import android.content.Context
 import android.graphics.Color.*
 import android.text.TextUtils
-import android.view.ContextThemeWrapper
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.colors.resolvers.DockQsbAutoResolver
 import ch.deletescape.lawnchair.colors.resolvers.DrawerLabelAutoResolver
 import ch.deletescape.lawnchair.colors.resolvers.DrawerQsbAutoResolver
 import ch.deletescape.lawnchair.colors.resolvers.WorkspaceLabelAutoResolver
-import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.util.SingletonHolder
+import ch.deletescape.lawnchair.util.ThemedContextProvider
 import com.android.launcher3.Utilities
 
 class ColorEngine private constructor(val context: Context) : LawnchairPreferences.OnPreferenceChangeListener {
@@ -45,8 +44,6 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
         if (!force) {
-            val resolver by getOrCreateResolver(key)
-            resolver.startListening()
             onColorChanged(key, getOrCreateResolver(key).onGetValue())
         }
     }
@@ -110,6 +107,7 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
         val resolver = createColorResolverNullable(key, string)
         return (resolver ?: Resolvers.getDefaultResolver(key, context, this)).also {
             resolverCache[cacheKey] = it
+            it.ensureIsListening()
         }
     }
 
@@ -178,15 +176,18 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
         }
     }
 
-    abstract class ColorResolver(val config: Config) {
+    abstract class ColorResolver(val config: Config) : ThemedContextProvider.Listener {
 
         private var listening = false
         val engine get() = config.engine
         val args get() = config.args
         open val isCustom = false
+        open val themeAware = false
 
         val context get() = engine.context
-        val launcherThemeContext get() = ContextThemeWrapper(context, ThemeOverride.Launcher().getTheme(context))
+
+        private val themedContextProvider by lazy { ThemedContextProvider(context, this) }
+        val launcherThemeContext get() = themedContextProvider.get()
 
         abstract fun resolveColor(): Int
 
@@ -200,12 +201,24 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
 
         open fun computeIsDark() = resolveColor().isDark
 
+        fun ensureIsListening() {
+            if (!listening) {
+                startListening()
+            }
+        }
+
         open fun startListening() {
             listening = true
+            if (themeAware) {
+                themedContextProvider.startListening()
+            }
         }
 
         open fun stopListening() {
             listening = false
+            if (themeAware) {
+                themedContextProvider.stopListening()
+            }
         }
 
         fun notifyChanged() {
@@ -216,6 +229,10 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
             if (listening) {
                 stopListening()
             }
+        }
+
+        override fun onThemeChanged() {
+            notifyChanged()
         }
 
         class Config(

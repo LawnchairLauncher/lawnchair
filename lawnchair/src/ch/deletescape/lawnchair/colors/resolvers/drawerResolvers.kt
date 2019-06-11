@@ -60,20 +60,11 @@ class DrawerQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config),
 @Keep
 class DrawerQsbLightResolver(config: Config) : WallpaperColorResolver(config), LawnchairPreferences.OnPreferenceChangeListener {
 
+    override val themeAware = true
     private val isDark get() = ThemeManager.getInstance(engine.context).isDark
-
-    override fun startListening() {
-        super.startListening()
-        LawnchairPreferences.getInstanceNoCreate().addOnPreferenceChangeListener(this, "pref_launcherTheme")
-    }
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
         notifyChanged()
-    }
-
-    override fun stopListening() {
-        super.stopListening()
-        LawnchairPreferences.getInstanceNoCreate().removeOnPreferenceChangeListener(this, "pref_launcherTheme")
     }
 
     override fun resolveColor() = engine.context.resources.getColor(
@@ -93,6 +84,7 @@ class DrawerQsbLightResolver(config: Config) : WallpaperColorResolver(config), L
 @Keep
 class DrawerQsbDarkResolver(config: Config) : WallpaperColorResolver(config) {
 
+    override val themeAware = true
     val color = engine.context.resources.getColor(R.color.qsb_background_drawer_dark_bar)
 
     override fun resolveColor() = ColorUtils.compositeColors(ColorUtils

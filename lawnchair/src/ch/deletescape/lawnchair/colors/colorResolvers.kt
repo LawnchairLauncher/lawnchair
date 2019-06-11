@@ -22,6 +22,7 @@ import android.support.annotation.Keep
 import android.text.TextUtils
 import android.view.ContextThemeWrapper
 import ch.deletescape.lawnchair.getColorAccent
+import ch.deletescape.lawnchair.getColorAttr
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.uioverrides.WallpaperColorInfo
@@ -143,7 +144,6 @@ class WallpaperMainColorResolver(config: Config) : WallpaperColorResolver(config
     override fun getDisplayName() = engine.context.getString(R.string.color_wallpaper_main) as String
 }
 
-
 @Keep
 class WallpaperSecondaryColorResolver(config: Config) : WallpaperColorResolver(config) {
 
@@ -158,4 +158,17 @@ class WallpaperTertiaryColorResolver(config: Config) : WallpaperColorResolver(co
     override fun resolveColor() = colorInfo.tertiaryColor
 
     override fun getDisplayName() = engine.context.getString(R.string.color_wallpaper_tertiary) as String
+}
+
+abstract class ThemeAttributeColorResolver(config: Config) :
+        ColorEngine.ColorResolver(config) {
+
+    protected abstract val colorAttr: Int
+    override val themeAware = true
+
+    override fun resolveColor(): Int {
+        return launcherThemeContext.getColorAttr(colorAttr)
+    }
+
+    override fun getDisplayName() = context.getString(R.string.theme_based)
 }
