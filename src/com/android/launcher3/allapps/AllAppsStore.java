@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -38,12 +37,19 @@ import java.util.function.Predicate;
  */
 public class AllAppsStore {
 
+    // Defer updates flag used to defer all apps updates to the next draw.
+    public static final int DEFER_UPDATES_NEXT_DRAW = 1 << 0;
+    // Defer updates flag used to defer all apps updates while the user interacts with all apps.
+    public static final int DEFER_UPDATES_USER_INTERACTION = 1 << 1;
+    // Defer updates flag used to defer all apps updates by a test's request.
+    public static final int DEFER_UPDATES_TEST = 1 << 2;
+
     private PackageUserKey mTempKey = new PackageUserKey(null, null);
     private final HashMap<ComponentKey, AppInfo> mComponentToAppMap = new HashMap<>();
     private final List<OnUpdateListener> mUpdateListeners = new ArrayList<>();
     private final ArrayList<ViewGroup> mIconContainers = new ArrayList<>();
 
-    private boolean mDeferUpdates = false;
+    private int mDeferUpdatesFlags = 0;
     private boolean mUpdatePending = false;
 
     public Collection<AppInfo> getApps() {
@@ -62,15 +68,20 @@ public class AllAppsStore {
         return mComponentToAppMap.get(key);
     }
 
-    public void setDeferUpdates(boolean deferUpdates) {
-        if (mDeferUpdates != deferUpdates) {
-            mDeferUpdates = deferUpdates;
+    public void enableDeferUpdates(int flag) {
+        mDeferUpdatesFlags |= flag;
+    }
 
-            if (!mDeferUpdates && mUpdatePending) {
-                notifyUpdate();
-                mUpdatePending = false;
-            }
+    public void disableDeferUpdates(int flag) {
+        mDeferUpdatesFlags &= ~flag;
+        if (mDeferUpdatesFlags == 0 && mUpdatePending) {
+            notifyUpdate();
+            mUpdatePending = false;
         }
+    }
+
+    public int getDeferUpdatesFlags() {
+        return mDeferUpdatesFlags;
     }
 
     /**
@@ -95,7 +106,7 @@ public class AllAppsStore {
 
 
     private void notifyUpdate() {
-        if (mDeferUpdates) {
+        if (mDeferUpdatesFlags != 0) {
             mUpdatePending = true;
             return;
         }
