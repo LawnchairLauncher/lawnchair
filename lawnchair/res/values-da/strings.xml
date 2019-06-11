@@ -290,10 +290,19 @@
     <string name="theme_auto_night_mode">Følg systemtema</string>
     <string name="theme_light">Lyst</string>
     <string name="theme_dark_text">Lyst med mørk tekst</string>
+    <string name="theme_with_dark_text">mørk tekst</string>
     <string name="theme_dark">Mørkt</string>
     <string name="theme_dark_dark_text">Mørkt med mørk tekst</string>
     <string name="theme_black">Sort</string>
     <string name="theme_black_dark_text">Sort med mørk tekst</string>
+    <string name="theme_dark_theme_mode">Mørkt tema</string>
+    <string name="theme_dark_theme_mode_on">Til</string>
+    <string name="theme_dark_theme_mode_off">Fra</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
+    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto-nattilstand</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Følg dagslys</string>
+    <string name="theme_use_black">Benyt helt sort</string>
+    <string name="theme_use_dark_text">Benyt sort tekst</string>
     <string name="pref_qsb_color">Farve</string>
     <string name="hide_from_predictions">Skjul i forslag</string>
     <string name="hide_from_predictions_summary">Vis aldrig gardinforslag</string>
@@ -409,4 +418,11 @@
     <string name="adaptify_pack_summary">Kreerer adaptive ikoner til ikoner i ikonpakke</string>
     <string name="pref_sesame_sync_look_and_feel">Del udseende og fonemmelse</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Synk Lawnchair-søgeindstillinger med Sesame</string>
+    <string name="pref_search_bar_radius">Søgebjælkeradius</string>
+    <string name="icon_text_scale_pref_title">Tekststørrelse</string>
+    <string name="text_color">Tekstfarve</string>
+    <string name="pref_notification_count_title">Vis notifikationsantal</string>
+    <string name="pref_notification_count_summary">Vis notifikationsantal i prikkerne</string>
+    <string name="pref_center_wallpaper">Centrér altid tapet</string>
+    <string name="pref_center_wallpaper_summary">Dette vil deaktivere tapetrulningseffekten</string>
 </resources>
