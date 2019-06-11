@@ -291,10 +291,19 @@
     <string name="theme_auto_night_mode">Rendszertéma alapján</string>
     <string name="theme_light">Világos</string>
     <string name="theme_dark_text">Világos, sötét szöveggel</string>
+    <string name="theme_with_dark_text">sötét szöveg</string>
     <string name="theme_dark">Sötét</string>
     <string name="theme_dark_dark_text">Sötét, sötét szöveggel</string>
     <string name="theme_black">Fekete</string>
     <string name="theme_black_dark_text">Fekete, sötét szöveggel</string>
+    <string name="theme_dark_theme_mode">Sötét téma</string>
+    <string name="theme_dark_theme_mode_on">Be</string>
+    <string name="theme_dark_theme_mode_off">Ki</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
+    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Napfényt követve</string>
+    <string name="theme_use_black">Használj igazi feketét</string>
+    <string name="theme_use_dark_text">Használj sötét szöveget</string>
     <string name="pref_qsb_color">Szín</string>
     <string name="hide_from_predictions">Elrejtés a javaslatokból</string>
     <string name="hide_from_predictions_summary">Soha nem jeleníti meg az alkalmazáslista javaslatait</string>
@@ -410,4 +419,11 @@
     <string name="adaptify_pack_summary">Alkalmazkodó ikonok készítése az ikoncsomagok ikonjaihoz</string>
     <string name="pref_sesame_sync_look_and_feel">Ossza meg a kinézetet és az érzést</string>
     <string name="pref_sesame_sync_look_and_feel_summary">A Lawnchair keresési beállításainak szinkonizálása Sesame-mal</string>
+    <string name="pref_search_bar_radius">Keresési sáv nagyság</string>
+    <string name="icon_text_scale_pref_title">Betűméret</string>
+    <string name="text_color">Szöveg színe</string>
+    <string name="pref_notification_count_title">Mutasd értesítés számlálót</string>
+    <string name="pref_notification_count_summary">Mutasd értesítés számlálót a pontokban</string>
+    <string name="pref_center_wallpaper">Hátteret mindig igazísd középre</string>
+    <string name="pref_center_wallpaper_summary">Ez kifogja kapcsolni a háttér mozgás efektet</string>
 </resources>
