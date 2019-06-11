@@ -39,24 +39,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
+import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.iconpack.EditIconActivity
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.override.CustomInfoProvider
 import ch.deletescape.lawnchair.root.RootHelperManager
-import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.views.LawnchairBackgroundView
 import com.android.launcher3.*
 import com.android.launcher3.uioverrides.OverviewState
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.SystemUiController
 import com.android.quickstep.views.LauncherRecentsView
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.Semaphore
 
-open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnPreferenceChangeListener {
+open class LawnchairLauncher : NexusLauncherActivity(),
+        LawnchairPreferences.OnPreferenceChangeListener,
+        ColorEngine.OnColorChangeListener {
     val hideStatusBarKey = "pref_hideStatusBar"
     val gestureController by lazy { GestureController(this) }
     val background by lazy { findViewById<LawnchairBackgroundView>(R.id.lawnchair_background)!! }
@@ -70,6 +73,8 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
     private val customLayoutInflater by lazy {
         LawnchairLayoutInflater(super.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater, this)
     }
+
+    private val colorsToWatch = arrayOf(ColorEngine.Resolvers.WORKSPACE_ICON_LABEL)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !Utilities.hasStoragePermission(this)) {
@@ -88,6 +93,8 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
         if (lawnchairPrefs.autoLaunchRoot) {
             RootHelperManager.getInstance(this).run {  }
         }
+
+        ColorEngine.getInstance(this).addColorChangeListeners(this, *colorsToWatch)
     }
 
     override fun finishBindingItems() {
@@ -130,6 +137,14 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
                 window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             } else if (!force) {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            }
+        }
+    }
+
+    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
+        when (resolver) {
+            ColorEngine.Resolvers.WORKSPACE_ICON_LABEL -> {
+                systemUiController.updateUiState(SystemUiController.UI_STATE_BASE_WINDOW, color.isDark)
             }
         }
     }
@@ -178,6 +193,7 @@ open class LawnchairLauncher : NexusLauncherActivity(), LawnchairPreferences.OnP
     override fun onDestroy() {
         super.onDestroy()
 
+        ColorEngine.getInstance(this).removeColorChangeListeners(this, *colorsToWatch)
         Utilities.getLawnchairPrefs(this).unregisterCallback()
 
         if (sRestart) {
