@@ -196,6 +196,10 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
 
         open fun computeForegroundColor() = resolveColor().foregroundColor
 
+        open fun computeLuminance() = resolveColor().luminance
+
+        open fun computeIsDark() = resolveColor().isDark
+
         open fun startListening() {
             listening = true
         }

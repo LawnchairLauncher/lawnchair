@@ -24,6 +24,9 @@ import android.view.ViewGroup.MarginLayoutParams;
 import android.view.animation.Interpolator;
 
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
+import ch.deletescape.lawnchair.colors.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Launcher;
@@ -40,6 +43,7 @@ import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
 import com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Handles AllApps view transition.
@@ -51,7 +55,8 @@ import com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout;
  * If release velocity < THRES1, snap according to either top or bottom depending on whether it's
  * closer to top or closer to the page indicator.
  */
-public class AllAppsTransitionController implements StateHandler, OnDeviceProfileChangeListener {
+public class AllAppsTransitionController implements StateHandler, OnDeviceProfileChangeListener,
+        ColorEngine.OnColorChangeListener {
 
     public static final Property<AllAppsTransitionController, Float> ALL_APPS_PROGRESS =
             new Property<AllAppsTransitionController, Float>(Float.class, "allAppsProgress") {
@@ -85,7 +90,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     private ScrimView mScrimView;
 
     private final Launcher mLauncher;
-    private final boolean mIsDarkTheme;
+    private boolean mIsDarkTheme;
     private boolean mIsVerticalLayout;
 
     // Animation in this class is controlled by a single variable {@link mProgress}.
@@ -108,6 +113,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         mIsDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
         mIsVerticalLayout = mLauncher.getDeviceProfile().isVerticalBarLayout();
         mLauncher.addOnDeviceProfileChangeListener(this);
+        ColorEngine.getInstance(l).addColorChangeListeners(this, Resolvers.ALLAPPS_ICON_LABEL);
     }
 
     public float getShiftRange() {
@@ -336,5 +342,10 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
 
     public AllAppsContainerView getAppsView() {
         return mAppsView;
+    }
+
+    @Override
+    public void onColorChange(@NotNull String resolver, int color, int foregroundColor) {
+        mIsDarkTheme = !LawnchairUtilsKt.isDark(color);
     }
 }
