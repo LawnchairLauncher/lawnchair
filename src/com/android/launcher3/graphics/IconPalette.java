@@ -23,6 +23,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
 
@@ -147,8 +148,8 @@ public class IconPalette {
     }
 
     public static int getMutedColor(Context context, int color, float scrimAlpha) {
-        boolean isDark = Themes.getAttrBoolean(context, R.attr.isMainColorDark);
-        int baseColor = isDark ? Color.BLACK : Color.WHITE;
+        boolean isDark = LawnchairUtilsKt.isDark(color);
+        int baseColor = isDark ? 0x212121 : Color.WHITE;
         int scrim = ColorUtils.setAlphaComponent(baseColor, (int) (255 * scrimAlpha));
         return ColorUtils.compositeColors(scrim, color);
     }
