@@ -291,10 +291,19 @@
     <string name="theme_auto_night_mode">Folge dem System-Thema</string>
     <string name="theme_light">Hell</string>
     <string name="theme_dark_text">Hell mit dunklem Text</string>
+    <string name="theme_with_dark_text">dunkler Text</string>
     <string name="theme_dark">Dunkel</string>
     <string name="theme_dark_dark_text">Dunkel mit dunklem Text</string>
     <string name="theme_black">Schwarz</string>
     <string name="theme_black_dark_text">Schwarz mit dunklem Text</string>
+    <string name="theme_dark_theme_mode">Dunkles Thema</string>
+    <string name="theme_dark_theme_mode_on">An</string>
+    <string name="theme_dark_theme_mode_off">Aus</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
+    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Tageslicht folgen</string>
+    <string name="theme_use_black">Benutze echtes Schwarz</string>
+    <string name="theme_use_dark_text">Dunklen Text benutzen</string>
     <string name="pref_qsb_color">Farbe</string>
     <string name="hide_from_predictions">Bei den Vorschlägen verbergen</string>
     <string name="hide_from_predictions_summary">Nie in App-Listen-Vorschlägen zeigen</string>
@@ -410,4 +419,11 @@
     <string name="adaptify_pack_summary">Erstelle adaptive Icons für Icons aus Icon-Paketen</string>
     <string name="pref_sesame_sync_look_and_feel">Aussehen teilen</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Sucheinstellungen von Lawnchair mit Sesame synchronisieren</string>
+    <string name="pref_search_bar_radius">Radius Suchleiste</string>
+    <string name="icon_text_scale_pref_title">Textgröße</string>
+    <string name="text_color">Textfarbe</string>
+    <string name="pref_notification_count_title">Benachrichtigungszähler anzeigen</string>
+    <string name="pref_notification_count_summary">Zeigt die Anzahl der Benachrichtigungen im Punkt</string>
+    <string name="pref_center_wallpaper">Hintergrund immer zentrieren</string>
+    <string name="pref_center_wallpaper_summary">Der Hintergrund wird beim Wischen durch die Seiten nicht mehr bewegt</string>
 </resources>
