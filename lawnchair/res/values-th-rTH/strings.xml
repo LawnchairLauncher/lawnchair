@@ -290,10 +290,19 @@
     <string name="theme_auto_night_mode">ตามธีมระบบ</string>
     <string name="theme_light">สว่าง</string>
     <string name="theme_dark_text">สว่าง (ตัวอักษรมืด)</string>
+    <string name="theme_with_dark_text">ตัวอักษรสีมืด</string>
     <string name="theme_dark">มืด</string>
     <string name="theme_dark_dark_text">มืด (ตัวอักษรมืด)</string>
     <string name="theme_black">ดำ</string>
     <string name="theme_black_dark_text">ดำ (ตัวอักษรมืด)</string>
+    <string name="theme_dark_theme_mode">ธีมสีมืด</string>
+    <string name="theme_dark_theme_mode_on">เปิด</string>
+    <string name="theme_dark_theme_mode_off">ปิด</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
+    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
+    <string name="theme_dark_theme_mode_follow_daylight">ตามแสงอาทิตย์</string>
+    <string name="theme_use_black">ใช้สีดำสนิท</string>
+    <string name="theme_use_dark_text">ใช้อักษ่รสีมืด</string>
     <string name="pref_qsb_color">สี</string>
     <string name="hide_from_predictions">ซ่อนจากคำแนะนำ</string>
     <string name="hide_from_predictions_summary">ไม่แสดงในคำแนะนำ</string>
@@ -407,4 +416,11 @@
     <string name="adaptify_pack_summary">สร้างไอคอนแบบปรับอัตโนมัติสำหรับไอคอนจากชุดไอคอน</string>
     <string name="pref_sesame_sync_look_and_feel">แชร์รูปแบบ</string>
     <string name="pref_sesame_sync_look_and_feel_summary">ซิงค์การตั้งค่าการค้นหากับ Sesame</string>
+    <string name="pref_search_bar_radius">ความโค้งมนของแถบค้นหา</string>
+    <string name="icon_text_scale_pref_title">ขนาดตัวอักษร</string>
+    <string name="text_color">สีตัวอักษร</string>
+    <string name="pref_notification_count_title">แสดงจำนวนการแจ้งเตือน</string>
+    <string name="pref_notification_count_summary">แสดงจำนวนการแจ้งเตือนในจุดแจ้งเตือน</string>
+    <string name="pref_center_wallpaper">ภาพพื้นหลังอยู่ตรงกลางเสมอ</string>
+    <string name="pref_center_wallpaper_summary">ปิดการใช้งานภาพพื้นหลังแบบเลื่อนได้</string>
 </resources>
