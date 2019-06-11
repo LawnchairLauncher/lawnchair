@@ -888,7 +888,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mLauncherCallbacks.onStart();
         }
         mAppWidgetHost.setListenIfResumed(true);
-        NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
         RaceConditionTracker.onEvent(ON_START_EVT, EXIT);
     }
 
@@ -907,6 +906,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
             // Refresh shortcuts if the permission changed.
             mModel.refreshShortcutsIfRequired();
+
+            // Set the notification listener and fetch updated notifications when we resume
+            NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
 
             DiscoveryBounce.showForHomeIfNeeded(this);
 
