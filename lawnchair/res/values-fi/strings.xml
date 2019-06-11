@@ -284,10 +284,15 @@
     <string name="theme_auto_night_mode">Noudata järjestelmän teema</string>
     <string name="theme_light">Vaalea</string>
     <string name="theme_dark_text">Vaalea tummalla tekstillä</string>
+    <string name="theme_with_dark_text">tumma teksti</string>
     <string name="theme_dark">Tumma</string>
     <string name="theme_dark_dark_text">Tumma tummalla tekstillä</string>
     <string name="theme_black">Musta</string>
     <string name="theme_black_dark_text">Musta tummalla tekstillä</string>
+    <string name="theme_dark_theme_mode">Tumma teema</string>
+    <string name="theme_dark_theme_mode_on">Käytössä</string>
+    <string name="theme_use_black">Käytä puhdasta mustaa</string>
+    <string name="theme_use_dark_text">Käytä tummaa tekstiä</string>
     <string name="pref_qsb_color">Väri</string>
     <string name="hide_from_predictions">Piilota ehdotuksista</string>
     <string name="hide_from_predictions_summary">Älä näytä koskaan sovellusvalikon ehdotuksissa</string>
@@ -402,4 +407,9 @@
     <string name="adaptify_pack_summary">Luo adaptiiviset kuvakkeet kuvakepaketin kuvakkeille</string>
     <string name="pref_sesame_sync_look_and_feel">Jaa ulkoasu ja tunnelma</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Synkronoi Lawnchair haun asetukset Sesamen kanssa</string>
+    <string name="icon_text_scale_pref_title">Tekstin koko</string>
+    <string name="text_color">Tekstin väri</string>
+    <string name="pref_notification_count_title">Näytä ilmoitusten lukumäärä</string>
+    <string name="pref_notification_count_summary">Näytä ilmoitusten lukumäärä pisteen sisällä</string>
+    <string name="pref_center_wallpaper">Keskitä taustakuva aina</string>
 </resources>
