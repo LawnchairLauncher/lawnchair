@@ -114,7 +114,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         mIsDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
         mIsVerticalLayout = mLauncher.getDeviceProfile().isVerticalBarLayout();
         mLauncher.addOnDeviceProfileChangeListener(this);
-        ColorEngine.getInstance(l).addColorChangeListeners(this, Resolvers.ALLAPPS_ICON_LABEL);
+        ColorEngine.getInstance(l).addColorChangeListeners(this, Resolvers.ALLAPPS_BACKGROUND);
     }
 
     public float getShiftRange() {
@@ -347,6 +347,6 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
 
     @Override
     public void onColorChange(@NotNull ResolveInfo resolveInfo) {
-        mIsDarkTheme = !LawnchairUtilsKt.isDark(resolveInfo.getColor());
+        mIsDarkTheme = LawnchairUtilsKt.isDark(resolveInfo.getColor());
     }
 }
