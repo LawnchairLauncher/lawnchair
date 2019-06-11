@@ -43,7 +43,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
@@ -541,7 +540,6 @@ public abstract class AbstractStateChangeTouchController
                 android.util.Log.e(
                         TestProtocol.NO_ALLAPPS_EVENT_TAG, "onSwipeInteractionCompleted 2");
             }
-            AccessibilityManagerCompat.sendStateEventToTest(mLauncher, targetState.ordinal);
         }
     }
 

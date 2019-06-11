@@ -64,7 +64,6 @@ import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.SpringObjectAnimator;
-import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
@@ -218,8 +217,6 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
 
         // Optimization, hide the all apps view to prevent layout while initializing
         activity.getAppsView().getContentView().setVisibility(View.GONE);
-
-        AccessibilityManagerCompat.sendStateEventToTest(activity, fromState.ordinal);
 
         return new AnimationFactory() {
             private Animator mShelfAnim;
