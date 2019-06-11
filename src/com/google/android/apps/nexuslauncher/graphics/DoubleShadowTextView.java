@@ -4,10 +4,14 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.widget.TextView;
+import ch.deletescape.lawnchair.colors.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
+import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
 import ch.deletescape.lawnchair.font.CustomFontManager;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
+import org.jetbrains.annotations.NotNull;
 
-public class DoubleShadowTextView extends TextView {
+public class DoubleShadowTextView extends TextView implements OnColorChangeListener {
     private final DoubleShadowBubbleTextView.ShadowInfo mShadowInfo;
 
     public DoubleShadowTextView(Context context) {
@@ -23,6 +27,7 @@ public class DoubleShadowTextView extends TextView {
         mShadowInfo = new DoubleShadowBubbleTextView.ShadowInfo(context, attrs, defStyleAttr);
         setShadowLayer(Math.max(mShadowInfo.keyShadowBlur + mShadowInfo.keyShadowOffset, mShadowInfo.ambientShadowBlur), 0f, 0f, mShadowInfo.keyShadowColor);
         CustomFontManager.Companion.getInstance(context).loadCustomFont(this, attrs);
+        ColorEngine.getInstance(context).addColorChangeListeners(this, Resolvers.WORKSPACE_ICON_LABEL);
     }
 
     protected void onDraw(Canvas canvas) {
@@ -34,5 +39,10 @@ public class DoubleShadowTextView extends TextView {
         super.onDraw(canvas);
         getPaint().setShadowLayer(mShadowInfo.keyShadowBlur, 0.0f, mShadowInfo.keyShadowOffset, mShadowInfo.keyShadowColor);
         super.onDraw(canvas);
+    }
+
+    @Override
+    public void onColorChange(@NotNull String resolver, int color, int foregroundColor) {
+        setTextColor(color);
     }
 }

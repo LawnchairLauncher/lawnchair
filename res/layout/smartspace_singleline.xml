@@ -77,12 +77,11 @@
             launcher:keyShadowOffset="0.5dip"
             launcher:customFontType="smartspaceText" />
 
-        <View
+        <ch.deletescape.lawnchair.smartspace.SmartspaceDividerView
             android:id="@+id/title_sep"
             android:layout_width="@dimen/smartspace_title_sep_width"
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
-            android:background="?workspaceTextColor"
             android:visibility="gone"
             tools:visibility="visible"/>
 
