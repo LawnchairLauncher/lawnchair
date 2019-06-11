@@ -28,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import ch.deletescape.lawnchair.colors.ColorEngine.ColorResolver;
+import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
@@ -41,6 +42,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A RecyclerView with custom fast scroll support for the all apps view.
@@ -424,7 +426,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     }
 
     @Override
-    public void onColorChange(String resolver, int color, int foregroundColor) {
+    public void onColorChange(@NotNull ResolveInfo resolveInfo) {
 
     }
 

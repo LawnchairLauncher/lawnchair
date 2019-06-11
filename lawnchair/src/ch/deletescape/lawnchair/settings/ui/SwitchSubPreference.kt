@@ -77,11 +77,11 @@ class SwitchSubPreference(context: Context, attrs: AttributeSet) : SubPreference
         ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
-    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
-        super.onColorChange(resolver, color, foregroundColor)
+    override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
+        super.onColorChange(resolveInfo)
 
-        if (resolver == ColorEngine.Resolvers.ACCENT) {
-            switch?.applyColor(color)
+        if (resolveInfo.key == ColorEngine.Resolvers.ACCENT) {
+            switch?.applyColor(resolveInfo.color)
         }
     }
 

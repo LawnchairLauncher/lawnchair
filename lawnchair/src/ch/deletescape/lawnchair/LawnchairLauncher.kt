@@ -141,10 +141,10 @@ open class LawnchairLauncher : NexusLauncherActivity(),
         }
     }
 
-    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
-        when (resolver) {
+    override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
+        when (resolveInfo.key) {
             ColorEngine.Resolvers.WORKSPACE_ICON_LABEL -> {
-                systemUiController.updateUiState(SystemUiController.UI_STATE_BASE_WINDOW, color.isDark)
+                systemUiController.updateUiState(SystemUiController.UI_STATE_BASE_WINDOW, resolveInfo.isDark)
             }
         }
     }

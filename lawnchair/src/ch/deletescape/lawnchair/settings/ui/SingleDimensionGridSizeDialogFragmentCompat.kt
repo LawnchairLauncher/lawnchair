@@ -93,9 +93,9 @@ class SingleDimensionGridSizeDialogFragmentCompat : PreferenceDialogFragmentComp
 
     }
 
-    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
-        if (resolver == ColorEngine.Resolvers.ACCENT) {
-            val tintList = ColorStateList.valueOf(color)
+    override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
+        if (resolveInfo.key == ColorEngine.Resolvers.ACCENT) {
+            val tintList = ColorStateList.valueOf(resolveInfo.color)
             numRowsPicker.apply {
                 progressBackgroundTintList = tintList
                 progressTintList = tintList

@@ -29,7 +29,7 @@ class SmartspaceDividerView(context: Context, attrs: AttributeSet?) : View(conte
         ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.WORKSPACE_ICON_LABEL)
     }
 
-    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
-        setBackgroundColor(color)
+    override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
+        setBackgroundColor(resolveInfo.color)
     }
 }

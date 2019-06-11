@@ -98,10 +98,10 @@ object Sesame : ColorEngine.OnColorChangeListener, LawnchairPreferences.OnPrefer
         context.lawnchairPrefs.removeOnPreferenceChangeListener(this, *syncedPrefs)
     }
 
-    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
-        when (resolver) {
+    override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
+        when (resolveInfo.key) {
             ColorEngine.Resolvers.HOTSEAT_QSB_BG -> if (isSesameSearch) {
-                LookAndFeel[LookFeelKeys.SEARCH_BAR_COLOR] = color
+                LookAndFeel[LookFeelKeys.SEARCH_BAR_COLOR] = resolveInfo.color
             }
         }
     }

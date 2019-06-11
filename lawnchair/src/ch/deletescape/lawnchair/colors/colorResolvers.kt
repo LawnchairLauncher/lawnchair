@@ -35,7 +35,7 @@ class LawnchairAccentResolver(config: Config) : ColorEngine.ColorResolver(config
         engine.addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
-    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
+    override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
         notifyChanged()
     }
 

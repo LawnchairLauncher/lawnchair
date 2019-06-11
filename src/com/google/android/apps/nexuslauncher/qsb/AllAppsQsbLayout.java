@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.TextView;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.colors.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
 import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
 import ch.deletescape.lawnchair.globalsearch.SearchProvider;
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
@@ -107,10 +108,10 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     @Override
-    public void onColorChange(@NotNull String resolver, int color, int foregroundColor) {
-        if (resolver.equals(Resolvers.ALLAPPS_QSB_BG)) {
-            mForegroundColor = foregroundColor;
-            ay(color);
+    public void onColorChange(@NotNull ResolveInfo resolveInfo) {
+        if (resolveInfo.getKey().equals(Resolvers.ALLAPPS_QSB_BG)) {
+            mForegroundColor = resolveInfo.getForegroundColor();
+            ay(resolveInfo.getColor());
             az(this.Dc);
         }
     }

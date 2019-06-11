@@ -24,6 +24,7 @@ import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
+import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
 import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
 import ch.deletescape.lawnchair.font.CustomFontManager;
 import ch.deletescape.lawnchair.font.FontLoader.FontReceiver;
@@ -148,8 +149,8 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
     }
 
     @Override
-    public void onColorChange(@NotNull String resolver, int color, int foregroundColor) {
-        mIconTextColor = color;
+    public void onColorChange(@NotNull ResolveInfo resolveInfo) {
+        mIconTextColor = resolveInfo.getColor();
         mIconFullTextAlpha = Color.alpha(mIconTextColor);
     }
 

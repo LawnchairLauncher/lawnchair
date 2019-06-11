@@ -25,7 +25,9 @@ import android.view.ViewGroup;
 
 import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
+import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
 import com.android.launcher3.views.RecyclerViewFastScroller;
+import org.jetbrains.annotations.NotNull;
 
 
 /**
@@ -60,9 +62,9 @@ public abstract class BaseRecyclerView extends RecyclerView implements OnColorCh
     }
 
     @Override
-    public void onColorChange(String resolver, int color, int foregroundColor) {
-        if (resolver.equals(ColorEngine.Resolvers.ACCENT)) {
-            mScrollbar.setColor(color, foregroundColor);
+    public void onColorChange(@NotNull ResolveInfo resolveInfo) {
+        if (resolveInfo.getKey().equals(ColorEngine.Resolvers.ACCENT)) {
+            mScrollbar.setColor(resolveInfo.getColor(), resolveInfo.getForegroundColor());
         }
     }
 

@@ -46,7 +46,7 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
     }
 
     private fun onColorChanged(key: String, colorResolver: ColorResolver) {
-        runOnMainThread { colorListeners[key]?.forEach { it.onColorChange(key, colorResolver.resolveColor(), colorResolver.computeForegroundColor()) } }
+        runOnMainThread { colorListeners[key]?.forEach { it.onColorChange(ResolveInfo(key, colorResolver)) } }
     }
 
     fun addColorChangeListeners(listener: OnColorChangeListener, vararg keys: String) {
@@ -60,7 +60,7 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
             }
             colorListeners[key]?.add(listener)
             val resolver by getOrCreateResolver(key)
-            listener.onColorChange(key, resolver.resolveColor(), resolver.computeForegroundColor())
+            listener.onColorChange(ResolveInfo(key, resolver))
         }
     }
 
@@ -143,7 +143,8 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
     }
 
     interface OnColorChangeListener {
-        fun onColorChange(resolver: String, color: Int, foregroundColor: Int)
+
+        fun onColorChange(resolveInfo: ResolveInfo)
     }
 
     internal class Resolvers {
@@ -202,11 +203,11 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
 
         override fun toString() = TextUtils.join("|", listOf(this::class.java.name) + args) as String
 
-        open fun computeForegroundColor() = resolveColor().foregroundColor
+        fun computeForegroundColor() = resolveColor().foregroundColor
 
-        open fun computeLuminance() = resolveColor().luminance
+        fun computeLuminance() = resolveColor().luminance
 
-        open fun computeIsDark() = resolveColor().isDark
+        fun computeIsDark() = resolveColor().isDark
 
         fun ensureIsListening() {
             if (!listening) {
@@ -247,5 +248,15 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
                 val engine: ColorEngine,
                 val listener: ((String, ColorResolver) -> Unit)? = null,
                 val args: List<String> = emptyList())
+    }
+
+    class ResolveInfo(val key: String, resolver: ColorResolver) {
+
+        val color = resolver.resolveColor()
+        val foregroundColor by lazy { color.foregroundColor }
+        val luminance = color.luminance
+        val isDark = luminance < 0.5f
+
+        val resolverClass = resolver::class.java
     }
 }

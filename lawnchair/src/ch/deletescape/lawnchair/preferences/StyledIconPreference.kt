@@ -50,14 +50,14 @@ open class StyledIconPreference(context: Context, attrs: AttributeSet) : Prefere
         ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
-    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
-        if (resolver == ColorEngine.Resolvers.ACCENT) {
-            val palette = ColorPalette.getPalette(color, count)
+    override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
+        if (resolveInfo.key == ColorEngine.Resolvers.ACCENT) {
+            val palette = ColorPalette.getPalette(resolveInfo.color, count)
             icon = icon?.mutate()?.apply {
                 setTint(try {
                     palette[index, true]
                 } catch (ignored: Exception) {
-                    color
+                    resolveInfo.color
                 })
             }
         }

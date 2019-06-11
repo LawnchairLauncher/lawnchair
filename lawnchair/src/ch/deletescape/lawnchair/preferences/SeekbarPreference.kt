@@ -85,9 +85,9 @@ open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: 
         ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
-    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
-        if (resolver == ColorEngine.Resolvers.ACCENT) {
-            val stateList = ColorStateList.valueOf(color)
+    override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
+        if (resolveInfo.key == ColorEngine.Resolvers.ACCENT) {
+            val stateList = ColorStateList.valueOf(resolveInfo.color)
             mSeekbar?.apply {
                 thumbTintList = stateList
                 progressTintList = stateList

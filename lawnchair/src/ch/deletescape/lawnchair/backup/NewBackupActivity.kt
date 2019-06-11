@@ -183,17 +183,17 @@ class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnColorChangeListe
         ColorEngine.getInstance(this).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
-    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
-        when (resolver) {
+    override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
+        when (resolveInfo.key) {
             ColorEngine.Resolvers.ACCENT -> {
-                val tintList = ColorStateList.valueOf(color)
+                val tintList = ColorStateList.valueOf(resolveInfo.color)
                 startButton.apply {
-                    DrawableCompat.setTint(background, color)
-                    DrawableCompat.setTint(drawable, foregroundColor)
+                    DrawableCompat.setTint(background, resolveInfo.color)
+                    DrawableCompat.setTint(drawable, resolveInfo.foregroundColor)
                     backgroundTintList = tintList
                 }
                 backupName.apply {
-                    highlightColor = color
+                    highlightColor = resolveInfo.color
                     supportBackgroundTintList = tintList
                 }
                 try {

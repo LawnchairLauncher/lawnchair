@@ -276,12 +276,12 @@ public class SettingsActivity extends SettingsBaseActivity implements
     }
 
     @Override
-    public void onColorChange(String resolver, int color, int foregroundColor) {
-        super.onColorChange(resolver, color, foregroundColor);
+    public void onColorChange(@NotNull ColorEngine.ResolveInfo resolveInfo) {
+        super.onColorChange(resolveInfo);
 
-        if (resolver.equals(ColorEngine.Resolvers.ACCENT) && shouldShowSearch()) {
+        if (resolveInfo.getKey().equals(ColorEngine.Resolvers.ACCENT) && shouldShowSearch()) {
             Drawable search = getResources().getDrawable(R.drawable.ic_settings_search, null);
-            search.setTint(color);
+            search.setTint(resolveInfo.getColor());
 
             Toolbar toolbar = findViewById(R.id.search_action_bar);
             toolbar.setNavigationIcon(search);

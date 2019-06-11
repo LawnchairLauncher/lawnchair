@@ -24,6 +24,7 @@ import android.view.ContextThemeWrapper;
 import android.view.View;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.colors.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
 import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
 import ch.deletescape.lawnchair.globalsearch.SearchProvider;
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
@@ -89,9 +90,9 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     }
 
     @Override
-    public void onColorChange(@NotNull String resolver, int color, int foregroundColor) {
-        if (resolver.equals(Resolvers.HOTSEAT_QSB_BG)) {
-            ay(color);
+    public void onColorChange(@NotNull ResolveInfo resolveInfo) {
+        if (resolveInfo.getKey().equals(Resolvers.HOTSEAT_QSB_BG)) {
+            ay(resolveInfo.getColor());
             az(ColorUtils.setAlphaComponent(Dc, Ds.micOpacity()));
         }
     }

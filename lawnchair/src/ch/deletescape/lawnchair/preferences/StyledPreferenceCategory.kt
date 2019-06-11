@@ -47,9 +47,9 @@ class StyledPreferenceCategory(context: Context, attrs: AttributeSet?) :
         ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
-    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
-        if (resolver == ColorEngine.Resolvers.ACCENT) {
-            title?.setTextColor(context.createDisabledColor(color))
+    override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
+        if (resolveInfo.key == ColorEngine.Resolvers.ACCENT) {
+            title?.setTextColor(context.createDisabledColor(resolveInfo.color))
         }
     }
 

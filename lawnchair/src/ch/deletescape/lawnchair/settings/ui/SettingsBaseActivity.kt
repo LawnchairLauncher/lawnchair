@@ -141,11 +141,11 @@ open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnColorChange
         ColorEngine.getInstance(this).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
-    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
-        when (resolver) {
+    override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
+        when (resolveInfo.key) {
             ColorEngine.Resolvers.ACCENT -> {
                 val arrowBack = resources.getDrawable(R.drawable.ic_arrow_back, null)
-                arrowBack?.setTint(color)
+                arrowBack?.setTint(resolveInfo.color)
                 supportActionBar?.setHomeAsUpIndicator(arrowBack)
             }
         }

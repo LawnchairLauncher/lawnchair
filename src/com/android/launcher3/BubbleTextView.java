@@ -43,6 +43,7 @@ import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.colors.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
 import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
 import ch.deletescape.lawnchair.colors.resolvers.DrawerLabelAutoResolver;
 import ch.deletescape.lawnchair.font.CustomFontManager;
@@ -488,8 +489,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     @Override
-    public void onColorChange(@NotNull String resolver, int color, int foregroundColor) {
-        setTextColor(color);
+    public void onColorChange(@NotNull ResolveInfo resolveInfo) {
+        setTextColor(resolveInfo.getColor());
     }
 
     @Override

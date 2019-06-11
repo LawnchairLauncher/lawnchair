@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
+import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
 import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
 import ch.deletescape.lawnchair.font.CustomFontManager;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
@@ -42,7 +43,7 @@ public class DoubleShadowTextView extends TextView implements OnColorChangeListe
     }
 
     @Override
-    public void onColorChange(@NotNull String resolver, int color, int foregroundColor) {
-        setTextColor(color);
+    public void onColorChange(@NotNull ResolveInfo resolveInfo) {
+        setTextColor(resolveInfo.getColor());
     }
 }

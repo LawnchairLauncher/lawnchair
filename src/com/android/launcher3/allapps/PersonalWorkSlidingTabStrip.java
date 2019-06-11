@@ -32,6 +32,7 @@ import ch.deletescape.lawnchair.allapps.AllAppsTabs;
 import ch.deletescape.lawnchair.allapps.AllAppsTabs.Tab;
 import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
+import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
 import ch.deletescape.lawnchair.preferences.DrawerTabEditBottomSheet;
 import ch.deletescape.lawnchair.groups.DrawerTabs;
 import ch.deletescape.lawnchair.groups.DrawerTabs.CustomTab;
@@ -41,6 +42,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.util.Themes;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Supports two indicator colors, dedicated for personal and work tabs.
@@ -299,7 +301,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     }
 
     @Override
-    public void onColorChange(String resolver, int color, int foregroundColor) {
+    public void onColorChange(@NotNull ResolveInfo resolveInfo) {
         resetTabTextColor();
         updateTabTextColor(mSelectedPosition);
         updateIndicatorPosition();

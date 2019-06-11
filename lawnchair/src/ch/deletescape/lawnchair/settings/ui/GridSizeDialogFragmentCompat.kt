@@ -84,13 +84,13 @@ class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), ColorEngi
         outState.putInt(SAVE_STATE_COLUMNS, numColumnsPicker.value)
     }
 
-    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
-        if (resolver == ColorEngine.Resolvers.ACCENT) {
+    override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
+        if (resolveInfo.key == ColorEngine.Resolvers.ACCENT) {
             try {
                 val mSelectionDivider = NumberPicker::class.java.getDeclaredField("mSelectionDivider")
                 mSelectionDivider.isAccessible = true
                 val drawable = mSelectionDivider.get(numColumnsPicker) as Drawable
-                drawable.setTint(color)
+                drawable.setTint(resolveInfo.color)
                 mSelectionDivider.set(numColumnsPicker, drawable)
                 mSelectionDivider.set(numRowsPicker, drawable)
             } catch (e: Exception) {

@@ -43,6 +43,7 @@ import ch.deletescape.lawnchair.allapps.AllAppsTabs;
 import ch.deletescape.lawnchair.allapps.AllAppsTabsController;
 import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
+import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
 import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BaseRecyclerView;
@@ -522,7 +523,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     @Override
-    public void onColorChange(@NotNull String resolver, int color, int foregroundColor) {
+    public void onColorChange(@NotNull ResolveInfo resolveInfo) {
         AllAppsRecyclerView recyclerView = getActiveRecyclerView();
         LawnchairUtilsKt.runOnAttached(recyclerView, () -> recyclerView.setScrollbarColor(
                 mTabsController.getTabs().get(0).getDrawerTab().getColorResolver().value()));

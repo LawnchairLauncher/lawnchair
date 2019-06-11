@@ -68,14 +68,14 @@ class ColorPickerPreference(context: Context, attrs: AttributeSet?)
         engine.removeColorChangeListeners(this, key)
     }
 
-    override fun onColorChange(resolverKey: String, color: Int, foregroundColor: Int) {
-        if (resolverKey == key) {
+    override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
+        if (resolveInfo.key == key) {
             val resolver by resolverPref
             summary = resolver.getDisplayName()
             if (icon == null) {
                 icon = context.resources.getDrawable(R.drawable.color_preview, null)
             }
-            icon.setColorFilter(color, PorterDuff.Mode.SRC)
+            icon.setColorFilter(resolveInfo.color, PorterDuff.Mode.SRC)
         }
     }
 

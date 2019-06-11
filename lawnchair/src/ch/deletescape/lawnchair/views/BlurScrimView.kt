@@ -204,15 +204,15 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         }
     }
 
-    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
-        when (resolver) {
+    override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
+        when (resolveInfo.key) {
             ColorEngine.Resolvers.ALLAPPS_BACKGROUND -> {
-                allAppsBackground = color
+                allAppsBackground = resolveInfo.color
                 calculateEndScrim()
                 postReInitUi()
             }
             ColorEngine.Resolvers.DOCK_BACKGROUND -> {
-                dockBackground = color
+                dockBackground = resolveInfo.color
                 postReInitUi()
             }
         }
