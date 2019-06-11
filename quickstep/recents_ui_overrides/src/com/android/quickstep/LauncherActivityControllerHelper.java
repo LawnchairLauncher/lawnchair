@@ -30,9 +30,6 @@ import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.WindowTransformSwipeHandler.RECENTS_ATTACH_DURATION;
 
-import static androidx.dynamicanimation.animation.SpringForce.DAMPING_RATIO_LOW_BOUNCY;
-import static androidx.dynamicanimation.animation.SpringForce.STIFFNESS_LOW;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -321,8 +318,8 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                     if (mAttachToWindowTranslationXAnim == null) {
                         mAttachToWindowTranslationXAnim = new SpringAnimation(recentsView,
                                 SpringAnimation.TRANSLATION_X).setSpring(new SpringForce()
-                                .setDampingRatio(DAMPING_RATIO_LOW_BOUNCY)
-                                .setStiffness(STIFFNESS_LOW));
+                                .setDampingRatio(0.8f)
+                                .setStiffness(250));
                     }
                     if (!recentsView.isShown() && animate) {
                         recentsView.setTranslationX(fromTranslationX);
