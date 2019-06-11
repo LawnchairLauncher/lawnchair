@@ -74,7 +74,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
 
         // To match the default wallpaper behavior in the system, we default to either the left
         // or right edge on initialization
-        if (!mWallpaperIsLiveWallpaper && prefs.getCenterWallpaper()) {
+        if (prefs.getCenterWallpaper()) {
             out[0] = 1;
             out[1] = 2;
             return;
