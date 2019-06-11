@@ -576,6 +576,7 @@
 
     <string name="icon_text_scale_pref_title">Text size</string>
     <string name="text_color">Text color</string>
+    <string name="background_color">Background color</string>
 
     <string name="pref_notification_count_title">Display notification count</string>
     <string name="pref_notification_count_summary">Display notification count inside the dots</string>

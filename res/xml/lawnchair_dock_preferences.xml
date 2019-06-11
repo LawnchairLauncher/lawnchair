@@ -21,6 +21,13 @@
             android:title="@string/dock_fill"
             android:dependency="pref_dockPreset"
             android:persistent="true" />
+
+        <ch.deletescape.lawnchair.colors.preferences.ColorPickerPreference
+            android:key="pref_dockBackgroundColorResolver"
+            android:title="@string/background_color"
+            android:dependency="enableGradient"
+            app:colorMode="RGB"
+            app:resolvers="@array/resolvers_shelf_background"/>
  
         <ch.deletescape.lawnchair.preferences.DockSwitchPreference
             android:key="enableShadow"

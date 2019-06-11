@@ -27,6 +27,7 @@ import android.view.View
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
+import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.dpToPx
 import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.runOnMainThread
@@ -61,7 +62,8 @@ import com.google.android.apps.nexuslauncher.qsb.AbstractQsbLayout
  */
 
 class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(context, attrs),
-        LawnchairPreferences.OnPreferenceChangeListener, View.OnLayoutChangeListener, BlurWallpaperProvider.Listener {
+        LawnchairPreferences.OnPreferenceChangeListener, View.OnLayoutChangeListener,
+        BlurWallpaperProvider.Listener, ColorEngine.OnColorChangeListener {
 
     private val key_radius = "pref_dockRadius"
     private val key_opacity = "pref_allAppsOpacitySB"
@@ -70,6 +72,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private val key_search_radius = "pref_searchbarRadius"
 
     private val prefsToWatch = arrayOf(key_radius, key_opacity, key_dock_opacity, key_dock_arrow, key_search_radius)
+    private val colorsToWatch = arrayOf(ColorEngine.Resolvers.ALLAPPS_BACKGROUND, ColorEngine.Resolvers.DOCK_BACKGROUND)
 
     private val blurDrawableCallback by lazy {
         object : Drawable.Callback {
@@ -108,7 +111,12 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     }
     private val insets = Rect()
 
-    private val alphaRanges = ArrayList<AlphaRange>()
+    private val colorRanges = ArrayList<ColorRange>()
+
+    private var allAppsBackground = 0
+    private var dockBackground = 0
+
+    private val reInitUiRunnable = this::reInitUi
 
     private fun createBlurDrawable(): BlurDrawable? {
         blurDrawable?.let { if (isAttachedToWindow) it.stopListening() }
@@ -163,6 +171,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         super.onAttachedToWindow()
 
         prefs.addOnPreferenceChangeListener(this, *prefsToWatch)
+        ColorEngine.getInstance(context).addColorChangeListeners(this, *colorsToWatch)
         mLauncher.hotseatSearchBox?.addOnLayoutChangeListener(this)
         BlurWallpaperProvider.getInstance(context).addListener(this)
         blurDrawable?.startListening()
@@ -176,14 +185,12 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             }
             key_opacity -> {
                 mEndAlpha = prefs.allAppsOpacity.takeIf { it >= 0 } ?: DEFAULT_END_ALPHA
-                mEndScrim = ColorUtils.setAlphaComponent(mEndScrim, mEndAlpha)
-                mEndFlatColor = ColorUtils.compositeColors(mEndScrim, ColorUtils.setAlphaComponent(
-                        mScrimColor, mMaxScrimAlpha))
+                calculateEndScrim()
                 mEndFlatColorAlpha = Color.alpha(mEndFlatColor)
-                reInitUi()
+                postReInitUi()
             }
             key_dock_opacity -> {
-                reInitUi()
+                postReInitUi()
             }
             key_dock_arrow -> {
                 updateDragHandleVisibility()
@@ -191,10 +198,30 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             key_search_radius -> {
                 if (searchBlurDrawable != null) {
                     searchBlurDrawable = createSearchBlurDrawable()
-                    reInitUi()
+                    postReInitUi()
                 }
             }
         }
+    }
+
+    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
+        when (resolver) {
+            ColorEngine.Resolvers.ALLAPPS_BACKGROUND -> {
+                allAppsBackground = color
+                calculateEndScrim()
+                postReInitUi()
+            }
+            ColorEngine.Resolvers.DOCK_BACKGROUND -> {
+                dockBackground = color
+                postReInitUi()
+            }
+        }
+    }
+
+    private fun calculateEndScrim() {
+        mEndScrim = ColorUtils.setAlphaComponent(allAppsBackground, mEndAlpha)
+        mEndFlatColor = ColorUtils.compositeColors(mEndScrim, ColorUtils.setAlphaComponent(
+                mScrimColor, mMaxScrimAlpha))
     }
 
     private fun rebuildColors() {
@@ -204,30 +231,36 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         val hasDockBackground = !prefs.dockGradientStyle
         val hasRecents = Utilities.isRecentsEnabled() && recentsProgress < 1f
 
-        val alphas = ArrayList<Pair<Float, Int>>()
-        alphas.add(Pair(Float.NEGATIVE_INFINITY, mEndAlpha))
-        alphas.add(Pair(0.5f, mEndAlpha))
+        val fullShelfColor = ColorUtils.setAlphaComponent(allAppsBackground, mEndAlpha)
+        val recentsShelfColor = ColorUtils.setAlphaComponent(allAppsBackground, super.getMidAlpha())
+        val homeShelfColor = ColorUtils.setAlphaComponent(dockBackground, midAlpha)
+        val nullShelfColor = ColorUtils.setAlphaComponent(
+                if (hasDockBackground) dockBackground else allAppsBackground, 0)
+
+        val colors = ArrayList<Pair<Float, Int>>()
+        colors.add(Pair(Float.NEGATIVE_INFINITY, fullShelfColor))
+        colors.add(Pair(0.5f, fullShelfColor))
         if (hasRecents && hasDockBackground) {
             if (homeProgress < recentsProgress) {
-                alphas.add(Pair(homeProgress, midAlpha))
-                alphas.add(Pair(recentsProgress, super.getMidAlpha()))
+                colors.add(Pair(homeProgress, homeShelfColor))
+                colors.add(Pair(recentsProgress, recentsShelfColor))
             } else {
-                alphas.add(Pair(recentsProgress, super.getMidAlpha()))
-                alphas.add(Pair(homeProgress, midAlpha))
+                colors.add(Pair(recentsProgress, recentsShelfColor))
+                colors.add(Pair(homeProgress, homeShelfColor))
             }
         } else if (hasDockBackground) {
-            alphas.add(Pair(homeProgress, midAlpha))
+            colors.add(Pair(homeProgress, homeShelfColor))
         } else if (hasRecents) {
-            alphas.add(Pair(recentsProgress, super.getMidAlpha()))
+            colors.add(Pair(recentsProgress, recentsShelfColor))
         }
-        alphas.add(Pair(1f, 0))
-        alphas.add(Pair(Float.POSITIVE_INFINITY, 0))
+        colors.add(Pair(1f, nullShelfColor))
+        colors.add(Pair(Float.POSITIVE_INFINITY, nullShelfColor))
 
-        alphaRanges.clear()
-        for (i in (1 until alphas.size)) {
-            val alpha1 = alphas[i - 1]
-            val alpha2 = alphas[i]
-            alphaRanges.add(AlphaRange(alpha1.first, alpha2.first, alpha1.second, alpha2.second))
+        colorRanges.clear()
+        for (i in (1 until colors.size)) {
+            val color1 = colors[i - 1]
+            val color2 = colors[i]
+            colorRanges.add(ColorRange(color1.first, color2.first, color1.second, color2.second))
         }
     }
 
@@ -239,6 +272,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         super.onDetachedFromWindow()
 
         prefs.removeOnPreferenceChangeListener(this, *prefsToWatch)
+        ColorEngine.getInstance(context).removeColorChangeListeners(this, *colorsToWatch)
         mLauncher.hotseatSearchBox?.removeOnLayoutChangeListener(this)
         BlurWallpaperProvider.getInstance(context).removeListener(this)
         blurDrawable?.stopListening()
@@ -259,7 +293,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     override fun setInsets(insets: Rect) {
         super.setInsets(insets)
         this.insets.set(insets)
-        invalidate()
+        postReInitUi()
     }
 
     override fun onDrawFlatColor(canvas: Canvas) {
@@ -334,11 +368,18 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
         mDragHandleOffset = Math.max(0f, mDragHandleBounds.top + mDragHandleSize - mShelfTop)
 
-        alphaRanges.forEach {
+        if (!useFlatColor) {
+            mShelfColor = getColorForProgress(mProgress)
+        }
+    }
+
+    private fun getColorForProgress(progress: Float): Int {
+        colorRanges.forEach {
             if (mProgress in it) {
-                mShelfColor = ColorUtils.setAlphaComponent(mEndScrim, it.getAlpha(mProgress))
+                return it.getColor(progress)
             }
         }
+        throw IllegalStateException("No color fround for progress $progress")
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -360,18 +401,25 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     }
 
     override fun onEnabledChanged() {
-        reInitUi()
+        postReInitUi()
         searchBlurDrawable = createSearchBlurDrawable()
     }
 
-    class AlphaRange(private val start: Float, private val end: Float,
-                     private val startAlpha: Int, private val endAlpha: Int) {
+    private fun postReInitUi() {
+        handler?.removeCallbacks(reInitUiRunnable)
+        handler?.post(reInitUiRunnable)
+    }
+
+    class ColorRange(private val start: Float, private val end: Float,
+                     private val startColor: Int, private val endColor: Int) {
 
         private val range = start..end
 
-        fun getAlpha(progress: Float): Int {
-            return Math.round(Utilities.mapToRange(
-                    progress, start, end, startAlpha.toFloat(), endAlpha.toFloat(), ACCEL))
+        fun getColor(progress: Float): Int {
+            if (start == Float.NEGATIVE_INFINITY) return endColor
+            if (end == Float.POSITIVE_INFINITY) return startColor
+            val amount = Utilities.mapToRange(progress, start, end, 0f, 1f, ACCEL)
+            return ColorUtils.blendARGB(startColor, endColor, amount)
         }
 
         operator fun contains(value: Float) = value in range

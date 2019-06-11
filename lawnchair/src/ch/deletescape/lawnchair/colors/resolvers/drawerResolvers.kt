@@ -22,6 +22,7 @@ import android.support.v4.graphics.ColorUtils
 import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.colors.ThemeAttributeColorResolver
 import ch.deletescape.lawnchair.colors.WallpaperColorResolver
 import ch.deletescape.lawnchair.theme.ThemeManager
 import com.android.launcher3.R
@@ -92,4 +93,10 @@ class DrawerQsbDarkResolver(config: Config) : WallpaperColorResolver(config) {
             colorInfo.mainColor)
 
     override fun getDisplayName() = engine.context.resources.getString(R.string.theme_dark)
+}
+
+@Keep
+class ShelfBackgroundAutoResolver(config: Config) : ThemeAttributeColorResolver(config) {
+
+    override val colorAttr = R.attr.allAppsScrimColor
 }

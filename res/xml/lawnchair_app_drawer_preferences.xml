@@ -14,6 +14,12 @@
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
             android:persistent="true" />
+
+        <ch.deletescape.lawnchair.colors.preferences.ColorPickerPreference
+            android:key="pref_allAppsBackgroundColorResolver"
+            android:title="@string/background_color"
+            app:colorMode="RGB"
+            app:resolvers="@array/resolvers_shelf_background"/>
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
     
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory

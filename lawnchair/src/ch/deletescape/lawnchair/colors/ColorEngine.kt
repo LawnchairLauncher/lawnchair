@@ -21,10 +21,7 @@ import android.content.Context
 import android.graphics.Color.*
 import android.text.TextUtils
 import ch.deletescape.lawnchair.*
-import ch.deletescape.lawnchair.colors.resolvers.DockQsbAutoResolver
-import ch.deletescape.lawnchair.colors.resolvers.DrawerLabelAutoResolver
-import ch.deletescape.lawnchair.colors.resolvers.DrawerQsbAutoResolver
-import ch.deletescape.lawnchair.colors.resolvers.WorkspaceLabelAutoResolver
+import ch.deletescape.lawnchair.colors.resolvers.*
 import ch.deletescape.lawnchair.util.SingletonHolder
 import ch.deletescape.lawnchair.util.ThemedContextProvider
 import com.android.launcher3.Utilities
@@ -155,24 +152,33 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
             const val ALLAPPS_QSB_BG = "pref_allappsQsbColorResolver"
             const val ALLAPPS_ICON_LABEL = "pref_allAppsLabelColorResolver"
             const val WORKSPACE_ICON_LABEL = "pref_workspaceLabelColorResolver"
+            const val DOCK_BACKGROUND = "pref_dockBackgroundColorResolver"
+            const val ALLAPPS_BACKGROUND = "pref_allAppsBackgroundColorResolver"
+
             fun getDefaultResolver(key: String, context: Context, engine: ColorEngine): ColorResolver {
                 return when (key) {
                     HOTSEAT_QSB_BG -> {
-                        DockQsbAutoResolver(ColorResolver.Config(key, engine, engine::onColorChanged))
+                        DockQsbAutoResolver(createConfig(key, engine))
                     }
                     ALLAPPS_QSB_BG -> {
-                        DrawerQsbAutoResolver(ColorResolver.Config(key, engine, engine::onColorChanged))
+                        DrawerQsbAutoResolver(createConfig(key, engine))
                     }
                     ALLAPPS_ICON_LABEL -> {
-                        DrawerLabelAutoResolver(ColorResolver.Config(key, engine, engine::onColorChanged))
+                        DrawerLabelAutoResolver(createConfig(key, engine))
                     }
                     WORKSPACE_ICON_LABEL -> {
-                        WorkspaceLabelAutoResolver(ColorResolver.Config(key, engine, engine::onColorChanged))
+                        WorkspaceLabelAutoResolver(createConfig(key, engine))
+                    }
+                    DOCK_BACKGROUND, ALLAPPS_BACKGROUND -> {
+                        ShelfBackgroundAutoResolver(createConfig(key, engine))
                     }
                     ACCENT -> engine.createColorResolver(key, LawnchairConfig.getInstance(context).defaultColorResolver)
                     else -> engine.createColorResolver(key, LawnchairConfig.getInstance(context).defaultColorResolver)
                 }
             }
+
+            private fun createConfig(key: String, engine: ColorEngine)
+                    = ColorResolver.Config(key, engine, engine::onColorChanged)
         }
     }
 
