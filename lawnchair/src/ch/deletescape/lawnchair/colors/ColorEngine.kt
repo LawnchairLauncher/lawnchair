@@ -70,7 +70,8 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
         }
         for (key in keys) {
             colorListeners[key]?.remove(listener)
-            if (colorListeners[key]?.isEmpty() != false) {
+            if (colorListeners[key]?.isEmpty() == true) {
+                colorListeners.remove(key)
                 prefs.removeOnPreferenceChangeListener(key, this)
             }
         }
@@ -100,7 +101,7 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
     fun createColorResolver(key: String, string: String): ColorResolver {
         val cacheKey = "$key@$string"
         // Prevent having to expensively use reflection every time
-        if (resolverCache.containsKey(cacheKey)) return resolverCache[cacheKey]!!
+        if (resolverCache.containsKey(cacheKey)) return resolverCache[cacheKey]!!.also { it.ensureIsListening() }
         val resolver = createColorResolverNullable(key, string)
         return (resolver ?: Resolvers.getDefaultResolver(key, context, this)).also {
             resolverCache[cacheKey] = it
