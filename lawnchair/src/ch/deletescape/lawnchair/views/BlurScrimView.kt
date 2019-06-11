@@ -379,7 +379,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
                 return it.getColor(progress)
             }
         }
-        throw IllegalStateException("No color fround for progress $progress")
+        return 0
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
