@@ -10,9 +10,9 @@
     <string name="smartspace_time">Ora</string>
     <string name="smartspace_date">Data</string>
     <string name="customize">Personalizza</string>
-    <string name="smartspace_preferences_in_settings">At a Glance</string>
+    <string name="smartspace_preferences_in_settings">Riepilogo</string>
     <string name="smartspace_preferences_in_settings_desc">Data, orario, sorgente meteo</string>
-    <string name="search">Ricerca</string>
+    <string name="search">Cerca</string>
     <string name="label_voice_search">Ricerca vocale</string>
     <string name="icon_pack">Pacchetto icone</string>
     <string name="home_widget">Widget Home</string>
@@ -54,9 +54,9 @@
     <string name="homescreen">Schermata home</string>
     <string name="backup_wallpaper">Sfondo</string>
     <string name="backup_error_blank_name">Inserisci il nome del backup</string>
-    <string name="backup_error_blank_location">Imposta percorso di backup</string>
-    <string name="backup_error_blank_contents">Aggiungi contenuto backup</string>
-    <string name="backup_creating">Creazione backup...</string>
+    <string name="backup_error_blank_location">Imposta percorso del backup</string>
+    <string name="backup_error_blank_contents">Aggiungi contenuto del backup</string>
+    <string name="backup_creating">Creazione backup</string>
     <string name="no_recent_backups">Niente da mostrare</string>
     <string name="backup_loading">Caricamento...</string>
     <string name="backup_invalid">File di backup errato</string>
@@ -64,7 +64,7 @@
     <string name="backup_pref_summary">Salva schermata home, ripristina backup</string>
     <string name="backup_timestamp">Data di creazione</string>
     <string name="backup_restoring">Ripristino</string>
-    <string name="backup_restarting">Riavvio...</string>
+    <string name="backup_restarting">Riavvio</string>
     <string name="restore_contents">Ripristina contenuto</string>
     <string name="restore_success">Ripristino completato</string>
     <string name="failed">Qualcosa è andato storto</string>
@@ -157,7 +157,7 @@
     <string name="about_bio_msfjarvis">Sviluppatore principale di halogenOS e sviluppatore di applicazioni di substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Crash launcher</string>
-    <string name="gestures_pref_title">Gesture</string>
+    <string name="gestures_pref_title">Gesti</string>
     <string name="gestures_pref_summary">Doppio tap, pulsante home, swipe verso il basso</string>
     <string name="action_open_drawer">Apri drawer applicazioni</string>
     <string name="action_last_task">Apri l\'ultima applicazione</string>
@@ -170,7 +170,7 @@
     <string name="action_assistant">Apri assistente</string>
     <string name="action_open_notifications">Apri notifiche</string>
     <string name="action_close_notifications">Chiudi notifiche</string>
-    <string name="action_sleep_timeout">Spegni schermo (metodo timeout)</string>
+    <string name="action_sleep_timeout">Spegni schermo (usando un timeout)</string>
     <string name="action_open_app">Apri app</string>
     <string name="action_open_app_with_target">Apri %s</string>
     <string name="action_open_app_select_app">Seleziona app</string>
@@ -185,15 +185,15 @@
     <string name="gesture_dock_swipe_up">Scorri verso l\'alto sulla dock</string>
     <string name="pref_show_assistant_title">Pulsante di ricerca vocale</string>
     <string name="pref_show_assistant_summary">Mostra il pulsante di ricerca vocale se supportato</string>
-    <string name="pref_show_as_assistant_summary">Mostra il pulsante dell\'assistente invece di quello per la ricerca vocale</string>
-    <string name="smartspace_time_24_h">formato 24 ore</string>
+    <string name="pref_show_as_assistant_summary">Mostra il pulsante dell\'assistente invece di quello della ricerca vocale</string>
+    <string name="smartspace_time_24_h">Formato 24 ore</string>
     <string name="weather_provider_disabled">Disabilitato</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
     <string name="weather_provider_pe">PixelExperience</string>
     <string name="pref_smartspace_widget_provider">Fonte meteo</string>
     <string name="pref_smartspace_event_provider">Fonte calendario</string>
     <string name="title_all_apps_search">Barra di ricerca nel drawer</string>
-    <string name="smartspace_widget_provider_not_found">Installa o aggiorna la app Google.</string>
+    <string name="smartspace_widget_provider_not_found">Installa o aggiorna l\'app Google.</string>
     <string name="apps_label">Applicazioni</string>
     <string name="all_apps_label">Tutte le app</string>
     <string name="all_apps_label_pref_title">Mostra l\'etichetta \"Tutte le app\"</string>
@@ -218,7 +218,7 @@
     <string name="title_use_pill_qsb">Utilizza la barra di ricerca con stile pillola</string>
     <string name="weather_provider_testing">Debug</string>
     <!--Marker G-->
-    <string name="backup_generate_report">Crea report bug</string>
+    <string name="backup_generate_report">Invia una segnalazione</string>
     <string name="show_top_shadow_pref_title">Ombra superiore</string>
     <string name="show_top_shadow_pref_summary">Mostra ombra sotto la barra di stato</string>
     <string name="two_row_dock">Due righe</string>
@@ -235,7 +235,7 @@
     <string name="dt2s_admin_hint">Per poter bloccare lo smartphone con doppio tap, concedi i permessi di amministratore</string>
     <string name="dt2s_admin_warning">Doppio tocco per bloccare sarà disabilitato</string>
     <string name="icon_pack_applied_toast">%s applicato</string>
-    <string name="color_system_accent">Colore primario del sistema</string>
+    <string name="color_system_accent">Colore d\'accento del sistema</string>
     <string name="color_pixel_accent">Blu Pixel</string>
     <string name="color_presets">Predefiniti</string>
     <string name="custom">Personalizzato</string>
@@ -292,10 +292,19 @@
     <string name="theme_auto_night_mode">Segui tema del sistema</string>
     <string name="theme_light">Chiaro</string>
     <string name="theme_dark_text">Chiaro con testo scuro</string>
+    <string name="theme_with_dark_text">testo scuro</string>
     <string name="theme_dark">Scuro</string>
     <string name="theme_dark_dark_text">Scuro con testo scuro</string>
     <string name="theme_black">Nero</string>
     <string name="theme_black_dark_text">Nero con testo scuro</string>
+    <string name="theme_dark_theme_mode">Tema scuro</string>
+    <string name="theme_dark_theme_mode_on">Attivato</string>
+    <string name="theme_dark_theme_mode_off">Disattivato</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
+    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Segui l\'ora del giorno</string>
+    <string name="theme_use_black">Usa nero puro</string>
+    <string name="theme_use_dark_text">Usa testo scuro</string>
     <string name="pref_qsb_color">Colore</string>
     <string name="hide_from_predictions">Rimuovi dai suggerimenti</string>
     <string name="hide_from_predictions_summary">Non mostrare mai nei suggerimenti del drawer</string>
@@ -411,4 +420,11 @@
     <string name="adaptify_pack_summary">Crea icone adattive per icone di un icon pack</string>
     <string name="pref_sesame_sync_look_and_feel">Condividi aspetto e feeling</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Sincronizza le impostazioni di ricerca di Lawnchair con Sesame</string>
+    <string name="pref_search_bar_radius">Raggio curvatura bordi barra di ricerca</string>
+    <string name="icon_text_scale_pref_title">Dimensione testo</string>
+    <string name="text_color">Colore testo</string>
+    <string name="pref_notification_count_title">Mostra conteggio notifiche</string>
+    <string name="pref_notification_count_summary">Mostra conteggio notifiche all\'interno dei badge</string>
+    <string name="pref_center_wallpaper">Centra sempre lo sfondo</string>
+    <string name="pref_center_wallpaper_summary">Questo disattiverà l\'effetto di scorrimento dello sfondo</string>
 </resources>
