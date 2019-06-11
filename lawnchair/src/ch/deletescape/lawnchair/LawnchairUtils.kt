@@ -763,3 +763,5 @@ fun Context.checkLocationAccess(): Boolean {
 
 val Int.foregroundColor
     get() = Palette.Swatch(ColorUtils.setAlphaComponent(this, 0xFF), 1).bodyTextColor
+
+inline fun <E> createWeakSet(): MutableSet<E> = Collections.newSetFromMap(WeakHashMap<E, Boolean>())

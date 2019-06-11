@@ -18,11 +18,7 @@
 package ch.deletescape.lawnchair.colors
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Color.*
-import android.support.annotation.ColorRes
-import android.support.v4.graphics.ColorUtils
-import android.support.v7.graphics.Palette
 import android.text.TextUtils
 import android.view.ContextThemeWrapper
 import ch.deletescape.lawnchair.*
@@ -30,12 +26,9 @@ import ch.deletescape.lawnchair.colors.resolvers.DockQsbAutoResolver
 import ch.deletescape.lawnchair.colors.resolvers.DrawerLabelAutoResolver
 import ch.deletescape.lawnchair.colors.resolvers.DrawerQsbAutoResolver
 import ch.deletescape.lawnchair.colors.resolvers.WorkspaceLabelAutoResolver
-import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.util.SingletonHolder
-import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import java.util.HashSet
 
 class ColorEngine private constructor(val context: Context) : LawnchairPreferences.OnPreferenceChangeListener {
 
@@ -68,7 +61,7 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
         }
         for (key in keys) {
             if (colorListeners[key] == null) {
-                colorListeners[key] = HashSet()
+                colorListeners[key] = createWeakSet()
                 prefs.addOnPreferenceChangeListener(this, key)
             }
             colorListeners[key]?.add(listener)
