@@ -21,6 +21,8 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Handler
 import ch.deletescape.lawnchair.*
+import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.colors.ThemeAttributeColorResolver
 import ch.deletescape.lawnchair.twilight.TwilightListener
 import ch.deletescape.lawnchair.twilight.TwilightManager
 import ch.deletescape.lawnchair.twilight.TwilightState
@@ -47,7 +49,8 @@ import com.android.launcher3.uioverrides.WallpaperColorInfo
  * limitations under the License.
  */
 
-class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, TwilightListener {
+class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, TwilightListener,
+        ColorEngine.OnColorChangeListener {
 
     private val app = context.lawnchairApp
     private val wallpaperColorInfo = WallpaperColorInfo.getInstance(context)!!
@@ -58,7 +61,7 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, 
         set(value) {
             if (field != value) {
                 field = value
-                forceUpdate()
+                updateTheme()
             }
         }
 
@@ -91,13 +94,34 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, 
             d("isDuringNight = $value")
             if (!prefs.launcherTheme.hasFlag(THEME_FOLLOW_DAYLIGHT)) return
             if (themeFlags.hasFlag(THEME_DARK) != value) {
-                forceUpdate()
+                updateTheme()
+            }
+        }
+
+    private var colorEngineDarkText: Boolean? = null
+        set(value) {
+            if (field != value) {
+                field = value
+                d("colorEngineDarkText = $value")
+                updateTheme()
             }
         }
 
     init {
-        onExtractedColorsChanged(null)
+        updateTheme()
         wallpaperColorInfo.addOnChangeListener(this)
+    }
+
+    fun registerColorListener() {
+        ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.WORKSPACE_ICON_LABEL)
+    }
+
+    override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
+        if (!ThemeAttributeColorResolver::class.java.isAssignableFrom(resolveInfo.resolverClass)) {
+            colorEngineDarkText = resolveInfo.isDark
+        } else {
+            colorEngineDarkText = null
+        }
     }
 
     fun addOverride(themeOverride: ThemeOverride) {
@@ -126,6 +150,10 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, 
     }
 
     override fun onExtractedColorsChanged(ignore: WallpaperColorInfo?) {
+        updateTheme()
+    }
+
+    fun updateTheme() {
         val theme = updateTwilightState(prefs.launcherTheme)
         val isBlack = isBlack(theme)
 
@@ -137,6 +165,7 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, 
         }
 
         val supportsDarkText = when {
+            colorEngineDarkText != null -> colorEngineDarkText == true
             theme.hasFlag(THEME_DARK_TEXT) -> true
             theme.hasFlag(THEME_FOLLOW_WALLPAPER) -> wallpaperColorInfo.supportsDarkText()
             else -> false
@@ -179,10 +208,6 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, 
 
     override fun onTwilightStateChanged(state: TwilightState?) {
         isDuringNight = state?.isNight == true
-    }
-
-    private fun forceUpdate() {
-        onExtractedColorsChanged(wallpaperColorInfo)
     }
 
     private fun reloadActivities() {
