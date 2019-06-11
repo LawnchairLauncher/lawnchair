@@ -50,7 +50,7 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
 
     private val alarmManager = ContextCompat.getSystemService(context, AlarmManager::class.java)!!
     private val locationManager = ContextCompat.getSystemService(context, LocationManager::class.java)!!
-    private val locationProvider = locationManager.getBestProvider(Criteria(), true)
+    private val locationProvider by lazy { locationManager.getBestProvider(Criteria(), true) }
 
     private val listeners = ArrayMap<TwilightListener, Handler>()
     private var hasListeners = false
@@ -134,10 +134,12 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
     private fun startListening() {
         Log.d(TAG, "startListening")
 
-        locationManager.requestLocationUpdates(locationProvider, 0, 0f, this, Looper.getMainLooper())
+        if (locationProvider != null) {
+            locationManager.requestLocationUpdates(locationProvider, 0, 0f, this, Looper.getMainLooper())
 
-        if (locationManager.getLastKnownLocation(locationProvider) == null) {
-            locationManager.requestSingleUpdate(locationProvider, this, Looper.getMainLooper())
+            if (locationManager.getLastKnownLocation(locationProvider) == null) {
+                locationManager.requestSingleUpdate(locationProvider, this, Looper.getMainLooper())
+            }
         }
 
         // Update whenever the system clock is changed.
