@@ -291,10 +291,17 @@
     <string name="theme_auto_night_mode">Urmează tema de sistem</string>
     <string name="theme_light">Luminoasă</string>
     <string name="theme_dark_text">Luminoasă cu text întunecat</string>
+    <string name="theme_with_dark_text">text întunecat</string>
     <string name="theme_dark">Întunecată</string>
     <string name="theme_dark_dark_text">Întunecată cu text întunecat</string>
     <string name="theme_black">Neagră</string>
     <string name="theme_black_dark_text">Neagră cu text întunecat</string>
+    <string name="theme_dark_theme_mode">Temă întunecată</string>
+    <string name="theme_dark_theme_mode_on">Pornit</string>
+    <string name="theme_dark_theme_mode_off">Oprit</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Urmează timpul zilei</string>
+    <string name="theme_use_black">Utilizează negru pur</string>
+    <string name="theme_use_dark_text">Utilizează text întunecat</string>
     <string name="pref_qsb_color">Culoare</string>
     <string name="hide_from_predictions">Ascunde din sugestii</string>
     <string name="hide_from_predictions_summary">Nu arăta niciodată în sugestiile din meniu</string>
@@ -412,4 +419,11 @@
     <string name="adaptify_pack_summary">Creare pictograme adaptive pentru pictograme din pachete cu pictograme</string>
     <string name="pref_sesame_sync_look_and_feel">Partajați aspectul</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Sincronizați setările de căutare a Lawnchair cu Sesame</string>
+    <string name="pref_search_bar_radius">Raza barei de căutare</string>
+    <string name="icon_text_scale_pref_title">Dimensiunea textului</string>
+    <string name="text_color">Culoarea textului</string>
+    <string name="pref_notification_count_title">Afişare număr de notificări</string>
+    <string name="pref_notification_count_summary">Afișare număr de notificări în interiorul punctelor</string>
+    <string name="pref_center_wallpaper">Imagine de fundal mereu la centru</string>
+    <string name="pref_center_wallpaper_summary">Aceasta va dezactiva derularea imaginii de fundal</string>
 </resources>
