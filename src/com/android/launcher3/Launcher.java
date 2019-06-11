@@ -1345,19 +1345,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         if (isActionMain) {
             if (!internalStateHandled) {
-                // Note: There should be at most one log per method call. This is enforced
-                // implicitly by using if-else statements.
-                UserEventDispatcher ued = getUserEventDispatcher();
-                AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(this);
-                if (topOpenView != null) {
-                    topOpenView.logActionCommand(Action.Command.HOME_INTENT);
-                } else if (alreadyOnHome) {
-                    Target target = newContainerTarget(mStateManager.getState().containerType);
-                    target.pageIndex = mWorkspace.getCurrentPage();
-                    ued.logActionCommand(Action.Command.HOME_INTENT, target,
-                            newContainerTarget(ContainerType.WORKSPACE));
-                }
-
                 // In all these cases, only animate if we're already on home
                 AbstractFloatingView.closeAllOpenViews(this, isStarted());
 
@@ -1376,6 +1363,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                     mWorkspace.post(mWorkspace::moveToDefaultScreen);
                 }
             }
+
+            // Handle HOME_INTENT
+            UserEventDispatcher ued = getUserEventDispatcher();
+            Target target = newContainerTarget(mStateManager.getState().containerType);
+            target.pageIndex = mWorkspace.getCurrentPage();
+            ued.logActionCommand(Action.Command.HOME_INTENT, target,
+                    newContainerTarget(ContainerType.WORKSPACE));
 
             final View v = getWindow().peekDecorView();
             if (v != null && v.getWindowToken() != null) {
