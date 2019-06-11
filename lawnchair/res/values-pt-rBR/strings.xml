@@ -175,7 +175,7 @@
     <string name="action_open_app_with_target">Abrir %s</string>
     <string name="action_open_app_select_app">Escolha o aplicativo</string>
     <string name="action_none">Não fazer nada</string>
-    <string name="action_despacito">Reproduzir o YouTube Rewind 2018 (estupro auditivo)</string>
+    <string name="action_despacito">Reproduzir o YouTube Rewind 2018 (distorcido)</string>
     <string name="gesture_press_home">Botão de início</string>
     <string name="gesture_press_back">Botão de voltar</string>
     <string name="gesture_double_tap">Toque duplo</string>
@@ -292,10 +292,19 @@
     <string name="theme_auto_night_mode">Do tema do sistema</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark_text">Branco com texto escuro</string>
+    <string name="theme_with_dark_text">texto escuro</string>
     <string name="theme_dark">Escuro</string>
     <string name="theme_dark_dark_text">Escuro com texto escuro</string>
     <string name="theme_black">Preto</string>
     <string name="theme_black_dark_text">Preto com texto escuro</string>
+    <string name="theme_dark_theme_mode">Tema escuro</string>
+    <string name="theme_dark_theme_mode_on">Ativado</string>
+    <string name="theme_dark_theme_mode_off">Desativado</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
+    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Siga a luz do dia</string>
+    <string name="theme_use_black">Use preto puro</string>
+    <string name="theme_use_dark_text">Use texto escuro</string>
     <string name="pref_qsb_color">Cor</string>
     <string name="hide_from_predictions">Ocultar das sugestões</string>
     <string name="hide_from_predictions_summary">Nunca mostrar sugestões na gaveta</string>
@@ -362,8 +371,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Permite o compartilhamento de dados entre o Lawnchair e o Sesame. Você pode alterar isso nas configurações do Lawnchair ou Sesame.]]></string>
     <string name="sesame_version">Versão de integração</string>
     <string name="sesame_shortcut_disabled">Atalhos do Sesame indisponíveis</string>
-    <string name="pref_sesame_sync_icon_pack">Compartilhar pacote de ícones</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Sincronizar o pacote de ícones com o Sesame</string>
     <string name="font_variant_italic">Itálico</string>
     <string name="font_weight_thin">Fino</string>
     <string name="font_weight_extra_light">Extra fino</string>
@@ -411,4 +418,13 @@
     <string name="dock_scale">Escala da Dock</string>
     <string name="adaptify_pack_title">Crie ícones adaptáveis ​​para o pacote de ícones</string>
     <string name="adaptify_pack_summary">Criar ícones adaptativos a partir do pacote de ícones</string>
+    <string name="pref_sesame_sync_look_and_feel">Compartilhar aparência</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Sincronizar configurações de busca do Lawnchair com o Sesame</string>
+    <string name="pref_search_bar_radius">Arredondamento da barra de pesquisa</string>
+    <string name="icon_text_scale_pref_title">Tamanho do texto</string>
+    <string name="text_color">Cor do Texto</string>
+    <string name="pref_notification_count_title">Mostrar número de notificações</string>
+    <string name="pref_notification_count_summary">Mostrar o número de notificações nos pontos</string>
+    <string name="pref_center_wallpaper">Sempre centralizar o papel de parede</string>
+    <string name="pref_center_wallpaper_summary">Isso irá desativar o deslizamento do papel de parede</string>
 </resources>

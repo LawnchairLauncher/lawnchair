@@ -121,7 +121,7 @@
     <string name="pref_category_aag">In een oogopslag</string>
     <string name="pref_category_pixel_searchbar">Pixel zoekbalk</string>
     <string name="pref_category_weather">Weer</string>
-    <string name="pref_category_misc">Andere</string>
+    <string name="pref_category_misc">Overige</string>
     <string name="pref_category_layout">Lay-out</string>
     <string name="pref_category_theme">Stijl</string>
     <string name="pref_category_searchbar">Zoekbalk</string>
@@ -153,7 +153,7 @@
     <string name="about_bio_deletescape">Android ontwikkelaar &amp; enthousiast, houdt van memes (iets te veel eigenlijk). Oprichter van het Lawnchair project.</string>
     <string name="about_bio_recoded">Milde codeur en grafisch ontwerper.</string>
     <string name="about_bio_josh">Freelance grafisch ontwerper.</string>
-    <string name="about_bio_chris">Millennial af, idk en idc. Iets met design en sociale media. Laten we samenkomen bij @lawnchairapp</string>
+    <string name="about_bio_chris">Zo millennial als maar kan, weet ik niet en boeit me niet. Iets met design en sociale media. Laten we samenkomen bij @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">Kernontwikkelaar bij halogenOS en applicatieontwikkelaar bij substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Crash launcher</string>
@@ -175,7 +175,7 @@
     <string name="action_open_app_with_target">Open %s</string>
     <string name="action_open_app_select_app">App kiezen</string>
     <string name="action_none">Niets doen</string>
-    <string name="action_despacito">Speel YouTube Rewind 2018 (earrape)</string>
+    <string name="action_despacito">Speel YouTube Rewind 2018 (vervormd)</string>
     <string name="gesture_press_home">Thuisknop</string>
     <string name="gesture_press_back">Terugknop</string>
     <string name="gesture_double_tap">Dubbeltik</string>
@@ -362,8 +362,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Zet delen van gegevens tussen Lawnchair en Sesame aan. Je kunt dit aanpassen in de instellingen van Lawnchair of Sesame.]]></string>
     <string name="sesame_version">Integratieversie</string>
     <string name="sesame_shortcut_disabled">Sesame-snelkoppeling niet beschikbaar</string>
-    <string name="pref_sesame_sync_icon_pack">Pictogrampakket delen</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Lawnchair pictogrampakket synchroniseren met Sesame</string>
     <string name="font_variant_italic">Cursief</string>
     <string name="font_weight_thin">Dun</string>
     <string name="font_weight_extra_light">ExtraLicht</string>
@@ -409,6 +407,8 @@
     <string name="about_app_description">Een aanpasbaar alternatief voor Pixel Launcher.</string>
     <string name="about_bio_paphonb">Een 18-jarige student, Android ontwikkelaar en één van de top ontwikkelaars bij Lawnchair Launcher.</string>
     <string name="dock_scale">Dock schaal</string>
-    <string name="adaptify_pack_title">Adaptieve pictogrammen genereren voor pictogrampakket</string>
-    <string name="adaptify_pack_summary">Adaptieve pictogrammen genereren voor pictogrammen uit pictogrampakketten</string>
+    <string name="adaptify_pack_title">Adaptief pictogrampakket</string>
+    <string name="adaptify_pack_summary">Adaptieve pictogrammen genereren voor pictogrampakketten</string>
+    <string name="pref_sesame_sync_look_and_feel">Uiterlijk en gedrag delen</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Lawnchair zoekinstellingen synchr. met Sesame</string>
 </resources>

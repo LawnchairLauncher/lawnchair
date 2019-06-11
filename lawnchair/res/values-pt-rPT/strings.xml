@@ -17,7 +17,7 @@
     <string name="icon_pack">Pacote de ícones</string>
     <string name="home_widget">Widget do ecrã principal</string>
     <string name="title_show_google_app">%1$s à esquerda</string>
-    <string name="msg_minus_one_on_left">Comentário à esquerda do ambiente de trabalho</string>
+    <string name="msg_minus_one_on_left">Feed à esquerda do ecrã principal</string>
     <string name="about">Sobre</string>
     <string name="google_app">Aplicação Google</string>
     <string name="about_app_version">Versão</string>
@@ -28,14 +28,14 @@
     <string name="pixel_style_pref_title">Estilo Pixel</string>
     <string name="about_summary_title">Resumo</string>
     <string name="action_edit">Editar</string>
-    <string name="hide_app_sum">Ocultar do menu de aplicativos</string>
+    <string name="hide_app_sum">Ocultar do menu de aplicações</string>
     <string name="hide_app">Ocultar aplicação</string>
     <string name="icon_shape_rounded_square">Quadrado arredondado</string>
     <string name="pixel_ui_pref_summary">Pacote de ícones, desfoque, cores</string>
-    <string name="app_drawer_pref_title">Gaveta de aplicativos</string>
+    <string name="app_drawer_pref_title">Gaveta de aplicações</string>
     <string name="app_drawer_pref_summary">Opacidade, sugestões, ocultar aplicações</string>
     <string name="search_pref_summary">Cor, motor de pesquisa e ícones</string>
-    <string name="general_pref_title">Ambiente de trabalho</string>
+    <string name="general_pref_title">Ecrã principal</string>
     <string name="general_pref_summary">Grelha, disposição de ícones, barra de estado</string>
     <string name="about_pref_summary">Equipa, links, licenças</string>
     <string name="hide_app_selected">&#160; oculta</string>
@@ -43,7 +43,7 @@
     <string name="hide_dock_gradient">Desativar gradiente</string>
     <string name="dock_pref_summary">Estilo, opacidade, indicador de página</string>
     <string name="dock_pref_title">Doca</string>
-    <string name="hide_icon_labels_pref_title">Ocultar nomes dos aplicativos</string>
+    <string name="hide_icon_labels_pref_title">Ocultar nomes das aplicações</string>
     <string name="backups">Cópias de Segurança</string>
     <string name="new_backup">Criar</string>
     <string name="restore_backup">Restaurar</string>
@@ -72,7 +72,7 @@
     <string name="full_width_widgets_pref_summary">Permitir que widgets estendam até ao limite do ecrã</string>
     <string name="full_width_width_widgets_pref_title">Widgets largos</string>
     <string name="hide_apps">Ocultar aplicações</string>
-    <string name="hide_apps_sum">Remover aplicativos do menu</string>
+    <string name="hide_apps_sum">Remover aplicações do menu</string>
     <string name="grid_size">Tamanho da grelha</string>
     <string name="developer_options_title">Opções de programador</string>
     <string name="developer_options_enabled">Opções do desenvolvedor ativada</string>
@@ -89,7 +89,7 @@
     <string name="launcher_theme_override_label">Forçar tema escuro</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="blur_pref_title">Desfocar</string>
-    <string name="blur_pref_summary">Desfoque no menu de aplicativos, doca e fundo das definições</string>
+    <string name="blur_pref_summary">Desfoque no menu de aplicações, doca e fundo das definições</string>
     <string name="blur_radius_pref_title">Intensidade do desfoque</string>
     <!--Marker B-->
     <string name="dock_colored_google">Ícones coloridos</string>
@@ -102,7 +102,7 @@
     <string name="dock_search_bar">Barra de pesquisa da doca</string>
     <string name="opacity">Opacidade</string>
     <string name="title_all_apps_google_search">Pesquisa global</string>
-    <string name="summary_all_apps_google_search">Pesquisar na web e nas aplicativos</string>
+    <string name="summary_all_apps_google_search">Pesquisar na web e nas aplicações</string>
     <string name="num_hotseat_icons_pref_title">Número de ícones</string>
     <string name="icon_scale_pref_title">Tamanho do ícone</string>
     <string name="add_settings_shortcut_title">Adicionar ícone de definições ao ecrã</string>
@@ -159,23 +159,23 @@
     <string name="debug_crash_launcher">Erro no launcher</string>
     <string name="gestures_pref_title">Gestos</string>
     <string name="gestures_pref_summary">Duplo clique, botão home, deslizar para baixo</string>
-    <string name="action_open_drawer">Abrir menu de aplicativos</string>
-    <string name="action_last_task">Abrir a última aplicação</string>
+    <string name="action_open_drawer">Abrir menu de aplicações</string>
+    <string name="action_last_task">Abrir última aplicação</string>
     <string name="action_open_widgets">Abrir o menu de widgets</string>
     <string name="action_open_settings">Abrir definições do launcher</string>
     <string name="action_open_overview">Abrir pop-up do ecrã principal</string>
     <string name="action_global_search">Abrir pesquisa global</string>
-    <string name="action_app_search">Abrir pesquisa de aplicativos</string>
-    <string name="action_overlay">Abrir o Google feed</string>
+    <string name="action_app_search">Abrir pesquisa de aplicações</string>
+    <string name="action_overlay">Abrir Google feed</string>
     <string name="action_assistant">Abrir assistente</string>
     <string name="action_open_notifications">Abrir notificações</string>
     <string name="action_close_notifications">Fechar notificações</string>
     <string name="action_sleep_timeout">Desligar (temporizador)</string>
     <string name="action_open_app">Abrir aplicação</string>
     <string name="action_open_app_with_target">Abrir %s</string>
-    <string name="action_open_app_select_app">Escolher aplicativo</string>
+    <string name="action_open_app_select_app">Escolher aplicação</string>
     <string name="action_none">Não fazer nada</string>
-    <string name="action_despacito">Reproduzir o YouTube Rewind 2018 (earrape)</string>
+    <string name="action_despacito">Reproduzir YouTube Rewind 2018 (distorted)</string>
     <string name="gesture_press_home">Botão da Página Inicial</string>
     <string name="gesture_press_back">Botão para voltar</string>
     <string name="gesture_double_tap">Toque duplo</string>
@@ -193,13 +193,13 @@
     <string name="pref_smartspace_widget_provider">Fonte de meteorologia</string>
     <string name="pref_smartspace_event_provider">Fonte do calendário</string>
     <string name="title_all_apps_search">Barra de pesquisa no menu</string>
-    <string name="smartspace_widget_provider_not_found">Instale ou atualize o aplicativo da Google.</string>
+    <string name="smartspace_widget_provider_not_found">Instale ou atualize a aplicação Google.</string>
     <string name="apps_label">Aplicações</string>
-    <string name="all_apps_label">Todos os Aplicativos</string>
-    <string name="all_apps_label_pref_title">Mostrar etiqueta \"Todos aplicativos\"</string>
-    <string name="separate_work_apps_pref_title">Separador para aplicativos de trabalho</string>
-    <string name="title_search_hidden_apps">Pesquisar aplicativos ocultos</string>
-    <string name="summary_search_hidden_apps">Mostrar aplicativos ocultos na pesquisa</string>
+    <string name="all_apps_label">Todas as aplicações</string>
+    <string name="all_apps_label_pref_title">Mostrar etiqueta \"Todas as aplicações\"</string>
+    <string name="separate_work_apps_pref_title">Separador para aplicações de trabalho</string>
+    <string name="title_search_hidden_apps">Pesquisar aplicações ocultas</string>
+    <string name="summary_search_hidden_apps">Mostrar aplicações ocultas na pesquisa</string>
     <!--Marker F-->
     <string name="default_city">Lisboa, PT</string>
     <string name="pref_weather_api_key_title">Chave API</string>
@@ -212,7 +212,7 @@
     <string name="all_icons">Todos os ícones</string>
     <string name="error_no_browser">Não existe uma aplicação para manipular URL</string>
     <string name="no_icon_found">Nenhum ícone encontrado</string>
-    <string name="icon_pack_external_picker">Abrir aplicativo externo</string>
+    <string name="icon_pack_external_picker">Abrir aplicação externa</string>
     <string name="week_day_format">%1$s,%2$s</string>
     <string name="full_wday_month_day_no_year">EEEE, d de MMMM</string>
     <string name="title_use_pill_qsb">Usar barra de pesquisa com estilo comprimido</string>
@@ -231,7 +231,7 @@
     <string name="transparent">Transparente</string>
     <string name="pref_open_source_licenses_title">Licenças</string>
     <string name="pref_legacy_treatment_title">Criar ícones adaptativos</string>
-    <string name="pref_legacy_treatment_summary">Ícones adaptativos automáticos para todos os aplicativos</string>
+    <string name="pref_legacy_treatment_summary">Ícones adaptativos para todas as aplicações</string>
     <string name="dt2s_admin_hint">Para usar o clique duplo para bloquear, conceda permissão de administrador</string>
     <string name="dt2s_admin_warning">Duplo clique para bloquear será desativado</string>
     <string name="icon_pack_applied_toast">%s aplicado</string>
@@ -248,13 +248,13 @@
     <string name="bridge_missing_message">Instale ou atualize Lawnfeed</string>
     <string name="quickstep_pref_title">Recentes</string>
     <string name="quickstep_pref_summary">Gestos, cantos, desfoque</string>
-    <string name="swipe_up_to_switch_apps_title">Deslize para cima para trocar de aplicativo</string>
+    <string name="swipe_up_to_switch_apps_title">Deslize acima para trocar de aplicação</string>
     <string name="swipe_left_to_go_back_title">Deslize para a esquerda para voltar</string>
     <string name="pref_category_nav_swipe_up_gestures">Ações ao deslizar para cima</string>
     <string name="gesture_nav_swipe_up_left">Da esquerda</string>
     <string name="gesture_nav_swipe_up_center">Do centro</string>
     <string name="gesture_nav_swipe_up_right">Da direita</string>
-    <string name="action_switch_apps">Trocar de aplicativo</string>
+    <string name="action_switch_apps">Mudar de aplicação</string>
     <string name="pref_global_search_provider">Motor de pesquisa</string>
     <string name="searchbar_appearance_title">Aparência</string>
     <string name="google">Google</string>
@@ -263,7 +263,7 @@
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
     <string name="search_provider_baidu">Baidu</string>
-    <string name="search_provider_appsearch">Pesquisar aplicativos</string>
+    <string name="search_provider_appsearch">Pesquisar aplicações</string>
     <string name="search_provider_search_lite">Search Lite</string>
     <string name="search_provider_cool_search">Cool Search</string>
     <string name="recent_task_option_force_stop">Forçar paragem</string>
@@ -273,11 +273,11 @@
     <string name="get_more_icon_packs">Obter mais</string>
     <string name="enabled_icon_packs">Ativado</string>
     <string name="pref_icon_pack_masking">Máscara do ícone</string>
-    <string name="pref_icon_pack_masking_summary">Tornar ícones dos aplicativos compatíveis com o pacote de ícones escolhido</string>
+    <string name="pref_icon_pack_masking_summary">Tornar ícone da aplicação compatível com o pacote de ícones escolhido</string>
     <string name="pref_legacy_colored_backgrounds">Fundos coloridos</string>
     <string name="pref_legacy_colored_backgrounds_summary">Fundos coloridos para os ícones adaptáveis gerados</string>
     <string name="pref_white_only_treatment">Substituir fundos brancos</string>
-    <string name="pref_white_only_treatment_summary">Fundos coloridos para todos os ícones adaptáveis</string>
+    <string name="pref_white_only_treatment_summary">Fundos coloridos para todos os ícones adaptativos</string>
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <!--Marker H-->
     <string name="dismiss_drop_target_label">"Não mostrar"</string>
@@ -286,7 +286,7 @@
     <string name="pref_drawer_padding">Altura da linha</string>
     <string name="pref_drawer_columns">Número de colunas</string>
     <string name="pref_prediction_count">Número de sugestões</string>
-    <string name="pref_mutliline_labels">Nome de aplicativos em multi-linha</string>
+    <string name="pref_mutliline_labels">Nome de aplicações multi-linha</string>
     <string name="lawnchair_actions">Ações</string>
     <string name="theme_auto">Seguir imagem de fundo</string>
     <string name="theme_auto_night_mode">Seguir tema do sistema</string>
@@ -309,9 +309,9 @@
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Sugestões</string>
     <string name="title_app_suggestions">Aplicações</string>
-    <string name="title_app_suggestions_in_search">Sugestões de aplicativos</string>
-    <string name="summary_app_suggestions">Aplicativos usados recentemente</string>
-    <string name="summary_app_suggestions_lawnstep">No ecrã de aplicativos recentes e no menu</string>
+    <string name="title_app_suggestions_in_search">Sugestões de aplicações</string>
+    <string name="summary_app_suggestions">Aplicações recentes</string>
+    <string name="summary_app_suggestions_lawnstep">No ecrã de aplicações recentes e no menu</string>
     <string name="app_actions_pref_title">Ações</string>
     <string name="app_actions_pref_title_in_search">Sugestões de ações</string>
     <string name="app_actions_pref_desc">Atalhos para ecrãs abertos frequentes</string>
@@ -321,22 +321,22 @@
     <string name="recents_not_connected">Serviço desligado</string>
     <string name="advanced_settings">Mais definições para %s</string>
     <string name="adaptive_icon">ícones adaptáveis</string>
-    <string name="drawer_tabs">Abas</string>
+    <string name="drawer_tabs">Separadores</string>
     <string name="add_new_tab">Adicionar</string>
     <string name="rename_tab">Renomear</string>
-    <string name="default_tab_name">Nova aba</string>
-    <string name="show_in_tabs">Abas</string>
+    <string name="default_tab_name">Novo separador</string>
+    <string name="show_in_tabs">Separadores</string>
     <string name="tabs_manage">Gerir</string>
     <plurals name="tab_apps_count">
-        <item quantity="one">%1$d aplicativo</item>
-        <item quantity="other">%1$d aplicativos</item>
+        <item quantity="one">%1$d aplicação</item>
+        <item quantity="other">%1$d aplicações</item>
     </plurals>
     <plurals name="hidden_apps_count">
         <item quantity="one">%1$d ocultado</item>
         <item quantity="other">%1$d ocultados</item>
     </plurals>
     <string name="selected_count">%1$d selecionado(s)</string>
-    <string name="tab_manage_apps">Gerir aplicativos</string>
+    <string name="tab_manage_apps">Gerir aplicações</string>
     <string name="tab_bottom_sheet_save">Salvar</string>
     <string name="tab_hide_from_main">Ocultar do menu</string>
     <string name="tab_color">Cor do separador</string>
@@ -362,8 +362,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Ativa a partilha de dados entre o Lawnchair e o Sesame. Pode alterar esta opção nas definições do Lawnchair ou do Sesame.]]></string>
     <string name="sesame_version">Versão integrada</string>
     <string name="sesame_shortcut_disabled">Atalhos do Sesame indisponíveis</string>
-    <string name="pref_sesame_sync_icon_pack">Partilhar pacote de ícones</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Sincronizar pacote de ícones do Lawnchair com o Sesame</string>
     <string name="font_variant_italic">Itálico</string>
     <string name="font_weight_thin">Fino</string>
     <string name="font_weight_extra_light">Extrafino</string>
@@ -380,7 +378,7 @@
     <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">Meteorologia OnePlus</string>
     <string name="overlap_placement">Posicionamento sobreposto</string>
-    <string name="overlap_placement_summary">Permitir que ícones e widgets se sobreponham uns aos outros.</string>
+    <string name="overlap_placement_summary">Permitir que os ícones e os widgets se sobreponham.</string>
     <string name="units_rakine">Rankine</string>
     <string name="units_newton">Newton</string>
     <string name="units_delisle">Delisle</string>
@@ -390,16 +388,16 @@
     <string name="pref_smartspace_time_above">Mostrar relógio largo</string>
     <string name="pref_smartspace_time_above_summary">Mostrar relógio acima do widget</string>
     <string name="pref_fonts_title">Tipos de letra</string>
-    <string name="pref_fonts_summary">Muda o tipo de letra para diferentes elementos</string>
+    <string name="pref_fonts_summary">Alterar tipo de letra para diferentes itens</string>
     <string name="pref_fonts_global_font">Tipo de letra global</string>
     <string name="pref_fonts_change_global_font">Alterar</string>
-    <string name="pref_fonts_home_icons">Nomes de aplicativos e das pastas</string>
+    <string name="pref_fonts_home_icons">Nomes de aplicações e de pastas</string>
     <string name="pref_fonts_home_smartspace">Widget \"At a Glance\"</string>
     <string name="pref_fonts_home_shortcuts">Bolhas para atalhos</string>
     <string name="pref_fonts_category_drawer">Menu</string>
-    <string name="pref_fonts_drawer_icons">Nomes dos aplicativos</string>
-    <string name="pref_fonts_drawer_app_actions_icons">Nomes de ações de aplicativos</string>
-    <string name="pref_fonts_drawer_tabs">Nome da aba</string>
+    <string name="pref_fonts_drawer_icons">Nome da aplicação</string>
+    <string name="pref_fonts_drawer_app_actions_icons">Nomes de ações de aplicações</string>
+    <string name="pref_fonts_drawer_tabs">Nome do separador</string>
     <string name="pref_fonts_find_fonts">Pesquisar tipos de letra</string>
     <string name="pref_fonts_add_fonts">Adicionar tipo de letra</string>
     <string name="pref_fonts_add_fonts_summary">OTF e TTF suportados</string>
@@ -411,4 +409,6 @@
     <string name="dock_scale">Escala da doca</string>
     <string name="adaptify_pack_title">Criar ícones adaptativos para o pacote de ícones</string>
     <string name="adaptify_pack_summary">Criar ícones adaptativos a partir do pacote de ícones</string>
+    <string name="pref_sesame_sync_look_and_feel">Partilhar aspeto e comportamento</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Sincronizar definições de pesquisa de Lawnchair com Sesame</string>
 </resources>

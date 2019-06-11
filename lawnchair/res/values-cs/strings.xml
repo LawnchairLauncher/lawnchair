@@ -174,7 +174,7 @@
     <string name="action_open_app_with_target">Otevřít %s</string>
     <string name="action_open_app_select_app">Vybrat aplikaci</string>
     <string name="action_none">Nic nedělat</string>
-    <string name="action_despacito">Přehrát YouTube Rewind 2018 (earrape)</string>
+    <string name="action_despacito">Přehrát YouTube Rewind 2018 (distorted)</string>
     <string name="gesture_press_home">Tlačítko Domů</string>
     <string name="gesture_press_back">Tlačítko Zpět</string>
     <string name="gesture_double_tap">Dvojité poklepání</string>
@@ -364,8 +364,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Dovolí sdílení dat mezi Lawnchair a Sesame. Můžete to změnit v nastavení Lawnchair nebo Sesame.]]></string>
     <string name="sesame_version">Verze integrace</string>
     <string name="sesame_shortcut_disabled">Zkratky Sesame nejsou dostupné</string>
-    <string name="pref_sesame_sync_icon_pack">Sdílet balíček ikon</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Synchronizovat balíčky ikon Lawnchair a Sesame</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
     <string name="font_weight_extra_light">ExtraLight</string>
@@ -413,4 +411,6 @@
     <string name="dock_scale">Měřítko doku</string>
     <string name="adaptify_pack_title">Vytvořit adaptivní ikony pro balíček ikon</string>
     <string name="adaptify_pack_summary">Vytvořit adaptivní ikony pro ikony z balíčků ikon</string>
+    <string name="pref_sesame_sync_look_and_feel">Sdílet vzhled a pocit</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Synchronizujte nastavení vyhledávání Lawnchair pomocí Sesame</string>
 </resources>

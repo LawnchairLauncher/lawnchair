@@ -174,7 +174,7 @@
     <string name="action_open_app_with_target">Åbn %s</string>
     <string name="action_open_app_select_app">Vælg app</string>
     <string name="action_none">Gør intet</string>
-    <string name="action_despacito">Afspil YouTube Rewind 2018 (øremisbrug)</string>
+    <string name="action_despacito">Afspil YouTube Rewind 2018 (forvrænget)</string>
     <string name="gesture_press_home">Hjemknap</string>
     <string name="gesture_press_back">Tilbageknap</string>
     <string name="gesture_double_tap">Dobbelttryk</string>
@@ -290,10 +290,19 @@
     <string name="theme_auto_night_mode">Følg systemtema</string>
     <string name="theme_light">Lyst</string>
     <string name="theme_dark_text">Lyst med mørk tekst</string>
+    <string name="theme_with_dark_text">mørk tekst</string>
     <string name="theme_dark">Mørkt</string>
     <string name="theme_dark_dark_text">Mørkt med mørk tekst</string>
     <string name="theme_black">Sort</string>
     <string name="theme_black_dark_text">Sort med mørk tekst</string>
+    <string name="theme_dark_theme_mode">Mørkt tema</string>
+    <string name="theme_dark_theme_mode_on">Til</string>
+    <string name="theme_dark_theme_mode_off">Fra</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
+    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto-nattilstand</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Følg dagslys</string>
+    <string name="theme_use_black">Benyt helt sort</string>
+    <string name="theme_use_dark_text">Benyt sort tekst</string>
     <string name="pref_qsb_color">Farve</string>
     <string name="hide_from_predictions">Skjul i forslag</string>
     <string name="hide_from_predictions_summary">Vis aldrig gardinforslag</string>
@@ -360,8 +369,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Tillader datadeling mellem Lawnchair og Sesame. Dette kan ændres i indstillingerne til Lawnchair eller Sesame.]]></string>
     <string name="sesame_version">Integrationsversion</string>
     <string name="sesame_shortcut_disabled">Sesame-genveje utilgængelige</string>
-    <string name="pref_sesame_sync_icon_pack">Del ikonpakke</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Synk Lawnchair-ikonpakke med Sesame</string>
     <string name="font_variant_italic">Kursiv</string>
     <string name="font_weight_thin">Tynd</string>
     <string name="font_weight_extra_light">Ekstra let</string>
@@ -409,4 +416,13 @@
     <string name="dock_scale">Dokskalering</string>
     <string name="adaptify_pack_title">Kreerer adaptive ikoner til ikonpakke</string>
     <string name="adaptify_pack_summary">Kreerer adaptive ikoner til ikoner i ikonpakke</string>
+    <string name="pref_sesame_sync_look_and_feel">Del udseende og fonemmelse</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Synk Lawnchair-søgeindstillinger med Sesame</string>
+    <string name="pref_search_bar_radius">Søgebjælkeradius</string>
+    <string name="icon_text_scale_pref_title">Tekststørrelse</string>
+    <string name="text_color">Tekstfarve</string>
+    <string name="pref_notification_count_title">Vis notifikationsantal</string>
+    <string name="pref_notification_count_summary">Vis notifikationsantal i prikkerne</string>
+    <string name="pref_center_wallpaper">Centrér altid tapet</string>
+    <string name="pref_center_wallpaper_summary">Dette vil deaktivere tapetrulningseffekten</string>
 </resources>

@@ -175,7 +175,7 @@
     <string name="action_open_app_with_target">%s megnyitása</string>
     <string name="action_open_app_select_app">Alkalmazás kijelölése</string>
     <string name="action_none">Nincs művelet</string>
-    <string name="action_despacito">Youtube Rewind 2018 lejátszása (fülsértő)</string>
+    <string name="action_despacito">Youtube-os időutazás 2018-ba (eltorzult)</string>
     <string name="gesture_press_home">Kezdőlap gomb</string>
     <string name="gesture_press_back">Vissza gomb</string>
     <string name="gesture_double_tap">Dupla érintés</string>
@@ -291,10 +291,19 @@
     <string name="theme_auto_night_mode">Rendszertéma alapján</string>
     <string name="theme_light">Világos</string>
     <string name="theme_dark_text">Világos, sötét szöveggel</string>
+    <string name="theme_with_dark_text">sötét szöveg</string>
     <string name="theme_dark">Sötét</string>
     <string name="theme_dark_dark_text">Sötét, sötét szöveggel</string>
     <string name="theme_black">Fekete</string>
     <string name="theme_black_dark_text">Fekete, sötét szöveggel</string>
+    <string name="theme_dark_theme_mode">Sötét téma</string>
+    <string name="theme_dark_theme_mode_on">Be</string>
+    <string name="theme_dark_theme_mode_off">Ki</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
+    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Napfényt követve</string>
+    <string name="theme_use_black">Használj igazi feketét</string>
+    <string name="theme_use_dark_text">Használj sötét szöveget</string>
     <string name="pref_qsb_color">Szín</string>
     <string name="hide_from_predictions">Elrejtés a javaslatokból</string>
     <string name="hide_from_predictions_summary">Soha nem jeleníti meg az alkalmazáslista javaslatait</string>
@@ -361,8 +370,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Lehetővé teszi az adatmegosztást a Lawnchair és a Sesame között. Ezt mindkét alkalmazás beállításában megváltoztathatja.]]></string>
     <string name="sesame_version">Az egységesítés verziója</string>
     <string name="sesame_shortcut_disabled">A Sesame-parancsikonok nem érhetők el</string>
-    <string name="pref_sesame_sync_icon_pack">Ikoncsomag-megosztás</string>
-    <string name="pref_sesame_sync_icon_pack_summary">A Lawnchair-ikoncsomag szinkronizálása a Sesame-mal</string>
     <string name="font_variant_italic">Dőlt</string>
     <string name="font_weight_thin">Keskeny</string>
     <string name="font_weight_extra_light">Extravékony</string>
@@ -410,4 +417,13 @@
     <string name="dock_scale">Dokkméretezés</string>
     <string name="adaptify_pack_title">Alkalmazkodó ikonok készítése az ikoncsomagokhoz</string>
     <string name="adaptify_pack_summary">Alkalmazkodó ikonok készítése az ikoncsomagok ikonjaihoz</string>
+    <string name="pref_sesame_sync_look_and_feel">Ossza meg a kinézetet és az érzést</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">A Lawnchair keresési beállításainak szinkonizálása Sesame-mal</string>
+    <string name="pref_search_bar_radius">Keresési sáv nagyság</string>
+    <string name="icon_text_scale_pref_title">Betűméret</string>
+    <string name="text_color">Szöveg színe</string>
+    <string name="pref_notification_count_title">Mutasd értesítés számlálót</string>
+    <string name="pref_notification_count_summary">Mutasd értesítés számlálót a pontokban</string>
+    <string name="pref_center_wallpaper">Hátteret mindig igazísd középre</string>
+    <string name="pref_center_wallpaper_summary">Ez kifogja kapcsolni a háttér mozgás efektet</string>
 </resources>

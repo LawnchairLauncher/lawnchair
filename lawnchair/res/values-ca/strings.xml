@@ -170,7 +170,7 @@
     <string name="action_open_app_with_target">Obre %s</string>
     <string name="action_open_app_select_app">Trieu l\'aplicació</string>
     <string name="action_none">No fa res</string>
-    <string name="action_despacito">Reprodueix el YouTube Rewind 2018 (compte amb les orelles)</string>
+    <string name="action_despacito">Reprodueix el YouTube Rewind 2018 (distorsionat)</string>
     <string name="gesture_press_home">Botó d\'inici</string>
     <string name="gesture_press_back">Botó enrera</string>
     <string name="gesture_double_tap">Doble toc</string>
@@ -356,8 +356,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Permet l'intercanvi de dades entre el Lawnchair i el Sesame. Podeu canviar-ho a la configuració del Lawnchair o del Sesame.]]></string>
     <string name="sesame_version">Versió de la integració</string>
     <string name="sesame_shortcut_disabled">Les dreceres del Sesame no estan disponibles</string>
-    <string name="pref_sesame_sync_icon_pack">Comparteix el paquet d\'icones</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Sincronitza el paquet d\'icones del Lawnchair amb el Sesame</string>
     <string name="font_variant_italic">Cursiva</string>
     <string name="font_weight_thin">Prima</string>
     <string name="font_weight_extra_light">Extra prima</string>
@@ -405,4 +403,6 @@
     <string name="dock_scale">Escala del caixó d\'aplicacions</string>
     <string name="adaptify_pack_title">Crea icones adaptatives per al paquet d\'icones</string>
     <string name="adaptify_pack_summary">Creeu icones adaptatives per a icones a partir de paquets d\'icones</string>
+    <string name="pref_sesame_sync_look_and_feel">Comparteix l\'aspecte i el comportament</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Sincronitza la configuració de cerca del Lawnchair amb el Sesame</string>
 </resources>

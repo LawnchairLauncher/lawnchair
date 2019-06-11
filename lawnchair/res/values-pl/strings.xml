@@ -175,7 +175,7 @@
     <string name="action_open_app_with_target">Otwórz %s</string>
     <string name="action_open_app_select_app">Wybierz aplikację</string>
     <string name="action_none">Nic nie rób</string>
-    <string name="action_despacito">Odtwórz YouTube Rewind 2018 (earrape)</string>
+    <string name="action_despacito">Odtwórz YouTube Rewind 2018 (Zniekształcone)</string>
     <string name="gesture_press_home">Przycisk Home</string>
     <string name="gesture_press_back">Przycisk Wstecz</string>
     <string name="gesture_double_tap">Dwukrotne naciśnięcie</string>
@@ -292,10 +292,18 @@
     <string name="theme_auto_night_mode">Z motywu systemu</string>
     <string name="theme_light">Jasny</string>
     <string name="theme_dark_text">Jasny z czarnym tekstem</string>
+    <string name="theme_with_dark_text">ciemny tekst</string>
     <string name="theme_dark">Ciemny</string>
     <string name="theme_dark_dark_text">Ciemny z ciemnym tekstem</string>
     <string name="theme_black">Czarny</string>
     <string name="theme_black_dark_text">Czarny z ciemnym tekstem</string>
+    <string name="theme_dark_theme_mode">Ciemny motyw</string>
+    <string name="theme_dark_theme_mode_on">Wł.</string>
+    <string name="theme_dark_theme_mode_off">Wył</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
+    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
+    <string name="theme_use_black">Używaj czystej czerni</string>
+    <string name="theme_use_dark_text">Używaj ciemnego tekstu</string>
     <string name="pref_qsb_color">Kolor</string>
     <string name="hide_from_predictions">Ukryj z sugestii</string>
     <string name="hide_from_predictions_summary">Nigdy nie pokazuj sugestii na liście aplikacji</string>
@@ -366,8 +374,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Włącza udostępnianie danych pomiędzy Lawnchair i Sesame. Możesz to zmienić w ustawieniach Lawnchair lub Sesame.]]></string>
     <string name="sesame_version">Wersja integracji</string>
     <string name="sesame_shortcut_disabled">Skróty Sesame niedostępne</string>
-    <string name="pref_sesame_sync_icon_pack">Udostępnij pakiet ikon</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Synchronizuj pakiet ikon Lawnchair z Sesame</string>
     <string name="font_variant_italic">Kursywa</string>
     <string name="font_weight_thin">Cienki</string>
     <string name="font_weight_extra_light">ExtraCienki</string>
@@ -415,4 +421,13 @@
     <string name="dock_scale">Rozmiar docka</string>
     <string name="adaptify_pack_title">Utwórz ikony adaptacyjne dla paczki ikon</string>
     <string name="adaptify_pack_summary">Utwórz ikony adaptacyjne dla ikon z paczek ikon</string>
+    <string name="pref_sesame_sync_look_and_feel">Synchronizuj wygląd i działanie</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Synchronizuj ustawienia wyszukiwania Lawnchair z Sesame</string>
+    <string name="pref_search_bar_radius">Zaokrąglenie paska wyszukiwania</string>
+    <string name="icon_text_scale_pref_title">Rozmiar tekstu</string>
+    <string name="text_color">Kolor tekstu</string>
+    <string name="pref_notification_count_title">Wyświetlaj liczbę powiadomień</string>
+    <string name="pref_notification_count_summary">Wyświetlaj liczbę powiadomień wewnątrz kropek</string>
+    <string name="pref_center_wallpaper">Zawsze środkuj tapetę</string>
+    <string name="pref_center_wallpaper_summary">To wyłączy efekt przewijania tapety</string>
 </resources>

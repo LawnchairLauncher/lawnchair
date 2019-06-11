@@ -174,7 +174,6 @@
     <string name="action_open_app_with_target">खुला %s</string>
     <string name="action_open_app_select_app">ऐप चुने</string>
     <string name="action_none">कुछ न करें</string>
-    <string name="action_despacito">यूट्यूब रिवाइंड 2018 चलाए (कानका‎बलात्कार)</string>
     <string name="gesture_press_home">होम बटन</string>
     <string name="gesture_press_back">वापस बटन</string>
     <string name="gesture_double_tap">दोहरा टैप</string>
@@ -360,8 +359,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[यह लांचर और सेसामि के नीचे डाटा इंटेग्रेट करता है। आप इसे सेटिंग्स में चेंज कर सकते है]]></string>
     <string name="sesame_version">इंटीग्रेशन का वर्जन</string>
     <string name="sesame_shortcut_disabled">सेसामी शॉर्टकट्स उपलब्ध नहीं है</string>
-    <string name="pref_sesame_sync_icon_pack">आइकन पैक शेयर करें</string>
-    <string name="pref_sesame_sync_icon_pack_summary">लॉन्चर का आइकन पैक सिसमे के साथ तुल्यकालन करें</string>
     <string name="font_variant_italic">इटालिक</string>
     <string name="font_weight_thin">पतला</string>
     <string name="font_weight_extra_light">अधिक हल्का रंग</string>

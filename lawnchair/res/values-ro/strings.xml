@@ -174,7 +174,7 @@
     <string name="action_open_app_with_target">Deschide %s</string>
     <string name="action_open_app_select_app">Alege aplicația</string>
     <string name="action_none">Nu face nimic</string>
-    <string name="action_despacito">Redare YouTube Rewind 2018 (earrape)</string>
+    <string name="action_despacito">Redare YouTube Rewind 2018 (distorted)</string>
     <string name="gesture_press_home">Butonul Acasă</string>
     <string name="gesture_press_back">Butonul Înapoi</string>
     <string name="gesture_double_tap">Atingere dublă</string>
@@ -291,10 +291,17 @@
     <string name="theme_auto_night_mode">Urmează tema de sistem</string>
     <string name="theme_light">Luminoasă</string>
     <string name="theme_dark_text">Luminoasă cu text întunecat</string>
+    <string name="theme_with_dark_text">text întunecat</string>
     <string name="theme_dark">Întunecată</string>
     <string name="theme_dark_dark_text">Întunecată cu text întunecat</string>
     <string name="theme_black">Neagră</string>
     <string name="theme_black_dark_text">Neagră cu text întunecat</string>
+    <string name="theme_dark_theme_mode">Temă întunecată</string>
+    <string name="theme_dark_theme_mode_on">Pornit</string>
+    <string name="theme_dark_theme_mode_off">Oprit</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Urmează timpul zilei</string>
+    <string name="theme_use_black">Utilizează negru pur</string>
+    <string name="theme_use_dark_text">Utilizează text întunecat</string>
     <string name="pref_qsb_color">Culoare</string>
     <string name="hide_from_predictions">Ascunde din sugestii</string>
     <string name="hide_from_predictions_summary">Nu arăta niciodată în sugestiile din meniu</string>
@@ -363,8 +370,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Activează distribuirea datelor între Lawnchair și Sesame. Puteți schima acest lucru în setările Lawnchair sau în setările Sesame.]]></string>
     <string name="sesame_version">Versiunea integrării</string>
     <string name="sesame_shortcut_disabled">Scurtăturile Sesame indisponibile</string>
-    <string name="pref_sesame_sync_icon_pack">Distribuie pachetul de pictograme</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Sincronizați pachetul de pictograme din Lawnchair cu Sesame</string>
     <string name="font_variant_italic">Cursiv</string>
     <string name="font_weight_thin">Subțire</string>
     <string name="font_weight_extra_light">Extra subțire</string>
@@ -412,4 +417,13 @@
     <string name="dock_scale">Scară zonă de andocare</string>
     <string name="adaptify_pack_title">Creare pictograme adaptive pentru pachetul cu pictograme</string>
     <string name="adaptify_pack_summary">Creare pictograme adaptive pentru pictograme din pachete cu pictograme</string>
+    <string name="pref_sesame_sync_look_and_feel">Partajați aspectul</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Sincronizați setările de căutare a Lawnchair cu Sesame</string>
+    <string name="pref_search_bar_radius">Raza barei de căutare</string>
+    <string name="icon_text_scale_pref_title">Dimensiunea textului</string>
+    <string name="text_color">Culoarea textului</string>
+    <string name="pref_notification_count_title">Afişare număr de notificări</string>
+    <string name="pref_notification_count_summary">Afișare număr de notificări în interiorul punctelor</string>
+    <string name="pref_center_wallpaper">Imagine de fundal mereu la centru</string>
+    <string name="pref_center_wallpaper_summary">Aceasta va dezactiva derularea imaginii de fundal</string>
 </resources>

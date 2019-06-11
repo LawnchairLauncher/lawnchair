@@ -35,7 +35,7 @@
     <string name="app_drawer_pref_title">Cajón de aplicaciones</string>
     <string name="app_drawer_pref_summary">Opacidad, sugerencias, ocultar aplicaciones</string>
     <string name="search_pref_summary">Color, motor de búsqueda, iconos</string>
-    <string name="general_pref_title">Pantalla de inicio</string>
+    <string name="general_pref_title">Escritorio</string>
     <string name="general_pref_summary">Cuadrícula, orden de los iconos, barra de estado</string>
     <string name="about_pref_summary">Equipo, enlaces, licencias</string>
     <string name="hide_app_selected">&#160; oculto</string>
@@ -153,7 +153,7 @@
     <string name="about_bio_deletescape">Desarrollador para Android &amp; entusiasta, ama los memes (demasiado en realidad). Fundador del proyecto Lawnchair.</string>
     <string name="about_bio_recoded">Programador y diseñador.</string>
     <string name="about_bio_josh">Diseñador gráfico independiente.</string>
-    <string name="about_bio_chris">Milenaria cómo ninguna, no se y no me importa. Algo con diseño y redes sociales. Vamos a pasar el rato juntos en @lawnchairapp ✨</string>
+    <string name="about_bio_chris">Milenial como ninguna, no sé y no me importa. Algo con diseño y redes sociales. Vamos a pasar el rato juntos en @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">Desarrollador central en halogenOS y desarrollador de aplicación en substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Fallo del launcher</string>
@@ -175,7 +175,7 @@
     <string name="action_open_app_with_target">Abrir %s</string>
     <string name="action_open_app_select_app">Escoger aplicación</string>
     <string name="action_none">No hacer nada</string>
-    <string name="action_despacito">Reproducir el YouTube Rewind 2018 (¡Cuidado con tus oídos!)</string>
+    <string name="action_despacito">Reproducir YouTube Rewind 2018(distorsionado)</string>
     <string name="gesture_press_home">Botón Inicio</string>
     <string name="gesture_press_back">Botón Atrás</string>
     <string name="gesture_double_tap">Doble toque</string>
@@ -266,7 +266,7 @@
     <string name="search_provider_search_lite">Search Lite</string>
     <string name="search_provider_cool_search">Cool Search</string>
     <string name="recent_task_option_force_stop">Forzar cierre</string>
-    <string name="pref_icon_packs">Paquetes de iconos</string>
+    <string name="pref_icon_packs">Packs de iconos</string>
     <string name="drag_to_enable_packs">Arrastrar arriba para habilitar</string>
     <string name="drag_to_disable_packs">Arrastrar abajo para deshabilitar</string>
     <string name="get_more_icon_packs">Conseguir más</string>
@@ -291,10 +291,19 @@
     <string name="theme_auto_night_mode">Seguir tema del sistema</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark_text">Blanco con texto oscuro</string>
+    <string name="theme_with_dark_text">texto oscuro</string>
     <string name="theme_dark">Oscuro</string>
     <string name="theme_dark_dark_text">Oscuro con texto oscuro</string>
     <string name="theme_black">Negro</string>
     <string name="theme_black_dark_text">Negro con texto oscuro</string>
+    <string name="theme_dark_theme_mode">Tema Oscuro</string>
+    <string name="theme_dark_theme_mode_on">Activado</string>
+    <string name="theme_dark_theme_mode_off">Desactivado</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">Tema automático</string>
+    <string name="theme_dark_theme_mode_follow_system">Tema modo noche automático</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Durante el día</string>
+    <string name="theme_use_black">Usar negro puro</string>
+    <string name="theme_use_dark_text">Usar texto oscuro</string>
     <string name="pref_qsb_color">Color</string>
     <string name="hide_from_predictions">Ocultar sugerencia</string>
     <string name="hide_from_predictions_summary">Nunca mostrar en la caja de sugerencias</string>
@@ -361,8 +370,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Habilita el compartimiento de datos entre Lawnchair y Sesame. Esto se puede cambiar en la configuración de Lawnchair o Sesame.]]></string>
     <string name="sesame_version">Versión de integración</string>
     <string name="sesame_shortcut_disabled">Accesos directos de Sesame no disponibles</string>
-    <string name="pref_sesame_sync_icon_pack">Compartir paquete de iconos</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Sincronizar paquete de iconos de Lawnchair con Sesame</string>
     <string name="font_variant_italic">Cursiva</string>
     <string name="font_weight_thin">Delgada</string>
     <string name="font_weight_extra_light">Extra clara</string>
@@ -410,4 +417,13 @@
     <string name="dock_scale">Escala del Dock</string>
     <string name="adaptify_pack_title">Crear iconos adaptativos para el paquete de iconos</string>
     <string name="adaptify_pack_summary">Crear iconos adaptativos para iconos de un paquete de iconos</string>
+    <string name="pref_sesame_sync_look_and_feel">Compartir Look and Feel</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Sincronizar los ajustes de búsqueda de Lawnchair con Sesame</string>
+    <string name="pref_search_bar_radius">Radio barra de búsqueda</string>
+    <string name="icon_text_scale_pref_title">Tamaño del texto</string>
+    <string name="text_color">Color del texto</string>
+    <string name="pref_notification_count_title">Mostrar el contador de notificaciones</string>
+    <string name="pref_notification_count_summary">Mostrar contador de notificaciones dentro de la burbuja</string>
+    <string name="pref_center_wallpaper">Fondo de pantalla siempre centrado</string>
+    <string name="pref_center_wallpaper_summary">Esto deshabilitará el movimiento del fondo de pantalla al cambiar de pantalla</string>
 </resources>

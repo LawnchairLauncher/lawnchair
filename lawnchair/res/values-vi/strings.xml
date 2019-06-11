@@ -153,6 +153,7 @@
     <string name="about_bio_deletescape">Nhà phát triển Android &amp; người đam mê, yêu thích meme (hơi nhiều một chút). Người sáng lập dự án Lawnchair.</string>
     <string name="about_bio_recoded">Coder và nhà thiết kế đồ họa.</string>
     <string name="about_bio_josh">Nhà thiết kế đồ hoạ tự do.</string>
+    <string name="about_bio_chris">Millennial af, idk and idc. Một cái gì đó với thiết kế và phương tiện truyền thông xã hội. Hãy đi chơi cùng nhau tại @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">Nhà phát triển cốt lõi của halogenOS và nhà phát triển ứng dụng của substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Buộc dừng launcher</string>
@@ -174,9 +175,9 @@
     <string name="action_open_app_with_target">Mở %s</string>
     <string name="action_open_app_select_app">Chọn ứng dụng</string>
     <string name="action_none">Không làm gì</string>
-    <string name="action_despacito">Phát YouTube Rewind 2018 (Earrape)</string>
-    <string name="gesture_press_home">Nút Home</string>
-    <string name="gesture_press_back">Nút Quay lại</string>
+    <string name="action_despacito">Phát YouTube Rewind 2018 (bị bóp méo)</string>
+    <string name="gesture_press_home">Phím Trang chính</string>
+    <string name="gesture_press_back">Phím Trở về</string>
     <string name="gesture_double_tap">Nhấn đúp</string>
     <string name="gesture_long_press">Chạm &amp; giữ</string>
     <string name="gesture_swipe_down">Vuốt xuống</string>
@@ -229,8 +230,8 @@
     <string name="theme_default">Mặc định</string>
     <string name="transparent">Trong suốt</string>
     <string name="pref_open_source_licenses_title">Giấy phép</string>
-    <string name="pref_legacy_treatment_title">Tạo biểu tượng thích ứng</string>
-    <string name="pref_legacy_treatment_summary">Tự động tạo biểu tượng thích ứng cho tất cả các ứng dụng</string>
+    <string name="pref_legacy_treatment_title">Tạo biểu tượng tương thích</string>
+    <string name="pref_legacy_treatment_summary">Tự động tạo lớp phủ cho tất cả các ứng dụng</string>
     <string name="dt2s_admin_hint">Để sử dụng chạm đúp để khóa, cấp quyền quản trị viên cho Lawnchair</string>
     <string name="dt2s_admin_warning">Chạm đúp để khóa sẽ bị tắt</string>
     <string name="icon_pack_applied_toast">Đã áp dụng %s</string>
@@ -244,7 +245,7 @@
     <string name="pref_hide_statusbar">Ẩn thanh thông báo</string>
     <string name="automatic_short">Tự động</string>
     <string name="bridge_missing_message">Cài đặt hoặc cập nhật Lawnfeed</string>
-    <string name="quickstep_pref_title">Gần đây</string>
+    <string name="quickstep_pref_title">Đa Nhiệm</string>
     <string name="quickstep_pref_summary">Cử chỉ, góc, mờ</string>
     <string name="swipe_up_to_switch_apps_title">Vuốt lên để chuyển đổi ứng dụng</string>
     <string name="swipe_left_to_go_back_title">Vuốt sang trái để quay lại</string>
@@ -302,14 +303,14 @@
     <string name="search_no_results">Không tìm thấy gì</string>
     <string name="search_menu">Tìm kiếm cài đặt</string>
     <string name="search_provider_s_finder">S Finder</string>
-    <string name="lawnchair_accent">Màu nhấn</string>
+    <string name="lawnchair_accent">Màu chủ đạo</string>
     <string name="theme_based">Theo giao diện</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Đề xuất</string>
     <string name="title_app_suggestions">Ứng dụng</string>
     <string name="title_app_suggestions_in_search">Hiển thị đề xuất ứng dụng</string>
     <string name="summary_app_suggestions">Ứng dụng mới sử dụng</string>
-    <string name="summary_app_suggestions_lawnstep">Trong màn hình ứng dụng gần đây và ngăn kéo ứng dụng</string>
+    <string name="summary_app_suggestions_lawnstep">Trong màn hình ứng dụng đa nhiệm và ngăn kéo ứng dụng</string>
     <string name="app_actions_pref_title">Hành động</string>
     <string name="app_actions_pref_title_in_search">Gợi ý hành động</string>
     <string name="app_actions_pref_desc">Các phím tắt để màn hình thường xuyên mở</string>
@@ -358,8 +359,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Cho phép chia sẻ dữ liệu giữa Lawn và Sesame. Bạn có thể thay đổi điều này trong cài đặt Lawn Lawn hoặc Sesame.]]></string>
     <string name="sesame_version">Phiên bản tích hợp</string>
     <string name="sesame_shortcut_disabled">Phím tắt Sesame không có sẵn</string>
-    <string name="pref_sesame_sync_icon_pack">Chia sẻ gói biểu tượng</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Đồng bộ biểu tượng Lawnchair với Sesame</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
     <string name="font_weight_extra_light">ExtraLight</string>
@@ -405,6 +404,8 @@
     <string name="about_app_description">Một thay thế Pixel Launcher có thể tùy chỉnh.</string>
     <string name="about_bio_paphonb">Một sinh viên 18 tuổi, Nhà phát triển Android và là một trong những nhà phát triển hàng đầu tại Lawnsheet Launcher.</string>
     <string name="dock_scale">Khoảng cách Dock</string>
-    <string name="adaptify_pack_title">Tạo biểu tượng thích ứng cho gói biểu tượng</string>
-    <string name="adaptify_pack_summary">Tạo biểu tượng thích ứng cho các biểu tượng từ gói biểu tượng</string>
+    <string name="adaptify_pack_title">Tạo lớp phủ biểu tượng</string>
+    <string name="adaptify_pack_summary">Tạo lớp phủ cho biểu tượng từ các gói biểu tượng</string>
+    <string name="pref_sesame_sync_look_and_feel">Chia sẻ cái nhìn và cảm nhận</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Đồng bộ hóa cài đặt tìm kiếm trên bãi cỏ với Sesame</string>
 </resources>

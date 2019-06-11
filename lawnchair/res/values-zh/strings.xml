@@ -292,10 +292,19 @@
     <string name="theme_auto_night_mode">跟随系统主题</string>
     <string name="theme_light">亮色主题</string>
     <string name="theme_dark_text">亮色主题 + 暗色文字</string>
+    <string name="theme_with_dark_text">深色文本</string>
     <string name="theme_dark">暗色主题</string>
     <string name="theme_dark_dark_text">暗色主题 + 暗色文字</string>
     <string name="theme_black">黑色主题</string>
     <string name="theme_black_dark_text">黑色主题 + 暗色文字</string>
+    <string name="theme_dark_theme_mode">暗色主题</string>
+    <string name="theme_dark_theme_mode_on">开启</string>
+    <string name="theme_dark_theme_mode_off">关闭</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
+    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
+    <string name="theme_dark_theme_mode_follow_daylight">随日出日落</string>
+    <string name="theme_use_black">使用纯黑色</string>
+    <string name="theme_use_dark_text">使用暗色文本</string>
     <string name="pref_qsb_color">颜色</string>
     <string name="hide_from_predictions">从建议中隐藏</string>
     <string name="hide_from_predictions_summary">不再显示于抽屉建议中</string>
@@ -352,7 +361,7 @@
     <string name="sesame_search_upsell_on">设置 Sesame 为搜索提供商</string>
     <string name="sesame_search_upsell_off">未设置 Sesame 为搜索提供商</string>
     <string name="pref_sesame_enabled">已分享 Sesame 快捷方式数据</string>
-    <string name="pref_sesame_disabled">无已分享数据</string>
+    <string name="pref_sesame_disabled">无共享数据</string>
     <string name="pref_sesame_show_shortcuts">应用快捷方式</string>
     <string name="pref_sesame_show_shortcuts_summary">在图标气泡中显示 Sesame 快捷方式</string>
     <string name="allow">允许</string>
@@ -360,8 +369,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[启用 Lawnchair 与 Sesame 之间的数据共享。 您可以在 Lawnchair 或 Sesame 设置中更改此设置。]]></string>
     <string name="sesame_version">集成版本</string>
     <string name="sesame_shortcut_disabled">Sesame 快捷方式不可用</string>
-    <string name="pref_sesame_sync_icon_pack">分享图标包</string>
-    <string name="pref_sesame_sync_icon_pack_summary">与 Sesame 同步 Lawnchair 图标包</string>
     <string name="font_variant_italic">斜体</string>
     <string name="font_weight_thin">细体</string>
     <string name="font_weight_extra_light">极细体</string>
@@ -375,7 +382,7 @@
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
-    <string name="search_provider_edge">Edge</string>
+    <string name="search_provider_edge">边缘</string>
     <string name="weather_provider_oneplus_weather">一加天气</string>
     <string name="overlap_placement">重叠放置</string>
     <string name="overlap_placement_summary">允许图标和小部件相互重叠。</string>
@@ -409,4 +416,12 @@
     <string name="dock_scale">Dock 栏大小</string>
     <string name="adaptify_pack_title">为图标包创建自适应图标</string>
     <string name="adaptify_pack_summary">为出自图标包的图标创建自适应图标</string>
+    <string name="pref_sesame_sync_look_and_feel">分享外观和风格</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">与 Sesame 同步 Lawnchair 搜索设置</string>
+    <string name="icon_text_scale_pref_title">文字大小</string>
+    <string name="text_color">文字颜色</string>
+    <string name="pref_notification_count_title">显示通知数量</string>
+    <string name="pref_notification_count_summary">在点内显示通知数量</string>
+    <string name="pref_center_wallpaper">始终居中壁纸</string>
+    <string name="pref_center_wallpaper_summary">这将禁用壁纸滚动效果</string>
 </resources>

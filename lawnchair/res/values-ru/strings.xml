@@ -175,7 +175,7 @@
     <string name="action_open_app_with_target">Открыть %s</string>
     <string name="action_open_app_select_app">Выберите приложение</string>
     <string name="action_none">Ничего не делать</string>
-    <string name="action_despacito">Воспроизвести YouTube Rewind 2018 (bassboosted)</string>
+    <string name="action_despacito">Воспроизвести YouTube Rewind 2018 (distorted)</string>
     <string name="gesture_press_home">Кнопка \"Домой\"</string>
     <string name="gesture_press_back">Кнопка \"Назад\"</string>
     <string name="gesture_double_tap">Двойное нажатие</string>
@@ -366,8 +366,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Обеспечивает обмен данными между Lawnchair и Sesame. Вы можете изменить это в настройках Lawnchair или Sesame.]]></string>
     <string name="sesame_version">Версия интеграции</string>
     <string name="sesame_shortcut_disabled">Ярлыкм Sesame недоступны</string>
-    <string name="pref_sesame_sync_icon_pack">Поделиться набором иконок</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Синхронизация иконок Lawnchair с Sesame </string>
     <string name="font_variant_italic">Курсив</string>
     <string name="font_weight_thin">Тонкий</string>
     <string name="font_weight_extra_light">Очень тонкий</string>
@@ -415,4 +413,6 @@
     <string name="dock_scale">Размер док-бара</string>
     <string name="adaptify_pack_title">Создать адаптивные иконки для набора иконок</string>
     <string name="adaptify_pack_summary">Создать адаптивные иконки для иконок из наборов иконок</string>
+    <string name="pref_sesame_sync_look_and_feel">Диктовать оформление</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Синхронизировать настройки поиска Lawnchair с Sesame</string>
 </resources>

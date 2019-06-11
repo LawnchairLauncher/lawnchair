@@ -175,7 +175,7 @@
     <string name="action_open_app_with_target">%s aç</string>
     <string name="action_open_app_select_app">Uygulama seçin</string>
     <string name="action_none">Hiç bir şey yapma</string>
-    <string name="action_despacito">YouTube Rewind 2018 Play (earrape)</string>
+    <string name="action_despacito">Play YouTube Rewind 2018 (distorted)</string>
     <string name="gesture_press_home">Ana ekran tuşu</string>
     <string name="gesture_press_back">Geri tuşu</string>
     <string name="gesture_double_tap">Çift dokunma</string>
@@ -292,10 +292,19 @@
     <string name="theme_auto_night_mode">Sistem temasına uyum sağla</string>
     <string name="theme_light">Aydınlık</string>
     <string name="theme_dark_text">Aydınlık - koyu metin</string>
+    <string name="theme_with_dark_text">koyu metin</string>
     <string name="theme_dark">Karanlık</string>
     <string name="theme_dark_dark_text">Karanlık - koyu metin</string>
     <string name="theme_black">Siyah</string>
     <string name="theme_black_dark_text">Siyah - koyu metin</string>
+    <string name="theme_dark_theme_mode">Karanlık tema</string>
+    <string name="theme_dark_theme_mode_on">Açık</string>
+    <string name="theme_dark_theme_mode_off">Kapalı</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
+    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Gün ışığını takip et</string>
+    <string name="theme_use_black">Saf siyah kullanın</string>
+    <string name="theme_use_dark_text">Koyu metin kullan</string>
     <string name="pref_qsb_color">Renk</string>
     <string name="hide_from_predictions">Önerilerden gizle</string>
     <string name="hide_from_predictions_summary">Çekmece önerilerinde asla gösterme</string>
@@ -362,8 +371,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Lawnchair ve Sesame arasında veri paylaşımını sağlar. Bunu Lawnchair veya Sesame ayarlarında değiştirebilirsiniz.]]></string>
     <string name="sesame_version">Entegrasyon sürümü</string>
     <string name="sesame_shortcut_disabled">Sesame kısayolları kullanılamıyor</string>
-    <string name="pref_sesame_sync_icon_pack">Simge paketini paylaş</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Lawnchair simge paketini Sesame ile eşitle</string>
     <string name="font_variant_italic">İtalik</string>
     <string name="font_weight_thin">İnce</string>
     <string name="font_weight_extra_light">Ekstra hafif</string>
@@ -411,4 +418,13 @@
     <string name="dock_scale">Alt panel boyutu</string>
     <string name="adaptify_pack_title">Simge paketleri için uyarlanabilir simgeler oluştur</string>
     <string name="adaptify_pack_summary">Simge paketlerinden simgeler için uyarlanabilir simgeler oluştur</string>
+    <string name="pref_sesame_sync_look_and_feel">Görünümü paylaş</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Lawnchair arama ayarlarını Sesame ile senkronize et</string>
+    <string name="pref_search_bar_radius">Arama çubuğu yarıçapı</string>
+    <string name="icon_text_scale_pref_title">Metin boyutu</string>
+    <string name="text_color">Metin rengi</string>
+    <string name="pref_notification_count_title">Bildirim sayısını göster</string>
+    <string name="pref_notification_count_summary">Noktaların içinde bildirim sayısını görüntüle</string>
+    <string name="pref_center_wallpaper">Duvar kağıdı her zaman ortada</string>
+    <string name="pref_center_wallpaper_summary">Duvar kağıdı kaydırma efektini devre dışı bırakacaktır</string>
 </resources>

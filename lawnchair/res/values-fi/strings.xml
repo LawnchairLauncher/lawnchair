@@ -169,7 +169,7 @@
     <string name="action_open_app_with_target">Avaa %s</string>
     <string name="action_open_app_select_app">Valitse sovellus</string>
     <string name="action_none">Älä tee mitään</string>
-    <string name="action_despacito">Toista YouTube Rewind 2018 (earrape)</string>
+    <string name="action_despacito">Toista YouTube Rewind 2018 (distorted)</string>
     <string name="gesture_press_home">Aloitusnäyttöpainike</string>
     <string name="gesture_press_back">Takaisin-näppäin</string>
     <string name="gesture_double_tap">Kaksoisnapautus</string>
@@ -284,10 +284,15 @@
     <string name="theme_auto_night_mode">Noudata järjestelmän teema</string>
     <string name="theme_light">Vaalea</string>
     <string name="theme_dark_text">Vaalea tummalla tekstillä</string>
+    <string name="theme_with_dark_text">tumma teksti</string>
     <string name="theme_dark">Tumma</string>
     <string name="theme_dark_dark_text">Tumma tummalla tekstillä</string>
     <string name="theme_black">Musta</string>
     <string name="theme_black_dark_text">Musta tummalla tekstillä</string>
+    <string name="theme_dark_theme_mode">Tumma teema</string>
+    <string name="theme_dark_theme_mode_on">Käytössä</string>
+    <string name="theme_use_black">Käytä puhdasta mustaa</string>
+    <string name="theme_use_dark_text">Käytä tummaa tekstiä</string>
     <string name="pref_qsb_color">Väri</string>
     <string name="hide_from_predictions">Piilota ehdotuksista</string>
     <string name="hide_from_predictions_summary">Älä näytä koskaan sovellusvalikon ehdotuksissa</string>
@@ -354,8 +359,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Ottaa käyttöön tietojen jakamisen Lawnchairin ja Sesamen välillä. Voit muuttaa tämän Lawnchairin tai Sesamen asetuksista.]]></string>
     <string name="sesame_version">Integraatioversio</string>
     <string name="sesame_shortcut_disabled">Sesame-pikakuvakkeet ei käytettävissä</string>
-    <string name="pref_sesame_sync_icon_pack">Jaa kuvakepaketti</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Synkronoi Lawnchair kuvakepaketti Sesamen kanssa</string>
     <string name="font_variant_italic">Kursivoitu</string>
     <string name="font_weight_thin">Laiha</string>
     <string name="font_weight_extra_light">ExtraKevyt</string>
@@ -400,4 +403,13 @@
     <string name="pref_show_dev_options">Näytä asetuksissa</string>
     <string name="about_app_description">Muokattavissa oleva Pixel Launcher -vaihtoehto.</string>
     <string name="dock_scale">Telakan koko</string>
+    <string name="adaptify_pack_title">Luo adaptiiviset kuvakkeet kuvakepaketille</string>
+    <string name="adaptify_pack_summary">Luo adaptiiviset kuvakkeet kuvakepaketin kuvakkeille</string>
+    <string name="pref_sesame_sync_look_and_feel">Jaa ulkoasu ja tunnelma</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Synkronoi Lawnchair haun asetukset Sesamen kanssa</string>
+    <string name="icon_text_scale_pref_title">Tekstin koko</string>
+    <string name="text_color">Tekstin väri</string>
+    <string name="pref_notification_count_title">Näytä ilmoitusten lukumäärä</string>
+    <string name="pref_notification_count_summary">Näytä ilmoitusten lukumäärä pisteen sisällä</string>
+    <string name="pref_center_wallpaper">Keskitä taustakuva aina</string>
 </resources>

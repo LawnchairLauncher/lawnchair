@@ -36,7 +36,7 @@
     <string name="app_drawer_pref_summary">الشفافية، الاقتراحات، إخفاء التطبيقات</string>
     <string name="search_pref_summary">اللون، محرك البحث، الايقونات</string>
     <string name="general_pref_title">الشاشة الرئيسية</string>
-    <string name="general_pref_summary">شبكة التطبيقات ، تخطيط الايقونات، شريط الحالة</string>
+    <string name="general_pref_summary">الشبكة، تخطيط الايقونات، شريط الحالة</string>
     <string name="about_pref_summary">الفريق، الروابط، التراخيص</string>
     <string name="hide_app_selected">&#160; مخفي</string>
     <string name="hide_app_apply">تطبيق</string>
@@ -57,11 +57,11 @@
     <string name="backup_error_blank_location">حدد مكان النسخة الإحتياطية</string>
     <string name="backup_error_blank_contents">إضافة محتويات النسخة الاحتياطية</string>
     <string name="backup_creating">إنشاء نسخة احتياطية</string>
-    <string name="no_recent_backups">لايوجد شي للاظهار</string>
+    <string name="no_recent_backups">لا يوجد شيء للعرض</string>
     <string name="backup_loading">جاري التحميل...</string>
-    <string name="backup_invalid">ملف النسخ الإحتياطي غير صحيح</string>
+    <string name="backup_invalid">ملف النسخ الاحتياطي غير صحيح</string>
     <string name="backup_share">مشاركة</string>
-    <string name="backup_pref_summary">حفظ الشاشة الرئيسية، إستعادة النسخ الإحتياطية</string>
+    <string name="backup_pref_summary">حفظ الشاشة الرئيسية، إستعادة النسخ الاحتياطية</string>
     <string name="backup_timestamp">تاريخ الإنشاء</string>
     <string name="backup_restoring">جاري الاستعادة</string>
     <string name="backup_restarting">يتم إعادة التشغيل</string>
@@ -81,7 +81,7 @@
     <string name="show_debug_info_pref_title">إظهار اسماء المكونات</string>
     <string name="debug_component_name">اسم المكون</string>
     <string name="debug_component_name_copied">تم النسخ</string>
-    <string name="read_external_storage_required">لحفظ النسخة الاحتياطية، امنح إذن الوصول لذاكرة التخزين</string>
+    <string name="read_external_storage_required">لحفظ النسخة الاحتياطية، امنح إذن لذاكرة التخزين</string>
     <string name="local_backups">النسخ الإحتياطي في ذاكرة التخزين</string>
     <string name="backup_location_device_storage">مجلد Lawnchair</string>
     <string name="grid_size_height">الارتفاع</string>
@@ -107,7 +107,7 @@
     <string name="icon_scale_pref_title">حجم الأيقونة</string>
     <string name="add_settings_shortcut_title">إضافة أيقونة الإعدادات إلى الشاشة الرئيسية</string>
     <string name="icon_pack_default">أيقونات النظام</string>
-    <string name="loading">يتم التحميل…</string>
+    <string name="loading">جاري التحميل…</string>
     <string name="low_performance_mode_pref_title">وضع الأداء المنخفض</string>
     <string name="title_storage_permission_required">مطلوب إذن الوصول إلى ذاكرة التخزين</string>
     <string name="content_storage_permission_required">امنح إذن التخزين لتعيين خلفية الشاشة</string>
@@ -130,7 +130,7 @@
     <string name="title_attribouter_email">البريد الإلكتروني</string>
     <string name="title_attribouter_website">الموقع</string>
     <string name="title_attribouter_rate">تقييم</string>
-    <string name="title_attribouter_version">الإصدار % 1$ s</string>
+    <string name="title_attribouter_version">الإصدار %1$s</string>
     <string name="title_attribouter_license">الترخيص</string>
     <string name="title_attribouter_license_permissions">أذونات</string>
     <string name="title_attribouter_license_conditions">الشروط</string>
@@ -149,12 +149,12 @@
     <string name="about_role_special_snowflake">مدير العلاقات العامة/مشرف</string>
     <string name="about_role_mod_support">المشرف/الدعم</string>
     <string name="about_role_family_member">فرد من الاسرة</string>
-    <string name="about_role_magisk_maintainer">مشرف أدوات Magisk</string>
-    <string name="about_bio_deletescape">مطور اندرويد متحمس، يحب الميمات (كثيراً). مؤسس مشروع Lawnchair.</string>
-    <string name="about_bio_recoded">مبرمج خفيف و مصمم جرافيكس.</string>
+    <string name="about_role_magisk_maintainer">مشرف وحده صيانة Magick</string>
+    <string name="about_bio_deletescape">مطور اندرويد &amp; متحمس، يحب الميمات (قليلا كثيراً في الواقع). مؤسس مشروع Lawnchair.</string>
+    <string name="about_bio_recoded">مبرمج خفيف ومصمم الرسومات.</string>
     <string name="about_bio_josh">مصمم جرافيك مستقل.</string>
     <string name="about_bio_chris">الالفيه كاللعنة، أنا لا أعرف وأنا لا اهتم. شيء ما مع التصميم ووسائل التواصل الاجتماعي. دعنا نجلس سوياً مع @lawnchairapp ✨</string>
-    <string name="about_bio_msfjarvis">المطور الأساسي في halogenOS و مطور التطبيق في substratum.</string>
+    <string name="about_bio_msfjarvis">مطور أساسي في halogenOS ومطور التطبيق في substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">توقف المشغل</string>
     <string name="gestures_pref_title">الإيماءات</string>
@@ -175,7 +175,7 @@
     <string name="action_open_app_with_target">فتح %s</string>
     <string name="action_open_app_select_app">اختار تطبيق</string>
     <string name="action_none">لا تفعل شيئًا</string>
-    <string name="action_despacito">شغل (YouTube Rewind 2018 (صوت عالي</string>
+    <string name="action_despacito">تشغيل (YouTube Rewind 2018 (distorted</string>
     <string name="gesture_press_home">زر الصفحة الرئيسية</string>
     <string name="gesture_press_back">زر الرجوع</string>
     <string name="gesture_double_tap">نقر مزدوج</string>
@@ -370,8 +370,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[تفعيل مشاركة البيانات بين Lawnchair و Sesame. يمكنك تغيير هذا في إعدادات Lawnchair أو Sesame.]]></string>
     <string name="sesame_version">نسخة الدمج</string>
     <string name="sesame_shortcut_disabled">اختصارات Sesame غير متوفرة</string>
-    <string name="pref_sesame_sync_icon_pack">مشاركة حزمة الإيقونات</string>
-    <string name="pref_sesame_sync_icon_pack_summary">مزامنة حزمة الإيقونات Lawnchair مع Sesame</string>
     <string name="font_variant_italic">خط مائل</string>
     <string name="font_weight_thin">نحيف</string>
     <string name="font_weight_extra_light">خفيف جداً</string>
@@ -396,13 +394,13 @@
     <string name="units_romer">رومر</string>
     <string name="owm_get_your_own_key">يرجى الحصول على مفتاح API الخاص بك من api.openweathermap.org</string>
     <string name="pref_smartspace_time_above">عرض ساعة كبيرة</string>
-    <string name="pref_smartspace_time_above_summary">اظهر الساعة في اعلى التطبيق المصغر</string>
+    <string name="pref_smartspace_time_above_summary">اظهر الساعة في اعلى الأداة</string>
     <string name="pref_fonts_title">الخطوط</string>
     <string name="pref_fonts_summary">تغيير الخط من العناصر المختلفة</string>
     <string name="pref_fonts_global_font">الخط العالمي</string>
     <string name="pref_fonts_change_global_font">تغيير</string>
     <string name="pref_fonts_home_icons">أسماء مجلدات &amp; التطبيق</string>
-    <string name="pref_fonts_home_smartspace">التطبيق المصغر \'النظرة السريعة\'</string>
+    <string name="pref_fonts_home_smartspace">أداة \'النظرة السريعة\'</string>
     <string name="pref_fonts_home_shortcuts">اختصارات الفقاعات</string>
     <string name="pref_fonts_category_drawer">قائمة التطبيقات</string>
     <string name="pref_fonts_drawer_icons">اسماء التطبيق</string>
@@ -419,4 +417,6 @@
     <string name="dock_scale">حجم المنصة السفلية</string>
     <string name="adaptify_pack_title">انشئ أيقونات مكيفة لحزمة الأيقونات</string>
     <string name="adaptify_pack_summary">انشئ أيقونات مكيفة للأيقونات من حزمة الأيقونات</string>
+    <string name="pref_sesame_sync_look_and_feel">شارك مظهر وإحساس</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">تزامن إعدادات بحث Lawnchair مع سمسم</string>
 </resources>

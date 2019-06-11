@@ -152,6 +152,7 @@
     <string name="about_bio_deletescape">Android-розробник та ентузіаст, любить меми (можливо аж занадто). Засновник проекту Lawnchair.</string>
     <string name="about_bio_recoded">Кодер та графічний дизайнер.</string>
     <string name="about_bio_josh">Позаштатний графічний дизайнер.</string>
+    <string name="about_bio_chris">Достобіса міленіал, котрий займається дизайном і соціальними мережами. Гайда веселитися разом: @lawnchairapp</string>
     <string name="about_bio_msfjarvis">Розробник коду в halogenOS і розробник додатків в substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Виліт лаунчера</string>
@@ -173,7 +174,6 @@
     <string name="action_open_app_with_target">Відкрити %s</string>
     <string name="action_open_app_select_app">Обрати додаток</string>
     <string name="action_none">Нічого не робити</string>
-    <string name="action_despacito">Програти YouTube Rewind 2018 (earrape)</string>
     <string name="gesture_press_home">Кнопка дому</string>
     <string name="gesture_press_back">Кнопка назад</string>
     <string name="gesture_double_tap">Подвійне натискання</string>
@@ -364,8 +364,6 @@
     <string name="sesame_enable_integration_description"><![CDATA[Дозволити поширювати дані між Lawnchair і Sesame. Ви можете змінити це в налаштуваннях Lawnchair або Sesame.]]></string>
     <string name="sesame_version">Версія інтеграції</string>
     <string name="sesame_shortcut_disabled">Ярлики Sesame недоступні</string>
-    <string name="pref_sesame_sync_icon_pack">Поділитись паком іконок</string>
-    <string name="pref_sesame_sync_icon_pack_summary">Синхронізувати пак іконок Lawnchair з Sesame</string>
     <string name="font_variant_italic">Курсив</string>
     <string name="font_weight_thin">Тонкий</string>
     <string name="font_weight_extra_light">ЕкстраСвітлий</string>
@@ -413,4 +411,6 @@
     <string name="dock_scale">Масштаб док-бару</string>
     <string name="adaptify_pack_title">Створити адаптивні іконки для набору іконок</string>
     <string name="adaptify_pack_summary">Створити адаптивні іконки для іконок з наборів іконок</string>
+    <string name="pref_sesame_sync_look_and_feel">Поділитися оформленням</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Синхронізувати налаштування пошуку Lawnchair з Sesame</string>
 </resources>
