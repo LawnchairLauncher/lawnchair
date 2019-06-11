@@ -299,7 +299,6 @@
     <string name="theme_dark_theme_mode_on">Til</string>
     <string name="theme_dark_theme_mode_off">Fra</string>
     <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
-    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto-nattilstand</string>
     <string name="theme_dark_theme_mode_follow_daylight">Følg dagslys</string>
     <string name="theme_use_black">Benyt helt sort</string>
     <string name="theme_use_dark_text">Benyt sort tekst</string>
