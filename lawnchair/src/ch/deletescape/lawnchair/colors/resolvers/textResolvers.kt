@@ -17,15 +17,14 @@
 
 package ch.deletescape.lawnchair.colors.resolvers
 
-import android.graphics.Color
 import android.support.annotation.Keep
 import ch.deletescape.lawnchair.LawnchairPreferences
-import ch.deletescape.lawnchair.colors.WallpaperColorResolver
+import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.R
 import com.android.launcher3.util.Themes
 
 @Keep
-class DrawerLabelAutoResolver(config: Config) : WallpaperColorResolver(config), LawnchairPreferences.OnPreferenceChangeListener {
+class DrawerLabelAutoResolver(config: Config) : ColorEngine.ColorResolver(config), LawnchairPreferences.OnPreferenceChangeListener {
 
     override fun getDisplayName() = context.getString(R.string.theme_based)
 
@@ -47,7 +46,7 @@ class DrawerLabelAutoResolver(config: Config) : WallpaperColorResolver(config), 
 }
 
 @Keep
-class WorkspaceLabelAutoResolver(config: Config) : WallpaperColorResolver(config), LawnchairPreferences.OnPreferenceChangeListener {
+class WorkspaceLabelAutoResolver(config: Config) : ColorEngine.ColorResolver(config), LawnchairPreferences.OnPreferenceChangeListener {
 
     override fun getDisplayName() = context.getString(R.string.theme_based)
 
