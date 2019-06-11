@@ -292,10 +292,19 @@
     <string name="theme_auto_night_mode">Do tema do sistema</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark_text">Branco com texto escuro</string>
+    <string name="theme_with_dark_text">texto escuro</string>
     <string name="theme_dark">Escuro</string>
     <string name="theme_dark_dark_text">Escuro com texto escuro</string>
     <string name="theme_black">Preto</string>
     <string name="theme_black_dark_text">Preto com texto escuro</string>
+    <string name="theme_dark_theme_mode">Tema escuro</string>
+    <string name="theme_dark_theme_mode_on">Ativado</string>
+    <string name="theme_dark_theme_mode_off">Desativado</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
+    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Siga a luz do dia</string>
+    <string name="theme_use_black">Use preto puro</string>
+    <string name="theme_use_dark_text">Use texto escuro</string>
     <string name="pref_qsb_color">Cor</string>
     <string name="hide_from_predictions">Ocultar das sugestões</string>
     <string name="hide_from_predictions_summary">Nunca mostrar sugestões na gaveta</string>
@@ -411,4 +420,11 @@
     <string name="adaptify_pack_summary">Criar ícones adaptativos a partir do pacote de ícones</string>
     <string name="pref_sesame_sync_look_and_feel">Compartilhar aparência</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Sincronizar configurações de busca do Lawnchair com o Sesame</string>
+    <string name="pref_search_bar_radius">Arredondamento da barra de pesquisa</string>
+    <string name="icon_text_scale_pref_title">Tamanho do texto</string>
+    <string name="text_color">Cor do Texto</string>
+    <string name="pref_notification_count_title">Mostrar número de notificações</string>
+    <string name="pref_notification_count_summary">Mostrar o número de notificações nos pontos</string>
+    <string name="pref_center_wallpaper">Sempre centralizar o papel de parede</string>
+    <string name="pref_center_wallpaper_summary">Isso irá desativar o deslizamento do papel de parede</string>
 </resources>
