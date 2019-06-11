@@ -41,14 +41,14 @@ public class BadgeRenderer {
 
     // The badge sizes are defined as percentages of the app icon size.
     private static final float SIZE_PERCENTAGE = 0.38f;
-    private static final float SIZE_PERCENTAGE_WITH_COUNT = 0.7f;
+    private static final float SIZE_PERCENTAGE_WITH_COUNT = 0.58f;
 
     // Extra scale down of the dot
     private static final float DOT_SCALE = 0.6f;
 
     // Used to expand the width of the badge for each additional digit.
     private static final float OFFSET_PERCENTAGE = 0.02f;
-    private static final float OFFSET_PERCENTAGE_WITH_COUNT = 0.20f;
+    private static final float OFFSET_PERCENTAGE_WITH_COUNT = 0.15f;
 
     private static final int MAX_COUNT = 99;
 
