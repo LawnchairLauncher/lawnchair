@@ -422,6 +422,7 @@
     <string name="pref_search_bar_radius">Radius Suchleiste</string>
     <string name="icon_text_scale_pref_title">Textgröße</string>
     <string name="text_color">Textfarbe</string>
+    <string name="background_color">Hintergrundfarbe</string>
     <string name="pref_notification_count_title">Benachrichtigungszähler anzeigen</string>
     <string name="pref_notification_count_summary">Zeigt die Anzahl der Benachrichtigungen im Punkt</string>
     <string name="pref_center_wallpaper">Hintergrund immer zentrieren</string>
