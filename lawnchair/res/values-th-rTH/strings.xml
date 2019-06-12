@@ -419,6 +419,7 @@
     <string name="pref_search_bar_radius">ความโค้งมนของแถบค้นหา</string>
     <string name="icon_text_scale_pref_title">ขนาดตัวอักษร</string>
     <string name="text_color">สีตัวอักษร</string>
+    <string name="background_color">สีพื้นหลัง</string>
     <string name="pref_notification_count_title">แสดงจำนวนการแจ้งเตือน</string>
     <string name="pref_notification_count_summary">แสดงจำนวนการแจ้งเตือนในจุดแจ้งเตือน</string>
     <string name="pref_center_wallpaper">ภาพพื้นหลังอยู่ตรงกลางเสมอ</string>
