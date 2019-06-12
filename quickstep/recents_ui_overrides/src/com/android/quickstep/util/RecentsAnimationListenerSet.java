@@ -49,6 +49,8 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
     private final Consumer<SwipeAnimationTargetSet> mOnFinishListener;
     private RecentsAnimationControllerCompat mController;
 
+    private boolean mCancelled;
+
     public RecentsAnimationListenerSet(boolean shouldMinimizeSplitScreen,
             Consumer<SwipeAnimationTargetSet> onFinishListener) {
         mShouldMinimizeSplitScreen = shouldMinimizeSplitScreen;
@@ -75,11 +77,16 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
         SwipeAnimationTargetSet targetSet = new SwipeAnimationTargetSet(controller, targets,
                 homeContentInsets, minimizedHomeBounds, mShouldMinimizeSplitScreen,
                 mOnFinishListener);
-        Utilities.postAsyncCallback(MAIN_THREAD_EXECUTOR.getHandler(), () -> {
-            for (SwipeAnimationListener listener : getListeners()) {
-                listener.onRecentsAnimationStart(targetSet);
-            }
-        });
+
+        if (mCancelled) {
+            targetSet.cancelAnimation();
+        } else {
+            Utilities.postAsyncCallback(MAIN_THREAD_EXECUTOR.getHandler(), () -> {
+                for (SwipeAnimationListener listener : getListeners()) {
+                    listener.onRecentsAnimationStart(targetSet);
+                }
+            });
+        }
     }
 
     @Override
@@ -98,5 +105,10 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
 
     private SwipeAnimationListener[] getListeners() {
         return mListeners.toArray(new SwipeAnimationListener[mListeners.size()]);
+    }
+
+    public void cancelListener() {
+        mCancelled = true;
+        onAnimationCanceled(false);
     }
 }
