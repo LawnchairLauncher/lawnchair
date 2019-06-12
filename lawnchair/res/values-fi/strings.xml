@@ -407,8 +407,10 @@
     <string name="adaptify_pack_summary">Luo adaptiiviset kuvakkeet kuvakepaketin kuvakkeille</string>
     <string name="pref_sesame_sync_look_and_feel">Jaa ulkoasu ja tunnelma</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Synkronoi Lawnchair haun asetukset Sesamen kanssa</string>
+    <string name="pref_search_bar_radius">Hakupalkin säde</string>
     <string name="icon_text_scale_pref_title">Tekstin koko</string>
     <string name="text_color">Tekstin väri</string>
+    <string name="background_color">Taustaväri</string>
     <string name="pref_notification_count_title">Näytä ilmoitusten lukumäärä</string>
     <string name="pref_notification_count_summary">Näytä ilmoitusten lukumäärä pisteen sisällä</string>
     <string name="pref_center_wallpaper">Keskitä taustakuva aina</string>
