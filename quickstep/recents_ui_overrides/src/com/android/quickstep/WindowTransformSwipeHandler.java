@@ -746,6 +746,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                         ? 0 : (progress - mShiftAtGestureStart) / (1 - mShiftAtGestureStart));
     }
 
+    /**
+     * @param windowProgress 0 == app, 1 == overview
+     */
     private void updateSysUiFlags(float windowProgress) {
         if (mRecentsView != null) {
             TaskView centermostTask = mRecentsView.getTaskViewAt(mRecentsView
@@ -1249,7 +1252,17 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 if (!mCanceled) {
                     TaskView nextTask = mRecentsView.getTaskView(taskId);
                     if (nextTask != null) {
-                        nextTask.launchTask(false /* animate */, true /* freezeTaskList */);
+                        nextTask.launchTask(false /* animate */, true /* freezeTaskList */,
+                                success -> {
+                            if (!success) {
+                                // We couldn't launch the task, so take user to overview so they can
+                                // decide what to do instead of staying in this broken state.
+                                endLauncherTransitionController();
+                                mActivityControlHelper.onLaunchTaskFailed(mActivity);
+                                nextTask.notifyTaskLaunchFailed(TAG);
+                                updateSysUiFlags(1 /* windowProgress == overview */);
+                            }
+                        }, mMainThreadHandler);
                         doLogGesture(NEW_TASK);
                     }
                     reset();

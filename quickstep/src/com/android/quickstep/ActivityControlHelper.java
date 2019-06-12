@@ -93,6 +93,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     boolean isInLiveTileMode();
 
+    void onLaunchTaskFailed(T activity);
+
     interface ActivityInitListener {
 
         void register();
