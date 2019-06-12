@@ -423,6 +423,7 @@
     <string name="pref_search_bar_radius">Arredondamento da barra de pesquisa</string>
     <string name="icon_text_scale_pref_title">Tamanho do texto</string>
     <string name="text_color">Cor do Texto</string>
+    <string name="background_color">Cor de plano de fundo</string>
     <string name="pref_notification_count_title">Mostrar número de notificações</string>
     <string name="pref_notification_count_summary">Mostrar o número de notificações nos pontos</string>
     <string name="pref_center_wallpaper">Sempre centralizar o papel de parede</string>
