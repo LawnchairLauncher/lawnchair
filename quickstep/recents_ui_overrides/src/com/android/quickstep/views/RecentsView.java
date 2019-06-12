@@ -892,7 +892,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mRunningTaskTileHidden = isHidden;
         TaskView runningTask = getRunningTaskView();
         if (runningTask != null) {
-            runningTask.setAlpha(isHidden ? 0 : mContentAlpha);
+            runningTask.setStableAlpha(isHidden ? 0 : mContentAlpha);
         }
     }
 
@@ -1294,7 +1294,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         for (int i = getTaskViewCount() - 1; i >= 0; i--) {
             TaskView child = getTaskViewAt(i);
             if (!mRunningTaskTileHidden || child.getTask().key.id != mRunningTaskId) {
-                getChildAt(i).setAlpha(alpha);
+                child.setStableAlpha(alpha);
             }
         }
         mClearAllButton.setContentAlpha(mContentAlpha);
