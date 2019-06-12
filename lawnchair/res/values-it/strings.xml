@@ -423,6 +423,7 @@
     <string name="pref_search_bar_radius">Raggio curvatura bordi barra di ricerca</string>
     <string name="icon_text_scale_pref_title">Dimensione testo</string>
     <string name="text_color">Colore testo</string>
+    <string name="background_color">Colore sfondo</string>
     <string name="pref_notification_count_title">Mostra conteggio notifiche</string>
     <string name="pref_notification_count_summary">Mostra conteggio notifiche all\'interno dei badge</string>
     <string name="pref_center_wallpaper">Centra sempre lo sfondo</string>
