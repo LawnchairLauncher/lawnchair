@@ -420,6 +420,7 @@
     <string name="pref_search_bar_radius">Søgebjælkeradius</string>
     <string name="icon_text_scale_pref_title">Tekststørrelse</string>
     <string name="text_color">Tekstfarve</string>
+    <string name="background_color">Baggrundsfarve</string>
     <string name="pref_notification_count_title">Vis notifikationsantal</string>
     <string name="pref_notification_count_summary">Vis notifikationsantal i prikkerne</string>
     <string name="pref_center_wallpaper">Centrér altid tapet</string>
