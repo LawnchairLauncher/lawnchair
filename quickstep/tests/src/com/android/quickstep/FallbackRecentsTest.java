@@ -22,6 +22,7 @@ import static androidx.test.InstrumentationRegistry.getInstrumentation;
 import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
 import static com.android.launcher3.tapl.TestHelpers.getHomeIntentInPackage;
 import static com.android.launcher3.tapl.TestHelpers.getLauncherInMyProcess;
+import static com.android.launcher3.ui.AbstractLauncherUiTest.resolveSystemApp;
 import static com.android.launcher3.util.rule.ShellCommandRule.disableHeadsUpNotification;
 import static com.android.launcher3.util.rule.ShellCommandRule.getLauncherCommand;
 import static com.android.quickstep.NavigationModeSwitchRule.Mode.THREE_BUTTON;
@@ -108,7 +109,7 @@ public class FallbackRecentsTest {
     @NavigationModeSwitch(mode = THREE_BUTTON)
     @Test
     public void goToOverviewFromApp() {
-        startAppFast("com.android.settings");
+        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
 
         mLauncher.getBackground().switchToOverview();
     }
