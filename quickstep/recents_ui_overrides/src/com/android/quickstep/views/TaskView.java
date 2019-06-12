@@ -163,6 +163,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private ObjectAnimator mIconAndDimAnimator;
     private float mIconScaleAnimStartProgress = 0;
     private float mFocusTransitionProgress = 1;
+    private float mStableAlpha = 1;
 
     private boolean mShowScreenshot;
 
@@ -469,13 +470,18 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         setTranslationX(0f);
         setTranslationY(0f);
         setTranslationZ(0);
-        setAlpha(1f);
+        setAlpha(mStableAlpha);
         setIconScaleAndDim(1);
     }
 
     public void resetVisualProperties() {
         resetViewTransforms();
         setFullscreenProgress(0);
+    }
+
+    public void setStableAlpha(float parentAlpha) {
+        mStableAlpha = parentAlpha;
+        setAlpha(mStableAlpha);
     }
 
     @Override
