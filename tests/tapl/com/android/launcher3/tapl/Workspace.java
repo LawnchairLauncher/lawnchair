@@ -213,6 +213,8 @@ public final class Workspace extends Home {
 
     @Override
     protected int getSwipeStartY() {
-        return mLauncher.waitForLauncherObject("hotseat").getVisibleBounds().top;
+        return mLauncher.getDevice().isNaturalOrientation() ?
+                mLauncher.waitForLauncherObject("hotseat").getVisibleBounds().top
+                : mLauncher.getRealDisplaySize().y - 1;
     }
 }
