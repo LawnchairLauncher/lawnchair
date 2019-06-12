@@ -51,4 +51,8 @@ public class LauncherAppTransitionManager implements ResourceBasedOverride {
         }
         return ActivityOptions.makeClipRevealAnimation(v, left, top, width, height);
     }
+
+    public boolean supportsAdaptiveIconAnimation() {
+        return false;
+    }
 }
