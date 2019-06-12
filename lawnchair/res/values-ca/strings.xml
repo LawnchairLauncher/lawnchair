@@ -286,10 +286,19 @@
     <string name="theme_auto_night_mode">Segueix el tema del sistema</string>
     <string name="theme_light">Clar</string>
     <string name="theme_dark_text">Clar amb text fosc</string>
+    <string name="theme_with_dark_text">text fosc</string>
     <string name="theme_dark">Fosc</string>
     <string name="theme_dark_dark_text">Fosc amb text fosc</string>
     <string name="theme_black">Negre</string>
     <string name="theme_black_dark_text">Negre amb text fosc</string>
+    <string name="theme_dark_theme_mode">Tema fosc</string>
+    <string name="theme_dark_theme_mode_on">Activat</string>
+    <string name="theme_dark_theme_mode_off">Desactivat</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
+    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Seguiu la llum del dia</string>
+    <string name="theme_use_black">Utilitza negre pur</string>
+    <string name="theme_use_dark_text">Utilitza text fosc</string>
     <string name="pref_qsb_color">Color</string>
     <string name="hide_from_predictions">Amaga suggeriment</string>
     <string name="hide_from_predictions_summary">No ho tornis a mostrar al calaix de suggeriments</string>
@@ -405,4 +414,12 @@
     <string name="adaptify_pack_summary">Creeu icones adaptatives per a icones a partir de paquets d\'icones</string>
     <string name="pref_sesame_sync_look_and_feel">Comparteix l\'aspecte i el comportament</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Sincronitza la configuració de cerca del Lawnchair amb el Sesame</string>
+    <string name="pref_search_bar_radius">Radi de la barra de cerca</string>
+    <string name="icon_text_scale_pref_title">Mida del text</string>
+    <string name="text_color">Color del text</string>
+    <string name="background_color">Color de fons</string>
+    <string name="pref_notification_count_title">Mostra el recompte de notificacions</string>
+    <string name="pref_notification_count_summary">Mostra el recompte de notificacions dins dels punts</string>
+    <string name="pref_center_wallpaper">Centra sempre el fons de pantalla</string>
+    <string name="pref_center_wallpaper_summary">Això desactivarà l\'efecte de desplaçament del fons de pantalla</string>
 </resources>
