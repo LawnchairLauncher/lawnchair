@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.uioverrides.states;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import com.android.launcher3.Launcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.views.RecentsView;
@@ -26,6 +29,8 @@ import com.android.quickstep.views.TaskView;
  * @see com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget#NEW_TASK
  */
 public class QuickSwitchState extends BackgroundAppState {
+
+    private static final String TAG = "QuickSwitchState";
 
     public QuickSwitchState(int id) {
         super(id, LauncherLogProto.ContainerType.APP);
@@ -48,7 +53,12 @@ public class QuickSwitchState extends BackgroundAppState {
     public void onStateTransitionEnd(Launcher launcher) {
         TaskView tasktolaunch = launcher.<RecentsView>getOverviewPanel().getTaskViewAt(0);
         if (tasktolaunch != null) {
-            tasktolaunch.launchTask(false);
+            tasktolaunch.launchTask(false, success -> {
+                if (!success) {
+                    launcher.getStateManager().goToState(OVERVIEW);
+                    tasktolaunch.notifyTaskLaunchFailed(TAG);
+                }
+            }, new Handler(Looper.getMainLooper()));
         } else {
             launcher.getStateManager().goToState(NORMAL);
         }

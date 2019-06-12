@@ -506,4 +506,9 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         return launcher != null && launcher.getStateManager().getState() == OVERVIEW &&
                 launcher.isStarted();
     }
+
+    @Override
+    public void onLaunchTaskFailed(Launcher launcher) {
+        launcher.getStateManager().goToState(OVERVIEW);
+    }
 }
