@@ -413,4 +413,5 @@
     <string name="adaptify_pack_summary">Vytvořit adaptivní ikony pro ikony z balíčků ikon</string>
     <string name="pref_sesame_sync_look_and_feel">Sdílet vzhled a pocit</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Synchronizujte nastavení vyhledávání Lawnchair pomocí Sesame</string>
+    <string name="background_color">Barva pozadí</string>
 </resources>
