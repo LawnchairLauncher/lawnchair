@@ -372,7 +372,6 @@
     <!--Marker K-->
     <string name="search_provider_firefox">फायरफॉक्स</string>
     <string name="search_provider_qwant">क्वांट</string>
-    <string name="search_provider_edge">किनारा</string>
     <string name="weather_provider_oneplus_weather">वन प्लस मौसम</string>
     <string name="overlap_placement">ओवरलैप प्लेसमेंट</string>
     <string name="overlap_placement_summary">आइकन और विजेट्स को ओवरलैप करें</string>
