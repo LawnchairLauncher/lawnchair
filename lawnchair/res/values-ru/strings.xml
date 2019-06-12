@@ -292,10 +292,15 @@
     <string name="theme_auto_night_mode">На основе системной темы</string>
     <string name="theme_light">Светлая</string>
     <string name="theme_dark_text">Светлая с тёмным текстом</string>
+    <string name="theme_with_dark_text">темный текст</string>
     <string name="theme_dark">Тёмная</string>
     <string name="theme_dark_dark_text">Тёмная с тёмным текстом</string>
     <string name="theme_black">Чёрная</string>
     <string name="theme_black_dark_text">Чёрная с тёмным текстом</string>
+    <string name="theme_dark_theme_mode">Тёмная тема</string>
+    <string name="theme_dark_theme_mode_on">Вкл.</string>
+    <string name="theme_dark_theme_mode_off">Выкл.</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">Тёмная тема: следовать цвету обоев</string>
     <string name="pref_qsb_color">Цвет</string>
     <string name="hide_from_predictions">Скрыть из списка подсказок</string>
     <string name="hide_from_predictions_summary">Никогда не показывать в подсказках меню приложений</string>
