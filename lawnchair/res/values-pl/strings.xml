@@ -426,6 +426,7 @@
     <string name="pref_search_bar_radius">Zaokrąglenie paska wyszukiwania</string>
     <string name="icon_text_scale_pref_title">Rozmiar tekstu</string>
     <string name="text_color">Kolor tekstu</string>
+    <string name="background_color">Kolor tła</string>
     <string name="pref_notification_count_title">Wyświetlaj liczbę powiadomień</string>
     <string name="pref_notification_count_summary">Wyświetlaj liczbę powiadomień wewnątrz kropek</string>
     <string name="pref_center_wallpaper">Zawsze środkuj tapetę</string>
