@@ -383,7 +383,6 @@
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
-    <string name="search_provider_edge">MS Edge</string>
     <string name="weather_provider_oneplus_weather">OnePlus Időjárás</string>
     <string name="overlap_placement">Átfedéses elhelyezés</string>
     <string name="overlap_placement_summary">Lehetővé teszi, hogy az ikonok és a kiaslkalmazások fedjék egymást.</string>
@@ -422,6 +421,7 @@
     <string name="pref_search_bar_radius">Keresési sáv nagyság</string>
     <string name="icon_text_scale_pref_title">Betűméret</string>
     <string name="text_color">Szöveg színe</string>
+    <string name="background_color">Háttérszín</string>
     <string name="pref_notification_count_title">Mutasd értesítés számlálót</string>
     <string name="pref_notification_count_summary">Mutasd értesítés számlálót a pontokban</string>
     <string name="pref_center_wallpaper">Hátteret mindig igazísd középre</string>
