@@ -422,6 +422,7 @@
     <string name="pref_search_bar_radius">Radio barra de búsqueda</string>
     <string name="icon_text_scale_pref_title">Tamaño del texto</string>
     <string name="text_color">Color del texto</string>
+    <string name="background_color">Color de fondo</string>
     <string name="pref_notification_count_title">Mostrar el contador de notificaciones</string>
     <string name="pref_notification_count_summary">Mostrar contador de notificaciones dentro de la burbuja</string>
     <string name="pref_center_wallpaper">Fondo de pantalla siempre centrado</string>
