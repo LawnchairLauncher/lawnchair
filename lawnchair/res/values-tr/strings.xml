@@ -384,7 +384,6 @@
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
-    <string name="search_provider_edge">Kenar</string>
     <string name="weather_provider_oneplus_weather">OnePlus hava durumu</string>
     <string name="overlap_placement">Örtüşen yerleşim</string>
     <string name="overlap_placement_summary">Simgelerin ve widget\'ların birbirleriyle örtüşmesine izin verin.</string>
@@ -423,6 +422,7 @@
     <string name="pref_search_bar_radius">Arama çubuğu yarıçapı</string>
     <string name="icon_text_scale_pref_title">Metin boyutu</string>
     <string name="text_color">Metin rengi</string>
+    <string name="background_color">Arka plan rengi</string>
     <string name="pref_notification_count_title">Bildirim sayısını göster</string>
     <string name="pref_notification_count_summary">Noktaların içinde bildirim sayısını görüntüle</string>
     <string name="pref_center_wallpaper">Duvar kağıdı her zaman ortada</string>
