@@ -868,9 +868,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     @UiThread
     private InputConsumer createNewInputProxyHandler() {
         endRunningWindowAnim();
-        if (mLauncherTransitionController != null) {
-            mLauncherTransitionController.getAnimationPlayer().end();
-        }
+        endLauncherTransitionController();
         if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             // Hide the task view, if not already hidden
             setTargetAlphaProvider(WindowTransformSwipeHandler::getHiddenTargetAlpha);
@@ -1312,6 +1310,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void endLauncherTransitionController() {
+        setShelfState(ShelfAnimState.CANCEL, LINEAR, 0);
         if (mLauncherTransitionController != null) {
             mLauncherTransitionController.getAnimationPlayer().end();
             mLauncherTransitionController = null;

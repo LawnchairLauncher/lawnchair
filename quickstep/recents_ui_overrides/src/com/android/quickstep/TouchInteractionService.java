@@ -619,7 +619,7 @@ public class TouchInteractionService extends Service implements
             return InputConsumer.NO_OP;
         }
 
-        if (activity.getRootView().hasWindowFocus()) {
+        if (activity.getRootView().hasWindowFocus() || mSwipeSharedState.goingToLauncher) {
             return new OverviewInputConsumer(activity, mInputMonitorCompat,
                     false /* startingInActivityBounds */);
         } else {
