@@ -292,10 +292,17 @@
     <string name="theme_auto_night_mode">تتبع سمة النظام</string>
     <string name="theme_light">فاتح</string>
     <string name="theme_dark_text">فاتح مع نص مظلم</string>
+    <string name="theme_with_dark_text">نص مظلم</string>
     <string name="theme_dark">مظلم</string>
     <string name="theme_dark_dark_text">مظلم مع نص مظلم</string>
     <string name="theme_black">أسود</string>
     <string name="theme_black_dark_text">أسود مع نص مظلم</string>
+    <string name="theme_dark_theme_mode">ثيم مظلم</string>
+    <string name="theme_dark_theme_mode_on">مفعل</string>
+    <string name="theme_dark_theme_mode_off">مغلق</string>
+    <string name="theme_dark_theme_mode_follow_daylight">اتبع ضوء اليوم</string>
+    <string name="theme_use_black">استخدم أسود نقي</string>
+    <string name="theme_use_dark_text">استخدم نص مظلم</string>
     <string name="pref_qsb_color">اللون</string>
     <string name="hide_from_predictions">إخفاء من الإقتراحات</string>
     <string name="hide_from_predictions_summary">لا تظهر أبداً في اقتراحات قائمة التطبيقات</string>
@@ -383,7 +390,7 @@
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
-    <string name="search_provider_edge">إدج</string>
+    <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">طقس OnePlus</string>
     <string name="overlap_placement">الوضع متداخل</string>
     <string name="overlap_placement_summary">السماح للايقونات والأدوات بالتداخل فيما بينها.</string>
@@ -419,4 +426,12 @@
     <string name="adaptify_pack_summary">انشئ أيقونات مكيفة للأيقونات من حزمة الأيقونات</string>
     <string name="pref_sesame_sync_look_and_feel">شارك مظهر وإحساس</string>
     <string name="pref_sesame_sync_look_and_feel_summary">تزامن إعدادات بحث Lawnchair مع سمسم</string>
+    <string name="pref_search_bar_radius">شريط بحث إطار نصف دائري</string>
+    <string name="icon_text_scale_pref_title">حجم النص</string>
+    <string name="text_color">لون النص</string>
+    <string name="background_color">لون الخلفية</string>
+    <string name="pref_notification_count_title">عرض عداد الإشعارات</string>
+    <string name="pref_notification_count_summary">عرض عدد الاشعارات داخل النافذة المنبثقة</string>
+    <string name="pref_center_wallpaper">خلفية مركزية دائما</string>
+    <string name="pref_center_wallpaper_summary">سيؤدي هذا إلى تعطيل تأثير التمرير للخلفية</string>
 </resources>
