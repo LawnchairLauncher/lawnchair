@@ -466,6 +466,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         reapplyUi();
         mDragLayer.recreateControllers();
 
+        // Calling onSaveInstanceState ensures that static cache used by listWidgets is
+        // initialized properly.
+        onSaveInstanceState(new Bundle());
         // TODO: We can probably avoid rebind when only screen size changed.
         rebindModel();
     }
