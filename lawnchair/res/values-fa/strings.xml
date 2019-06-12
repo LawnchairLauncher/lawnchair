@@ -367,7 +367,6 @@
     <!--Marker K-->
     <string name="search_provider_firefox">فایرفاکس</string>
     <string name="search_provider_qwant">کوانت</string>
-    <string name="search_provider_edge">اج</string>
     <string name="weather_provider_oneplus_weather">آب و هوای وان‌پلاس</string>
     <string name="overlap_placement">جای‌گذاری با هم‌پوشی</string>
     <string name="overlap_placement_summary">اجازه دهید آیکون‌ها و ابزارک‌ها روی هم بیافتند.</string>
