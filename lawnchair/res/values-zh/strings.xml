@@ -302,7 +302,7 @@
     <string name="theme_dark_theme_mode_off">关闭</string>
     <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
     <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
-    <string name="theme_dark_theme_mode_follow_daylight">随日出日落</string>
+    <string name="theme_dark_theme_mode_follow_daylight">跟随日光</string>
     <string name="theme_use_black">使用纯黑色</string>
     <string name="theme_use_dark_text">使用暗色文本</string>
     <string name="pref_qsb_color">颜色</string>
@@ -382,7 +382,7 @@
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
-    <string name="search_provider_edge">边缘</string>
+    <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">一加天气</string>
     <string name="overlap_placement">重叠放置</string>
     <string name="overlap_placement_summary">允许图标和小部件相互重叠。</string>
@@ -418,8 +418,10 @@
     <string name="adaptify_pack_summary">为出自图标包的图标创建自适应图标</string>
     <string name="pref_sesame_sync_look_and_feel">分享外观和风格</string>
     <string name="pref_sesame_sync_look_and_feel_summary">与 Sesame 同步 Lawnchair 搜索设置</string>
+    <string name="pref_search_bar_radius">搜索栏圆角幅度</string>
     <string name="icon_text_scale_pref_title">文字大小</string>
     <string name="text_color">文字颜色</string>
+    <string name="background_color">背景色</string>
     <string name="pref_notification_count_title">显示通知数量</string>
     <string name="pref_notification_count_summary">在点内显示通知数量</string>
     <string name="pref_center_wallpaper">始终居中壁纸</string>
