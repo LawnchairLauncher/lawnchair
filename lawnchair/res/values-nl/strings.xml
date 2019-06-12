@@ -292,10 +292,17 @@
     <string name="theme_auto_night_mode">Volg systeemthema</string>
     <string name="theme_light">Licht</string>
     <string name="theme_dark_text">Licht met donkere tekst</string>
+    <string name="theme_with_dark_text">donkere tekst</string>
     <string name="theme_dark">Donker</string>
     <string name="theme_dark_dark_text">Donker met donkere tekst</string>
     <string name="theme_black">Zwart</string>
     <string name="theme_black_dark_text">Zwart met donkere tekst</string>
+    <string name="theme_dark_theme_mode">Donker thema</string>
+    <string name="theme_dark_theme_mode_on">Aan</string>
+    <string name="theme_dark_theme_mode_off">Uit</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Volg daglicht</string>
+    <string name="theme_use_black">Gebruik puur zwart</string>
+    <string name="theme_use_dark_text">Gebruik donkere tekst</string>
     <string name="pref_qsb_color">Kleur</string>
     <string name="hide_from_predictions">Verbergen in suggesties</string>
     <string name="hide_from_predictions_summary">Nooit laten zien in app-overzicht suggesties</string>
@@ -411,4 +418,12 @@
     <string name="adaptify_pack_summary">Adaptieve pictogrammen genereren voor pictogrampakketten</string>
     <string name="pref_sesame_sync_look_and_feel">Uiterlijk en gedrag delen</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Lawnchair zoekinstellingen synchr. met Sesame</string>
+    <string name="pref_search_bar_radius">Zoekbalk hoekafronding</string>
+    <string name="icon_text_scale_pref_title">Tekstgrootte</string>
+    <string name="text_color">Tekstkleur</string>
+    <string name="background_color">Achtergrondkleur</string>
+    <string name="pref_notification_count_title">Meldingsaantal weergeven</string>
+    <string name="pref_notification_count_summary">Meldingsaantal weergeven in de stipjes</string>
+    <string name="pref_center_wallpaper">Achtergrond altijd centreren</string>
+    <string name="pref_center_wallpaper_summary">Dit zal het achtergrond scrolleffect uitschakelen</string>
 </resources>
