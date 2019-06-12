@@ -461,6 +461,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private void onIdpChanged(InvariantDeviceProfile idp) {
         mUserEventDispatcher = null;
 
+        DeviceProfile oldWallpaperProfile = getWallpaperDeviceProfile();
         initDeviceProfile(idp);
         dispatchDeviceProfileChanged();
         reapplyUi();
@@ -469,8 +470,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         // Calling onSaveInstanceState ensures that static cache used by listWidgets is
         // initialized properly.
         onSaveInstanceState(new Bundle());
-        // TODO: We can probably avoid rebind when only screen size changed.
-        rebindModel();
+        if (oldWallpaperProfile != getWallpaperDeviceProfile()) {
+            rebindModel();
+        }
     }
 
     public void onAssistantVisibilityChanged(float visibility) {
