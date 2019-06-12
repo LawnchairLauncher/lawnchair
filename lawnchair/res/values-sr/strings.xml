@@ -175,6 +175,7 @@
     <string name="action_open_app_with_target">Отвори %s</string>
     <string name="action_open_app_select_app">Избор апликације</string>
     <string name="action_none">Не ради ништа</string>
+    <string name="action_despacito">Пусти YouTube Rewind 2018 (изобличено)</string>
     <string name="gesture_press_home">Дугме „Почетак”</string>
     <string name="gesture_press_back">Дугме „Назад”</string>
     <string name="gesture_double_tap">Двоструки додир</string>
@@ -294,6 +295,11 @@
     <string name="theme_dark_dark_text">Тамна са тамним текстом</string>
     <string name="theme_black">Црна</string>
     <string name="theme_black_dark_text">Црна са тамним текстом</string>
+    <string name="theme_dark_theme_mode">Тамна тема</string>
+    <string name="theme_dark_theme_mode_on">Укључено</string>
+    <string name="theme_dark_theme_mode_off">Искључено</string>
+    <string name="theme_use_black">Потпуно црна</string>
+    <string name="theme_use_dark_text">Таман текст</string>
     <string name="pref_qsb_color">Боја</string>
     <string name="hide_from_predictions">Сакриј из предлога</string>
     <string name="hide_from_predictions_summary">Никада не приказуј у предлозима листе апликација</string>
@@ -411,4 +417,12 @@
     <string name="adaptify_pack_summary">Примењује прилагодљиве иконе и на пакете икона</string>
     <string name="pref_sesame_sync_look_and_feel">Дели изглед</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Синхронизује Lawnchair-ова подешавања претраге са Sesame-ом</string>
+    <string name="pref_search_bar_radius">Опсег траке за претрагу</string>
+    <string name="icon_text_scale_pref_title">Величина текста</string>
+    <string name="text_color">Боја текста</string>
+    <string name="background_color">Боја позадине</string>
+    <string name="pref_notification_count_title">Број обавештења</string>
+    <string name="pref_notification_count_summary">Приказује број обавештења у тачкама</string>
+    <string name="pref_center_wallpaper">Увек центрирај позадину</string>
+    <string name="pref_center_wallpaper_summary">Овим ћете онемогућити ефекат померања позадине</string>
 </resources>
