@@ -382,7 +382,7 @@
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
-    <string name="search_provider_edge">Bords</string>
+    <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">Météo OnePlus</string>
     <string name="overlap_placement">Placement superposé</string>
     <string name="overlap_placement_summary">Autoriser les icônes et les widgets à se superposer.</string>
@@ -421,6 +421,7 @@
     <string name="pref_search_bar_radius">Rayon de bar de recherche</string>
     <string name="icon_text_scale_pref_title">Taille du texte</string>
     <string name="text_color">Couleur du texte</string>
+    <string name="background_color">Couleur du fond</string>
     <string name="pref_notification_count_title">Affiche le nombre de notification</string>
     <string name="pref_notification_count_summary">Afficher le nombre de notification dans le point</string>
     <string name="pref_center_wallpaper">Toujours centrée le fond d\'écran</string>
