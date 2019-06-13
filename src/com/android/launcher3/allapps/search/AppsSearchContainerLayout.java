@@ -20,6 +20,7 @@ import static android.view.View.MeasureSpec.getSize;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
+import static com.android.launcher3.Utilities.prefixTextWithIcon;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 
 import android.content.Context;
@@ -40,6 +41,7 @@ import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
@@ -89,14 +91,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         mFixedTranslationY = getTranslationY();
         mMarginTopAdjusting = mFixedTranslationY - getPaddingTop();
 
-        // Update the hint to contain the icon.
-        // Prefix the original hint with two spaces. The first space gets replaced by the icon
-        // using span. The second space is used for a singe space character between the hint
-        // and the icon.
-        SpannableString spanned = new SpannableString("  " + getHint());
-        spanned.setSpan(new TintedDrawableSpan(getContext(), R.drawable.ic_allapps_search),
-                0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-        setHint(spanned);
+        setHint(prefixTextWithIcon(getContext(), R.drawable.ic_allapps_search, getHint()));
     }
 
     @Override
