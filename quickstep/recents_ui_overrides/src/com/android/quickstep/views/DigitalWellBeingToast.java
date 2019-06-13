@@ -18,9 +18,11 @@ package com.android.quickstep.views;
 
 import static android.provider.Settings.ACTION_APP_USAGE_SETTINGS;
 
+import static com.android.launcher3.Utilities.prefixTextWithIcon;
+
+import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.AppUsageLimit;
@@ -28,16 +30,16 @@ import android.icu.text.MeasureFormat;
 import android.icu.text.MeasureFormat.FormatWidth;
 import android.icu.util.Measure;
 import android.icu.util.MeasureUnit;
+import android.os.Build;
 import android.os.UserHandle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.StringRes;
 
 import com.android.launcher3.BaseActivity;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -46,45 +48,72 @@ import com.android.systemui.shared.recents.model.Task;
 import java.time.Duration;
 import java.util.Locale;
 
-public final class DigitalWellBeingToast extends LinearLayout {
+@TargetApi(Build.VERSION_CODES.Q)
+public final class DigitalWellBeingToast {
     static final Intent OPEN_APP_USAGE_SETTINGS_TEMPLATE = new Intent(ACTION_APP_USAGE_SETTINGS);
     static final int MINUTE_MS = 60000;
-    private final LauncherApps mLauncherApps;
-
-    public interface InitializeCallback {
-        void call(String contentDescription);
-    }
 
     private static final String TAG = DigitalWellBeingToast.class.getSimpleName();
 
+    private final BaseDraggingActivity mActivity;
+    private final TaskView mTaskView;
+    private final LauncherApps mLauncherApps;
+
     private Task mTask;
-    private TextView mText;
+    private boolean mHasLimit;
+    private long mAppRemainingTimeMs;
 
-    public DigitalWellBeingToast(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        setLayoutDirection(Utilities.isRtl(getResources()) ?
-                View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
-        setOnClickListener((view) -> openAppUsageSettings());
-        mLauncherApps = context.getSystemService(LauncherApps.class);
+    public DigitalWellBeingToast(BaseDraggingActivity activity, TaskView taskView) {
+        mActivity = activity;
+        mTaskView = taskView;
+        mLauncherApps = activity.getSystemService(LauncherApps.class);
     }
 
-    public TextView getTextView() {
-        return mText;
+    private void setTaskFooter(View view) {
+        View oldFooter = mTaskView.setFooter(TaskView.INDEX_DIGITAL_WELLBEING_TOAST, view);
+        if (oldFooter != null) {
+            oldFooter.setOnClickListener(null);
+            mActivity.getViewCache().recycleView(R.layout.digital_wellbeing_toast, oldFooter);
+        }
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-
-        mText = findViewById(R.id.digital_well_being_remaining_time);
+    private void setNoLimit() {
+        mHasLimit = false;
+        mTaskView.setContentDescription(mTask.titleDescription);
+        setTaskFooter(null);
+        mAppRemainingTimeMs = 0;
     }
 
-    public void initialize(Task task, InitializeCallback callback) {
+    private void setLimit(long appUsageLimitTimeMs, long appRemainingTimeMs) {
+        mAppRemainingTimeMs = appRemainingTimeMs;
+        mHasLimit = true;
+        TextView toast = mActivity.getViewCache().getView(R.layout.digital_wellbeing_toast,
+                mActivity, mTaskView);
+        toast.setText(prefixTextWithIcon(mActivity, R.drawable.ic_hourglass_top, getText()));
+        toast.setOnClickListener(this::openAppUsageSettings);
+        setTaskFooter(toast);
+
+        mTaskView.setContentDescription(
+                getContentDescriptionForTask(mTask, appUsageLimitTimeMs, appRemainingTimeMs));
+        RecentsView rv = mTaskView.getRecentsView();
+        if (rv != null) {
+            rv.onDigitalWellbeingToastShown();
+        }
+    }
+
+    public String getText() {
+        return getText(mAppRemainingTimeMs);
+    }
+
+    public boolean hasLimit() {
+        return mHasLimit;
+    }
+
+    public void initialize(Task task) {
         mTask = task;
 
         if (task.key.userId != UserHandle.myUserId()) {
-            setVisibility(GONE);
-            callback.call(task.titleDescription);
+            setNoLimit();
             return;
         }
 
@@ -98,16 +127,12 @@ public final class DigitalWellBeingToast extends LinearLayout {
             final long appRemainingTimeMs =
                     usageLimit != null ? usageLimit.getUsageRemaining() : -1;
 
-            post(() -> {
+            mTaskView.post(() -> {
                 if (appUsageLimitTimeMs < 0 || appRemainingTimeMs < 0) {
-                    setVisibility(GONE);
+                    setNoLimit();
                 } else {
-                    setVisibility(VISIBLE);
-                    mText.setText(getText(appRemainingTimeMs));
+                    setLimit(appUsageLimitTimeMs, appRemainingTimeMs);
                 }
-
-                callback.call(getContentDescriptionForTask(
-                        task, appUsageLimitTimeMs, appRemainingTimeMs));
             });
         });
     }
@@ -146,7 +171,7 @@ public final class DigitalWellBeingToast extends LinearLayout {
 
         // Use a specific string for usage less than one minute but non-zero.
         if (duration.compareTo(Duration.ZERO) > 0) {
-            return getResources().getString(durationLessThanOneMinuteStringId);
+            return mActivity.getString(durationLessThanOneMinuteStringId);
         }
 
         // Otherwise, return 0-minute string.
@@ -176,24 +201,24 @@ public final class DigitalWellBeingToast extends LinearLayout {
     }
 
     private String getText(long remainingTime) {
-        return getResources().getString(
+        return mActivity.getString(
                 R.string.time_left_for_app,
                 getRoundedUpToMinuteReadableDuration(remainingTime));
     }
 
-    public void openAppUsageSettings() {
+    public void openAppUsageSettings(View view) {
         final Intent intent = new Intent(OPEN_APP_USAGE_SETTINGS_TEMPLATE)
                 .putExtra(Intent.EXTRA_PACKAGE_NAME,
                         mTask.getTopComponent().getPackageName()).addFlags(
                         Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         try {
-            final BaseActivity activity = BaseActivity.fromContext(getContext());
+            final BaseActivity activity = BaseActivity.fromContext(view.getContext());
             final ActivityOptions options = ActivityOptions.makeScaleUpAnimation(
-                    this, 0, 0,
-                    getWidth(), getHeight());
+                    view, 0, 0,
+                    view.getWidth(), view.getHeight());
             activity.startActivity(intent, options.toBundle());
             activity.getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.Touch.TAP,
-                    LauncherLogProto.ControlType.APP_USAGE_SETTINGS, this);
+                    LauncherLogProto.ControlType.APP_USAGE_SETTINGS, view);
         } catch (ActivityNotFoundException e) {
             Log.e(TAG, "Failed to open app usage settings for task "
                     + mTask.getTopComponent().getPackageName(), e);
@@ -203,7 +228,7 @@ public final class DigitalWellBeingToast extends LinearLayout {
     private String getContentDescriptionForTask(
             Task task, long appUsageLimitTimeMs, long appRemainingTimeMs) {
         return appUsageLimitTimeMs >= 0 && appRemainingTimeMs >= 0 ?
-                getResources().getString(
+                mActivity.getString(
                         R.string.task_contents_description_with_remaining_time,
                         task.titleDescription,
                         getText(appRemainingTimeMs)) :
