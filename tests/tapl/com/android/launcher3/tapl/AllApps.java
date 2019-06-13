@@ -48,6 +48,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                 "apps_list_view");
         // Wait for the recycler to populate.
         mLauncher.waitForObjectInContainer(appListRecycler, By.clazz(TextView.class));
+        verifyNotFrozen("All apps freeze flags upon opening all apps");
     }
 
     @Override
@@ -209,5 +210,26 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                     allAppsContainer, Direction.UP, 1, new Rect(0, mHeight / 2, 0, 0), 10);
             verifyActiveContainer();
         }
+    }
+
+    /**
+     * Freezes updating app list upon app install/uninstall/update.
+     */
+    public void freeze() {
+        mLauncher.getTestInfo(TestProtocol.REQUEST_FREEZE_APP_LIST);
+    }
+
+    /**
+     * Resumes updating app list upon app install/uninstall/update.
+     */
+    public void unfreeze() {
+        mLauncher.getTestInfo(TestProtocol.REQUEST_UNFREEZE_APP_LIST);
+        verifyNotFrozen("All apps freeze flags upon unfreezing");
+    }
+
+    private void verifyNotFrozen(String message) {
+        mLauncher.assertEquals(message, 0, mLauncher.getTestInfo(
+                TestProtocol.REQUEST_APP_LIST_FREEZE_FLAGS).
+                getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD));
     }
 }

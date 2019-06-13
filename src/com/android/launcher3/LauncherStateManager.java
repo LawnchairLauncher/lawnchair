@@ -49,6 +49,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.PropertySetter.AnimatedPropertySetter;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.UiFactory;
 
@@ -496,6 +497,8 @@ public class LauncherStateManager {
         for (int i = mListeners.size() - 1; i >= 0; i--) {
             mListeners.get(i).onStateTransitionComplete(state);
         }
+
+        AccessibilityManagerCompat.sendStateEventToTest(mLauncher, state.ordinal);
     }
 
     public void onWindowFocusChanged() {
