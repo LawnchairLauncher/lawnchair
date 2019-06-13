@@ -113,7 +113,7 @@ class ARGBColorResolver(config: Config) : ColorEngine.ColorResolver(config) {
 
     override fun resolveColor() = color
 
-    override fun getDisplayName() = "#${String.format("%07X", color.toLong() and 0xFFFFFFFF)}"
+    override fun getDisplayName() = "#${String.format("%08X", color.toLong() and 0xFFFFFFFF)}"
 }
 
 abstract class WallpaperColorResolver(config: Config)
