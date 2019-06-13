@@ -98,7 +98,7 @@
     <string name="dock_style_p">Zaoblený</string>
     <string name="dock_style_n">Plochý</string>
     <string name="dock_style_hidden">Skrytý</string>
-    <string name="dock_search_bar">Vyhledávací pruh doku</string>
+    <string name="dock_search_bar">Vyhledávací panel doku</string>
     <string name="opacity">Neprůhlednost</string>
     <string name="title_all_apps_google_search">Globální hledání</string>
     <string name="summary_all_apps_google_search">Najít výsledky z webu a aplikací</string>
@@ -290,10 +290,17 @@
     <string name="theme_auto_night_mode">Podle motivu systému</string>
     <string name="theme_light">Světlý</string>
     <string name="theme_dark_text">Světlý s tmavým textem</string>
+    <string name="theme_with_dark_text">tmavý text</string>
     <string name="theme_dark">Tmavý</string>
     <string name="theme_dark_dark_text">Tmavý s tmavým textem</string>
     <string name="theme_black">Černý</string>
     <string name="theme_black_dark_text">Černý s tmavým textem</string>
+    <string name="theme_dark_theme_mode">Tmavý motiv</string>
+    <string name="theme_dark_theme_mode_on">Zap.</string>
+    <string name="theme_dark_theme_mode_off">Vyp.</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Podle denní doby</string>
+    <string name="theme_use_black">Použít čistě černý</string>
+    <string name="theme_use_dark_text">Použít tmavý text</string>
     <string name="pref_qsb_color">Barva</string>
     <string name="hide_from_predictions">Skrýt z výsledků našeptávání</string>
     <string name="hide_from_predictions_summary">Nikdy nezobrazit v roletě našeptávání</string>
@@ -413,5 +420,12 @@
     <string name="adaptify_pack_summary">Vytvořit adaptivní ikony pro ikony z balíčků ikon</string>
     <string name="pref_sesame_sync_look_and_feel">Sdílet vzhled a pocit</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Synchronizujte nastavení vyhledávání Lawnchair pomocí Sesame</string>
+    <string name="pref_search_bar_radius">Rádius vyhledávacího panelu</string>
+    <string name="icon_text_scale_pref_title">Velikost textu</string>
+    <string name="text_color">Barva textu</string>
     <string name="background_color">Barva pozadí</string>
+    <string name="pref_notification_count_title">Zobrazit počet oznámení</string>
+    <string name="pref_notification_count_summary">Zobrazení počtu oznámení uvnitř teček</string>
+    <string name="pref_center_wallpaper">Vždy centrovat tapetu</string>
+    <string name="pref_center_wallpaper_summary">Tím se zakáže efekt posouvání tapet</string>
 </resources>
