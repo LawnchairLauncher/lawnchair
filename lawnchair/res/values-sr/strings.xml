@@ -291,6 +291,7 @@
     <string name="theme_auto_night_mode">На основу теме система</string>
     <string name="theme_light">Светла</string>
     <string name="theme_dark_text">Светла са тамним текстом</string>
+    <string name="theme_with_dark_text">тамни текст</string>
     <string name="theme_dark">Тамна</string>
     <string name="theme_dark_dark_text">Тамна са тамним текстом</string>
     <string name="theme_black">Црна</string>
@@ -298,8 +299,9 @@
     <string name="theme_dark_theme_mode">Тамна тема</string>
     <string name="theme_dark_theme_mode_on">Укључено</string>
     <string name="theme_dark_theme_mode_off">Искључено</string>
+    <string name="theme_dark_theme_mode_follow_daylight">На основу доба дана</string>
     <string name="theme_use_black">Потпуно црна</string>
-    <string name="theme_use_dark_text">Таман текст</string>
+    <string name="theme_use_dark_text">Тамни текст</string>
     <string name="pref_qsb_color">Боја</string>
     <string name="hide_from_predictions">Сакриј из предлога</string>
     <string name="hide_from_predictions_summary">Никада не приказуј у предлозима листе апликација</string>
