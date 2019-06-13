@@ -74,6 +74,11 @@
             android:title="@string/auto_add_shortcuts_label"
             app:controllerClass=".AddIconToHomeController"/>
 
+        <ch.deletescape.lawnchair.settings.ui.PreferenceDialogPreference
+            android:key="pref_iconPopupMenu"
+            android:title="@string/pref_icon_popup_menu"
+            app:content="@xml/lawnchair_icon_popup_menu_preferences" />
+
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
