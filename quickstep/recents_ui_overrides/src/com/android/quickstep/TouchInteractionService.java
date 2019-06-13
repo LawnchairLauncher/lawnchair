@@ -547,6 +547,10 @@ public class TouchInteractionService extends Service implements
                         (mSystemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE) != 0, base,
                         mInputMonitorCompat, mSwipeTouchRegion);
             }
+        } else {
+            if ((mSystemUiStateFlags & SYSUI_STATE_SCREEN_PINNING) != 0) {
+                base = mResetGestureInputConsumer;
+            }
         }
         return base;
     }
