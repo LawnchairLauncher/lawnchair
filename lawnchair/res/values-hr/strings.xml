@@ -23,7 +23,7 @@
     <string name="pixel_style_pref_title">Pixel stil</string>
     <string name="about_summary_title">Sažetak</string>
     <string name="action_edit">Uredi</string>
-    <string name="hide_app_sum">Sakrij iz izbornika aplikacija</string>
+    <string name="hide_app_sum">Sakrijte iz izbornika aplikacija</string>
     <string name="hide_app">Sakrij aplikaciju</string>
     <string name="icon_shape_rounded_square">Zaobljeni kvadrat</string>
     <string name="pixel_ui_pref_summary">Paket ikona, zamagljenost, boje</string>
