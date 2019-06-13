@@ -287,10 +287,17 @@
     <string name="theme_auto_night_mode">Следвай системната тема</string>
     <string name="theme_light">Светла</string>
     <string name="theme_dark_text">Светла с тъмен текст</string>
+    <string name="theme_with_dark_text">тъмен текст</string>
     <string name="theme_dark">Тъмна</string>
     <string name="theme_dark_dark_text">Тъмна с тъмен текст</string>
     <string name="theme_black">Черна</string>
     <string name="theme_black_dark_text">Черна с тъмен текст</string>
+    <string name="theme_dark_theme_mode">Тъмна тема</string>
+    <string name="theme_dark_theme_mode_on">Вкл.</string>
+    <string name="theme_dark_theme_mode_off">Изкл.</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Следвай дневната светлина</string>
+    <string name="theme_use_black">Използвай чисто черно</string>
+    <string name="theme_use_dark_text">Използвай тъмен текст</string>
     <string name="pref_qsb_color">Цвят</string>
     <string name="hide_from_predictions">Скрий от предложенията</string>
     <string name="hide_from_predictions_summary">Никога не показвай в предложенията в списъка с приложения</string>
@@ -406,4 +413,12 @@
     <string name="adaptify_pack_summary">Създай адаптивни икони за иконите от пакета с икони</string>
     <string name="pref_sesame_sync_look_and_feel">Сподели вида и усещането</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Синхронизирай настройките за търсене на Lawnchair със Sesame</string>
+    <string name="pref_search_bar_radius">Радиус на лентата за търсене</string>
+    <string name="icon_text_scale_pref_title">Размер на текста</string>
+    <string name="text_color">Цвят на текста</string>
+    <string name="background_color">Цвят на фона</string>
+    <string name="pref_notification_count_title">Покажи броя на известията</string>
+    <string name="pref_notification_count_summary">Показвай броя на известията в точките за известия</string>
+    <string name="pref_center_wallpaper">Винаги центриран тапет</string>
+    <string name="pref_center_wallpaper_summary">Това ще изключи ефекта на местене на тапета</string>
 </resources>
