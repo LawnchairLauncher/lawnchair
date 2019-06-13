@@ -26,6 +26,7 @@ import android.os.Process;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -625,6 +626,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_START_TAG, "AllAppsContainerView.dispatchTouchEvent " + ev);
+        }
         final boolean result = super.dispatchTouchEvent(ev);
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
