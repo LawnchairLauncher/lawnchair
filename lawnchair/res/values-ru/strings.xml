@@ -301,6 +301,9 @@
     <string name="theme_dark_theme_mode_on">Вкл.</string>
     <string name="theme_dark_theme_mode_off">Выкл.</string>
     <string name="theme_dark_theme_mode_follow_wallpaper">Тёмная тема: следовать цвету обоев</string>
+    <string name="theme_dark_theme_mode_follow_daylight">На основе времени суток</string>
+    <string name="theme_use_black">Использовать черный</string>
+    <string name="theme_use_dark_text">Использовать тёмный текст</string>
     <string name="pref_qsb_color">Цвет</string>
     <string name="hide_from_predictions">Скрыть из списка подсказок</string>
     <string name="hide_from_predictions_summary">Никогда не показывать в подсказках меню приложений</string>
@@ -420,4 +423,12 @@
     <string name="adaptify_pack_summary">Создать адаптивные иконки для иконок из наборов иконок</string>
     <string name="pref_sesame_sync_look_and_feel">Диктовать оформление</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Синхронизировать настройки поиска Lawnchair с Sesame</string>
+    <string name="pref_search_bar_radius">Радиус скругления панели поиска</string>
+    <string name="icon_text_scale_pref_title">Размер шрифта</string>
+    <string name="text_color">Цвет текста</string>
+    <string name="background_color">Цвет фона</string>
+    <string name="pref_notification_count_title">Отображать количество уведомлений</string>
+    <string name="pref_notification_count_summary">Показывать количество уведомлений внутри точки</string>
+    <string name="pref_center_wallpaper">Обои всегда по центру</string>
+    <string name="pref_center_wallpaper_summary">Отключит эффект прокрутки обоев</string>
 </resources>
