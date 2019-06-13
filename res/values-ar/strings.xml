@@ -85,7 +85,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"الأدوات"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"الخلفيات"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"الأنماط والخلفيات"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"إعدادات الصفحة الرئيسية"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"إعدادات الشاشة الرئيسية"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"أوقف المشرف هذه الميزة"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"السماح بتدوير الشاشة الرئيسية"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"عند تدوير الهاتف"</string>
@@ -108,7 +108,7 @@
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"أدوات <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widgets_list" msgid="796804551140113767">"قائمة الأدوات"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"تم إغلاق قائمة الأدوات."</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"إضافة إلى الشاشة الرئيسية"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"الإضافة إلى الشاشة الرئيسية"</string>
     <string name="action_move_here" msgid="2170188780612570250">"نقل العنصر إلى هنا"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"تمت إضافة العنصر إلى الشاشة الرئيسية"</string>
     <string name="item_removed" msgid="851119963877842327">"تم حذف العنصر"</string>
