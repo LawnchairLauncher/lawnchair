@@ -153,6 +153,7 @@
     <string name="about_bio_deletescape">Dezvoltator și entuziast Android, iubeşte memele (un pic prea mult de fapt). Fondator al proiectului Lawnchair.</string>
     <string name="about_bio_recoded">Coder mediu și designer grafic.</string>
     <string name="about_bio_josh">Freelance graphic designer.</string>
+    <string name="about_bio_chris">Minte creativă, angajat în ceva legat de design și social media. Să mergem împreună la @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">Dezvoltator principal al halogenOS și dezvoltator al substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Închidere forțată a lansatorului</string>
@@ -422,6 +423,7 @@
     <string name="pref_search_bar_radius">Raza barei de căutare</string>
     <string name="icon_text_scale_pref_title">Dimensiunea textului</string>
     <string name="text_color">Culoarea textului</string>
+    <string name="background_color">Culoarea fundalului</string>
     <string name="pref_notification_count_title">Afişare număr de notificări</string>
     <string name="pref_notification_count_summary">Afișare număr de notificări în interiorul punctelor</string>
     <string name="pref_center_wallpaper">Imagine de fundal mereu la centru</string>
