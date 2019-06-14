@@ -37,7 +37,6 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_S
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
-import android.app.KeyguardManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -234,7 +233,6 @@ public class TouchInteractionService extends Service implements
     private final InputConsumer mResetGestureInputConsumer =
             new ResetGestureInputConsumer(mSwipeSharedState);
 
-    private KeyguardManager mKM;
     private ActivityManagerWrapper mAM;
     private RecentsModel mRecentsModel;
     private ISystemUiProxy mISystemUiProxy;
@@ -280,7 +278,6 @@ public class TouchInteractionService extends Service implements
 
         // Initialize anything here that is needed in direct boot mode.
         // Everything else should be initialized in initWhenUserUnlocked() below.
-        mKM = getSystemService(KeyguardManager.class);
         mMainChoreographer = Choreographer.getInstance();
         mAM = ActivityManagerWrapper.getInstance();
 
@@ -560,11 +557,8 @@ public class TouchInteractionService extends Service implements
         if (!useSharedState) {
             mSwipeSharedState.clearAllState();
         }
-        if ((mSystemUiStateFlags & SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED) != 0
-                || mKM.isDeviceLocked()) {
-            // This handles apps launched in direct boot mode (e.g. dialer) as well as apps launched
-            // while device is locked after exiting direct boot mode (e.g. camera), or if the
-            // app is showing over the lockscreen (even if not locked)
+        if ((mSystemUiStateFlags & SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED) != 0) {
+            // This handles apps showing over the lockscreen (e.g. camera)
             return createDeviceLockedInputConsumer(runningTaskInfo);
         }
 
@@ -669,7 +663,6 @@ public class TouchInteractionService extends Service implements
             pw.println("  systemUiFlags=" + mSystemUiStateFlags);
             pw.println("  systemUiFlagsDesc="
                     + QuickStepContract.getSystemUiStateString(mSystemUiStateFlags));
-            pw.println("  isDeviceLocked=" + mKM.isDeviceLocked());
             pw.println("  assistantAvailable=" + mAssistantAvailable);
             pw.println("  assistantDisabled="
                     + QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags));
