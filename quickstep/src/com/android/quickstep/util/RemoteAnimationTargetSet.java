@@ -33,20 +33,26 @@ public class RemoteAnimationTargetSet {
     public final RemoteAnimationTargetCompat[] unfilteredApps;
     public final RemoteAnimationTargetCompat[] apps;
     public final int targetMode;
+    public final boolean hasRecents;
 
     public RemoteAnimationTargetSet(RemoteAnimationTargetCompat[] apps, int targetMode) {
         ArrayList<RemoteAnimationTargetCompat> filteredApps = new ArrayList<>();
+        boolean hasRecents = false;
         if (apps != null) {
             for (RemoteAnimationTargetCompat target : apps) {
                 if (target.mode == targetMode) {
                     filteredApps.add(target);
                 }
+
+                hasRecents |= target.activityType ==
+                        RemoteAnimationTargetCompat.ACTIVITY_TYPE_RECENTS;
             }
         }
 
         this.unfilteredApps = apps;
         this.apps = filteredApps.toArray(new RemoteAnimationTargetCompat[filteredApps.size()]);
         this.targetMode = targetMode;
+        this.hasRecents = hasRecents;
     }
 
     public RemoteAnimationTargetCompat findTask(int taskId) {
