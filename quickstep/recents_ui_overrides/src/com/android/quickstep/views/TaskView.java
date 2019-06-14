@@ -163,6 +163,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private ObjectAnimator mIconAndDimAnimator;
     private float mIconScaleAnimStartProgress = 0;
     private float mFocusTransitionProgress = 1;
+    private float mStableAlpha = 1;
 
     private boolean mShowScreenshot;
 
@@ -353,14 +354,15 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mIconLoadRequest = iconCache.updateIconInBackground(mTask,
                     (task) -> {
                         setIcon(task.icon);
-                        if (isRunningTask()) {
+                        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask()) {
                             getRecentsView().updateLiveTileIcon(task.icon);
                         }
                         mDigitalWellBeingToast.initialize(
                                 mTask,
                                 contentDescription -> {
                                     setContentDescription(contentDescription);
-                                    if (mDigitalWellBeingToast.getVisibility() == VISIBLE) {
+                                    if (mDigitalWellBeingToast.getVisibility() == VISIBLE
+                                            && getRecentsView() != null) {
                                         getRecentsView().onDigitalWellbeingToastShown();
                                     }
                                 });
@@ -468,13 +470,18 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         setTranslationX(0f);
         setTranslationY(0f);
         setTranslationZ(0);
-        setAlpha(1f);
+        setAlpha(mStableAlpha);
         setIconScaleAndDim(1);
     }
 
     public void resetVisualProperties() {
         resetViewTransforms();
         setFullscreenProgress(0);
+    }
+
+    public void setStableAlpha(float parentAlpha) {
+        mStableAlpha = parentAlpha;
+        setAlpha(mStableAlpha);
     }
 
     @Override
@@ -498,6 +505,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mSnapshotView.setDimAlpha(curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
         setCurveScale(getCurveScaleForCurveInterpolation(curveInterpolation));
 
+        float fade = Utilities.boundToRange(1.0f - 2 * scrollState.linearInterpolation, 0f, 1f);
+        mTaskFooterContainer.setAlpha(fade);
         if (mMenuView != null) {
             mMenuView.setPosition(getX() - getRecentsView().getScrollX(), getY());
             mMenuView.setScaleX(getScaleX());
@@ -716,6 +725,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     public boolean isRunningTask() {
+        if (getRecentsView() == null) {
+            return false;
+        }
         return this == getRecentsView().getRunningTaskView();
     }
 

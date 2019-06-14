@@ -192,6 +192,7 @@ public class ClipAnimationHelper {
             float cornerRadius = 0f;
             float scale = Math.max(params.currentRect.width(), mTargetRect.width()) / crop.width();
             if (app.mode == targetSet.targetMode) {
+                alpha = mTaskAlphaCallback.apply(app, params.targetAlpha);
                 if (app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
                     mTmpMatrix.setRectToRect(mSourceRect, params.currentRect, ScaleToFit.FILL);
                     mTmpMatrix.postTranslate(app.position.x, app.position.y);
@@ -208,8 +209,11 @@ public class ClipAnimationHelper {
                         }
                         mCurrentCornerRadius = cornerRadius;
                     }
+                } else if (targetSet.hasRecents) {
+                    // If home has a different target then recents, reverse anim the
+                    // home target.
+                    alpha = 1 - (progress * params.targetAlpha);
                 }
-                alpha = mTaskAlphaCallback.apply(app, params.targetAlpha);
             } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() && launcherOnTop) {
                 crop = null;
                 layer = Integer.MAX_VALUE;
