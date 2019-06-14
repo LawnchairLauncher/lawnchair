@@ -208,14 +208,10 @@ public final class LauncherInstrumentation {
             // app context are not constructed with resources that take overlays into account
             final Context ctx = baseContext.createPackageContext("android", 0);
             for (int i = 0; i < 100; ++i) {
-                log("Interaction mode = " + getCurrentInteractionMode(ctx));
-                if (isGesturalMode(ctx)) {
-                    return NavigationModel.ZERO_BUTTON;
-                } else if (isSwipeUpMode(ctx)) {
-                    return NavigationModel.TWO_BUTTON;
-                } else if (isLegacyMode(ctx)) {
-                    return NavigationModel.THREE_BUTTON;
-                }
+                final int currentInteractionMode = getCurrentInteractionMode(ctx);
+                log("Interaction mode = " + currentInteractionMode);
+                final NavigationModel model = getNavigationModel(currentInteractionMode);
+                if (model != null) return model;
                 Thread.sleep(100);
             }
             fail("Can't detect navigation mode");
@@ -223,6 +219,17 @@ public final class LauncherInstrumentation {
             fail(e.toString());
         }
         return NavigationModel.THREE_BUTTON;
+    }
+
+    public static NavigationModel getNavigationModel(int currentInteractionMode) {
+        if (QuickStepContract.isGesturalMode(currentInteractionMode)) {
+            return NavigationModel.ZERO_BUTTON;
+        } else if (QuickStepContract.isSwipeUpMode(currentInteractionMode)) {
+            return NavigationModel.TWO_BUTTON;
+        } else if (QuickStepContract.isLegacyMode(currentInteractionMode)) {
+            return NavigationModel.THREE_BUTTON;
+        }
+        return null;
     }
 
     public static boolean isAvd() {
@@ -748,19 +755,7 @@ public final class LauncherInstrumentation {
         return currentTime;
     }
 
-    public static boolean isGesturalMode(Context context) {
-        return QuickStepContract.isGesturalMode(getCurrentInteractionMode(context));
-    }
-
-    public static boolean isSwipeUpMode(Context context) {
-        return QuickStepContract.isSwipeUpMode(getCurrentInteractionMode(context));
-    }
-
-    public static boolean isLegacyMode(Context context) {
-        return QuickStepContract.isLegacyMode(getCurrentInteractionMode(context));
-    }
-
-    private static int getCurrentInteractionMode(Context context) {
+    public static int getCurrentInteractionMode(Context context) {
         return getSystemIntegerRes(context, "config_navBarInteractionMode");
     }
 
