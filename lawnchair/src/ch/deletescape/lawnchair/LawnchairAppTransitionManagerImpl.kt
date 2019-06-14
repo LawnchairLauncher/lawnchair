@@ -350,7 +350,7 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
         launchOpts.loadThumbnails = false
         val preloadOpts = RecentsTaskLoadPlan.PreloadOptions()
         preloadOpts.loadTitles = false
-        val recentsTaskLoader = recentsView.model.recentsTaskLoader
+        val recentsTaskLoader = recentsView.model?.recentsTaskLoader ?: return null
         plan.preloadPlan(preloadOpts, recentsTaskLoader, -1, Utilities.getUserId())
         recentsTaskLoader.loadTasks(plan, launchOpts)
         return plan.taskStack.findTaskWithId(taskId)
