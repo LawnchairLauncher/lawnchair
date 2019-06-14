@@ -106,7 +106,7 @@
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> – widżety"</string>
     <string name="widgets_list" msgid="796804551140113767">"Lista widgetów"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Lista widgetów zamknięta"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"Dodaj do strony głównej"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"Dodaj do ekranu głównego"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Przenieś element tutaj"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Element został dodany do ekranu głównego"</string>
     <string name="item_removed" msgid="851119963877842327">"Element został usunięty"</string>
