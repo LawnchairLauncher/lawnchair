@@ -892,7 +892,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mRunningTaskTileHidden = isHidden;
         TaskView runningTask = getRunningTaskView();
         if (runningTask != null) {
-            runningTask.setAlpha(isHidden ? 0 : mContentAlpha);
+            runningTask.setStableAlpha(isHidden ? 0 : mContentAlpha);
         }
     }
 
@@ -1294,7 +1294,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         for (int i = getTaskViewCount() - 1; i >= 0; i--) {
             TaskView child = getTaskViewAt(i);
             if (!mRunningTaskTileHidden || child.getTask().key.id != mRunningTaskId) {
-                getChildAt(i).setAlpha(alpha);
+                child.setStableAlpha(alpha);
             }
         }
         mClearAllButton.setContentAlpha(mContentAlpha);
@@ -1674,6 +1674,16 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     public ClearAllButton getClearAllButton() {
         return mClearAllButton;
+    }
+
+    /**
+     * @return How many pixels the running task is offset on the x-axis due to the current scrollX.
+     */
+    public float getScrollOffset() {
+        int startScroll = getScrollForPage(getRunningTaskIndex());
+        int offsetX = startScroll - getScrollX();
+        offsetX *= getScaleX();
+        return offsetX;
     }
 
     public Consumer<MotionEvent> getEventDispatcher(RotationMode rotationMode) {
