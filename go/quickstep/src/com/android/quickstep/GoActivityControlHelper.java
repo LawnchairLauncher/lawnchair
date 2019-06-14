@@ -61,4 +61,9 @@ public abstract class GoActivityControlHelper<T extends BaseDraggingActivity> im
         // Go does not support live tiles.
         return false;
     }
+
+    @Override
+    public void onLaunchTaskFailed(T activity) {
+        // Go does not support gestures from one task to another.
+    }
 }

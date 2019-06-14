@@ -461,13 +461,18 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private void onIdpChanged(InvariantDeviceProfile idp) {
         mUserEventDispatcher = null;
 
+        DeviceProfile oldWallpaperProfile = getWallpaperDeviceProfile();
         initDeviceProfile(idp);
         dispatchDeviceProfileChanged();
         reapplyUi();
         mDragLayer.recreateControllers();
 
-        // TODO: We can probably avoid rebind when only screen size changed.
-        rebindModel();
+        // Calling onSaveInstanceState ensures that static cache used by listWidgets is
+        // initialized properly.
+        onSaveInstanceState(new Bundle());
+        if (oldWallpaperProfile != getWallpaperDeviceProfile()) {
+            rebindModel();
+        }
     }
 
     public void onAssistantVisibilityChanged(float visibility) {
@@ -889,7 +894,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mLauncherCallbacks.onStart();
         }
         mAppWidgetHost.setListenIfResumed(true);
-        NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
         RaceConditionTracker.onEvent(ON_START_EVT, EXIT);
     }
 
@@ -908,6 +912,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
             // Refresh shortcuts if the permission changed.
             mModel.refreshShortcutsIfRequired();
+
+            // Set the notification listener and fetch updated notifications when we resume
+            NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
 
             DiscoveryBounce.showForHomeIfNeeded(this);
 
