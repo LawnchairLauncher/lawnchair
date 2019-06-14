@@ -84,7 +84,7 @@
     <string name="settings_button_text" msgid="8873672322605444408">"ការកំណត់​ទំព័រដើម"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"បានបិទដំណើរការដោយអ្នកគ្រប់គ្រងរបស់អ្នក"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"អនុញ្ញាតការបងិ្វលអេក្រង់ដើម"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"នៅពេលដែលបង្វិលទូរស័ព្ទរបស់អ្នក"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"នៅពេលដែលបង្វិលទូរសព្ទ"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"ស្លាកជូនដំណឹង"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"បើក"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"បិទ"</string>
@@ -104,7 +104,7 @@
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"ធាតុ​ក្រាហ្វិក <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widgets_list" msgid="796804551140113767">"បញ្ជីធាតុ​ក្រាហ្វិក"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"បាន​បិទ​បញ្ជីធាតុ​ក្រាហ្វិក"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"បន្ថែមទៅអេក្រង់ដើម"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"បញ្ចូលទៅអេក្រង់ដើម"</string>
     <string name="action_move_here" msgid="2170188780612570250">"ផ្លាស់ធាតុមកទីនេះ"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"ធាតុដែលត្រូវបានបន្ថែមទៅអេក្រង់ដើម"</string>
     <string name="item_removed" msgid="851119963877842327">"ធាតុដែលបានដកចេញ"</string>
