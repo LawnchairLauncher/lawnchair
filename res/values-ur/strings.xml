@@ -33,7 +33,7 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"کوئی ویجٹ منتخب کرنے یا حسب ضرورت کاروائیاں استعمال کرنے کیلئے دو بار تھپتھپائیں اور پکڑے رکھیں۔"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"‏%1$d چوڑا اور ‎%2$d اونچا"</string>
-    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"‏دستی طور پر رکھنے کیلئے ‎&amp; ٹچ کرکے ہولڈ کریں"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"‏دستی طور پر رکھنے کیلئے ‎ٹچ کر کے دبائے رکھیں"</string>
     <string name="place_automatically" msgid="8064208734425456485">"خود کار طور پر شامل کریں"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ایپس تلاش کریں"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ایپس لوڈ کی جا رہی ہیں…"</string>
