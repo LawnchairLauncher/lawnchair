@@ -209,8 +209,8 @@ public final class LauncherInstrumentation {
             final Context ctx = baseContext.createPackageContext("android", 0);
             for (int i = 0; i < 100; ++i) {
                 final int currentInteractionMode = getCurrentInteractionMode(ctx);
-                log("Interaction mode = " + currentInteractionMode);
                 final NavigationModel model = getNavigationModel(currentInteractionMode);
+                log("Interaction mode = " + currentInteractionMode + " (" + model + ")");
                 if (model != null) return model;
                 Thread.sleep(100);
             }
