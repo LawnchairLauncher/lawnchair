@@ -174,6 +174,7 @@
     <string name="action_open_app_with_target">Відкрити %s</string>
     <string name="action_open_app_select_app">Обрати додаток</string>
     <string name="action_none">Нічого не робити</string>
+    <string name="action_despacito">Відтворити YouTube Rewind 2018 (distorted)</string>
     <string name="gesture_press_home">Кнопка дому</string>
     <string name="gesture_press_back">Кнопка назад</string>
     <string name="gesture_double_tap">Подвійне натискання</string>
@@ -290,10 +291,17 @@
     <string name="theme_auto_night_mode">Слідувати системній темі</string>
     <string name="theme_light">Світла</string>
     <string name="theme_dark_text">Світла з темним текстом</string>
+    <string name="theme_with_dark_text">темний текст</string>
     <string name="theme_dark">Темна</string>
     <string name="theme_dark_dark_text">Темна з темним текстом</string>
     <string name="theme_black">Чорна</string>
     <string name="theme_black_dark_text">Чорна з темним текстом</string>
+    <string name="theme_dark_theme_mode">Темна тема</string>
+    <string name="theme_dark_theme_mode_on">Увімк.</string>
+    <string name="theme_dark_theme_mode_off">Вимк.</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Враховуючи час доби</string>
+    <string name="theme_use_black">Використовувати чорний колір</string>
+    <string name="theme_use_dark_text">Використовувати темний текст</string>
     <string name="pref_qsb_color">Кольорове</string>
     <string name="hide_from_predictions">Приховати з запропонованого</string>
     <string name="hide_from_predictions_summary">Ніколи не показувати в пропозиціях списку додатків</string>
@@ -413,4 +421,12 @@
     <string name="adaptify_pack_summary">Створити адаптивні іконки для іконок з наборів іконок</string>
     <string name="pref_sesame_sync_look_and_feel">Поділитися оформленням</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Синхронізувати налаштування пошуку Lawnchair з Sesame</string>
+    <string name="pref_search_bar_radius">Задіус заокруглення панелі пошуку</string>
+    <string name="icon_text_scale_pref_title">Розмір тексту</string>
+    <string name="text_color">Колір тексту</string>
+    <string name="background_color">Колір фону</string>
+    <string name="pref_notification_count_title">Відображати кількість сповіщень</string>
+    <string name="pref_notification_count_summary">Відображати кількість сповіщень всередині кола</string>
+    <string name="pref_center_wallpaper">Завжди центрувати шпалери</string>
+    <string name="pref_center_wallpaper_summary">Вимкне ефект зміни шпалер</string>
 </resources>
