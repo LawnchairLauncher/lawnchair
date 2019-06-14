@@ -395,7 +395,7 @@ public abstract class AbstractLauncherUiTest {
                         DEFAULT_UI_TIMEOUT));
     }
 
-    protected static String resolveSystemApp(String category) {
+    public static String resolveSystemApp(String category) {
         return getInstrumentation().getContext().getPackageManager().resolveActivity(
                 new Intent(Intent.ACTION_MAIN).addCategory(category),
                 PackageManager.MATCH_SYSTEM_ONLY).

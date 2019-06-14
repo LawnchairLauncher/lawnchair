@@ -175,6 +175,10 @@ public abstract class BaseActivity extends Activity
         mActivityFlags &= ~ACTIVITY_STATE_STARTED & ~ACTIVITY_STATE_USER_ACTIVE;
         mForceInvisible = 0;
         super.onStop();
+
+        // Reset the overridden sysui flags used for the task-swipe launch animation, this is a
+        // catch all for if we do not get resumed (and therefore not paused below)
+        getSystemUiController().updateUiState(UI_STATE_OVERVIEW, 0);
     }
 
     @Override
