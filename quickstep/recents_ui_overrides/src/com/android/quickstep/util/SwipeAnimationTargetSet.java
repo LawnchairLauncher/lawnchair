@@ -36,7 +36,6 @@ public class SwipeAnimationTargetSet extends RemoteAnimationTargetSet {
     private final boolean mShouldMinimizeSplitScreen;
     private final Consumer<SwipeAnimationTargetSet> mOnFinishListener;
 
-
     public final RecentsAnimationControllerCompat controller;
     public final Rect homeContentInsets;
     public final Rect minimizedHomeBounds;
@@ -101,6 +100,10 @@ public class SwipeAnimationTargetSet extends RemoteAnimationTargetSet {
 
     public ThumbnailData screenshotTask(int taskId) {
         return controller != null ? controller.screenshotTask(taskId) : null;
+    }
+
+    public void cancelAnimation() {
+        finishController(false /* toRecents */, null, false /* sendUserLeaveHint */);
     }
 
     public interface SwipeAnimationListener {
