@@ -24,6 +24,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.ResourceBasedOverride;
+import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -62,7 +63,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         return shortcuts;
     }
 
-    public TaskOverlay createOverlay(View thumbnailView) {
+    public TaskOverlay createOverlay(TaskThumbnailView thumbnailView) {
         return new TaskOverlay();
     }
 

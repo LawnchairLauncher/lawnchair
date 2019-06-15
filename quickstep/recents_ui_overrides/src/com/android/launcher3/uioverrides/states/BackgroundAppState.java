@@ -64,10 +64,12 @@ public class BackgroundAppState extends OverviewState {
     public ScaleAndTranslation getOverviewScaleAndTranslation(Launcher launcher) {
         // Initialize the recents view scale to what it would be when starting swipe up
         RecentsView recentsView = launcher.getOverviewPanel();
-        if (recentsView.getTaskViewCount() == 0) {
+        int taskCount = recentsView.getTaskViewCount();
+        if (taskCount == 0) {
             return super.getOverviewScaleAndTranslation(launcher);
         }
-        TaskView dummyTask = recentsView.getTaskViewAt(recentsView.getCurrentPage());
+        TaskView dummyTask = recentsView.getTaskViewAt(Math.max(taskCount - 1,
+                recentsView.getCurrentPage()));
         return recentsView.getTempClipAnimationHelper().updateForFullscreenOverview(dummyTask)
                 .getScaleAndTranslation();
     }

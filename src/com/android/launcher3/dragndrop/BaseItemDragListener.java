@@ -37,6 +37,7 @@ import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.states.InternalStateHandler;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.widget.PendingItemDragHelper;
 
 import java.util.UUID;
@@ -136,6 +137,9 @@ public abstract class BaseItemDragListener extends InternalStateHandler implemen
 
     @Override
     public boolean shouldStartDrag(double distanceDragged) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_DRAG_TAG, "BIDL.shouldStartDrag");
+        }
         // Stay in pre-drag mode, if workspace is locked.
         return !mLauncher.isWorkspaceLocked();
     }
