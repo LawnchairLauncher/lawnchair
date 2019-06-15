@@ -769,3 +769,9 @@ val Int.luminance get() = ColorUtils.calculateLuminance(this)
 val Int.isDark get() = luminance < 0.5f
 
 inline fun <E> createWeakSet(): MutableSet<E> = Collections.newSetFromMap(WeakHashMap<E, Boolean>())
+
+inline fun <T> listWhileNotNull(generator: () -> T?): List<T> = mutableListOf<T>().apply {
+    while (true) {
+        add(generator() ?: break)
+    }
+}

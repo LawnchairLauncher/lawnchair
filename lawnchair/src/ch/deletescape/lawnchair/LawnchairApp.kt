@@ -27,6 +27,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.support.annotation.Keep
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
+import ch.deletescape.lawnchair.flowerpot.Flowerpot
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.sesame.Sesame
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
@@ -59,6 +60,7 @@ class LawnchairApp : Application() {
 
         ThemeManager.getInstance(this).registerColorListener()
         BlurWallpaperProvider.getInstance(this)
+        Flowerpot.Manager.getInstance(this)
     }
 
     fun onLauncherAppStateCreated() {
