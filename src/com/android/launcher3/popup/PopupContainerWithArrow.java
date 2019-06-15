@@ -36,6 +36,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
@@ -67,6 +68,7 @@ import com.android.launcher3.popup.PopupDataProvider.PopupDataChangeListener;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.PackageUserKey;
@@ -447,6 +449,11 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
 
             @Override
             public boolean shouldStartDrag(double distanceDragged) {
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.NO_DRAG_TAG,
+                            "createPreDragCondition().shouldStartDrag " + distanceDragged + ", "
+                                    + mStartDragThreshold);
+                }
                 return distanceDragged > mStartDragThreshold;
             }
 

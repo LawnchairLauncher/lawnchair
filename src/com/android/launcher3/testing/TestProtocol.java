@@ -57,6 +57,7 @@ public final class TestProtocol {
     }
 
     public static final String TEST_INFO_RESPONSE_FIELD = "response";
+
     public static final String REQUEST_HOME_TO_OVERVIEW_SWIPE_HEIGHT =
             "home-to-overview-swipe-height";
     public static final String REQUEST_BACKGROUND_TO_OVERVIEW_SWIPE_HEIGHT =
@@ -65,6 +66,10 @@ public final class TestProtocol {
             "all-apps-to-overview-swipe-height";
     public static final String REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT =
             "home-to-all-apps-swipe-height";
+    public static final String REQUEST_FREEZE_APP_LIST = "freeze-app-list";
+    public static final String REQUEST_UNFREEZE_APP_LIST = "unfreeze-app-list";
+    public static final String REQUEST_APP_LIST_FREEZE_FLAGS = "app-list-freeze-flags";
+
     public static boolean sDebugTracing = false;
     public static final String REQUEST_ENABLE_DEBUG_TRACING = "enable-debug-tracing";
     public static final String REQUEST_DISABLE_DEBUG_TRACING = "disable-debug-tracing";

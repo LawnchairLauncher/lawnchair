@@ -20,7 +20,6 @@ import android.graphics.Point;
 
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
-import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
@@ -70,11 +69,16 @@ abstract class Launchable {
      * Drags an object to the center of homescreen.
      */
     public Workspace dragToWorkspace() {
-        final UiDevice device = mLauncher.getDevice();
+        final Point launchableCenter = getObject().getVisibleCenter();
+        final Point displaySize = mLauncher.getRealDisplaySize();
+        final int width = displaySize.x / 2;
         Workspace.dragIconToWorkspace(
                 mLauncher,
                 this,
-                new Point(device.getDisplayWidth() / 2, device.getDisplayHeight() / 2),
+                new Point(
+                        launchableCenter.x >= width ?
+                                launchableCenter.x - width / 2 : launchableCenter.x + width / 2,
+                        displaySize.y / 2),
                 getLongPressIndicator());
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "dragged launchable to workspace")) {

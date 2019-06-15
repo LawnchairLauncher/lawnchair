@@ -32,6 +32,19 @@ public interface InputConsumer {
     int TYPE_ACCESSIBILITY = 1 << 5;
     int TYPE_SCREEN_PINNED = 1 << 6;
     int TYPE_OVERVIEW_WITHOUT_FOCUS = 1 << 7;
+    int TYPE_RESET_GESTURE = 1 << 8;
+
+    String[] NAMES = new String[] {
+           "TYPE_NO_OP",                    // 0
+            "TYPE_OVERVIEW",                // 1
+            "TYPE_OTHER_ACTIVITY",          // 2
+            "TYPE_ASSISTANT",               // 3
+            "TYPE_DEVICE_LOCKED",           // 4
+            "TYPE_ACCESSIBILITY",           // 5
+            "TYPE_SCREEN_PINNED",           // 6
+            "TYPE_OVERVIEW_WITHOUT_FOCUS",  // 7
+            "TYPE_RESET_GESTURE",           // 8
+    };
 
     InputConsumer NO_OP = () -> TYPE_NO_OP;
 
@@ -66,23 +79,15 @@ public interface InputConsumer {
     }
 
     default String getName() {
-        switch (getType()) {
-            case TYPE_OVERVIEW:
-                return "OVERVIEW";
-            case TYPE_OTHER_ACTIVITY:
-                return "OTHER_ACTIVITY";
-            case TYPE_ASSISTANT:
-                return "ASSISTANT";
-            case TYPE_DEVICE_LOCKED:
-                return "DEVICE_LOCKED";
-            case TYPE_ACCESSIBILITY:
-                return "ACCESSIBILITY";
-            case TYPE_SCREEN_PINNED:
-                return "SCREEN_PINNED";
-            case TYPE_OVERVIEW_WITHOUT_FOCUS:
-                return "TYPE_OVERVIEW_WITHOUT_FOCUS";
-            default:
-                return "NO_OP";
+        String name = "";
+        for (int i = 0; i < NAMES.length; i++) {
+            if ((getType() & (1 << i)) != 0) {
+                if (name.length() > 0) {
+                    name += ":";
+                }
+                name += NAMES[i];
+            }
         }
+        return name;
     }
 }

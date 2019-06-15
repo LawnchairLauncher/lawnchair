@@ -252,7 +252,7 @@ public class TaskThumbnailView extends View {
         }
     }
 
-    protected TaskView getTaskView() {
+    public TaskView getTaskView() {
         return (TaskView) getParent();
     }
 

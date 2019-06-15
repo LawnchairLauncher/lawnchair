@@ -16,13 +16,17 @@
 package com.android.quickstep;
 
 import static android.view.View.TRANSLATION_Y;
+
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
 import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_DAMPING_RATIO;
 import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_STIFFNESS;
+import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
+import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.WindowTransformSwipeHandler.RECENTS_ATTACH_DURATION;
 
@@ -44,16 +48,19 @@ import android.view.animation.Interpolator;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.dynamicanimation.animation.SpringAnimation;
+import androidx.dynamicanimation.animation.SpringForce;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListenerEx;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.SpringObjectAnimator;
-import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
@@ -97,6 +104,13 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         // Re apply state in case we did something funky during the transition.
         activity.getStateManager().reapplyState();
         DiscoveryBounce.showForOverviewIfNeeded(activity);
+    }
+
+    @Override
+    public void onSwipeUpToHomeComplete(Launcher activity) {
+        // Ensure recents is at the correct position for NORMAL state. For example, when we detach
+        // recents, we assume the first task is invisible, making translation off by one task.
+        activity.getStateManager().reapplyState();
     }
 
     @Override
@@ -156,18 +170,23 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
             public AnimatorPlaybackController createActivityAnimationToHome() {
                 // Return an empty APC here since we have an non-user controlled animation to home.
                 long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
-                AnimatorSet as = new AnimatorSet();
-                as.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        activity.getStateManager().goToState(NORMAL, false);
-                    }
-                });
-                return AnimatorPlaybackController.wrap(as, accuracy);
+                return activity.getStateManager().createAnimationToNewWorkspace(NORMAL, accuracy,
+                        0 /* animComponents */);
             }
 
             @Override
             public void playAtomicAnimation(float velocity) {
+                // Setup workspace with 0 duration to prepare for our staggered animation.
+                LauncherStateManager stateManager = activity.getStateManager();
+                AnimatorSetBuilder builder = new AnimatorSetBuilder();
+                // setRecentsAttachedToAppWindow() will animate recents out.
+                builder.addFlag(AnimatorSetBuilder.FLAG_DONT_ANIMATE_OVERVIEW);
+                stateManager.createAtomicAnimation(BACKGROUND_APP, NORMAL, builder, ANIM_ALL, 0);
+                builder.build().start();
+
+                // Stop scrolling so that it doesn't interfere with the translation offscreen.
+                recentsView.getScroller().forceFinished(true);
+
                 new StaggeredWorkspaceAnim(activity, workspaceView, velocity).start();
             }
         };
@@ -196,12 +215,11 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         // Optimization, hide the all apps view to prevent layout while initializing
         activity.getAppsView().getContentView().setVisibility(View.GONE);
 
-        AccessibilityManagerCompat.sendStateEventToTest(activity, fromState.ordinal);
-
         return new AnimationFactory() {
             private Animator mShelfAnim;
             private ShelfAnimState mShelfState;
-            private Animator mAttachToWindowAnim;
+            private Animator mAttachToWindowFadeAnim;
+            private SpringAnimation mAttachToWindowTranslationXAnim;
             private boolean mIsAttachedToWindow;
 
             @Override
@@ -267,20 +285,60 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                     return;
                 }
                 mIsAttachedToWindow = attached;
-                if (mAttachToWindowAnim != null) {
-                    mAttachToWindowAnim.cancel();
+                if (mAttachToWindowFadeAnim != null) {
+                    mAttachToWindowFadeAnim.cancel();
                 }
-                mAttachToWindowAnim = ObjectAnimator.ofFloat(activity.getOverviewPanel(),
+                RecentsView recentsView = activity.getOverviewPanel();
+                mAttachToWindowFadeAnim = ObjectAnimator.ofFloat(recentsView,
                         RecentsView.CONTENT_ALPHA, attached ? 1 : 0);
-                mAttachToWindowAnim.addListener(new AnimatorListenerAdapter() {
+
+                int runningTaskIndex = recentsView.getRunningTaskIndex();
+                if (runningTaskIndex == 0) {
+                    // If we are on the first task (we haven't quick switched), translate recents in
+                    // from the side. Calculate the start translation based on current scale/scroll.
+                    float currScale = recentsView.getScaleX();
+                    float scrollOffsetX = recentsView.getScrollOffset();
+
+                    float offscreenX = NORMAL.getOverviewScaleAndTranslation(activity).translationX;
+                    // The first task is hidden, so offset by its width.
+                    int firstTaskWidth = recentsView.getTaskViewAt(0).getWidth();
+                    offscreenX -= (firstTaskWidth + recentsView.getPageSpacing()) * currScale;
+                    // Offset since scale pushes tasks outwards.
+                    offscreenX += firstTaskWidth * (currScale - 1) / 2;
+                    offscreenX = Math.max(0, offscreenX);
+                    if (recentsView.isRtl()) {
+                        offscreenX = -offscreenX;
+                    }
+
+                    float fromTranslationX = attached ? offscreenX - scrollOffsetX : 0;
+                    float toTranslationX = attached ? 0 : offscreenX - scrollOffsetX;
+                    if (mAttachToWindowTranslationXAnim == null) {
+                        mAttachToWindowTranslationXAnim = new SpringAnimation(recentsView,
+                                SpringAnimation.TRANSLATION_X).setSpring(new SpringForce()
+                                .setDampingRatio(0.8f)
+                                .setStiffness(250));
+                    }
+                    if (!recentsView.isShown() && animate) {
+                        recentsView.setTranslationX(fromTranslationX);
+                        mAttachToWindowTranslationXAnim.setStartValue(fromTranslationX);
+                    }
+                    mAttachToWindowTranslationXAnim.animateToFinalPosition(toTranslationX);
+                    if (!animate && mAttachToWindowTranslationXAnim.canSkipToEnd()) {
+                        mAttachToWindowTranslationXAnim.skipToEnd();
+                    }
+
+                    mAttachToWindowFadeAnim.setInterpolator(attached ? INSTANT : ACCEL_2);
+                } else {
+                    mAttachToWindowFadeAnim.setInterpolator(ACCEL_DEACCEL);
+                }
+                mAttachToWindowFadeAnim.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        mAttachToWindowAnim = null;
+                        mAttachToWindowFadeAnim = null;
                     }
                 });
-                mAttachToWindowAnim.setInterpolator(ACCEL_DEACCEL);
-                mAttachToWindowAnim.setDuration(animate ? RECENTS_ATTACH_DURATION : 0);
-                mAttachToWindowAnim.start();
+                mAttachToWindowFadeAnim.setDuration(animate ? RECENTS_ATTACH_DURATION : 0);
+                mAttachToWindowFadeAnim.start();
             }
         };
     }
@@ -447,5 +505,10 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         Launcher launcher = getCreatedActivity();
         return launcher != null && launcher.getStateManager().getState() == OVERVIEW &&
                 launcher.isStarted();
+    }
+
+    @Override
+    public void onLaunchTaskFailed(Launcher launcher) {
+        launcher.getStateManager().goToState(OVERVIEW);
     }
 }
