@@ -521,6 +521,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
 
         // Do not let touch escape to siblings below this view.
+        return isHandlingTouch() || shouldStealTouchFromSiblingsBelow(ev);
+    }
+
+    protected boolean shouldStealTouchFromSiblingsBelow(MotionEvent ev) {
         return true;
     }
 
