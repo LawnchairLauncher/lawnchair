@@ -6,16 +6,16 @@
     <string name="icu_abbrev_time">HH:mm</string>
     <string name="icu_abbrev_time_12h">hh:mm aa</string>
     <string name="icu_abbrev_date"> dd MMMM</string>
-    <string name="in_smartspace">Ve widgetu \‘At a glance\’</string>
+    <string name="in_smartspace">Ve widgetu \‘Přehled událostí\’</string>
     <string name="smartspace_time">Čas</string>
     <string name="smartspace_date">Datum</string>
     <string name="customize">Přizpůsobení</string>
-    <string name="smartspace_preferences_in_settings">At a Glance</string>
+    <string name="smartspace_preferences_in_settings">Přehled událostí</string>
     <string name="smartspace_preferences_in_settings_desc">Datum, čas, zdroj počasí</string>
     <string name="search">Hledat</string>
     <string name="label_voice_search">Hlasové vyhledávání</string>
     <string name="icon_pack">Balíček ikon</string>
-    <string name="home_widget">Domovský widget</string>
+    <string name="home_widget">Widget domovské obrazovky</string>
     <string name="title_show_google_app">%1$s na levé straně</string>
     <string name="msg_minus_one_on_left">Feed vlevo od plochy</string>
     <string name="about">O aplikaci</string>
@@ -100,7 +100,7 @@
     <string name="dock_style_hidden">Skrytý</string>
     <string name="dock_search_bar">Vyhledávací panel doku</string>
     <string name="opacity">Neprůhlednost</string>
-    <string name="title_all_apps_google_search">Globální hledání</string>
+    <string name="title_all_apps_google_search">Globální vyhledávání</string>
     <string name="summary_all_apps_google_search">Najít výsledky z webu a aplikací</string>
     <string name="num_hotseat_icons_pref_title">Počet ikon</string>
     <string name="icon_scale_pref_title">Velikost ikon</string>
@@ -113,11 +113,11 @@
     <string name="reset_to_default">Obnovit výchozí</string>
     <string name="dock_shadow">Stín</string>
     <string name="dock_fill">Pozadí</string>
-    <string name="radius">Zakulacené rohy</string>
+    <string name="radius">Zaoblení rohů</string>
     <string name="gradient">Gradient</string>
     <!--Marker C-->
     <string name="pref_category_icons">Ikony</string>
-    <string name="pref_category_aag">At a Glance</string>
+    <string name="pref_category_aag">Přehled událostí</string>
     <string name="pref_category_pixel_searchbar">Vyhledávací panel Pixel</string>
     <string name="pref_category_weather">Počasí</string>
     <string name="pref_category_misc">Ostatní</string>
@@ -152,29 +152,29 @@
     <string name="about_bio_deletescape">Vývojář androidu &amp; nadšenec, milující memy (vlastně přespříliš). Zakladatel projektu Lawnchair.</string>
     <string name="about_bio_recoded">Kodér a grafický designér.</string>
     <string name="about_bio_josh">Grafický návrhář na volné noze.</string>
-    <string name="about_bio_chris">Tvůrce myšlenky, vlivná osoba &amp; tvůrce obsahu. Vedoucí sociálních médií a PR manažer ✨</string>
+    <string name="about_bio_chris">Mileniál jak p*ča, nevim a nestarám se. Cosi s designem a sociálními médii. Pojďme se společně rozvalit v @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">Hlavní vývojář HalogenOS a vývojář aplikace Substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Shoď launcher</string>
     <string name="gestures_pref_title">Gesta</string>
-    <string name="gestures_pref_summary">Dvojitý poklep, tlačítko domů, přejetí dolů</string>
+    <string name="gestures_pref_summary">Dvojité poklepání, tlačítko domů, přejetí dolů</string>
     <string name="action_open_drawer">Otevřít seznam aplikací</string>
     <string name="action_last_task">Otevřít poslední aplikaci</string>
     <string name="action_open_widgets">Otevřít roletu s widgety</string>
     <string name="action_open_settings">Otevřít nastavení launcheru</string>
-    <string name="action_open_overview">Otevřít vyskakovací domácí obrazovku</string>
+    <string name="action_open_overview">Otevřít vyskakovací bublinu nastavení domovské obrazovky</string>
     <string name="action_global_search">Otevřít globální vyhledávání</string>
     <string name="action_app_search">Otevřít vyhledávání aplikací</string>
     <string name="action_overlay">Otevřít Google feed</string>
     <string name="action_assistant">Otevřít asistenta</string>
     <string name="action_open_notifications">Otevřít oznámení</string>
     <string name="action_close_notifications">Zavřít oznámení</string>
-    <string name="action_sleep_timeout">Spát (s prodlevou)</string>
+    <string name="action_sleep_timeout">Uspat (s prodlevou)</string>
     <string name="action_open_app">Otevřít aplikaci</string>
     <string name="action_open_app_with_target">Otevřít %s</string>
     <string name="action_open_app_select_app">Vybrat aplikaci</string>
     <string name="action_none">Nic nedělat</string>
-    <string name="action_despacito">Přehrát YouTube Rewind 2018 (distorted)</string>
+    <string name="action_despacito">Přehrát YouTube Rewind 2018 (zkreslený)</string>
     <string name="gesture_press_home">Tlačítko Domů</string>
     <string name="gesture_press_back">Tlačítko Zpět</string>
     <string name="gesture_double_tap">Dvojité poklepání</string>
@@ -185,7 +185,7 @@
     <string name="pref_show_assistant_title">Tlačítko hlasového vyhledávání</string>
     <string name="pref_show_assistant_summary">Zobrazit tlačítko hlasového vyhledávání (pokud podporováno)</string>
     <string name="pref_show_as_assistant_summary">Zobrazit tlačítko asistenta místo hlasového vyhledávání</string>
-    <string name="smartspace_time_24_h">24-hodinový formát</string>
+    <string name="smartspace_time_24_h">24hodinový formát</string>
     <string name="weather_provider_disabled">Vypnuto</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
     <string name="weather_provider_pe">PixelExperience</string>
@@ -195,7 +195,7 @@
     <string name="smartspace_widget_provider_not_found">Něco se nepovedlo. Instalujte nebo aktualizujte aplikaci Google.</string>
     <string name="apps_label">Aplikace</string>
     <string name="all_apps_label">Všechny aplikace</string>
-    <string name="all_apps_label_pref_title">Zobrazit štítek \"Všechny aplikace\"</string>
+    <string name="all_apps_label_pref_title">Zobrazit štítek „Všechny aplikace“</string>
     <string name="separate_work_apps_pref_title">Druhá záložka pro pracovní aplikace</string>
     <string name="title_search_hidden_apps">Najít skryté aplikace</string>
     <string name="summary_search_hidden_apps">Zobrazit skryté aplikace ve výsledcích hledání</string>
@@ -205,8 +205,8 @@
     <string name="pref_weather_city_summary">Pro lepší výsledky zadejte kód země</string>
     <string name="pref_weather_city_title">Město</string>
     <string name="pref_weather_units">Jednotka teploty</string>
-    <string name="units_metric">Celsius</string>
-    <string name="units_imperial">Fahrenheit</string>
+    <string name="units_metric">Stupně Celsia</string>
+    <string name="units_imperial">Stupně Fahrenheita</string>
     <string name="units_kelvin">Kelvin</string>
     <string name="all_icons">Všechny ikony</string>
     <string name="error_no_browser">Nebyla nalezena žádná aktivita pro práci s adresami URL</string>
@@ -271,7 +271,7 @@
     <string name="get_more_icon_packs">Získat více</string>
     <string name="enabled_icon_packs">Zapnuto</string>
     <string name="pref_icon_pack_masking">Maskování ikon</string>
-    <string name="pref_icon_pack_masking_summary">Přizpůsob ikony bez tématu aby odpovídaly balíčku ikon</string>
+    <string name="pref_icon_pack_masking_summary">Přizpůsobit ikony bez tématu tak, aby odpovídaly balíčku ikon</string>
     <string name="pref_legacy_colored_backgrounds">Vybarvená pozadí</string>
     <string name="pref_legacy_colored_backgrounds_summary">Vybarvená pozadí pro generované adaptivní ikony</string>
     <string name="pref_white_only_treatment">Nahradit bílá pozadí</string>
@@ -401,7 +401,7 @@
     <string name="pref_fonts_global_font">Globální písmo</string>
     <string name="pref_fonts_change_global_font">Změnit</string>
     <string name="pref_fonts_home_icons">Aplikace &amp; jména složek</string>
-    <string name="pref_fonts_home_smartspace">Widget Přehled událostí</string>
+    <string name="pref_fonts_home_smartspace">Widget „Přehled událostí“</string>
     <string name="pref_fonts_home_shortcuts">Bubliny se zkratkami</string>
     <string name="pref_fonts_category_drawer">Roleta</string>
     <string name="pref_fonts_drawer_icons">Názvy aplikací</string>
@@ -414,7 +414,7 @@
     <string name="about_translate">Překlady</string>
     <string name="pref_show_dev_options">Zobrazit v nastavení</string>
     <string name="about_app_description">Přizpůsobitelná alternativa Pixel launcheru.</string>
-    <string name="about_bio_paphonb">18-letý student, vývojář androidu a jeden z nejlepších vývojářů Lawnchair Launcher.</string>
+    <string name="about_bio_paphonb">18letý student, vývojář Androidu a jeden z nejlepších vývojářů Lawnchair Launcher.</string>
     <string name="dock_scale">Měřítko doku</string>
     <string name="adaptify_pack_title">Vytvořit adaptivní ikony pro balíček ikon</string>
     <string name="adaptify_pack_summary">Vytvořit adaptivní ikony pro ikony z balíčků ikon</string>
@@ -427,5 +427,5 @@
     <string name="pref_notification_count_title">Zobrazit počet oznámení</string>
     <string name="pref_notification_count_summary">Zobrazení počtu oznámení uvnitř teček</string>
     <string name="pref_center_wallpaper">Vždy centrovat tapetu</string>
-    <string name="pref_center_wallpaper_summary">Tím se zakáže efekt posouvání tapet</string>
+    <string name="pref_center_wallpaper_summary">Tímto se zakáže efekt posouvání tapet</string>
 </resources>
