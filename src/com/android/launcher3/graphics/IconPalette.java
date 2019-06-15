@@ -148,9 +148,7 @@ public class IconPalette {
     }
 
     public static int getMutedColor(Context context, int color, float scrimAlpha) {
-        boolean isDark = LawnchairUtilsKt.isDark(color);
-        int baseColor = isDark ? 0x212121 : Color.WHITE;
-        int scrim = ColorUtils.setAlphaComponent(baseColor, (int) (255 * scrimAlpha));
+        int scrim = ColorUtils.setAlphaComponent(Color.WHITE, (int) (255 * scrimAlpha));
         return ColorUtils.compositeColors(scrim, color);
     }
 }
