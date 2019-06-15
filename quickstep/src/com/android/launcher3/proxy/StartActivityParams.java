@@ -31,7 +31,7 @@ public class StartActivityParams implements Parcelable {
 
     private static final String TAG = "StartActivityParams";
 
-    private final PendingIntent mCallback;
+    private final PendingIntent mPICallback;
     public final int requestCode;
 
     public Intent intent;
@@ -44,13 +44,17 @@ public class StartActivityParams implements Parcelable {
     public Bundle options;
 
     public StartActivityParams(Activity activity, int requestCode) {
-        mCallback = activity.createPendingResult(requestCode, new Intent(),
-                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_UPDATE_CURRENT);
+        this(activity.createPendingResult(requestCode, new Intent(),
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_UPDATE_CURRENT), requestCode);
+    }
+
+    public StartActivityParams(PendingIntent pendingIntent, int requestCode) {
+        this.mPICallback = pendingIntent;
         this.requestCode = requestCode;
     }
 
     private StartActivityParams(Parcel parcel) {
-        mCallback = parcel.readTypedObject(PendingIntent.CREATOR);
+        mPICallback = parcel.readTypedObject(PendingIntent.CREATOR);
         requestCode = parcel.readInt();
         intent = parcel.readTypedObject(Intent.CREATOR);
 
@@ -70,7 +74,7 @@ public class StartActivityParams implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeTypedObject(mCallback, flags);
+        parcel.writeTypedObject(mPICallback, flags);
         parcel.writeInt(requestCode);
         parcel.writeTypedObject(intent, flags);
 
@@ -84,7 +88,9 @@ public class StartActivityParams implements Parcelable {
 
     public void deliverResult(Context context, int resultCode, Intent data) {
         try {
-            mCallback.send(context, resultCode, data);
+            if (mPICallback != null) {
+                mPICallback.send(context, resultCode, data);
+            }
         } catch (CanceledException e) {
             Log.e(TAG, "Unable to send back result", e);
         }
