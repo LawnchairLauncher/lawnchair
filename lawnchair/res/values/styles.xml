@@ -229,7 +229,7 @@
         <item name="android:windowBackground">@color/settings_background_dark</item>
         <item name="colorPrimary">?android:windowBackground</item>
         <item name="colorPrimaryDark">?android:windowBackground</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorAccentDark</item>
         <item name="actionBarTheme">@style/SettingsTheme.V2.Dark.ActionBar</item>
         <item name="android:colorEdgeEffect">?colorAccent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
@@ -251,7 +251,7 @@
     </style>
     <style name="SettingsTheme.V2.Dark.Dialog" parent="Theme.AppCompat.Dialog.Alert">
         <item name="android:windowBackground">@drawable/dialog_material_background</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorAccentDark</item>
         <item name="buttonStyle">@style/SettingsTheme.V2.Button</item>
         <item name="android:buttonStyle">@style/SettingsTheme.V2.Button</item>
     </style>

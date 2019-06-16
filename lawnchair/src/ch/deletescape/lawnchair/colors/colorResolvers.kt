@@ -73,9 +73,11 @@ class SystemAccentResolver(config: Config) : ColorEngine.ColorResolver(config) {
 @Keep
 class PixelAccentResolver(config: Config) : ColorEngine.ColorResolver(config) {
 
-    private val accentColor = ContextThemeWrapper(engine.context, R.style.BaseLauncherThemeWithCustomAttrs).getColorAccent()
+    override val themeAware = true
 
-    override fun resolveColor() = accentColor
+    override fun resolveColor(): Int {
+        return launcherThemeContext.getColorAttr(android.R.attr.colorAccent)
+    }
 
     override fun getDisplayName() = engine.context.getString(R.string.color_pixel_accent) as String
 }

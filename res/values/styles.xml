@@ -86,6 +86,8 @@
         <item name="isMainColorDark">true</item>
         <item name="workspaceStatusBarScrim">@drawable/workspace_bg_dark</item>
         <item name="android:alertDialogTheme">@style/SettingsTheme.V2.Dark.Dialog</item>
+
+        <item name="android:colorAccent">@color/colorAccentDark</item>
     </style>
 
     <style name="LauncherTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark">
