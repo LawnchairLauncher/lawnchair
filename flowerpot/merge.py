@@ -24,18 +24,15 @@ CATEGORY_MAP = {
     "NEWS": ["NEWS_AND_MAGAZINES"],
     "ENTERTAINMENT": ["ENTERTAINMENT", "MUSIC_AND_AUDIO", "VIDEO_PLAYERS"],
     "MUSIC": ["MUSIC_AND_AUDIO"],
-    "LIFESTYLE": ["LIFESTYLE", "BEAUTY"],
+    "LIFESTYLE": ["LIFESTYLE", "BEAUTY", "SHOPPING"],
     "PHOTOGRAPHY": ["PHOTOGRAPHY"],
-    "BUSINESS_AND_PRODUCTIVITY": ["PRODUCTIVITY", "BUSINESS"],
+    "BUSINESS_AND_PRODUCTIVITY": ["PRODUCTIVITY", "BUSINESS", "FINANCE"],
     "TOOLS": ["TOOLS"],
-    "FINANCE": ["FINANCE"],
-    "COMMUNICATION": ["COMMUNICATION"],
-    "SOCIAL": ["SOCIAL"],
+    "COMMUNICATION": ["COMMUNICATION", "SOCIAL"],
     "TRAVEL_AND_NAVIGATION": ["MAPS_AND_NAVIGATION", "TRAVEL_AND_LOCAL"],
     "GAME": ["GAME"],  # Actually identified by isGame manifest tag which not all apps have :(
     "FOOD_AND_DRINK": ["FOOD_AND_DRINK"],
-    "PERSONALIZATION": ["PERSONALIZATION"],  # Additionally identify icon packs by manifest
-    "SHOPPING": ["SHOPPING"]
+    "PERSONALIZATION": ["PERSONALIZATION"]  # Additionally identify icon packs by manifest
 }
 
 IN_PATH = "playstore"
