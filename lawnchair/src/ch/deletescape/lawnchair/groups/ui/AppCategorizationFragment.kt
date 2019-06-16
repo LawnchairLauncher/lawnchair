@@ -33,7 +33,8 @@ import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.groups.AppGroupsManager
 import ch.deletescape.lawnchair.groups.DrawerFoldersAdapter
-import ch.deletescape.lawnchair.preferences.DrawerTabsAdapter
+import ch.deletescape.lawnchair.groups.DrawerTabsAdapter
+import ch.deletescape.lawnchair.groups.FlowerpotTabsAdapter
 import com.android.launcher3.R
 import kotlinx.android.synthetic.lawnchair.fragment_app_categorization.*
 
@@ -60,6 +61,7 @@ class AppCategorizationFragment : Fragment(), LawnchairPreferences.OnPreferenceC
             }
         }
     private val drawerTabsAdapter by lazy { DrawerTabsAdapter(ourContext) }
+    private val flowerpotTabsAdapter by lazy { FlowerpotTabsAdapter(ourContext) }
     private val drawerFoldersAdapter by lazy { DrawerFoldersAdapter(ourContext) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -95,6 +97,7 @@ class AppCategorizationFragment : Fragment(), LawnchairPreferences.OnPreferenceC
 
     private fun updateGroupAdapter() {
         groupAdapter = when (manager.getEnabledType()) {
+            AppGroupsManager.CategorizationType.Flowerpot -> flowerpotTabsAdapter
             AppGroupsManager.CategorizationType.Tabs -> drawerTabsAdapter
             AppGroupsManager.CategorizationType.Folders -> drawerFoldersAdapter
             else -> null
@@ -133,5 +136,10 @@ class AppCategorizationFragment : Fragment(), LawnchairPreferences.OnPreferenceC
                 .setup(AppGroupsManager.CategorizationType.Tabs,
                         R.string.pref_appcategorization_tabs_title,
                         R.string.pref_appcategorization_tabs_summary)
+
+        (flowerpotTypeItem as AppCategorizationTypeItem)
+                .setup(AppGroupsManager.CategorizationType.Flowerpot,
+                        R.string.pref_appcategorization_flowerpot_title,
+                        R.string.pref_appcategorization_flowerpot_summary)
     }
 }

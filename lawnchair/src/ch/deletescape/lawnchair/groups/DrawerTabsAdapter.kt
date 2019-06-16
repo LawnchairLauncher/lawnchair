@@ -15,23 +15,21 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.deletescape.lawnchair.preferences
+package ch.deletescape.lawnchair.groups
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import ch.deletescape.lawnchair.groups.AppGroups
-import ch.deletescape.lawnchair.groups.DrawerTabs
 import ch.deletescape.lawnchair.groups.ui.AppGroupsAdapter
 import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.lawnchairPrefs
 import com.android.launcher3.R
 import com.android.launcher3.compat.UserManagerCompat
 
-class DrawerTabsAdapter(context: Context) : AppGroupsAdapter<DrawerTabsAdapter.TabHolder, DrawerTabs.Tab>(context) {
+open class DrawerTabsAdapter(context: Context) : AppGroupsAdapter<DrawerTabsAdapter.TabHolder, DrawerTabs.Tab>(context) {
 
-    override val groupsModel = manager.drawerTabs
+    override val groupsModel: DrawerTabs = manager.drawerTabs
     override val headerText = R.string.drawer_tabs
 
     private val hasWorkApps = context.lawnchairPrefs.separateWorkApps

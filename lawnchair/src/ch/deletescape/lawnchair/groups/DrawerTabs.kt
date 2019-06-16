@@ -32,7 +32,8 @@ import ch.deletescape.lawnchair.tintDrawable
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 
-class DrawerTabs(manager: AppGroupsManager) : AppGroups<DrawerTabs.Tab>(manager, AppGroupsManager.CategorizationType.Tabs) {
+abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.CategorizationType)
+    : AppGroups<DrawerTabs.Tab>(manager, type) {
 
     override fun getDefaultCreators(): List<GroupCreator<Tab>> {
         return listOf(::createAllAppsTab, ::createPersonalTab, ::createWorkTab)

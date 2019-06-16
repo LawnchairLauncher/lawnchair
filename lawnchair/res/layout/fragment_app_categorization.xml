@@ -47,6 +47,10 @@
             android:id="@+id/tabTypeItem"
             layout="@layout/app_categorization_type_item" />
 
+        <include
+            android:id="@+id/flowerpotTypeItem"
+            layout="@layout/app_categorization_type_item" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"

@@ -28,17 +28,23 @@ import java.io.InputStream
 /**
  * A ruleset for an app category
  */
-class Flowerpot(val name: String, private val loader: Flowerpot.() -> Unit) {
+class Flowerpot(private val context: Context, val name: String, private val loader: Flowerpot.() -> Unit) {
 
     private var loaded = false
-    private val rules: MutableList<Rule> = mutableListOf<Rule>()
+    val rules: MutableSet<Rule> = mutableSetOf()
     val size get() = rules.size
+    lateinit var apps: FlowerpotApps
 
     fun ensureLoaded() {
         if (!loaded) {
-            loader(this)
+            load()
             loaded = true
         }
+    }
+
+    private fun load() {
+        loader(this)
+        apps = FlowerpotApps(context, this)
     }
 
     /**
@@ -53,7 +59,7 @@ class Flowerpot(val name: String, private val loader: Flowerpot.() -> Unit) {
          * Load a flowerpot from an assets file
          */
         fun fromAssets(context: Context, path: String, name: String): Flowerpot {
-            return Flowerpot(name) {
+            return Flowerpot(context, name) {
                 loadFromInputStream(context.assets.open(path))
             }
         }
@@ -100,8 +106,8 @@ class Flowerpot(val name: String, private val loader: Flowerpot.() -> Unit) {
          */
         private fun loadAssets() {
             context.assets.list(ASSETS_PATH)?.forEach {
-                pots.computeIfAbsent(it) {
-                    Flowerpot.fromAssets(context, "$ASSETS_PATH/$it", it)
+                pots.getOrPut(it) {
+                    fromAssets(context, "$ASSETS_PATH/$it", it)
                 }
             }
         }
@@ -118,6 +124,8 @@ class Flowerpot(val name: String, private val loader: Flowerpot.() -> Unit) {
                 ensureLoaded()
             }
         }
+
+        fun getAllPots() = pots.values
 
         companion object: SingletonHolder<Manager, Context>(ensureOnMainThread(useApplicationContext(::Manager))) {
 

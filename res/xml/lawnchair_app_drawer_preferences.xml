@@ -90,7 +90,7 @@
             app:colorMode="RGB"
             app:resolvers="@array/resolvers_drawer_labels"/>
 
-        <Preference
+        <ch.deletescape.lawnchair.preferences.Preference
             android:title="Categorization"
             android:fragment="ch.deletescape.lawnchair.groups.ui.AppCategorizationFragment"
             app:controllerClass=".SecretOptionsController" />

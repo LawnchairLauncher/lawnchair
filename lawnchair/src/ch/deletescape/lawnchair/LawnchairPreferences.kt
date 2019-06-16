@@ -26,6 +26,7 @@ import android.provider.Settings
 import android.text.TextUtils
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import ch.deletescape.lawnchair.groups.AppGroupsManager
+import ch.deletescape.lawnchair.groups.DrawerTabs
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.preferences.DockStyle
 import ch.deletescape.lawnchair.sesame.Sesame
@@ -179,6 +180,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val drawerLabelRows get() = if(drawerMultilineLabel) 2 else 1
     val appGroupsManager by lazy { AppGroupsManager(this) }
     val drawerTabs get() = appGroupsManager.drawerTabs
+    val currentTabsModel get() = appGroupsManager.getEnabledModel() as? DrawerTabs ?: appGroupsManager.drawerTabs
     val showActions by BooleanPref("pref_show_suggested_actions", true, doNothing)
     val sortDrawerByColors by BooleanPref("pref_allAppsColorSorted", false, reloadAll)
     val drawerTextScale by FloatPref("pref_allAppsIconTextScale", 1f, recreate)

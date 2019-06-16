@@ -26,13 +26,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.groups.LegacyDrawerTabsAdapter
+import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.tintDrawable
 import com.android.launcher3.R
 
 @Keep
 class DrawerTabsFragment : RecyclerViewFragment() {
 
-    private var adapter: DrawerTabsAdapter? = null
+    private var adapter: LegacyDrawerTabsAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +50,7 @@ class DrawerTabsFragment : RecyclerViewFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         view.findViewById<ImageView>(R.id.btn_add).apply {
+            isVisible = false
             tintDrawable(ColorEngine.getInstance(context).accent)
             setOnClickListener {
                 adapter!!.showAddDialog()
@@ -59,7 +62,7 @@ class DrawerTabsFragment : RecyclerViewFragment() {
         val context = recyclerView.context
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        adapter = DrawerTabsAdapter(context).apply {
+        adapter = LegacyDrawerTabsAdapter(context).apply {
             itemTouchHelper.attachToRecyclerView(recyclerView)
         }
         recyclerView.adapter = adapter

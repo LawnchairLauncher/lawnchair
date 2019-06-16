@@ -51,7 +51,7 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
                                               private val type: AppGroupsManager.CategorizationType) {
 
     private val prefs = manager.prefs
-    private val context = prefs.context
+    val context = prefs.context
 
     private var groupsDataJson by prefs.StringPref(type.prefsKey, "{}", prefs.withChangeCallback {
         onGroupsChanged(it)

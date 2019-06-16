@@ -83,10 +83,18 @@ abstract class AppGroupsAdapter<VH : AppGroupsAdapter<VH, T>.GroupHolder, T : Ap
 
     open fun loadAppGroups() {
         items.clear()
-        items.add(HeaderItem())
-        items.add(AddItem())
+        createHeaderItem()?.let { items.add(it) }
+        createAddItem()?.let { items.add(it) }
         items.addAll(filterGroups().map { GroupItem(it) })
         notifyDataSetChanged()
+    }
+
+    open fun createHeaderItem(): Item? {
+        return HeaderItem()
+    }
+
+    open fun createAddItem(): Item? {
+        return AddItem()
     }
 
     open fun addGroup(group: T) {
