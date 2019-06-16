@@ -66,6 +66,7 @@ import ch.deletescape.lawnchair.FakeLauncherKt;
 import ch.deletescape.lawnchair.FeedBridge;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.LawnchairPreferencesChangeCallback;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.overrides.ThemedEditTextPreferenceDialogFragmentCompat;
@@ -84,10 +85,13 @@ import ch.deletescape.lawnchair.theme.ThemeOverride.ThemeSet;
 import ch.deletescape.lawnchair.views.SpringRecyclerView;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherFiles;
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.notification.NotificationListener;
+import com.android.launcher3.util.ContentWriter;
+import com.android.launcher3.util.ContentWriter.CommitParams;
 import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
 import com.google.android.apps.nexuslauncher.reflection.ReflectionClient;
@@ -642,6 +646,13 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     }
                     return null;
                 });
+
+                Preference resetIconsPreference = findPreference("pref_resetCustomIcons");
+                resetIconsPreference.setOnPreferenceClickListener(preference -> {
+                    new SettingsActivity.ResetIconsConfirmation()
+                            .show(getFragmentManager(), "reset_icons");
+                    return true;
+                });
             } else if (getContent() == R.xml.lawnchair_app_drawer_preferences) {
                 findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
             } else if (getContent() == R.xml.lawnchair_dev_options_preference) {
@@ -967,6 +978,51 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     .putExtra(":settings:fragment_args_key", cn.flattenToString());
             getActivity().startActivity(intent);
+        }
+    }
+
+    public static class ResetIconsConfirmation
+            extends DialogFragment implements DialogInterface.OnClickListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final Context context = getActivity();
+            return new AlertDialog.Builder(context)
+                    .setTitle(R.string.reset_custom_icons)
+                    .setMessage(R.string.reset_custom_icons_confirmation)
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setPositiveButton(android.R.string.ok, this)
+                    .create();
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            LawnchairUtilsKt.applyAccent(((AlertDialog) getDialog()));
+        }
+
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            Context context = getContext();
+
+            // Clear custom app icons
+            LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
+            prefs.beginBlockingEdit();
+            prefs.getCustomAppIcon().clear();
+            prefs.endBlockingEdit();
+
+            // Clear custom shortcut icons
+            ContentWriter writer = new ContentWriter(context, new CommitParams(null, null));
+            writer.put(Favorites.CUSTOM_ICON, (byte[]) null);
+            writer.put(Favorites.CUSTOM_ICON_ENTRY, (String) null);
+            writer.commit();
+
+            // Reload changes
+            LawnchairUtilsKt.reloadIcons(context);
+            LawnchairPreferencesChangeCallback prefsCallback = prefs.getOnChangeCallback();
+            if (prefsCallback != null) {
+                prefsCallback.reloadAll();
+            }
         }
     }
 

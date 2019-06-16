@@ -465,6 +465,11 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         operator fun get(key: K): V? {
             return valueMap[key]
         }
+
+        fun clear() {
+            valueMap.clear()
+            saveChanges()
+        }
     }
 
     inline fun <reified T : Enum<T>> EnumPref(key: String, defaultValue: T,

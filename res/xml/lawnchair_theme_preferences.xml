@@ -29,6 +29,10 @@
             android:title="@string/icon_shape_override_label"
             app:controllerClass=".IconShapeOverrideController" />
 
+        <Preference
+            android:key="pref_resetCustomIcons"
+            android:title="@string/reset_custom_icons" />
+
         <ch.deletescape.lawnchair.preferences.AdvancedPreferencesGroup
             app:topic="@string/adaptive_icon"
             app:controllerClass=".IconShapeOverrideController">

@@ -218,7 +218,7 @@ public class ModelWriter {
         writer.put(Favorites.TITLE_ALIAS, alias);
         writer.put(Favorites.SWIPE_UP_ACTION, swipeUpAction);
         if (updateIcon) {
-            writer.put(LauncherSettings.Favorites.CUSTOM_ICON, icon != null ? Utilities.flattenBitmap(icon) : null);
+            writer.put(Favorites.CUSTOM_ICON, icon != null ? Utilities.flattenBitmap(icon) : null);
             writer.put(Favorites.CUSTOM_ICON_ENTRY, iconEntry != null ? iconEntry.toString() : null);
         }
 

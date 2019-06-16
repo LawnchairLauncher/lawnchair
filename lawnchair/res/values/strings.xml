@@ -619,4 +619,6 @@
     <string name="category_travel_and_navigation">Travel and Navigation</string>
 
     <string name="lock_desktop">Lock desktop</string>
+    <string name="reset_custom_icons">Reset custom icons</string>
+    <string name="reset_custom_icons_confirmation">Are you sure you want to reset all custom icons? This action is non-reversible.</string>
 </resources>
