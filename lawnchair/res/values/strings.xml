@@ -621,4 +621,5 @@
     <string name="lock_desktop">Lock desktop</string>
     <string name="reset_custom_icons">Reset custom icons</string>
     <string name="reset_custom_icons_confirmation">Are you sure you want to reset all custom icons? This action is non-reversible.</string>
+    <string name="open_image_picker">Open image picker</string>
 </resources>

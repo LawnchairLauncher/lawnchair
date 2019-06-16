@@ -46,6 +46,7 @@ import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.override.CustomInfoProvider
 import ch.deletescape.lawnchair.root.RootHelperManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
+import ch.deletescape.lawnchair.util.extensions.d
 import ch.deletescape.lawnchair.views.LawnchairBackgroundView
 import com.android.launcher3.*
 import com.android.launcher3.uioverrides.OverviewState
