@@ -585,4 +585,16 @@
     <string name="pref_center_wallpaper_summary">This will disable the wallpaper scrolling effect</string>
 
     <string name="pref_icon_popup_menu">Popup menu items</string>
+
+    <string name="pref_appcategorization_enable_title">Categorize Apps</string>
+    <string name="pref_appcategorization_enable_summary">Fix my messy drawer.</string>
+    <string name="pref_appcategorization_style_text">Style</string>
+    <string name="pref_app_groups_edit_tip">Tap to edit, drag to reorder.</string>
+    <string name="pref_app_groups_create">Create</string>
+    <string name="pref_appcategorization_folders_title">Folder</string>
+    <string name="pref_appcategorization_folders_summary">Tap to open pop-up.</string>
+    <string name="pref_appcategorization_tabs_title">Tabs</string>
+    <string name="pref_appcategorization_tabs_summary">Swipe between groups.</string>
+    <string name="default_folder_name">New folder</string>
+    <string name="drawer_folders">Folders</string>
 </resources>

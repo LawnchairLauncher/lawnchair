@@ -25,9 +25,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.colors.ColorEngine
-import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.tintDrawable
 import com.android.launcher3.R
 
@@ -52,9 +50,7 @@ class DrawerTabsFragment : RecyclerViewFragment() {
         view.findViewById<ImageView>(R.id.btn_add).apply {
             tintDrawable(ColorEngine.getInstance(context).accent)
             setOnClickListener {
-                DrawerTabEditBottomSheet.newTab(activity!!) {
-                    adapter!!.addTab(it)
-                }
+                adapter!!.showAddDialog()
             }
         }
     }
@@ -72,7 +68,7 @@ class DrawerTabsFragment : RecyclerViewFragment() {
     override fun onResume() {
         super.onResume()
 
-        adapter?.reloadTabs()
+        adapter?.loadAppGroups()
     }
 
     override fun onPause() {

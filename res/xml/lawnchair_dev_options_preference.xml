@@ -82,6 +82,12 @@
             android:fragment="ch.deletescape.lawnchair.preferences.CustomFontFragment" />
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_appsCategorizationEnabled"
+            android:title="Enable apps categorization"
+            android:defaultValue="true"
+            android:persistent="true" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_forceEnableFools"
             android:title="Enable April Fools"
             android:defaultValue="false"
