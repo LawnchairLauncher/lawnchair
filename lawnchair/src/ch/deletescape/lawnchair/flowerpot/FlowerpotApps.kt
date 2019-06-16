@@ -42,7 +42,7 @@ class FlowerpotApps(private val context: Context, private val pot: Flowerpot) : 
         matches.clear()
         intentMatches.clear()
         for (rule in pot.rules.filterIsInstance<Rule.IntentCategory>()) {
-            context.packageManager.queryIntentActivities(Intent().addCategory(rule.category), 0).forEach {
+            context.packageManager.queryIntentActivities(Intent(Intent.ACTION_MAIN).addCategory(rule.category), 0).forEach {
                 intentMatches.add(it.activityInfo.packageName)
             }
         }
