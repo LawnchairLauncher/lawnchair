@@ -208,6 +208,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val visualizeOccupied by BooleanPref("pref_debugVisualizeOccupied")
     val scaleAdaptiveBg by BooleanPref("pref_scaleAdaptiveBg", false)
     val folderBgColored by BooleanPref("pref_folderBgColorGen", false)
+    val brightnessTheme by BooleanPref("pref_brightnessTheme", false, restart)
 
     // Search
     var searchProvider by StringPref("pref_globalSearchProvider", lawnchairConfig.defaultSearchProvider) {

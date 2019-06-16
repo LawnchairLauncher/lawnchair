@@ -107,7 +107,7 @@ public class IconPalette {
      *
      * This was copied from com.android.internal.util.NotificationColorUtil.
      */
-    private static int ensureTextContrast(int color, int bg) {
+    public static int ensureTextContrast(int color, int bg) {
         return findContrastColor(color, bg, 4.5);
     }
     /**

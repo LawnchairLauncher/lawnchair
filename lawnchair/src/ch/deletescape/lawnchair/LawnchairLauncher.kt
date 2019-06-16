@@ -45,6 +45,7 @@ import ch.deletescape.lawnchair.iconpack.EditIconActivity
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.override.CustomInfoProvider
 import ch.deletescape.lawnchair.root.RootHelperManager
+import ch.deletescape.lawnchair.sensors.BrightnessManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.util.extensions.d
 import ch.deletescape.lawnchair.views.LawnchairBackgroundView
@@ -164,11 +165,15 @@ open class LawnchairLauncher : NexusLauncherActivity(),
         restartIfPending()
         // lawnchairPrefs.checkFools()
 
+        BrightnessManager.getInstance(this).startListening()
+
         paused = false
     }
 
     override fun onPause() {
         super.onPause()
+
+        BrightnessManager.getInstance(this).stopListening()
 
         paused = true
     }

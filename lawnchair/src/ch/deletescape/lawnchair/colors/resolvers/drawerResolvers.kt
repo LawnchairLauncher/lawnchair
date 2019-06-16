@@ -17,6 +17,7 @@
 
 package ch.deletescape.lawnchair.colors.resolvers
 
+import android.graphics.Color
 import android.support.annotation.Keep
 import android.support.v4.graphics.ColorUtils
 import ch.deletescape.lawnchair.LawnchairLauncher
@@ -24,12 +25,16 @@ import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.colors.ThemeAttributeColorResolver
 import ch.deletescape.lawnchair.colors.WallpaperColorResolver
+import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.sensors.BrightnessManager
 import ch.deletescape.lawnchair.theme.ThemeManager
 import com.android.launcher3.R
 import com.android.launcher3.util.Themes
+import kotlin.math.max
+import kotlin.math.min
 
 @Keep
-class DrawerQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config),  LawnchairPreferences.OnPreferenceChangeListener {
+class DrawerQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config), LawnchairPreferences.OnPreferenceChangeListener, BrightnessManager.OnBrightnessChangeListener {
 
     private val isDark get() =  ThemeManager.getInstance(engine.context).isDark
     private val lightResolver = DrawerQsbLightResolver(Config("DrawerQsbAutoResolver@Light", engine, {
@@ -38,10 +43,20 @@ class DrawerQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config),
     private val darkResolver = DrawerQsbDarkResolver(Config("DrawerQsbAutoResolver@Dark", engine, {
         _, _ -> if (isDark) notifyChanged()
     }))
+    private val prefs = context.lawnchairPrefs
+    private var brightness = 1f
 
     override fun startListening() {
         super.startListening()
         LawnchairPreferences.getInstanceNoCreate().addOnPreferenceChangeListener(this, "pref_launcherTheme")
+        if (prefs.brightnessTheme) {
+            BrightnessManager.getInstance(context).addListener(this)
+        }
+    }
+
+    override fun onBrightnessChanged(illuminance: Float) {
+        brightness = min(max(illuminance - 2f, 0f), 35f) / 35
+        notifyChanged()
     }
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
@@ -51,9 +66,12 @@ class DrawerQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config),
     override fun stopListening() {
         super.stopListening()
         LawnchairPreferences.getInstanceNoCreate().removeOnPreferenceChangeListener(this, "pref_launcherTheme")
+        BrightnessManager.getInstance(context).removeListener(this)
     }
 
-    override fun resolveColor() = if (isDark) darkResolver.resolveColor() else lightResolver.resolveColor()
+    override fun resolveColor() = if (prefs.brightnessTheme) {
+        ColorUtils.blendARGB(Color.BLACK, Color.WHITE, brightness)
+    } else if (isDark) darkResolver.resolveColor() else lightResolver.resolveColor()
 
     override fun getDisplayName() = engine.context.resources.getString(R.string.theme_based)
 }
@@ -96,7 +114,33 @@ class DrawerQsbDarkResolver(config: Config) : WallpaperColorResolver(config) {
 }
 
 @Keep
-class ShelfBackgroundAutoResolver(config: Config) : ThemeAttributeColorResolver(config) {
+class ShelfBackgroundAutoResolver(config: Config) : ThemeAttributeColorResolver(config), BrightnessManager.OnBrightnessChangeListener {
 
     override val colorAttr = R.attr.allAppsScrimColor
+    private var brightness = 1f
+    private val prefs = context.lawnchairPrefs
+
+    override fun startListening() {
+        super.startListening()
+        if (prefs.brightnessTheme) {
+            BrightnessManager.getInstance(context).addListener(this)
+        }
+    }
+
+    override fun onBrightnessChanged(illuminance: Float) {
+        brightness = min(max(illuminance - 4f, 0f), 35f) / 35
+        notifyChanged()
+    }
+
+    override fun resolveColor(): Int {
+        if (prefs.brightnessTheme) {
+            return ColorUtils.blendARGB(Color.BLACK, Color.WHITE, brightness)
+        }
+        return super.resolveColor()
+    }
+
+    override fun stopListening() {
+        super.stopListening()
+        BrightnessManager.getInstance(context).removeListener(this)
+    }
 }

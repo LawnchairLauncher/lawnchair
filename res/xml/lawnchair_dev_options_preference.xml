@@ -128,5 +128,11 @@
             android:title="Sort drawer by icon color"
             android:summary="Some initial experiments with alternative drawer sorting modes"
             android:defaultValue="false" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_brightnessTheme"
+            android:title="Brightness based theme"
+            android:summary="Dynamically fade between light and dark"
+            android:defaultValue="false" />
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 </PreferenceScreen>
