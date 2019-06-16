@@ -93,7 +93,7 @@ class OpenOverviewGestureHandler(context: Context, config: JSONObject?) : Gestur
     override val requiresForeground = true
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
-        OptionsPopupView.showDefaultOptions(controller.launcher, controller.touchDownPoint.x, controller.touchDownPoint.y)
+        controller.launcher.stateManager.goToState(LauncherState.OPTIONS)
     }
 }
 

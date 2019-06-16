@@ -37,6 +37,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
 
+import ch.deletescape.lawnchair.touch.WorkspaceOptionModeTouchHelper;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DropTargetBar;
@@ -88,6 +89,8 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
     private final WorkspaceAndHotseatScrim mScrim;
 
+    private final WorkspaceOptionModeTouchHelper mWorkspaceOptionModeTouchHelper;
+
     /**
      * Used to create a new DragLayer from XML.
      *
@@ -103,6 +106,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
 
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
         mScrim = new WorkspaceAndHotseatScrim(this);
+        mWorkspaceOptionModeTouchHelper = new WorkspaceOptionModeTouchHelper(Launcher.getLauncher(context));
     }
 
     public void setup(DragController dragController, Workspace workspace) {
@@ -240,7 +244,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     public boolean dispatchTouchEvent(MotionEvent ev) {
         ev.offsetLocation(getTranslationX(), 0);
         try {
-            return super.dispatchTouchEvent(ev);
+            return mWorkspaceOptionModeTouchHelper.dispatchTouchEvent(ev) || super.dispatchTouchEvent(ev);
         } finally {
             ev.offsetLocation(-getTranslationX(), 0);
         }

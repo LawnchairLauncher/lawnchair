@@ -51,6 +51,7 @@ import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.util.extensions.d
 import ch.deletescape.lawnchair.util.extensions.e
 import ch.deletescape.lawnchair.views.LawnchairBackgroundView
+import ch.deletescape.lawnchair.views.OptionsPanel
 import com.android.launcher3.*
 import com.android.launcher3.uioverrides.OverviewState
 import com.android.launcher3.util.ComponentKey
@@ -68,7 +69,7 @@ open class LawnchairLauncher : NexusLauncherActivity(),
     val gestureController by lazy { GestureController(this) }
     val background by lazy { findViewById<LawnchairBackgroundView>(R.id.lawnchair_background)!! }
     val dummyView by lazy { findViewById<View>(R.id.dummy_view)!! }
-    var updateWallpaper = true
+    val optionsView by lazy { findViewById<OptionsPanel>(R.id.options_view)!! }
 
     protected open val isScreenshotMode = false
     private val prefCallback = LawnchairPreferencesChangeCallback(this)

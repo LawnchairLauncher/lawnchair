@@ -68,6 +68,10 @@
             android:id="@+id/scrim_view"
             layout="@layout/scrim_view"/>
 
+        <include
+            android:id="@+id/options_view"
+            layout="@layout/options_view" />
+
         <com.android.launcher3.pageindicators.WorkspacePageIndicator
             android:id="@+id/page_indicator"
             android:layout_width="match_parent"

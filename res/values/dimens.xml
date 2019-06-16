@@ -289,7 +289,7 @@
     <dimen name="chroma_view_height">505dp</dimen>
 
 <!-- Overview -->
-    <dimen name="options_menu_icon_size">24dp</dimen>
+    <dimen name="options_menu_icon_size">48dp</dimen>
     <dimen name="options_menu_thumb_size">32dp</dimen>
     <dimen name="qsb_doodle_tap_target_logo_width">106dp</dimen>
     <dimen name="qsb_mic_width">56dp</dimen>

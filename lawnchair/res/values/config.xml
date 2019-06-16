@@ -47,4 +47,7 @@
     <string-array name="config_default_icon_packs">
         <item>@string/config_default_icon_pack</item>
     </string-array>
+
+    <!-- Out of 100, the percent to shrink the workspace during options mode. -->
+    <integer name="config_workspaceOptionsShrinkPercentage">70</integer>
 </resources>

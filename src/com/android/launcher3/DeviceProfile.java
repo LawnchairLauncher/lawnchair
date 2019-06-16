@@ -75,6 +75,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     private final int topWorkspacePadding;
     public float workspaceSpringLoadShrinkFactor;
     public final int workspaceSpringLoadedBottomSpace;
+    public float workspaceOptionsShrinkFactor;
 
     // Drag handle
     public int verticalDragHandleSizePx;
@@ -466,6 +467,8 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
             workspaceSpringLoadShrinkFactor =
                     res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
         }
+        workspaceOptionsShrinkFactor =
+                res.getInteger(R.integer.config_workspaceOptionsShrinkPercentage) / 100.0f;
 
         // Folder icon
         folderIconSizePx = IconNormalizer.getNormalizedCircleSize(iconSizePx);
