@@ -599,4 +599,22 @@
     <string name="pref_appcategorization_flowerpot_summary">Based on app category.</string>
     <string name="default_folder_name">New folder</string>
     <string name="drawer_folders">Folders</string>
+
+    <string name="category_business_and_productivity">Business and Productivity</string>
+    <string name="category_communication">Communication</string>
+    <string name="category_entertainment">Entertainment</string>
+    <string name="category_finance">Finance</string>
+    <string name="category_food_and_drink">Food and Drink</string>
+    <string name="category_game">Games</string>
+    <string name="category_health_and_fitness">Health and Fitness</string>
+    <string name="category_knowledge_and_reference">Knowledge and Reference</string>
+    <string name="category_lifestyle">Lifestyle</string>
+    <string name="category_music">Music</string>
+    <string name="category_news">News</string>
+    <string name="category_personalization">Personalization</string>
+    <string name="category_photography">Photography</string>
+    <string name="category_shopping">Shopping</string>
+    <string name="category_social">Social</string>
+    <string name="category_tools">Tools</string>
+    <string name="category_travel_and_navigation">Travel and Navigation</string>
 </resources>

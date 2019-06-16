@@ -39,7 +39,7 @@ class FlowerpotTabs(manager: AppGroupsManager) : DrawerTabs(manager, AppGroupsMa
         }.toMutableList()
         existingGroups.addAll(pots.map {
             FlowerpotTab(context).apply {
-                title.value = beautifyName(it.name)
+                title.value = it.displayName
                 potName.value = it.name
             }
         })
@@ -84,9 +84,5 @@ class FlowerpotTabs(manager: AppGroupsManager) : DrawerTabs(manager, AppGroupsMa
     companion object {
 
         const val TYPE_FLOWERPOT = 4
-
-        private fun beautifyName(name: String): String {
-            return name.replace('_', ' ').toLowerCase().capitalize()
-        }
     }
 }

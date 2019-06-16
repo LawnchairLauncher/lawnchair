@@ -21,8 +21,10 @@ import android.content.Context
 import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.flowerpot.parser.FlowerpotReader
 import ch.deletescape.lawnchair.flowerpot.rules.Rule
+import ch.deletescape.lawnchair.toTitleCase
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
+import com.android.launcher3.R
 import java.io.InputStream
 
 /**
@@ -30,6 +32,13 @@ import java.io.InputStream
  */
 class Flowerpot(private val context: Context, val name: String, private val loader: Flowerpot.() -> Unit) {
 
+    val displayName by lazy {
+        val id = context.resources.getIdentifier("category_${name.toLowerCase()}", "string", context.packageName)
+        if (id != 0)
+            context.getString(id)
+        else
+            beautifyName(name)
+    }
     private var loaded = false
     val rules: MutableSet<Rule> = mutableSetOf()
     val size get() = rules.size
@@ -78,6 +87,11 @@ class Flowerpot(private val context: Context, val name: String, private val load
          * Path relative to assets/ to the directory containing the shipped flowerpot files
          */
         const val ASSETS_PATH = "flowerpot"
+
+        private fun beautifyName(name: String): String {
+            return name.replace('_', ' ').toLowerCase().toTitleCase()
+        }
+
     }
 
     object Version {
