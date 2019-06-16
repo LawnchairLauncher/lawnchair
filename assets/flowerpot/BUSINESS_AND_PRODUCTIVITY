@@ -1,7 +1,9 @@
-# generated at Sat Jun 15 22:01:53 2019 using merge.py
+# generated at Sun Jun 16 11:56:57 2019 using merge.py
 # format: flowerpot-1 (azalea)
 # specs: https://del.dog/flowerpot
 $1
+# STATIC TEMPLATE
+&category|productivity
 # PRODUCTIVITY
 com.google.android.apps.subscriptions.red
 com.blackberry.blackberrylauncher

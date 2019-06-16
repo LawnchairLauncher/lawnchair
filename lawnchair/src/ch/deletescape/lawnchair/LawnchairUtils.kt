@@ -775,3 +775,5 @@ inline fun <T> listWhileNotNull(generator: () -> T?): List<T> = mutableListOf<T>
         add(generator() ?: break)
     }
 }
+
+inline infix fun Int.hasFlag(flag: Int) = (this and flag) != 0

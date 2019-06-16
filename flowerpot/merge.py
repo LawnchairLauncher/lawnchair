@@ -32,7 +32,7 @@ CATEGORY_MAP = {
     "COMMUNICATION": ["COMMUNICATION"],
     "SOCIAL": ["SOCIAL"],
     "TRAVEL_AND_NAVIGATION": ["MAPS_AND_NAVIGATION", "TRAVEL_AND_LOCAL"],
-    # "GAME": ["GAME"],  # Actually identified by isGame manifest tag
+    "GAME": ["GAME"],  # Actually identified by isGame manifest tag which not all apps have :(
     "FOOD_AND_DRINK": ["FOOD_AND_DRINK"],
     "PERSONALIZATION": ["PERSONALIZATION"],  # Additionally identify icon packs by manifest
     "SHOPPING": ["SHOPPING"]

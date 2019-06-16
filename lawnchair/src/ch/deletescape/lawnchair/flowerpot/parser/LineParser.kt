@@ -35,6 +35,13 @@ object LineParser {
             ':' -> Rule.IntentAction(line.rest)
             // Intent category
             ';' -> Rule.IntentCategory(line.rest)
+            // Code rule
+            '&' -> {
+                val parts = line.rest.split("|")
+                val ruleName = parts[0]
+                val args = if (parts.size > 1) parts.subList(1, parts.size) else emptyList()
+                Rule.CodeRule(ruleName, args.toTypedArray())
+            }
             // Package
             else -> if (!line[0].isLetter()) {
                 throw FlowerpotFormatException("Unknown rule identifier '${line[0]}' for version $version")
