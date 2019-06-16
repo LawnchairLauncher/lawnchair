@@ -24,6 +24,7 @@ import android.os.UserHandle
 import ch.deletescape.lawnchair.flowerpot.rules.CodeRule
 import ch.deletescape.lawnchair.flowerpot.rules.Rule
 import com.android.launcher3.compat.LauncherAppsCompat
+import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
 
@@ -39,19 +40,15 @@ class FlowerpotApps(private val context: Context, private val pot: Flowerpot) : 
     }
 
     private fun filterApps() {
+        queryIntentMatches()
         matches.clear()
-        intentMatches.clear()
-        for (rule in pot.rules.filterIsInstance<Rule.IntentCategory>()) {
-            context.packageManager.queryIntentActivities(Intent(Intent.ACTION_MAIN).addCategory(rule.category), 0).forEach {
-                intentMatches.add(it.activityInfo.packageName)
-            }
+        UserManagerCompat.getInstance(context).userProfiles.forEach {
+            addFromPackage(null, it)
         }
-        for (rule in pot.rules.filterIsInstance<Rule.IntentAction>()) {
-            context.packageManager.queryIntentActivities(Intent(rule.action), 0).forEach {
-                intentMatches.add(it.activityInfo.packageName)
-            }
-        }
-        launcherApps.getActivityList(null, Process.myUserHandle()).forEach {
+    }
+
+    private fun addFromPackage(packageName: String?, user: UserHandle) {
+        launcherApps.getActivityList(packageName, user).forEach {
             if (intentMatches.contains(it.componentName.packageName)
                     || pot.rules.contains(Rule.Package(it.componentName.packageName))) {
                 matches.add(ComponentKey(it.componentName, it.user))
@@ -66,35 +63,52 @@ class FlowerpotApps(private val context: Context, private val pot: Flowerpot) : 
         }
     }
 
-    override fun onPackageRemoved(packageName: String?, user: UserHandle?) {
-        filterApps()
+    private fun queryIntentMatches() {
+        intentMatches.clear()
+        for (rule in pot.rules.filterIsInstance<Rule.IntentCategory>()) {
+            context.packageManager.queryIntentActivities(Intent(Intent.ACTION_MAIN).addCategory(rule.category), 0).forEach {
+                intentMatches.add(it.activityInfo.packageName)
+            }
+        }
+        for (rule in pot.rules.filterIsInstance<Rule.IntentAction>()) {
+            context.packageManager.queryIntentActivities(Intent(rule.action), 0).forEach {
+                intentMatches.add(it.activityInfo.packageName)
+            }
+        }
     }
 
-    override fun onPackageAdded(packageName: String?, user: UserHandle?) {
-        filterApps()
+    override fun onPackageAdded(packageName: String, user: UserHandle) {
+        queryIntentMatches()
+        addFromPackage(packageName, user)
     }
 
-    override fun onPackageChanged(packageName: String?, user: UserHandle?) {
-        filterApps()
+    override fun onPackageChanged(packageName: String, user: UserHandle) {
+        onPackageAdded(packageName, user)
     }
 
-    override fun onPackagesAvailable(packageNames: Array<out String>?, user: UserHandle?, replacing: Boolean) {
-        filterApps()
+    override fun onPackageRemoved(packageName: String, user: UserHandle) {
+        matches.removeAll {
+            it.componentName.packageName == packageName && it.user == user
+        }
     }
 
-    override fun onPackagesUnavailable(packageNames: Array<out String>?, user: UserHandle?, replacing: Boolean) {
-        filterApps()
+    override fun onPackagesAvailable(packageNames: Array<out String>, user: UserHandle, replacing: Boolean) {
+        packageNames.forEach { onPackageAdded(it, user) }
     }
 
-    override fun onPackagesSuspended(packageNames: Array<out String>?, user: UserHandle?) {
-        filterApps()
+    override fun onPackagesUnavailable(packageNames: Array<out String>, user: UserHandle, replacing: Boolean) {
+        packageNames.forEach { onPackageRemoved(it, user) }
     }
 
-    override fun onPackagesUnsuspended(packageNames: Array<out String>?, user: UserHandle?) {
-        filterApps()
+    override fun onPackagesSuspended(packageNames: Array<out String>, user: UserHandle) {
+        packageNames.forEach { onPackageRemoved(it, user) }
+    }
+
+    override fun onPackagesUnsuspended(packageNames: Array<out String>, user: UserHandle) {
+        packageNames.forEach { onPackageAdded(it, user) }
     }
 
     override fun onShortcutsChanged(packageName: String?, shortcuts: MutableList<ShortcutInfoCompat>?, user: UserHandle?) {
-        filterApps()
+
     }
 }
