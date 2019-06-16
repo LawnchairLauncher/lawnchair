@@ -113,6 +113,7 @@ class LawnchairShortcut(private val context: Context) {
     class Edit : SystemShortcut<Launcher>(R.drawable.ic_edit_no_shadow, R.string.action_preferences) {
 
         override fun getOnClickListener(launcher: Launcher, itemInfo: ItemInfo): View.OnClickListener? {
+            if (launcher.lawnchairPrefs.lockDesktop) return null
             if (!CustomInfoProvider.isEditable(itemInfo)) return null
             return View.OnClickListener {
                 AbstractFloatingView.closeAllOpenViews(launcher)

@@ -44,6 +44,7 @@ import android.os.UserHandle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -66,6 +67,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.folder.Folder;
@@ -1667,6 +1669,14 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
         }
 
+        if (Utilities.getLawnchairPrefs(mLauncher).getLockDesktop()) {
+            child.setVisibility(View.VISIBLE);
+
+            if (dragOptions.preDragCondition != null) {
+                mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+            }
+            return null;
+        }
         DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source,
                 dragObject, dragVisualizeOffset, dragRect, scale * iconScale, scale, dragOptions);
         dv.setIntrinsicIconScaleFactor(dragOptions.intrinsicIconScaleFactor);

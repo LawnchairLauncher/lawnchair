@@ -261,10 +261,15 @@ public class Folder extends AbstractFloatingView implements DragSource,
         mFooter.measure(measureSpec, measureSpec);
         mFooterHeight = mFooter.getMeasuredHeight();
 
-        findViewById(R.id.settings_button).setOnClickListener(v -> {
-            animateClosed();
-            CustomBottomSheet.show(mLauncher, mInfo);
-        });
+        View settingsButton = findViewById(R.id.settings_button);
+        if (Utilities.getLawnchairPrefs(mLauncher).getLockDesktop()) {
+            settingsButton.setVisibility(View.GONE);
+        } else {
+            settingsButton.setOnClickListener(v -> {
+                animateClosed();
+                CustomBottomSheet.show(mLauncher, mInfo);
+            });
+        }
     }
 
     public boolean onLongClick(View v) {

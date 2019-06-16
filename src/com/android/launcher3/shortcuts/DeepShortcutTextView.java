@@ -33,7 +33,7 @@ import com.android.launcher3.Utilities;
  */
 public class DeepShortcutTextView extends BubbleTextView {
     private final Rect mDragHandleBounds = new Rect();
-    private final int mDragHandleWidth;
+    private int mDragHandleWidth;
     private boolean mShowInstructionToast = false;
 
     private Toast mInstructionToast;
@@ -53,6 +53,17 @@ public class DeepShortcutTextView extends BubbleTextView {
         mDragHandleWidth = resources.getDimensionPixelSize(R.dimen.popup_padding_end)
                 + resources.getDimensionPixelSize(R.dimen.deep_shortcut_drag_handle_size)
                 + resources.getDimensionPixelSize(R.dimen.deep_shortcut_drawable_padding) / 2;
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        if (Utilities.getLawnchairPrefs(getContext()).getLockDesktop()) {
+            setCompoundDrawables(null, null, null, null);
+            mDragHandleWidth = 0;
+            mDragHandleBounds.set(0, 0, 0, 0);
+        }
     }
 
     @Override

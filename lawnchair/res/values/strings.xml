@@ -617,4 +617,6 @@
     <string name="category_social">Social</string>
     <string name="category_tools">Tools</string>
     <string name="category_travel_and_navigation">Travel and Navigation</string>
+
+    <string name="lock_desktop">Lock desktop</string>
 </resources>

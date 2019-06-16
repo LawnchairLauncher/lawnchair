@@ -16,6 +16,11 @@
             android:title="@string/overlap_placement"
             android:summary="@string/overlap_placement_summary" />
 
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_lockDesktop"
+            android:title="@string/lock_desktop" />
+
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
