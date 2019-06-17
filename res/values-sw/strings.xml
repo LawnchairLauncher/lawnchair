@@ -106,7 +106,7 @@
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Wijeti za <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widgets_list" msgid="796804551140113767">"Orodha ya wijeti"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Orodha ya wijeti imefungwa"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"Ongeza kwenye skrini ya Kwanza"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"Ongeza kwenye Skrini ya Kwanza"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Hamishia kipengee hapa"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Kipengee kimeongezwa kwenye skrini ya kwanza"</string>
     <string name="item_removed" msgid="851119963877842327">"Kipengee kimeondolewa"</string>

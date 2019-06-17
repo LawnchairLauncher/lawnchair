@@ -25,7 +25,7 @@
         android:id="@+id/snapshot"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/task_thumbnail_top_margin" />
+        android:layout_marginTop="@dimen/task_thumbnail_top_margin"/>
 
     <com.android.quickstep.views.IconView
         android:id="@+id/icon"
@@ -33,47 +33,5 @@
         android:layout_height="@dimen/task_thumbnail_icon_size"
         android:layout_gravity="top|center_horizontal"
         android:focusable="false"
-        android:importantForAccessibility="no" />
-
-    <LinearLayout
-        android:id="@+id/task_footer_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:animateLayoutChanges="true"
-        android:forceHasOverlappingRendering="true"
-        android:layout_gravity="bottom|center_horizontal">
-        <FrameLayout
-            android:id="@+id/proactive_suggest_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:visibility="gone"
-            />
-        <com.android.quickstep.views.DigitalWellBeingToast
-            android:id="@+id/digital_well_being_toast"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:importantForAccessibility="noHideDescendants"
-            android:background="@drawable/bg_wellbeing_toast"
-            android:gravity="center"
-            android:visibility="gone">
-            <ImageView
-                android:id="@+id/digital_well_being_hourglass"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/ic_hourglass_top"
-            />
-            <TextView
-                android:id="@+id/digital_well_being_remaining_time"
-                android:layout_width="wrap_content"
-                android:layout_height="24dp"
-                android:fontFamily="sans-serif"
-                android:textSize="14sp"
-                android:textColor="@android:color/white"
-                android:gravity="center_vertical"
-            />
-        </com.android.quickstep.views.DigitalWellBeingToast>
-    </LinearLayout>
+        android:importantForAccessibility="no"/>
 </com.android.quickstep.views.TaskView>
