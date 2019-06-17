@@ -35,6 +35,7 @@ import kotlin.math.min
 @Keep
 class DockQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config), LawnchairPreferences.OnPreferenceChangeListener, BrightnessManager.OnBrightnessChangeListener {
 
+    override val themeAware = true
     private val isDark get() = ThemeManager.getInstance(engine.context).isDark
     private val lightResolver = DockQsbLightResolver(Config("DockQsbAutoResolver@Light", engine, { _, _ ->
         if (!isDark) notifyChanged()
@@ -47,7 +48,6 @@ class DockQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config), L
 
     override fun startListening() {
         super.startListening()
-        LawnchairPreferences.getInstanceNoCreate().addOnPreferenceChangeListener(this, "pref_launcherTheme")
         if (prefs.brightnessTheme) {
             BrightnessManager.getInstance(context).addListener(this)
         }
@@ -64,7 +64,6 @@ class DockQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config), L
 
     override fun stopListening() {
         super.stopListening()
-        LawnchairPreferences.getInstanceNoCreate().removeOnPreferenceChangeListener(this, "pref_launcherTheme")
         BrightnessManager.getInstance(context).removeListener(this)
     }
 
