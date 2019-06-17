@@ -25,5 +25,5 @@ import ch.deletescape.lawnchair.settings.ui.PreferenceController
 @Keep
 class SecretOptionsController(context: Context) : PreferenceController(context) {
 
-    override val isVisible = context.lawnchairPrefs.wipOptionsEnabled
+    override val isVisible = context.lawnchairPrefs.debugMenuEnabled
 }

@@ -73,6 +73,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.xmlpull.v1.XmlPullParser
 import java.lang.reflect.Field
+import java.security.MessageDigest
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
@@ -790,3 +791,19 @@ inline fun <T> listWhileNotNull(generator: () -> T?): List<T> = mutableListOf<T>
 }
 
 inline infix fun Int.hasFlag(flag: Int) = (this and flag) != 0
+
+fun String.hash(type: String): String {
+    val chars = "0123456789abcdef"
+    val bytes = MessageDigest
+            .getInstance(type)
+            .digest(toByteArray())
+    val result = StringBuilder(bytes.size * 2)
+
+    bytes.forEach {
+        val i = it.toInt()
+        result.append(chars[i shr 4 and 0x0f])
+        result.append(chars[i and 0x0f])
+    }
+
+    return result.toString()
+}

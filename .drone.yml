@@ -12,7 +12,7 @@ pipeline:
   # Step 2: The actual point of all of this
   build:
     image: runmymind/docker-android-sdk:ubuntu-standalone
-    secrets: [ store_password, key_password, github_token ]
+    secrets: [ store_password, key_password, github_token, debug_menu_code ]
     environment:
       - MAJOR_MINOR=2.0
       - CI_BUILD=true

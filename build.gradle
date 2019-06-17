@@ -68,6 +68,9 @@ android {
 
         buildConfigField "boolean", "SIGNATURE_VERIFICATION", "false"
 
+        def debugMenuCode = System.getenv("DEBUG_MENU_CODE") ?: "veryperu"
+        buildConfigField "String", "DEBUG_MENU_CODE_HASH", '"' + debugMenuCode.digest('SHA-1') + '"'
+
         ndk {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a"
         }

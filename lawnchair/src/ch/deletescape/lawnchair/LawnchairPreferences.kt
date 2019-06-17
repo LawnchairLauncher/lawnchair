@@ -188,11 +188,11 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_showDevOptions", false, doNothing)
-    private var wipOptionsKey by StringPref("pref_wipOptionsKey", "", doNothing)
-    var wipOptionsEnabled
-        get() = wipOptionsKey == Settings.Secure.ANDROID_ID
+    private var debugMenuKey by StringPref("pref_debugMenuKey", "", doNothing)
+    var debugMenuEnabled
+        get() = debugMenuKey == Settings.Secure.ANDROID_ID
         set(value) {
-            wipOptionsKey = if (value) Settings.Secure.ANDROID_ID else ""
+            debugMenuKey = if (value) Settings.Secure.ANDROID_ID else ""
         }
     val showDebugInfo by BooleanPref("pref_showDebugInfo", false, doNothing)
     val alwaysClearIconCache by BooleanPref("pref_alwaysClearIconCache", false, restart)
