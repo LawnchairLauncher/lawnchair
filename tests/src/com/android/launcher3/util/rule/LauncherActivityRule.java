@@ -72,11 +72,6 @@ public class LauncherActivityRule implements TestRule {
         getInstrumentation().startActivitySync(getHomeIntentInPackage(getTargetContext()));
     }
 
-    public void returnToHome() {
-        getTargetContext().startActivity(getHomeIntentInPackage(getTargetContext()));
-        getInstrumentation().waitForIdleSync();
-    }
-
     private class MyStatement extends Statement implements ActivityLifecycleCallbacks {
 
         private final Statement mBase;

@@ -190,7 +190,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         }
 
         // Go back to home
-        mActivityMonitor.returnToHome();
+        mLauncher.pressHome();
         Wait.atMost(null, new ItemSearchCondition(itemMatcher), DEFAULT_ACTIVITY_TIMEOUT);
     }
 
