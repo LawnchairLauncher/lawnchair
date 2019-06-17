@@ -66,6 +66,8 @@ android {
         def githubToken = localProps.getProperty('githubToken') ?: '"' + System.getenv("GITHUB_TOKEN") + '"'
         buildConfigField "String", "GITHUB_TOKEN", githubToken
 
+        buildConfigField "boolean", "SIGNATURE_VERIFICATION", "false"
+
         ndk {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a"
         }
@@ -152,11 +154,15 @@ android {
             dimension "build"
             applicationIdSuffix ".ci"
             versionNameSuffix "-ci-" + System.getenv("DRONE_BRANCH")
+
+            buildConfigField "boolean", "SIGNATURE_VERIFICATION", "true"
         }
 
         plah {
             dimension "build"
             applicationIdSuffix ".plah"
+
+            buildConfigField "boolean", "SIGNATURE_VERIFICATION", "true"
         }
     }
 
