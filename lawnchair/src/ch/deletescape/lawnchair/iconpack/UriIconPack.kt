@@ -21,14 +21,18 @@ import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.text.TextUtils
-import ch.deletescape.lawnchair.util.extensions.d
+import ch.deletescape.lawnchair.adaptive.AdaptiveIconGenerator
 import com.android.launcher3.FastBitmapDrawable
 import com.android.launcher3.ItemInfo
+import com.android.launcher3.Utilities
 import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
 import java.io.FileDescriptor
@@ -53,9 +57,8 @@ class UriIconPack(context: Context) : IconPack(context, "lawnchairUriPack") {
     }
 
     private fun getUriEntry(name: String?): UriEntry? {
-        d("getUriEntry($name)")
         if (TextUtils.isEmpty(name)) return null
-        val entry = entryCache.getOrPut(name!!) { UriEntry(context, Uri.parse(name)) }
+        val entry = entryCache.getOrPut(name!!) { UriEntry.fromSpec(context, name) }
         if (!entry.isAvailable) return null
         return entry
     }
@@ -75,18 +78,25 @@ class UriIconPack(context: Context) : IconPack(context, "lawnchairUriPack") {
     override fun getIcon(launcherActivityInfo: LauncherActivityInfo, iconDpi: Int,
                          flattenDrawable: Boolean, customIconEntry: IconPackManager.CustomIconEntry?,
                          iconProvider: LawnchairIconProvider?): Drawable? {
-        return getUriEntry(customIconEntry)?.drawable
+        val entry = getUriEntry(customIconEntry)
+        val icon = entry?.drawable
+        if (icon != null) {
+            return if (Utilities.ATLEAST_OREO && entry.adaptive) {
+                AdaptiveIconGenerator(context, icon, entry.identifierName).result
+            } else icon
+        }
+        return null
     }
 
     override fun newIcon(icon: Bitmap, itemInfo: ItemInfo,
                          customIconEntry: IconPackManager.CustomIconEntry?,
                          drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable? {
-        return getUriEntry(customIconEntry)?.bitmap?.let { FastBitmapDrawable(it) }
+        return FastBitmapDrawable(icon)
     }
 
     override fun supportsMasking() = false
 
-    class UriEntry(private val context: Context, private val uri: Uri) : Entry() {
+    class UriEntry(private val context: Context, val uri: Uri, var adaptive: Boolean) : Entry() {
 
         override val identifierName = uri.toString()
         override val displayName = identifierName
@@ -112,7 +122,17 @@ class UriIconPack(context: Context) : IconPack(context, "lawnchairUriPack") {
         }
 
         override fun toCustomEntry(): IconPackManager.CustomIconEntry {
-            return IconPackManager.CustomIconEntry("lawnchairUriPack", uri.toString())
+            return IconPackManager.CustomIconEntry("lawnchairUriPack", "$uri|$adaptive")
+        }
+
+        companion object {
+
+            fun fromSpec(context: Context, spec: String?): UriEntry {
+                val parts = spec!!.split("|")
+                val uri = Uri.parse(parts[0])
+                val adaptive = parts.size > 1 && parts[1] == "true"
+                return UriEntry(context, uri, adaptive)
+            }
         }
     }
 }

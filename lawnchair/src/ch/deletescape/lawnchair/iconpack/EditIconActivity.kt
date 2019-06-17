@@ -20,24 +20,29 @@ package ch.deletescape.lawnchair.iconpack
 import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import ch.deletescape.lawnchair.LawnchairLauncher
+import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
 import java.lang.ref.WeakReference
@@ -177,12 +182,26 @@ class EditIconActivity : SettingsBaseActivity() {
     }
 
     private fun onSelectUri(uri: Uri) {
-        val entry = UriIconPack.UriEntry(this, uri)
+        val entry = UriIconPack.UriEntry(this, uri, false)
         if (!entry.isAvailable) return
 
-        contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_ENTRY, entry.toCustomEntry().toString()))
-        finish()
+        val dialogContent = layoutInflater.inflate(R.layout.import_icon_preview, null).apply {
+            findViewById<ImageView>(android.R.id.icon).setImageDrawable(entry.drawable)
+        }
+        val checkBox = dialogContent.findViewById<CheckBox>(android.R.id.checkbox)
+        if (!Utilities.ATLEAST_OREO) {
+            checkBox.isVisible = false
+        }
+        AlertDialog.Builder(this)
+                .setTitle(R.string.import_icon)
+                .setView(dialogContent)
+                .setPositiveButton(android.R.string.ok) { _, _ ->
+                    entry.adaptive = checkBox.isChecked
+                    contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_ENTRY, entry.toCustomEntry().toString()))
+                    finish()
+                }
+                .show().applyAccent()
     }
 
     inner class IconAdapter : RecyclerView.Adapter<IconAdapter.Holder>() {
