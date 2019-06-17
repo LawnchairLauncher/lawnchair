@@ -66,8 +66,8 @@
     <string name="folder_hint_text" msgid="6617836969016293992">"अनामित फोल्डर"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> अक्षम केला आहे"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
-      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>साठी<xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g>सूचना आहेत</item>
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>साठी <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> सूचना आहेत</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g>साठी<xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g>सूचना आहे</item>
     </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"%2$d पैकी %1$d पृष्ठ"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%2$d पैकी %1$d मुख्य स्क्रीन"</string>

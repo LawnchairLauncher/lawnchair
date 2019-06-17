@@ -44,6 +44,7 @@ import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener;
 
 /**
@@ -96,6 +97,9 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
 
         if (Utilities.ATLEAST_OREO) {
             setExecutor(Utilities.THREAD_POOL_EXECUTOR);
+        }
+        if (Utilities.ATLEAST_Q && Themes.getAttrBoolean(mLauncher, R.attr.isWorkspaceDarkText)) {
+            setOnLightBackground(true);
         }
     }
 
