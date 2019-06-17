@@ -80,6 +80,10 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val updateSmartspace = { updateSmartspace() }
     private val reloadIcons = { reloadIcons() }
     private val reloadIconPacks = { IconPackManager.getInstance(context).packList.reloadPacks() }
+    private val reloadDockStyle = {
+        LauncherAppState.getIDP(context).onDockStyleChanged(this)
+        recreate()
+    }
 
     private val lawnchairConfig = LawnchairConfig.getInstance(context)
 
@@ -141,9 +145,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
 
     // Dock
-    val dockStyles = DockStyle.StyleManager(this, restart, resetAllApps)
+    val dockStyles = DockStyle.StyleManager(this, reloadDockStyle, resetAllApps)
     val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", false, doNothing)
-    val dockSearchBarPref by BooleanPref("pref_dockSearchBar", Utilities.ATLEAST_MARSHMALLOW, restart)
+    val dockSearchBarPref by BooleanPref("pref_dockSearchBar", Utilities.ATLEAST_MARSHMALLOW, recreate)
     inline val dockSearchBar get() = !dockHide && dockSearchBarPref
     val dockRadius get() = dockStyles.currentStyle.radius
     val dockShadow get() = dockStyles.currentStyle.enableShadow

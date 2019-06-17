@@ -28,6 +28,7 @@ import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.settings.IconScale;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Thunk;
@@ -396,6 +397,11 @@ public class InvariantDeviceProfile {
                         (ASPECT_RATIO_LANDSCAPE - ASPECT_RATIO_PORTRAIT);
         final float y = WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT - x * ASPECT_RATIO_PORTRAIT;
         return x * aspectRatio + y;
+    }
+
+    public void onDockStyleChanged(LawnchairPreferences prefs) {
+        portraitProfile.onValueChanged("", prefs, false);
+        landscapeProfile.onValueChanged("", prefs, false);
     }
 
 }
