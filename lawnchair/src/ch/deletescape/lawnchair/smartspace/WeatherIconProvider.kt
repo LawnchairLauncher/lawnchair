@@ -48,28 +48,26 @@ class WeatherIconProvider(private val context: Context) {
         const val CONDITION_SNOW = "13"
         const val CONDITION_MIST = "50"
 
-        private val ID_MAP = HashMap<String, Int>()
-
-        init {
-            ID_MAP["${CONDITION_CLEAR}d"] = R.drawable.weather_01
-            ID_MAP["${CONDITION_CLEAR}n"] = R.drawable.weather_01n
-            ID_MAP["${CONDITION_FEW_CLOUDS}d"] = R.drawable.weather_02
-            ID_MAP["${CONDITION_FEW_CLOUDS}n"] = R.drawable.weather_02n
-            ID_MAP["${CONDITION_CLOUDS}d"] = R.drawable.weather_03
-            ID_MAP["${CONDITION_CLOUDS}n"] = R.drawable.weather_03n
-            ID_MAP["${CONDITION_MOST_CLOUDS}d"] = R.drawable.weather_04
-            ID_MAP["${CONDITION_MOST_CLOUDS}n"] = R.drawable.weather_04n
-            ID_MAP["${CONDITION_SHOWERS}d"] = R.drawable.weather_09
-            ID_MAP["${CONDITION_SHOWERS}n"] = R.drawable.weather_09
-            ID_MAP["${CONDITION_RAIN}d"] = R.drawable.weather_10
-            ID_MAP["${CONDITION_RAIN}n"] = R.drawable.weather_10n
-            ID_MAP["${CONDITION_STORM}d"] = R.drawable.weather_11
-            ID_MAP["${CONDITION_STORM}n"] = R.drawable.weather_11
-            ID_MAP["${CONDITION_SNOW}d"] = R.drawable.weather_13
-            ID_MAP["${CONDITION_SNOW}n"] = R.drawable.weather_13
-            ID_MAP["${CONDITION_MIST}d"] = R.drawable.weather_50
-            ID_MAP["${CONDITION_MIST}n"] = R.drawable.weather_50
-            ID_MAP[CONDITION_UNKNOWN] = R.drawable.weather_none_available
-        }
+        private val ID_MAP = mapOf(
+                "${CONDITION_CLEAR}d" to R.drawable.weather_01,
+                "${CONDITION_CLEAR}n" to R.drawable.weather_01n,
+                "${CONDITION_FEW_CLOUDS}d" to R.drawable.weather_02,
+                "${CONDITION_FEW_CLOUDS}n" to R.drawable.weather_02n,
+                "${CONDITION_CLOUDS}d" to R.drawable.weather_03,
+                "${CONDITION_CLOUDS}n" to R.drawable.weather_03n,
+                "${CONDITION_MOST_CLOUDS}d" to R.drawable.weather_04,
+                "${CONDITION_MOST_CLOUDS}n" to R.drawable.weather_04n,
+                "${CONDITION_SHOWERS}d" to R.drawable.weather_09,
+                "${CONDITION_SHOWERS}n" to R.drawable.weather_09,
+                "${CONDITION_RAIN}d" to R.drawable.weather_10,
+                "${CONDITION_RAIN}n" to R.drawable.weather_10n,
+                "${CONDITION_STORM}d" to R.drawable.weather_11,
+                "${CONDITION_STORM}n" to R.drawable.weather_11,
+                "${CONDITION_SNOW}d" to R.drawable.weather_13,
+                "${CONDITION_SNOW}n" to R.drawable.weather_13,
+                "${CONDITION_MIST}d" to R.drawable.weather_50,
+                "${CONDITION_MIST}n" to R.drawable.weather_50,
+                CONDITION_UNKNOWN to R.drawable.weather_none_available
+        )
     }
 }

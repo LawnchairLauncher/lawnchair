@@ -621,4 +621,6 @@
     <string name="open_image_picker">Open image picker</string>
     <string name="import_icon">Import icon</string>
     <string name="import_as_adaptive">As adaptive icon</string>
+
+    <string name="weather_provider_accu" translatable="false">AccuWeather</string>
 </resources>

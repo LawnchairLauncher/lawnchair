@@ -63,6 +63,12 @@
         android:key="currentWeatherProvider"
         android:title="@string/pref_smartspace_widget_provider" />
 
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        android:key="pref_debugOkhttp"
+        android:title="Enable full network log"
+        android:summary="Useful for debugging some weather providers"
+        android:defaultValue="false" />
+
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_wipOptions"
         android:title="Other"
