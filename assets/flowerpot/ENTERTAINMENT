@@ -1,11 +1,11 @@
-# generated at Mon Jun 17 11:03:38 2019 using merge.py
+# generated at Mon Jun 17 13:22:44 2019 using merge.py
 # format: flowerpot-1 (azalea)
 # specs: https://del.dog/flowerpot
 $1
 # STATIC TEMPLATE
 &category|audio
 &category|video
-;android.intent.category.APP_MUSI
+;android.intent.category.APP_MUSIC
 ;android.intent.category.LEANBACK_LAUNCHER
 ;android.intent.category.VR_HOME
 # ENTERTAINMENT
