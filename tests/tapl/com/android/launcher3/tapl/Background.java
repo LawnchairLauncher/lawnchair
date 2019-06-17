@@ -87,16 +87,24 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
             }
 
             case TWO_BUTTON: {
-                final int centerX = mLauncher.getDevice().getDisplayWidth() / 2;
-                final int startY = getSwipeStartY();
-                final int swipeHeight = mLauncher.getTestInfo(getSwipeHeightRequestName()).
-                        getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+                final int startX;
+                final int startY;
+                final int endX;
+                final int endY;
+                final int swipeLength = mLauncher.getTestInfo(getSwipeHeightRequestName()).
+                        getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD) + mLauncher.getTouchSlop();
 
-                mLauncher.swipeToState(
-                        centerX, startY, centerX,
-                        startY - swipeHeight - mLauncher.getTouchSlop(),
-                        10,
-                        expectedState);
+                if (mLauncher.getDevice().isNaturalOrientation()) {
+                    startX = endX = mLauncher.getDevice().getDisplayWidth() / 2;
+                    startY = getSwipeStartY();
+                    endY = startY - swipeLength;
+                } else {
+                    startX = getSwipeStartX();
+                    endX = startX - swipeLength;
+                    startY = endY = mLauncher.getDevice().getDisplayHeight() / 2;
+                }
+
+                mLauncher.swipeToState(startX, startY, endX, endY, 10, expectedState);
                 break;
             }
 
@@ -109,6 +117,10 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
 
     protected String getSwipeHeightRequestName() {
         return TestProtocol.REQUEST_BACKGROUND_TO_OVERVIEW_SWIPE_HEIGHT;
+    }
+
+    protected int getSwipeStartX() {
+        return mLauncher.getRealDisplaySize().x - 1;
     }
 
     protected int getSwipeStartY() {
