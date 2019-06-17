@@ -333,7 +333,11 @@ public final class LauncherInstrumentation {
                 "but the current state is not " + containerType.name())) {
             switch (containerType) {
                 case WORKSPACE: {
-                    waitForLauncherObject(APPS_RES_ID);
+                    if (mDevice.isNaturalOrientation()) {
+                        waitForLauncherObject(APPS_RES_ID);
+                    } else {
+                        waitUntilGone(APPS_RES_ID);
+                    }
                     waitUntilGone(OVERVIEW_RES_ID);
                     waitUntilGone(WIDGETS_RES_ID);
                     return waitForLauncherObject(WORKSPACE_RES_ID);
