@@ -20,9 +20,8 @@ package ch.deletescape.lawnchair.colors
 import android.graphics.Color
 import android.support.annotation.Keep
 import android.text.TextUtils
-import android.view.ContextThemeWrapper
-import ch.deletescape.lawnchair.getColorAccent
 import ch.deletescape.lawnchair.getColorAttr
+import ch.deletescape.lawnchair.theme.ThemeOverride
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.uioverrides.WallpaperColorInfo
@@ -52,8 +51,11 @@ class LawnchairAccentResolver(config: Config) : ColorEngine.ColorResolver(config
 @Keep
 class SystemAccentResolver(config: Config) : ColorEngine.ColorResolver(config) {
 
+    override val themeAware = true
+    override val themeSet = ThemeOverride.DeviceDefault()
+
     override fun resolveColor(): Int {
-        var color = ContextThemeWrapper(engine.context, android.R.style.Theme_DeviceDefault).getColorAccent()
+        var color = themedContext.getColorAttr(android.R.attr.colorAccent)
         if (Utilities.isOnePlusStock()) {
             var propertyValue = Utilities.getSystemProperty("persist.sys.theme.accentcolor", "")
             if (!TextUtils.isEmpty(propertyValue)) {
@@ -76,7 +78,7 @@ class PixelAccentResolver(config: Config) : ColorEngine.ColorResolver(config) {
     override val themeAware = true
 
     override fun resolveColor(): Int {
-        return launcherThemeContext.getColorAttr(android.R.attr.colorAccent)
+        return themedContext.getColorAttr(android.R.attr.colorAccent)
     }
 
     override fun getDisplayName() = engine.context.getString(R.string.color_pixel_accent) as String
@@ -169,7 +171,7 @@ abstract class ThemeAttributeColorResolver(config: Config) :
     override val themeAware = true
 
     override fun resolveColor(): Int {
-        return launcherThemeContext.getColorAttr(colorAttr)
+        return themedContext.getColorAttr(colorAttr)
     }
 
     override fun getDisplayName() = context.getString(R.string.theme_based)

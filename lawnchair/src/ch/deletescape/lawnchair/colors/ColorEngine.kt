@@ -22,6 +22,7 @@ import android.graphics.Color.*
 import android.text.TextUtils
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.colors.resolvers.*
+import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.util.SingletonHolder
 import ch.deletescape.lawnchair.util.ThemedContextProvider
 import ch.deletescape.lawnchair.util.extensions.d
@@ -222,11 +223,12 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
         val args get() = config.args
         open val isCustom = false
         open val themeAware = false
+        open val themeSet: ThemeOverride.ThemeSet = ThemeOverride.Launcher()
 
         val context get() = engine.context
 
-        private val themedContextProvider by lazy { ThemedContextProvider(context, this) }
-        val launcherThemeContext get() = themedContextProvider.get()
+        private val themedContextProvider by lazy { ThemedContextProvider(context, this, themeSet) }
+        val themedContext get() = themedContextProvider.get()
 
         abstract fun resolveColor(): Int
 

@@ -20,7 +20,6 @@ package ch.deletescape.lawnchair.colors.resolvers
 import android.graphics.Color
 import android.support.annotation.Keep
 import android.support.v4.graphics.ColorUtils
-import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.colors.ThemeAttributeColorResolver
@@ -92,7 +91,7 @@ class DrawerQsbLightResolver(config: Config) : WallpaperColorResolver(config), L
                 R.color.qsb_background_drawer_default
     ).let {
         ColorUtils.compositeColors(ColorUtils
-                .compositeColors(it, Themes.getAttrColor(launcherThemeContext, R.attr.allAppsScrimColor)),
+                .compositeColors(it, Themes.getAttrColor(themedContext, R.attr.allAppsScrimColor)),
                 colorInfo.mainColor)
     }
 
@@ -106,7 +105,7 @@ class DrawerQsbDarkResolver(config: Config) : WallpaperColorResolver(config) {
     val color = engine.context.resources.getColor(R.color.qsb_background_drawer_dark_bar)
 
     override fun resolveColor() = ColorUtils.compositeColors(ColorUtils
-            .compositeColors(color, Themes.getAttrColor(launcherThemeContext, R.attr.allAppsScrimColor)),
+            .compositeColors(color, Themes.getAttrColor(themedContext, R.attr.allAppsScrimColor)),
             colorInfo.mainColor)
 
     override fun getDisplayName() = engine.context.resources.getString(R.string.theme_dark)
