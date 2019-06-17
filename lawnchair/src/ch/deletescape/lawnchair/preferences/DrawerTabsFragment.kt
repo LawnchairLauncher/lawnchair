@@ -27,7 +27,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.groups.LegacyDrawerTabsAdapter
-import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.tintDrawable
 import com.android.launcher3.R
 
@@ -50,7 +49,6 @@ class DrawerTabsFragment : RecyclerViewFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         view.findViewById<ImageView>(R.id.btn_add).apply {
-            isVisible = false
             tintDrawable(ColorEngine.getInstance(context).accent)
             setOnClickListener {
                 adapter!!.showAddDialog()

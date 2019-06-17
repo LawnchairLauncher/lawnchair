@@ -49,7 +49,7 @@ open class DrawerTabsAdapter(context: Context) : AppGroupsAdapter<DrawerTabsAdap
         }
     }
 
-    inner class TabHolder(itemView: View) : GroupHolder(itemView) {
+    open inner class TabHolder(itemView: View) : GroupHolder(itemView) {
 
         override fun bind(info: AppGroups.Group) {
             super.bind(info)

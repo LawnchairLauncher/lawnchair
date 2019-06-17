@@ -191,7 +191,7 @@ abstract class AppGroupsAdapter<VH : AppGroupsAdapter<VH, T>.GroupHolder, T : Ap
             deleted = false
         }
 
-        private fun formatSummary(summary: String?): String? {
+        protected open fun formatSummary(summary: String?): String? {
             if (summary.isNullOrEmpty()) return null
             return if (itemView.layoutDirection == LayoutDirection.LTR) {
                 "— $summary"
