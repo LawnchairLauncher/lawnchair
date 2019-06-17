@@ -90,6 +90,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.notification.NotificationListener;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.ContentWriter.CommitParams;
 import com.android.launcher3.util.SettingsObserver;
@@ -97,6 +98,7 @@ import com.android.launcher3.views.ButtonPreference;
 import com.google.android.apps.nexuslauncher.reflection.ReflectionClient;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Set;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import org.jetbrains.annotations.NotNull;
@@ -1007,6 +1009,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
             // Clear custom app icons
             LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
+            Set<ComponentKey> toUpdateSet = prefs.getCustomAppIcon().toMap().keySet();
             prefs.beginBlockingEdit();
             prefs.getCustomAppIcon().clear();
             prefs.endBlockingEdit();
@@ -1018,7 +1021,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
             writer.commit();
 
             // Reload changes
-            LawnchairUtilsKt.reloadIcons(context);
+            LawnchairUtilsKt.reloadIconsFromComponents(context, toUpdateSet);
             LawnchairPreferencesChangeCallback prefsCallback = prefs.getOnChangeCallback();
             if (prefsCallback != null) {
                 prefsCallback.reloadAll();

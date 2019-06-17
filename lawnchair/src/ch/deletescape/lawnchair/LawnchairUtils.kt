@@ -63,6 +63,7 @@ import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
+import com.android.launcher3.util.PackageUserKey
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.OptionsPopupView
 import com.android.systemui.shared.recents.model.TaskStack
@@ -367,6 +368,19 @@ fun java.text.Collator.matches(query: String, target: String): Boolean {
 fun String.toTitleCase(): String = splitToSequence(" ").map { it.capitalize() }.joinToString(" ")
 
 fun reloadIcons(context: Context) {
+    val userManagerCompat = UserManagerCompat.getInstance(context)
+    val launcherApps = LauncherAppsCompat.getInstance(context)
+
+    reloadIcons(context, userManagerCompat.userProfiles.flatMap { user ->
+        launcherApps.getActivityList(null, user).map { PackageUserKey(it.componentName.packageName, it.user) }
+    })
+}
+
+fun reloadIconsFromComponents(context: Context, components: Collection<ComponentKey>) {
+    reloadIcons(context, components.map { PackageUserKey(it.componentName.packageName, it.user) })
+}
+
+fun reloadIcons(context: Context, packages: Collection<PackageUserKey>) {
     LooperExecutor(LauncherModel.getIconPackLooper()).execute {
         val userManagerCompat = UserManagerCompat.getInstance(context)
         val las = LauncherAppState.getInstance(context)
@@ -378,9 +392,8 @@ fun reloadIcons(context: Context) {
         }
 
         val shortcutManager = DeepShortcutManager.getInstance(context)
-        val launcherApps = LauncherAppsCompat.getInstance(context)
-        userManagerCompat.userProfiles.forEach { user ->
-            launcherApps.getActivityList(null, user).forEach { CustomIconUtils.reloadIcon(shortcutManager, model, user, it.componentName.packageName) }
+        packages.forEach {
+            CustomIconUtils.reloadIcon(shortcutManager, model, it.mUser, it.mPackageName)
         }
         if (launcher != null) {
             runOnMainThread {
