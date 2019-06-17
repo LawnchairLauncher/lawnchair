@@ -17,6 +17,7 @@ package com.android.launcher3.views;
 
 import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.Utilities.getBadge;
+import static com.android.launcher3.Utilities.getFullDrawable;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
@@ -42,6 +43,7 @@ import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
@@ -65,6 +67,7 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
@@ -76,6 +79,11 @@ import androidx.dynamicanimation.animation.SpringForce;
 @TargetApi(Build.VERSION_CODES.Q)
 public class FloatingIconView extends View implements
         Animator.AnimatorListener, ClipPathView, OnGlobalLayoutListener {
+
+    private static final String TAG = FloatingIconView.class.getSimpleName();
+
+    // Manages loading the icon on a worker thread
+    private static @Nullable IconLoadResult sIconLoadResult;
 
     public static final float SHAPE_PROGRESS_DURATION = 0.10f;
     private static final int FADE_DURATION_MS = 200;
@@ -125,6 +133,8 @@ public class FloatingIconView extends View implements
     private boolean mIsVerticalBarLayout = false;
     private boolean mIsAdaptiveIcon = false;
     private boolean mIsOpening;
+
+    private IconLoadResult mIconLoadResult;
 
     private @Nullable Drawable mBadge;
     private @Nullable Drawable mForeground;
@@ -299,8 +309,8 @@ public class FloatingIconView extends View implements
      * @param v The view to copy
      * @param positionOut Rect that will hold the size and position of v.
      */
-    private void matchPositionOf(View v, RectF positionOut) {
-        float rotation = getLocationBoundsForView(v, positionOut);
+    private void matchPositionOf(Launcher launcher, View v, boolean isOpening, RectF positionOut) {
+        float rotation = getLocationBoundsForView(launcher, v, isOpening, positionOut);
         final LayoutParams lp = new LayoutParams(
                 Math.round(positionOut.width()),
                 Math.round(positionOut.height()));
@@ -328,8 +338,9 @@ public class FloatingIconView extends View implements
      * - For DeepShortcutView, we return the bounds of the icon view.
      * - For BubbleTextView, we return the icon bounds.
      */
-    private float getLocationBoundsForView(View v, RectF outRect) {
-        boolean ignoreTransform = !mIsOpening;
+    private static float getLocationBoundsForView(Launcher launcher, View v, boolean isOpening,
+            RectF outRect) {
+        boolean ignoreTransform = !isOpening;
         if (v instanceof DeepShortcutView) {
             v = ((DeepShortcutView) v).getBubbleText();
             ignoreTransform = false;
@@ -353,7 +364,7 @@ public class FloatingIconView extends View implements
         float[] points = new float[] {iconBounds.left, iconBounds.top, iconBounds.right,
                 iconBounds.bottom};
         float[] rotation = new float[] {0};
-        Utilities.getDescendantCoordRelativeToAncestor(v, mLauncher.getDragLayer(), points,
+        Utilities.getDescendantCoordRelativeToAncestor(v, launcher.getDragLayer(), points,
                 false, ignoreTransform, rotation);
         outRect.set(
                 Math.min(points[0], points[2]),
@@ -363,148 +374,217 @@ public class FloatingIconView extends View implements
         return rotation[0];
     }
 
+    /**
+     * Loads the icon and saves the results to {@link #sIconLoadResult}.
+     * Runs onIconLoaded callback (if any), which signifies that the FloatingIconView is
+     * ready to display the icon. Otherwise, the FloatingIconView will grab the results when its
+     * initialized.
+     *
+     * @param originalView The View that the FloatingIconView will replace.
+     * @param info ItemInfo of the originalView
+     * @param pos The position of the view.
+     */
     @WorkerThread
     @SuppressWarnings("WrongThread")
-    private void getIcon(View v, ItemInfo info, boolean isOpening,
-            Runnable onIconLoadedRunnable, CancellationSignal loadIconSignal) {
-        final LayoutParams lp = (LayoutParams) getLayoutParams();
+    private static void getIconResult(Launcher l, View originalView, ItemInfo info, RectF pos,
+            IconLoadResult iconLoadResult) {
         Drawable drawable = null;
+        Drawable badge = null;
         boolean supportsAdaptiveIcons = ADAPTIVE_ICON_WINDOW_ANIM.get()
                 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
-        Drawable btvIcon = v instanceof BubbleTextView ? ((BubbleTextView) v).getIcon() : null;
+        Drawable btvIcon = originalView instanceof BubbleTextView
+                ? ((BubbleTextView) originalView).getIcon() : null;
         if (info instanceof SystemShortcut) {
-            if (v instanceof ImageView) {
-                drawable = ((ImageView) v).getDrawable();
-            } else if (v instanceof DeepShortcutView) {
-                drawable = ((DeepShortcutView) v).getIconView().getBackground();
+            if (originalView instanceof ImageView) {
+                drawable = ((ImageView) originalView).getDrawable();
+            } else if (originalView instanceof DeepShortcutView) {
+                drawable = ((DeepShortcutView) originalView).getIconView().getBackground();
             } else {
-                drawable = v.getBackground();
+                drawable = originalView.getBackground();
             }
         } else {
-            boolean isFolderIcon = v instanceof FolderIcon;
-            int width = isFolderIcon ? v.getWidth() : lp.width;
-            int height = isFolderIcon ? v.getHeight() : lp.height;
+            boolean isFolderIcon = originalView instanceof FolderIcon;
+            int width = isFolderIcon ? originalView.getWidth() : (int) pos.width();
+            int height = isFolderIcon ? originalView.getHeight() : (int) pos.height();
             if (supportsAdaptiveIcons) {
-                drawable = Utilities.getFullDrawable(mLauncher, info, width, height, false,
-                        sTmpObjArray);
+                drawable = getFullDrawable(l, info, width, height, false, sTmpObjArray);
                 if (drawable instanceof AdaptiveIconDrawable) {
-                    mBadge = getBadge(mLauncher, info, sTmpObjArray[0]);
+                    badge = getBadge(l, info, sTmpObjArray[0]);
                 } else {
                     // The drawable we get back is not an adaptive icon, so we need to use the
                     // BubbleTextView icon that is already legacy treated.
                     drawable = btvIcon;
                 }
             } else {
-                if (v instanceof BubbleTextView) {
+                if (originalView instanceof BubbleTextView) {
                     // Similar to DragView, we simply use the BubbleTextView icon here.
                     drawable = btvIcon;
                 } else {
-                    drawable = Utilities.getFullDrawable(mLauncher, info, width, height, false,
-                            sTmpObjArray);
+                    drawable = getFullDrawable(l, info, width, height, false, sTmpObjArray);
                 }
             }
         }
 
-        Drawable finalDrawable = drawable == null ? null
-                : drawable.getConstantState().newDrawable();
-        boolean isAdaptiveIcon = supportsAdaptiveIcons
-                && finalDrawable instanceof AdaptiveIconDrawable;
-        int iconOffset = getOffsetForIconBounds(finalDrawable);
+        drawable = drawable == null ? null : drawable.getConstantState().newDrawable();
+        int iconOffset = getOffsetForIconBounds(l, drawable, pos);
+        synchronized (iconLoadResult) {
+            iconLoadResult.drawable = drawable;
+            iconLoadResult.badge = badge;
+            iconLoadResult.iconOffset = iconOffset;
+            if (iconLoadResult.onIconLoaded != null) {
+                l.getMainExecutor().execute(iconLoadResult.onIconLoaded);
+                iconLoadResult.onIconLoaded = null;
+            }
+            iconLoadResult.isIconLoaded = true;
+        }
+    }
 
-        mLauncher.getMainExecutor().execute(() -> {
-            if (isAdaptiveIcon) {
-                mIsAdaptiveIcon = true;
-                boolean isFolderIcon = finalDrawable instanceof FolderAdaptiveIcon;
+    /**
+     * Sets the drawables of the {@param originalView} onto this view.
+     *
+     * @param originalView The View that the FloatingIconView will replace.
+     * @param drawable The drawable of the original view.
+     * @param badge The badge of the original view.
+     * @param iconOffset The amount of offset needed to match this view with the original view.
+     */
+    @UiThread
+    private void setIcon(View originalView, @Nullable Drawable drawable, @Nullable Drawable badge,
+            int iconOffset) {
+        mBadge = badge;
 
-                AdaptiveIconDrawable adaptiveIcon = (AdaptiveIconDrawable) finalDrawable;
-                Drawable background = adaptiveIcon.getBackground();
-                if (background == null) {
-                    background = new ColorDrawable(Color.TRANSPARENT);
+        mIsAdaptiveIcon = drawable instanceof AdaptiveIconDrawable;
+        if (mIsAdaptiveIcon) {
+            boolean isFolderIcon = drawable instanceof FolderAdaptiveIcon;
+
+            AdaptiveIconDrawable adaptiveIcon = (AdaptiveIconDrawable) drawable;
+            Drawable background = adaptiveIcon.getBackground();
+            if (background == null) {
+                background = new ColorDrawable(Color.TRANSPARENT);
+            }
+            mBackground = background;
+            Drawable foreground = adaptiveIcon.getForeground();
+            if (foreground == null) {
+                foreground = new ColorDrawable(Color.TRANSPARENT);
+            }
+            mForeground = foreground;
+
+            final LayoutParams lp = (LayoutParams) getLayoutParams();
+            final int originalHeight = lp.height;
+            final int originalWidth = lp.width;
+
+            int blurMargin = mBlurSizeOutline / 2;
+            mFinalDrawableBounds.set(0, 0, originalWidth, originalHeight);
+
+            if (!isFolderIcon) {
+                mFinalDrawableBounds.inset(iconOffset - blurMargin, iconOffset - blurMargin);
+            }
+            mForeground.setBounds(mFinalDrawableBounds);
+            mBackground.setBounds(mFinalDrawableBounds);
+
+            mStartRevealRect.set(0, 0, originalWidth, originalHeight);
+
+            if (mBadge != null) {
+                mBadge.setBounds(mStartRevealRect);
+                if (!mIsOpening && !isFolderIcon) {
+                    DRAWABLE_ALPHA.set(mBadge, 0);
                 }
-                mBackground = background;
-                Drawable foreground = adaptiveIcon.getForeground();
-                if (foreground == null) {
-                    foreground = new ColorDrawable(Color.TRANSPARENT);
+            }
+
+            if (isFolderIcon) {
+                ((FolderIcon) originalView).getPreviewBounds(sTmpRect);
+                float bgStroke = ((FolderIcon) originalView).getBackgroundStrokeWidth();
+                if (mForeground instanceof ShiftedBitmapDrawable) {
+                    ShiftedBitmapDrawable sbd = (ShiftedBitmapDrawable) mForeground;
+                    sbd.setShiftX(sbd.getShiftX() - sTmpRect.left - bgStroke);
+                    sbd.setShiftY(sbd.getShiftY() - sTmpRect.top - bgStroke);
                 }
-                mForeground = foreground;
-
-                final int originalHeight = lp.height;
-                final int originalWidth = lp.width;
-
-                int blurMargin = mBlurSizeOutline / 2;
-                mFinalDrawableBounds.set(0, 0, originalWidth, originalHeight);
-                if (!isFolderIcon) {
-                    mFinalDrawableBounds.inset(iconOffset - blurMargin, iconOffset - blurMargin);
+                if (mBadge instanceof ShiftedBitmapDrawable) {
+                    ShiftedBitmapDrawable sbd = (ShiftedBitmapDrawable) mBadge;
+                    sbd.setShiftX(sbd.getShiftX() - sTmpRect.left - bgStroke);
+                    sbd.setShiftY(sbd.getShiftY() - sTmpRect.top - bgStroke);
                 }
-                mForeground.setBounds(mFinalDrawableBounds);
-                mBackground.setBounds(mFinalDrawableBounds);
-
-                mStartRevealRect.set(0, 0, originalWidth, originalHeight);
-
-                if (mBadge != null) {
-                    mBadge.setBounds(mStartRevealRect);
-                    if (!isOpening && !isFolderIcon) {
-                        DRAWABLE_ALPHA.set(mBadge, 0);
-                    }
-                }
-
-                if (isFolderIcon) {
-                    ((FolderIcon) v).getPreviewBounds(sTmpRect);
-                    float bgStroke = ((FolderIcon) v).getBackgroundStrokeWidth();
-                    if (mForeground instanceof ShiftedBitmapDrawable) {
-                        ShiftedBitmapDrawable sbd = (ShiftedBitmapDrawable) mForeground;
-                        sbd.setShiftX(sbd.getShiftX() - sTmpRect.left - bgStroke);
-                        sbd.setShiftY(sbd.getShiftY() - sTmpRect.top - bgStroke);
-                    }
-                    if (mBadge instanceof ShiftedBitmapDrawable) {
-                        ShiftedBitmapDrawable sbd = (ShiftedBitmapDrawable) mBadge;
-                        sbd.setShiftX(sbd.getShiftX() - sTmpRect.left - bgStroke);
-                        sbd.setShiftY(sbd.getShiftY() - sTmpRect.top - bgStroke);
-                    }
-                } else {
-                    Utilities.scaleRectAboutCenter(mStartRevealRect,
-                            IconShape.getNormalizationScale());
-                }
-
-                float aspectRatio = mLauncher.getDeviceProfile().aspectRatio;
-                if (mIsVerticalBarLayout) {
-                    lp.width = (int) Math.max(lp.width, lp.height * aspectRatio);
-                } else {
-                    lp.height = (int) Math.max(lp.height, lp.width * aspectRatio);
-                }
-                layout(lp.leftMargin, lp.topMargin, lp.leftMargin + lp.width, lp.topMargin
-                        + lp.height);
-
-                float scale = Math.max((float) lp.height / originalHeight,
-                        (float) lp.width / originalWidth);
-                float bgDrawableStartScale;
-                if (isOpening) {
-                    bgDrawableStartScale = 1f;
-                    mOutline.set(0, 0, originalWidth, originalHeight);
-                } else {
-                    bgDrawableStartScale = scale;
-                    mOutline.set(0, 0, lp.width, lp.height);
-                }
-                setBackgroundDrawableBounds(bgDrawableStartScale);
-                mEndRevealRect.set(0, 0, lp.width, lp.height);
-                setOutlineProvider(new ViewOutlineProvider() {
-                    @Override
-                    public void getOutline(View view, Outline outline) {
-                        outline.setRoundRect(mOutline, mTaskCornerRadius);
-                    }
-                });
-                setClipToOutline(true);
             } else {
-                setBackground(finalDrawable);
-                setClipToOutline(false);
+                Utilities.scaleRectAboutCenter(mStartRevealRect,
+                        IconShape.getNormalizationScale());
             }
 
-            if (!loadIconSignal.isCanceled()) {
-                onIconLoadedRunnable.run();
+            float aspectRatio = mLauncher.getDeviceProfile().aspectRatio;
+            if (mIsVerticalBarLayout) {
+                lp.width = (int) Math.max(lp.width, lp.height * aspectRatio);
+            } else {
+                lp.height = (int) Math.max(lp.height, lp.width * aspectRatio);
             }
-            invalidate();
-            invalidateOutline();
-        });
+            layout(lp.leftMargin, lp.topMargin, lp.leftMargin + lp.width, lp.topMargin
+                    + lp.height);
+
+            float scale = Math.max((float) lp.height / originalHeight,
+                    (float) lp.width / originalWidth);
+            float bgDrawableStartScale;
+            if (mIsOpening) {
+                bgDrawableStartScale = 1f;
+                mOutline.set(0, 0, originalWidth, originalHeight);
+            } else {
+                bgDrawableStartScale = scale;
+                mOutline.set(0, 0, lp.width, lp.height);
+            }
+            setBackgroundDrawableBounds(bgDrawableStartScale);
+            mEndRevealRect.set(0, 0, lp.width, lp.height);
+            setOutlineProvider(new ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    outline.setRoundRect(mOutline, mTaskCornerRadius);
+                }
+            });
+            setClipToOutline(true);
+        } else {
+            setBackground(drawable);
+            setClipToOutline(false);
+        }
+
+        invalidate();
+        invalidateOutline();
+    }
+
+    /**
+     * Checks if the icon result is loaded. If true, we set the icon immediately. Else, we add a
+     * callback to set the icon once the icon result is loaded.
+     */
+    private void checkIconResult(View originalView, boolean isOpening) {
+        CancellationSignal cancellationSignal = new CancellationSignal();
+        if (!isOpening) {
+            // Hide immediately since the floating view starts at a different location.
+            originalView.setVisibility(INVISIBLE);
+            cancellationSignal.setOnCancelListener(() -> originalView.setVisibility(VISIBLE));
+        }
+
+        if (mIconLoadResult == null) {
+            Log.w(TAG, "No icon load result found in checkIconResult");
+            return;
+        }
+
+        synchronized (mIconLoadResult) {
+            if (mIconLoadResult.isIconLoaded) {
+                setIcon(originalView, mIconLoadResult.drawable, mIconLoadResult.badge,
+                        mIconLoadResult.iconOffset);
+                if (isOpening) {
+                    originalView.setVisibility(INVISIBLE);
+                }
+            } else {
+                mIconLoadResult.onIconLoaded = () -> {
+                    if (cancellationSignal.isCanceled()) {
+                        return;
+                    }
+                    if (mIconLoadResult.isIconLoaded) {
+                        setIcon(originalView, mIconLoadResult.drawable, mIconLoadResult.badge,
+                                mIconLoadResult.iconOffset);
+                    }
+                    // Delay swapping views until the icon is loaded to prevent a flash.
+                    setVisibility(VISIBLE);
+                    originalView.setVisibility(INVISIBLE);
+                };
+            }
+        }
+        mLoadIconSignal = cancellationSignal;
     }
 
     private void setBackgroundDrawableBounds(float scale) {
@@ -521,17 +601,19 @@ public class FloatingIconView extends View implements
 
     @WorkerThread
     @SuppressWarnings("WrongThread")
-    private int getOffsetForIconBounds(Drawable drawable) {
+    private static int getOffsetForIconBounds(Launcher l, Drawable drawable, RectF position) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O ||
                 !(drawable instanceof AdaptiveIconDrawable)) {
             return 0;
         }
+        int blurSizeOutline =
+                l.getResources().getDimensionPixelSize(R.dimen.blur_size_medium_outline);
 
-        final LayoutParams lp = (LayoutParams) getLayoutParams();
-        Rect bounds = new Rect(0, 0, lp.width + mBlurSizeOutline, lp.height + mBlurSizeOutline);
-        bounds.inset(mBlurSizeOutline / 2, mBlurSizeOutline / 2);
+        Rect bounds = new Rect(0, 0, (int) position.width() + blurSizeOutline,
+                (int) position.height() + blurSizeOutline);
+        bounds.inset(blurSizeOutline / 2, blurSizeOutline / 2);
 
-        try (LauncherIcons li = LauncherIcons.obtain(mLauncher)) {
+        try (LauncherIcons li = LauncherIcons.obtain(l)) {
             Utilities.scaleRectAboutCenter(bounds, li.getNormalizer().getScale(drawable, null,
                     null, null));
         }
@@ -587,7 +669,11 @@ public class FloatingIconView extends View implements
     }
 
     @Override
-    public void onAnimationStart(Animator animator) {}
+    public void onAnimationStart(Animator animator) {
+        if (mIconLoadResult != null && mIconLoadResult.isIconLoaded) {
+            setVisibility(View.VISIBLE);
+        }
+    }
 
     @Override
     public void onAnimationCancel(Animator animator) {}
@@ -598,7 +684,8 @@ public class FloatingIconView extends View implements
     @Override
     public void onGlobalLayout() {
         if (mOriginalIcon.isAttachedToWindow() && mPositionOut != null) {
-            float rotation = getLocationBoundsForView(mOriginalIcon, sTmpRectF);
+            float rotation = getLocationBoundsForView(mLauncher, mOriginalIcon, mIsOpening,
+                    sTmpRectF);
             if (rotation != mRotation || !sTmpRectF.equals(mPositionOut)) {
                 updatePosition(rotation, sTmpRectF, (LayoutParams) getLayoutParams());
                 if (mOnTargetChangeRunnable != null) {
@@ -613,6 +700,22 @@ public class FloatingIconView extends View implements
     }
 
     /**
+     * Loads the icon drawable on a worker thread to reduce latency between swapping views.
+     */
+    @UiThread
+    public static IconLoadResult fetchIcon(Launcher l, View v, ItemInfo info, boolean isOpening) {
+        IconLoadResult result = new IconLoadResult();
+        new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(() -> {
+            RectF position = new RectF();
+            getLocationBoundsForView(l, v, isOpening, position);
+            getIconResult(l, v, info, position, result);
+        });
+
+        sIconLoadResult = result;
+        return result;
+    }
+
+    /**
      * Creates a floating icon view for {@param originalView}.
      * @param originalView The view to copy
      * @param hideOriginal If true, it will hide {@param originalView} while this view is visible.
@@ -624,38 +727,30 @@ public class FloatingIconView extends View implements
             boolean hideOriginal, RectF positionOut, boolean isOpening) {
         final DragLayer dragLayer = launcher.getDragLayer();
         ViewGroup parent = (ViewGroup) dragLayer.getParent();
-
         FloatingIconView view = launcher.getViewCache().getView(R.layout.floating_icon_view,
                 launcher, parent);
         view.recycle();
 
+        // Get the drawable on the background thread
+        boolean shouldLoadIcon = originalView.getTag() instanceof ItemInfo && hideOriginal;
+        view.mIconLoadResult = sIconLoadResult;
+        if (shouldLoadIcon && view.mIconLoadResult == null) {
+            view.mIconLoadResult = fetchIcon(launcher, originalView,
+                    (ItemInfo) originalView.getTag(), isOpening);
+        }
+        sIconLoadResult = null;
+
         view.mIsVerticalBarLayout = launcher.getDeviceProfile().isVerticalBarLayout();
         view.mIsOpening = isOpening;
-
         view.mOriginalIcon = originalView;
         view.mPositionOut = positionOut;
-        // Match the position of the original view.
-        view.matchPositionOf(originalView, positionOut);
 
-        // Get the drawable on the background thread
+        // Match the position of the original view.
+        view.matchPositionOf(launcher, originalView, isOpening, positionOut);
+
         // Must be called after matchPositionOf so that we know what size to load.
-        if (originalView.getTag() instanceof ItemInfo && hideOriginal) {
-            view.mLoadIconSignal = new CancellationSignal();
-            Runnable onIconLoaded = () -> {
-                // Delay swapping views until the icon is loaded to prevent a flash.
-                view.setVisibility(VISIBLE);
-                originalView.setVisibility(INVISIBLE);
-            };
-            if (!isOpening) {
-                // Hide immediately since the floating view starts at a different location.
-                originalView.setVisibility(INVISIBLE);
-                view.mLoadIconSignal.setOnCancelListener(() -> originalView.setVisibility(VISIBLE));
-            }
-            CancellationSignal loadIconSignal = view.mLoadIconSignal;
-            new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(() -> {
-                view.getIcon(originalView, (ItemInfo) originalView.getTag(), isOpening,
-                        onIconLoaded, loadIconSignal);
-            });
+        if (shouldLoadIcon) {
+            view.checkIconResult(originalView, isOpening);
         }
 
         // We need to add it to the overlay, but keep it invisible until animation starts..
@@ -779,5 +874,14 @@ public class FloatingIconView extends View implements
         mFgSpringY.cancel();
         mBadge = null;
         sTmpObjArray[0] = null;
+        mIconLoadResult = null;
+    }
+
+    private static class IconLoadResult {
+        Drawable drawable;
+        Drawable badge;
+        int iconOffset;
+        Runnable onIconLoaded;
+        boolean isIconLoaded;
     }
 }
