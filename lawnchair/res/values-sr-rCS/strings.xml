@@ -82,6 +82,7 @@
     <string name="grid_size_height">Visina</string>
     <string name="grid_size_width">Širina</string>
     <string name="launcher_theme_override_label">Nametni tamnu temu</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="blur_pref_title">Zamagljenje</string>
     <string name="blur_pref_summary">Efekat zamagljenja liste aplikacija, doka i pozadine podešavanja</string>
     <string name="blur_radius_pref_title">Nivo zamagljenja</string>
@@ -135,6 +136,7 @@
     <string name="about_our_contributors">Naši glavni saradnici</string>
     <string name="about_our_family">Drugi članovi naše porodice</string>
     <string name="about_role_lead">glavni programer</string>
+    <string name="about_role_devops">DevOps</string>
     <string name="about_role_dev">programer</string>
     <string name="about_role_dev_mod">programer/moderator</string>
     <string name="about_role_designer">dizajner</string>
@@ -248,7 +250,13 @@
     <string name="searchbar_appearance_title">Izgled</string>
     <string name="google">Google</string>
     <string name="search_provider_google_go">Google Go</string>
+    <string name="search_provider_yandex">Yandex</string>
+    <string name="search_provider_ddg">DuckDuckGo</string>
+    <string name="search_provider_bing">Bing</string>
+    <string name="search_provider_baidu">Baidu</string>
     <string name="search_provider_appsearch">Pretraga aplikacija</string>
+    <string name="search_provider_search_lite">Search Lite</string>
+    <string name="search_provider_cool_search">Cool Search</string>
     <string name="recent_task_option_force_stop">Prinudno zaustavi</string>
     <string name="pref_icon_packs">Paketi ikona</string>
     <string name="drag_to_enable_packs">Prevucite nagore za uključivanje</string>
@@ -261,6 +269,7 @@
     <string name="pref_legacy_colored_backgrounds_summary">Obojena pozadina generisanih prilagodljivih ikona</string>
     <string name="pref_white_only_treatment">Zameni belu pozadinu</string>
     <string name="pref_white_only_treatment_summary">Obojena pozadina svih prilagodljivih ikona</string>
+    <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <!--Marker H-->
     <string name="dismiss_drop_target_label">"Ne prikazuj"</string>
     <string name="suggested_action_content_description">%1$s se otvara u %2$s</string>
@@ -292,6 +301,7 @@
     <string name="search_clear_history">Obriši istoriju</string>
     <string name="search_no_results">Ništa nije pronađeno</string>
     <string name="search_menu">Pretražite podešavanja</string>
+    <string name="search_provider_s_finder">S Finder</string>
     <string name="lawnchair_accent">Naglašena boja</string>
     <string name="theme_based">Na osnovu teme</string>
     <!--Marker I-->
@@ -338,6 +348,7 @@
     <string name="shortcut_sesame">Prečice</string>
     <string name="pref_integrations">Integracija</string>
     <string name="pref_integrations_summary">Pretraga, Sesame, Google</string>
+    <string name="sesame">Sesame</string>
     <string name="sesame_data_integration">Integracija podataka</string>
     <string name="sesame_upsell">Dodirnite za instalaciju Sesame-a</string>
     <string name="sesame_search_upsell_on">Sesame je postavljen za dobavljača pretrage</string>
@@ -362,6 +373,9 @@
     <string name="font_weight_extra_bold">veoma masni</string>
     <string name="font_weight_extra_black">crni</string>
     <!--Marker K-->
+    <string name="search_provider_firefox">Firefox</string>
+    <string name="search_provider_qwant">Qwant</string>
+    <string name="weather_provider_oneplus_weather">OnePlus Weather</string>
     <string name="overlap_placement">Preklapanje elemenata</string>
     <string name="overlap_placement_summary">Dozvoljava međusobno preklapanje ikona i vidžeta</string>
     <string name="units_rakine">Rankin</string>
