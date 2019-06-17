@@ -1,7 +1,19 @@
-# generated at Sun Jun 16 22:36:15 2019 using merge.py
+# generated at Mon Jun 17 11:03:38 2019 using merge.py
 # format: flowerpot-1 (azalea)
 # specs: https://del.dog/flowerpot
 $1
+# STATIC TEMPLATE
+&category|social
+# Some social apps which weren't scraped
+com.twitter.android
+# Intents
+:android.intent.action.ANSWER
+;android.intent.category.APP_MESSAGING
+;android.intent.category.APP_CONTACTS
+;android.intent.category.APP_EMAIL
+:android.intent.action.DIAL
+:android.intent.action.CALL_BUTTON
+:android.intent.action.CALL
 # COMMUNICATION
 com.link.messages.sms
 call.free.international.phone.call

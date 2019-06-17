@@ -19,3 +19,4 @@
 :android.intent.action.SET_WALLPAPER
 # Muzei intent
 :com.google.android.apps.muzei.api.MuzeiArtProvider
+;android.intent.category.SECONDARY_HOME

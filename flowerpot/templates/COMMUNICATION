@@ -1,0 +1,11 @@
+&category|social
+# Some social apps which weren't scraped
+com.twitter.android
+# Intents
+:android.intent.action.ANSWER
+;android.intent.category.APP_MESSAGING
+;android.intent.category.APP_CONTACTS
+;android.intent.category.APP_EMAIL
+:android.intent.action.DIAL
+:android.intent.action.CALL_BUTTON
+:android.intent.action.CALL

@@ -1,0 +1,5 @@
+;android.intent.category.APP_BROWSER
+:android.intent.action.WEB_SEARCH
+:android.intent.action.TRANSLATE
+:android.intent.action.SEARCH
+:android.intent.action.DEFINE

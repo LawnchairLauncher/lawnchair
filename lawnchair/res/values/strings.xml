@@ -612,7 +612,7 @@
     <string name="category_news">News</string>
     <string name="category_personalization">Personalization</string>
     <string name="category_photography">Photography</string>
-    <string name="category_tools">Tools</string>
+    <string name="category_tools">Utility</string>
     <string name="category_travel_and_navigation">Travel and Navigation</string>
 
     <string name="lock_desktop">Lock desktop</string>
