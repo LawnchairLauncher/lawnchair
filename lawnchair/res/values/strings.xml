@@ -473,7 +473,7 @@
     <string name="tab_manage_apps">Manage apps</string>
 
     <string name="tab_bottom_sheet_save">Save</string>
-    <string name="tab_hide_from_main">Hide from drawer</string>
+    <string name="tab_hide_from_main">Hide from main tab</string>
     <string name="tab_color">Tab color</string>
 
     <string name="delete">Delete</string>
