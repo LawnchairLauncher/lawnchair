@@ -16,7 +16,6 @@
 package com.android.quickstep;
 
 import static android.view.View.TRANSLATION_Y;
-
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -62,6 +61,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -260,8 +260,11 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                 }
                 float shelfHiddenProgress = BACKGROUND_APP.getVerticalProgress(activity);
                 float shelfOverviewProgress = OVERVIEW.getVerticalProgress(activity);
+                // Peek based on default overview progress so we can see hotseat if we're showing
+                // that instead of predictions in overview.
+                float defaultOverviewProgress = OverviewState.getDefaultVerticalProgress(activity);
                 float shelfPeekingProgress = shelfHiddenProgress
-                        - (shelfHiddenProgress - shelfOverviewProgress) * 0.25f;
+                        - (shelfHiddenProgress - defaultOverviewProgress) * 0.25f;
                 float toProgress = mShelfState == ShelfAnimState.HIDE
                         ? shelfHiddenProgress
                         : mShelfState == ShelfAnimState.PEEK
