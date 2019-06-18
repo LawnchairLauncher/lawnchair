@@ -268,8 +268,6 @@ public class LauncherState {
         if (this != NORMAL) {
             LauncherStateManager lsm = launcher.getStateManager();
             LauncherState lastState = lsm.getLastState();
-            launcher.getUserEventDispatcher().logActionCommand(Action.Command.BACK,
-                    containerType, lastState.containerType);
             lsm.goToState(lastState);
         }
     }

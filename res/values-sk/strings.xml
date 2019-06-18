@@ -83,7 +83,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Miniaplikácie"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Tapety"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Štýly a tapety"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Nastavenia Home"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Nastavenia plochy"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Zakázané vaším správcom"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Povoliť otáčanie plochy"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Pri otočení telefónu"</string>

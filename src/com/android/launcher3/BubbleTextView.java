@@ -32,6 +32,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Property;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -52,6 +53,7 @@ import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconCache.IconLoadRequest;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.views.ActivityContext;
 
 import java.text.NumberFormat;
@@ -304,6 +306,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_START_TAG, "BubbleTextView.onTouchEvent " + event);
+        }
         // Call the superclass onTouchEvent first, because sometimes it changes the state to
         // isPressed() on an ACTION_UP
         boolean result = super.onTouchEvent(event);
