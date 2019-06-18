@@ -32,7 +32,7 @@ public class TintedDrawableSpan extends DynamicDrawableSpan {
 
     public TintedDrawableSpan(Context context, int resourceId) {
         super(ALIGN_BOTTOM);
-        mDrawable = context.getDrawable(resourceId);
+        mDrawable = context.getDrawable(resourceId).mutate();
         mOldTint = 0;
         mDrawable.setTint(0);
     }

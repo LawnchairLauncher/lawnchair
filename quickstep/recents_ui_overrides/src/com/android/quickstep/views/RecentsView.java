@@ -351,6 +351,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 .getDimensionPixelSize(R.dimen.recents_empty_message_text_padding);
         setWillNotDraw(false);
         updateEmptyMessage();
+
+        // Initialize quickstep specific cache params here, as this is constructed only once
+        mActivity.getViewCache().setCacheSize(R.layout.digital_wellbeing_toast, 5);
     }
 
     public OverScroller getScroller() {
