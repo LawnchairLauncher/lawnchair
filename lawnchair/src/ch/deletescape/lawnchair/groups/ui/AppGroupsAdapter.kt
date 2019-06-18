@@ -50,6 +50,8 @@ abstract class AppGroupsAdapter<VH : AppGroupsAdapter<VH, T>.GroupHolder, T : Ap
 
     val itemTouchHelper = ItemTouchHelper(TouchHelperCallback())
 
+    private var headerItemCount = 0
+
     override fun getItemCount() = items.size
 
     override fun getItemViewType(position: Int): Int {
@@ -83,8 +85,15 @@ abstract class AppGroupsAdapter<VH : AppGroupsAdapter<VH, T>.GroupHolder, T : Ap
 
     open fun loadAppGroups() {
         items.clear()
-        createHeaderItem()?.let { items.add(it) }
-        createAddItem()?.let { items.add(it) }
+        headerItemCount = 0
+        createHeaderItem()?.let {
+            items.add(it)
+            headerItemCount++
+        }
+        createAddItem()?.let {
+            items.add(it)
+            headerItemCount++
+        }
         items.addAll(filterGroups().map { GroupItem(it) })
         notifyDataSetChanged()
     }
@@ -111,7 +120,7 @@ abstract class AppGroupsAdapter<VH : AppGroupsAdapter<VH, T>.GroupHolder, T : Ap
     }
 
     protected open fun move(from: Int, to: Int): Boolean {
-        if (to <= 1) return false
+        if (to < headerItemCount) return false
         if (to == from) return true
         items.add(to, items.removeAt(from))
         notifyItemMoved(from, to)
@@ -224,7 +233,7 @@ abstract class AppGroupsAdapter<VH : AppGroupsAdapter<VH, T>.GroupHolder, T : Ap
 
         override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
             if (viewHolder !is AppGroupsAdapter<*, *>.GroupHolder) return 0
-            return ItemTouchHelper.Callback.makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0)
+            return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0)
         }
 
         override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
