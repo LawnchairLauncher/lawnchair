@@ -189,6 +189,7 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
     private String getBadgePackage(ShortcutInfo si) {
         String whitelistedPkg = mContext.getString(R.string.shortcutinfo_badgepkg_whitelist);
         if (whitelistedPkg.equals(si.getPackage())
+                && si.getExtras() != null
                 && si.getExtras().containsKey(EXTRA_BADGEPKG)) {
             return si.getExtras().getString(EXTRA_BADGEPKG);
         }

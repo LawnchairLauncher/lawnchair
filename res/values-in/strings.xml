@@ -33,7 +33,7 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Tap dua kalip &amp; tahan untuk mengambil widget atau menggunakan tindakan khusus."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"lebar %1$d x tinggi %2$d"</string>
-    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Sentuh &amp; tahan untuk menempatkan secara manual"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Tap lama untuk menempatkan secara manual"</string>
     <string name="place_automatically" msgid="8064208734425456485">"Tambahkan otomatis"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Telusuri aplikasi"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Memuat aplikasi…"</string>
@@ -81,9 +81,9 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Widget"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Wallpaper"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Gaya &amp; wallpaper"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Setelan layar Utama"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Setelan layar utama"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Dinonaktifkan oleh admin"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"Izinkan layar Utama diputar"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Izinkan Layar utama diputar"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Saat ponsel diputar"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Titik notifikasi"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Aktif"</string>
