@@ -6,7 +6,7 @@
     <string name="icu_abbrev_time">HH:mm</string>
     <string name="icu_abbrev_time_12h">hh:mm aa</string>
     <string name="icu_abbrev_date"> dd MMMM</string>
-    <string name="in_smartspace">Ve widgetu \‘Přehled událostí\’</string>
+    <string name="in_smartspace">Ve widgetu „Přehled událostí“</string>
     <string name="smartspace_time">Čas</string>
     <string name="smartspace_date">Datum</string>
     <string name="customize">Přizpůsobení</string>
@@ -148,7 +148,7 @@
     <string name="about_role_special_snowflake">Sociální média/PR &amp; OEM vztahy</string>
     <string name="about_role_mod_support">Moderátor/podpora</string>
     <string name="about_role_family_member">Člen rodiny</string>
-    <string name="about_role_magisk_maintainer">Správce Magisk modulu</string>
+    <string name="about_role_magisk_maintainer">Správce modulu Magisk</string>
     <string name="about_bio_deletescape">Vývojář androidu &amp; nadšenec, milující memy (vlastně přespříliš). Zakladatel projektu Lawnchair.</string>
     <string name="about_bio_recoded">Kodér a grafický designér.</string>
     <string name="about_bio_josh">Grafický návrhář na volné noze.</string>
@@ -200,7 +200,7 @@
     <string name="title_search_hidden_apps">Najít skryté aplikace</string>
     <string name="summary_search_hidden_apps">Zobrazit skryté aplikace ve výsledcích hledání</string>
     <!--Marker F-->
-    <string name="default_city">Lucerne, CH</string>
+    <string name="default_city">Prague, CS</string>
     <string name="pref_weather_api_key_title">API klíč</string>
     <string name="pref_weather_city_summary">Pro lepší výsledky zadejte kód země</string>
     <string name="pref_weather_city_title">Město</string>
@@ -262,8 +262,8 @@
     <string name="search_provider_bing">Bing</string>
     <string name="search_provider_baidu">Baidu</string>
     <string name="search_provider_appsearch">Aplikace vyhledávání</string>
-    <string name="search_provider_search_lite">Vyhledávání \"Lite\"</string>
-    <string name="search_provider_cool_search">Vyhledávání \"Cool\"</string>
+    <string name="search_provider_search_lite">Search Lite</string>
+    <string name="search_provider_cool_search">Cool Search</string>
     <string name="recent_task_option_force_stop">Vynutit ukončení</string>
     <string name="pref_icon_packs">Balíčky ikon</string>
     <string name="drag_to_enable_packs">Přetáhnout nahoru pro povolení</string>
@@ -276,7 +276,7 @@
     <string name="pref_legacy_colored_backgrounds_summary">Vybarvená pozadí pro generované adaptivní ikony</string>
     <string name="pref_white_only_treatment">Nahradit bílá pozadí</string>
     <string name="pref_white_only_treatment_summary">Vybarvená pozadí pro všechny adaptivní ikony</string>
-    <string name="smartspace_provider_bridge">Přemostění Pixel (Rootless)</string>
+    <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <!--Marker H-->
     <string name="dismiss_drop_target_label">"Nezobrazovat"</string>
     <string name="suggested_action_content_description">%1$s se otevírají v %2$s</string>
@@ -324,8 +324,8 @@
     <string name="recent_task_option_popup_window">Dialogové okno</string>
     <string name="feed_theme_pref_title">Barva pozadí</string>
     <string name="recents_not_connected">Služba není připojena</string>
-    <string name="advanced_settings">Další %s nastavení</string>
-    <string name="adaptive_icon">adaptivní ikona</string>
+    <string name="advanced_settings">Další nastavení %s</string>
+    <string name="adaptive_icon">adaptivních ikon</string>
     <string name="drawer_tabs">Záložky</string>
     <string name="add_new_tab">Přidat</string>
     <string name="rename_tab">Přejmenovat</string>
