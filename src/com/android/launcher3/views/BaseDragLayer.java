@@ -116,9 +116,23 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
         mMultiValueAlpha = new MultiValueAlpha(this, alphaChannelCount);
     }
 
+    /**
+     * Same as {@link #isEventOverView(View, MotionEvent, View)} where evView == this drag layer.
+     */
     public boolean isEventOverView(View view, MotionEvent ev) {
         getDescendantRectRelativeToSelf(view, mHitRect);
         return mHitRect.contains((int) ev.getX(), (int) ev.getY());
+    }
+
+    /**
+     * Given a motion event in evView's coordinates, return whether the event is within another
+     * view's bounds.
+     */
+    public boolean isEventOverView(View view, MotionEvent ev, View evView) {
+        int[] xy = new int[] {(int) ev.getX(), (int) ev.getY()};
+        getDescendantCoordRelativeToSelf(evView, xy);
+        getDescendantRectRelativeToSelf(view, mHitRect);
+        return mHitRect.contains(xy[0], xy[1]);
     }
 
     @Override
