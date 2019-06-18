@@ -33,6 +33,7 @@ import androidx.test.uiautomator.UiDevice;
 
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
+import com.android.systemui.shared.system.QuickStepContract;
 
 import org.junit.Assert;
 import org.junit.rules.TestRule;
@@ -43,6 +44,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Test rule that allows executing a test with Quickstep on and then Quickstep off.
@@ -78,11 +81,14 @@ public class NavigationModeSwitchRule implements TestRule {
                 @Override
                 public void evaluate() throws Throwable {
                     final Context context = getInstrumentation().getContext();
-                    final String prevOverlayPkg = LauncherInstrumentation.isGesturalMode(context)
-                            ? NAV_BAR_MODE_GESTURAL_OVERLAY
-                            : LauncherInstrumentation.isSwipeUpMode(context)
-                                    ? NAV_BAR_MODE_2BUTTON_OVERLAY
-                                    : NAV_BAR_MODE_3BUTTON_OVERLAY;
+                    final int currentInteractionMode =
+                            LauncherInstrumentation.getCurrentInteractionMode(context);
+                    final String prevOverlayPkg =
+                            QuickStepContract.isGesturalMode(currentInteractionMode)
+                                    ? NAV_BAR_MODE_GESTURAL_OVERLAY
+                                    : QuickStepContract.isSwipeUpMode(currentInteractionMode)
+                                            ? NAV_BAR_MODE_2BUTTON_OVERLAY
+                                            : NAV_BAR_MODE_3BUTTON_OVERLAY;
                     final LauncherInstrumentation.NavigationModel originalMode =
                             mLauncher.getNavigationModel();
                     try {
@@ -131,6 +137,27 @@ public class NavigationModeSwitchRule implements TestRule {
                     setOverlayPackageEnabled(NAV_BAR_MODE_GESTURAL_OVERLAY,
                             overlayPackage == NAV_BAR_MODE_GESTURAL_OVERLAY);
 
+                    if (currentSysUiNavigationMode() != expectedMode) {
+                        final CountDownLatch latch = new CountDownLatch(1);
+                        final Context targetContext = getInstrumentation().getTargetContext();
+                        final SysUINavigationMode.NavigationModeChangeListener listener =
+                                newMode -> {
+                                    if (LauncherInstrumentation.getNavigationModel(newMode.resValue)
+                                            == expectedMode) {
+                                        latch.countDown();
+                                    }
+                                };
+                        final SysUINavigationMode sysUINavigationMode =
+                                SysUINavigationMode.INSTANCE.get(targetContext);
+                        targetContext.getMainExecutor().execute(() ->
+                                sysUINavigationMode.addModeChangeListener(listener));
+                        latch.await(10, TimeUnit.SECONDS);
+                        targetContext.getMainExecutor().execute(() ->
+                                sysUINavigationMode.removeModeChangeListener(listener));
+                        Assert.assertTrue("Navigation mode didn't change to " + expectedMode,
+                                currentSysUiNavigationMode() == expectedMode);
+                    }
+
                     for (int i = 0; i != 100; ++i) {
                         if (mLauncher.getNavigationModel() == expectedMode) {
                             Thread.sleep(5000);
@@ -152,5 +179,13 @@ public class NavigationModeSwitchRule implements TestRule {
         } else {
             return base;
         }
+    }
+
+    private static LauncherInstrumentation.NavigationModel currentSysUiNavigationMode() {
+        return LauncherInstrumentation.getNavigationModel(
+                SysUINavigationMode.getMode(
+                        getInstrumentation().
+                                getTargetContext()).
+                        resValue);
     }
 }
