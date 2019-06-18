@@ -1204,6 +1204,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                     if (((initialScrollX >= mMaxScrollX) && (isVelocityXLeft || !isFling)) ||
                             ((initialScrollX <= mMinScrollX) && (!isVelocityXLeft || !isFling))) {
                         mScroller.springBack(getScrollX(), mMinScrollX, mMaxScrollX);
+                        mNextPage = getPageNearestToCenterOfScreen();
                     } else {
                         mScroller.setInterpolator(mDefaultInterpolator);
                         mScroller.fling(initialScrollX, -velocityX,
