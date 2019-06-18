@@ -291,10 +291,17 @@
     <string name="theme_auto_night_mode">Theo giao diện hệ thống</string>
     <string name="theme_light">Sáng</string>
     <string name="theme_dark_text">Sáng với văn bản tối</string>
+    <string name="theme_with_dark_text">văn bản tối</string>
     <string name="theme_dark">Tối</string>
     <string name="theme_dark_dark_text">Tối với văn bản tối</string>
     <string name="theme_black">Đen</string>
     <string name="theme_black_dark_text">Đen với văn bản tối</string>
+    <string name="theme_dark_theme_mode">Chủ đề tối</string>
+    <string name="theme_dark_theme_mode_on">Bật</string>
+    <string name="theme_dark_theme_mode_off">Tắt</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Theo dõi ánh sáng ban ngày</string>
+    <string name="theme_use_black">Sử dụng màu đen tinh khiết</string>
+    <string name="theme_use_dark_text">Sử dụng văn bản tối</string>
     <string name="pref_qsb_color">Màu sắc</string>
     <string name="hide_from_predictions">Ẩn từ đề xuất</string>
     <string name="hide_from_predictions_summary">Không bao giờ hiển thị trong đề xuất ngăn kéo</string>
@@ -408,4 +415,12 @@
     <string name="adaptify_pack_summary">Tạo lớp phủ cho biểu tượng từ các gói biểu tượng</string>
     <string name="pref_sesame_sync_look_and_feel">Chia sẻ cái nhìn và cảm nhận</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Đồng bộ hóa cài đặt tìm kiếm trên bãi cỏ với Sesame</string>
+    <string name="pref_search_bar_radius">Bán kính thanh tìm kiếm</string>
+    <string name="icon_text_scale_pref_title">Cỡ chữ</string>
+    <string name="text_color">Màu chữ</string>
+    <string name="background_color">Màu nền</string>
+    <string name="pref_notification_count_title">Hiển thị số lượng thông báo</string>
+    <string name="pref_notification_count_summary">Hiển thị số thông báo bên trong các dấu chấm</string>
+    <string name="pref_center_wallpaper">Luôn để hình nền ở trung tâm</string>
+    <string name="pref_center_wallpaper_summary">Điều này sẽ vô hiệu hóa hiệu ứng cuộn hình nền</string>
 </resources>
