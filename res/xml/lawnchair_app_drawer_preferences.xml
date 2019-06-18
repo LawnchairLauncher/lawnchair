@@ -90,6 +90,11 @@
             app:colorMode="RGB"
             app:resolvers="@array/resolvers_drawer_labels"/>
 
+        <ch.deletescape.lawnchair.settings.ui.PreferenceDialogPreference
+            android:key="pref_iconPopupMenu"
+            android:title="@string/pref_icon_popup_menu"
+            app:content="@xml/lawnchair_drawer_icon_popup_menu_preferences" />
+
         <ch.deletescape.lawnchair.preferences.Preference
             android:title="Categorization"
             android:fragment="ch.deletescape.lawnchair.groups.ui.AppCategorizationFragment"

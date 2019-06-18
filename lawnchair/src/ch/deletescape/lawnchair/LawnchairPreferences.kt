@@ -126,6 +126,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val desktopTextScale by FloatPref("pref_iconTextScaleSB", 1f, reloadAll)
     val centerWallpaper by BooleanPref("pref_centerWallpaper")
     val lockDesktop by BooleanPref("pref_lockDesktop", false, reloadAll)
+    val usePopupMenuView by BooleanPref("pref_desktopUsePopupMenuView", true, doNothing)
 
     // Smartspace
     val enableSmartspace by BooleanPref("pref_smartspace", lawnchairConfig.enableSmartspace)

@@ -21,10 +21,10 @@
 
     <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
         android:defaultValue="false"
-        android:key="pref_iconPopup_remove"
-        android:icon="@drawable/ic_remove_no_shadow"
+        android:key="pref_iconPopup_uninstall"
+        android:icon="@drawable/ic_uninstall_no_shadow"
         android:persistent="true"
-        android:title="@string/remove_drop_target_label" />
+        android:title="@string/uninstall_drop_target_label" />
 
     <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
         android:defaultValue="true"

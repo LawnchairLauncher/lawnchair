@@ -32,6 +32,7 @@ import ch.deletescape.lawnchair.gestures.ui.SelectAppActivity
 import ch.deletescape.lawnchair.getIcon
 import com.android.launcher3.LauncherState
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
+import ch.deletescape.lawnchair.lawnchairPrefs
 import com.android.launcher3.R
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
@@ -93,7 +94,12 @@ class OpenOverviewGestureHandler(context: Context, config: JSONObject?) : Gestur
     override val requiresForeground = true
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
-        controller.launcher.stateManager.goToState(LauncherState.OPTIONS)
+        if (context.lawnchairPrefs.usePopupMenuView) {
+            OptionsPopupView.showDefaultOptions(controller.launcher,
+                    controller.touchDownPoint.x, controller.touchDownPoint.y)
+        } else {
+            controller.launcher.stateManager.goToState(LauncherState.OPTIONS)
+        }
     }
 }
 
