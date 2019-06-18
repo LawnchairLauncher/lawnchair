@@ -106,6 +106,10 @@ public class SwipeAnimationTargetSet extends RemoteAnimationTargetSet {
         finishController(false /* toRecents */, null, false /* sendUserLeaveHint */);
     }
 
+    public void finishAnimation() {
+        finishController(true /* toRecents */, null, false /* sendUserLeaveHint */);
+    }
+
     public interface SwipeAnimationListener {
 
         void onRecentsAnimationStart(SwipeAnimationTargetSet targetSet);

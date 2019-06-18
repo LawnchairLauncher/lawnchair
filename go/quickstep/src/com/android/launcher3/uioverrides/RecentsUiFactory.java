@@ -89,4 +89,6 @@ public abstract class RecentsUiFactory {
     public static RotationMode getRotationMode(DeviceProfile dp) {
         return RotationMode.NORMAL;
     }
+
+    public static void clearSwipeSharedState(boolean finishAnimation) {}
 }

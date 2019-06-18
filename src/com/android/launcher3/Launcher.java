@@ -244,7 +244,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Thunk boolean mWorkspaceLoading = true;
 
-    private OnResumeCallback mOnResumeCallback;
+    private ArrayList<OnResumeCallback> mOnResumeCallbacks = new ArrayList<>();
 
     private ViewOnDrawExecutor mPendingExecutor;
 
@@ -869,6 +869,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     protected void onStop() {
         super.onStop();
+
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStop();
         }
@@ -951,7 +952,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mHandler.removeCallbacks(mHandleDeferredResume);
         Utilities.postAsyncCallback(mHandler, mHandleDeferredResume);
 
-        setOnResumeCallback(null);
+        for (OnResumeCallback cb : mOnResumeCallbacks) {
+            cb.onLauncherResume();
+        }
+        mOnResumeCallbacks.clear();
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
@@ -1805,6 +1809,16 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             android.util.Log.d(TestProtocol.NO_START_TAG,
                     "startActivitySafely outer");
         }
+
+        if (!hasBeenResumed()) {
+            // Workaround an issue where the WM launch animation is clobbered when finishing the
+            // recents animation into launcher. Defer launching the activity until Launcher is
+            // next resumed.
+            addOnResumeCallback(() -> startActivitySafely(v, intent, item, sourceContainer));
+            UiFactory.clearSwipeSharedState(true /* finishAnimation */);
+            return true;
+        }
+
         boolean success = super.startActivitySafely(v, intent, item, sourceContainer);
         if (success && v instanceof BubbleTextView) {
             // This is set to the view that launched the activity that navigated the user away
@@ -1813,7 +1827,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             // state when we return to launcher.
             BubbleTextView btv = (BubbleTextView) v;
             btv.setStayPressed(true);
-            setOnResumeCallback(btv);
+            addOnResumeCallback(btv);
         }
         return success;
     }
@@ -1861,11 +1875,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return result;
     }
 
-    public void setOnResumeCallback(OnResumeCallback callback) {
-        if (mOnResumeCallback != null) {
-            mOnResumeCallback.onLauncherResume();
-        }
-        mOnResumeCallback = callback;
+    public void addOnResumeCallback(OnResumeCallback callback) {
+        mOnResumeCallbacks.add(callback);
     }
 
     /**
