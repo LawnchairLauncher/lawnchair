@@ -69,4 +69,13 @@
         <item>ch.deletescape.lawnchair.colors.WallpaperSecondaryColorResolver</item>
         <item>ch.deletescape.lawnchair.colors.WallpaperTertiaryColorResolver</item>
     </string-array>
+    <string-array name="resolvers_superg_background">
+        <item>ch.deletescape.lawnchair.colors.resolvers.SuperGAutoResolver</item>
+        <item>ch.deletescape.lawnchair.colors.resolvers.SuperGLightResolver</item>
+        <item>ch.deletescape.lawnchair.colors.resolvers.SuperGDarkResolver</item>
+        <item>ch.deletescape.lawnchair.colors.LawnchairAccentResolver</item>
+        <item>ch.deletescape.lawnchair.colors.WallpaperMainColorResolver</item>
+        <item>ch.deletescape.lawnchair.colors.WallpaperSecondaryColorResolver</item>
+        <item>ch.deletescape.lawnchair.colors.WallpaperTertiaryColorResolver</item>
+    </string-array>
 </resources>

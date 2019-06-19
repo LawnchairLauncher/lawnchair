@@ -26,10 +26,7 @@ import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.*
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.InsetDrawable
-import android.graphics.drawable.RippleDrawable
-import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.*
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
@@ -810,3 +807,19 @@ fun String.hash(type: String): String {
 
 val Context.locale
     get() = this.resources.configuration.locales[0] ?: this.resources.configuration.locale
+
+fun createRipplePill(context: Context, color: Int, radius: Float): Drawable {
+    return RippleDrawable(
+            ContextCompat.getColorStateList(context, R.color.focused_background)!!,
+            createPill(color, radius),
+            createPill(color, radius)
+    )
+}
+
+fun createPill(color: Int, radius: Float): Drawable {
+    return GradientDrawable().apply {
+        shape = GradientDrawable.RECTANGLE
+        setColor(color)
+        cornerRadius = radius
+    }
+}

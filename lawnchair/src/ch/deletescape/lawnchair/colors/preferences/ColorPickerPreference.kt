@@ -29,7 +29,7 @@ import com.android.launcher3.R
 import me.priyesh.chroma.ColorMode
 
 
-class ColorPickerPreference(context: Context, attrs: AttributeSet?)
+open class ColorPickerPreference(context: Context, attrs: AttributeSet?)
     : Preference(context, attrs), ColorEngine.OnColorChangeListener {
 
     private val engine = ColorEngine.getInstance(context)

@@ -38,14 +38,12 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
     private ObjectAnimator mElevationAnimator; //bJ
     protected boolean qsbHidden;
     private int mQsbViewId = 0;
-    protected final Launcher mLauncher;
     private boolean mWindowHasFocus;
 
     protected abstract int getQsbView(boolean withMic);
 
     public BaseGContainerView(Context paramContext, AttributeSet paramAttributeSet, int paramInt) {
         super(paramContext, paramAttributeSet, paramInt);
-        mLauncher = Launcher.getLauncher(paramContext);
         Utilities.getPrefs(paramContext).registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -67,6 +65,11 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
             mQsbView.setOnClickListener(this);
         }
         loadIcon();
+        applyQsbColor();
+    }
+
+    protected void applyQsbColor() {
+
     }
 
     @Override
@@ -215,7 +218,7 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
         } catch (ActivityNotFoundException ignored) {
             try {
                 context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com")),
-                        mLauncher.getActivityLaunchOptions(mQsbView).toBundle());
+                        Launcher.getLauncher(context).getActivityLaunchOptions(mQsbView).toBundle());
             } catch (ActivityNotFoundException ignored2) {
             }
         }

@@ -152,6 +152,7 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
             const val WORKSPACE_ICON_LABEL = "pref_workspaceLabelColorResolver"
             const val DOCK_BACKGROUND = "pref_dockBackgroundColorResolver"
             const val ALLAPPS_BACKGROUND = "pref_allAppsBackgroundColorResolver"
+            const val SUPERG_BACKGROUND = "pref_superGBackgroundColorResolver"
 
             fun getDefaultResolver(key: String, engine: ColorEngine): ColorResolver {
                 val context = engine.context
@@ -170,6 +171,9 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
                     }
                     DOCK_BACKGROUND, ALLAPPS_BACKGROUND -> {
                         ShelfBackgroundAutoResolver(createConfig(key, engine))
+                    }
+                    SUPERG_BACKGROUND -> {
+                        SuperGAutoResolver(createConfig(key, engine))
                     }
                     else -> {
                         engine.createColorResolverNullable(key,
