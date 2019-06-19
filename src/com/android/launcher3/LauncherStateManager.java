@@ -223,12 +223,16 @@ public class LauncherStateManager {
     }
 
     public void reapplyState(boolean cancelCurrentAnimation) {
+        boolean wasInAnimation = mConfig.mCurrentAnimation != null;
         if (cancelCurrentAnimation) {
             cancelAnimation();
         }
         if (mConfig.mCurrentAnimation == null) {
             for (StateHandler handler : getStateHandlers()) {
                 handler.setState(mState);
+            }
+            if (wasInAnimation) {
+                onStateTransitionEnd(mState);
             }
         }
     }
