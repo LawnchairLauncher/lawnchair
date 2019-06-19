@@ -430,6 +430,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         super.onConfigurationChanged(newConfig);
     }
 
+    public void reload() {
+        onIdpChanged(mDeviceProfile.inv);
+    }
+
     private boolean supportsFakeLandscapeUI() {
         return FeatureFlags.FAKE_LANDSCAPE_UI.get() && !mRotationHelper.homeScreenCanRotate();
     }
