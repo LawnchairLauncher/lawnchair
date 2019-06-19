@@ -293,10 +293,17 @@
     <string name="theme_auto_night_mode">Βάση θέματος συστήματος</string>
     <string name="theme_light">Φωτεινό</string>
     <string name="theme_dark_text">Φωτεινό με σκούρο κείμενο</string>
+    <string name="theme_with_dark_text">σκοτεινό κείμενο</string>
     <string name="theme_dark">Σκοτεινό</string>
     <string name="theme_dark_dark_text">Σκοτεινό με σκούρο κείμενο</string>
     <string name="theme_black">Μαύρο</string>
     <string name="theme_black_dark_text">Μαύρο με σκούρο κείμενο</string>
+    <string name="theme_dark_theme_mode">Σκοτεινό θέμα</string>
+    <string name="theme_dark_theme_mode_on">Ενεργό</string>
+    <string name="theme_dark_theme_mode_off">Ανενεργό</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Ακολουθεί το φως ημέρας</string>
+    <string name="theme_use_black">Χρήση αμιγούς μαύρου</string>
+    <string name="theme_use_dark_text">Χρήση σκοτεινού κειμένου</string>
     <string name="pref_qsb_color">Χρώμα</string>
     <string name="hide_from_predictions">Απόκρυψη από προτάσεις εφαρμογών</string>
     <string name="hide_from_predictions_summary">Να μην εμφανίζεται ποτέ στις προτάσεις εφαρμογών του συρταριού</string>
@@ -412,4 +419,12 @@
     <string name="adaptify_pack_summary">Δημιουργία προσαρμοσμένων εικονιδίων για εικονίδια από πακέτα εικονιδίων</string>
     <string name="pref_sesame_sync_look_and_feel">Κοινοποίηση εμφάνισης</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Συγχρονισμός ρυθμίσεων αναζήτησης Lawnchair με την εφαρμογή Sesame</string>
+    <string name="pref_search_bar_radius">Γωνιακή ακτίνα μπάρας αναζήτησης</string>
+    <string name="icon_text_scale_pref_title">Μέγεθος κειμένου</string>
+    <string name="text_color">Χρώμα κειμένου</string>
+    <string name="background_color">Χρώμα φόντου</string>
+    <string name="pref_notification_count_title">Εμφάνιση καταμέτρησης ειδοποιήσεων</string>
+    <string name="pref_notification_count_summary">Εμφάνιση καταμέτρησης ειδοποιήσεων μέσα στις κουκίδες</string>
+    <string name="pref_center_wallpaper">Κεντράρισμα ταπετσαρίας</string>
+    <string name="pref_center_wallpaper_summary">Αυτό θα απενεργοποιήσει το εφέ κύλισης ταπετσαρίας</string>
 </resources>
