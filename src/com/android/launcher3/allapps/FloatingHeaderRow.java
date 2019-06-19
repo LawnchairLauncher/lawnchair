@@ -46,8 +46,8 @@ public interface FloatingHeaderRow {
      */
     boolean hasVisibleContent();
 
-    void setContentVisibility(boolean hasHeaderExtra, boolean hasContent,
-            PropertySetter setter, Interpolator fadeInterpolator);
+    void setContentVisibility(boolean hasHeaderExtra, boolean hasAllAppsContent,
+            PropertySetter setter, Interpolator headerFade, Interpolator allAppsFade);
 
     /**
      * Scrolls the content vertically.

@@ -31,6 +31,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Interpolator;
 
+import androidx.annotation.ColorInt;
+import androidx.core.content.ContextCompat;
+
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -40,9 +43,6 @@ import com.android.launcher3.allapps.FloatingHeaderRow;
 import com.android.launcher3.allapps.FloatingHeaderView;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.util.Themes;
-
-import androidx.annotation.ColorInt;
-import androidx.core.content.ContextCompat;
 
 /**
  * A view which shows a horizontal divider
@@ -288,10 +288,10 @@ public class AppsDividerView extends View implements LauncherStateManager.StateL
     }
 
     @Override
-    public void setContentVisibility(boolean hasHeaderExtra, boolean hasContent,
-            PropertySetter setter, Interpolator fadeInterpolator) {
+    public void setContentVisibility(boolean hasHeaderExtra, boolean hasAllAppsContent,
+            PropertySetter setter, Interpolator headerFade, Interpolator allAppsFade) {
         // Don't use setViewAlpha as we want to control the visibility ourselves.
-        setter.setFloat(this, ALPHA, hasContent ? 1 : 0, fadeInterpolator);
+        setter.setFloat(this, ALPHA, hasAllAppsContent ? 1 : 0, allAppsFade);
     }
 
     @Override
