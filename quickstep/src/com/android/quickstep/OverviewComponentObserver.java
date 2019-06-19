@@ -115,7 +115,11 @@ public final class OverviewComponentObserver {
             // as uninstalling the app or removing the "Launcher" feature in an update).
             // Listen for package updates of this app (and remove any previously attached
             // package listener).
-            if (!defaultHome.getPackageName().equals(mUpdateRegisteredPackage)) {
+            if (defaultHome == null) {
+                if (mUpdateRegisteredPackage != null) {
+                    mContext.unregisterReceiver(mOtherHomeAppUpdateReceiver);
+                }
+            } else if (!defaultHome.getPackageName().equals(mUpdateRegisteredPackage)) {
                 if (mUpdateRegisteredPackage != null) {
                     mContext.unregisterReceiver(mOtherHomeAppUpdateReceiver);
                 }
