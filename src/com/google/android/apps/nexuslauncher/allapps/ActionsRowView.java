@@ -3,12 +3,14 @@ package com.google.android.apps.nexuslauncher.allapps;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.ColorUtils;
 import android.text.Layout;
 import android.text.Layout.Alignment;
 import android.text.StaticLayout.Builder;
@@ -20,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.LinearLayout;
+import ch.deletescape.lawnchair.allapps.PredictionsDividerLayout;
 import ch.deletescape.lawnchair.font.CustomFontManager;
 import ch.deletescape.lawnchair.font.FontLoader.FontReceiver;
 import ch.deletescape.lawnchair.predictions.LawnchairEventPredictor;
@@ -40,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
-public class ActionsRowView extends LinearLayout implements UpdateListener, LogContainerProvider,
+public class ActionsRowView extends PredictionsDividerLayout implements UpdateListener, LogContainerProvider,
         FontReceiver {
     private static final boolean DEBUG = false;
     private static final String TAG = "ActionsRowView";
@@ -213,10 +216,10 @@ public class ActionsRowView extends LinearLayout implements UpdateListener, LogC
         updateVisibility();
     }
 
-    public void setShowAllAppsLabel(boolean z) {
-        if (this.mShowAllAppsLabel != z) {
-            this.mShowAllAppsLabel = z;
-            setWillNotDraw(!this.mShowAllAppsLabel);
+    public void setShowAllAppsLabel(boolean z, boolean force) {
+        if (mShowAllAppsLabel != z || force) {
+            mShowAllAppsLabel = z;
+            setWillNotDraw(!mShowAllAppsLabel);
             int i = 0;
             if (mShowAllAppsLabel) {
                 rebuildLabel();
@@ -225,7 +228,7 @@ public class ActionsRowView extends LinearLayout implements UpdateListener, LogC
             }
             int paddingTop = getPaddingTop();
             int paddingRight = getPaddingRight();
-            if (this.mShowAllAppsLabel) {
+            if (mShowAllAppsLabel) {
                 i = getAllAppsLayoutFullHeight();
             }
             setPadding(getPaddingLeft(), paddingTop, paddingRight, i);
@@ -246,11 +249,15 @@ public class ActionsRowView extends LinearLayout implements UpdateListener, LogC
 
     @SuppressLint("NewApi")
     private void rebuildLabel() {
+        int normalColor = ContextCompat
+                .getColor(getContext(), Themes.getAttrBoolean(getContext(), R.attr.isMainColorDark)
+                        ? R.color.all_apps_label_text_dark : R.color.all_apps_label_text);
+        int textAlpha = Color.alpha(normalColor);
+
         TextPaint textPaint = new TextPaint();
         textPaint.setAntiAlias(true);
         textPaint.setTypeface(mAllAppsLabelTypeface);
-        textPaint.setColor(ContextCompat
-                .getColor(getContext(), Themes.getAttrBoolean(getContext(), R.attr.isMainColorDark) ? R.color.all_apps_label_text_dark : R.color.all_apps_label_text));
+        textPaint.setColor(ColorUtils.setAlphaComponent(getAllAppsLabelColor(), textAlpha));
         textPaint.setTextSize((float) getResources().getDimensionPixelSize(R.dimen.all_apps_label_text_size));
         CharSequence text = getResources().getText(R.string.all_apps_label);
         mAllAppsLabelLayout = Builder.obtain(text, 0, text.length(), textPaint, Math.round(textPaint.measureText(text.toString()))).setAlignment(
@@ -287,5 +294,11 @@ public class ActionsRowView extends LinearLayout implements UpdateListener, LogC
             this.mIsCollapsed = z;
             updateVisibility();
         }
+    }
+
+    @Override
+    public void onAllAppsLabelColorChanged() {
+        setShowAllAppsLabel(mShowAllAppsLabel, true);
+        invalidate();
     }
 }
