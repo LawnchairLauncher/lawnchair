@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewConfiguration;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
+import ch.deletescape.lawnchair.font.CustomFontManager;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
@@ -186,5 +187,10 @@ public class ActionView extends BubbleTextView implements OnLongClickListener {
     @Override
     protected boolean isTextHidden() {
         return false;
+    }
+
+    @Override
+    protected int getCustomFontType(int display) {
+        return CustomFontManager.FONT_ACTION_VIEW;
     }
 }

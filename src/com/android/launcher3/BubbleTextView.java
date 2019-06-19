@@ -181,7 +181,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
         int defaultIconSize = grid.iconSizePx;
         LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
-        CustomFontManager customFontManager = CustomFontManager.Companion.getInstance(context);
         if (display == DISPLAY_WORKSPACE) {
             mHideText = prefs.getHideAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.iconTextSizePx);
@@ -189,7 +188,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             int lines = prefs.getHomeLabelRows();
             setMaxLines(lines);
             setSingleLine(lines == 1);
-            customFontManager.loadCustomFont(this, attrs);
             colorEngine.addColorChangeListeners(this, Resolvers.WORKSPACE_ICON_LABEL);
         } else if (display == DISPLAY_ALL_APPS) {
             mHideText = prefs.getHideAllAppsAppLabels();
@@ -199,7 +197,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             int lines = prefs.getDrawerLabelRows();
             setMaxLines(lines);
             setSingleLine(lines == 1);
-            customFontManager.setCustomFont(this, CustomFontManager.FONT_ALL_APPS_ICON);
             colorEngine.addColorChangeListeners(this, Resolvers.ALLAPPS_ICON_LABEL);
         } else if (display == DISPLAY_FOLDER) {
             mHideText = prefs.getHideAppLabels();
@@ -209,7 +206,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             int lines = prefs.getHomeLabelRows();
             setMaxLines(lines);
             setSingleLine(lines == 1);
-            customFontManager.setCustomFont(this, CustomFontManager.FONT_FOLDER_ICON);
+        }
+        CustomFontManager customFontManager = CustomFontManager.Companion.getInstance(context);
+        int customFontType = getCustomFontType(display);
+        if (customFontType != -1) {
+            customFontManager.setCustomFont(this, customFontType);
         } else {
             customFontManager.loadCustomFont(this, attrs);
         }
@@ -225,6 +226,17 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         setEllipsize(TruncateAt.END);
         setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
         setTextAlpha(1f);
+    }
+
+    protected int getCustomFontType(int display) {
+        switch (display) {
+            case DISPLAY_ALL_APPS:
+                return CustomFontManager.FONT_ALL_APPS_ICON;
+            case DISPLAY_FOLDER:
+                return CustomFontManager.FONT_FOLDER_ICON;
+            default:
+                return -1;
+        }
     }
 
     @Override
