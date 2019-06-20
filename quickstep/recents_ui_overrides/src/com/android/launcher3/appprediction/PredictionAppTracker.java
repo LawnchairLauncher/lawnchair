@@ -170,8 +170,8 @@ public class PredictionAppTracker extends AppLaunchTracker {
     public void onStartShortcut(String packageName, String shortcutId, UserHandle user,
             String container) {
         // TODO: Use the full shortcut info
-        AppTarget target = new AppTarget.Builder(new AppTargetId("shortcut:" + shortcutId))
-                .setTarget(packageName, user)
+        AppTarget target = new AppTarget.Builder(
+                new AppTargetId("shortcut:" + shortcutId), packageName, user)
                 .setClassName(shortcutId)
                 .build();
         sendLaunch(target, container);
@@ -181,8 +181,8 @@ public class PredictionAppTracker extends AppLaunchTracker {
     @UiThread
     public void onStartApp(ComponentName cn, UserHandle user, String container) {
         if (cn != null) {
-            AppTarget target = new AppTarget.Builder(new AppTargetId("app:" + cn))
-                    .setTarget(cn.getPackageName(), user)
+            AppTarget target = new AppTarget.Builder(
+                    new AppTargetId("app:" + cn), cn.getPackageName(), user)
                     .setClassName(cn.getClassName())
                     .build();
             sendLaunch(target, container);
