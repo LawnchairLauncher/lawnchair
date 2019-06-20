@@ -24,6 +24,7 @@ import android.content.ServiceConnection
 import android.os.IBinder
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
 import ch.deletescape.lawnchair.util.extensions.d
+import ch.deletescape.lawnchair.util.extensions.e
 
 class BugReportClient(private val context: Context) {
 
@@ -47,9 +48,19 @@ class BugReportClient(private val context: Context) {
         rebind()
     }
 
+    fun rebindIfNeeded() {
+        if (bugReportService == null) {
+            rebind()
+        }
+    }
+
     private fun rebind() {
-        context.startService(Intent(context, BugReportService::class.java))
-        context.bindService(Intent(context, BugReportService::class.java), connection, 0)
+        try {
+            context.startService(Intent(context, BugReportService::class.java))
+            context.bindService(Intent(context, BugReportService::class.java), connection, 0)
+        } catch (t: Throwable) {
+            e("Failed to rebind", t)
+        }
     }
 
     fun sendReport(report: BugReport) {

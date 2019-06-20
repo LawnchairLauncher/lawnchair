@@ -40,6 +40,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
+import ch.deletescape.lawnchair.bugreport.BugReportClient
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.iconpack.EditIconActivity
@@ -206,6 +207,7 @@ open class LawnchairLauncher : NexusLauncherActivity(),
         // lawnchairPrefs.checkFools()
 
         BrightnessManager.getInstance(this).startListening()
+        BugReportClient.getInstance(this).rebindIfNeeded()
 
         paused = false
     }
