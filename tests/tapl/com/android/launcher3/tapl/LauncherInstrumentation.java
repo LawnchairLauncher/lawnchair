@@ -315,18 +315,26 @@ public final class LauncherInstrumentation {
         mExpectedRotation = expectedRotation;
     }
 
-    private UiObject2 verifyContainerType(ContainerType containerType) {
-        assertEquals("Unexpected display rotation",
-                mExpectedRotation, mDevice.getDisplayRotation());
+    public String getNavigationModeMismatchError() {
         final NavigationModel navigationModel = getNavigationModel();
         final boolean hasRecentsButton = hasSystemUiObject("recent_apps");
         final boolean hasHomeButton = hasSystemUiObject("home");
-        assertTrue("Presence of recents button doesn't match the interaction mode, mode="
-                        + navigationModel.name() + ", hasRecents=" + hasRecentsButton,
-                (navigationModel == NavigationModel.THREE_BUTTON) == hasRecentsButton);
-        assertTrue("Presence of home button doesn't match the interaction mode, mode="
-                        + navigationModel.name() + ", hasHome=" + hasHomeButton,
-                (navigationModel != NavigationModel.ZERO_BUTTON) == hasHomeButton);
+        if ((navigationModel == NavigationModel.THREE_BUTTON) != hasRecentsButton) {
+            return "Presence of recents button doesn't match the interaction mode, mode="
+                    + navigationModel.name() + ", hasRecents=" + hasRecentsButton;
+        }
+        if ((navigationModel != NavigationModel.ZERO_BUTTON) != hasHomeButton) {
+            return "Presence of home button doesn't match the interaction mode, mode="
+                    + navigationModel.name() + ", hasHome=" + hasHomeButton;
+        }
+        return null;
+    }
+
+    private UiObject2 verifyContainerType(ContainerType containerType) {
+        assertEquals("Unexpected display rotation",
+                mExpectedRotation, mDevice.getDisplayRotation());
+        final String error = getNavigationModeMismatchError();
+        assertTrue(error, error == null);
         log("verifyContainerType: " + containerType);
 
         try (Closable c = addContextLayer(
