@@ -15,19 +15,24 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.deletescape.lawnchair
+package ch.deletescape.lawnchair.animations
 
 import android.animation.*
 import android.annotation.TargetApi
+import android.app.ActivityOptions
 import android.content.Context
+import android.content.Intent
 import android.graphics.Matrix
 import android.graphics.Rect
 import android.os.Build
 import android.support.annotation.Keep
-import android.util.Log
 import android.util.Pair
 import android.view.View
 import android.view.animation.PathInterpolator
+import ch.deletescape.lawnchair.LawnchairLauncher
+import ch.deletescape.lawnchair.LawnchairPreferences
+import ch.deletescape.lawnchair.findInViews
+import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.util.InvertedMultiValueAlpha
 import ch.deletescape.lawnchair.views.LawnchairBackgroundView
 import com.android.launcher3.*
@@ -56,8 +61,32 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
     private val prefsToListen = arrayOf("pref_useScaleAnim", "pref_useWindowToIcon")
     private var useWindowToIcon = false
 
+    private val animationType by context.lawnchairPrefs.StringBasedPref("pref_animationType",
+            AnimationType.DefaultAnimation(), { },
+            AnimationType.Companion::fromString,
+            AnimationType.Companion::toString) { }
+
     init {
         Utilities.getLawnchairPrefs(launcher).addOnPreferenceChangeListener(this, *prefsToListen)
+    }
+
+    override fun getActivityLaunchOptions(launcher: Launcher, v: View): ActivityOptions {
+        if (isLaunchingFromRecents(launcher)) {
+            return super.getActivityLaunchOptions(launcher, v)
+        }
+        return animationType.getActivityLaunchOptions(launcher, v) ?: super.getActivityLaunchOptions(launcher, v)
+    }
+
+    private fun isLaunchingFromRecents(launcher: Launcher): Boolean {
+        return launcher.stateManager.state.overviewUi
+    }
+
+    fun playLaunchAnimation(launcher: Launcher, v: View?, intent: Intent) {
+        animationType.playLaunchAnimation(launcher, v, intent, this)
+    }
+
+    fun overrideResumeAnimation(launcher: Launcher) {
+        animationType.overrideResumeAnimation(launcher)
     }
 
     override fun destroy() {
@@ -177,7 +206,7 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
         anim.play(workspaceAnimator)
     }
 
-    override fun getLauncherContentAnimator(isAppOpening: Boolean): Pair<AnimatorSet, Runnable> {
+    public override fun getLauncherContentAnimator(isAppOpening: Boolean): Pair<AnimatorSet, Runnable> {
         if (!useScaleAnim) {
             return super.getLauncherContentAnimator(isAppOpening)
         }

@@ -633,4 +633,12 @@
     <string name="copied_toast">Copied</string>
     <string name="action_copy">Copy</string>
     <string name="action_share">Share</string>
+
+    <string name="animation_type_title">App opening animation</string>
+    <string name="animation_type_default">Default</string>
+    <string name="animation_type_pie">Pie</string>
+    <string name="animation_type_pie_like">Pie-like</string>
+    <string name="animation_type_reveal">Reveal</string>
+    <string name="animation_type_slide_up">Slide Up</string>
+    <string name="animation_type_scale_up">Scale Up</string>
 </resources>

@@ -18,7 +18,7 @@
 -->
 
 <set xmlns:android="http://schemas.android.com/apk/res/android"
-        android:background="#ff000000" android:shareInterpolator="false" android:zAdjustment="top">
+        android:shareInterpolator="false" android:zAdjustment="top">
 
     <alpha android:fromAlpha="0" android:toAlpha="1.0"
             android:fillEnabled="true" android:fillBefore="true" android:fillAfter="true"

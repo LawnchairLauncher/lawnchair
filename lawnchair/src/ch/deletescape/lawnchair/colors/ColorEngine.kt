@@ -112,6 +112,10 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
         return getResolverCache(key).value
     }
 
+    fun resolveColor(key: String): ResolveInfo {
+        return ResolveInfo(key, getResolver(key))
+    }
+
     fun setColor(resolver: String, color: Int) {
         prefs.sharedPrefs.edit().putString(resolver, (if (alpha(color) < 0xFF) {
             // ARGB

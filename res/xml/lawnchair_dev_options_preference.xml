@@ -151,5 +151,10 @@
             android:title="Desktop popup menu"
             android:summary="Use Pie launcher menu instead of the Oreo's overview mode"
             android:defaultValue="true" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_forceFakePieAnims"
+            android:title="Force fake Pie anims"
+            android:defaultValue="false" />
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 </PreferenceScreen>

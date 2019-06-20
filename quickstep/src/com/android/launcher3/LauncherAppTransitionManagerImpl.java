@@ -451,7 +451,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     /**
      * Animators for the "floating view" of the view used to launch the target.
      */
-    private void playIconAnimators(AnimatorSet appOpenAnimator, View v, Rect windowTargetBounds) {
+    public void playIconAnimators(AnimatorSet appOpenAnimator, View v, Rect windowTargetBounds) {
         playIconAnimators(appOpenAnimator, v, windowTargetBounds, false);
     }
 
@@ -933,5 +933,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
     public AlphaProperty getDragLayerAlpha() {
         return mDragLayerAlpha;
+    }
+
+    public View getFloatingView() {
+        return mFloatingView;
     }
 }

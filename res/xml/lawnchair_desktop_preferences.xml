@@ -90,6 +90,12 @@
         android:key="prefCat_desktopMisc"
         android:title="@string/pref_category_misc">
 
+        <ch.deletescape.lawnchair.preferences.AnimationTypePreference
+            android:key="pref_animationType"
+            android:defaultValue=""
+            android:title="@string/animation_type_title"
+            android:summary="%s" />
+
         <com.android.launcher3.views.ButtonPreference
             android:key="pref_icon_badging"
             android:persistent="false"

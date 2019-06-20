@@ -170,6 +170,13 @@ fun Context.getBooleanAttr(attr: Int): Boolean {
     return value
 }
 
+fun Context.getIntAttr(attr: Int): Int {
+    val ta = obtainStyledAttributes(intArrayOf(attr))
+    val value = ta.getInt(0, 0)
+    ta.recycle()
+    return value
+}
+
 inline fun ViewGroup.forEachChildIndexed(action: (View, Int) -> Unit) {
     val count = childCount
     for (i in (0 until count)) {
