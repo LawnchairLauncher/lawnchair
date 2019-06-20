@@ -145,6 +145,7 @@ public class PredictionRowView extends PredictionsDividerLayout implements LogCo
         updateVisibility();
 
         CustomFontManager.Companion.getInstance(context).setCustomFont(this, CustomFontManager.FONT_DRAWER_TAB);
+        onColorChange(ColorEngine.Companion.getInstance(context).resolveColor(ColorEngine.Resolvers.ALLAPPS_ICON_LABEL));
     }
 
     @Override
