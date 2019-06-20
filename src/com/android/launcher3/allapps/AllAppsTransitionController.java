@@ -16,8 +16,8 @@ import static com.android.launcher3.util.SystemUiController.UI_STATE_ALL_APPS;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.util.FloatProperty;
 import android.util.Log;
-import android.util.Property;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
@@ -26,7 +26,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.LauncherStateManager.StateHandler;
-import com.android.launcher3.ProgressInterface;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
@@ -46,14 +45,13 @@ import com.android.launcher3.views.ScrimView;
  * If release velocity < THRES1, snap according to either top or bottom depending on whether it's
  * closer to top or closer to the page indicator.
  */
-public class AllAppsTransitionController implements StateHandler, OnDeviceProfileChangeListener,
-        ProgressInterface {
+public class AllAppsTransitionController implements StateHandler, OnDeviceProfileChangeListener {
 
     public static final float SPRING_DAMPING_RATIO = 0.9f;
     public static final float SPRING_STIFFNESS = 600f;
 
-    public static final Property<AllAppsTransitionController, Float> ALL_APPS_PROGRESS =
-            new Property<AllAppsTransitionController, Float>(Float.class, "allAppsProgress") {
+    public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PROGRESS =
+            new FloatProperty<AllAppsTransitionController>("allAppsProgress") {
 
         @Override
         public Float get(AllAppsTransitionController controller) {
@@ -61,7 +59,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         }
 
         @Override
-        public void set(AllAppsTransitionController controller, Float progress) {
+        public void setValue(AllAppsTransitionController controller, float progress) {
             controller.setProgress(progress);
         }
     };
@@ -121,7 +119,6 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
      * @see #setState(LauncherState)
      * @see #setStateWithAnimation(LauncherState, AnimatorSetBuilder, AnimationConfig)
      */
-    @Override
     public void setProgress(float progress) {
         mProgress = progress;
         mScrimView.setProgress(progress);
@@ -149,7 +146,6 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         }
     }
 
-    @Override
     public float getProgress() {
         return mProgress;
     }
@@ -192,7 +188,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         Interpolator interpolator = config.userControlled ? LINEAR : toState == OVERVIEW
                 ? builder.getInterpolator(ANIM_OVERVIEW_SCALE, FAST_OUT_SLOW_IN)
                 : FAST_OUT_SLOW_IN;
-        Animator anim = new SpringObjectAnimator<>(this, "allAppsSpringFromAATC", 1f / mShiftRange,
+        Animator anim = new SpringObjectAnimator<>(this, ALL_APPS_PROGRESS, 1f / mShiftRange,
                 SPRING_DAMPING_RATIO, SPRING_STIFFNESS, mProgress, targetProgress);
         anim.setDuration(config.duration);
         anim.setInterpolator(builder.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
