@@ -45,7 +45,7 @@
     <string name="dock_pref_summary">Στυλ, ορατότητα, ένδειξη σελίδας</string>
     <string name="dock_pref_title">Μπάρα εφαρμογών</string>
     <string name="hide_icon_labels_pref_title">Απόκρυψη ονομάτων εφαρμογών</string>
-    <string name="backups">Αντίγραφα Ασφαλείας</string>
+    <string name="backups">Αντίγραφα ασφαλείας</string>
     <string name="new_backup">Δημιουργία</string>
     <string name="restore_backup">Επαναφορά</string>
     <string name="backup_location">Τοποθεσία</string>
