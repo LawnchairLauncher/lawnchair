@@ -21,6 +21,7 @@ import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
+import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_DAMPING_RATIO;
 import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_STIFFNESS;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
@@ -380,7 +381,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
 
     private Animator createShelfAnim(Launcher activity, float ... progressValues) {
         Animator shiftAnim = new SpringObjectAnimator<>(activity.getAllAppsController(),
-                "allAppsSpringFromACH", activity.getAllAppsController().getShiftRange(),
+                ALL_APPS_PROGRESS, activity.getAllAppsController().getShiftRange(),
                 SPRING_DAMPING_RATIO, SPRING_STIFFNESS, progressValues);
         return shiftAnim;
     }
