@@ -22,9 +22,14 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Environment
 import android.support.v4.content.ContextCompat
+import ch.deletescape.lawnchair.bugreport.BugReport
+import ch.deletescape.lawnchair.bugreport.BugReportClient
+import ch.deletescape.lawnchair.util.extensions.e
 import com.android.launcher3.BuildConfig
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
+import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -47,23 +52,46 @@ class LawnchairBugReporter(private val context: Context, private val crashHandle
     }
 
     fun writeReport(error: String, throwable: Throwable?) {
-        Report(error, throwable).save()
+        Report(error, throwable).apply {
+            send(save())
+        }
     }
 
     inner class Report(val error: String, val throwable: Throwable? = null) {
 
         private val fileName = "Lawnchair bug report ${SimpleDateFormat.getDateTimeInstance().format(Date())}"
 
-        fun save() {
-            if (!hasPermission) return
+        fun send(reportFile: File?) {
+            if (!context.lawnchairPrefs.showCrashNotifications) return
+
+            val baos = ByteArrayOutputStream()
+            PrintStream(baos, true, "UTF-8").use {
+                writeContents(it)
+            }
+            val contents = String(baos.toByteArray(), StandardCharsets.UTF_8)
+            val report = BugReport(getDescription(throwable ?: return), contents, reportFile)
+            try {
+                BugReportClient.getInstance(context).sendReport(report)
+            } catch (t: Throwable) {
+                e("Failed to send bug report", t)
+            }
+        }
+
+        private fun getDescription(throwable: Throwable): String {
+            return "${throwable::class.java.name}: ${throwable.message}"
+        }
+
+        fun save(): File? {
+            if (!hasPermission) return null
             if (!folder.exists()) folder.mkdirs()
 
             val file = File(folder, "$fileName.txt")
-            if (!file.createNewFile()) return
+            if (!file.createNewFile()) return null
 
             val stream = PrintStream(file)
             writeContents(stream)
             stream.close()
+            return file
         }
 
         private fun writeContents(stream: PrintStream) {

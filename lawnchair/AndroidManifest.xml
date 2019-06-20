@@ -78,11 +78,19 @@
     <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES"/>
     <uses-permission android:name="android.permission.MANAGE_DEVICE_ADMINS"/>
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
 
     <!-- Used for Google/Lawnchair predictions, solely used to read bt connection state -->
     <uses-permission android:name="android.permission.BLUETOOTH"/>
 
     <uses-permission android:name="org.pixelexperience.weather.client.READ_WEATHER"/>
+
+    <permission
+        android:name="${applicationId}.permission.BROADCAST_BUGREPORT"
+        android:protectionLevel="signature"/>
+
+    <uses-permission android:name="${applicationId}.permission.BROADCAST_BUGREPORT"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application
         android:networkSecurityConfig="@xml/network_security_config"
@@ -362,6 +370,18 @@
             android:authorities="${applicationId}.fivesecsprovider"
             android:exported="true"
             android:grantUriPermissions="true"/>
+
+        <service
+            android:enabled="true"
+            android:exported="false"
+            android:name="ch.deletescape.lawnchair.bugreport.BugReportService"
+            android:process=":bugReport" />
+
+        <service
+            android:enabled="true"
+            android:exported="false"
+            android:name="ch.deletescape.lawnchair.bugreport.DogbinUploadService"
+            android:process=":bugReport" />
     </application>
 
 </manifest>

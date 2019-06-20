@@ -58,6 +58,7 @@ public class LauncherAppState {
         if (INSTANCE == null) {
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 INSTANCE = new LauncherAppState(context.getApplicationContext());
+                LawnchairAppKt.getLawnchairApp(context).onLauncherAppStateCreated();
             } else {
                 try {
                     return new MainThreadExecutor().submit(new Callable<LauncherAppState>() {
@@ -132,8 +133,6 @@ public class LauncherAppState {
             };
             mNotificationBadgingObserver.register(NOTIFICATION_BADGING);
         }
-
-        LawnchairAppKt.getLawnchairApp(context).onLauncherAppStateCreated();
     }
 
     /**

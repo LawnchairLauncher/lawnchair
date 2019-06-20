@@ -28,6 +28,8 @@ import android.provider.Settings
 import android.support.annotation.Keep
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.flowerpot.Flowerpot
+import ch.deletescape.lawnchair.bugreport.BugReportClient
+import ch.deletescape.lawnchair.bugreport.BugReportService
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.sesame.Sesame
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
@@ -51,19 +53,20 @@ class LawnchairApp : Application() {
 
     init {
         d("Hidden APIs allowed: ${Utilities.HIDDEN_APIS_ALLOWED}")
-        Thread.setDefaultUncaughtExceptionHandler(bugReporter)
-        registerActivityLifecycleCallbacks(activityHandler)
     }
 
-    override fun onCreate() {
-        super.onCreate()
+    fun onLauncherAppStateCreated() {
+        Thread.setDefaultUncaughtExceptionHandler(bugReporter)
+        registerActivityLifecycleCallbacks(activityHandler)
 
         ThemeManager.getInstance(this).registerColorListener()
         BlurWallpaperProvider.getInstance(this)
         Flowerpot.Manager.getInstance(this)
-    }
+        if (lawnchairPrefs.showCrashNotifications) {
+            BugReportClient.getInstance(this)
+            BugReportService.registerNotificationChannel(this)
+        }
 
-    fun onLauncherAppStateCreated() {
         if (BuildConfig.FEATURE_QUINOA) {
             SesameFrontend.init(this, object: SesameInitOnComplete {
                 override fun onConnect() {

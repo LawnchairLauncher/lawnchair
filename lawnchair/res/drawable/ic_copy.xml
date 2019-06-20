@@ -16,9 +16,10 @@
   ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<resources>
-    <color name="all_apps_prediction_row_separator">#3c000000</color>
-    <color name="all_apps_prediction_row_separator_dark">#3cffffff</color>
-    <color name="dismiss_target_hover_tint">#ffea4335</color>
-    <color name="bugNotificationColor">#ff4caf50</color>
-</resources>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="24dp"
+    android:width="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path android:fillColor="#000" android:pathData="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z" />
+</vector>

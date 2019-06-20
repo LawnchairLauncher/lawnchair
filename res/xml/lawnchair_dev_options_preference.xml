@@ -69,6 +69,11 @@
         android:summary="Useful for debugging some weather providers"
         android:defaultValue="false" />
 
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        android:key="pref_showCrashNotifications"
+        android:title="Show bug report notifications"
+        android:defaultValue="true" />
+
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_wipOptions"
         android:title="Other"

@@ -623,4 +623,14 @@
     <string name="import_as_adaptive">As adaptive icon</string>
 
     <string name="weather_provider_accu" translatable="false">AccuWeather</string>
+    <string name="bugreport_channel_name">Bug reports</string>
+    <string name="status_channel_name">Bug report upload status</string>
+    <string name="dogbin_uploading">Upload in progress</string>
+    <string name="action_dogbin_upload">Upload to dogbin</string>
+    <string name="action_dogbin_upload_error">Upload failed</string>
+    <string name="action_dogbin_copy_link">Copy link</string>
+    <string name="lawnchair_bug_report">Lawnchair bug report</string>
+    <string name="copied_toast">Copied</string>
+    <string name="action_copy">Copy</string>
+    <string name="action_share">Share</string>
 </resources>
