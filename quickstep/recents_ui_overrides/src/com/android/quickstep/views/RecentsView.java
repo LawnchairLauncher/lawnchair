@@ -19,6 +19,8 @@ package com.android.quickstep.views;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
@@ -79,7 +81,6 @@ import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.LauncherAnimUtils.ViewProgressProperty;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
@@ -1031,9 +1032,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private void addDismissedTaskAnimations(View taskView, AnimatorSet anim, long duration) {
         addAnim(ObjectAnimator.ofFloat(taskView, ALPHA, 0), duration, ACCEL_2, anim);
         if (QUICKSTEP_SPRINGS.get() && taskView instanceof TaskView)
-            addAnim(new SpringObjectAnimator<>(new ViewProgressProperty(taskView,
-                            View.TRANSLATION_Y), "taskViewTransY", SPRING_MIN_VISIBLE_CHANGE,
-                            SPRING_DAMPING_RATIO, SPRING_STIFFNESS, 0, -taskView.getHeight()),
+            addAnim(new SpringObjectAnimator<>(taskView, VIEW_TRANSLATE_Y,
+                            SPRING_MIN_VISIBLE_CHANGE, SPRING_DAMPING_RATIO, SPRING_STIFFNESS,
+                            0, -taskView.getHeight()),
                     duration, LINEAR, anim);
         else {
             addAnim(ObjectAnimator.ofFloat(taskView, TRANSLATION_Y, -taskView.getHeight()),
@@ -1109,10 +1110,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 int scrollDiff = newScroll[i] - oldScroll[i] + offset;
                 if (scrollDiff != 0) {
                     if (QUICKSTEP_SPRINGS.get() && child instanceof TaskView) {
-                        addAnim(new SpringObjectAnimator<>(
-                                new ViewProgressProperty(child, View.TRANSLATION_X),
-                                "taskViewTransX", SPRING_MIN_VISIBLE_CHANGE, SPRING_DAMPING_RATIO,
-                                SPRING_STIFFNESS, 0, scrollDiff), duration, ACCEL, anim);
+                        addAnim(new SpringObjectAnimator<>(child, VIEW_TRANSLATE_X,
+                                SPRING_MIN_VISIBLE_CHANGE, SPRING_DAMPING_RATIO, SPRING_STIFFNESS,
+                                0, scrollDiff), duration, ACCEL, anim);
                     } else {
                         addAnim(ObjectAnimator.ofFloat(child, TRANSLATION_X, scrollDiff), duration,
                                 ACCEL, anim);
