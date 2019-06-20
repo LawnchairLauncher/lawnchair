@@ -16,7 +16,8 @@
 
 package com.android.launcher3.tapl;
 
-import androidx.test.uiautomator.Direction;
+import android.graphics.Rect;
+
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
@@ -26,7 +27,6 @@ import com.android.launcher3.testing.TestProtocol;
  * A recent task in the overview panel carousel.
  */
 public final class OverviewTask {
-    static final int FLING_SPEED = 3000;
     private static final long WAIT_TIME_MS = 60000;
     private final LauncherInstrumentation mLauncher;
     private final UiObject2 mTask;
@@ -51,7 +51,10 @@ public final class OverviewTask {
                 "want to dismiss a task")) {
             verifyActiveContainer();
             // Dismiss the task via flinging it up.
-            mTask.fling(Direction.DOWN, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
+            final Rect taskBounds = mTask.getVisibleBounds();
+            final int centerX = taskBounds.centerX();
+            final int centerY = taskBounds.centerY();
+            mLauncher.linearGesture(centerX, centerY, centerX, 0, 10);
             mLauncher.waitForIdle();
         }
     }
