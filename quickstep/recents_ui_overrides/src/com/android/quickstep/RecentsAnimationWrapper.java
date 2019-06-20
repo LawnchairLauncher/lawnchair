@@ -19,6 +19,8 @@ import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
+import static com.android.launcher3.Utilities.FLAG_NO_GESTURES;
+
 import android.view.InputEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -182,7 +184,10 @@ public class RecentsAnimationWrapper {
             }
         }
         if (mInputConsumer != null) {
+            int flags = ev.getEdgeFlags();
+            ev.setEdgeFlags(flags | FLAG_NO_GESTURES);
             mInputConsumer.onMotionEvent(ev);
+            ev.setEdgeFlags(flags);
         }
 
         return true;
