@@ -43,6 +43,7 @@ import android.view.ViewDebug;
 import android.widget.TextView;
 
 import com.android.launcher3.Launcher.OnResumeCallback;
+import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DrawableFactory;
@@ -225,6 +226,18 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public void applyFromWorkspaceItem(WorkspaceItemInfo info) {
         applyFromWorkspaceItem(info, false);
+    }
+
+    @Override
+    public void setAccessibilityDelegate(AccessibilityDelegate delegate) {
+        if (delegate instanceof LauncherAccessibilityDelegate) {
+            super.setAccessibilityDelegate(delegate);
+        } else {
+            // NO-OP
+            // Workaround for b/129745295 where RecyclerView is setting our Accessibility
+            // delegate incorrectly. There are no cases when we shouldn't be using the
+            // LauncherAccessibilityDelegate for BubbleTextView.
+        }
     }
 
     public void applyFromWorkspaceItem(WorkspaceItemInfo info, boolean promiseStateChanged) {
