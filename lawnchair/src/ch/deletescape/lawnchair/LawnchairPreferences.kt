@@ -205,7 +205,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, doNothing)
     val enablePhysics get() = !lowPerformanceMode
     val backupScreenshot by BooleanPref("pref_backupScreenshot", false, doNothing)
-    val useScaleAnim by BooleanPref("pref_useScaleAnim", false, doNothing)
+    var useScaleAnim by BooleanPref("pref_useScaleAnim", false, doNothing)
     val useWindowToIcon by BooleanPref("pref_useWindowToIcon", true, doNothing)
     val dismissTasksOnKill by BooleanPref("pref_dismissTasksOnKill", true, doNothing)
     var customFontName by StringPref("pref_customFontName", "Google Sans", doNothing)

@@ -19,6 +19,7 @@ package ch.deletescape.lawnchair.animations
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
@@ -38,11 +39,19 @@ class SplashLayout(context: Context) : FrameLayout(context), Insettable {
     private var layoutInDisplayCutoutMode = 0
 
     private val insets = Rect()
+    private val crop = Rect()
 
     init {
         addView(statusView, 0, 0)
         addView(navView, 0, 0)
         addView(cutoutView, 0, 0)
+    }
+
+    override fun draw(canvas: Canvas) {
+        canvas.save()
+        canvas.clipRect(crop)
+        super.draw(canvas)
+        canvas.restore()
     }
 
     @SuppressLint("RtlHardcoded")
@@ -110,5 +119,10 @@ class SplashLayout(context: Context) : FrameLayout(context), Insettable {
         navView.setBackgroundColor(splashData.navColor)
         layoutInDisplayCutoutMode = splashData.layoutInDisplayCutoutMode
         setInsets(this.insets)
+    }
+
+    fun setCrop(crop: Rect) {
+        this.crop.set(crop)
+        invalidate()
     }
 }

@@ -28,6 +28,7 @@ import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
 import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.util.extensions.w
 import com.android.launcher3.*
 import com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS
 import com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE
@@ -113,6 +114,12 @@ abstract class AnimationType {
                                          manager: LawnchairAppTransitionManagerImpl) {
             val view = v ?: lastView?.get() ?: return
             if (!hasControlRemoteAppTransitionPermission(launcher)) {
+                val prefs = launcher.lawnchairPrefs
+                if (prefs.useScaleAnim) {
+                    w("scale anim is not supported, turning it off")
+                    prefs.useScaleAnim = false
+                }
+
                 val anim = AnimatorSet()
 
                 val splashData = SplashResolver.getInstance(launcher).loadSplash(intent)
@@ -160,7 +167,7 @@ abstract class AnimationType {
             return Rect(0, 0, launcher.deviceProfile.widthPx, launcher.deviceProfile.heightPx)
         }
 
-        private fun getOpeningWindowAnimators(launcher: Launcher, v: View, dummyView: View,
+        private fun getOpeningWindowAnimators(launcher: Launcher, v: View, splashView: SplashLayout,
                                               floatingView: View,
                                               windowTargetBounds: Rect): ValueAnimator {
             val bounds = Rect()
@@ -218,13 +225,14 @@ abstract class AnimationType {
                     crop.right = windowWidth
                     crop.bottom = (crop.top + cropHeight).toInt()
 
-                    dummyView.pivotX = 0f
-                    dummyView.pivotY = 0f
-                    dummyView.scaleX = scale
-                    dummyView.scaleY = scale
-                    dummyView.translationX = transX0
-                    dummyView.translationY = transY0
-                    dummyView.alpha = mAlpha.value
+                    splashView.pivotX = 0f
+                    splashView.pivotY = 0f
+                    splashView.scaleX = scale
+                    splashView.scaleY = scale
+                    splashView.translationX = transX0
+                    splashView.translationY = transY0
+                    splashView.alpha = mAlpha.value
+                    splashView.setCrop(crop)
                 }
             })
             return appAnimator

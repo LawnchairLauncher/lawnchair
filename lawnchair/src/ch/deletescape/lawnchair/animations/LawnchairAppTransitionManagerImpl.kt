@@ -70,7 +70,7 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
         Utilities.getLawnchairPrefs(launcher).addOnPreferenceChangeListener(this, *prefsToListen)
     }
 
-    override fun getActivityLaunchOptions(launcher: Launcher, v: View): ActivityOptions {
+    override fun getActivityLaunchOptions(launcher: Launcher, v: View): ActivityOptions? {
         if (isLaunchingFromRecents(launcher)) {
             return super.getActivityLaunchOptions(launcher, v)
         }
