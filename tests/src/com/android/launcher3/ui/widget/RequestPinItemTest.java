@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.ui.widget;
 
+import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 
@@ -155,7 +157,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
                 getWorkspace().
                 switchToAllApps().
                 getAppIcon("Test Pin Item").
-                launch("com.google.android.apps.nexuslauncher.tests");
+                launch(getAppPackageName());
         assertNotNull(openMonitor.blockingGetExtraIntent());
 
         // Set callback
