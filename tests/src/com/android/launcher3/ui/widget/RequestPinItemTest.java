@@ -41,7 +41,6 @@ import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
 import com.android.launcher3.testcomponent.RequestPinItemActivity;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
-import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ShellCommandRule;
@@ -149,14 +148,14 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         clearHomescreen();
         mActivityMonitor.startLauncher();
 
-        // Open all apps and wait for load complete
-        final UiObject2 appsContainer = TestViewHelpers.openAllApps();
-        Wait.atMost(null, Condition.minChildCount(appsContainer, 2), DEFAULT_UI_TIMEOUT);
-
         // Open Pin item activity
         BlockingBroadcastReceiver openMonitor = new BlockingBroadcastReceiver(
                 RequestPinItemActivity.class.getName());
-        scrollAndFind(appsContainer, By.text("Test Pin Item")).click();
+        mLauncher.
+                getWorkspace().
+                switchToAllApps().
+                getAppIcon("Test Pin Item").
+                launch("com.google.android.apps.nexuslauncher.tests");
         assertNotNull(openMonitor.blockingGetExtraIntent());
 
         // Set callback
