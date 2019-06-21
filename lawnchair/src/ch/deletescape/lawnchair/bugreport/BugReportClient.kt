@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
+import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
 import ch.deletescape.lawnchair.util.extensions.d
 import ch.deletescape.lawnchair.util.extensions.e
@@ -35,6 +36,7 @@ class BugReportClient(private val context: Context) {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             d("Service connected")
             bugReportService = IBugReportService.Stub.asInterface(service)
+            setAutoUploadEnabled()
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -65,6 +67,10 @@ class BugReportClient(private val context: Context) {
 
     fun sendReport(report: BugReport) {
         bugReportService?.sendReport(report) ?: throw RuntimeException("Bug report service is null")
+    }
+
+    fun setAutoUploadEnabled() {
+        bugReportService?.setAutoUploadEnabled(context.lawnchairPrefs.autoUploadBugReport)
     }
 
     companion object : LawnchairSingletonHolder<BugReportClient>(::BugReportClient)

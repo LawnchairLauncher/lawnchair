@@ -36,6 +36,7 @@ class BugReportService : Service() {
 
     private val handler = Handler()
     private val resetThrottleRunnable = Runnable { reportCount = 0 }
+    private var autoUpload = false
 
     private var reportCount = 0
 
@@ -68,6 +69,14 @@ class BugReportService : Service() {
         return super.onStartCommand(intent, flags, startId)
     }
 
+    fun onNewReport(report: BugReport) {
+        if (autoUpload) {
+            startDogbinUpload(report)
+        } else {
+            notify(report)
+        }
+    }
+
     fun notify(report: BugReport, uploading: Boolean = false) {
         val notificationId = report.notificationId
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
@@ -90,36 +99,35 @@ class BugReportService : Service() {
             builder.setContentIntent(pendingOpenIntent)
         }
 
+        val copyIntent = Intent(COPY_ACTION)
+                .setPackage(BuildConfig.APPLICATION_ID)
+                .putExtra("report", report)
+        val pendingCopyIntent = PendingIntent.getBroadcast(
+                this, notificationId, copyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val copyText = if (report.link != null) R.string.action_copy_link else R.string.action_copy
+        val copyActionBuilder = NotificationCompat.Action.Builder(
+                R.drawable.ic_copy, getString(copyText), pendingCopyIntent)
+        builder.addAction(copyActionBuilder.build())
+
+        val pendingShareIntent = PendingIntent.getActivity(
+                this, notificationId, report.createShareIntent(this), PendingIntent.FLAG_UPDATE_CURRENT)
+        val shareActionBuilder = NotificationCompat.Action.Builder(
+                R.drawable.ic_share, getString(R.string.action_share), pendingShareIntent)
+        builder.addAction(shareActionBuilder.build())
+
         if (uploading) {
             builder.setOngoing(true)
             builder.setProgress(0, 0, true)
-        } else {
-            val copyIntent = Intent(COPY_ACTION)
+        } else if (report.link == null) {
+            val uploadIntent = Intent(UPLOAD_ACTION)
                     .setPackage(BuildConfig.APPLICATION_ID)
                     .putExtra("report", report)
-            val pendingCopyIntent = PendingIntent.getBroadcast(
-                    this, notificationId, copyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-            val copyActionBuilder = NotificationCompat.Action.Builder(
-                    R.drawable.ic_copy, getString(R.string.action_copy), pendingCopyIntent)
-            builder.addAction(copyActionBuilder.build())
-
-            val pendingShareIntent = PendingIntent.getActivity(
-                    this, notificationId, report.createShareIntent(this), PendingIntent.FLAG_UPDATE_CURRENT)
-            val shareActionBuilder = NotificationCompat.Action.Builder(
-                    R.drawable.ic_share, getString(R.string.action_share), pendingShareIntent)
-            builder.addAction(shareActionBuilder.build())
-
-            if (report.link == null) {
-                val uploadIntent = Intent(UPLOAD_ACTION)
-                        .setPackage(BuildConfig.APPLICATION_ID)
-                        .putExtra("report", report)
-                val pendingUploadIntent = PendingIntent.getBroadcast(
-                        this, notificationId, uploadIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-                val uploadText = if (report.uploadError) R.string.action_dogbin_upload_error else R.string.action_dogbin_upload
-                val uploadActionBuilder = NotificationCompat.Action.Builder(
-                        R.drawable.ic_backup, getString(uploadText), pendingUploadIntent)
-                builder.addAction(uploadActionBuilder.build())
-            }
+            val pendingUploadIntent = PendingIntent.getBroadcast(
+                    this, notificationId, uploadIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val uploadText = if (report.uploadError) R.string.action_dogbin_upload_error else R.string.action_dogbin_upload
+            val uploadActionBuilder = NotificationCompat.Action.Builder(
+                    R.drawable.ic_upload, getString(uploadText), pendingUploadIntent)
+            builder.addAction(uploadActionBuilder.build())
         }
 
         getSystemService(this, NotificationManager::class.java)!!
@@ -147,10 +155,14 @@ class BugReportService : Service() {
                     reportCount++
                     handler.removeCallbacks(resetThrottleRunnable)
                     if (reportCount <= 3) {
-                        notify(report)
+                        onNewReport(report)
                         handler.postDelayed(resetThrottleRunnable, 10000)
                     }
                 }
+            }
+
+            override fun setAutoUploadEnabled(enable: Boolean) {
+                autoUpload = enable
             }
         }
     }

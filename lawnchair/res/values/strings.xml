@@ -632,6 +632,7 @@
     <string name="lawnchair_bug_report">Lawnchair bug report</string>
     <string name="copied_toast">Copied</string>
     <string name="action_copy">Copy</string>
+    <string name="action_copy_link">Copy link</string>
     <string name="action_share">Share</string>
 
     <string name="animation_type_title">App opening animation</string>

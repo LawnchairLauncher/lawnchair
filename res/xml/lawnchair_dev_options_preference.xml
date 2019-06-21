@@ -74,6 +74,12 @@
         android:title="Show bug report notifications"
         android:defaultValue="true" />
 
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        android:key="pref_autoUploadBugReport"
+        android:title="Automatically upload bug reports to dogbin"
+        android:defaultValue="false"
+        android:dependency="pref_showCrashNotifications" />
+
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_wipOptions"
         android:title="Other"

@@ -24,6 +24,7 @@ import android.net.Uri
 import android.os.Looper
 import android.provider.Settings
 import android.text.TextUtils
+import ch.deletescape.lawnchair.bugreport.BugReportClient
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import ch.deletescape.lawnchair.groups.AppGroupsManager
 import ch.deletescape.lawnchair.groups.DrawerTabs
@@ -216,6 +217,11 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val brightnessTheme by BooleanPref("pref_brightnessTheme", false, restart)
     val debugOkHttp by BooleanPref("pref_debugOkhttp", onChange = restart)
     val showCrashNotifications by BooleanPref("pref_showCrashNotifications", true, restart)
+    val autoUploadBugReport by BooleanPref("pref_autoUploadBugReport", false) {
+        if (showCrashNotifications) {
+            BugReportClient.getInstance(context).setAutoUploadEnabled()
+        }
+    }
     val forceFakePieAnims by BooleanPref("pref_forceFakePieAnims", false)
 
     // Search
