@@ -25,6 +25,7 @@
     android:alpha="0"
     android:gravity="center"
     android:orientation="horizontal"
+    android:visibility="invisible"
     android:weightSum="4">
 
     <ch.deletescape.lawnchair.views.OptionsTextView
