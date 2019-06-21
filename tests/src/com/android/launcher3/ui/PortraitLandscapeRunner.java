@@ -49,14 +49,12 @@ class PortraitLandscapeRunner implements TestRule {
                 mTest.mDevice.setOrientationNatural();
                 mTest.mLauncher.setExpectedRotation(Surface.ROTATION_0);
                 base.evaluate();
-                mTest.mLauncher.pressHome();
             }
 
             private void evaluateInLandscape() throws Throwable {
                 mTest.mDevice.setOrientationLeft();
                 mTest.mLauncher.setExpectedRotation(Surface.ROTATION_90);
                 base.evaluate();
-                mTest.mLauncher.pressHome();
             }
         };
     }
