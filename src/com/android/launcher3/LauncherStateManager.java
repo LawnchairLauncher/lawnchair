@@ -111,6 +111,9 @@ public class LauncherStateManager {
     private final Launcher mLauncher;
     private final ArrayList<StateListener> mListeners = new ArrayList<>();
 
+    // Animators which are run on properties also controlled by state animations.
+    private Animator[] mStateElementAnimators;
+
     private StateHandler[] mStateHandlers;
     private LauncherState mState = NORMAL;
 
@@ -209,6 +212,7 @@ public class LauncherStateManager {
     public void reapplyState(boolean cancelCurrentAnimation) {
         boolean wasInAnimation = mConfig.mCurrentAnimation != null;
         if (cancelCurrentAnimation) {
+            cancelAllStateElementAnimation();
             cancelAnimation();
         }
         if (mConfig.mCurrentAnimation == null) {
@@ -250,6 +254,7 @@ public class LauncherStateManager {
         mConfig.reset();
 
         if (!animated) {
+            cancelAllStateElementAnimation();
             onStateTransitionStart(state);
             for (StateHandler handler : getStateHandlers()) {
                 handler.setState(state);
@@ -519,6 +524,47 @@ public class LauncherStateManager {
             onStateTransitionEnd(mState);
         }
         mConfig.setAnimation(anim, null);
+    }
+
+    private void cancelAllStateElementAnimation() {
+        if (mStateElementAnimators == null) {
+            return;
+        }
+
+        for (Animator animator : mStateElementAnimators) {
+            if (animator != null) {
+                animator.cancel();
+            }
+        }
+    }
+
+    /**
+     * Cancels a currently running gesture animation
+     */
+    public void cancelStateElementAnimation(int index) {
+        if (mStateElementAnimators == null) {
+            return;
+        }
+        if (mStateElementAnimators[index] != null) {
+            mStateElementAnimators[index].cancel();
+        }
+    }
+
+    public Animator createStateElementAnimation(int index, float... values) {
+        cancelStateElementAnimation(index);
+        LauncherAppTransitionManager latm = mLauncher.getAppTransitionManager();
+        if (mStateElementAnimators == null) {
+            mStateElementAnimators = new Animator[latm.getStateElementAnimationsCount()];
+        }
+        Animator anim = latm.createStateElementAnimation(index, values);
+        mStateElementAnimators[index] = anim;
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mStateElementAnimators[index] = null;
+            }
+        });
+        return anim;
     }
 
     private void clearCurrentAnimation() {

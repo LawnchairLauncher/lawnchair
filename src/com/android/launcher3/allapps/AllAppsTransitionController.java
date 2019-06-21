@@ -47,8 +47,8 @@ import com.android.launcher3.views.ScrimView;
  */
 public class AllAppsTransitionController implements StateHandler, OnDeviceProfileChangeListener {
 
-    public static final float SPRING_DAMPING_RATIO = 0.9f;
-    public static final float SPRING_STIFFNESS = 600f;
+    private static final float SPRING_DAMPING_RATIO = 0.9f;
+    private static final float SPRING_STIFFNESS = 600f;
 
     public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PROGRESS =
             new FloatProperty<AllAppsTransitionController>("allAppsProgress") {
@@ -188,8 +188,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         Interpolator interpolator = config.userControlled ? LINEAR : toState == OVERVIEW
                 ? builder.getInterpolator(ANIM_OVERVIEW_SCALE, FAST_OUT_SLOW_IN)
                 : FAST_OUT_SLOW_IN;
-        Animator anim = new SpringObjectAnimator<>(this, ALL_APPS_PROGRESS, 1f / mShiftRange,
-                SPRING_DAMPING_RATIO, SPRING_STIFFNESS, mProgress, targetProgress);
+        Animator anim = createSpringAnimation(mProgress, targetProgress);
         anim.setDuration(config.duration);
         anim.setInterpolator(builder.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
         anim.addListener(getProgressAnimatorListener());
@@ -197,6 +196,11 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         builder.play(anim);
 
         setAlphas(toState, config, builder);
+    }
+
+    public Animator createSpringAnimation(float... progressValues) {
+        return new SpringObjectAnimator<>(this, ALL_APPS_PROGRESS, 1f / mShiftRange,
+                SPRING_DAMPING_RATIO, SPRING_STIFFNESS, progressValues);
     }
 
     private void setAlphas(LauncherState toState, AnimationConfig config,

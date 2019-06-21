@@ -16,25 +16,32 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
 import static com.android.quickstep.TaskViewUtils.getRecentsWindowAnimator;
 
+import static androidx.dynamicanimation.animation.DynamicAnimation.MIN_VISIBLE_CHANGE_PIXELS;
+import static androidx.dynamicanimation.animation.SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY;
+import static androidx.dynamicanimation.animation.SpringForce.STIFFNESS_MEDIUM;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -46,11 +53,12 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
  */
 public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransitionManagerImpl {
 
-    private RecentsView mRecentsView;
+    public static final int INDEX_SHELF_ANIM = 0;
+    public static final int INDEX_RECENTS_FADE_ANIM = 1;
+    public static final int INDEX_RECENTS_TRANSLATE_X_ANIM = 2;
 
     public LauncherAppTransitionManagerImpl(Context context) {
         super(context);
-        mRecentsView = mLauncher.getOverviewPanel();
     }
 
     @Override
@@ -132,5 +140,26 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
             overview.setFreezeViewVisibility(false);
             mLauncher.getStateManager().reapplyState();
         };
+    }
+
+    @Override
+    public int getStateElementAnimationsCount() {
+        return 3;
+    }
+
+    @Override
+    public Animator createStateElementAnimation(int index, float... values) {
+        switch (index) {
+            case INDEX_SHELF_ANIM:
+                return mLauncher.getAllAppsController().createSpringAnimation(values);
+            case INDEX_RECENTS_FADE_ANIM:
+                return ObjectAnimator.ofFloat(mLauncher.getOverviewPanel(),
+                        RecentsView.CONTENT_ALPHA, values);
+            case INDEX_RECENTS_TRANSLATE_X_ANIM:
+                return new SpringObjectAnimator<>(mLauncher.getOverviewPanel(),
+                        VIEW_TRANSLATE_X, MIN_VISIBLE_CHANGE_PIXELS, 0.8f, 250, values);
+            default:
+                return super.createStateElementAnimation(index, values);
+        }
     }
 }
