@@ -177,6 +177,7 @@ public class ActionView extends BubbleTextView implements OnLongClickListener {
         point.y = this.mLastTouchPos.y;
         DragView dragView = launcher.getWorkspace().beginDragShared(view, launcher.getAppsView(),
                 itemInfo, new MyDragPreviewProvider(view, point), dragOptions);
+        if (dragView == null) return false;
         Rect rect = new Rect();
         getIconBounds(rect);
         dragView.animateShift(((-point.x) + rect.left) + (rect.width() / 2),
