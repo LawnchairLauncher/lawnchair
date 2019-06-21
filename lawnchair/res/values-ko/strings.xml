@@ -170,6 +170,7 @@
     <string name="action_open_app_with_target">%s 열기</string>
     <string name="action_open_app_select_app">앱 선택</string>
     <string name="action_none">아무것도 하지 않기</string>
+    <string name="action_despacito">YouTube Rewind 2018 (distorted) 재생</string>
     <string name="gesture_press_home">홈 버튼</string>
     <string name="gesture_press_back">뒤로 가기 버튼</string>
     <string name="gesture_double_tap">두번 탭하기</string>
@@ -285,6 +286,10 @@
     <string name="theme_dark">어두운 테마</string>
     <string name="theme_dark_dark_text">어두운 배경에 흰색 글자</string>
     <string name="theme_black">검은색</string>
+    <string name="theme_dark_theme_mode">어두운 테마</string>
+    <string name="theme_dark_theme_mode_on">사용</string>
+    <string name="theme_dark_theme_mode_off">사용 안 함</string>
+    <string name="theme_use_dark_text">어두운 텍스트를 사용</string>
     <string name="pref_qsb_color">색상</string>
     <string name="bubble_searchbar">듀얼 버블 검색 바</string>
     <string name="search_menu">설정 검색</string>
@@ -292,9 +297,12 @@
     <string name="lawnchair_accent">액센트</string>
     <string name="theme_based">테마 사용</string>
     <!--Marker I-->
+    <string name="suggestion_pref_screen_title">추천</string>
     <string name="title_app_suggestions">앱</string>
+    <string name="title_app_suggestions_in_search">앱 추천</string>
     <string name="summary_app_suggestions">최근 사용한 앱</string>
     <string name="app_actions_pref_title">액션</string>
+    <string name="app_actions_pref_title_in_search">액션 추천</string>
     <string name="change_default_home">홈 화면으로 설정</string>
     <string name="feed_theme_pref_title">배경색</string>
     <string name="recents_not_connected">서비스 연결하지 않음</string>
@@ -364,4 +372,7 @@
     <string name="about_bio_paphonb">18살 학생 • 안드로이드 개발자 • Lawnchair 시작 관리자 첫번째 위 개발자의 한명</string>
     <string name="dock_scale">독 스타일</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Lawnchair 검색 설정을 Sesame과 동기화</string>
+    <string name="icon_text_scale_pref_title">텍스트 크기</string>
+    <string name="text_color">텍스트 색상</string>
+    <string name="background_color">배경 색상</string>
 </resources>
