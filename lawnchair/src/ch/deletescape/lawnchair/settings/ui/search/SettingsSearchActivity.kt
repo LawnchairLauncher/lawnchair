@@ -71,12 +71,12 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
         search_view.setOnQueryTextListener(this)
         search_view.requestFocus()
 
-        overridePendingTransition(R.anim.fade_in_short, R.anim.no_anim)
+        overridePendingTransition(R.anim.fade_in_short, R.anim.no_anim_short)
     }
 
     override fun finish() {
         super.finish()
-        overridePendingTransition(R.anim.no_anim, R.anim.fade_out_short)
+        overridePendingTransition(R.anim.no_anim_short, R.anim.fade_out_short)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

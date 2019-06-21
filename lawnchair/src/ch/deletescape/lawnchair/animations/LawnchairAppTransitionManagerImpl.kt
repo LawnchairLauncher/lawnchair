@@ -45,8 +45,11 @@ import com.android.quickstep.TaskUtils
 import com.android.quickstep.util.MultiValueUpdateListener
 import com.android.quickstep.util.RemoteAnimationProvider
 import com.android.quickstep.views.RecentsView
+import com.android.quickstep.views.TaskView
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan
 import com.android.systemui.shared.recents.model.Task
+import com.android.systemui.shared.system.ActivityCompat
+import com.android.systemui.shared.system.RemoteAnimationDefinitionCompat
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING
@@ -64,25 +67,36 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
     private val animationType by context.lawnchairPrefs.StringBasedPref("pref_animationType",
             AnimationType.DefaultAnimation(), { },
             AnimationType.Companion::fromString,
-            AnimationType.Companion::toString) { }
+            AnimationType.Companion::toString) { registerRemoteAnimations() }
 
     init {
         Utilities.getLawnchairPrefs(launcher).addOnPreferenceChangeListener(this, *prefsToListen)
+        registerRemoteAnimations()
+    }
+
+    override fun registerRemoteAnimations() {
+        if (animationType.allowWallpaperOpenRemoteAnimation) {
+            super.registerRemoteAnimations()
+        } else if (hasControlRemoteAppTransitionPermission()) {
+            ActivityCompat(launcher).registerRemoteAnimations(RemoteAnimationDefinitionCompat())
+        }
     }
 
     override fun getActivityLaunchOptions(launcher: Launcher, v: View): ActivityOptions? {
-        if (isLaunchingFromRecents(launcher)) {
+        if (isLaunchingFromRecents(launcher, v)) {
             return super.getActivityLaunchOptions(launcher, v)
         }
         return animationType.getActivityLaunchOptions(launcher, v) ?: super.getActivityLaunchOptions(launcher, v)
     }
 
-    private fun isLaunchingFromRecents(launcher: Launcher): Boolean {
-        return launcher.stateManager.state.overviewUi
+    private fun isLaunchingFromRecents(launcher: Launcher, v: View?): Boolean {
+        return launcher.stateManager.state.overviewUi && v is TaskView
     }
 
     fun playLaunchAnimation(launcher: Launcher, v: View?, intent: Intent) {
-        animationType.playLaunchAnimation(launcher, v, intent, this)
+        if (!isLaunchingFromRecents(launcher, v)) {
+            animationType.playLaunchAnimation(launcher, v, intent, this)
+        }
     }
 
     fun overrideResumeAnimation(launcher: Launcher) {

@@ -641,4 +641,6 @@
     <string name="animation_type_reveal">Reveal</string>
     <string name="animation_type_slide_up">Slide Up</string>
     <string name="animation_type_scale_up">Scale Up</string>
+    <string name="animation_type_blink">Blink</string>
+    <string name="animation_type_fade">Fade</string>
 </resources>

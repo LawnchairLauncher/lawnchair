@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~     This file is part of Lawnchair Launcher.
+  ~
+  ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Lawnchair Launcher is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shareInterpolator="false" android:zAdjustment="top">
+    <scale android:fromXScale="1.2" android:toXScale="1.0"
+        android:fromYScale=".8" android:toYScale="1.0"
+        android:pivotX="50%p" android:pivotY="50%p"
+        android:fillEnabled="true" android:fillBefore="true" android:fillAfter="true"
+        android:interpolator="@android:interpolator/decelerate_quint"
+        android:startOffset="300"
+        android:duration="240" />
+    <alpha android:fromAlpha="0" android:toAlpha="1.0"
+        android:fillEnabled="true" android:fillBefore="true" android:fillAfter="true"
+        android:interpolator="@android:interpolator/decelerate_quad"
+        android:startOffset="300"
+        android:duration="300"/>
+</set>

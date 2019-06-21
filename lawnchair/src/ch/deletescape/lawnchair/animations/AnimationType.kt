@@ -39,6 +39,8 @@ import java.lang.ref.WeakReference
 
 abstract class AnimationType {
 
+    open val allowWallpaperOpenRemoteAnimation = true
+
     open fun getActivityLaunchOptions(launcher: Launcher, v: View?): ActivityOptions? {
         return null
     }
@@ -73,6 +75,34 @@ abstract class AnimationType {
     }
 
     class DefaultAnimation : AnimationType()
+
+    class FadeAnimation : AnimationType() {
+
+        override val allowWallpaperOpenRemoteAnimation = false
+
+        override fun getActivityLaunchOptions(launcher: Launcher, v: View?): ActivityOptions? {
+            return ActivityOptions.makeCustomAnimation(
+                    launcher, R.anim.fade_in_short, R.anim.no_anim_short)
+        }
+
+        override fun overrideResumeAnimation(launcher: Launcher) {
+            launcher.overridePendingTransition(R.anim.no_anim_short, R.anim.fade_out_short)
+        }
+    }
+
+    class BlinkAnimation : AnimationType() {
+
+        override val allowWallpaperOpenRemoteAnimation = false
+
+        override fun getActivityLaunchOptions(launcher: Launcher, v: View?): ActivityOptions? {
+            return ActivityOptions.makeCustomAnimation(
+                    launcher, R.anim.blink_open_enter, R.anim.blink_open_exit)
+        }
+
+        override fun overrideResumeAnimation(launcher: Launcher) {
+            launcher.overridePendingTransition(R.anim.blink_close_enter, R.anim.blink_close_exit)
+        }
+    }
 
     class ScaleUpAnimation : AnimationType() {
 
@@ -248,6 +278,8 @@ abstract class AnimationType {
         const val TYPE_REVEAL = "reveal"
         const val TYPE_SLIDE_UP = "slideUp"
         const val TYPE_SCALE_UP = "scaleUp"
+        const val TYPE_BLINK = "blink"
+        const val TYPE_FADE = "fade"
 
         fun fromString(type: String): AnimationType {
             return when (type) {
@@ -255,6 +287,8 @@ abstract class AnimationType {
                 TYPE_REVEAL -> RevealAnimation()
                 TYPE_SLIDE_UP -> SlideUpAnimation()
                 TYPE_SCALE_UP -> ScaleUpAnimation()
+                TYPE_BLINK -> BlinkAnimation()
+                TYPE_FADE -> FadeAnimation()
                 else -> DefaultAnimation()
             }
         }
@@ -265,6 +299,8 @@ abstract class AnimationType {
                 is RevealAnimation -> TYPE_REVEAL
                 is SlideUpAnimation -> TYPE_SLIDE_UP
                 is ScaleUpAnimation -> TYPE_SCALE_UP
+                is BlinkAnimation -> TYPE_BLINK
+                is FadeAnimation -> TYPE_FADE
                 else -> ""
             }
         }

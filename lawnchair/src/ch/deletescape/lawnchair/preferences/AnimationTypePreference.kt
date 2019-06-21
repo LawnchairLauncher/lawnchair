@@ -41,6 +41,8 @@ class AnimationTypePreference(context: Context, attrs: AttributeSet?) : ListPref
         }
         builder.addEntry(R.string.animation_type_slide_up, AnimationType.TYPE_SLIDE_UP)
         builder.addEntry(R.string.animation_type_scale_up, AnimationType.TYPE_SCALE_UP)
+        builder.addEntry(R.string.animation_type_blink, AnimationType.TYPE_BLINK)
+        builder.addEntry(R.string.animation_type_fade, AnimationType.TYPE_FADE)
 
         val (entries, entryValues) = builder.build()
         setEntries(entries)
