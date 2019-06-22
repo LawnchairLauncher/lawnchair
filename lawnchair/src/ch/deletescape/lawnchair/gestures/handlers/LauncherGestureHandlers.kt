@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.gestures.handlers
 
 import android.app.Activity
+import android.accessibilityservice.AccessibilityService
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
@@ -32,6 +33,7 @@ import ch.deletescape.lawnchair.gestures.ui.SelectAppActivity
 import ch.deletescape.lawnchair.getIcon
 import com.android.launcher3.LauncherState
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
+import ch.deletescape.lawnchair.lawnchairApp
 import com.android.launcher3.R
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
@@ -298,6 +300,15 @@ class StartVoiceSearchGestureHandler(context: Context, config: JSONObject?) : Ge
                 Log.e(this::class.java.name, "Failed to start voice search", e)
             }
         }
+    }
+}
+
+@Keep
+class OpenRecentsByAccessibilityGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config){
+    override val displayName = context.getString(R.string.action_recents_accessibility)
+
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
+        context.applicationContext.lawnchairApp.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
     }
 }
 

@@ -412,4 +412,5 @@
     <string name="adaptify_pack_summary">Δημιουργία προσαρμοσμένων εικονιδίων για εικονίδια από πακέτα εικονιδίων</string>
     <string name="pref_sesame_sync_look_and_feel">Κοινοποίηση εμφάνισης</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Συγχρονισμός ρυθμίσεων αναζήτησης Lawnchair με την εφαρμογή Sesame</string>
+    <string name="action_recents_accessibility">Προβολή πρόσφατων εφαρμογών με χρήση προσβασιμότητας</string>
 </resources>

@@ -353,6 +353,7 @@
     <string name="gesture_nav_swipe_up_center">From center</string>
     <string name="gesture_nav_swipe_up_right">From right</string>
     <string name="action_switch_apps">Switch apps</string>
+    <string name="action_recents_accessibility">Show recent apps using accessibility service</string>
 
     <string name="pref_global_search_provider">Search engine</string>
     <string name="searchbar_appearance_title">Appearance</string>

@@ -159,6 +159,7 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
                 PlayDespacitoGestureHandler(context, null),
                 StartAppGestureHandler(context, null),
                 OpenRecentsGestureHandler(context, null),
+                OpenRecentsByAccessibilityGestureHandler(context, null),
                 LaunchMostRecentTaskGestureHandler(context, null)
         ).apply {
             if (hasBlank) {
