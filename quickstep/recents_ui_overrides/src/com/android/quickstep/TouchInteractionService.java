@@ -267,6 +267,9 @@ public class TouchInteractionService extends Service implements
     private Mode mMode = Mode.THREE_BUTTONS;
     private int mDefaultDisplayId;
     private final RectF mSwipeTouchRegion = new RectF();
+    private final RectF mAssistantLeftRegion = new RectF();
+    private final RectF mAssistantRightRegion = new RectF();
+
     private ComponentName mGestureBlockingActivity;
 
     private Region mExclusionRegion;
@@ -349,9 +352,25 @@ public class TouchInteractionService extends Service implements
         defaultDisplay.getRealSize(realSize);
         mSwipeTouchRegion.set(0, 0, realSize.x, realSize.y);
         if (mMode == Mode.NO_BUTTON) {
-            mSwipeTouchRegion.top = mSwipeTouchRegion.bottom -
-                    getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
+            int touchHeight = getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
+            mSwipeTouchRegion.top = mSwipeTouchRegion.bottom - touchHeight;
+
+            final int assistantWidth = getResources()
+                    .getDimensionPixelSize(R.dimen.gestures_assistant_width);
+            final float assistantHeight = Math.max(touchHeight,
+                    QuickStepContract.getWindowCornerRadius(getResources()));
+            mAssistantLeftRegion.bottom = mAssistantRightRegion.bottom = mSwipeTouchRegion.bottom;
+            mAssistantLeftRegion.top = mAssistantRightRegion.top =
+                    mSwipeTouchRegion.bottom - assistantHeight;
+
+            mAssistantLeftRegion.left = 0;
+            mAssistantLeftRegion.right = assistantWidth;
+
+            mAssistantRightRegion.right = mSwipeTouchRegion.right;
+            mAssistantRightRegion.left = mSwipeTouchRegion.right - assistantWidth;
         } else {
+            mAssistantLeftRegion.setEmpty();
+            mAssistantRightRegion.setEmpty();
             switch (defaultDisplay.getRotation()) {
                 case Surface.ROTATION_90:
                     mSwipeTouchRegion.left = mSwipeTouchRegion.right
@@ -491,6 +510,15 @@ public class TouchInteractionService extends Service implements
                 mConsumer = newConsumer(useSharedState, event);
                 TOUCH_INTERACTION_LOG.addLog("setInputConsumer", mConsumer.getType());
                 mUncheckedConsumer = mConsumer;
+            } else if (mIsUserUnlocked && mMode == Mode.NO_BUTTON
+                    && canTriggerAssistantAction(event)) {
+                // Do not change mConsumer as if there is an ongoing QuickSwitch gesture, we should
+                // not interrupt it. QuickSwitch assumes that interruption can only happen if the
+                // next gesture is also quick switch.
+                mUncheckedConsumer =
+                        new AssistantTouchConsumer(this, mISystemUiProxy,
+                                mOverviewComponentObserver.getActivityControlHelper(),
+                                InputConsumer.NO_OP, mInputMonitorCompat);
             } else {
                 mUncheckedConsumer = InputConsumer.NO_OP;
             }
@@ -503,6 +531,14 @@ public class TouchInteractionService extends Service implements
                 && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0
                 && ((mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED) == 0
                         || (mSystemUiStateFlags & SYSUI_STATE_OVERVIEW_DISABLED) == 0);
+    }
+
+    private boolean canTriggerAssistantAction(MotionEvent ev) {
+        return mAssistantAvailable
+                && !QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags)
+                && (mAssistantLeftRegion.contains(ev.getX(), ev.getY()) ||
+                    mAssistantRightRegion.contains(ev.getX(), ev.getY()))
+                && !ActivityManagerWrapper.getInstance().isLockToAppActive();
     }
 
     private InputConsumer newConsumer(boolean useSharedState, MotionEvent event) {
@@ -525,10 +561,7 @@ public class TouchInteractionService extends Service implements
         if (mMode == Mode.NO_BUTTON) {
             final ActivityControlHelper activityControl =
                     mOverviewComponentObserver.getActivityControlHelper();
-            if (mAssistantAvailable
-                    && !QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags)
-                    && AssistantTouchConsumer.withinTouchRegion(this, event)
-                    && !ActivityManagerWrapper.getInstance().isLockToAppActive()) {
+            if (canTriggerAssistantAction(event)) {
                 base = new AssistantTouchConsumer(this, mISystemUiProxy, activityControl, base,
                         mInputMonitorCompat);
             }

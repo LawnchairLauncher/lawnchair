@@ -34,7 +34,6 @@ import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerTyp
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
-import android.gesture.Gesture;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -50,11 +49,9 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.touch.SwipeDetector;
 import com.android.quickstep.ActivityControlHelper;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.InputMonitorCompat;
-import com.android.systemui.shared.system.QuickStepContract;
 
 /**
  * Touch consumer for handling events to launch assistant from launcher
@@ -268,14 +265,6 @@ public class AssistantTouchConsumer extends DelegateInputConsumer {
         // and counterclockwise from horizontal in the bottom left corner
         angle = angle > 90 ? 180 - angle : angle;
         return (angle > mAngleThreshold && angle < 90);
-    }
-
-    public static boolean withinTouchRegion(Context context, MotionEvent ev) {
-        final Resources res = context.getResources();
-        final int width = res.getDisplayMetrics().widthPixels;
-        final int height = res.getDisplayMetrics().heightPixels;
-        final int size = res.getDimensionPixelSize(R.dimen.gestures_assistant_size);
-        return (ev.getX() > width - size || ev.getX() < size) && ev.getY() > height - size;
     }
 
     private class AssistantGestureListener extends SimpleOnGestureListener {
