@@ -208,7 +208,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @NavigationModeSwitch
-    @PortraitLandscape
+//    @PortraitLandscape
     public void testBackground() throws Exception {
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
         final Background background = mLauncher.getBackground();
