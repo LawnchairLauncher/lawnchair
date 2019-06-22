@@ -302,6 +302,7 @@
     <string name="theme_dark_theme_mode_off">Wył</string>
     <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
     <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Na podstawie pory dnia</string>
     <string name="theme_use_black">Używaj czystej czerni</string>
     <string name="theme_use_dark_text">Używaj ciemnego tekstu</string>
     <string name="pref_qsb_color">Kolor</string>
