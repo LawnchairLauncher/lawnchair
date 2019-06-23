@@ -92,7 +92,7 @@ class IconPackManager(private val context: Context) {
     }
 
     fun getIconPack(name: String, put: Boolean = true, load: Boolean = false): IconPack? {
-        return getIconPackInternal(name, put, load)!!
+        return getIconPackInternal(name, put, load)
     }
 
     fun getIconPack(packProvider: PackProvider, put: Boolean = true, load: Boolean = false): IconPack {
