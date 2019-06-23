@@ -26,6 +26,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.LawnchairPreferencesChangeCallback
+import ch.deletescape.lawnchair.groups.FlowerpotTabs.FlowerpotTab
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.preferences.SelectableAppsActivity
 import ch.deletescape.lawnchair.tintDrawable
@@ -45,6 +46,7 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
             TYPE_PERSONAL -> ::createPersonalTab
             TYPE_WORK -> ::createWorkTab
             TYPE_ALL_APPS -> ::createAllAppsTab
+            FlowerpotTabs.TYPE_FLOWERPOT -> ::FlowerpotTab
             else -> ::createNull
         }
     }

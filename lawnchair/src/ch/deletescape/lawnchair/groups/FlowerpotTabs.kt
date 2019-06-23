@@ -18,7 +18,17 @@
 package ch.deletescape.lawnchair.groups
 
 import android.content.Context
+import android.support.v7.app.AlertDialog
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import ch.deletescape.lawnchair.allapps.AllAppsTabsController
+import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.flowerpot.Flowerpot
+import ch.deletescape.lawnchair.getLauncherOrNull
+import ch.deletescape.lawnchair.theme.ThemeOverride
+import ch.deletescape.lawnchair.util.ThemedContextProvider
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 
@@ -54,16 +64,16 @@ class FlowerpotTabs(manager: AppGroupsManager) : DrawerTabs(manager, AppGroupsMa
         }
     }
 
-    class FlowerpotTab(context: Context) : Tab(context, TYPE_FLOWERPOT, R.string.default_tab_name) {
+    class FlowerpotTab(private val context: Context) : Tab(context, TYPE_FLOWERPOT, R.string.default_tab_name) {
+        // todo: make updating the title dynamically less hacky (aka make it actually work)
+        val potName: FlowerpotCustomization = FlowerpotCustomization("potName", "", context, customizations.entries.first { it is CustomTitle } as CustomTitle)
 
-        val potName = StringCustomization("potName", "")
-
-        private val pot by lazy { Flowerpot.Manager.getInstance(context).getPot(potName.value!!, true)!! }
+        private val pot get() = Flowerpot.Manager.getInstance(context).getPot(potName.value!!, true)!!
 
         init {
             addCustomization(potName)
 
-            customizations.setOrder(KEY_TITLE, KEY_COLOR)
+            customizations.setOrder(KEY_TITLE, "potName", KEY_COLOR)
         }
 
         override fun getSummary(context: Context): String? {
@@ -78,6 +88,57 @@ class FlowerpotTabs(manager: AppGroupsManager) : DrawerTabs(manager, AppGroupsMa
 
         fun getFilter(context: Context): Filter<*> {
             return CustomFilter(context, getMatches())
+        }
+    }
+
+    class FlowerpotCustomization(key: String, default: String, private val context: Context, private val title: Group.CustomTitle) : Group.StringCustomization(key, default) {
+        private val flowerpotManager = Flowerpot.Manager.getInstance(context)
+        private val displayName get() = flowerpotManager.getPot(value!!)?.displayName
+
+        override fun createRow(context: Context, parent: ViewGroup, accent: Int): View? {
+            val view = LayoutInflater.from(context).inflate(R.layout.drawer_tab_flowerpot_row, parent, false)
+            updateSummary(view)
+
+            view.setOnClickListener {
+                // make a copy to ensure indexes don't change while the dialog is opened
+                val pots = flowerpotManager.getAllPots().toList()
+                val currentIndex = pots.indexOfFirst { it.name == value }
+                val themedContext = ThemedContextProvider(context, null, ThemeOverride.Settings()).get()
+                AlertDialog.Builder(themedContext, ThemeOverride.AlertDialog().getTheme(context))
+                        .setTitle(R.string.pref_appcategorization_flowerpot_title)
+                        .setSingleChoiceItems(pots.map { it.displayName as CharSequence }.toTypedArray(), currentIndex) { dialog, which ->
+                            if (currentIndex != which) {
+                                var updateTitle = false
+                                if (title.value == displayName) {
+                                    updateTitle = true
+                                }
+                                value = pots[which].name
+                                if (updateTitle) {
+                                    title.value = displayName
+                                }
+                                updateSummary(view)
+                            }
+                            dialog.dismiss()
+                        }
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .create()
+                        .apply {
+                            applyAccent()
+                            show()
+                        }
+            }
+
+            return view
+        }
+
+        private fun updateSummary(view: View) {
+            if (value != null) {
+                view.findViewById<TextView>(R.id.current_category).setText(displayName)
+            }
+        }
+
+        override fun clone(): Group.Customization<String, String> {
+            return FlowerpotCustomization(key, default, context, title).also { it.value = value }
         }
     }
 
