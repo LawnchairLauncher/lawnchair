@@ -129,10 +129,11 @@ abstract class AppGroupsAdapter<VH : AppGroupsAdapter<VH, T>.GroupHolder, T : Ap
     }
 
     fun showAddDialog() {
-        DrawerTabEditBottomSheet.newGroup(context, createGroup()) {
-            val group = createGroup()
-            group.customizations.applyFrom(it)
-            addGroup(group)
+        createGroup { group ->
+            DrawerTabEditBottomSheet.newGroup(context, group) {
+                group.customizations.applyFrom(it)
+                addGroup(group)
+            }
         }
     }
 
@@ -140,7 +141,7 @@ abstract class AppGroupsAdapter<VH : AppGroupsAdapter<VH, T>.GroupHolder, T : Ap
         DrawerTabEditBottomSheet.edit(context, group, ::loadAppGroups)
     }
 
-    abstract fun createGroup(): T
+    abstract fun createGroup(callback: (group: T) -> Unit)
 
     open class Holder(itemView: View) : RecyclerView.ViewHolder(itemView)
 

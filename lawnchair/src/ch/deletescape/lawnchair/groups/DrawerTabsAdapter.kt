@@ -18,12 +18,16 @@
 package ch.deletescape.lawnchair.groups
 
 import android.content.Context
+import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.groups.ui.AppGroupsAdapter
 import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.theme.ThemeOverride
+import ch.deletescape.lawnchair.util.ThemedContextProvider
 import com.android.launcher3.R
 import com.android.launcher3.compat.UserManagerCompat
 
@@ -35,7 +39,23 @@ open class DrawerTabsAdapter(context: Context) : AppGroupsAdapter<DrawerTabsAdap
     private val hasWorkApps = context.lawnchairPrefs.separateWorkApps
             && UserManagerCompat.getInstance(context).userProfiles.size > 1
 
-    override fun createGroup() = DrawerTabs.CustomTab(context)
+    override fun createGroup(callback: (DrawerTabs.Tab) -> Unit) {
+        val themedContext = ThemedContextProvider(context, null, ThemeOverride.Settings()).get()
+        AlertDialog.Builder(themedContext, ThemeOverride.AlertDialog().getTheme(context))
+                .setTitle("Select tab type [TODO: PROPER UI (nobody tag lumiq)]")
+                .setSingleChoiceItems(arrayOf("Custom selection", "Smart category"), 0) { dialog, index ->
+                    dialog.dismiss()
+                    when (index) {
+                        0 -> callback(DrawerTabs.CustomTab(context))
+                        1 -> callback(FlowerpotTabs.FlowerpotTab(context))
+                    }
+                }
+                .create()
+                .apply {
+                    applyAccent()
+                    show()
+                }
+    }
 
     override fun createGroupHolder(parent: ViewGroup): TabHolder {
         return TabHolder(LayoutInflater.from(parent.context).inflate(R.layout.tab_item, parent, false))
@@ -54,7 +74,7 @@ open class DrawerTabsAdapter(context: Context) : AppGroupsAdapter<DrawerTabsAdap
         override fun bind(info: AppGroups.Group) {
             super.bind(info)
 
-            delete.isVisible = info is DrawerTabs.CustomTab
+            delete.isVisible = info.type in arrayOf(DrawerTabs.TYPE_CUSTOM, FlowerpotTabs.TYPE_FLOWERPOT)
         }
     }
 }

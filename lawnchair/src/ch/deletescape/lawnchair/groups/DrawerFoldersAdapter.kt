@@ -29,7 +29,9 @@ class DrawerFoldersAdapter(context: Context) : AppGroupsAdapter<DrawerFoldersAda
     override val groupsModel = manager.drawerFolders
     override val headerText = R.string.drawer_folders
 
-    override fun createGroup() = DrawerFolders.CustomFolder(context)
+    override fun createGroup(callback: (folder: DrawerFolders.Folder) -> Unit) {
+        callback(DrawerFolders.CustomFolder(context))
+    }
 
     override fun createGroupHolder(parent: ViewGroup): FolderHolder {
         return FolderHolder(LayoutInflater.from(parent.context).inflate(R.layout.tab_item, parent, false))

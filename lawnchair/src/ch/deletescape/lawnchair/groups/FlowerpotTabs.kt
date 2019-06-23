@@ -93,7 +93,7 @@ class FlowerpotTabs(manager: AppGroupsManager) : DrawerTabs(manager, AppGroupsMa
 
     class FlowerpotCustomization(key: String, default: String, private val context: Context, private val title: Group.CustomTitle) : Group.StringCustomization(key, default) {
         private val flowerpotManager = Flowerpot.Manager.getInstance(context)
-        private val displayName get() = flowerpotManager.getPot(value!!)?.displayName
+        private val displayName get() = value?.let { flowerpotManager.getPot(it)?.displayName }
 
         override fun createRow(context: Context, parent: ViewGroup, accent: Int): View? {
             val view = LayoutInflater.from(context).inflate(R.layout.drawer_tab_flowerpot_row, parent, false)
@@ -106,7 +106,7 @@ class FlowerpotTabs(manager: AppGroupsManager) : DrawerTabs(manager, AppGroupsMa
                 val themedContext = ThemedContextProvider(context, null, ThemeOverride.Settings()).get()
                 AlertDialog.Builder(themedContext, ThemeOverride.AlertDialog().getTheme(context))
                         .setTitle(R.string.pref_appcategorization_flowerpot_title)
-                        .setSingleChoiceItems(pots.map { it.displayName as CharSequence }.toTypedArray(), currentIndex) { dialog, which ->
+                        .setSingleChoiceItems(pots.map { it.displayName }.toTypedArray(), currentIndex) { dialog, which ->
                             if (currentIndex != which) {
                                 var updateTitle = false
                                 if (title.value == displayName) {
