@@ -26,6 +26,7 @@ import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.groups.ui.AppGroupsAdapter
 import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.preferences.DrawerTabTypeSelectionBottomSheet
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.util.ThemedContextProvider
 import com.android.launcher3.R
@@ -40,21 +41,15 @@ open class DrawerTabsAdapter(context: Context) : AppGroupsAdapter<DrawerTabsAdap
             && UserManagerCompat.getInstance(context).userProfiles.size > 1
 
     override fun createGroup(callback: (DrawerTabs.Tab) -> Unit) {
-        val themedContext = ThemedContextProvider(context, null, ThemeOverride.Settings()).get()
-        AlertDialog.Builder(themedContext, ThemeOverride.AlertDialog().getTheme(context))
-                .setTitle("Select tab type [TODO: PROPER UI (nobody tag lumiq)]")
-                .setSingleChoiceItems(arrayOf("Custom selection", "Smart category"), 0) { dialog, index ->
-                    dialog.dismiss()
-                    when (index) {
-                        0 -> callback(DrawerTabs.CustomTab(context))
-                        1 -> callback(FlowerpotTabs.FlowerpotTab(context))
-                    }
-                }
-                .create()
-                .apply {
-                    applyAccent()
-                    show()
-                }
+        DrawerTabTypeSelectionBottomSheet.show(context, mapOf(
+                FlowerpotTabs.TYPE_FLOWERPOT to arrayOf(R.string.tab_type_smart, R.string.pref_appcategorization_flowerpot_summary, R.drawable.ic_category),
+                DrawerTabs.TYPE_CUSTOM to arrayOf(R.string.tab_type_custom, R.string.tab_type_custom_desc, R.drawable.ic_list)
+        )) {
+            when (it) {
+                DrawerTabs.TYPE_CUSTOM -> callback(DrawerTabs.CustomTab(context))
+                FlowerpotTabs.TYPE_FLOWERPOT -> callback(FlowerpotTabs.FlowerpotTab(context))
+            }
+        }
     }
 
     override fun createGroupHolder(parent: ViewGroup): TabHolder {

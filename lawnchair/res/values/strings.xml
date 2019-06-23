@@ -647,5 +647,9 @@
     <string name="permission_iplocate">Allow access to coarse, network based location?</string>
     <string name="permission_iplocate_twilight_explanation">This allows more accurate daytime calculations without having to know your exact location.</string>
     <string name="pref_appcategorization_flowerpot_title">Category</string>
-    <string name="pref_appcategorization_flowerpot_summary">Based on app category.</string>
+    <string name="pref_appcategorization_flowerpot_summary">Apps are automatically picked based on their metadata.</string>
+    <string name="select_tab_type">Tab type</string>
+    <string name="tab_type_custom">Custom tab</string>
+    <string name="tab_type_custom_desc">Manually pick apps for this tab.</string>
+    <string name="tab_type_smart">Smart tab</string>
 </resources>

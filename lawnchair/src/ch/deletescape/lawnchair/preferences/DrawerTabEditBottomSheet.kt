@@ -72,7 +72,7 @@ class DrawerTabEditBottomSheet(context: Context, config: AppGroups.Group.Customi
                     callback()
                 }
                 sheet.close(true)
-            }, true)
+            }, false)
         }
 
         fun show(launcher: Launcher, config: AppGroups.Group.CustomizationMap, callback: () -> Unit, animate: Boolean = true) {
