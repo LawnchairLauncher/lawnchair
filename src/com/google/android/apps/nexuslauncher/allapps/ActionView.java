@@ -84,6 +84,9 @@ public class ActionView extends BubbleTextView implements OnLongClickListener {
         BaseDraggingActivity activity = LawnchairUtilsKt.getBaseDraggingActivityOrNull(context);
         DeviceProfile grid = activity.getDeviceProfile();
         setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
+
+        setMaxLines(1);
+        setSingleLine(true);
     }
 
     public void setAction(Action action, int i) {
