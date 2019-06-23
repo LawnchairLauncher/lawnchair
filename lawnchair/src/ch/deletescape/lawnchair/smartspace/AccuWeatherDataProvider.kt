@@ -22,6 +22,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.location.Criteria
 import android.location.LocationManager
+import android.support.annotation.Keep
 import android.util.Log
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.checkLocationAccess
@@ -38,6 +39,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import kotlin.math.roundToInt
 
+@Keep
 class AccuWeatherDataProvider(controller: LawnchairSmartspaceController) :
         LawnchairSmartspaceController.PeriodicDataProvider(controller), LawnchairPreferences.OnPreferenceChangeListener {
 

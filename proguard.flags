@@ -231,3 +231,5 @@
   EdgeEffect mEdgeGlowTop;
   EdgeEffect mEdgeGlowBottom;
 }
+
+-keep class ch.deletescape.lawnchair.smartspace.accu.** { *; }
