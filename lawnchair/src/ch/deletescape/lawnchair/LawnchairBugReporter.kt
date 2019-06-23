@@ -24,6 +24,7 @@ import android.os.Environment
 import android.support.v4.content.ContextCompat
 import ch.deletescape.lawnchair.bugreport.BugReport
 import ch.deletescape.lawnchair.bugreport.BugReportClient
+import ch.deletescape.lawnchair.bugreport.BugReportFileManager
 import ch.deletescape.lawnchair.util.extensions.e
 import com.android.launcher3.BuildConfig
 import java.io.ByteArrayOutputStream
@@ -39,6 +40,7 @@ class LawnchairBugReporter(private val context: Context, private val crashHandle
     private val hasPermission get() = ContextCompat.checkSelfPermission(context,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
     private val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Lawnchair/logs")
+    private val cacheFolder by lazy { BugReportFileManager.getFolder(context) }
 
     override fun uncaughtException(t: Thread?, e: Throwable?) {
         handleException(e)
@@ -82,10 +84,15 @@ class LawnchairBugReporter(private val context: Context, private val crashHandle
         }
 
         fun save(): File? {
-            if (!hasPermission) return null
-            if (!folder.exists()) folder.mkdirs()
+            val dest = if (cacheFolder.exists()) {
+                cacheFolder
+            } else {
+                if (!hasPermission) return null
+                if (!folder.exists()) folder.mkdirs()
+                folder
+            }
 
-            val file = File(folder, "$fileName.txt")
+            val file = File(dest, "$fileName.txt")
             if (!file.createNewFile()) return null
 
             val stream = PrintStream(file)

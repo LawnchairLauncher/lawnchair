@@ -22,6 +22,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.*
+import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
@@ -43,6 +44,8 @@ class BugReportService : Service() {
     override fun onCreate() {
         super.onCreate()
 
+        BugReportFileManager.getInstance(this)
+
         val filter = IntentFilter().apply {
             addAction(COPY_ACTION)
             addAction(UPLOAD_ACTION)
@@ -62,8 +65,8 @@ class BugReportService : Service() {
         registerReceiver(receiver, filter, PERMISSION, handler)
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        if (intent.hasExtra("report")) {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent != null && intent.hasExtra("report")) {
             notify(intent.getParcelableExtra("report"))
         }
         return super.onStartCommand(intent, flags, startId)
@@ -90,7 +93,13 @@ class BugReportService : Service() {
                 .setWhen(report.id)
                 .setAutoCancel(true)
 
-        report.getFileUri(this)?.let { fileUri ->
+        val fileUri = report.getFileUri(this)
+        if (report.link != null) {
+            val openIntent = Intent(Intent.ACTION_VIEW, Uri.parse(report.link))
+            val pendingOpenIntent = PendingIntent.getActivity(
+                    this, notificationId, openIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            builder.setContentIntent(pendingOpenIntent)
+        } else if (fileUri != null) {
             val openIntent = Intent(Intent.ACTION_VIEW)
                     .setDataAndType(fileUri, "text/plain")
                     .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -99,21 +108,23 @@ class BugReportService : Service() {
             builder.setContentIntent(pendingOpenIntent)
         }
 
-        val copyIntent = Intent(COPY_ACTION)
-                .setPackage(BuildConfig.APPLICATION_ID)
-                .putExtra("report", report)
-        val pendingCopyIntent = PendingIntent.getBroadcast(
-                this, notificationId, copyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val copyText = if (report.link != null) R.string.action_copy_link else R.string.action_copy
-        val copyActionBuilder = NotificationCompat.Action.Builder(
-                R.drawable.ic_copy, getString(copyText), pendingCopyIntent)
-        builder.addAction(copyActionBuilder.build())
-
         val pendingShareIntent = PendingIntent.getActivity(
                 this, notificationId, report.createShareIntent(this), PendingIntent.FLAG_UPDATE_CURRENT)
         val shareActionBuilder = NotificationCompat.Action.Builder(
                 R.drawable.ic_share, getString(R.string.action_share), pendingShareIntent)
         builder.addAction(shareActionBuilder.build())
+
+        if (report.link != null || fileUri == null) {
+            val copyIntent = Intent(COPY_ACTION)
+                    .setPackage(BuildConfig.APPLICATION_ID)
+                    .putExtra("report", report)
+            val pendingCopyIntent = PendingIntent.getBroadcast(
+                    this, notificationId, copyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val copyText = if (report.link != null) R.string.action_copy_link else R.string.action_copy
+            val copyActionBuilder = NotificationCompat.Action.Builder(
+                    R.drawable.ic_copy, getString(copyText), pendingCopyIntent)
+            builder.addAction(copyActionBuilder.build())
+        }
 
         if (uploading) {
             builder.setOngoing(true)
