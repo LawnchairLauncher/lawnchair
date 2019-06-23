@@ -22,10 +22,11 @@ import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator
 import com.luckycatlabs.sunrisesunset.dto.Location as SSLocation
 import java.util.*
 
-class SunriseSunsetCalculatorCompat(location: Location?, timeZone: TimeZone) {
+class SunriseSunsetCalculatorCompat(latitude: Double?, longitude: Double?, timeZone: TimeZone) {
 
-    private val calculator = location?.let { SunriseSunsetCalculator(
-            SSLocation(it.latitude, it.longitude), timeZone) }
+    private val calculator = if (latitude != null && longitude != null)
+        SunriseSunsetCalculator(SSLocation(latitude, longitude), timeZone)
+    else null
 
     fun getOfficialSunriseCalendarForDate(calendar: Calendar): Calendar {
         return calculator?.getOfficialSunriseCalendarForDate(calendar) ?: cloneWithHour(calendar, 6)

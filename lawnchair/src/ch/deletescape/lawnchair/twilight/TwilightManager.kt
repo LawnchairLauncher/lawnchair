@@ -57,7 +57,7 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
     private var timeChangedReceiver: BroadcastReceiver? = null
     private var lastLocation: Location? = null
 
-    var lastTwilightState: TwilightState? = calculateTwilightState(null, System.currentTimeMillis())
+    var lastTwilightState: TwilightState? = calculateTwilightState(null, null, System.currentTimeMillis())
         get() = synchronized(listeners) { field }
         private set(value) {
             synchronized(listeners) {
@@ -181,7 +181,7 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
         val currentTimeMillis = System.currentTimeMillis()
         val location = lastLocation ?: locationManager.getBestProvider(Criteria(), true)
                 ?.let { locationManager.getLastKnownLocation(it) }
-        val state = calculateTwilightState(location, currentTimeMillis)
+        val state = calculateTwilightState(location?.latitude, location?.longitude, currentTimeMillis)
         Log.d(TAG, "updateTwilightState: $state")
 
         lastTwilightState = state
@@ -230,9 +230,9 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
         private const val MSG_START_LISTENING = 1
         private const val MSG_STOP_LISTENING = 2
 
-        fun calculateTwilightState(location: Location?, timeMillis: Long): TwilightState? {
+        fun calculateTwilightState(latitude: Double?, longitude: Double?, timeMillis: Long): TwilightState? {
             val c = Calendar.getInstance().apply { timeInMillis = timeMillis }
-            val calc = SunriseSunsetCalculatorCompat(location, c.timeZone)
+            val calc = SunriseSunsetCalculatorCompat(latitude, longitude, c.timeZone)
             val sunrise = calc.getOfficialSunriseCalendarForDate(c)
             val adjustedSunset: Calendar
             val adjustedSunrise: Calendar

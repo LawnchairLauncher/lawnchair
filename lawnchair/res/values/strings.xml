@@ -497,6 +497,7 @@
     <string name="pref_sesame_show_shortcuts">App shortcuts</string>
     <string name="pref_sesame_show_shortcuts_summary">Show Sesame shortcuts in icon bubbles</string>
     <string name="allow">Allow</string>
+    <string name="deny">Deny</string>
     <string name="sesame_enable_integration_title">Enable integration</string>
     
     <string name="sesame_enable_integration_description"><![CDATA[Enables data sharing between Lawnchair and Sesame. You can change this in Lawnchair or Sesame settings.]]></string>
@@ -644,4 +645,7 @@
     <string name="animation_type_scale_up">Scale Up</string>
     <string name="animation_type_blink">Blink</string>
     <string name="animation_type_fade">Fade</string>
+
+    <string name="permission_iplocate">Allow access to coarse, network based location?</string>
+    <string name="permission_iplocate_twilight_explanation">This allows more accurate daytime calculations without having to know your exact location.</string>
 </resources>
