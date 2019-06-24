@@ -350,7 +350,6 @@
     <string name="selected_count">%1$d выбрано</string>
     <string name="tab_manage_apps">Управление приложениями</string>
     <string name="tab_bottom_sheet_save">Сохранить</string>
-    <string name="tab_hide_from_main">Скрыть приложение</string>
     <string name="tab_color">Цвет вкладки</string>
     <string name="delete">Удалить</string>
     <string name="none">Ничего</string>
@@ -423,7 +422,6 @@
     <string name="adaptify_pack_summary">Создать адаптивные иконки для иконок из наборов иконок</string>
     <string name="pref_sesame_sync_look_and_feel">Диктовать оформление</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Синхронизировать настройки поиска Lawnchair с Sesame</string>
-    <string name="pref_search_bar_radius">Радиус скругления панели поиска</string>
     <string name="icon_text_scale_pref_title">Размер шрифта</string>
     <string name="text_color">Цвет текста</string>
     <string name="background_color">Цвет фона</string>
@@ -431,4 +429,5 @@
     <string name="pref_notification_count_summary">Показывать количество уведомлений внутри точки</string>
     <string name="pref_center_wallpaper">Обои всегда по центру</string>
     <string name="pref_center_wallpaper_summary">Отключит эффект прокрутки обоев</string>
+    <string name="lock_desktop">Заблокировать рабочий стол</string>
 </resources>
