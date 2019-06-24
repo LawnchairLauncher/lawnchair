@@ -160,7 +160,6 @@ abstract class AnimationType {
                 val dp = launcher.deviceProfile
                 val rootView = launcher.dragLayer.parent as ViewGroup
                 rootView.addView(splashView, dp.widthPx, dp.heightPx)
-                launcher.addOnResumeCallback { rootView.removeView(splashView) }
 
                 // Set the state animation first so that any state listeners are called
                 // before our internal listeners.
@@ -176,12 +175,16 @@ abstract class AnimationType {
                     }
 
                     override fun onAnimationEnd(animation: Animator) {
-                        launcherContentAnimator.second.run()
                         launcher.clearForceInvisibleFlag(INVISIBLE_BY_APP_TRANSITIONS)
                     }
                 })
                 anim.play(getOpeningWindowAnimators(
                         launcher, view, splashView, manager.floatingView, windowTargetBounds))
+
+                launcher.addOnResumeCallback {
+                    rootView.removeView(splashView)
+                    launcherContentAnimator.second.run()
+                }
 
                 anim.start()
             }
