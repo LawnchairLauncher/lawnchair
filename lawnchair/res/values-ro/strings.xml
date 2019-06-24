@@ -8,7 +8,7 @@
     <string name="icu_abbrev_date"> dd MMMM</string>
     <string name="in_smartspace">În widget-ul \"Pe scurt\"</string>
     <string name="smartspace_time">Ora</string>
-    <string name="smartspace_date">Dată</string>
+    <string name="smartspace_date">Data</string>
     <string name="customize">Personalizează</string>
     <string name="smartspace_preferences_in_settings">Pe scurt</string>
     <string name="smartspace_preferences_in_settings_desc">Dată, oră, sursă date meteo</string>
@@ -32,10 +32,10 @@
     <string name="hide_app">Ascundere aplicaţie</string>
     <string name="icon_shape_rounded_square">Pătrat rotunjit</string>
     <string name="pixel_ui_pref_summary">Pachet de pictograme, estompare, culori</string>
-    <string name="app_drawer_pref_title">Lista de aplicații</string>
+    <string name="app_drawer_pref_title">Listă aplicații</string>
     <string name="app_drawer_pref_summary">Opacitate, sugestii, ascundere aplicații</string>
     <string name="search_pref_summary">Culoare, motor de căutare, iconițe</string>
-    <string name="general_pref_title">Desktop</string>
+    <string name="general_pref_title">Ecran principal</string>
     <string name="general_pref_summary">Grilă, aspect pictograme, bară de stare</string>
     <string name="about_pref_summary">Echipa, legături, licențe</string>
     <string name="hide_app_selected">&#160; ascuns</string>
@@ -66,7 +66,7 @@
     <string name="backup_restoring">Se restabileşte</string>
     <string name="backup_restarting">Repornire</string>
     <string name="restore_contents">Restabilire conţinut</string>
-    <string name="restore_success">Restaurare finalizată</string>
+    <string name="restore_success">Restabilire finalizată</string>
     <string name="failed">Ceva nu a funcţionat corect</string>
     <string name="backup_share_text">Copie de rezervă Lawnchair</string>
     <string name="full_width_widgets_pref_summary">Permiteți widget-urilor să se întindă până la marginile ecranului</string>
@@ -79,7 +79,7 @@
     <string name="restart_lawnchair_pref_title">Repornire</string>
     <string name="restart_lawnchair_pref_summary">Aplică setările din nou</string>
     <string name="show_debug_info_pref_title">Arată nume componente</string>
-    <string name="debug_component_name">Nume component</string>
+    <string name="debug_component_name">Numele componentei</string>
     <string name="debug_component_name_copied">Copiat</string>
     <string name="read_external_storage_required">Pentru a salva copia de rezervă, acordați permisiunea pentru stocare</string>
     <string name="local_backups">Copii de rezervă locale</string>
@@ -95,14 +95,14 @@
     <string name="dock_colored_google">Pictograme colorate</string>
     <string name="hotseat_show_arrow">Săgeată</string>
     <string name="hotseat_show_page_indicator">Indicator pagină</string>
-    <string name="dock_style_pref_title">Stil andocare</string>
+    <string name="dock_style_pref_title">Stil zonă de andocare</string>
     <string name="dock_style_p">Rotunjit</string>
     <string name="dock_style_n">Plat</string>
     <string name="dock_style_hidden">Ascuns</string>
-    <string name="dock_search_bar">Bară de căutare andocată</string>
+    <string name="dock_search_bar">Bară de căutare în zona de andocare</string>
     <string name="opacity">Opacitate</string>
     <string name="title_all_apps_google_search">Căutare globală</string>
-    <string name="summary_all_apps_google_search">Caută rezultate pe web sau în aplicații</string>
+    <string name="summary_all_apps_google_search">Caută rezultate web sau aplicații</string>
     <string name="num_hotseat_icons_pref_title">Număr de pictograme</string>
     <string name="icon_scale_pref_title">Mărimea pictogramelor</string>
     <string name="add_settings_shortcut_title">Adaugă pictograma de setări pe ecranul de start</string>
@@ -118,16 +118,16 @@
     <string name="gradient">Gradient</string>
     <!--Marker C-->
     <string name="pref_category_icons">Pictograme</string>
-    <string name="pref_category_aag">Pe scurt</string>
+    <string name="pref_category_aag">Widget-ul \"dintr-o privire\"</string>
     <string name="pref_category_pixel_searchbar">Bară de căutare pixel</string>
-    <string name="pref_category_weather">Meteo</string>
-    <string name="pref_category_misc">Alte</string>
-    <string name="pref_category_layout">Amplasare</string>
+    <string name="pref_category_weather">Vremea</string>
+    <string name="pref_category_misc">Altele</string>
+    <string name="pref_category_layout">Dispunere</string>
     <string name="pref_category_theme">Stil</string>
     <string name="pref_category_searchbar">Bara de căutare</string>
     <!--Marker D-->
     <string name="title_attribouter_licenses">Licențe Open Source</string>
-    <string name="title_attribouter_email">E-mail</string>
+    <string name="title_attribouter_email">Email</string>
     <string name="title_attribouter_website">Site web</string>
     <string name="title_attribouter_rate">Evaluare</string>
     <string name="title_attribouter_version">Versiunea %1$s</string>
@@ -146,7 +146,7 @@
     <string name="about_role_dev_mod">Dezvoltator/Moderator</string>
     <string name="about_role_designer">Designer</string>
     <string name="about_role_ui_ux_designer">Designer UI/UX</string>
-    <string name="about_role_special_snowflake">Rețele de socializare/Relații publice și relații OEM</string>
+    <string name="about_role_special_snowflake">Rețele de socializare/Relații publice &amp; relații OEM</string>
     <string name="about_role_mod_support">Moderator/Suport</string>
     <string name="about_role_family_member">Membru al familiei</string>
     <string name="about_role_magisk_maintainer">Responsabil modul Magisk</string>
@@ -158,7 +158,7 @@
     <!--Marker E-->
     <string name="debug_crash_launcher">Închidere forțată a lansatorului</string>
     <string name="gestures_pref_title">Gesturi</string>
-    <string name="gestures_pref_summary">Atingere dublă, butonul Acasă, tragere în jos</string>
+    <string name="gestures_pref_summary">Atingere dublă, butonul acasă, tragere în jos</string>
     <string name="action_open_drawer">Deschide sertarul de aplicații</string>
     <string name="action_last_task">Deschide ultima aplicatie</string>
     <string name="action_open_widgets">Deschide sertarul cu widget-uri</string>
@@ -347,7 +347,6 @@
     <string name="selected_count">%1$d selectat</string>
     <string name="tab_manage_apps">Administrează aplicații</string>
     <string name="tab_bottom_sheet_save">Salvează</string>
-    <string name="tab_hide_from_main">Ascunde din sertar</string>
     <string name="tab_color">Culoarea filei</string>
     <string name="delete">Ștergeți</string>
     <string name="none">Niciuna</string>
@@ -420,7 +419,6 @@
     <string name="adaptify_pack_summary">Creare pictograme adaptive pentru pictograme din pachete cu pictograme</string>
     <string name="pref_sesame_sync_look_and_feel">Partajați aspectul</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Sincronizați setările de căutare a Lawnchair cu Sesame</string>
-    <string name="pref_search_bar_radius">Raza barei de căutare</string>
     <string name="icon_text_scale_pref_title">Dimensiunea textului</string>
     <string name="text_color">Culoarea textului</string>
     <string name="background_color">Culoarea fundalului</string>
@@ -428,4 +426,5 @@
     <string name="pref_notification_count_summary">Afișare număr de notificări în interiorul punctelor</string>
     <string name="pref_center_wallpaper">Imagine de fundal mereu la centru</string>
     <string name="pref_center_wallpaper_summary">Aceasta va dezactiva derularea imaginii de fundal</string>
+    <string name="lock_desktop">Blocare desktop</string>
 </resources>
