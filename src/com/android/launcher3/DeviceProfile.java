@@ -172,8 +172,6 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         isTablet = res.getBoolean(R.bool.is_tablet);
         isLargeTablet = res.getBoolean(R.bool.is_large_tablet);
         isPhone = !isTablet && !isLargeTablet;
-        float aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
-        isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
 
         // Some more constants
         transposeLayoutWithOrientation =
@@ -213,7 +211,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
 
         prefs = Utilities.getLawnchairPrefs(context);
         prefs.addOnPreferenceChangeListener(this, "pref_fullWidthWidgets", "pref_dockSearchBar",
-                "pref_twoRowDock", "pref_compactDock", "pref_allAppsPaddingScale", "pref_tallDockScale",
+                "pref_twoRowDock", "pref_compactDock", "pref_allAppsPaddingScale", "pref_dockScale",
                 "pref_iconTextScaleSB", "pref_allAppsIconTextScale",
                 "pref_displayNotificationCount");
     }
@@ -275,18 +273,20 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         boolean dockSearchBar = prefs.getDockSearchBar();
         boolean dockHidden = prefs.getDockHide();
         int dockRows = prefs.getDockRowsCount();
-        float tallDockScale = isTallDevice ? prefs.getTallDockScale() : 0;
+        float dockScale = prefs.getDockScale();
 
         cellLayoutPaddingLeftRightPx = (!isVerticalBarLayout() && fullWidthWidgets) ? 0
                 : res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
 
-        int normalDockBottomPadding = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding);
+        float aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
+        isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
 
         hotseatBarTopPaddingPx =
                 res.getDimensionPixelSize(dockSearchBar ?
                         R.dimen.dynamic_grid_hotseat_top_padding :
                         R.dimen.v1_dynamic_grid_hotseat_top_padding);
-        hotseatBarBottomPaddingPx = (int) (normalDockBottomPadding * (1 - tallDockScale))
+        hotseatBarBottomPaddingPx = (isTallDevice ? 0
+                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding))
                 + res.getDimensionPixelSize(dockSearchBar ?
                 R.dimen.dynamic_grid_hotseat_bottom_padding :
                 R.dimen.v1_dynamic_grid_hotseat_bottom_padding);
@@ -321,7 +321,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
             // in portrait mode closer together by adding more height to the hotseat.
             // Note: This calculation was created after noticing a pattern in the design spec.
             int extraSpace = (int) ((getCellSizeOriginal().y - iconSizeOriginalPx
-                    - iconDrawablePaddingOriginalPx * 2 - verticalDragHandleSizePx) * tallDockScale);
+                    - iconDrawablePaddingOriginalPx * 2 - verticalDragHandleSizePx) * dockScale);
             hotseatBarSizePx += extraSpace;
             if (prefs.getDockGradientStyle()) {
                 hotseatBarBottomPaddingPx += extraSpace;
@@ -340,7 +340,21 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
 
             updateAvailableDimensions(dm, res);
         } else if (!isVerticalBarLayout()) {
-            hotseatBarSizePx = hotseatCellHeightPx * dockRows + hotseatBarBottomPaddingPx + hotseatBarTopPaddingPx;
+            int qsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
+            verticalDragHandleSizePx *= dockScale;
+            int bottomPaddingNew = Math.max((int)(hotseatBarBottomPaddingPx * dockScale), dockSearchBar ? qsbHeight : 0);
+            if (prefs.getDockGradientStyle()) {
+                hotseatBarTopPaddingPx *= dockScale;
+                hotseatBarBottomPaddingPx = bottomPaddingNew;
+            } else {
+                int difference = hotseatBarBottomPaddingPx - bottomPaddingNew;
+                hotseatBarTopPaddingPx -= difference;
+                hotseatBarBottomPaddingPx = bottomPaddingNew;
+            }
+
+            // TODO: Fix icon cut off on smaller devices with lower values
+            int minHeight = hotseatCellHeightPx * dockRows + hotseatBarBottomPaddingPx + hotseatBarTopPaddingPx;
+            hotseatBarSizePx = Math.max(minHeight, (int) (hotseatBarSizePx * dockScale));
         }
 
         updateWorkspacePadding();

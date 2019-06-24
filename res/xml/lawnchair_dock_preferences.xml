@@ -57,12 +57,11 @@
             android:persistent="true" />
 
         <ch.deletescape.lawnchair.preferences.SeekbarPreference
-            android:key="pref_tallDockScale"
-            android:title="@string/tall_dock_scale"
+            android:key="pref_dockScale"
+            android:title="@string/dock_scale"
             android:dependency="pref_dockPreset"
-            app:controllerClass=".TallDockScaleController"
-            app:minValue="0"
-            app:maxValue="1"
+            app:minValue="0.75"
+            app:maxValue="1.25"
             app:defaultSeekbarValue="1"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"

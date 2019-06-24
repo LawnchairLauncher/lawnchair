@@ -652,6 +652,4 @@
     <string name="tab_type_custom">Custom tab</string>
     <string name="tab_type_custom_desc">Manually pick apps for this tab.</string>
     <string name="tab_type_smart">Smart tab</string>
-
-    <string name="tall_dock_scale">Dock padding</string>
 </resources>

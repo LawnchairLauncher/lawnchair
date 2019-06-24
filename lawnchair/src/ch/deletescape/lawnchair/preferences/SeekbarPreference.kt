@@ -31,14 +31,11 @@ import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
 import ch.deletescape.lawnchair.colors.ColorEngine
-import ch.deletescape.lawnchair.settings.ui.ControlledPreference
 import com.android.launcher3.R
 
+
 open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        Preference(context, attrs, defStyleAttr), SeekBar.OnSeekBarChangeListener,
-        View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener,
-        ColorEngine.OnColorChangeListener,
-        ControlledPreference by ControlledPreference.Delegate(context, attrs) {
+        Preference(context, attrs, defStyleAttr), SeekBar.OnSeekBarChangeListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener, ColorEngine.OnColorChangeListener {
 
     private var mSeekbar: SeekBar? = null
     protected var mValueText: TextView? = null
