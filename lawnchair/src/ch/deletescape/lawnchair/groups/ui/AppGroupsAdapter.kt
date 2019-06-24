@@ -133,12 +133,17 @@ abstract class AppGroupsAdapter<VH : AppGroupsAdapter<VH, T>.GroupHolder, T : Ap
             DrawerTabEditBottomSheet.newGroup(context, group, animate) {
                 group.customizations.applyFrom(it)
                 addGroup(group)
+                saveChanges()
             }
         }
     }
 
     fun showEditDialog(group: T) {
-        DrawerTabEditBottomSheet.edit(context, group, ::loadAppGroups)
+        DrawerTabEditBottomSheet.edit(context, group) {
+            saved = false
+            saveChanges()
+            loadAppGroups()
+        }
     }
 
     abstract fun createGroup(callback: (group: T, animate: Boolean) -> Unit)

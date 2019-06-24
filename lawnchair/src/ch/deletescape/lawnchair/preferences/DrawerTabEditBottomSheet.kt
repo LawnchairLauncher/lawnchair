@@ -96,21 +96,22 @@ class DrawerTabEditBottomSheet(context: Context, config: AppGroups.Group.Customi
             val config = AppGroups.Group.CustomizationMap(group.customizations)
             show(context, config, true) {
                 group.customizations.applyFrom(config)
-                context.lawnchairPrefs.drawerTabs.saveToJson()
                 callback()
             }
         }
 
-        fun edit(launcher: Launcher, group: AppGroups.Group) {
+        fun editTab(launcher: Launcher, group: AppGroups.Group) {
             val config = AppGroups.Group.CustomizationMap(group.customizations)
-            edit(launcher, config, group)
+            edit(launcher, config, group, true) {
+                launcher.lawnchairPrefs.drawerTabs.saveToJson()
+            }
         }
 
         fun edit(launcher: Launcher, config: AppGroups.Group.CustomizationMap,
-                 group: AppGroups.Group, animate: Boolean = true) {
+                 group: AppGroups.Group, animate: Boolean = true, callback: () -> Unit) {
             show(launcher, config, animate) {
                 group.customizations.applyFrom(config)
-                launcher.lawnchairPrefs.drawerTabs.saveToJson()
+                callback()
             }
         }
     }
