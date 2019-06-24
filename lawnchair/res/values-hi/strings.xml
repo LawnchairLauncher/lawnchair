@@ -342,7 +342,6 @@
     <string name="selected_count">%1$d चयनित</string>
     <string name="tab_manage_apps">एप्लिकेशन प्रबंधित करें</string>
     <string name="tab_bottom_sheet_save">सेव करें</string>
-    <string name="tab_hide_from_main">एप्लिकेशन दराज से छुपाएँ</string>
     <string name="tab_color">टैब का रंग</string>
     <string name="delete">हटाएं</string>
     <string name="none">कुछ नहीं</string>
@@ -412,4 +411,5 @@
     <string name="dock_scale">डॉक की लंबाई</string>
     <string name="icon_text_scale_pref_title">अक्षरों का साइज</string>
     <string name="text_color">अक्षरों का रंग</string>
+    <string name="lock_desktop">डेस्कटॉप बंद करे</string>
 </resources>
