@@ -345,7 +345,6 @@
     <string name="selected_count">%1$d geselecteerd</string>
     <string name="tab_manage_apps">Apps beheren</string>
     <string name="tab_bottom_sheet_save">Opslaan</string>
-    <string name="tab_hide_from_main">Verberg in app-overzicht</string>
     <string name="tab_color">Tabbladkleur</string>
     <string name="delete">Verwijderen</string>
     <string name="none">Geen</string>
@@ -418,7 +417,6 @@
     <string name="adaptify_pack_summary">Adaptieve pictogrammen genereren voor pictogrampakketten</string>
     <string name="pref_sesame_sync_look_and_feel">Uiterlijk en gedrag delen</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Lawnchair zoekinstellingen synchr. met Sesame</string>
-    <string name="pref_search_bar_radius">Zoekbalk hoekafronding</string>
     <string name="icon_text_scale_pref_title">Tekstgrootte</string>
     <string name="text_color">Tekstkleur</string>
     <string name="background_color">Achtergrondkleur</string>
@@ -426,4 +424,5 @@
     <string name="pref_notification_count_summary">Meldingsaantal weergeven in de stipjes</string>
     <string name="pref_center_wallpaper">Achtergrond altijd centreren</string>
     <string name="pref_center_wallpaper_summary">Dit zal het achtergrond scrolleffect uitschakelen</string>
+    <string name="lock_desktop">Startscherm vergrendelen</string>
 </resources>
