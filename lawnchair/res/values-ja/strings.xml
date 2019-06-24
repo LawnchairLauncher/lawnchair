@@ -331,7 +331,6 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="selected_count">%1$d個選択しています</string>
     <string name="tab_manage_apps">アプリを管理</string>
     <string name="tab_bottom_sheet_save">保存</string>
-    <string name="tab_hide_from_main">\"アプリ\"タブに表示しない</string>
     <string name="tab_color">タブの色</string>
     <string name="delete">削除</string>
     <string name="none">無し</string>
@@ -402,4 +401,5 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="dock_scale">ドックの大きさ</string>
     <string name="adaptify_pack_title">アイコンパック用のアダプティブアイコンを作成する</string>
     <string name="adaptify_pack_summary">アイコンパック用のアダプティブアイコンを作成する</string>
+    <string name="lock_desktop">デスクトップをロック</string>
 </resources>
