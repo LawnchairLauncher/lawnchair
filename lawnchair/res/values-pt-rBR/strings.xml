@@ -196,7 +196,7 @@
     <string name="smartspace_widget_provider_not_found">Instale ou atualize o aplicativo do Google.</string>
     <string name="apps_label">Aplicativos</string>
     <string name="all_apps_label">Todos os apps</string>
-    <string name="all_apps_label_pref_title">Mostrar rotulo \"Todos os Apps\"</string>
+    <string name="all_apps_label_pref_title">Mostrar rótulo \"Todos os Apps\"</string>
     <string name="separate_work_apps_pref_title">Segunda aba para aplicativos de trabalho</string>
     <string name="title_search_hidden_apps">Mostrar aplicativos ocultados</string>
     <string name="summary_search_hidden_apps">Mostrar aplicativos ocultados nos resultados</string>
@@ -347,7 +347,6 @@
     <string name="selected_count">%1$d selecionado</string>
     <string name="tab_manage_apps">Gerenciar aplicativos</string>
     <string name="tab_bottom_sheet_save">Salvar</string>
-    <string name="tab_hide_from_main">Ocultar na gaveta</string>
     <string name="tab_color">Cor da aba</string>
     <string name="delete">Excluir</string>
     <string name="none">Nenhum</string>
@@ -420,7 +419,6 @@
     <string name="adaptify_pack_summary">Criar ícones adaptativos a partir do pacote de ícones</string>
     <string name="pref_sesame_sync_look_and_feel">Compartilhar aparência</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Sincronizar configurações de busca do Lawnchair com o Sesame</string>
-    <string name="pref_search_bar_radius">Arredondamento da barra de pesquisa</string>
     <string name="icon_text_scale_pref_title">Tamanho do texto</string>
     <string name="text_color">Cor do Texto</string>
     <string name="background_color">Cor de plano de fundo</string>
@@ -428,4 +426,5 @@
     <string name="pref_notification_count_summary">Mostrar o número de notificações nos pontos</string>
     <string name="pref_center_wallpaper">Sempre centralizar o papel de parede</string>
     <string name="pref_center_wallpaper_summary">Isso irá desativar o deslizamento do papel de parede</string>
+    <string name="lock_desktop">Impedir mudanças</string>
 </resources>
