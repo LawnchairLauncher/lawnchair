@@ -343,7 +343,6 @@
     <string name="selected_count">%1$d ถูกเลือก</string>
     <string name="tab_manage_apps">จัดการแอป</string>
     <string name="tab_bottom_sheet_save">บันทึก</string>
-    <string name="tab_hide_from_main">ซ่อนจากรายการแอป</string>
     <string name="tab_color">สีแท็บ</string>
     <string name="delete">ลบ</string>
     <string name="none">ไม่มี</string>
@@ -416,7 +415,6 @@
     <string name="adaptify_pack_summary">สร้างไอคอนแบบปรับอัตโนมัติสำหรับไอคอนจากชุดไอคอน</string>
     <string name="pref_sesame_sync_look_and_feel">แชร์รูปแบบ</string>
     <string name="pref_sesame_sync_look_and_feel_summary">ซิงค์การตั้งค่าการค้นหากับ Sesame</string>
-    <string name="pref_search_bar_radius">ความโค้งมนของแถบค้นหา</string>
     <string name="icon_text_scale_pref_title">ขนาดตัวอักษร</string>
     <string name="text_color">สีตัวอักษร</string>
     <string name="background_color">สีพื้นหลัง</string>
