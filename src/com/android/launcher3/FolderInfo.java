@@ -165,6 +165,10 @@ public class FolderInfo extends ItemInfo {
         public void onTitleChanged(CharSequence title);
         public void onItemsChanged(boolean animate);
         public void prepareAutoUpdate();
+
+        public default void onIconChanged() {
+            // do nothing
+        }
     }
 
     public boolean hasOption(int optionFlag) {
@@ -231,6 +235,15 @@ public class FolderInfo extends ItemInfo {
         CustomInfoProvider<FolderInfo> infoProvider = CustomInfoProvider.Companion.forItem(launcher, this);
         if (infoProvider != null) {
             infoProvider.setIcon(this, null);
+        }
+    }
+
+    /**
+     * DO NOT USE OUTSIDE CUSTOMINFOPROVIDER
+     */
+    public void onIconChanged() {
+        for (FolderListener listener : listeners) {
+            listener.onIconChanged();
         }
     }
 

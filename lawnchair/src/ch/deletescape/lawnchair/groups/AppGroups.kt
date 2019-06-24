@@ -161,6 +161,7 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
         const val KEY_VERSION = "version"
         const val KEY_GROUPS = "tabs"
 
+        const val KEY_ID = "id"
         const val KEY_TYPE = "type"
         const val KEY_COLOR = "color"
         const val KEY_TITLE = "title"
@@ -304,6 +305,21 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
             override fun clone(): Customization<Boolean, Boolean> {
                 return BooleanCustomization(key, default).also { it.value = value }
             }
+        }
+
+        open class LongCustomization(key: String, default: Long) : Customization<Long, Long>(key, default) {
+            override fun loadFromJson(context: Context, obj: Long?) {
+                value = obj
+            }
+
+            override fun saveToJson(context: Context): Long? {
+                return value
+            }
+
+            override fun clone(): Customization<Long, Long> {
+                return LongCustomization(key, default).also { it.value = value }
+            }
+
         }
 
         class SwitchRow(private val icon: Int, private val label: Int, key: String, default: Boolean) :

@@ -52,7 +52,9 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.FolderInfo.FolderListener;
+import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -175,7 +177,13 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         icon.mFolderName.setText(folderInfo.title);
         icon.mFolderName.setCompoundDrawablePadding(0);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) icon.mFolderName.getLayoutParams();
-        lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
+        if (folderInfo.container == ItemInfo.NO_ID) {
+            lp.topMargin = grid.allAppsIconSizePx + grid.allAppsIconDrawablePaddingPx;
+            // TODO: I'm not completely sure yet we actually need to reinitiate it.
+            icon.mBackground = new PreviewBackground(true);
+        } else {
+            lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
+        }
 
         icon.setTag(folderInfo);
         icon.setOnClickListener(ItemClickHandler.INSTANCE);
@@ -308,7 +316,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             Rect from = new Rect();
             dragLayer.getViewRectRelativeToSelf(animateView, from);
             Rect to = finalRect;
-            if (to == null) {
+            if (to == null && !isInAppDrawer()) {
                 to = new Rect();
                 Workspace workspace = mLauncher.getWorkspace();
                 // Set cellLayout and this to it's final state to compute final animation locations
@@ -353,6 +361,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 addItem(item);
             }
 
+            if (isInAppDrawer()) {
+                return;
+            }
             int[] center = new int[2];
             float scale = getLocalCenterForIndex(index, numItemsInPreview, center);
             center[0] = (int) Math.round(scaleRelativeToDragLayer * center[0]);
@@ -546,6 +557,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         return getPreviewItemsOnPage(0);
     }
 
+    private boolean isFirstPreviewLoad = true;
+
     /**
      * Returns the list of "preview items" on {@param page}.
      */
@@ -557,13 +570,25 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         int numItems = itemsOnPage.size();
         for (int rank = 0; rank < numItems; ++rank) {
             if (mPreviewVerifier.isItemInPreview(page, rank)) {
-                itemsToDisplay.add(itemsOnPage.get(rank));
+                BubbleTextView item = itemsOnPage.get(rank);
+                if (isFirstPreviewLoad && isInAppDrawer()) {
+                    // hack to make sure drawer folders have high res previews
+                    item.verifyHighRes(new ItemInfoUpdateReceiver() {
+                        @Override
+                        public void reapplyItemInfo(ItemInfoWithIcon info) {
+                            item.reapplyItemInfo(info);
+                            updatePreviewItems(false);
+                        }
+                    });
+                }
+                itemsToDisplay.add(item);
             }
 
             if (itemsToDisplay.size() == MAX_NUM_ITEMS_IN_PREVIEW) {
                 break;
             }
         }
+        isFirstPreviewLoad = false;
         return itemsToDisplay;
     }
 
@@ -664,6 +689,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public void clearLeaveBehindIfExists() {
+        if (isInAppDrawer()) {
+            return;
+        }
         ((CellLayout.LayoutParams) getLayoutParams()).canReorder = true;
         if (mInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             CellLayout cl = (CellLayout) getParent().getParent();
@@ -672,6 +700,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public void drawLeaveBehindIfExists() {
+        if (isInAppDrawer()) {
+            return;
+        }
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
         // While the folder is open, the position of the icon cannot change.
         lp.canReorder = false;
@@ -716,4 +747,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                     icon.setIconScale(scale);
                 }
             };
+
+    public boolean isInAppDrawer() {
+        return mInfo.container == ItemInfo.NO_ID;
+    }
 }

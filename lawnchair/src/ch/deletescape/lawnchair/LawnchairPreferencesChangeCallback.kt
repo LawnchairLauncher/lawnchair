@@ -37,6 +37,10 @@ class LawnchairPreferencesChangeCallback(val launcher: LawnchairLauncher) {
         launcher.model.forceReload()
     }
 
+    fun reloadDrawer() {
+        launcher.appsView.apps.reset()
+    }
+
     fun restart() {
         launcher.scheduleRestart()
     }

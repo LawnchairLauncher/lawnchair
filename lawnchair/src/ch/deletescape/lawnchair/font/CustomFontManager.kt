@@ -62,6 +62,7 @@ class CustomFontManager(private val context: Context) {
     private val taskOptionFont = deepShortcutFont
 
     private val allAppsFont = FontPref("pref_font_allApps", launcherCondensed)
+    private val drawerFolderFont = allAppsFont
     private val actionFont = FontPref("pref_font_drawerAppActions", launcherCondensed)
     private val drawerTab = FontPref("pref_font_drawerTab", uiMedium)
 
@@ -91,6 +92,7 @@ class CustomFontManager(private val context: Context) {
         map[FONT_SYSTEM_SHORTCUT] = FontSpec(systemShortcutFont, sansSerif)
         map[FONT_TASK_OPTION] = FontSpec(taskOptionFont, sansSerif)
         map[FONT_DRAWER_TAB] = FontSpec(drawerTab, sansSerifMedium)
+        map[FONT_DRAWER_FOLDER] = FontSpec(drawerFolderFont, sansSerifCondensed)
 
         TraceHelper.endSection("createFontMap")
         return map
@@ -218,6 +220,7 @@ class CustomFontManager(private val context: Context) {
         const val FONT_SYSTEM_SHORTCUT = 15
         const val FONT_TASK_OPTION = 16
         const val FONT_DRAWER_TAB = 17
+        const val FONT_DRAWER_FOLDER = 18
 
         const val VARIANT_MEDIUM = "500"
     }

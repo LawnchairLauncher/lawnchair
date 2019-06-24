@@ -77,6 +77,7 @@ import java.util.concurrent.ExecutionException
 import kotlin.collections.ArrayList
 import kotlin.math.ceil
 import kotlin.math.roundToInt
+import kotlin.random.Random
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty
 
@@ -836,3 +837,5 @@ fun createPill(color: Int, radius: Float): Drawable {
         cornerRadius = radius
     }
 }
+
+val Long.Companion.random get() = Random.nextLong()

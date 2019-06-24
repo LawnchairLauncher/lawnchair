@@ -79,6 +79,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
     private static final int DISPLAY_FOLDER = 2;
+    private static final int DISPLAY_DRAWER_FOLDER = 5;
 
     private static final int[] STATE_PRESSED = new int[] {android.R.attr.state_pressed};
 
@@ -206,6 +207,15 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             int lines = prefs.getHomeLabelRows();
             setMaxLines(lines);
             setSingleLine(lines == 1);
+        } else if (display == DISPLAY_DRAWER_FOLDER) {
+            mHideText = prefs.getHideAllAppsAppLabels();
+            setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    isTextHidden() ? 0 : grid.allAppsFolderChildTextSizePx);
+            setCompoundDrawablePadding(grid.allAppsFolderChildDrawablePaddingPx);
+            defaultIconSize = grid.allAppsFolderChildIconSizePx;
+            int lines = prefs.getDrawerLabelRows();
+            setMaxLines(lines);
+            setSingleLine(lines == 1);
         }
         CustomFontManager customFontManager = CustomFontManager.Companion.getInstance(context);
         int customFontType = getCustomFontType(display);
@@ -234,6 +244,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                 return CustomFontManager.FONT_ALL_APPS_ICON;
             case DISPLAY_FOLDER:
                 return CustomFontManager.FONT_FOLDER_ICON;
+            case DISPLAY_DRAWER_FOLDER:
+                return CustomFontManager.FONT_DRAWER_FOLDER;
             default:
                 return -1;
         }
@@ -702,6 +714,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
      * Verifies that the current icon is high-res otherwise posts a request to load the icon.
      */
     public void verifyHighRes() {
+        verifyHighRes(BubbleTextView.this);
+    }
+
+    public void verifyHighRes(ItemInfoUpdateReceiver callback) {
         if (mIconLoadRequest != null) {
             mIconLoadRequest.cancel();
             mIconLoadRequest = null;
@@ -710,7 +726,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             ItemInfoWithIcon info = (ItemInfoWithIcon) getTag();
             if (info.usingLowResIcon) {
                 mIconLoadRequest = LauncherAppState.getInstance(getContext()).getIconCache()
-                        .updateIconInBackground(BubbleTextView.this, info);
+                        .updateIconInBackground(callback, info);
             }
         }
     }

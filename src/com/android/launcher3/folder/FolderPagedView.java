@@ -231,8 +231,9 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
 
     @SuppressLint("InflateParams")
     public View createNewView(ShortcutInfo item) {
-        final BubbleTextView textView = (BubbleTextView) mInflater.inflate(
-                R.layout.folder_application, null, false);
+        int layout = mFolder.isInAppDrawer() ? R.layout.all_apps_folder_application
+                : R.layout.folder_application;
+        final BubbleTextView textView = (BubbleTextView) mInflater.inflate(layout, null, false);
         textView.applyFromShortcutInfo(item);
         textView.setHapticFeedbackEnabled(false);
         textView.setOnClickListener(ItemClickHandler.INSTANCE);
@@ -256,7 +257,11 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     private CellLayout createAndAddNewPage() {
         DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
         CellLayout page = (CellLayout) mInflater.inflate(R.layout.folder_page, this, false);
-        page.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
+        if (mFolder.isInAppDrawer()) {
+            page.setCellDimensions(grid.allAppsFolderCellWidthPx, grid.allAppsFolderCellHeightPx);
+        } else {
+            page.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
+        }
         page.getShortcutsAndWidgets().setMotionEventSplittingEnabled(false);
         page.setInvertIfRtl(true);
         page.setGridSize(mGridCountX, mGridCountY);

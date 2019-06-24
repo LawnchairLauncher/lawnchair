@@ -87,6 +87,7 @@
             <enum name="systemShortcut" value="15" />
             <enum name="taskOption" value="16" />
             <enum name="drawerTab" value="17" />
+            <enum name="drawerFolder" value="18"/>
         </attr>
         <attr name="customFontWeight" format="enum">
             <enum name="w100" value="100" />

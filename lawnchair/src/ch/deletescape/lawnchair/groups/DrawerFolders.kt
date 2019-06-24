@@ -18,10 +18,13 @@
 package ch.deletescape.lawnchair.groups
 
 import android.content.Context
-import ch.deletescape.lawnchair.LawnchairPreferencesChangeCallback
+import ch.deletescape.lawnchair.*
+import com.android.launcher3.FolderInfo
 import com.android.launcher3.R
+import com.android.launcher3.ShortcutInfo
+import com.android.launcher3.allapps.AlphabeticalAppsList
 
-class DrawerFolders(manager: AppGroupsManager) : AppGroups<DrawerFolders.Folder>(manager, AppGroupsManager.CategorizationType.Folders) {
+class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFolders.Folder>(manager, AppGroupsManager.CategorizationType.Folders) {
 
     override fun getDefaultCreators(): List<GroupCreator<Folder>> {
         return emptyList()
@@ -37,10 +40,54 @@ class DrawerFolders(manager: AppGroupsManager) : AppGroups<DrawerFolders.Folder>
     private fun createCustomFolder(context: Context) = CustomFolder(context)
 
     override fun onGroupsChanged(changeCallback: LawnchairPreferencesChangeCallback) {
-
+        // TODO: reload after icon cache is ready to ensure high res folder previews
+        changeCallback.reloadDrawer()
     }
 
-    abstract class Folder(context: Context, type: Int, titleRes: Int) : Group(type, context, titleRes)
+    fun getFolderInfos(apps: AlphabeticalAppsList): List<FolderInfo> = getGroups().map { it.toFolderInfo(apps) }
+
+    abstract class Folder(protected val context: Context, type: Int, val titleRes: Int) : Group(type, context, titleRes), FolderInfo.FolderListener {
+        // Ensure icon customization sticks across group changes
+        val id = LongCustomization(KEY_ID, Long.random + 9999L)
+
+        init {
+            // DO NOT actually change this ever
+            addCustomization(id)
+        }
+
+        open fun toFolderInfo(apps: AlphabeticalAppsList) = FolderInfo().apply {
+            setTitle(this@Folder.getTitle())
+            id = this@Folder.id.value()
+            contents = ArrayList()
+            addListener(this@Folder)
+        }
+
+        override fun onAdd(item: ShortcutInfo?, rank: Int) {
+            // not implemented
+        }
+
+        override fun onRemove(item: ShortcutInfo?) {
+            // not implemented
+        }
+
+        override fun onTitleChanged(title: CharSequence?) {
+            // TODO: implement allowing title changing from folder editing UI
+        }
+
+        override fun onItemsChanged(animate: Boolean) {
+            // not implemented
+        }
+
+        override fun prepareAutoUpdate() {
+            // not implemented
+        }
+
+        override fun onIconChanged() {
+            context.lawnchairPrefs.withChangeCallback {
+                it.reloadDrawer()
+            }
+        }
+    }
 
     class CustomFolder(context: Context) : Folder(context, TYPE_CUSTOM, R.string.default_folder_name) {
 
@@ -61,6 +108,11 @@ class DrawerFolders(manager: AppGroupsManager) : AppGroups<DrawerFolders.Folder>
         }
 
         fun getFilter(context: Context): Filter<*> = CustomFilter(context, contents.value())
+
+        override fun toFolderInfo(apps: AlphabeticalAppsList) = super.toFolderInfo(apps).apply {
+            // ✨
+            contents = ArrayList(this@CustomFolder.contents.value!!.mapNotNull { key -> apps.apps.firstOrNull() { it.toComponentKey() == key }?.makeShortcut() })
+        }
     }
 
     companion object {

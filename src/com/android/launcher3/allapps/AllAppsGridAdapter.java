@@ -30,15 +30,18 @@ import android.view.View.OnFocusChangeListener;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import ch.deletescape.lawnchair.colors.ColorEngine;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.FolderInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -66,9 +69,12 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public static final int VIEW_TYPE_ALL_APPS_DIVIDER = 1 << 4;
     public static final int VIEW_TYPE_WORK_TAB_FOOTER = 1 << 5;
 
+    // Drawer folders
+    public static final int VIEW_TYPE_FOLDER = 1 << 6;
+
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
-    public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
+    public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON | VIEW_TYPE_FOLDER;
 
 
     public interface BindViewCallback {
@@ -278,6 +284,12 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_WORK_TAB_FOOTER:
                 View footer = mLayoutInflater.inflate(R.layout.work_tab_footer, parent, false);
                 return new ViewHolder(footer);
+            case VIEW_TYPE_FOLDER:
+                FrameLayout layout = new FrameLayout(mLauncher);
+                ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                return new ViewHolder(layout);
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -320,6 +332,14 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                         managedByLabel.getContext()).isAnyProfileQuietModeEnabled();
                 managedByLabel.setText(anyProfileQuietModeEnabled
                         ? R.string.work_mode_off_label : R.string.work_mode_on_label);
+                break;
+            case VIEW_TYPE_FOLDER:
+                // TODO: clean up this mess
+                FolderInfo folderInfo = mApps.getAdapterItems().get(position).folderInfo;
+                ViewGroup container = (ViewGroup) holder.itemView;
+                container.removeAllViews();
+                container.addView(FolderIcon.fromXml(R.layout.all_apps_folder_icon, mLauncher,
+                        container, folderInfo));
                 break;
         }
         if (mBindViewCallback != null) {
