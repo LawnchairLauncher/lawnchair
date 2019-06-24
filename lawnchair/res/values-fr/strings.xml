@@ -346,7 +346,6 @@
     <string name="selected_count">%1$d sélectionné</string>
     <string name="tab_manage_apps">Gérer les applications</string>
     <string name="tab_bottom_sheet_save">Enregistrer</string>
-    <string name="tab_hide_from_main">Masquer du tiroir d\'applications</string>
     <string name="tab_color">Couleur de l\'onglet</string>
     <string name="delete">Supprimer</string>
     <string name="none">Aucun</string>
@@ -419,7 +418,6 @@
     <string name="adaptify_pack_summary">Créé ds icônes adaptative pour des icônes provenant de pack d\'icônes</string>
     <string name="pref_sesame_sync_look_and_feel">Partager le Style</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Synchroniser Lawnchair avec les paramètres Sesame</string>
-    <string name="pref_search_bar_radius">Rayon de bar de recherche</string>
     <string name="icon_text_scale_pref_title">Taille du texte</string>
     <string name="text_color">Couleur du texte</string>
     <string name="background_color">Couleur du fond</string>
@@ -427,4 +425,5 @@
     <string name="pref_notification_count_summary">Afficher le nombre de notification dans le point</string>
     <string name="pref_center_wallpaper">Toujours centrée le fond d\'écran</string>
     <string name="pref_center_wallpaper_summary">Cela désactivera l\'effet de défilement du fond d\'écran</string>
+    <string name="lock_desktop">Verrouiller l\'écran d\'accueil</string>
 </resources>
