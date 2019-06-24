@@ -65,17 +65,17 @@ class DrawerTabEditBottomSheet(context: Context, config: AppGroups.Group.Customi
 
     companion object {
 
-        fun show(context: Context, config: AppGroups.Group.CustomizationMap, callback: () -> Unit) {
+        fun show(context: Context, config: AppGroups.Group.CustomizationMap, animate: Boolean, callback: () -> Unit) {
             val sheet = SettingsBottomSheet.inflate(context)
             sheet.show(DrawerTabEditBottomSheet(context, config) {
                 if (it) {
                     callback()
                 }
                 sheet.close(true)
-            }, false)
+            }, animate)
         }
 
-        fun show(launcher: Launcher, config: AppGroups.Group.CustomizationMap, callback: () -> Unit, animate: Boolean = true) {
+        fun show(launcher: Launcher, config: AppGroups.Group.CustomizationMap, animate: Boolean, callback: () -> Unit) {
             val sheet = BaseBottomSheet.inflate(launcher)
             sheet.show(DrawerTabEditBottomSheet(launcher, config) {
                 if (it) {
@@ -85,16 +85,16 @@ class DrawerTabEditBottomSheet(context: Context, config: AppGroups.Group.Customi
             }, animate)
         }
 
-        fun newGroup(context: Context, emptyGroup: AppGroups.Group, callback: (AppGroups.Group.CustomizationMap) -> Unit) {
+        fun newGroup(context: Context, emptyGroup: AppGroups.Group, animate: Boolean, callback: (AppGroups.Group.CustomizationMap) -> Unit) {
             val config = emptyGroup.customizations
-            show(context, config) {
+            show(context, config, animate) {
                 callback(config)
             }
         }
 
         fun edit(context: Context, group: AppGroups.Group, callback: () -> Unit) {
             val config = AppGroups.Group.CustomizationMap(group.customizations)
-        show(context, config) {
+            show(context, config, true) {
                 group.customizations.applyFrom(config)
                 context.lawnchairPrefs.drawerTabs.saveToJson()
                 callback()
@@ -108,10 +108,10 @@ class DrawerTabEditBottomSheet(context: Context, config: AppGroups.Group.Customi
 
         fun edit(launcher: Launcher, config: AppGroups.Group.CustomizationMap,
                  group: AppGroups.Group, animate: Boolean = true) {
-            show(launcher, config, {
+            show(launcher, config, animate) {
                 group.customizations.applyFrom(config)
                 launcher.lawnchairPrefs.drawerTabs.saveToJson()
-            }, animate)
+            }
         }
     }
 }

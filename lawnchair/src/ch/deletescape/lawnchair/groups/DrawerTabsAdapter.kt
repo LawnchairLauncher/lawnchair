@@ -40,14 +40,14 @@ open class DrawerTabsAdapter(context: Context) : AppGroupsAdapter<DrawerTabsAdap
     private val hasWorkApps = context.lawnchairPrefs.separateWorkApps
             && UserManagerCompat.getInstance(context).userProfiles.size > 1
 
-    override fun createGroup(callback: (DrawerTabs.Tab) -> Unit) {
+    override fun createGroup(callback: (DrawerTabs.Tab, Boolean) -> Unit) {
         DrawerTabTypeSelectionBottomSheet.show(context, mapOf(
                 FlowerpotTabs.TYPE_FLOWERPOT to arrayOf(R.string.tab_type_smart, R.string.pref_appcategorization_flowerpot_summary, R.drawable.ic_category),
                 DrawerTabs.TYPE_CUSTOM to arrayOf(R.string.tab_type_custom, R.string.tab_type_custom_desc, R.drawable.ic_list)
         )) {
             when (it) {
-                DrawerTabs.TYPE_CUSTOM -> callback(DrawerTabs.CustomTab(context))
-                FlowerpotTabs.TYPE_FLOWERPOT -> callback(FlowerpotTabs.FlowerpotTab(context))
+                DrawerTabs.TYPE_CUSTOM -> callback(DrawerTabs.CustomTab(context), false)
+                FlowerpotTabs.TYPE_FLOWERPOT -> callback(FlowerpotTabs.FlowerpotTab(context), false)
             }
         }
     }
