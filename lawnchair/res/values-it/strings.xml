@@ -347,7 +347,6 @@
     <string name="selected_count">%1$d selezionato</string>
     <string name="tab_manage_apps">Gestisci applicazioni</string>
     <string name="tab_bottom_sheet_save">Salva</string>
-    <string name="tab_hide_from_main">Nascondi dalla lista applicazioni</string>
     <string name="tab_color">Colore tab</string>
     <string name="delete">Elimina</string>
     <string name="none">Nessuno</string>
@@ -420,7 +419,6 @@
     <string name="adaptify_pack_summary">Crea icone adattive per icone di un icon pack</string>
     <string name="pref_sesame_sync_look_and_feel">Condividi aspetto e feeling</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Sincronizza le impostazioni di ricerca di Lawnchair con Sesame</string>
-    <string name="pref_search_bar_radius">Raggio curvatura bordi barra di ricerca</string>
     <string name="icon_text_scale_pref_title">Dimensione testo</string>
     <string name="text_color">Colore testo</string>
     <string name="background_color">Colore sfondo</string>
@@ -428,4 +426,5 @@
     <string name="pref_notification_count_summary">Mostra conteggio notifiche all\'interno dei badge</string>
     <string name="pref_center_wallpaper">Centra sempre lo sfondo</string>
     <string name="pref_center_wallpaper_summary">Questo disattiverà l\'effetto di scorrimento dello sfondo</string>
+    <string name="lock_desktop">Blocca la schermata home</string>
 </resources>
