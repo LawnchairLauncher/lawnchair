@@ -345,7 +345,6 @@
     <string name="selected_count">已选择 %1$d 项</string>
     <string name="tab_manage_apps">管理应用</string>
     <string name="tab_bottom_sheet_save">保存</string>
-    <string name="tab_hide_from_main">从抽屉中隐藏</string>
     <string name="tab_color">标签页颜色</string>
     <string name="delete">删除</string>
     <string name="none">无</string>
@@ -418,7 +417,6 @@
     <string name="adaptify_pack_summary">为出自图标包的图标创建自适应图标</string>
     <string name="pref_sesame_sync_look_and_feel">分享外观和风格</string>
     <string name="pref_sesame_sync_look_and_feel_summary">与 Sesame 同步 Lawnchair 搜索设置</string>
-    <string name="pref_search_bar_radius">搜索栏圆角幅度</string>
     <string name="icon_text_scale_pref_title">文字大小</string>
     <string name="text_color">文字颜色</string>
     <string name="background_color">背景色</string>
@@ -426,4 +424,5 @@
     <string name="pref_notification_count_summary">在点内显示通知数量</string>
     <string name="pref_center_wallpaper">始终居中壁纸</string>
     <string name="pref_center_wallpaper_summary">这将禁用壁纸滚动效果</string>
+    <string name="lock_desktop">锁定桌面</string>
 </resources>
