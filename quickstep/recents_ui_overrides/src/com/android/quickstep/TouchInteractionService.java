@@ -81,6 +81,7 @@ import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
 import com.android.quickstep.inputconsumers.AssistantTouchConsumer;
 import com.android.quickstep.inputconsumers.DeviceLockedInputConsumer;
+import com.android.quickstep.inputconsumers.FallbackNoButtonInputConsumer;
 import com.android.quickstep.inputconsumers.InputConsumer;
 import com.android.quickstep.inputconsumers.OtherActivityInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
@@ -614,6 +615,10 @@ public class TouchInteractionService extends Service implements
         } else if (mGestureBlockingActivity != null && runningTaskInfo != null
                 && mGestureBlockingActivity.equals(runningTaskInfo.topActivity)) {
             return mResetGestureInputConsumer;
+        } else if (mMode == Mode.NO_BUTTON && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
+            return new FallbackNoButtonInputConsumer(this, activityControl,
+                    mInputMonitorCompat, mSwipeSharedState, mSwipeTouchRegion,
+                    mOverviewComponentObserver, disableHorizontalSwipe(event), runningTaskInfo);
         } else {
             return createOtherActivityInputConsumer(event, runningTaskInfo);
         }
