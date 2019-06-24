@@ -78,7 +78,7 @@ class AccuWeatherDataProvider(controller: LawnchairSmartspaceController) :
                     }
 
                     override fun onResponse(call: Call<List<AccuLocationGSon>>, response: Response<List<AccuLocationGSon>>) {
-                        response.body()?.get(0)?.key?.let {
+                        response.body()?.firstOrNull()?.key?.let {
                             keyCache = Pair(prefs.weatherCity, it)
                             loadWeather()
                         }

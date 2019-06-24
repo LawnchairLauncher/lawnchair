@@ -812,8 +812,14 @@ fun String.hash(type: String): String {
     return result.toString()
 }
 
-val Context.locale
-    get() = this.resources.configuration.locales[0] ?: this.resources.configuration.locale
+val Context.locale: Locale
+    get() {
+        return if (Utilities.ATLEAST_NOUGAT) {
+            this.resources.configuration.locales[0] ?: this.resources.configuration.locale
+        } else {
+            this.resources.configuration.locale
+        }
+    }
 
 fun createRipplePill(context: Context, color: Int, radius: Float): Drawable {
     return RippleDrawable(
