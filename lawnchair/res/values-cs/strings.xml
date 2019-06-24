@@ -347,7 +347,6 @@
     <string name="selected_count">%1$d vybráno</string>
     <string name="tab_manage_apps">Spravovat aplikace</string>
     <string name="tab_bottom_sheet_save">Uložit</string>
-    <string name="tab_hide_from_main">Skrýt v roletě</string>
     <string name="tab_color">Barva záložky</string>
     <string name="delete">Smazat</string>
     <string name="none">Žádné</string>
@@ -420,7 +419,6 @@
     <string name="adaptify_pack_summary">Vytvořit adaptivní ikony pro ikony z balíčků ikon</string>
     <string name="pref_sesame_sync_look_and_feel">Sdílet vzhled a pocit</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Synchronizujte nastavení vyhledávání Lawnchair pomocí Sesame</string>
-    <string name="pref_search_bar_radius">Rádius vyhledávacího panelu</string>
     <string name="icon_text_scale_pref_title">Velikost textu</string>
     <string name="text_color">Barva textu</string>
     <string name="background_color">Barva pozadí</string>
@@ -428,4 +426,5 @@
     <string name="pref_notification_count_summary">Zobrazení počtu oznámení uvnitř teček</string>
     <string name="pref_center_wallpaper">Vždy centrovat tapetu</string>
     <string name="pref_center_wallpaper_summary">Tímto se zakáže efekt posouvání tapet</string>
+    <string name="lock_desktop">Uzamčení pracovní plochy</string>
 </resources>
