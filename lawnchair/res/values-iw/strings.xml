@@ -329,4 +329,5 @@
     <string name="pref_fonts_missing_font">גופן לא נמצא</string>
     <string name="about_translate">תרגומים</string>
     <string name="pref_show_dev_options">הצג בהגדרות</string>
+    <string name="lock_desktop">נעל את מסך הבית</string>
 </resources>
