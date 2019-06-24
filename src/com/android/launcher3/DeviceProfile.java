@@ -578,10 +578,13 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
                 padding.set(availablePaddingX / 2, topWorkspacePadding + availablePaddingY / 2,
                         availablePaddingX / 2, paddingBottom + availablePaddingY / 2);
             } else {
+                int horizontalPadding = Utilities.getLawnchairPrefs(mContext)
+                        .getAllowFullWidthWidgets() ? 0 : desiredWorkspaceLeftRightMarginPx;
+
                 // Pad the top and bottom of the workspace with search/hotseat bar sizes
-                padding.set(desiredWorkspaceLeftRightMarginPx,
+                padding.set(horizontalPadding,
                         topWorkspacePadding,
-                        desiredWorkspaceLeftRightMarginPx,
+                        horizontalPadding,
                         paddingBottom);
             }
         }
