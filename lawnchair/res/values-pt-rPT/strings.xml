@@ -345,7 +345,6 @@
     <string name="selected_count">%1$d selecionado(s)</string>
     <string name="tab_manage_apps">Gerir aplicações</string>
     <string name="tab_bottom_sheet_save">Salvar</string>
-    <string name="tab_hide_from_main">Ocultar do menu</string>
     <string name="tab_color">Cor do separador</string>
     <string name="delete">Apagar</string>
     <string name="none">Nenhuma</string>
@@ -418,7 +417,6 @@
     <string name="adaptify_pack_summary">Criar ícones adaptativos a partir do pacote de ícones</string>
     <string name="pref_sesame_sync_look_and_feel">Partilhar aspeto e comportamento</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Sincronizar definições de pesquisa de Lawnchair com Sesame</string>
-    <string name="pref_search_bar_radius">Raio da barra de pesquisa</string>
     <string name="icon_text_scale_pref_title">Tamanho do texto</string>
     <string name="text_color">Cor do texto</string>
     <string name="background_color">Cor de fundo</string>
@@ -426,4 +424,5 @@
     <string name="pref_notification_count_summary">Mostrar número de notificações no interior dos pontos</string>
     <string name="pref_center_wallpaper">Centrar papel de parede</string>
     <string name="pref_center_wallpaper_summary">Esta opção desativa a deslocação do papel de parede</string>
+    <string name="lock_desktop">Bloquear ecrã</string>
 </resources>
