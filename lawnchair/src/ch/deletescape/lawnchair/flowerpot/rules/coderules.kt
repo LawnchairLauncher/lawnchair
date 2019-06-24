@@ -20,6 +20,7 @@ package ch.deletescape.lawnchair.flowerpot.rules
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import ch.deletescape.lawnchair.hasFlag
+import com.android.launcher3.Utilities
 
 sealed class CodeRule(vararg val args: String) {
     abstract fun matches(info: ApplicationInfo): Boolean
@@ -49,7 +50,7 @@ sealed class CodeRule(vararg val args: String) {
             }
         }
 
-        override fun matches(info: ApplicationInfo) = info.category == category
+        override fun matches(info: ApplicationInfo) = Utilities.ATLEAST_OREO && info.category == category
     }
 
     companion object {
