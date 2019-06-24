@@ -335,7 +335,6 @@
     <string name="selected_count">‏%1$d انتخاب شد</string>
     <string name="tab_manage_apps">مدیریت برنامه‌ها</string>
     <string name="tab_bottom_sheet_save">ذخیره</string>
-    <string name="tab_hide_from_main">پنهان کردن از منوی باز شونده</string>
     <string name="tab_color">رنگ زبانه</string>
     <string name="delete">حذف</string>
     <string name="none">هیچ‌کدام</string>
@@ -411,4 +410,5 @@
     <string name="text_color">رنگ متن</string>
     <string name="background_color">رنگ پس‌زمینه</string>
     <string name="pref_notification_count_title">نمایش تعداد اعلان ها</string>
+    <string name="lock_desktop">دسکتاپ را قفل کن</string>
 </resources>
