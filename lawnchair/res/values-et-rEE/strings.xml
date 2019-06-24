@@ -341,7 +341,6 @@
     <string name="selected_count">%1$d valitud</string>
     <string name="tab_manage_apps">Halda rakendusi</string>
     <string name="tab_bottom_sheet_save">Salvesta</string>
-    <string name="tab_hide_from_main">Peida sahtlist</string>
     <string name="tab_color">Kaardi värv</string>
     <string name="delete">Kustuta</string>
     <string name="none">Pole</string>
@@ -414,7 +413,6 @@
     <string name="adaptify_pack_summary">Loo ikoonipaketi jaoks kohanduvad ikoonid</string>
     <string name="pref_sesame_sync_look_and_feel">Jaga välimust</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Sünkrooni Lawnchairi otsingusätted Sesame\'iga</string>
-    <string name="pref_search_bar_radius">Otsinguriba raadius</string>
     <string name="icon_text_scale_pref_title">Teksti suurus</string>
     <string name="text_color">Teksti värv</string>
     <string name="background_color">Taustavärv</string>
@@ -422,4 +420,5 @@
     <string name="pref_notification_count_summary">Näita punkti sees teavituste arvu</string>
     <string name="pref_center_wallpaper">Joonda taustapilt alati keskele</string>
     <string name="pref_center_wallpaper_summary">See keelab taustapildi kerimise efekti</string>
+    <string name="lock_desktop">Lukusta töölaud</string>
 </resources>
