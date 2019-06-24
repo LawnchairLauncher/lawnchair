@@ -809,6 +809,12 @@ public class Folder extends AbstractFloatingView implements DragSource,
     };
 
     public void completeDragExit() {
+        if (isInAppDrawer()) {
+            // This is faster and more straightforward than trying to get the dragged app reliably
+            // back into the folder in any other way
+            mLauncher.getAppsView().getApps().reset();
+            return;
+        }
         if (mIsOpen) {
             close(true);
             mRearrangeOnClose = true;
@@ -1279,6 +1285,9 @@ public class Folder extends AbstractFloatingView implements DragSource,
     }
 
     public void onRemove(ShortcutInfo item) {
+        if (isInAppDrawer()) {
+            return;
+        }
         mItemsInvalidated = true;
         View v = getViewForInfo(item);
         mContent.removeItem(v);
