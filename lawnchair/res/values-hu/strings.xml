@@ -346,7 +346,6 @@
     <string name="selected_count">%1$d kiválasztva</string>
     <string name="tab_manage_apps">Alkalmazáskezelés</string>
     <string name="tab_bottom_sheet_save">Mentés</string>
-    <string name="tab_hide_from_main">Elrejtés az alkalmazáslistából</string>
     <string name="tab_color">A lap színe</string>
     <string name="delete">Törlés</string>
     <string name="none">Egyik sem</string>
@@ -418,7 +417,6 @@
     <string name="adaptify_pack_summary">Alkalmazkodó ikonok készítése az ikoncsomagok ikonjaihoz</string>
     <string name="pref_sesame_sync_look_and_feel">Ossza meg a kinézetet és az érzést</string>
     <string name="pref_sesame_sync_look_and_feel_summary">A Lawnchair keresési beállításainak szinkonizálása Sesame-mal</string>
-    <string name="pref_search_bar_radius">Keresési sáv nagyság</string>
     <string name="icon_text_scale_pref_title">Betűméret</string>
     <string name="text_color">Szöveg színe</string>
     <string name="background_color">Háttérszín</string>
@@ -426,4 +424,5 @@
     <string name="pref_notification_count_summary">Mutasd értesítés számlálót a pontokban</string>
     <string name="pref_center_wallpaper">Hátteret mindig igazísd középre</string>
     <string name="pref_center_wallpaper_summary">Ez kifogja kapcsolni a háttér mozgás efektet</string>
+    <string name="lock_desktop">Asztal zárolása</string>
 </resources>
