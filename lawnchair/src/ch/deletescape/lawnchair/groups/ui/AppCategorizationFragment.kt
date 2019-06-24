@@ -136,10 +136,5 @@ class AppCategorizationFragment : Fragment(), LawnchairPreferences.OnPreferenceC
                 .setup(AppGroupsManager.CategorizationType.Tabs,
                         R.string.pref_appcategorization_tabs_title,
                         R.string.pref_appcategorization_tabs_summary)
-
-        (flowerpotTypeItem as AppCategorizationTypeItem)
-                .setup(AppGroupsManager.CategorizationType.Flowerpot,
-                        R.string.pref_appcategorization_flowerpot_title,
-                        R.string.pref_appcategorization_flowerpot_summary)
     }
 }

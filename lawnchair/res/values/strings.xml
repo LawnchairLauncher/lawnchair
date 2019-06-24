@@ -592,7 +592,7 @@
     <string name="pref_appcategorization_style_text">Style</string>
     <string name="pref_app_groups_edit_tip">Tap to edit, drag to reorder.</string>
     <string name="pref_app_groups_create">Create</string>
-    <string name="pref_appcategorization_folders_title">Folder</string>
+    <string name="pref_appcategorization_folders_title">Folders</string>
     <string name="pref_appcategorization_folders_summary">Tap to open pop-up.</string>
     <string name="pref_appcategorization_tabs_title">Tabs</string>
     <string name="pref_appcategorization_tabs_summary">Swipe between groups.</string>
@@ -652,4 +652,5 @@
     <string name="tab_type_custom">Custom tab</string>
     <string name="tab_type_custom_desc">Manually pick apps for this tab.</string>
     <string name="tab_type_smart">Smart tab</string>
+    <string name="categorization">Categorization</string>
 </resources>

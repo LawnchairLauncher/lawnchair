@@ -162,5 +162,10 @@
             android:key="pref_forceFakePieAnims"
             android:title="Force fake Pie anims"
             android:defaultValue="false" />
+
+        <Preference
+            android:key="pref_drawerTabs"
+            android:title="@string/drawer_tabs"
+            android:fragment="ch.deletescape.lawnchair.preferences.DrawerTabsFragment"/>
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 </PreferenceScreen>

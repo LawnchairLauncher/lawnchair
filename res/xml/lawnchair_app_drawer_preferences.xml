@@ -96,14 +96,8 @@
             app:content="@xml/lawnchair_drawer_icon_popup_menu_preferences" />
 
         <ch.deletescape.lawnchair.preferences.Preference
-            android:title="Categorization"
-            android:fragment="ch.deletescape.lawnchair.groups.ui.AppCategorizationFragment"
-            app:controllerClass=".SecretOptionsController" />
-
-        <Preference
-            android:key="pref_drawerTabs"
-            android:title="@string/drawer_tabs"
-            android:fragment="ch.deletescape.lawnchair.preferences.DrawerTabsFragment" />
+            android:title="@string/categorization"
+            android:fragment="ch.deletescape.lawnchair.groups.ui.AppCategorizationFragment"/>
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
     
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
