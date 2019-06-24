@@ -341,7 +341,6 @@
     <string name="selected_count">%1$d terpilih</string>
     <string name="tab_manage_apps">Kelola aplikasi</string>
     <string name="tab_bottom_sheet_save">Simpan</string>
-    <string name="tab_hide_from_main">Sembunyikan dari app drawer</string>
     <string name="tab_color">Warna tab</string>
     <string name="delete">Hapus</string>
     <string name="none">Kosong</string>
@@ -414,7 +413,6 @@
     <string name="adaptify_pack_summary">Buat adaptif ikon untuk ikon dari paket ikon</string>
     <string name="pref_sesame_sync_look_and_feel">Bagikan tampilan dan nuansa</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Sinkronkan setelan Lawnchair dengan Sesame</string>
-    <string name="pref_search_bar_radius">Radius bilah cari</string>
     <string name="icon_text_scale_pref_title">Ukuran teks</string>
     <string name="text_color">Warna teks</string>
     <string name="background_color">Warna latar belakang</string>
@@ -422,4 +420,5 @@
     <string name="pref_notification_count_summary">Tampilkan jumlah notifikasi di dalam titik</string>
     <string name="pref_center_wallpaper">Wallpaper selalu di pusat</string>
     <string name="pref_center_wallpaper_summary">Ini akan menonaktifkan efek gulir wallpaper</string>
+    <string name="lock_desktop">Kunci desktop</string>
 </resources>
