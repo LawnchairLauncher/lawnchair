@@ -340,7 +340,6 @@
     <string name="selected_count">%1$d избран(и)</string>
     <string name="tab_manage_apps">Управление на приложения</string>
     <string name="tab_bottom_sheet_save">Запази</string>
-    <string name="tab_hide_from_main">Скрий приложението от списъка с приложения</string>
     <string name="tab_color">Цвят на раздела</string>
     <string name="delete">Изтрий</string>
     <string name="none">Няма</string>
@@ -413,7 +412,6 @@
     <string name="adaptify_pack_summary">Създай адаптивни икони за иконите от пакета с икони</string>
     <string name="pref_sesame_sync_look_and_feel">Сподели вида и усещането</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Синхронизирай настройките за търсене на Lawnchair със Sesame</string>
-    <string name="pref_search_bar_radius">Радиус на лентата за търсене</string>
     <string name="icon_text_scale_pref_title">Размер на текста</string>
     <string name="text_color">Цвят на текста</string>
     <string name="background_color">Цвят на фона</string>
