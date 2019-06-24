@@ -345,7 +345,6 @@
     <string name="selected_count">已選取 %1$d 個應用程式</string>
     <string name="tab_manage_apps">管理應用程式</string>
     <string name="tab_bottom_sheet_save">儲存</string>
-    <string name="tab_hide_from_main">從抽屜隱藏</string>
     <string name="tab_color">分頁色彩</string>
     <string name="delete">刪除</string>
     <string name="none">無</string>
@@ -418,7 +417,6 @@
     <string name="adaptify_pack_summary">使用圖示套件時，仍建立自動調整圖示</string>
     <string name="pref_sesame_sync_look_and_feel">分享外觀與風格</string>
     <string name="pref_sesame_sync_look_and_feel_summary">與 Sesame 同步 Lawnchair 搜尋設定</string>
-    <string name="pref_search_bar_radius">搜尋列半徑</string>
     <string name="icon_text_scale_pref_title">文字大小</string>
     <string name="text_color">文字顏色</string>
     <string name="background_color">背景顏色</string>
@@ -426,4 +424,5 @@
     <string name="pref_notification_count_summary">在「點」中顯示通知數</string>
     <string name="pref_center_wallpaper">永遠置中桌布</string>
     <string name="pref_center_wallpaper_summary">這將會關閉桌布滾動特效</string>
+    <string name="lock_desktop">鎖定桌面</string>
 </resources>
