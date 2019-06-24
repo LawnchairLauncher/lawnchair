@@ -346,7 +346,6 @@
     <string name="selected_count">Изабрано: %1$d</string>
     <string name="tab_manage_apps">Управљај апликацијама</string>
     <string name="tab_bottom_sheet_save">Сачувај</string>
-    <string name="tab_hide_from_main">Сакриј са листе апликација</string>
     <string name="tab_color">Боја картице</string>
     <string name="delete">Избриши</string>
     <string name="none">Нема</string>
@@ -419,7 +418,6 @@
     <string name="adaptify_pack_summary">Примењује прилагодљиве иконе и на пакете икона</string>
     <string name="pref_sesame_sync_look_and_feel">Дели изглед</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Синхронизује Lawnchair-ова подешавања претраге са Sesame-ом</string>
-    <string name="pref_search_bar_radius">Опсег траке за претрагу</string>
     <string name="icon_text_scale_pref_title">Величина текста</string>
     <string name="text_color">Боја текста</string>
     <string name="background_color">Боја позадине</string>
@@ -427,4 +425,5 @@
     <string name="pref_notification_count_summary">Приказује број обавештења у тачкама</string>
     <string name="pref_center_wallpaper">Увек центрирај позадину</string>
     <string name="pref_center_wallpaper_summary">Овим ћете онемогућити ефекат померања позадине</string>
+    <string name="lock_desktop">Закључај радну површину</string>
 </resources>
