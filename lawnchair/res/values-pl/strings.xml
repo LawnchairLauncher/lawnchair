@@ -351,7 +351,6 @@
     <string name="selected_count">%1$d zaznaczonych</string>
     <string name="tab_manage_apps">Zarządzaj aplikacjami</string>
     <string name="tab_bottom_sheet_save">Zapisz</string>
-    <string name="tab_hide_from_main">Ukryj aplikację</string>
     <string name="tab_color">Kolor karty</string>
     <string name="delete">Usuń</string>
     <string name="none">Brak</string>
@@ -424,7 +423,6 @@
     <string name="adaptify_pack_summary">Utwórz ikony adaptacyjne dla ikon z paczek ikon</string>
     <string name="pref_sesame_sync_look_and_feel">Synchronizuj wygląd i działanie</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Synchronizuj ustawienia wyszukiwania Lawnchair z Sesame</string>
-    <string name="pref_search_bar_radius">Zaokrąglenie paska wyszukiwania</string>
     <string name="icon_text_scale_pref_title">Rozmiar tekstu</string>
     <string name="text_color">Kolor tekstu</string>
     <string name="background_color">Kolor tła</string>
@@ -432,4 +430,5 @@
     <string name="pref_notification_count_summary">Wyświetlaj liczbę powiadomień wewnątrz kropek</string>
     <string name="pref_center_wallpaper">Zawsze środkuj tapetę</string>
     <string name="pref_center_wallpaper_summary">To wyłączy efekt przewijania tapety</string>
+    <string name="lock_desktop">Blokada pulpitu</string>
 </resources>
