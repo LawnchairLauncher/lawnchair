@@ -347,7 +347,6 @@
     <string name="selected_count">%1$d seçildi</string>
     <string name="tab_manage_apps">Uygulamaları yönet</string>
     <string name="tab_bottom_sheet_save">Kaydet</string>
-    <string name="tab_hide_from_main">Çekmeceden gizle</string>
     <string name="tab_color">Sekme rengi</string>
     <string name="delete">Sil</string>
     <string name="none">Hiçbiri</string>
@@ -419,7 +418,6 @@
     <string name="adaptify_pack_summary">Simge paketlerinden simgeler için uyarlanabilir simgeler oluştur</string>
     <string name="pref_sesame_sync_look_and_feel">Görünümü paylaş</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Lawnchair arama ayarlarını Sesame ile senkronize et</string>
-    <string name="pref_search_bar_radius">Arama çubuğu yarıçapı</string>
     <string name="icon_text_scale_pref_title">Metin boyutu</string>
     <string name="text_color">Metin rengi</string>
     <string name="background_color">Arka plan rengi</string>
@@ -427,4 +425,5 @@
     <string name="pref_notification_count_summary">Noktaların içinde bildirim sayısını görüntüle</string>
     <string name="pref_center_wallpaper">Duvar kağıdı her zaman ortada</string>
     <string name="pref_center_wallpaper_summary">Duvar kağıdı kaydırma efektini devre dışı bırakacaktır</string>
+    <string name="lock_desktop">Ana ekranı kilitle</string>
 </resources>
