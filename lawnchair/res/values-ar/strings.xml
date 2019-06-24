@@ -353,7 +353,6 @@
     <string name="selected_count">‏تم تحديد %1$d</string>
     <string name="tab_manage_apps">إدارة التطبيقات</string>
     <string name="tab_bottom_sheet_save">حفظ</string>
-    <string name="tab_hide_from_main">إخفاء من قائمة التطبيقات</string>
     <string name="tab_color">لون التبويب</string>
     <string name="delete">حذف</string>
     <string name="none">لا شئ</string>
@@ -426,7 +425,6 @@
     <string name="adaptify_pack_summary">انشئ أيقونات مكيفة للأيقونات من حزمة الأيقونات</string>
     <string name="pref_sesame_sync_look_and_feel">شارك مظهر وإحساس</string>
     <string name="pref_sesame_sync_look_and_feel_summary">تزامن إعدادات بحث Lawnchair مع سمسم</string>
-    <string name="pref_search_bar_radius">شريط بحث إطار نصف دائري</string>
     <string name="icon_text_scale_pref_title">حجم النص</string>
     <string name="text_color">لون النص</string>
     <string name="background_color">لون الخلفية</string>
@@ -434,4 +432,5 @@
     <string name="pref_notification_count_summary">عرض عدد الاشعارات داخل النافذة المنبثقة</string>
     <string name="pref_center_wallpaper">خلفية مركزية دائما</string>
     <string name="pref_center_wallpaper_summary">سيؤدي هذا إلى تعطيل تأثير التمرير للخلفية</string>
+    <string name="lock_desktop">قفل الشاشة الرئيسية</string>
 </resources>
