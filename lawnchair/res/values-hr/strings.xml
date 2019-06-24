@@ -340,7 +340,6 @@
     <string name="selected_count">%1$d odabrano</string>
     <string name="tab_manage_apps">Upravljanje aplikacijama</string>
     <string name="tab_bottom_sheet_save">Spremi</string>
-    <string name="tab_hide_from_main">Sakrij iz izbornika aplikacija</string>
     <string name="tab_color">Boja kartice</string>
     <string name="delete">Izbriši</string>
     <string name="none">Nijedan</string>
@@ -413,7 +412,6 @@
     <string name="adaptify_pack_summary">Stvori prilagodljive ikone za ikone iz paketa ikona</string>
     <string name="pref_sesame_sync_look_and_feel">Podijeli izgled i osjećaj</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Uskladi Lawnchair postavke pretraživanja sa Sesame</string>
-    <string name="pref_search_bar_radius">Radijus trake za pretraživanje</string>
     <string name="icon_text_scale_pref_title">Veličina teksta</string>
     <string name="text_color">Boja teksta</string>
     <string name="background_color">Boja pozadine</string>
