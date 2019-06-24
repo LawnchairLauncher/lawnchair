@@ -330,7 +330,6 @@
     <string name="selected_count">%1$d markerad</string>
     <string name="tab_manage_apps">Hantera appar</string>
     <string name="tab_bottom_sheet_save">Spara</string>
-    <string name="tab_hide_from_main">Göm från appmenyn</string>
     <string name="tab_color">Flikfärg</string>
     <string name="delete">Ta bort</string>
     <string name="none">Ingen</string>
@@ -399,4 +398,5 @@
     <string name="about_app_description">Ett anpassningsbart Pixel Launcher-alternative.</string>
     <string name="about_bio_paphonb">En 18-årig student, Android Developer och en av de bästa utvecklarna på Lawnchair Launcher.</string>
     <string name="dock_scale">Favoritfälts-stil</string>
+    <string name="lock_desktop">Lås startskärmen</string>
 </resources>
