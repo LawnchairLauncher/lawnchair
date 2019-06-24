@@ -341,7 +341,6 @@
     <string name="selected_count">%1$d seleccionat(s)</string>
     <string name="tab_manage_apps">Gestiona les aplicacions</string>
     <string name="tab_bottom_sheet_save">Desa</string>
-    <string name="tab_hide_from_main">Oculta del calaix</string>
     <string name="tab_color">Color de la pestanya</string>
     <string name="delete">Suprimeix</string>
     <string name="none">Cap</string>
@@ -414,7 +413,6 @@
     <string name="adaptify_pack_summary">Creeu icones adaptatives per a icones a partir de paquets d\'icones</string>
     <string name="pref_sesame_sync_look_and_feel">Comparteix l\'aspecte i el comportament</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Sincronitza la configuració de cerca del Lawnchair amb el Sesame</string>
-    <string name="pref_search_bar_radius">Radi de la barra de cerca</string>
     <string name="icon_text_scale_pref_title">Mida del text</string>
     <string name="text_color">Color del text</string>
     <string name="background_color">Color de fons</string>
@@ -422,4 +420,5 @@
     <string name="pref_notification_count_summary">Mostra el recompte de notificacions dins dels punts</string>
     <string name="pref_center_wallpaper">Centra sempre el fons de pantalla</string>
     <string name="pref_center_wallpaper_summary">Això desactivarà l\'efecte de desplaçament del fons de pantalla</string>
+    <string name="lock_desktop">Bloqueja l\'escriptori</string>
 </resources>
