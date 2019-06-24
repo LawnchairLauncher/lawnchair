@@ -342,7 +342,6 @@
     <string name="selected_count">Đã chọn %1$d</string>
     <string name="tab_manage_apps">Quản lý ứng dụng</string>
     <string name="tab_bottom_sheet_save">Lưu</string>
-    <string name="tab_hide_from_main">Ẩn khỏi danh sách ứng dụng</string>
     <string name="tab_color">Màu thẻ</string>
     <string name="delete">Xóa</string>
     <string name="none">Không</string>
@@ -415,7 +414,6 @@
     <string name="adaptify_pack_summary">Tạo lớp phủ cho biểu tượng từ các gói biểu tượng</string>
     <string name="pref_sesame_sync_look_and_feel">Chia sẻ cái nhìn và cảm nhận</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Đồng bộ hóa cài đặt tìm kiếm trên bãi cỏ với Sesame</string>
-    <string name="pref_search_bar_radius">Bán kính thanh tìm kiếm</string>
     <string name="icon_text_scale_pref_title">Cỡ chữ</string>
     <string name="text_color">Màu chữ</string>
     <string name="background_color">Màu nền</string>
@@ -423,4 +421,5 @@
     <string name="pref_notification_count_summary">Hiển thị số thông báo bên trong các dấu chấm</string>
     <string name="pref_center_wallpaper">Luôn để hình nền ở trung tâm</string>
     <string name="pref_center_wallpaper_summary">Điều này sẽ vô hiệu hóa hiệu ứng cuộn hình nền</string>
+    <string name="lock_desktop">Khóa màn hình chính</string>
 </resources>
