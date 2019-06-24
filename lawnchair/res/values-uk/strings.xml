@@ -348,7 +348,6 @@
     <string name="selected_count">%1$d обрані</string>
     <string name="tab_manage_apps">Керувати додатками</string>
     <string name="tab_bottom_sheet_save">Зберігти</string>
-    <string name="tab_hide_from_main">Приховати з списку додатків</string>
     <string name="tab_color">Колір вкладки</string>
     <string name="delete">Видалити</string>
     <string name="none">НІчого</string>
@@ -421,7 +420,6 @@
     <string name="adaptify_pack_summary">Створити адаптивні іконки для іконок з наборів іконок</string>
     <string name="pref_sesame_sync_look_and_feel">Поділитися оформленням</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Синхронізувати налаштування пошуку Lawnchair з Sesame</string>
-    <string name="pref_search_bar_radius">Задіус заокруглення панелі пошуку</string>
     <string name="icon_text_scale_pref_title">Розмір тексту</string>
     <string name="text_color">Колір тексту</string>
     <string name="background_color">Колір фону</string>
@@ -429,4 +427,5 @@
     <string name="pref_notification_count_summary">Відображати кількість сповіщень всередині кола</string>
     <string name="pref_center_wallpaper">Завжди центрувати шпалери</string>
     <string name="pref_center_wallpaper_summary">Вимкне ефект зміни шпалер</string>
+    <string name="lock_desktop">Блокування робочого стола</string>
 </resources>
