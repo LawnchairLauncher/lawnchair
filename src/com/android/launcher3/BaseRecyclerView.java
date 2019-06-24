@@ -77,6 +77,7 @@ public abstract class BaseRecyclerView extends RecyclerView implements OnColorCh
 
     public void bindFastScrollbar() {
         ViewGroup parent = (ViewGroup) getParent().getParent();
+        if (parent == null) return;
         mScrollbar = parent.findViewById(R.id.fast_scroller);
         mScrollbar.setRecyclerView(this, parent.findViewById(R.id.fast_scroller_popup));
         onUpdateScrollbar(0);
