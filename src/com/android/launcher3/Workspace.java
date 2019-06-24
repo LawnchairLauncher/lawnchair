@@ -1167,7 +1167,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl)) && !inOptionsState;
 
         boolean shouldZeroOverlay = mLauncherOverlay != null && mLastOverlayScroll != 0 &&
-                ((amount >= 0 && !mIsRtl) || (amount <= 0 && mIsRtl)) || inOptionsState;
+                ((amount >= 0 && !mIsRtl) || (amount <= 0 && mIsRtl) || inOptionsState);
 
         if (shouldScrollOverlay) {
             if (!mStartedSendingScrollEvents && mScrollInteractionBegan) {
