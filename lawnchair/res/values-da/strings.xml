@@ -344,7 +344,6 @@
     <string name="selected_count">%1$d valgt</string>
     <string name="tab_manage_apps">Håndtér apps</string>
     <string name="tab_bottom_sheet_save">Gem</string>
-    <string name="tab_hide_from_main">Skjul i app-oversigt</string>
     <string name="tab_color">Fanefarve</string>
     <string name="delete">Slet</string>
     <string name="none">Ingen</string>
@@ -417,7 +416,6 @@
     <string name="adaptify_pack_summary">Kreerer adaptive ikoner til ikoner i ikonpakke</string>
     <string name="pref_sesame_sync_look_and_feel">Del udseende og fonemmelse</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Synk Lawnchair-søgeindstillinger med Sesame</string>
-    <string name="pref_search_bar_radius">Søgebjælkeradius</string>
     <string name="icon_text_scale_pref_title">Tekststørrelse</string>
     <string name="text_color">Tekstfarve</string>
     <string name="background_color">Baggrundsfarve</string>
@@ -425,4 +423,5 @@
     <string name="pref_notification_count_summary">Vis notifikationsantal i prikkerne</string>
     <string name="pref_center_wallpaper">Centrér altid tapet</string>
     <string name="pref_center_wallpaper_summary">Dette vil deaktivere tapetrulningseffekten</string>
+    <string name="lock_desktop">Lås hjemmeskærm</string>
 </resources>
