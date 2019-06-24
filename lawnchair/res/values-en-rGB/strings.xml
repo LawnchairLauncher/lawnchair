@@ -329,7 +329,6 @@
     <string name="selected_count">%1$d selected</string>
     <string name="tab_manage_apps">Manage apps</string>
     <string name="tab_bottom_sheet_save">Save</string>
-    <string name="tab_hide_from_main">Hide from drawer</string>
     <string name="tab_color">Tab colour</string>
     <string name="delete">Delete</string>
     <string name="none">None</string>
