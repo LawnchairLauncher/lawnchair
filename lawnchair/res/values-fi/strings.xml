@@ -335,7 +335,6 @@
     <string name="selected_count">%1$d valittu</string>
     <string name="tab_manage_apps">Hallinnoi sovelluksia</string>
     <string name="tab_bottom_sheet_save">Tallenna</string>
-    <string name="tab_hide_from_main">Piilota sovellusvalikosta</string>
     <string name="tab_color">Välilehden väri</string>
     <string name="delete">Poista</string>
     <string name="none">Ei mitään</string>
@@ -407,11 +406,11 @@
     <string name="adaptify_pack_summary">Luo adaptiiviset kuvakkeet kuvakepaketin kuvakkeille</string>
     <string name="pref_sesame_sync_look_and_feel">Jaa ulkoasu ja tunnelma</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Synkronoi Lawnchair haun asetukset Sesamen kanssa</string>
-    <string name="pref_search_bar_radius">Hakupalkin säde</string>
     <string name="icon_text_scale_pref_title">Tekstin koko</string>
     <string name="text_color">Tekstin väri</string>
     <string name="background_color">Taustaväri</string>
     <string name="pref_notification_count_title">Näytä ilmoitusten lukumäärä</string>
     <string name="pref_notification_count_summary">Näytä ilmoitusten lukumäärä pisteen sisällä</string>
     <string name="pref_center_wallpaper">Keskitä taustakuva aina</string>
+    <string name="lock_desktop">Lukitse aloitusnäyttö</string>
 </resources>
