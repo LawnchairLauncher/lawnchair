@@ -27,11 +27,11 @@
     <string name="pixel_style_pref_title">Styl Pixel</string>
     <string name="about_summary_title">Shrnutí</string>
     <string name="action_edit">Upravit</string>
-    <string name="hide_app_sum">Skrýt v seznamu aplikací</string>
+    <string name="hide_app_sum">Skrýt z rolety aplikací</string>
     <string name="hide_app">Skrýt aplikaci</string>
     <string name="icon_shape_rounded_square">Zaoblený čtverec</string>
     <string name="pixel_ui_pref_summary">Balíček ikon, rozostření, barvy</string>
-    <string name="app_drawer_pref_title">Menu aplikací</string>
+    <string name="app_drawer_pref_title">Roleta aplikací</string>
     <string name="app_drawer_pref_summary">Neprůhlednost, návrhy, skrýt aplikace</string>
     <string name="search_pref_summary">Barva, vyhledávač, ikony</string>
     <string name="general_pref_title">Plocha</string>
@@ -98,7 +98,7 @@
     <string name="dock_style_p">Zaoblený</string>
     <string name="dock_style_n">Plochý</string>
     <string name="dock_style_hidden">Skrytý</string>
-    <string name="dock_search_bar">Vyhledávací panel doku</string>
+    <string name="dock_search_bar">Vyhledávací lišta doku</string>
     <string name="opacity">Neprůhlednost</string>
     <string name="title_all_apps_google_search">Globální vyhledávání</string>
     <string name="summary_all_apps_google_search">Najít výsledky z webu a aplikací</string>
@@ -118,7 +118,7 @@
     <!--Marker C-->
     <string name="pref_category_icons">Ikony</string>
     <string name="pref_category_aag">Přehled událostí</string>
-    <string name="pref_category_pixel_searchbar">Vyhledávací panel Pixel</string>
+    <string name="pref_category_pixel_searchbar">Vyhledávací lišta Pixel</string>
     <string name="pref_category_weather">Počasí</string>
     <string name="pref_category_misc">Ostatní</string>
     <string name="pref_category_layout">Rozložení</string>
@@ -158,7 +158,7 @@
     <string name="debug_crash_launcher">Shoď launcher</string>
     <string name="gestures_pref_title">Gesta</string>
     <string name="gestures_pref_summary">Dvojité poklepání, tlačítko domů, přejetí dolů</string>
-    <string name="action_open_drawer">Otevřít seznam aplikací</string>
+    <string name="action_open_drawer">Otevřít roletu aplikací</string>
     <string name="action_last_task">Otevřít poslední aplikaci</string>
     <string name="action_open_widgets">Otevřít roletu s widgety</string>
     <string name="action_open_settings">Otevřít nastavení launcheru</string>
@@ -214,7 +214,7 @@
     <string name="icon_pack_external_picker">Otevřít vnější volič</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
-    <string name="title_use_pill_qsb">Použít pilulkový vyhledávací pruh</string>
+    <string name="title_use_pill_qsb">Použít pilulkovou vyhledávací lištu</string>
     <string name="weather_provider_testing">Ladění</string>
     <!--Marker G-->
     <string name="backup_generate_report">Vytvořit hlášení o chybě</string>
@@ -222,7 +222,7 @@
     <string name="show_top_shadow_pref_summary">Stín pod stavovou lištou</string>
     <string name="two_row_dock">Dva řádky</string>
     <string name="keep_scroll_state_pref_title">Zachovat pozici rolování</string>
-    <string name="reset">Resetovat</string>
+    <string name="reset">Obnovit</string>
     <string name="theme_title">Motiv</string>
     <string name="theme_automatic">Automatický</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
@@ -283,7 +283,7 @@
     <string name="action_sleep">Uspat</string>
     <string name="pref_drawer_padding">Výška řádku</string>
     <string name="pref_drawer_columns">Počet sloupců</string>
-    <string name="pref_prediction_count">Počet výsledků našeptávání</string>
+    <string name="pref_prediction_count">Počet návrhů</string>
     <string name="pref_mutliline_labels">Víceřádkové názvy aplikací</string>
     <string name="lawnchair_actions">Akce</string>
     <string name="theme_auto">Podle tapety</string>
@@ -302,8 +302,8 @@
     <string name="theme_use_black">Použít čistě černý</string>
     <string name="theme_use_dark_text">Použít tmavý text</string>
     <string name="pref_qsb_color">Barva</string>
-    <string name="hide_from_predictions">Skrýt z výsledků našeptávání</string>
-    <string name="hide_from_predictions_summary">Nikdy nezobrazit v roletě našeptávání</string>
+    <string name="hide_from_predictions">Skrýt z návrhů</string>
+    <string name="hide_from_predictions_summary">Nikdy nezobrazovat návrhy v roletě</string>
     <string name="bubble_searchbar">Dvojitá bublinová lišta vyhledávání</string>
     <string name="search_clear_history">Vymazat historii</string>
     <string name="search_no_results">Nic nenalezeno</string>
@@ -316,7 +316,7 @@
     <string name="title_app_suggestions">Aplikace</string>
     <string name="title_app_suggestions_in_search">Zobrazovat návrhy aplikací</string>
     <string name="summary_app_suggestions">Naposledy použité aplikace</string>
-    <string name="summary_app_suggestions_lawnstep">Na obrazovce posledních aplikací a roletě aplikací</string>
+    <string name="summary_app_suggestions_lawnstep">Na obrazovce nedávných aplikací a v roletě aplikací</string>
     <string name="app_actions_pref_title">Akce</string>
     <string name="app_actions_pref_title_in_search">Návrhy akcí</string>
     <string name="app_actions_pref_desc">Zkratky k často otevíraným obrazovkám</string>
@@ -347,6 +347,7 @@
     <string name="selected_count">%1$d vybráno</string>
     <string name="tab_manage_apps">Spravovat aplikace</string>
     <string name="tab_bottom_sheet_save">Uložit</string>
+    <string name="tab_hide_from_main">Skrýt z hlavní záložky</string>
     <string name="tab_color">Barva záložky</string>
     <string name="delete">Smazat</string>
     <string name="none">Žádné</string>
@@ -366,6 +367,7 @@
     <string name="pref_sesame_show_shortcuts">Zkratky aplikací</string>
     <string name="pref_sesame_show_shortcuts_summary">Zobrazit zkratky Sesame v bublinkových ikonách</string>
     <string name="allow">Povolit</string>
+    <string name="deny">Odepřít</string>
     <string name="sesame_enable_integration_title">Povolit integraci</string>
     <string name="sesame_enable_integration_description"><![CDATA[Dovolí sdílení dat mezi Lawnchair a Sesame. Můžete to změnit v nastavení Lawnchair nebo Sesame.]]></string>
     <string name="sesame_version">Verze integrace</string>
@@ -419,6 +421,7 @@
     <string name="adaptify_pack_summary">Vytvořit adaptivní ikony pro ikony z balíčků ikon</string>
     <string name="pref_sesame_sync_look_and_feel">Sdílet vzhled a pocit</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Synchronizujte nastavení vyhledávání Lawnchair pomocí Sesame</string>
+    <string name="pref_search_bar_radius">Zaoblení rohů vyhledávací lišty</string>
     <string name="icon_text_scale_pref_title">Velikost textu</string>
     <string name="text_color">Barva textu</string>
     <string name="background_color">Barva pozadí</string>
@@ -426,5 +429,65 @@
     <string name="pref_notification_count_summary">Zobrazení počtu oznámení uvnitř teček</string>
     <string name="pref_center_wallpaper">Vždy centrovat tapetu</string>
     <string name="pref_center_wallpaper_summary">Tímto se zakáže efekt posouvání tapet</string>
+    <string name="pref_icon_popup_menu">Položky vyskakovací nabídky</string>
+    <string name="pref_appcategorization_enable_title">Kategorizovat aplikace</string>
+    <string name="pref_appcategorization_enable_summary">Opravit moji chaotickou roletu aplikací.</string>
+    <string name="pref_appcategorization_style_text">Styl</string>
+    <string name="pref_app_groups_edit_tip">Klepnutím editujete, tažením přeuspořádáte.</string>
+    <string name="pref_app_groups_create">Vytvořit</string>
+    <string name="pref_appcategorization_folders_title">Složky</string>
+    <string name="pref_appcategorization_folders_summary">Klepnutím otevřete vyskakovací nabídku.</string>
+    <string name="pref_appcategorization_tabs_title">Záložky</string>
+    <string name="pref_appcategorization_tabs_summary">Přejíždějte mezi skupinami.</string>
+    <string name="default_folder_name">Nová složka</string>
+    <string name="drawer_folders">Složky</string>
+    <string name="category_business_and_productivity">Byznys a produktivita</string>
+    <string name="category_communication">Komunikace</string>
+    <string name="category_entertainment">Zábava</string>
+    <string name="category_food_and_drink">Jídlo a nápoje</string>
+    <string name="category_game">Hry</string>
+    <string name="category_health_and_fitness">Zdraví a kondice</string>
+    <string name="category_knowledge_and_reference">Znalosti a reference</string>
+    <string name="category_lifestyle">Nakupování a životní styl</string>
+    <string name="category_music">Hudba</string>
+    <string name="category_news">Zprávy</string>
+    <string name="category_personalization">Personalizace</string>
+    <string name="category_photography">Fotografie</string>
+    <string name="category_tools">Nástroje</string>
+    <string name="category_travel_and_navigation">Cestování a navigace</string>
     <string name="lock_desktop">Uzamčení pracovní plochy</string>
+    <string name="reset_custom_icons">Obnovit vlastní ikony</string>
+    <string name="reset_custom_icons_confirmation">Jste si jisti, že chcete obnovit všechny vlastní ikony? Tato akce je nevratná.</string>
+    <string name="open_image_picker">Otevřít volič obrázků</string>
+    <string name="import_icon">Importovat ikonu</string>
+    <string name="import_as_adaptive">Jako adaptivní ikonu</string>
+    <string name="bugreport_channel_name">Hlášení o chybách</string>
+    <string name="status_channel_name">Stav nahrávání hlášení o chybách</string>
+    <string name="dogbin_uploading">Probíhá nahrávání</string>
+    <string name="action_dogbin_upload">Nahrát na dogbin</string>
+    <string name="action_dogbin_upload_error">Nahrávání selhalo</string>
+    <string name="action_dogbin_copy_link">Zkopírovat odkaz</string>
+    <string name="lawnchair_bug_report">Hlášení o chybách Lawnchair</string>
+    <string name="copied_toast">Zkopírováno</string>
+    <string name="action_copy">Kopírovat</string>
+    <string name="action_copy_link">Zkopírovat odkaz</string>
+    <string name="action_share">Sdílet</string>
+    <string name="animation_type_title">Animace otevření aplikace</string>
+    <string name="animation_type_default">Výchozí</string>
+    <string name="animation_type_pie">Pie</string>
+    <string name="animation_type_pie_like">Jako v Pie</string>
+    <string name="animation_type_reveal">Odhalení</string>
+    <string name="animation_type_slide_up">Posunutí nahoru</string>
+    <string name="animation_type_scale_up">Zvětšení</string>
+    <string name="animation_type_blink">Bliknutí</string>
+    <string name="animation_type_fade">Vyblednutí</string>
+    <string name="permission_iplocate">Povolit přístup k přibližnému umístění, založeném na datech ze sítě?</string>
+    <string name="permission_iplocate_twilight_explanation">Toto umožňuje přesnější výpočty denní doby, aniž by musela být známa vaše přesná poloha.</string>
+    <string name="pref_appcategorization_flowerpot_title">Kategorie</string>
+    <string name="pref_appcategorization_flowerpot_summary">Aplikace jsou vybrány automaticky na základě jejich metadat.</string>
+    <string name="select_tab_type">Typ záložky</string>
+    <string name="tab_type_custom">Vlastní záložka</string>
+    <string name="tab_type_custom_desc">Ručně vyberte aplikace pro tuto záložku.</string>
+    <string name="tab_type_smart">Chytrá záložka</string>
+    <string name="categorization">Kategorizace</string>
 </resources>
