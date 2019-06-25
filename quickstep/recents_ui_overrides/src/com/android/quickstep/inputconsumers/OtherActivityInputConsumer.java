@@ -79,7 +79,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private static final String UP_EVT = "OtherActivityInputConsumer.UP";
 
     // TODO: Move to quickstep contract
-    private static final float QUICKSTEP_TOUCH_SLOP_RATIO = 3;
+    public static final float QUICKSTEP_TOUCH_SLOP_RATIO = 3;
 
     private final CachedEventDispatcher mRecentsViewDispatcher = new CachedEventDispatcher();
     private final RunningTaskInfo mRunningTask;
