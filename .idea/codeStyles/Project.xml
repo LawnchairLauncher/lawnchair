@@ -7,7 +7,9 @@
         <option name="TAB_SIZE" value="2" />
       </value>
     </option>
+    <option name="LINE_SEPARATOR" value="&#10;" />
     <option name="RIGHT_MARGIN" value="100" />
+    <option name="SOFT_MARGINS" value="80,100" />
     <AndroidXmlCodeStyleSettings>
       <option name="USE_CUSTOM_SETTINGS" value="true" />
       <option name="LAYOUT_SETTINGS">
@@ -526,6 +528,25 @@
           </section>
         </rules>
       </arrangement>
+    </codeStyleSettings>
+    <codeStyleSettings language="kotlin">
+      <option name="KEEP_FIRST_COLUMN_COMMENT" value="false" />
+      <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />
+      <option name="ALIGN_MULTILINE_BINARY_OPERATION" value="true" />
+      <option name="ALIGN_MULTILINE_EXTENDS_LIST" value="true" />
+      <option name="ALIGN_MULTILINE_METHOD_BRACKETS" value="true" />
+      <option name="CALL_PARAMETERS_WRAP" value="1" />
+      <option name="CALL_PARAMETERS_LPAREN_ON_NEXT_LINE" value="true" />
+      <option name="CALL_PARAMETERS_RPAREN_ON_NEXT_LINE" value="true" />
+      <option name="METHOD_PARAMETERS_WRAP" value="1" />
+      <option name="METHOD_PARAMETERS_LPAREN_ON_NEXT_LINE" value="true" />
+      <option name="METHOD_PARAMETERS_RPAREN_ON_NEXT_LINE" value="true" />
+      <option name="EXTENDS_LIST_WRAP" value="1" />
+      <option name="METHOD_CALL_CHAIN_WRAP" value="1" />
+      <option name="WRAP_FIRST_METHOD_IN_CALL_CHAIN" value="true" />
+      <option name="ASSIGNMENT_WRAP" value="1" />
+      <option name="PARAMETER_ANNOTATION_WRAP" value="1" />
+      <option name="VARIABLE_ANNOTATION_WRAP" value="1" />
     </codeStyleSettings>
     <codeStyleSettings language="protobuf">
       <option name="RIGHT_MARGIN" value="80" />
