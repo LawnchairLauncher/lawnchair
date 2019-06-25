@@ -48,7 +48,7 @@ class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFol
             .filter { !it.isEmpty }
             .map { it.toFolderInfo(apps) }
 
-    abstract class Folder(protected val context: Context, type: Int, val titleRes: Int) : Group(type, context, titleRes), FolderInfo.FolderListener {
+    abstract class Folder(val context: Context, type: Int, titleRes: Int) : Group(type, context, titleRes) {
         // Ensure icon customization sticks across group changes
         val id = LongCustomization(KEY_ID, Long.random + 9999L)
         open val isEmpty = true
@@ -58,37 +58,10 @@ class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFol
             addCustomization(id)
         }
 
-        open fun toFolderInfo(apps: AlphabeticalAppsList) = FolderInfo().apply {
+        open fun toFolderInfo(apps: AlphabeticalAppsList) = DrawerFolderInfo(this).apply {
             setTitle(this@Folder.getTitle())
             id = this@Folder.id.value()
             contents = ArrayList()
-            addListener(this@Folder)
-        }
-
-        override fun onAdd(item: ShortcutInfo?, rank: Int) {
-            // not implemented
-        }
-
-        override fun onRemove(item: ShortcutInfo?) {
-            // not implemented
-        }
-
-        override fun onTitleChanged(title: CharSequence?) {
-            // TODO: implement allowing title changing from folder editing UI
-        }
-
-        override fun onItemsChanged(animate: Boolean) {
-            // not implemented
-        }
-
-        override fun prepareAutoUpdate() {
-            // not implemented
-        }
-
-        override fun onIconChanged() {
-            context.lawnchairPrefs.withChangeCallback {
-                it.reloadDrawer()
-            }
         }
     }
 

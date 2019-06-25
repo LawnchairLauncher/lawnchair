@@ -50,6 +50,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
+import ch.deletescape.lawnchair.groups.DrawerFolderInfo;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Alarm;
 import com.android.launcher3.AppInfo;
@@ -267,7 +268,11 @@ public class Folder extends AbstractFloatingView implements DragSource,
         } else {
             settingsButton.setOnClickListener(v -> {
                 animateClosed();
-                CustomBottomSheet.show(mLauncher, mInfo);
+                if (mInfo instanceof DrawerFolderInfo) {
+                    ((DrawerFolderInfo) mInfo).showEdit(mLauncher);
+                } else {
+                    CustomBottomSheet.show(mLauncher, mInfo);
+                }
             });
         }
     }
@@ -458,11 +463,6 @@ public class Folder extends AbstractFloatingView implements DragSource,
         } else {
             mFolderName.setText("");
             mFolderName.setHint(sHintText);
-        }
-
-        if (isInAppDrawer()) {
-            // TODO: Allow editing title for drawer folder & sync with group backend
-            mFolderName.setEnabled(false);
         }
 
         // In case any children didn't come across during loading, clean up the folder accordingly
@@ -705,6 +705,9 @@ public class Folder extends AbstractFloatingView implements DragSource,
         clearDragInfo();
         mState = STATE_SMALL;
         mContent.setCurrentPage(0);
+        if (mInfo instanceof DrawerFolderInfo) {
+            ((DrawerFolderInfo) mInfo).onCloseComplete();
+        }
     }
 
     @Override

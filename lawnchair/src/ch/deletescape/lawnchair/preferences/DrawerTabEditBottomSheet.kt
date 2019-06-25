@@ -27,6 +27,8 @@ import android.widget.TextView
 import ch.deletescape.lawnchair.applyColor
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.groups.AppGroups
+import ch.deletescape.lawnchair.groups.DrawerFolders
+import ch.deletescape.lawnchair.groups.DrawerTabs
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheet
 import ch.deletescape.lawnchair.views.BaseBottomSheet
@@ -100,10 +102,17 @@ class DrawerTabEditBottomSheet(context: Context, config: AppGroups.Group.Customi
             }
         }
 
-        fun editTab(launcher: Launcher, group: AppGroups.Group) {
+        fun editTab(launcher: Launcher, group: DrawerTabs.Tab) {
             val config = AppGroups.Group.CustomizationMap(group.customizations)
             edit(launcher, config, group, true) {
                 launcher.lawnchairPrefs.drawerTabs.saveToJson()
+            }
+        }
+
+        fun editFolder(launcher: Launcher, group: DrawerFolders.Folder) {
+            val config = AppGroups.Group.CustomizationMap(group.customizations)
+            edit(launcher, config, group, true) {
+                launcher.lawnchairPrefs.appGroupsManager.drawerFolders.saveToJson()
             }
         }
 
