@@ -347,6 +347,7 @@
     <string name="selected_count">%1$d selectat</string>
     <string name="tab_manage_apps">Administrează aplicații</string>
     <string name="tab_bottom_sheet_save">Salvează</string>
+    <string name="tab_hide_from_main">Ascundeți din fila principală</string>
     <string name="tab_color">Culoarea filei</string>
     <string name="delete">Ștergeți</string>
     <string name="none">Niciuna</string>
@@ -366,6 +367,7 @@
     <string name="pref_sesame_show_shortcuts">Scurtături pentru aplicații</string>
     <string name="pref_sesame_show_shortcuts_summary">Arată scurtăturile Sesame în bulele pictogramelor</string>
     <string name="allow">Permite</string>
+    <string name="deny">Refuzați</string>
     <string name="sesame_enable_integration_title">Activează integrarea</string>
     <string name="sesame_enable_integration_description"><![CDATA[Activează distribuirea datelor între Lawnchair și Sesame. Puteți schima acest lucru în setările Lawnchair sau în setările Sesame.]]></string>
     <string name="sesame_version">Versiunea integrării</string>
