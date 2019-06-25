@@ -44,11 +44,14 @@ class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFol
         changeCallback.reloadDrawer()
     }
 
-    fun getFolderInfos(apps: AlphabeticalAppsList): List<FolderInfo> = getGroups().map { it.toFolderInfo(apps) }
+    fun getFolderInfos(apps: AlphabeticalAppsList): List<FolderInfo> = getGroups()
+            .filter { !it.isEmpty }
+            .map { it.toFolderInfo(apps) }
 
     abstract class Folder(protected val context: Context, type: Int, val titleRes: Int) : Group(type, context, titleRes), FolderInfo.FolderListener {
         // Ensure icon customization sticks across group changes
         val id = LongCustomization(KEY_ID, Long.random + 9999L)
+        open val isEmpty = true
 
         init {
             // DO NOT actually change this ever
@@ -94,6 +97,7 @@ class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFol
         val hideFromAllApps = SwitchRow(R.drawable.tab_hide_from_main, R.string.tab_hide_from_main,
                 KEY_HIDE_FROM_ALL_APPS, true)
         val contents = AppsRow(KEY_ITEMS, mutableSetOf())
+        override val isEmpty get() = contents.value.isNullOrEmpty()
 
         init {
             addCustomization(hideFromAllApps)
@@ -111,7 +115,9 @@ class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFol
 
         override fun toFolderInfo(apps: AlphabeticalAppsList) = super.toFolderInfo(apps).apply {
             // ✨
-            contents = ArrayList(this@CustomFolder.contents.value!!.mapNotNull { key -> apps.apps.firstOrNull() { it.toComponentKey() == key }?.makeShortcut() })
+            this@CustomFolder.contents.value?.mapNotNullTo(contents) { key ->
+                apps.apps.firstOrNull { it.toComponentKey() == key }?.makeShortcut()
+            }
         }
     }
 
