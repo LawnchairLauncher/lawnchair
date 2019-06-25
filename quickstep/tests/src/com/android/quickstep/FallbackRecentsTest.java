@@ -43,10 +43,12 @@ import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
+import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
@@ -62,10 +64,14 @@ public class FallbackRecentsTest {
     private final LauncherInstrumentation mLauncher;
     private final ActivityInfo mOtherLauncherActivity;
 
-    @Rule public final TestRule mDisableHeadsUpNotification = disableHeadsUpNotification();
-    @Rule public final TestRule mQuickstepOnOffExecutor;
+    @Rule
+    public final TestRule mDisableHeadsUpNotification = disableHeadsUpNotification();
 
-    @Rule public final TestRule mSetLauncherCommand;
+    @Rule
+    public final TestRule mSetLauncherCommand;
+
+    @Rule
+    public final TestRule mOrderSensitiveRules;
 
     public FallbackRecentsTest() throws RemoteException {
         Instrumentation instrumentation = getInstrumentation();
@@ -74,7 +80,10 @@ public class FallbackRecentsTest {
         mDevice.setOrientationNatural();
         mLauncher = new LauncherInstrumentation(instrumentation);
 
-        mQuickstepOnOffExecutor = new NavigationModeSwitchRule(mLauncher);
+        mOrderSensitiveRules = RuleChain.
+                outerRule(new NavigationModeSwitchRule(mLauncher)).
+                around(new FailureWatcher(mDevice));
+
         mOtherLauncherActivity = context.getPackageManager().queryIntentActivities(
                 getHomeIntentInPackage(context),
                 MATCH_DISABLED_COMPONENTS).get(0).activityInfo;
