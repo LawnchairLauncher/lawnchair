@@ -48,6 +48,11 @@ class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFol
             .filter { !it.isEmpty }
             .map { it.toFolderInfo(apps) }
 
+    fun getHiddenComponents() = getGroups()
+            .filterIsInstance<CustomFolder>()
+            .filter { it.hideFromAllApps.value() }
+            .flatMap { it.contents.value() }
+
     abstract class Folder(val context: Context, type: Int, titleRes: Int) : Group(type, context, titleRes) {
         // Ensure icon customization sticks across group changes
         val id = LongCustomization(KEY_ID, Long.random + 9999L)

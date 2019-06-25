@@ -388,9 +388,14 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             }
         }
 
+        List<ComponentKey> folderFilters = getFolderFilteredApps();
+
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
         for (AppInfo info : getFiltersAppInfos()) {
+            if (folderFilters.contains(info.toComponentKey())) {
+                continue;
+            }
             String sectionName = getAndUpdateCachedSectionName(info);
 
             // Create a new section if the section names do not match
@@ -547,6 +552,13 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                 .getAppGroupsManager()
                 .getDrawerFolders()
                 .getFolderInfos(this);
+    }
+
+    private List<ComponentKey> getFolderFilteredApps() {
+        return Utilities.getLawnchairPrefs(mLauncher)
+                .getAppGroupsManager()
+                .getDrawerFolders()
+                .getHiddenComponents();
     }
 
     public void reset() {
