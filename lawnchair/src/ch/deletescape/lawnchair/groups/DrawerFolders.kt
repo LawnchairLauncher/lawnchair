@@ -72,6 +72,8 @@ class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFol
         val contents = AppsRow(KEY_ITEMS, mutableSetOf())
         override val isEmpty get() = contents.value.isNullOrEmpty()
 
+        val comparator = ShortcutInfoComparator(context)
+
         init {
             addCustomization(hideFromAllApps)
             addCustomization(contents)
@@ -90,7 +92,7 @@ class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFol
             // ✨
             this@CustomFolder.contents.value?.mapNotNullTo(contents) { key ->
                 apps.apps.firstOrNull { it.toComponentKey() == key }?.makeShortcut()
-            }
+            }?.sortWith(comparator)
         }
     }
 
