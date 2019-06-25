@@ -370,6 +370,7 @@
     <string name="pref_sesame_show_shortcuts">Skróty aplikacji</string>
     <string name="pref_sesame_show_shortcuts_summary">Pokaż skróty Sesame w ikonach-bańkach</string>
     <string name="allow">Zezwól</string>
+    <string name="deny">Odrzuć</string>
     <string name="sesame_enable_integration_title">Włącz integrację</string>
     <string name="sesame_enable_integration_description"><![CDATA[Włącza udostępnianie danych pomiędzy Lawnchair i Sesame. Możesz to zmienić w ustawieniach Lawnchair lub Sesame.]]></string>
     <string name="sesame_version">Wersja integracji</string>
@@ -430,5 +431,6 @@
     <string name="pref_notification_count_summary">Wyświetlaj liczbę powiadomień wewnątrz kropek</string>
     <string name="pref_center_wallpaper">Zawsze środkuj tapetę</string>
     <string name="pref_center_wallpaper_summary">To wyłączy efekt przewijania tapety</string>
+    <string name="pref_appcategorization_style_text">Styl</string>
     <string name="lock_desktop">Blokada pulpitu</string>
 </resources>
