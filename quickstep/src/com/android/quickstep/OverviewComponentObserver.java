@@ -33,7 +33,6 @@ import android.content.pm.ResolveInfo;
 
 import com.android.systemui.shared.system.PackageManagerWrapper;
 
-import com.android.systemui.shared.system.QuickStepContract;
 import java.util.ArrayList;
 
 /**
@@ -58,7 +57,9 @@ public final class OverviewComponentObserver {
     private String mUpdateRegisteredPackage;
     private ActivityControlHelper mActivityControlHelper;
     private Intent mOverviewIntent;
+    private Intent mHomeIntent;
     private int mSystemUiStateFlags;
+    private boolean mIsHomeAndOverviewSame;
 
     public OverviewComponentObserver(Context context) {
         mContext = context;
@@ -93,11 +94,14 @@ public final class OverviewComponentObserver {
 
         final String overviewIntentCategory;
         ComponentName overviewComponent;
+        mHomeIntent = null;
+
         if ((mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED) == 0 &&
                 (defaultHome == null || mMyHomeComponent.equals(defaultHome))) {
             // User default home is same as out home app. Use Overview integrated in Launcher.
             overviewComponent = mMyHomeComponent;
             mActivityControlHelper = new LauncherActivityControllerHelper();
+            mIsHomeAndOverviewSame = true;
             overviewIntentCategory = Intent.CATEGORY_HOME;
 
             if (mUpdateRegisteredPackage != null) {
@@ -109,8 +113,12 @@ public final class OverviewComponentObserver {
             // The default home app is a different launcher. Use the fallback Overview instead.
             overviewComponent = new ComponentName(mContext, RecentsActivity.class);
             mActivityControlHelper = new FallbackActivityControllerHelper();
+            mIsHomeAndOverviewSame = false;
             overviewIntentCategory = Intent.CATEGORY_DEFAULT;
 
+            mHomeIntent = new Intent(Intent.ACTION_MAIN)
+                    .addCategory(Intent.CATEGORY_HOME)
+                    .setComponent(defaultHome);
             // User's default home app can change as a result of package updates of this app (such
             // as uninstalling the app or removing the "Launcher" feature in an update).
             // Listen for package updates of this app (and remove any previously attached
@@ -135,6 +143,9 @@ public final class OverviewComponentObserver {
                 .addCategory(overviewIntentCategory)
                 .setComponent(overviewComponent)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (mHomeIntent == null) {
+            mHomeIntent = mOverviewIntent;
+        }
     }
 
     /**
@@ -156,6 +167,20 @@ public final class OverviewComponentObserver {
      */
     public Intent getOverviewIntent() {
         return mOverviewIntent;
+    }
+
+    /**
+     * Get the current intent for going to the home activity.
+     */
+    public Intent getHomeIntent() {
+        return mHomeIntent;
+    }
+
+    /**
+     * Returns true if home and overview are same activity.
+     */
+    public boolean isHomeAndOverviewSame() {
+        return mIsHomeAndOverviewSame;
     }
 
     /**
