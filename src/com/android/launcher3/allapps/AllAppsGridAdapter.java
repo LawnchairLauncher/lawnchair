@@ -286,9 +286,11 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 return new ViewHolder(footer);
             case VIEW_TYPE_FOLDER:
                 FrameLayout layout = new FrameLayout(mLauncher);
+
                 ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                        mLauncher.getDeviceProfile().allAppsCellHeightPx);
+                layout.setLayoutParams(lp);
                 return new ViewHolder(layout);
             default:
                 throw new RuntimeException("Unexpected view type");
@@ -337,9 +339,18 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 // TODO: clean up this mess
                 FolderInfo folderInfo = mApps.getAdapterItems().get(position).folderInfo;
                 ViewGroup container = (ViewGroup) holder.itemView;
-                container.removeAllViews();
-                container.addView(FolderIcon.fromXml(R.layout.all_apps_folder_icon, mLauncher,
-                        container, folderInfo));
+                FolderIcon folderIcon = container.findViewById(R.id.folder_icon);
+                if (folderIcon != null) {
+                    if (folderIcon.getTag() != folderInfo) {
+                        folderIcon.bind(folderInfo);
+                        folderIcon.verifyHighRes();
+                    }
+                } else {
+                    folderIcon = FolderIcon.fromXml(R.layout.all_apps_folder_icon, mLauncher,
+                            container, folderInfo);
+                    folderIcon.verifyHighRes();
+                    container.addView(folderIcon);
+                }
                 break;
         }
         if (mBindViewCallback != null) {

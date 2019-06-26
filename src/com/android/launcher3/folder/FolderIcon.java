@@ -30,6 +30,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -43,6 +44,7 @@ import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.gestures.BlankGestureHandler;
 import ch.deletescape.lawnchair.gestures.GestureController;
 import ch.deletescape.lawnchair.gestures.GestureHandler;
+import ch.deletescape.lawnchair.groups.DrawerFolderInfo;
 import com.android.launcher3.Alarm;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
@@ -177,10 +179,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         icon.mFolderName.setText(folderInfo.title);
         icon.mFolderName.setCompoundDrawablePadding(0);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) icon.mFolderName.getLayoutParams();
-        if (folderInfo.container == ItemInfo.NO_ID) {
+        if (folderInfo instanceof DrawerFolderInfo) {
             lp.topMargin = grid.allAppsIconSizePx + grid.allAppsIconDrawablePaddingPx;
-            // TODO: I'm not completely sure yet we actually need to reinitiate it.
-            icon.mBackground = new PreviewBackground(true);
         } else {
             lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
         }
@@ -208,6 +208,33 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             icon.mBackground.setStartOpacity(0f);
         }
         return icon;
+    }
+
+    public void bind(FolderInfo folderInfo) {
+        if (mInfo != null) {
+            mInfo.removeListener(this);
+        }
+
+        mFolderName.setText(folderInfo.title);
+
+        setTag(folderInfo);
+        mInfo = folderInfo;
+        setContentDescription(mLauncher.getString(R.string.folder_name_format, folderInfo.title));
+        mFolder.bind(folderInfo);
+        setFolder(mFolder);
+
+        folderInfo.addListener(this);
+
+        applySwipeUpAction(folderInfo);
+        if (folderInfo.hasCustomIcon(mLauncher)) {
+            isCustomIcon = true;
+            customIcon = folderInfo.getIcon(mLauncher);
+            mBackground.setStartOpacity(0f);
+        } else {
+            isCustomIcon = false;
+            customIcon = null;
+            mBackground.setStartOpacity(1f);
+        }
     }
 
     @Override
@@ -557,8 +584,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         return getPreviewItemsOnPage(0);
     }
 
-    private boolean isFirstPreviewLoad = true;
-
     /**
      * Returns the list of "preview items" on {@param page}.
      */
@@ -570,26 +595,35 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         int numItems = itemsOnPage.size();
         for (int rank = 0; rank < numItems; ++rank) {
             if (mPreviewVerifier.isItemInPreview(page, rank)) {
-                BubbleTextView item = itemsOnPage.get(rank);
-                if (isFirstPreviewLoad && isInAppDrawer()) {
-                    // hack to make sure drawer folders have high res previews
-                    item.verifyHighRes(new ItemInfoUpdateReceiver() {
-                        @Override
-                        public void reapplyItemInfo(ItemInfoWithIcon info) {
-                            item.reapplyItemInfo(info);
-                            updatePreviewItems(false);
-                        }
-                    });
-                }
-                itemsToDisplay.add(item);
+                itemsToDisplay.add(itemsOnPage.get(rank));
             }
 
             if (itemsToDisplay.size() == MAX_NUM_ITEMS_IN_PREVIEW) {
                 break;
             }
         }
-        isFirstPreviewLoad = false;
         return itemsToDisplay;
+    }
+
+    public void verifyHighRes() {
+        int processedItemCount = 0;
+        List<BubbleTextView> itemsOnPage = mFolder.getItemsOnPage(0);
+        int numItems = itemsOnPage.size();
+        for (int rank = 0; rank < numItems; ++rank) {
+            if (mPreviewVerifier.isItemInPreview(0, rank)) {
+                BubbleTextView item = itemsOnPage.get(rank);
+                item.verifyHighRes(info -> {
+                    item.reapplyItemInfo(info);
+                    updatePreviewItems(false);
+                    invalidate();
+                });
+                processedItemCount++;
+            }
+
+            if (processedItemCount == MAX_NUM_ITEMS_IN_PREVIEW) {
+                break;
+            }
+        }
     }
 
     @Override
@@ -749,6 +783,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             };
 
     public boolean isInAppDrawer() {
-        return mInfo.container == ItemInfo.NO_ID;
+        return mInfo instanceof DrawerFolderInfo;
     }
 }
