@@ -27,6 +27,7 @@ import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
@@ -214,5 +215,20 @@ public final class Workspace extends Home {
     @Override
     protected int getSwipeStartY() {
         return mLauncher.getRealDisplaySize().y - 1;
+    }
+
+    @Nullable
+    public Widget tryGetWidget(String label, long timeout) {
+        final UiObject2 widget = mLauncher.tryWaitForLauncherObject(
+                By.clazz("com.android.launcher3.widget.LauncherAppWidgetHostView").desc(label),
+                timeout);
+        return widget != null ? new Widget(mLauncher, widget) : null;
+    }
+
+    @Nullable
+    public Widget tryGetPendingWidget(long timeout) {
+        final UiObject2 widget = mLauncher.tryWaitForLauncherObject(
+                By.clazz("com.android.launcher3.widget.PendingAppWidgetHostView"), timeout);
+        return widget != null ? new Widget(mLauncher, widget) : null;
     }
 }
