@@ -29,7 +29,6 @@ import android.view.View;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.ItemInfo;
@@ -81,15 +80,10 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
     @Test
     public void testPinWidgetNoConfig() throws Throwable {
-        runTest("pinWidgetNoConfig", true, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View view) {
-                return info instanceof LauncherAppWidgetInfo &&
-                        ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
-                        ((LauncherAppWidgetInfo) info).providerName.getClassName()
-                                .equals(AppWidgetNoConfig.class.getName());
-            }
-        });
+        runTest("pinWidgetNoConfig", true, (info, view) -> info instanceof LauncherAppWidgetInfo &&
+                ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
+                ((LauncherAppWidgetInfo) info).providerName.getClassName()
+                        .equals(AppWidgetNoConfig.class.getName()));
     }
 
         @Test
@@ -99,28 +93,19 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
                 RequestPinItemActivity.class, "setRemoteViewColor").putExtra(
                 RequestPinItemActivity.EXTRA_PARAM + "0", Color.RED);
 
-        runTest("pinWidgetNoConfig", true, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View view) {
-                return info instanceof LauncherAppWidgetInfo &&
-                        ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
-                        ((LauncherAppWidgetInfo) info).providerName.getClassName()
-                                .equals(AppWidgetNoConfig.class.getName());
-            }
-        }, command);
+        runTest("pinWidgetNoConfig", true, (info, view) -> info instanceof LauncherAppWidgetInfo &&
+                ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
+                ((LauncherAppWidgetInfo) info).providerName.getClassName()
+                        .equals(AppWidgetNoConfig.class.getName()), command);
     }
 
     @Test
     public void testPinWidgetWithConfig() throws Throwable {
-        runTest("pinWidgetWithConfig", true, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View view) {
-                return info instanceof LauncherAppWidgetInfo &&
+        runTest("pinWidgetWithConfig", true,
+                (info, view) -> info instanceof LauncherAppWidgetInfo &&
                         ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
                         ((LauncherAppWidgetInfo) info).providerName.getClassName()
-                                .equals(AppWidgetWithConfig.class.getName());
-            }
-        });
+                                .equals(AppWidgetWithConfig.class.getName()));
     }
 
     @Test
@@ -174,9 +159,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         // call the requested method to start the flow
         mTargetContext.sendBroadcast(RequestPinItemActivity.getCommandIntent(
                 RequestPinItemActivity.class, activityMethod));
-        UiObject2 widgetCell = mDevice.wait(
-                Until.findObject(By.clazz(WidgetCell.class)), DEFAULT_ACTIVITY_TIMEOUT);
-        assertNotNull(widgetCell);
+        mLauncher.getWidgetCell();
 
         // Accept confirmation:
         BlockingBroadcastReceiver resultReceiver = new BlockingBroadcastReceiver(mCallbackAction);
