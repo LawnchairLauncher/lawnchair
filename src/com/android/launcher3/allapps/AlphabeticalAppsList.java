@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -388,7 +389,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             }
         }
 
-        List<ComponentKey> folderFilters = getFolderFilteredApps();
+        Set<ComponentKey> folderFilters = getFolderFilteredApps();
 
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
@@ -554,7 +555,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                 .getFolderInfos(this);
     }
 
-    private List<ComponentKey> getFolderFilteredApps() {
+    private Set<ComponentKey> getFolderFilteredApps() {
         return Utilities.getLawnchairPrefs(mLauncher)
                 .getAppGroupsManager()
                 .getDrawerFolders()
