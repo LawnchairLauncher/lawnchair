@@ -68,6 +68,9 @@ import com.android.launcher3.views.BottomUserEducationView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
 import com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -438,6 +441,14 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     public AlphabeticalAppsList getApps() {
         return mAH[AdapterHolder.MAIN].appsList;
+    }
+
+    public Collection<AlphabeticalAppsList> getAppsLists() {
+        List<AlphabeticalAppsList> results = new ArrayList<>();
+        for (AdapterHolder holder : mAH) {
+            results.add(holder.appsList);
+        }
+        return results;
     }
 
     public FloatingHeaderView getFloatingHeaderView() {
