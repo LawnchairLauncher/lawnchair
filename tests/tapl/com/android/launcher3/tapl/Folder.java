@@ -16,13 +16,20 @@
 
 package com.android.launcher3.tapl;
 
+import android.widget.FrameLayout;
+
 import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
 
-public class WidgetCell {
-    WidgetCell(LauncherInstrumentation launcher) {
-        final UiObject2 widgetCell = launcher.waitForLauncherObject(By.clazz(
-                "com.android.launcher3.widget.WidgetCell"));
-        launcher.assertNotNull("Can't find widget cell object", widgetCell);
+/**
+ * App folder in workspace/
+ */
+public final class Folder {
+    Folder(LauncherInstrumentation launcher, UiObject2 icon) {
+    }
+
+    static BySelector getSelector(String folderName, LauncherInstrumentation launcher) {
+        return By.clazz(FrameLayout.class).desc(folderName).pkg(launcher.getLauncherPackageName());
     }
 }

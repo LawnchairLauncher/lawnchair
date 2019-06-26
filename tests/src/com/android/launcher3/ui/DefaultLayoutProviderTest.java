@@ -25,25 +25,22 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.os.ParcelFileDescriptor.AutoCloseOutputStream;
 
+import androidx.test.InstrumentationRegistry;
+import androidx.test.filters.MediumTest;
+import androidx.test.runner.AndroidJUnit4;
+
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.rule.ShellCommandRule;
-import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.OutputStreamWriter;
-
-import androidx.test.InstrumentationRegistry;
-import androidx.test.filters.MediumTest;
-import androidx.test.runner.AndroidJUnit4;
-import androidx.test.uiautomator.UiSelector;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -71,7 +68,6 @@ public class DefaultLayoutProviderTest extends AbstractLauncherUiTest {
     }
 
     @Test
-    // Convert test to TAPL; b/131116002
     public void testCustomProfileLoaded_with_icon_on_hotseat() throws Exception {
         writeLayout(new LauncherLayoutBuilder().atHotseat(0).putApp(SETTINGS_APP, SETTINGS_APP));
 
@@ -79,14 +75,10 @@ public class DefaultLayoutProviderTest extends AbstractLauncherUiTest {
         mActivityMonitor.startLauncher();
         waitForModelLoaded();
 
-        // Verify widget present
-        UiSelector selector = new UiSelector().packageName(mTargetContext.getPackageName())
-                .description(getSettingsApp().getLabel().toString());
-        assertTrue(mDevice.findObject(selector).waitForExists(DEFAULT_UI_TIMEOUT));
+        mLauncher.getWorkspace().getHotseatAppIcon(getSettingsApp().getLabel().toString());
     }
 
     @Test
-    // Convert test to TAPL; b/131116002
     public void testCustomProfileLoaded_with_widget() throws Exception {
         // A non-restored widget with no config screen gets restored automatically.
         LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
@@ -100,13 +92,11 @@ public class DefaultLayoutProviderTest extends AbstractLauncherUiTest {
         waitForModelLoaded();
 
         // Verify widget present
-        UiSelector selector = new UiSelector().packageName(mTargetContext.getPackageName())
-                .className(LauncherAppWidgetHostView.class).description(info.label);
-        assertTrue(mDevice.findObject(selector).waitForExists(DEFAULT_UI_TIMEOUT));
+        assertTrue("Widget is not present",
+                mLauncher.getWorkspace().tryGetWidget(info.label, DEFAULT_UI_TIMEOUT) != null);
     }
 
     @Test
-    // Convert test to TAPL; b/131116002
     public void testCustomProfileLoaded_with_folder() throws Exception {
         writeLayout(new LauncherLayoutBuilder().atHotseat(0).putFolder(android.R.string.copy)
                 .addApp(SETTINGS_APP, SETTINGS_APP)
@@ -118,10 +108,7 @@ public class DefaultLayoutProviderTest extends AbstractLauncherUiTest {
         mActivityMonitor.startLauncher();
         waitForModelLoaded();
 
-        // Verify widget present
-        UiSelector selector = new UiSelector().packageName(mTargetContext.getPackageName())
-                .descriptionContains(mTargetContext.getString(android.R.string.copy));
-        assertTrue(mDevice.findObject(selector).waitForExists(DEFAULT_UI_TIMEOUT));
+        mLauncher.getWorkspace().getHotseatFolder("Folder: Copy");
     }
 
     @After
