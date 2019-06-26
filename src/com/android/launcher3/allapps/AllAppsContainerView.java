@@ -421,6 +421,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     public void onTabChanged(int pos) {
+        pos = Utilities.boundToRange(pos, 0, mTabsController.getTabsCount() - 1);
         mHeader.setCurrentActive(pos);
         reset(true /* animate */, true);
         if (mAH[pos].recyclerView != null) {
@@ -429,7 +430,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                     .getDrawerTab().getColorResolver().value());
 
             mTabsController.bindButtons(findViewById(R.id.tabs), mViewPager);
-
         }
         if (mAH[pos].isWork) {
             BottomUserEducationView.showIfNeeded(mLauncher);
