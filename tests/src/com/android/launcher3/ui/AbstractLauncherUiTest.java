@@ -125,7 +125,7 @@ public abstract class AbstractLauncherUiTest {
     protected TestRule getRulesInsideActivityMonitor() {
         return RuleChain.
                 outerRule(new PortraitLandscapeRunner(this)).
-                around(new FailureWatcher(this));
+                around(new FailureWatcher(mDevice));
     }
 
     @Rule
