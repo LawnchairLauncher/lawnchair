@@ -17,8 +17,8 @@
 
 package ch.deletescape.lawnchair.preferences
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Parcelable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -27,6 +27,7 @@ import android.widget.TextView
 import ch.deletescape.lawnchair.applyColor
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.groups.AppGroups
+import ch.deletescape.lawnchair.groups.DrawerFolders
 import ch.deletescape.lawnchair.groups.DrawerTabs
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheet
@@ -34,6 +35,7 @@ import ch.deletescape.lawnchair.views.BaseBottomSheet
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
 
+@SuppressLint("ViewConstructor")
 class DrawerTabEditBottomSheet(context: Context, config: AppGroups.Group.CustomizationMap,
                                private val callback: (Boolean) -> Unit) : FrameLayout(context), View.OnClickListener {
 
@@ -65,17 +67,17 @@ class DrawerTabEditBottomSheet(context: Context, config: AppGroups.Group.Customi
 
     companion object {
 
-        fun show(context: Context, config: AppGroups.Group.CustomizationMap, callback: () -> Unit) {
+        fun show(context: Context, config: AppGroups.Group.CustomizationMap, animate: Boolean, callback: () -> Unit) {
             val sheet = SettingsBottomSheet.inflate(context)
             sheet.show(DrawerTabEditBottomSheet(context, config) {
                 if (it) {
                     callback()
                 }
                 sheet.close(true)
-            }, true)
+            }, animate)
         }
 
-        fun show(launcher: Launcher, config: AppGroups.Group.CustomizationMap, callback: () -> Unit, animate: Boolean = true) {
+        fun show(launcher: Launcher, config: AppGroups.Group.CustomizationMap, animate: Boolean, callback: () -> Unit) {
             val sheet = BaseBottomSheet.inflate(launcher)
             sheet.show(DrawerTabEditBottomSheet(launcher, config) {
                 if (it) {
@@ -85,33 +87,41 @@ class DrawerTabEditBottomSheet(context: Context, config: AppGroups.Group.Customi
             }, animate)
         }
 
-        fun newTab(context: Context, callback: (AppGroups.Group.CustomizationMap) -> Unit) {
-            val config = DrawerTabs.CustomTab(context).customizations
-            show(context, config) {
+        fun newGroup(context: Context, emptyGroup: AppGroups.Group, animate: Boolean, callback: (AppGroups.Group.CustomizationMap) -> Unit) {
+            val config = emptyGroup.customizations
+            show(context, config, animate) {
                 callback(config)
             }
         }
 
         fun edit(context: Context, group: AppGroups.Group, callback: () -> Unit) {
             val config = AppGroups.Group.CustomizationMap(group.customizations)
-        show(context, config) {
+            show(context, config, true) {
                 group.customizations.applyFrom(config)
-                context.lawnchairPrefs.drawerTabs.saveToJson()
                 callback()
             }
         }
 
-        fun edit(launcher: Launcher, group: AppGroups.Group) {
+        fun editTab(launcher: Launcher, group: DrawerTabs.Tab) {
             val config = AppGroups.Group.CustomizationMap(group.customizations)
-            edit(launcher, config, group)
+            edit(launcher, config, group, true) {
+                launcher.lawnchairPrefs.drawerTabs.saveToJson()
+            }
+        }
+
+        fun editFolder(launcher: Launcher, group: DrawerFolders.Folder) {
+            val config = AppGroups.Group.CustomizationMap(group.customizations)
+            edit(launcher, config, group, true) {
+                launcher.lawnchairPrefs.appGroupsManager.drawerFolders.saveToJson()
+            }
         }
 
         fun edit(launcher: Launcher, config: AppGroups.Group.CustomizationMap,
-                 group: AppGroups.Group, animate: Boolean = true) {
-            show(launcher, config, {
+                 group: AppGroups.Group, animate: Boolean = true, callback: () -> Unit) {
+            show(launcher, config, animate) {
                 group.customizations.applyFrom(config)
-                launcher.lawnchairPrefs.drawerTabs.saveToJson()
-            }, animate)
+                callback()
+            }
         }
     }
 }

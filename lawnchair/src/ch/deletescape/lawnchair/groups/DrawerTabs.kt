@@ -26,15 +26,17 @@ import android.widget.ImageView
 import android.widget.TextView
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.LawnchairPreferencesChangeCallback
+import ch.deletescape.lawnchair.groups.FlowerpotTabs.FlowerpotTab
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.preferences.SelectableAppsActivity
 import ch.deletescape.lawnchair.tintDrawable
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 
-class DrawerTabs(prefs: LawnchairPreferences) : AppGroups<DrawerTabs.Tab>(prefs, "pref_drawerTabs") {
+abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.CategorizationType)
+    : AppGroups<DrawerTabs.Tab>(manager, type) {
 
-    override fun getDefaultGroups(): List<GroupCreator<Tab>> {
+    override fun getDefaultCreators(): List<GroupCreator<Tab>> {
         return listOf(::createAllAppsTab, ::createPersonalTab, ::createWorkTab)
     }
 
@@ -44,6 +46,7 @@ class DrawerTabs(prefs: LawnchairPreferences) : AppGroups<DrawerTabs.Tab>(prefs,
             TYPE_PERSONAL -> ::createPersonalTab
             TYPE_WORK -> ::createWorkTab
             TYPE_ALL_APPS -> ::createAllAppsTab
+            FlowerpotTabs.TYPE_FLOWERPOT -> ::FlowerpotTab
             else -> ::createNull
         }
     }
@@ -54,7 +57,6 @@ class DrawerTabs(prefs: LawnchairPreferences) : AppGroups<DrawerTabs.Tab>(prefs,
 
     private fun createAllAppsTab(context: Context) = AllAppsTab(context)
 
-    @Suppress("UNUSED_PARAMETER")
     private fun createCustomTab(context: Context) = CustomTab(context)
 
     override fun onGroupsChanged(changeCallback: LawnchairPreferencesChangeCallback) {
@@ -68,8 +70,6 @@ class DrawerTabs(prefs: LawnchairPreferences) : AppGroups<DrawerTabs.Tab>(prefs,
         init {
             addCustomization(colorResolver)
         }
-
-        open fun getSummary(context: Context): String? = null
     }
 
     class CustomTab(context: Context) : Tab(context, TYPE_CUSTOM, R.string.default_tab_name) {

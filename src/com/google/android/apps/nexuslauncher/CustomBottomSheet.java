@@ -84,6 +84,8 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         ((PrefsFragment) mFragmentManager.findFragmentById(R.id.sheet_prefs)).loadForApp(itemInfo,
                 this::setForceOpen, this::unsetForceOpen, this::reopen);
 
+        boolean allowTitleEdit = true;
+
         if (itemInfo instanceof ItemInfoWithIcon || mInfoProvider.supportsIcon()) {
             ImageView icon = findViewById(R.id.icon);
             if (itemInfo instanceof ShortcutInfo && ((ShortcutInfo) itemInfo).customIcon != null) {
@@ -91,15 +93,21 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             } else if (itemInfo instanceof  ItemInfoWithIcon) {
                 icon.setImageBitmap(((ItemInfoWithIcon) itemInfo).iconBitmap);
             } else if (itemInfo instanceof FolderInfo) {
+                FolderInfo folderInfo = (FolderInfo) itemInfo;
                 //icon.setImageDrawable(mLauncher.getDrawable(R.drawable.ic_lawnstep));
-                icon.setImageDrawable(((FolderInfo) itemInfo).getIcon(mLauncher));
+                icon.setImageDrawable(folderInfo.getIcon(mLauncher));
+                // Drawer folder
+                if (folderInfo.container == ItemInfo.NO_ID) {
+                    // TODO: Allow editing title for drawer folder & sync with group backend
+                    allowTitleEdit = false;
+                }
             }
             if (mInfoProvider != null) {
                 LawnchairLauncher launcher = LawnchairLauncher.Companion.getLauncher(getContext());
                 icon.setOnClickListener(v -> launcher.startEditIcon(mItemInfo, mInfoProvider));
             }
         }
-        if (mInfoProvider != null) {
+        if (mInfoProvider != null && allowTitleEdit) {
             mPreviousTitle = mInfoProvider.getCustomTitle(mItemInfo);
             if (mPreviousTitle == null)
                 mPreviousTitle = "";
@@ -215,7 +223,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 mTabsPref.loadSummary();
             }
 
-            if (mProvider != null && mProvider.supportsSwipeUp()) {
+            if (mProvider != null && mProvider.supportsSwipeUp(itemInfo)) {
                 previousSwipeUpAction = mProvider.getSwipeUpAction(itemInfo);
                 mSwipeUpPref.setValue(previousSwipeUpAction);
                 mSwipeUpPref.setOnSelectHandler(gestureHandler -> {
@@ -245,6 +253,8 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                     && mPrefHidePredictions != null) {
                 getPreferenceScreen().removePreference(mPrefHidePredictions);
             }
+
+            // TODO: Add link to edit bottom sheet for drawer folder
         }
 
         private void onSelectHandler(GestureHandler handler) {

@@ -20,7 +20,7 @@ After registering it in `ch.deletescape.lawnchair.globalsearch.SearchProviderCon
 ### Building
 
 Alright, I admit it, our build variants are a bit of a mess right now. Make sure to choose one of the variants prefixed `quickstepLawnchair*`
-from the "Build Variants" menu in Android Studio. Our team is usually always on the latest canary version of Android Studio, builds are not guaranteed to work in the Stable channel.
+from the "Build Variants" menu in IntelliJ. Our team is usually always on the latest stable version of IntelliJ IDEA.
 
 ## Translations
 

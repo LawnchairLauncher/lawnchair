@@ -47,6 +47,7 @@ class IconPackManager(private val context: Context) {
     val prefs = context.lawnchairPrefs
     private val appInfoProvider = AppInfoProvider.getInstance(context)
     val defaultPack = DefaultPack(context)
+    val uriPack = UriIconPack(context)
     var dayOfMonth = 0
         set(value) {
             if (value != field) {
@@ -80,6 +81,7 @@ class IconPackManager(private val context: Context) {
 
     private fun getIconPackInternal(name: String, put: Boolean = true, load: Boolean = false): IconPack? {
         if (name == defaultPack.packPackageName) return defaultPack
+        if (name == uriPack.packPackageName) return uriPack
         return if (isPackProvider(context, name)) {
             packList.getPack(name, put).apply {
                 if (load) {
@@ -90,7 +92,7 @@ class IconPackManager(private val context: Context) {
     }
 
     fun getIconPack(name: String, put: Boolean = true, load: Boolean = false): IconPack? {
-        return getIconPackInternal(name, put, load)!!
+        return getIconPackInternal(name, put, load)
     }
 
     fun getIconPack(packProvider: PackProvider, put: Boolean = true, load: Boolean = false): IconPack {

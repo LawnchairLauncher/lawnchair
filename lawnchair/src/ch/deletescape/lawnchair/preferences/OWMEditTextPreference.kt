@@ -22,6 +22,7 @@ import android.support.v7.preference.EditTextPreference
 import android.text.TextUtils
 import android.util.AttributeSet
 import ch.deletescape.lawnchair.LawnchairPreferences
+import ch.deletescape.lawnchair.smartspace.AccuWeatherDataProvider
 import ch.deletescape.lawnchair.smartspace.OWMWeatherDataProvider
 import com.android.launcher3.Utilities
 
@@ -51,6 +52,7 @@ class OWMEditTextPreference(context: Context, attrs: AttributeSet?) : EditTextPr
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
         if (key == "pref_smartspace_widget_provider") {
             isVisible = prefs.weatherProvider == OWMWeatherDataProvider::class.java.name
+                    || !isApi && prefs.weatherProvider == AccuWeatherDataProvider::class.java.name
         }
     }
 

@@ -45,6 +45,10 @@ public abstract class MultiValueUpdateListener implements ValueAnimator.Animator
 
     public abstract void onUpdate(float percent);
 
+    public FloatProp createFloatProp(float start, float end, float delay, float duration, Interpolator i) {
+        return new FloatProp(start, end, delay, duration, i);
+    }
+
     public final class FloatProp {
 
         public float value;

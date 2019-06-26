@@ -312,15 +312,17 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
                 val lst = SesameFrontend.getUsageCounts(System.currentTimeMillis() - TimeUnit.HOURS.toMillis(4),
                         System.currentTimeMillis(), ActionsController.MAX_ITEMS + 3,
                         arrayOf(ShortcutType.DEEP_LINK, ShortcutType.CONTACT))
-                callback(ArrayList(lst!!.mapIndexedNotNull{ index, usage ->
-                    val shortcut = SesameShortcutInfo(context, usage.shortcut)
-                    actionFromString(
-                            actionToString(shortcut.id, shortcut.getBadgePackage(context), shortcut.`package`),
-                            index.toLong())
-                }))
-            } else {
-                callback(ArrayList(actionList.getRanked().take(ActionsController.MAX_ITEMS).mapIndexedNotNull { index, s -> actionFromString(s, index.toLong()) }))
+                if (lst != null) {
+                    callback(ArrayList(lst.mapIndexedNotNull { index, usage ->
+                        val shortcut = SesameShortcutInfo(context, usage.shortcut)
+                        actionFromString(
+                                actionToString(shortcut.id, shortcut.getBadgePackage(context), shortcut.`package`),
+                                index.toLong())
+                    }))
+                    return@runOnUiWorkerThread
+                }
             }
+            callback(ArrayList(actionList.getRanked().take(ActionsController.MAX_ITEMS).mapIndexedNotNull { index, s -> actionFromString(s, index.toLong()) }))
         }
     }
 

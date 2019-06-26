@@ -23,10 +23,13 @@ import android.graphics.drawable.RippleDrawable
 import android.util.AttributeSet
 import android.widget.Button
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.colors.resolvers.DrawerLabelAutoResolver
 import ch.deletescape.lawnchair.font.CustomFontManager
+import ch.deletescape.lawnchair.getColorAttr
 import ch.deletescape.lawnchair.getTabRipple
 
-class ColoredButton(context: Context, attrs: AttributeSet) : Button(context, attrs) {
+class ColoredButton(context: Context, attrs: AttributeSet) : Button(context, attrs),
+        ColorEngine.OnColorChangeListener {
 
     var colorResolver: ColorEngine.ColorResolver = ColorEngine.getInstance(context).accentResolver
         set(value) {
@@ -37,7 +40,7 @@ class ColoredButton(context: Context, attrs: AttributeSet) : Button(context, att
         }
     var color: Int = 0
 
-    private val defaultColor = currentTextColor
+    private var defaultColor = currentTextColor
 
     init {
         CustomFontManager.getInstance(context).loadCustomFont(this, attrs)
@@ -61,5 +64,28 @@ class ColoredButton(context: Context, attrs: AttributeSet) : Button(context, att
 
     private fun setRippleColor() {
         background = RippleDrawable(getTabRipple(context, color), null, null)
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.ALLAPPS_ICON_LABEL)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        ColorEngine.getInstance(context).removeColorChangeListeners(this, ColorEngine.Resolvers.ALLAPPS_ICON_LABEL)
+    }
+
+    override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
+        when (resolveInfo.key) {
+            ColorEngine.Resolvers.ALLAPPS_ICON_LABEL -> {
+                defaultColor = if (DrawerLabelAutoResolver::class.java.isAssignableFrom(resolveInfo.resolverClass)) {
+                    context.getColorAttr(android.R.attr.textColorTertiary)
+                } else {
+                    resolveInfo.color
+                }
+                setTextColor()
+            }
+        }
     }
 }

@@ -50,7 +50,6 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
 
     private val alarmManager = ContextCompat.getSystemService(context, AlarmManager::class.java)!!
     private val locationManager = ContextCompat.getSystemService(context, LocationManager::class.java)!!
-    private val locationProvider by lazy { locationManager.getBestProvider(Criteria(), true) }
 
     private val listeners = ArrayMap<TwilightListener, Handler>()
     private var hasListeners = false
@@ -58,7 +57,7 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
     private var timeChangedReceiver: BroadcastReceiver? = null
     private var lastLocation: Location? = null
 
-    var lastTwilightState: TwilightState? = calculateTwilightState(null, System.currentTimeMillis())
+    var lastTwilightState: TwilightState? = calculateTwilightState(null, null, System.currentTimeMillis())
         get() = synchronized(listeners) { field }
         private set(value) {
             synchronized(listeners) {
@@ -134,6 +133,7 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
     private fun startListening() {
         Log.d(TAG, "startListening")
 
+        val locationProvider = locationManager.getBestProvider(Criteria(), true)
         if (locationProvider != null) {
             locationManager.requestLocationUpdates(locationProvider, 0, 0f, this, Looper.getMainLooper())
 
@@ -179,8 +179,9 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
     private fun updateTwilightState() {
         // Calculate the twilight state based on the current time and location.
         val currentTimeMillis = System.currentTimeMillis()
-        val location = lastLocation ?: locationManager.getLastKnownLocation(locationProvider)
-        val state = calculateTwilightState(location, currentTimeMillis)
+        val location = lastLocation ?: locationManager.getBestProvider(Criteria(), true)
+                ?.let { locationManager.getLastKnownLocation(it) }
+        val state = calculateTwilightState(location?.latitude, location?.longitude, currentTimeMillis)
         Log.d(TAG, "updateTwilightState: $state")
 
         lastTwilightState = state
@@ -229,9 +230,9 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
         private const val MSG_START_LISTENING = 1
         private const val MSG_STOP_LISTENING = 2
 
-        fun calculateTwilightState(location: Location?, timeMillis: Long): TwilightState? {
+        fun calculateTwilightState(latitude: Double?, longitude: Double?, timeMillis: Long): TwilightState? {
             val c = Calendar.getInstance().apply { timeInMillis = timeMillis }
-            val calc = SunriseSunsetCalculatorCompat(location, c.timeZone)
+            val calc = SunriseSunsetCalculatorCompat(latitude, longitude, c.timeZone)
             val sunrise = calc.getOfficialSunriseCalendarForDate(c)
             val adjustedSunset: Calendar
             val adjustedSunrise: Calendar

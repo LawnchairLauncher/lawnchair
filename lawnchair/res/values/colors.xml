@@ -20,4 +20,5 @@
     <color name="all_apps_prediction_row_separator">#3c000000</color>
     <color name="all_apps_prediction_row_separator_dark">#3cffffff</color>
     <color name="dismiss_target_hover_tint">#ffea4335</color>
+    <color name="bugNotificationColor">#ff4caf50</color>
 </resources>

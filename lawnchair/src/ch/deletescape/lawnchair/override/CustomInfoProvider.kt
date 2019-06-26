@@ -40,7 +40,7 @@ abstract class CustomInfoProvider<in T : ItemInfo>(val context: Context) {
 
     abstract fun getIcon(info: T): IconPackManager.CustomIconEntry?
 
-    open fun supportsSwipeUp() = false
+    open fun supportsSwipeUp(info: T) = false
 
     open fun setSwipeUpAction(info: T, action: String?) {
         TODO("not implemented")

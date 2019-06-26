@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2016 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<ch.deletescape.lawnchair.views.OptionsPanel
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:theme="@style/HomeScreenElementTheme"
+    launcher:layout_ignoreInsets="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal|bottom"
+    android:alpha="0"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:visibility="invisible"
+    android:weightSum="4">
+
+    <ch.deletescape.lawnchair.views.OptionsTextView
+        android:id="@+id/wallpaper_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawablePadding="4dp"
+        android:drawableTop="@drawable/ic_wallpaper"
+        android:drawableTint="?attr/workspaceTextColor"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center_horizontal"
+        android:stateListAnimator="@animator/overview_button_anim"
+        android:text="@string/wallpaper_button_text"
+        android:textAllCaps="true"
+        android:textColor="?attr/workspaceTextColor"
+        android:textSize="12sp" />
+
+    <ch.deletescape.lawnchair.views.OptionsTextView
+        android:id="@+id/widget_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawablePadding="4dp"
+        android:drawableTop="@drawable/ic_widget"
+        android:drawableTint="?attr/workspaceTextColor"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center_horizontal"
+        android:stateListAnimator="@animator/overview_button_anim"
+        android:text="@string/widget_button_text"
+        android:textAllCaps="true"
+        android:textColor="?attr/workspaceTextColor"
+        android:textSize="12sp" />
+
+    <ch.deletescape.lawnchair.views.OptionsTextView
+        android:id="@+id/settings_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawablePadding="4dp"
+        android:drawableTop="@drawable/ic_setting"
+        android:drawableTint="?attr/workspaceTextColor"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center_horizontal"
+        android:stateListAnimator="@animator/overview_button_anim"
+        android:text="@string/settings_button_text"
+        android:textAllCaps="true"
+        android:textColor="?attr/workspaceTextColor"
+        android:textSize="12sp" />
+
+</ch.deletescape.lawnchair.views.OptionsPanel>

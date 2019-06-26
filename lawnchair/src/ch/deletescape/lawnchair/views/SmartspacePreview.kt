@@ -61,7 +61,7 @@ class SmartspacePreview(context: Context, attrs: AttributeSet?) :
 
     private fun inflateCurrentView() {
         if (enable.get()) {
-            val layout = if (usePillQsb.get()) R.layout.qsb_blocker_view else R.layout.search_container_workspace
+            val layout = if (usePillQsb.get()) R.layout.qsb_container_preview else R.layout.search_container_workspace
             addView(inflateView(layout))
         } else {
             currentView = null

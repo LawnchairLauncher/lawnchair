@@ -90,10 +90,14 @@
             app:colorMode="RGB"
             app:resolvers="@array/resolvers_drawer_labels"/>
 
-        <Preference
-            android:key="pref_drawerTabs"
-            android:title="@string/drawer_tabs"
-            android:fragment="ch.deletescape.lawnchair.preferences.DrawerTabsFragment" />
+        <ch.deletescape.lawnchair.settings.ui.PreferenceDialogPreference
+            android:key="pref_iconPopupMenu"
+            android:title="@string/pref_icon_popup_menu"
+            app:content="@xml/lawnchair_drawer_icon_popup_menu_preferences" />
+
+        <ch.deletescape.lawnchair.preferences.Preference
+            android:title="@string/categorization"
+            android:fragment="ch.deletescape.lawnchair.groups.ui.AppCategorizationFragment"/>
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
     
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory

@@ -196,6 +196,10 @@
             avatar="https://i.imgur.com/4IN8bUD.png"
             task="@string/about_role_family_member" />
         <me.jfenn.attribouter.wedges.ContributorWedge
+            name="Jeff the Gardener"
+            avatar="https://i.imgur.com/u6wFXEU.png"
+            task="Jeff"/>
+        <me.jfenn.attribouter.wedges.ContributorWedge
             name="Luca"
             avatar="https://i.imgur.com/IFXZUr7.png"
             task="@string/about_role_family_member" />

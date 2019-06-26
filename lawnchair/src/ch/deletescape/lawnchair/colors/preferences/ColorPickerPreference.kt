@@ -29,13 +29,12 @@ import com.android.launcher3.R
 import me.priyesh.chroma.ColorMode
 
 
-class ColorPickerPreference(context: Context, attrs: AttributeSet?)
+open class ColorPickerPreference(context: Context, attrs: AttributeSet?)
     : Preference(context, attrs), ColorEngine.OnColorChangeListener {
 
     private val engine = ColorEngine.getInstance(context)
     private val colorMode: ColorMode
     private val resolvers: Array<String>
-    private val resolverPref: LawnchairPreferences.StringBasedPref<ColorEngine.ColorResolver>
 
     init {
         fragment = key
@@ -44,9 +43,6 @@ class ColorPickerPreference(context: Context, attrs: AttributeSet?)
         colorMode = getColorMode(ta.getInt(R.styleable.ColorPickerPreference_colorMode, 0))
         resolvers = context.resources.getStringArray(ta.getResourceId(R.styleable.ColorPickerPreference_resolvers, -1))
         ta.recycle()
-        resolverPref = engine.getOrCreateResolver(key,
-                resolvers.mapToResolvers(engine).getOrNull(0)
-                        ?: ColorEngine.Resolvers.getDefaultResolver(key, context, engine))
     }
 
     private fun getColorMode(mode: Int): ColorMode = when (mode) {
@@ -70,7 +66,7 @@ class ColorPickerPreference(context: Context, attrs: AttributeSet?)
 
     override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
         if (resolveInfo.key == key) {
-            val resolver by resolverPref
+            val resolver = engine.getResolver(key)
             summary = resolver.getDisplayName()
             if (icon == null) {
                 icon = context.resources.getDrawable(R.drawable.color_preview, null)
@@ -80,7 +76,7 @@ class ColorPickerPreference(context: Context, attrs: AttributeSet?)
     }
 
     fun showDialog(fragmentManager: FragmentManager) {
-        val resolver by resolverPref
+        val resolver = engine.getResolver(key)
         ColorPickerDialog.newInstance(key, resolver.resolveColor(), colorMode, resolvers).show(fragmentManager, key)
     }
 }

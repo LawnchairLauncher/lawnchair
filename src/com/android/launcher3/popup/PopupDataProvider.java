@@ -23,10 +23,9 @@ import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import ch.deletescape.lawnchair.popup.SesameSettings;
+import ch.deletescape.lawnchair.popup.LawnchairShortcut;
 import ch.deletescape.lawnchair.sesame.Sesame;
 import ch.deletescape.lawnchair.sesame.SesameShortcutInfo;
-import com.android.launcher3.BuildConfig;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -75,8 +74,6 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     public PopupDataProvider(Launcher launcher) {
         mLauncher = launcher;
         mSystemShortcuts = new SystemShortcut[] {
-                Utilities.getOverrideObject(SystemShortcut.Custom.class, launcher, R.string.custom_shortcut_class),
-                new SesameSettings(),
                 new SystemShortcut.AppInfo(),
                 new SystemShortcut.Widgets(),
                 new SystemShortcut.Install()
@@ -223,7 +220,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
 
     public @NonNull List<SystemShortcut> getEnabledSystemShortcutsForItem(ItemInfo info) {
         List<SystemShortcut> systemShortcuts = new ArrayList<>();
-        for (SystemShortcut systemShortcut : mSystemShortcuts) {
+        for (SystemShortcut systemShortcut :
+                LawnchairShortcut.Companion.getInstance(mLauncher).getEnabledShortcuts()) {
             if (systemShortcut.getOnClickListener(mLauncher, info) != null) {
                 systemShortcuts.add(systemShortcut);
             }

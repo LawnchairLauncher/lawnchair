@@ -17,14 +17,50 @@
 
 package ch.deletescape.lawnchair.colors.resolvers
 
+import android.graphics.Color
 import android.support.annotation.Keep
+import android.support.v4.graphics.ColorUtils
 import ch.deletescape.lawnchair.colors.ThemeAttributeColorResolver
+import ch.deletescape.lawnchair.foregroundColor
+import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.sensors.BrightnessManager
 import com.android.launcher3.R
+import com.android.launcher3.graphics.IconPalette
+import kotlin.math.max
+import kotlin.math.min
 
 @Keep
-class DrawerLabelAutoResolver(config: Config) : ThemeAttributeColorResolver(config) {
+class DrawerLabelAutoResolver(config: Config) : ThemeAttributeColorResolver(config), BrightnessManager.OnBrightnessChangeListener {
 
     override val colorAttr = android.R.attr.textColorSecondary
+    private var brightness = 1f
+    private val prefs = context.lawnchairPrefs
+
+    override fun startListening() {
+        super.startListening()
+        if (prefs.brightnessTheme) {
+            BrightnessManager.getInstance(context).addListener(this)
+        }
+    }
+
+    override fun onBrightnessChanged(illuminance: Float) {
+        brightness = min(max(illuminance - 4f, 0f), 35f) / 35
+        notifyChanged()
+    }
+
+    override fun resolveColor(): Int {
+        if (prefs.brightnessTheme) {
+            val bg = ColorUtils.blendARGB(Color.BLACK, Color.WHITE, brightness)
+            val fg = ColorUtils.blendARGB(Color.WHITE, Color.BLACK, brightness)
+            return IconPalette.ensureTextContrast(fg, bg)
+        }
+        return super.resolveColor()
+    }
+
+    override fun stopListening() {
+        super.stopListening()
+        BrightnessManager.getInstance(context).removeListener(this)
+    }
 }
 
 @Keep

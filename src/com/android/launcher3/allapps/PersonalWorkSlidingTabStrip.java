@@ -325,7 +325,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
             button.setText(tab.getName());
             button.setOnLongClickListener(v -> {
                 DrawerTabEditBottomSheet.Companion
-                        .edit(Launcher.getLauncher(getContext()), tab.getDrawerTab());
+                        .editTab(Launcher.getLauncher(getContext()), tab.getDrawerTab());
                 return true;
             });
         }

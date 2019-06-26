@@ -474,7 +474,7 @@
     <string name="tab_manage_apps">Manage apps</string>
 
     <string name="tab_bottom_sheet_save">Save</string>
-    <string name="tab_hide_from_main">Hide from drawer</string>
+    <string name="tab_hide_from_main">Hide from main tab</string>
     <string name="tab_color">Tab color</string>
 
     <string name="delete">Delete</string>
@@ -498,6 +498,7 @@
     <string name="pref_sesame_show_shortcuts">App shortcuts</string>
     <string name="pref_sesame_show_shortcuts_summary">Show Sesame shortcuts in icon bubbles</string>
     <string name="allow">Allow</string>
+    <string name="deny">Deny</string>
     <string name="sesame_enable_integration_title">Enable integration</string>
     
     <string name="sesame_enable_integration_description"><![CDATA[Enables data sharing between Lawnchair and Sesame. You can change this in Lawnchair or Sesame settings.]]></string>
@@ -573,7 +574,7 @@
     <string name="pref_sesame_sync_look_and_feel">Share look and feel</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Sync Lawnchair search settings with Sesame</string>
 
-    <string name="pref_search_bar_radius">Search bar radius</string>
+    <string name="pref_search_bar_radius">Search bar corner rounding</string>
 
     <string name="icon_text_scale_pref_title">Text size</string>
     <string name="text_color">Text color</string>
@@ -584,4 +585,73 @@
 
     <string name="pref_center_wallpaper">Always center wallpaper</string>
     <string name="pref_center_wallpaper_summary">This will disable the wallpaper scrolling effect</string>
+
+    <string name="pref_icon_popup_menu">Popup menu items</string>
+
+    <string name="pref_appcategorization_enable_title">Categorize Apps</string>
+    <string name="pref_appcategorization_enable_summary">Fix my messy drawer.</string>
+    <string name="pref_appcategorization_style_text">Style</string>
+    <string name="pref_app_groups_edit_tip">Tap to edit, drag to reorder.</string>
+    <string name="pref_app_groups_create">Create</string>
+    <string name="pref_appcategorization_folders_title">Folders</string>
+    <string name="pref_appcategorization_folders_summary">Tap to open pop-up.</string>
+    <string name="pref_appcategorization_tabs_title">Tabs</string>
+    <string name="pref_appcategorization_tabs_summary">Swipe between groups.</string>
+    <string name="default_folder_name">New folder</string>
+    <string name="drawer_folders">Folders</string>
+
+    <string name="category_business_and_productivity">Business and Productivity</string>
+    <string name="category_communication">Communication</string>
+    <string name="category_entertainment">Entertainment</string>
+    <string name="category_food_and_drink">Food and Drink</string>
+    <string name="category_game">Games</string>
+    <string name="category_health_and_fitness">Health and Fitness</string>
+    <string name="category_knowledge_and_reference">Knowledge and Reference</string>
+    <string name="category_lifestyle">Shopping and Lifestyle</string>
+    <string name="category_music">Music</string>
+    <string name="category_news">News</string>
+    <string name="category_personalization">Personalization</string>
+    <string name="category_photography">Photography</string>
+    <string name="category_tools">Utility</string>
+    <string name="category_travel_and_navigation">Travel and Navigation</string>
+
+    <string name="lock_desktop">Lock desktop</string>
+    <string name="reset_custom_icons">Reset custom icons</string>
+    <string name="reset_custom_icons_confirmation">Are you sure you want to reset all custom icons? This action is non-reversible.</string>
+    <string name="open_image_picker">Open image picker</string>
+    <string name="import_icon">Import icon</string>
+    <string name="import_as_adaptive">As adaptive icon</string>
+
+    <string name="weather_provider_accu" translatable="false">AccuWeather</string>
+    <string name="bugreport_channel_name">Bug reports</string>
+    <string name="status_channel_name">Bug report upload status</string>
+    <string name="dogbin_uploading">Upload in progress</string>
+    <string name="action_dogbin_upload">Upload to dogbin</string>
+    <string name="action_dogbin_upload_error">Upload failed</string>
+    <string name="action_dogbin_copy_link">Copy link</string>
+    <string name="lawnchair_bug_report">Lawnchair bug report</string>
+    <string name="copied_toast">Copied</string>
+    <string name="action_copy">Copy</string>
+    <string name="action_copy_link">Copy link</string>
+    <string name="action_share">Share</string>
+
+    <string name="animation_type_title">App opening animation</string>
+    <string name="animation_type_default">Default</string>
+    <string name="animation_type_pie">Pie</string>
+    <string name="animation_type_pie_like">Pie-like</string>
+    <string name="animation_type_reveal">Reveal</string>
+    <string name="animation_type_slide_up">Slide Up</string>
+    <string name="animation_type_scale_up">Scale Up</string>
+    <string name="animation_type_blink">Blink</string>
+    <string name="animation_type_fade">Fade</string>
+
+    <string name="permission_iplocate">Allow access to coarse, network based location?</string>
+    <string name="permission_iplocate_twilight_explanation">This allows more accurate daytime calculations without having to know your exact location.</string>
+    <string name="pref_appcategorization_flowerpot_title">Category</string>
+    <string name="pref_appcategorization_flowerpot_summary">Apps are automatically picked based on their metadata.</string>
+    <string name="select_tab_type">Tab type</string>
+    <string name="tab_type_custom">Custom tab</string>
+    <string name="tab_type_custom_desc">Manually pick apps for this tab.</string>
+    <string name="tab_type_smart">Smart tab</string>
+    <string name="categorization">Categorization</string>
 </resources>

@@ -19,7 +19,6 @@ package ch.deletescape.lawnchair.font.settingsui
 
 import android.content.Context
 import android.os.Build
-import android.support.v4.content.ContextCompat
 import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
 import android.widget.Button
@@ -31,7 +30,6 @@ import ch.deletescape.lawnchair.createColoredButtonBackground
 import ch.deletescape.lawnchair.font.CustomFontManager
 import ch.deletescape.lawnchair.tintDrawable
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
 
 class GlobalFontPreference(context: Context, attrs: AttributeSet) : FontPreference(context, attrs) {
 
@@ -41,7 +39,7 @@ class GlobalFontPreference(context: Context, attrs: AttributeSet) : FontPreferen
 
     init {
         layoutResource = R.layout.preference_global_font
-        widgetLayoutResource = R.layout.preference_global_font_switch
+        widgetLayoutResource = R.layout.preference_switch_widget
     }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {

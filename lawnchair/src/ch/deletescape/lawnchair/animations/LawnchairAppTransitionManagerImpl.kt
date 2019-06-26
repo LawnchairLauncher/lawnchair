@@ -15,19 +15,24 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.deletescape.lawnchair
+package ch.deletescape.lawnchair.animations
 
 import android.animation.*
 import android.annotation.TargetApi
+import android.app.ActivityOptions
 import android.content.Context
+import android.content.Intent
 import android.graphics.Matrix
 import android.graphics.Rect
 import android.os.Build
 import android.support.annotation.Keep
-import android.util.Log
 import android.util.Pair
 import android.view.View
 import android.view.animation.PathInterpolator
+import ch.deletescape.lawnchair.LawnchairLauncher
+import ch.deletescape.lawnchair.LawnchairPreferences
+import ch.deletescape.lawnchair.findInViews
+import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.util.InvertedMultiValueAlpha
 import ch.deletescape.lawnchair.views.LawnchairBackgroundView
 import com.android.launcher3.*
@@ -40,8 +45,11 @@ import com.android.quickstep.TaskUtils
 import com.android.quickstep.util.MultiValueUpdateListener
 import com.android.quickstep.util.RemoteAnimationProvider
 import com.android.quickstep.views.RecentsView
+import com.android.quickstep.views.TaskView
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan
 import com.android.systemui.shared.recents.model.Task
+import com.android.systemui.shared.system.ActivityCompat
+import com.android.systemui.shared.system.RemoteAnimationDefinitionCompat
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING
@@ -56,8 +64,43 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
     private val prefsToListen = arrayOf("pref_useScaleAnim", "pref_useWindowToIcon")
     private var useWindowToIcon = false
 
+    private val animationType by context.lawnchairPrefs.StringBasedPref("pref_animationType",
+            AnimationType.DefaultAnimation(), { },
+            AnimationType.Companion::fromString,
+            AnimationType.Companion::toString) { registerRemoteAnimations() }
+
     init {
         Utilities.getLawnchairPrefs(launcher).addOnPreferenceChangeListener(this, *prefsToListen)
+        registerRemoteAnimations()
+    }
+
+    override fun registerRemoteAnimations() {
+        if (animationType.allowWallpaperOpenRemoteAnimation) {
+            super.registerRemoteAnimations()
+        } else if (hasControlRemoteAppTransitionPermission()) {
+            ActivityCompat(launcher).registerRemoteAnimations(RemoteAnimationDefinitionCompat())
+        }
+    }
+
+    override fun getActivityLaunchOptions(launcher: Launcher, v: View): ActivityOptions? {
+        if (isLaunchingFromRecents(launcher, v)) {
+            return super.getActivityLaunchOptions(launcher, v)
+        }
+        return animationType.getActivityLaunchOptions(launcher, v) ?: super.getActivityLaunchOptions(launcher, v)
+    }
+
+    private fun isLaunchingFromRecents(launcher: Launcher, v: View?): Boolean {
+        return launcher.stateManager.state.overviewUi && v is TaskView
+    }
+
+    fun playLaunchAnimation(launcher: Launcher, v: View?, intent: Intent) {
+        if (!isLaunchingFromRecents(launcher, v)) {
+            animationType.playLaunchAnimation(launcher, v, intent, this)
+        }
+    }
+
+    fun overrideResumeAnimation(launcher: Launcher) {
+        animationType.overrideResumeAnimation(launcher)
     }
 
     override fun destroy() {
@@ -177,7 +220,7 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
         anim.play(workspaceAnimator)
     }
 
-    override fun getLauncherContentAnimator(isAppOpening: Boolean): Pair<AnimatorSet, Runnable> {
+    public override fun getLauncherContentAnimator(isAppOpening: Boolean): Pair<AnimatorSet, Runnable> {
         if (!useScaleAnim) {
             return super.getLauncherContentAnimator(isAppOpening)
         }
@@ -350,7 +393,7 @@ class LawnchairAppTransitionManagerImpl(context: Context) : LauncherAppTransitio
         launchOpts.loadThumbnails = false
         val preloadOpts = RecentsTaskLoadPlan.PreloadOptions()
         preloadOpts.loadTitles = false
-        val recentsTaskLoader = recentsView.model.recentsTaskLoader
+        val recentsTaskLoader = recentsView.model?.recentsTaskLoader ?: return null
         plan.preloadPlan(preloadOpts, recentsTaskLoader, -1, Utilities.getUserId())
         recentsTaskLoader.loadTasks(plan, launchOpts)
         return plan.taskStack.findTaskWithId(taskId)

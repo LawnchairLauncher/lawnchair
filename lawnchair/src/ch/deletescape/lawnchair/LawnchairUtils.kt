@@ -26,10 +26,7 @@ import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.*
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.InsetDrawable
-import android.graphics.drawable.RippleDrawable
-import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.*
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
@@ -63,6 +60,7 @@ import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
+import com.android.launcher3.util.PackageUserKey
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.OptionsPopupView
 import com.android.systemui.shared.recents.model.TaskStack
@@ -72,12 +70,14 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.xmlpull.v1.XmlPullParser
 import java.lang.reflect.Field
+import java.security.MessageDigest
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import kotlin.collections.ArrayList
 import kotlin.math.ceil
 import kotlin.math.roundToInt
+import kotlin.random.Random
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty
 
@@ -167,6 +167,13 @@ fun Context.getDimenAttr(attr: Int): Int {
 fun Context.getBooleanAttr(attr: Int): Boolean {
     val ta = obtainStyledAttributes(intArrayOf(attr))
     val value = ta.getBoolean(0, false)
+    ta.recycle()
+    return value
+}
+
+fun Context.getIntAttr(attr: Int): Int {
+    val ta = obtainStyledAttributes(intArrayOf(attr))
+    val value = ta.getInt(0, 0)
     ta.recycle()
     return value
 }
@@ -367,6 +374,19 @@ fun java.text.Collator.matches(query: String, target: String): Boolean {
 fun String.toTitleCase(): String = splitToSequence(" ").map { it.capitalize() }.joinToString(" ")
 
 fun reloadIcons(context: Context) {
+    val userManagerCompat = UserManagerCompat.getInstance(context)
+    val launcherApps = LauncherAppsCompat.getInstance(context)
+
+    reloadIcons(context, userManagerCompat.userProfiles.flatMap { user ->
+        launcherApps.getActivityList(null, user).map { PackageUserKey(it.componentName.packageName, it.user) }
+    })
+}
+
+fun reloadIconsFromComponents(context: Context, components: Collection<ComponentKey>) {
+    reloadIcons(context, components.map { PackageUserKey(it.componentName.packageName, it.user) })
+}
+
+fun reloadIcons(context: Context, packages: Collection<PackageUserKey>) {
     LooperExecutor(LauncherModel.getIconPackLooper()).execute {
         val userManagerCompat = UserManagerCompat.getInstance(context)
         val las = LauncherAppState.getInstance(context)
@@ -378,9 +398,8 @@ fun reloadIcons(context: Context) {
         }
 
         val shortcutManager = DeepShortcutManager.getInstance(context)
-        val launcherApps = LauncherAppsCompat.getInstance(context)
-        userManagerCompat.userProfiles.forEach { user ->
-            launcherApps.getActivityList(null, user).forEach { CustomIconUtils.reloadIcon(shortcutManager, model, user, it.componentName.packageName) }
+        packages.forEach {
+            CustomIconUtils.reloadIcon(shortcutManager, model, it.mUser, it.mPackageName)
         }
         if (launcher != null) {
             runOnMainThread {
@@ -769,3 +788,54 @@ val Int.luminance get() = ColorUtils.calculateLuminance(this)
 val Int.isDark get() = luminance < 0.5f
 
 inline fun <E> createWeakSet(): MutableSet<E> = Collections.newSetFromMap(WeakHashMap<E, Boolean>())
+
+inline fun <T> listWhileNotNull(generator: () -> T?): List<T> = mutableListOf<T>().apply {
+    while (true) {
+        add(generator() ?: break)
+    }
+}
+
+inline infix fun Int.hasFlag(flag: Int) = (this and flag) != 0
+
+fun String.hash(type: String): String {
+    val chars = "0123456789abcdef"
+    val bytes = MessageDigest
+            .getInstance(type)
+            .digest(toByteArray())
+    val result = StringBuilder(bytes.size * 2)
+
+    bytes.forEach {
+        val i = it.toInt()
+        result.append(chars[i shr 4 and 0x0f])
+        result.append(chars[i and 0x0f])
+    }
+
+    return result.toString()
+}
+
+val Context.locale: Locale
+    get() {
+        return if (Utilities.ATLEAST_NOUGAT) {
+            this.resources.configuration.locales[0] ?: this.resources.configuration.locale
+        } else {
+            this.resources.configuration.locale
+        }
+    }
+
+fun createRipplePill(context: Context, color: Int, radius: Float): Drawable {
+    return RippleDrawable(
+            ContextCompat.getColorStateList(context, R.color.focused_background)!!,
+            createPill(color, radius),
+            createPill(color, radius)
+    )
+}
+
+fun createPill(color: Int, radius: Float): Drawable {
+    return GradientDrawable().apply {
+        shape = GradientDrawable.RECTANGLE
+        setColor(color)
+        cornerRadius = radius
+    }
+}
+
+val Long.Companion.random get() = Random.nextLong()

@@ -1811,6 +1811,18 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mOnResumeCallback = callback;
     }
 
+    public void addOnResumeCallback(OnResumeCallback callback) {
+        if (mOnResumeCallback == null) {
+            setOnResumeCallback(callback);
+        } else {
+            OnResumeCallback existingCallback = mOnResumeCallback;
+            mOnResumeCallback = () -> {
+                existingCallback.onLauncherResume();
+                callback.onLauncherResume();
+            };
+        }
+    }
+
     /**
      * Implementation of the method from LauncherModel.Callbacks.
      */
@@ -2496,6 +2508,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     protected void onRotationChanged() {
 
+    }
+
+    public LauncherAppTransitionManager getLauncherAppTransitionManager() {
+        return mAppTransitionManager;
     }
 
     public static Launcher getLauncher(Context context) {

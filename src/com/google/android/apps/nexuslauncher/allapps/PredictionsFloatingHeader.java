@@ -74,14 +74,14 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
 
     private void updateExpectedHeight() {
         boolean useAllAppsLabel = mShowAllAppsLabel && mTabsHidden;
-        mActionsRowView.setShowAllAppsLabel(useAllAppsLabel && mActionsRowView.shouldDraw());
+        mActionsRowView.setShowAllAppsLabel(useAllAppsLabel && mActionsRowView.shouldDraw(), false);
         DividerType dividerType = DividerType.NONE;
         if (useAllAppsLabel && !mActionsRowView.shouldDraw()) {
             dividerType = DividerType.ALL_APPS_LABEL;
         } else if (mTabsHidden && !mActionsRowView.shouldDraw()) {
             dividerType = DividerType.LINE;
         }
-        mPredictionRowView.setDividerType(dividerType);
+        mPredictionRowView.setDividerType(dividerType, false);
         mMaxTranslation = mPredictionRowView.getExpectedHeight() + mActionsRowView.getExpectedHeight();
     }
 

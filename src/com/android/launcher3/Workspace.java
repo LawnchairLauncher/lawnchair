@@ -44,6 +44,7 @@ import android.os.UserHandle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -66,6 +67,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.folder.Folder;
@@ -76,6 +78,7 @@ import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
+import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.touch.WorkspaceTouchListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
@@ -1095,6 +1098,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
     }
 
+    public boolean duringScrollInteraction() {
+        return mScrollInteractionBegan;
+    }
+
     public void setLauncherOverlay(LauncherOverlay overlay) {
         mLauncherOverlay = overlay;
         // A new overlay has been set. Reset event tracking
@@ -1154,11 +1161,13 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     @Override
     protected void overScroll(float amount) {
+        boolean inOptionsState = mLauncher.isInState(LauncherState.OPTIONS);
+
         boolean shouldScrollOverlay = mLauncherOverlay != null &&
-                ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl));
+                ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl)) && !inOptionsState;
 
         boolean shouldZeroOverlay = mLauncherOverlay != null && mLastOverlayScroll != 0 &&
-                ((amount >= 0 && !mIsRtl) || (amount <= 0 && mIsRtl));
+                ((amount >= 0 && !mIsRtl) || (amount <= 0 && mIsRtl) || inOptionsState);
 
         if (shouldScrollOverlay) {
             if (!mStartedSendingScrollEvents && mScrollInteractionBegan) {
@@ -1168,7 +1177,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
             mLastOverlayScroll = Math.abs(amount / getMeasuredWidth());
             mLauncherOverlay.onScrollChange(mLastOverlayScroll, mIsRtl);
-        } else {
+        } else if (!inOptionsState) {
             dampedOverScroll(amount);
         }
 
@@ -1667,6 +1676,14 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
         }
 
+        if (Utilities.getLawnchairPrefs(mLauncher).getLockDesktop()) {
+            child.setVisibility(View.VISIBLE);
+
+            if (dragOptions.preDragCondition != null) {
+                mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+            }
+            return null;
+        }
         DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source,
                 dragObject, dragVisualizeOffset, dragRect, scale * iconScale, scale, dragOptions);
         dv.setIntrinsicIconScaleFactor(dragOptions.intrinsicIconScaleFactor);
@@ -3481,6 +3498,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         requestLayout();
+    }
+
+    public boolean inTransition() {
+        return isPageInTransition();
     }
 
     /**

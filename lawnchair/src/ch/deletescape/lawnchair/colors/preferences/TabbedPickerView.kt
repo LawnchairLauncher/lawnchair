@@ -126,9 +126,10 @@ class TabbedPickerView(context: Context, val key: String, initialColor: Int,
 
         fun fromPrefs(context: Context, key: String, initialColor: Int, colorMode: ColorMode,
                       resolvers: Array<String>, dismiss: () -> Unit): TabbedPickerView {
-            var resolver by ColorEngine.getInstance(context).getOrCreateResolver(key)
+            val resolverCache = ColorEngine.getInstance(context).getResolverCache(key)
+            val resolver = resolverCache.value
             return TabbedPickerView(context, key, initialColor, colorMode, resolvers,
-                    resolver.isCustom, { resolver = it }, dismiss)
+                    resolver.isCustom, { resolverCache.set(it) }, dismiss)
         }
     }
 }

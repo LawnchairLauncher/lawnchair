@@ -63,6 +63,23 @@
         android:key="currentWeatherProvider"
         android:title="@string/pref_smartspace_widget_provider" />
 
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        android:key="pref_debugOkhttp"
+        android:title="Enable full network log"
+        android:summary="Useful for debugging some weather providers"
+        android:defaultValue="false" />
+
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        android:key="pref_showCrashNotifications"
+        android:title="Show bug report notifications"
+        android:defaultValue="true" />
+
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        android:key="pref_autoUploadBugReport"
+        android:title="Automatically upload bug reports to dogbin"
+        android:defaultValue="false"
+        android:dependency="pref_showCrashNotifications" />
+
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_wipOptions"
         android:title="Other"
@@ -80,6 +97,12 @@
         <Preference
             android:title="UI font"
             android:fragment="ch.deletescape.lawnchair.preferences.CustomFontFragment" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_appsCategorizationEnabled"
+            android:title="Enable apps categorization"
+            android:defaultValue="true"
+            android:persistent="true" />
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_forceEnableFools"
@@ -122,5 +145,27 @@
             android:title="Sort drawer by icon color"
             android:summary="Some initial experiments with alternative drawer sorting modes"
             android:defaultValue="false" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_brightnessTheme"
+            android:title="Brightness based theme"
+            android:summary="Dynamically fade between light and dark"
+            android:defaultValue="false" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_desktopUsePopupMenuView"
+            android:title="Desktop popup menu"
+            android:summary="Use Pie launcher menu instead of the Oreo's overview mode"
+            android:defaultValue="true" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_forceFakePieAnims"
+            android:title="Force fake Pie anims"
+            android:defaultValue="false" />
+
+        <Preference
+            android:key="pref_drawerTabs"
+            android:title="@string/drawer_tabs"
+            android:fragment="ch.deletescape.lawnchair.preferences.DrawerTabsFragment"/>
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 </PreferenceScreen>

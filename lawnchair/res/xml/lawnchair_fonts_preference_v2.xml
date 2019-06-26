@@ -27,7 +27,7 @@
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:title="@string/homescreen"
-        android:layout="@layout/settings_category_fonts"
+        android:layout="@layout/settings_category_v2"
         android:dependency="pref_font_global">
 
         <ch.deletescape.lawnchair.font.settingsui.FontPreference
@@ -48,7 +48,7 @@
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:title="@string/pref_fonts_category_drawer"
-        android:layout="@layout/settings_category_fonts"
+        android:layout="@layout/settings_category_v2"
         android:dependency="pref_font_global">
 
         <ch.deletescape.lawnchair.font.settingsui.FontPreference

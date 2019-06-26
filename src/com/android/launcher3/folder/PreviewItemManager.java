@@ -27,6 +27,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 
@@ -125,7 +126,8 @@ public class PreviewItemManager {
     }
 
     private PreviewItemDrawingParams getFinalIconParams(PreviewItemDrawingParams params) {
-        float iconSize = mIcon.mLauncher.getDeviceProfile().iconSizePx;
+        DeviceProfile dp = mIcon.mLauncher.getDeviceProfile();
+        float iconSize = mIcon.isInAppDrawer() ? dp.allAppsIconSizePx : dp.iconSizePx;
 
         final float scale = iconSize / mReferenceDrawable.getIntrinsicWidth();
         final float trans = (mIcon.mBackground.previewSize - iconSize) / 2;

@@ -20,25 +20,31 @@ package ch.deletescape.lawnchair.iconpack
 import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import ch.deletescape.lawnchair.LawnchairLauncher
+import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
+import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
-import kotlinx.android.synthetic.main.activity_new_backup.*
 import java.lang.ref.WeakReference
 
 class EditIconActivity : SettingsBaseActivity() {
@@ -147,12 +153,55 @@ class EditIconActivity : SettingsBaseActivity() {
         startActivityForResult(IconPickerActivity.newIntent(this, provider), CODE_PICK_ICON)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == CODE_PICK_ICON && resultCode == Activity.RESULT_OK) {
-            val entryString = data?.getStringExtra(EditIconActivity.EXTRA_ENTRY) ?: return
-            setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_ENTRY, entryString))
-            finish()
+    fun onSelectExternal() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "image/*"
         }
+
+        startActivityForResult(intent, PICKER_REQUEST_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                CODE_PICK_ICON -> {
+                    val entryString = data?.getStringExtra(EXTRA_ENTRY) ?: return
+                    setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_ENTRY, entryString))
+                    finish()
+                }
+                PICKER_REQUEST_CODE -> {
+                    data?.data?.also { uri ->
+                        onSelectUri(uri)
+                    }
+                }
+            }
+        }
+
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun onSelectUri(uri: Uri) {
+        val entry = UriIconPack.UriEntry(this, uri, false)
+        if (!entry.isAvailable) return
+
+        val dialogContent = layoutInflater.inflate(R.layout.import_icon_preview, null).apply {
+            findViewById<ImageView>(android.R.id.icon).setImageDrawable(entry.drawable)
+        }
+        val checkBox = dialogContent.findViewById<CheckBox>(android.R.id.checkbox)
+        if (!Utilities.ATLEAST_OREO) {
+            checkBox.isVisible = false
+        }
+        AlertDialog.Builder(this)
+                .setTitle(R.string.import_icon)
+                .setView(dialogContent)
+                .setPositiveButton(android.R.string.ok) { _, _ ->
+                    entry.adaptive = checkBox.isChecked
+                    contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_ENTRY, entry.toCustomEntry().toString()))
+                    finish()
+                }
+                .show().applyAccent()
     }
 
     inner class IconAdapter : RecyclerView.Adapter<IconAdapter.Holder>() {
@@ -216,10 +265,14 @@ class EditIconActivity : SettingsBaseActivity() {
             return Holder(LayoutInflater.from(parent.context).inflate(R.layout.icon_pack_item, parent, false))
         }
 
-        override fun getItemCount() = iconPacks.size
+        override fun getItemCount() = iconPacks.size + 1
 
         override fun onBindViewHolder(holder: Holder, position: Int) {
-            holder.bind(iconPacks[position])
+            if (position == iconPacks.size) {
+                holder.bindExternal()
+            } else {
+                holder.bind(iconPacks[position])
+            }
         }
 
         inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
@@ -241,8 +294,19 @@ class EditIconActivity : SettingsBaseActivity() {
                 }
             }
 
+            fun bindExternal() {
+                val context = itemView.context
+                icon.setImageDrawable(IconPackManager.getInstance(context).defaultPack.displayIcon)
+                title.text = context.getString(R.string.open_image_picker)
+                packageName.isVisible = false
+            }
+
             override fun onClick(v: View) {
-                onSelectIconPack(iconPacks[adapterPosition].provider)
+                if (adapterPosition == iconPacks.size) {
+                    onSelectExternal()
+                } else {
+                    onSelectIconPack(iconPacks[adapterPosition].provider)
+                }
             }
         }
     }
@@ -294,6 +358,8 @@ class EditIconActivity : SettingsBaseActivity() {
         const val EXTRA_COMPONENT = "component"
         const val EXTRA_USER = "user"
         const val EXTRA_FOLDER = "is_folder"
+
+        const val PICKER_REQUEST_CODE = 999
 
         fun newIntent(context: Context, title: String, isFolder: Boolean, componentKey: ComponentKey? = null): Intent {
             return Intent(context, EditIconActivity::class.java).apply {

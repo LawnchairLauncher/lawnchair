@@ -57,6 +57,13 @@
             android:defaultValue="false"
             />
 
+        <ch.deletescape.lawnchair.preferences.SuperGColorPickerPreference
+            android:key="pref_superGBackgroundColorResolver"
+            android:title="@string/background_color"
+            android:dependency="pref_use_pill_qsb"
+            app:colorMode="RGB"
+            app:resolvers="@array/resolvers_superg_background"/>
+
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory

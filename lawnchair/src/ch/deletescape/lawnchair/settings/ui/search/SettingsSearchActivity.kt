@@ -37,6 +37,7 @@ import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity.SubSettingsFragment.*
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
+import com.android.launcher3.BuildConfig
 
 class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextListener {
 
@@ -70,12 +71,12 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
         search_view.setOnQueryTextListener(this)
         search_view.requestFocus()
 
-        overridePendingTransition(R.anim.fade_in_short, R.anim.no_anim)
+        overridePendingTransition(R.anim.fade_in_short, R.anim.no_anim_short)
     }
 
     override fun finish() {
         super.finish()
-        overridePendingTransition(R.anim.no_anim, R.anim.fade_out_short)
+        overridePendingTransition(R.anim.no_anim_short, R.anim.fade_out_short)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -107,10 +108,14 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
         if (query == currentQuery) return
         currentQuery = query
         // Find any matching debug command and invoke it
-        debugCommands[query]?.let { command ->
-            command.invoke(this)
-            onBackPressed()
-            return
+        if (query.startsWith("..")) {
+            val debugCommand = query.substring(2)
+            if (debugCommand.hash("SHA-1").endsWith(BuildConfig.DEBUG_MENU_CODE_HASH)) {
+                lawnchairPrefs.debugMenuEnabled = !lawnchairPrefs.debugMenuEnabled
+                startActivity(Intent(this, SettingsActivity::class.java)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                onBackPressed()
+            }
         }
         val matches = if (query.isEmpty())
             emptyList()
@@ -247,25 +252,5 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             return oldList[oldItemPosition] == newList[newItemPosition]
         }
-    }
-
-    companion object {
-        val prefs = LawnchairPreferences.getInstanceNoCreate()
-        @Suppress("DIVISION_BY_ZERO")
-        val debugCommands = mapOf<String, (SettingsSearchActivity) -> Unit>(
-                Pair("!!restart", { _ -> prefs.restart() }),
-                Pair("!!peru", { it ->
-                    prefs.developerOptionsEnabled = !prefs.developerOptionsEnabled
-                    it.startActivity(Intent(it, SettingsActivity::class.java)
-                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-                }),
-                Pair("!!veryperu", { it ->
-                    prefs.wipOptionsEnabled = !prefs.wipOptionsEnabled
-                    it.startActivity(Intent(it, SettingsActivity::class.java)
-                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-                }),
-                Pair("!!kys", { _ -> 1 / 0 }),
-                Pair("uuddlrlrba", { _ -> Toast.makeText(prefs.context, "ok, we get it, you're a gamer", Toast.LENGTH_LONG).show() })
-        )
     }
 }

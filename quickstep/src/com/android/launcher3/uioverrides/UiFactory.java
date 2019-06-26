@@ -38,6 +38,7 @@ import android.util.Base64;
 
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.gestures.VerticalSwipeGestureController;
+import ch.deletescape.lawnchair.touch.PinchStateChangeTouchController;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -68,6 +69,7 @@ public class UiFactory {
         if (!swipeUpEnabled) {
             return new TouchController[] {
                     launcher.getDragController(),
+                    new PinchStateChangeTouchController(launcher),
                     new VerticalSwipeGestureController(launcher),
                     new OverviewToAllAppsTouchController(launcher),
                     new LauncherTaskViewController(launcher)};
@@ -75,6 +77,7 @@ public class UiFactory {
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
             return new TouchController[] {
                     launcher.getDragController(),
+                    new PinchStateChangeTouchController(launcher),
                     new VerticalSwipeGestureController(launcher),
                     new OverviewToAllAppsTouchController(launcher),
                     new LandscapeEdgeSwipeController(launcher),
@@ -82,6 +85,7 @@ public class UiFactory {
         } else {
             return new TouchController[] {
                     launcher.getDragController(),
+                    new PinchStateChangeTouchController(launcher),
                     new VerticalSwipeGestureController(launcher),
                     new PortraitStatesTouchController(launcher),
                     new LauncherTaskViewController(launcher)};

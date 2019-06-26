@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewConfiguration;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
+import ch.deletescape.lawnchair.font.CustomFontManager;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
@@ -83,6 +84,9 @@ public class ActionView extends BubbleTextView implements OnLongClickListener {
         BaseDraggingActivity activity = LawnchairUtilsKt.getBaseDraggingActivityOrNull(context);
         DeviceProfile grid = activity.getDeviceProfile();
         setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
+
+        setMaxLines(1);
+        setSingleLine(true);
     }
 
     public void setAction(Action action, int i) {
@@ -176,6 +180,7 @@ public class ActionView extends BubbleTextView implements OnLongClickListener {
         point.y = this.mLastTouchPos.y;
         DragView dragView = launcher.getWorkspace().beginDragShared(view, launcher.getAppsView(),
                 itemInfo, new MyDragPreviewProvider(view, point), dragOptions);
+        if (dragView == null) return false;
         Rect rect = new Rect();
         getIconBounds(rect);
         dragView.animateShift(((-point.x) + rect.left) + (rect.width() / 2),
@@ -186,5 +191,10 @@ public class ActionView extends BubbleTextView implements OnLongClickListener {
     @Override
     protected boolean isTextHidden() {
         return false;
+    }
+
+    @Override
+    protected int getCustomFontType(int display) {
+        return CustomFontManager.FONT_ACTION_VIEW;
     }
 }

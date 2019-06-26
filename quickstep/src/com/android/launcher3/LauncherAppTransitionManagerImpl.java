@@ -173,7 +173,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         mClosingWindowTransY = res.getDimensionPixelSize(R.dimen.closing_window_trans_y);
 
         mLauncher.addOnDeviceProfileChangeListener(this);
-        registerRemoteAnimations();
     }
 
     @Override
@@ -451,7 +450,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     /**
      * Animators for the "floating view" of the view used to launch the target.
      */
-    private void playIconAnimators(AnimatorSet appOpenAnimator, View v, Rect windowTargetBounds) {
+    public void playIconAnimators(AnimatorSet appOpenAnimator, View v, Rect windowTargetBounds) {
         playIconAnimators(appOpenAnimator, v, windowTargetBounds, false);
     }
 
@@ -722,7 +721,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     /**
      * Registers remote animations used when closing apps to home screen.
      */
-    private void registerRemoteAnimations() {
+    protected void registerRemoteAnimations() {
         // Unregister this
         if (hasControlRemoteAppTransitionPermission()) {
             RemoteAnimationDefinitionCompat definition = new RemoteAnimationDefinitionCompat();
@@ -899,7 +898,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 .getProperty(LawnchairBackgroundView.ALPHA_INDEX_TRANSITIONS).setValue(0f);
     }
 
-    private boolean hasControlRemoteAppTransitionPermission() {
+    protected boolean hasControlRemoteAppTransitionPermission() {
         return Utilities.hasPermission(mLauncher, CONTROL_REMOTE_APP_TRANSITION_PERMISSION);
     }
 
@@ -933,5 +932,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
     public AlphaProperty getDragLayerAlpha() {
         return mDragLayerAlpha;
+    }
+
+    public View getFloatingView() {
+        return mFloatingView;
     }
 }

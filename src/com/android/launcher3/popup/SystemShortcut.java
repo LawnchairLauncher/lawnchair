@@ -8,12 +8,16 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
 
+import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.animations.LawnchairAppTransitionManagerImpl;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppTransitionManager;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.InstantAppResolver;
@@ -62,6 +66,9 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         @Override
         public View.OnClickListener getOnClickListener(final Launcher launcher,
                 final ItemInfo itemInfo) {
+            if (Utilities.getLawnchairPrefs(launcher).getLockDesktop()) {
+                return null;
+            }
             if (!DeepShortcutManager.supportsShortcuts(itemInfo)) {
                 return null;
             }
@@ -98,8 +105,14 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
                 dismissTaskMenuView(activity);
                 Rect sourceBounds = activity.getViewBounds(view);
                 Bundle opts = activity.getActivityLaunchOptionsAsBundle(view);
-                new PackageManagerHelper(activity).startDetailsActivityForInfo(
+                Intent intent = new PackageManagerHelper(activity).startDetailsActivityForInfo(
                         itemInfo, sourceBounds, opts);
+                if (activity instanceof LawnchairLauncher) {
+                    LauncherAppTransitionManager manager =
+                            ((LawnchairLauncher) activity).getLauncherAppTransitionManager();
+                    ((LawnchairAppTransitionManagerImpl) manager).playLaunchAnimation(
+                            (Launcher) activity, null, intent);
+                }
                 activity.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
                         ControlType.APPINFO_TARGET, view);
             };

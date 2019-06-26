@@ -18,6 +18,7 @@ package com.android.launcher3.allapps;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -26,6 +27,7 @@ import android.support.animation.DynamicAnimation;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
@@ -86,6 +88,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     private final Paint mNavBarScrimPaint;
     private int mNavBarScrimHeight = 0;
+    private int mNavBarScrimColor;
 
     private SearchUiManager mSearchUiManager;
     private View mSearchContainer;
@@ -123,8 +126,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mTabsController = new AllAppsTabsController(allAppsTabs, this);
         createHolders();
 
+        mNavBarScrimColor = Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor);
+
         mNavBarScrimPaint = new Paint();
-        mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
+        mNavBarScrimPaint.setColor(mNavBarScrimColor);
 
         mAllAppsStore.addUpdateListener(this::onAppsUpdated);
 
@@ -513,20 +518,33 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        ColorEngine.getInstance(getContext()).addColorChangeListeners(this, Resolvers.ACCENT);
+        ColorEngine.getInstance(getContext()).addColorChangeListeners(this, Resolvers.ACCENT, Resolvers.ALLAPPS_BACKGROUND);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        ColorEngine.getInstance(getContext()).removeColorChangeListeners(this, Resolvers.ACCENT);
+        ColorEngine.getInstance(getContext()).removeColorChangeListeners(this, Resolvers.ACCENT, Resolvers.ALLAPPS_BACKGROUND);
     }
 
     @Override
     public void onColorChange(@NotNull ResolveInfo resolveInfo) {
-        AllAppsRecyclerView recyclerView = getActiveRecyclerView();
-        LawnchairUtilsKt.runOnAttached(recyclerView, () -> recyclerView.setScrollbarColor(
-                mTabsController.getTabs().get(0).getDrawerTab().getColorResolver().value()));
+        switch (resolveInfo.getKey()) {
+            case Resolvers.ACCENT:
+                AllAppsRecyclerView recyclerView = getActiveRecyclerView();
+                LawnchairUtilsKt.runOnAttached(recyclerView, () -> recyclerView.setScrollbarColor(
+                        mTabsController.getTabs().get(0).getDrawerTab().getColorResolver().value()));
+                break;
+            case Resolvers.ALLAPPS_BACKGROUND:
+                int newScrimColor = ColorUtils.setAlphaComponent(resolveInfo.getColor(),
+                        Color.alpha(mNavBarScrimColor));
+                if (Utilities.ATLEAST_OREO || LawnchairUtilsKt.isDark(newScrimColor)) {
+                    mNavBarScrimPaint.setColor(newScrimColor);
+                } else {
+                    mNavBarScrimPaint.setColor(mNavBarScrimColor);
+                }
+                invalidate();
+        }
     }
 
     /**

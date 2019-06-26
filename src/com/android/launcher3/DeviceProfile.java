@@ -75,6 +75,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     private final int topWorkspacePadding;
     public float workspaceSpringLoadShrinkFactor;
     public final int workspaceSpringLoadedBottomSpace;
+    public float workspaceOptionsShrinkFactor;
 
     // Drag handle
     public int verticalDragHandleSizePx;
@@ -96,14 +97,27 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     public int folderIconSizePx;
     public int folderIconOffsetYPx;
 
+    // Drawer folder
+    public int allAppsFolderIconSizePx;
+    public int allAppsFolderIconOffsetYPx;
+
     // Folder cell
     public int folderCellWidthPx;
     public int folderCellHeightPx;
+
+    // Drawer folder cell
+    public int allAppsFolderCellWidthPx;
+    public int allAppsFolderCellHeightPx;
 
     // Folder child
     public int folderChildIconSizePx;
     public int folderChildTextSizePx;
     public int folderChildDrawablePaddingPx;
+
+    // Drawer folder child
+    public int allAppsFolderChildIconSizePx;
+    public int allAppsFolderChildTextSizePx;
+    public int allAppsFolderChildDrawablePaddingPx;
 
     // Hotseat
     public int hotseatCellHeightPx;
@@ -466,16 +480,22 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
             workspaceSpringLoadShrinkFactor =
                     res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
         }
+        workspaceOptionsShrinkFactor =
+                res.getInteger(R.integer.config_workspaceOptionsShrinkPercentage) / 100.0f;
 
         // Folder icon
         folderIconSizePx = IconNormalizer.getNormalizedCircleSize(iconSizePx);
         folderIconOffsetYPx = (iconSizePx - folderIconSizePx) / 2;
+        allAppsFolderIconSizePx = IconNormalizer.getNormalizedCircleSize(allAppsIconSizePx);
+        allAppsFolderIconOffsetYPx = (allAppsIconSizePx - allAppsFolderIconSizePx) / 2;
     }
 
     private void updateAvailableFolderCellDimensions(DisplayMetrics dm, Resources res) {
         int folderBottomPanelSize = res.getDimensionPixelSize(R.dimen.folder_label_padding_top)
                 + res.getDimensionPixelSize(R.dimen.folder_label_padding_bottom)
                 + Utilities.calculateTextHeight(res.getDimension(R.dimen.folder_label_text_size));
+
+        // Home Folders
 
         updateFolderCellSize(1f, dm, res);
 
@@ -497,9 +517,28 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         if (scale < 1f) {
             updateFolderCellSize(scale, dm, res);
         }
+
+        // Drawer Folders
+        updateDrawerFolderCellSize(1f, dm, res);
+
+        // Check if the icons fit within the available height.
+        usedHeight = allAppsFolderCellHeightPx * inv.numFolderRows + folderBottomPanelSize;
+        maxHeight = availableHeightPx - totalWorkspacePadding.y - folderMargin;
+        scaleY = maxHeight / usedHeight;
+
+        // Check if the icons fit within the available width.
+        usedWidth = allAppsFolderCellWidthPx * inv.numFolderColumns;
+        maxWidth = availableWidthPx - totalWorkspacePadding.x - folderMargin;
+        scaleX = maxWidth / usedWidth;
+
+        scale = Math.min(scaleX, scaleY);
+        if (scale < 1f) {
+            updateDrawerFolderCellSize(scale, dm, res);
+        }
     }
 
     private void updateFolderCellSize(float scale, DisplayMetrics dm, Resources res) {
+        // Home Folders
         int folderLabelRowCount = prefs.getHomeLabelRows();
         
         folderChildIconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * scale);
@@ -514,6 +553,25 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         folderCellHeightPx = folderChildIconSizePx + 2 * cellPaddingY + textHeight;
         folderChildDrawablePaddingPx = Math.max(0,
                 (folderCellHeightPx - folderChildIconSizePx - textHeight) / 3);
+    }
+
+    private void updateDrawerFolderCellSize(float scale, DisplayMetrics dm, Resources res) {
+        // Drawer folders
+        int folderLabelRowCount = prefs.getHomeLabelRows();
+
+        allAppsFolderChildIconSizePx = (int) (Utilities.pxFromDp(inv.allAppsIconSize, dm) * scale);
+        allAppsFolderChildTextSizePx =
+                (int) (res.getDimensionPixelSize(R.dimen.folder_child_text_size) * scale);
+
+        int textHeight =
+                Utilities.calculateTextHeight(allAppsFolderChildTextSizePx) * folderLabelRowCount;
+        int cellPaddingX = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_x_padding) * scale);
+        int cellPaddingY = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_y_padding) * scale);
+
+        allAppsFolderCellWidthPx = allAppsFolderChildIconSizePx + 2 * cellPaddingX;
+        allAppsFolderCellHeightPx = allAppsFolderChildIconSizePx + 2 * cellPaddingY + textHeight;
+        allAppsFolderChildDrawablePaddingPx = Math.max(0,
+                (allAppsFolderCellHeightPx - allAppsFolderChildIconSizePx - textHeight) / 3);
     }
 
     public void updateInsets(Rect insets) {
@@ -589,10 +647,13 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
                 padding.set(availablePaddingX / 2, topWorkspacePadding + availablePaddingY / 2,
                         availablePaddingX / 2, paddingBottom + availablePaddingY / 2);
             } else {
+                int horizontalPadding = Utilities.getLawnchairPrefs(mContext)
+                        .getAllowFullWidthWidgets() ? 0 : desiredWorkspaceLeftRightMarginPx;
+
                 // Pad the top and bottom of the workspace with search/hotseat bar sizes
-                padding.set(desiredWorkspaceLeftRightMarginPx,
+                padding.set(horizontalPadding,
                         topWorkspacePadding,
-                        desiredWorkspaceLeftRightMarginPx,
+                        horizontalPadding,
                         paddingBottom);
             }
         }

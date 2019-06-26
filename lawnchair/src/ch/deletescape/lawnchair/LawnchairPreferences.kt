@@ -24,7 +24,9 @@ import android.net.Uri
 import android.os.Looper
 import android.provider.Settings
 import android.text.TextUtils
+import ch.deletescape.lawnchair.bugreport.BugReportClient
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
+import ch.deletescape.lawnchair.groups.AppGroupsManager
 import ch.deletescape.lawnchair.groups.DrawerTabs
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.preferences.DockStyle
@@ -79,6 +81,10 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val updateSmartspace = { updateSmartspace() }
     private val reloadIcons = { reloadIcons() }
     private val reloadIconPacks = { IconPackManager.getInstance(context).packList.reloadPacks() }
+    private val reloadDockStyle = {
+        LauncherAppState.getIDP(context).onDockStyleChanged(this)
+        recreate()
+    }
 
     private val lawnchairConfig = LawnchairConfig.getInstance(context)
 
@@ -120,6 +126,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val allowOverlap by BooleanPref("pref_allowOverlap", false, reloadAll)
     val desktopTextScale by FloatPref("pref_iconTextScaleSB", 1f, reloadAll)
     val centerWallpaper by BooleanPref("pref_centerWallpaper")
+    val lockDesktop by BooleanPref("pref_lockDesktop", false, reloadAll)
+    val usePopupMenuView by BooleanPref("pref_desktopUsePopupMenuView", true, doNothing)
 
     // Smartspace
     val enableSmartspace by BooleanPref("pref_smartspace", lawnchairConfig.enableSmartspace)
@@ -139,9 +147,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
 
     // Dock
-    val dockStyles = DockStyle.StyleManager(this, restart, resetAllApps)
+    val dockStyles = DockStyle.StyleManager(this, reloadDockStyle, resetAllApps)
     val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", false, doNothing)
-    val dockSearchBarPref by BooleanPref("pref_dockSearchBar", Utilities.ATLEAST_MARSHMALLOW, restart)
+    val dockSearchBarPref by BooleanPref("pref_dockSearchBar", Utilities.ATLEAST_MARSHMALLOW, recreate)
     inline val dockSearchBar get() = !dockHide && dockSearchBarPref
     val dockRadius get() = dockStyles.currentStyle.radius
     val dockShadow get() = dockStyles.currentStyle.enableShadow
@@ -177,18 +185,20 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val showPredictions by BooleanPref("pref_show_predictions", true, doNothing)
     private val drawerMultilineLabel by BooleanPref("pref_iconLabelsInTwoLines", false, recreate)
     val drawerLabelRows get() = if(drawerMultilineLabel) 2 else 1
-    val drawerTabs by lazy { DrawerTabs(this) }
+    val appGroupsManager by lazy { AppGroupsManager(this) }
+    val drawerTabs get() = appGroupsManager.drawerTabs
+    val currentTabsModel get() = appGroupsManager.getEnabledModel() as? DrawerTabs ?: appGroupsManager.drawerTabs
     val showActions by BooleanPref("pref_show_suggested_actions", true, doNothing)
     val sortDrawerByColors by BooleanPref("pref_allAppsColorSorted", false, reloadAll)
     val drawerTextScale by FloatPref("pref_allAppsIconTextScale", 1f, recreate)
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_showDevOptions", false, doNothing)
-    private var wipOptionsKey by StringPref("pref_wipOptionsKey", "", doNothing)
-    var wipOptionsEnabled
-        get() = wipOptionsKey == Settings.Secure.ANDROID_ID
+    private var debugMenuKey by StringPref("pref_debugMenuKey", "", doNothing)
+    var debugMenuEnabled
+        get() = debugMenuKey == Settings.Secure.ANDROID_ID
         set(value) {
-            wipOptionsKey = if (value) Settings.Secure.ANDROID_ID else ""
+            debugMenuKey = if (value) Settings.Secure.ANDROID_ID else ""
         }
     val showDebugInfo by BooleanPref("pref_showDebugInfo", false, doNothing)
     val alwaysClearIconCache by BooleanPref("pref_alwaysClearIconCache", false, restart)
@@ -196,7 +206,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, doNothing)
     val enablePhysics get() = !lowPerformanceMode
     val backupScreenshot by BooleanPref("pref_backupScreenshot", false, doNothing)
-    val useScaleAnim by BooleanPref("pref_useScaleAnim", false, doNothing)
+    var useScaleAnim by BooleanPref("pref_useScaleAnim", false, doNothing)
     val useWindowToIcon by BooleanPref("pref_useWindowToIcon", true, doNothing)
     val dismissTasksOnKill by BooleanPref("pref_dismissTasksOnKill", true, doNothing)
     var customFontName by StringPref("pref_customFontName", "Google Sans", doNothing)
@@ -204,6 +214,15 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val visualizeOccupied by BooleanPref("pref_debugVisualizeOccupied")
     val scaleAdaptiveBg by BooleanPref("pref_scaleAdaptiveBg", false)
     val folderBgColored by BooleanPref("pref_folderBgColorGen", false)
+    val brightnessTheme by BooleanPref("pref_brightnessTheme", false, restart)
+    val debugOkHttp by BooleanPref("pref_debugOkhttp", onChange = restart)
+    val showCrashNotifications by BooleanPref("pref_showCrashNotifications", true, restart)
+    val autoUploadBugReport by BooleanPref("pref_autoUploadBugReport", false) {
+        if (showCrashNotifications) {
+            BugReportClient.getInstance(context).setAutoUploadEnabled()
+        }
+    }
+    val forceFakePieAnims by BooleanPref("pref_forceFakePieAnims", false)
 
     // Search
     var searchProvider by StringPref("pref_globalSearchProvider", lawnchairConfig.defaultSearchProvider) {
@@ -460,6 +479,38 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
         operator fun get(key: K): V? {
             return valueMap[key]
+        }
+
+        fun clear() {
+            valueMap.clear()
+            saveChanges()
+        }
+    }
+
+    inline fun <reified T : Enum<T>> EnumPref(key: String, defaultValue: T,
+                                              noinline onChange: () -> Unit = doNothing): PrefDelegate<T> {
+        return IntBasedPref(key, defaultValue, onChange, { value ->
+            enumValues<T>().firstOrNull { item -> item.ordinal == value } ?: defaultValue
+        }, { it.ordinal }, { })
+    }
+
+    open inner class IntBasedPref<T : Any>(key: String, defaultValue: T, onChange: () -> Unit = doNothing,
+                                              private val fromInt: (Int) -> T,
+                                              private val toInt: (T) -> Int,
+                                              private val dispose: (T) -> Unit) :
+            PrefDelegate<T>(key, defaultValue, onChange) {
+        override fun onGetValue(): T {
+            return if (sharedPrefs.contains(key)) {
+                fromInt(sharedPrefs.getInt(getKey(), toInt(defaultValue)))
+            } else defaultValue
+        }
+
+        override fun onSetValue(value: T) {
+            edit { putInt(getKey(), toInt(value)) }
+        }
+
+        override fun disposeOldValue(oldValue: T) {
+            dispose(oldValue)
         }
     }
 

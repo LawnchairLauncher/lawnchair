@@ -50,6 +50,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
+import ch.deletescape.lawnchair.groups.DrawerFolderInfo;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Alarm;
 import com.android.launcher3.AppInfo;
@@ -261,10 +262,19 @@ public class Folder extends AbstractFloatingView implements DragSource,
         mFooter.measure(measureSpec, measureSpec);
         mFooterHeight = mFooter.getMeasuredHeight();
 
-        findViewById(R.id.settings_button).setOnClickListener(v -> {
-            animateClosed();
-            CustomBottomSheet.show(mLauncher, mInfo);
-        });
+        View settingsButton = findViewById(R.id.settings_button);
+        if (Utilities.getLawnchairPrefs(mLauncher).getLockDesktop()) {
+            settingsButton.setVisibility(View.GONE);
+        } else {
+            settingsButton.setOnClickListener(v -> {
+                animateClosed();
+                if (mInfo instanceof DrawerFolderInfo) {
+                    ((DrawerFolderInfo) mInfo).showEdit(mLauncher);
+                } else {
+                    CustomBottomSheet.show(mLauncher, mInfo);
+                }
+            });
+        }
     }
 
     public boolean onLongClick(View v) {
@@ -307,6 +317,9 @@ public class Folder extends AbstractFloatingView implements DragSource,
             return;
         }
 
+        if (isInAppDrawer()) {
+            close(true);
+        }
         mContent.removeItem(mCurrentDragView);
         if (dragObject.dragInfo instanceof ShortcutInfo) {
             mItemsInvalidated = true;
@@ -455,7 +468,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
         // In case any children didn't come across during loading, clean up the folder accordingly
         mFolderIcon.post(new Runnable() {
             public void run() {
-                if (getItemCount() <= 1) {
+                if (getItemCount() <= 1 && !isInAppDrawer()) {
                     replaceFolderWithFinalItem();
                 }
             }
@@ -682,7 +695,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
             mRearrangeOnClose = false;
         }
         if (getItemCount() <= 1) {
-            if (!mDragInProgress && !mSuppressFolderDeletion) {
+            if (!mDragInProgress && !mSuppressFolderDeletion && !isInAppDrawer()) {
                 replaceFolderWithFinalItem();
             } else if (mDragInProgress) {
                 mDeleteFolderOnDropCompleted = true;
@@ -692,6 +705,9 @@ public class Folder extends AbstractFloatingView implements DragSource,
         clearDragInfo();
         mState = STATE_SMALL;
         mContent.setCurrentPage(0);
+        if (mInfo instanceof DrawerFolderInfo) {
+            ((DrawerFolderInfo) mInfo).onCloseComplete();
+        }
     }
 
     @Override
@@ -796,6 +812,12 @@ public class Folder extends AbstractFloatingView implements DragSource,
     };
 
     public void completeDragExit() {
+        if (isInAppDrawer()) {
+            // This is faster and more straightforward than trying to get the dragged app reliably
+            // back into the folder in any other way
+            mLauncher.getAppsView().getApps().reset();
+            return;
+        }
         if (mIsOpen) {
             close(true);
             mRearrangeOnClose = true;
@@ -1266,6 +1288,9 @@ public class Folder extends AbstractFloatingView implements DragSource,
     }
 
     public void onRemove(ShortcutInfo item) {
+        if (isInAppDrawer()) {
+            return;
+        }
         mItemsInvalidated = true;
         View v = getViewForInfo(item);
         mContent.removeItem(v);
@@ -1508,5 +1533,9 @@ public class Folder extends AbstractFloatingView implements DragSource,
             }
         }
         return false;
+    }
+
+    public boolean isInAppDrawer() {
+        return mInfo.container == ItemInfo.NO_ID;
     }
 }

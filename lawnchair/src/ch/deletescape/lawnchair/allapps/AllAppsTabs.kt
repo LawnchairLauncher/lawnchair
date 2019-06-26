@@ -22,6 +22,7 @@ import android.content.Context
 import android.os.Process
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.groups.DrawerTabs
+import ch.deletescape.lawnchair.groups.FlowerpotTabs
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import com.android.launcher3.ItemInfo
 import com.android.launcher3.util.ComponentKey
@@ -49,7 +50,7 @@ class AllAppsTabs(private val context: Context) : Iterable<AllAppsTabs.Tab> {
     fun reloadTabs() {
         addedApps.clear()
         tabs.clear()
-        context.lawnchairPrefs.drawerTabs.getGroups().mapNotNullTo(tabs) {
+        context.lawnchairPrefs.currentTabsModel.getGroups().mapNotNullTo(tabs) {
             when {
                 hasWorkApps && it is DrawerTabs.PersonalTab ->
                     PersonalTab(createMatcher(addedApps, personalMatcher), drawerTab = it)
@@ -61,6 +62,10 @@ class AllAppsTabs(private val context: Context) : Iterable<AllAppsTabs.Tab> {
                     if (it.hideFromAllApps.value()) {
                         addedApps.addAll(it.contents.value())
                     }
+                    Tab(it.getTitle(), it.getFilter(context).matcher, drawerTab = it)
+                }
+                it is FlowerpotTabs.FlowerpotTab && !it.getMatches().isEmpty() -> {
+                    addedApps.addAll(it.getMatches())
                     Tab(it.getTitle(), it.getFilter(context).matcher, drawerTab = it)
                 }
                 else -> null

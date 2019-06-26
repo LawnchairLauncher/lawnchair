@@ -41,7 +41,7 @@ class BlankActivity : Activity() {
         } else if (intent.hasExtra("permissions")) {
             ActivityCompat.requestPermissions(this, intent.getStringArrayExtra("permissions"), permissionRequestCode)
         } else {
-            finish()
+            super.finish()
         }
     }
 

@@ -47,14 +47,20 @@ import org.json.JSONObject
 
 typealias GroupCreator<T> = (Context) -> T?
 
-abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: String) {
+abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsManager,
+                                              private val type: AppGroupsManager.CategorizationType) {
 
-    private val context = prefs.context
+    private val prefs = manager.prefs
+    val context = prefs.context
 
-    private var groupsDataJson by prefs.StringPref(key, "{}", prefs.withChangeCallback {
+    private var groupsDataJson by prefs.StringPref(type.prefsKey, "{}", prefs.withChangeCallback {
         onGroupsChanged(it)
     })
     private val groups = ArrayList<T>()
+
+    var isEnabled = manager.categorizationType == type
+
+    private val defaultGroups by lazy { getDefaultCreators().mapNotNull { it(context) } }
 
     init {
         loadGroups()
@@ -89,14 +95,22 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
                     used.add(creator)
                     creator(context)?.apply { loadCustomizations(context, group.asMap()) }
                 }
-        getDefaultGroups().asReversed().forEach { creator ->
+        getDefaultCreators().asReversed().forEach { creator ->
             if (creator !in used) {
                 creator(context)?.let { groups.add(0, it) }
             }
         }
     }
 
-    abstract fun getDefaultGroups(): List<GroupCreator<T>>
+    fun checkIsEnabled(changeCallback: LawnchairPreferencesChangeCallback) {
+        val enabled = manager.categorizationEnabled && manager.categorizationType == type
+        if (isEnabled != enabled) {
+            isEnabled = enabled
+            onGroupsChanged(changeCallback)
+        }
+    }
+
+    abstract fun getDefaultCreators(): List<GroupCreator<T>>
 
     abstract fun getGroupCreator(type: Int): GroupCreator<T>
 
@@ -106,6 +120,9 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
     abstract fun onGroupsChanged(changeCallback: LawnchairPreferencesChangeCallback)
 
     fun getGroups(): List<T> {
+        if (!isEnabled) {
+            return defaultGroups
+        }
         return groups
     }
 
@@ -118,7 +135,7 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
             val creator = getGroupCreator(it.type)
             used.add(creator)
         }
-        getDefaultGroups().asReversed().forEach { creator ->
+        getDefaultCreators().asReversed().forEach { creator ->
             if (creator !in used) {
                 creator(context)?.let { this.groups.add(0, it) }
             }
@@ -144,6 +161,7 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
         const val KEY_VERSION = "version"
         const val KEY_GROUPS = "tabs"
 
+        const val KEY_ID = "id"
         const val KEY_TYPE = "type"
         const val KEY_COLOR = "color"
         const val KEY_TITLE = "title"
@@ -165,6 +183,10 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
 
         fun getTitle(): String {
             return title.value ?: defaultTitle
+        }
+
+        open fun getSummary(context: Context): String? {
+            return null
         }
 
         fun addCustomization(customization: Customization<*, *>) {
@@ -283,6 +305,21 @@ abstract class AppGroups<T : AppGroups.Group>(prefs: LawnchairPreferences, key: 
             override fun clone(): Customization<Boolean, Boolean> {
                 return BooleanCustomization(key, default).also { it.value = value }
             }
+        }
+
+        open class LongCustomization(key: String, default: Long) : Customization<Long, Long>(key, default) {
+            override fun loadFromJson(context: Context, obj: Long?) {
+                value = obj
+            }
+
+            override fun saveToJson(context: Context): Long? {
+                return value
+            }
+
+            override fun clone(): Customization<Long, Long> {
+                return LongCustomization(key, default).also { it.value = value }
+            }
+
         }
 
         class SwitchRow(private val icon: Int, private val label: Int, key: String, default: Boolean) :

@@ -27,6 +27,7 @@ import android.support.annotation.Keep
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import ch.deletescape.lawnchair.animations.LawnchairAppTransitionManagerImpl
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import ch.deletescape.lawnchair.gestures.ui.SelectAppActivity
@@ -34,6 +35,7 @@ import ch.deletescape.lawnchair.getIcon
 import com.android.launcher3.LauncherState
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import ch.deletescape.lawnchair.lawnchairApp
+import ch.deletescape.lawnchair.lawnchairPrefs
 import com.android.launcher3.R
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
@@ -95,7 +97,12 @@ class OpenOverviewGestureHandler(context: Context, config: JSONObject?) : Gestur
     override val requiresForeground = true
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
-        OptionsPopupView.showDefaultOptions(controller.launcher, controller.touchDownPoint.x, controller.touchDownPoint.y)
+        if (context.lawnchairPrefs.usePopupMenuView) {
+            OptionsPopupView.showDefaultOptions(controller.launcher,
+                    controller.touchDownPoint.x, controller.touchDownPoint.y)
+        } else {
+            controller.launcher.stateManager.goToState(LauncherState.OPTIONS)
+        }
     }
 }
 
@@ -255,6 +262,10 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
                     // App is probably not installed anymore, show a Toast
                     Toast.makeText(context, R.string.failed, Toast.LENGTH_LONG).show()
                 }
+                val transitionManager = controller.launcher.launcherAppTransitionManager
+                        as? LawnchairAppTransitionManagerImpl
+                transitionManager?.playLaunchAnimation(controller.launcher, view,
+                        Intent().setComponent(target!!.componentName))
             }
             "shortcut" -> {
                 DeepShortcutManager.getInstance(context)

@@ -28,6 +28,7 @@ import android.view.animation.Interpolator;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.states.HomeState;
+import ch.deletescape.lawnchair.states.OptionsState;
 import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.uioverrides.AllAppsState;
 import com.android.launcher3.uioverrides.FastOverviewState;
@@ -56,6 +57,7 @@ public class LauncherState implements LawnchairPreferences.OnPreferenceChangeLis
     public static final int ALL_APPS_HEADER_EXTRA = 1 << 3; // e.g. app predictions
     public static final int ALL_APPS_CONTENT = 1 << 4;
     public static final int VERTICAL_SWIPE_INDICATOR = 1 << 5;
+    public static final int OPTIONS_VIEW = 1 << 6;
 
     protected static final int FLAG_MULTI_PAGE = 1 << 0;
     protected static final int FLAG_DISABLE_ACCESSIBILITY = 1 << 1;
@@ -76,7 +78,7 @@ public class LauncherState implements LawnchairPreferences.OnPreferenceChangeLis
                 }
             };
 
-    private static final LauncherState[] sAllStates = new LauncherState[5];
+    private static final LauncherState[] sAllStates = new LauncherState[6];
 
     /**
      * TODO: Create a separate class for NORMAL state.
@@ -92,6 +94,7 @@ public class LauncherState implements LawnchairPreferences.OnPreferenceChangeLis
     public static final LauncherState OVERVIEW = new OverviewState(2);
     public static final LauncherState FAST_OVERVIEW = new FastOverviewState(3);
     public static final LauncherState ALL_APPS = new AllAppsState(4);
+    public static final LauncherState OPTIONS = new OptionsState(5);
 
     protected static final Rect sTempRect = new Rect();
 

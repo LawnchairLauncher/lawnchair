@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
+import ch.deletescape.lawnchair.allapps.PredictionsDividerLayout;
 import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
 import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
@@ -56,7 +57,7 @@ import java.util.Collections;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
-public class PredictionRowView extends LinearLayout implements LogContainerProvider,
+public class PredictionRowView extends PredictionsDividerLayout implements LogContainerProvider,
         OnUpdateListener, OnDeviceProfileChangeListener, FontReceiver, OnColorChangeListener {
     private static final Interpolator ALPHA_FACTOR_INTERPOLATOR = input -> input < 0.8f ? 0.0f : (input - 0.8f) / 0.2f;
     private static final String TAG = "PredictionRowView";
@@ -75,7 +76,7 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
 
     private Layout mAllAppsLabelLayout;
     @ColorInt
-    private final int mAllAppsLabelTextColor;
+    private int mAllAppsLabelTextColor;
     private int mAllAppsLabelTextCurrentAlpha;
     private final int mAllAppsLabelTextFullAlpha;
     private final TextPaint mAllAppsLabelTextPaint;
@@ -97,7 +98,7 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
     private boolean mPredictionsEnabled;
     private float mScrollTranslation;
     private boolean mScrolledOut;
-    private final int mStrokeColor;
+    private int mStrokeColor;
     private Typeface mAllAppsLabelTypeface = Typeface.create("sans-serif-medium", Typeface.NORMAL);
 
     public enum DividerType {
@@ -130,28 +131,28 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
         mPaint = new Paint();
         mPaint.setColor(ContextCompat.getColor(context, isMainColorDark ? R.color.all_apps_prediction_row_separator_dark : R.color.all_apps_prediction_row_separator));
         mPaint.setStrokeWidth((float) getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height));
-        mStrokeColor = this.mPaint.getColor();
+        mStrokeColor = mPaint.getColor();
         mFocusHelper = new SimpleFocusIndicatorHelper(this);
         mNumPredictedAppsPerRow = LauncherAppState.getIDP(context).numColsDrawer; // TODO: make a separated pref
         mLauncher = Launcher.getLauncher(context);
         mLauncher.addOnDeviceProfileChangeListener(this);
-        ColorEngine.getInstance(context)
-                .addColorChangeListeners(this, Resolvers.ALLAPPS_ICON_LABEL);
 
-        mIconCurrentTextAlpha = this.mIconFullTextAlpha;
+        mIconCurrentTextAlpha = mIconFullTextAlpha;
         mAllAppsLabelTextPaint.setColor(ContextCompat.getColor(context, isMainColorDark ? R.color.all_apps_label_text_dark : R.color.all_apps_label_text));
-        mAllAppsLabelTextColor = this.mAllAppsLabelTextPaint.getColor();
-        mAllAppsLabelTextFullAlpha = Color.alpha(this.mAllAppsLabelTextColor);
-        mAllAppsLabelTextCurrentAlpha = this.mAllAppsLabelTextFullAlpha;
+        mAllAppsLabelTextColor = mAllAppsLabelTextPaint.getColor();
+        mAllAppsLabelTextFullAlpha = Color.alpha(mAllAppsLabelTextColor);
+        mAllAppsLabelTextCurrentAlpha = mAllAppsLabelTextFullAlpha;
         updateVisibility();
 
         CustomFontManager.Companion.getInstance(context).setCustomFont(this, CustomFontManager.FONT_DRAWER_TAB);
+        onColorChange(ColorEngine.Companion.getInstance(context).resolveColor(ColorEngine.Resolvers.ALLAPPS_ICON_LABEL));
     }
 
     @Override
     public void onColorChange(@NotNull ResolveInfo resolveInfo) {
         mIconTextColor = resolveInfo.getColor();
         mIconFullTextAlpha = Color.alpha(mIconTextColor);
+        super.onColorChange(resolveInfo);
     }
 
     protected void onAttachedToWindow() {
@@ -203,9 +204,9 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
         return dp.allAppsCellHeightPx + getPaddingBottom() + getPaddingTop();
     }
 
-    public void setDividerType(DividerType dividerType) {
+    public void setDividerType(DividerType dividerType, boolean force) {
         int i = 0;
-        if (mDividerType != dividerType) {
+        if (mDividerType != dividerType || force) {
             if (dividerType == DividerType.ALL_APPS_LABEL) {
                 rebuildLabel();
             } else {
@@ -264,25 +265,25 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
     }
 
     public void onAppsUpdated() {
-        this.mPredictedApps.clear();
-        this.mPredictedApps.addAll(processPredictedAppComponents(this.mPredictedAppComponents));
+        mPredictedApps.clear();
+        mPredictedApps.addAll(processPredictedAppComponents(mPredictedAppComponents));
         applyPredictionApps();
     }
 
     private void applyPredictionApps() {
-        if (this.mLoadingProgress != null) {
-            removeView(this.mLoadingProgress);
+        if (mLoadingProgress != null) {
+            removeView(mLoadingProgress);
         }
-        if (getChildCount() != this.mNumPredictedAppsPerRow) {
-            while (getChildCount() > this.mNumPredictedAppsPerRow) {
+        if (getChildCount() != mNumPredictedAppsPerRow) {
+            while (getChildCount() > mNumPredictedAppsPerRow) {
                 removeViewAt(0);
             }
-            while (getChildCount() < this.mNumPredictedAppsPerRow) {
-                BubbleTextView bubbleTextView = (BubbleTextView) this.mLauncher.getLayoutInflater().inflate(R.layout.all_apps_icon, this, false);
+            while (getChildCount() < mNumPredictedAppsPerRow) {
+                BubbleTextView bubbleTextView = (BubbleTextView) mLauncher.getLayoutInflater().inflate(R.layout.all_apps_icon, this, false);
                 bubbleTextView.setOnClickListener(ItemClickHandler.INSTANCE);
                 bubbleTextView.setOnLongClickListener(ItemLongClickListener.INSTANCE_ALL_APPS);
                 bubbleTextView.setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
-                bubbleTextView.setOnFocusChangeListener(this.mFocusHelper);
+                bubbleTextView.setOnFocusChangeListener(mFocusHelper);
                 LayoutParams layoutParams = (LayoutParams) bubbleTextView.getLayoutParams();
                 layoutParams.height = getExpectedHeight();
                 layoutParams.width = 0;
@@ -290,17 +291,17 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
                 addView(bubbleTextView);
             }
         }
-        int size = this.mPredictedApps.size();
-        int alphaComponent = ColorUtils.setAlphaComponent(this.mIconTextColor, this.mIconCurrentTextAlpha);
+        int size = mPredictedApps.size();
+        int alphaComponent = ColorUtils.setAlphaComponent(mIconTextColor, mIconCurrentTextAlpha);
         for (int i = 0; i < getChildCount(); i++) {
             BubbleTextView bubbleTextView2 = (BubbleTextView) getChildAt(i);
             bubbleTextView2.reset();
             if (size > i) {
                 bubbleTextView2.setVisibility(View.VISIBLE);
-                if (this.mPredictedApps.get(i) instanceof AppInfo) {
-                    bubbleTextView2.applyFromApplicationInfo((AppInfo) this.mPredictedApps.get(i));
-                } else if (this.mPredictedApps.get(i) instanceof ShortcutInfo) {
-                    bubbleTextView2.applyFromShortcutInfo((ShortcutInfo) this.mPredictedApps.get(i));
+                if (mPredictedApps.get(i) instanceof AppInfo) {
+                    bubbleTextView2.applyFromApplicationInfo((AppInfo) mPredictedApps.get(i));
+                } else if (mPredictedApps.get(i) instanceof ShortcutInfo) {
+                    bubbleTextView2.applyFromShortcutInfo((ShortcutInfo) mPredictedApps.get(i));
                 }
                 bubbleTextView2.setTextColor(alphaComponent);
             } else {
@@ -308,14 +309,14 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
             }
         }
         if (size == 0) {
-            if (this.mLoadingProgress == null) {
-                this.mLoadingProgress = LayoutInflater.from(getContext()).inflate(R.layout.prediction_load_progress, this, false);
+            if (mLoadingProgress == null) {
+                mLoadingProgress = LayoutInflater.from(getContext()).inflate(R.layout.prediction_load_progress, this, false);
             }
-            addView(this.mLoadingProgress);
+            addView(mLoadingProgress);
         } else {
-            this.mLoadingProgress = null;
+            mLoadingProgress = null;
         }
-        this.mParent.headerChanged();
+        mParent.headerChanged();
     }
 
     private List<ItemInfoWithIcon> processPredictedAppComponents(List<ComponentKeyMapper> list) {
@@ -336,13 +337,13 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
     }
 
     protected void onDraw(Canvas canvas) {
-        if (this.mDividerType == DividerType.LINE) {
+        if (mDividerType == DividerType.LINE) {
             int dimensionPixelSize = getResources().getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
             float height = (float) (getHeight() - (getPaddingBottom() / 2));
             Canvas canvas2 = canvas;
             float f = height;
-            canvas2.drawLine((float) (getPaddingLeft() + dimensionPixelSize), f, (float) ((getWidth() - getPaddingRight()) - dimensionPixelSize), height, this.mPaint);
-        } else if (this.mDividerType == DividerType.ALL_APPS_LABEL) {
+            canvas2.drawLine((float) (getPaddingLeft() + dimensionPixelSize), f, (float) ((getWidth() - getPaddingRight()) - dimensionPixelSize), height, mPaint);
+        } else if (mDividerType == DividerType.ALL_APPS_LABEL) {
             drawAllAppsHeader(canvas);
         }
     }
@@ -363,19 +364,19 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
     }
 
     public void setTextAlpha(int i) {
-        this.mIconCurrentTextAlpha = i;
-        int alphaComponent = ColorUtils.setAlphaComponent(this.mIconTextColor, this.mIconCurrentTextAlpha);
-        if (this.mLoadingProgress == null) {
+        mIconCurrentTextAlpha = i;
+        int alphaComponent = ColorUtils.setAlphaComponent(mIconTextColor, mIconCurrentTextAlpha);
+        if (mLoadingProgress == null) {
             for (int i2 = 0; i2 < getChildCount(); i2++) {
                 ((BubbleTextView) getChildAt(i2)).setTextColor(alphaComponent);
             }
         }
-        i = ColorUtils.setAlphaComponent(this.mStrokeColor, Math.round(((float) (Color.alpha(this.mStrokeColor) * i)) / 255f));
-        if (i != this.mPaint.getColor()) {
-            this.mPaint.setColor(i);
-            this.mAllAppsLabelTextCurrentAlpha = Math.round((float) ((this.mAllAppsLabelTextFullAlpha * this.mIconCurrentTextAlpha) / this.mIconFullTextAlpha));
-            this.mAllAppsLabelTextPaint.setColor(ColorUtils.setAlphaComponent(this.mAllAppsLabelTextColor, this.mAllAppsLabelTextCurrentAlpha));
-            if (this.mDividerType != DividerType.NONE) {
+        i = ColorUtils.setAlphaComponent(mStrokeColor, Math.round(((float) (Color.alpha(mStrokeColor) * i)) / 255f));
+        if (i != mPaint.getColor()) {
+            mPaint.setColor(i);
+            mAllAppsLabelTextCurrentAlpha = Math.round((mAllAppsLabelTextFullAlpha * mIconCurrentTextAlpha) / mIconFullTextAlpha);
+            mAllAppsLabelTextPaint.setColor(ColorUtils.setAlphaComponent(mAllAppsLabelTextColor, mAllAppsLabelTextCurrentAlpha));
+            if (mDividerType != DividerType.NONE) {
                 invalidate();
             }
         }
@@ -431,5 +432,14 @@ public class PredictionRowView extends LinearLayout implements LogContainerProvi
             this.mIsCollapsed = z;
             updateVisibility();
         }
+    }
+
+    @Override
+    public void onAllAppsLabelColorChanged() {
+        mStrokeColor = ColorUtils.setAlphaComponent(getAllAppsLabelColor(), Color.alpha(mStrokeColor));
+        mAllAppsLabelTextColor = getAllAppsLabelColor();
+        setTextAlpha(mIconCurrentTextAlpha);
+        setDividerType(mDividerType, true);
+        invalidate();
     }
 }

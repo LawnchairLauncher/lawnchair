@@ -24,8 +24,12 @@ import android.location.Criteria
 import android.location.LocationManager
 import android.support.annotation.Keep
 import ch.deletescape.lawnchair.checkLocationAccess
+import ch.deletescape.lawnchair.location.IPLocation
+import ch.deletescape.lawnchair.perms.CustomPermissionManager
+import ch.deletescape.lawnchair.runOnUiWorkerThread
 import ch.deletescape.lawnchair.twilight.TwilightManager
 import ch.deletescape.lawnchair.util.Temperature
+import com.android.launcher3.R
 import com.android.launcher3.util.PackageManagerHelper
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator
 import com.luckycatlabs.sunrisesunset.dto.Location
@@ -44,6 +48,7 @@ class OnePlusWeatherDataProvider(controller: LawnchairSmartspaceController) :
     private val locationManager: LocationManager? by lazy { if (locationAccess) {
         context.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
     } else null }
+    private val ipLocation = IPLocation(context)
 
     init {
         if (!OnePlusWeatherDataProvider.isAvailable(context)) {
@@ -58,11 +63,24 @@ class OnePlusWeatherDataProvider(controller: LawnchairSmartspaceController) :
     }
 
     override fun onWeatherUpdated(weatherData: OPWeatherProvider.WeatherData) {
-        updateData(LawnchairSmartspaceController.WeatherData(
-                getConditionIcon(weatherData),
-                Temperature(weatherData.temperature, getTemperatureUnit(weatherData)),
-                forecastIntent = Intent().setClassName(OPWeatherProvider.WEATHER_PACKAGE_NAME, OPWeatherProvider.WEATHER_LAUNCH_ACTIVITY)
-        ), null)
+        if (locationAccess) {
+            update(weatherData)
+        } else {
+            CustomPermissionManager.getInstance(context).checkOrRequestPermission(CustomPermissionManager.PERMISSION_IPLOCATE, R.string.permission_iplocate_twilight_explanation) {
+                // update regardless of the result
+                update(weatherData)
+            }
+        }
+    }
+
+    private fun update(weatherData: OPWeatherProvider.WeatherData) {
+        runOnUiWorkerThread {
+            updateData(LawnchairSmartspaceController.WeatherData(
+                    getConditionIcon(weatherData),
+                    Temperature(weatherData.temperature, getTemperatureUnit(weatherData)),
+                    forecastIntent = Intent().setClassName(OPWeatherProvider.WEATHER_PACKAGE_NAME, OPWeatherProvider.WEATHER_LAUNCH_ACTIVITY)
+            ), null)
+        }
     }
 
     private fun getConditionIcon(data: OPWeatherProvider.WeatherData):Bitmap {
@@ -72,8 +90,13 @@ class OnePlusWeatherDataProvider(controller: LawnchairSmartspaceController) :
         if (locationAccess) {
             locationManager?.getBestProvider(Criteria(), true)?.let { provider ->
                 locationManager?.getLastKnownLocation(provider)?.let { location ->
-                    isDay = TwilightManager.calculateTwilightState(location, c.timeInMillis)?.isNight != true
+                    isDay = TwilightManager.calculateTwilightState(location.latitude, location.longitude, c.timeInMillis)?.isNight != true
                 }
+            }
+        } else {
+            val res = ipLocation.get()
+            if (res.success) {
+                isDay = TwilightManager.calculateTwilightState(res.lat, res.lon, c.timeInMillis)?.isNight != true
             }
         }
 

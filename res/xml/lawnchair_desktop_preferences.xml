@@ -16,6 +16,11 @@
             android:title="@string/overlap_placement"
             android:summary="@string/overlap_placement_summary" />
 
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_lockDesktop"
+            android:title="@string/lock_desktop" />
+
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
@@ -74,11 +79,22 @@
             android:title="@string/auto_add_shortcuts_label"
             app:controllerClass=".AddIconToHomeController"/>
 
+        <ch.deletescape.lawnchair.settings.ui.PreferenceDialogPreference
+            android:key="pref_iconPopupMenu"
+            android:title="@string/pref_icon_popup_menu"
+            app:content="@xml/lawnchair_icon_popup_menu_preferences" />
+
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_desktopMisc"
         android:title="@string/pref_category_misc">
+
+        <ch.deletescape.lawnchair.preferences.AnimationTypePreference
+            android:key="pref_animationType"
+            android:defaultValue=""
+            android:title="@string/animation_type_title"
+            android:summary="%s" />
 
         <com.android.launcher3.views.ButtonPreference
             android:key="pref_icon_badging"

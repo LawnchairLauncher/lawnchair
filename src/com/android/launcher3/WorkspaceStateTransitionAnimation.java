@@ -21,6 +21,7 @@ import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.HOTSEAT_SEARCH_BOX;
+import static com.android.launcher3.LauncherState.OPTIONS_VIEW;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_BLUR_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_SCALE;
@@ -36,6 +37,7 @@ import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.util.InvertedMultiValueAlpha;
 import ch.deletescape.lawnchair.util.InvertedMultiValueAlpha.InvertedAlphaProperty;
 import ch.deletescape.lawnchair.views.LawnchairBackgroundView;
+import ch.deletescape.lawnchair.views.OptionsPanel;
 import com.android.launcher3.LauncherState.PageAlphaProvider;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.anim.AnimatorSetBuilder;
@@ -98,6 +100,10 @@ public class WorkspaceStateTransitionAnimation {
             propertySetter.setViewAlpha(mLauncher.getWorkspace().getPageIndicator(),
                     hotseatIconsAlpha, fadeInterpolator);
         }
+
+        // Set options view
+        OptionsPanel optionsPanel = LawnchairLauncher.getLauncher(mLauncher).getOptionsView();
+        propertySetter.setViewAlpha(optionsPanel, (elements & OPTIONS_VIEW) != 0 ? 1 : 0, fadeInterpolator);
 
         if (!config.playNonAtomicComponent()) {
             // Only the alpha and scale, handled above, are included in the atomic animation.

@@ -222,8 +222,12 @@ public class IconShapeOverride {
             LauncherAppState.getInstance(mContext).getIconCache().clear();
 
             // Schedule restart
-            ((LawnchairLauncher) LauncherAppState.getInstanceNoCreate().getLauncher())
-                    .scheduleRestart();
+            LawnchairLauncher launcher = ((LawnchairLauncher) LauncherAppState.getInstanceNoCreate().getLauncher());
+            if (launcher != null) {
+                launcher.scheduleRestart();
+            } else {
+                Utilities.restartLauncher(mContext);
+            }
 
             // Wait for it
 //            try {
