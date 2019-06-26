@@ -101,7 +101,7 @@ class SelectableAppsActivity : SettingsActivity() {
         }
 
         private fun updateTitle(size: Int) {
-            activity!!.title = getString(R.string.selected_count, size)
+            activity?.title = getString(R.string.selected_count, size)
         }
     }
 
