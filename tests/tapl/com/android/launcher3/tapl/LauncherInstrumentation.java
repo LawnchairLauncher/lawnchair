@@ -503,9 +503,9 @@ public final class LauncherInstrumentation {
     }
 
     @NonNull
-    public WidgetCell getWidgetCell() {
+    public AddToHomeScreenPrompt getAddToHomeScreenPrompt() {
         try (LauncherInstrumentation.Closable c = addContextLayer("want to get widget cell")) {
-            return new WidgetCell(this);
+            return new AddToHomeScreenPrompt(this);
         }
     }
 

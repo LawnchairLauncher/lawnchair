@@ -143,9 +143,15 @@ public final class Workspace extends Home {
     }
 
     @NonNull
-    private AppIcon getHotseatAppIcon(String appName) {
+    public AppIcon getHotseatAppIcon(String appName) {
         return new AppIcon(mLauncher, mLauncher.getObjectInContainer(
                 mHotseat, AppIcon.getAppIconSelector(appName, mLauncher)));
+    }
+
+    @NonNull
+    public Folder getHotseatFolder(String appName) {
+        return new Folder(mLauncher, mLauncher.getObjectInContainer(
+                mHotseat, Folder.getSelector(appName, mLauncher)));
     }
 
     static void dragIconToWorkspace(
