@@ -46,6 +46,7 @@ import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
+import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
@@ -181,6 +182,13 @@ public abstract class RecentsUiFactory {
      */
     public static StateHandler createRecentsViewStateController(Launcher launcher) {
         return new RecentsViewStateController(launcher);
+    }
+
+    /**
+     * Clears the swipe shared state for the current swipe gesture.
+     */
+    public static void clearSwipeSharedState(boolean finishAnimation) {
+        TouchInteractionService.getSwipeSharedState().clearAllState(finishAnimation);
     }
 
     /**

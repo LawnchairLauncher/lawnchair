@@ -765,7 +765,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 LauncherAnimationRunner.AnimationResult result) {
             if (!mLauncher.hasBeenResumed()) {
                 // If launcher is not resumed, wait until new async-frame after resume
-                mLauncher.setOnResumeCallback(() ->
+                mLauncher.addOnResumeCallback(() ->
                         postAsyncCallback(mHandler, () ->
                                 onCreateAnimation(targetCompats, result)));
                 return;
