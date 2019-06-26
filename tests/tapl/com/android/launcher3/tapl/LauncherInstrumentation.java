@@ -502,6 +502,13 @@ public final class LauncherInstrumentation {
         }
     }
 
+    @NonNull
+    public WidgetCell getWidgetCell() {
+        try (LauncherInstrumentation.Closable c = addContextLayer("want to get widget cell")) {
+            return new WidgetCell(this);
+        }
+    }
+
     /**
      * Gets the Overview object if the current state is showing the overview panel. Fails if the
      * launcher is not in that state.
@@ -513,17 +520,6 @@ public final class LauncherInstrumentation {
         try (LauncherInstrumentation.Closable c = addContextLayer("want to get overview")) {
             return new Overview(this);
         }
-    }
-
-    /**
-     * Gets the Base overview object if either Launcher is in overview state or the fallback
-     * overview activity is showing. Fails otherwise.
-     *
-     * @return BaseOverview object.
-     */
-    @NonNull
-    public BaseOverview getBaseOverview() {
-        return new BaseOverview(this);
     }
 
     /**
@@ -617,6 +613,16 @@ public final class LauncherInstrumentation {
     }
 
     @NonNull
+    UiObject2 waitForLauncherObject(BySelector selector) {
+        return waitForObjectBySelector(selector.pkg(getLauncherPackageName()));
+    }
+
+    @NonNull
+    UiObject2 tryWaitForLauncherObject(BySelector selector, long timeout) {
+        return tryWaitForObjectBySelector(selector.pkg(getLauncherPackageName()), timeout);
+    }
+
+    @NonNull
     UiObject2 waitForFallbackLauncherObject(String resName) {
         return waitForObjectBySelector(getFallbackLauncherObjectSelector(resName));
     }
@@ -625,6 +631,10 @@ public final class LauncherInstrumentation {
         final UiObject2 object = mDevice.wait(Until.findObject(selector), WAIT_TIME_MS);
         assertNotNull("Can't find a launcher object; selector: " + selector, object);
         return object;
+    }
+
+    private UiObject2 tryWaitForObjectBySelector(BySelector selector, long timeout) {
+        return mDevice.wait(Until.findObject(selector), timeout);
     }
 
     BySelector getLauncherObjectSelector(String resName) {
