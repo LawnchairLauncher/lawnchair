@@ -4,7 +4,7 @@ import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
 import android.util.Log;
 
-import com.android.launcher3.ui.AbstractLauncherUiTest;
+import androidx.test.uiautomator.UiDevice;
 
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -16,16 +16,16 @@ import java.io.IOException;
 public class FailureWatcher extends TestWatcher {
     private static final String TAG = "FailureWatcher";
     private static int sScreenshotCount = 0;
-    private AbstractLauncherUiTest mAbstractLauncherUiTest;
+    final private UiDevice mDevice;
 
-    public FailureWatcher(AbstractLauncherUiTest abstractLauncherUiTest) {
-        mAbstractLauncherUiTest = abstractLauncherUiTest;
+    public FailureWatcher(UiDevice device) {
+        mDevice = device;
     }
 
     private void dumpViewHierarchy() {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         try {
-            mAbstractLauncherUiTest.getDevice().dumpWindowHierarchy(stream);
+            mDevice.dumpWindowHierarchy(stream);
             stream.flush();
             stream.close();
             for (String line : stream.toString().split("\\r?\\n")) {
@@ -38,7 +38,7 @@ public class FailureWatcher extends TestWatcher {
 
     @Override
     protected void failed(Throwable e, Description description) {
-        if (mAbstractLauncherUiTest.getDevice() == null) return;
+        if (mDevice == null) return;
         final String pathname = getInstrumentation().getTargetContext().
                 getFilesDir().getPath() + "/TaplTestScreenshot" + sScreenshotCount++ + ".png";
         Log.e(TAG, "Failed test " + description.getMethodName() +
@@ -48,12 +48,12 @@ public class FailureWatcher extends TestWatcher {
         dumpViewHierarchy();
 
         try {
-            final String dumpsysResult = mAbstractLauncherUiTest.getDevice().executeShellCommand(
+            final String dumpsysResult = mDevice.executeShellCommand(
                     "dumpsys activity service TouchInteractionService");
             Log.d(TAG, "TouchInteractionService: " + dumpsysResult);
         } catch (IOException ex) {
         }
 
-        mAbstractLauncherUiTest.getDevice().takeScreenshot(new File(pathname));
+        mDevice.takeScreenshot(new File(pathname));
     }
 }
