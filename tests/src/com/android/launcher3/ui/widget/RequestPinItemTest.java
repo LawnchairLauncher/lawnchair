@@ -28,8 +28,6 @@ import android.view.View;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
-import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
@@ -38,6 +36,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.tapl.AddToHomeScreenPrompt;
 import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
 import com.android.launcher3.testcomponent.RequestPinItemActivity;
@@ -45,7 +44,6 @@ import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ShellCommandRule;
-import com.android.launcher3.widget.WidgetCell;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -159,13 +157,11 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         // call the requested method to start the flow
         mTargetContext.sendBroadcast(RequestPinItemActivity.getCommandIntent(
                 RequestPinItemActivity.class, activityMethod));
-        mLauncher.getWidgetCell();
+        final AddToHomeScreenPrompt addToHomeScreenPrompt = mLauncher.getAddToHomeScreenPrompt();
 
         // Accept confirmation:
         BlockingBroadcastReceiver resultReceiver = new BlockingBroadcastReceiver(mCallbackAction);
-        mDevice.wait(Until.findObject(
-                By.text(mLauncher.isAvd() ? "ADD AUTOMATICALLY" : "Add automatically")),
-                DEFAULT_UI_TIMEOUT).click();
+        addToHomeScreenPrompt.addAutomatically();
         Intent result = resultReceiver.blockingGetIntent();
         assertNotNull(result);
         mAppWidgetId = result.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
