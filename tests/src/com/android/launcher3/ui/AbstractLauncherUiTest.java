@@ -20,7 +20,6 @@ import static androidx.test.InstrumentationRegistry.getInstrumentation;
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import static java.lang.System.exit;
 
@@ -38,10 +37,7 @@ import android.util.Log;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.BySelector;
-import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiDevice;
-import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.Launcher;
@@ -50,7 +46,6 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.MainThreadExecutor;
-import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.model.AppLaunchTracker;
@@ -86,7 +81,6 @@ public abstract class AbstractLauncherUiTest {
     public static final long DEFAULT_ACTIVITY_TIMEOUT = TimeUnit.SECONDS.toMillis(10);
     public static final long DEFAULT_BROADCAST_TIMEOUT_SECS = 5;
 
-    public static final long SHORT_UI_TIMEOUT = 300;
     public static final long DEFAULT_UI_TIMEOUT = 10000;
     private static final String TAG = "AbstractLauncherUiTest";
 
@@ -177,31 +171,6 @@ public abstract class AbstractLauncherUiTest {
             resetLoaderState();
         } else {
             mDevice.executeShellCommand("pm clear " + mDevice.getLauncherPackageName());
-        }
-    }
-
-    /**
-     * Scrolls the {@param container} until it finds an object matching {@param condition}.
-     *
-     * @return the matching object.
-     */
-    protected UiObject2 scrollAndFind(UiObject2 container, BySelector condition) {
-        final int margin = ResourceUtils.getNavbarSize(
-                ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, mLauncher.getResources()) + 1;
-        container.setGestureMargins(0, 0, 0, margin);
-
-        int i = 0;
-        for (; ; ) {
-            // findObject can only execute after spring settles.
-            mDevice.wait(Until.findObject(condition), SHORT_UI_TIMEOUT);
-            UiObject2 widget = container.findObject(condition);
-            if (widget != null && widget.getVisibleBounds().intersects(
-                    0, 0, mDevice.getDisplayWidth(),
-                    mDevice.getDisplayHeight() - margin)) {
-                return widget;
-            }
-            if (++i > 40) fail("Too many attempts");
-            container.scroll(Direction.DOWN, 1f);
         }
     }
 

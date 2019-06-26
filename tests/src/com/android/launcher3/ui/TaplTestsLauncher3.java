@@ -216,7 +216,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
             final AppIcon app = allApps.getAppIcon("TestActivity7");
             assertNotNull("AppIcon.launch returned null", app.launch(getAppPackageName()));
             test.executeOnLauncher(launcher -> assertTrue(
-                    "Launcher activity is the top activity; expecting another activity to be the top "
+                    "Launcher activity is the top activity; expecting another activity to be the "
+                            + "top "
                             + "one",
                     test.isInBackground(launcher)));
         } finally {
@@ -306,11 +307,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 switchToAllApps();
         allApps.freeze();
         try {
-            allApps.
-                    getAppIcon(APP_NAME).
-                    dragToWorkspace().
-                    getWorkspaceAppIcon(APP_NAME).
-                    launch(getAppPackageName());
+            allApps.getAppIcon(APP_NAME).dragToWorkspace();
+            mLauncher.getWorkspace().getWorkspaceAppIcon(APP_NAME).launch(getAppPackageName());
         } finally {
             allApps.unfreeze();
         }
@@ -339,13 +337,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                     getMenuItem(0);
             final String shortcutName = menuItem.getText();
 
-            // 4. Drag the first shortcut to the home screen.
-            // 5. Verify that the shortcut works on home screen
-            //    (the app opens and has the same text as the shortcut).
-            menuItem.
-                    dragToWorkspace().
-                    getWorkspaceAppIcon(shortcutName).
-                    launch(getAppPackageName());
+            menuItem.dragToWorkspace();
+            mLauncher.getWorkspace().getWorkspaceAppIcon(shortcutName).launch(getAppPackageName());
         } finally {
             allApps.unfreeze();
         }
