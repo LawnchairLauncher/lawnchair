@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.anim;
 
+import static androidx.dynamicanimation.animation.FloatPropertyCompat.createFloatPropertyCompat;
+
 import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 
 import android.animation.Animator;
@@ -24,15 +26,12 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.FloatProperty;
 import android.util.Log;
-import android.util.Property;
-
-import com.android.launcher3.ProgressInterface;
 
 import java.util.ArrayList;
 
 import androidx.dynamicanimation.animation.DynamicAnimation.OnAnimationEndListener;
-import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
@@ -40,12 +39,11 @@ import androidx.dynamicanimation.animation.SpringForce;
  * This animator allows for an object's property to be be controlled by an {@link ObjectAnimator} or
  * a {@link SpringAnimation}. It extends ValueAnimator so it can be used in an AnimatorSet.
  */
-public class SpringObjectAnimator<T extends ProgressInterface> extends ValueAnimator {
+public class SpringObjectAnimator<T> extends ValueAnimator {
 
     private static final String TAG = "SpringObjectAnimator";
     private static boolean DEBUG = false;
 
-    private T mObject;
     private ObjectAnimator mObjectAnimator;
     private float[] mValues;
 
@@ -57,29 +55,15 @@ public class SpringObjectAnimator<T extends ProgressInterface> extends ValueAnim
     private boolean mAnimatorEnded = true;
     private boolean mEnded = true;
 
-    private static final FloatPropertyCompat<ProgressInterface> sFloatProperty =
-            new FloatPropertyCompat<ProgressInterface>("springObjectAnimator") {
-        @Override
-        public float getValue(ProgressInterface object) {
-            return object.getProgress();
-        }
-
-        @Override
-        public void setValue(ProgressInterface object, float progress) {
-            object.setProgress(progress);
-        }
-    };
-
-    public SpringObjectAnimator(T object, String name, float minimumVisibleChange, float damping,
-            float stiffness, float... values) {
-        mObject = object;
-        mSpring = new SpringAnimation(object, sFloatProperty);
+    public SpringObjectAnimator(T object, FloatProperty<T> property, float minimumVisibleChange,
+            float damping, float stiffness, float... values) {
+        mSpring = new SpringAnimation(object, createFloatPropertyCompat(property));
         mSpring.setMinimumVisibleChange(minimumVisibleChange);
         mSpring.setSpring(new SpringForce(0)
                 .setDampingRatio(damping)
                 .setStiffness(stiffness));
         mSpring.setStartVelocity(0.01f);
-        mProperty = new SpringProperty<T>(name, mSpring);
+        mProperty = new SpringProperty<>(property, mSpring);
         mObjectAnimator = ObjectAnimator.ofFloat(object, mProperty, values);
         mValues = values;
         mListeners = new ArrayList<>();
@@ -285,13 +269,15 @@ public class SpringObjectAnimator<T extends ProgressInterface> extends ValueAnim
         mObjectAnimator.setCurrentPlayTime(playTime);
     }
 
-    public static class SpringProperty<T extends ProgressInterface> extends Property<T, Float> {
+    public static class SpringProperty<T> extends FloatProperty<T> {
 
         boolean useSpring = false;
+        final FloatProperty<T> mProperty;
         final SpringAnimation mSpring;
 
-        public SpringProperty(String name, SpringAnimation spring) {
-            super(Float.class, name);
+        public SpringProperty(FloatProperty<T> property, SpringAnimation spring) {
+            super(property.getName());
+            mProperty = property;
             mSpring = spring;
         }
 
@@ -301,15 +287,15 @@ public class SpringObjectAnimator<T extends ProgressInterface> extends ValueAnim
 
         @Override
         public Float get(T object) {
-            return object.getProgress();
+            return mProperty.get(object);
         }
 
         @Override
-        public void set(T object, Float progress) {
+        public void setValue(T object, float progress) {
             if (useSpring) {
                 mSpring.animateToFinalPosition(progress);
             } else {
-                object.setProgress(progress);
+                mProperty.setValue(object, progress);
             }
         }
     }
