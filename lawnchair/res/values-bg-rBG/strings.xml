@@ -359,6 +359,7 @@
     <string name="pref_sesame_show_shortcuts">Преки пътища за приложенията</string>
     <string name="pref_sesame_show_shortcuts_summary">Показвай преките пътища от Sesame в изскачащото меню</string>
     <string name="allow">Разреши</string>
+    <string name="deny">Откажи</string>
     <string name="sesame_enable_integration_title">Разреши интеграция</string>
     <string name="sesame_enable_integration_description"><![CDATA[Разрешава споделяне на данни между Lawnchair и Sesame. Можете да промените това в настройките на Lawnchair или Sesame.]]></string>
     <string name="sesame_version">Версия на интеграцията</string>
@@ -419,4 +420,25 @@
     <string name="pref_notification_count_summary">Показвай броя на известията в точките за известия</string>
     <string name="pref_center_wallpaper">Винаги центриран тапет</string>
     <string name="pref_center_wallpaper_summary">Това ще изключи ефекта на местене на тапета</string>
+    <string name="pref_appcategorization_style_text">Стил</string>
+    <string name="pref_app_groups_create">Създай</string>
+    <string name="pref_appcategorization_folders_title">Папки</string>
+    <string name="pref_appcategorization_tabs_title">Раздели</string>
+    <string name="default_folder_name">Нова папка</string>
+    <string name="drawer_folders">Папки</string>
+    <string name="category_communication">Комуникация</string>
+    <string name="category_entertainment">Развлечения</string>
+    <string name="category_food_and_drink">Храна и напитки</string>
+    <string name="category_game">Игри</string>
+    <string name="category_music">Музика</string>
+    <string name="category_news">Новини</string>
+    <string name="category_photography">Фотография</string>
+    <string name="category_tools">Инструменти</string>
+    <string name="reset_custom_icons_confirmation">Сигурен ли си, че искате да нулираш всички потребителски икони? Това действие е необратимо.</string>
+    <string name="action_dogbin_upload_error">Качването е неуспешно</string>
+    <string name="action_dogbin_copy_link">Копирай връзката</string>
+    <string name="copied_toast">Копирано</string>
+    <string name="action_copy">Копирай</string>
+    <string name="action_copy_link">Копирай връзката</string>
+    <string name="action_share">Споделяне</string>
 </resources>
