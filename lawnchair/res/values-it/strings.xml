@@ -478,9 +478,12 @@
     <string name="animation_type_pie_like">Stile Pie</string>
     <string name="animation_type_reveal">Rivela</string>
     <string name="animation_type_slide_up">Dal basso verso l\'alto</string>
+    <string name="animation_type_scale_up">Aumenta</string>
     <string name="animation_type_blink">Lampeggia</string>
     <string name="animation_type_fade">Dissolvenza</string>
+    <string name="permission_iplocate_twilight_explanation">Questo permette calcoli più precisi dell\'orario senza bisogno di sapere la tua posizione esatta.</string>
     <string name="pref_appcategorization_flowerpot_title">Categoria</string>
+    <string name="pref_appcategorization_flowerpot_summary">Le app sono selezionate automaticamente basandosi sui metadati.</string>
     <string name="select_tab_type">Tipo scheda</string>
     <string name="tab_type_custom">Scheda personalizzata</string>
     <string name="tab_type_custom_desc">Seleziona manualmente app per questa scheda.</string>
