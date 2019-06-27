@@ -128,6 +128,16 @@ public final class Utilities {
     public static final int EDGE_NAV_BAR = 1 << 8;
 
     /**
+     * Set on a motion event do disallow any gestures and only handle touch.
+     * See {@link MotionEvent#setEdgeFlags(int)}.
+     */
+    public static final int FLAG_NO_GESTURES = 1 << 9;
+
+    public static boolean shouldDisableGestures(MotionEvent ev) {
+        return (ev.getEdgeFlags() & FLAG_NO_GESTURES) == FLAG_NO_GESTURES;
+    }
+
+    /**
      * Indicates if the device has a debug build. Should only be used to store additional info or
      * add extra logging and not for changing the app behavior.
      */

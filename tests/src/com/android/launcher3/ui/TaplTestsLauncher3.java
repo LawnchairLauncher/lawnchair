@@ -59,11 +59,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     public static void initialize(AbstractLauncherUiTest test) throws Exception {
         test.clearLauncherData();
-        if (TestHelpers.isInLauncherProcess()) {
-            test.mActivityMonitor.returnToHome();
-        } else {
-            test.mDevice.pressHome();
-        }
+        test.mDevice.pressHome();
         test.waitForLauncherCondition("Launcher didn't start", launcher -> launcher != null);
         test.waitForState("Launcher internal state didn't switch to Home", LauncherState.NORMAL);
         test.waitForResumed("Launcher internal state is still Background");
@@ -279,8 +275,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     public void testLaunchMenuItem() throws Exception {
-        if (!TestHelpers.isInLauncherProcess()) return;
-
         final AllApps allApps = mLauncher.
                 getWorkspace().
                 switchToAllApps();
@@ -327,8 +321,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     public void testDragShortcut() throws Throwable {
-        if (!TestHelpers.isInLauncherProcess()) return;
-
         // 1. Open all apps and wait for load complete.
         // 2. Find the app and long press it to show shortcuts.
         // 3. Press icon center until shortcuts appear

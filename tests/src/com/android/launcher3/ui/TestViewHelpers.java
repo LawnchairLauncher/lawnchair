@@ -54,21 +54,6 @@ public class TestViewHelpers {
         return UiDevice.getInstance(getInstrumentation());
     }
 
-    /**
-     * Opens all apps and returns the recycler view
-     */
-    public static UiObject2 openAllApps() {
-        final UiDevice device = getDevice();
-        device.waitForIdle();
-        UiObject2 hotseat = device.wait(
-                Until.findObject(getSelectorForId(R.id.hotseat)), 2500);
-        Point start = hotseat.getVisibleCenter();
-        int endY = (int) (device.getDisplayHeight() * 0.1f);
-        // 100 px/step
-        device.swipe(start.x, start.y, start.x, endY, (start.y - endY) / 100);
-        return findViewById(R.id.apps_list_view);
-    }
-
     public static UiObject2 findViewById(int id) {
         return getDevice().wait(Until.findObject(getSelectorForId(id)),
                 AbstractLauncherUiTest.DEFAULT_UI_TIMEOUT);

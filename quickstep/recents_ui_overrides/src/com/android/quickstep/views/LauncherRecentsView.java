@@ -33,9 +33,11 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.StateListener;
@@ -249,5 +251,17 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
                     & RECENTS_CLEAR_ALL_BUTTON) != 0;
             setDisallowScrollToClearAll(!hasClearAllButton);
         }
+    }
+
+    @Override
+    protected boolean shouldStealTouchFromSiblingsBelow(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            // Allow touches to go through to the hotseat.
+            Hotseat hotseat = mActivity.getHotseat();
+            boolean touchingHotseat = hotseat.isShown()
+                    && mActivity.getDragLayer().isEventOverView(hotseat, ev, this);
+            return !touchingHotseat;
+        }
+        return super.shouldStealTouchFromSiblingsBelow(ev);
     }
 }

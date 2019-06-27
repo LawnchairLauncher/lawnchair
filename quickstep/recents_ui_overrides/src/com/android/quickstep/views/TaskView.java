@@ -368,6 +368,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         } else {
             mSnapshotView.setThumbnail(null, null);
             setIcon(null);
+            // Reset the task thumbnail reference as well (it will be fetched from the cache or
+            // reloaded next time we need it)
+            mTask.thumbnail = null;
         }
     }
 
@@ -488,9 +491,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mSnapshotView.setThumbnail(mTask, null);
         setOverlayEnabled(false);
         onTaskListVisibilityChanged(false);
-        if (mTask != null) {
-            mTask.thumbnail = null;
-        }
     }
 
     @Override

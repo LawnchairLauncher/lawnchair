@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.ui.widget;
 
+import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 
@@ -26,9 +28,6 @@ import android.view.View;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
-import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.UiObject2;
-import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
@@ -37,15 +36,14 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.tapl.AddToHomeScreenPrompt;
 import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
 import com.android.launcher3.testcomponent.RequestPinItemActivity;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
-import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ShellCommandRule;
-import com.android.launcher3.widget.WidgetCell;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -80,15 +78,10 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
     @Test
     public void testPinWidgetNoConfig() throws Throwable {
-        runTest("pinWidgetNoConfig", true, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View view) {
-                return info instanceof LauncherAppWidgetInfo &&
-                        ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
-                        ((LauncherAppWidgetInfo) info).providerName.getClassName()
-                                .equals(AppWidgetNoConfig.class.getName());
-            }
-        });
+        runTest("pinWidgetNoConfig", true, (info, view) -> info instanceof LauncherAppWidgetInfo &&
+                ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
+                ((LauncherAppWidgetInfo) info).providerName.getClassName()
+                        .equals(AppWidgetNoConfig.class.getName()));
     }
 
         @Test
@@ -98,28 +91,19 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
                 RequestPinItemActivity.class, "setRemoteViewColor").putExtra(
                 RequestPinItemActivity.EXTRA_PARAM + "0", Color.RED);
 
-        runTest("pinWidgetNoConfig", true, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View view) {
-                return info instanceof LauncherAppWidgetInfo &&
-                        ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
-                        ((LauncherAppWidgetInfo) info).providerName.getClassName()
-                                .equals(AppWidgetNoConfig.class.getName());
-            }
-        }, command);
+        runTest("pinWidgetNoConfig", true, (info, view) -> info instanceof LauncherAppWidgetInfo &&
+                ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
+                ((LauncherAppWidgetInfo) info).providerName.getClassName()
+                        .equals(AppWidgetNoConfig.class.getName()), command);
     }
 
     @Test
     public void testPinWidgetWithConfig() throws Throwable {
-        runTest("pinWidgetWithConfig", true, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View view) {
-                return info instanceof LauncherAppWidgetInfo &&
+        runTest("pinWidgetWithConfig", true,
+                (info, view) -> info instanceof LauncherAppWidgetInfo &&
                         ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
                         ((LauncherAppWidgetInfo) info).providerName.getClassName()
-                                .equals(AppWidgetWithConfig.class.getName());
-            }
-        });
+                                .equals(AppWidgetWithConfig.class.getName()));
     }
 
     @Test
@@ -149,14 +133,14 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         clearHomescreen();
         mActivityMonitor.startLauncher();
 
-        // Open all apps and wait for load complete
-        final UiObject2 appsContainer = TestViewHelpers.openAllApps();
-        Wait.atMost(null, Condition.minChildCount(appsContainer, 2), DEFAULT_UI_TIMEOUT);
-
         // Open Pin item activity
         BlockingBroadcastReceiver openMonitor = new BlockingBroadcastReceiver(
                 RequestPinItemActivity.class.getName());
-        scrollAndFind(appsContainer, By.text("Test Pin Item")).click();
+        mLauncher.
+                getWorkspace().
+                switchToAllApps().
+                getAppIcon("Test Pin Item").
+                launch(getAppPackageName());
         assertNotNull(openMonitor.blockingGetExtraIntent());
 
         // Set callback
@@ -173,15 +157,11 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         // call the requested method to start the flow
         mTargetContext.sendBroadcast(RequestPinItemActivity.getCommandIntent(
                 RequestPinItemActivity.class, activityMethod));
-        UiObject2 widgetCell = mDevice.wait(
-                Until.findObject(By.clazz(WidgetCell.class)), DEFAULT_ACTIVITY_TIMEOUT);
-        assertNotNull(widgetCell);
+        final AddToHomeScreenPrompt addToHomeScreenPrompt = mLauncher.getAddToHomeScreenPrompt();
 
         // Accept confirmation:
         BlockingBroadcastReceiver resultReceiver = new BlockingBroadcastReceiver(mCallbackAction);
-        mDevice.wait(Until.findObject(
-                By.text(mLauncher.isAvd() ? "ADD AUTOMATICALLY" : "Add automatically")),
-                DEFAULT_UI_TIMEOUT).click();
+        addToHomeScreenPrompt.addAutomatically();
         Intent result = resultReceiver.blockingGetIntent();
         assertNotNull(result);
         mAppWidgetId = result.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
@@ -190,7 +170,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         }
 
         // Go back to home
-        mActivityMonitor.returnToHome();
+        mLauncher.pressHome();
         Wait.atMost(null, new ItemSearchCondition(itemMatcher), DEFAULT_ACTIVITY_TIMEOUT);
     }
 
