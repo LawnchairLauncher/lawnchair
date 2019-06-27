@@ -276,8 +276,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     public void testLaunchMenuItem() throws Exception {
-        if (!TestHelpers.isInLauncherProcess()) return;
-
         final AllApps allApps = mLauncher.
                 getWorkspace().
                 switchToAllApps();
@@ -321,8 +319,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     public void testDragShortcut() throws Throwable {
-        if (!TestHelpers.isInLauncherProcess()) return;
-
         // 1. Open all apps and wait for load complete.
         // 2. Find the app and long press it to show shortcuts.
         // 3. Press icon center until shortcuts appear
