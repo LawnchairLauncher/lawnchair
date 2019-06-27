@@ -18,16 +18,7 @@ package com.android.launcher3.tapl;
 
 import androidx.test.uiautomator.UiObject2;
 
-/**
- * Widget in workspace or a widget list.
- */
-public final class Widget extends Launchable {
-    Widget(LauncherInstrumentation launcher, UiObject2 icon) {
-        super(launcher, icon);
-    }
-
-    @Override
-    protected String getLongPressIndicator() {
-        return "drop_target_bar";
+public class Widget {
+    Widget(LauncherInstrumentation launcher, UiObject2 widget) {
     }
 }
