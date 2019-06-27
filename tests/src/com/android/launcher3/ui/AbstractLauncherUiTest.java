@@ -35,7 +35,6 @@ import android.content.pm.PackageManager;
 import android.os.Process;
 import android.os.RemoteException;
 import android.util.Log;
-import android.view.Surface;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
@@ -67,7 +66,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
-import org.junit.runners.model.Statement;
 
 import java.io.IOException;
 import java.lang.annotation.ElementType;
@@ -124,46 +122,10 @@ public abstract class AbstractLauncherUiTest {
     protected @interface PortraitLandscape {
     }
 
-    @Rule
-    public TestRule mPortraitLandscapeExecutor =
-            (base, description) -> false && description.getAnnotation(PortraitLandscape.class)
-                    != null ? new Statement() {
-                @Override
-                public void evaluate() throws Throwable {
-                    try {
-                        // Create launcher activity if necessary and bring it to the front.
-                        mLauncher.pressHome();
-                        waitForLauncherCondition("Launcher activity wasn't created",
-                                launcher -> launcher != null);
-
-                        executeOnLauncher(launcher ->
-                                launcher.getRotationHelper().forceAllowRotationForTesting(true));
-
-                        evaluateInPortrait();
-                        evaluateInLandscape();
-                    } finally {
-                        mDevice.setOrientationNatural();
-                        executeOnLauncher(launcher ->
-                                launcher.getRotationHelper().forceAllowRotationForTesting(false));
-                        mLauncher.setExpectedRotation(Surface.ROTATION_0);
-                    }
-                }
-
-                private void evaluateInPortrait() throws Throwable {
-                    mDevice.setOrientationNatural();
-                    mLauncher.setExpectedRotation(Surface.ROTATION_0);
-                    base.evaluate();
-                }
-
-                private void evaluateInLandscape() throws Throwable {
-                    mDevice.setOrientationLeft();
-                    mLauncher.setExpectedRotation(Surface.ROTATION_90);
-                    base.evaluate();
-                }
-            } : base;
-
     protected TestRule getRulesInsideActivityMonitor() {
-        return new FailureWatcher(this);
+        return RuleChain.
+                outerRule(new PortraitLandscapeRunner(this)).
+                around(new FailureWatcher(mDevice));
     }
 
     @Rule
