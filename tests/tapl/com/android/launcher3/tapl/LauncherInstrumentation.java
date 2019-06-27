@@ -263,10 +263,26 @@ public final class LauncherInstrumentation {
         }
     }
 
+    private String getAnomalyMessage() {
+        final UiObject2 object = mDevice.findObject(By.res("android", "alertTitle"));
+        if (object != null) {
+            return "System alert popup is visible: " + object.getText();
+        }
+
+        if (!mDevice.hasObject(By.textStartsWith(""))) return "Screen is empty";
+
+        return null;
+    }
+
     private void fail(String message) {
-        log("Hierarchy dump for: " + getContextDescription() + message);
+        message = "http://go/tapl : " + getContextDescription() + message;
+
+        final String anomaly = getAnomalyMessage();
+        if (anomaly != null) message = anomaly + ", which causes:\n" + message;
+
+        log("Hierarchy dump for: " + message);
         dumpViewHierarchy();
-        Assert.fail("http://go/tapl : " + getContextDescription() + message);
+        Assert.fail(message);
     }
 
     private String getContextDescription() {
