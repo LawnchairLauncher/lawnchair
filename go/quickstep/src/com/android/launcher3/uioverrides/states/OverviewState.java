@@ -16,21 +16,40 @@
 
 package com.android.launcher3.uioverrides.states;
 
+import static android.view.View.VISIBLE;
+
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE_X;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_SCALE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_TRANSLATE;
+import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
+import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
+import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
 import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
+
+import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.views.IconRecentsView;
 
 /**
  * Definition for overview state
  */
 public class OverviewState extends LauncherState {
+
+    // Scale recents takes before animating in
+    private static final float RECENTS_PREPARE_SCALE = 1.33f;
 
     private static final int STATE_FLAGS = FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED
             | FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_DISABLE_ACCESSIBILITY;
@@ -103,6 +122,27 @@ public class OverviewState extends LauncherState {
         return dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx;
     }
 
+    @Override
+    public void prepareForAtomicAnimation(Launcher launcher, LauncherState fromState,
+            AnimatorSetBuilder builder) {
+        if (fromState == NORMAL && this == OVERVIEW) {
+            if (SysUINavigationMode.getMode(launcher) == SysUINavigationMode.Mode.NO_BUTTON) {
+                builder.setInterpolator(ANIM_WORKSPACE_SCALE, ACCEL);
+                builder.setInterpolator(ANIM_WORKSPACE_TRANSLATE, ACCEL);
+            } else {
+                builder.setInterpolator(ANIM_WORKSPACE_SCALE, OVERSHOOT_1_2);
+            }
+            builder.setInterpolator(ANIM_WORKSPACE_FADE, OVERSHOOT_1_2);
+            builder.setInterpolator(ANIM_OVERVIEW_SCALE, OVERSHOOT_1_2);
+            builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, OVERSHOOT_1_7);
+            builder.setInterpolator(ANIM_OVERVIEW_FADE, OVERSHOOT_1_2);
+
+            View overview = launcher.getOverviewPanel();
+            if (overview.getVisibility() != VISIBLE) {
+                SCALE_PROPERTY.set(overview, RECENTS_PREPARE_SCALE);
+            }
+        }
+    }
 
     public static OverviewState newBackgroundState(int id) {
         return new OverviewState(id);

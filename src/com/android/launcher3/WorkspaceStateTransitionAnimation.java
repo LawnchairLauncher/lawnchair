@@ -19,6 +19,8 @@ package com.android.launcher3;
 import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_SCALE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_TRANSLATE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_SCALE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_TRANSLATE;
@@ -104,7 +106,10 @@ public class WorkspaceStateTransitionAnimation {
                 hotseat.setPivotY(workspacePivot[1]);
             }
             float hotseatScale = hotseatScaleAndTranslation.scale;
-            propertySetter.setFloat(hotseat, SCALE_PROPERTY, hotseatScale, scaleInterpolator);
+            Interpolator hotseatScaleInterpolator = builder.getInterpolator(ANIM_HOTSEAT_SCALE,
+                    scaleInterpolator);
+            propertySetter.setFloat(hotseat, SCALE_PROPERTY, hotseatScale,
+                    hotseatScaleInterpolator);
 
             float hotseatIconsAlpha = (elements & HOTSEAT_ICONS) != 0 ? 1 : 0;
             propertySetter.setViewAlpha(hotseat, hotseatIconsAlpha, fadeInterpolator);
@@ -125,10 +130,12 @@ public class WorkspaceStateTransitionAnimation {
         propertySetter.setFloat(mWorkspace, View.TRANSLATION_Y,
                 scaleAndTranslation.translationY, translationInterpolator);
 
+        Interpolator hotseatTranslationInterpolator = builder.getInterpolator(
+                ANIM_HOTSEAT_TRANSLATE, translationInterpolator);
         propertySetter.setFloat(hotseat, View.TRANSLATION_Y,
-                hotseatScaleAndTranslation.translationY, translationInterpolator);
+                hotseatScaleAndTranslation.translationY, hotseatTranslationInterpolator);
         propertySetter.setFloat(mWorkspace.getPageIndicator(), View.TRANSLATION_Y,
-                hotseatScaleAndTranslation.translationY, translationInterpolator);
+                hotseatScaleAndTranslation.translationY, hotseatTranslationInterpolator);
 
         setScrim(propertySetter, state);
     }

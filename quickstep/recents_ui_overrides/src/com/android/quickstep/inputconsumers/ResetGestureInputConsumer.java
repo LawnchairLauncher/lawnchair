@@ -39,7 +39,7 @@ public class ResetGestureInputConsumer implements InputConsumer {
     public void onMotionEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN
                 && mSwipeSharedState.getActiveListener() != null) {
-            mSwipeSharedState.clearAllState();
+            mSwipeSharedState.clearAllState(false /* finishAnimation */);
         }
     }
 }

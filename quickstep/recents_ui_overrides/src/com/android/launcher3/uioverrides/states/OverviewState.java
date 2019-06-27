@@ -15,8 +15,20 @@
  */
 package com.android.launcher3.uioverrides.states;
 
+import static android.view.View.VISIBLE;
+
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE_X;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_SCALE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_TRANSLATE;
+import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
+import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
+import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 
@@ -30,8 +42,11 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.DiscoveryBounce;
+import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
@@ -39,6 +54,9 @@ import com.android.quickstep.views.TaskView;
  * Definition for overview state
  */
 public class OverviewState extends LauncherState {
+
+    // Scale recents takes before animating in
+    private static final float RECENTS_PREPARE_SCALE = 1.33f;
 
     protected static final Rect sTempRect = new Rect();
 
@@ -127,6 +145,10 @@ public class OverviewState extends LauncherState {
             // We have no all apps content, so we're still at the fully down progress.
             return super.getVerticalProgress(launcher);
         }
+        return getDefaultVerticalProgress(launcher);
+    }
+
+    public static float getDefaultVerticalProgress(Launcher launcher) {
         return 1 - (getDefaultSwipeHeight(launcher)
                 / launcher.getAllAppsController().getShiftRange());
     }
@@ -153,6 +175,29 @@ public class OverviewState extends LauncherState {
             taskView.launchTask(true);
         } else {
             super.onBackPressed(launcher);
+        }
+    }
+
+    @Override
+    public void prepareForAtomicAnimation(Launcher launcher, LauncherState fromState,
+            AnimatorSetBuilder builder) {
+        if (fromState == NORMAL && this == OVERVIEW) {
+            if (SysUINavigationMode.getMode(launcher) == SysUINavigationMode.Mode.NO_BUTTON) {
+                builder.setInterpolator(ANIM_WORKSPACE_SCALE, ACCEL);
+                builder.setInterpolator(ANIM_WORKSPACE_TRANSLATE, ACCEL);
+            } else {
+                builder.setInterpolator(ANIM_WORKSPACE_SCALE, OVERSHOOT_1_2);
+
+                // Scale up the recents, if it is not coming from the side
+                RecentsView overview = launcher.getOverviewPanel();
+                if (overview.getVisibility() != VISIBLE || overview.getContentAlpha() == 0) {
+                    SCALE_PROPERTY.set(overview, RECENTS_PREPARE_SCALE);
+                }
+            }
+            builder.setInterpolator(ANIM_WORKSPACE_FADE, OVERSHOOT_1_2);
+            builder.setInterpolator(ANIM_OVERVIEW_SCALE, OVERSHOOT_1_2);
+            builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, OVERSHOOT_1_7);
+            builder.setInterpolator(ANIM_OVERVIEW_FADE, OVERSHOOT_1_2);
         }
     }
 

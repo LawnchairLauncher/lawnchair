@@ -16,8 +16,6 @@
 
 package com.android.launcher3.uioverrides;
 
-import static android.view.View.VISIBLE;
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
@@ -48,6 +46,7 @@ import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
+import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
@@ -61,9 +60,6 @@ public abstract class RecentsUiFactory {
     public static final boolean GO_LOW_RAM_RECENTS_ENABLED = false;
     private static final AsyncCommand SET_SHELF_HEIGHT_CMD = (visible, height) ->
             WindowManagerWrapper.getInstance().setShelfHeight(visible != 0, height);
-
-    // Scale recents takes before animating in
-    private static final float RECENTS_PREPARE_SCALE = 1.33f;
 
     public static RotationMode ROTATION_LANDSCAPE = new RotationMode(-90) {
         @Override
@@ -189,19 +185,10 @@ public abstract class RecentsUiFactory {
     }
 
     /**
-     * Prepare the recents view to animate in.
-     *
-     * @param launcher the launcher activity
+     * Clears the swipe shared state for the current swipe gesture.
      */
-    public static void prepareToShowOverview(Launcher launcher) {
-        if (SysUINavigationMode.getMode(launcher) == NO_BUTTON) {
-            // Overview lives on the side, so doesn't scale in from above.
-            return;
-        }
-        RecentsView overview = launcher.getOverviewPanel();
-        if (overview.getVisibility() != VISIBLE || overview.getContentAlpha() == 0) {
-            SCALE_PROPERTY.set(overview, RECENTS_PREPARE_SCALE);
-        }
+    public static void clearSwipeSharedState(boolean finishAnimation) {
+        TouchInteractionService.getSwipeSharedState().clearAllState(finishAnimation);
     }
 
     /**

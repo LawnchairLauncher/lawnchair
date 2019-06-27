@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 package com.android.launcher3.uioverrides.states;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE_X;
+import static com.android.launcher3.anim.Interpolators.INSTANT;
+import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
+
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.AnimatorSetBuilder;
 
 public class OverviewPeekState extends OverviewState {
     public OverviewPeekState(int id) {
@@ -28,5 +35,14 @@ public class OverviewPeekState extends OverviewState {
         result.translationX = NORMAL.getOverviewScaleAndTranslation(launcher).translationX
                 - launcher.getResources().getDimension(R.dimen.overview_peek_distance);
         return result;
+    }
+
+    @Override
+    public void prepareForAtomicAnimation(Launcher launcher, LauncherState fromState,
+            AnimatorSetBuilder builder) {
+        if (this == OVERVIEW_PEEK && fromState == NORMAL) {
+            builder.setInterpolator(ANIM_OVERVIEW_FADE, INSTANT);
+            builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, OVERSHOOT_1_7);
+        }
     }
 }

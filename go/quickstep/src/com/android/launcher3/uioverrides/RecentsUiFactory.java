@@ -16,11 +16,6 @@
 
 package com.android.launcher3.uioverrides;
 
-import static android.view.View.VISIBLE;
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-
-import android.view.View;
-
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
@@ -43,8 +38,6 @@ import java.util.ArrayList;
 public abstract class RecentsUiFactory {
 
     public static final boolean GO_LOW_RAM_RECENTS_ENABLED = true;
-    // Scale recents takes before animating in
-    private static final float RECENTS_PREPARE_SCALE = 1.33f;
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
         ArrayList<TouchController> list = new ArrayList<>();
@@ -77,18 +70,6 @@ public abstract class RecentsUiFactory {
     }
 
     /**
-     * Prepare the recents view to animate in.
-     *
-     * @param launcher the launcher activity
-     */
-    public static void prepareToShowOverview(Launcher launcher) {
-        View overview = launcher.getOverviewPanel();
-        if (overview.getVisibility() != VISIBLE) {
-            SCALE_PROPERTY.set(overview, RECENTS_PREPARE_SCALE);
-        }
-    }
-
-    /**
      * Clean-up logic that occurs when recents is no longer in use/visible.
      *
      * @param launcher the launcher activity
@@ -108,4 +89,6 @@ public abstract class RecentsUiFactory {
     public static RotationMode getRotationMode(DeviceProfile dp) {
         return RotationMode.NORMAL;
     }
+
+    public static void clearSwipeSharedState(boolean finishAnimation) {}
 }

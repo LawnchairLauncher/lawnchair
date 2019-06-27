@@ -122,7 +122,7 @@ public final class LauncherInstrumentation {
     private static final String APPS_RES_ID = "apps_view";
     private static final String OVERVIEW_RES_ID = "overview_panel";
     private static final String WIDGETS_RES_ID = "widgets_list_view";
-    public static final int WAIT_TIME_MS = 10000;
+    public static final int WAIT_TIME_MS = 60000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
     private static WeakReference<VisibleContainer> sActiveContainer = new WeakReference<>(null);
@@ -315,25 +315,37 @@ public final class LauncherInstrumentation {
         mExpectedRotation = expectedRotation;
     }
 
-    private UiObject2 verifyContainerType(ContainerType containerType) {
-        assertEquals("Unexpected display rotation",
-                mExpectedRotation, mDevice.getDisplayRotation());
+    public String getNavigationModeMismatchError() {
         final NavigationModel navigationModel = getNavigationModel();
         final boolean hasRecentsButton = hasSystemUiObject("recent_apps");
         final boolean hasHomeButton = hasSystemUiObject("home");
-        assertTrue("Presence of recents button doesn't match the interaction mode, mode="
-                        + navigationModel.name() + ", hasRecents=" + hasRecentsButton,
-                (navigationModel == NavigationModel.THREE_BUTTON) == hasRecentsButton);
-        assertTrue("Presence of home button doesn't match the interaction mode, mode="
-                        + navigationModel.name() + ", hasHome=" + hasHomeButton,
-                (navigationModel != NavigationModel.ZERO_BUTTON) == hasHomeButton);
+        if ((navigationModel == NavigationModel.THREE_BUTTON) != hasRecentsButton) {
+            return "Presence of recents button doesn't match the interaction mode, mode="
+                    + navigationModel.name() + ", hasRecents=" + hasRecentsButton;
+        }
+        if ((navigationModel != NavigationModel.ZERO_BUTTON) != hasHomeButton) {
+            return "Presence of home button doesn't match the interaction mode, mode="
+                    + navigationModel.name() + ", hasHome=" + hasHomeButton;
+        }
+        return null;
+    }
+
+    private UiObject2 verifyContainerType(ContainerType containerType) {
+        assertEquals("Unexpected display rotation",
+                mExpectedRotation, mDevice.getDisplayRotation());
+        final String error = getNavigationModeMismatchError();
+        assertTrue(error, error == null);
         log("verifyContainerType: " + containerType);
 
         try (Closable c = addContextLayer(
                 "but the current state is not " + containerType.name())) {
             switch (containerType) {
                 case WORKSPACE: {
-                    waitForLauncherObject(APPS_RES_ID);
+                    if (mDevice.isNaturalOrientation()) {
+                        waitForLauncherObject(APPS_RES_ID);
+                    } else {
+                        waitUntilGone(APPS_RES_ID);
+                    }
                     waitUntilGone(OVERVIEW_RES_ID);
                     waitUntilGone(WIDGETS_RES_ID);
                     return waitForLauncherObject(WORKSPACE_RES_ID);
@@ -490,6 +502,13 @@ public final class LauncherInstrumentation {
         }
     }
 
+    @NonNull
+    public AddToHomeScreenPrompt getAddToHomeScreenPrompt() {
+        try (LauncherInstrumentation.Closable c = addContextLayer("want to get widget cell")) {
+            return new AddToHomeScreenPrompt(this);
+        }
+    }
+
     /**
      * Gets the Overview object if the current state is showing the overview panel. Fails if the
      * launcher is not in that state.
@@ -501,17 +520,6 @@ public final class LauncherInstrumentation {
         try (LauncherInstrumentation.Closable c = addContextLayer("want to get overview")) {
             return new Overview(this);
         }
-    }
-
-    /**
-     * Gets the Base overview object if either Launcher is in overview state or the fallback
-     * overview activity is showing. Fails otherwise.
-     *
-     * @return BaseOverview object.
-     */
-    @NonNull
-    public BaseOverview getBaseOverview() {
-        return new BaseOverview(this);
     }
 
     /**
@@ -605,6 +613,16 @@ public final class LauncherInstrumentation {
     }
 
     @NonNull
+    UiObject2 waitForLauncherObject(BySelector selector) {
+        return waitForObjectBySelector(selector.pkg(getLauncherPackageName()));
+    }
+
+    @NonNull
+    UiObject2 tryWaitForLauncherObject(BySelector selector, long timeout) {
+        return tryWaitForObjectBySelector(selector.pkg(getLauncherPackageName()), timeout);
+    }
+
+    @NonNull
     UiObject2 waitForFallbackLauncherObject(String resName) {
         return waitForObjectBySelector(getFallbackLauncherObjectSelector(resName));
     }
@@ -613,6 +631,10 @@ public final class LauncherInstrumentation {
         final UiObject2 object = mDevice.wait(Until.findObject(selector), WAIT_TIME_MS);
         assertNotNull("Can't find a launcher object; selector: " + selector, object);
         return object;
+    }
+
+    private UiObject2 tryWaitForObjectBySelector(BySelector selector, long timeout) {
+        return mDevice.wait(Until.findObject(selector), timeout);
     }
 
     BySelector getLauncherObjectSelector(String resName) {
@@ -688,7 +710,7 @@ public final class LauncherInstrumentation {
 
     // Inject a swipe gesture. Inject exactly 'steps' motion points, incrementing event time by a
     // fixed interval each time.
-    private void linearGesture(int startX, int startY, int endX, int endY, int steps) {
+    void linearGesture(int startX, int startY, int endX, int endY, int steps) {
         final long downTime = SystemClock.uptimeMillis();
         final Point start = new Point(startX, startY);
         final Point end = new Point(endX, endY);
