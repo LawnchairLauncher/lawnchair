@@ -301,7 +301,8 @@ public class LauncherModel extends BroadcastReceiver
                 }
             }
         } else if (IS_DOGFOOD_BUILD && ACTION_FORCE_ROLOAD.equals(action)) {
-            forceReload();
+            Launcher l = (Launcher) getCallback();
+            l.reload();
         }
     }
 

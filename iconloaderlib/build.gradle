@@ -1,13 +1,3 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        google()
-    }
-    dependencies {
-        classpath GRADLE_CLASS_PATH
-    }
-}
-
 apply plugin: 'com.android.library'
 
 android {
@@ -42,12 +32,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-}
-
-
-repositories {
-    mavenCentral()
-    google()
 }
 
 dependencies {

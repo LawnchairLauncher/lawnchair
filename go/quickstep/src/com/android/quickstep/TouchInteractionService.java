@@ -19,15 +19,21 @@ import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYS
 
 import android.annotation.TargetApi;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Region;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Process;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.android.launcher3.Utilities;
+import com.android.launcher3.compat.UserManagerCompat;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 
@@ -37,7 +43,16 @@ import com.android.systemui.shared.recents.ISystemUiProxy;
 @TargetApi(Build.VERSION_CODES.O)
 public class TouchInteractionService extends Service {
 
-    private static final String TAG = "TouchInteractionService";
+    private static final String TAG = "GoTouchInteractionService";
+    private boolean mIsUserUnlocked;
+    private BroadcastReceiver mUserUnlockedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Intent.ACTION_USER_UNLOCKED.equals(intent.getAction())) {
+                initWhenUserUnlocked();
+            }
+        }
+    };
 
     private final IBinder mMyBinder = new IOverviewProxy.Stub() {
 
@@ -53,17 +68,21 @@ public class TouchInteractionService extends Service {
 
         @Override
         public void onOverviewToggle() {
-            mOverviewCommandHelper.onOverviewToggle();
+            if (mIsUserUnlocked) {
+                mOverviewCommandHelper.onOverviewToggle();
+            }
         }
 
         @Override
         public void onOverviewShown(boolean triggeredFromAltTab) {
-            mOverviewCommandHelper.onOverviewShown(triggeredFromAltTab);
+            if (mIsUserUnlocked) {
+                mOverviewCommandHelper.onOverviewShown(triggeredFromAltTab);
+            }
         }
 
         @Override
         public void onOverviewHidden(boolean triggeredFromAltTab, boolean triggeredFromHomeKey) {
-            if (triggeredFromAltTab && !triggeredFromHomeKey) {
+            if (mIsUserUnlocked && triggeredFromAltTab && !triggeredFromHomeKey) {
                 // onOverviewShownFromAltTab hides the overview and ends at the target app
                 mOverviewCommandHelper.onOverviewHidden();
             }
@@ -71,7 +90,9 @@ public class TouchInteractionService extends Service {
 
         @Override
         public void onTip(int actionType, int viewType) {
-            mOverviewCommandHelper.onTip(actionType, viewType);
+            if (mIsUserUnlocked) {
+                mOverviewCommandHelper.onTip(actionType, viewType);
+            }
         }
 
         @Override
@@ -123,17 +144,31 @@ public class TouchInteractionService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mRecentsModel = RecentsModel.INSTANCE.get(this);
-        mOverviewComponentObserver = new OverviewComponentObserver(this);
-        mOverviewCommandHelper = new OverviewCommandHelper(this,
-                mOverviewComponentObserver);
+        if (UserManagerCompat.getInstance(this).isUserUnlocked(Process.myUserHandle())) {
+            initWhenUserUnlocked();
+        } else {
+            mIsUserUnlocked = false;
+            registerReceiver(mUserUnlockedReceiver, new IntentFilter(Intent.ACTION_USER_UNLOCKED));
+        }
 
         sConnected = true;
     }
 
+    private void initWhenUserUnlocked() {
+        mRecentsModel = RecentsModel.INSTANCE.get(this);
+        mOverviewComponentObserver = new OverviewComponentObserver(this);
+        mOverviewCommandHelper = new OverviewCommandHelper(this,
+                mOverviewComponentObserver);
+        mIsUserUnlocked = true;
+        Utilities.unregisterReceiverSafely(this, mUserUnlockedReceiver);
+    }
+
     @Override
     public void onDestroy() {
-        mOverviewComponentObserver.onDestroy();
+        if (mIsUserUnlocked) {
+            mOverviewComponentObserver.onDestroy();
+        }
+        Utilities.unregisterReceiverSafely(this, mUserUnlockedReceiver);
         sConnected = false;
         super.onDestroy();
     }
