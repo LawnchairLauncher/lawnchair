@@ -614,12 +614,12 @@ public final class LauncherInstrumentation {
 
     @NonNull
     UiObject2 waitForLauncherObject(BySelector selector) {
-        return waitForObjectBySelector(By.copy(selector).pkg(getLauncherPackageName()));
+        return waitForObjectBySelector(selector.pkg(getLauncherPackageName()));
     }
 
     @NonNull
     UiObject2 tryWaitForLauncherObject(BySelector selector, long timeout) {
-        return tryWaitForObjectBySelector(By.copy(selector).pkg(getLauncherPackageName()), timeout);
+        return tryWaitForObjectBySelector(selector.pkg(getLauncherPackageName()), timeout);
     }
 
     @NonNull
