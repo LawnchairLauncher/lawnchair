@@ -211,13 +211,17 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     public void bind(FolderInfo folderInfo) {
         if (mInfo != null) {
             mInfo.removeListener(this);
+            mInfo.removeListener(mFolder);
         }
+
+        if (folderInfo == null) return;
 
         mFolderName.setText(folderInfo.title);
 
         setTag(folderInfo);
         mInfo = folderInfo;
-        setContentDescription(mLauncher.getString(R.string.folder_name_format, folderInfo.title));
+        setContentDescription(
+                mLauncher.getString(R.string.folder_name_format, folderInfo.title));
         mFolder.bind(folderInfo);
         setFolder(mFolder);
 
@@ -246,6 +250,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             setCustomIcon(null);
             mBackground.setStartOpacity(1f);
         }
+        mFolderName.setText(mInfo.getIconTitle());
         invalidate();
     }
 

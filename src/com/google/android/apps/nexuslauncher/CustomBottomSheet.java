@@ -207,7 +207,9 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             prefs = Utilities.getLawnchairPrefs(getActivity());
             mSwipeUpPref = (LauncherGesturePreference) screen.findPreference("pref_swipe_up_gesture");
             mTabsPref = (MultiSelectTabPreference) screen.findPreference("pref_show_in_tabs");
-            mKey = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
+            if (!(itemInfo instanceof FolderInfo)) {
+                mKey = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
+            }
             mPrefHide = (SwitchPreference) findPreference(PREF_HIDE);
             mPrefCoverMode = (SwitchPreference) findPreference("pref_cover_mode");
 
