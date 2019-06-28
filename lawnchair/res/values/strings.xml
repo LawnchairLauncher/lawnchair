@@ -655,4 +655,5 @@
     <string name="categorization">Categorization</string>
 
     <string name="folder_cover_mode">Cover mode</string>
+    <string name="folder_cover_mode_desc">Tap to open first app, swipe up to open folder</string>
 </resources>

@@ -1749,6 +1749,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             BubbleTextView btv = (BubbleTextView) v;
             btv.setStayPressed(true);
             setOnResumeCallback(btv);
+        } else if (success && v instanceof FolderIcon) {
+            FolderIcon folderIcon = (FolderIcon) v;
+            folderIcon.setStayPressed(true);
+            setOnResumeCallback(folderIcon);
         }
         return success;
     }

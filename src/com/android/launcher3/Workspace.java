@@ -1660,6 +1660,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (child instanceof BubbleTextView) {
             BubbleTextView icon = (BubbleTextView) child;
             icon.clearPressedBackground();
+        } else if (child instanceof FolderIcon) {
+            ((FolderIcon) child).clearPressedBackground();
         }
 
         if (child.getParent() instanceof ShortcutAndWidgetContainer) {

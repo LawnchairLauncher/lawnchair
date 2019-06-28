@@ -415,8 +415,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
         requestFocus();
         super.onAttachedToWindow();
         if (mFolderIcon != null && mFolderIcon.isCustomIcon && Utilities.getLawnchairPrefs(getContext()).getFolderBgColored()) {
-            int color = ColorExtractor.findDominantColorByHue(Utilities.drawableToBitmap(mFolderIcon.customIcon));
-            setBackgroundTintList(ColorStateList.valueOf(color));
+            setBackgroundTintList(ColorStateList.valueOf(mFolderIcon.getFolderName().getBadgeColor()));
         }
     }
 

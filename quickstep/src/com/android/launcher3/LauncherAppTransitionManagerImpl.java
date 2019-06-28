@@ -455,8 +455,15 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         playIconAnimators(appOpenAnimator, v, windowTargetBounds, false);
     }
 
-    protected void playIconAnimators(AnimatorSet appOpenAnimator, View v, Rect windowTargetBounds,
+    protected void playIconAnimators(AnimatorSet appOpenAnimator, View v2, Rect windowTargetBounds,
             boolean reversed) {
+        View v;
+        if (v2 instanceof FolderIcon) {
+            v = ((FolderIcon) v2).getFolderName();
+        } else {
+            v = v2;
+        }
+
         final boolean isBubbleTextView = v instanceof BubbleTextView;
         mFloatingView = new View(mLauncher);
         if (isBubbleTextView && v.getTag() instanceof ItemInfoWithIcon ) {
@@ -492,9 +499,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             if (dr instanceof FastBitmapDrawable) {
                 startScale = ((FastBitmapDrawable) dr).getAnimatedScale();
             }
-        } else if (v instanceof FolderIcon) {
-            FolderIcon folderIcon = (FolderIcon) v;
-            folderIcon.getIconBounds(rect);
         } else {
             rect.set(0, 0, rect.width(), rect.height());
         }
@@ -637,6 +641,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
     protected ValueAnimator getOpeningWindowAnimators(View v, RemoteAnimationTargetCompat[] targets,
             Rect windowTargetBounds, boolean reversed) {
+        if (v instanceof FolderIcon) {
+            v = ((FolderIcon) v).getFolderName();
+        }
+
         int targetMode = reversed ? MODE_CLOSING : MODE_OPENING;
         Rect bounds = new Rect();
         if (v.getParent() instanceof DeepShortcutView) {
@@ -645,8 +653,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             mDragLayer.getDescendantRectRelativeToSelf(view.getIconView(), bounds);
         } else if (v instanceof BubbleTextView) {
             ((BubbleTextView) v).getIconBounds(bounds);
-        } else if (v instanceof FolderIcon) {
-            ((FolderIcon) v).getIconBounds(bounds);
         } else {
             mDragLayer.getDescendantRectRelativeToSelf(v, bounds);
         }

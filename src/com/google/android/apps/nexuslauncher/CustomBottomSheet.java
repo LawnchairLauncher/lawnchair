@@ -94,7 +94,6 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 icon.setImageBitmap(((ItemInfoWithIcon) itemInfo).iconBitmap);
             } else if (itemInfo instanceof FolderInfo) {
                 FolderInfo folderInfo = (FolderInfo) itemInfo;
-                //icon.setImageDrawable(mLauncher.getDrawable(R.drawable.ic_lawnstep));
                 icon.setImageDrawable(folderInfo.getIcon(mLauncher));
                 // Drawer folder
                 if (folderInfo.container == ItemInfo.NO_ID) {
@@ -104,7 +103,19 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             }
             if (mInfoProvider != null) {
                 LawnchairLauncher launcher = LawnchairLauncher.Companion.getLauncher(getContext());
-                icon.setOnClickListener(v -> launcher.startEditIcon(mItemInfo, mInfoProvider));
+                icon.setOnClickListener(v -> {
+                    ItemInfo editItem;
+                    if (mItemInfo instanceof FolderInfo && ((FolderInfo) mItemInfo).isCoverMode()) {
+                        editItem = ((FolderInfo) mItemInfo).getCoverInfo();
+                    } else {
+                        editItem = mItemInfo;
+                    }
+                    CustomInfoProvider editProvider
+                            = CustomInfoProvider.Companion.forItem(getContext(), editItem);
+                    if (editProvider != null) {
+                        launcher.startEditIcon(editItem, editProvider);
+                    }
+                });
             }
         }
         if (mInfoProvider != null && allowTitleEdit) {
