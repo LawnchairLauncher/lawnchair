@@ -55,7 +55,7 @@ public class IconNormalizer {
     private static final float LINEAR_SCALE_SLOPE =
             (MAX_CIRCLE_AREA_FACTOR - MAX_SQUARE_AREA_FACTOR) / (1 - CIRCLE_AREA_BY_RECT);
 
-    private static final int MIN_VISIBLE_ALPHA = 0xEE;
+    private static final int MIN_VISIBLE_ALPHA = 40;
 
     // Shape detection related constants
     private static final float BOUND_RATIO_MARGIN = .05f;
