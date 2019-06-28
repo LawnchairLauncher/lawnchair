@@ -85,6 +85,14 @@ public class DotRenderer {
         return pos;
     }
 
+    public float[] getLeftDotPosition() {
+        return mLeftDotPosition;
+    }
+
+    public float[] getRightDotPosition() {
+        return mRightDotPosition;
+    }
+
     /**
      * Draw a circle on top of the canvas according to the given params.
      */

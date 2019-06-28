@@ -18,6 +18,7 @@ package com.android.quickstep.views;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
+import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
@@ -29,6 +30,7 @@ import android.graphics.Path;
 import android.graphics.Path.Direction;
 import android.graphics.Path.Op;
 import android.util.AttributeSet;
+import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
@@ -68,6 +70,9 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
     // Mid point where the alpha changes
     private int mMidAlpha;
     private float mMidProgress;
+
+    private Interpolator mBeforeMidProgressColorInterpolator = ACCEL;
+    private Interpolator mAfterMidProgressColorInterpolator = ACCEL;
 
     private float mShiftRange;
 
@@ -120,6 +125,15 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
     @Override
     public void onNavigationModeChanged(Mode newMode) {
         mSysUINavigationMode = newMode;
+        // Note that these interpolators are inverted because progress goes 1 to 0.
+        if (mSysUINavigationMode == Mode.NO_BUTTON) {
+            // Show the shelf more quickly before reaching overview progress.
+            mBeforeMidProgressColorInterpolator = ACCEL_2;
+            mAfterMidProgressColorInterpolator = ACCEL;
+        } else {
+            mBeforeMidProgressColorInterpolator = ACCEL;
+            mAfterMidProgressColorInterpolator = Interpolators.clampToProgress(ACCEL, 0.5f, 1f);
+        }
     }
 
     @Override
@@ -171,7 +185,7 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
             mRemainingScreenColor = 0;
 
             int alpha = Math.round(Utilities.mapToRange(
-                    mProgress, mMidProgress, 1, mMidAlpha, 0, ACCEL));
+                    mProgress, mMidProgress, 1, mMidAlpha, 0, mBeforeMidProgressColorInterpolator));
             mShelfColor = setColorAlphaBound(mEndScrim, alpha);
         } else {
             mDragHandleOffset += mShiftRange * (mMidProgress - mProgress);
@@ -179,7 +193,7 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
             // Note that these ranges and interpolators are inverted because progress goes 1 to 0.
             int alpha = Math.round(
                     Utilities.mapToRange(mProgress, (float) 0, mMidProgress, (float) mEndAlpha,
-                            (float) mMidAlpha, Interpolators.clampToProgress(ACCEL, 0.5f, 1f)));
+                            (float) mMidAlpha, mAfterMidProgressColorInterpolator));
             mShelfColor = setColorAlphaBound(mEndScrim, alpha);
 
             int remainingScrimAlpha = Math.round(

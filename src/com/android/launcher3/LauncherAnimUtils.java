@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import android.graphics.drawable.Drawable;
+import android.util.FloatProperty;
 import android.util.Property;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -47,15 +48,15 @@ public class LauncherAnimUtils {
                 }
             };
 
-    public static final Property<View, Float> SCALE_PROPERTY =
-            new Property<View, Float>(Float.class, "scale") {
+    public static final FloatProperty<View> SCALE_PROPERTY =
+            new FloatProperty<View>("scale") {
                 @Override
                 public Float get(View view) {
                     return view.getScaleX();
                 }
 
                 @Override
-                public void set(View view, Float scale) {
+                public void setValue(View view, float scale) {
                     view.setScaleX(scale);
                     view.setScaleY(scale);
                 }
@@ -92,23 +93,31 @@ public class LauncherAnimUtils {
                 }
             };
 
-    public static class ViewProgressProperty implements ProgressInterface {
-        View mView;
-        Property<View, Float> mProperty;
+    public static final FloatProperty<View> VIEW_TRANSLATE_X =
+            View.TRANSLATION_X instanceof FloatProperty ? (FloatProperty) View.TRANSLATION_X
+                    : new FloatProperty<View>("translateX") {
+                        @Override
+                        public void setValue(View view, float v) {
+                            view.setTranslationX(v);
+                        }
 
-        public ViewProgressProperty(View view, Property<View, Float> property) {
-            mView = view;
-            mProperty = property;
-        }
+                        @Override
+                        public Float get(View view) {
+                            return view.getTranslationX();
+                        }
+                    };
 
-        @Override
-        public void setProgress(float progress) {
-            mProperty.set(mView, progress);
-        }
+    public static final FloatProperty<View> VIEW_TRANSLATE_Y =
+            View.TRANSLATION_Y instanceof FloatProperty ? (FloatProperty) View.TRANSLATION_Y
+                    : new FloatProperty<View>("translateY") {
+                        @Override
+                        public void setValue(View view, float v) {
+                            view.setTranslationY(v);
+                        }
 
-        @Override
-        public float getProgress() {
-            return mProperty.get(mView);
-        }
-    }
+                        @Override
+                        public Float get(View view) {
+                            return view.getTranslationY();
+                        }
+                    };
 }

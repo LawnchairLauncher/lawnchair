@@ -109,7 +109,7 @@ abstract class BaseFlags {
             "Show chip hints and gleams on the overview screen");
 
     public static final TogglableFlag FAKE_LANDSCAPE_UI = new TogglableFlag(
-            "FAKE_LANDSCAPE_UI", true,
+            "FAKE_LANDSCAPE_UI", false,
             "Rotate launcher UI instead of using transposed layout");
 
     public static void initialize(Context context) {

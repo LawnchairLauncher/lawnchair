@@ -69,8 +69,6 @@ public class UiFactory {
         return false;
     }
 
-    public static void prepareToShowOverview(Launcher launcher) { }
-
     public static void setBackButtonAlpha(Launcher launcher, float alpha, boolean animate) { }
 
 
@@ -94,5 +92,7 @@ public class UiFactory {
     }
 
     public static void resetPendingActivityResults(Launcher launcher, int requestCode) { }
+
+    public static void clearSwipeSharedState(boolean finishAnimation) {}
 
 }

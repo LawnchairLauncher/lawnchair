@@ -16,23 +16,7 @@
 
 package com.android.launcher3;
 
-import static android.view.View.VISIBLE;
-
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE_X;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_SCALE;
-import static com.android.launcher3.anim.Interpolators.ACCEL;
-import static com.android.launcher3.anim.Interpolators.DEACCEL;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
-import static com.android.launcher3.anim.Interpolators.INSTANT;
-import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
-import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
-import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 
 import android.animation.Animator;
@@ -41,8 +25,6 @@ import android.animation.AnimatorSet;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-
-import androidx.annotation.IntDef;
 
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -57,6 +39,8 @@ import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+
+import androidx.annotation.IntDef;
 
 /**
  * TODO: figure out what kind of tests we can write for this
@@ -126,6 +110,9 @@ public class LauncherStateManager {
     private final Handler mUiHandler;
     private final Launcher mLauncher;
     private final ArrayList<StateListener> mListeners = new ArrayList<>();
+
+    // Animators which are run on properties also controlled by state animations.
+    private Animator[] mStateElementAnimators;
 
     private StateHandler[] mStateHandlers;
     private LauncherState mState = NORMAL;
@@ -223,12 +210,17 @@ public class LauncherStateManager {
     }
 
     public void reapplyState(boolean cancelCurrentAnimation) {
+        boolean wasInAnimation = mConfig.mCurrentAnimation != null;
         if (cancelCurrentAnimation) {
+            cancelAllStateElementAnimation();
             cancelAnimation();
         }
         if (mConfig.mCurrentAnimation == null) {
             for (StateHandler handler : getStateHandlers()) {
                 handler.setState(mState);
+            }
+            if (wasInAnimation) {
+                onStateTransitionEnd(mState);
             }
         }
     }
@@ -262,6 +254,7 @@ public class LauncherStateManager {
         mConfig.reset();
 
         if (!animated) {
+            cancelAllStateElementAnimation();
             onStateTransitionStart(state);
             for (StateHandler handler : getStateHandlers()) {
                 handler.setState(state);
@@ -310,47 +303,7 @@ public class LauncherStateManager {
      */
     public void prepareForAtomicAnimation(LauncherState fromState, LauncherState toState,
             AnimatorSetBuilder builder) {
-        if (fromState == NORMAL && toState == OVERVIEW) {
-            builder.setInterpolator(ANIM_WORKSPACE_SCALE, OVERSHOOT_1_2);
-            builder.setInterpolator(ANIM_WORKSPACE_FADE, OVERSHOOT_1_2);
-            builder.setInterpolator(ANIM_OVERVIEW_SCALE, OVERSHOOT_1_2);
-            builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, OVERSHOOT_1_7);
-            builder.setInterpolator(ANIM_OVERVIEW_FADE, OVERSHOOT_1_2);
-
-            // Start from a higher overview scale, but only if we're invisible so we don't jump.
-            UiFactory.prepareToShowOverview(mLauncher);
-        } else if (fromState == OVERVIEW && toState == NORMAL) {
-            builder.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL);
-            builder.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);
-            builder.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCEL, 0, 0.9f));
-            builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL);
-            builder.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
-            Workspace workspace = mLauncher.getWorkspace();
-
-            // Start from a higher workspace scale, but only if we're invisible so we don't jump.
-            boolean isWorkspaceVisible = workspace.getVisibility() == VISIBLE;
-            if (isWorkspaceVisible) {
-                CellLayout currentChild = (CellLayout) workspace.getChildAt(
-                        workspace.getCurrentPage());
-                isWorkspaceVisible = currentChild.getVisibility() == VISIBLE
-                        && currentChild.getShortcutsAndWidgets().getAlpha() > 0;
-            }
-            if (!isWorkspaceVisible) {
-                workspace.setScaleX(0.92f);
-                workspace.setScaleY(0.92f);
-            }
-            Hotseat hotseat = workspace.getHotseat();
-            boolean isHotseatVisible = hotseat.getVisibility() == VISIBLE && hotseat.getAlpha() > 0;
-            if (!isHotseatVisible) {
-                hotseat.setScaleX(0.92f);
-                hotseat.setScaleY(0.92f);
-            }
-        } else if (fromState == NORMAL && toState == OVERVIEW_PEEK) {
-            builder.setInterpolator(ANIM_OVERVIEW_FADE, INSTANT);
-        } else if (fromState == OVERVIEW_PEEK && toState == NORMAL) {
-            // Keep fully visible until the very end (when overview is offscreen) to make invisible.
-            builder.setInterpolator(ANIM_OVERVIEW_FADE, t -> t < 1 ? 0 : 1);
-        }
+        toState.prepareForAtomicAnimation(mLauncher, fromState, builder);
     }
 
     public AnimatorSet createAtomicAnimation(LauncherState fromState, LauncherState toState,
@@ -571,6 +524,47 @@ public class LauncherStateManager {
             onStateTransitionEnd(mState);
         }
         mConfig.setAnimation(anim, null);
+    }
+
+    private void cancelAllStateElementAnimation() {
+        if (mStateElementAnimators == null) {
+            return;
+        }
+
+        for (Animator animator : mStateElementAnimators) {
+            if (animator != null) {
+                animator.cancel();
+            }
+        }
+    }
+
+    /**
+     * Cancels a currently running gesture animation
+     */
+    public void cancelStateElementAnimation(int index) {
+        if (mStateElementAnimators == null) {
+            return;
+        }
+        if (mStateElementAnimators[index] != null) {
+            mStateElementAnimators[index].cancel();
+        }
+    }
+
+    public Animator createStateElementAnimation(int index, float... values) {
+        cancelStateElementAnimation(index);
+        LauncherAppTransitionManager latm = mLauncher.getAppTransitionManager();
+        if (mStateElementAnimators == null) {
+            mStateElementAnimators = new Animator[latm.getStateElementAnimationsCount()];
+        }
+        Animator anim = latm.createStateElementAnimation(index, values);
+        mStateElementAnimators[index] = anim;
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mStateElementAnimators[index] = null;
+            }
+        });
+        return anim;
     }
 
     private void clearCurrentAnimation() {

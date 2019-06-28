@@ -23,6 +23,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.quickstep.SysUINavigationMode;
 
 /**
  * Definition for AllApps state
@@ -63,7 +64,13 @@ public class AllAppsState extends LauncherState {
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
         ScaleAndTranslation scaleAndTranslation = LauncherState.OVERVIEW
                 .getWorkspaceScaleAndTranslation(launcher);
-        scaleAndTranslation.scale = 1;
+        if (SysUINavigationMode.getMode(launcher) == SysUINavigationMode.Mode.NO_BUTTON) {
+            float normalScale = 1;
+            // Scale down halfway to where we'd be in overview, to prepare for a potential pause.
+            scaleAndTranslation.scale = (scaleAndTranslation.scale + normalScale) / 2;
+        } else {
+            scaleAndTranslation.scale = 1;
+        }
         return scaleAndTranslation;
     }
 

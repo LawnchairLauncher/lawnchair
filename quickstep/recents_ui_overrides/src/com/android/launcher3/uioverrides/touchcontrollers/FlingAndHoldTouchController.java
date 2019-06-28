@@ -16,11 +16,20 @@
 
 package com.android.launcher3.uioverrides.touchcontrollers;
 
+import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
 import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
 import static com.android.launcher3.LauncherStateManager.ATOMIC_OVERVIEW_PEEK_COMPONENT;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_SCALE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_TRANSLATE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_SCALE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_TRANSLATE;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
@@ -38,14 +47,14 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.views.RecentsView;
-import com.android.systemui.shared.system.QuickStepContract;
 
 /**
  * Touch controller which handles swipe and hold to go to Overview
  */
 public class FlingAndHoldTouchController extends PortraitStatesTouchController {
 
-    private static final long PEEK_ANIM_DURATION = 100;
+    private static final long PEEK_IN_ANIM_DURATION = 240;
+    private static final long PEEK_OUT_ANIM_DURATION = 100;
     private static final float MAX_DISPLACEMENT_PERCENT = 0.75f;
 
     private final MotionPauseDetector mMotionPauseDetector;
@@ -81,9 +90,9 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
                 }
                 LauncherState fromState = isPaused ? NORMAL : OVERVIEW_PEEK;
                 LauncherState toState = isPaused ? OVERVIEW_PEEK : NORMAL;
+                long peekDuration = isPaused ? PEEK_IN_ANIM_DURATION : PEEK_OUT_ANIM_DURATION;
                 mPeekAnim = mLauncher.getStateManager().createAtomicAnimation(fromState, toState,
-                        new AnimatorSetBuilder(), ATOMIC_OVERVIEW_PEEK_COMPONENT,
-                        PEEK_ANIM_DURATION);
+                        new AnimatorSetBuilder(), ATOMIC_OVERVIEW_PEEK_COMPONENT, peekDuration);
                 mPeekAnim.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -107,6 +116,21 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
     }
 
     @Override
+    protected AnimatorSetBuilder getAnimatorSetBuilderForStates(LauncherState fromState,
+            LauncherState toState) {
+        if (fromState == NORMAL && toState == ALL_APPS) {
+            AnimatorSetBuilder builder = new AnimatorSetBuilder();
+
+            // Get workspace out of the way quickly, to prepare for potential pause.
+            builder.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL_3);
+            builder.setInterpolator(ANIM_WORKSPACE_TRANSLATE, DEACCEL_3);
+            builder.setInterpolator(ANIM_WORKSPACE_FADE, DEACCEL_3);
+            return builder;
+        }
+        return super.getAnimatorSetBuilderForStates(fromState, toState);
+    }
+
+    @Override
     public boolean onDrag(float displacement, MotionEvent event) {
         float upDisplacement = -displacement;
         mMotionPauseDetector.setDisallowPause(upDisplacement < mMotionPauseMinDisplacement
@@ -123,8 +147,11 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
             }
 
             AnimatorSetBuilder builder = new AnimatorSetBuilder();
-            builder.setInterpolator(AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS, OVERSHOOT_1_2);
-            builder.setInterpolator(AnimatorSetBuilder.ANIM_WORKSPACE_TRANSLATE, OVERSHOOT_1_2);
+            builder.setInterpolator(ANIM_VERTICAL_PROGRESS, OVERSHOOT_1_2);
+            if ((OVERVIEW.getVisibleElements(mLauncher) & HOTSEAT_ICONS) != 0) {
+                builder.setInterpolator(ANIM_HOTSEAT_SCALE, OVERSHOOT_1_2);
+                builder.setInterpolator(ANIM_HOTSEAT_TRANSLATE, OVERSHOOT_1_2);
+            }
             AnimatorSet overviewAnim = mLauncher.getStateManager().createAtomicAnimation(
                     NORMAL, OVERVIEW, builder, ANIM_ALL, ATOMIC_DURATION);
             overviewAnim.addListener(new AnimatorListenerAdapter() {

@@ -179,7 +179,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             DeferredOnComplete deferred = (DeferredOnComplete) d.dragSource;
             if (target != null) {
                 deferred.mPackageName = target.getPackageName();
-                mLauncher.setOnResumeCallback(deferred);
+                mLauncher.addOnResumeCallback(deferred);
             } else {
                 deferred.sendFailure();
             }

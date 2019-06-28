@@ -27,6 +27,7 @@ import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
@@ -142,9 +143,15 @@ public final class Workspace extends Home {
     }
 
     @NonNull
-    private AppIcon getHotseatAppIcon(String appName) {
+    public AppIcon getHotseatAppIcon(String appName) {
         return new AppIcon(mLauncher, mLauncher.getObjectInContainer(
                 mHotseat, AppIcon.getAppIconSelector(appName, mLauncher)));
+    }
+
+    @NonNull
+    public Folder getHotseatFolder(String appName) {
+        return new Folder(mLauncher, mLauncher.getObjectInContainer(
+                mHotseat, Folder.getSelector(appName, mLauncher)));
     }
 
     static void dragIconToWorkspace(
@@ -213,6 +220,21 @@ public final class Workspace extends Home {
 
     @Override
     protected int getSwipeStartY() {
-        return mLauncher.waitForLauncherObject("hotseat").getVisibleBounds().top;
+        return mLauncher.getRealDisplaySize().y - 1;
+    }
+
+    @Nullable
+    public Widget tryGetWidget(String label, long timeout) {
+        final UiObject2 widget = mLauncher.tryWaitForLauncherObject(
+                By.clazz("com.android.launcher3.widget.LauncherAppWidgetHostView").desc(label),
+                timeout);
+        return widget != null ? new Widget(mLauncher, widget) : null;
+    }
+
+    @Nullable
+    public Widget tryGetPendingWidget(long timeout) {
+        final UiObject2 widget = mLauncher.tryWaitForLauncherObject(
+                By.clazz("com.android.launcher3.widget.PendingAppWidgetHostView"), timeout);
+        return widget != null ? new Widget(mLauncher, widget) : null;
     }
 }
