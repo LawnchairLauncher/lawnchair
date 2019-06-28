@@ -17,13 +17,14 @@
 
 package ch.deletescape.lawnchair.smartspace
 
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
+import android.app.PendingIntent
+import android.content.*
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Handler
 import android.os.HandlerThread
+import android.os.Process
+import android.provider.CalendarContract
 import android.support.annotation.Keep
 import android.text.TextUtils
 import android.util.Log
@@ -33,7 +34,9 @@ import ch.deletescape.lawnchair.runOnUiWorkerThread
 import ch.deletescape.lawnchair.util.Temperature
 import com.android.launcher3.Launcher
 import com.android.launcher3.Utilities
+import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.util.PackageManagerHelper
+import com.google.android.apps.nexuslauncher.DynamicIconProvider
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 
@@ -124,10 +127,16 @@ class LawnchairSmartspaceController(val context: Context) {
     }
 
     fun openWeather(v: View) {
-        if (weatherData == null) return
+        val data = weatherData ?: return
         val launcher = Launcher.getLauncher(v.context)
-        if (weatherData!!.forecastIntent != null) {
-            launcher.startActivitySafely(v, weatherData!!.forecastIntent, null)
+        if (data.pendingIntent != null) {
+            val opts = launcher.getActivityLaunchOptionsAsBundle(v)
+            launcher.startIntentSender(
+                    data.pendingIntent.intentSender, null,
+                    Intent.FLAG_ACTIVITY_NEW_TASK,
+                    Intent.FLAG_ACTIVITY_NEW_TASK, 0, opts)
+        } else if (data.forecastIntent != null) {
+            launcher.startActivitySafely(v, data.forecastIntent, null)
         } else if (PackageManagerHelper.isAppEnabled(launcher.packageManager, "com.google.android.googlequicksearchbox", 0)) {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse("dynact://velour/weather/ProxyActivity")
@@ -135,8 +144,20 @@ class LawnchairSmartspaceController(val context: Context) {
                     "com.google.android.apps.gsa.velour.DynamicActivityTrampoline")
             launcher.startActivitySafely(v, intent, null)
         } else {
-            Utilities.openURLinBrowser(launcher, weatherData!!.forecastUrl,
+            Utilities.openURLinBrowser(launcher, data.forecastUrl,
                     launcher.getViewBounds(v), launcher.getActivityLaunchOptions(v).toBundle())
+        }
+    }
+
+    fun openEvent(v: View) {
+        val data = cardData ?: return
+        val launcher = Launcher.getLauncher(v.context)
+        if (data.pendingIntent != null) {
+            val opts = launcher.getActivityLaunchOptionsAsBundle(v)
+            launcher.startIntentSender(
+                    data.pendingIntent.intentSender, null,
+                    Intent.FLAG_ACTIVITY_NEW_TASK,
+                    Intent.FLAG_ACTIVITY_NEW_TASK, 0, opts)
         }
     }
 
@@ -256,7 +277,8 @@ class LawnchairSmartspaceController(val context: Context) {
     data class WeatherData(val icon: Bitmap,
                            private val temperature: Temperature,
                            val forecastUrl: String? = "https://www.google.com/search?q=weather",
-                           val forecastIntent: Intent? = null) {
+                           val forecastIntent: Intent? = null,
+                           val pendingIntent: PendingIntent? = null) {
 
         fun getTitle(unit: Temperature.Unit): String {
             return "${temperature.inUnit(unit)} ${unit.suffix}"
@@ -265,7 +287,8 @@ class LawnchairSmartspaceController(val context: Context) {
 
     data class CardData(val icon: Bitmap,
                         val title: String, val titleEllipsize: TextUtils.TruncateAt?,
-                        val subtitle: String, val subtitleEllipsize: TextUtils.TruncateAt?)
+                        val subtitle: String, val subtitleEllipsize: TextUtils.TruncateAt?,
+                        val pendingIntent: PendingIntent? = null)
 
     interface Listener {
 
