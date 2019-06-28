@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 
+import ch.deletescape.lawnchair.LawnchairLauncher;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
@@ -50,7 +51,7 @@ public class BackButtonAlphaHandler implements LauncherStateManager.StateHandler
             return;
         }
         float fromAlpha = mOverviewInteractionState.getBackButtonAlpha();
-        float toAlpha = toState.hideBackButton ? 0 : 1;
+        float toAlpha = toState.hideBackButton && !UiFactory.hasBackGesture(mLauncher) ? 0 : 1;
         if (Float.compare(fromAlpha, toAlpha) != 0) {
             ValueAnimator anim = ValueAnimator.ofFloat(fromAlpha, toAlpha);
             anim.setDuration(config.duration);
