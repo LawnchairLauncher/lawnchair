@@ -61,6 +61,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     private final OnClickListener mCalendarClickListener;
     private final OnClickListener mClockClickListener;
     private final OnClickListener mWeatherClickListener;
+    private final OnClickListener mEventClickListener;
     private ImageView mSubtitleIcon;
     private TextView mSubtitleText;
     private ViewGroup mSubtitleWeatherContent;
@@ -116,6 +117,11 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         mWeatherClickListener = v -> {
             if (mController != null)
                 mController.openWeather(v);
+        };
+
+        mEventClickListener = v -> {
+            if (mController != null)
+                mController.openEvent(v);
         };
 
         dp = SmartspaceController.get(context);
@@ -193,6 +199,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
 
     @SuppressWarnings("ConstantConditions")
     private void loadDoubleLine(final LawnchairSmartspaceController.DataContainer data) {
+        setOnClickListener(mEventClickListener);
         setBackgroundResource(mSmartspaceBackgroundRes);
         mTitleText.setText(data.getCard().getTitle());
         mTitleText.setEllipsize(data.getCard().getTitleEllipsize());
@@ -206,6 +213,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
 
     @SuppressWarnings("ConstantConditions")
     private void loadSingleLine(final LawnchairSmartspaceController.DataContainer data) {
+        setOnClickListener(null);
         setBackgroundResource(0);
         bindWeather(data, mTitleWeatherContent, mTitleWeatherText, mTitleWeatherIcon);
         bindClockAndSeparator(false);
