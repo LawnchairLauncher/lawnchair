@@ -359,6 +359,7 @@
     <string name="pref_sesame_show_shortcuts">Prečaci aplikacija</string>
     <string name="pref_sesame_show_shortcuts_summary">Prikaži Sesame prečace u krugićima ikona</string>
     <string name="allow">Dopusti</string>
+    <string name="deny">Odbij</string>
     <string name="sesame_enable_integration_title">Omogući integraciju</string>
     <string name="sesame_enable_integration_description"><![CDATA[Omogućuje dijeljenje podataka između Lawnchair i Sesame. Ovo možete promijeniti u Lawnchair ili Sesame postavkama.]]></string>
     <string name="sesame_version">Verzija integracije</string>
@@ -419,4 +420,25 @@
     <string name="pref_notification_count_summary">Prikaži broj obavijesti unutar točkica</string>
     <string name="pref_center_wallpaper">Uvijek centriraj pozadinu</string>
     <string name="pref_center_wallpaper_summary">Ovo će onemogućiti efekt pomicanja pozadine</string>
+    <string name="pref_appcategorization_enable_title">Kategoriziraj aplikacije</string>
+    <string name="pref_appcategorization_style_text">Stil</string>
+    <string name="pref_app_groups_create">Stvori</string>
+    <string name="pref_appcategorization_folders_title">Mape</string>
+    <string name="pref_appcategorization_tabs_title">Kartice</string>
+    <string name="default_folder_name">Nova mapa</string>
+    <string name="drawer_folders">Mape</string>
+    <string name="category_communication">Komunikacija</string>
+    <string name="category_entertainment">Zabava</string>
+    <string name="category_food_and_drink">Hrana i piće</string>
+    <string name="category_game">Igre</string>
+    <string name="category_health_and_fitness">Zdravlje i fitness</string>
+    <string name="category_music">Glazba</string>
+    <string name="category_news">Vijesti</string>
+    <string name="category_personalization">Personalizacija</string>
+    <string name="category_photography">Fotografija</string>
+    <string name="category_tools">Alati</string>
+    <string name="action_share">Podijeli</string>
+    <string name="animation_type_default">Zadana</string>
+    <string name="select_tab_type">Tip kartica</string>
+    <string name="categorization">Kategorizacija</string>
 </resources>
