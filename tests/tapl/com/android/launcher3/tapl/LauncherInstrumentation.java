@@ -270,9 +270,19 @@ public final class LauncherInstrumentation {
             return "System alert popup is visible: " + object.getText();
         }
 
+        if (hasSystemUiObject("keyguard_status_view")) return "Phone is locked";
+
         if (!mDevice.hasObject(By.textStartsWith(""))) return "Screen is empty";
 
         return null;
+    }
+
+    private String getVisibleStateMessage() {
+        if (hasLauncherObject(WIDGETS_RES_ID)) return "Widgets";
+        if (hasLauncherObject(OVERVIEW_RES_ID)) return "Overview";
+        if (hasLauncherObject(WORKSPACE_RES_ID)) return "Workspace";
+        if (hasLauncherObject(APPS_RES_ID)) return "AllApps";
+        return "Background";
     }
 
     private static String truncateCrash(String text, int maxLines) {
@@ -354,7 +364,11 @@ public final class LauncherInstrumentation {
         message = "http://go/tapl : " + getContextDescription() + message;
 
         final String anomaly = getAnomalyMessage();
-        if (anomaly != null) message = anomaly + ", which causes:\n" + message;
+        if (anomaly != null) {
+            message = anomaly + ", which causes:\n" + message;
+        } else {
+            message = message + " (visible state: " + getVisibleStateMessage() + ")";
+        }
 
         final String systemHealth = getSystemHealthMessage();
         if (systemHealth != null) {
