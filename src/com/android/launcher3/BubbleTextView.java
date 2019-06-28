@@ -58,6 +58,7 @@ import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.badge.BadgeRenderer;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.PreloadIconDrawable;
@@ -322,6 +323,20 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         }
     }
 
+    public void applyIcon(ItemInfoWithIcon info) {
+        FastBitmapDrawable iconDrawable = DrawableFactory.get(getContext()).newIcon(info);
+        mBadgeColor = IconPalette.getMutedColor(getContext(), info.iconColor, 0.54f);
+
+        setIcon(iconDrawable);
+    }
+
+    public void applyIcon(BitmapInfo info) {
+        FastBitmapDrawable iconDrawable = new FastBitmapDrawable(info);
+        mBadgeColor = IconPalette.getMutedColor(getContext(), info.color, 0.54f);
+
+        setIcon(iconDrawable);
+    }
+
     private void applySwipeUpAction(ShortcutInfo info) {
         GestureHandler handler = GestureController.Companion.createGestureHandler(
                 getContext(), info.swipeUpAction, new BlankGestureHandler(getContext(), null));
@@ -416,7 +431,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         return result;
     }
 
-    void setStayPressed(boolean stayPressed) {
+    public void setStayPressed(boolean stayPressed) {
         mStayPressed = stayPressed;
         refreshDrawableState();
     }
@@ -542,6 +557,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public void setTextVisibility(boolean visible) {
         setTextAlpha(visible ? 1 : 0);
+    }
+
+    public boolean getTextVisibility() {
+        return mTextAlpha > 0;
     }
 
     private void setTextAlpha(float alpha) {
@@ -737,5 +756,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     protected boolean isTextHidden() {
         return mHideText;
+    }
+
+    public int getBadgeColor() {
+        return mBadgeColor;
     }
 }

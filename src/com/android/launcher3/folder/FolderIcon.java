@@ -60,6 +60,7 @@ import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.OnAlarmListener;
@@ -75,6 +76,7 @@ import com.android.launcher3.badge.FolderBadgeInfo;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
@@ -85,7 +87,7 @@ import java.util.List;
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
  */
-public class FolderIcon extends FrameLayout implements FolderListener {
+public class FolderIcon extends FrameLayout implements FolderListener, OnResumeCallback {
     @Thunk Launcher mLauncher;
     @Thunk Folder mFolder;
     private FolderInfo mInfo;
@@ -128,8 +130,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private GestureHandler mSwipeUpHandler;
 
     public boolean isCustomIcon = false;
-    Drawable customIcon = null;
-    private int mIconSize = 0;
 
     private static final Property<FolderIcon, Float> BADGE_SCALE_PROPERTY
             = new Property<FolderIcon, Float>(Float.TYPE, "badgeScale") {
@@ -235,33 +235,45 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         applySwipeUpAction(mInfo);
         setOnClickListener(mInfo.isCoverMode() ?
                 ItemClickHandler.FOLDER_COVER_INSTANCE : ItemClickHandler.INSTANCE);
+
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFolderName.getLayoutParams();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        mFolderName.setTag(null);
+
         if (mInfo.useIconMode(mLauncher)) {
-            if (mInfo instanceof DrawerFolderInfo) {
-                mIconSize = mLauncher.getDeviceProfile().allAppsIconSizePx;
+            lp.topMargin = 0;
+            if (isInAppDrawer()) {
+                mFolderName.setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             } else {
-                mIconSize = mLauncher.getDeviceProfile().iconSizePx;
+                mFolderName.setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
             }
+
             isCustomIcon = true;
-            setCustomIcon(mInfo.getIcon(mLauncher));
+
+            if (mInfo.isCoverMode()) {
+                ItemInfoWithIcon coverInfo = mInfo.getCoverInfo();
+                mFolderName.setTag(coverInfo);
+                mFolderName.applyIcon(coverInfo);
+            } else {
+                BitmapInfo info = BitmapInfo.fromBitmap(
+                        Utilities.drawableToBitmap(mInfo.getIcon(getContext())));
+                mFolderName.applyIcon(info);
+            }
             mBackground.setStartOpacity(0f);
         } else {
+            if (isInAppDrawer()) {
+                lp.topMargin = grid.allAppsIconSizePx + grid.allAppsIconDrawablePaddingPx;
+            } else {
+                lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
+            }
+            mFolderName.setCompoundDrawablePadding(0);
+
             isCustomIcon = false;
-            customIcon = null;
-            setCustomIcon(null);
+            mFolderName.setCompoundDrawables(null, null, null, null);
             mBackground.setStartOpacity(1f);
         }
         mFolderName.setText(mInfo.getIconTitle());
-        invalidate();
-    }
-
-    private void setCustomIcon(Drawable icon) {
-        if (customIcon != null) {
-            customIcon.setCallback(null);
-        }
-        customIcon = icon;
-        if (customIcon != null) {
-            customIcon.setCallback(this);
-        }
+        requestLayout();
     }
 
     @Override
@@ -545,15 +557,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         } else if (!isCustomIcon || mInfo.container == Favorites.CONTAINER_HOTSEAT) return;
 
         if (isCustomIcon) {
-            int size = (int) (mIconSize * mIconScale);
-            int availableWidth = getWidth() - size;
-            float offsetY = (size - mIconSize) / 2f;
-
-            canvas.save();
-            canvas.translate(availableWidth / 2f, getPaddingTop() - offsetY);
-            customIcon.setBounds(0, 0, size, size);
-            customIcon.draw(canvas);
-            canvas.restore();
             return;
         }
 
@@ -590,15 +593,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public void setTextVisible(boolean visible) {
-        if (visible) {
-            mFolderName.setVisibility(VISIBLE);
-        } else {
-            mFolderName.setVisibility(INVISIBLE);
-        }
+        mFolderName.setTextVisibility(visible);
     }
 
     public boolean getTextVisible() {
-        return mFolderName.getVisibility() == VISIBLE;
+        return mFolderName.getTextVisibility();
     }
 
     /**
@@ -652,7 +651,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     @Override
     protected boolean verifyDrawable(@NonNull Drawable who) {
-        return who == customIcon || mPreviewItemManager.verifyDrawable(who) || super.verifyDrawable(who);
+        return mPreviewItemManager.verifyDrawable(who) || super.verifyDrawable(who);
     }
 
     @Override
@@ -792,14 +791,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         }
     }
 
-    public void getIconBounds(Rect outBounds) {
-        int top = getPaddingTop();
-        int left = (getWidth() - mIconSize) / 2;
-        int right = left + mIconSize;
-        int bottom = top + mIconSize;
-        outBounds.set(left, top, right, bottom);
-    }
-
     private float mIconScale = 1f;
 
     public void setIconScale(float scale) {
@@ -826,5 +817,28 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     public boolean isInAppDrawer() {
         return mInfo instanceof DrawerFolderInfo;
+    }
+
+    public boolean isCoverMode() {
+        return mInfo.isCoverMode();
+    }
+
+    public BubbleTextView getFolderName() {
+        return mFolderName;
+    }
+
+    public void setStayPressed(boolean stayPressed) {
+        mFolderName.setStayPressed(stayPressed);
+    }
+
+    @Override
+    public void onLauncherResume() {
+        // Reset the pressed state of icon that was locked in the press state while activity
+        // was launching
+        setStayPressed(false);
+    }
+
+    public void clearPressedBackground() {
+        setStayPressed(false);
     }
 }

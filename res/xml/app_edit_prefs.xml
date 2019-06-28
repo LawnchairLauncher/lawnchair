@@ -35,6 +35,7 @@
     <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
         android:key="pref_cover_mode"
         android:title="@string/folder_cover_mode"
+        android:summary="@string/folder_cover_mode_desc"
         android:defaultValue="false"
         android:disableDependentsState="true"
         android:persistent="false"/>

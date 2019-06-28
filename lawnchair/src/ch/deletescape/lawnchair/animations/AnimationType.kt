@@ -33,6 +33,7 @@ import com.android.launcher3.*
 import com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS
 import com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE
 import com.android.launcher3.anim.Interpolators.LINEAR
+import com.android.launcher3.folder.FolderIcon
 import com.android.launcher3.shortcuts.DeepShortcutView
 import com.android.quickstep.util.MultiValueUpdateListener
 import java.lang.ref.WeakReference
@@ -200,9 +201,11 @@ abstract class AnimationType {
             return Rect(0, 0, launcher.deviceProfile.widthPx, launcher.deviceProfile.heightPx)
         }
 
-        private fun getOpeningWindowAnimators(launcher: Launcher, v: View, splashView: SplashLayout,
+        private fun getOpeningWindowAnimators(launcher: Launcher, v2: View, splashView: SplashLayout,
                                               floatingView: View,
                                               windowTargetBounds: Rect): ValueAnimator {
+            val v = if (v2 is FolderIcon) v2.folderName else v2
+
             val bounds = Rect()
             when {
                 v.parent is DeepShortcutView -> {
