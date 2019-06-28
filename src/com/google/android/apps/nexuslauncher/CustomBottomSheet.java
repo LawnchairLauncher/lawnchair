@@ -254,7 +254,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 mPrefHidePredictions.setOnPreferenceChangeListener(this);
             }
 
-            if (prefs.getShowDebugInfo() && mKey.componentName != null) {
+            if (prefs.getShowDebugInfo() && mKey != null && mKey.componentName != null) {
                 Preference componentPref = getPreferenceScreen().findPreference("componentName");
                 componentPref.setOnPreferenceClickListener(this);
                 componentPref.setSummary(mKey.toString());
