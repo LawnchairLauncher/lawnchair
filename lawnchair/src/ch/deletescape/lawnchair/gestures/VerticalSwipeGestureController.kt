@@ -54,6 +54,8 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     private var downSent = false
     private var pointerCount = 0
 
+    private var overrideDragging = false
+
     override fun onControllerInterceptTouchEvent(ev: MotionEvent): Boolean {
         downTime = ev.downTime
         val isDown = ev.actionMasked == MotionEvent.ACTION_DOWN
@@ -117,11 +119,15 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     override fun onDragStart(start: Boolean) {
         state = GestureState.Free
         (swipeUpOverride as? VerticalSwipeGestureHandler)?.onDragStart(start)
+        overrideDragging = true
     }
 
     override fun onDrag(displacement: Float, velocity: Float): Boolean {
         if (state != GestureState.Locked) {
-            (swipeUpOverride as? VerticalSwipeGestureHandler)?.onDrag(displacement, velocity)
+            val wasFree = state == GestureState.Free
+            if (overrideDragging) {
+                (swipeUpOverride as? VerticalSwipeGestureHandler)?.onDrag(displacement, velocity)
+            }
             if (gesture.customSwipeDown) {
                 if (velocity > triggerVelocity && state == GestureState.Free) {
                     state = GestureState.Triggered
@@ -136,7 +142,9 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
                 }
             }
 
-            if (velocity < -triggerVelocity && state == GestureState.Free) {
+            if (wasFree && state == GestureState.NotificationOpened) {
+                sendOnDragEnd(velocity, false)
+            } else if (velocity < -triggerVelocity && state == GestureState.Free) {
                 controller.getSwipeUpOverride(downTime)?.let {
                     state = GestureState.Triggered
                     it.onGestureTrigger(controller)
@@ -154,7 +162,14 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
 
     override fun onDragEnd(velocity: Float, fling: Boolean) {
         launcher.workspace.postDelayed(detector::finishedScrolling, 200)
-        (swipeUpOverride as? VerticalSwipeGestureHandler)?.onDragEnd(velocity, fling)
+        sendOnDragEnd(velocity, fling)
+    }
+
+    private fun sendOnDragEnd(velocity: Float, fling: Boolean) {
+        if (overrideDragging) {
+            (swipeUpOverride as? VerticalSwipeGestureHandler)?.onDragEnd(velocity, fling)
+            overrideDragging = false
+        }
     }
 
     private fun openNotificationsOrQuickSettings(): Boolean {

@@ -275,7 +275,7 @@ open class LawnchairLauncher : NexusLauncherActivity(),
         currentEditIcon = when (itemInfo) {
             is AppInfo -> IconPackManager.getInstance(this).getEntryForComponent(component!!)?.drawable
             is ShortcutInfo -> BitmapDrawable(resources, itemInfo.iconBitmap)
-            is FolderInfo -> itemInfo.getFolderIcon(this)
+            is FolderInfo -> itemInfo.getDefaultIcon(this)
             else -> null
         }
         currentEditInfo = itemInfo

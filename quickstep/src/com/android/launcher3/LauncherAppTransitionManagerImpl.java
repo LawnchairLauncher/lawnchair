@@ -67,6 +67,7 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -462,6 +463,12 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             // Create a copy of the app icon
             mFloatingView.setBackground(
                     DrawableFactory.get(mLauncher).newIcon((ItemInfoWithIcon) v.getTag()));
+        } else if (v.getTag() instanceof FolderInfo) {
+            FolderInfo folderInfo = (FolderInfo) v.getTag();
+            if (folderInfo.isCoverMode()) {
+                mFloatingView.setBackground(
+                        DrawableFactory.get(mLauncher).newIcon(folderInfo.getCoverInfo()));
+            }
         }
 
         // Position the floating view exactly on top of the original
@@ -485,6 +492,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             if (dr instanceof FastBitmapDrawable) {
                 startScale = ((FastBitmapDrawable) dr).getAnimatedScale();
             }
+        } else if (v instanceof FolderIcon) {
+            FolderIcon folderIcon = (FolderIcon) v;
+            folderIcon.getIconBounds(rect);
         } else {
             rect.set(0, 0, rect.width(), rect.height());
         }
@@ -635,6 +645,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             mDragLayer.getDescendantRectRelativeToSelf(view.getIconView(), bounds);
         } else if (v instanceof BubbleTextView) {
             ((BubbleTextView) v).getIconBounds(bounds);
+        } else if (v instanceof FolderIcon) {
+            ((FolderIcon) v).getIconBounds(bounds);
         } else {
             mDragLayer.getDescendantRectRelativeToSelf(v, bounds);
         }

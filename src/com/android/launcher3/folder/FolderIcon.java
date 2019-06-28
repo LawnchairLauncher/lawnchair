@@ -44,6 +44,8 @@ import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.gestures.BlankGestureHandler;
 import ch.deletescape.lawnchair.gestures.GestureController;
 import ch.deletescape.lawnchair.gestures.GestureHandler;
+import ch.deletescape.lawnchair.gestures.RunnableGestureHandler;
+import ch.deletescape.lawnchair.gestures.handlers.ViewSwipeUpGestureHandler;
 import ch.deletescape.lawnchair.groups.DrawerFolderInfo;
 import com.android.launcher3.Alarm;
 import com.android.launcher3.AppInfo;
@@ -127,6 +129,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     public boolean isCustomIcon = false;
     Drawable customIcon = null;
+    private int mIconSize = 0;
 
     private static final Property<FolderIcon, Float> BADGE_SCALE_PROPERTY
             = new Property<FolderIcon, Float>(Float.TYPE, "badgeScale") {
@@ -176,7 +179,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
         icon.setClipToPadding(false);
         icon.mFolderName = icon.findViewById(R.id.folder_icon_name);
-        icon.mFolderName.setText(folderInfo.title);
+        icon.mFolderName.setText(folderInfo.getIconTitle());
         icon.mFolderName.setCompoundDrawablePadding(0);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) icon.mFolderName.getLayoutParams();
         if (folderInfo instanceof DrawerFolderInfo) {
@@ -201,12 +204,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         folderInfo.addListener(icon);
 
         icon.setOnFocusChangeListener(launcher.mFocusHandler);
-        icon.applySwipeUpAction(folderInfo);
-        if (folderInfo.hasCustomIcon(launcher)) {
-            icon.isCustomIcon = true;
-            icon.customIcon = folderInfo.getIcon(launcher);
-            icon.mBackground.setStartOpacity(0f);
-        }
+        icon.onIconChanged();
         return icon;
     }
 
@@ -225,15 +223,39 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
         folderInfo.addListener(this);
 
-        applySwipeUpAction(folderInfo);
-        if (folderInfo.hasCustomIcon(mLauncher)) {
+        onIconChanged();
+    }
+
+    @Override
+    public void onIconChanged() {
+        applySwipeUpAction(mInfo);
+        setOnClickListener(mInfo.isCoverMode() ?
+                ItemClickHandler.FOLDER_COVER_INSTANCE : ItemClickHandler.INSTANCE);
+        if (mInfo.useIconMode(mLauncher)) {
+            if (mInfo instanceof DrawerFolderInfo) {
+                mIconSize = mLauncher.getDeviceProfile().allAppsIconSizePx;
+            } else {
+                mIconSize = mLauncher.getDeviceProfile().iconSizePx;
+            }
             isCustomIcon = true;
-            customIcon = folderInfo.getIcon(mLauncher);
+            setCustomIcon(mInfo.getIcon(mLauncher));
             mBackground.setStartOpacity(0f);
         } else {
             isCustomIcon = false;
             customIcon = null;
+            setCustomIcon(null);
             mBackground.setStartOpacity(1f);
+        }
+        invalidate();
+    }
+
+    private void setCustomIcon(Drawable icon) {
+        if (customIcon != null) {
+            customIcon.setCallback(null);
+        }
+        customIcon = icon;
+        if (customIcon != null) {
+            customIcon.setCallback(this);
         }
     }
 
@@ -518,18 +540,15 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         } else if (!isCustomIcon || mInfo.container == Favorites.CONTAINER_HOTSEAT) return;
 
         if (isCustomIcon) {
-            int offsetX = mBackground.getOffsetX();
-            int offsetY = mBackground.getOffsetY();
-            float actualSize = mBackground.previewSize * mBackground.mScale;
-            int previewSize = (int) (actualSize * mIconScale);
-            if (mIconScale != 1) {
-                int offset = (int) ((previewSize - actualSize) / 2);
-                offsetX -= offset;
-                offsetY -= offset;
-            }
-            mTempBounds.set(offsetX, offsetY, offsetX + previewSize, offsetY + previewSize);
-            customIcon.setBounds(mTempBounds);
+            int size = (int) (mIconSize * mIconScale);
+            int availableWidth = getWidth() - size;
+            float offsetY = (size - mIconSize) / 2f;
+
+            canvas.save();
+            canvas.translate(availableWidth / 2f, getPaddingTop() - offsetY);
+            customIcon.setBounds(0, 0, size, size);
             customIcon.draw(canvas);
+            canvas.restore();
             return;
         }
 
@@ -628,11 +647,15 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     @Override
     protected boolean verifyDrawable(@NonNull Drawable who) {
-        return mPreviewItemManager.verifyDrawable(who) || super.verifyDrawable(who);
+        return who == customIcon || mPreviewItemManager.verifyDrawable(who) || super.verifyDrawable(who);
     }
 
     @Override
     public void onItemsChanged(boolean animate) {
+        if (mInfo.isCoverMode()) {
+            onIconChanged();
+            mFolderName.setText(mInfo.getIconTitle());
+        }
         updatePreviewItems(animate);
         invalidate();
         requestLayout();
@@ -670,7 +693,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     @Override
     public void onTitleChanged(CharSequence title) {
-        mFolderName.setText(title);
+        mFolderName.setText(mInfo.getIconTitle());
         applySwipeUpAction(mInfo);
         setContentDescription(getContext().getString(R.string.folder_name_format, title));
     }
@@ -751,11 +774,25 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     private void applySwipeUpAction(FolderInfo info) {
-        mSwipeUpHandler = GestureController.Companion.createGestureHandler(
-                getContext(), info.swipeUpAction, new BlankGestureHandler(getContext(), null));
+        if (info.isCoverMode()) {
+            mSwipeUpHandler = new RunnableGestureHandler(getContext(), () -> ItemClickHandler.INSTANCE.onClick(this));
+        } else {
+            mSwipeUpHandler = GestureController.Companion.createGestureHandler(
+                    getContext(), info.swipeUpAction, new BlankGestureHandler(getContext(), null));
+        }
         if (mSwipeUpHandler instanceof BlankGestureHandler) {
             mSwipeUpHandler = null;
+        } else {
+            mSwipeUpHandler = new ViewSwipeUpGestureHandler(this, mSwipeUpHandler);
         }
+    }
+
+    public void getIconBounds(Rect outBounds) {
+        int top = getPaddingTop();
+        int left = (getWidth() - mIconSize) / 2;
+        int right = left + mIconSize;
+        int bottom = top + mIconSize;
+        outBounds.set(left, top, right, bottom);
     }
 
     private float mIconScale = 1f;
