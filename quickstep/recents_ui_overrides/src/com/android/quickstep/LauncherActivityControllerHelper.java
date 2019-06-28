@@ -18,12 +18,13 @@ package com.android.quickstep;
 import static android.view.View.TRANSLATION_Y;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.LauncherAppTransitionManagerImpl.INDEX_RECENTS_FADE_ANIM;
+import static com.android.launcher3.LauncherAppTransitionManagerImpl.INDEX_RECENTS_TRANSLATE_X_ANIM;
+import static com.android.launcher3.LauncherAppTransitionManagerImpl.INDEX_SHELF_ANIM;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
-import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_DAMPING_RATIO;
-import static com.android.launcher3.allapps.AllAppsTransitionController.SPRING_STIFFNESS;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
@@ -31,7 +32,6 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.WindowTransformSwipeHandler.RECENTS_ATTACH_DURATION;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
@@ -48,8 +48,6 @@ import android.view.animation.Interpolator;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
-import androidx.dynamicanimation.animation.SpringAnimation;
-import androidx.dynamicanimation.animation.SpringForce;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -60,13 +58,14 @@ import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
+import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -216,10 +215,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         activity.getAppsView().getContentView().setVisibility(View.GONE);
 
         return new AnimationFactory() {
-            private Animator mShelfAnim;
             private ShelfAnimState mShelfState;
-            private Animator mAttachToWindowFadeAnim;
-            private SpringAnimation mAttachToWindowTranslationXAnim;
             private boolean mIsAttachedToWindow;
 
             @Override
@@ -252,31 +248,26 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                     return;
                 }
                 mShelfState = shelfState;
-                if (mShelfAnim != null) {
-                    mShelfAnim.cancel();
-                }
+                activity.getStateManager().cancelStateElementAnimation(INDEX_SHELF_ANIM);
                 if (mShelfState == ShelfAnimState.CANCEL) {
                     return;
                 }
                 float shelfHiddenProgress = BACKGROUND_APP.getVerticalProgress(activity);
                 float shelfOverviewProgress = OVERVIEW.getVerticalProgress(activity);
+                // Peek based on default overview progress so we can see hotseat if we're showing
+                // that instead of predictions in overview.
+                float defaultOverviewProgress = OverviewState.getDefaultVerticalProgress(activity);
                 float shelfPeekingProgress = shelfHiddenProgress
-                        - (shelfHiddenProgress - shelfOverviewProgress) * 0.25f;
+                        - (shelfHiddenProgress - defaultOverviewProgress) * 0.25f;
                 float toProgress = mShelfState == ShelfAnimState.HIDE
                         ? shelfHiddenProgress
                         : mShelfState == ShelfAnimState.PEEK
                                 ? shelfPeekingProgress
                                 : shelfOverviewProgress;
-                mShelfAnim = createShelfAnim(activity, toProgress);
-                mShelfAnim.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mShelfAnim = null;
-                    }
-                });
-                mShelfAnim.setInterpolator(interpolator);
-                mShelfAnim.setDuration(duration);
-                mShelfAnim.start();
+                Animator shelfAnim = activity.getStateManager()
+                        .createStateElementAnimation(INDEX_SHELF_ANIM, toProgress);
+                shelfAnim.setInterpolator(interpolator);
+                shelfAnim.setDuration(duration).start();
             }
 
             @Override
@@ -285,12 +276,10 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                     return;
                 }
                 mIsAttachedToWindow = attached;
-                if (mAttachToWindowFadeAnim != null) {
-                    mAttachToWindowFadeAnim.cancel();
-                }
-                RecentsView recentsView = activity.getOverviewPanel();
-                mAttachToWindowFadeAnim = ObjectAnimator.ofFloat(recentsView,
-                        RecentsView.CONTENT_ALPHA, attached ? 1 : 0);
+                LauncherRecentsView recentsView = activity.getOverviewPanel();
+                Animator fadeAnim = activity.getStateManager()
+                        .createStateElementAnimation(
+                        INDEX_RECENTS_FADE_ANIM, attached ? 1 : 0);
 
                 int runningTaskIndex = recentsView.getRunningTaskIndex();
                 if (runningTaskIndex == 0) {
@@ -312,33 +301,28 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
 
                     float fromTranslationX = attached ? offscreenX - scrollOffsetX : 0;
                     float toTranslationX = attached ? 0 : offscreenX - scrollOffsetX;
-                    if (mAttachToWindowTranslationXAnim == null) {
-                        mAttachToWindowTranslationXAnim = new SpringAnimation(recentsView,
-                                SpringAnimation.TRANSLATION_X).setSpring(new SpringForce()
-                                .setDampingRatio(0.8f)
-                                .setStiffness(250));
-                    }
+                    activity.getStateManager()
+                            .cancelStateElementAnimation(INDEX_RECENTS_TRANSLATE_X_ANIM);
+
                     if (!recentsView.isShown() && animate) {
                         recentsView.setTranslationX(fromTranslationX);
-                        mAttachToWindowTranslationXAnim.setStartValue(fromTranslationX);
-                    }
-                    mAttachToWindowTranslationXAnim.animateToFinalPosition(toTranslationX);
-                    if (!animate && mAttachToWindowTranslationXAnim.canSkipToEnd()) {
-                        mAttachToWindowTranslationXAnim.skipToEnd();
+                    } else {
+                        fromTranslationX = recentsView.getTranslationX();
                     }
 
-                    mAttachToWindowFadeAnim.setInterpolator(attached ? INSTANT : ACCEL_2);
-                } else {
-                    mAttachToWindowFadeAnim.setInterpolator(ACCEL_DEACCEL);
-                }
-                mAttachToWindowFadeAnim.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mAttachToWindowFadeAnim = null;
+                    if (!animate) {
+                        recentsView.setTranslationX(toTranslationX);
+                    } else {
+                        activity.getStateManager().createStateElementAnimation(
+                                INDEX_RECENTS_TRANSLATE_X_ANIM,
+                                fromTranslationX, toTranslationX).start();
                     }
-                });
-                mAttachToWindowFadeAnim.setDuration(animate ? RECENTS_ATTACH_DURATION : 0);
-                mAttachToWindowFadeAnim.start();
+
+                    fadeAnim.setInterpolator(attached ? INSTANT : ACCEL_2);
+                } else {
+                    fadeAnim.setInterpolator(ACCEL_DEACCEL);
+                }
+                fadeAnim.setDuration(animate ? RECENTS_ATTACH_DURATION : 0).start();
             }
         };
     }
@@ -354,10 +338,10 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         if (!activity.getDeviceProfile().isVerticalBarLayout()
                 && SysUINavigationMode.getMode(activity) != Mode.NO_BUTTON) {
             // Don't animate the shelf when the mode is NO_BUTTON, because we update it atomically.
-            Animator shiftAnim = createShelfAnim(activity,
+            anim.play(activity.getStateManager().createStateElementAnimation(
+                    INDEX_SHELF_ANIM,
                     fromState.getVerticalProgress(activity),
-                    endState.getVerticalProgress(activity));
-            anim.play(shiftAnim);
+                    endState.getVerticalProgress(activity)));
         }
         playScaleDownAnim(anim, activity, fromState, endState);
 
@@ -373,13 +357,6 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                     controller.getInterpolatedProgress() > 0.5 ? endState : fromState, false);
         });
         callback.accept(controller);
-    }
-
-    private Animator createShelfAnim(Launcher activity, float ... progressValues) {
-        Animator shiftAnim = new SpringObjectAnimator<>(activity.getAllAppsController(),
-                "allAppsSpringFromACH", activity.getAllAppsController().getShiftRange(),
-                SPRING_DAMPING_RATIO, SPRING_STIFFNESS, progressValues);
-        return shiftAnim;
     }
 
     /**
