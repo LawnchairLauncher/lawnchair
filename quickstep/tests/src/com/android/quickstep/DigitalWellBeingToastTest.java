@@ -51,7 +51,7 @@ public class DigitalWellBeingToastTest extends AbstractQuickStepTest {
             mLauncher.pressHome();
             final DigitalWellBeingToast toast = getToast();
 
-            assertTrue("Toast is not visible", toast.hasLimit());
+            waitForLauncherCondition("Toast is not visible", launcher -> toast.hasLimit());
             assertEquals("Toast text: ", "5 minutes left today", toast.getText());
 
             // Unset time limit for app.
