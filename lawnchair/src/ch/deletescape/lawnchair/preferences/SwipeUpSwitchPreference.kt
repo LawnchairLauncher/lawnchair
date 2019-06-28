@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.Switch
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.search.SearchIndex
+import ch.deletescape.lawnchair.util.extensions.d
 import com.android.quickstep.OverviewInteractionState
 import com.android.systemui.shared.system.SettingsCompat
 
@@ -23,14 +24,15 @@ class SwipeUpSwitchPreference(context: Context, attrs: AttributeSet? = null) : S
         if (secureOverrideMode && !hasWriteSecurePermission) {
             isEnabled = false
         }
+        isChecked = OverviewInteractionState.getInstance(context).isSwipeUpGestureEnabled
+    }
+
+    override fun onSetInitialValue(restoreValue: Boolean, defaultValue: Any?) {
+
     }
 
     override fun shouldDisableDependents(): Boolean {
         return disableDependentsState == isChecked
-    }
-
-    override fun getPersistedBoolean(defaultReturnValue: Boolean): Boolean {
-        return OverviewInteractionState.getInstance(context).isSwipeUpGestureEnabled
     }
 
     override fun persistBoolean(value: Boolean): Boolean {
