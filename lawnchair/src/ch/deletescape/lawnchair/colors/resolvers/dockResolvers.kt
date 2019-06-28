@@ -83,7 +83,7 @@ class DockQsbLightResolver(config: Config) : WallpaperColorResolver(config), Law
     }
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
-        notifyChanged()
+        if (!force) notifyChanged()
     }
 
     override fun stopListening() {
