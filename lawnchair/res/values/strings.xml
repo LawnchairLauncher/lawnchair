@@ -653,4 +653,6 @@
     <string name="tab_type_custom_desc">Manually pick apps for this tab.</string>
     <string name="tab_type_smart">Smart tab</string>
     <string name="categorization">Categorization</string>
+
+    <string name="folder_cover_mode">Cover mode</string>
 </resources>

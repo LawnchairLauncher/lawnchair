@@ -170,6 +170,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         private SwitchPreference mPrefHidePredictions;
         private LauncherGesturePreference mSwipeUpPref;
         private MultiSelectTabPreference mTabsPref;
+        private SwitchPreference mPrefCoverMode;
         private LawnchairPreferences prefs;
 
         private ComponentKey mKey;
@@ -208,6 +209,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             mTabsPref = (MultiSelectTabPreference) screen.findPreference("pref_show_in_tabs");
             mKey = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
             mPrefHide = (SwitchPreference) findPreference(PREF_HIDE);
+            mPrefCoverMode = (SwitchPreference) findPreference("pref_cover_mode");
 
             if (isApp) {
                 mPrefHide.setChecked(CustomAppFilter.isHiddenApp(context, mKey));
@@ -252,6 +254,12 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             if ((!prefs.getShowPredictions() || HIDE_PREDICTION_OPTION)
                     && mPrefHidePredictions != null) {
                 getPreferenceScreen().removePreference(mPrefHidePredictions);
+            }
+
+            if (itemInfo instanceof FolderInfo) {
+                mPrefCoverMode.setChecked(((FolderInfo) itemInfo).isCoverMode());
+            } else {
+                getPreferenceScreen().removePreference(mPrefCoverMode);
             }
 
             // TODO: Add link to edit bottom sheet for drawer folder
@@ -316,6 +324,16 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
             if (mTabsPref.getEdited()) {
                 prefs.getDrawerTabs().saveToJson();
+            }
+
+            if (itemInfo instanceof FolderInfo) {
+                FolderInfo folderInfo = (FolderInfo) itemInfo;
+                boolean coverEnabled = mPrefCoverMode.isChecked();
+                if (folderInfo.isCoverMode() != coverEnabled) {
+                    Launcher launcher = Launcher.getLauncher(getActivity());
+                    folderInfo.setCoverMode(coverEnabled, launcher.getModelWriter());
+                    folderInfo.onIconChanged();
+                }
             }
         }
 

@@ -184,7 +184,7 @@ public class FolderAnimationManager {
             play(a, anim);
         }
 
-        if (mFolder.mInfo.hasCustomIcon(mContext)) {
+        if (mFolder.mInfo.useIconMode(mContext)) {
             play(a, getAnimator(mFolder, View.ALPHA, 0f, 1f));
         }
         play(a, getAnimator(mFolder, View.TRANSLATION_X, xDistance, 0f));

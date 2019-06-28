@@ -70,3 +70,13 @@ class BlankGestureHandler(context: Context, config: JSONObject?) : GestureHandle
 
     }
 }
+
+class RunnableGestureHandler(context: Context,
+        private val onTrigger: Runnable) : GestureHandler(context, null) {
+
+    override val displayName = context.getString(R.string.action_none)!!
+
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
+        onTrigger.run()
+    }
+}
