@@ -95,6 +95,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     void onLaunchTaskFailed(T activity);
 
+    void onLaunchTaskSuccess(T activity);
+
     interface ActivityInitListener {
 
         void register();
