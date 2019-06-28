@@ -185,4 +185,8 @@ public class TouchInteractionService extends Service {
         }
         return mMyBinder;
     }
+
+    public static boolean isInputMonitorInitialized() {
+        return true;
+    }
 }

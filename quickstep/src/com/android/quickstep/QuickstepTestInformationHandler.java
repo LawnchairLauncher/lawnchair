@@ -10,7 +10,8 @@ import com.android.quickstep.util.LayoutUtils;
 
 public class QuickstepTestInformationHandler extends TestInformationHandler {
 
-    public QuickstepTestInformationHandler(Context context) { }
+    public QuickstepTestInformationHandler(Context context) {
+    }
 
     @Override
     public Bundle call(String method) {
@@ -28,6 +29,12 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                         LayoutUtils.getShelfTrackingDistance(mContext, mDeviceProfile);
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, (int) swipeHeight);
                 return response;
+            }
+
+            case TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED: {
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        TouchInteractionService.isInputMonitorInitialized());
+                break;
             }
         }
 

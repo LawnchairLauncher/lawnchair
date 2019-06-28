@@ -444,6 +444,8 @@ public final class LauncherInstrumentation {
     }
 
     private UiObject2 verifyContainerType(ContainerType containerType) {
+        waitForTouchInteractionService();
+
         assertEquals("Unexpected display rotation",
                 mExpectedRotation, mDevice.getDisplayRotation());
 
@@ -512,6 +514,18 @@ public final class LauncherInstrumentation {
                     return null;
             }
         }
+    }
+
+    private void waitForTouchInteractionService() {
+        for (int i = 0; i < 100; ++i) {
+            if (getTestInfo(
+                    TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED).
+                    getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD)) {
+                return;
+            }
+            SystemClock.sleep(100);
+        }
+        fail("TouchInteractionService didn't connect");
     }
 
     Parcelable executeAndWaitForEvent(Runnable command,
