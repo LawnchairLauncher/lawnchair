@@ -74,6 +74,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.logging.EventLogArray;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -502,6 +503,9 @@ public class TouchInteractionService extends Service implements
     }
 
     private void onInputEvent(InputEvent ev) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.EVENTS_TO_OVERVIEW_MISSING_TAG, "onInputEvent " + ev);
+        }
         if (!(ev instanceof MotionEvent)) {
             Log.e(TAG, "Unknown event " + ev);
             return;
