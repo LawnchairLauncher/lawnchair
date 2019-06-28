@@ -25,6 +25,7 @@ import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.util.RaceConditionReproducer;
 import com.android.quickstep.NavigationModeSwitchRule.Mode;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
@@ -79,6 +80,8 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     public void testStressPressHome() {
+        if (LauncherInstrumentation.isAvd()) return; // b/136278866
+
         for (int i = 0; i < STRESS_REPEAT_COUNT; ++i) {
             // Destroy Launcher activity.
             closeLauncherActivity();
@@ -91,6 +94,8 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     public void testStressSwipeToOverview() {
+        if (LauncherInstrumentation.isAvd()) return; // b/136278866
+
         for (int i = 0; i < STRESS_REPEAT_COUNT; ++i) {
             // Destroy Launcher activity.
             closeLauncherActivity();
