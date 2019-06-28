@@ -57,6 +57,8 @@ public class QuickSwitchState extends BackgroundAppState {
                 if (!success) {
                     launcher.getStateManager().goToState(OVERVIEW);
                     tasktolaunch.notifyTaskLaunchFailed(TAG);
+                } else {
+                    launcher.getStateManager().moveToRestState();
                 }
             }, new Handler(Looper.getMainLooper()));
         } else {
