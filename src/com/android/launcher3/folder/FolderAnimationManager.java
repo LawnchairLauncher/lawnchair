@@ -292,8 +292,6 @@ public class FolderAnimationManager {
                 iconScaleAnimator.setInterpolator(Interpolators.DEACCEL_1_5);
                 iconScaleAnimator.setStartDelay(mIsOpening ? mDelay * 2 : mDelay);
                 play(animatorSet, iconScaleAnimator);
-
-                mFolderIcon.mFolderName.setIconVisible(!mIsOpening);
             }
 
             if (mFolder.getItemCount() > MAX_NUM_ITEMS_IN_PREVIEW) {
