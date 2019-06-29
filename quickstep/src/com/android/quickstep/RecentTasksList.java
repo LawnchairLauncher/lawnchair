@@ -84,7 +84,7 @@ public class RecentTasksList extends TaskStackChangeListener {
         final int requestLoadId = mChangeId;
         Runnable resultCallback = callback == null
                 ? () -> { }
-                : () -> callback.accept(mTasks);
+                : () -> callback.accept(copyOf(mTasks));
 
         if (mLastLoadedId == mChangeId && (!mLastLoadHadKeysOnly || loadKeysOnly)) {
             // The list is up to date, callback with the same list
@@ -182,5 +182,15 @@ public class RecentTasksList extends TaskStackChangeListener {
         }
 
         return allTasks;
+    }
+
+    private ArrayList<Task> copyOf(ArrayList<Task> tasks) {
+        ArrayList<Task> newTasks = new ArrayList<>();
+        for (int i = 0; i < tasks.size(); i++) {
+            Task t = tasks.get(i);
+            newTasks.add(new Task(t.key, t.colorPrimary, t.colorBackground, t.isDockable,
+                    t.isLocked, t.taskDescription, t.topActivity));
+        }
+        return newTasks;
     }
 }

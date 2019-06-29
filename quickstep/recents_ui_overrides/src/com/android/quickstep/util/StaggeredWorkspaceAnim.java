@@ -17,19 +17,15 @@ package com.android.quickstep.util;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
-import androidx.dynamicanimation.animation.SpringForce;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAnimUtils.ViewProgressProperty;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
@@ -40,6 +36,7 @@ import com.android.launcher3.anim.SpringObjectAnimator;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -147,9 +144,8 @@ public class StaggeredWorkspaceAnim {
         long startDelay = (long) ((invertedRow + 1) * APP_CLOSE_ROW_START_DELAY_MS);
 
         v.setTranslationY(mSpringTransY);
-        SpringObjectAnimator springTransY = new SpringObjectAnimator<>(
-                new ViewProgressProperty(v, View.TRANSLATION_Y), "staggeredSpringTransY", 1f,
-                DAMPING_RATIO, STIFFNESS, mSpringTransY, 0);
+        SpringObjectAnimator springTransY = new SpringObjectAnimator<>(v, VIEW_TRANSLATE_Y,
+                1f, DAMPING_RATIO, STIFFNESS, mSpringTransY, 0);
         springTransY.setStartDelay(startDelay);
         mAnimators.add(springTransY);
 
