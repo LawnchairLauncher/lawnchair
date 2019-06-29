@@ -269,7 +269,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, OnResumeC
             mFolderName.setCompoundDrawablePadding(0);
 
             isCustomIcon = false;
-            mFolderName.setCompoundDrawables(null, null, null, null);
+            mFolderName.clearIcon();
             mBackground.setStartOpacity(1f);
         }
         mFolderName.setText(mInfo.getIconTitle());

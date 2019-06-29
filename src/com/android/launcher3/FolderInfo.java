@@ -234,6 +234,12 @@ public class FolderInfo extends ItemInfo {
         return isCoverMode() || hasCustomIcon(context);
     }
 
+    public boolean usingCustomIcon(Context context) {
+        if (isCoverMode()) return false;
+        Launcher launcher = LawnchairLauncher.getLauncher(context);
+        return getIconInternal(launcher) != null;
+    }
+
     private boolean hasCustomIcon(Context context) {
         Launcher launcher = LawnchairLauncher.getLauncher(context);
         return getIconInternal(launcher) != null;
