@@ -423,8 +423,8 @@
     <string name="icon_text_scale_pref_title">Betűméret</string>
     <string name="text_color">Szöveg színe</string>
     <string name="background_color">Háttérszín</string>
-    <string name="pref_notification_count_title">Mutasd értesítés számlálót</string>
-    <string name="pref_notification_count_summary">Mutasd értesítés számlálót a pontokban</string>
+    <string name="pref_notification_count_title">Az értesítések számának kijelzése</string>
+    <string name="pref_notification_count_summary">A pöttyökön jelenjen meg az értesítések száma is</string>
     <string name="pref_center_wallpaper">Hátteret mindig igazísd középre</string>
     <string name="pref_center_wallpaper_summary">Ez kifogja kapcsolni a háttér mozgás efektet</string>
     <string name="pref_icon_popup_menu">A felugró menü elemei</string>
