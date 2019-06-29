@@ -149,6 +149,7 @@
     <string name="about_bio_deletescape">안드로이드 개발자 &amp; 매니아. 밈을 사랑합니다(사실 조금 과하게). Lawnchair 프로젝트 설립자.</string>
     <string name="about_bio_recoded">부드러운 코더이자 그래픽 디자이너.</string>
     <string name="about_bio_josh">프리랜서 그래픽 디자이너.</string>
+    <string name="about_bio_chris">디자인과 소셜 미디어에 관한 것. </string>
     <string name="about_bio_msfjarvis">halogenOS의 핵심 개발자이자 substratum의 애플리케이션 개발자.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">런처 충돌 일으키기</string>
