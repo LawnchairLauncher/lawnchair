@@ -130,6 +130,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, OnResumeC
     private GestureHandler mSwipeUpHandler;
 
     public boolean isCustomIcon = false;
+    private boolean mIsTextVisible = true;
 
     private static final Property<FolderIcon, Float> BADGE_SCALE_PROPERTY
             = new Property<FolderIcon, Float>(Float.TYPE, "badgeScale") {
@@ -593,11 +594,12 @@ public class FolderIcon extends FrameLayout implements FolderListener, OnResumeC
     }
 
     public void setTextVisible(boolean visible) {
+        mIsTextVisible = visible;
         mFolderName.setTextVisibility(visible);
     }
 
     public boolean getTextVisible() {
-        return mFolderName.getTextVisibility();
+        return mIsTextVisible;
     }
 
     /**
