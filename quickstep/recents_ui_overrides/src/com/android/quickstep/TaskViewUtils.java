@@ -29,8 +29,6 @@ import android.view.View;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.MultiValueUpdateListener;
@@ -123,6 +121,7 @@ public final class TaskViewUtils {
                 new RemoteAnimationTargetSet(targets, MODE_OPENING);
         targetSet.addDependentTransactionApplier(applier);
 
+        final RecentsView recentsView = v.getRecentsView();
         final ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
         appAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
         appAnimator.addUpdateListener(new MultiValueUpdateListener() {
@@ -153,7 +152,10 @@ public final class TaskViewUtils {
                 // TODO: Take into account the current fullscreen progress for animating the insets
                 params.setProgress(1 - percent);
                 RectF taskBounds = inOutHelper.applyTransform(targetSet, params);
-                if (!skipViewChanges) {
+                int taskIndex = recentsView.indexOfChild(v);
+                int centerTaskIndex = recentsView.getCurrentPage();
+                boolean parallaxCenterAndAdjacentTask = taskIndex != centerTaskIndex;
+                if (!skipViewChanges && parallaxCenterAndAdjacentTask) {
                     float scale = taskBounds.width() / mThumbnailRect.width();
                     v.setScaleX(scale);
                     v.setScaleY(scale);

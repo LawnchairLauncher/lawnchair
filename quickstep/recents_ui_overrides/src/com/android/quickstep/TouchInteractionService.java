@@ -81,6 +81,7 @@ import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
 import com.android.quickstep.inputconsumers.AssistantTouchConsumer;
 import com.android.quickstep.inputconsumers.DeviceLockedInputConsumer;
+import com.android.quickstep.inputconsumers.FallbackNoButtonInputConsumer;
 import com.android.quickstep.inputconsumers.InputConsumer;
 import com.android.quickstep.inputconsumers.OtherActivityInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
@@ -224,14 +225,18 @@ public class TouchInteractionService extends Service implements
     };
 
     private static boolean sConnected = false;
+    private static final SwipeSharedState sSwipeSharedState = new SwipeSharedState();
 
     public static boolean isConnected() {
         return sConnected;
     }
 
-    private final SwipeSharedState mSwipeSharedState = new SwipeSharedState();
+    public static SwipeSharedState getSwipeSharedState() {
+        return sSwipeSharedState;
+    }
+
     private final InputConsumer mResetGestureInputConsumer =
-            new ResetGestureInputConsumer(mSwipeSharedState);
+            new ResetGestureInputConsumer(sSwipeSharedState);
 
     private ActivityManagerWrapper mAM;
     private RecentsModel mRecentsModel;
@@ -267,6 +272,9 @@ public class TouchInteractionService extends Service implements
     private Mode mMode = Mode.THREE_BUTTONS;
     private int mDefaultDisplayId;
     private final RectF mSwipeTouchRegion = new RectF();
+    private final RectF mAssistantLeftRegion = new RectF();
+    private final RectF mAssistantRightRegion = new RectF();
+
     private ComponentName mGestureBlockingActivity;
 
     private Region mExclusionRegion;
@@ -349,9 +357,25 @@ public class TouchInteractionService extends Service implements
         defaultDisplay.getRealSize(realSize);
         mSwipeTouchRegion.set(0, 0, realSize.x, realSize.y);
         if (mMode == Mode.NO_BUTTON) {
-            mSwipeTouchRegion.top = mSwipeTouchRegion.bottom -
-                    getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
+            int touchHeight = getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
+            mSwipeTouchRegion.top = mSwipeTouchRegion.bottom - touchHeight;
+
+            final int assistantWidth = getResources()
+                    .getDimensionPixelSize(R.dimen.gestures_assistant_width);
+            final float assistantHeight = Math.max(touchHeight,
+                    QuickStepContract.getWindowCornerRadius(getResources()));
+            mAssistantLeftRegion.bottom = mAssistantRightRegion.bottom = mSwipeTouchRegion.bottom;
+            mAssistantLeftRegion.top = mAssistantRightRegion.top =
+                    mSwipeTouchRegion.bottom - assistantHeight;
+
+            mAssistantLeftRegion.left = 0;
+            mAssistantLeftRegion.right = assistantWidth;
+
+            mAssistantRightRegion.right = mSwipeTouchRegion.right;
+            mAssistantRightRegion.left = mSwipeTouchRegion.right - assistantWidth;
         } else {
+            mAssistantLeftRegion.setEmpty();
+            mAssistantRightRegion.setEmpty();
             switch (defaultDisplay.getRotation()) {
                 case Surface.ROTATION_90:
                     mSwipeTouchRegion.left = mSwipeTouchRegion.right
@@ -416,7 +440,7 @@ public class TouchInteractionService extends Service implements
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
         mIsUserUnlocked = true;
 
-        mSwipeSharedState.setOverviewComponentObserver(mOverviewComponentObserver);
+        sSwipeSharedState.setOverviewComponentObserver(mOverviewComponentObserver);
         mInputConsumer.registerInputConsumer();
         onSystemUiProxySet();
         onSystemUiFlagsChanged();
@@ -491,6 +515,15 @@ public class TouchInteractionService extends Service implements
                 mConsumer = newConsumer(useSharedState, event);
                 TOUCH_INTERACTION_LOG.addLog("setInputConsumer", mConsumer.getType());
                 mUncheckedConsumer = mConsumer;
+            } else if (mIsUserUnlocked && mMode == Mode.NO_BUTTON
+                    && canTriggerAssistantAction(event)) {
+                // Do not change mConsumer as if there is an ongoing QuickSwitch gesture, we should
+                // not interrupt it. QuickSwitch assumes that interruption can only happen if the
+                // next gesture is also quick switch.
+                mUncheckedConsumer =
+                        new AssistantTouchConsumer(this, mISystemUiProxy,
+                                mOverviewComponentObserver.getActivityControlHelper(),
+                                InputConsumer.NO_OP, mInputMonitorCompat);
             } else {
                 mUncheckedConsumer = InputConsumer.NO_OP;
             }
@@ -503,6 +536,14 @@ public class TouchInteractionService extends Service implements
                 && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0
                 && ((mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED) == 0
                         || (mSystemUiStateFlags & SYSUI_STATE_OVERVIEW_DISABLED) == 0);
+    }
+
+    private boolean canTriggerAssistantAction(MotionEvent ev) {
+        return mAssistantAvailable
+                && !QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags)
+                && (mAssistantLeftRegion.contains(ev.getX(), ev.getY()) ||
+                    mAssistantRightRegion.contains(ev.getX(), ev.getY()))
+                && !ActivityManagerWrapper.getInstance().isLockToAppActive();
     }
 
     private InputConsumer newConsumer(boolean useSharedState, MotionEvent event) {
@@ -525,10 +566,7 @@ public class TouchInteractionService extends Service implements
         if (mMode == Mode.NO_BUTTON) {
             final ActivityControlHelper activityControl =
                     mOverviewComponentObserver.getActivityControlHelper();
-            if (mAssistantAvailable
-                    && !QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags)
-                    && AssistantTouchConsumer.withinTouchRegion(this, event)
-                    && !ActivityManagerWrapper.getInstance().isLockToAppActive()) {
+            if (canTriggerAssistantAction(event)) {
                 base = new AssistantTouchConsumer(this, mISystemUiProxy, activityControl, base,
                         mInputMonitorCompat);
             }
@@ -555,7 +593,7 @@ public class TouchInteractionService extends Service implements
     private InputConsumer newBaseConsumer(boolean useSharedState, MotionEvent event) {
         final RunningTaskInfo runningTaskInfo = mAM.getRunningTask(0);
         if (!useSharedState) {
-            mSwipeSharedState.clearAllState();
+            sSwipeSharedState.clearAllState(false /* finishAnimation */);
         }
         if ((mSystemUiStateFlags & SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED) != 0) {
             // This handles apps showing over the lockscreen (e.g. camera)
@@ -565,22 +603,26 @@ public class TouchInteractionService extends Service implements
         final ActivityControlHelper activityControl =
                 mOverviewComponentObserver.getActivityControlHelper();
 
-        if (runningTaskInfo == null && !mSwipeSharedState.goingToLauncher
-                && !mSwipeSharedState.recentsAnimationFinishInterrupted) {
+        if (runningTaskInfo == null && !sSwipeSharedState.goingToLauncher
+                && !sSwipeSharedState.recentsAnimationFinishInterrupted) {
             return mResetGestureInputConsumer;
-        } else if (mSwipeSharedState.recentsAnimationFinishInterrupted) {
+        } else if (sSwipeSharedState.recentsAnimationFinishInterrupted) {
             // If the finish animation was interrupted, then continue using the other activity input
             // consumer but with the next task as the running task
             RunningTaskInfo info = new ActivityManager.RunningTaskInfo();
-            info.id = mSwipeSharedState.nextRunningTaskId;
+            info.id = sSwipeSharedState.nextRunningTaskId;
             return createOtherActivityInputConsumer(event, info);
-        } else if (mSwipeSharedState.goingToLauncher || activityControl.isResumed()) {
+        } else if (sSwipeSharedState.goingToLauncher || activityControl.isResumed()) {
             return createOverviewInputConsumer(event);
         } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() && activityControl.isInLiveTileMode()) {
             return createOverviewInputConsumer(event);
         } else if (mGestureBlockingActivity != null && runningTaskInfo != null
                 && mGestureBlockingActivity.equals(runningTaskInfo.topActivity)) {
             return mResetGestureInputConsumer;
+        } else if (mMode == Mode.NO_BUTTON && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
+            return new FallbackNoButtonInputConsumer(this, activityControl,
+                    mInputMonitorCompat, sSwipeSharedState, mSwipeTouchRegion,
+                    mOverviewComponentObserver, disableHorizontalSwipe(event), runningTaskInfo);
         } else {
             return createOtherActivityInputConsumer(event, runningTaskInfo);
         }
@@ -602,13 +644,13 @@ public class TouchInteractionService extends Service implements
         return new OtherActivityInputConsumer(this, runningTaskInfo, mRecentsModel,
                 mOverviewComponentObserver.getOverviewIntent(), activityControl,
                 shouldDefer, mOverviewCallbacks, mInputConsumer, this::onConsumerInactive,
-                mSwipeSharedState, mInputMonitorCompat, mSwipeTouchRegion,
+                sSwipeSharedState, mInputMonitorCompat, mSwipeTouchRegion,
                 disableHorizontalSwipe(event));
     }
 
     private InputConsumer createDeviceLockedInputConsumer(RunningTaskInfo taskInfo) {
         if (mMode == Mode.NO_BUTTON && taskInfo != null) {
-            return new DeviceLockedInputConsumer(this, mSwipeSharedState, mInputMonitorCompat,
+            return new DeviceLockedInputConsumer(this, sSwipeSharedState, mInputMonitorCompat,
                     mSwipeTouchRegion, taskInfo.taskId);
         } else {
             return mResetGestureInputConsumer;
@@ -623,7 +665,7 @@ public class TouchInteractionService extends Service implements
             return mResetGestureInputConsumer;
         }
 
-        if (activity.getRootView().hasWindowFocus() || mSwipeSharedState.goingToLauncher) {
+        if (activity.getRootView().hasWindowFocus() || sSwipeSharedState.goingToLauncher) {
             return new OverviewInputConsumer(activity, mInputMonitorCompat,
                     false /* startingInActivityBounds */);
         } else {
@@ -670,7 +712,7 @@ public class TouchInteractionService extends Service implements
                     + mOverviewComponentObserver.getActivityControlHelper().isResumed());
             pw.println("  useSharedState=" + mConsumer.useSharedSwipeState());
             if (mConsumer.useSharedSwipeState()) {
-                mSwipeSharedState.dump("    ", pw);
+                sSwipeSharedState.dump("    ", pw);
             }
             pw.println("  mConsumer=" + mConsumer.getName());
             pw.println("FeatureFlags:");

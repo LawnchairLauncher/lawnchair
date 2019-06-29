@@ -24,7 +24,7 @@
 
     <dimen name="recents_page_spacing">10dp</dimen>
     <dimen name="recents_clear_all_deadzone_vertical_margin">70dp</dimen>
-    <dimen name="overview_peek_distance">32dp</dimen>
+    <dimen name="overview_peek_distance">96dp</dimen>
 
     <!-- The speed in dp/s at which the user needs to be scrolling in recents such that we start
              loading full resolution screenshots. -->
@@ -66,7 +66,8 @@
     <dimen name="shelf_surface_offset">24dp</dimen>
 
     <!-- Assistant Gestures -->
-    <dimen name="gestures_assistant_size">48dp</dimen>
+    <!-- Distance from the vertical edges of the screen in which assist gestures are recognized -->
+    <dimen name="gestures_assistant_width">48dp</dimen>
     <dimen name="gestures_assistant_drag_threshold">55dp</dimen>
 
     <!-- Distance to move elements when swiping up to go home from launcher -->
