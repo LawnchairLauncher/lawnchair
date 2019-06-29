@@ -208,7 +208,7 @@ public class DragView extends View {
                 info.itemType != LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
             return;
         }
-        if (info instanceof FolderInfo && ((FolderInfo) info).useIconMode(mLauncher)) {
+        if (info instanceof FolderInfo && ((FolderInfo) info).usingCustomIcon(mLauncher)) {
             return;
         }
         // Load the adaptive icon on a background thread and add the view in ui thread.
@@ -364,6 +364,11 @@ public class DragView extends View {
                 return sm.getShortcutIconDrawable(si.get(0), iconDpi);
             }
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+            FolderInfo folderInfo = (FolderInfo) info;
+            if (folderInfo.isCoverMode()) {
+                return getFullDrawable(folderInfo.getCoverInfo(), appState, outObj);
+            }
+
             FolderAdaptiveIcon icon =  FolderAdaptiveIcon.createFolderAdaptiveIcon(
                     mLauncher, info.id, new Point(mBitmap.getWidth(), mBitmap.getHeight()));
             if (icon == null) {

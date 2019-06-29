@@ -1612,6 +1612,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     + "View: " + child + "  tag: " + child.getTag();
             throw new IllegalStateException(msg);
         }
+
+        if (child instanceof FolderIcon && ((FolderIcon) child).isCoverMode()) {
+            child.setVisibility(View.VISIBLE);
+            child = ((FolderIcon) child).getFolderName();
+        }
+
         beginDragShared(child, source, (ItemInfo) dragObject,
                 new DragPreviewProvider(child), options);
     }

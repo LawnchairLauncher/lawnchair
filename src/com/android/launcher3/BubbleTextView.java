@@ -677,6 +677,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mIcon = icon;
     }
 
+    public void clearIcon() {
+        mIcon = null;
+        setCompoundDrawables(null, null, null, null);
+    }
+
     public void setIconVisible(boolean visible) {
         mIsIconVisible = visible;
         Drawable icon = visible ? mIcon : new ColorDrawable(Color.TRANSPARENT);
