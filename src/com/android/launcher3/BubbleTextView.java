@@ -559,10 +559,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         setTextAlpha(visible ? 1 : 0);
     }
 
-    public boolean getTextVisibility() {
-        return mTextAlpha > 0;
-    }
-
     private void setTextAlpha(float alpha) {
         mTextAlpha = alpha;
         super.setTextColor(getModifiedColor());
