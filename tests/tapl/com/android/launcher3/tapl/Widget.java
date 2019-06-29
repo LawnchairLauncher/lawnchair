@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.tapl;
 
-/**
- * Progress is defined as a value with range [0, 1], and is specific to each implementor.
- * It is used when there is a transition from one state of the UI to another.
- */
-public interface ProgressInterface {
-    void setProgress(float progress);
-    float getProgress();
+import androidx.test.uiautomator.UiObject2;
+
+public class Widget {
+    Widget(LauncherInstrumentation launcher, UiObject2 widget) {
+    }
 }

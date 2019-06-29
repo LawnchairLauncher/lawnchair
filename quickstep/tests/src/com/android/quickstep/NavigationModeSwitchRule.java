@@ -159,13 +159,20 @@ public class NavigationModeSwitchRule implements TestRule {
                     }
 
                     for (int i = 0; i != 100; ++i) {
-                        if (mLauncher.getNavigationModel() == expectedMode) {
-                            Thread.sleep(5000);
-                            return;
-                        }
+                        if (mLauncher.getNavigationModel() == expectedMode) break;
                         Thread.sleep(100);
                     }
-                    Assert.fail("Couldn't switch to " + overlayPackage);
+                    Assert.assertTrue("Couldn't switch to " + overlayPackage,
+                            mLauncher.getNavigationModel() == expectedMode);
+
+                    for (int i = 0; i != 100; ++i) {
+                        if (mLauncher.getNavigationModeMismatchError() == null) break;
+                        Thread.sleep(100);
+                    }
+                    final String error = mLauncher.getNavigationModeMismatchError();
+                    Assert.assertTrue("Switching nav mode: " + error, error == null);
+
+                    Thread.sleep(5000);
                 }
 
                 private void setOverlayPackageEnabled(String overlayPackage, boolean enable)

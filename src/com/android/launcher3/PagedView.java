@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.Utilities.shouldDisableGestures;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isObservedEventType;
 import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
@@ -844,10 +845,11 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
          * If we return true, onTouchEvent will be called and we do the actual
          * scrolling there.
          */
-        acquireVelocityTrackerAndAddMovement(ev);
 
         // Skip touch handling if there are no pages to swipe
-        if (getChildCount() <= 0) return super.onInterceptTouchEvent(ev);
+        if (getChildCount() <= 0 || shouldDisableGestures(ev)) return false;
+
+        acquireVelocityTrackerAndAddMovement(ev);
 
         /*
          * Shortcut the most recurring case: the user is in the dragging
@@ -1093,7 +1095,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         // Skip touch handling if there are no pages to swipe
-        if (getChildCount() <= 0) return false;
+        if (getChildCount() <= 0 || shouldDisableGestures(ev)) return false;
 
         acquireVelocityTrackerAndAddMovement(ev);
 
@@ -1204,6 +1206,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                     if (((initialScrollX >= mMaxScrollX) && (isVelocityXLeft || !isFling)) ||
                             ((initialScrollX <= mMinScrollX) && (!isVelocityXLeft || !isFling))) {
                         mScroller.springBack(getScrollX(), mMinScrollX, mMaxScrollX);
+                        mNextPage = getPageNearestToCenterOfScreen();
                     } else {
                         mScroller.setInterpolator(mDefaultInterpolator);
                         mScroller.fling(initialScrollX, -velocityX,
