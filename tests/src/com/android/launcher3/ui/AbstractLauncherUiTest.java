@@ -51,6 +51,7 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.launcher3.util.rule.LauncherActivityRule;
@@ -110,6 +111,23 @@ public abstract class AbstractLauncherUiTest {
     public ShellCommandRule mDisableHeadsUpNotification =
             ShellCommandRule.disableHeadsUpNotification();
 
+    protected void clearPackageData(String pkg) throws IOException, InterruptedException {
+        final CountDownLatch count = new CountDownLatch(2);
+        final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                count.countDown();
+            }
+        };
+        mTargetContext.registerReceiver(broadcastReceiver,
+                PackageManagerHelper.getPackageFilter(pkg,
+                        Intent.ACTION_PACKAGE_RESTARTED, Intent.ACTION_PACKAGE_DATA_CLEARED));
+
+        mDevice.executeShellCommand("pm clear " + pkg);
+        assertTrue(pkg + " didn't restart", count.await(10, TimeUnit.SECONDS));
+        mTargetContext.unregisterReceiver(broadcastReceiver);
+    }
+
     // Annotation for tests that need to be run in portrait and landscape modes.
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
@@ -164,13 +182,13 @@ public abstract class AbstractLauncherUiTest {
         }
     }
 
-    protected void clearLauncherData() throws IOException {
+    protected void clearLauncherData() throws IOException, InterruptedException {
         if (TestHelpers.isInLauncherProcess()) {
             LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
                     LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
             resetLoaderState();
         } else {
-            mDevice.executeShellCommand("pm clear " + mDevice.getLauncherPackageName());
+            clearPackageData(mDevice.getLauncherPackageName());
         }
     }
 
