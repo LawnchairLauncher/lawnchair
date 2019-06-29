@@ -684,6 +684,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     protected void applyCompoundDrawables(Drawable icon) {
+        if (icon == null) return;
+
         // If we had already set an icon before, disable relayout as the icon size is the
         // same as before.
         mDisableRelayout = mIcon != null;
