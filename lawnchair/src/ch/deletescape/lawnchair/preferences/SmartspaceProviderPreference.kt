@@ -112,6 +112,7 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
                 Pair(PEWeatherDataProvider::class.java.name, R.string.weather_provider_pe),
                 Pair(OnePlusWeatherDataProvider::class.java.name, R.string.weather_provider_oneplus_weather),
                 Pair(NowPlayingProvider::class.java.name, R.string.event_provider_now_playing),
+                Pair(BatteryStatusProvider::class.java.name, R.string.battery_status),
                 Pair(FakeDataProvider::class.java.name, R.string.weather_provider_testing))
     }
 }

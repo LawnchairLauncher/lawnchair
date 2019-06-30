@@ -659,4 +659,7 @@
 
     <string name="pref_smartspace_event_providers">Events sources</string>
     <string name="event_provider_now_playing">Now playing</string>
+    <string name="battery_status">Battery status</string>
+    <string name="battery_charging">Battery charging</string>
+    <string name="battery_low">Battery low</string>
 </resources>

@@ -314,12 +314,12 @@ class LawnchairSmartspaceController(val context: Context) {
         }
     }
 
-    data class CardData(val icon: Bitmap,
+    data class CardData(val icon: Bitmap? = null,
                         val lines: List<Line>,
                         val pendingIntent: PendingIntent? = null,
                         val forceSingleLine: Boolean = false) {
 
-        constructor(icon: Bitmap,
+        constructor(icon: Bitmap?,
                     title: CharSequence, titleEllipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END,
                     subtitle: CharSequence, subtitleEllipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END,
                     pendingIntent: PendingIntent? = null)
@@ -353,7 +353,10 @@ class LawnchairSmartspaceController(val context: Context) {
 
     data class Line(
             val text: CharSequence,
-            val ellipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END)
+            val ellipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END) {
+
+        constructor(context: Context, textRes: Int) : this(context.getString(textRes))
+    }
 
     interface Listener {
 
