@@ -662,4 +662,5 @@
     <string name="battery_status">Battery status</string>
     <string name="battery_charging">Battery charging</string>
     <string name="battery_low">Battery low</string>
+    <string name="event_provider_unread_notifications">Unread notifications</string>
 </resources>
