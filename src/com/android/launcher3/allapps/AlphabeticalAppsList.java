@@ -378,6 +378,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                     mFastScrollerSections.add(lastFastScrollerSectionInfo);
                 }
 
+                info.setAppsStore(mAllAppsStore);
                 // Create an folder item
                 AdapterItem appItem = AdapterItem
                         .asFolder(position++, sectionName, info, folderIndex++);

@@ -3350,19 +3350,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             public boolean evaluate(ItemInfo info, View v) {
                 if (info instanceof FolderInfo && folderIds.contains(info.id)
                         && v instanceof FolderIcon) {
-                    FolderBadgeInfo folderBadgeInfo = new FolderBadgeInfo();
-                    for (ShortcutInfo si : ((FolderInfo) info).contents) {
-                        folderBadgeInfo.addBadgeInfo(mLauncher.getBadgeInfoForItem(si));
-                    }
-                    ((FolderIcon) v).setBadgeInfo(folderBadgeInfo);
-
-                    if (((FolderIcon) v).isCoverMode()) {
-                        ShortcutInfo coverInfo = ((FolderIcon) v).getCoverInfo();
-                        if (packageUserKey.updateFromItemInfo(coverInfo) &&
-                                updatedBadges.contains(packageUserKey)) {
-                            ((FolderIcon) v).applyCoverBadgeState(coverInfo, true);
-                        }
-                    }
+                    ((FolderIcon) v).updateIconBadges(updatedBadges, packageUserKey);
                 }
                 // process all the shortcuts
                 return false;

@@ -78,11 +78,13 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.touch.ItemClickHandler;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
@@ -186,6 +188,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, OnResumeC
         if (folderInfo instanceof DrawerFolderInfo) {
             lp.topMargin = grid.allAppsIconSizePx + grid.allAppsIconDrawablePaddingPx;
             icon.mBackground = new PreviewBackground(true);
+            ((DrawerFolderInfo) folderInfo).getAppsStore().registerFolderIcon(icon);
         } else {
             lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
         }
@@ -840,5 +843,21 @@ public class FolderIcon extends FrameLayout implements FolderListener, OnResumeC
 
     public void clearPressedBackground() {
         setStayPressed(false);
+    }
+
+    public void updateIconBadges(Set<PackageUserKey> updatedBadges, PackageUserKey tmpKey) {
+        FolderBadgeInfo folderBadgeInfo = new FolderBadgeInfo();
+        for (ShortcutInfo si : mInfo.contents) {
+            folderBadgeInfo.addBadgeInfo(mLauncher.getBadgeInfoForItem(si));
+        }
+        setBadgeInfo(folderBadgeInfo);
+
+        if (isCoverMode()) {
+            ShortcutInfo coverInfo = getCoverInfo();
+            if (tmpKey.updateFromItemInfo(coverInfo) &&
+                    updatedBadges.contains(tmpKey)) {
+                applyCoverBadgeState(coverInfo, true);
+            }
+        }
     }
 }

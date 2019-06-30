@@ -21,10 +21,12 @@ import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.preferences.DrawerTabEditBottomSheet
 import com.android.launcher3.FolderInfo
 import com.android.launcher3.Launcher
+import com.android.launcher3.allapps.AllAppsStore
 
 class DrawerFolderInfo(private val drawerFolder: DrawerFolders.Folder) : FolderInfo() {
 
     private var changed = false
+    lateinit var appsStore: AllAppsStore
 
     override fun setTitle(title: CharSequence?) {
         super.setTitle(title)

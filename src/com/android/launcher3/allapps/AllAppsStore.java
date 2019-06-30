@@ -20,16 +20,24 @@ import android.view.ViewGroup;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.PromiseAppInfo;
+import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Workspace.ItemOperator;
+import com.android.launcher3.badge.FolderBadgeInfo;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.WeakHashMap;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -41,6 +49,7 @@ public class AllAppsStore {
     private final HashMap<ComponentKey, AppInfo> mComponentToAppMap = new HashMap<>();
     private final List<OnUpdateListener> mUpdateListeners = new ArrayList<>();
     private final ArrayList<ViewGroup> mIconContainers = new ArrayList<>();
+    private final Set<FolderIcon> mFolderIcons = Collections.newSetFromMap(new WeakHashMap<>());
 
     private boolean mDeferUpdates = false;
     private boolean mUpdatePending = false;
@@ -132,6 +141,10 @@ public class AllAppsStore {
         mIconContainers.remove(container);
     }
 
+    public void registerFolderIcon(FolderIcon folderIcon) {
+        mFolderIcons.add(folderIcon);
+    }
+
     public void updateIconBadges(Set<PackageUserKey> updatedBadges) {
         updateAllIcons((child) -> {
             if (child.getTag() instanceof ItemInfo) {
@@ -141,6 +154,23 @@ public class AllAppsStore {
                 }
             }
         });
+
+        Set<FolderIcon> foldersToUpdate = new HashSet<>();
+        for (FolderIcon folderIcon : mFolderIcons) {
+            folderIcon.getFolder().iterateOverItems((info, view) -> {
+                if (mTempKey.updateFromItemInfo(info) && updatedBadges.contains(mTempKey)) {
+                    if (view instanceof BubbleTextView) {
+                        ((BubbleTextView) view).applyBadgeState(info, true);
+                    }
+                    foldersToUpdate.add(folderIcon);
+                }
+                return false;
+            });
+        }
+
+        for (FolderIcon folderIcon : foldersToUpdate) {
+            folderIcon.updateIconBadges(updatedBadges, mTempKey);
+        }
     }
 
     public void updatePromiseAppProgress(PromiseAppInfo app) {
