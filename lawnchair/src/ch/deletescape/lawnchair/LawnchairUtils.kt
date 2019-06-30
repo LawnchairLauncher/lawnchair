@@ -157,6 +157,14 @@ fun Context.getDrawableAttr(attr: Int): Drawable? {
     return drawable
 }
 
+fun Context.getDrawableAttrNullable(attr: Int): Drawable? {
+    return try {
+        getDrawableAttr(attr)
+    } catch (e: Resources.NotFoundException) {
+        null
+    }
+}
+
 fun Context.getDimenAttr(attr: Int): Int {
     val ta = obtainStyledAttributes(intArrayOf(attr))
     val size = ta.getDimensionPixelSize(0, 0)
