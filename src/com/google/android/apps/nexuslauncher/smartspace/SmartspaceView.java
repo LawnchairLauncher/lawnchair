@@ -62,6 +62,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     private final OnClickListener mClockClickListener;
     private final OnClickListener mWeatherClickListener;
     private final OnClickListener mEventClickListener;
+    private View mSubtitleLine;
     private ImageView mSubtitleIcon;
     private TextView mSubtitleText;
     private ViewGroup mSubtitleWeatherContent;
@@ -217,6 +218,17 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         setBackgroundResource(0);
         bindWeather(data, mTitleWeatherContent, mTitleWeatherText, mTitleWeatherIcon);
         bindClockAndSeparator(false);
+        if (data.isCardAvailable()) {
+            mSubtitleLine.setVisibility(View.VISIBLE);
+            mSubtitleText.setText(data.getCard().getTitle());
+            mSubtitleText.setEllipsize(data.getCard().getTitleEllipsize());
+            mSubtitleText.setOnClickListener(mEventClickListener);
+            mSubtitleIcon.setImageTintList(dH);
+            mSubtitleIcon.setImageBitmap(data.getCard().getIcon());
+            mSubtitleIcon.setOnClickListener(mEventClickListener);
+        } else {
+            mSubtitleLine.setVisibility(View.GONE);
+        }
     }
 
     private void bindClockAndSeparator(boolean forced) {
@@ -285,6 +297,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
 
     private void loadViews() {
         mTitleText = findViewById(R.id.title_text);
+        mSubtitleLine = findViewById(R.id.subtitle_line);
         mSubtitleText = findViewById(R.id.subtitle_text);
         mSubtitleIcon = findViewById(R.id.subtitle_icon);
         mTitleWeatherIcon = findViewById(R.id.title_weather_icon);

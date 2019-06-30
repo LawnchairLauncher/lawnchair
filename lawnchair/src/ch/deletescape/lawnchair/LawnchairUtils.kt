@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair
 
 import android.app.Activity
+import android.app.Notification
 import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
@@ -847,3 +848,11 @@ fun createPill(color: Int, radius: Float): Drawable {
 }
 
 val Long.Companion.random get() = Random.nextLong()
+
+fun Notification.loadSmallIcon(context: Context): Drawable? {
+    return if (Utilities.ATLEAST_MARSHMALLOW) {
+        smallIcon.loadDrawable(context)
+    } else {
+        context.getDrawable(icon)
+    }
+}
