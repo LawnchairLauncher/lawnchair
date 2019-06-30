@@ -3355,6 +3355,14 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                         folderBadgeInfo.addBadgeInfo(mLauncher.getBadgeInfoForItem(si));
                     }
                     ((FolderIcon) v).setBadgeInfo(folderBadgeInfo);
+
+                    if (((FolderIcon) v).isCoverMode()) {
+                        ShortcutInfo coverInfo = ((FolderIcon) v).getCoverInfo();
+                        if (packageUserKey.updateFromItemInfo(coverInfo) &&
+                                updatedBadges.contains(packageUserKey)) {
+                            ((FolderIcon) v).applyCoverBadgeState(coverInfo, true);
+                        }
+                    }
                 }
                 // process all the shortcuts
                 return false;
