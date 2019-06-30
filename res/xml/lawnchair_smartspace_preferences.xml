@@ -104,5 +104,12 @@
             android:title="@string/pref_smartspace_event_provider"
             android:summary="%s"
             />
+
+        <ch.deletescape.lawnchair.preferences.SmartspaceEventProvidersPreference
+            android:key="pref_smartspace_event_providers"
+            android:dependency="pref_use_pill_qsb"
+            android:title="@string/pref_smartspace_event_providers"
+            app:controllerClass=".SecretOptionsController"
+            />
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 </android.support.v7.preference.PreferenceScreen>

@@ -140,6 +140,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
             SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
     var eventProvider by StringPref("pref_smartspace_event_provider",
             SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
+    var eventProviders = StringListPref("pref_smartspace_event_providers",
+            ::updateSmartspaceProvider, listOf(eventProvider))
     var weatherApiKey by StringPref("pref_weatherApiKey", context.getString(R.string.default_owm_key))
     var weatherCity by StringPref("pref_weather_city", context.getString(R.string.default_city))
     val weatherUnit by StringBasedPref("pref_weather_units", Temperature.Unit.Celsius, ::updateSmartspaceProvider,
@@ -351,6 +353,15 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         onChangeListeners[key]?.remove(listener)
     }
 
+    inner class StringListPref(prefKey: String,
+                               onChange: () -> Unit = doNothing,
+                               default: List<String> = emptyList())
+        : MutableListPref<String>(prefKey, onChange, default) {
+
+        override fun unflattenValue(value: String) = value
+        override fun flattenValue(value: String) = value
+    }
+
     abstract inner class MutableListPref<T>(private val prefs: SharedPreferences,
                                             private val prefKey: String,
                                             onChange: () -> Unit = doNothing,
@@ -382,6 +393,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
             valueList[position] = value
             saveChanges()
         }
+
+        fun getAll(): List<T> = valueList
 
         fun setAll(value: List<T>) {
             if (value == valueList) return

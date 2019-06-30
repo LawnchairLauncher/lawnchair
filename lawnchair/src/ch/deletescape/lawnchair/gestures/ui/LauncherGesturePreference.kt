@@ -25,9 +25,9 @@ import android.util.AttributeSet
 import ch.deletescape.lawnchair.gestures.BlankGestureHandler
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
-import ch.deletescape.lawnchair.preferences.RecyclerViewPreference
+import ch.deletescape.lawnchair.preferences.LauncherRecyclerViewPreference
 
-class LauncherGesturePreference(context: Context, attrs: AttributeSet?) : RecyclerViewPreference(context, attrs) {
+class LauncherGesturePreference(context: Context, attrs: AttributeSet?) : LauncherRecyclerViewPreference(context, attrs) {
 
     var value: String? = null
         set(value) {

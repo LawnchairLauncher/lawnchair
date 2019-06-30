@@ -656,4 +656,6 @@
 
     <string name="folder_cover_mode">Cover mode</string>
     <string name="folder_cover_mode_desc">Tap to open first app, swipe up to open folder</string>
+
+    <string name="pref_smartspace_event_providers">Events sources</string>
 </resources>

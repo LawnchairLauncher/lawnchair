@@ -29,7 +29,7 @@ import ch.deletescape.lawnchair.setCustomFont
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import com.android.launcher3.R
 
-abstract class RecyclerViewPreference(context: Context, attrs: AttributeSet?) : DialogPreference(context, attrs) {
+abstract class LauncherRecyclerViewPreference(context: Context, attrs: AttributeSet?) : DialogPreference(context, attrs) {
 
     private val themeRes = ThemeOverride.LauncherDialog().getTheme(context)
     protected val themedContext = ContextThemeWrapper(context, themeRes)
