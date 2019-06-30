@@ -281,6 +281,7 @@ class SmartspaceEventProvidersAdapter(private val context: Context)
                 list.add(SmartspaceDataWidget::class.java.name)
             if (FeedBridge.getInstance(context).resolveBridge()?.supportsSmartspace == true)
                 list.add(SmartspacePixelBridge::class.java.name)
+            list.add(NowPlayingProvider::class.java.name)
             if (context.lawnchairPrefs.showDebugInfo)
                 list.add(FakeDataProvider::class.java.name)
             return list

@@ -19,6 +19,7 @@ package ch.deletescape.lawnchair.smartspace
 
 import android.app.PendingIntent
 import android.content.*
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Handler
@@ -232,6 +233,17 @@ class LawnchairSmartspaceController(val context: Context) {
                 updateData(currentData?.weather, currentData?.card)
             }
         }
+
+        protected fun getApp(name: String): CharSequence {
+            val pm = controller.context.packageManager
+            try {
+                return pm.getApplicationLabel(
+                        pm.getApplicationInfo(name, PackageManager.GET_META_DATA))
+            } catch (ignored: PackageManager.NameNotFoundException) {
+            }
+
+            return name
+        }
     }
 
     abstract class PeriodicDataProvider(controller: LawnchairSmartspaceController) : DataProvider(controller) {
@@ -286,7 +298,7 @@ class LawnchairSmartspaceController(val context: Context) {
 
     data class DataContainer(val weather: WeatherData? = null, val card: CardData? = null) {
 
-        val isDoubleLine get() = isCardAvailable
+        val isDoubleLine get() = card?.isDoubleLine ?: false
         val isWeatherAvailable get() = weather != null
         val isCardAvailable get() = card != null
     }
@@ -303,9 +315,45 @@ class LawnchairSmartspaceController(val context: Context) {
     }
 
     data class CardData(val icon: Bitmap,
-                        val title: String, val titleEllipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END,
-                        val subtitle: String, val subtitleEllipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END,
-                        val pendingIntent: PendingIntent? = null)
+                        val lines: List<Line>,
+                        val pendingIntent: PendingIntent? = null,
+                        val forceSingleLine: Boolean = false) {
+
+        constructor(icon: Bitmap,
+                    title: CharSequence, titleEllipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END,
+                    subtitle: CharSequence, subtitleEllipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END,
+                    pendingIntent: PendingIntent? = null)
+                : this(icon, listOf(Line(title, titleEllipsize), Line(subtitle, subtitleEllipsize)), pendingIntent)
+
+        val isDoubleLine = !forceSingleLine && lines.size >= 2
+
+        val title: CharSequence?
+        val titleEllipsize: TextUtils.TruncateAt?
+
+        val subtitle: CharSequence?
+        val subtitleEllipsize: TextUtils.TruncateAt?
+
+        init {
+            if (lines.isEmpty()) {
+                error("Can't create card with zero lines")
+            }
+            if (forceSingleLine) {
+                title = TextUtils.join(" – ", lines.map { it.text })!!
+                titleEllipsize = if (lines.size == 1) lines.first().ellipsize else TextUtils.TruncateAt.END
+                subtitle = null
+                subtitleEllipsize = null
+            } else {
+                title = lines.first().text
+                titleEllipsize = lines.first().ellipsize
+                subtitle = TextUtils.join(" – ", lines.subList(1, lines.size).map { it.text })!!
+                subtitleEllipsize = if (lines.size == 2) lines[1].ellipsize else TextUtils.TruncateAt.END
+            }
+        }
+    }
+
+    data class Line(
+            val text: CharSequence,
+            val ellipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END)
 
     interface Listener {
 
