@@ -31,21 +31,20 @@ class AllAppsTabsController(val tabs: AllAppsTabs, private val container: AllApp
     val tabsCount get() = tabs.count
     val shouldShowTabs get() = tabsCount > 1
 
-    private var holders: AdapterHolders = emptyArray()
+    private var holders = mutableListOf<AllAppsContainerView.AdapterHolder>()
 
     private var horizontalPadding = 0
     private var bottomPadding = 0
 
     fun createHolders(): AdapterHolders {
-        if (holders.size >= tabsCount) {
-            return holders
+        while (holders.size < tabsCount) {
+            holders.add(container.createHolder(false).apply {
+                padding.bottom = bottomPadding
+                padding.left = horizontalPadding
+                padding.right = horizontalPadding
+            })
         }
-        holders = AdapterHolders(tabsCount) { container.createHolder(false).apply {
-            padding.bottom = bottomPadding
-            padding.left = horizontalPadding
-            padding.right = horizontalPadding
-        } }
-        return holders
+        return holders.toTypedArray()
     }
 
     fun reloadTabs() {
