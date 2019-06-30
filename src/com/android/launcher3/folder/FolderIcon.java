@@ -242,10 +242,12 @@ public class FolderIcon extends FrameLayout implements FolderListener, OnResumeC
                 ItemInfoWithIcon coverInfo = mInfo.getCoverInfo();
                 mFolderName.setTag(coverInfo);
                 mFolderName.applyIcon(coverInfo);
+                applyCoverBadgeState(coverInfo, false);
             } else {
                 BitmapInfo info = BitmapInfo.fromBitmap(
                         Utilities.drawableToBitmap(mInfo.getIcon(getContext())));
                 mFolderName.applyIcon(info);
+                mFolderName.applyBadgeState(mInfo, false);
             }
             mBackground.setStartOpacity(0f);
         } else {
@@ -255,6 +257,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, OnResumeC
                 lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
             }
             mFolderName.setCompoundDrawablePadding(0);
+            mFolderName.applyBadgeState(mInfo, false);
 
             isCustomIcon = false;
             mFolderName.clearIcon();
@@ -469,6 +472,14 @@ public class FolderIcon extends FrameLayout implements FolderListener, OnResumeC
     public void setBadgeInfo(FolderBadgeInfo badgeInfo) {
         updateBadgeScale(mBadgeInfo.hasBadge(), badgeInfo.hasBadge());
         mBadgeInfo = badgeInfo;
+    }
+
+    public ShortcutInfo getCoverInfo() {
+        return mInfo.getCoverInfo();
+    }
+
+    public void applyCoverBadgeState(ItemInfo itemInfo, boolean animate) {
+        mFolderName.applyBadgeState(itemInfo, animate);
     }
 
     public ClippedFolderIconLayoutRule getLayoutRule() {
