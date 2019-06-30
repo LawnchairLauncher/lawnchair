@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.util
 
 import android.content.Context
+import android.support.v7.preference.ListPreference
 
 class EntriesBuilder(private val context: Context) {
 
@@ -44,4 +45,13 @@ class EntriesBuilder(private val context: Context) {
     fun build(): Pair<Array<String>, Array<String>> {
         return Pair(entries.toTypedArray(), entryValues.toTypedArray())
     }
+
+    fun build(listPreference: ListPreference) {
+        listPreference.entries = entries.toTypedArray()
+        listPreference.entryValues = entryValues.toTypedArray()
+    }
+}
+
+inline fun ListPreference.buildEntries(edit: EntriesBuilder.() -> Unit) {
+    EntriesBuilder(context).apply(edit).build(this)
 }

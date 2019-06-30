@@ -23,20 +23,17 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Handler
 import android.os.HandlerThread
-import android.os.Process
-import android.provider.CalendarContract
 import android.support.annotation.Keep
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.runOnUiWorkerThread
 import ch.deletescape.lawnchair.util.Temperature
 import com.android.launcher3.Launcher
 import com.android.launcher3.Utilities
-import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.util.PackageManagerHelper
-import com.google.android.apps.nexuslauncher.DynamicIconProvider
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 
@@ -47,9 +44,10 @@ class LawnchairSmartspaceController(val context: Context) {
     private var cardData: CardData? = null
     private val listeners = ArrayList<Listener>()
     private val weatherProviderPref = Utilities.getLawnchairPrefs(context)::weatherProvider
-    private val eventProviderPref = Utilities.getLawnchairPrefs(context)::eventProvider
+    private val eventProvidersPref = context.lawnchairPrefs.eventProviders
     private var weatherDataProvider = BlankDataProvider(this) as DataProvider
-    private var eventDataProvider = weatherDataProvider
+    private val eventDataProviders = mutableListOf<DataProvider>()
+    private val eventDataMap = mutableMapOf<DataProvider, CardData?>()
 
     init {
         onProviderChanged()
@@ -59,8 +57,9 @@ class LawnchairSmartspaceController(val context: Context) {
         updateData(weather, cardData)
     }
 
-    private fun updateCardData(card: CardData?) {
-        updateData(weatherData, card)
+    private fun updateCardData(provider: DataProvider, card: CardData?) {
+        eventDataMap[provider] = card
+        forceUpdate()
     }
 
     private fun updateData(weather: WeatherData?, card: CardData?) {
@@ -71,7 +70,10 @@ class LawnchairSmartspaceController(val context: Context) {
     }
 
     private fun forceUpdate() {
-        updateData(weatherData, cardData)
+        updateData(weatherData, eventDataProviders
+                .asSequence()
+                .mapNotNull { eventDataMap[it] }
+                .firstOrNull())
     }
 
     private fun notifyListeners() {
@@ -92,30 +94,45 @@ class LawnchairSmartspaceController(val context: Context) {
     fun onProviderChanged() {
         runOnUiWorkerThread {
             val weatherClass = weatherProviderPref.get()
-            val eventClass = eventProviderPref.get()
-            if (weatherClass != weatherDataProvider::class.java.name || eventClass != eventDataProvider::class.java.name) {
-                weatherDataProvider.onDestroy()
-                eventDataProvider.onDestroy()
-                weatherDataProvider = createDataProvider(weatherClass)
-                weatherDataProvider.weatherUpdateListener = ::updateWeatherData
-                eventDataProvider = if (weatherClass == eventClass) {
-                    weatherDataProvider
-                } else {
-                    createDataProvider(eventClass)
-                }
-                eventDataProvider.cardUpdateListener = ::updateCardData
-                runOnUiWorkerThread {
-                    weatherProviderPref.set(weatherDataProvider::class.java.name)
-                    eventProviderPref.set(eventDataProvider::class.java.name)
-                }
-                runOnMainThread {
-                    weatherDataProvider.forceUpdate()
-                    if (weatherClass != eventClass) {
-                        eventDataProvider.forceUpdate()
-                    }
-                }
-            } else {
+            val eventClasses = eventProvidersPref.getAll()
+            if (weatherClass == weatherDataProvider::class.java.name
+                && eventClasses == eventDataProviders.map { it::class.java.name }) {
                 runOnMainThread(::forceUpdate)
+                return@runOnUiWorkerThread
+            }
+
+            val activeProviders = eventDataProviders + weatherDataProvider
+            val providerCache = activeProviders
+                    .associateByTo(mutableMapOf()) { it::class.java.name }
+            val getProvider = { name: String ->
+                providerCache.getOrPut(name) { createDataProvider(name) }
+            }
+
+            // Load all providers
+            weatherDataProvider = getProvider(weatherClass)
+            weatherDataProvider.weatherUpdateListener = ::updateWeatherData
+            eventDataProviders.clear()
+            eventClasses
+                    .map { getProvider(it) }
+                    .filterTo(eventDataProviders) { it !is BlankDataProvider }
+                    .forEach { it.cardUpdateListener = ::updateCardData }
+
+            val allProviders = providerCache.values.toSet()
+            val newProviders = setOf(weatherDataProvider) + eventDataProviders
+            val needsDestroy = allProviders - newProviders
+            val needsUpdate = newProviders - activeProviders
+
+            needsDestroy.forEach {
+                eventDataMap.remove(it)
+                it.onDestroy()
+            }
+
+            weatherProviderPref.set(weatherDataProvider::class.java.name)
+            eventProvidersPref.setAll(eventDataProviders.map { it::class.java.name })
+
+            runOnMainThread {
+                needsUpdate.forEach { it.forceUpdate() }
+                forceUpdate()
             }
         }
     }
@@ -178,7 +195,7 @@ class LawnchairSmartspaceController(val context: Context) {
         private var waiter: Semaphore? = Semaphore(0)
 
         var weatherUpdateListener: ((WeatherData?) -> Unit)? = null
-        var cardUpdateListener: ((CardData?) -> Unit)? = null
+        var cardUpdateListener: ((DataProvider, CardData?) -> Unit)? = null
 
         private var currentData: DataContainer? = null
 
@@ -207,7 +224,7 @@ class LawnchairSmartspaceController(val context: Context) {
         fun updateData(weather: WeatherData?, card: CardData?) {
             currentData = DataContainer(weather, card)
             weatherUpdateListener?.invoke(weather)
-            cardUpdateListener?.invoke(card)
+            cardUpdateListener?.invoke(this, card)
         }
 
         open fun forceUpdate() {
@@ -286,8 +303,8 @@ class LawnchairSmartspaceController(val context: Context) {
     }
 
     data class CardData(val icon: Bitmap,
-                        val title: String, val titleEllipsize: TextUtils.TruncateAt?,
-                        val subtitle: String, val subtitleEllipsize: TextUtils.TruncateAt?,
+                        val title: String, val titleEllipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END,
+                        val subtitle: String, val subtitleEllipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END,
                         val pendingIntent: PendingIntent? = null)
 
     interface Listener {

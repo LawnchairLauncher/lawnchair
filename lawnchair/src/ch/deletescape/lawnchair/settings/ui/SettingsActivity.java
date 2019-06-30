@@ -79,6 +79,8 @@ import ch.deletescape.lawnchair.globalsearch.ui.SearchProviderPreference;
 import ch.deletescape.lawnchair.globalsearch.ui.SelectSearchProviderFragment;
 import ch.deletescape.lawnchair.iconpack.IconPackManager;
 import ch.deletescape.lawnchair.preferences.ResumablePreference;
+import ch.deletescape.lawnchair.preferences.SmartspaceEventProvidersFragment;
+import ch.deletescape.lawnchair.preferences.SmartspaceEventProvidersPreference;
 import ch.deletescape.lawnchair.settings.ui.search.SettingsSearchActivity;
 import ch.deletescape.lawnchair.theme.ThemeOverride;
 import ch.deletescape.lawnchair.theme.ThemeOverride.ThemeSet;
@@ -730,6 +732,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
             } else if (preference instanceof AbstractMultiSelectListPreference) {
                 f = ThemedMultiSelectListPreferenceDialogFragmentCompat.Companion
                         .newInstance(preference.getKey());
+            } else if (preference instanceof SmartspaceEventProvidersPreference) {
+                f = SmartspaceEventProvidersFragment.Companion.newInstance(preference.getKey());
             } else {
                 super.onDisplayPreferenceDialog(preference);
                 return;
