@@ -1353,6 +1353,10 @@ public class Folder extends AbstractFloatingView implements DragSource,
         return mItemsInReadingOrder;
     }
 
+    public void iterateOverItems(ItemOperator op) {
+        mContent.iterateOverItems(op);
+    }
+
     public List<BubbleTextView> getItemsOnPage(int page) {
         ArrayList<View> allItems = getItemsInReadingOrder();
         int lastPage = mContent.getPageCount() - 1;
