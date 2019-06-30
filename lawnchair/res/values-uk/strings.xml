@@ -10,13 +10,13 @@
     <string name="smartspace_time">Час</string>
     <string name="smartspace_date">Дата</string>
     <string name="customize">Персоналізувати</string>
-    <string name="smartspace_preferences_in_settings">Найголовніше</string>
-    <string name="smartspace_preferences_in_settings_desc">Дата, час, джерело даних про погоду</string>
+    <string name="smartspace_preferences_in_settings">Стислий огляд</string>
+    <string name="smartspace_preferences_in_settings_desc">Дата, час, постачальник погоди</string>
     <string name="search">Пошук</string>
     <string name="label_voice_search">Голосовий пошук</string>
-    <string name="icon_pack">Набір іконок</string>
+    <string name="icon_pack">Набір значків</string>
     <string name="home_widget">Віджет на головному екрані</string>
-    <string name="title_show_google_app">%1$s залишилось</string>
+    <string name="title_show_google_app">%1$s зліва</string>
     <string name="msg_minus_one_on_left">Стрічка новин зліва робочого столу</string>
     <string name="about">Про додаток</string>
     <string name="google_app">Додаток Google</string>
@@ -25,17 +25,17 @@
     <string name="msg_disable_suggestions_prompt">"Інформація про використання буде видалена"</string>
     <string name="label_turn_off_suggestions">Вимкнути</string>
     <string name="pixel_style_pref_title">Стиль Pixel</string>
-    <string name="about_summary_title">Зміст</string>
+    <string name="about_summary_title">Підсумок</string>
     <string name="action_edit">Редагувати</string>
-    <string name="hide_app_sum">Приховати з списку додатків</string>
+    <string name="hide_app_sum">Приховати зі списку додатків</string>
     <string name="hide_app">Приховати програму</string>
-    <string name="icon_shape_rounded_square">Округлі квадратні</string>
-    <string name="pixel_ui_pref_summary">Набір іконок, розмити, кольори</string>
+    <string name="icon_shape_rounded_square">Округлі квадрати</string>
+    <string name="pixel_ui_pref_summary">Набір значків, розмиття, кольори</string>
     <string name="app_drawer_pref_title">Список програм</string>
     <string name="app_drawer_pref_summary">Прозорість, пропозиції, приховати додатки</string>
-    <string name="search_pref_summary">Колір, провайдер пошуку, іконки</string>
+    <string name="search_pref_summary">Колір, провайдер пошуку, значки</string>
     <string name="general_pref_title">Робочий стіл</string>
-    <string name="general_pref_summary">Сітка, підпис іконок, рядок стану</string>
+    <string name="general_pref_summary">Сітка, підпис значків, рядок стану</string>
     <string name="about_pref_summary">Команди, посилання, ліцензії</string>
     <string name="hide_app_selected">&#160; приховані</string>
     <string name="hide_app_apply">Застосувати</string>
@@ -53,10 +53,10 @@
     <string name="homescreen">Головний екран</string>
     <string name="backup_wallpaper">Фоновий малюнок</string>
     <string name="backup_error_blank_name">Введіть назву резервної копії</string>
-    <string name="backup_error_blank_location">Виьеріть місце збереження резервної копії</string>
+    <string name="backup_error_blank_location">Виберіть розташування резервної копії</string>
     <string name="backup_error_blank_contents">Додати вміст резервної копії</string>
     <string name="backup_creating">Створення резервної копії</string>
-    <string name="no_recent_backups">Нема що показати</string>
+    <string name="no_recent_backups">Нічого показати</string>
     <string name="backup_loading">Завантаження...</string>
     <string name="backup_invalid">Невірний файл резервної копії</string>
     <string name="backup_share">Поділитись</string>
@@ -67,20 +67,20 @@
     <string name="restore_contents">Відновлення даних</string>
     <string name="restore_success">Відновлення завершене</string>
     <string name="failed">Щось пішло не так</string>
-    <string name="backup_share_text">Lawnchair резервна копія</string>
-    <string name="full_width_widgets_pref_summary">Дозволити віддетам розтягуватсь до країв екрану</string>
+    <string name="backup_share_text">Резервна копія Lawnchair</string>
+    <string name="full_width_widgets_pref_summary">Дозволити віджетам розтягуватись до країв екрану</string>
     <string name="full_width_width_widgets_pref_title">Розширити віджети</string>
     <string name="hide_apps">Приховати додатки</string>
-    <string name="hide_apps_sum">Прибрати додатки з списку додатків</string>
+    <string name="hide_apps_sum">Прибрати додатки зі списку додатків</string>
     <string name="grid_size">Розмір сітки</string>
     <string name="developer_options_title">Параметри розробника</string>
     <string name="developer_options_enabled">Параметри розробника ввімкнені</string>
     <string name="restart_lawnchair_pref_title">Перезавантажити</string>
     <string name="restart_lawnchair_pref_summary">Знову застосувати налаштування</string>
     <string name="show_debug_info_pref_title">Показати імена компонентів</string>
-    <string name="debug_component_name">Ім\'я компонеету</string>
+    <string name="debug_component_name">Назва компоненту</string>
     <string name="debug_component_name_copied">Скопійовано</string>
-    <string name="read_external_storage_required">Щоб зберігати резервну копію, надайте доступ до сховища</string>
+    <string name="read_external_storage_required">Щоб зберегти резервну копію, надайте доступ до сховища</string>
     <string name="local_backups">Резервна копія в сховищі</string>
     <string name="backup_location_device_storage">Папка Lawnchair</string>
     <string name="grid_size_height">Висота</string>
@@ -91,12 +91,12 @@
     <string name="blur_pref_summary">Ефект розмиття для списку додатків, док-бару, налаштування фону</string>
     <string name="blur_radius_pref_title">Сила розмиття</string>
     <!--Marker B-->
-    <string name="dock_colored_google">Кольорові іконки</string>
+    <string name="dock_colored_google">Кольорові значки</string>
     <string name="hotseat_show_arrow">Стрілка</string>
     <string name="hotseat_show_page_indicator">Індикатор сторінки</string>
     <string name="dock_style_pref_title">Стиль док бару</string>
-    <string name="dock_style_p">Заокруглені</string>
-    <string name="dock_style_n">Плоский</string>
+    <string name="dock_style_p">Округлі</string>
+    <string name="dock_style_n">Плаский</string>
     <string name="dock_style_hidden">Прихований</string>
     <string name="dock_search_bar">Строка пошуку в док барі</string>
     <string name="opacity">Прозорість</string>
@@ -162,7 +162,7 @@
     <string name="action_last_task">Відкрити останній додаток</string>
     <string name="action_open_widgets">Відкрити меню віджетів</string>
     <string name="action_open_settings">Відкрити налаштування лаунчера</string>
-    <string name="action_open_overview">Відкрити вспливаючі сповіщення на домашньому екрані</string>
+    <string name="action_open_overview">Відкрити спливаючі сповіщення на домашньому екрані</string>
     <string name="action_global_search">Відкрити глобальний пошук</string>
     <string name="action_app_search">Відкрити пошук долатків</string>
     <string name="action_overlay">Відкрити стрічку Google</string>
@@ -183,8 +183,8 @@
     <string name="gesture_swipe_up">Провести плаьцем вгору</string>
     <string name="gesture_dock_swipe_up">Провести пальцем вгору на док барі</string>
     <string name="pref_show_assistant_title">Кнопка голосового пошуку</string>
-    <string name="pref_show_assistant_summary">Відображати кнопку голосового пошуку як підтримується</string>
-    <string name="pref_show_as_assistant_summary">Відображати кнопку асастента замість голосового пошуку</string>
+    <string name="pref_show_assistant_summary">Відображати кнопку голосового пошуку, якщо підтримується</string>
+    <string name="pref_show_as_assistant_summary">Відображати кнопку асистента замість голосового пошуку</string>
     <string name="smartspace_time_24_h">24-годинний формат</string>
     <string name="weather_provider_disabled">Вимкнено</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
@@ -208,8 +208,8 @@
     <string name="units_metric">Цельсій</string>
     <string name="units_imperial">Фаренгейт</string>
     <string name="units_kelvin">Кельвін</string>
-    <string name="all_icons">Усі іконки</string>
-    <string name="error_no_browser">Не знайдено ніякої активності щоб впоратися URLs</string>
+    <string name="all_icons">Усі значки</string>
+    <string name="error_no_browser">Не знайдено ніякої активності щоб впоратися з URLs</string>
     <string name="no_icon_found">Не знайдено жодної іконки</string>
     <string name="icon_pack_external_picker">Відкрити зовнішній вибір</string>
     <string name="week_day_format">%1$s %2$s</string>
@@ -217,7 +217,7 @@
     <string name="title_use_pill_qsb">Використовувати стиль пігулки в строці пошуку</string>
     <string name="weather_provider_testing">Debug</string>
     <!--Marker G-->
-    <string name="backup_generate_report">Створити звіт на помилку</string>
+    <string name="backup_generate_report">Створити звіт про помилку</string>
     <string name="show_top_shadow_pref_title">Верхня тінь</string>
     <string name="show_top_shadow_pref_summary">Тінь під рядком стану</string>
     <string name="two_row_dock">Два рядки</string>
@@ -248,8 +248,8 @@
     <string name="quickstep_pref_title">Недавні</string>
     <string name="quickstep_pref_summary">Жести, кути, розмиття</string>
     <string name="swipe_up_to_switch_apps_title">Потягніть палець вгору щоб відкрити додатки</string>
-    <string name="swipe_left_to_go_back_title">Протянуть палець вліво щоб повернутися назад</string>
-    <string name="pref_category_nav_swipe_up_gestures">Дії при протягренні пальця вгору</string>
+    <string name="swipe_left_to_go_back_title">Проведіть пальцем вліво щоб повернутися назад</string>
+    <string name="pref_category_nav_swipe_up_gestures">Дії при проведенні пальцем вгору</string>
     <string name="gesture_nav_swipe_up_left">Зліва</string>
     <string name="gesture_nav_swipe_up_center">З центру</string>
     <string name="gesture_nav_swipe_up_right">З права</string>
@@ -321,7 +321,7 @@
     <string name="app_actions_pref_title">Дії</string>
     <string name="app_actions_pref_title_in_search">Пропозиції дій</string>
     <string name="app_actions_pref_desc">Ярлики до часто відкритих екранів</string>
-    <string name="change_default_home">Встановити в якості домашнього екарну</string>
+    <string name="change_default_home">Встановити в якості домашнього екрану</string>
     <string name="recent_task_option_popup_window">Діалогове вікно</string>
     <string name="feed_theme_pref_title">Колір фону</string>
     <string name="recents_not_connected">Сервіс не підключений</string>
@@ -335,7 +335,7 @@
     <string name="tabs_manage">Керування</string>
     <plurals name="tab_apps_count">
         <item quantity="one">%1$d додаток</item>
-        <item quantity="few">%1$d додатків</item>
+        <item quantity="few">%1$d додатки</item>
         <item quantity="many">%1$d додатків</item>
         <item quantity="other">%1$d додатків</item>
     </plurals>
@@ -347,7 +347,7 @@
     </plurals>
     <string name="selected_count">%1$d обрані</string>
     <string name="tab_manage_apps">Керувати додатками</string>
-    <string name="tab_bottom_sheet_save">Зберігти</string>
+    <string name="tab_bottom_sheet_save">Зберегти</string>
     <string name="tab_hide_from_main">Приховати з головної вкладки</string>
     <string name="tab_color">Колір вкладки</string>
     <string name="delete">Видалити</string>
@@ -361,8 +361,8 @@
     <string name="sesame">Sesame</string>
     <string name="sesame_data_integration">Інтеграція даних</string>
     <string name="sesame_upsell">Натисніть щоб встановити Sesame</string>
-    <string name="sesame_search_upsell_on">Sesame встановлений як провайдер пошуку</string>
-    <string name="sesame_search_upsell_off">Sesame не встановлений як провайдер пошуку</string>
+    <string name="sesame_search_upsell_on">Sesame встановлено як провайдер пошуку</string>
+    <string name="sesame_search_upsell_off">Sesame не встановлено як провайдер пошуку</string>
     <string name="pref_sesame_enabled">Дані з ярлика Sesame поширені</string>
     <string name="pref_sesame_disabled">Немає спільних даних</string>
     <string name="pref_sesame_show_shortcuts">Ярлики додатків</string>
@@ -395,7 +395,7 @@
     <string name="units_delisle">Делісл</string>
     <string name="units_reaumur">Réaumur</string>
     <string name="units_romer">Rømer</string>
-    <string name="owm_get_your_own_key">Будь ласка отримайте власний APIтключ з api.openweathermap.org</string>
+    <string name="owm_get_your_own_key">Будь ласка отримайте власний API-ключ з api.openweathermap.org</string>
     <string name="pref_smartspace_time_above">Показати великий годинник</string>
     <string name="pref_smartspace_time_above_summary">Показати годинник над віджетом</string>
     <string name="pref_fonts_title">Шрифти</string>
@@ -429,7 +429,7 @@
     <string name="pref_notification_count_title">Відображати кількість сповіщень</string>
     <string name="pref_notification_count_summary">Відображати кількість сповіщень всередині кола</string>
     <string name="pref_center_wallpaper">Завжди центрувати шпалери</string>
-    <string name="pref_center_wallpaper_summary">Вимкне ефект зміни шпалер</string>
+    <string name="pref_center_wallpaper_summary">Вимкне ефект прокручування шпалер</string>
     <string name="pref_icon_popup_menu">Спливаюче меню</string>
     <string name="pref_appcategorization_enable_title">Вибрати категорію додатків</string>
     <string name="pref_appcategorization_enable_summary">Зафіксувати мій порядок додатків в списку.</string>
@@ -456,9 +456,9 @@
     <string name="category_photography">Фотографія</string>
     <string name="category_tools">Службові програми</string>
     <string name="category_travel_and_navigation">Подорожі та навігація</string>
-    <string name="lock_desktop">Блокування робочого стола</string>
+    <string name="lock_desktop">Блокування робочого столу</string>
     <string name="reset_custom_icons">Скидання сторонніх значків</string>
-    <string name="reset_custom_icons_confirmation">Ви впевнені, що ви хочете скинути призначені для користувацькі значки?
+    <string name="reset_custom_icons_confirmation">Ви впевнені, що хочете скинути користувальницькі значки?
 Ця дія не може бути скасована.</string>
     <string name="open_image_picker">Відкрити вибір зображення</string>
     <string name="import_icon">Імпорт значка</string>
@@ -475,7 +475,7 @@
     <string name="action_copy_link">Скопіювати посилання</string>
     <string name="action_share">Поділитись</string>
     <string name="animation_type_title">Анімація відкриття додатків</string>
-    <string name="animation_type_default">За замовчанням</string>
+    <string name="animation_type_default">За замовчуванням</string>
     <string name="animation_type_pie">Pie</string>
     <string name="animation_type_pie_like">У стилі Pie</string>
     <string name="animation_type_reveal">Задній фон</string>
@@ -483,7 +483,7 @@
     <string name="animation_type_scale_up">Збільшити масштаб</string>
     <string name="animation_type_blink">Миготіння</string>
     <string name="animation_type_fade">Затухання</string>
-    <string name="permission_iplocate">Дозволити доступ до грубого мережевого розташування?</string>
+    <string name="permission_iplocate">Дозволити доступ до приблизного мережевого розташування?</string>
     <string name="permission_iplocate_twilight_explanation">Це дозволяє більш точні розрахунки в денний час без необхідності знати ваше точне місце розташування.</string>
     <string name="pref_appcategorization_flowerpot_title">Категорія</string>
     <string name="pref_appcategorization_flowerpot_summary">Додатки автоматично вибираються на основі метаданих.</string>
