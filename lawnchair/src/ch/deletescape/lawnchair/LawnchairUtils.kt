@@ -22,6 +22,7 @@ import android.app.Notification
 import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.PackageInfo.REQUESTED_PERMISSION_GRANTED
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.content.res.Configuration
@@ -54,6 +55,7 @@ import android.widget.*
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.font.CustomFontManager
 import ch.deletescape.lawnchair.util.JSONMap
+import ch.deletescape.lawnchair.util.hasFlag
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
@@ -855,4 +857,17 @@ fun Notification.loadSmallIcon(context: Context): Drawable? {
     } else {
         context.getDrawable(icon)
     }
+}
+
+fun Context.checkPackagePermission(packageName: String, permissionName: String): Boolean {
+    try {
+        val info = packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
+        info.requestedPermissions.forEachIndexed { index, s ->
+            if (s == permissionName) {
+                return info.requestedPermissionsFlags[index].hasFlag(REQUESTED_PERMISSION_GRANTED)
+            }
+        }
+    } catch (e: PackageManager.NameNotFoundException) {
+    }
+    return false
 }

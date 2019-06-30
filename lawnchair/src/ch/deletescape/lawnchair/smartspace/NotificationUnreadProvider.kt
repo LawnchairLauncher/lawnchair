@@ -48,15 +48,15 @@ class NotificationUnreadProvider(controller: LawnchairSmartspaceController) :
         if (filtered.isEmpty()) return null
 
         val context = controller.context
-        val bestNotification = filtered.reduce { acc, sbn ->
+        val sbn = filtered.reduce { acc, sbn ->
             if (sbn.notification.priority > acc.notification.priority) {
                 sbn
             } else {
                 acc
             }
         }
-        val notif = NotificationInfo(context, bestNotification)
-        val app = getApp(notif.packageUserKey.mPackageName).toString()
+        val notif = NotificationInfo(context, sbn)
+        val app = getApp(sbn).toString()
         val title = notif.title?.toString() ?: ""
         val splitted = splitTitle(title)
         val body = notif.text?.toString()?.trim()?.split("\n")?.firstOrNull() ?: ""
@@ -72,7 +72,7 @@ class NotificationUnreadProvider(controller: LawnchairSmartspaceController) :
             lines.add(appLine)
         }
         return CardData(
-                bestNotification.notification.loadSmallIcon(context)?.toBitmap(),
+                sbn.notification.loadSmallIcon(context)?.toBitmap(),
                 lines, notif.intent)
     }
 
