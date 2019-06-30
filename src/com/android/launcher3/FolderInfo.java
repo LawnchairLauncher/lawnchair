@@ -226,7 +226,7 @@ public class FolderInfo extends ItemInfo {
             // out.drawColor(Color.RED);
             icon.draw(out);
         });
-        icon.bind(null);
+        icon.unbind();
         return new BitmapDrawable(launcher.getResources(), b);
     }
 

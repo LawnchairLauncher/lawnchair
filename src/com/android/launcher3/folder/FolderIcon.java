@@ -209,26 +209,12 @@ public class FolderIcon extends FrameLayout implements FolderListener, OnResumeC
         return icon;
     }
 
-    public void bind(FolderInfo folderInfo) {
+    public void unbind() {
         if (mInfo != null) {
             mInfo.removeListener(this);
             mInfo.removeListener(mFolder);
+            mInfo = null;
         }
-
-        if (folderInfo == null) return;
-
-        mFolderName.setText(folderInfo.title);
-
-        setTag(folderInfo);
-        mInfo = folderInfo;
-        setContentDescription(
-                mLauncher.getString(R.string.folder_name_format, folderInfo.title));
-        mFolder.bind(folderInfo);
-        setFolder(mFolder);
-
-        folderInfo.addListener(this);
-
-        onIconChanged();
     }
 
     @Override

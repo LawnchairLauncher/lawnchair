@@ -23,6 +23,8 @@ import android.os.UserHandle;
 import android.support.v4.graphics.ColorUtils;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.allapps.AppColorComparator;
+import ch.deletescape.lawnchair.groups.DrawerFolderInfo;
+import ch.deletescape.lawnchair.groups.DrawerFolderItem;
 import ch.deletescape.lawnchair.groups.DrawerFolders;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
@@ -106,10 +108,8 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         /**
          * Folder-only properties
          */
-        // The associated FolderInfo for the folder
-        public FolderInfo folderInfo = null;
-        // The index of this folder not including sections
-        public int folderIndex = -1;
+        // The associated folder for the folder
+        public DrawerFolderItem folderItem = null;
 
         public static AdapterItem asApp(int pos, String sectionName, AppInfo appInfo,
                                         int appIndex) {
@@ -150,14 +150,13 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             return item;
         }
 
-        public static AdapterItem asFolder(int pos, String sectionName, FolderInfo folderInfo,
-                int folderIndex) {
+        public static AdapterItem asFolder(int pos, String sectionName,
+                DrawerFolderInfo folderInfo, int folderIndex) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_FOLDER;
             item.position = pos;
             item.sectionName = sectionName;
-            item.folderInfo = folderInfo;
-            item.folderIndex = folderIndex;
+            item.folderItem = new DrawerFolderItem(folderInfo, folderIndex);
             return item;
         }
     }
@@ -368,7 +367,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
         // Drawer folders are arranged before all the apps
         if (!hasFilter()) {
-            for (FolderInfo info : getFolderInfos()) {
+            for (DrawerFolderInfo info : getFolderInfos()) {
                 String sectionName = "#";
 
                 // Create a new section if the section names do not match
@@ -548,7 +547,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         mIsWork = isWork;
     }
 
-    private List<FolderInfo> getFolderInfos() {
+    private List<DrawerFolderInfo> getFolderInfos() {
         return Utilities.getLawnchairPrefs(mLauncher)
                 .getAppGroupsManager()
                 .getDrawerFolders()
