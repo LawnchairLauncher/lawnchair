@@ -117,6 +117,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private var dockBackground = 0
 
     private val reInitUiRunnable = this::reInitUi
+    private var fullBlurProgress = 0f
 
     private fun createBlurDrawable(): BlurDrawable? {
         blurDrawable?.let { if (isAttachedToWindow) it.stopListening() }
@@ -253,6 +254,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         } else if (hasRecents) {
             colors.add(Pair(recentsProgress, recentsShelfColor))
         }
+        fullBlurProgress = Math.max(Math.max(homeProgress, recentsProgress), 0.5f)
         colors.add(Pair(1f, nullShelfColor))
         colors.add(Pair(Float.POSITIVE_INFINITY, nullShelfColor))
 
@@ -354,12 +356,12 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         super.updateColors()
         val alpha = when {
             useFlatColor -> ((1 - mProgress) * 255).toInt()
-            mProgress >= mMidProgress -> Math.round(255 * ACCEL_2.getInterpolation(
-                    Math.max(0f, 1 - mProgress) / (1 - mMidProgress)))
+            mProgress >= fullBlurProgress -> Math.round(255 * ACCEL_2.getInterpolation(
+                    Math.max(0f, 1 - mProgress) / (1 - fullBlurProgress)))
             else -> {
-                val startAlpha = if (mMidProgress >= 1f) 0f else 255f
+                val startAlpha = if (fullBlurProgress >= 1f) 0f else 255f
                 Math.round(
-                        Utilities.mapToRange(mProgress, 0.toFloat(), mMidProgress, 255f,
+                        Utilities.mapToRange(mProgress, 0.toFloat(), fullBlurProgress, 255f,
                                 startAlpha, Interpolators.clampToProgress(ACCEL, 0.5f, 1f)))
             }
         }
