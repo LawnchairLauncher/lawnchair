@@ -24,10 +24,12 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Handler
 import android.os.HandlerThread
+import android.service.notification.StatusBarNotification
 import android.support.annotation.Keep
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import ch.deletescape.lawnchair.checkPackagePermission
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.runOnUiWorkerThread
@@ -243,6 +245,23 @@ class LawnchairSmartspaceController(val context: Context) {
             }
 
             return name
+        }
+
+        protected fun getApp(sbn: StatusBarNotification): CharSequence {
+            val context = controller.context
+            val subName = sbn.notification.extras.getString(EXTRA_SUBSTITUTE_APP_NAME)
+            if (subName != null) {
+                if (context.checkPackagePermission(sbn.packageName, PERM_SUBSTITUTE_APP_NAME)) {
+                    return subName
+                }
+            }
+            return getApp(sbn.packageName)
+        }
+
+        companion object {
+
+            private const val PERM_SUBSTITUTE_APP_NAME = "android.permission.SUBSTITUTE_NOTIFICATION_APP_NAME"
+            private const val EXTRA_SUBSTITUTE_APP_NAME = "android.substName"
         }
     }
 
