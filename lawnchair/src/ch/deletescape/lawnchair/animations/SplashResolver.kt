@@ -22,7 +22,7 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.view.ContextThemeWrapper
 import ch.deletescape.lawnchair.getColorAttr
-import ch.deletescape.lawnchair.getDrawableAttr
+import ch.deletescape.lawnchair.getDrawableAttrNullable
 import ch.deletescape.lawnchair.getIntAttr
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import ch.deletescape.lawnchair.theme.ThemeOverride
@@ -36,8 +36,9 @@ class SplashResolver(private val context: Context) {
     fun loadSplash(intent: Intent): SplashData {
         val activityInfo = intent.resolveActivityInfo(context.packageManager, 0)
         val themedContext: Context
-        themedContext = if (activityInfo.packageName == BuildConfig.APPLICATION_ID
-                && activityInfo.name == SettingsActivity::class.java.name) {
+        themedContext = if (activityInfo == null
+                            || (activityInfo.packageName == BuildConfig.APPLICATION_ID
+                            && activityInfo.name == SettingsActivity::class.java.name)) {
             ContextThemeWrapper(context, ThemeOverride.Settings().getTheme(context))
         } else {
             val theme = activityInfo.themeResource
@@ -47,7 +48,7 @@ class SplashResolver(private val context: Context) {
         val layoutInDisplayCutoutMode = if (Utilities.ATLEAST_P)
             themedContext.getIntAttr(android.R.attr.windowLayoutInDisplayCutoutMode) else 0
         return SplashData(
-                themedContext.getDrawableAttr(android.R.attr.windowBackground),
+                themedContext.getDrawableAttrNullable(android.R.attr.windowBackground),
                 themedContext.getColorAttr(android.R.attr.statusBarColor),
                 themedContext.getColorAttr(android.R.attr.navigationBarColor),
                 layoutInDisplayCutoutMode)
