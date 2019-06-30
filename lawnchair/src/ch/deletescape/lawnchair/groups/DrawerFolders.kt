@@ -53,7 +53,7 @@ class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFol
         return apps.apps.associateBy { it.toComponentKey() }
     }
 
-    private fun getFolderInfos(getAppInfo: (ComponentKey) -> AppInfo?): List<FolderInfo> = getGroups()
+    private fun getFolderInfos(getAppInfo: (ComponentKey) -> AppInfo?): List<DrawerFolderInfo> = getGroups()
             .asSequence()
             .filter { !it.isEmpty }
             .map { it.toFolderInfo(getAppInfo) }
