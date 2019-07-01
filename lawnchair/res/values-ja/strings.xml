@@ -482,4 +482,13 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="tab_type_custom_desc">手動でタブのアプリを選択</string>
     <string name="tab_type_smart">スマートタブ</string>
     <string name="categorization">カテゴリ設定</string>
+    <string name="folder_cover_mode">カバーモード</string>
+    <string name="folder_cover_mode_desc">タップして最初のアプリを開き、上スワイプでフォルダを開きます。</string>
+    <string name="pref_smartspace_event_providers">イベントソース</string>
+    <string name="event_provider_now_playing">Now Playing</string>
+    <string name="battery_status">バッテリーの状態</string>
+    <string name="battery_charging">充電中</string>
+    <string name="battery_low">残量低下</string>
+    <string name="event_provider_unread_notifications">未読の通知</string>
+    <string name="event_provider_missing_notification_access"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g>を使用するには、<xliff:g example="My App" id="name">%2$s</xliff:g>のアプリの通知を有効にして下さい。</string>
 </resources>
