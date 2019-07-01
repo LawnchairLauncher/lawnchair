@@ -484,4 +484,11 @@
     <string name="tab_type_custom_desc">Vali rakendused käsitsi sellelt kaardilt.</string>
     <string name="tab_type_smart">Nutikas kaart</string>
     <string name="categorization">Liigitamine</string>
+    <string name="folder_cover_mode_desc">Vajuta esimese rakenduse avamiseks. Kausta avamiseks libista üles.</string>
+    <string name="pref_smartspace_event_providers">Sündmuste allikad</string>
+    <string name="event_provider_now_playing">Nüüd esitamisel</string>
+    <string name="battery_status">Aku olek</string>
+    <string name="battery_charging">Akut laaditakse</string>
+    <string name="battery_low">Akutase on madal</string>
+    <string name="event_provider_unread_notifications">Lugemata teavitused</string>
 </resources>
