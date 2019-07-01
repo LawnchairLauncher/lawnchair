@@ -489,4 +489,12 @@
     <string name="tab_type_custom_desc">Choisissez manuellement les applications pour cet onglet.</string>
     <string name="tab_type_smart">Onglet intelligent</string>
     <string name="categorization">Catégorisation</string>
+    <string name="folder_cover_mode">Mode couverture</string>
+    <string name="folder_cover_mode_desc">Appuyez pour ouvrir la première application, balayez vers le haut pour ouvrir le dossier</string>
+    <string name="pref_smartspace_event_providers">Sources d\'événements</string>
+    <string name="event_provider_now_playing">Lecture en cours</string>
+    <string name="battery_status">État de la batterie</string>
+    <string name="battery_charging">Batterie en charge</string>
+    <string name="battery_low">Batterie faible</string>
+    <string name="event_provider_unread_notifications">Notifications non lues</string>
 </resources>
