@@ -1259,6 +1259,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                                 mActivityControlHelper.onLaunchTaskFailed(mActivity);
                                 nextTask.notifyTaskLaunchFailed(TAG);
                                 updateSysUiFlags(1 /* windowProgress == overview */);
+                            } else {
+                                mActivityControlHelper.onLaunchTaskSuccess(mActivity);
                             }
                         }, mMainThreadHandler);
                         doLogGesture(NEW_TASK);
