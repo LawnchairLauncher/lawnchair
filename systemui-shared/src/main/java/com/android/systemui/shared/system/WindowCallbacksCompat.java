@@ -59,6 +59,11 @@ public class WindowCallbacksCompat {
         public void onPostDraw(DisplayListCanvas canvas) {
             WindowCallbacksCompat.this.onPostDraw(canvas);
         }
+
+        @Keep
+        public void onWindowFocusChangedFromViewRoot(boolean bool) {
+
+        }
     };
 
     private final View mView;
