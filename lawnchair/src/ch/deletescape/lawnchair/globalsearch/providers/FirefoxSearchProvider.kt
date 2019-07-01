@@ -48,6 +48,7 @@ open class FirefoxSearchProvider(context: Context) : SearchProvider(context) {
             "org.mozilla.firefox_beta",
             "org.mozilla.fennec_aurora",
             "org.mozilla.focus",
-            "org.mozilla.fenix"
+            "org.mozilla.fenix",
+            "org.mozilla.fenix.nightly"
     ).firstOrNull { PackageManagerHelper.isAppEnabled(context.packageManager, it, 0) }
 }
