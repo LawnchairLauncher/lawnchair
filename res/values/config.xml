@@ -165,6 +165,7 @@
     <item type="id" name="action_deep_shortcuts" />
     <item type="id" name="action_shortcuts_and_notifications"/>
     <item type="id" name="action_dismiss_notification" />
+    <item type="id" name="action_customize" />
 
 <!-- QSB IDs. DO not change -->
     <item type="id" name="search_container_workspace" />

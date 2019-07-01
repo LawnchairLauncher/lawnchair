@@ -48,7 +48,7 @@ abstract class BaseFlags {
     public static final boolean NO_ALL_APPS_ICON = true;
 
     // When true, custom widgets are loaded using CustomWidgetParser.
-    public static final boolean ENABLE_CUSTOM_WIDGETS = false;
+    public static final boolean ENABLE_CUSTOM_WIDGETS = true;
 
     // Features to control Launcher3Go behavior
     public static final boolean GO_DISABLE_WIDGETS = false;

@@ -31,11 +31,10 @@ class SmartspacePreview(context: Context, attrs: AttributeSet?) :
         FrameLayout(context, attrs), LawnchairPreferences.OnPreferenceChangeListener {
 
     private val prefs = Utilities.getLawnchairPrefs(context)
-    private val enable = prefs::enableSmartspace
     private val usePillQsb = prefs::usePillQsb
-    private val prefsToWatch = arrayOf("pref_smartspace", "pref_smartspace_time",  "pref_smartspace_time_above",
+    private val prefsToWatch = arrayOf("pref_smartspace_time",  "pref_smartspace_time_above",
             "pref_smartspace_time_24_h", "pref_smartspace_date", "pref_use_pill_qsb")
-    private val needsReinflate = setOf("pref_smartspace", "pref_use_pill_qsb")
+    private val needsReinflate = setOf("pref_use_pill_qsb")
     private var currentView: SmartspaceView? = null
 
     override fun onAttachedToWindow() {
@@ -60,12 +59,8 @@ class SmartspacePreview(context: Context, attrs: AttributeSet?) :
     }
 
     private fun inflateCurrentView() {
-        if (enable.get()) {
-            val layout = if (usePillQsb.get()) R.layout.qsb_container_preview else R.layout.search_container_workspace
-            addView(inflateView(layout))
-        } else {
-            currentView = null
-        }
+        val layout = if (usePillQsb.get()) R.layout.qsb_container_preview else R.layout.search_container_workspace
+        addView(inflateView(layout))
     }
 
     private fun inflateView(layout: Int): View {
