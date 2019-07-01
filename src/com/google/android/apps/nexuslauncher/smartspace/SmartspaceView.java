@@ -223,9 +223,16 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             mSubtitleText.setText(data.getCard().getTitle());
             mSubtitleText.setEllipsize(data.getCard().getTitleEllipsize());
             mSubtitleText.setOnClickListener(mEventClickListener);
-            mSubtitleIcon.setImageTintList(dH);
-            mSubtitleIcon.setImageBitmap(data.getCard().getIcon());
-            mSubtitleIcon.setOnClickListener(mEventClickListener);
+
+            Bitmap icon = data.getCard().getIcon();
+            if (icon != null) {
+                mSubtitleIcon.setVisibility(View.VISIBLE);
+                mSubtitleIcon.setImageTintList(dH);
+                mSubtitleIcon.setImageBitmap(icon);
+                mSubtitleIcon.setOnClickListener(mEventClickListener);
+            } else {
+                mSubtitleIcon.setVisibility(View.GONE);
+            }
         } else {
             mSubtitleLine.setVisibility(View.GONE);
         }
