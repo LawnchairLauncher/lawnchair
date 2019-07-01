@@ -27,6 +27,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import ch.deletescape.lawnchair.FeedBridge
+import ch.deletescape.lawnchair.getColorEngineAccent
 import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.smartspace.*
@@ -61,7 +62,7 @@ class SmartspaceEventProvidersAdapter(private val context: Context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return when (viewType) {
-            TYPE_HEADER -> createHolder(parent, R.layout.icon_pack_text_item, ::HeaderHolder)
+            TYPE_HEADER -> createHolder(parent, R.layout.event_provider_text_item, ::HeaderHolder)
             TYPE_ITEM -> createHolder(parent, R.layout.event_provider_dialog_item, ::ProviderHolder)
             TYPE_DIVIDER -> createHolder(parent, R.layout.event_providers_divider_item, ::DividerHolder)
             else -> throw IllegalArgumentException("type must be either TYPE_TEXT, " +
@@ -179,7 +180,10 @@ class SmartspaceEventProvidersAdapter(private val context: Context)
     class HeaderHolder(itemView: View) : Holder(itemView) {
 
         init {
-            itemView.findViewById<TextView>(android.R.id.text1).setText(R.string.enabled_icon_packs)
+            itemView.findViewById<TextView>(android.R.id.text1).apply {
+                setText(R.string.enabled_icon_packs)
+                setTextColor(context.getColorEngineAccent())
+            }
         }
     }
 
@@ -231,6 +235,10 @@ class SmartspaceEventProvidersAdapter(private val context: Context)
     inner class DividerHolder(itemView: View) : Holder(itemView) {
 
         val text: TextView = itemView.findViewById(android.R.id.text1)
+
+        init {
+            text.setTextColor(text.context.getColorEngineAccent())
+        }
 
         override fun bind(item: Item) {
             super.bind(item)
