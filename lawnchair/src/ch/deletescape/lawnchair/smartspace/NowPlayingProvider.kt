@@ -44,7 +44,7 @@ class NowPlayingProvider(controller: LawnchairSmartspaceController) :
 
         val sbn = media.playingNotification ?: return null
         val notification = sbn.notification
-        val icon = notification.loadSmallIcon(context)?.toBitmap() ?: defaultIcon
+        val icon = sbn.loadSmallIcon(context)?.toBitmap() ?: defaultIcon
 
         val mediaInfo = media.info
         val lines = mutableListOf<Line>()

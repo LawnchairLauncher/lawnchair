@@ -94,7 +94,7 @@ class NotificationUnreadProvider(controller: LawnchairSmartspaceController) :
             lines.add(appLine)
         }
         return CardData(
-                sbn.notification.loadSmallIcon(context)?.toBitmap(),
+                sbn.loadSmallIcon(context)?.toBitmap(),
                 lines, notif.intent)
     }
 

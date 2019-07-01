@@ -33,6 +33,7 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.provider.OpenableColumns
+import android.service.notification.StatusBarNotification
 import android.support.animation.FloatPropertyCompat
 import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
@@ -851,11 +852,11 @@ fun createPill(color: Int, radius: Float): Drawable {
 
 val Long.Companion.random get() = Random.nextLong()
 
-fun Notification.loadSmallIcon(context: Context): Drawable? {
+fun StatusBarNotification.loadSmallIcon(context: Context): Drawable? {
     return if (Utilities.ATLEAST_MARSHMALLOW) {
-        smallIcon?.loadDrawable(context)
+        notification.smallIcon?.loadDrawable(context)
     } else {
-        context.getDrawable(icon)
+        context.resourcesForApplication(packageName)?.getDrawable(notification.icon)
     }
 }
 
