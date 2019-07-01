@@ -29,7 +29,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PropertyListBuilder;
@@ -151,15 +150,16 @@ public class NotificationFooterLayout extends FrameLayout {
 
     public void animateFirstNotificationTo(Rect toBounds,
             final IconAnimationEndListener callback) {
-        AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
+        AnimatorSet animation = new AnimatorSet();
         final View firstNotification = mIconRow.getChildAt(mIconRow.getChildCount() - 1);
 
         Rect fromBounds = sTempRect;
         firstNotification.getGlobalVisibleRect(fromBounds);
         float scale = (float) toBounds.height() / fromBounds.height();
-        Animator moveAndScaleIcon = LauncherAnimUtils.ofPropertyValuesHolder(firstNotification,
-                new PropertyListBuilder().scale(scale).translationY(toBounds.top - fromBounds.top
-                        + (fromBounds.height() * scale - fromBounds.height()) / 2).build());
+        Animator moveAndScaleIcon = new PropertyListBuilder().scale(scale)
+                .translationY(toBounds.top - fromBounds.top
+                        + (fromBounds.height() * scale - fromBounds.height()) / 2)
+                .build(firstNotification);
         moveAndScaleIcon.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {

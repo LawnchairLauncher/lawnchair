@@ -18,15 +18,16 @@ package com.android.launcher3.widget;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.OnItemTouchListener;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.R;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener;
 
 /**
  * The widgets recycler view.
@@ -53,11 +54,6 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
         super(context, attrs, defStyleAttr);
         mScrollbarTop = getResources().getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         addOnItemTouchListener(this);
-    }
-
-    public WidgetsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr,
-            int defStyleRes) {
-        this(context, attrs, defStyleAttr);
     }
 
     @Override

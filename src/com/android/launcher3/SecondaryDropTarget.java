@@ -2,7 +2,6 @@ package com.android.launcher3;
 
 import static android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID;
 import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_RECONFIGURABLE;
-
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_MASK;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_NO;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
@@ -10,7 +9,6 @@ import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.UNINSTALL;
 
 import android.appwidget.AppWidgetHostView;
-import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
@@ -152,7 +150,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         Intent intent = null;
         UserHandle user = null;
         if (item != null &&
-                item.itemType == LauncherSettings.BaseLauncherColumns.ITEM_TYPE_APPLICATION) {
+                item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
             intent = item.getIntent();
             user = item.user;
         }
@@ -181,7 +179,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             DeferredOnComplete deferred = (DeferredOnComplete) d.dragSource;
             if (target != null) {
                 deferred.mPackageName = target.getPackageName();
-                mLauncher.setOnResumeCallback(deferred);
+                mLauncher.addOnResumeCallback(deferred);
             } else {
                 deferred.sendFailure();
             }

@@ -15,11 +15,12 @@
  */
 package com.android.launcher3.widget;
 
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.ViewGroup;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
+
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 public class WidgetsRowViewHolder extends ViewHolder {
 

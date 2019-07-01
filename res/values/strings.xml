@@ -66,6 +66,8 @@
     <string name="all_apps_no_search_results">No apps found matching \"<xliff:g id="query" example="Android">%1$s</xliff:g>\"</string>
     <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
     <string name="all_apps_search_market_message">Search for more apps</string>
+    <!-- Label for an icon representing any generic app. [CHAR_LIMIT=50] -->
+    <string name="label_application">App</string>
 
     <!-- Popup items -->
     <!-- Text to display as the header above notifications. [CHAR_LIMIT=30] -->
@@ -92,9 +94,11 @@
          for accessibilty (spoken when the button gets focus). -->
     <string name="all_apps_home_button_label">Home</string>
 
-    <!-- Label for remove drop target. [CHAR_LIMIT=20] -->
+    <!-- Label for remove drop target (from the homescreen only).
+         May appear next to uninstall_drop_target_label [CHAR_LIMIT=20] -->
     <string name="remove_drop_target_label">Remove</string>
-    <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
+    <!-- Label for uninstall drop target (from the device).
+         May appear next to remove_drop_target_label [CHAR_LIMIT=20]-->
     <string name="uninstall_drop_target_label">Uninstall</string>
     <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
     <string name="app_info_drop_target_label">App info</string>
@@ -141,7 +145,7 @@
     <!-- The format string for when an app is temporarily disabled. -->
     <string name="disabled_app_label">Disabled <xliff:g id="app_name" example="Messenger">%1$s</xliff:g></string>
     <!-- The format string for when an app has a notification dot (meaning it has associated notifications). -->
-    <plurals name="badged_app_label">
+    <plurals name="dotted_app_label">
         <item quantity="one"><xliff:g id="app_name" example="Messenger">%1$s</xliff:g>, has <xliff:g id="notification_count" example="1">%2$d</xliff:g> notification</item>
         <item quantity="other"><xliff:g id="app_name" example="Messenger">%1$s</xliff:g>, has <xliff:g id="notification_count" example="3">%2$d</xliff:g> notifications</item>
     </plurals>
@@ -173,6 +177,8 @@
     <string name="widget_button_text">Widgets</string>
     <!-- Text for wallpaper change button -->
     <string name="wallpaper_button_text">Wallpapers</string>
+    <!-- Text for wallpaper change button -->
+    <string name="styles_wallpaper_button_text">Styles &amp; wallpapers</string>
     <!-- Text for settings button -->
     <string name="settings_button_text">Home settings</string>
     <!-- Message shown when a feature is disabled by the administrator -->
@@ -184,11 +190,11 @@
     <!-- Text explaining when the home screen will get rotated. [CHAR LIMIT=100] -->
     <string name="allow_rotation_desc">When phone is rotated</string>
     <!-- Title for Notification dots setting. Tapping this will link to the system Notifications settings screen where the user can turn off notification dots globally. [CHAR LIMIT=50] -->
-    <string name="icon_badging_title">Notification dots</string>
-    <!-- Text to indicate that the system icon badging setting is on [CHAR LIMIT=100] -->
-    <string name="icon_badging_desc_on">On</string>
-    <!-- Text to indicate that the system icon badging setting is off [CHAR LIMIT=100] -->
-    <string name="icon_badging_desc_off">Off</string>
+    <string name="notification_dots_title">Notification dots</string>
+    <!-- Text to indicate that the system notification dots setting is on [CHAR LIMIT=100] -->
+    <string name="notification_dots_desc_on">On</string>
+    <!-- Text to indicate that the system notification dots setting is off [CHAR LIMIT=100] -->
+    <string name="notification_dots_desc_off">Off</string>
     <!-- Title for the dialog shown when the app does not has notification access, explaining the requirement for notification access [CHAR LIMIT=50] -->
     <string name="title_missing_notification_access">Notification access needed</string>
     <!-- Message explaining to the user that the notification access is required by the app for showing 'Notification dots' [CHAR LIMIT=NONE] -->
@@ -196,30 +202,12 @@
     <!-- Button text in the confirmation dialog which would take the user to the system settings [CHAR LIMIT=50] -->
     <string name="title_change_settings">Change settings</string>
     <!-- Summary for Notification dots setting. Tapping this will link enable/disable notification dots feature on the home screen. [CHAR LIMIT=50] -->
-    <string name="icon_badging_service_title">Show notification dots</string>
+    <string name="notification_dots_service_title">Show notification dots</string>
 
     <!-- Label for the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=40] -->
     <string name="auto_add_shortcuts_label">Add icon to Home screen</string>
     <!-- Text description of the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=NONE] -->
     <string name="auto_add_shortcuts_description">For new apps</string>
-
-    <!-- Developer setting to change the shape of icons on home screen. [CHAR LIMIT=50] -->
-    <string name="icon_shape_override_label">Change icon shape</string>
-    <!-- Subtext explaining that the icons will only be affected on the home screen. This text follows the actual icon action: Change icon shape, on Home screen [CHAR LIMIT=100] -->
-    <string name="icon_shape_override_label_location">on Home screen</string>
-    <!-- Option to not change the icon shape on home screen and use the system default setting instead. [CHAR LIMIT=50] -->
-    <string name="icon_shape_system_default">Use system default</string>
-    <!-- Option to change the shape of the home screen icons to a square. [CHAR LIMIT=50] -->
-    <string name="icon_shape_square">Square</string>
-    <!-- Option to change the shape of the home screen icons to a squircle. This represents the name of the shape somewhere between a circle and a square. [CHAR LIMIT=50] -->
-    <string name="icon_shape_squircle">Squircle</string>
-    <!-- Option to change the shape of the home screen icons to a circle. [CHAR LIMIT=50] -->
-    <string name="icon_shape_circle">Circle</string>
-    <!-- Option to change the shape of the home screen icons to a teardrop. This represents the name of the shape similar to a circle with with the bottom right corner pushed out like a square [CHAR LIMIT=50] -->
-    <string name="icon_shape_teardrop">Teardrop</string>
-
-    <!-- Message shown in the progress dialog when the icon shape override is being applied [CHAR LIMIT=100]-->
-    <string name="icon_shape_override_progress">Applying icon shape changes</string>
 
     <!-- Label on an icon that references an uninstalled package, for which we have no information about when it might be installed. [CHAR_LIMIT=15] -->
     <string name="package_state_unknown">Unknown</string>
@@ -259,8 +247,11 @@
     <!-- Accessibility confirmation for item added to workspace. -->
     <string name="item_added_to_workspace">Item added to home screen</string>
 
-    <!-- Accessibility confirmation for item removed. -->
+    <!-- Accessibility confirmation for item removed. [CHAR_LIMIT=50]-->
     <string name="item_removed">Item removed</string>
+
+    <!-- Action shown in snackbar to undo item removal. [CHAR_LIMIT=20] -->
+    <string name="undo">Undo</string>
 
     <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
     <string name="action_move">Move item</string>
@@ -344,4 +335,7 @@
     <string name="work_mode_off_label">Notifications and apps are off</string>
     <string name="bottom_work_tab_user_education_close_button">Close</string>
     <string name="bottom_work_tab_user_education_closed">Closed</string>
+
+    <!-- Failed action error message: e.g. Failed: Pause -->
+    <string name="remote_action_failed">Failed: <xliff:g id="what" example="Pause">%1$s</xliff:g></string>
 </resources>

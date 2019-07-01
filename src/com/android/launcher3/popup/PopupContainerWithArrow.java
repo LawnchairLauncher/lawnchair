@@ -16,6 +16,8 @@
 
 package com.android.launcher3.popup;
 
+import static com.android.launcher3.Utilities.squaredHypot;
+import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.launcher3.notification.NotificationMainView.NOTIFICATION_ITEM_INFO;
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS;
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS_IF_NOTIFICATIONS;
@@ -34,10 +36,10 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -51,39 +53,42 @@ import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
-import com.android.launcher3.badge.BadgeInfo;
+import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationItemView;
 import com.android.launcher3.notification.NotificationKeyData;
+import com.android.launcher3.popup.PopupDataProvider.PopupDataChangeListener;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
+import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * A container for shortcuts to deep links and notifications associated with an app.
  */
-@TargetApi(Build.VERSION_CODES.N)
 public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         DragController.DragListener, View.OnLongClickListener,
-        View.OnTouchListener {
+        View.OnTouchListener, PopupDataChangeListener {
 
     private final List<DeepShortcutView> mShortcuts = new ArrayList<>();
     private final PointF mInterceptTouchDown = new PointF();
-    private final Point mIconLastTouchPos = new Point();
+    protected final Point mIconLastTouchPos = new Point();
 
     private final int mStartDragThreshold;
     private final LauncherAccessibilityDelegate mAccessibilityDelegate;
@@ -114,6 +119,18 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mLauncher.getPopupDataProvider().setChangeListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mLauncher.getPopupDataProvider().setChangeListener(null);
+    }
+
+    @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mInterceptTouchDown.set(ev.getX(), ev.getY());
@@ -123,8 +140,8 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
             return true;
         }
         // Stop sending touch events to deep shortcut views if user moved beyond touch slop.
-        return Math.hypot(mInterceptTouchDown.x - ev.getX(), mInterceptTouchDown.y - ev.getY())
-                > ViewConfiguration.get(getContext()).getScaledTouchSlop();
+        return squaredHypot(mInterceptTouchDown.x - ev.getX(), mInterceptTouchDown.y - ev.getY())
+                > squaredTouchSlop(getContext());
     }
 
     @Override
@@ -143,13 +160,22 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     @Override
     public void logActionCommand(int command) {
         mLauncher.getUserEventDispatcher().logActionCommand(
-                command, mOriginalIcon, ContainerType.DEEPSHORTCUTS);
+                command, mOriginalIcon, getLogContainerType());
+    }
+
+    @Override
+    public int getLogContainerType() {
+        return ContainerType.DEEPSHORTCUTS;
+    }
+
+    public OnClickListener getItemClickListener() {
+        return ItemClickHandler.INSTANCE;
     }
 
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            DragLayer dl = mLauncher.getDragLayer();
+            BaseDragLayer dl = getPopupContainer();
             if (!dl.isEventOverView(this, ev)) {
                 mLauncher.getUserEventDispatcher().logActionTapOutside(
                         LoggerUtils.newContainerTarget(ContainerType.DEEPSHORTCUTS));
@@ -179,17 +205,10 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
             return null;
         }
 
-        PopupDataProvider popupDataProvider = launcher.getPopupDataProvider();
-        List<String> shortcutIds = popupDataProvider.getShortcutIdsForItem(itemInfo);
-        List<NotificationKeyData> notificationKeys = popupDataProvider
-                .getNotificationKeysForItem(itemInfo);
-        List<SystemShortcut> systemShortcuts = popupDataProvider
-                .getEnabledSystemShortcutsForItem(itemInfo);
-
         final PopupContainerWithArrow container =
                 (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
                         R.layout.popup_container, launcher.getDragLayer(), false);
-        container.populateAndShow(icon, shortcutIds, notificationKeys, systemShortcuts);
+        container.populateAndShow(icon, itemInfo, SystemShortcutFactory.INSTANCE.get(launcher));
         return container;
     }
 
@@ -214,8 +233,21 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         }
     }
 
+    protected void populateAndShow(
+            BubbleTextView icon, ItemInfo item, SystemShortcutFactory factory) {
+        PopupDataProvider popupDataProvider = mLauncher.getPopupDataProvider();
+        populateAndShow(icon,
+                popupDataProvider.getShortcutCountForItem(item),
+                popupDataProvider.getNotificationKeysForItem(item),
+                factory.getEnabledShortcuts(mLauncher, item));
+    }
+
+    public ViewGroup getSystemShortcutContainerForTesting() {
+        return mSystemShortcutContainer;
+    }
+
     @TargetApi(Build.VERSION_CODES.P)
-    private void populateAndShow(final BubbleTextView originalIcon, final List<String> shortcutIds,
+    protected void populateAndShow(final BubbleTextView originalIcon, int shortcutCount,
             final List<NotificationKeyData> notificationKeys, List<SystemShortcut> systemShortcuts) {
         mNumNotifications = notificationKeys.size();
         mOriginalIcon = originalIcon;
@@ -233,12 +265,12 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         int viewsToFlip = getChildCount();
         mSystemShortcutContainer = this;
 
-        if (!shortcutIds.isEmpty()) {
+        if (shortcutCount > 0) {
             if (mNotificationItemView != null) {
                 mNotificationItemView.addGutter();
             }
 
-            for (int i = shortcutIds.size(); i > 0; i--) {
+            for (int i = shortcutCount; i > 0; i--) {
                 mShortcuts.add(inflateAndAdd(R.layout.deep_shortcut, this));
             }
             updateHiddenShortcuts();
@@ -268,7 +300,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         }
 
         mLauncher.getDragController().addDragListener(this);
-        mOriginalIcon.forceHideBadge(true);
+        mOriginalIcon.forceHideDot(true);
 
         // All views are added. Animate layout from now on.
         setLayoutTransition(new LayoutTransition());
@@ -277,7 +309,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         final Looper workerLooper = LauncherModel.getWorkerLooper();
         new Handler(workerLooper).postAtFrontOfQueue(PopupPopulator.createUpdateRunnable(
                 mLauncher, originalItemInfo, new Handler(Looper.getMainLooper()),
-                this, shortcutIds, mShortcuts, notificationKeys));
+                this, mShortcuts, notificationKeys));
     }
 
     private String getTitleForAccessibility() {
@@ -293,7 +325,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
 
     @Override
     protected void getTargetObjectLocation(Rect outPos) {
-        mLauncher.getDragLayer().getDescendantRectRelativeToSelf(mOriginalIcon, outPos);
+        getPopupContainer().getDescendantRectRelativeToSelf(mOriginalIcon, outPos);
         outPos.top += mOriginalIcon.getPaddingTop();
         outPos.left += mOriginalIcon.getPaddingLeft();
         outPos.right -= mOriginalIcon.getPaddingRight();
@@ -341,7 +373,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     }
 
     @Override
-    protected void onWidgetsBound() {
+    public void onWidgetsBound() {
         ItemInfo itemInfo = (ItemInfo) mOriginalIcon.getTag();
         SystemShortcut widgetInfo = new SystemShortcut.Widgets();
         View.OnClickListener onClickListener = widgetInfo.getOnClickListener(mLauncher, itemInfo);
@@ -380,21 +412,30 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     }
 
     private void initializeSystemShortcut(int resId, ViewGroup container, SystemShortcut info) {
-        View view = inflateAndAdd(resId, container);
+        View view = inflateAndAdd(
+                resId, container, getInsertIndexForSystemShortcut(container, info));
         if (view instanceof DeepShortcutView) {
             // Expanded system shortcut, with both icon and text shown on white background.
             final DeepShortcutView shortcutView = (DeepShortcutView) view;
-            shortcutView.getIconView().setBackgroundResource(info.iconResId);
-            shortcutView.getBubbleText().setText(info.labelResId);
+            info.setIconAndLabelFor(shortcutView.getIconView(), shortcutView.getBubbleText());
         } else if (view instanceof ImageView) {
             // Only the system shortcut icon shows on a gray background header.
-            final ImageView shortcutIcon = (ImageView) view;
-            shortcutIcon.setImageResource(info.iconResId);
-            shortcutIcon.setContentDescription(getContext().getText(info.labelResId));
+            info.setIconAndContentDescriptionFor((ImageView) view);
         }
         view.setTag(info);
         view.setOnClickListener(info.getOnClickListener(mLauncher,
                 (ItemInfo) mOriginalIcon.getTag()));
+    }
+
+    /**
+     * Returns an index for inserting a shortcut into a container.
+     */
+    private int getInsertIndexForSystemShortcut(ViewGroup container, SystemShortcut shortcut) {
+        final View separator = container.findViewById(R.id.separator);
+
+        return separator != null && shortcut.isLeftGroup() ?
+                container.indexOfChild(separator) :
+                container.getChildCount();
     }
 
     /**
@@ -408,6 +449,11 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
 
             @Override
             public boolean shouldStartDrag(double distanceDragged) {
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.NO_DRAG_TAG,
+                            "createPreDragCondition().shouldStartDrag " + distanceDragged + ", "
+                                    + mStartDragThreshold);
+                }
                 return distanceDragged > mStartDragThreshold;
             }
 
@@ -442,32 +488,34 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     }
 
     /**
-     * Updates the notification header if the original icon's badge updated.
+     * Updates the notification header if the original icon's dot updated.
      */
-    public void updateNotificationHeader(Set<PackageUserKey> updatedBadges) {
+    @Override
+    public void onNotificationDotsUpdated(Predicate<PackageUserKey> updatedDots) {
         ItemInfo itemInfo = (ItemInfo) mOriginalIcon.getTag();
         PackageUserKey packageUser = PackageUserKey.fromItemInfo(itemInfo);
-        if (updatedBadges.contains(packageUser)) {
+        if (updatedDots.test(packageUser)) {
             updateNotificationHeader();
         }
     }
 
     private void updateNotificationHeader() {
         ItemInfoWithIcon itemInfo = (ItemInfoWithIcon) mOriginalIcon.getTag();
-        BadgeInfo badgeInfo = mLauncher.getBadgeInfoForItem(itemInfo);
-        if (mNotificationItemView != null && badgeInfo != null) {
+        DotInfo dotInfo = mLauncher.getDotInfoForItem(itemInfo);
+        if (mNotificationItemView != null && dotInfo != null) {
             mNotificationItemView.updateHeader(
-                    badgeInfo.getNotificationCount(), itemInfo.iconColor);
+                    dotInfo.getNotificationCount(), itemInfo.iconColor);
         }
     }
 
-    public void trimNotifications(Map<PackageUserKey, BadgeInfo> updatedBadges) {
+    @Override
+    public void trimNotifications(Map<PackageUserKey, DotInfo> updatedDots) {
         if (mNotificationItemView == null) {
             return;
         }
         ItemInfo originalInfo = (ItemInfo) mOriginalIcon.getTag();
-        BadgeInfo badgeInfo = updatedBadges.get(PackageUserKey.fromItemInfo(originalInfo));
-        if (badgeInfo == null || badgeInfo.getNotificationKeys().size() == 0) {
+        DotInfo dotInfo = updatedDots.get(PackageUserKey.fromItemInfo(originalInfo));
+        if (dotInfo == null || dotInfo.getNotificationKeys().size() == 0) {
             // No more notifications, remove the notification views and expand all shortcuts.
             mNotificationItemView.removeAllViews();
             mNotificationItemView = null;
@@ -475,7 +523,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
             updateDividers();
         } else {
             mNotificationItemView.trimNotifications(
-                    NotificationKeyData.extractKeysOnly(badgeInfo.getNotificationKeys()));
+                    NotificationKeyData.extractKeysOnly(dotInfo.getNotificationKeys()));
         }
     }
 
@@ -520,14 +568,14 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     protected void onCreateCloseAnimation(AnimatorSet anim) {
         // Animate original icon's text back in.
         anim.play(mOriginalIcon.createTextAlphaAnimator(true /* fadeIn */));
-        mOriginalIcon.forceHideBadge(false);
+        mOriginalIcon.forceHideDot(false);
     }
 
     @Override
     protected void closeComplete() {
         super.closeComplete();
         mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());
-        mOriginalIcon.forceHideBadge(false);
+        mOriginalIcon.forceHideDot(false);
     }
 
     @Override

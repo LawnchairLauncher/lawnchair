@@ -179,7 +179,7 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
 
 
     @Override
-    public boolean onDrag(float displacement, float velocity) {
+    public boolean onDrag(float displacement) {
         setContentTranslation(canChildBeDismissed()
                 ? displacement : OverScroll.dampedScroll(displacement, getWidth()));
         mContentTranslateAnimator.cancel();

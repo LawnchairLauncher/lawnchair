@@ -18,10 +18,11 @@ package com.android.launcher3;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.util.PackageManagerHelper;
+
+import androidx.annotation.NonNull;
 
 public class PromiseAppInfo extends AppInfo {
 
@@ -37,13 +38,13 @@ public class PromiseAppInfo extends AppInfo {
     }
 
     @Override
-    public ShortcutInfo makeShortcut() {
-        ShortcutInfo shortcut = new ShortcutInfo(this);
+    public WorkspaceItemInfo makeWorkspaceItem() {
+        WorkspaceItemInfo shortcut = new WorkspaceItemInfo(this);
         shortcut.setInstallProgress(level);
         // We need to update the component name when the apk is installed
-        shortcut.status |= ShortcutInfo.FLAG_AUTOINSTALL_ICON;
+        shortcut.status |= WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON;
         // Since the user is manually placing it on homescreen, it should not be auto-removed later
-        shortcut.status |= ShortcutInfo.FLAG_RESTORE_STARTED;
+        shortcut.status |= WorkspaceItemInfo.FLAG_RESTORE_STARTED;
         return shortcut;
     }
 

@@ -18,8 +18,10 @@ package com.android.launcher3.shortcuts;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.Toast;
@@ -38,6 +40,10 @@ public class DeepShortcutTextView extends BubbleTextView {
 
     private Toast mInstructionToast;
 
+    private boolean mShowLoadingState;
+    private Drawable mLoadingStatePlaceholder;
+    private final Rect mLoadingStateBounds = new Rect();
+
     public DeepShortcutTextView(Context context) {
         this(context, null, 0);
     }
@@ -53,6 +59,7 @@ public class DeepShortcutTextView extends BubbleTextView {
         mDragHandleWidth = resources.getDimensionPixelSize(R.dimen.popup_padding_end)
                 + resources.getDimensionPixelSize(R.dimen.deep_shortcut_drag_handle_size)
                 + resources.getDimensionPixelSize(R.dimen.deep_shortcut_drawable_padding) / 2;
+        showLoadingState(true);
     }
 
     @Override
@@ -63,11 +70,39 @@ public class DeepShortcutTextView extends BubbleTextView {
         if (!Utilities.isRtl(getResources())) {
             mDragHandleBounds.offset(getMeasuredWidth() - mDragHandleBounds.width(), 0);
         }
+
+        setLoadingBounds();
+    }
+
+    private void setLoadingBounds() {
+        if (mLoadingStatePlaceholder == null) {
+            return;
+        }
+        mLoadingStateBounds.set(
+                0,
+                0,
+                getMeasuredWidth() - mDragHandleWidth - getPaddingStart(),
+                mLoadingStatePlaceholder.getIntrinsicHeight());
+        mLoadingStateBounds.offset(
+                Utilities.isRtl(getResources()) ? mDragHandleWidth : getPaddingStart(),
+                (int) ((getMeasuredHeight() - mLoadingStatePlaceholder.getIntrinsicHeight())
+                        / 2.0f)
+        );
+        mLoadingStatePlaceholder.setBounds(mLoadingStateBounds);
     }
 
     @Override
     protected void applyCompoundDrawables(Drawable icon) {
         // The icon is drawn in a separate view.
+    }
+
+    @Override
+    public void setText(CharSequence text, BufferType type) {
+        super.setText(text, type);
+
+        if (!TextUtils.isEmpty(text)) {
+            showLoadingState(false);
+        }
     }
 
     @Override
@@ -86,6 +121,34 @@ public class DeepShortcutTextView extends BubbleTextView {
             return true;
         }
         return super.performClick();
+    }
+
+    @Override
+    public void onDraw(Canvas canvas) {
+        if (!mShowLoadingState) {
+            super.onDraw(canvas);
+            return;
+        }
+
+        mLoadingStatePlaceholder.draw(canvas);
+    }
+
+    private void showLoadingState(boolean loading) {
+        if (loading == mShowLoadingState) {
+            return;
+        }
+
+        mShowLoadingState = loading;
+
+        if (loading) {
+            mLoadingStatePlaceholder = getContext().getDrawable(
+                    R.drawable.deep_shortcuts_text_placeholder);
+            setLoadingBounds();
+        } else {
+            mLoadingStatePlaceholder = null;
+        }
+
+        invalidate();
     }
 
     private void showToast() {

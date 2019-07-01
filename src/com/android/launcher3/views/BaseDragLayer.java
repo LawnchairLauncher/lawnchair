@@ -16,59 +16,131 @@
 
 package com.android.launcher3.views;
 
-import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
+import static android.view.MotionEvent.ACTION_CANCEL;
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_UP;
 
+import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
+import static com.android.launcher3.Utilities.shouldDisableGestures;
+
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Insets;
 import android.graphics.Rect;
+import android.graphics.RectF;
+import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.Property;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseActivity;
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.TouchController;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 /**
  * A viewgroup with utility methods for drag-n-drop and touch interception
  */
-public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends InsettableFrameLayout {
+public abstract class BaseDragLayer<T extends Context & ActivityContext>
+        extends InsettableFrameLayout {
 
-    protected final int[] mTmpXY = new int[2];
+    public static final Property<LayoutParams, Integer> LAYOUT_X =
+            new Property<LayoutParams, Integer>(Integer.TYPE, "x") {
+                @Override
+                public Integer get(LayoutParams lp) {
+                    return lp.x;
+                }
+
+                @Override
+                public void set(LayoutParams lp, Integer x) {
+                    lp.x = x;
+                }
+            };
+
+    public static final Property<LayoutParams, Integer> LAYOUT_Y =
+            new Property<LayoutParams, Integer>(Integer.TYPE, "y") {
+                @Override
+                public Integer get(LayoutParams lp) {
+                    return lp.y;
+                }
+
+                @Override
+                public void set(LayoutParams lp, Integer y) {
+                    lp.y = y;
+                }
+            };
+
+    // Touch is being dispatched through the normal view dispatch system
+    private static final int TOUCH_DISPATCHING_VIEW = 1 << 0;
+    // Touch is being dispatched through the normal view dispatch system, and started at the
+    // system gesture region
+    private static final int TOUCH_DISPATCHING_GESTURE = 1 << 1;
+    // Touch is being dispatched through a proxy from InputMonitor
+    private static final int TOUCH_DISPATCHING_PROXY = 1 << 2;
+
+    protected final float[] mTmpXY = new float[2];
+    protected final float[] mTmpRectPoints = new float[4];
     protected final Rect mHitRect = new Rect();
+
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private final RectF mSystemGestureRegion = new RectF();
+    private int mTouchDispatchState = 0;
 
     protected final T mActivity;
     private final MultiValueAlpha mMultiValueAlpha;
 
+    // All the touch controllers for the view
     protected TouchController[] mControllers;
+    // Touch controller which is currently active for the normal view dispatch
     protected TouchController mActiveController;
+    // Touch controller which is being used for the proxy events
+    protected TouchController mProxyTouchController;
+
     private TouchCompleteListener mTouchCompleteListener;
 
     public BaseDragLayer(Context context, AttributeSet attrs, int alphaChannelCount) {
         super(context, attrs);
-        mActivity = (T) BaseActivity.fromContext(context);
+        mActivity = (T) ActivityContext.lookupContext(context);
         mMultiValueAlpha = new MultiValueAlpha(this, alphaChannelCount);
     }
 
+    /**
+     * Same as {@link #isEventOverView(View, MotionEvent, View)} where evView == this drag layer.
+     */
     public boolean isEventOverView(View view, MotionEvent ev) {
         getDescendantRectRelativeToSelf(view, mHitRect);
         return mHitRect.contains((int) ev.getX(), (int) ev.getY());
+    }
+
+    /**
+     * Given a motion event in evView's coordinates, return whether the event is within another
+     * view's bounds.
+     */
+    public boolean isEventOverView(View view, MotionEvent ev, View evView) {
+        int[] xy = new int[] {(int) ev.getX(), (int) ev.getY()};
+        getDescendantCoordRelativeToSelf(evView, xy);
+        getDescendantRectRelativeToSelf(view, mHitRect);
+        return mHitRect.contains(xy[0], xy[1]);
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
 
-        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+        if (action == ACTION_UP || action == ACTION_CANCEL) {
             if (mTouchCompleteListener != null) {
                 mTouchCompleteListener.onTouchComplete();
             }
@@ -79,20 +151,30 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
         return findActiveController(ev);
     }
 
-    protected boolean findActiveController(MotionEvent ev) {
-        mActiveController = null;
+    private TouchController findControllerToHandleTouch(MotionEvent ev) {
+        if (shouldDisableGestures(ev)) return null;
 
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
         if (topView != null && topView.onControllerInterceptTouchEvent(ev)) {
-            mActiveController = topView;
-            return true;
+            return topView;
         }
 
         for (TouchController controller : mControllers) {
             if (controller.onControllerInterceptTouchEvent(ev)) {
-                mActiveController = controller;
-                return true;
+                return controller;
             }
+        }
+        return null;
+    }
+
+    protected boolean findActiveController(MotionEvent ev) {
+        mActiveController = null;
+        if ((mTouchDispatchState & (TOUCH_DISPATCHING_GESTURE | TOUCH_DISPATCHING_PROXY)) == 0) {
+            // Only look for controllers if we are not dispatching from gesture area and proxy is
+            // not active
+            mActiveController = findControllerToHandleTouch(ev);
+
+            if (mActiveController != null) return true;
         }
         return false;
     }
@@ -150,8 +232,12 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        if (TestProtocol.sDebugTracing) {
+            android.util.Log.d(TestProtocol.NO_DRAG_TAG,
+                    "onTouchEvent " + ev);
+        }
         int action = ev.getAction();
-        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+        if (action == ACTION_UP || action == ACTION_CANCEL) {
             if (mTouchCompleteListener != null) {
                 mTouchCompleteListener.onTouchComplete();
             }
@@ -159,11 +245,88 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
         }
 
         if (mActiveController != null) {
+            if (TestProtocol.sDebugTracing) {
+                android.util.Log.d(TestProtocol.NO_DRAG_TAG,
+                        "onTouchEvent 1");
+            }
             return mActiveController.onControllerTouchEvent(ev);
         } else {
             // In case no child view handled the touch event, we may not get onIntercept anymore
             return findActiveController(ev);
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_START_TAG, "BaseDragLayer.dispatchTouchEvent " + ev);
+        }
+        switch (ev.getAction()) {
+            case ACTION_DOWN: {
+                float x = ev.getX();
+                float y = ev.getY();
+                mTouchDispatchState |= TOUCH_DISPATCHING_VIEW;
+
+                if ((y < mSystemGestureRegion.top
+                        || x < mSystemGestureRegion.left
+                        || x > (getWidth() - mSystemGestureRegion.right)
+                        || y > (getHeight() - mSystemGestureRegion.bottom))) {
+                    mTouchDispatchState |= TOUCH_DISPATCHING_GESTURE;
+                } else {
+                    mTouchDispatchState &= ~TOUCH_DISPATCHING_GESTURE;
+                }
+                break;
+            }
+            case ACTION_CANCEL:
+            case ACTION_UP:
+                mTouchDispatchState &= ~TOUCH_DISPATCHING_GESTURE;
+                mTouchDispatchState &= ~TOUCH_DISPATCHING_VIEW;
+                break;
+        }
+        super.dispatchTouchEvent(ev);
+
+        // We want to get all events so that mTouchDispatchSource is maintained properly
+        return true;
+    }
+
+    /**
+     * Called before we are about to receive proxy events.
+     *
+     * @return false if we can't handle proxy at this time
+     */
+    public boolean prepareProxyEventStarting() {
+        mProxyTouchController = null;
+        if ((mTouchDispatchState & TOUCH_DISPATCHING_VIEW) != 0 && mActiveController != null) {
+            // We are already dispatching using view system and have an active controller, we can't
+            // handle another controller.
+
+            // This flag was already cleared in proxy ACTION_UP or ACTION_CANCEL. Added here just
+            // to be safe
+            mTouchDispatchState &= ~TOUCH_DISPATCHING_PROXY;
+            return false;
+        }
+
+        mTouchDispatchState |= TOUCH_DISPATCHING_PROXY;
+        return true;
+    }
+
+    /**
+     * Proxies the touch events to the gesture handlers
+     */
+    public boolean proxyTouchEvent(MotionEvent ev) {
+        boolean handled;
+        if (mProxyTouchController != null) {
+            handled = mProxyTouchController.onControllerTouchEvent(ev);
+        } else {
+            mProxyTouchController = findControllerToHandleTouch(ev);
+            handled = mProxyTouchController != null;
+        }
+        int action = ev.getAction();
+        if (action == ACTION_UP || action == ACTION_CANCEL) {
+            mProxyTouchController = null;
+            mTouchDispatchState &= ~TOUCH_DISPATCHING_PROXY;
+        }
+        return handled;
     }
 
     /**
@@ -174,14 +337,16 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
      * @return The factor by which this descendant is scaled relative to this DragLayer.
      */
     public float getDescendantRectRelativeToSelf(View descendant, Rect r) {
-        mTmpXY[0] = 0;
-        mTmpXY[1] = 0;
-        float scale = getDescendantCoordRelativeToSelf(descendant, mTmpXY);
-
-        r.set(mTmpXY[0], mTmpXY[1],
-                (int) (mTmpXY[0] + scale * descendant.getMeasuredWidth()),
-                (int) (mTmpXY[1] + scale * descendant.getMeasuredHeight()));
-        return scale;
+        mTmpRectPoints[0] = 0;
+        mTmpRectPoints[1] = 0;
+        mTmpRectPoints[2] = descendant.getWidth();
+        mTmpRectPoints[3] = descendant.getHeight();
+        float s = getDescendantCoordRelativeToSelf(descendant, mTmpRectPoints);
+        r.left = Math.round(Math.min(mTmpRectPoints[0], mTmpRectPoints[2]));
+        r.top = Math.round(Math.min(mTmpRectPoints[1], mTmpRectPoints[3]));
+        r.right = Math.round(Math.max(mTmpRectPoints[0], mTmpRectPoints[2]));
+        r.bottom = Math.round(Math.max(mTmpRectPoints[1], mTmpRectPoints[3]));
+        return s;
     }
 
     public float getLocationInDragLayer(View child, int[] loc) {
@@ -191,6 +356,14 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
     }
 
     public float getDescendantCoordRelativeToSelf(View descendant, int[] coord) {
+        mTmpXY[0] = coord[0];
+        mTmpXY[1] = coord[1];
+        float scale = getDescendantCoordRelativeToSelf(descendant, mTmpXY);
+        Utilities.roundArray(mTmpXY, coord);
+        return scale;
+    }
+
+    public float getDescendantCoordRelativeToSelf(View descendant, float[] coord) {
         return getDescendantCoordRelativeToSelf(descendant, coord, false);
     }
 
@@ -206,17 +379,27 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
      *         this scale factor is assumed to be equal in X and Y, and so if at any point this
      *         assumption fails, we will need to return a pair of scale factors.
      */
-    public float getDescendantCoordRelativeToSelf(View descendant, int[] coord,
+    public float getDescendantCoordRelativeToSelf(View descendant, float[] coord,
             boolean includeRootScroll) {
         return Utilities.getDescendantCoordRelativeToAncestor(descendant, this,
                 coord, includeRootScroll);
     }
 
     /**
+     * Inverse of {@link #getDescendantCoordRelativeToSelf(View, float[])}.
+     */
+    public void mapCoordInSelfToDescendant(View descendant, float[] coord) {
+        Utilities.mapCoordInSelfToDescendant(descendant, this, coord);
+    }
+
+    /**
      * Inverse of {@link #getDescendantCoordRelativeToSelf(View, int[])}.
      */
     public void mapCoordInSelfToDescendant(View descendant, int[] coord) {
-        Utilities.mapCoordInSelfToDescendant(descendant, this, coord);
+        mTmpXY[0] = coord[0];
+        mTmpXY[1] = coord[1];
+        Utilities.mapCoordInSelfToDescendant(descendant, this, mTmpXY);
+        Utilities.roundArray(mTmpXY, coord);
     }
 
     public void getViewRectRelativeToSelf(View v, Rect r) {
@@ -293,6 +476,15 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
         return mMultiValueAlpha.getProperty(index);
     }
 
+    public void dump(String prefix, PrintWriter writer) {
+        writer.println(prefix + "DragLayer");
+        if (mActiveController != null) {
+            writer.println(prefix + "\tactiveController: " + mActiveController);
+            mActiveController.dump(prefix + "\t", writer);
+        }
+        writer.println(prefix + "\tdragLayerAlpha : " + mMultiValueAlpha );
+    }
+
     public static class LayoutParams extends InsettableFrameLayout.LayoutParams {
         public int x, y;
         public boolean customPosition = false;
@@ -307,38 +499,6 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
 
         public LayoutParams(ViewGroup.LayoutParams lp) {
             super(lp);
-        }
-
-        public void setWidth(int width) {
-            this.width = width;
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public void setHeight(int height) {
-            this.height = height;
-        }
-
-        public int getHeight() {
-            return height;
-        }
-
-        public void setX(int x) {
-            this.x = x;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public void setY(int y) {
-            this.y = y;
-        }
-
-        public int getY() {
-            return y;
         }
     }
 
@@ -355,5 +515,16 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
                 }
             }
         }
+    }
+
+    @Override
+    @TargetApi(Build.VERSION_CODES.Q)
+    public WindowInsets dispatchApplyWindowInsets(WindowInsets insets) {
+        if (Utilities.ATLEAST_Q) {
+            Insets gestureInsets = insets.getMandatorySystemGestureInsets();
+            mSystemGestureRegion.set(gestureInsets.left, gestureInsets.top,
+                    gestureInsets.right, gestureInsets.bottom);
+        }
+        return super.dispatchApplyWindowInsets(insets);
     }
 }

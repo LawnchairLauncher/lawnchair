@@ -17,21 +17,19 @@
 package com.android.launcher3.popup;
 
 import android.content.ComponentName;
+import android.content.pm.ShortcutInfo;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.service.notification.StatusBarNotification;
-import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutView;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
@@ -39,6 +37,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 /**
  * Contains logic relevant to populating a {@link PopupContainerWithArrow}. In particular,
@@ -53,10 +54,10 @@ public class PopupPopulator {
     /**
      * Sorts shortcuts in rank order, with manifest shortcuts coming before dynamic shortcuts.
      */
-    private static final Comparator<ShortcutInfoCompat> SHORTCUT_RANK_COMPARATOR
-            = new Comparator<ShortcutInfoCompat>() {
+    private static final Comparator<ShortcutInfo> SHORTCUT_RANK_COMPARATOR
+            = new Comparator<ShortcutInfo>() {
         @Override
-        public int compare(ShortcutInfoCompat a, ShortcutInfoCompat b) {
+        public int compare(ShortcutInfo a, ShortcutInfo b) {
             if (a.isDeclaredInManifest() && !b.isDeclaredInManifest()) {
                 return -1;
             }
@@ -75,11 +76,11 @@ public class PopupPopulator {
      * @param shortcutIdToRemoveFirst An id that should be filtered out first, if any.
      * @return a subset of shortcuts, in sorted order, with size <= MAX_SHORTCUTS.
      */
-    public static List<ShortcutInfoCompat> sortAndFilterShortcuts(
-            List<ShortcutInfoCompat> shortcuts, @Nullable String shortcutIdToRemoveFirst) {
+    public static List<ShortcutInfo> sortAndFilterShortcuts(
+            List<ShortcutInfo> shortcuts, @Nullable String shortcutIdToRemoveFirst) {
         // Remove up to one specific shortcut before sorting and doing somewhat fancy filtering.
         if (shortcutIdToRemoveFirst != null) {
-            Iterator<ShortcutInfoCompat> shortcutIterator = shortcuts.iterator();
+            Iterator<ShortcutInfo> shortcutIterator = shortcuts.iterator();
             while (shortcutIterator.hasNext()) {
                 if (shortcutIterator.next().getId().equals(shortcutIdToRemoveFirst)) {
                     shortcutIterator.remove();
@@ -95,11 +96,11 @@ public class PopupPopulator {
 
         // The list of shortcuts is now sorted with static shortcuts followed by dynamic
         // shortcuts. We want to preserve this order, but only keep MAX_SHORTCUTS.
-        List<ShortcutInfoCompat> filteredShortcuts = new ArrayList<>(MAX_SHORTCUTS);
+        List<ShortcutInfo> filteredShortcuts = new ArrayList<>(MAX_SHORTCUTS);
         int numDynamic = 0;
         int size = shortcuts.size();
         for (int i = 0; i < size; i++) {
-            ShortcutInfoCompat shortcut = shortcuts.get(i);
+            ShortcutInfo shortcut = shortcuts.get(i);
             int filteredSize = filteredShortcuts.size();
             if (filteredSize < MAX_SHORTCUTS) {
                 // Always add the first MAX_SHORTCUTS to the filtered list.
@@ -123,7 +124,7 @@ public class PopupPopulator {
 
     public static Runnable createUpdateRunnable(final Launcher launcher, final ItemInfo originalInfo,
             final Handler uiHandler, final PopupContainerWithArrow container,
-            final List<String> shortcutIds, final List<DeepShortcutView> shortcutViews,
+            final List<DeepShortcutView> shortcutViews,
             final List<NotificationKeyData> notificationKeys) {
         final ComponentName activity = originalInfo.getTargetComponent();
         final UserHandle user = originalInfo.user;
@@ -139,17 +140,17 @@ public class PopupPopulator {
                 uiHandler.post(() -> container.applyNotificationInfos(infos));
             }
 
-            List<ShortcutInfoCompat> shortcuts = DeepShortcutManager.getInstance(launcher)
-                    .queryForShortcutsContainer(activity, shortcutIds, user);
+            List<ShortcutInfo> shortcuts = DeepShortcutManager.getInstance(launcher)
+                    .queryForShortcutsContainer(activity, user);
             String shortcutIdToDeDupe = notificationKeys.isEmpty() ? null
                     : notificationKeys.get(0).shortcutId;
             shortcuts = PopupPopulator.sortAndFilterShortcuts(shortcuts, shortcutIdToDeDupe);
             for (int i = 0; i < shortcuts.size() && i < shortcutViews.size(); i++) {
-                final ShortcutInfoCompat shortcut = shortcuts.get(i);
-                final ShortcutInfo si = new ShortcutInfo(shortcut, launcher);
+                final ShortcutInfo shortcut = shortcuts.get(i);
+                final WorkspaceItemInfo si = new WorkspaceItemInfo(shortcut, launcher);
                 // Use unbadged icon for the menu.
                 LauncherIcons li = LauncherIcons.obtain(launcher);
-                li.createShortcutIcon(shortcut, false /* badged */).applyTo(si);
+                si.applyFrom(li.createShortcutIcon(shortcut, false /* badged */));
                 li.recycle();
                 si.rank = i;
 

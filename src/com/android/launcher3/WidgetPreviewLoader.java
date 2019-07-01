@@ -24,16 +24,18 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.CancellationSignal;
 import android.os.Handler;
+import android.os.Process;
 import android.os.UserHandle;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.LongSparseArray;
 
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.graphics.LauncherIcons;
-import com.android.launcher3.graphics.ShadowGenerator;
+import com.android.launcher3.icons.GraphicsUtils;
+import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.icons.ShadowGenerator;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
@@ -50,6 +52,8 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+
+import androidx.annotation.Nullable;
 
 public class WidgetPreviewLoader {
 
@@ -70,7 +74,6 @@ public class WidgetPreviewLoader {
     private final Context mContext;
     private final IconCache mIconCache;
     private final UserManagerCompat mUserManager;
-    private final AppWidgetManagerCompat mWidgetManager;
     private final CacheDb mDb;
 
     private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
@@ -79,7 +82,6 @@ public class WidgetPreviewLoader {
     public WidgetPreviewLoader(Context context, IconCache iconCache) {
         mContext = context;
         mIconCache = iconCache;
-        mWidgetManager = AppWidgetManagerCompat.getInstance(context);
         mUserManager = UserManagerCompat.getInstance(context);
         mDb = new CacheDb(context);
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
@@ -104,6 +106,10 @@ public class WidgetPreviewLoader {
         return signal;
     }
 
+    public void refresh() {
+        mDb.clear();
+
+    }
     /**
      * The DB holds the generated previews for various components. Previews can also have different
      * sizes (landscape vs portrait).
@@ -147,7 +153,7 @@ public class WidgetPreviewLoader {
         values.put(CacheDb.COLUMN_PACKAGE, key.componentName.getPackageName());
         values.put(CacheDb.COLUMN_VERSION, versions[0]);
         values.put(CacheDb.COLUMN_LAST_UPDATED, versions[1]);
-        values.put(CacheDb.COLUMN_PREVIEW_BITMAP, Utilities.flattenBitmap(preview));
+        values.put(CacheDb.COLUMN_PREVIEW_BITMAP, GraphicsUtils.flattenBitmap(preview));
         mDb.insertOrReplace(values);
     }
 
@@ -471,8 +477,9 @@ public class WidgetPreviewLoader {
         RectF boxRect = drawBoxWithShadow(c, size, size);
 
         LauncherIcons li = LauncherIcons.obtain(mContext);
-        Bitmap icon = li.createScaledBitmapWithoutShadow(
-                mutateOnMainThread(info.getFullResIcon(mIconCache)), 0);
+        Bitmap icon = li.createBadgedIconBitmap(
+                mutateOnMainThread(info.getFullResIcon(mIconCache)),
+                Process.myUserHandle(), 0).icon;
         li.recycle();
 
         Rect src = new Rect(0, 0, icon.getWidth(), icon.getHeight());

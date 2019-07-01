@@ -18,10 +18,16 @@ package com.android.launcher3.uioverrides;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentSender;
+import android.os.Bundle;
 import android.os.CancellationSignal;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.util.TouchController;
 
 import java.io.PrintWriter;
@@ -33,7 +39,9 @@ public class UiFactory {
                 launcher.getDragController(), new AllAppsSwipeController(launcher)};
     }
 
-    public static void setOnTouchControllersChangedListener(Context context, Runnable listener) { }
+    public static Runnable enableLiveUIChanges(Launcher l) {
+        return null;
+    }
 
     public static StateHandler[] getStateHandler(Launcher launcher) {
         return new StateHandler[] {
@@ -61,7 +69,30 @@ public class UiFactory {
         return false;
     }
 
-    public static void prepareToShowOverview(Launcher launcher) { }
-
     public static void setBackButtonAlpha(Launcher launcher, float alpha, boolean animate) { }
+
+
+    public static ScaleAndTranslation getOverviewScaleAndTranslationForNormalState(Launcher l) {
+        return new ScaleAndTranslation(1.1f, 0f, 0f);
+    }
+
+    public static RotationMode getRotationMode(DeviceProfile dp) {
+        return RotationMode.NORMAL;
+    }
+
+    public static boolean startIntentSenderForResult(Activity activity, IntentSender intent,
+            int requestCode, Intent fillInIntent, int flagsMask, int flagsValues, int extraFlags,
+            Bundle options) {
+        return false;
+    }
+
+    public static boolean startActivityForResult(Activity activity, Intent intent, int requestCode,
+            Bundle options) {
+        return false;
+    }
+
+    public static void resetPendingActivityResults(Launcher launcher, int requestCode) { }
+
+    public static void clearSwipeSharedState(boolean finishAnimation) {}
+
 }

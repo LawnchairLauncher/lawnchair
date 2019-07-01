@@ -17,6 +17,8 @@
 
 package com.android.launcher3.graphics;
 
+import static com.android.launcher3.graphics.IconShape.DEFAULT_PATH_SIZE;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -54,8 +56,6 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
                     object.setInternalProgress(value);
                 }
             };
-
-    public static final int PATH_SIZE = 100;
 
     private static final float PROGRESS_WIDTH = 7;
     private static final float PROGRESS_GAP = 2;
@@ -123,14 +123,14 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
         mTmpMatrix.setScale(
-                (bounds.width() - 2 * PROGRESS_WIDTH - 2 * PROGRESS_GAP) / PATH_SIZE,
-                (bounds.height() - 2 * PROGRESS_WIDTH - 2 * PROGRESS_GAP) / PATH_SIZE);
+                (bounds.width() - 2 * PROGRESS_WIDTH - 2 * PROGRESS_GAP) / DEFAULT_PATH_SIZE,
+                (bounds.height() - 2 * PROGRESS_WIDTH - 2 * PROGRESS_GAP) / DEFAULT_PATH_SIZE);
         mTmpMatrix.postTranslate(
                 bounds.left + PROGRESS_WIDTH + PROGRESS_GAP,
                 bounds.top + PROGRESS_WIDTH + PROGRESS_GAP);
 
         mProgressPath.transform(mTmpMatrix, mScaledTrackPath);
-        float scale = bounds.width() / PATH_SIZE;
+        float scale = bounds.width() / DEFAULT_PATH_SIZE;
         mProgressPaint.setStrokeWidth(PROGRESS_WIDTH * scale);
 
         mShadowBitmap = getShadowBitmap(bounds.width(), bounds.height(),

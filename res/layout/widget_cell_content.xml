@@ -34,7 +34,6 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:fadingEdge="horizontal"
-            android:fontFamily="sans-serif-condensed"
             android:gravity="start"
             android:singleLine="true"
             android:maxLines="1"
@@ -51,7 +50,6 @@
             android:layout_marginLeft="5dp"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="14sp"
-            android:fontFamily="sans-serif-condensed"
             android:alpha="0.8" />
     </LinearLayout>
 

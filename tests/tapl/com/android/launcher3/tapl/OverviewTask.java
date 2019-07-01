@@ -16,50 +16,62 @@
 
 package com.android.launcher3.tapl;
 
-import android.support.test.uiautomator.Direction;
-import android.support.test.uiautomator.UiObject2;
-import android.support.test.uiautomator.Until;
+import android.graphics.Rect;
+
+import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.Until;
+
+import com.android.launcher3.testing.TestProtocol;
 
 /**
  * A recent task in the overview panel carousel.
  */
 public final class OverviewTask {
-    private final Launcher mLauncher;
+    private static final long WAIT_TIME_MS = 60000;
+    private final LauncherInstrumentation mLauncher;
     private final UiObject2 mTask;
+    private final BaseOverview mOverview;
 
-    OverviewTask(Launcher launcher, UiObject2 task) {
+    OverviewTask(LauncherInstrumentation launcher, UiObject2 task, BaseOverview overview) {
         mLauncher = launcher;
-        assertState();
         mTask = task;
+        mOverview = overview;
+        verifyActiveContainer();
     }
 
-    /**
-     * Asserts that we are in overview.
-     *
-     * @return Overview panel.
-     */
-    private void assertState() {
-        mLauncher.assertState(Launcher.State.OVERVIEW);
+    private void verifyActiveContainer() {
+        mOverview.verifyActiveContainer();
     }
 
     /**
      * Swipes the task up.
      */
     public void dismiss() {
-        assertState();
-        // Dismiss the task via flinging it up.
-        mTask.fling(Direction.DOWN);
-        mLauncher.waitForIdle();
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to dismiss a task")) {
+            verifyActiveContainer();
+            // Dismiss the task via flinging it up.
+            final Rect taskBounds = mTask.getVisibleBounds();
+            final int centerX = taskBounds.centerX();
+            final int centerY = taskBounds.centerY();
+            mLauncher.linearGesture(centerX, centerY, centerX, 0, 10);
+            mLauncher.waitForIdle();
+        }
     }
 
     /**
      * Clicks at the task.
      */
-    public void open() {
-        assertState();
-        mLauncher.assertTrue("Launching task didn't open a new window: " +
-                        mTask.getParent().getContentDescription(),
-                mTask.clickAndWait(Until.newWindow(), Launcher.APP_LAUNCH_TIMEOUT_MS));
-        mLauncher.assertState(Launcher.State.BACKGROUND);
+    public Background open() {
+        verifyActiveContainer();
+        mLauncher.getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "clicking an overview task")) {
+            mLauncher.assertTrue("Launching task didn't open a new window: " +
+                            mTask.getParent().getContentDescription(),
+                    mTask.clickAndWait(Until.newWindow(), WAIT_TIME_MS));
+        }
+        mLauncher.getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
+        return new Background(mLauncher);
     }
 }

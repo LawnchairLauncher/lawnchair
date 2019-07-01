@@ -16,6 +16,8 @@
 
 package com.android.launcher3.folder;
 
+import android.util.Log;
+
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.InvariantDeviceProfile;
 
@@ -26,14 +28,20 @@ import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_I
  */
 public class FolderIconPreviewVerifier {
 
+    private static final String TAG = "FolderPreviewVerifier";
+
     private final int mMaxGridCountX;
     private final int mMaxGridCountY;
     private final int mMaxItemsPerPage;
-    private final int[] mGridSize = new int[2];
+    private final int[] mGridSize = new int[] { 1, 1 };
 
+    private int mNumItemsInFolder;
     private int mGridCountX;
     private boolean mDisplayingUpperLeftQuadrant = false;
 
+    /**
+     * Note: must call {@link #setFolderInfo(FolderInfo)} manually for verifier to work.
+     */
     public FolderIconPreviewVerifier(InvariantDeviceProfile profile) {
         mMaxGridCountX = profile.numFolderColumns;
         mMaxGridCountY = profile.numFolderRows;
@@ -42,11 +50,14 @@ public class FolderIconPreviewVerifier {
 
     public void setFolderInfo(FolderInfo info) {
         int numItemsInFolder = info.contents.size();
-        FolderPagedView.calculateGridSize(numItemsInFolder, 0, 0, mMaxGridCountX,
-                mMaxGridCountY, mMaxItemsPerPage, mGridSize);
-        mGridCountX = mGridSize[0];
+        if (numItemsInFolder != mNumItemsInFolder) {
+            FolderPagedView.calculateGridSize(numItemsInFolder, 0, 0, mMaxGridCountX,
+                    mMaxGridCountY, mMaxItemsPerPage, mGridSize);
+            mGridCountX = mGridSize[0];
 
-        mDisplayingUpperLeftQuadrant = numItemsInFolder > MAX_NUM_ITEMS_IN_PREVIEW;
+            mDisplayingUpperLeftQuadrant = numItemsInFolder > MAX_NUM_ITEMS_IN_PREVIEW;
+            mNumItemsInFolder = numItemsInFolder;
+        }
     }
 
     /**
@@ -62,6 +73,10 @@ public class FolderIconPreviewVerifier {
      * @return True iff the icon is in the 2x2 upper left quadrant of the Folder.
      */
     public boolean isItemInPreview(int page, int rank) {
+        if (mGridSize[0] == 1) {
+            Log.w(TAG, "setFolderInfo not called before checking if item is in preview.");
+        }
+
         // First page items are laid out such that the first 4 items are always in the upper
         // left quadrant. For all other pages, we need to check the row and col.
         if (page > 0 || mDisplayingUpperLeftQuadrant) {

@@ -16,77 +16,26 @@
 
 package com.android.launcher3.tapl;
 
-import android.graphics.Point;
-import android.support.annotation.NonNull;
-import android.support.test.uiautomator.Direction;
-import android.support.test.uiautomator.UiObject2;
+import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
 
-import java.util.Collections;
-import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.test.uiautomator.UiObject2;
+
+import com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
 
 /**
  * Overview pane.
  */
-public final class Overview {
-    private static final int DEFAULT_FLING_SPEED = 15000;
+public final class Overview extends BaseOverview {
 
-    private final Launcher mLauncher;
-
-    Overview(Launcher launcher) {
-        mLauncher = launcher;
-        assertState();
+    Overview(LauncherInstrumentation launcher) {
+        super(launcher);
+        verifyActiveContainer();
     }
 
-    /**
-     * Asserts that we are in overview.
-     *
-     * @return Overview panel.
-     */
-    @NonNull
-    private UiObject2 assertState() {
-        return mLauncher.assertState(Launcher.State.OVERVIEW);
-    }
-
-    /**
-     * Flings forward (left) and waits the fling's end.
-     */
-    public void flingForward() {
-        final UiObject2 overview = assertState();
-        overview.fling(Direction.LEFT, DEFAULT_FLING_SPEED);
-        mLauncher.waitForIdle();
-        assertState();
-    }
-
-    /**
-     * Flings backward (right) and waits the fling's end.
-     */
-    public void flingBackward() {
-        final UiObject2 overview = assertState();
-        overview.fling(Direction.RIGHT, DEFAULT_FLING_SPEED);
-        mLauncher.waitForIdle();
-        assertState();
-    }
-
-    /**
-     * Gets the current task in the carousel, or fails if the carousel is empty.
-     *
-     * @return the task in the middle of the visible tasks list.
-     */
-    @NonNull
-    public OverviewTask getCurrentTask() {
-        assertState();
-        final List<UiObject2> taskViews = mLauncher.getDevice().findObjects(
-                Launcher.getLauncherObjectSelector("snapshot"));
-        mLauncher.assertNotEquals("Unable to find a task", 0, taskViews.size());
-
-        // taskViews contains up to 3 task views: the 'main' (having the widest visible
-        // part) one in the center, and parts of its right and left siblings. Find the
-        // main task view by its width.
-        final UiObject2 widestTask = Collections.max(taskViews,
-                (t1, t2) -> Integer.compare(t1.getVisibleBounds().width(),
-                        t2.getVisibleBounds().width()));
-
-        return new OverviewTask(mLauncher, widestTask);
+    @Override
+    protected ContainerType getContainerType() {
+        return LauncherInstrumentation.ContainerType.OVERVIEW;
     }
 
     /**
@@ -96,16 +45,22 @@ public final class Overview {
      */
     @NonNull
     public AllAppsFromOverview switchToAllApps() {
-        assertState();
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to switch from overview to all apps")) {
+            verifyActiveContainer();
 
-        // Swipe from the hotseat to near the top, e.g. 10% of the screen.
-        final UiObject2 predictionRow = mLauncher.waitForLauncherObject(
-                "prediction_row");
-        final Point start = predictionRow.getVisibleCenter();
-        final int endY = (int) (mLauncher.getDevice().getDisplayHeight() * 0.1f);
-        mLauncher.swipe(
-                start.x, start.y, start.x, endY, (start.y - endY) / 100); // 100 px/step
+            // Swipe from an app icon to the top.
+            LauncherInstrumentation.log("Overview.switchToAllApps before swipe");
+            final UiObject2 allApps = mLauncher.waitForLauncherObject("apps_view");
+            mLauncher.swipeToState(mLauncher.getDevice().getDisplayWidth() / 2,
+                    allApps.getVisibleBounds().top,
+                    mLauncher.getDevice().getDisplayWidth() / 2,
+                    0, 50, ALL_APPS_STATE_ORDINAL);
 
-        return new AllAppsFromOverview(mLauncher);
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "swiped all way up from overview")) {
+                return new AllAppsFromOverview(mLauncher);
+            }
+        }
     }
 }
