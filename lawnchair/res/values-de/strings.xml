@@ -489,4 +489,12 @@
     <string name="tab_type_custom_desc">Apps für diesen Tab manuell auswählen</string>
     <string name="tab_type_smart">Smarter Tab</string>
     <string name="categorization">Kategorisierung</string>
+    <string name="folder_cover_mode">Cover-Modus</string>
+    <string name="folder_cover_mode_desc">Tippe zum Öffnen der ersten App, hochwischen zum Öffnen des Ordners</string>
+    <string name="pref_smartspace_event_providers">Ereignisquellen</string>
+    <string name="event_provider_now_playing">Aktuelle Wiedergabe</string>
+    <string name="battery_status">Batterie-Status</string>
+    <string name="battery_charging">Batterie lädt</string>
+    <string name="battery_low">Batterie fast leer</string>
+    <string name="event_provider_unread_notifications">Ungelesene Benachrichtigungen</string>
 </resources>
