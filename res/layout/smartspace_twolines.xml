@@ -99,7 +99,6 @@
             android:paddingTop="4dp"
             android:textColor="?workspaceTextColor"
             android:textSize="16dp"
-            android:inputType="textNoSuggestions"
             launcher:ambientShadowBlur="3dp"
             launcher:ambientShadowColor="?workspaceAmbientShadowColor"
             launcher:keyShadowBlur="2dp"
