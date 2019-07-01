@@ -230,4 +230,9 @@ public final class FallbackActivityControllerHelper implements
         // TODO: probably go back to overview instead.
         activity.<RecentsView>getOverviewPanel().startHome();
     }
+
+    @Override
+    public void onLaunchTaskSuccess(RecentsActivity activity) {
+        activity.onTaskLaunched();
+    }
 }
