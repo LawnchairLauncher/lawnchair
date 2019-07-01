@@ -71,25 +71,25 @@
     <string name="full_width_widgets_pref_summary">Дозволити віджетам розтягуватись до країв екрану</string>
     <string name="full_width_width_widgets_pref_title">Розширити віджети</string>
     <string name="hide_apps">Приховати додатки</string>
-    <string name="hide_apps_sum">Прибрати додатки зі списку додатків</string>
+    <string name="hide_apps_sum">Прибрати додатки зі списку</string>
     <string name="grid_size">Розмір сітки</string>
     <string name="developer_options_title">Параметри розробника</string>
     <string name="developer_options_enabled">Параметри розробника ввімкнені</string>
     <string name="restart_lawnchair_pref_title">Перезавантажити</string>
     <string name="restart_lawnchair_pref_summary">Знову застосувати налаштування</string>
-    <string name="show_debug_info_pref_title">Показати імена компонентів</string>
+    <string name="show_debug_info_pref_title">Показати назви компонентів</string>
     <string name="debug_component_name">Назва компоненту</string>
     <string name="debug_component_name_copied">Скопійовано</string>
     <string name="read_external_storage_required">Щоб зберегти резервну копію, надайте доступ до сховища</string>
     <string name="local_backups">Резервна копія в сховищі</string>
-    <string name="backup_location_device_storage">Папка Lawnchair</string>
+    <string name="backup_location_device_storage">Тека Lawnchair</string>
     <string name="grid_size_height">Висота</string>
     <string name="grid_size_width">Ширина</string>
     <string name="launcher_theme_override_label">Використовувати темну тему</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="blur_pref_title">Увімкнути розмиття</string>
     <string name="blur_pref_summary">Ефект розмиття для списку додатків, док-бару, налаштування фону</string>
-    <string name="blur_radius_pref_title">Сила розмиття</string>
+    <string name="blur_radius_pref_title">Інтенсивність розмиття</string>
     <!--Marker B-->
     <string name="dock_colored_google">Кольорові значки</string>
     <string name="hotseat_show_arrow">Стрілка</string>
@@ -102,10 +102,10 @@
     <string name="opacity">Прозорість</string>
     <string name="title_all_apps_google_search">Глобальний пошук</string>
     <string name="summary_all_apps_google_search">Знаходити веб результати і додатки</string>
-    <string name="num_hotseat_icons_pref_title">Кількість іконок</string>
-    <string name="icon_scale_pref_title">Розмір іконок</string>
-    <string name="add_settings_shortcut_title">Додати налаштування іконок на домашній екран</string>
-    <string name="icon_pack_default">Системні іконки</string>
+    <string name="num_hotseat_icons_pref_title">Кількість значків</string>
+    <string name="icon_scale_pref_title">Розмір значків</string>
+    <string name="add_settings_shortcut_title">Додати значок налаштування на домашній екран</string>
+    <string name="icon_pack_default">Системні значки</string>
     <string name="loading">Завантаження...</string>
     <string name="low_performance_mode_pref_title">Режим низької продуктивності</string>
     <string name="title_storage_permission_required">Потрібен дозвіл на доступ до пам\'яті пристрою</string>
@@ -492,4 +492,12 @@
     <string name="tab_type_custom_desc">Вручну виберіть додатки для цієї вкладки.</string>
     <string name="tab_type_smart">Розумна вкладка</string>
     <string name="categorization">Категоризація</string>
+    <string name="folder_cover_mode">Режим обкладинки медіа</string>
+    <string name="folder_cover_mode_desc">Доторкніться, щоб відкрити перший додаток, проведіть пальцем вгору, щоб відкрити теку</string>
+    <string name="pref_smartspace_event_providers">Джерела подій</string>
+    <string name="event_provider_now_playing">Відтворюється</string>
+    <string name="battery_status">Стан акумулятора</string>
+    <string name="battery_charging">Заряджання акумулятора</string>
+    <string name="battery_low">Низький заряд батареї</string>
+    <string name="event_provider_unread_notifications">Непрочитані сповіщення</string>
 </resources>
