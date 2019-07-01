@@ -486,4 +486,12 @@
     <string name="tab_type_custom_desc">เลือกแอปสำหรับแท็บนี้ด้วยตัวคุณเอง</string>
     <string name="tab_type_smart">แท็บอัจฉริยะ</string>
     <string name="categorization">การจัดหมวดหมู่</string>
+    <string name="folder_cover_mode">เปิดใช้ปก</string>
+    <string name="folder_cover_mode_desc">แตะเพื่อเปิดแอปแรก, ปัดขึ้นเพื่อเปิดโฟลเดอร์</string>
+    <string name="pref_smartspace_event_providers">แหล่งที่มาของกิจกรรม</string>
+    <string name="event_provider_now_playing">กำลังเล่น</string>
+    <string name="battery_status">สถานะแบตเตอรี่</string>
+    <string name="battery_charging">กำลังชาร์จแบตเตอรี่</string>
+    <string name="battery_low">แบตเตอรี่ต่ำ</string>
+    <string name="event_provider_unread_notifications">การแจ้งเตือนที่ยังไม่ได้อ่าน</string>
 </resources>
