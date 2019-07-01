@@ -322,7 +322,7 @@
     <string name="app_actions_pref_title">الاجراءت</string>
     <string name="app_actions_pref_title_in_search">إقتراحات الإجراء</string>
     <string name="app_actions_pref_desc">إختصارات للشاشات المفتوحة باستمرار</string>
-    <string name="change_default_home">تعيين كـ لانشر إفتراضي</string>
+    <string name="change_default_home">تعيين كـ مُشغل افتراضي</string>
     <string name="recent_task_option_popup_window">نافذة الحوار</string>
     <string name="feed_theme_pref_title">لون الخلفية</string>
     <string name="recents_not_connected">الخدمة غير متصلة</string>
@@ -393,7 +393,7 @@
     <string name="search_provider_qwant">Qwant</string>
     <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">طقس OnePlus</string>
-    <string name="overlap_placement">الوضع متداخل</string>
+    <string name="overlap_placement">الوضع المتداخل</string>
     <string name="overlap_placement_summary">السماح للايقونات والأدوات بالتداخل فيما بينها.</string>
     <string name="units_rakine">رانكين</string>
     <string name="units_newton">نيوتن</string>
@@ -437,9 +437,9 @@
     <string name="pref_center_wallpaper_summary">سيؤدي هذا إلى تعطيل تأثير التمرير للخلفية</string>
     <string name="pref_icon_popup_menu">عناصر القائمة المنبثقة</string>
     <string name="pref_appcategorization_enable_title">تصنيف التطبيقات</string>
-    <string name="pref_appcategorization_enable_summary">إصلاح فوضى درج التطبيقات.</string>
+    <string name="pref_appcategorization_enable_summary">إصلح فوضى درج التطبيقات الخاص بي.</string>
     <string name="pref_appcategorization_style_text">النمط</string>
-    <string name="pref_app_groups_edit_tip">انقر للتحرير ، واسحب لإعادة الترتيب.</string>
+    <string name="pref_app_groups_edit_tip">انقر للتحرير، إسحب لإعادة الترتيب.</string>
     <string name="pref_app_groups_create">إنشاء</string>
     <string name="pref_appcategorization_folders_title">المجلدات</string>
     <string name="pref_appcategorization_folders_summary">انقر لفتح النافذة المنبثقة.</string>
@@ -496,4 +496,13 @@
     <string name="tab_type_custom_desc">اختر التطبيقات يدويًا لعلامة التبويب هذه.</string>
     <string name="tab_type_smart">تبويب ذكي</string>
     <string name="categorization">التصنيفات</string>
+    <string name="folder_cover_mode">وضع الغلاف</string>
+    <string name="folder_cover_mode_desc">انقر لفتح التطبيق الأول، إسحب لفتح المجلد</string>
+    <string name="pref_smartspace_event_providers">مصادر الأحداث</string>
+    <string name="event_provider_now_playing">الأن يتم التشغيل</string>
+    <string name="battery_status">حالة البطارية</string>
+    <string name="battery_charging">يتم شحن البطارية</string>
+    <string name="battery_low">البطارية منخفضة</string>
+    <string name="event_provider_unread_notifications">إشعارات غير مقروءة</string>
+    <string name="event_provider_missing_notification_access">لإستخدام <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>، قم بتشغيل إشعارات التطبيق لـ<xliff:g example="My App" id="name">%2$s</xliff:g></string>
 </resources>
