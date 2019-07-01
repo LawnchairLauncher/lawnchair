@@ -17,14 +17,17 @@
 
 package ch.deletescape.lawnchair.smartspace
 
+import android.service.notification.StatusBarNotification
 import android.support.annotation.Keep
 import android.support.v4.app.NotificationCompat.PRIORITY_DEFAULT
 import android.text.TextUtils
-import ch.deletescape.lawnchair.loadSmallIcon
+import ch.deletescape.lawnchair.*
+import ch.deletescape.lawnchair.flowerpot.Flowerpot
+import ch.deletescape.lawnchair.flowerpot.FlowerpotApps
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.CardData
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.Line
-import ch.deletescape.lawnchair.toBitmap
 import com.android.launcher3.notification.NotificationInfo
+import com.android.launcher3.util.PackageUserKey
 
 @Keep
 class NotificationUnreadProvider(controller: LawnchairSmartspaceController) :
@@ -32,29 +35,46 @@ class NotificationUnreadProvider(controller: LawnchairSmartspaceController) :
         NotificationsManager.OnChangeListener {
 
     private val manager = NotificationsManager.instance
+    private var flowerpotLoaded = false
+    private var flowerpotApps: FlowerpotApps? = null
+    private val tmpKey = PackageUserKey(null, null)
 
     init {
         manager.addListener(this)
-        onNotificationsChanged()
+        runOnUiWorkerThread {
+            flowerpotApps = Flowerpot.Manager.getInstance(controller.context)
+                    .getPot("COMMUNICATION", true)?.apps
+            flowerpotLoaded = true
+            onNotificationsChanged()
+        }
     }
 
     override fun onNotificationsChanged() {
         updateData(null, getEventCard())
     }
 
+    private fun isCommunicationApp(sbn: StatusBarNotification): Boolean {
+        return tmpKey.updateFromNotification(sbn)
+               && flowerpotApps?.packageMatches?.contains(tmpKey) != false
+    }
+
     private fun getEventCard(): CardData? {
-        val filtered = manager.notifications
-                .filter { it.notification.priority >= PRIORITY_DEFAULT && !it.isOngoing }
-        if (filtered.isEmpty()) return null
+        if (!flowerpotLoaded) return null
+
+        val sbn = manager.notifications
+                .asSequence()
+                .filter { !it.isOngoing }
+                .filter { it.notification.priority >= PRIORITY_DEFAULT }
+                .filter { isCommunicationApp(it) }
+                .fold(null as StatusBarNotification?) { acc, sbn ->
+                    if (acc == null || sbn.notification.priority > acc.notification.priority) {
+                        sbn
+                    } else {
+                        acc
+                    }
+                } ?: return null
 
         val context = controller.context
-        val sbn = filtered.reduce { acc, sbn ->
-            if (sbn.notification.priority > acc.notification.priority) {
-                sbn
-            } else {
-                acc
-            }
-        }
         val notif = NotificationInfo(context, sbn)
         val app = getApp(sbn).toString()
         val title = notif.title?.toString() ?: ""
