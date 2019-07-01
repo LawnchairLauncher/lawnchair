@@ -25,6 +25,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import ch.deletescape.lawnchair.LawnchairAppKt;
 import ch.deletescape.lawnchair.LawnchairPreferences;
@@ -218,6 +220,8 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         setBackgroundResource(0);
         bindWeather(data, mTitleWeatherContent, mTitleWeatherText, mTitleWeatherIcon);
         bindClockAndSeparator(false);
+        int clockAboveTextSize;
+        float clockAboveWeight;
         if (data.isCardAvailable()) {
             mSubtitleLine.setVisibility(View.VISIBLE);
             mSubtitleText.setText(data.getCard().getTitle());
@@ -233,9 +237,17 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             } else {
                 mSubtitleIcon.setVisibility(View.GONE);
             }
+
+            clockAboveTextSize = R.dimen.smartspace_title_size;
+            clockAboveWeight = 0f;
         } else {
             mSubtitleLine.setVisibility(View.GONE);
+            clockAboveTextSize = R.dimen.smartspace_clock_above_size;
+            clockAboveWeight = 1.25f;
         }
+        mClockAboveView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimensionPixelSize(clockAboveTextSize));
+        ((LinearLayout.LayoutParams) mClockAboveView.getLayoutParams()).weight = clockAboveWeight;
     }
 
     private void bindClockAndSeparator(boolean forced) {
