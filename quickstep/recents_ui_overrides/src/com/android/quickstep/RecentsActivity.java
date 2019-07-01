@@ -177,4 +177,8 @@ public final class RecentsActivity extends BaseRecentsActivity {
         super.onStart();
         mFallbackRecentsView.resetTaskVisuals();
     }
+
+    public void onTaskLaunched() {
+        mFallbackRecentsView.resetTaskVisuals();
+    }
 }
