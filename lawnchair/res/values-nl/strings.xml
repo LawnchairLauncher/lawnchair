@@ -488,4 +488,13 @@
     <string name="tab_type_custom_desc">Handmatig apps kiezen voor dit tabblad.</string>
     <string name="tab_type_smart">Slim tabblad</string>
     <string name="categorization">Categorisatie</string>
+    <string name="folder_cover_mode">Omslagafbeelding</string>
+    <string name="folder_cover_mode_desc">Tik om eerste app te openen, veeg omhoog om map te openen</string>
+    <string name="pref_smartspace_event_providers">Gebeurtenis bronnen</string>
+    <string name="event_provider_now_playing">Afspelende media</string>
+    <string name="battery_status">Accustatus</string>
+    <string name="battery_charging">Accu laadt op</string>
+    <string name="battery_low">Accu bijna leeg</string>
+    <string name="event_provider_unread_notifications">Ongelezen meldingen</string>
+    <string name="event_provider_missing_notification_access">Om <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> te gebruiken, schakel app-meldingen in voor <xliff:g example="My App" id="name">%2$s</xliff:g></string>
 </resources>
