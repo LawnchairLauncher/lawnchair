@@ -489,4 +489,12 @@
     <string name="tab_type_custom_desc">Selecciona manualmente las aplicaciones para esta pestaña.</string>
     <string name="tab_type_smart">Pestaña inteligente</string>
     <string name="categorization">Categorización</string>
+    <string name="folder_cover_mode_desc">Toque para abrir la primera aplicación, deslice hacia arriba para abrir la carpeta</string>
+    <string name="pref_smartspace_event_providers">Fuentes de los eventos</string>
+    <string name="event_provider_now_playing">Reproduciendo</string>
+    <string name="battery_status">Estado de la batería</string>
+    <string name="battery_charging">Batería cargando</string>
+    <string name="battery_low">Batería baja</string>
+    <string name="event_provider_unread_notifications">Notificaciones no leídas</string>
+    <string name="event_provider_missing_notification_access">Para usar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, active las notificaciones de la aplicación para <xliff:g example="My App" id="name">%2$s</xliff:g></string>
 </resources>
