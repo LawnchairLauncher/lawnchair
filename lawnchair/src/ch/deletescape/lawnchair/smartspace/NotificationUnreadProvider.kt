@@ -31,7 +31,7 @@ import com.android.launcher3.util.PackageUserKey
 
 @Keep
 class NotificationUnreadProvider(controller: LawnchairSmartspaceController) :
-        LawnchairSmartspaceController.DataProvider(controller),
+        LawnchairSmartspaceController.NotificationBasedDataProvider(controller),
         NotificationsManager.OnChangeListener {
 
     private val manager = NotificationsManager.instance
@@ -39,7 +39,9 @@ class NotificationUnreadProvider(controller: LawnchairSmartspaceController) :
     private var flowerpotApps: FlowerpotApps? = null
     private val tmpKey = PackageUserKey(null, null)
 
-    init {
+    override fun waitForSetup() {
+        super.waitForSetup()
+
         manager.addListener(this)
         runOnUiWorkerThread {
             flowerpotApps = Flowerpot.Manager.getInstance(controller.context)

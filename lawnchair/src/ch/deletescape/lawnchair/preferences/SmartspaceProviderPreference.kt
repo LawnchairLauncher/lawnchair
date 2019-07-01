@@ -36,7 +36,7 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
     init {
         buildEntries {
             getProviders().forEach {
-                addEntry(displayNames[it] ?: error("No display name for provider $it"), it)
+                addEntry(LawnchairSmartspaceController.getDisplayName(it), it)
             }
         }
     }
@@ -99,21 +99,5 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
     override fun persistString(value: String?): Boolean {
         prefs.sharedPrefs.edit().putString(key, value ?: BlankDataProvider::class.java.name).apply()
         return true
-    }
-
-    companion object {
-
-        val displayNames = mapOf(
-                Pair(BlankDataProvider::class.java.name, R.string.weather_provider_disabled),
-                Pair(SmartspaceDataWidget::class.java.name, R.string.google_app),
-                Pair(SmartspacePixelBridge::class.java.name, R.string.smartspace_provider_bridge),
-                Pair(OWMWeatherDataProvider::class.java.name, R.string.weather_provider_owm),
-                Pair(AccuWeatherDataProvider::class.java.name, R.string.weather_provider_accu),
-                Pair(PEWeatherDataProvider::class.java.name, R.string.weather_provider_pe),
-                Pair(OnePlusWeatherDataProvider::class.java.name, R.string.weather_provider_oneplus_weather),
-                Pair(NowPlayingProvider::class.java.name, R.string.event_provider_now_playing),
-                Pair(NotificationUnreadProvider::class.java.name, R.string.event_provider_unread_notifications),
-                Pair(BatteryStatusProvider::class.java.name, R.string.battery_status),
-                Pair(FakeDataProvider::class.java.name, R.string.weather_provider_testing))
     }
 }
