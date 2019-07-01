@@ -488,4 +488,13 @@
     <string name="tab_type_custom_desc">手动选择此标签页的应用。</string>
     <string name="tab_type_smart">智能标签页</string>
     <string name="categorization">分类</string>
+    <string name="folder_cover_mode">封面模式</string>
+    <string name="folder_cover_mode_desc">单击开启第一个应用，向上滑动开启文件夹</string>
+    <string name="pref_smartspace_event_providers">事件来源</string>
+    <string name="event_provider_now_playing">正在播放</string>
+    <string name="battery_status">电池状态</string>
+    <string name="battery_charging">充电中</string>
+    <string name="battery_low">低电量</string>
+    <string name="event_provider_unread_notifications">未读通知</string>
+    <string name="event_provider_missing_notification_access">若要使用 <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>，请为 <xliff:g example="My App" id="name">%2$s</xliff:g> 开启应用通知</string>
 </resources>
