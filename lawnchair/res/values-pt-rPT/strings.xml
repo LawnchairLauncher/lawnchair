@@ -478,6 +478,7 @@
     <string name="animation_type_scale_up">Ampliar para cima</string>
     <string name="animation_type_blink">Intermitência</string>
     <string name="animation_type_fade">Desvanecer</string>
+    <string name="permission_iplocate">Permitir acesso à localização tendo por base a rede?</string>
     <string name="permission_iplocate_twilight_explanation">Esta opção permite cálculos de hora mais precisos sem ser necessário aceder à sua localização.</string>
     <string name="pref_appcategorization_flowerpot_title">Categoria</string>
     <string name="pref_appcategorization_flowerpot_summary">As aplicações são organizadas de acordo com os seus meta-dados.</string>
@@ -486,4 +487,12 @@
     <string name="tab_type_custom_desc">Escolher aplicações para este separador.</string>
     <string name="tab_type_smart">Separador inteligente</string>
     <string name="categorization">Categorização</string>
+    <string name="folder_cover_mode_desc">Toque para abrir a primeira aplicação, deslize acima para abrir a pasta</string>
+    <string name="pref_smartspace_event_providers">Fonte dos eventos</string>
+    <string name="event_provider_now_playing">Em reprodução</string>
+    <string name="battery_status">Estado da bateria</string>
+    <string name="battery_charging">A carregar</string>
+    <string name="battery_low">Energia baixa</string>
+    <string name="event_provider_unread_notifications">Notificações não lidas</string>
+    <string name="event_provider_missing_notification_access">Para utilizar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ative as notificações para a aplicação <xliff:g example="My App" id="name">%2$s</xliff:g></string>
 </resources>
