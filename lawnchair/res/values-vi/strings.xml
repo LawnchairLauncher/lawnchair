@@ -485,4 +485,12 @@
     <string name="tab_type_custom_desc">Chọn ứng dụng cho tab này một cách thủ công.</string>
     <string name="tab_type_smart">Tab thông minh</string>
     <string name="categorization">Phân loại</string>
+    <string name="folder_cover_mode">Chế độ Ảnh bìa</string>
+    <string name="folder_cover_mode_desc">Chạm để mở ứng dụng đầu tiên, vuốt lên để mở thư mục</string>
+    <string name="pref_smartspace_event_providers">Nguồn cấp Sự kiện</string>
+    <string name="event_provider_now_playing">Đang phát</string>
+    <string name="battery_status">Trạng thái pin</string>
+    <string name="battery_charging">Đang sạc</string>
+    <string name="battery_low">Pin yếu</string>
+    <string name="event_provider_unread_notifications">Thông báo chưa đọc</string>
 </resources>
