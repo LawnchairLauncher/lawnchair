@@ -27,13 +27,15 @@ import com.android.launcher3.R
 
 @Keep
 class NowPlayingProvider(controller: LawnchairSmartspaceController) :
-        LawnchairSmartspaceController.DataProvider(controller) {
+        LawnchairSmartspaceController.NotificationBasedDataProvider(controller) {
 
     private val context = controller.context
     private val media = MediaListener(context, this::reload)
     private val defaultIcon = context.getDrawable(R.drawable.ic_music_note)!!.toBitmap()!!
 
-    init {
+    override fun waitForSetup() {
+        super.waitForSetup()
+
         media.onResume()
     }
 

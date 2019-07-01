@@ -166,7 +166,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             mLayoutHorizontal = false;
             mIconSize = 0;
             mCenterVertically = true;
-            mLongPressHelper = null;
+            mLongPressHelper = new CheckLongPressHelper(this);
             mStylusEventHelper = null;
             mSlop = 0;
             return;

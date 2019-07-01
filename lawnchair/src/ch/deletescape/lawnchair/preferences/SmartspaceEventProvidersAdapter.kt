@@ -173,8 +173,7 @@ class SmartspaceEventProvidersAdapter(private val context: Context)
 
     inner class ProviderInfo(val name: String) {
 
-        val displayName = context.getString(SmartspaceProviderPreference.displayNames[name]
-                                            ?: error("No display name for provider $name"))
+        val displayName = LawnchairSmartspaceController.getDisplayName(context, name)
     }
 
     class HeaderHolder(itemView: View) : Holder(itemView) {

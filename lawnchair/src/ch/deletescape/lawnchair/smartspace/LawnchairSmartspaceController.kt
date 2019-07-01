@@ -24,18 +24,20 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Handler
 import android.os.HandlerThread
+import android.provider.Settings
 import android.service.notification.StatusBarNotification
 import android.support.annotation.Keep
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
-import ch.deletescape.lawnchair.checkPackagePermission
-import ch.deletescape.lawnchair.lawnchairPrefs
-import ch.deletescape.lawnchair.runOnMainThread
-import ch.deletescape.lawnchair.runOnUiWorkerThread
+import ch.deletescape.lawnchair.*
+import ch.deletescape.lawnchair.preferences.SmartspaceProviderPreference
 import ch.deletescape.lawnchair.util.Temperature
+import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.Launcher
+import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.notification.NotificationListener
 import com.android.launcher3.util.PackageManagerHelper
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
@@ -315,6 +317,50 @@ class LawnchairSmartspaceController(val context: Context) {
         }
     }
 
+    abstract class NotificationBasedDataProvider(controller: LawnchairSmartspaceController) :
+            DataProvider(controller) {
+
+        override fun performSetup() {
+            if (checkNotificationAccess()) {
+                onSetupComplete()
+                return
+            }
+
+            val context = controller.context
+            val cn = ComponentName(context, NotificationListener::class.java)
+            val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    .putExtra(":settings:fragment_args_key", cn.flattenToString())
+            val providerName = getDisplayName(this::class.java.name)
+            val msg = context.getString(R.string.event_provider_missing_notification_access,
+                                        context.getString(providerName),
+                                        context.getString(R.string.derived_app_name))
+            BlankActivity.startActivityWithDialog(
+                    context, intent, 1030,
+                    context.getString(R.string.title_missing_notification_access),
+                    msg,
+                    context.getString(R.string.title_change_settings)) {
+                onSetupComplete()
+            }
+        }
+
+        private fun checkNotificationAccess(): Boolean {
+            val context = controller.context
+            val enabledListeners = Settings.Secure.getString(
+                    context.contentResolver, "enabled_notification_listeners")
+            val myListener = ComponentName(context, NotificationListener::class.java)
+            return enabledListeners?.let {
+                it.contains(myListener.flattenToString()) || it.contains(myListener.flattenToString())
+            } ?: false
+        }
+
+        override fun waitForSetup() {
+            super.waitForSetup()
+
+            if (!checkNotificationAccess()) error("Notification access needed")
+        }
+    }
+
     data class DataContainer(val weather: WeatherData? = null, val card: CardData? = null) {
 
         val isDoubleLine get() = card?.isDoubleLine ?: false
@@ -380,6 +426,30 @@ class LawnchairSmartspaceController(val context: Context) {
     interface Listener {
 
         fun onDataUpdated(data: DataContainer)
+    }
+
+    companion object {
+
+        private val displayNames = mapOf(
+                Pair(BlankDataProvider::class.java.name, R.string.weather_provider_disabled),
+                Pair(SmartspaceDataWidget::class.java.name, R.string.google_app),
+                Pair(SmartspacePixelBridge::class.java.name, R.string.smartspace_provider_bridge),
+                Pair(OWMWeatherDataProvider::class.java.name, R.string.weather_provider_owm),
+                Pair(AccuWeatherDataProvider::class.java.name, R.string.weather_provider_accu),
+                Pair(PEWeatherDataProvider::class.java.name, R.string.weather_provider_pe),
+                Pair(OnePlusWeatherDataProvider::class.java.name, R.string.weather_provider_oneplus_weather),
+                Pair(NowPlayingProvider::class.java.name, R.string.event_provider_now_playing),
+                Pair(NotificationUnreadProvider::class.java.name, R.string.event_provider_unread_notifications),
+                Pair(BatteryStatusProvider::class.java.name, R.string.battery_status),
+                Pair(FakeDataProvider::class.java.name, R.string.weather_provider_testing))
+
+        fun getDisplayName(providerName: String): Int {
+            return displayNames[providerName] ?: error("No display name for provider $providerName")
+        }
+
+        fun getDisplayName(context: Context, providerName: String): String {
+            return context.getString(getDisplayName(providerName))
+        }
     }
 }
 

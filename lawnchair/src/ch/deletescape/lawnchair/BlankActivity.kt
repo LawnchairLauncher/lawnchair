@@ -17,7 +17,6 @@
 
 package ch.deletescape.lawnchair
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -25,24 +24,59 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.ResultReceiver
 import android.support.v4.app.ActivityCompat
+import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 
-class BlankActivity : Activity() {
+class BlankActivity : AppCompatActivity() {
 
     private val requestCode by lazy { intent.getIntExtra("requestCode", 0) }
     private val permissionRequestCode by lazy { intent.getIntExtra("permissionRequestCode", 0) }
     private val resultReceiver by lazy { intent.getParcelableExtra("callback") as ResultReceiver }
     private var resultSent = false
+    private var firstResume = true
+    private var targetStarted = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onResume() {
+        super.onResume()
 
-        if (intent.hasExtra("intent")) {
-            startActivityForResult(intent.getParcelableExtra("intent"), requestCode)
-        } else if (intent.hasExtra("permissions")) {
-            ActivityCompat.requestPermissions(this, intent.getStringArrayExtra("permissions"), permissionRequestCode)
+        if (firstResume) {
+            firstResume = false
+            if (intent.hasExtra("dialogTitle")) {
+                AlertDialog.Builder(this)
+                        .setTitle(intent.getCharSequenceExtra("dialogTitle"))
+                        .setMessage(intent.getCharSequenceExtra("dialogMessage"))
+                        .setOnDismissListener { if (!targetStarted) finish() }
+                        .setNegativeButton(android.R.string.cancel) { _, _ -> finish() }
+                        .setPositiveButton(intent.getStringExtra("positiveButton")) { _, _ ->
+                            startTargetActivity()
+                        }
+                        .show()
+                        .applyAccent()
+            } else {
+                startTargetActivity()
+            }
         } else {
-            super.finish()
+            finish()
         }
+    }
+
+    private fun startTargetActivity() {
+        when {
+            intent.hasExtra("intent") -> {
+                if (intent.hasExtra("dialogTitle")) {
+                    startActivity(intent.getParcelableExtra("intent"))
+                } else {
+                    startActivityForResult(intent.getParcelableExtra("intent"), requestCode)
+                }
+            }
+            intent.hasExtra("permissions") -> ActivityCompat.requestPermissions(
+                    this, intent.getStringArrayExtra("permissions"), permissionRequestCode)
+            else -> {
+                finish()
+                return
+            }
+        }
+        targetStarted = true
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -68,10 +102,13 @@ class BlankActivity : Activity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun finish() {
-        if (!resultSent)
+    override fun onDestroy() {
+        super.onDestroy()
+
+        if (!resultSent && intent.hasExtra("callback")) {
+            resultSent = true
             resultReceiver.send(RESULT_CANCELED, null)
-        super.finish()
+        }
     }
 
     companion object {
@@ -85,6 +122,25 @@ class BlankActivity : Activity() {
 
                     override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
                         callback(resultCode, resultData)
+                    }
+                })
+            }
+            start(context, intent)
+        }
+
+        fun startActivityWithDialog(context: Context, targetIntent: Intent, requestCode: Int,
+                                    dialogTitle: CharSequence, dialogMessage: CharSequence,
+                                    positiveButton: String, callback: (Int) -> Unit) {
+            val intent = Intent(context, BlankActivity::class.java).apply {
+                putExtra("intent", targetIntent)
+                putExtra("requestCode", requestCode)
+                putExtra("dialogTitle", dialogTitle)
+                putExtra("dialogMessage", dialogMessage)
+                putExtra("positiveButton", positiveButton)
+                putExtra("callback", object : ResultReceiver(Handler()) {
+
+                    override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+                        callback(resultCode)
                     }
                 })
             }
