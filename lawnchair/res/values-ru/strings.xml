@@ -494,4 +494,13 @@
     <string name="tab_type_custom_desc">Вручную выберите приложения для этой вкладки.</string>
     <string name="tab_type_smart">Умная вкладка</string>
     <string name="categorization">Категории</string>
+    <string name="folder_cover_mode">Режим обложки</string>
+    <string name="folder_cover_mode_desc">Нажать чтобы открыть первое приложение, свайп вверх чтобы открыть папку</string>
+    <string name="pref_smartspace_event_providers">Источники событий</string>
+    <string name="event_provider_now_playing">Сейчас играет</string>
+    <string name="battery_status">Состояние батареи</string>
+    <string name="battery_charging">Зарядка батареи</string>
+    <string name="battery_low">Низкий заряд батареи</string>
+    <string name="event_provider_unread_notifications">Непрочитанные уведомления</string>
+    <string name="event_provider_missing_notification_access">Чтобы использовать <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включите уведомления приложения для<xliff:g example="My App" id="name">%2$s</xliff:g></string>
 </resources>
