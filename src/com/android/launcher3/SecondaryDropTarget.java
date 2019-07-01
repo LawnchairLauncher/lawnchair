@@ -6,6 +6,7 @@ import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_RECONFIGURA
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_MASK;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_NO;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
+import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.CUSTOMIZE;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.RECONFIGURE;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.UNINSTALL;
 
@@ -28,6 +29,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -36,6 +38,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.Themes;
 
+import com.android.launcher3.widget.custom.CustomAppWidgetProviderInfo;
 import java.net.URISyntaxException;
 
 /**
@@ -80,6 +83,10 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             mHoverColor = getResources().getColor(R.color.uninstall_target_hover_tint);
             setDrawable(R.drawable.ic_uninstall_shadow);
             updateText(R.string.uninstall_drop_target_label);
+        } else if (action == CUSTOMIZE) {
+            mHoverColor = Themes.getColorAccent(getContext());
+            setDrawable(R.drawable.ic_smartspace_preferences);
+            updateText(R.string.customize);
         } else {
             mHoverColor = Themes.getColorAccent(getContext());
             setDrawable(R.drawable.ic_setup_shadow);
@@ -115,6 +122,9 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         if (view instanceof AppWidgetHostView) {
             if (getReconfigurableWidgetId(view) != INVALID_APPWIDGET_ID) {
                 setupUi(RECONFIGURE);
+                return true;
+            } else if (getWidgetCustomizeIntent(view) != null) {
+                setupUi(CUSTOMIZE);
                 return true;
             }
             return false;
@@ -216,6 +226,23 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         return hostView.getAppWidgetId();
     }
 
+    private Intent getWidgetCustomizeIntent(View view) {
+        if (!(view instanceof AppWidgetHostView)) {
+            return null;
+        }
+        AppWidgetHostView hostView = (AppWidgetHostView) view;
+        AppWidgetProviderInfo widgetInfo = hostView.getAppWidgetInfo();
+        if (widgetInfo instanceof CustomAppWidgetProviderInfo) {
+            CustomAppWidgetProviderInfo customInfo = (CustomAppWidgetProviderInfo) widgetInfo;
+            Context context = getContext();
+            return new Intent(context, SettingsActivity.class)
+                    .putExtra(SettingsActivity.SubSettingsFragment.TITLE, context.getString(customInfo.customizeTitle))
+                    .putExtra(SettingsActivity.SubSettingsFragment.CONTENT_RES_ID, customInfo.customizeScreen)
+                    .putExtra(SettingsActivity.SubSettingsFragment.HAS_PREVIEW, customInfo.customizeHasPreview);
+        }
+        return null;
+    }
+
     /**
      * Performs the drop action and returns the target component for the dragObject or null if
      * the action was not performed.
@@ -225,6 +252,13 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             int widgetId = getReconfigurableWidgetId(view);
             if (widgetId != INVALID_APPWIDGET_ID) {
                 mLauncher.getAppWidgetHost().startConfigActivity(mLauncher, widgetId, -1);
+            }
+            return null;
+        } else if (mCurrentAccessibilityAction == CUSTOMIZE) {
+            Intent customizeIntent = getWidgetCustomizeIntent(view);
+            if (customizeIntent != null) {
+                Launcher launcher = Launcher.getLauncher(view.getContext());
+                launcher.startActivitySafely(view, customizeIntent, null);
             }
             return null;
         }

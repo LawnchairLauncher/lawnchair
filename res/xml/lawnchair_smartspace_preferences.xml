@@ -11,7 +11,6 @@
   
     <ch.deletescape.lawnchair.preferences.PreviewPreference
         android:key="pref_smartspace_preview"
-        android:dependency="pref_smartspace"
         app:previewLayout="@layout/smartspace_preview" />
     
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
@@ -51,7 +50,6 @@
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_use_pill_qsb"
-            android:dependency="pref_smartspace"
             android:title="@string/title_use_pill_qsb"
             android:disableDependentsState="true"
             android:defaultValue="false"
@@ -72,7 +70,6 @@
 
         <ch.deletescape.lawnchair.preferences.SmartspaceProviderPreference
             android:key="pref_smartspace_widget_provider"
-            android:dependency="pref_smartspace"
             android:title="@string/pref_smartspace_widget_provider"
             android:summary="%s"
             />

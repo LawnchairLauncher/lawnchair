@@ -10,6 +10,7 @@ import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.google.android.apps.nexuslauncher.smartspace.SmartspaceView;
 import com.google.android.libraries.gsa.launcherclient.LauncherClient;
 
 public class NexusLauncherActivity extends Launcher {
@@ -58,5 +59,9 @@ public class NexusLauncherActivity extends Launcher {
 
     public AnimatorSet openQsb() {
         return mLauncher.mQsbAnimationController.openQsb();
+    }
+
+    public void registerSmartspaceView(SmartspaceView smartspace) {
+        mLauncher.registerSmartspaceView(smartspace);
     }
 }

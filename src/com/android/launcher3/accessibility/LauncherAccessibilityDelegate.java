@@ -58,6 +58,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     protected static final int RESIZE = R.id.action_resize;
     public static final int DEEP_SHORTCUTS = R.id.action_deep_shortcuts;
     public static final int SHORTCUTS_AND_NOTIFICATIONS = R.id.action_shortcuts_and_notifications;
+    public static final int CUSTOMIZE = R.id.action_customize;
 
     public enum DragType {
         ICON,

@@ -135,6 +135,10 @@
 
     <declare-styleable name="CustomAppWidgetProviderInfo">
         <attr name="providerId" format="integer" />
+        <attr name="noPadding" format="boolean" />
+        <attr name="customizeTitle" format="string" />
+        <attr name="customizeScreen" format="reference" />
+        <attr name="customizeHasPreview" format="boolean" />
 
         <attr name="android:label" />
         <attr name="android:initialLayout" />

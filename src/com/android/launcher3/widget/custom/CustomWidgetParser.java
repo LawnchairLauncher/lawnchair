@@ -124,8 +124,12 @@ public class CustomWidgetParser {
 
     private static CustomAppWidgetProviderInfo newInfo(TypedArray a, Parcel parcel, Context context) {
         int providerId = a.getInt(R.styleable.CustomAppWidgetProviderInfo_providerId, 0);
-        CustomAppWidgetProviderInfo info = new CustomAppWidgetProviderInfo(parcel, false, providerId);
+        boolean noPadding = a.getBoolean(R.styleable.CustomAppWidgetProviderInfo_noPadding, false);
+        CustomAppWidgetProviderInfo info = new CustomAppWidgetProviderInfo(parcel, false, providerId, noPadding);
         info.provider = new ComponentName(context.getPackageName(), CLS_CUSTOM_WIDGET_PREFIX + providerId);
+        info.customizeTitle = a.getResourceId(R.styleable.CustomAppWidgetProviderInfo_customizeTitle, 0);
+        info.customizeScreen = a.getResourceId(R.styleable.CustomAppWidgetProviderInfo_customizeScreen, 0);
+        info.customizeHasPreview = a.getBoolean(R.styleable.CustomAppWidgetProviderInfo_customizeHasPreview, false);
 
         info.label = a.getString(R.styleable.CustomAppWidgetProviderInfo_android_label);
         info.initialLayout = a.getResourceId(R.styleable.CustomAppWidgetProviderInfo_android_initialLayout, 0);

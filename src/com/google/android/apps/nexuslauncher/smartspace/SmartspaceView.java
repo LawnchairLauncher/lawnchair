@@ -37,6 +37,7 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.graphics.ShadowGenerator;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.DynamicIconProvider;
+import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 import com.google.android.apps.nexuslauncher.graphics.DoubleShadowTextView;
 import com.google.android.apps.nexuslauncher.graphics.IcuDateTextView;
 import org.jetbrains.annotations.NotNull;
@@ -144,6 +145,15 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         mWeatherIconSize = res.getDimensionPixelSize(R.dimen.smartspace_title_weather_icon_size);
 
         setClipChildren(false);
+
+        try {
+            Launcher launcher = Launcher.getLauncher(getContext());
+            if (launcher instanceof NexusLauncherActivity) {
+                ((NexusLauncherActivity) launcher).registerSmartspaceView(this);
+            }
+        } catch (ClassCastException e) {
+
+        }
     }
 
     @Override
