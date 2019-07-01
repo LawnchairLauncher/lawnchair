@@ -19,8 +19,10 @@ package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
 import android.support.v7.preference.DialogPreference
+import android.support.v7.preference.PreferenceViewHolder
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.widget.TextView
 import ch.deletescape.lawnchair.lawnchairApp
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.ControlledPreference
@@ -43,13 +45,20 @@ class SmartspaceEventProvidersPreference(context: Context, attrs: AttributeSet?)
 
     private fun updateSummary() {
         val providerNames = context.lawnchairPrefs.eventProviders.getAll()
-                .apply { d("providers: $this") }
                 .map { context.getString(SmartspaceProviderPreference.displayNames[it] ?: error("No display name for provider $it")) }
         if (providerNames.isNotEmpty()) {
             summary = TextUtils.join(", ", providerNames)
         } else {
             setSummary(R.string.weather_provider_disabled)
         }
+    }
+
+    override fun onBindViewHolder(holder: PreferenceViewHolder) {
+        super.onBindViewHolder(holder)
+
+        val summaryView = holder.findViewById(android.R.id.summary) as TextView
+        summaryView.maxLines = 1
+        summaryView.ellipsize = TextUtils.TruncateAt.END
     }
 
     override fun getDialogLayoutResource() = R.layout.dialog_preference_recyclerview

@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="?android:attr/listPreferredItemPaddingStart"
+        android:layout_marginStart="@dimen/dialog_horizontal_padding"
         android:orientation="vertical"
         android:paddingEnd="16dp">
 
@@ -46,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:paddingStart="?android:attr/listPreferredItemPaddingEnd"
-        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+        android:paddingEnd="21dp"
         android:src="@drawable/deep_shortcuts_drag_handle"
         android:background="@android:color/transparent"
         android:clickable="false"
