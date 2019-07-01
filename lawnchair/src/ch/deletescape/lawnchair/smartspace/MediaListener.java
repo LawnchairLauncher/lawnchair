@@ -37,6 +37,7 @@ public class MediaListener extends MediaController.Callback
     private final NotificationsManager mNotificationsManager;
     private List<MediaController> mControllers = Collections.emptyList();
     private MediaController mTracking;
+    private MediaInfo mInfo;
     private StatusBarNotification mPlayingNotification;
 
     MediaListener(Context context, Runnable onChange) {
@@ -62,19 +63,11 @@ public class MediaListener extends MediaController.Callback
     }
 
     boolean isTracking() {
-        return mTracking != null;
+        return mTracking != null && mInfo != null;
     }
 
-    CharSequence getTitle() {
-        return mTracking.getMetadata().getText(MediaMetadata.METADATA_KEY_TITLE);
-    }
-
-    CharSequence getArtist() {
-        return mTracking.getMetadata().getText(MediaMetadata.METADATA_KEY_ARTIST);
-    }
-
-    CharSequence getAlbum() {
-        return mTracking.getMetadata().getText(MediaMetadata.METADATA_KEY_ALBUM);
+    MediaInfo getInfo() {
+        return mInfo;
     }
 
     @Nullable StatusBarNotification getPlayingNotification() {
@@ -123,6 +116,18 @@ public class MediaListener extends MediaController.Callback
         }
 
         mPlayingNotification = findNotification(mTracking);
+        if (mTracking != null) {
+            MediaMetadata metadata = mTracking.getMetadata();
+            if (metadata != null) {
+                mInfo = new MediaInfo();
+                mInfo.title = metadata.getText(MediaMetadata.METADATA_KEY_TITLE);
+                mInfo.artist = metadata.getText(MediaMetadata.METADATA_KEY_ARTIST);
+                mInfo.album = metadata.getText(MediaMetadata.METADATA_KEY_ALBUM);
+            } else if (mPlayingNotification != null) {
+                mInfo = new MediaInfo();
+                mInfo.title = mPlayingNotification.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE);
+            }
+        }
 
         mOnChange.run();
     }
@@ -215,5 +220,24 @@ public class MediaListener extends MediaController.Callback
     @Override
     public void onNotificationsChanged() {
         onActiveSessionsChanged(null);
+    }
+
+    public class MediaInfo {
+
+        private CharSequence title;
+        private CharSequence artist;
+        private CharSequence album;
+
+        public CharSequence getTitle() {
+            return title;
+        }
+
+        public CharSequence getArtist() {
+            return artist;
+        }
+
+        public CharSequence getAlbum() {
+            return album;
+        }
     }
 }
