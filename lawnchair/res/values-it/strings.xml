@@ -481,6 +481,7 @@
     <string name="animation_type_scale_up">Aumenta</string>
     <string name="animation_type_blink">Lampeggia</string>
     <string name="animation_type_fade">Dissolvenza</string>
+    <string name="permission_iplocate">Permetti l\'accesso alla posizione basata sulla rete?</string>
     <string name="permission_iplocate_twilight_explanation">Questo permette calcoli più precisi dell\'orario senza bisogno di sapere la tua posizione esatta.</string>
     <string name="pref_appcategorization_flowerpot_title">Categoria</string>
     <string name="pref_appcategorization_flowerpot_summary">Le app sono selezionate automaticamente basandosi sui metadati.</string>
@@ -489,4 +490,13 @@
     <string name="tab_type_custom_desc">Seleziona manualmente app per questa scheda.</string>
     <string name="tab_type_smart">Scheda intelligente</string>
     <string name="categorization">Categorizzazione</string>
+    <string name="folder_cover_mode">Modalità copertina</string>
+    <string name="folder_cover_mode_desc">Premi per aprire la prima app, scorri verso l\'alto per aprire la cartella</string>
+    <string name="pref_smartspace_event_providers">Fonti di eventi</string>
+    <string name="event_provider_now_playing">In riproduzione</string>
+    <string name="battery_status">Stato della batteria</string>
+    <string name="battery_charging">Batteria in carica</string>
+    <string name="battery_low">Batteria scarica</string>
+    <string name="event_provider_unread_notifications">Notifiche non lette</string>
+    <string name="event_provider_missing_notification_access">Per usare <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, attiva le notifiche per la app <xliff:g example="My App" id="name">%2$s</xliff:g></string>
 </resources>
