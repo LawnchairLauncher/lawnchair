@@ -389,6 +389,10 @@
     <string name="pref_appcategorization_tabs_title">탭</string>
     <string name="default_folder_name">새 폴더</string>
     <string name="drawer_folders">폴더</string>
+    <string name="category_communication">커뮤니케이션</string>
+    <string name="category_entertainment">엔터테인먼트</string>
+    <string name="category_food_and_drink">음식과 음료</string>
+    <string name="category_game">게임</string>
     <string name="category_music">음악</string>
     <string name="category_news">뉴스</string>
     <string name="category_personalization">개인화</string>
@@ -407,4 +411,9 @@
     <string name="animation_type_pie">Pie</string>
     <string name="animation_type_pie_like">Pie 같이</string>
     <string name="tab_type_smart">스마트 탭</string>
+    <string name="folder_cover_mode">커버 모드</string>
+    <string name="event_provider_now_playing">지금 재생 중</string>
+    <string name="battery_status">배터리 상태</string>
+    <string name="battery_charging">배터리 충전중</string>
+    <string name="event_provider_unread_notifications">읽지 않는 알림</string>
 </resources>
