@@ -489,4 +489,13 @@ A művelet nem visszavonható.</string>
     <string name="tab_type_custom_desc">Ennél a lapnál manuális az allamazásválasztás.</string>
     <string name="tab_type_smart">Okos lap</string>
     <string name="categorization">Kategorizálás</string>
+    <string name="folder_cover_mode">Borítókép-mód</string>
+    <string name="folder_cover_mode_desc">Megérintve az első alkalmazás nyílik meg, felfelé csúsztatva az egész mappa</string>
+    <string name="pref_smartspace_event_providers">Eseményforrások</string>
+    <string name="event_provider_now_playing">Now Playing</string>
+    <string name="battery_status">Akkumulátorállapot</string>
+    <string name="battery_charging">Akkumulátortöltés</string>
+    <string name="battery_low">Alacsony akkuszint</string>
+    <string name="event_provider_unread_notifications">Olvasatlan értesítések</string>
+    <string name="event_provider_missing_notification_access"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> használatához kapcsolja be az értesítéseket a következőhöz: <xliff:g example="My App" id="name">%2$s</xliff:g></string>
 </resources>
