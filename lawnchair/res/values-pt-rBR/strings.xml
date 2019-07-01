@@ -490,4 +490,13 @@
     <string name="tab_type_custom_desc">Manualmente selecione apps pra essa aba.</string>
     <string name="tab_type_smart">Aba inteligente</string>
     <string name="categorization">Categorização</string>
+    <string name="folder_cover_mode">Modo capa</string>
+    <string name="folder_cover_mode_desc">Toque pra abrir o primeiro app, deslize pra cima pra abrir a pasta</string>
+    <string name="pref_smartspace_event_providers">Fontes de eventos</string>
+    <string name="event_provider_now_playing">Tocando agora</string>
+    <string name="battery_status">Estado da bateria</string>
+    <string name="battery_charging">Bateria carregando</string>
+    <string name="battery_low">Bateria fraca</string>
+    <string name="event_provider_unread_notifications">Notificações não lidas</string>
+    <string name="event_provider_missing_notification_access">Para usar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ative as notificações do aplicativo para <xliff:g example="My App" id="name">%2$s</xliff:g></string>
 </resources>
