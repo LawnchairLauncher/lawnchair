@@ -853,7 +853,7 @@ val Long.Companion.random get() = Random.nextLong()
 
 fun Notification.loadSmallIcon(context: Context): Drawable? {
     return if (Utilities.ATLEAST_MARSHMALLOW) {
-        smallIcon.loadDrawable(context)
+        smallIcon?.loadDrawable(context)
     } else {
         context.getDrawable(icon)
     }
