@@ -107,7 +107,7 @@ class NotificationsManager private constructor(): NotificationListener.Notificat
     }
 
     private fun onChange() {
-        val notifications = bgNotificationsMap.values
+        val notifications = bgNotificationsMap.values.toList()
         runOnMainThread {
             synchronized(notificationList) {
                 notificationList.clear()
