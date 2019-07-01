@@ -86,6 +86,10 @@ android {
                     signingConfig signingConfigs.ci
                 }
             }
+
+            dexOptions {
+                matchingFallbacks = ['debug']
+            }
         }
 
         optimized {
@@ -108,6 +112,10 @@ android {
                 if (System.getenv("CI_EVENT_TYPE") != "pull_request") {
                     signingConfig signingConfigs.ci
                 }
+            }
+
+            dexOptions {
+                matchingFallbacks = ['release']
             }
         }
     }
@@ -246,11 +254,13 @@ afterEvaluate {
 
 apply from: 'lawnchair/smali.gradle'
 
-repositories {
-    google()
-    mavenCentral()
-    jcenter()
-    maven { url 'https://jitpack.io' }
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
 }
 
 dependencies {
@@ -286,7 +296,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.0.0-RC1'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
 
-    quickstepImplementation fileTree(dir: "quickstep/libs", include: 'sysui_shared.jar')
+    quickstepImplementation project(':systemui-shared')
     lawnchairImplementation files('lawnchair/libs/sesame-lib.aar')
 
     testImplementation 'junit:junit:4.12'
