@@ -489,4 +489,13 @@
     <string name="tab_type_custom_desc">Bu sekme için uygulamaları el ile seçin.</string>
     <string name="tab_type_smart">Akıllı sekme</string>
     <string name="categorization">Sınıflandırma</string>
+    <string name="folder_cover_mode">Kapak modu</string>
+    <string name="folder_cover_mode_desc">İlk uygulamayı açmak için dokunun, klasörü açmak için yukarı kaydırın</string>
+    <string name="pref_smartspace_event_providers">Etkinlik kaynakları</string>
+    <string name="event_provider_now_playing">Şimdi çalan</string>
+    <string name="battery_status">Pil durumu</string>
+    <string name="battery_charging">Pil şarj ediliyor</string>
+    <string name="battery_low">Düşük pil</string>
+    <string name="event_provider_unread_notifications">Okunmamış bildiriler</string>
+    <string name="event_provider_missing_notification_access"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> kullanmak için, <xliff:g example="My App" id="name">%2$s</xliff:g> için uygulama bildirimlerini aç</string>
 </resources>
