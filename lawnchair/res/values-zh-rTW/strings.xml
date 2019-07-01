@@ -488,4 +488,12 @@
     <string name="tab_type_custom_desc">手動為此分頁挑選 App</string>
     <string name="tab_type_smart">智慧分頁</string>
     <string name="categorization">分類</string>
+    <string name="folder_cover_mode">覆蓋模式</string>
+    <string name="folder_cover_mode_desc">點按以開啓第一個應用程式，上滑打開資料夾</string>
+    <string name="pref_smartspace_event_providers">事件來源</string>
+    <string name="event_provider_now_playing">現正播放</string>
+    <string name="battery_status">電池狀態</string>
+    <string name="battery_charging">充電中</string>
+    <string name="battery_low">低電量</string>
+    <string name="event_provider_unread_notifications">未讀通知</string>
 </resources>
