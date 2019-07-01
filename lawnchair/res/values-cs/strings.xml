@@ -490,4 +490,13 @@
     <string name="tab_type_custom_desc">Ručně vyberte aplikace pro tuto záložku.</string>
     <string name="tab_type_smart">Chytrá záložka</string>
     <string name="categorization">Kategorizace</string>
+    <string name="folder_cover_mode">Režim Krytí</string>
+    <string name="folder_cover_mode_desc">Klepnutím otevřete první aplikaci, přejetím nahoru otevřete složku</string>
+    <string name="pref_smartspace_event_providers">Zdroje událostí</string>
+    <string name="event_provider_now_playing">Nyní se přehrává</string>
+    <string name="battery_status">Stav baterie</string>
+    <string name="battery_charging">Nabíjení baterie</string>
+    <string name="battery_low">Nízký stav baterie</string>
+    <string name="event_provider_unread_notifications">Nepřečtená oznámení</string>
+    <string name="event_provider_missing_notification_access">Pro použití <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> zapněte oznámení aplikace pro <xliff:g example="My App" id="name">%2$s</xliff:g></string>
 </resources>
