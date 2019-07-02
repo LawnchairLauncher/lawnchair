@@ -31,9 +31,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import ch.deletescape.lawnchair.*
-import ch.deletescape.lawnchair.preferences.SmartspaceProviderPreference
 import ch.deletescape.lawnchair.util.Temperature
-import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -172,15 +170,7 @@ class LawnchairSmartspaceController(val context: Context) {
     }
 
     fun openEvent(v: View) {
-        val data = cardData ?: return
-        val launcher = Launcher.getLauncher(v.context)
-        if (data.pendingIntent != null) {
-            val opts = launcher.getActivityLaunchOptionsAsBundle(v)
-            launcher.startIntentSender(
-                    data.pendingIntent.intentSender, null,
-                    Intent.FLAG_ACTIVITY_NEW_TASK,
-                    Intent.FLAG_ACTIVITY_NEW_TASK, 0, opts)
-        }
+        cardData?.onClickListener?.onClick(v)
     }
 
     private fun createDataProvider(className: String): DataProvider {
@@ -381,8 +371,19 @@ class LawnchairSmartspaceController(val context: Context) {
 
     data class CardData(val icon: Bitmap? = null,
                         val lines: List<Line>,
-                        val pendingIntent: PendingIntent? = null,
+                        val onClickListener: View.OnClickListener? = null,
                         val forceSingleLine: Boolean = false) {
+
+        constructor(icon: Bitmap? = null,
+                    lines: List<Line>,
+                    intent: PendingIntent? = null,
+                    forceSingleLine: Boolean = false) :
+                this(icon, lines, intent?.let { PendingIntentClickListener(it) }, forceSingleLine)
+
+        constructor(icon: Bitmap? = null,
+                    lines: List<Line>,
+                    forceSingleLine: Boolean = false) :
+                this(icon, lines, null as View.OnClickListener?, forceSingleLine)
 
         constructor(icon: Bitmap?,
                     title: CharSequence, titleEllipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END,
@@ -413,6 +414,18 @@ class LawnchairSmartspaceController(val context: Context) {
                 subtitle = TextUtils.join(" – ", lines.subList(1, lines.size).map { it.text })!!
                 subtitleEllipsize = if (lines.size == 2) lines[1].ellipsize else TextUtils.TruncateAt.END
             }
+        }
+    }
+
+    class PendingIntentClickListener(private val pendingIntent: PendingIntent) : View.OnClickListener {
+
+        override fun onClick(v: View) {
+            val launcher = Launcher.getLauncher(v.context)
+            val opts = launcher.getActivityLaunchOptionsAsBundle(v)
+            launcher.startIntentSender(
+                    pendingIntent.intentSender, null,
+                    Intent.FLAG_ACTIVITY_NEW_TASK,
+                    Intent.FLAG_ACTIVITY_NEW_TASK, 0, opts)
         }
     }
 

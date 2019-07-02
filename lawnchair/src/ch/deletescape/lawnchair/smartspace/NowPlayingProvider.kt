@@ -19,6 +19,7 @@ package ch.deletescape.lawnchair.smartspace
 
 import android.support.annotation.Keep
 import android.text.TextUtils
+import android.view.View
 import ch.deletescape.lawnchair.loadSmallIcon
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.CardData
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.Line
@@ -40,21 +41,29 @@ class NowPlayingProvider(controller: LawnchairSmartspaceController) :
     }
 
     private fun getEventCard(): CardData? {
-        if (!media.isTracking ) return null
+        val tracking = media.tracking ?: return null
 
-        val sbn = media.playingNotification ?: return null
-        val notification = sbn.notification
-        val icon = sbn.loadSmallIcon(context)?.toBitmap() ?: defaultIcon
+        val sbn = tracking.sbn
+        val icon = sbn?.loadSmallIcon(context)?.toBitmap() ?: defaultIcon
 
-        val mediaInfo = media.info
+        val mediaInfo = tracking.info
         val lines = mutableListOf<Line>()
         lines.add(Line(mediaInfo.title.toString()))
         if (!TextUtils.isEmpty(mediaInfo.artist)) {
             lines.add(Line(mediaInfo.artist.toString()))
-        } else {
+        } else if (sbn != null) {
             lines.add(Line(getApp(sbn).toString()))
+        } else {
+            lines.add(Line(getApp(tracking.packageName)))
         }
-        return CardData(icon, lines, notification.contentIntent, true)
+        val intent = sbn?.notification?.contentIntent
+        return if (intent != null) {
+            CardData(icon, lines, intent, true)
+        } else {
+            CardData(icon, lines, View.OnClickListener {
+                media.toggle(true)
+            }, true)
+        }
     }
 
     private fun reload() {
