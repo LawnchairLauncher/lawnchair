@@ -498,4 +498,6 @@
     <string name="battery_charging">Se încarcă bateria</string>
     <string name="battery_low">Baterie descărcată</string>
     <string name="event_provider_unread_notifications">Notificări necitite</string>
+    <string name="event_provider_missing_notification_access">Pentru a utiliza <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activați notificările aplicației <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="zen_mode_enabled">Nu deranjați este activată</string>
 </resources>
