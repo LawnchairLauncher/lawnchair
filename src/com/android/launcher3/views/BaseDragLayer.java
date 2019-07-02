@@ -221,12 +221,10 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
         if (child instanceof AbstractFloatingView) {
             // Handles the case where the view is removed without being properly closed.
             // This can happen if something goes wrong during a state change/transition.
-            postDelayed(() -> {
-                AbstractFloatingView floatingView = (AbstractFloatingView) child;
-                if (floatingView.isOpen()) {
-                    floatingView.close(false);
-                }
-            }, SINGLE_FRAME_MS);
+            AbstractFloatingView floatingView = (AbstractFloatingView) child;
+            if (floatingView.isOpen()) {
+                postDelayed(() -> floatingView.close(false), SINGLE_FRAME_MS);
+            }
         }
     }
 
