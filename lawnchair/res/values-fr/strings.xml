@@ -279,7 +279,7 @@
     <string name="pref_white_only_treatment_summary">Arrière-plans colorés pour toutes les icônes adaptatives</string>
     <string name="smartspace_provider_bridge">Pixel Bridge sans Root</string>
     <!--Marker H-->
-    <string name="dismiss_drop_target_label">"Ne pas montrer"</string>
+    <string name="dismiss_drop_target_label">"Ne pas afficher"</string>
     <string name="suggested_action_content_description">%1$s s\'ouvre dans %2$s</string>
     <string name="action_sleep">Veille</string>
     <string name="pref_drawer_padding">Hauteur des lignes</string>
@@ -312,7 +312,7 @@
     <string name="search_no_results">Aucun résultat</string>
     <string name="search_menu">Trouver les paramètres</string>
     <string name="search_provider_s_finder">S Finder</string>
-    <string name="lawnchair_accent">Accent</string>
+    <string name="lawnchair_accent">Accentuation</string>
     <string name="theme_based">Suivre le thème</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Suggestions</string>
@@ -401,7 +401,7 @@
     <string name="pref_fonts_global_font">Polices de caractère globale</string>
     <string name="pref_fonts_change_global_font">Modifier</string>
     <string name="pref_fonts_home_icons">Application &amp; nom des dossiers</string>
-    <string name="pref_fonts_home_smartspace">\'At a Glance\' widget</string>
+    <string name="pref_fonts_home_smartspace">Widget \"En bref...\"</string>
     <string name="pref_fonts_home_shortcuts">Bulle de raccourcis</string>
     <string name="pref_fonts_category_drawer">Tiroir des applications</string>
     <string name="pref_fonts_drawer_icons">Noms d\'applications</string>
@@ -497,4 +497,6 @@
     <string name="battery_charging">Batterie en charge</string>
     <string name="battery_low">Batterie faible</string>
     <string name="event_provider_unread_notifications">Notifications non lues</string>
+    <string name="event_provider_missing_notification_access">Pour utiliser <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activez les notifications d\'application pour <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="zen_mode_enabled">Ne pas déranger est activé</string>
 </resources>
