@@ -498,4 +498,5 @@ A művelet nem visszavonható.</string>
     <string name="battery_low">Alacsony akkuszint</string>
     <string name="event_provider_unread_notifications">Olvasatlan értesítések</string>
     <string name="event_provider_missing_notification_access"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> használatához kapcsolja be az értesítéseket a következőhöz: <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="zen_mode_enabled">A Ne zavarjanak (DND) engedélyezett</string>
 </resources>
