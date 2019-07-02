@@ -422,10 +422,14 @@ class LawnchairSmartspaceController(val context: Context) {
         override fun onClick(v: View) {
             val launcher = Launcher.getLauncher(v.context)
             val opts = launcher.getActivityLaunchOptionsAsBundle(v)
-            launcher.startIntentSender(
-                    pendingIntent.intentSender, null,
-                    Intent.FLAG_ACTIVITY_NEW_TASK,
-                    Intent.FLAG_ACTIVITY_NEW_TASK, 0, opts)
+            try {
+                launcher.startIntentSender(
+                        pendingIntent.intentSender, null,
+                        Intent.FLAG_ACTIVITY_NEW_TASK,
+                        Intent.FLAG_ACTIVITY_NEW_TASK, 0, opts)
+            } catch (e: ActivityNotFoundException) {
+                // ignored
+            }
         }
     }
 
