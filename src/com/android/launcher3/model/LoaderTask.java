@@ -41,6 +41,7 @@ import android.util.LongSparseArray;
 import android.util.MutableInt;
 
 import ch.deletescape.lawnchair.iconpack.IconPackManager;
+import ch.deletescape.lawnchair.model.HomeWidgetMigrationTask;
 import ch.deletescape.lawnchair.sesame.Sesame;
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
@@ -247,6 +248,10 @@ public class LoaderTask implements Runnable {
         } catch (Exception e) {
             // Migration failed. Clear workspace.
             clearDb = true;
+        }
+
+        if (!clearDb) {
+            HomeWidgetMigrationTask.migrateIfNeeded(context);
         }
 
         if (!clearDb && GridSizeMigrationTask.ENABLED &&

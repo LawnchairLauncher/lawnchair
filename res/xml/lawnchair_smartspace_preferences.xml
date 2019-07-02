@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
-        android:key="pref_smartspace"
-        android:title="@string/home_widget"
-        android:summary="@string/smartspace_preferences_in_settings_desc"
-        android:defaultValue="@bool/config_enable_smartspace"
-        android:persistent="true" />
   
     <ch.deletescape.lawnchair.preferences.PreviewPreference
         android:key="pref_smartspace_preview"
