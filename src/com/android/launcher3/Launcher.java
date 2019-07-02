@@ -55,7 +55,9 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.os.Process;
 import android.os.StrictMode;
+import android.os.StrictMode.OnVmViolationListener;
 import android.os.UserHandle;
+import android.os.strictmode.Violation;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -76,6 +78,8 @@ import android.widget.Toast;
 
 import ch.deletescape.lawnchair.*;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
+import ch.deletescape.lawnchair.bugreport.BugReport;
+import ch.deletescape.lawnchair.bugreport.BugReportClient;
 import ch.deletescape.lawnchair.theme.ThemeOverride;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.LauncherStateManager.StateListener;
@@ -114,6 +118,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
@@ -258,6 +263,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (DEBUG_STRICT_MODE) {
+            // TODO: Revise policy and potentially change this to send bug reports too
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                     .detectDiskReads()
                     .detectDiskWrites()
@@ -269,7 +275,20 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                     .detectLeakedClosableObjects()
                     .detectActivityLeaks()
                     .penaltyLog()
-                    .penaltyDeath()
+                    //.penaltyDeath()
+                    .penaltyListener(new LooperExecutor(getMainLooper()),
+                            new OnVmViolationListener() {
+                                @Override
+                                public void onVmViolation(Violation v) {
+                                    BugReportClient.Companion.getInstance(Launcher.this)
+                                            .sendReport(new BugReport(
+                                                    v.getMessage(),
+                                                    v.toString() + "\n" +
+                                                            v.getStackTrace().toString(),
+                                                    null
+                                            ));
+                                }
+                            })
                     .build());
         }
 
