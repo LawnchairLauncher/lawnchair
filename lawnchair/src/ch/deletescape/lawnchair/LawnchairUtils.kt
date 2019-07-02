@@ -872,5 +872,3 @@ fun Context.checkPackagePermission(packageName: String, permissionName: String):
     }
     return false
 }
-
-fun <T> Sequence<T>.isEmpty() = !iterator().hasNext()
