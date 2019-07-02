@@ -65,9 +65,9 @@
             android:persistent="true"
             android:title="@string/icon_scale_pref_title"
             app:defaultSeekbarValue="1.0"
-            app:maxValue="1.5"
+            app:maxValue="2.0"
             app:minValue="0.3"
-            app:steps="120"
+            app:steps="170"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100" />
 
