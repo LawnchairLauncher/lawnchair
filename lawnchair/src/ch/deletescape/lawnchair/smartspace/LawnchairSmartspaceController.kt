@@ -17,6 +17,7 @@
 
 package ch.deletescape.lawnchair.smartspace
 
+import android.app.Notification
 import android.app.PendingIntent
 import android.content.*
 import android.content.pm.PackageManager
@@ -32,6 +33,7 @@ import android.util.Log
 import android.view.View
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.util.Temperature
+import ch.deletescape.lawnchair.util.hasFlag
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -193,6 +195,9 @@ class LawnchairSmartspaceController(val context: Context) {
         var cardUpdateListener: ((DataProvider, CardData?) -> Unit)? = null
 
         private var currentData: DataContainer? = null
+
+        protected val context = controller.context
+        protected val resources = context.resources
 
         open fun performSetup() {
             onSetupComplete()
@@ -417,7 +422,7 @@ class LawnchairSmartspaceController(val context: Context) {
         }
     }
 
-    class PendingIntentClickListener(private val pendingIntent: PendingIntent) : View.OnClickListener {
+    open class PendingIntentClickListener(private val pendingIntent: PendingIntent) : View.OnClickListener {
 
         override fun onClick(v: View) {
             val launcher = Launcher.getLauncher(v.context)
@@ -429,6 +434,20 @@ class LawnchairSmartspaceController(val context: Context) {
                         Intent.FLAG_ACTIVITY_NEW_TASK, 0, opts)
             } catch (e: ActivityNotFoundException) {
                 // ignored
+            }
+        }
+    }
+
+    class NotificationClickListener(sbn: StatusBarNotification)
+        : PendingIntentClickListener(sbn.notification.contentIntent) {
+
+        private val key = sbn.key
+        private val autoCancel = sbn.notification.flags.hasFlag(Notification.FLAG_AUTO_CANCEL)
+
+        override fun onClick(v: View) {
+            super.onClick(v)
+            if (autoCancel) {
+                Launcher.getLauncher(v.context).popupDataProvider.cancelNotification(key)
             }
         }
     }

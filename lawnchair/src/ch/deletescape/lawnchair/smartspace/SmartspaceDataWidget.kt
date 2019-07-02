@@ -45,7 +45,6 @@ import com.android.launcher3.Utilities
 @Keep
 class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : LawnchairSmartspaceController.DataProvider(controller) {
 
-    private val context = controller.context
     private val prefs = Utilities.getLawnchairPrefs(context)
     private val smartspaceWidgetHost = SmartspaceWidgetHost()
     private var smartspaceView: SmartspaceWidgetHostView? = null

@@ -664,4 +664,5 @@
     <string name="battery_low">Battery low</string>
     <string name="event_provider_unread_notifications">Unread notifications</string>
     <string name="event_provider_missing_notification_access">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on app notifications for <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="zen_mode_enabled">Do not disturb is enabled</string>
 </resources>

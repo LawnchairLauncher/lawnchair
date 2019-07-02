@@ -26,6 +26,7 @@ import ch.deletescape.lawnchair.flowerpot.Flowerpot
 import ch.deletescape.lawnchair.flowerpot.FlowerpotApps
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.CardData
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.Line
+import com.android.launcher3.R
 import com.android.launcher3.notification.NotificationInfo
 import com.android.launcher3.util.PackageUserKey
 
@@ -38,11 +39,22 @@ class NotificationUnreadProvider(controller: LawnchairSmartspaceController) :
     private var flowerpotLoaded = false
     private var flowerpotApps: FlowerpotApps? = null
     private val tmpKey = PackageUserKey(null, null)
+    private var zenModeEnabled = false
+        set(value) {
+            if (field != value) {
+                field = value
+                onNotificationsChanged()
+            }
+        }
+    private val zenModeListener = ZenModeListener(controller.context.contentResolver) {
+        zenModeEnabled = it
+    }
 
     override fun waitForSetup() {
         super.waitForSetup()
 
         manager.addListener(this)
+        zenModeListener.startListening()
         runOnUiWorkerThread {
             flowerpotApps = Flowerpot.Manager.getInstance(controller.context)
                     .getPot("COMMUNICATION", true)?.apps
@@ -76,6 +88,12 @@ class NotificationUnreadProvider(controller: LawnchairSmartspaceController) :
                     }
                 } ?: return null
 
+        if (zenModeEnabled) {
+            return CardData(
+                    context.getDrawable(R.drawable.ic_zen_mode)!!.toBitmap(),
+                    listOf(Line(context.getString(R.string.zen_mode_enabled))))
+        }
+
         val context = controller.context
         val notif = NotificationInfo(context, sbn)
         val app = getApp(sbn).toString()
@@ -94,8 +112,8 @@ class NotificationUnreadProvider(controller: LawnchairSmartspaceController) :
             lines.add(appLine)
         }
         return CardData(
-                sbn.loadSmallIcon(context)?.toBitmap(),
-                lines, notif.intent)
+                sbn.loadSmallIcon(context)?.toBitmap(), lines,
+                LawnchairSmartspaceController.NotificationClickListener(sbn))
     }
 
     private fun splitTitle(title: String): Array<String> {
@@ -108,9 +126,9 @@ class NotificationUnreadProvider(controller: LawnchairSmartspaceController) :
         return arrayOf(title)
     }
 
-
     override fun onDestroy() {
         super.onDestroy()
         manager.removeListener(this)
+        zenModeListener.stopListening()
     }
 }

@@ -42,7 +42,6 @@ import java.util.concurrent.TimeUnit
 class OnePlusWeatherDataProvider(controller: LawnchairSmartspaceController) :
         LawnchairSmartspaceController.DataProvider(controller), OPWeatherProvider.IWeatherCallback {
 
-    private val context = controller.context
     private val provider by lazy { OPWeatherProvider(context) }
     private val locationAccess by lazy { context.checkLocationAccess() }
     private val locationManager: LocationManager? by lazy { if (locationAccess) {
