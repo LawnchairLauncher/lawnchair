@@ -495,4 +495,5 @@
     <string name="battery_low">Energia baixa</string>
     <string name="event_provider_unread_notifications">Notificações não lidas</string>
     <string name="event_provider_missing_notification_access">Para utilizar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ative as notificações para a aplicação <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="zen_mode_enabled">A opção Não incomodar está ativa</string>
 </resources>
