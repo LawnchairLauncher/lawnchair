@@ -491,4 +491,5 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="battery_low">残量低下</string>
     <string name="event_provider_unread_notifications">未読の通知</string>
     <string name="event_provider_missing_notification_access"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g>を使用するには、<xliff:g example="My App" id="name">%2$s</xliff:g>のアプリの通知を有効にして下さい。</string>
+    <string name="zen_mode_enabled">マナーモードは有効です</string>
 </resources>
