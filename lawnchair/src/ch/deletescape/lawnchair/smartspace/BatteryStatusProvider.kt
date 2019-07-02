@@ -30,7 +30,6 @@ import com.android.launcher3.R
 class BatteryStatusProvider(controller: LawnchairSmartspaceController) :
         LawnchairSmartspaceController.DataProvider(controller) {
 
-    private val context = controller.context
     private val batteryReceiver = object : BroadcastReceiver() {
 
         override fun onReceive(context: Context?, intent: Intent) {
