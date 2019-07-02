@@ -32,6 +32,7 @@ import ch.deletescape.lawnchair.dpToPx
 import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.states.HomeState
+import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -241,20 +242,24 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         val colors = ArrayList<Pair<Float, Int>>()
         colors.add(Pair(Float.NEGATIVE_INFINITY, fullShelfColor))
         colors.add(Pair(0.5f, fullShelfColor))
+        fullBlurProgress = 0.5f
         if (hasRecents && hasDockBackground) {
             if (homeProgress < recentsProgress) {
                 colors.add(Pair(homeProgress, homeShelfColor))
                 colors.add(Pair(recentsProgress, recentsShelfColor))
+                fullBlurProgress = recentsProgress
             } else {
                 colors.add(Pair(recentsProgress, recentsShelfColor))
                 colors.add(Pair(homeProgress, homeShelfColor))
+                fullBlurProgress = homeProgress
             }
         } else if (hasDockBackground) {
             colors.add(Pair(homeProgress, homeShelfColor))
+            fullBlurProgress = homeProgress
         } else if (hasRecents) {
             colors.add(Pair(recentsProgress, recentsShelfColor))
+            fullBlurProgress = recentsProgress
         }
-        fullBlurProgress = Math.max(Math.max(homeProgress, recentsProgress), 0.5f)
         colors.add(Pair(1f, nullShelfColor))
         colors.add(Pair(Float.POSITIVE_INFINITY, nullShelfColor))
 
@@ -358,12 +363,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             useFlatColor -> ((1 - mProgress) * 255).toInt()
             mProgress >= fullBlurProgress -> Math.round(255 * ACCEL_2.getInterpolation(
                     Math.max(0f, 1 - mProgress) / (1 - fullBlurProgress)))
-            else -> {
-                val startAlpha = if (fullBlurProgress >= 1f) 0f else 255f
-                Math.round(
-                        Utilities.mapToRange(mProgress, 0.toFloat(), fullBlurProgress, 255f,
-                                startAlpha, Interpolators.clampToProgress(ACCEL, 0.5f, 1f)))
-            }
+            else -> 255
         }
         blurDrawable?.alpha = alpha
         shadowHelper.paint.alpha = alpha
