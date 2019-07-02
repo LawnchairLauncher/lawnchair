@@ -497,4 +497,6 @@
     <string name="battery_charging">Batterie lädt</string>
     <string name="battery_low">Batterie fast leer</string>
     <string name="event_provider_unread_notifications">Ungelesene Benachrichtigungen</string>
+    <string name="event_provider_missing_notification_access">Zur Benutzung von <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> bitte App-Benachrichtigungen für <xliff:g example="My App" id="name">%2$s</xliff:g> einschalten.</string>
+    <string name="zen_mode_enabled">\"Nicht stören\" ist aktiviert</string>
 </resources>
