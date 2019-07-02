@@ -489,4 +489,14 @@
     <string name="tab_type_custom_desc">Χειροκίνητη επιλογή εφαρμογών για αυτήν την καρτέλα.</string>
     <string name="tab_type_smart">Έξυπνη καρτέλα</string>
     <string name="categorization">Κατηγοριοποίηση</string>
+    <string name="folder_cover_mode">Παραλλαγή φακέλου</string>
+    <string name="folder_cover_mode_desc">Πατήστε για άνοιγμα πρώτης εφαρμογής, σύρετε πάνω για άνοιγμα του φακέλου</string>
+    <string name="pref_smartspace_event_providers">Πηγές πληροφοριών έξυπνης περιοχής</string>
+    <string name="event_provider_now_playing">Παίζεται τώρα</string>
+    <string name="battery_status">Κατάσταση μπαταρίας</string>
+    <string name="battery_charging">Φόρτιση μπαταρίας</string>
+    <string name="battery_low">Χαμηλό επίπεδο μπαταρίας</string>
+    <string name="event_provider_unread_notifications">Μη αναγνωσμένες ειδοποιήσεις</string>
+    <string name="event_provider_missing_notification_access">Για χρήση <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ενεργοποιήστε την πρόσβαση της εφαρμογής στις ειδοποιήσεις για <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="zen_mode_enabled">Η λειτουργία \"Μην ενοχλείτε\" είναι ενεργοποιημένη</string>
 </resources>
