@@ -118,7 +118,7 @@
     <string name="gradient">渐变</string>
     <!--Marker C-->
     <string name="pref_category_icons">图标</string>
-    <string name="pref_category_aag">速览</string>
+    <string name="pref_category_aag">概览</string>
     <string name="pref_category_pixel_searchbar">Pixel 搜索栏</string>
     <string name="pref_category_weather">天气</string>
     <string name="pref_category_misc">其它</string>
@@ -497,4 +497,5 @@
     <string name="battery_low">低电量</string>
     <string name="event_provider_unread_notifications">未读通知</string>
     <string name="event_provider_missing_notification_access">若要使用 <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>，请为 <xliff:g example="My App" id="name">%2$s</xliff:g> 开启应用通知</string>
+    <string name="zen_mode_enabled">勿扰模式已启用</string>
 </resources>
