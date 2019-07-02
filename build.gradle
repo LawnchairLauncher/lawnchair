@@ -62,6 +62,7 @@ android {
         def isPublicBuild = System.getenv("CI_BUILD") == "true" && System.getenv("DRONE_BRANCH") == "alpha"
         buildConfigField "boolean", "FEATURE_QUINOA", "true"
         buildConfigField "boolean", "FEATURE_SETTINGS_SEARCH", "true"
+        buildConfigField "boolean", "DEBUG_STRICT_MODE", isPublicBuild ? "false" : "true"
 
         def githubToken = localProps.getProperty('githubToken') ?: '"' + System.getenv("GITHUB_TOKEN") + '"'
         buildConfigField "String", "GITHUB_TOKEN", githubToken
