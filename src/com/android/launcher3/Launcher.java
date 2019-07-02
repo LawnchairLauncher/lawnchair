@@ -154,7 +154,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
-    static final boolean DEBUG_STRICT_MODE = false;
+    static final boolean DEBUG_STRICT_MODE = BuildConfig.DEBUG_STRICT_MODE;
 
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
@@ -267,6 +267,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
                     .detectLeakedSqlLiteObjects()
                     .detectLeakedClosableObjects()
+                    .detectActivityLeaks()
                     .penaltyLog()
                     .penaltyDeath()
                     .build());
