@@ -492,4 +492,5 @@
     <string name="battery_low">Baterija slaba</string>
     <string name="event_provider_unread_notifications">Nepročitane obavijesti</string>
     <string name="event_provider_missing_notification_access">Za uporabu <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, uključite obavijesti za <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="zen_mode_enabled">Uključena opcija \'Ne ometaj\'</string>
 </resources>
