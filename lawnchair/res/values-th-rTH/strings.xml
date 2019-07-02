@@ -494,4 +494,6 @@
     <string name="battery_charging">กำลังชาร์จแบตเตอรี่</string>
     <string name="battery_low">แบตเตอรี่ต่ำ</string>
     <string name="event_provider_unread_notifications">การแจ้งเตือนที่ยังไม่ได้อ่าน</string>
+    <string name="event_provider_missing_notification_access">เพื่อใช้ <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, เปิดใช้งานการแจ้งเตือนแอปสำหรับ <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="zen_mode_enabled">เปิดใช้งานโหมดห้ามรบกวนอยู่</string>
 </resources>
