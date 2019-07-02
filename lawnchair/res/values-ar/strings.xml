@@ -297,12 +297,12 @@
     <string name="theme_dark_dark_text">مظلم مع نص مظلم</string>
     <string name="theme_black">أسود</string>
     <string name="theme_black_dark_text">أسود مع نص مظلم</string>
-    <string name="theme_dark_theme_mode">ثيم مظلم</string>
+    <string name="theme_dark_theme_mode">سمة مظلم</string>
     <string name="theme_dark_theme_mode_on">مفعل</string>
     <string name="theme_dark_theme_mode_off">مغلق</string>
-    <string name="theme_dark_theme_mode_follow_daylight">اتبع ضوء اليوم</string>
-    <string name="theme_use_black">استخدم أسود نقي</string>
-    <string name="theme_use_dark_text">استخدم نص مظلم</string>
+    <string name="theme_dark_theme_mode_follow_daylight">إتبع ضوء اليوم</string>
+    <string name="theme_use_black">إستخدم أسود نقي</string>
+    <string name="theme_use_dark_text">إستخدم نص مظلم</string>
     <string name="pref_qsb_color">اللون</string>
     <string name="hide_from_predictions">إخفاء من الإقتراحات</string>
     <string name="hide_from_predictions_summary">لا تظهر أبداً في اقتراحات قائمة التطبيقات</string>
@@ -431,10 +431,10 @@
     <string name="icon_text_scale_pref_title">حجم النص</string>
     <string name="text_color">لون النص</string>
     <string name="background_color">لون الخلفية</string>
-    <string name="pref_notification_count_title">عرض عداد الإشعارات</string>
-    <string name="pref_notification_count_summary">عرض عدد الاشعارات داخل النافذة المنبثقة</string>
+    <string name="pref_notification_count_title">عرض عداد الإشعار</string>
+    <string name="pref_notification_count_summary">عرض عداد الإشعار داخل النقط</string>
     <string name="pref_center_wallpaper">خلفية مركزية دائما</string>
-    <string name="pref_center_wallpaper_summary">سيؤدي هذا إلى تعطيل تأثير التمرير للخلفية</string>
+    <string name="pref_center_wallpaper_summary">سيؤدي هذا إلى تعطيل تأثير تمرير الخلفية</string>
     <string name="pref_icon_popup_menu">عناصر القائمة المنبثقة</string>
     <string name="pref_appcategorization_enable_title">تصنيف التطبيقات</string>
     <string name="pref_appcategorization_enable_summary">إصلح فوضى درج التطبيقات الخاص بي.</string>
@@ -466,24 +466,24 @@
     <string name="reset_custom_icons_confirmation">هل تريد بالتأكيد إعادة تعيين جميع الأيقونات المخصصة؟ هذا العمل غير قابل للعكس.</string>
     <string name="open_image_picker">فتح منتقي الصور</string>
     <string name="import_icon">استيراد أيقونة</string>
-    <string name="import_as_adaptive">الأيقونة المتكيفة</string>
+    <string name="import_as_adaptive">كأيقونة متكيفة</string>
     <string name="bugreport_channel_name">تقرير الأخطاء</string>
-    <string name="status_channel_name">حالة تحميل تقرير الأخطاء</string>
-    <string name="dogbin_uploading">جاري التحميل</string>
+    <string name="status_channel_name">حالة تحميل تقرير الخطأ</string>
+    <string name="dogbin_uploading">التحميل في التقدم</string>
     <string name="action_dogbin_upload">تحميل إلى dogbin</string>
     <string name="action_dogbin_upload_error">فشلت عملية التحميل</string>
     <string name="action_dogbin_copy_link">نسخ الرابط</string>
-    <string name="lawnchair_bug_report">تقرير أخطاء Lawnchair</string>
+    <string name="lawnchair_bug_report">تقرير خطأ Lawnchair</string>
     <string name="copied_toast">تم النسخ</string>
     <string name="action_copy">نسخ</string>
     <string name="action_copy_link">نسخ الرابط</string>
     <string name="action_share">مشاركة</string>
-    <string name="animation_type_title">تأثير الحركة عند فتح التطبيق</string>
+    <string name="animation_type_title">تأثير حركة فتح التطبيق</string>
     <string name="animation_type_default">الإفتراضي</string>
     <string name="animation_type_pie">Pie</string>
-    <string name="animation_type_pie_like">Pie-like</string>
+    <string name="animation_type_pie_like">شبيه-Pie</string>
     <string name="animation_type_reveal">كشف</string>
-    <string name="animation_type_slide_up">إنزلاق للأعلى</string>
+    <string name="animation_type_slide_up">إنزلق للأعلى</string>
     <string name="animation_type_scale_up">رفع للأعلى</string>
     <string name="animation_type_blink">وميض</string>
     <string name="animation_type_fade">تلاشي</string>
@@ -492,7 +492,7 @@
     <string name="pref_appcategorization_flowerpot_title">الفئة</string>
     <string name="pref_appcategorization_flowerpot_summary">يتم اختيار التطبيقات تلقائيًا استنادًا إلى بيانات التعريف الخاصة بها.</string>
     <string name="select_tab_type">نوع التبويب</string>
-    <string name="tab_type_custom">الألسنة الخاصة</string>
+    <string name="tab_type_custom">التبويب المخصص</string>
     <string name="tab_type_custom_desc">اختر التطبيقات يدويًا لعلامة التبويب هذه.</string>
     <string name="tab_type_smart">تبويب ذكي</string>
     <string name="categorization">التصنيفات</string>
@@ -505,4 +505,5 @@
     <string name="battery_low">البطارية منخفضة</string>
     <string name="event_provider_unread_notifications">إشعارات غير مقروءة</string>
     <string name="event_provider_missing_notification_access">لإستخدام <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>، قم بتشغيل إشعارات التطبيق لـ<xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="zen_mode_enabled">عدم الإزعاج قيد التشغيل</string>
 </resources>
