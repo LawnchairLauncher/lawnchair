@@ -487,6 +487,7 @@ Tindakan ini tidak bisa dibatalkan.</string>
     <string name="tab_type_custom_desc">Pilih aplikasi untuk tab ini secara manual.</string>
     <string name="tab_type_smart">Tab pintar</string>
     <string name="categorization">Kategorisasi</string>
+    <string name="folder_cover_mode">Mode kover</string>
     <string name="folder_cover_mode_desc">Ketuk untuk membuka app pertama, geser ke atas untuk membuka folder</string>
     <string name="pref_smartspace_event_providers">Sumber Event</string>
     <string name="event_provider_now_playing">Sedang diputar</string>
@@ -495,4 +496,5 @@ Tindakan ini tidak bisa dibatalkan.</string>
     <string name="battery_low">Baterai lemah</string>
     <string name="event_provider_unread_notifications">Notifikasi yang belum dibaca</string>
     <string name="event_provider_missing_notification_access">Untuk menggunakan <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, hidupkan pengaturan notifikasi di aplikasi <xliff:g example="My App" id="name">%2$s</xliff:g> tersebut</string>
+    <string name="zen_mode_enabled">Jangan ganggu diaktifkan</string>
 </resources>
