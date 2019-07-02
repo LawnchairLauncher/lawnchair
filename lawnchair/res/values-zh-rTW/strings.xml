@@ -496,4 +496,5 @@
     <string name="battery_charging">充電中</string>
     <string name="battery_low">低電量</string>
     <string name="event_provider_unread_notifications">未讀通知</string>
+    <string name="zen_mode_enabled">已打開勿擾模式</string>
 </resources>
