@@ -113,4 +113,7 @@ public final class FallbackActivityControllerHelper extends
     public int getContainerType() {
         return LauncherLogProto.ContainerType.SIDELOADED_LAUNCHER;
     }
+
+    @Override
+    public void onLaunchTaskSuccess(RecentsActivity activity) { }
 }
