@@ -124,6 +124,7 @@ class BlankActivity : AppCompatActivity() {
                         callback(resultCode, resultData)
                     }
                 })
+                addFlags(flags)
             }
             start(context, intent)
         }
