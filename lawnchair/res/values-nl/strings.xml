@@ -497,4 +497,5 @@
     <string name="battery_low">Accu bijna leeg</string>
     <string name="event_provider_unread_notifications">Ongelezen meldingen</string>
     <string name="event_provider_missing_notification_access">Om <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> te gebruiken, schakel app-meldingen in voor <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="zen_mode_enabled">Niet storen is ingeschakeld</string>
 </resources>
