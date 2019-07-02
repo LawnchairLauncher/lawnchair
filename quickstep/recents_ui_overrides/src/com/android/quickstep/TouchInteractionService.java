@@ -43,6 +43,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.Region;
@@ -74,6 +76,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.logging.EventLogArray;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.UiThreadHelper;
@@ -92,6 +95,7 @@ import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
@@ -153,6 +157,7 @@ public class TouchInteractionService extends Service implements
                     .asInterface(bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
             MAIN_THREAD_EXECUTOR.execute(TouchInteractionService.this::initInputMonitor);
             MAIN_THREAD_EXECUTOR.execute(TouchInteractionService.this::onSystemUiProxySet);
+            MAIN_THREAD_EXECUTOR.execute(() -> preloadOverview(true /* fromInit */));
         }
 
         @Override
@@ -686,6 +691,54 @@ public class TouchInteractionService extends Service implements
             mConsumer = mResetGestureInputConsumer;
             mUncheckedConsumer = mConsumer;
         }
+    }
+
+    private void preloadOverview(boolean fromInit) {
+        if (!mIsUserUnlocked) {
+            return;
+        }
+
+        final ActivityControlHelper<BaseDraggingActivity> activityControl =
+                mOverviewComponentObserver.getActivityControlHelper();
+        if (activityControl.getCreatedActivity() == null) {
+            // Make sure that UI states will be initialized.
+            activityControl.createActivityInitListener((activity, wasVisible) -> {
+                AppLaunchTracker.INSTANCE.get(activity);
+                return false;
+            }).register();
+        } else if (fromInit) {
+            // The activity has been created before the initialization of overview service. It is
+            // usually happens when booting or launcher is the top activity, so we should already
+            // have the latest state.
+            return;
+        }
+
+        // Pass null animation handler to indicate this start is preload.
+        BackgroundExecutor.get().submit(
+                () -> ActivityManagerWrapper.getInstance().startRecentsActivity(
+                        mOverviewComponentObserver.getOverviewIntentIgnoreSysUiState(),
+                        null /* assistDataReceiver */, null /* animationHandler */,
+                        null /* resultCallback */, null /* resultCallbackHandler */));
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        if (!mIsUserUnlocked) {
+            return;
+        }
+        final ActivityControlHelper activityControl =
+                mOverviewComponentObserver.getActivityControlHelper();
+        final BaseDraggingActivity activity = activityControl.getCreatedActivity();
+        if (activity == null || activity.isStarted()) {
+            // We only care about the existing background activity.
+            return;
+        }
+        if (mOverviewComponentObserver.canHandleConfigChanges(activity.getComponentName(),
+                activity.getResources().getConfiguration().diff(newConfig))) {
+            return;
+        }
+
+        preloadOverview(false /* fromInit */);
     }
 
     @Override
