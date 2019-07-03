@@ -683,4 +683,9 @@
         <item>Sweet dreams!</item>
         <item>Don\'t stay up too long</item>
     </string-array>
+
+    <string name="onbording">Onboarding</string>
+    <string name="onbording_settings_title">Set-up %s</string>
+    <string name="onbording_settings_summary">Long press your home screen</string>
+    <string name="onboarding_swipe_up">Swipe up to see all your apps</string>
 </resources>

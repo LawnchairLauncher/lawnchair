@@ -82,6 +82,7 @@ import ch.deletescape.lawnchair.preferences.ResumablePreference;
 import ch.deletescape.lawnchair.preferences.SmartspaceEventProvidersFragment;
 import ch.deletescape.lawnchair.preferences.SmartspaceEventProvidersPreference;
 import ch.deletescape.lawnchair.settings.ui.search.SettingsSearchActivity;
+import ch.deletescape.lawnchair.smartspace.OnboardingProvider;
 import ch.deletescape.lawnchair.theme.ThemeOverride;
 import ch.deletescape.lawnchair.theme.ThemeOverride.ThemeSet;
 import ch.deletescape.lawnchair.views.SpringRecyclerView;
@@ -179,6 +180,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
         if (hasPreview) {
             overrideOpenAnim();
         }
+
+        Utilities.getDevicePrefs(this).edit().putBoolean(OnboardingProvider.PREF_HAS_OPENED_SETTINGS, true).apply();
     }
 
     @Override

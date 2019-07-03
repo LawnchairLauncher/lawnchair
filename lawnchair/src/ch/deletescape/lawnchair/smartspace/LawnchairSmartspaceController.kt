@@ -479,6 +479,7 @@ class LawnchairSmartspaceController(val context: Context) {
                 Pair(NotificationUnreadProvider::class.java.name, R.string.event_provider_unread_notifications),
                 Pair(BatteryStatusProvider::class.java.name, R.string.battery_status),
                 Pair(PersonalityProvider::class.java.name, R.string.personality_provider),
+                Pair(OnboardingProvider::class.java.name, R.string.onbording),
                 Pair(FakeDataProvider::class.java.name, R.string.weather_provider_testing))
 
         fun getDisplayName(providerName: String): Int {
