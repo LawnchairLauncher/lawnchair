@@ -872,3 +872,6 @@ fun Context.checkPackagePermission(packageName: String, permissionName: String):
     }
     return false
 }
+
+inline val Calendar.hourOfDay get() = get(Calendar.HOUR_OF_DAY)
+inline val Calendar.dayOfYear get() = get(Calendar.DAY_OF_YEAR)
