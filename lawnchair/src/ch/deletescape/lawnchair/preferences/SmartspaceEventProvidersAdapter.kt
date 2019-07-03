@@ -291,6 +291,7 @@ class SmartspaceEventProvidersAdapter(private val context: Context)
             list.add(NowPlayingProvider::class.java.name)
             list.add(NotificationUnreadProvider::class.java.name)
             list.add(BatteryStatusProvider::class.java.name)
+            list.add(PersonalityProvider::class.java.name)
             if (context.lawnchairPrefs.showDebugInfo)
                 list.add(FakeDataProvider::class.java.name)
             return list
