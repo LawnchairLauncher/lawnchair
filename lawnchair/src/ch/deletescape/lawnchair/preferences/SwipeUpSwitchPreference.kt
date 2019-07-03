@@ -8,6 +8,8 @@ import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Switch
+import ch.deletescape.lawnchair.applyColor
+import ch.deletescape.lawnchair.getColorEngineAccent
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.search.SearchIndex
 import ch.deletescape.lawnchair.util.extensions.d
@@ -52,7 +54,8 @@ class SwipeUpSwitchPreference(context: Context, attrs: AttributeSet? = null) : S
                 android.Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED
 
         override fun createSliceView(): View {
-            return (super.createSliceView() as Switch).apply {
+            return Switch(context).apply {
+                applyColor(context.getColorEngineAccent())
                 isChecked = OverviewInteractionState.getInstance(context).isSwipeUpGestureEnabled
                 setOnCheckedChangeListener { _, isChecked ->
                     persistBoolean(isChecked)
