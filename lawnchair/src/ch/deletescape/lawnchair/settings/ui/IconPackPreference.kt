@@ -36,8 +36,11 @@ import com.android.launcher3.R
 import java.lang.IllegalStateException
 
 class IconPackPreference(context: Context, attrs: AttributeSet? = null) : Preference(context, attrs) {
+
     private val ipm = IconPackManager.getInstance(context)
     private val packList = ipm.packList
+
+    private val onChangeListener = ::updatePreview
 
     init {
         layoutResource = R.layout.pref_with_preview_icon
@@ -47,13 +50,13 @@ class IconPackPreference(context: Context, attrs: AttributeSet? = null) : Prefer
     override fun onAttached() {
         super.onAttached()
 
-        ipm.addListener(this::updatePreview)
+        ipm.addListener(onChangeListener)
     }
 
     override fun onDetached() {
         super.onDetached()
 
-       ipm.removeListener(this::updatePreview)
+       ipm.removeListener(onChangeListener)
     }
 
     private fun updatePreview() {
