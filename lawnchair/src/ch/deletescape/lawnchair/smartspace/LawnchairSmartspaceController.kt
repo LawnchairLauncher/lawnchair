@@ -54,8 +54,13 @@ class LawnchairSmartspaceController(val context: Context) {
     private val eventDataProviders = mutableListOf<DataProvider>()
     private val eventDataMap = mutableMapOf<DataProvider, CardData?>()
 
+    private val stockProviderClasses = listOf(
+            OnboardingProvider::class.java)
+    private val stockProviders = mutableListOf<DataProvider>()
+
     init {
         onProviderChanged()
+        initStockProviders()
     }
 
     private fun updateWeatherData(weather: WeatherData?) {
@@ -75,10 +80,11 @@ class LawnchairSmartspaceController(val context: Context) {
     }
 
     private fun forceUpdate() {
-        updateData(weatherData, eventDataProviders
-                .asSequence()
+        val allProviders = stockProviders.asSequence() + eventDataProviders.asSequence()
+        val eventData = allProviders
                 .mapNotNull { eventDataMap[it] }
-                .firstOrNull())
+                .firstOrNull()
+        updateData(weatherData, eventData)
     }
 
     private fun notifyListeners() {
@@ -137,6 +143,22 @@ class LawnchairSmartspaceController(val context: Context) {
 
             runOnMainThread {
                 needsUpdate.forEach { it.forceUpdate() }
+                forceUpdate()
+            }
+        }
+    }
+
+    private fun initStockProviders() {
+        runOnUiWorkerThread {
+            val providers = mutableListOf<DataProvider>()
+            stockProviderClasses
+                    .map { createDataProvider(it.name) }
+                    .filterTo(providers) { it !is BlankDataProvider }
+                    .forEach { it.cardUpdateListener = ::updateCardData }
+
+            runOnMainThread {
+                stockProviders.addAll(providers)
+                providers.forEach { it.forceUpdate() }
                 forceUpdate()
             }
         }
