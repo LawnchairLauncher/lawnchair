@@ -33,6 +33,7 @@ import ch.deletescape.lawnchair.preferences.DockStyle
 import ch.deletescape.lawnchair.sesame.Sesame
 import ch.deletescape.lawnchair.settings.GridSize
 import ch.deletescape.lawnchair.settings.GridSize2D
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import ch.deletescape.lawnchair.smartspace.BatteryStatusProvider
 import ch.deletescape.lawnchair.smartspace.NotificationUnreadProvider
 import ch.deletescape.lawnchair.smartspace.NowPlayingProvider
@@ -126,7 +127,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val autoAddInstalled by BooleanPref("pref_add_icon_to_home", true, doNothing)
     private val homeMultilineLabel by BooleanPref("pref_homeIconLabelsInTwoLines", false, recreate)
     val homeLabelRows get() = if(homeMultilineLabel) 2 else 1
-    val allowOverlap by BooleanPref("pref_allowOverlap", false, reloadAll)
+    val allowOverlap by BooleanPref(SettingsActivity.ALLOW_OVERLAP_PREF, false, reloadAll)
     val desktopTextScale by FloatPref("pref_iconTextScaleSB", 1f, reloadAll)
     val centerWallpaper by BooleanPref("pref_centerWallpaper")
     val lockDesktop by BooleanPref("pref_lockDesktop", false, reloadAll)

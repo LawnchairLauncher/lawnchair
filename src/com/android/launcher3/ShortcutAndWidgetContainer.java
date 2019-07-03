@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import org.jetbrains.annotations.NotNull;
@@ -61,7 +62,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements LawnchairPr
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mPrefs.addOnPreferenceChangeListener("pref_allowOverlap", this);
+        mPrefs.addOnPreferenceChangeListener(SettingsActivity.ALLOW_OVERLAP_PREF, this);
     }
 
     @Override
@@ -74,7 +75,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements LawnchairPr
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mPrefs.removeOnPreferenceChangeListener("pref_allowOverlap", this);
+        mPrefs.removeOnPreferenceChangeListener(SettingsActivity.ALLOW_OVERLAP_PREF, this);
     }
 
     public void setCellDimensions(int cellWidth, int cellHeight, int countX, int countY) {
