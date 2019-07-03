@@ -23,8 +23,8 @@ import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.BuildConfig
+import com.topjohnwu.superuser.Shell
 import eu.chainfire.librootjava.RootIPCReceiver
-import eu.chainfire.libsuperuser.Shell
 import eu.chainfire.librootjava.RootJava
 import java.util.*
 
@@ -43,7 +43,6 @@ class RootHelperManager(private val context: Context) {
     }
 
     private var commandQueue = LinkedList<(IRootHelper) -> Unit>()
-    private var rootShell: Shell.Interactive? = null
     private var rootHelper: IRootHelper? = null
 
     init {
@@ -60,13 +59,11 @@ class RootHelperManager(private val context: Context) {
         context.lawnchairPrefs.autoLaunchRoot = isAvailable
         if (!isAvailable) return
         if (rootHelper != null) return
-        if (rootShell == null || rootShell?.isRunning != true) {
-            rootShell = Shell.Builder()
-                    .useSU()
-                    .open()
-        }
-        rootShell!!.addCommand(RootJava.getLaunchScript(context, RootHelper::class.java,
-                null, null, null, BuildConfig.APPLICATION_ID + ":rootHelper"))
+
+        RootJava.getLaunchScript(
+                context, RootHelper::class.java,
+                null, null, null, BuildConfig.APPLICATION_ID + ":rootHelper"
+                                ).forEach { Shell.su(it).submit() }
     }
 
     private fun executeQueuedCommands() {
@@ -75,8 +72,10 @@ class RootHelperManager(private val context: Context) {
         }
     }
 
-    companion object : SingletonHolder<RootHelperManager, Context>(ensureOnMainThread(useApplicationContext(::RootHelperManager))) {
+    companion object : SingletonHolder<RootHelperManager, Context>(
+            ensureOnMainThread(useApplicationContext(::RootHelperManager))
+                                                                  ) {
 
-        val isAvailable by lazy { Shell.SU.available() }
+        val isAvailable by lazy { Shell.rootAccess() }
     }
 }
