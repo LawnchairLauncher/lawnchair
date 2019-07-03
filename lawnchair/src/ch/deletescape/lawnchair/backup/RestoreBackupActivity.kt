@@ -245,7 +245,7 @@ class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader
                 val tintList = ColorStateList.valueOf(resolveInfo.color)
                 startButton.apply {
                     DrawableCompat.setTint(background, resolveInfo.color)
-                    DrawableCompat.setTint(drawable, resolveInfo.color)
+                    DrawableCompat.setTint(drawable, resolveInfo.foregroundColor)
                     backgroundTintList = tintList
                 }
                 backupName.apply {
