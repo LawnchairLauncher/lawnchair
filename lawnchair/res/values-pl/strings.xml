@@ -433,6 +433,7 @@
     <string name="pref_notification_count_summary">Wyświetlaj liczbę powiadomień wewnątrz kropek</string>
     <string name="pref_center_wallpaper">Zawsze środkuj tapetę</string>
     <string name="pref_center_wallpaper_summary">To wyłączy efekt przewijania tapety</string>
+    <string name="pref_icon_popup_menu">Wyskakujące elementy menu</string>
     <string name="pref_appcategorization_enable_title">Kategoryzuj aplikacje</string>
     <string name="pref_appcategorization_enable_summary">Posprzątaj bałagan na liście aplikacji.</string>
     <string name="pref_appcategorization_style_text">Styl</string>
@@ -502,4 +503,5 @@
     <string name="battery_low">Niski poziom baterii</string>
     <string name="event_provider_unread_notifications">Nieprzeczytane powiadomienia</string>
     <string name="event_provider_missing_notification_access">Aby używać <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, włącz powiadomienia aplikacji dla <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="zen_mode_enabled">Tryb nie przeszkadzać jest włączony</string>
 </resources>
