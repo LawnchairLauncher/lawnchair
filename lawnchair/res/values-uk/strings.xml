@@ -501,4 +501,5 @@
     <string name="battery_low">Низький заряд батареї</string>
     <string name="event_provider_unread_notifications">Непрочитані сповіщення</string>
     <string name="event_provider_missing_notification_access">Щоб користуватись <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включіть сповіщення додатку для <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="zen_mode_enabled">Режим \"Не турбувати\" ввімкнений</string>
 </resources>
