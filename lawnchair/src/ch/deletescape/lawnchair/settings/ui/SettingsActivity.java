@@ -130,6 +130,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
     public final static String FEED_THEME_PREF = "pref_feedTheme";
     public final static String SMARTSPACE_PREF = "pref_smartspace";
+    public final static String ALLOW_OVERLAP_PREF = "pref_allowOverlap";
     private final static String BRIDGE_TAG = "tag_bridge";
 
     public final static String EXTRA_TITLE = "title";
