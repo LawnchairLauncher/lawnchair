@@ -32,6 +32,10 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import ch.deletescape.lawnchair.*
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity.NOTIFICATION_BADGING
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity.SubSettingsFragment.CONTENT_RES_ID
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity.SubSettingsFragment.TITLE
 import ch.deletescape.lawnchair.util.Temperature
 import ch.deletescape.lawnchair.util.hasFlag
 import com.android.launcher3.Launcher
@@ -344,14 +348,25 @@ class LawnchairSmartspaceController(val context: Context) {
             }
 
             val context = controller.context
-            val cn = ComponentName(context, NotificationListener::class.java)
-            val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    .putExtra(":settings:fragment_args_key", cn.flattenToString())
             val providerName = getDisplayName(this::class.java.name)
-            val msg = context.getString(R.string.event_provider_missing_notification_access,
+            val intent: Intent
+            val msg: String
+            if (Utilities.ATLEAST_OREO) {
+                intent = Intent(context, SettingsActivity::class.java)
+                        .putExtra(SettingsActivity.EXTRA_FRAGMENT_ARG_KEY, "pref_icon_badging")
+                        .putExtra(TITLE, context.getString(R.string.general_pref_title))
+                        .putExtra(CONTENT_RES_ID, R.xml.lawnchair_desktop_preferences)
+                msg = context.getString(R.string.event_provider_missing_notification_dots,
+                                        context.getString(providerName))
+            } else {
+                val cn = ComponentName(context, NotificationListener::class.java)
+                intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        .putExtra(":settings:fragment_args_key", cn.flattenToString())
+                msg = context.getString(R.string.event_provider_missing_notification_access,
                                         context.getString(providerName),
                                         context.getString(R.string.derived_app_name))
+            }
             BlankActivity.startActivityWithDialog(
                     context, intent, 1030,
                     context.getString(R.string.title_missing_notification_access),
@@ -366,9 +381,11 @@ class LawnchairSmartspaceController(val context: Context) {
             val enabledListeners = Settings.Secure.getString(
                     context.contentResolver, "enabled_notification_listeners")
             val myListener = ComponentName(context, NotificationListener::class.java)
-            return enabledListeners?.let {
+            val listenerEnabled = enabledListeners?.let {
                 it.contains(myListener.flattenToString()) || it.contains(myListener.flattenToString())
             } ?: false
+            val badgingEnabled = Settings.Secure.getInt(context.contentResolver, NOTIFICATION_BADGING, 1) == 1
+            return listenerEnabled && badgingEnabled
         }
 
         override fun waitForSetup() {
