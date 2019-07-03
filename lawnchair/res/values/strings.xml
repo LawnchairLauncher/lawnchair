@@ -624,6 +624,8 @@
     <string name="weather_provider_accu" translatable="false">AccuWeather</string>
     <string name="bugreport_channel_name">Bug reports</string>
     <string name="status_channel_name">Bug report upload status</string>
+    <string name="bugreport_group_summary">%d new reports</string>
+    <string name="bugreport_group_summary_multiple">Multiple new reports</string>
     <string name="dogbin_uploading">Upload in progress</string>
     <string name="action_dogbin_upload">Upload to dogbin</string>
     <string name="action_dogbin_upload_error">Upload failed</string>
