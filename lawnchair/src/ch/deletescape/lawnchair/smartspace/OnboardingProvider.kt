@@ -22,6 +22,7 @@ package ch.deletescape.lawnchair.smartspace
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.R
@@ -30,28 +31,40 @@ import com.android.launcher3.allapps.DiscoveryBounce
 
 // TODO: add event for after installing a new Icon Pack with apply activity as intent
 class OnboardingProvider(controller: LawnchairSmartspaceController) :
-        LawnchairSmartspaceController.DataProvider(controller) {
+        LawnchairSmartspaceController.DataProvider(controller),
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val deviceKeys = arrayOf(PREF_HAS_OPENED_SETTINGS)
     private val prefKeys = arrayOf(DiscoveryBounce.HOME_BOUNCE_SEEN)
+
+    private val devicePrefs = Utilities.getDevicePrefs(context)
+    private val prefs = Utilities.getPrefs(context)
+
     override fun performSetup() {
         super.performSetup()
-        Utilities.getDevicePrefs(context).registerOnSharedPreferenceChangeListener { _, key ->
-                if (key in deviceKeys) {
-                    update(context)
-                }
-            }
-        Utilities.getPrefs(context).registerOnSharedPreferenceChangeListener { _, key ->
-                if (key in prefKeys) {
-                    update(context)
-                }
-            }
-        update(context)
+        devicePrefs.registerOnSharedPreferenceChangeListener(this)
+        prefs.registerOnSharedPreferenceChangeListener(this)
+        update()
     }
 
-    private fun update(context: Context) {
-        val devicePrefs = Utilities.getDevicePrefs(context)
-        val prefs = Utilities.getPrefs(context)
+    override fun onDestroy() {
+        super.onDestroy()
+        devicePrefs.unregisterOnSharedPreferenceChangeListener(this)
+        prefs.unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+        val keys = when (sharedPreferences) {
+            devicePrefs -> deviceKeys
+            prefs -> prefKeys
+            else -> return
+        }
+        if (key in keys) {
+            update()
+        }
+    }
+
+    private fun update() {
         val card = when {
             !prefs.getBoolean(DiscoveryBounce.HOME_BOUNCE_SEEN, false) -> LawnchairSmartspaceController.CardData(
                     lines = listOf(LawnchairSmartspaceController.Line(context, R.string.onboarding_swipe_up)))
