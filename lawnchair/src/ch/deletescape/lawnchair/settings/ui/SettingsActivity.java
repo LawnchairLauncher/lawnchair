@@ -643,18 +643,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
                             .register(NOTIFICATION_BADGING, NOTIFICATION_ENABLED_LISTENERS);
                 }
             } else if (getContent() == R.xml.lawnchair_theme_preferences) {
-                IconPackManager ipm = IconPackManager.Companion.getInstance(mContext);
-                Preference packMaskingPreference = findPreference("pref_iconPackMasking");
-                PreferenceGroup parent = packMaskingPreference.getParent();
-                ipm.addListener(() -> {
-                    if (!ipm.maskSupported()) {
-                        parent.removePreference(packMaskingPreference);
-                    } else if (parent.findPreference("pref_iconPackMasking") == null) {
-                        parent.addPreference(packMaskingPreference);
-                    }
-                    return null;
-                });
-
                 Preference resetIconsPreference = findPreference("pref_resetCustomIcons");
                 resetIconsPreference.setOnPreferenceClickListener(preference -> {
                     new SettingsActivity.ResetIconsConfirmation()
