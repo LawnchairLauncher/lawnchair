@@ -29,6 +29,8 @@ import ch.deletescape.lawnchair.hourOfDay
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import java.util.*
+import kotlin.math.abs
+import kotlin.random.Random
 
 @Keep
 class PersonalityProvider(controller: LawnchairSmartspaceController) :
@@ -44,11 +46,16 @@ class PersonalityProvider(controller: LawnchairSmartspaceController) :
         }
     }
 
-    var time = currentTime()
+    var time = currentTime()!!
+        set(value) {
+            field = value
+            randomIndex = abs(Random(time.dayOfYear).nextInt())
+        }
+    var randomIndex = 0
     val isMorning get() = time.hourOfDay in 5 until 9
     val isEvening get() = time.hourOfDay in 19 until 24 || time.hourOfDay == 0
-    val morningGreeting get() = morningStrings[time.dayOfYear % morningStrings.size]
-    val eveningGreeting get() = eveningStrings[time.dayOfYear % eveningStrings.size]
+    val morningGreeting get() = morningStrings[randomIndex % morningStrings.size]
+    val eveningGreeting get() = eveningStrings[randomIndex % eveningStrings.size]
 
     private val morningStrings = controller.context.resources.getStringArray(R.array.greetings_morning)
     private val eveningStrings = controller.context.resources.getStringArray(R.array.greetings_evening)
