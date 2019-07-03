@@ -26,6 +26,8 @@ import android.os.ResultReceiver
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.view.ContextThemeWrapper
+import ch.deletescape.lawnchair.theme.ThemeOverride
 
 class BlankActivity : AppCompatActivity() {
 
@@ -42,7 +44,8 @@ class BlankActivity : AppCompatActivity() {
         if (firstResume) {
             firstResume = false
             if (intent.hasExtra("dialogTitle")) {
-                AlertDialog.Builder(this)
+                val theme = ThemeOverride.Settings().getTheme(this)
+                AlertDialog.Builder(ContextThemeWrapper(this, theme))
                         .setTitle(intent.getCharSequenceExtra("dialogTitle"))
                         .setMessage(intent.getCharSequenceExtra("dialogMessage"))
                         .setOnDismissListener { if (!targetStarted) finish() }
