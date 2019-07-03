@@ -23,6 +23,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
+import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.allapps.DiscoveryBounce

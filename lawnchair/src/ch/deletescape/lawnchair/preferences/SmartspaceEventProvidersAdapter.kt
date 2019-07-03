@@ -284,7 +284,6 @@ class SmartspaceEventProvidersAdapter(private val context: Context)
 
         fun getEventProviders(context: Context): List<String> {
             val list = ArrayList<String>()
-            list.add(OnboardingProvider::class.java.name)
             if (Utilities.ATLEAST_NOUGAT)
                 list.add(SmartspaceDataWidget::class.java.name)
             if (FeedBridge.getInstance(context).resolveBridge()?.supportsSmartspace == true)
