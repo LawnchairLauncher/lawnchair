@@ -34,8 +34,8 @@ class BatteryStatusProvider(controller: LawnchairSmartspaceController) :
 
         override fun onReceive(context: Context?, intent: Intent) {
             val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
-            charging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
-                       status == BatteryManager.BATTERY_STATUS_FULL
+            charging = status == BatteryManager.BATTERY_STATUS_CHARGING
+            full = status == BatteryManager.BATTERY_STATUS_FULL
             level = (100f
                      * intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
                      / intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100)).toInt()
@@ -43,6 +43,7 @@ class BatteryStatusProvider(controller: LawnchairSmartspaceController) :
         }
     }
     private var charging = false
+    private var full = false
     private var level = 100
 
     init {
@@ -52,11 +53,14 @@ class BatteryStatusProvider(controller: LawnchairSmartspaceController) :
     private fun getEventCard(): LawnchairSmartspaceController.CardData? {
         val lines = mutableListOf<Line>()
         when {
+            full -> lines.add(Line(context, R.string.battery_full))
             charging -> lines.add(Line(context, R.string.battery_charging))
             level <= 15 -> lines.add(Line(context, R.string.battery_low))
             else -> return null
         }
-        lines.add(Line("$level%"))
+        if (!full) {
+            lines.add(Line("$level%"))
+        }
         return LawnchairSmartspaceController.CardData(
                 lines = lines,
                 forceSingleLine = true)
