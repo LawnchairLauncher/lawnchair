@@ -28,6 +28,8 @@ if (localPropsFile.exists()) {
     localProps.load(localPropsFile.newDataInputStream())
 }
 
+def isPublicBuild = System.getenv("CI_BUILD") == "true" && System.getenv("DRONE_BRANCH") == "alpha"
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.google.protobuf'
@@ -59,10 +61,10 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
-        def isPublicBuild = System.getenv("CI_BUILD") == "true" && System.getenv("DRONE_BRANCH") == "alpha"
         buildConfigField "boolean", "FEATURE_QUINOA", "true"
         buildConfigField "boolean", "FEATURE_SETTINGS_SEARCH", "true"
         buildConfigField "boolean", "DEBUG_STRICT_MODE", isPublicBuild ? "false" : "true"
+        buildConfigField "boolean", "HAS_LEAKCANARY", "false"
 
         def githubToken = localProps.getProperty('githubToken') ?: '"' + System.getenv("GITHUB_TOKEN") + '"'
         buildConfigField "String", "GITHUB_TOKEN", githubToken
@@ -91,6 +93,8 @@ android {
             dexOptions {
                 matchingFallbacks = ['debug']
             }
+
+            buildConfigField "boolean", "HAS_LEAKCANARY", isPublicBuild ? "false" : "true"
         }
 
         optimized {
@@ -299,6 +303,12 @@ dependencies {
 
     quickstepImplementation project(':systemui-shared')
     lawnchairImplementation files('lawnchair/libs/sesame-lib.aar')
+
+    if (!isPublicBuild) {
+        // TODO: update to 2.x when we're on AndroidX
+        debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+        debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.3'
+    }
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation "org.mockito:mockito-core:1.9.5"
