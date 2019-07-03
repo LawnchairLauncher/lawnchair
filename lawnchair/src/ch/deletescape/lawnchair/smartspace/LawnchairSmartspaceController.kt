@@ -422,9 +422,10 @@ class LawnchairSmartspaceController(val context: Context) {
         }
     }
 
-    open class PendingIntentClickListener(private val pendingIntent: PendingIntent) : View.OnClickListener {
+    open class PendingIntentClickListener(private val pendingIntent: PendingIntent?) : View.OnClickListener {
 
         override fun onClick(v: View) {
+            if (pendingIntent == null) return
             val launcher = Launcher.getLauncher(v.context)
             val opts = launcher.getActivityLaunchOptionsAsBundle(v)
             try {
