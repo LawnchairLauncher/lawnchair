@@ -29,14 +29,15 @@ import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import java.io.File
 
-data class BugReport(val id: Long, val description: String, val contents: String?,
+data class BugReport(val id: Long, val type: String, val description: String, val contents: String?,
                      var link: String?, var uploadError: Boolean = false, val file: File?) : Parcelable {
 
-    constructor(description: String, contents: String, file: File?) : this(
-            System.currentTimeMillis(), description, contents, null, false, file)
+    constructor(type: String, description: String, contents: String, file: File?) : this(
+            System.currentTimeMillis(), type, description, contents, null, false, file)
 
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
+            parcel.readString()!!,
             parcel.readString()!!,
             parcel.readString(),
             parcel.readString(),
@@ -45,6 +46,7 @@ data class BugReport(val id: Long, val description: String, val contents: String
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(id)
+        parcel.writeString(type)
         parcel.writeString(description)
         parcel.writeString(contents)
         parcel.writeString(link)
@@ -54,6 +56,13 @@ data class BugReport(val id: Long, val description: String, val contents: String
 
     override fun describeContents(): Int {
         return 0
+    }
+
+    fun getTitle(context: Context): String {
+        return if (type == TYPE_UNCAUGHT_EXCEPTION) {
+            context.getString(R.string.crash_report_notif_title,
+                              context.getString(R.string.derived_app_name))
+        } else type
     }
 
     fun getFileUri(context: Context): Uri? {
@@ -78,6 +87,9 @@ data class BugReport(val id: Long, val description: String, val contents: String
     val notificationId = id.toInt()
 
     companion object CREATOR : Parcelable.Creator<BugReport> {
+
+        const val TYPE_UNCAUGHT_EXCEPTION = "Uncaught exception"
+        const val TYPE_STRICT_MODE_VIOLATION = "Strict mode violation"
 
         override fun createFromParcel(parcel: Parcel): BugReport {
             return BugReport(parcel)
