@@ -496,4 +496,5 @@
     <string name="battery_low">Lavt batteriniveau</string>
     <string name="event_provider_unread_notifications">Ulæste notifikationer</string>
     <string name="event_provider_missing_notification_access">For at benytte <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, slå app-notifikationer til for <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="zen_mode_enabled">Forstyr ikke er aktiveret</string>
 </resources>
