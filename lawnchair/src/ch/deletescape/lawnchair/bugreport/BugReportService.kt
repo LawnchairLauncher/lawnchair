@@ -83,7 +83,7 @@ class BugReportService : Service() {
     fun notify(report: BugReport, uploading: Boolean = false) {
         val notificationId = report.notificationId
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Lawnchair crashed!")
+                .setContentTitle(report.getTitle(this))
                 .setContentText(report.description)
                 .setSmallIcon(R.drawable.ic_bug_notification)
                 .setColor(ContextCompat.getColor(this, R.color.bugNotificationColor))

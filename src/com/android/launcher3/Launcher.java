@@ -280,13 +280,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                             new OnVmViolationListener() {
                                 @Override
                                 public void onVmViolation(Violation v) {
-                                    BugReportClient.Companion.getInstance(Launcher.this)
-                                            .sendReport(new BugReport(
-                                                    v.getMessage(),
-                                                    v.toString() + "\n" +
-                                                            v.getStackTrace().toString(),
-                                                    null
-                                            ));
+                                    LawnchairAppKt.getLawnchairApp(Launcher.this)
+                                            .getBugReporter().reportVmViolation(v);
                                 }
                             })
                     .build());
