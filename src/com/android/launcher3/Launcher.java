@@ -265,8 +265,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (DEBUG_STRICT_MODE && Utilities.ATLEAST_P) {
             // TODO: Revise policy and potentially change this to send bug reports too
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                    .detectDiskReads()
-                    .detectDiskWrites()
+                    //.detectDiskReads()
+                    //.detectDiskWrites()
                     .detectNetwork()   // or .detectAll() for all detectable problems
                     .penaltyLog()
                     .build());
