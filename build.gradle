@@ -308,6 +308,8 @@ dependencies {
         // TODO: update to 2.x when we're on AndroidX
         debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
         debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.3'
+        optimizedImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+        optimizedImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.3'
     }
 
     testImplementation 'junit:junit:4.12'
