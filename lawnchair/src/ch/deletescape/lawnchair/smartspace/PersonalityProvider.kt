@@ -48,8 +48,10 @@ class PersonalityProvider(controller: LawnchairSmartspaceController) :
 
     var time = currentTime()!!
         set(value) {
+            if (field.dayOfYear != value.dayOfYear) {
+                randomIndex = abs(Random(value.dayOfYear).nextInt())
+            }
             field = value
-            randomIndex = abs(Random(time.dayOfYear).nextInt())
         }
     var randomIndex = 0
     val isMorning get() = time.hourOfDay in 5 until 9
