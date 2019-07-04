@@ -463,6 +463,8 @@
     <string name="import_as_adaptive">Como um ícone adaptivo</string>
     <string name="bugreport_channel_name">Relatório de erros</string>
     <string name="status_channel_name">Status de upload do relatório de erro</string>
+    <string name="bugreport_group_summary">%d novos relatórios</string>
+    <string name="bugreport_group_summary_multiple">Vários novos relatórios</string>
     <string name="dogbin_uploading">Upload em progresso</string>
     <string name="action_dogbin_upload">Enviar pra dogbin</string>
     <string name="action_dogbin_upload_error">Upload falhou</string>
@@ -496,8 +498,38 @@
     <string name="event_provider_now_playing">Tocando agora</string>
     <string name="battery_status">Estado da bateria</string>
     <string name="battery_charging">Bateria carregando</string>
+    <string name="battery_full">Bateria carregada</string>
     <string name="battery_low">Bateria fraca</string>
     <string name="event_provider_unread_notifications">Notificações não lidas</string>
     <string name="event_provider_missing_notification_access">Para usar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ative as notificações do aplicativo para <xliff:g example="My App" id="name">%2$s</xliff:g></string>
-    <string name="zen_mode_enabled">A opção Não incomodar está ativa</string>
+    <string name="event_provider_missing_notification_dots">Para usar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ative os pontos de notificação.</string>
+    <string name="zen_mode_enabled">Não perturbe está ativado</string>
+    <string name="crash_report_notif_title">%1$s parou!</string>
+    <string name="personality_provider">Mensagens contextuais</string>
+    <string-array name="greetings_morning">
+        <item>Bom dia!</item>
+        <item>Que dia lindo!</item>
+        <item>Você já olhou pra fora hoje?</item>
+        <item>Tenha um ótimo dia!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Boa noite!</item>
+        <item>Durma bem!</item>
+        <item>Te vejo amanhã!</item>
+        <item>Bons sonhos!</item>
+        <item>Não fique acordado por muito tempo</item>
+        <item>Como foi seu dia?</item>
+        <item>Oque você fez hoje?</item>
+    </string-array>
+    <string name="onbording_settings_summary">Pressione na sua tela inicial</string>
+    <string name="onboarding_swipe_up">Deslize pra cima pra ver todos os seus aplicativos</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Never (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
 </resources>
