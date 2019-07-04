@@ -447,4 +447,80 @@
     <string name="category_travel_and_navigation">Travel and Navigation</string>
     <string name="lock_desktop">Travel and Navigation</string>
     <string name="reset_custom_icons">Reset custom icons</string>
+    <string name="reset_custom_icons_confirmation">Are you sure you want to reset all custom icons? This action is non-reversible.</string>
+    <string name="open_image_picker">Open image picker</string>
+    <string name="import_icon">Import icon</string>
+    <string name="import_as_adaptive">As adaptive icon</string>
+    <string name="bugreport_channel_name">Bug reports</string>
+    <string name="status_channel_name">Bug report upload status</string>
+    <string name="bugreport_group_summary">%d new reports</string>
+    <string name="bugreport_group_summary_multiple">Multiple new reports</string>
+    <string name="dogbin_uploading">Upload in progress</string>
+    <string name="action_dogbin_upload">Upload to dogbin</string>
+    <string name="action_dogbin_upload_error">Upload failed</string>
+    <string name="action_dogbin_copy_link">Copy link</string>
+    <string name="lawnchair_bug_report">Lawnchair bug report</string>
+    <string name="copied_toast">Copied</string>
+    <string name="action_copy">Copy</string>
+    <string name="action_copy_link">Copy link</string>
+    <string name="action_share">Share</string>
+    <string name="animation_type_title">App opening animation</string>
+    <string name="animation_type_default">Default</string>
+    <string name="animation_type_pie">Pie</string>
+    <string name="animation_type_pie_like">Pie-like</string>
+    <string name="animation_type_reveal">Reveal</string>
+    <string name="animation_type_slide_up">Slide Up</string>
+    <string name="animation_type_scale_up">Scale Up</string>
+    <string name="animation_type_blink">Blink</string>
+    <string name="animation_type_fade">Fade</string>
+    <string name="permission_iplocate">Allow access to coarse, network based location?</string>
+    <string name="permission_iplocate_twilight_explanation">This allows more accurate daytime calculations without having to know your exact location.</string>
+    <string name="pref_appcategorization_flowerpot_title">Category</string>
+    <string name="pref_appcategorization_flowerpot_summary">Apps are automatically picked based on their metadata.</string>
+    <string name="select_tab_type">Tab type</string>
+    <string name="tab_type_custom">Custom tab</string>
+    <string name="tab_type_custom_desc">Manually pick apps for this tab.</string>
+    <string name="tab_type_smart">Smart tab</string>
+    <string name="categorization">Categorization</string>
+    <string name="folder_cover_mode">Cover mode</string>
+    <string name="folder_cover_mode_desc">Tap to open first app, swipe up to open folder</string>
+    <string name="pref_smartspace_event_providers">Events sources</string>
+    <string name="event_provider_now_playing">Now playing</string>
+    <string name="battery_status">Battery status</string>
+    <string name="battery_charging">Battery charging</string>
+    <string name="battery_full">Battery full</string>
+    <string name="battery_low">Battery low</string>
+    <string name="event_provider_unread_notifications">Unread notifications</string>
+    <string name="event_provider_missing_notification_access">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on app notifications for <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on notification dots</string>
+    <string name="zen_mode_enabled">Do not disturb is enabled</string>
+    <string name="crash_report_notif_title">%1$s crashed!</string>
+    <string name="personality_provider">Contextual messages</string>
+    <string-array name="greetings_morning">
+        <item>Good morning!</item>
+        <item>What a beautiful day!</item>
+        <item>Have you looked outside yet?</item>
+        <item>Have a great day!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Good night!</item>
+        <item>Sleep well!</item>
+        <item>See you tomorrow!</item>
+        <item>Sweet dreams!</item>
+        <item>Don\'t stay up too long</item>
+        <item>How was your day?</item>
+        <item>What did you do today?</item>
+    </string-array>
+    <string name="onbording_settings_title">Set-up %s</string>
+    <string name="onbording_settings_summary">Long press your home screen</string>
+    <string name="onboarding_swipe_up">Swipe up to see all your apps</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
 </resources>
