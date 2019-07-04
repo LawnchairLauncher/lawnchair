@@ -462,6 +462,7 @@
     <string name="import_as_adaptive">Como icono adaptativo</string>
     <string name="bugreport_channel_name">Informe de errores</string>
     <string name="status_channel_name">Estado de carga del informe de error</string>
+    <string name="bugreport_group_summary_multiple">Múltiples reportes</string>
     <string name="dogbin_uploading">Subiendo</string>
     <string name="action_dogbin_upload">Subir a dogbin</string>
     <string name="action_dogbin_upload_error">No se pudo cargar</string>
@@ -495,8 +496,31 @@
     <string name="event_provider_now_playing">Reproduciendo</string>
     <string name="battery_status">Estado de la batería</string>
     <string name="battery_charging">Batería cargando</string>
+    <string name="battery_full">Batería llena</string>
     <string name="battery_low">Batería baja</string>
     <string name="event_provider_unread_notifications">Notificaciones no leídas</string>
     <string name="event_provider_missing_notification_access">Para usar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, active las notificaciones de la aplicación para <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Para usar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> activar puntos de notificación</string>
     <string name="zen_mode_enabled">Modo no molestar activado</string>
+    <string name="crash_report_notif_title">%1$s falló!</string>
+    <string name="personality_provider">Mensajes contextuales</string>
+    <string-array name="greetings_morning">
+        <item>¡Buenos días!</item>
+        <item>Un día maravilloso!</item>
+        <item>¿Has echado un vistazo afuera?</item>
+        <item>¡Que tengas un buen día!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>¡Buenas Noches!</item>
+        <item>¡Que duermas bien!</item>
+        <item>¡Hasta mañana!</item>
+        <item>¡Felices sueños!</item>
+        <item>No te acuestes muy tarde</item>
+        <item>¿Qué tal fue el día?</item>
+        <item>¿Qué hiciste hoy?</item>
+    </string-array>
+    <string name="onbording_settings_title">Ajuste %s</string>
+    <string name="onbording_settings_summary">Pulsación larga en pantalla de inicio</string>
+    <string name="onboarding_swipe_up">Desliza arriba para ver todas tus aplicaciones</string>
+    <string name="web_search_google">Google (web)</string>
 </resources>
