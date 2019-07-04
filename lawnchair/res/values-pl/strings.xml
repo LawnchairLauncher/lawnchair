@@ -467,6 +467,8 @@
     <string name="import_as_adaptive">Jako ikona adaptacyjna</string>
     <string name="bugreport_channel_name">Zgłaszanie błędów</string>
     <string name="status_channel_name">Status wysyłania zgłoszenia</string>
+    <string name="bugreport_group_summary">%d nowych zgłoszeń</string>
+    <string name="bugreport_group_summary_multiple">Wiele nowych zgłoszeń</string>
     <string name="dogbin_uploading">Trwa wysyłanie</string>
     <string name="action_dogbin_upload">Wyślij do dogbin</string>
     <string name="action_dogbin_upload_error">Wysyłanie nie powiodło się</string>
@@ -500,8 +502,40 @@
     <string name="event_provider_now_playing">Teraz odtwarzane</string>
     <string name="battery_status">Stan baterii</string>
     <string name="battery_charging">Ładowanie baterii</string>
+    <string name="battery_full">Bateria naładowana</string>
     <string name="battery_low">Niski poziom baterii</string>
     <string name="event_provider_unread_notifications">Nieprzeczytane powiadomienia</string>
     <string name="event_provider_missing_notification_access">Aby używać <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, włącz powiadomienia aplikacji dla <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Aby używać<xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, włącz kropki powiadomień</string>
     <string name="zen_mode_enabled">Tryb nie przeszkadzać jest włączony</string>
+    <string name="crash_report_notif_title">%1$s uległ awarii!</string>
+    <string name="personality_provider">Wiadomości kontekstowe</string>
+    <string-array name="greetings_morning">
+        <item>Dzień dobry!</item>
+        <item>Co za piękny dzień!</item>
+        <item>Wyjrzałeś już dzisiaj za okno?</item>
+        <item>Miłego dnia!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Dobranoc!</item>
+        <item>Śpij dobrze!</item>
+        <item>Do zobaczenia jutro!</item>
+        <item>Słodkich snów!</item>
+        <item>Nie przemęczaj się</item>
+        <item>Jak ci mija dzień?</item>
+        <item>Co dzisiaj zrobiłeś?</item>
+    </string-array>
+    <string name="onbording">Wprowadzenie</string>
+    <string name="onbording_settings_title">Konfiguracja %s</string>
+    <string name="onbording_settings_summary">Dotknij i przytrzymaj na ekranie głównym</string>
+    <string name="onboarding_swipe_up">Przeciągnij w górę aby zobaczyć wszystkie twoje aplikacje</string>
+    <string name="web_search_google">Google (sieć)</string>
+    <string name="web_search_ddg">DuckDuckGo (sieć)</string>
+    <string name="web_search_startpage">Startpage.com (sieć)</string>
+    <string name="web_search_bing">Bing (sieć)</string>
+    <string name="web_search_qwant">Qwant (sieć)</string>
+    <string name="web_search_ecosia">Ecosia (sieć)</string>
+    <string name="web_search_yandex">Yandex (sieć)</string>
+    <string name="web_search_naver">Naver (sieć)</string>
+    <string name="web_search_baidu">Baidu (sieć)</string>
 </resources>
