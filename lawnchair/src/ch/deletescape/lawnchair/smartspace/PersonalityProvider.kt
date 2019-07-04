@@ -36,13 +36,8 @@ import kotlin.random.Random
 class PersonalityProvider(controller: LawnchairSmartspaceController) :
         LawnchairSmartspaceController.DataProvider(controller) {
     private val timeReceiver = object : BroadcastReceiver() {
-
         override fun onReceive(context: Context?, intent: Intent) {
-            val oldTime = time
             time = currentTime()
-            if (oldTime.hourOfDay != time.hourOfDay) {
-                updateData(null, getEventCard())
-            }
         }
     }
 
@@ -51,7 +46,10 @@ class PersonalityProvider(controller: LawnchairSmartspaceController) :
             if (field.dayOfYear != value.dayOfYear) {
                 randomIndex = abs(Random(value.dayOfYear).nextInt())
             }
-            field = value
+            if (field.hourOfDay != value.hourOfDay) {
+                field = value
+                updateData(null, getEventCard())
+            }
         }
     var randomIndex = 0
     val isMorning get() = time.hourOfDay in 5 until 9
