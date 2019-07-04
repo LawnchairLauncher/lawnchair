@@ -5,9 +5,7 @@ import android.support.v7.view.ContextThemeWrapper
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.globalsearch.providers.*
-import ch.deletescape.lawnchair.globalsearch.providers.web.DDGWebSearchProvider
-import ch.deletescape.lawnchair.globalsearch.providers.web.GoogleWebSearchProvider
-import ch.deletescape.lawnchair.globalsearch.providers.web.StartpageWebSearchProvider
+import ch.deletescape.lawnchair.globalsearch.providers.web.*
 import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.useApplicationContext
@@ -101,6 +99,7 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
         fun getSearchProviders(context: Context) = listOf(
                 AppSearchSearchProvider(context),
                 GoogleSearchProvider(context),
+                // TODO: fall back to this if google is not available per default
                 GoogleWebSearchProvider(context),
                 SFinderSearchProvider(context),
                 if (BuildConfig.FEATURE_QUINOA) {
@@ -113,13 +112,19 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
                 DuckDuckGoSearchProvider(context),
                 DDGWebSearchProvider(context),
                 BingSearchProvider(context),
+                BingWebSearchProvider(context),
                 StartpageWebSearchProvider(context),
                 BaiduSearchProvider(context),
+                BaiduWebSearchProvider(context),
                 YandexSearchProvider(context),
+                YandexWebSearchProvider(context),
                 QwantSearchProvider(context),
+                QwantWebSearchProvider(context),
+                EcosiaWebSearchProvider(context),
                 SearchLiteSearchProvider(context),
                 CoolSearchSearchProvider(context),
-                EdgeSearchProvider(context)
+                EdgeSearchProvider(context),
+                NaverWebSearchProvider(context)
         ).filter { it.isAvailable }
     }
 }
