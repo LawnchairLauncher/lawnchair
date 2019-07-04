@@ -489,4 +489,14 @@
     <string name="tab_type_custom_desc">Ручно изаберите апликације за ову картицу.</string>
     <string name="tab_type_smart">Паметна картица</string>
     <string name="categorization">Категоризација</string>
+    <string name="folder_cover_mode">Режим прекривања</string>
+    <string name="folder_cover_mode_desc">Додирните да бисте отворили прву апликацију, превуците нагоре да бисте отворили фасциклу</string>
+    <string name="pref_smartspace_event_providers">Извори догађаја</string>
+    <string name="event_provider_now_playing">Репродукује се</string>
+    <string name="battery_status">Статус батерије</string>
+    <string name="battery_charging">Батерија се пуни</string>
+    <string name="battery_low">Батерија је скоро празна</string>
+    <string name="event_provider_unread_notifications">Непрочитана обавештења</string>
+    <string name="event_provider_missing_notification_access">Да бисте користили <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, укључите обавештења апликације <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="zen_mode_enabled">Укључен је режим „Не узнемиравај”</string>
 </resources>
