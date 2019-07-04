@@ -465,6 +465,8 @@
     <string name="import_as_adaptive">Адаптивна іконка</string>
     <string name="bugreport_channel_name">Звіт про помилки</string>
     <string name="status_channel_name">Статус звіту про помилку</string>
+    <string name="bugreport_group_summary">%d нових звіти</string>
+    <string name="bugreport_group_summary_multiple">Численні нові звіти</string>
     <string name="dogbin_uploading">Йде завантаження</string>
     <string name="action_dogbin_upload">Завантажити в dogbin</string>
     <string name="action_dogbin_upload_error">Збій завантаження</string>
@@ -498,8 +500,39 @@
     <string name="event_provider_now_playing">Відтворюється</string>
     <string name="battery_status">Стан акумулятора</string>
     <string name="battery_charging">Заряджання акумулятора</string>
+    <string name="battery_full">Акумулятор заряджений</string>
     <string name="battery_low">Низький заряд батареї</string>
     <string name="event_provider_unread_notifications">Непрочитані сповіщення</string>
     <string name="event_provider_missing_notification_access">Щоб користуватись <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включіть сповіщення додатку для <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Щоб застосувати <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ввімкніть крапки сповіщення</string>
     <string name="zen_mode_enabled">Режим \"Не турбувати\" ввімкнений</string>
+    <string name="crash_report_notif_title">%1$s завершив роботу в аварійному режимі!</string>
+    <string name="personality_provider">Контекстні повідомлення</string>
+    <string-array name="greetings_morning">
+        <item>Доброго ранку!</item>
+        <item>Який чудовий день!</item>
+        <item>Ти вже виглядував назовні?</item>
+        <item>Гарного дня!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>На добраніч!</item>
+        <item>Приємних снів!</item>
+        <item>До завтра!</item>
+        <item>Солодких снів!</item>
+        <item>Не йди спати занадто пізно</item>
+        <item>Яким пройшов твій день?</item>
+        <item>Що ти робив сьогодні?</item>
+    </string-array>
+    <string name="onbording_settings_title">Налаштування %s</string>
+    <string name="onbording_settings_summary">Тривале натискання на головному екрані</string>
+    <string name="onboarding_swipe_up">Проведи пальцем вгору, щоб побачити всі додатки</string>
+    <string name="web_search_google">Google (Мережа)</string>
+    <string name="web_search_ddg">DuckDuckGo (Мережа)</string>
+    <string name="web_search_startpage">Startpage.com (Мережа)</string>
+    <string name="web_search_bing">Bing (Мережа)</string>
+    <string name="web_search_qwant">Qwant (Мережа)</string>
+    <string name="web_search_ecosia">Ecosia (Мережа)</string>
+    <string name="web_search_yandex">Yandex (Мережа)</string>
+    <string name="web_search_naver">Naver (Мережа)</string>
+    <string name="web_search_baidu">Baidu (Мережа)</string>
 </resources>
