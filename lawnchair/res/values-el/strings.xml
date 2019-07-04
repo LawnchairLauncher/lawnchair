@@ -462,6 +462,8 @@
     <string name="import_as_adaptive">Ως προσαρμοζόμενο εικονίδιο</string>
     <string name="bugreport_channel_name">Αναφορές σφαλμάτων</string>
     <string name="status_channel_name">Κατάσταση μεταφόρτωσης αναφοράς σφαλμάτων</string>
+    <string name="bugreport_group_summary">%d νέες αναφορές</string>
+    <string name="bugreport_group_summary_multiple">Πολλαπλές νέες αναφορές</string>
     <string name="dogbin_uploading">Μεταφόρτωση σε εξέλιξη...</string>
     <string name="action_dogbin_upload">Μεταφόρτωση στο dogbin</string>
     <string name="action_dogbin_upload_error">Αποτυχία αποστολής</string>
@@ -495,8 +497,37 @@
     <string name="event_provider_now_playing">Παίζεται τώρα</string>
     <string name="battery_status">Κατάσταση μπαταρίας</string>
     <string name="battery_charging">Φόρτιση μπαταρίας</string>
+    <string name="battery_full">Πλήρης μπαταρία</string>
     <string name="battery_low">Χαμηλό επίπεδο μπαταρίας</string>
     <string name="event_provider_unread_notifications">Μη αναγνωσμένες ειδοποιήσεις</string>
     <string name="event_provider_missing_notification_access">Για χρήση <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ενεργοποιήστε την πρόσβαση της εφαρμογής στις ειδοποιήσεις για <xliff:g example="My App" id="name">%2$s</xliff:g></string>
     <string name="zen_mode_enabled">Η λειτουργία \"Μην ενοχλείτε\" είναι ενεργοποιημένη</string>
+    <string name="personality_provider">Συγκεκριμένα μηνύματα</string>
+    <string-array name="greetings_morning">
+        <item>Καλή σας ημέρα!</item>
+        <item>Τι υπέροχη ημέρα!</item>
+        <item>Έχεις κοιτάξει έξω ακόμη;</item>
+        <item>Να έχεις μια καταπληκτική ημέρα!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Καλό σας βράδυ!</item>
+        <item>Κοιμήσου καλά!</item>
+        <item>Τα λέμε αύριο!</item>
+        <item>Να έχεις γλυκά όνειρα!</item>
+        <item>Μην μένεις ξύπνιος μέχρι αργά</item>
+        <item>Πώς ήταν η ημέρα σου;</item>
+        <item>Τι έκανες σήμερα;</item>
+    </string-array>
+    <string name="onbording_settings_title">Ρύθμιση %s</string>
+    <string name="onbording_settings_summary">Πιέστε παρατεταμένα στην αρχική σας οθόνη</string>
+    <string name="onboarding_swipe_up">Σύρετε επάνω να δείτε όλες σας τις εφαρμογές</string>
+    <string name="web_search_google">Google (ιστός)</string>
+    <string name="web_search_ddg">DuckDuckGo (ιστός)</string>
+    <string name="web_search_startpage">Startpage.com (ιστός)</string>
+    <string name="web_search_bing">Bing (ιστός)</string>
+    <string name="web_search_qwant">Qwant (ιστός)</string>
+    <string name="web_search_ecosia">Ecosia (ιστός)</string>
+    <string name="web_search_yandex">Yandex (ιστός)</string>
+    <string name="web_search_naver">Naver (ιστός)</string>
+    <string name="web_search_baidu">Baidu (ιστός)</string>
 </resources>
