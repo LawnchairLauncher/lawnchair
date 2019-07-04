@@ -462,6 +462,8 @@
     <string name="import_as_adaptive">Comme une icône adaptative</string>
     <string name="bugreport_channel_name">Signaler un problème</string>
     <string name="status_channel_name">Statuts d\'envoi du signalement de problème</string>
+    <string name="bugreport_group_summary">Nouveau rapport</string>
+    <string name="bugreport_group_summary_multiple">Plusieurs nouveaux rapports</string>
     <string name="dogbin_uploading">Envoie en cours</string>
     <string name="action_dogbin_upload">Transférer vers dogbin</string>
     <string name="action_dogbin_upload_error">Envoie échoué</string>
@@ -495,8 +497,36 @@
     <string name="event_provider_now_playing">Lecture en cours</string>
     <string name="battery_status">État de la batterie</string>
     <string name="battery_charging">Batterie en charge</string>
+    <string name="battery_full">Batterie rechargée</string>
     <string name="battery_low">Batterie faible</string>
     <string name="event_provider_unread_notifications">Notifications non lues</string>
     <string name="event_provider_missing_notification_access">Pour utiliser <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activez les notifications d\'application pour <xliff:g example="My App" id="name">%2$s</xliff:g></string>
     <string name="zen_mode_enabled">Ne pas déranger est activé</string>
+    <string name="personality_provider">Messages contextuelles</string>
+    <string-array name="greetings_morning">
+        <item>Bonjour !</item>
+        <item>Quelle belle journée !</item>
+        <item>Avez-vous déjà regardé dehors ?</item>
+        <item>Bonne journée !</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Bonne nuit !</item>
+        <item>Dormez bien !</item>
+        <item>A demain !</item>
+        <item>Faites de beaux rêves !</item>
+        <item>Ne reste pas debout trop longtemps</item>
+        <item>Comment s\'est passé votre journée ?</item>
+        <item>Qu\'avez-vous fait aujourd\'hui ?</item>
+    </string-array>
+    <string name="onbording_settings_summary">Appuyez longuement sur l\'écran d’accueil</string>
+    <string name="onboarding_swipe_up">Glissez vers le haut pour afficher toutes vos applications</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
 </resources>
