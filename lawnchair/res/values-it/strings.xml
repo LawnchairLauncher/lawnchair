@@ -463,6 +463,8 @@
     <string name="import_as_adaptive">Come icona adattiva</string>
     <string name="bugreport_channel_name">Segnalazioni bug</string>
     <string name="status_channel_name">Stato caricamento della segnalazione bug</string>
+    <string name="bugreport_group_summary">%d nuove segnalazioni</string>
+    <string name="bugreport_group_summary_multiple">Multiple nuove segnalazioni</string>
     <string name="dogbin_uploading">Caricamento in corso</string>
     <string name="action_dogbin_upload">Carica su dogbin</string>
     <string name="action_dogbin_upload_error">Caricamento fallito</string>
@@ -496,8 +498,39 @@
     <string name="event_provider_now_playing">In riproduzione</string>
     <string name="battery_status">Stato della batteria</string>
     <string name="battery_charging">Batteria in carica</string>
+    <string name="battery_full">Batteria carica</string>
     <string name="battery_low">Batteria scarica</string>
     <string name="event_provider_unread_notifications">Notifiche non lette</string>
     <string name="event_provider_missing_notification_access">Per usare <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, attiva le notifiche per la app <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Per usare <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, attiva i badge di notifica</string>
     <string name="zen_mode_enabled">Non disturbare è attivo</string>
+    <string name="crash_report_notif_title">%1$s è crashato!</string>
+    <string name="personality_provider">Messaggi contestuali</string>
+    <string-array name="greetings_morning">
+        <item>Buongiorno!</item>
+        <item>Che bella giornata!</item>
+        <item>Non hai ancora guardato fuori?</item>
+        <item>Buona giornata!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Buona notte!</item>
+        <item>Dormi bene!</item>
+        <item>Ci vediamo domani!</item>
+        <item>Sogni d\'oro!</item>
+        <item>Non stare sveglio troppo a lungo</item>
+        <item>Com\'è stata la tua giornata?</item>
+        <item>Cosa hai fatto oggi?</item>
+    </string-array>
+    <string name="onbording_settings_title">Imposta %s</string>
+    <string name="onbording_settings_summary">Tieni premuto sulla schermata home</string>
+    <string name="onboarding_swipe_up">Scorri verso l\'alto per vedere tutte le tue app</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
 </resources>
