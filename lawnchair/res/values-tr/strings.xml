@@ -462,6 +462,8 @@
     <string name="import_as_adaptive">Uyarlanabilir simge olarak</string>
     <string name="bugreport_channel_name">Hata raporları</string>
     <string name="status_channel_name">Hata raporu yükleme durumu</string>
+    <string name="bugreport_group_summary">%d yeni rapor</string>
+    <string name="bugreport_group_summary_multiple">Birden çok yeni rapor</string>
     <string name="dogbin_uploading">Yükleme devam ediyor</string>
     <string name="action_dogbin_upload">Dogbin\'e yükle</string>
     <string name="action_dogbin_upload_error">Yükleme başarısız</string>
@@ -495,8 +497,39 @@
     <string name="event_provider_now_playing">Şimdi çalan</string>
     <string name="battery_status">Pil durumu</string>
     <string name="battery_charging">Pil şarj ediliyor</string>
+    <string name="battery_full">Pil dolu</string>
     <string name="battery_low">Düşük pil</string>
     <string name="event_provider_unread_notifications">Okunmamış bildiriler</string>
     <string name="event_provider_missing_notification_access"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> kullanmak için, <xliff:g example="My App" id="name">%2$s</xliff:g> için uygulama bildirimlerini aç</string>
+    <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> kullanmak için, bildirim noktalarını aç</string>
     <string name="zen_mode_enabled">Rahatsız etmeyin etkin</string>
+    <string name="crash_report_notif_title">%1$s çöktü!</string>
+    <string name="personality_provider">İçeriğe dayalı mesaj</string>
+    <string-array name="greetings_morning">
+        <item>Günaydın!</item>
+        <item>Ne kadar güzel bir gün!</item>
+        <item>Dışarıya baktın mı?</item>
+        <item>İyi günler!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>İyi geceler!</item>
+        <item>İyi uykular!</item>
+        <item>Yarın görüşürüz!</item>
+        <item>Tatlı rüyalar!</item>
+        <item>Çok uzun süre kalma</item>
+        <item>Günün nasıldı?</item>
+        <item>Bugün ne yaptın?</item>
+    </string-array>
+    <string name="onbording_settings_title">%s ayarla</string>
+    <string name="onbording_settings_summary">Ana ekranınıza uzun basın</string>
+    <string name="onboarding_swipe_up">Tüm uygulamalarınızı görmek için yukarı kaydırın</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
 </resources>
