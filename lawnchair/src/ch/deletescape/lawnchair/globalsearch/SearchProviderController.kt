@@ -5,6 +5,7 @@ import android.support.v7.view.ContextThemeWrapper
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.globalsearch.providers.*
+import ch.deletescape.lawnchair.globalsearch.providers.web.GoogleWebSearchProvider
 import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.useApplicationContext
@@ -98,6 +99,7 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
         fun getSearchProviders(context: Context) = listOf(
                 AppSearchSearchProvider(context),
                 GoogleSearchProvider(context),
+                GoogleWebSearchProvider(context),
                 SFinderSearchProvider(context),
                 if (BuildConfig.FEATURE_QUINOA) {
                     SesameSearchProvider(context)

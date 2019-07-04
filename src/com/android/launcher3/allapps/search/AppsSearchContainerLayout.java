@@ -47,6 +47,7 @@ import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Layout to contain the All-apps search UI.
@@ -175,9 +176,14 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    public void onSearchResult(String query, ArrayList<ComponentKey> apps) {
+    public void onSearchResult(String query, ArrayList<ComponentKey> apps, List<String> suggestions) {
         if (apps != null) {
             mApps.setOrderedFilter(apps);
+        }
+        if (suggestions != null) {
+            mApps.setSearchSuggestions(suggestions);
+        }
+        if (apps != null || suggestions != null) {
             notifyResultChanged();
             mAppsView.setLastSearchQuery(query);
         }
@@ -195,7 +201,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
 
     @Override
     public void clearSearchResult() {
-        if (mApps.setOrderedFilter(null)) {
+        if (mApps.setOrderedFilter(null) || mApps.setSearchSuggestions(null)) {
             notifyResultChanged();
         }
 
