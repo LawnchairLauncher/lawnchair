@@ -870,6 +870,9 @@ public final class Utilities {
     public static void openURLinBrowser(Context context, String url, Rect sourceBounds, Bundle options) {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            if (!(context instanceof Activity)){
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            }
             intent.setSourceBounds(sourceBounds);
             if(options == null){
                 context.startActivity(intent);

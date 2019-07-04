@@ -31,9 +31,14 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import ch.deletescape.lawnchair.colors.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
+import ch.deletescape.lawnchair.globalsearch.SearchProvider;
+import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
+import ch.deletescape.lawnchair.globalsearch.providers.web.WebSearchProvider;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.FolderInfo;
@@ -71,6 +76,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     // Drawer folders
     public static final int VIEW_TYPE_FOLDER = 1 << 6;
+    // Web search suggestions
+    public static final int VIEW_TYPE_SEARCH_SUGGESTION = 1 << 7;
 
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
@@ -221,7 +228,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     public static boolean isViewType(int viewType, int viewTypeMask) {
         return (viewType & viewTypeMask) != 0;
-    }
+}
 
     public void setIconFocusListener(OnFocusChangeListener focusListener) {
         mIconFocusListener = focusListener;
@@ -292,6 +299,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                         mLauncher.getDeviceProfile().allAppsCellHeightPx);
                 layout.setLayoutParams(lp);
                 return new ViewHolder(layout);
+            case VIEW_TYPE_SEARCH_SUGGESTION:
+                return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_search_suggestion, parent, false));
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -345,6 +354,21 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
                 folderIcon.verifyHighRes();
                 break;
+            case VIEW_TYPE_SEARCH_SUGGESTION:
+                int color = getDrawerTextColor();
+                ViewGroup group = (ViewGroup) holder.itemView;
+                TextView textView = group.findViewById(R.id.suggestion);
+                String suggestion = mApps.getAdapterItems().get(position).suggestion;
+                textView.setText(suggestion);
+                textView.setTextColor(color);
+                ((ImageView) group.findViewById(android.R.id.icon)).getDrawable().setTint(color);
+                group.setOnClickListener(v -> {
+                    SearchProvider provider = getSearchProvider();
+                    if (provider instanceof WebSearchProvider) {
+                        ((WebSearchProvider) provider).openResults(suggestion);
+                    }
+                });
+                break;
         }
         if (mBindViewCallback != null) {
             mBindViewCallback.onBindView(holder);
@@ -366,6 +390,15 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public int getItemViewType(int position) {
         AlphabeticalAppsList.AdapterItem item = mApps.getAdapterItems().get(position);
         return item.viewType;
+    }
+
+    public int getDrawerTextColor() {
+        return ColorEngine.getInstance(mLauncher).getResolver(Resolvers.ALLAPPS_ICON_LABEL).resolveColor();
+    }
+
+
+    private SearchProvider getSearchProvider() {
+        return SearchProviderController.Companion.getInstance(mLauncher).getSearchProvider();
     }
 
 }
