@@ -247,6 +247,7 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
                 fullList.addAll(
                         PLACE_HOLDERS.mapNotNull { packageManager.getLaunchIntentForPackage(it)?.component }
                                 .map { ComponentKeyMapper(context, ComponentKey(it, user)) }
+                                .filterNot { fullList.contains(it) }
                 )
             }
             fullList.take(MAX_PREDICTIONS).toMutableList()
