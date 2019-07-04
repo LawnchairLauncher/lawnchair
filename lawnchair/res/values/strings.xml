@@ -694,4 +694,5 @@
     <string name="onboarding_swipe_up">Swipe up to see all your apps</string>
 
     <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
 </resources>

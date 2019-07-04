@@ -5,6 +5,7 @@ import android.support.v7.view.ContextThemeWrapper
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.globalsearch.providers.*
+import ch.deletescape.lawnchair.globalsearch.providers.web.DDGWebSearchProvider
 import ch.deletescape.lawnchair.globalsearch.providers.web.GoogleWebSearchProvider
 import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
@@ -109,6 +110,7 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
                 GoogleGoSearchProvider(context),
                 FirefoxSearchProvider(context),
                 DuckDuckGoSearchProvider(context),
+                DDGWebSearchProvider(context),
                 BingSearchProvider(context),
                 BaiduSearchProvider(context),
                 YandexSearchProvider(context),
