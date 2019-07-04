@@ -461,6 +461,8 @@
     <string name="import_as_adaptive">Als adaptief pictogram</string>
     <string name="bugreport_channel_name">Foutrapporten</string>
     <string name="status_channel_name">Foutrapport uploadstatus</string>
+    <string name="bugreport_group_summary">%d nieuwe foutrapporten</string>
+    <string name="bugreport_group_summary_multiple">Meerdere nieuwe foutrapporten</string>
     <string name="dogbin_uploading">Bezig met uploaden</string>
     <string name="action_dogbin_upload">Uploaden naar dogbin</string>
     <string name="action_dogbin_upload_error">Uploaden mislukt</string>
@@ -488,14 +490,46 @@
     <string name="tab_type_custom_desc">Handmatig apps kiezen voor dit tabblad.</string>
     <string name="tab_type_smart">Slim tabblad</string>
     <string name="categorization">Categorisatie</string>
-    <string name="folder_cover_mode">Omslagafbeelding</string>
+    <string name="folder_cover_mode">Omslagmodus</string>
     <string name="folder_cover_mode_desc">Tik om eerste app te openen, veeg omhoog om map te openen</string>
     <string name="pref_smartspace_event_providers">Gebeurtenis bronnen</string>
     <string name="event_provider_now_playing">Afspelende media</string>
     <string name="battery_status">Accustatus</string>
     <string name="battery_charging">Accu laadt op</string>
+    <string name="battery_full">Accu vol</string>
     <string name="battery_low">Accu bijna leeg</string>
     <string name="event_provider_unread_notifications">Ongelezen meldingen</string>
     <string name="event_provider_missing_notification_access">Om <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> te gebruiken, schakel app-meldingen in voor <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Om <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> te gebruiken, schakel meldingsstipjes in</string>
     <string name="zen_mode_enabled">Niet storen is ingeschakeld</string>
+    <string name="crash_report_notif_title">%1$s is vastgelopen!</string>
+    <string name="personality_provider">Contextuele berichten</string>
+    <string-array name="greetings_morning">
+        <item>Goedemorgen!</item>
+        <item>Wat een mooie dag!</item>
+        <item>Heb je al naar buiten gekeken?</item>
+        <item>Geniet van je dag!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Goedenacht!</item>
+        <item>Slaap lekker!</item>
+        <item>Tot morgen!</item>
+        <item>Droom zacht!</item>
+        <item>Niet te lang opblijven</item>
+        <item>Hoe was je dag?</item>
+        <item>Wat heb je gedaan vandaag?</item>
+    </string-array>
+    <string name="onbording">Onboarding</string>
+    <string name="onbording_settings_title">%s instellen</string>
+    <string name="onbording_settings_summary">Startscherm lang aanraken</string>
+    <string name="onboarding_swipe_up">Veeg omhoog om alle apps te zien</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Never (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
 </resources>
