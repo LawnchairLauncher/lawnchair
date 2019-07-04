@@ -43,9 +43,7 @@ class PersonalityProvider(controller: LawnchairSmartspaceController) :
 
     var time = currentTime()!!
         set(value) {
-            if (field.dayOfYear != value.dayOfYear) {
-                randomIndex = abs(Random(value.dayOfYear).nextInt())
-            }
+            randomIndex = abs(Random(value.dayOfYear).nextInt())
             if (field.hourOfDay != value.hourOfDay) {
                 field = value
                 updateData(null, getEventCard())
