@@ -462,6 +462,8 @@
     <string name="import_as_adaptive">Als adaptives Icon</string>
     <string name="bugreport_channel_name">Fehlerberichte</string>
     <string name="status_channel_name">Upload-Status Fehlerbericht</string>
+    <string name="bugreport_group_summary">%d neue Berichte</string>
+    <string name="bugreport_group_summary_multiple">Mehrere neue Berichte</string>
     <string name="dogbin_uploading">Upload läuft</string>
     <string name="action_dogbin_upload">Upload auf dogbin</string>
     <string name="action_dogbin_upload_error">Upload fehlgeschlagen</string>
@@ -495,8 +497,40 @@
     <string name="event_provider_now_playing">Aktuelle Wiedergabe</string>
     <string name="battery_status">Batterie-Status</string>
     <string name="battery_charging">Batterie lädt</string>
+    <string name="battery_full">Akku voll</string>
     <string name="battery_low">Batterie fast leer</string>
     <string name="event_provider_unread_notifications">Ungelesene Benachrichtigungen</string>
     <string name="event_provider_missing_notification_access">Zur Benutzung von <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> bitte App-Benachrichtigungen für <xliff:g example="My App" id="name">%2$s</xliff:g> einschalten.</string>
+    <string name="event_provider_missing_notification_dots">Wenn du <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> benutzen willst, musst du die Benachrichtigungspunkte einschalten</string>
     <string name="zen_mode_enabled">\"Nicht stören\" ist aktiviert</string>
+    <string name="crash_report_notif_title">%1$s ist abgestürzt!</string>
+    <string name="personality_provider">Kontextbasierte Nachrichten</string>
+    <string-array name="greetings_morning">
+        <item>Guten Morgen!</item>
+        <item>Was für ein schöner Tag!</item>
+        <item>Hast du schon mal rausgeschaut?</item>
+        <item>Hab einen schönen Tag!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Gute Nacht!</item>
+        <item>Schlaf gut!</item>
+        <item>Bis morgen!</item>
+        <item>Süße Träume!</item>
+        <item>Bleib nicht zulange auf</item>
+        <item>Wie war dein Tag?</item>
+        <item>Was hast du heute gemacht?</item>
+    </string-array>
+    <string name="onbording">Onboarding</string>
+    <string name="onbording_settings_title">Stelle %s ein</string>
+    <string name="onbording_settings_summary">Lange Tippen auf dem Startbildschirm</string>
+    <string name="onboarding_swipe_up">Nach oben wischen um alle deine Apps zu sehen</string>
+    <string name="web_search_google">Google (Web)</string>
+    <string name="web_search_ddg">DuckDuckGo (Web)</string>
+    <string name="web_search_startpage">Startpage.com (Web)</string>
+    <string name="web_search_bing">Bing (Web)</string>
+    <string name="web_search_qwant">Qwant (Web)</string>
+    <string name="web_search_ecosia">Ecosia (Web)</string>
+    <string name="web_search_yandex">Yandex (Web)</string>
+    <string name="web_search_naver">Naver (Web)</string>
+    <string name="web_search_baidu">Baidu (Web)</string>
 </resources>
