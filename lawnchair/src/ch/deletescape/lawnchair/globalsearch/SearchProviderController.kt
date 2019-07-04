@@ -7,6 +7,7 @@ import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.globalsearch.providers.*
 import ch.deletescape.lawnchair.globalsearch.providers.web.DDGWebSearchProvider
 import ch.deletescape.lawnchair.globalsearch.providers.web.GoogleWebSearchProvider
+import ch.deletescape.lawnchair.globalsearch.providers.web.StartpageWebSearchProvider
 import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.useApplicationContext
@@ -112,6 +113,7 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
                 DuckDuckGoSearchProvider(context),
                 DDGWebSearchProvider(context),
                 BingSearchProvider(context),
+                StartpageWebSearchProvider(context),
                 BaiduSearchProvider(context),
                 YandexSearchProvider(context),
                 QwantSearchProvider(context),
