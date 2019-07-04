@@ -291,6 +291,7 @@
     <string name="theme_black_dark_text">Musta tummalla tekstillä</string>
     <string name="theme_dark_theme_mode">Tumma teema</string>
     <string name="theme_dark_theme_mode_on">Käytössä</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Seuraa päivänvaloa</string>
     <string name="theme_use_black">Käytä puhdasta mustaa</string>
     <string name="theme_use_dark_text">Käytä tummaa tekstiä</string>
     <string name="pref_qsb_color">Väri</string>
@@ -406,6 +407,7 @@
     <string name="adaptify_pack_summary">Luo adaptiiviset kuvakkeet kuvakepaketin kuvakkeille</string>
     <string name="pref_sesame_sync_look_and_feel">Jaa ulkoasu ja tunnelma</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Synkronoi Lawnchair haun asetukset Sesamen kanssa</string>
+    <string name="pref_search_bar_radius">Hakupalkin kulmien pyöristys</string>
     <string name="icon_text_scale_pref_title">Tekstin koko</string>
     <string name="text_color">Tekstin väri</string>
     <string name="background_color">Taustaväri</string>
@@ -446,4 +448,27 @@
     <string name="animation_type_fade">Häivytys</string>
     <string name="pref_appcategorization_flowerpot_title">Kategoria</string>
     <string name="select_tab_type">Välilehden tyyppi</string>
+    <string name="pref_smartspace_event_providers">Tapahtumien lähde</string>
+    <string name="event_provider_now_playing">Nyt soi</string>
+    <string name="battery_status">Akun tila</string>
+    <string name="battery_charging">Akkua ladataan</string>
+    <string name="battery_full">Akku täynnä</string>
+    <string name="battery_low">Akku vähissä</string>
+    <string name="event_provider_unread_notifications">Lukemattomat ilmoitukset</string>
+    <string name="crash_report_notif_title">%1$s kaatui!</string>
+    <string-array name="greetings_morning">
+        <item>Hyvää huomenta!</item>
+        <item>Miten hieno päivä!</item>
+        <item>Oletko katsonut vielä ulos?</item>
+        <item>Hyvää päivänjatkoa!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Hyvää yötä!</item>
+        <item>Nuku hyvin!</item>
+        <item>Nähdään huomenna!</item>
+        <item>Kauniita unia!</item>
+        <item>Älä valvo liian myöhään</item>
+        <item>Millainen oli päiväsi?</item>
+        <item>Mitä teit tänään?</item>
+    </string-array>
 </resources>
