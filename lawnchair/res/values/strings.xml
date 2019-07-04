@@ -695,4 +695,5 @@
 
     <string name="web_search_google">Google (web)</string>
     <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
 </resources>

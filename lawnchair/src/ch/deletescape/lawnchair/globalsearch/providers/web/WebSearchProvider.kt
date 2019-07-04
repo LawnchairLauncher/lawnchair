@@ -75,6 +75,6 @@ abstract class WebSearchProvider(context: Context) : SearchProvider(context) {
     protected open fun getResultUrl(query: String) = searchUrl.format(query)
 
     companion object {
-        private const val MAX_SUGGESTIONS = 5
+        const val MAX_SUGGESTIONS = 5
     }
 }
