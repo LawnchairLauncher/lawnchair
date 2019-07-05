@@ -33,10 +33,8 @@ import ch.deletescape.lawnchair.preferences.DockStyle
 import ch.deletescape.lawnchair.sesame.Sesame
 import ch.deletescape.lawnchair.settings.GridSize
 import ch.deletescape.lawnchair.settings.GridSize2D
-import ch.deletescape.lawnchair.smartspace.BatteryStatusProvider
-import ch.deletescape.lawnchair.smartspace.NotificationUnreadProvider
-import ch.deletescape.lawnchair.smartspace.NowPlayingProvider
-import ch.deletescape.lawnchair.smartspace.SmartspaceDataWidget
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity
+import ch.deletescape.lawnchair.smartspace.*
 import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.util.Temperature
 import com.android.launcher3.*
@@ -126,7 +124,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val autoAddInstalled by BooleanPref("pref_add_icon_to_home", true, doNothing)
     private val homeMultilineLabel by BooleanPref("pref_homeIconLabelsInTwoLines", false, recreate)
     val homeLabelRows get() = if(homeMultilineLabel) 2 else 1
-    val allowOverlap by BooleanPref("pref_allowOverlap", false, reloadAll)
+    val allowOverlap by BooleanPref(SettingsActivity.ALLOW_OVERLAP_PREF, false, reloadAll)
     val desktopTextScale by FloatPref("pref_iconTextScaleSB", 1f, reloadAll)
     val centerWallpaper by BooleanPref("pref_centerWallpaper")
     val lockDesktop by BooleanPref("pref_lockDesktop", false, reloadAll)
@@ -147,7 +145,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
             ::updateSmartspaceProvider, listOf(eventProvider,
                                                NotificationUnreadProvider::class.java.name,
                                                NowPlayingProvider::class.java.name,
-                                               BatteryStatusProvider::class.java.name))
+                                               BatteryStatusProvider::class.java.name,
+                                               PersonalityProvider::class.java.name))
     var weatherApiKey by StringPref("pref_weatherApiKey", context.getString(R.string.default_owm_key))
     var weatherCity by StringPref("pref_weather_city", context.getString(R.string.default_city))
     val weatherUnit by StringBasedPref("pref_weather_units", Temperature.Unit.Celsius, ::updateSmartspaceProvider,

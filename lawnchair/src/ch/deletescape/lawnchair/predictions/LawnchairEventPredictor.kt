@@ -236,15 +236,18 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
                     System.currentTimeMillis(), MAX_PREDICTIONS * 2,
                     arrayOf(ShortcutType.APP_COMPONENT))
             val user = Process.myUserHandle()
-            val fullList = lst!!.mapNotNull { it.shortcut.componentName }
-                    .map { getComponentFromString(it) }
-                    .filterNot { it.componentKey.componentName == sesameComponent }
-                    .filterNot { isHiddenApp(context, it.componentKey) }
-                    .filter { mAppFilter.shouldShowApp(it.componentKey.componentName, user) }.toMutableList()
+            val fullList = lst?.mapNotNull { it.shortcut.componentName }
+                                   ?.map { getComponentFromString(it) }
+                                   ?.filterNot { it.componentKey.componentName == sesameComponent }
+                                   ?.filterNot { isHiddenApp(context, it.componentKey) }
+                                   ?.filter {
+                                       mAppFilter.shouldShowApp(it.componentKey.componentName, user)
+                                   }?.toMutableList() ?: mutableListOf<ComponentKeyMapper>()
             if (fullList.size < MAX_PREDICTIONS) {
                 fullList.addAll(
                         PLACE_HOLDERS.mapNotNull { packageManager.getLaunchIntentForPackage(it)?.component }
                                 .map { ComponentKeyMapper(context, ComponentKey(it, user)) }
+                                .filterNot { fullList.contains(it) }
                 )
             }
             fullList.take(MAX_PREDICTIONS).toMutableList()

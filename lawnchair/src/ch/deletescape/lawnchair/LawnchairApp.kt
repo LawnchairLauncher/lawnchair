@@ -39,6 +39,7 @@ import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.quickstep.RecentsActivity
+import com.squareup.leakcanary.LeakCanary
 import ninja.sesame.lib.bridge.v1.SesameFrontend
 import ninja.sesame.lib.bridge.v1.SesameInitOnComplete
 import ninja.sesame.lib.bridge.v1_1.LookFeelKeys
@@ -53,6 +54,18 @@ class LawnchairApp : Application() {
 
     init {
         d("Hidden APIs allowed: ${Utilities.HIDDEN_APIS_ALLOWED}")
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        if (BuildConfig.HAS_LEAKCANARY) {
+            if (LeakCanary.isInAnalyzerProcess(this)) {
+                // This process is dedicated to LeakCanary for heap analysis.
+                // You should not init your app in this process.
+                return
+            }
+            LeakCanary.install(this)
+        }
     }
 
     fun onLauncherAppStateCreated() {

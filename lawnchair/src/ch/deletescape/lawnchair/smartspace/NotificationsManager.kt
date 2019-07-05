@@ -34,15 +34,11 @@ import java.util.concurrent.ExecutionException
 class NotificationsManager private constructor(): NotificationListener.NotificationsChangedListener {
 
     private val bgNotificationsMap = mutableMapOf<String, StatusBarNotification>()
-    private val notificationList = mutableListOf<StatusBarNotification>()
     private val listeners  = mutableListOf<OnChangeListener>()
     private var refreshPending = false
 
-    val notifications: List<StatusBarNotification> get() {
-        synchronized(notificationList) {
-            return notificationList
-        }
-    }
+    var notifications = emptyList<StatusBarNotification>()
+        private set
 
     init {
         LauncherNotifications.getInstance().addListener(this)
@@ -109,10 +105,7 @@ class NotificationsManager private constructor(): NotificationListener.Notificat
     private fun onChange() {
         val notifications = bgNotificationsMap.values.toList()
         runOnMainThread {
-            synchronized(notificationList) {
-                notificationList.clear()
-                notificationList.addAll(notifications)
-            }
+            this.notifications = notifications
             listeners.forEach(OnChangeListener::onNotificationsChanged)
         }
     }

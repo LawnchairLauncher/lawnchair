@@ -22,6 +22,8 @@ import android.support.annotation.Keep
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Switch
+import ch.deletescape.lawnchair.applyColor
+import ch.deletescape.lawnchair.getColorEngineAccent
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.search.SearchIndex
 import com.android.launcher3.Utilities
@@ -68,23 +70,43 @@ class DockSwitchPreference(context: Context, attrs: AttributeSet? = null) : Styl
 
     class DockSwitchSlice(context: Context, attrs: AttributeSet) : SwitchSlice(context, attrs) {
 
-        private val prefs = Utilities.getLawnchairPrefs(context)
-        private val currentStyle get() = prefs.dockStyles.currentStyle
+        override fun createSliceView(): View {
+            return DockSwitchSliceView(context, key)
+        }
+    }
+
+    class DockSwitchSliceView(
+            context: Context,
+            private val key: String)
+        : Switch(context) {
+
+        private val currentStyle get() = context.lawnchairPrefs.dockStyles.currentStyle
         private val inverted get() = key == "enableGradient"
 
         @Suppress("UNCHECKED_CAST")
         private val property get() = DockStyle.properties[key] as? KMutableProperty1<DockStyle, Boolean>
+        private val listener = ::onChange
 
-        override fun createSliceView(): View {
-            return (super.createSliceView() as Switch).apply {
-                context.lawnchairPrefs.dockStyles.addListener {
-                    isChecked = getPersistedBoolean()
-                }
-                isChecked = getPersistedBoolean()
-                setOnCheckedChangeListener { _, isChecked ->
-                    persistBoolean(isChecked)
-                }
+        init {
+            applyColor(context.getColorEngineAccent())
+            setOnCheckedChangeListener { _, isChecked ->
+                persistBoolean(isChecked)
             }
+            isChecked = getPersistedBoolean()
+        }
+
+        override fun onAttachedToWindow() {
+            super.onAttachedToWindow()
+            context.lawnchairPrefs.dockStyles.addListener(listener)
+        }
+
+        override fun onDetachedFromWindow() {
+            super.onDetachedFromWindow()
+            context.lawnchairPrefs.dockStyles.removeListener(listener)
+        }
+
+        private fun onChange() {
+            isChecked = getPersistedBoolean()
         }
 
         private fun getPersistedBoolean(): Boolean {

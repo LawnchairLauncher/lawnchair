@@ -305,8 +305,8 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
     override fun onDrawFlatColor(canvas: Canvas) {
         blurDrawable?.run {
-            setBounds(0, 0, width, (height + mRadius).toInt())
-            draw(canvas)
+            setBounds(0, 0, width, height)
+            draw(canvas, true)
         }
         drawSearchBlur(canvas)
     }

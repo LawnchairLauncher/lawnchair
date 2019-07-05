@@ -12,7 +12,7 @@
             android:persistent="true"
             android:title="@string/pref_icon_packs" />
 
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        <ch.deletescape.lawnchair.settings.ui.IconMaskingPreference
             android:defaultValue="true"
             android:key="pref_iconPackMasking"
             android:summary="@string/pref_icon_pack_masking_summary"

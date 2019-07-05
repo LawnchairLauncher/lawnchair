@@ -7,9 +7,14 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 
+import ch.deletescape.lawnchair.globalsearch.SearchProvider;
+import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
+import ch.deletescape.lawnchair.globalsearch.providers.web.WebSearchProvider;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
 import com.android.launcher3.allapps.search.SearchAlgorithm;
+import java.util.Collections;
+import java.util.List;
 
 public class SearchThread implements SearchAlgorithm, Handler.Callback {
     private static HandlerThread handlerThread;
@@ -28,11 +33,11 @@ public class SearchThread implements SearchAlgorithm, Handler.Callback {
         mHandler = new Handler(SearchThread.handlerThread.getLooper(), this);
     }
 
-    private void dj(SearchResult componentList) {
+    private void dj(SearchResult result) {
         Uri uri = new Uri.Builder()
                 .scheme("content")
                 .authority(BuildConfig.APPLICATION_ID + ".appssearch")
-                .appendPath(componentList.mQuery)
+                .appendPath(result.mQuery)
                 .build();
 
         Cursor cursor = null;
@@ -40,7 +45,7 @@ public class SearchThread implements SearchAlgorithm, Handler.Callback {
             cursor = mContext.getContentResolver().query(uri, null, null, null, null);
             int suggestIntentData = cursor.getColumnIndex("suggest_intent_data");
             while (cursor.moveToNext()) {
-                componentList.mApps.add(AppSearchProvider.uriToComponent(Uri.parse(cursor.getString(suggestIntentData)), mContext));
+                result.mApps.add(AppSearchProvider.uriToComponent(Uri.parse(cursor.getString(suggestIntentData)), mContext));
             }
         } catch (NullPointerException ignored) {
 
@@ -50,7 +55,9 @@ public class SearchThread implements SearchAlgorithm, Handler.Callback {
             }
         }
 
-        Message.obtain(mUiHandler, 200, componentList).sendToTarget();
+        result.mSuggestions.addAll(getSuggestions(result.mQuery));
+
+        Message.obtain(mUiHandler, 200, result).sendToTarget();
     }
 
     public void cancel(boolean interruptActiveRequests) {
@@ -66,6 +73,15 @@ public class SearchThread implements SearchAlgorithm, Handler.Callback {
         Message.obtain(mHandler, 100, new SearchResult(query, callback)).sendToTarget();
     }
 
+    private List<String> getSuggestions(String query) {
+        SearchProvider provider = SearchProviderController.Companion
+                .getInstance(mContext).getSearchProvider();
+        if (provider instanceof WebSearchProvider) {
+            return ((WebSearchProvider) provider).getSuggestions(query);
+        }
+        return Collections.emptyList();
+    }
+
     public boolean handleMessage(final Message message) {
         switch (message.what) {
             default: {
@@ -78,7 +94,7 @@ public class SearchThread implements SearchAlgorithm, Handler.Callback {
             case 200: {
                 if (!mInterruptActiveRequests) {
                     SearchResult searchResult = (SearchResult) message.obj;
-                    searchResult.mCallbacks.onSearchResult(searchResult.mQuery, searchResult.mApps);
+                    searchResult.mCallbacks.onSearchResult(searchResult.mQuery, searchResult.mApps, searchResult.mSuggestions);
                 }
                 break;
             }

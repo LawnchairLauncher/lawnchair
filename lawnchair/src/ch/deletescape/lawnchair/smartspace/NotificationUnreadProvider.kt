@@ -80,13 +80,9 @@ class NotificationUnreadProvider(controller: LawnchairSmartspaceController) :
                 .filter { !it.isOngoing }
                 .filter { it.notification.priority >= PRIORITY_DEFAULT }
                 .filter { isCommunicationApp(it) }
-                .fold(null as StatusBarNotification?) { acc, sbn ->
-                    if (acc == null || sbn.notification.priority > acc.notification.priority) {
-                        sbn
-                    } else {
-                        acc
-                    }
-                } ?: return null
+                .maxWith(compareBy(
+                        { it.notification.priority },
+                        { it.notification.`when`})) ?: return null
 
         if (zenModeEnabled) {
             return CardData(

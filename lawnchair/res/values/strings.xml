@@ -624,6 +624,8 @@
     <string name="weather_provider_accu" translatable="false">AccuWeather</string>
     <string name="bugreport_channel_name">Bug reports</string>
     <string name="status_channel_name">Bug report upload status</string>
+    <string name="bugreport_group_summary">%d new reports</string>
+    <string name="bugreport_group_summary_multiple">Multiple new reports</string>
     <string name="dogbin_uploading">Upload in progress</string>
     <string name="action_dogbin_upload">Upload to dogbin</string>
     <string name="action_dogbin_upload_error">Upload failed</string>
@@ -661,8 +663,43 @@
     <string name="event_provider_now_playing">Now playing</string>
     <string name="battery_status">Battery status</string>
     <string name="battery_charging">Battery charging</string>
+    <string name="battery_full">Battery full</string>
     <string name="battery_low">Battery low</string>
     <string name="event_provider_unread_notifications">Unread notifications</string>
     <string name="event_provider_missing_notification_access">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on app notifications for <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on notification dots</string>
     <string name="zen_mode_enabled">Do not disturb is enabled</string>
+    <string name="crash_report_notif_title">%1$s crashed!</string>
+
+    <string name="personality_provider">Contextual messages</string>
+    <string-array name="greetings_morning">
+        <item>Good morning!</item>
+        <item>What a beautiful day!</item>
+        <item>Have you looked outside yet?</item>
+        <item>Have a great day!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Good night!</item>
+        <item>Sleep well!</item>
+        <item>See you tomorrow!</item>
+        <item>Sweet dreams!</item>
+        <item>Don\'t stay up too long</item>
+        <item>How was your day?</item>
+        <item>What did you do today?</item>
+    </string-array>
+
+    <string name="onbording">Onboarding</string>
+    <string name="onbording_settings_title">Set-up %s</string>
+    <string name="onbording_settings_summary">Long press your home screen</string>
+    <string name="onboarding_swipe_up">Swipe up to see all your apps</string>
+
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
 </resources>

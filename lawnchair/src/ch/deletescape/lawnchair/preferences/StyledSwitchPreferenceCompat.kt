@@ -28,6 +28,7 @@ import android.widget.Switch
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.applyColor
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.getColorEngineAccent
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.ControlledPreference
 import ch.deletescape.lawnchair.settings.ui.search.SearchIndex
@@ -67,20 +68,35 @@ open class StyledSwitchPreferenceCompat(context: Context, attrs: AttributeSet? =
         }
 
         override fun createSliceView(): View {
-            val color = ColorEngine.getInstance(context).accent
-            val prefs = context.lawnchairPrefs
-            var pref by prefs.BooleanPref(key, defaultValue)
-            return Switch(context).apply {
-                applyColor(color)
-                prefs.addOnPreferenceChangeListener(key, object : LawnchairPreferences.OnPreferenceChangeListener {
-                    override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
-                        isChecked = pref
-                    }
-                })
-                setOnCheckedChangeListener { _, isChecked ->
-                    pref = isChecked
-                }
+            return SwitchSliceView(context, key, defaultValue)
+        }
+    }
+
+    class SwitchSliceView(
+            context: Context,
+            private val key: String,
+            private val defaultValue: Boolean)
+        : Switch(context), LawnchairPreferences.OnPreferenceChangeListener {
+
+        init {
+            applyColor(context.getColorEngineAccent())
+            setOnCheckedChangeListener { _, isChecked ->
+                context.lawnchairPrefs.sharedPrefs.edit().putBoolean(key, isChecked).apply()
             }
+        }
+
+        override fun onAttachedToWindow() {
+            super.onAttachedToWindow()
+            context.lawnchairPrefs.addOnPreferenceChangeListener(key, this)
+        }
+
+        override fun onDetachedFromWindow() {
+            super.onDetachedFromWindow()
+            context.lawnchairPrefs.removeOnPreferenceChangeListener(key, this)
+        }
+
+        override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
+            isChecked = prefs.sharedPrefs.getBoolean(key, defaultValue)
         }
     }
 

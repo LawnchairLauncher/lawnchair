@@ -28,6 +28,7 @@ class ZenModeListener(
 
     fun startListening() {
         contentResolver.registerContentObserver(Settings.Global.getUriFor(ZEN_MODE), false, this)
+        onChange(false)
     }
 
     fun stopListening() {
