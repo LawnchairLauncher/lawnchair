@@ -286,10 +286,19 @@
     <string name="theme_auto_night_mode">Segueix el tema del sistema</string>
     <string name="theme_light">Clar</string>
     <string name="theme_dark_text">Clar amb text fosc</string>
+    <string name="theme_with_dark_text">text fosc</string>
     <string name="theme_dark">Fosc</string>
     <string name="theme_dark_dark_text">Fosc amb text fosc</string>
     <string name="theme_black">Negre</string>
     <string name="theme_black_dark_text">Negre amb text fosc</string>
+    <string name="theme_dark_theme_mode">Tema fosc</string>
+    <string name="theme_dark_theme_mode_on">Activat</string>
+    <string name="theme_dark_theme_mode_off">Desactivat</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
+    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Seguiu la llum del dia</string>
+    <string name="theme_use_black">Utilitza negre pur</string>
+    <string name="theme_use_dark_text">Utilitza text fosc</string>
     <string name="pref_qsb_color">Color</string>
     <string name="hide_from_predictions">Amaga suggeriment</string>
     <string name="hide_from_predictions_summary">No ho tornis a mostrar al calaix de suggeriments</string>
@@ -332,7 +341,7 @@
     <string name="selected_count">%1$d seleccionat(s)</string>
     <string name="tab_manage_apps">Gestiona les aplicacions</string>
     <string name="tab_bottom_sheet_save">Desa</string>
-    <string name="tab_hide_from_main">Oculta del calaix</string>
+    <string name="tab_hide_from_main">Amaga de la pestanya principal</string>
     <string name="tab_color">Color de la pestanya</string>
     <string name="delete">Suprimeix</string>
     <string name="none">Cap</string>
@@ -352,6 +361,7 @@
     <string name="pref_sesame_show_shortcuts">Dreceres d\'aplicació</string>
     <string name="pref_sesame_show_shortcuts_summary">Mostra dreceres del Sesame en icones de bombolles</string>
     <string name="allow">Permet</string>
+    <string name="deny">Denega</string>
     <string name="sesame_enable_integration_title">Activa la integració</string>
     <string name="sesame_enable_integration_description"><![CDATA[Permet l'intercanvi de dades entre el Lawnchair i el Sesame. Podeu canviar-ho a la configuració del Lawnchair o del Sesame.]]></string>
     <string name="sesame_version">Versió de la integració</string>
@@ -405,4 +415,116 @@
     <string name="adaptify_pack_summary">Creeu icones adaptatives per a icones a partir de paquets d\'icones</string>
     <string name="pref_sesame_sync_look_and_feel">Comparteix l\'aspecte i el comportament</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Sincronitza la configuració de cerca del Lawnchair amb el Sesame</string>
+    <string name="pref_search_bar_radius">Cantonades arrodonides a la barra de cerca</string>
+    <string name="icon_text_scale_pref_title">Mida del text</string>
+    <string name="text_color">Color del text</string>
+    <string name="background_color">Color de fons</string>
+    <string name="pref_notification_count_title">Mostra el recompte de notificacions</string>
+    <string name="pref_notification_count_summary">Mostra el recompte de notificacions dins dels punts</string>
+    <string name="pref_center_wallpaper">Centra sempre el fons de pantalla</string>
+    <string name="pref_center_wallpaper_summary">Això desactivarà l\'efecte de desplaçament del fons de pantalla</string>
+    <string name="pref_icon_popup_menu">Elements del menú emergent</string>
+    <string name="pref_appcategorization_enable_title">Classifica les aplicacions</string>
+    <string name="pref_appcategorization_enable_summary">Arregla el meu calaix desordenat.</string>
+    <string name="pref_appcategorization_style_text">Estil</string>
+    <string name="pref_app_groups_edit_tip">Toqueu per editar, arrossegueu per reordenar.</string>
+    <string name="pref_app_groups_create">Crea</string>
+    <string name="pref_appcategorization_folders_title">Carpetes</string>
+    <string name="pref_appcategorization_folders_summary">Toqueu per obrir la finestra emergent.</string>
+    <string name="pref_appcategorization_tabs_title">Pestanyes</string>
+    <string name="pref_appcategorization_tabs_summary">Llisqueu entre els grups.</string>
+    <string name="default_folder_name">Carpeta nova</string>
+    <string name="drawer_folders">Carpetes</string>
+    <string name="category_business_and_productivity">Negoci i productivitat</string>
+    <string name="category_communication">Comuniació</string>
+    <string name="category_entertainment">Entreteniment</string>
+    <string name="category_food_and_drink">Aliments i begudes</string>
+    <string name="category_game">Jocs</string>
+    <string name="category_health_and_fitness">Salut i fitness</string>
+    <string name="category_knowledge_and_reference">Coneixement i referència</string>
+    <string name="category_lifestyle">Compres i estil de vida</string>
+    <string name="category_music">Música</string>
+    <string name="category_news">Notícies</string>
+    <string name="category_personalization">Personalització</string>
+    <string name="category_photography">Fotografia</string>
+    <string name="category_tools">Utilitat</string>
+    <string name="category_travel_and_navigation">Viatges i navegació</string>
+    <string name="lock_desktop">Bloqueja l\'escriptori</string>
+    <string name="reset_custom_icons">Restableix les icones personalitzades</string>
+    <string name="reset_custom_icons_confirmation">Esteu segur que voleu restablir totes les icones personalitzades? Aquesta acció no és pot desfer.</string>
+    <string name="open_image_picker">Obre el selector d\'imatges</string>
+    <string name="import_icon">Importa una icona</string>
+    <string name="import_as_adaptive">Com icona adaptativa</string>
+    <string name="bugreport_channel_name">Informes d\'errors</string>
+    <string name="status_channel_name">Estat de càrrega de l\'informe d\'errors</string>
+    <string name="bugreport_group_summary">%d informes nous</string>
+    <string name="bugreport_group_summary_multiple">Diversos informes nous</string>
+    <string name="dogbin_uploading">Pujada en curs</string>
+    <string name="action_dogbin_upload">Puja al dogbin</string>
+    <string name="action_dogbin_upload_error">Ha fallat la pujada</string>
+    <string name="action_dogbin_copy_link">Copia l\'enllaç</string>
+    <string name="lawnchair_bug_report">Informe d\'errors del Lawnchair</string>
+    <string name="copied_toast">Copiat</string>
+    <string name="action_copy">Copia</string>
+    <string name="action_copy_link">Copia l\'enllaç</string>
+    <string name="action_share">Comparteix</string>
+    <string name="animation_type_title">Animació d\'obertura d\'aplicacions</string>
+    <string name="animation_type_default">Per defecte</string>
+    <string name="animation_type_pie">Pie</string>
+    <string name="animation_type_pie_like">Tipus Pie</string>
+    <string name="animation_type_reveal">Revelació</string>
+    <string name="animation_type_slide_up">Llisqueu cap amunt</string>
+    <string name="animation_type_scale_up">Amplia</string>
+    <string name="animation_type_blink">Parpellejar</string>
+    <string name="animation_type_fade">Esvair</string>
+    <string name="permission_iplocate">Voleu permetre l\'accés a la ubicació basada en xarxa?</string>
+    <string name="permission_iplocate_twilight_explanation">Això permet realitzar càlculs més precisos sense haver de conèixer la vostra ubicació exacta.</string>
+    <string name="pref_appcategorization_flowerpot_title">Categoria</string>
+    <string name="pref_appcategorization_flowerpot_summary">Les aplicacions se seleccionen automàticament en funció de les seves metadades.</string>
+    <string name="select_tab_type">Tipus de pestanya</string>
+    <string name="tab_type_custom">Pestanya personalitzada</string>
+    <string name="tab_type_custom_desc">Trieu manualment aplicacions per aquesta pestanya.</string>
+    <string name="tab_type_smart">Pestanya intel·ligent</string>
+    <string name="categorization">Categorització</string>
+    <string name="folder_cover_mode">Mode de coberta</string>
+    <string name="folder_cover_mode_desc">Toqueu per obrir la primera aplicació, llisqueu cap amunt per obrir la carpeta</string>
+    <string name="pref_smartspace_event_providers">Fonts dels esdeveniments</string>
+    <string name="event_provider_now_playing">Reproducció en curs</string>
+    <string name="battery_status">Estat de la bateria</string>
+    <string name="battery_charging">Carregant la bateria</string>
+    <string name="battery_full">Bateria carregada</string>
+    <string name="battery_low">Bateria baixa</string>
+    <string name="event_provider_unread_notifications">Notificacions no llegides</string>
+    <string name="event_provider_missing_notification_access">Per utilitzar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activeu les notificacions d\'aplicacions per <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Per utilitzar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activeu els punts de notificació</string>
+    <string name="zen_mode_enabled">El mode no molestar està activat</string>
+    <string name="crash_report_notif_title">%1$s ha fallat!</string>
+    <string name="personality_provider">Missatges contextuals</string>
+    <string-array name="greetings_morning">
+        <item>Bon dia!</item>
+        <item>Quin dia més bonic!</item>
+        <item>Heu fet un cop d\'ull a l\'exterior?</item>
+        <item>Que tinguis un bon dia!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Bona nit!</item>
+        <item>Que dormiu bé!</item>
+        <item>Fins demà!</item>
+        <item>Dolços somnis!</item>
+        <item>No us aneu a dormir molt tard</item>
+        <item>Com ha anat el dia?</item>
+        <item>Què heu fet avui?</item>
+    </string-array>
+    <string name="onbording_settings_title">Configura %s</string>
+    <string name="onbording_settings_summary">Mantingueu premuda la pantalla d\'inici</string>
+    <string name="onboarding_swipe_up">Llisqueu cap amunt per veure totes les aplicacions</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
 </resources>
