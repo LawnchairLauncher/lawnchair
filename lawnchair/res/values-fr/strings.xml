@@ -153,6 +153,7 @@
     <string name="about_bio_deletescape">Développeur Android &amp; passionné, adore les memes (un peu trop en fait). Fondateur du projet Lawnchair.</string>
     <string name="about_bio_recoded">Programmeur et designer graphique.</string>
     <string name="about_bio_josh">Designer graphique indépendant.</string>
+    <string name="about_bio_chris">Millénaire à l\'os, je sais pas et je m\'en fiche. Quelque chose avec le design et les médias sociaux. Allons traîner ensemble sur @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">Développeur principal chez halogenOS et développeur d\'application pour Substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Arrêt soudain du launcher</string>
@@ -278,7 +279,7 @@
     <string name="pref_white_only_treatment_summary">Arrière-plans colorés pour toutes les icônes adaptatives</string>
     <string name="smartspace_provider_bridge">Pixel Bridge sans Root</string>
     <!--Marker H-->
-    <string name="dismiss_drop_target_label">"Ne pas montrer"</string>
+    <string name="dismiss_drop_target_label">"Ne pas afficher"</string>
     <string name="suggested_action_content_description">%1$s s\'ouvre dans %2$s</string>
     <string name="action_sleep">Veille</string>
     <string name="pref_drawer_padding">Hauteur des lignes</string>
@@ -311,7 +312,7 @@
     <string name="search_no_results">Aucun résultat</string>
     <string name="search_menu">Trouver les paramètres</string>
     <string name="search_provider_s_finder">S Finder</string>
-    <string name="lawnchair_accent">Accent</string>
+    <string name="lawnchair_accent">Accentuation</string>
     <string name="theme_based">Suivre le thème</string>
     <!--Marker I-->
     <string name="suggestion_pref_screen_title">Suggestions</string>
@@ -345,7 +346,7 @@
     <string name="selected_count">%1$d sélectionné</string>
     <string name="tab_manage_apps">Gérer les applications</string>
     <string name="tab_bottom_sheet_save">Enregistrer</string>
-    <string name="tab_hide_from_main">Masquer du tiroir d\'applications</string>
+    <string name="tab_hide_from_main">Caché de l\'onglet principale</string>
     <string name="tab_color">Couleur de l\'onglet</string>
     <string name="delete">Supprimer</string>
     <string name="none">Aucun</string>
@@ -365,6 +366,7 @@
     <string name="pref_sesame_show_shortcuts">Raccourcis d\'application</string>
     <string name="pref_sesame_show_shortcuts_summary">Afficher les raccourcis Sesame dans les icônes</string>
     <string name="allow">Autoriser</string>
+    <string name="deny">Annuler</string>
     <string name="sesame_enable_integration_title">Activer l\'intégration</string>
     <string name="sesame_enable_integration_description"><![CDATA[Autoriser le partage de données entre Lawnchair et Sesame. Vous pouvez modifier cela dans les paramètres Lawnchair ou Sesame.]]></string>
     <string name="sesame_version">Version d\'intégration</string>
@@ -382,7 +384,7 @@
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
-    <string name="search_provider_edge">Bords</string>
+    <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">Météo OnePlus</string>
     <string name="overlap_placement">Placement superposé</string>
     <string name="overlap_placement_summary">Autoriser les icônes et les widgets à se superposer.</string>
@@ -399,7 +401,7 @@
     <string name="pref_fonts_global_font">Polices de caractère globale</string>
     <string name="pref_fonts_change_global_font">Modifier</string>
     <string name="pref_fonts_home_icons">Application &amp; nom des dossiers</string>
-    <string name="pref_fonts_home_smartspace">\'At a Glance\' widget</string>
+    <string name="pref_fonts_home_smartspace">Widget \"En bref...\"</string>
     <string name="pref_fonts_home_shortcuts">Bulle de raccourcis</string>
     <string name="pref_fonts_category_drawer">Tiroir des applications</string>
     <string name="pref_fonts_drawer_icons">Noms d\'applications</string>
@@ -418,11 +420,113 @@
     <string name="adaptify_pack_summary">Créé ds icônes adaptative pour des icônes provenant de pack d\'icônes</string>
     <string name="pref_sesame_sync_look_and_feel">Partager le Style</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Synchroniser Lawnchair avec les paramètres Sesame</string>
-    <string name="pref_search_bar_radius">Rayon de bar de recherche</string>
+    <string name="pref_search_bar_radius">Rondeur de la barre de recherche</string>
     <string name="icon_text_scale_pref_title">Taille du texte</string>
     <string name="text_color">Couleur du texte</string>
+    <string name="background_color">Couleur du fond</string>
     <string name="pref_notification_count_title">Affiche le nombre de notification</string>
     <string name="pref_notification_count_summary">Afficher le nombre de notification dans le point</string>
     <string name="pref_center_wallpaper">Toujours centrée le fond d\'écran</string>
     <string name="pref_center_wallpaper_summary">Cela désactivera l\'effet de défilement du fond d\'écran</string>
+    <string name="pref_icon_popup_menu">Objet du menu Popup</string>
+    <string name="pref_appcategorization_enable_title">Catégorisé les applications</string>
+    <string name="pref_appcategorization_enable_summary">Ranger mon tiroir d\'application.</string>
+    <string name="pref_appcategorization_style_text">Style</string>
+    <string name="pref_app_groups_edit_tip">Touché pour éditer, glisser pour réorganiser.</string>
+    <string name="pref_app_groups_create">Créer</string>
+    <string name="pref_appcategorization_folders_title">Dossiers</string>
+    <string name="pref_appcategorization_folders_summary">Appuyez pour ouvrir la fenêtre contextuelle.</string>
+    <string name="pref_appcategorization_tabs_title">Onglets</string>
+    <string name="pref_appcategorization_tabs_summary">Glisser entre les groupes.</string>
+    <string name="default_folder_name">Nouveau dossier</string>
+    <string name="drawer_folders">Dossiers</string>
+    <string name="category_business_and_productivity">Travail &amp; Productivité</string>
+    <string name="category_communication">Communication</string>
+    <string name="category_entertainment">Divertissement</string>
+    <string name="category_food_and_drink">Nourriture et boisson</string>
+    <string name="category_game">Jeux</string>
+    <string name="category_health_and_fitness">Santé et Sport</string>
+    <string name="category_knowledge_and_reference">Connaissance et référence</string>
+    <string name="category_lifestyle">Shopping et Style de vie</string>
+    <string name="category_music">Musique</string>
+    <string name="category_news">Actualités</string>
+    <string name="category_personalization">Personnalisation</string>
+    <string name="category_photography">Photographie</string>
+    <string name="category_tools">Outils</string>
+    <string name="category_travel_and_navigation">Voyage et Navigation</string>
+    <string name="lock_desktop">Verrouiller l\'écran d\'accueil</string>
+    <string name="reset_custom_icons">Réinitialiser les icônes personnalisées</string>
+    <string name="reset_custom_icons_confirmation">Êtes-vous sûr de que vouloir réinitialiser les icônes personnaliser ? Cette action ne peut pas être annulée.</string>
+    <string name="open_image_picker">Ouvrir le sélecteur d\'image</string>
+    <string name="import_icon">Importé des icônes</string>
+    <string name="import_as_adaptive">Comme une icône adaptative</string>
+    <string name="bugreport_channel_name">Signaler un problème</string>
+    <string name="status_channel_name">Statuts d\'envoi du signalement de problème</string>
+    <string name="bugreport_group_summary">Nouveau rapport</string>
+    <string name="bugreport_group_summary_multiple">Plusieurs nouveaux rapports</string>
+    <string name="dogbin_uploading">Envoie en cours</string>
+    <string name="action_dogbin_upload">Transférer vers dogbin</string>
+    <string name="action_dogbin_upload_error">Envoie échoué</string>
+    <string name="action_dogbin_copy_link">Copié le lien</string>
+    <string name="lawnchair_bug_report">Signaler un problème sur Lawnchair</string>
+    <string name="copied_toast">Copié</string>
+    <string name="action_copy">Copier</string>
+    <string name="action_copy_link">Copié le lien</string>
+    <string name="action_share">Partager</string>
+    <string name="animation_type_title">Animations d\'ouverture d\'application</string>
+    <string name="animation_type_default">Défaut</string>
+    <string name="animation_type_pie">Pie</string>
+    <string name="animation_type_pie_like">Comme pie</string>
+    <string name="animation_type_reveal">Révéler</string>
+    <string name="animation_type_slide_up">Glisser vers le haut</string>
+    <string name="animation_type_scale_up">Agrandir</string>
+    <string name="animation_type_blink">Intervalle</string>
+    <string name="animation_type_fade">Fondu</string>
+    <string name="permission_iplocate">Autoriser la localisation, basée sur un emplacement réseau approximatif ?</string>
+    <string name="permission_iplocate_twilight_explanation">Cela permet des calculs plus précis sans avoir à connaître votre position exacte.</string>
+    <string name="pref_appcategorization_flowerpot_title">Catégorie</string>
+    <string name="pref_appcategorization_flowerpot_summary">Les applications sont automatiquement sélectionnées en fonction de leurs métadonnées.</string>
+    <string name="select_tab_type">Type d\'onglet</string>
+    <string name="tab_type_custom">Onglet personnalisé</string>
+    <string name="tab_type_custom_desc">Choisissez manuellement les applications pour cet onglet.</string>
+    <string name="tab_type_smart">Onglet intelligent</string>
+    <string name="categorization">Catégorisation</string>
+    <string name="folder_cover_mode">Mode couverture</string>
+    <string name="folder_cover_mode_desc">Appuyez pour ouvrir la première application, balayez vers le haut pour ouvrir le dossier</string>
+    <string name="pref_smartspace_event_providers">Sources d\'événements</string>
+    <string name="event_provider_now_playing">Lecture en cours</string>
+    <string name="battery_status">État de la batterie</string>
+    <string name="battery_charging">Batterie en charge</string>
+    <string name="battery_full">Batterie rechargée</string>
+    <string name="battery_low">Batterie faible</string>
+    <string name="event_provider_unread_notifications">Notifications non lues</string>
+    <string name="event_provider_missing_notification_access">Pour utiliser <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activez les notifications d\'application pour <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="zen_mode_enabled">Ne pas déranger est activé</string>
+    <string name="personality_provider">Messages contextuelles</string>
+    <string-array name="greetings_morning">
+        <item>Bonjour !</item>
+        <item>Quelle belle journée !</item>
+        <item>Avez-vous déjà regardé dehors ?</item>
+        <item>Bonne journée !</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Bonne nuit !</item>
+        <item>Dormez bien !</item>
+        <item>A demain !</item>
+        <item>Faites de beaux rêves !</item>
+        <item>Ne reste pas debout trop longtemps</item>
+        <item>Comment s\'est passé votre journée ?</item>
+        <item>Qu\'avez-vous fait aujourd\'hui ?</item>
+    </string-array>
+    <string name="onbording_settings_summary">Appuyez longuement sur l\'écran d’accueil</string>
+    <string name="onboarding_swipe_up">Glissez vers le haut pour afficher toutes vos applications</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
 </resources>

@@ -291,6 +291,7 @@
     <string name="theme_black_dark_text">Musta tummalla tekstillä</string>
     <string name="theme_dark_theme_mode">Tumma teema</string>
     <string name="theme_dark_theme_mode_on">Käytössä</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Seuraa päivänvaloa</string>
     <string name="theme_use_black">Käytä puhdasta mustaa</string>
     <string name="theme_use_dark_text">Käytä tummaa tekstiä</string>
     <string name="pref_qsb_color">Väri</string>
@@ -335,7 +336,6 @@
     <string name="selected_count">%1$d valittu</string>
     <string name="tab_manage_apps">Hallinnoi sovelluksia</string>
     <string name="tab_bottom_sheet_save">Tallenna</string>
-    <string name="tab_hide_from_main">Piilota sovellusvalikosta</string>
     <string name="tab_color">Välilehden väri</string>
     <string name="delete">Poista</string>
     <string name="none">Ei mitään</string>
@@ -407,9 +407,68 @@
     <string name="adaptify_pack_summary">Luo adaptiiviset kuvakkeet kuvakepaketin kuvakkeille</string>
     <string name="pref_sesame_sync_look_and_feel">Jaa ulkoasu ja tunnelma</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Synkronoi Lawnchair haun asetukset Sesamen kanssa</string>
+    <string name="pref_search_bar_radius">Hakupalkin kulmien pyöristys</string>
     <string name="icon_text_scale_pref_title">Tekstin koko</string>
     <string name="text_color">Tekstin väri</string>
+    <string name="background_color">Taustaväri</string>
     <string name="pref_notification_count_title">Näytä ilmoitusten lukumäärä</string>
     <string name="pref_notification_count_summary">Näytä ilmoitusten lukumäärä pisteen sisällä</string>
     <string name="pref_center_wallpaper">Keskitä taustakuva aina</string>
+    <string name="pref_appcategorization_enable_title">Sovellusten luokittelu</string>
+    <string name="pref_appcategorization_style_text">Tyyli</string>
+    <string name="pref_app_groups_create">Luo</string>
+    <string name="pref_appcategorization_folders_title">Kansiot</string>
+    <string name="pref_appcategorization_tabs_title">Välilehdet</string>
+    <string name="default_folder_name">Uusi kansio</string>
+    <string name="drawer_folders">Kansiot</string>
+    <string name="category_communication">Viestintä</string>
+    <string name="category_entertainment">Viihde</string>
+    <string name="category_food_and_drink">Ruoka ja juoma</string>
+    <string name="category_game">Pelit</string>
+    <string name="category_health_and_fitness">Terveys ja Kuntoilu</string>
+    <string name="category_music">Musiikki</string>
+    <string name="category_news">Uutiset</string>
+    <string name="category_personalization">Personointi</string>
+    <string name="category_photography">Valokuvaus</string>
+    <string name="lock_desktop">Lukitse aloitusnäyttö</string>
+    <string name="import_as_adaptive">Adaptiivisena kuvakkeena</string>
+    <string name="bugreport_channel_name">Virheraportit</string>
+    <string name="action_dogbin_upload_error">Lähetys epäonnistui</string>
+    <string name="action_dogbin_copy_link">Kopioi linkki</string>
+    <string name="copied_toast">Kopioitu</string>
+    <string name="action_copy">Kopioi</string>
+    <string name="action_copy_link">Kopioi linkki</string>
+    <string name="action_share">Jaa</string>
+    <string name="animation_type_default">Oletus</string>
+    <string name="animation_type_pie">Pie</string>
+    <string name="animation_type_pie_like">Pie -tyylinen</string>
+    <string name="animation_type_reveal">Paljasta</string>
+    <string name="animation_type_slide_up">Liu\'uta ylös</string>
+    <string name="animation_type_scale_up">Laajenna</string>
+    <string name="animation_type_fade">Häivytys</string>
+    <string name="pref_appcategorization_flowerpot_title">Kategoria</string>
+    <string name="select_tab_type">Välilehden tyyppi</string>
+    <string name="pref_smartspace_event_providers">Tapahtumien lähde</string>
+    <string name="event_provider_now_playing">Nyt soi</string>
+    <string name="battery_status">Akun tila</string>
+    <string name="battery_charging">Akkua ladataan</string>
+    <string name="battery_full">Akku täynnä</string>
+    <string name="battery_low">Akku vähissä</string>
+    <string name="event_provider_unread_notifications">Lukemattomat ilmoitukset</string>
+    <string name="crash_report_notif_title">%1$s kaatui!</string>
+    <string-array name="greetings_morning">
+        <item>Hyvää huomenta!</item>
+        <item>Miten hieno päivä!</item>
+        <item>Oletko katsonut vielä ulos?</item>
+        <item>Hyvää päivänjatkoa!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Hyvää yötä!</item>
+        <item>Nuku hyvin!</item>
+        <item>Nähdään huomenna!</item>
+        <item>Kauniita unia!</item>
+        <item>Älä valvo liian myöhään</item>
+        <item>Millainen oli päiväsi?</item>
+        <item>Mitä teit tänään?</item>
+    </string-array>
 </resources>

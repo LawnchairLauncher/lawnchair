@@ -288,10 +288,15 @@
     <string name="theme_auto_night_mode">Følg systemtema</string>
     <string name="theme_light">Lys</string>
     <string name="theme_dark_text">Lys med mørk tekst</string>
+    <string name="theme_with_dark_text">mørk tekst</string>
     <string name="theme_dark">Mørk</string>
     <string name="theme_dark_dark_text">Mørk med mørk tekst</string>
     <string name="theme_black">Svart</string>
     <string name="theme_black_dark_text">Svart med mørk tekst</string>
+    <string name="theme_dark_theme_mode">mørkt tema</string>
+    <string name="theme_dark_theme_mode_on">På</string>
+    <string name="theme_dark_theme_mode_off">Av</string>
+    <string name="theme_dark_theme_mode_follow_daylight">følg dagslyset</string>
     <string name="pref_qsb_color">Farge</string>
     <string name="hide_from_predictions">Skjul fra forslag</string>
     <string name="hide_from_predictions_summary">Vis aldri i Appforslag</string>
@@ -334,7 +339,6 @@
     <string name="selected_count">%1$d valgt</string>
     <string name="tab_manage_apps">Behandle apper</string>
     <string name="tab_bottom_sheet_save">Lagre</string>
-    <string name="tab_hide_from_main">Skjul i Alle apper</string>
     <string name="tab_color">Fanefarge</string>
     <string name="delete">Slett</string>
     <string name="none">Ingen</string>
@@ -403,4 +407,5 @@
     <string name="about_app_description">Et Pixel Launcher alternativ som kan tilpasses.</string>
     <string name="about_bio_paphonb">A 18-year-old student, Android Developer and one of the top developers at Lawnchair Launcher.</string>
     <string name="dock_scale">Dokkskalering</string>
+    <string name="lock_desktop">Lås startskjermen</string>
 </resources>
