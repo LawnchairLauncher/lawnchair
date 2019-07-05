@@ -287,10 +287,17 @@
     <string name="theme_auto_night_mode">Следвай системната тема</string>
     <string name="theme_light">Светла</string>
     <string name="theme_dark_text">Светла с тъмен текст</string>
+    <string name="theme_with_dark_text">тъмен текст</string>
     <string name="theme_dark">Тъмна</string>
     <string name="theme_dark_dark_text">Тъмна с тъмен текст</string>
     <string name="theme_black">Черна</string>
     <string name="theme_black_dark_text">Черна с тъмен текст</string>
+    <string name="theme_dark_theme_mode">Тъмна тема</string>
+    <string name="theme_dark_theme_mode_on">Вкл.</string>
+    <string name="theme_dark_theme_mode_off">Изкл.</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Следвай дневната светлина</string>
+    <string name="theme_use_black">Използвай чисто черно</string>
+    <string name="theme_use_dark_text">Използвай тъмен текст</string>
     <string name="pref_qsb_color">Цвят</string>
     <string name="hide_from_predictions">Скрий от предложенията</string>
     <string name="hide_from_predictions_summary">Никога не показвай в предложенията в списъка с приложения</string>
@@ -333,7 +340,7 @@
     <string name="selected_count">%1$d избран(и)</string>
     <string name="tab_manage_apps">Управление на приложения</string>
     <string name="tab_bottom_sheet_save">Запази</string>
-    <string name="tab_hide_from_main">Скрий приложението от списъка с приложения</string>
+    <string name="tab_hide_from_main">Скрий от основния раздел</string>
     <string name="tab_color">Цвят на раздела</string>
     <string name="delete">Изтрий</string>
     <string name="none">Няма</string>
@@ -353,6 +360,7 @@
     <string name="pref_sesame_show_shortcuts">Преки пътища за приложенията</string>
     <string name="pref_sesame_show_shortcuts_summary">Показвай преките пътища от Sesame в изскачащото меню</string>
     <string name="allow">Разреши</string>
+    <string name="deny">Откажи</string>
     <string name="sesame_enable_integration_title">Разреши интеграция</string>
     <string name="sesame_enable_integration_description"><![CDATA[Разрешава споделяне на данни между Lawnchair и Sesame. Можете да промените това в настройките на Lawnchair или Sesame.]]></string>
     <string name="sesame_version">Версия на интеграцията</string>
@@ -406,4 +414,103 @@
     <string name="adaptify_pack_summary">Създай адаптивни икони за иконите от пакета с икони</string>
     <string name="pref_sesame_sync_look_and_feel">Сподели вида и усещането</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Синхронизирай настройките за търсене на Lawnchair със Sesame</string>
+    <string name="pref_search_bar_radius">Закръгляване на ъглите на лентата за търсене</string>
+    <string name="icon_text_scale_pref_title">Размер на текста</string>
+    <string name="text_color">Цвят на текста</string>
+    <string name="background_color">Цвят на фона</string>
+    <string name="pref_notification_count_title">Покажи броя на известията</string>
+    <string name="pref_notification_count_summary">Показвай броя на известията в точките за известия</string>
+    <string name="pref_center_wallpaper">Винаги центриран тапет</string>
+    <string name="pref_center_wallpaper_summary">Това ще изключи ефекта на местене на тапета</string>
+    <string name="pref_appcategorization_enable_title">Категоризиране на приложенията</string>
+    <string name="pref_appcategorization_enable_summary">Оправи разхвърляния ми списък с приложения.</string>
+    <string name="pref_appcategorization_style_text">Стил</string>
+    <string name="pref_app_groups_edit_tip">Натиснете за редактиране, влачете за да пренаредите.</string>
+    <string name="pref_app_groups_create">Създай</string>
+    <string name="pref_appcategorization_folders_title">Папки</string>
+    <string name="pref_appcategorization_tabs_title">Раздели</string>
+    <string name="default_folder_name">Нова папка</string>
+    <string name="drawer_folders">Папки</string>
+    <string name="category_business_and_productivity">Бизнес и продуктивност</string>
+    <string name="category_communication">Комуникация</string>
+    <string name="category_entertainment">Развлечения</string>
+    <string name="category_food_and_drink">Храна и напитки</string>
+    <string name="category_game">Игри</string>
+    <string name="category_health_and_fitness">Здраве и Фитнес</string>
+    <string name="category_music">Музика</string>
+    <string name="category_news">Новини</string>
+    <string name="category_personalization">Персонализиране</string>
+    <string name="category_photography">Фотография</string>
+    <string name="category_tools">Инструменти</string>
+    <string name="lock_desktop">Заключване на работния плот</string>
+    <string name="reset_custom_icons_confirmation">Сигурен ли си, че искате да нулираш всички потребителски икони? Това действие е необратимо.</string>
+    <string name="open_image_picker">Отвори избора на изображение</string>
+    <string name="import_icon">Внасяне на икона</string>
+    <string name="import_as_adaptive">Като адаптивна икона</string>
+    <string name="bugreport_channel_name">Доклади за грешки</string>
+    <string name="status_channel_name">Състояние на качването на доклад за грешка</string>
+    <string name="bugreport_group_summary">%d нови доклада</string>
+    <string name="bugreport_group_summary_multiple">Няколко нови доклада</string>
+    <string name="dogbin_uploading">Качването е в ход</string>
+    <string name="action_dogbin_upload">Качване в dogbin</string>
+    <string name="action_dogbin_upload_error">Качването е неуспешно</string>
+    <string name="action_dogbin_copy_link">Копирай връзката</string>
+    <string name="lawnchair_bug_report">Доклад за грешки на Lawnchair</string>
+    <string name="copied_toast">Копирано</string>
+    <string name="action_copy">Копирай</string>
+    <string name="action_copy_link">Копирай връзката</string>
+    <string name="action_share">Споделяне</string>
+    <string name="animation_type_title">Анимация при отваряне на приложения</string>
+    <string name="animation_type_default">По подразбиране</string>
+    <string name="animation_type_pie">Android Pie</string>
+    <string name="animation_type_pie_like">В стила на Android Pie</string>
+    <string name="animation_type_reveal">Разкриване</string>
+    <string name="animation_type_slide_up">Плъзгане нагоре</string>
+    <string name="animation_type_scale_up">Мащабиране</string>
+    <string name="animation_type_blink">Премигване</string>
+    <string name="animation_type_fade">Плавен преход</string>
+    <string name="permission_iplocate">Давате ли достъп до приблизително местоположение, базирано на мрежата?</string>
+    <string name="pref_appcategorization_flowerpot_title">Категория</string>
+    <string name="select_tab_type">Вид на раздела</string>
+    <string name="tab_type_custom_desc">Ръчно изберете приложения за този раздел.</string>
+    <string name="tab_type_smart">Умен раздел</string>
+    <string name="categorization">Категоризация</string>
+    <string name="folder_cover_mode">Режим на обложка</string>
+    <string name="folder_cover_mode_desc">Натиснете, за да отворите първото приложение, плъзнете нагоре, за да отворите папката</string>
+    <string name="pref_smartspace_event_providers">Източници на събития</string>
+    <string name="event_provider_now_playing">Сега се изпълнява</string>
+    <string name="battery_status">Състояние на батерията</string>
+    <string name="battery_charging">Батерията се зарежда</string>
+    <string name="battery_full">Батерията е пълна</string>
+    <string name="battery_low">Батерията е изтощена</string>
+    <string name="event_provider_unread_notifications">Непрочетени известия</string>
+    <string name="event_provider_missing_notification_access">За да използвате <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включете известията за приложението <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">За да използвате <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включете точките за известия</string>
+    <string-array name="greetings_morning">
+        <item>Добро утро!</item>
+        <item>Какъв прекрасен ден!</item>
+        <item>Погледна ли навън вече?</item>
+        <item>Лек ден!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Лека нощ!</item>
+        <item>Лека нощ!</item>
+        <item>До утре!</item>
+        <item>Сладки сънища!</item>
+        <item>Не стой до късно</item>
+        <item>Как беше деня ти?</item>
+        <item>Какво прави днес?</item>
+    </string-array>
+    <string name="onbording_settings_title">Настройте %s</string>
+    <string name="onbording_settings_summary">Задръжте на началния екран</string>
+    <string name="onboarding_swipe_up">Плъзнете нагоре, за да видите всичките си приложения</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
 </resources>
