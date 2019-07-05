@@ -174,6 +174,7 @@
     <string name="action_open_app_with_target">खुला %s</string>
     <string name="action_open_app_select_app">ऐप चुने</string>
     <string name="action_none">कुछ न करें</string>
+    <string name="action_despacito">यूट्यूब रिवाइंड 2018 चलाएँ (कान का ‎बलात्कार)</string>
     <string name="gesture_press_home">होम बटन</string>
     <string name="gesture_press_back">वापस बटन</string>
     <string name="gesture_double_tap">दोहरा टैप</string>
@@ -289,10 +290,16 @@
     <string name="theme_auto_night_mode">सिस्टम थीम फॉलो करें</string>
     <string name="theme_light">हल्का</string>
     <string name="theme_dark_text">सफेद थीम काले अक्षरों के साथ</string>
+    <string name="theme_with_dark_text">काले अक्षर</string>
     <string name="theme_dark">डार्क</string>
     <string name="theme_dark_dark_text">गहरे रंग की थीम गहरे अक्षरों के साथ</string>
     <string name="theme_black">काला</string>
     <string name="theme_black_dark_text">काली थीम गहरे रंग के अक्षरों के साथ</string>
+    <string name="theme_dark_theme_mode">काला थीम</string>
+    <string name="theme_dark_theme_mode_on">चालू</string>
+    <string name="theme_dark_theme_mode_off">बंद</string>
+    <string name="theme_use_black">शुद्ध काला उपयोग करे</string>
+    <string name="theme_use_dark_text">काले अक्षर का उपयोग करे</string>
     <string name="pref_qsb_color">रंग</string>
     <string name="hide_from_predictions">सुझाव से छुपाएं</string>
     <string name="hide_from_predictions_summary">ड्रॉअर सुझाव ऐप्स में कभी न दिखाएं</string>
@@ -335,7 +342,6 @@
     <string name="selected_count">%1$d चयनित</string>
     <string name="tab_manage_apps">एप्लिकेशन प्रबंधित करें</string>
     <string name="tab_bottom_sheet_save">सेव करें</string>
-    <string name="tab_hide_from_main">एप्लिकेशन दराज से छुपाएँ</string>
     <string name="tab_color">टैब का रंग</string>
     <string name="delete">हटाएं</string>
     <string name="none">कुछ नहीं</string>
@@ -372,7 +378,6 @@
     <!--Marker K-->
     <string name="search_provider_firefox">फायरफॉक्स</string>
     <string name="search_provider_qwant">क्वांट</string>
-    <string name="search_provider_edge">किनारा</string>
     <string name="weather_provider_oneplus_weather">वन प्लस मौसम</string>
     <string name="overlap_placement">ओवरलैप प्लेसमेंट</string>
     <string name="overlap_placement_summary">आइकन और विजेट्स को ओवरलैप करें</string>
@@ -404,4 +409,7 @@
     <string name="about_app_description">एक अनुकूलन पिक्सल लॉन्चर विकल्प</string>
     <string name="about_bio_paphonb">एक 18 साल का विद्यार्थी, एंड्रॉयड डेवलपर और Lawnchair लॉन्चर का एक ऊपरी डेवलपर्स</string>
     <string name="dock_scale">डॉक की लंबाई</string>
+    <string name="icon_text_scale_pref_title">अक्षरों का साइज</string>
+    <string name="text_color">अक्षरों का रंग</string>
+    <string name="lock_desktop">डेस्कटॉप बंद करे</string>
 </resources>

@@ -67,7 +67,7 @@
     <string name="full_width_widgets_pref_summary">به ابزارک‌ها اجازه داده شود تا کناره‌های صفحه کشیده شوند</string>
     <string name="full_width_width_widgets_pref_title">ابزارک‌های عریض</string>
     <string name="hide_apps">پنهان کردن برنامه ها</string>
-    <string name="hide_apps_sum">حذف برنامه‌ها از کشو</string>
+    <string name="hide_apps_sum">حذف آیکن از منوی برنامه ها</string>
     <string name="grid_size">اندازه شبکه</string>
     <string name="developer_options_title">گزینه‌های توسعه‌دهنده</string>
     <string name="developer_options_enabled">گزینه‌های توسعه‌دهنده فعال شد</string>
@@ -170,6 +170,7 @@
     <string name="action_open_app_with_target">بازکردن %s</string>
     <string name="action_open_app_select_app">انتخاب برنامه</string>
     <string name="action_none">کاری نکند</string>
+    <string name="action_despacito">پخش YouTube Rewind 2018 (تجز به گوش!)</string>
     <string name="gesture_press_home">دکمه‌ی خانه</string>
     <string name="gesture_press_back">دکمه‌ی بازگشت</string>
     <string name="gesture_double_tap">ضربه دوتایی</string>
@@ -288,6 +289,10 @@
     <string name="theme_dark_dark_text">تیره با نوشته‌های تیره</string>
     <string name="theme_black">مشکی</string>
     <string name="theme_black_dark_text">مشکی با نوشته‌های تیره</string>
+    <string name="theme_dark_theme_mode">تم تاریک</string>
+    <string name="theme_dark_theme_mode_on">روشن</string>
+    <string name="theme_dark_theme_mode_off">خاموش</string>
+    <string name="theme_use_dark_text">استفاده از تم تیره</string>
     <string name="pref_qsb_color">رنگ</string>
     <string name="hide_from_predictions">پنهان کردن از پیشنهادات</string>
     <string name="hide_from_predictions_summary">دیگر در پیشنهادات منوی بازشونده (دراور) نشان نده</string>
@@ -330,7 +335,6 @@
     <string name="selected_count">‏%1$d انتخاب شد</string>
     <string name="tab_manage_apps">مدیریت برنامه‌ها</string>
     <string name="tab_bottom_sheet_save">ذخیره</string>
-    <string name="tab_hide_from_main">پنهان کردن از منوی باز شونده</string>
     <string name="tab_color">رنگ زبانه</string>
     <string name="delete">حذف</string>
     <string name="none">هیچ‌کدام</string>
@@ -367,7 +371,6 @@
     <!--Marker K-->
     <string name="search_provider_firefox">فایرفاکس</string>
     <string name="search_provider_qwant">کوانت</string>
-    <string name="search_provider_edge">اج</string>
     <string name="weather_provider_oneplus_weather">آب و هوای وان‌پلاس</string>
     <string name="overlap_placement">جای‌گذاری با هم‌پوشی</string>
     <string name="overlap_placement_summary">اجازه دهید آیکون‌ها و ابزارک‌ها روی هم بیافتند.</string>
@@ -403,4 +406,9 @@
     <string name="adaptify_pack_summary">آیکون‌های تطبیقی برای آیکون‌های آیکون پک‌ها ایجاد شود</string>
     <string name="pref_sesame_sync_look_and_feel">به اشتراک گذاشتن قیافه</string>
     <string name="pref_sesame_sync_look_and_feel_summary">همگام کردن تنظیمات lawnchair با sesame</string>
+    <string name="icon_text_scale_pref_title">ابعاد متن</string>
+    <string name="text_color">رنگ متن</string>
+    <string name="background_color">رنگ پس‌زمینه</string>
+    <string name="pref_notification_count_title">نمایش تعداد اعلان ها</string>
+    <string name="lock_desktop">دسکتاپ را قفل کن</string>
 </resources>

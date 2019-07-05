@@ -170,6 +170,7 @@
     <string name="action_open_app_with_target">Open %s</string>
     <string name="action_open_app_select_app">Pick app</string>
     <string name="action_none">Do nothing</string>
+    <string name="action_despacito">Play YouTube Rewind 2018 (distorted)</string>
     <string name="gesture_press_home">Home button</string>
     <string name="gesture_press_back">Back button</string>
     <string name="gesture_double_tap">Double tap</string>
@@ -283,10 +284,17 @@
     <string name="theme_auto_night_mode">Follow system theme</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark_text">Light with dark text</string>
+    <string name="theme_with_dark_text">dark text</string>
     <string name="theme_dark">Dark</string>
     <string name="theme_dark_dark_text">Dark with dark text</string>
     <string name="theme_black">Black</string>
     <string name="theme_black_dark_text">Black with dark text</string>
+    <string name="theme_dark_theme_mode">Dark theme</string>
+    <string name="theme_dark_theme_mode_on">On</string>
+    <string name="theme_dark_theme_mode_off">Off</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Follow daylight</string>
+    <string name="theme_use_black">Use pure black</string>
+    <string name="theme_use_dark_text">Use dark text</string>
     <string name="pref_qsb_color">Colour</string>
     <string name="hide_from_predictions">Hide from suggestions</string>
     <string name="hide_from_predictions_summary">Never show in drawer suggestions</string>
@@ -329,7 +337,7 @@
     <string name="selected_count">%1$d selected</string>
     <string name="tab_manage_apps">Manage apps</string>
     <string name="tab_bottom_sheet_save">Save</string>
-    <string name="tab_hide_from_main">Hide from drawer</string>
+    <string name="tab_hide_from_main">Hide from main tab</string>
     <string name="tab_color">Tab colour</string>
     <string name="delete">Delete</string>
     <string name="none">None</string>
@@ -349,6 +357,7 @@
     <string name="pref_sesame_show_shortcuts">App shortcuts</string>
     <string name="pref_sesame_show_shortcuts_summary">Show Sesame shortcuts in icon bubbles</string>
     <string name="allow">Allow</string>
+    <string name="deny">Deny</string>
     <string name="sesame_enable_integration_title">Enable integration</string>
     <string name="sesame_enable_integration_description"><![CDATA[Enables data sharing between Lawnchair and Sesame. You can change this in Lawnchair or Sesame settings.]]></string>
     <string name="sesame_version">Integration version</string>
@@ -402,4 +411,116 @@
     <string name="adaptify_pack_summary">Create adaptive icons for icons from icon packs</string>
     <string name="pref_sesame_sync_look_and_feel">Share look and feel</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Sync Lawnchair search settings with Sesame</string>
+    <string name="pref_search_bar_radius">Search bar corner rounding</string>
+    <string name="icon_text_scale_pref_title">Text size</string>
+    <string name="text_color">Text color</string>
+    <string name="background_color">Background color</string>
+    <string name="pref_notification_count_title">Display notification count</string>
+    <string name="pref_notification_count_summary">Display notification count inside the dots</string>
+    <string name="pref_center_wallpaper">Always center wallpaper</string>
+    <string name="pref_center_wallpaper_summary">This will disable the wallpaper scrolling effect</string>
+    <string name="pref_icon_popup_menu">Popup menu items</string>
+    <string name="pref_appcategorization_enable_title">Categorize Apps</string>
+    <string name="pref_appcategorization_enable_summary">Fix my messy drawer.</string>
+    <string name="pref_appcategorization_style_text">Style</string>
+    <string name="pref_app_groups_edit_tip">Tap to edit, drag to reorder.</string>
+    <string name="pref_app_groups_create">Create</string>
+    <string name="pref_appcategorization_folders_title">Folders</string>
+    <string name="pref_appcategorization_folders_summary">Tap to open pop-up.</string>
+    <string name="pref_appcategorization_tabs_title">Tabs</string>
+    <string name="pref_appcategorization_tabs_summary">Swipe between groups.</string>
+    <string name="default_folder_name">New folder</string>
+    <string name="drawer_folders">Folders</string>
+    <string name="category_business_and_productivity">Business and Productivity</string>
+    <string name="category_communication">Communication</string>
+    <string name="category_entertainment">Entertainment</string>
+    <string name="category_food_and_drink">Food and Drink</string>
+    <string name="category_game">Games</string>
+    <string name="category_health_and_fitness">Health and Fitness</string>
+    <string name="category_knowledge_and_reference">Knowledge and Reference</string>
+    <string name="category_lifestyle">Shopping and Lifestyle</string>
+    <string name="category_music">Music</string>
+    <string name="category_news">News</string>
+    <string name="category_personalization">Personalization</string>
+    <string name="category_photography">Personalization</string>
+    <string name="category_tools">Utility</string>
+    <string name="category_travel_and_navigation">Travel and Navigation</string>
+    <string name="lock_desktop">Travel and Navigation</string>
+    <string name="reset_custom_icons">Reset custom icons</string>
+    <string name="reset_custom_icons_confirmation">Are you sure you want to reset all custom icons? This action is non-reversible.</string>
+    <string name="open_image_picker">Open image picker</string>
+    <string name="import_icon">Import icon</string>
+    <string name="import_as_adaptive">As adaptive icon</string>
+    <string name="bugreport_channel_name">Bug reports</string>
+    <string name="status_channel_name">Bug report upload status</string>
+    <string name="bugreport_group_summary">%d new reports</string>
+    <string name="bugreport_group_summary_multiple">Multiple new reports</string>
+    <string name="dogbin_uploading">Upload in progress</string>
+    <string name="action_dogbin_upload">Upload to dogbin</string>
+    <string name="action_dogbin_upload_error">Upload failed</string>
+    <string name="action_dogbin_copy_link">Copy link</string>
+    <string name="lawnchair_bug_report">Lawnchair bug report</string>
+    <string name="copied_toast">Copied</string>
+    <string name="action_copy">Copy</string>
+    <string name="action_copy_link">Copy link</string>
+    <string name="action_share">Share</string>
+    <string name="animation_type_title">App opening animation</string>
+    <string name="animation_type_default">Default</string>
+    <string name="animation_type_pie">Pie</string>
+    <string name="animation_type_pie_like">Pie-like</string>
+    <string name="animation_type_reveal">Reveal</string>
+    <string name="animation_type_slide_up">Slide Up</string>
+    <string name="animation_type_scale_up">Scale Up</string>
+    <string name="animation_type_blink">Blink</string>
+    <string name="animation_type_fade">Fade</string>
+    <string name="permission_iplocate">Allow access to coarse, network based location?</string>
+    <string name="permission_iplocate_twilight_explanation">This allows more accurate daytime calculations without having to know your exact location.</string>
+    <string name="pref_appcategorization_flowerpot_title">Category</string>
+    <string name="pref_appcategorization_flowerpot_summary">Apps are automatically picked based on their metadata.</string>
+    <string name="select_tab_type">Tab type</string>
+    <string name="tab_type_custom">Custom tab</string>
+    <string name="tab_type_custom_desc">Manually pick apps for this tab.</string>
+    <string name="tab_type_smart">Smart tab</string>
+    <string name="categorization">Categorization</string>
+    <string name="folder_cover_mode">Cover mode</string>
+    <string name="folder_cover_mode_desc">Tap to open first app, swipe up to open folder</string>
+    <string name="pref_smartspace_event_providers">Events sources</string>
+    <string name="event_provider_now_playing">Now playing</string>
+    <string name="battery_status">Battery status</string>
+    <string name="battery_charging">Battery charging</string>
+    <string name="battery_full">Battery full</string>
+    <string name="battery_low">Battery low</string>
+    <string name="event_provider_unread_notifications">Unread notifications</string>
+    <string name="event_provider_missing_notification_access">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on app notifications for <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on notification dots</string>
+    <string name="zen_mode_enabled">Do not disturb is enabled</string>
+    <string name="crash_report_notif_title">%1$s crashed!</string>
+    <string name="personality_provider">Contextual messages</string>
+    <string-array name="greetings_morning">
+        <item>Good morning!</item>
+        <item>What a beautiful day!</item>
+        <item>Have you looked outside yet?</item>
+        <item>Have a great day!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Good night!</item>
+        <item>Sleep well!</item>
+        <item>See you tomorrow!</item>
+        <item>Sweet dreams!</item>
+        <item>Don\'t stay up too long</item>
+        <item>How was your day?</item>
+        <item>What did you do today?</item>
+    </string-array>
+    <string name="onbording_settings_title">Set-up %s</string>
+    <string name="onbording_settings_summary">Long press your home screen</string>
+    <string name="onboarding_swipe_up">Swipe up to see all your apps</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
 </resources>
