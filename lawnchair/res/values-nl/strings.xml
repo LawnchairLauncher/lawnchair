@@ -86,7 +86,7 @@
     <string name="backup_location_device_storage">Lawnchair map</string>
     <string name="grid_size_height">Hoogte</string>
     <string name="grid_size_width">Breedte</string>
-    <string name="launcher_theme_override_label">Donker thema gebruiken</string>
+    <string name="launcher_theme_override_label">Donker thema forceren</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="blur_pref_title">Vervaging</string>
     <string name="blur_pref_summary">Vervagingseffect voor app-overzicht, dock, instellingen achtergrond</string>
@@ -292,10 +292,17 @@
     <string name="theme_auto_night_mode">Volg systeemthema</string>
     <string name="theme_light">Licht</string>
     <string name="theme_dark_text">Licht met donkere tekst</string>
+    <string name="theme_with_dark_text">donkere tekst</string>
     <string name="theme_dark">Donker</string>
     <string name="theme_dark_dark_text">Donker met donkere tekst</string>
     <string name="theme_black">Zwart</string>
     <string name="theme_black_dark_text">Zwart met donkere tekst</string>
+    <string name="theme_dark_theme_mode">Donker thema</string>
+    <string name="theme_dark_theme_mode_on">Aan</string>
+    <string name="theme_dark_theme_mode_off">Uit</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Volg daglicht</string>
+    <string name="theme_use_black">Gebruik puur zwart</string>
+    <string name="theme_use_dark_text">Gebruik donkere tekst</string>
     <string name="pref_qsb_color">Kleur</string>
     <string name="hide_from_predictions">Verbergen in suggesties</string>
     <string name="hide_from_predictions_summary">Nooit laten zien in app-overzicht suggesties</string>
@@ -338,7 +345,7 @@
     <string name="selected_count">%1$d geselecteerd</string>
     <string name="tab_manage_apps">Apps beheren</string>
     <string name="tab_bottom_sheet_save">Opslaan</string>
-    <string name="tab_hide_from_main">Verberg in app-overzicht</string>
+    <string name="tab_hide_from_main">Verbergen in hoofdtabblad</string>
     <string name="tab_color">Tabbladkleur</string>
     <string name="delete">Verwijderen</string>
     <string name="none">Geen</string>
@@ -358,6 +365,7 @@
     <string name="pref_sesame_show_shortcuts">App-snelkoppelingen</string>
     <string name="pref_sesame_show_shortcuts_summary">Sesame snelkoppeling weergeven in pictogram-bubbels</string>
     <string name="allow">Toestaan</string>
+    <string name="deny">Afwijzen</string>
     <string name="sesame_enable_integration_title">Integratie inschakelen</string>
     <string name="sesame_enable_integration_description"><![CDATA[Zet delen van gegevens tussen Lawnchair en Sesame aan. Je kunt dit aanpassen in de instellingen van Lawnchair of Sesame.]]></string>
     <string name="sesame_version">Integratieversie</string>
@@ -411,4 +419,117 @@
     <string name="adaptify_pack_summary">Adaptieve pictogrammen genereren voor pictogrampakketten</string>
     <string name="pref_sesame_sync_look_and_feel">Uiterlijk en gedrag delen</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Lawnchair zoekinstellingen synchr. met Sesame</string>
+    <string name="pref_search_bar_radius">Zoekbalk hoekafronding</string>
+    <string name="icon_text_scale_pref_title">Tekstgrootte</string>
+    <string name="text_color">Tekstkleur</string>
+    <string name="background_color">Achtergrondkleur</string>
+    <string name="pref_notification_count_title">Meldingsaantal weergeven</string>
+    <string name="pref_notification_count_summary">Meldingsaantal weergeven in de stipjes</string>
+    <string name="pref_center_wallpaper">Achtergrond altijd centreren</string>
+    <string name="pref_center_wallpaper_summary">Dit zal het achtergrond scrolleffect uitschakelen</string>
+    <string name="pref_icon_popup_menu">Pop-up menu-items</string>
+    <string name="pref_appcategorization_enable_title">Apps categoriseren</string>
+    <string name="pref_appcategorization_enable_summary">Ruim mijn rommelige overzicht op.</string>
+    <string name="pref_appcategorization_style_text">Stijl</string>
+    <string name="pref_app_groups_edit_tip">Tik om te bewerken, sleep om te rangschikken.</string>
+    <string name="pref_app_groups_create">Maken</string>
+    <string name="pref_appcategorization_folders_title">Mappen</string>
+    <string name="pref_appcategorization_folders_summary">Tik om pop-up te openen.</string>
+    <string name="pref_appcategorization_tabs_title">Tabbladen</string>
+    <string name="pref_appcategorization_tabs_summary">Veeg tussen groepen.</string>
+    <string name="default_folder_name">Nieuwe map</string>
+    <string name="drawer_folders">Mappen</string>
+    <string name="category_business_and_productivity">Werk en productiviteit</string>
+    <string name="category_communication">Communicatie</string>
+    <string name="category_entertainment">Vermaak</string>
+    <string name="category_food_and_drink">Eten en drinken</string>
+    <string name="category_game">Spellen</string>
+    <string name="category_health_and_fitness">Gezondheid en fitness</string>
+    <string name="category_knowledge_and_reference">Kennis en referentie</string>
+    <string name="category_lifestyle">Winkelen en lifestyle</string>
+    <string name="category_music">Muziek</string>
+    <string name="category_news">Nieuws</string>
+    <string name="category_personalization">Personalisatie</string>
+    <string name="category_photography">Fotografie</string>
+    <string name="category_tools">Hulpprogramma\'s</string>
+    <string name="category_travel_and_navigation">Reizen en navigatie</string>
+    <string name="lock_desktop">Startscherm vergrendelen</string>
+    <string name="reset_custom_icons">Aangepaste pictogrammen terugzetten</string>
+    <string name="reset_custom_icons_confirmation">Zeker weten alle aangepaste pictogrammen terugzetten? Deze actie kun je niet terugdraaien.</string>
+    <string name="open_image_picker">Afbeeldingskiezer openen</string>
+    <string name="import_icon">Pictogram importeren</string>
+    <string name="import_as_adaptive">Als adaptief pictogram</string>
+    <string name="bugreport_channel_name">Foutrapporten</string>
+    <string name="status_channel_name">Foutrapport uploadstatus</string>
+    <string name="bugreport_group_summary">%d nieuwe foutrapporten</string>
+    <string name="bugreport_group_summary_multiple">Meerdere nieuwe foutrapporten</string>
+    <string name="dogbin_uploading">Bezig met uploaden</string>
+    <string name="action_dogbin_upload">Uploaden naar dogbin</string>
+    <string name="action_dogbin_upload_error">Uploaden mislukt</string>
+    <string name="action_dogbin_copy_link">Link kopiëren</string>
+    <string name="lawnchair_bug_report">Lawnchair foutrapport</string>
+    <string name="copied_toast">Gekopieerd</string>
+    <string name="action_copy">Kopiëren</string>
+    <string name="action_copy_link">Link kopiëren</string>
+    <string name="action_share">Delen</string>
+    <string name="animation_type_title">App-openanimatie</string>
+    <string name="animation_type_default">Standaard</string>
+    <string name="animation_type_pie">Pie</string>
+    <string name="animation_type_pie_like">Pie-achtig</string>
+    <string name="animation_type_reveal">Onthullen</string>
+    <string name="animation_type_slide_up">Omhoog glijden</string>
+    <string name="animation_type_scale_up">Opschalen</string>
+    <string name="animation_type_blink">Knipperen</string>
+    <string name="animation_type_fade">Vervagen</string>
+    <string name="permission_iplocate">Toegang tot grove netwerkgebaseerde locatie toestaan?</string>
+    <string name="permission_iplocate_twilight_explanation">Dit staat nauwkeurige dagcyclus berekeningen toe, zonder je exacte locatie te hoeven weten.</string>
+    <string name="pref_appcategorization_flowerpot_title">Categorie</string>
+    <string name="pref_appcategorization_flowerpot_summary">Apps worden automatisch gekozen op basis van hun metadata.</string>
+    <string name="select_tab_type">Tabblad type</string>
+    <string name="tab_type_custom">Aangepast tabblad</string>
+    <string name="tab_type_custom_desc">Handmatig apps kiezen voor dit tabblad.</string>
+    <string name="tab_type_smart">Slim tabblad</string>
+    <string name="categorization">Categorisatie</string>
+    <string name="folder_cover_mode">Omslagmodus</string>
+    <string name="folder_cover_mode_desc">Tik om eerste app te openen, veeg omhoog om map te openen</string>
+    <string name="pref_smartspace_event_providers">Gebeurtenis bronnen</string>
+    <string name="event_provider_now_playing">Afspelende media</string>
+    <string name="battery_status">Accustatus</string>
+    <string name="battery_charging">Accu laadt op</string>
+    <string name="battery_full">Accu vol</string>
+    <string name="battery_low">Accu bijna leeg</string>
+    <string name="event_provider_unread_notifications">Ongelezen meldingen</string>
+    <string name="event_provider_missing_notification_access">Om <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> te gebruiken, schakel app-meldingen in voor <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Om <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> te gebruiken, schakel meldingsstipjes in</string>
+    <string name="zen_mode_enabled">Niet storen is ingeschakeld</string>
+    <string name="crash_report_notif_title">%1$s is vastgelopen!</string>
+    <string name="personality_provider">Contextuele berichten</string>
+    <string-array name="greetings_morning">
+        <item>Goedemorgen!</item>
+        <item>Wat een mooie dag!</item>
+        <item>Heb je al naar buiten gekeken?</item>
+        <item>Geniet van je dag!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Goedenacht!</item>
+        <item>Slaap lekker!</item>
+        <item>Tot morgen!</item>
+        <item>Droom zacht!</item>
+        <item>Niet te lang opblijven</item>
+        <item>Hoe was je dag?</item>
+        <item>Wat heb je gedaan vandaag?</item>
+    </string-array>
+    <string name="onbording">Onboarding</string>
+    <string name="onbording_settings_title">%s instellen</string>
+    <string name="onbording_settings_summary">Startscherm lang aanraken</string>
+    <string name="onboarding_swipe_up">Veeg omhoog om alle apps te zien</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Never (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
 </resources>
