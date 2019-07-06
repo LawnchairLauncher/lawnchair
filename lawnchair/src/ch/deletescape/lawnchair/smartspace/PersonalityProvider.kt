@@ -23,6 +23,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Handler
+import android.os.Looper
 import android.support.annotation.Keep
 import ch.deletescape.lawnchair.dayOfYear
 import ch.deletescape.lawnchair.hourOfDay
@@ -35,20 +37,14 @@ import kotlin.random.Random
 @Keep
 class PersonalityProvider(controller: LawnchairSmartspaceController) :
         LawnchairSmartspaceController.DataProvider(controller) {
+    private val updateInterval = 60 * 1000
     private val timeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
-            time = currentTime()
+            onUpdate()
         }
     }
 
     var time = currentTime()!!
-        set(value) {
-            randomIndex = abs(Random(value.dayOfYear).nextInt())
-            if (field.hourOfDay != value.hourOfDay) {
-                field = value
-                updateData(null, getEventCard())
-            }
-        }
     var randomIndex = 0
     val isMorning get() = time.hourOfDay in 5 until 9
     val isEvening get() = time.hourOfDay in 19 until 24 || time.hourOfDay == 0
@@ -58,20 +54,36 @@ class PersonalityProvider(controller: LawnchairSmartspaceController) :
     private val morningStrings = controller.context.resources.getStringArray(R.array.greetings_morning)
     private val eveningStrings = controller.context.resources.getStringArray(R.array.greetings_evening)
 
+    private val handler = Handler(Looper.getMainLooper())
+    private val onUpdateRunnable = ::onUpdate
+
     private fun currentTime() = Calendar.getInstance()
 
     override fun performSetup() {
         super.performSetup()
         context.registerReceiver(
                 timeReceiver,
-                IntentFilter(Intent.ACTION_DATE_CHANGED).apply {
+                IntentFilter().apply {
+                    addAction(Intent.ACTION_DATE_CHANGED)
                     addAction(Intent.ACTION_TIME_CHANGED)
                     addAction(Intent.ACTION_TIMEZONE_CHANGED)
-                    if (!Utilities.ATLEAST_NOUGAT) {
-                        addAction(Intent.ACTION_TIME_TICK)
-                    }
                 })
+        onUpdate()
+    }
+
+    private fun onUpdate() {
+        time = currentTime()
+        randomIndex = abs(Random(time.dayOfYear).nextInt())
         updateData(null, getEventCard())
+
+        val now = System.currentTimeMillis()
+        handler.removeCallbacks(onUpdateRunnable)
+        handler.postDelayed(onUpdateRunnable, updateInterval - now % updateInterval)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(onUpdateRunnable)
     }
 
     private fun getEventCard(): LawnchairSmartspaceController.CardData? {
