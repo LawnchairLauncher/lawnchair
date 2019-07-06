@@ -519,6 +519,7 @@ Tindakan ini tidak bisa dibatalkan.</string>
         <item>Apa yang kamu lakukan hari ini?</item>
     </string-array>
     <string name="onbording_settings_title">Siapkan %s</string>
+    <string name="onbording_settings_summary">Tekan lama layar beranda anda</string>
     <string name="onboarding_swipe_up">Geser keatas untuk melihat seluruh aplikasi mu</string>
     <string name="web_search_google">Google (web)</string>
     <string name="web_search_ddg">DuckDuckGo (web)</string>
