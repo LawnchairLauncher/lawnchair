@@ -875,3 +875,8 @@ fun Context.checkPackagePermission(packageName: String, permissionName: String):
 
 inline val Calendar.hourOfDay get() = get(Calendar.HOUR_OF_DAY)
 inline val Calendar.dayOfYear get() = get(Calendar.DAY_OF_YEAR)
+
+inline val Int.red get() = Color.red(this)
+inline val Int.green get() = Color.green(this)
+inline val Int.blue get() = Color.blue(this)
+inline val Int.alpha get() = Color.alpha(this)
