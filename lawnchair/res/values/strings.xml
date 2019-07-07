@@ -702,4 +702,6 @@
     <string name="web_search_yandex">Yandex (web)</string>
     <string name="web_search_naver">Naver (web)</string>
     <string name="web_search_baidu">Baidu (web)</string>
+
+    <string name="icon_shape_override_miui_explaination">Due to a restriction in MIUI, your icon shape might not change and remain square.\nPlease don\'t report this as a bug.</string>
 </resources>
