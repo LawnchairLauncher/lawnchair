@@ -347,7 +347,7 @@
     <string name="selected_count">%1$d selezionato</string>
     <string name="tab_manage_apps">Gestisci applicazioni</string>
     <string name="tab_bottom_sheet_save">Salva</string>
-    <string name="tab_hide_from_main">Nascondi dalla lista applicazioni</string>
+    <string name="tab_hide_from_main">Nascondi dalla scheda principale</string>
     <string name="tab_color">Colore tab</string>
     <string name="delete">Elimina</string>
     <string name="none">Nessuno</string>
@@ -367,6 +367,7 @@
     <string name="pref_sesame_show_shortcuts">Scorciatoie delle app</string>
     <string name="pref_sesame_show_shortcuts_summary">Mostra le scorciatoie di Sesame nei popup delle icone</string>
     <string name="allow">Concedi</string>
+    <string name="deny">Nega</string>
     <string name="sesame_enable_integration_title">Attiva l\'integrazione</string>
     <string name="sesame_enable_integration_description"><![CDATA[Abilita la condivisione di dati tra Lawnchair e Sesame. Puoi modificare quest'opzione nelle impostazioni di Lawnchair o di Sesame.]]></string>
     <string name="sesame_version">Versione dell\'integrazione</string>
@@ -420,11 +421,118 @@
     <string name="adaptify_pack_summary">Crea icone adattive per icone di un icon pack</string>
     <string name="pref_sesame_sync_look_and_feel">Condividi aspetto e feeling</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Sincronizza le impostazioni di ricerca di Lawnchair con Sesame</string>
-    <string name="pref_search_bar_radius">Raggio curvatura bordi barra di ricerca</string>
+    <string name="pref_search_bar_radius">Stondatura angoli barra di ricerca</string>
     <string name="icon_text_scale_pref_title">Dimensione testo</string>
     <string name="text_color">Colore testo</string>
+    <string name="background_color">Colore sfondo</string>
     <string name="pref_notification_count_title">Mostra conteggio notifiche</string>
     <string name="pref_notification_count_summary">Mostra conteggio notifiche all\'interno dei badge</string>
     <string name="pref_center_wallpaper">Centra sempre lo sfondo</string>
     <string name="pref_center_wallpaper_summary">Questo disattiverà l\'effetto di scorrimento dello sfondo</string>
+    <string name="pref_icon_popup_menu">Elementi menù a comparsa</string>
+    <string name="pref_appcategorization_enable_title">Categorizza applicazioni</string>
+    <string name="pref_appcategorization_enable_summary">Sistema il mio drawer disordinato.</string>
+    <string name="pref_appcategorization_style_text">Stile</string>
+    <string name="pref_app_groups_edit_tip">Premi per modificare, trascina per riordinare.</string>
+    <string name="pref_app_groups_create">Crea</string>
+    <string name="pref_appcategorization_folders_title">Cartelle</string>
+    <string name="pref_appcategorization_folders_summary">Premi per aprire.</string>
+    <string name="pref_appcategorization_tabs_title">Schede</string>
+    <string name="pref_appcategorization_tabs_summary">Scorri tra i gruppi.</string>
+    <string name="default_folder_name">Nuova cartella</string>
+    <string name="drawer_folders">Cartelle</string>
+    <string name="category_business_and_productivity">Business e Produttività</string>
+    <string name="category_communication">Comunicazione</string>
+    <string name="category_entertainment">Intrattenimento</string>
+    <string name="category_food_and_drink">Cibo e Bevande</string>
+    <string name="category_game">Giochi</string>
+    <string name="category_health_and_fitness">Salute e Fitness</string>
+    <string name="category_knowledge_and_reference">Conoscenza e Riferimento</string>
+    <string name="category_lifestyle">Shopping e Stile di vita</string>
+    <string name="category_music">Musica</string>
+    <string name="category_news">Notizie</string>
+    <string name="category_personalization">Personalizzazione</string>
+    <string name="category_photography">Fotografia</string>
+    <string name="category_tools">Utilità</string>
+    <string name="category_travel_and_navigation">Viaggi e Navigazione</string>
+    <string name="lock_desktop">Blocca la schermata home</string>
+    <string name="reset_custom_icons">Reimposta icone personalizzate</string>
+    <string name="reset_custom_icons_confirmation">Sei sicuro di voler reimpostare tutte le icone personalizzate? Questa azione è irreversibile.</string>
+    <string name="open_image_picker">Apri selettore immagini</string>
+    <string name="import_icon">Importa icona</string>
+    <string name="import_as_adaptive">Come icona adattiva</string>
+    <string name="bugreport_channel_name">Segnalazioni bug</string>
+    <string name="status_channel_name">Stato caricamento della segnalazione bug</string>
+    <string name="bugreport_group_summary">%d nuove segnalazioni</string>
+    <string name="bugreport_group_summary_multiple">Multiple nuove segnalazioni</string>
+    <string name="dogbin_uploading">Caricamento in corso</string>
+    <string name="action_dogbin_upload">Carica su dogbin</string>
+    <string name="action_dogbin_upload_error">Caricamento fallito</string>
+    <string name="action_dogbin_copy_link">Copia link</string>
+    <string name="lawnchair_bug_report">Segnalazione bug di Lawnchair</string>
+    <string name="copied_toast">Copiato</string>
+    <string name="action_copy">Copia</string>
+    <string name="action_copy_link">Copia link</string>
+    <string name="action_share">Condividi</string>
+    <string name="animation_type_title">Animazione d\'apertura delle app</string>
+    <string name="animation_type_default">Predefinita</string>
+    <string name="animation_type_pie">Pie</string>
+    <string name="animation_type_pie_like">Stile Pie</string>
+    <string name="animation_type_reveal">Rivela</string>
+    <string name="animation_type_slide_up">Dal basso verso l\'alto</string>
+    <string name="animation_type_scale_up">Aumenta</string>
+    <string name="animation_type_blink">Lampeggia</string>
+    <string name="animation_type_fade">Dissolvenza</string>
+    <string name="permission_iplocate">Permetti l\'accesso alla posizione basata sulla rete?</string>
+    <string name="permission_iplocate_twilight_explanation">Questo permette calcoli più precisi dell\'orario senza bisogno di sapere la tua posizione esatta.</string>
+    <string name="pref_appcategorization_flowerpot_title">Categoria</string>
+    <string name="pref_appcategorization_flowerpot_summary">Le app sono selezionate automaticamente basandosi sui metadati.</string>
+    <string name="select_tab_type">Tipo scheda</string>
+    <string name="tab_type_custom">Scheda personalizzata</string>
+    <string name="tab_type_custom_desc">Seleziona manualmente app per questa scheda.</string>
+    <string name="tab_type_smart">Scheda intelligente</string>
+    <string name="categorization">Categorizzazione</string>
+    <string name="folder_cover_mode">Modalità copertina</string>
+    <string name="folder_cover_mode_desc">Premi per aprire la prima app, scorri verso l\'alto per aprire la cartella</string>
+    <string name="pref_smartspace_event_providers">Fonti di eventi</string>
+    <string name="event_provider_now_playing">In riproduzione</string>
+    <string name="battery_status">Stato della batteria</string>
+    <string name="battery_charging">Batteria in carica</string>
+    <string name="battery_full">Batteria carica</string>
+    <string name="battery_low">Batteria scarica</string>
+    <string name="event_provider_unread_notifications">Notifiche non lette</string>
+    <string name="event_provider_missing_notification_access">Per usare <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, attiva le notifiche per la app <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Per usare <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, attiva i badge di notifica</string>
+    <string name="zen_mode_enabled">Non disturbare è attivo</string>
+    <string name="crash_report_notif_title">%1$s è crashato!</string>
+    <string name="personality_provider">Messaggi contestuali</string>
+    <string-array name="greetings_morning">
+        <item>Buongiorno!</item>
+        <item>Che bella giornata!</item>
+        <item>Non hai ancora guardato fuori?</item>
+        <item>Buona giornata!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Buona notte!</item>
+        <item>Dormi bene!</item>
+        <item>Ci vediamo domani!</item>
+        <item>Sogni d\'oro!</item>
+        <item>Non stare sveglio troppo a lungo</item>
+        <item>Com\'è stata la tua giornata?</item>
+        <item>Cosa hai fatto oggi?</item>
+    </string-array>
+    <string name="onbording_settings_title">Imposta %s</string>
+    <string name="onbording_settings_summary">Tieni premuto sulla schermata home</string>
+    <string name="onboarding_swipe_up">Scorri verso l\'alto per vedere tutte le tue app</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">A causa di una restrizione della MIUI, la forma delle icone potrebbe non cambiare e rimanere quadrata. \nPer favore non segnalarlo come bug.</string>
+    <string name="button_organize_screens">Organizza schermate</string>
 </resources>
