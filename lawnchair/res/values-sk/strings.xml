@@ -340,7 +340,6 @@
     <string name="selected_count">%1$d vybraných</string>
     <string name="tab_manage_apps">Spravovať aplikácie</string>
     <string name="tab_bottom_sheet_save">Uložiť</string>
-    <string name="tab_hide_from_main">Skryť zo zoznamu aplikácií</string>
     <string name="tab_color">Farba strany</string>
     <string name="delete">Vymazať</string>
     <string name="none">Žiadne</string>
@@ -413,4 +412,5 @@
     <string name="adaptify_pack_summary">Vytvoriť adaptívne ikony pre ikony z balíčkov ikon</string>
     <string name="pref_sesame_sync_look_and_feel">Zdieľať vzhľad</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Synchronizovať nastavenia vyhľadávania Laenchair so Sesame</string>
+    <string name="lock_desktop">Uzamknutie pracovnej plochy</string>
 </resources>
