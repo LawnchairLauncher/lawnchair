@@ -41,13 +41,14 @@ class NowPlayingProvider(controller: LawnchairSmartspaceController) :
 
     private fun getEventCard(): CardData? {
         val tracking = media.tracking ?: return null
+        val title = tracking.info.title ?: return null
 
         val sbn = tracking.sbn
         val icon = sbn?.loadSmallIcon(context)?.toBitmap() ?: defaultIcon
 
         val mediaInfo = tracking.info
         val lines = mutableListOf<Line>()
-        lines.add(Line(mediaInfo.title.toString()))
+        lines.add(Line(title))
         if (!TextUtils.isEmpty(mediaInfo.artist)) {
             lines.add(Line(mediaInfo.artist.toString()))
         } else if (sbn != null) {
