@@ -347,7 +347,7 @@
     <string name="selected_count">%1$d seçildi</string>
     <string name="tab_manage_apps">Uygulamaları yönet</string>
     <string name="tab_bottom_sheet_save">Kaydet</string>
-    <string name="tab_hide_from_main">Çekmeceden gizle</string>
+    <string name="tab_hide_from_main">Ana sekmeden gizle</string>
     <string name="tab_color">Sekme rengi</string>
     <string name="delete">Sil</string>
     <string name="none">Hiçbiri</string>
@@ -367,6 +367,7 @@
     <string name="pref_sesame_show_shortcuts">Uygulama kısayolları</string>
     <string name="pref_sesame_show_shortcuts_summary">Simge balonlarında sesame kısayollarını göster</string>
     <string name="allow">İzin ver</string>
+    <string name="deny">Reddet</string>
     <string name="sesame_enable_integration_title">Entegrasyonu etkinleştir</string>
     <string name="sesame_enable_integration_description"><![CDATA[Lawnchair ve Sesame arasında veri paylaşımını sağlar. Bunu Lawnchair veya Sesame ayarlarında değiştirebilirsiniz.]]></string>
     <string name="sesame_version">Entegrasyon sürümü</string>
@@ -384,7 +385,6 @@
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
-    <string name="search_provider_edge">Kenar</string>
     <string name="weather_provider_oneplus_weather">OnePlus hava durumu</string>
     <string name="overlap_placement">Örtüşen yerleşim</string>
     <string name="overlap_placement_summary">Simgelerin ve widget\'ların birbirleriyle örtüşmesine izin verin.</string>
@@ -420,11 +420,118 @@
     <string name="adaptify_pack_summary">Simge paketlerinden simgeler için uyarlanabilir simgeler oluştur</string>
     <string name="pref_sesame_sync_look_and_feel">Görünümü paylaş</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Lawnchair arama ayarlarını Sesame ile senkronize et</string>
-    <string name="pref_search_bar_radius">Arama çubuğu yarıçapı</string>
+    <string name="pref_search_bar_radius">Arama çubuğu köşelerini yuvarla</string>
     <string name="icon_text_scale_pref_title">Metin boyutu</string>
     <string name="text_color">Metin rengi</string>
+    <string name="background_color">Arka plan rengi</string>
     <string name="pref_notification_count_title">Bildirim sayısını göster</string>
     <string name="pref_notification_count_summary">Noktaların içinde bildirim sayısını görüntüle</string>
     <string name="pref_center_wallpaper">Duvar kağıdı her zaman ortada</string>
     <string name="pref_center_wallpaper_summary">Duvar kağıdı kaydırma efektini devre dışı bırakacaktır</string>
+    <string name="pref_icon_popup_menu">Açılır menü öğeleri</string>
+    <string name="pref_appcategorization_enable_title">Uygulamaları gruplandır</string>
+    <string name="pref_appcategorization_enable_summary">Dağınık çekmecemi düzenle.</string>
+    <string name="pref_appcategorization_style_text">Stil</string>
+    <string name="pref_app_groups_edit_tip">Düzenlemek için dokunun, yeniden düzenlemek için sürükleyin.</string>
+    <string name="pref_app_groups_create">Oluştur</string>
+    <string name="pref_appcategorization_folders_title">Klasörler</string>
+    <string name="pref_appcategorization_folders_summary">Açılır pencereyi açmak için dokunun.</string>
+    <string name="pref_appcategorization_tabs_title">Sekmeler</string>
+    <string name="pref_appcategorization_tabs_summary">Gruplar arasında kaydırın.</string>
+    <string name="default_folder_name">Yeni klasör</string>
+    <string name="drawer_folders">Klasörler</string>
+    <string name="category_business_and_productivity">İş ve Verimlilik</string>
+    <string name="category_communication">İletişim</string>
+    <string name="category_entertainment">Eğlence</string>
+    <string name="category_food_and_drink">Yiyecek ve İçecek</string>
+    <string name="category_game">Oyunlar</string>
+    <string name="category_health_and_fitness">Sağlık ve Fitness</string>
+    <string name="category_knowledge_and_reference">Bilgi ve Referans</string>
+    <string name="category_lifestyle">Alışveriş ve Yaşam</string>
+    <string name="category_music">Müzik</string>
+    <string name="category_news">Haber</string>
+    <string name="category_personalization">Kişiselleştirme</string>
+    <string name="category_photography">Fotoğrafçılık</string>
+    <string name="category_tools">Araçlar</string>
+    <string name="category_travel_and_navigation">Seyahat ve Navigasyon</string>
+    <string name="lock_desktop">Ana ekranı kilitle</string>
+    <string name="reset_custom_icons">Özel simgeleri sıfırla</string>
+    <string name="reset_custom_icons_confirmation">Tüm özel simgeleri sıfırlamak istediğinizden emin misiniz? Bu işlem geri alınamaz.</string>
+    <string name="open_image_picker">Görüntü seçiciyi aç</string>
+    <string name="import_icon">Simgeyi içe aktar</string>
+    <string name="import_as_adaptive">Uyarlanabilir simge olarak</string>
+    <string name="bugreport_channel_name">Hata raporları</string>
+    <string name="status_channel_name">Hata raporu yükleme durumu</string>
+    <string name="bugreport_group_summary">%d yeni rapor</string>
+    <string name="bugreport_group_summary_multiple">Birden çok yeni rapor</string>
+    <string name="dogbin_uploading">Yükleme devam ediyor</string>
+    <string name="action_dogbin_upload">Dogbin\'e yükle</string>
+    <string name="action_dogbin_upload_error">Yükleme başarısız</string>
+    <string name="action_dogbin_copy_link">Bağlantıyı kopyala</string>
+    <string name="lawnchair_bug_report">Lawnchair hata raporu</string>
+    <string name="copied_toast">Kopyalandı</string>
+    <string name="action_copy">Kopyala</string>
+    <string name="action_copy_link">Bağlantıyı kopyala</string>
+    <string name="action_share">Paylaş</string>
+    <string name="animation_type_title">Uygulama açılış animasyonu</string>
+    <string name="animation_type_default">Varsayılan</string>
+    <string name="animation_type_pie">Pie</string>
+    <string name="animation_type_pie_like">Pie benzeri</string>
+    <string name="animation_type_reveal">Ortaya çıkar</string>
+    <string name="animation_type_slide_up">Yukarı kaydır</string>
+    <string name="animation_type_scale_up">Arttır</string>
+    <string name="animation_type_blink">Göz kırpma</string>
+    <string name="animation_type_fade">Karart</string>
+    <string name="permission_iplocate">Ağ tabanlı bir konuma erişime izin verilsin mi?</string>
+    <string name="permission_iplocate_twilight_explanation">Bu, tam konumunuzu bilmenize gerek kalmadan daha doğru gündüz hesaplamaları yapmanızı sağlar.</string>
+    <string name="pref_appcategorization_flowerpot_title">Kategori</string>
+    <string name="pref_appcategorization_flowerpot_summary">Uygulamalar meta verilerine göre otomatik olarak seçilir.</string>
+    <string name="select_tab_type">Sekme türü</string>
+    <string name="tab_type_custom">Özel sekme</string>
+    <string name="tab_type_custom_desc">Bu sekme için uygulamaları el ile seçin.</string>
+    <string name="tab_type_smart">Akıllı sekme</string>
+    <string name="categorization">Sınıflandırma</string>
+    <string name="folder_cover_mode">Kapak modu</string>
+    <string name="folder_cover_mode_desc">İlk uygulamayı açmak için dokunun, klasörü açmak için yukarı kaydırın</string>
+    <string name="pref_smartspace_event_providers">Etkinlik kaynakları</string>
+    <string name="event_provider_now_playing">Şimdi çalan</string>
+    <string name="battery_status">Pil durumu</string>
+    <string name="battery_charging">Pil şarj ediliyor</string>
+    <string name="battery_full">Pil dolu</string>
+    <string name="battery_low">Düşük pil</string>
+    <string name="event_provider_unread_notifications">Okunmamış bildiriler</string>
+    <string name="event_provider_missing_notification_access"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> kullanmak için, <xliff:g example="My App" id="name">%2$s</xliff:g> için uygulama bildirimlerini aç</string>
+    <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> kullanmak için, bildirim noktalarını aç</string>
+    <string name="zen_mode_enabled">Rahatsız etmeyin etkin</string>
+    <string name="crash_report_notif_title">%1$s çöktü!</string>
+    <string name="personality_provider">İçeriğe dayalı mesaj</string>
+    <string-array name="greetings_morning">
+        <item>Günaydın!</item>
+        <item>Ne kadar güzel bir gün!</item>
+        <item>Dışarıya baktın mı?</item>
+        <item>İyi günler!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>İyi geceler!</item>
+        <item>İyi uykular!</item>
+        <item>Yarın görüşürüz!</item>
+        <item>Tatlı rüyalar!</item>
+        <item>Çok uzun süre kalma</item>
+        <item>Günün nasıldı?</item>
+        <item>Bugün ne yaptın?</item>
+    </string-array>
+    <string name="onbording_settings_title">%s ayarla</string>
+    <string name="onbording_settings_summary">Ana ekranınıza uzun basın</string>
+    <string name="onboarding_swipe_up">Tüm uygulamalarınızı görmek için yukarı kaydırın</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">MIUI\'daki bir kısıtlama nedeniyle, simge şekliniz değişmeyebilir ve kare kalabilir.\nLütfen bunu bir hata olarak bildirmeyin.</string>
+    <string name="button_organize_screens">Ekranları düzenle</string>
 </resources>
