@@ -91,6 +91,11 @@ public class RestoreDbTask {
         db.update(Favorites.TABLE_NAME, values, "itemType = ?",
                 new String[]{Integer.toString(Favorites.ITEM_TYPE_APPWIDGET)});
 
+        // Mark custom widgets as restore completed
+        values.put(Favorites.RESTORED,  LauncherAppWidgetInfo.RESTORE_COMPLETED);
+        db.update(Favorites.TABLE_NAME, values, "itemType = ?",
+                new String[]{Integer.toString(Favorites.ITEM_TYPE_CUSTOM_APPWIDGET)});
+
         long myProfileId = helper.getDefaultUserSerial();
         if (Utilities.longCompare(oldProfileId, myProfileId) != 0) {
             FileLog.d(TAG, "Changing primary user id from " + oldProfileId + " to " + myProfileId);
