@@ -41,6 +41,7 @@ import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.views.OptionsPopupView
 import com.android.launcher3.widget.WidgetsFullSheet
+import ninja.sesame.lib.bridge.v1.SesameFrontend
 import org.json.JSONObject
 
 @Keep
@@ -266,8 +267,12 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
                         Intent().setComponent(target!!.componentName))
             }
             "shortcut" -> {
-                DeepShortcutManager.getInstance(context)
-                        .startShortcut(packageName, id, intent, opts, user)
+                if (id?.startsWith("sesame_") == true) {
+                    context.startActivity(SesameFrontend.addPackageAuth(context, intent!!), opts)
+                } else {
+                    DeepShortcutManager.getInstance(context)
+                            .startShortcut(packageName, id, intent, opts, user)
+                }
             }
         }
     }
