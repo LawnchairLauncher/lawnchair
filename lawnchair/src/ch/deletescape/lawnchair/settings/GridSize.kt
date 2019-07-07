@@ -34,7 +34,7 @@ open class GridSize(
         onChangeListener.invoke()
     }
 
-    var numRowsPref by prefs.IntPref("pref_$rowsKey", 0, onChange)
+    var numRowsPref by prefs.StringIntMigrationPref("pref_$rowsKey", 0, onChange)
 
     init {
         applyNumRows()

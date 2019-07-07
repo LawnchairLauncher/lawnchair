@@ -20,11 +20,17 @@ package ch.deletescape.lawnchair
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.net.Uri
 import android.os.Looper
 import android.provider.Settings
 import android.text.TextUtils
 import ch.deletescape.lawnchair.bugreport.BugReportClient
+import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.colors.RGBColorResolver
+import ch.deletescape.lawnchair.gestures.BlankGestureHandler
+import ch.deletescape.lawnchair.gestures.GestureController
+import ch.deletescape.lawnchair.gestures.handlers.*
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import ch.deletescape.lawnchair.groups.AppGroupsManager
 import ch.deletescape.lawnchair.groups.DrawerTabs
@@ -37,6 +43,8 @@ import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import ch.deletescape.lawnchair.smartspace.*
 import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.util.Temperature
+import ch.deletescape.lawnchair.util.extensions.d
+import ch.deletescape.lawnchair.util.extensions.e
 import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
 import com.android.quickstep.OverviewInteractionState
@@ -47,6 +55,7 @@ import java.io.File
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
@@ -68,7 +77,11 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
             oldFile.renameTo(newFile)
             oldFile.delete()
         }
-        return context.applicationContext.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+        return context.applicationContext
+                .getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+                .apply {
+                    migrateConfig(this)
+                }
     }
 
     val doNothing = { }
@@ -90,7 +103,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val lawnchairConfig = LawnchairConfig.getInstance(context)
 
     var restoreSuccess by BooleanPref("pref_restoreSuccess", false)
-    var configVersion by IntPref("config_version", if (restoreSuccess) 0 else CURRENT_VERSION)
+    var configVersion by IntPref(VERSION_KEY, if (restoreSuccess) 0 else CURRENT_VERSION)
+    // Show a short onboarding "welcome to your new home"
+    var migratedFrom1 by BooleanPref("pref_legacyUpgrade", false)
 
     // Blur
     var enableBlur by BooleanPref("pref_enableBlur", lawnchairConfig.defaultEnableBlur, updateBlur)
@@ -121,7 +136,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val gridSize by gridSizeDelegate
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
     val showTopShadow by BooleanPref("pref_showTopShadow", true, recreate) // TODO: update the scrim instead of doing this
-    val autoAddInstalled by BooleanPref("pref_add_icon_to_home", true, doNothing)
+    var autoAddInstalled by BooleanPref("pref_add_icon_to_home", true, doNothing)
     private val homeMultilineLabel by BooleanPref("pref_homeIconLabelsInTwoLines", false, recreate)
     val homeLabelRows get() = if(homeMultilineLabel) 2 else 1
     val allowOverlap by BooleanPref(SettingsActivity.ALLOW_OVERLAP_PREF, false, reloadAll)
@@ -156,7 +171,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     // Dock
     val dockStyles = DockStyle.StyleManager(this, reloadDockStyle, resetAllApps)
     val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", false, doNothing)
-    val dockSearchBarPref by BooleanPref("pref_dockSearchBar", Utilities.ATLEAST_MARSHMALLOW, recreate)
+    var dockSearchBarPref by BooleanPref(
+            "pref_dockSearchBar", Utilities.ATLEAST_MARSHMALLOW, recreate
+                                        )
     inline val dockSearchBar get() = !dockHide && dockSearchBarPref
     val dockRadius get() = dockStyles.currentStyle.radius
     val dockShadow get() = dockStyles.currentStyle.enableShadow
@@ -169,7 +186,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val dockGridSize by dockGridSizeDelegate
     val twoRowDock by BooleanPref("pref_twoRowDock", false, restart)
     val dockRowsCount get() = if (twoRowDock) 2 else 1
-    val dockScale by FloatPref("pref_dockScale", 1f, recreate)
+    var dockScale by FloatPref("pref_dockScale", 1f, recreate)
 
     // Drawer
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
@@ -177,7 +194,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val allAppsStartAlpha get() = dockStyles.currentStyle.opacity
     val allAppsEndAlpha get() = allAppsOpacity
     val allAppsSearch by BooleanPref("pref_allAppsSearch", true, recreate)
-    val allAppsGlobalSearch by BooleanPref("pref_allAppsGoogleSearch", true, doNothing)
+    var allAppsGlobalSearch by BooleanPref("pref_allAppsGoogleSearch", true, doNothing)
     val showAllAppsLabel by BooleanPref("pref_showAllAppsLabel", false) {
         val header = onChangeCallback?.launcher?.appsView?.floatingHeaderView as? PredictionsFloatingHeader
         header?.updateShowAllAppsLabel()
@@ -592,11 +609,35 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     open inner class StringIntPref(key: String, defaultValue: Int = 0, onChange: () -> Unit = doNothing) :
             PrefDelegate<Int>(key, defaultValue, onChange) {
-        override fun onGetValue(): Int = sharedPrefs.getString(getKey(), "$defaultValue").toInt()
+        override fun onGetValue(): Int = try {
+            sharedPrefs.getString(getKey(), "$defaultValue").toInt()
+        } catch (e: Exception) {
+            sharedPrefs.getInt(getKey(), defaultValue)
+        }
 
         override fun onSetValue(value: Int) {
             edit { putString(getKey(), "$value") }
         }
+    }
+
+    // This properly migrates v1 string int prefs including those with "default" value
+    open inner class StringIntMigrationPref(
+            key: String, defaultValue: Int = 0, onChange: () -> Unit = doNothing
+                                           ) :
+            PrefDelegate<Int>(key, defaultValue, onChange) {
+        override fun onGetValue(): Int = try {
+            sharedPrefs.getInt(getKey(), defaultValue)
+        } catch (e: Exception) {
+            toInt(sharedPrefs.getString(getKey(), "$defaultValue")).apply {
+                edit { putInt(getKey(), this@apply) }
+            }
+        }
+
+        override fun onSetValue(value: Int) {
+            edit { putInt(getKey(), value) }
+        }
+
+        private fun toInt(string: String) = if (string == "default") 0 else string.toInt()
     }
 
     open inner class IntPref(key: String, defaultValue: Int = 0, onChange: () -> Unit = doNothing) :
@@ -662,6 +703,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     var blockingEditing = false
     var bulkEditing = false
     var editor: SharedPreferences.Editor? = null
+    val bulkEditCount = AtomicInteger(0)
 
     fun beginBlockingEdit() {
         blockingEditing = true
@@ -673,14 +715,22 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     @SuppressLint("CommitPrefEdits")
     fun beginBulkEdit() {
-        bulkEditing = true
-        editor = sharedPrefs.edit()
+        synchronized(bulkEditCount) {
+            if (bulkEditCount.getAndIncrement() == 0) {
+                bulkEditing = true
+                editor = sharedPrefs.edit()
+            }
+        }
     }
 
     fun endBulkEdit() {
-        bulkEditing = false
-        commitOrApply(editor!!, blockingEditing)
-        editor = null
+        synchronized(bulkEditCount) {
+            if (bulkEditCount.decrementAndGet() == 0) {
+                bulkEditing = false
+                commitOrApply(editor!!, blockingEditing)
+                editor = null
+            }
+        }
     }
 
     inline fun blockingEdit(body: LawnchairPreferences.() -> Unit) {
@@ -783,20 +833,107 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     }
 
     init {
-        migrateConfig()
+        d("Initializing", Throwable())
     }
 
-    private fun migrateConfig() {
-        if (configVersion != CURRENT_VERSION) {
-            blockingEdit {
-                bulkEdit {
+    fun migrateConfig(prefs: SharedPreferences) {
+        val version = prefs.getInt(VERSION_KEY, CURRENT_VERSION)
+        if (version != CURRENT_VERSION) {
+            with(prefs.edit()) {
                     // Migration codes here
 
-
-                    configVersion = CURRENT_VERSION
+                if (version == 100) {
+                    migrateFromV1(this, prefs)
                 }
+
+                putInt(VERSION_KEY, CURRENT_VERSION)
+                commit()
             }
         }
+    }
+
+    private fun migrateFromV1(editor: SharedPreferences.Editor, prefs: SharedPreferences) = with(
+            editor
+                                                                                                ) {
+        // Set flags
+        putBoolean("pref_legacyUpgrade", true)
+        putBoolean("pref_restoreSuccess", false)
+
+        // Dt2s
+        putString("pref_gesture_double_tap",
+                  when (prefs.getString("pref_dt2sHandler", "")) {
+                      "" -> BlankGestureHandler(context, null)
+                      "ch.deletescape.lawnchair.gestures.dt2s.DoubleTapGesture\$SleepGestureHandlerTimeout" ->
+                          SleepGestureHandlerTimeout(context, null)
+                      else -> SleepGestureHandler(context, null)
+                  }.toString())
+
+        // Dock
+        putString("pref_dockPreset", "0")
+        putBoolean("pref_dockShadow", false)
+        putBoolean("pref_hotseatShowArrow", prefs.getBoolean("pref_hotseatShowArrow", true))
+        putFloat("pref_dockRadius", 0f)
+        putBoolean("pref_dockGradient", prefs.getBoolean("pref_isHotseatTransparent", false))
+        if (!prefs.getBoolean("pref_hotseatShouldUseCustomOpacity", false)) {
+            putFloat("pref_hotseatCustomOpacity", -1f / 255)
+        }
+        // Slightly reduce the value so it actually looks more like it used to look in v1
+        putFloat("pref_dockScale", prefs.getFloat("pref_hotseatHeightScale", 1f) - .3f)
+
+        // Home widget
+        val pillQsb = prefs.getBoolean("pref_showPixelBar", true)
+                      // The new dock qsb should be close enough I guess
+                      && !prefs.getBoolean("pref_fullWidthSearchbar", false);
+        putBoolean("pref_use_pill_qsb", pillQsb)
+        if (pillQsb) {
+            putBoolean("pref_dockSearchBar", false)
+        }
+        if (!prefs.getBoolean("pref_showDateOrWeather", true)) {
+            putString("pref_smartspace_widget_provider", BlankDataProvider::class.java.name)
+        }
+        val showAssistant = prefs.getBoolean("pref_showMic", false)
+        putBoolean("opa_enabled", showAssistant)
+        putBoolean("opa_assistant", showAssistant)
+
+        // Colors
+        ColorEngine.setColor(
+                this,
+                ColorEngine.Resolvers.WORKSPACE_ICON_LABEL,
+                prefs.getInt("pref_workspaceLabelColor", Color.WHITE));
+        if (prefs.getBoolean("pref_allAppsCustomLabelColor", false)) {
+            ColorEngine.setColor(this,
+                                 ColorEngine.Resolvers.ALLAPPS_ICON_LABEL,
+                                 prefs.getInt("pref_allAppsCustomLabelColor",
+                                              0x666666 or 0xff shl 24));
+        }
+
+        // Theme
+        putString("pref_launcherTheme",
+                  when (prefs.getString("pref_theme", "0")) {
+                      "1" -> ThemeManager.THEME_DARK
+                      "2" -> ThemeManager.THEME_USE_BLACK or ThemeManager.THEME_DARK
+                      else -> 0
+                  }.toString())
+        putString("pref_icon_pack", prefs.getString("pref_iconPackPackage", ""))
+
+        // Gestures
+        putString("pref_gesture_swipe_down",
+                  when (prefs.getInt("pref_pulldownAction", 1)) {
+                      1 -> NotificationsOpenGestureHandler(context, null)
+                      2 -> StartGlobalSearchGestureHandler(context, null)
+                      3 -> StartAppSearchGestureHandler(context, null)
+                      else -> BlankGestureHandler(context, null)
+                  }.toString())
+        if (prefs.getBoolean("pref_homeOpensDrawer", false)) {
+            putString("pref_gesture_press_home",
+                      OpenDrawerGestureHandler(context, null).toString())
+        }
+
+        // misc
+        putBoolean("pref_add_icon_to_home", prefs.getBoolean("pref_autoAddShortcuts", true))
+
+        // Disable some newer features per default
+        putBoolean("pref_allAppsGoogleSearch", false)
     }
 
     interface OnPreferenceChangeListener {
@@ -810,6 +947,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         private var INSTANCE: LawnchairPreferences? = null
 
         const val CURRENT_VERSION = 200
+        const val VERSION_KEY = "config_version"
 
         fun getInstance(context: Context): LawnchairPreferences {
             if (INSTANCE == null) {

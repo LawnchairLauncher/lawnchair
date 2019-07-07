@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.colors
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color.*
 import android.text.TextUtils
 import ch.deletescape.lawnchair.*
@@ -117,29 +118,40 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
     }
 
     fun setColor(resolver: String, color: Int) {
-        prefs.sharedPrefs.edit().putString(resolver, (if (alpha(color) < 0xFF) {
-            // ARGB
-            arrayOf(
-                    ARGBColorResolver::class.java.name,
-                    alpha(color).toString(),
-                    red(color).toString(),
-                    green(color).toString(),
-                    blue(color).toString()
-            )
-        } else {
-            // RGB
-            arrayOf(
-                    RGBColorResolver::class.java.name,
-                    red(color).toString(),
-                    green(color).toString(),
-                    blue(color).toString()
-            )
-        }).joinToString("|")).apply()
+        var needsApply = prefs.editor == null
+        val editor = prefs.editor ?: prefs.sharedPrefs.edit()
+        setColor(editor, resolver, color)
+        if (needsApply) {
+            editor.apply()
+        }
     }
 
     companion object : SingletonHolder<ColorEngine, Context>(ensureOnMainThread(useApplicationContext(::ColorEngine))) {
         @JvmStatic
         override fun getInstance(arg: Context) = super.getInstance(arg)
+
+        fun setColor(editor: SharedPreferences.Editor, resolver: String, color: Int) {
+            editor.putString(
+                    resolver, (if (alpha(color) < 0xFF) {
+                // ARGB
+                arrayOf(
+                        ARGBColorResolver::class.java.name,
+                        color.alpha.toString(),
+                        color.red.toString(),
+                        color.green.toString(),
+                        color.blue.toString()
+                       )
+            } else {
+                // RGB
+                arrayOf(
+                        RGBColorResolver::class.java.name,
+                        color.red.toString(),
+                        color.green.toString(),
+                        color.blue.toString()
+                       )
+            }).joinToString("|")
+                            )
+        }
     }
 
     interface OnColorChangeListener {
