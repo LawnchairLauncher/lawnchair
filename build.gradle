@@ -165,7 +165,10 @@ android {
 
         dev {
             dimension "build"
-            applicationIdSuffix ".dev"
+            // Use v1 dev package name for compatibility testing
+            if (localProps.getProperty("v1compat") != "true") {
+                applicationIdSuffix ".dev"
+            }
             versionNameSuffix "-dev"
         }
 
