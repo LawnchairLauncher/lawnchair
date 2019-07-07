@@ -32,7 +32,7 @@ import ch.deletescape.lawnchair.dpToPx
 import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.states.HomeState
-import ch.deletescape.lawnchair.util.extensions.d
+import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -71,8 +71,11 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private val key_dock_opacity = "pref_hotseatCustomOpacity"
     private val key_dock_arrow = "pref_hotseatShowArrow"
     private val key_search_radius = "pref_searchbarRadius"
+    private val key_debug_state = "pref_debugDisplayState"
 
-    private val prefsToWatch = arrayOf(key_radius, key_opacity, key_dock_opacity, key_dock_arrow, key_search_radius)
+    private val prefsToWatch =
+            arrayOf(key_radius, key_opacity, key_dock_opacity, key_dock_arrow, key_search_radius,
+                    key_debug_state)
     private val colorsToWatch = arrayOf(ColorEngine.Resolvers.ALLAPPS_BACKGROUND, ColorEngine.Resolvers.DOCK_BACKGROUND)
 
     private val blurDrawableCallback by lazy {
@@ -119,6 +122,13 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
     private val reInitUiRunnable = this::reInitUi
     private var fullBlurProgress = 0f
+
+    private var shouldDrawDebug = false
+    private val debugTextPaint = Paint().apply {
+        textSize = DEBUG_TEXT_SIZE
+        color = Color.RED
+        typeface = Typeface.DEFAULT_BOLD
+    }
 
     private fun createBlurDrawable(): BlurDrawable? {
         blurDrawable?.let { if (isAttachedToWindow) it.stopListening() }
@@ -202,6 +212,9 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
                     searchBlurDrawable = createSearchBlurDrawable()
                     postReInitUi()
                 }
+            }
+            key_debug_state -> {
+                shouldDrawDebug = prefs.displayDebugOverlay
             }
         }
     }
@@ -294,6 +307,10 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
                     0f, SCRIM_CATCHUP_THRESHOLD, 0f, 1f, Interpolators.LINEAR), 0f, 1f)
             statusBarPaint.alpha = ((1 - scrimProgress) * 97).toInt()
             canvas.drawRect(0f, 0f, width.toFloat(), insets.top.toFloat(), statusBarPaint)
+        }
+
+        if (shouldDrawDebug) {
+            drawDebug(canvas)
         }
     }
 
@@ -407,9 +424,24 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         searchBlurDrawable = createSearchBlurDrawable()
     }
 
+    private fun drawDebug(canvas: Canvas) {
+        listOf(
+                "version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
+                "state: ${mLauncher.stateManager.state::class.java.simpleName}",
+                "toState: ${mLauncher.stateManager.toState::class.java.simpleName}"
+              ).forEachIndexed { index, line ->
+            canvas.drawText(line, 50f, 200f + (DEBUG_LINE_HEIGHT * index), debugTextPaint)
+        }
+    }
+
     private fun postReInitUi() {
         handler?.removeCallbacks(reInitUiRunnable)
         handler?.post(reInitUiRunnable)
+    }
+
+    companion object {
+        private const val DEBUG_TEXT_SIZE = 30f
+        private const val DEBUG_LINE_HEIGHT = DEBUG_TEXT_SIZE + 3f
     }
 
     class ColorRange(private val start: Float, private val end: Float,

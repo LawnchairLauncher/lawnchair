@@ -247,6 +247,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         }
     }
     val forceFakePieAnims by BooleanPref("pref_forceFakePieAnims", false)
+    val displayDebugOverlay by BooleanPref("pref_debugDisplayState", false)
 
     // Search
     var searchProvider by StringPref("pref_globalSearchProvider", lawnchairConfig.defaultSearchProvider) {
