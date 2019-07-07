@@ -532,4 +532,6 @@ A művelet nem visszavonható.</string>
     <string name="web_search_yandex">Yandex (web)</string>
     <string name="web_search_naver">Naver (web)</string>
     <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">A MIUI korlátozása miatt előfordulhat, hogy az ikon alakja nem változik, és négyzet marad.\nKérjük, ne jelentse ezt hibaként.</string>
+    <string name="button_organize_screens">Képernyők rendezése</string>
 </resources>
