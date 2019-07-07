@@ -490,7 +490,7 @@
     <string name="tab_type_custom_desc">手動挑選應用程式</string>
     <string name="tab_type_smart">智慧分頁</string>
     <string name="categorization">分類</string>
-    <string name="folder_cover_mode">覆蓋模式</string>
+    <string name="folder_cover_mode">封面圖片模式</string>
     <string name="folder_cover_mode_desc">輕觸以開啓首個應用程式，向上滑動開啟資料夾</string>
     <string name="pref_smartspace_event_providers">事件來源</string>
     <string name="event_provider_now_playing">現正播放</string>
