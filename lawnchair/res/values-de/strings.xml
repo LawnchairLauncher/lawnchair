@@ -346,7 +346,7 @@
     <string name="selected_count">%1$d ausgewählt</string>
     <string name="tab_manage_apps">Apps verwalten</string>
     <string name="tab_bottom_sheet_save">Speichern</string>
-    <string name="tab_hide_from_main">In App-Liste verstecken</string>
+    <string name="tab_hide_from_main">Im Haupt-Tab ausblenden</string>
     <string name="tab_color">Tab-Farbe</string>
     <string name="delete">Löschen</string>
     <string name="none">Nichts</string>
@@ -366,6 +366,7 @@
     <string name="pref_sesame_show_shortcuts">App-Verknüpfungen</string>
     <string name="pref_sesame_show_shortcuts_summary">Zeige Sesame-Einträge in App-Verknüpfungen</string>
     <string name="allow">Erlauben</string>
+    <string name="deny">Ablehnen</string>
     <string name="sesame_enable_integration_title">Aktiviere Integration</string>
     <string name="sesame_enable_integration_description"><![CDATA[Aktiviert das Teilen der Daten zwischen Lawnchair und Sesame. Dies kann in den jeweiligen Einstellungen geändert werden.]]></string>
     <string name="sesame_version">Sesame-Version</string>
@@ -419,11 +420,119 @@
     <string name="adaptify_pack_summary">Erstelle adaptive Icons für Icons aus Icon-Paketen</string>
     <string name="pref_sesame_sync_look_and_feel">Aussehen teilen</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Sucheinstellungen von Lawnchair mit Sesame synchronisieren</string>
-    <string name="pref_search_bar_radius">Radius Suchleiste</string>
+    <string name="pref_search_bar_radius">Rundung Suchleistenecken</string>
     <string name="icon_text_scale_pref_title">Textgröße</string>
     <string name="text_color">Textfarbe</string>
+    <string name="background_color">Hintergrundfarbe</string>
     <string name="pref_notification_count_title">Benachrichtigungszähler anzeigen</string>
     <string name="pref_notification_count_summary">Zeigt die Anzahl der Benachrichtigungen im Punkt</string>
     <string name="pref_center_wallpaper">Hintergrund immer zentrieren</string>
     <string name="pref_center_wallpaper_summary">Der Hintergrund wird beim Wischen durch die Seiten nicht mehr bewegt</string>
+    <string name="pref_icon_popup_menu">Elemente Popup-Menü</string>
+    <string name="pref_appcategorization_enable_title">Apps kategorisieren</string>
+    <string name="pref_appcategorization_enable_summary">Räume meinen Messie-Ordner auf.</string>
+    <string name="pref_appcategorization_style_text">Stil</string>
+    <string name="pref_app_groups_edit_tip">Tippen zum Bearbeiten, ziehen zum Verschieben.</string>
+    <string name="pref_app_groups_create">Erstellen</string>
+    <string name="pref_appcategorization_folders_title">Ordner</string>
+    <string name="pref_appcategorization_folders_summary">Tippen, um Popup zu öffnen.</string>
+    <string name="pref_appcategorization_tabs_title">Tabs</string>
+    <string name="pref_appcategorization_tabs_summary">Zwischen Gruppen wischen</string>
+    <string name="default_folder_name">Neuer Ordner</string>
+    <string name="drawer_folders">Ordner</string>
+    <string name="category_business_and_productivity">Geschäft und Produktivität</string>
+    <string name="category_communication">Kommunikation</string>
+    <string name="category_entertainment">Unterhaltung</string>
+    <string name="category_food_and_drink">Essen und Trinken</string>
+    <string name="category_game">Spiele</string>
+    <string name="category_health_and_fitness">Gesundheit und Fitness</string>
+    <string name="category_knowledge_and_reference">Wissen und Recherche</string>
+    <string name="category_lifestyle">Shopping und Lifestyle</string>
+    <string name="category_music">Musik</string>
+    <string name="category_news">Nachrichten</string>
+    <string name="category_personalization">Personalisierung</string>
+    <string name="category_photography">Fotografie</string>
+    <string name="category_tools">Tools</string>
+    <string name="category_travel_and_navigation">Reisen und Navigation</string>
+    <string name="lock_desktop">Startbildschirm sperren</string>
+    <string name="reset_custom_icons">Benutzerdefinierte Icons zurücksetzen</string>
+    <string name="reset_custom_icons_confirmation">Bist du sicher, dass du alle benutzerdefinierten Icons zurücksetzen möchtest? Diese Aktion kann nicht widerrufen werden.</string>
+    <string name="open_image_picker">Bildauswahl öffnen</string>
+    <string name="import_icon">Icon importieren</string>
+    <string name="import_as_adaptive">Als adaptives Icon</string>
+    <string name="bugreport_channel_name">Fehlerberichte</string>
+    <string name="status_channel_name">Upload-Status Fehlerbericht</string>
+    <string name="bugreport_group_summary">%d neue Berichte</string>
+    <string name="bugreport_group_summary_multiple">Mehrere neue Berichte</string>
+    <string name="dogbin_uploading">Upload läuft</string>
+    <string name="action_dogbin_upload">Upload auf dogbin</string>
+    <string name="action_dogbin_upload_error">Upload fehlgeschlagen</string>
+    <string name="action_dogbin_copy_link">Link kopieren</string>
+    <string name="lawnchair_bug_report">Lawnchair Fehlerbericht</string>
+    <string name="copied_toast">Kopiert</string>
+    <string name="action_copy">Kopieren</string>
+    <string name="action_copy_link">Link kopieren</string>
+    <string name="action_share">Teilen</string>
+    <string name="animation_type_title">Animation App-Start</string>
+    <string name="animation_type_default">Standard</string>
+    <string name="animation_type_pie">Pie</string>
+    <string name="animation_type_pie_like">Pie-ähnlich</string>
+    <string name="animation_type_reveal">Enthüllen</string>
+    <string name="animation_type_slide_up">Hoch gleiten</string>
+    <string name="animation_type_scale_up">Vergrößern</string>
+    <string name="animation_type_blink">Blinken</string>
+    <string name="animation_type_fade">Verblassen</string>
+    <string name="permission_iplocate">Zugriff auf Coarse (Netzwerkbasierter Standort) erlauben?</string>
+    <string name="permission_iplocate_twilight_explanation">Ermöglichkeit eine bessere Bestimmung der Tageszeit auch ohne exakten Standort</string>
+    <string name="pref_appcategorization_flowerpot_title">Kategorie</string>
+    <string name="pref_appcategorization_flowerpot_summary">Apps werden automatisch anhand ihrer Metadaten geordnet.</string>
+    <string name="select_tab_type">Tab-Typ</string>
+    <string name="tab_type_custom">Angepasster Tab</string>
+    <string name="tab_type_custom_desc">Apps für diesen Tab manuell auswählen</string>
+    <string name="tab_type_smart">Smarter Tab</string>
+    <string name="categorization">Kategorisierung</string>
+    <string name="folder_cover_mode">Cover-Modus</string>
+    <string name="folder_cover_mode_desc">Tippe zum Öffnen der ersten App, hochwischen zum Öffnen des Ordners</string>
+    <string name="pref_smartspace_event_providers">Ereignisquellen</string>
+    <string name="event_provider_now_playing">Aktuelle Wiedergabe</string>
+    <string name="battery_status">Batterie-Status</string>
+    <string name="battery_charging">Batterie lädt</string>
+    <string name="battery_full">Akku voll</string>
+    <string name="battery_low">Batterie fast leer</string>
+    <string name="event_provider_unread_notifications">Ungelesene Benachrichtigungen</string>
+    <string name="event_provider_missing_notification_access">Zur Benutzung von <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> bitte App-Benachrichtigungen für <xliff:g example="My App" id="name">%2$s</xliff:g> einschalten.</string>
+    <string name="event_provider_missing_notification_dots">Wenn du <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> benutzen willst, musst du die Benachrichtigungspunkte einschalten</string>
+    <string name="zen_mode_enabled">\"Nicht stören\" ist aktiviert</string>
+    <string name="crash_report_notif_title">%1$s ist abgestürzt!</string>
+    <string name="personality_provider">Kontextbasierte Nachrichten</string>
+    <string-array name="greetings_morning">
+        <item>Guten Morgen!</item>
+        <item>Was für ein schöner Tag!</item>
+        <item>Hast du schon mal rausgeschaut?</item>
+        <item>Hab einen schönen Tag!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Gute Nacht!</item>
+        <item>Schlaf gut!</item>
+        <item>Bis morgen!</item>
+        <item>Süße Träume!</item>
+        <item>Bleib nicht zulange auf</item>
+        <item>Wie war dein Tag?</item>
+        <item>Was hast du heute gemacht?</item>
+    </string-array>
+    <string name="onbording">Onboarding</string>
+    <string name="onbording_settings_title">Stelle %s ein</string>
+    <string name="onbording_settings_summary">Lange Tippen auf dem Startbildschirm</string>
+    <string name="onboarding_swipe_up">Nach oben wischen um alle deine Apps zu sehen</string>
+    <string name="web_search_google">Google (Web)</string>
+    <string name="web_search_ddg">DuckDuckGo (Web)</string>
+    <string name="web_search_startpage">Startpage.com (Web)</string>
+    <string name="web_search_bing">Bing (Web)</string>
+    <string name="web_search_qwant">Qwant (Web)</string>
+    <string name="web_search_ecosia">Ecosia (Web)</string>
+    <string name="web_search_yandex">Yandex (Web)</string>
+    <string name="web_search_naver">Naver (Web)</string>
+    <string name="web_search_baidu">Baidu (Web)</string>
+    <string name="icon_shape_override_miui_explaination">Wegen einer Beschränkung in MIUI kann es sein, dass sich die Icon-Form nicht ändert und die Icons quadratisch bleiben.\nDies bitte nicht als Fehler melden.</string>
+    <string name="button_organize_screens">Bildschirme organisieren</string>
 </resources>
