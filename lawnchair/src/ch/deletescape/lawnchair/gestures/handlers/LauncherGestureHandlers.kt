@@ -319,6 +319,7 @@ class OpenRecentsByAccessibilityGestureHandler(context: Context, config: JSONObj
     override val displayName = context.getString(R.string.action_recents_accessibility)
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
+        // applicationContext.lawnchairApp might not be right for this. if changed, fix the imports as well
         context.applicationContext.lawnchairApp.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
     }
 }
