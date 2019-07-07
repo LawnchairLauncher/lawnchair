@@ -535,4 +535,6 @@
     <string name="web_search_yandex">Yandex (Мережа)</string>
     <string name="web_search_naver">Naver (Мережа)</string>
     <string name="web_search_baidu">Baidu (Мережа)</string>
+    <string name="icon_shape_override_miui_explaination">У зв\'язку з обмеженням у MIUI, ваша форма піктограми може не змінитися і залишитися квадратною.\nНе повідомляйте про це як про помилку.</string>
+    <string name="button_organize_screens">Наладити екрани</string>
 </resources>
