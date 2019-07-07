@@ -292,10 +292,17 @@
     <string name="theme_auto_night_mode">تتبع سمة النظام</string>
     <string name="theme_light">فاتح</string>
     <string name="theme_dark_text">فاتح مع نص مظلم</string>
+    <string name="theme_with_dark_text">نص مظلم</string>
     <string name="theme_dark">مظلم</string>
     <string name="theme_dark_dark_text">مظلم مع نص مظلم</string>
     <string name="theme_black">أسود</string>
     <string name="theme_black_dark_text">أسود مع نص مظلم</string>
+    <string name="theme_dark_theme_mode">سمة مظلم</string>
+    <string name="theme_dark_theme_mode_on">مفعل</string>
+    <string name="theme_dark_theme_mode_off">مغلق</string>
+    <string name="theme_dark_theme_mode_follow_daylight">إتبع ضوء اليوم</string>
+    <string name="theme_use_black">إستخدم أسود نقي</string>
+    <string name="theme_use_dark_text">إستخدم نص مظلم</string>
     <string name="pref_qsb_color">اللون</string>
     <string name="hide_from_predictions">إخفاء من الإقتراحات</string>
     <string name="hide_from_predictions_summary">لا تظهر أبداً في اقتراحات قائمة التطبيقات</string>
@@ -315,7 +322,7 @@
     <string name="app_actions_pref_title">الاجراءت</string>
     <string name="app_actions_pref_title_in_search">إقتراحات الإجراء</string>
     <string name="app_actions_pref_desc">إختصارات للشاشات المفتوحة باستمرار</string>
-    <string name="change_default_home">تعيين كشاشة رئيسية</string>
+    <string name="change_default_home">تعيين كـ مُشغل افتراضي</string>
     <string name="recent_task_option_popup_window">نافذة الحوار</string>
     <string name="feed_theme_pref_title">لون الخلفية</string>
     <string name="recents_not_connected">الخدمة غير متصلة</string>
@@ -346,7 +353,7 @@
     <string name="selected_count">‏تم تحديد %1$d</string>
     <string name="tab_manage_apps">إدارة التطبيقات</string>
     <string name="tab_bottom_sheet_save">حفظ</string>
-    <string name="tab_hide_from_main">إخفاء من قائمة التطبيقات</string>
+    <string name="tab_hide_from_main">إخفاء من التبويب الرئيسي</string>
     <string name="tab_color">لون التبويب</string>
     <string name="delete">حذف</string>
     <string name="none">لا شئ</string>
@@ -366,6 +373,7 @@
     <string name="pref_sesame_show_shortcuts">اختصارات التطبيق</string>
     <string name="pref_sesame_show_shortcuts_summary">إظهار اختصارات Sesame في فقاعات الأيقونات</string>
     <string name="allow">السماح</string>
+    <string name="deny">رفض</string>
     <string name="sesame_enable_integration_title">تفعيل دمج البيانات</string>
     <string name="sesame_enable_integration_description"><![CDATA[تفعيل مشاركة البيانات بين Lawnchair و Sesame. يمكنك تغيير هذا في إعدادات Lawnchair أو Sesame.]]></string>
     <string name="sesame_version">نسخة الدمج</string>
@@ -383,9 +391,9 @@
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
-    <string name="search_provider_edge">إدج</string>
+    <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">طقس OnePlus</string>
-    <string name="overlap_placement">الوضع متداخل</string>
+    <string name="overlap_placement">الوضع المتداخل</string>
     <string name="overlap_placement_summary">السماح للايقونات والأدوات بالتداخل فيما بينها.</string>
     <string name="units_rakine">رانكين</string>
     <string name="units_newton">نيوتن</string>
@@ -419,4 +427,118 @@
     <string name="adaptify_pack_summary">انشئ أيقونات مكيفة للأيقونات من حزمة الأيقونات</string>
     <string name="pref_sesame_sync_look_and_feel">شارك مظهر وإحساس</string>
     <string name="pref_sesame_sync_look_and_feel_summary">تزامن إعدادات بحث Lawnchair مع سمسم</string>
+    <string name="pref_search_bar_radius">إستدارة زوايا شريط البحث</string>
+    <string name="icon_text_scale_pref_title">حجم النص</string>
+    <string name="text_color">لون النص</string>
+    <string name="background_color">لون الخلفية</string>
+    <string name="pref_notification_count_title">عرض عداد الإشعار</string>
+    <string name="pref_notification_count_summary">عرض عداد الإشعار داخل النقط</string>
+    <string name="pref_center_wallpaper">خلفية مركزية دائما</string>
+    <string name="pref_center_wallpaper_summary">سيؤدي هذا إلى تعطيل تأثير تمرير الخلفية</string>
+    <string name="pref_icon_popup_menu">عناصر القائمة المنبثقة</string>
+    <string name="pref_appcategorization_enable_title">تصنيف التطبيقات</string>
+    <string name="pref_appcategorization_enable_summary">إصلح فوضى درج التطبيقات الخاص بي.</string>
+    <string name="pref_appcategorization_style_text">النمط</string>
+    <string name="pref_app_groups_edit_tip">انقر للتحرير، إسحب لإعادة الترتيب.</string>
+    <string name="pref_app_groups_create">إنشاء</string>
+    <string name="pref_appcategorization_folders_title">المجلدات</string>
+    <string name="pref_appcategorization_folders_summary">انقر لفتح النافذة المنبثقة.</string>
+    <string name="pref_appcategorization_tabs_title">التبويبات</string>
+    <string name="pref_appcategorization_tabs_summary">السحب بين المجموعات.</string>
+    <string name="default_folder_name">مجلد جديد</string>
+    <string name="drawer_folders">المجلدات</string>
+    <string name="category_business_and_productivity">الأعمال والإنتاجية</string>
+    <string name="category_communication">التواصل</string>
+    <string name="category_entertainment">ترفيه</string>
+    <string name="category_food_and_drink">الطعام والشراب</string>
+    <string name="category_game">الألعاب</string>
+    <string name="category_health_and_fitness">الصحة واللياقة البدنية</string>
+    <string name="category_knowledge_and_reference">المعرفة والمراجع</string>
+    <string name="category_lifestyle">التسوق ونمط الحياة</string>
+    <string name="category_music">الموسيقى</string>
+    <string name="category_news">الأخبار</string>
+    <string name="category_personalization">التخصيص</string>
+    <string name="category_photography">التصوير</string>
+    <string name="category_tools">الأدوات</string>
+    <string name="category_travel_and_navigation">السفر والملاحة</string>
+    <string name="lock_desktop">قفل الشاشة الرئيسية</string>
+    <string name="reset_custom_icons">إعادة تعيين الأيقونات المخصصة</string>
+    <string name="reset_custom_icons_confirmation">هل تريد بالتأكيد إعادة تعيين جميع الأيقونات المخصصة؟ هذا العمل غير قابل للعكس.</string>
+    <string name="open_image_picker">فتح منتقي الصور</string>
+    <string name="import_icon">استيراد أيقونة</string>
+    <string name="import_as_adaptive">كأيقونة متكيفة</string>
+    <string name="bugreport_channel_name">تقرير الأخطاء</string>
+    <string name="status_channel_name">حالة تحميل تقرير الخطأ</string>
+    <string name="bugreport_group_summary">%d تقارير جديدة</string>
+    <string name="bugreport_group_summary_multiple">تقارير جديدة متعددة</string>
+    <string name="dogbin_uploading">التحميل في التقدم</string>
+    <string name="action_dogbin_upload">تحميل إلى dogbin</string>
+    <string name="action_dogbin_upload_error">فشلت عملية التحميل</string>
+    <string name="action_dogbin_copy_link">نسخ الرابط</string>
+    <string name="lawnchair_bug_report">تقرير خطأ Lawnchair</string>
+    <string name="copied_toast">تم النسخ</string>
+    <string name="action_copy">نسخ</string>
+    <string name="action_copy_link">نسخ الرابط</string>
+    <string name="action_share">مشاركة</string>
+    <string name="animation_type_title">تأثير حركة فتح التطبيق</string>
+    <string name="animation_type_default">الإفتراضي</string>
+    <string name="animation_type_pie">Pie</string>
+    <string name="animation_type_pie_like">شبيه-Pie</string>
+    <string name="animation_type_reveal">كشف</string>
+    <string name="animation_type_slide_up">إنزلق للأعلى</string>
+    <string name="animation_type_scale_up">رفع للأعلى</string>
+    <string name="animation_type_blink">وميض</string>
+    <string name="animation_type_fade">تلاشي</string>
+    <string name="permission_iplocate">السماح بالوصول إلى موقع الشبكة الخشنة؟</string>
+    <string name="permission_iplocate_twilight_explanation">يسمح ذلك بإجراء حسابات أكثر دقة خلال النهار دون الحاجة إلى معرفة موقعك بالضبط.</string>
+    <string name="pref_appcategorization_flowerpot_title">الفئة</string>
+    <string name="pref_appcategorization_flowerpot_summary">يتم اختيار التطبيقات تلقائيًا استنادًا إلى بيانات التعريف الخاصة بها.</string>
+    <string name="select_tab_type">نوع التبويب</string>
+    <string name="tab_type_custom">التبويب المخصص</string>
+    <string name="tab_type_custom_desc">اختر التطبيقات يدويًا لعلامة التبويب هذه.</string>
+    <string name="tab_type_smart">تبويب ذكي</string>
+    <string name="categorization">التصنيفات</string>
+    <string name="folder_cover_mode">وضع الغلاف</string>
+    <string name="folder_cover_mode_desc">انقر لفتح التطبيق الأول، إسحب لفتح المجلد</string>
+    <string name="pref_smartspace_event_providers">مصادر الأحداث</string>
+    <string name="event_provider_now_playing">الأن يتم التشغيل</string>
+    <string name="battery_status">حالة البطارية</string>
+    <string name="battery_charging">يتم شحن البطارية</string>
+    <string name="battery_full">البطارية ممتلئة</string>
+    <string name="battery_low">البطارية منخفضة</string>
+    <string name="event_provider_unread_notifications">إشعارات غير مقروءة</string>
+    <string name="event_provider_missing_notification_access">لإستخدام <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>، قم بتشغيل إشعارات التطبيق لـ<xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">لاستخدام <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, قم بتشيغل نقاط الإشعارات</string>
+    <string name="zen_mode_enabled">عدم الإزعاج قيد التشغيل</string>
+    <string name="crash_report_notif_title">%1$s تعطل!</string>
+    <string name="personality_provider">الرسائل السياقية</string>
+    <string-array name="greetings_morning">
+        <item>صباح الخير!</item>
+        <item>يا له من يوم جميل!</item>
+        <item>هل نظرت إلى الخارج بعد؟</item>
+        <item>أتمنى لك يوماً عظيماً!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>ليلة سعيدة!</item>
+        <item>نوماً هنيئاً!</item>
+        <item>أراك غداً!</item>
+        <item>أحلام جميلة!</item>
+        <item>لا تبقى مستيقظاً طويلاً</item>
+        <item>كيف كان يومك؟</item>
+        <item>ماذا فعلت اليوم؟</item>
+    </string-array>
+    <string name="onbording_settings_title">إعداد %s</string>
+    <string name="onbording_settings_summary">اضغط لفترة طويلة على الشاشة الرئيسية</string>
+    <string name="onboarding_swipe_up">اسحب لأعلى لرؤية جميع تطبيقاتك</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">نظراً لتقييد MIUI ، فقد لا يتغير شكل الأيقونة ويظل مربعاً.\n الرجاء عدم الإبلاغ عن هذا على أنه خطأ.</string>
+    <string name="button_organize_screens">تنظيم الشاشات</string>
 </resources>
