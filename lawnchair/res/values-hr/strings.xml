@@ -319,8 +319,8 @@
     <string name="recent_task_option_popup_window">Prozor dijaloga</string>
     <string name="feed_theme_pref_title">Boja pozadine</string>
     <string name="recents_not_connected">Servis nije povezan</string>
-    <string name="advanced_settings">Više %s postavki</string>
-    <string name="adaptive_icon">prilagodljiva ikona</string>
+    <string name="advanced_settings">Više postavki %s</string>
+    <string name="adaptive_icon">prilagodljivih ikona</string>
     <string name="drawer_tabs">Kartice</string>
     <string name="add_new_tab">Dodaj</string>
     <string name="rename_tab">Preimenuj</string>
@@ -395,7 +395,7 @@
     <string name="pref_fonts_global_font">Globalne font</string>
     <string name="pref_fonts_change_global_font">Promijeni</string>
     <string name="pref_fonts_home_icons">Nazivi aplikacija i mapa</string>
-    <string name="pref_fonts_home_smartspace">Widget\'At a Glance\'</string>
+    <string name="pref_fonts_home_smartspace">Widget \'At a Glance\'</string>
     <string name="pref_fonts_home_shortcuts">Mjehurići prečaca</string>
     <string name="pref_fonts_category_drawer">Izbornik</string>
     <string name="pref_fonts_drawer_icons">Nazivi aplikacija</string>
@@ -526,4 +526,6 @@
     <string name="web_search_yandex">Yandex (web)</string>
     <string name="web_search_naver">Naver (web)</string>
     <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">Zbog restrikcije MIUI sustava, oblik vaših ikona se možda neće promijeniti te će ostati kvadrat.\nMolimo ne prijavljujte ovo kao pogrešku.</string>
+    <string name="button_organize_screens">Organiziraj zaslone</string>
 </resources>
