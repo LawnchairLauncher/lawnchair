@@ -318,7 +318,7 @@
     <string name="show_in_tabs">탭</string>
     <string name="tabs_manage">관리</string>
     <plurals name="tab_apps_count">
-        <item quantity="other">%1$d 앱</item>
+        <item quantity="other">앱 %1$d개</item>
     </plurals>
     <string name="selected_count">%1$d개 선택됨</string>
     <string name="tab_manage_apps">앱 관리</string>
@@ -357,8 +357,8 @@
     <string name="units_rakine">랭킨</string>
     <string name="units_newton">뉴턴</string>
     <string name="owm_get_your_own_key">api.openweathermap.org에서 당신 자신의 API 키를 받으세요.</string>
-    <string name="pref_smartspace_time_above">큰 시계 보기</string>
-    <string name="pref_smartspace_time_above_summary">시계를 위젯 위에 보기</string>
+    <string name="pref_smartspace_time_above">큰 시계 표시</string>
+    <string name="pref_smartspace_time_above_summary">시계를 위젯 위에 표시</string>
     <string name="pref_fonts_title">글꼴</string>
     <string name="pref_fonts_global_font">전역 폰트</string>
     <string name="pref_fonts_change_global_font">바꾸기</string>
@@ -375,14 +375,14 @@
     <string name="about_translate">번역</string>
     <string name="pref_show_dev_options">설정에서 보이기</string>
     <string name="about_bio_paphonb">18살 학생 • 안드로이드 개발자 • Lawnchair 시작 관리자 첫번째 위 개발자의 한명</string>
-    <string name="dock_scale">독 스타일</string>
+    <string name="dock_scale">독 스케일</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Lawnchair 검색 설정을 Sesame과 동기화</string>
     <string name="icon_text_scale_pref_title">텍스트 크기</string>
     <string name="text_color">텍스트 색상</string>
     <string name="background_color">배경 색상</string>
     <string name="pref_notification_count_title">알림 개수 표시</string>
     <string name="pref_appcategorization_style_text">스타일</string>
-    <string name="pref_app_groups_edit_tip">탭하여 수정, 길게 터치하여 주문 바꾸기</string>
+    <string name="pref_app_groups_edit_tip">탭하여 수정, 길게 터치하여 순서 바꾸기</string>
     <string name="pref_app_groups_create">새로 만들기</string>
     <string name="pref_appcategorization_folders_title">폴더</string>
     <string name="pref_appcategorization_folders_summary">탭하여 팝업 열기</string>
@@ -423,7 +423,7 @@
         <item>Have a great day!</item>
     </string-array>
     <string-array name="greetings_evening">
-        <item>Good night!</item>
+        <item>굿나잇</item>
         <item>잘 자요</item>
         <item>See you tomorrow!</item>
         <item>Sweet dreams!</item>
