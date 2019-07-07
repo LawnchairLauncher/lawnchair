@@ -85,7 +85,7 @@
     <string name="launcher_theme_override_label">ダークテーマを強制する</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="blur_pref_title">ぼかしを有効にする</string>
-    <string name="blur_pref_summary">アプリドロワー、ドック、設定の背景をぼかします</string>
+    <string name="blur_pref_summary">アプリドロワー、ドック、設定の背景のぼかし</string>
     <string name="blur_radius_pref_title">ぼかしの強さ</string>
     <!--Marker B-->
     <string name="dock_colored_google">色付きのアイコン</string>
@@ -146,8 +146,8 @@
     <string name="about_role_mod_support">仲介者 / サポート</string>
     <string name="about_role_family_member">仲間たち</string>
     <string name="about_role_magisk_maintainer">Magiskモジュールメンテナ</string>
-    <string name="about_bio_deletescape">Android開発者でファンですが、実はちょっとバイオ系の方が好きです。
-Lawnchairプロジェクトの創始者です。</string>
+    <string name="about_bio_deletescape">Android 開発者でファンですが、実はちょっとバイオ系の方が好きです。
+Lawnchair プロジェクトの創始者です。</string>
     <string name="about_bio_recoded">温和なコーダーで、グラフィックデザイナー</string>
     <string name="about_bio_josh">フリーランスのグラフィックデザイナー</string>
     <string name="about_bio_chris">Millennial af, idk and idc. デザインとソーシャルメディアの何かと共に。@lawnchairapp で一緒に過ごしましょう✨</string>
@@ -407,7 +407,7 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="about_translate">翻訳</string>
     <string name="pref_show_dev_options">設定に表示</string>
     <string name="about_app_description">カスタマイズできるPixel Launcher の代わりとなるランチャー</string>
-    <string name="about_bio_paphonb">18歳の学生。Android 開発者で、 Lawnchair ランチャーの中心的な開発者の一人です.</string>
+    <string name="about_bio_paphonb">18歳の学生。Android 開発者で、 Lawnchair ランチャーの中心的な開発者の一人です。</string>
     <string name="dock_scale">ドックの大きさ</string>
     <string name="adaptify_pack_title">アイコンパック用のアダプティブアイコンを作成</string>
     <string name="adaptify_pack_summary">アイコンパックからアイコン用のアダプティブアイコンを作成する</string>
@@ -525,4 +525,6 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="web_search_yandex">Yandex (ウェブ)</string>
     <string name="web_search_naver">Naver (ウェブ)</string>
     <string name="web_search_baidu">Baidu (ウェブ)</string>
+    <string name="icon_shape_override_miui_explaination">MIUI の制限により、アイコンの形が変わらず四角のままになることがあります。\nこれをバグとして報告しないで下さい。</string>
+    <string name="button_organize_screens">画面を組織化</string>
 </resources>
