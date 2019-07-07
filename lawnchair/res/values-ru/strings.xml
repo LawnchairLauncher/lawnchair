@@ -537,4 +537,6 @@
     <string name="web_search_yandex">Яндекс (веб)</string>
     <string name="web_search_naver">Naver (веб)</string>
     <string name="web_search_baidu">Baidu (веб)</string>
+    <string name="icon_shape_override_miui_explaination">В связи с ограничением в MIUI, ваша форма иконок может не изменится и остаться квадратной.\nНе сообщайте про это как ошибку.</string>
+    <string name="button_organize_screens">Настроить страницы</string>
 </resources>
