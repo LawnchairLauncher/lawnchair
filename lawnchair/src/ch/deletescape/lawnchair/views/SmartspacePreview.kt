@@ -25,10 +25,12 @@ import android.widget.FrameLayout
 import ch.deletescape.lawnchair.LawnchairPreferences
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.widget.custom.CustomWidgetParser
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceView
 
 class SmartspacePreview(context: Context, attrs: AttributeSet?) :
-        FrameLayout(context, attrs), LawnchairPreferences.OnPreferenceChangeListener {
+        FrameLayout(context, attrs), LawnchairPreferences.OnPreferenceChangeListener,
+        PreviewFrame.CustomWidgetPreview {
 
     private val prefs = Utilities.getLawnchairPrefs(context)
     private val usePillQsb = prefs::usePillQsb
@@ -36,6 +38,8 @@ class SmartspacePreview(context: Context, attrs: AttributeSet?) :
             "pref_smartspace_time_24_h", "pref_smartspace_date", "pref_use_pill_qsb")
     private val needsReinflate = setOf("pref_use_pill_qsb")
     private var currentView: SmartspaceView? = null
+
+    override val provider = CustomWidgetParser.getCustomWidgets(context)[0]!!
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
