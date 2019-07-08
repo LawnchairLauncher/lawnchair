@@ -152,6 +152,9 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     }
 
     private TouchController findControllerToHandleTouch(MotionEvent ev) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.EVENTS_TO_OVERVIEW_MISSING_TAG, "findControllerToHandleTouch " + ev);
+        }
         if (shouldDisableGestures(ev)) return null;
 
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
@@ -314,6 +317,9 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
      * Proxies the touch events to the gesture handlers
      */
     public boolean proxyTouchEvent(MotionEvent ev) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.EVENTS_TO_OVERVIEW_MISSING_TAG, "proxyTouchEvent " + ev);
+        }
         boolean handled;
         if (mProxyTouchController != null) {
             handled = mProxyTouchController.onControllerTouchEvent(ev);

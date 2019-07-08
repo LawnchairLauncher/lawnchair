@@ -181,6 +181,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
      * Flings backward (up) and waits the fling's end.
      */
     public void flingBackward() {
+        mLauncher.getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
         try (LauncherInstrumentation.Closable c =
                      mLauncher.addContextLayer("want to fling backward in all apps")) {
             final UiObject2 allAppsContainer = verifyActiveContainer();
@@ -189,6 +190,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                     allAppsContainer, Direction.UP, 1, new Rect(0, mHeight / 2, 0, 0), 10);
             verifyActiveContainer();
         }
+        mLauncher.getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
     }
 
     /**
