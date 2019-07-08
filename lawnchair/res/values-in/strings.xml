@@ -494,7 +494,7 @@ Tindakan ini tidak bisa dibatalkan.</string>
     <string name="pref_smartspace_event_providers">Sumber Event</string>
     <string name="event_provider_now_playing">Sedang diputar</string>
     <string name="battery_status">Status baterai</string>
-    <string name="battery_charging">Baterai sedang diisi</string>
+    <string name="battery_charging">Mengisi baterai</string>
     <string name="battery_full">Baterai penuh</string>
     <string name="battery_low">Baterai lemah</string>
     <string name="event_provider_unread_notifications">Notifikasi yang belum dibaca</string>
@@ -530,4 +530,5 @@ Tindakan ini tidak bisa dibatalkan.</string>
     <string name="web_search_yandex">Yandex (web)</string>
     <string name="web_search_naver">Naver (web)</string>
     <string name="web_search_baidu">Baidu (web)</string>
+    <string name="button_organize_screens">Atur layar</string>
 </resources>
