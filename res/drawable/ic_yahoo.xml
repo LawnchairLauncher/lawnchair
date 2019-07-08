@@ -1,0 +1,24 @@
+<!--
+  ~     Copyright (C) 2019 Lawnchair Team.
+  ~
+  ~     This file is part of Lawnchair Launcher.
+  ~
+  ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Lawnchair Launcher is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<vector android:height="24dp" android:viewportHeight="291.319"
+    android:viewportWidth="291.319" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#720E9E" android:pathData="M145.659,0c80.45,0 145.66,65.219 145.66,145.66c0,80.45 -65.21,145.659 -145.66,145.659S0,226.109 0,145.66C0,65.219 65.21,0 145.659,0z"/>
+    <path android:fillColor="#FFFFFF" android:pathData="M212.353,114.98l0.155,-0.027l4.825,-5.371l-0.237,-0.018l0.51,-0.801h-67.595l2.604,9.249h18.444l-31.044,28.722c-6.336,-9.24 -21.184,-30.479 -31.544,-46.411h19.254v-6.555l0.264,-1.884l-0.264,-0.036v-0.765H54.631v9.24H77.49c8.876,7.328 47.358,54.049 48.76,58.51c0.564,4.179 1.366,28.841 -0.291,30.698c-1.994,2.868 -22.814,1.32 -26.483,1.593l-0.137,9.058c6.7,0.2 26.801,-0.009 33.584,-0.009c13.364,0 36.77,-0.346 40.065,-0.082l0.41,-8.576l-26.901,-0.401c-0.564,-3.887 -1.183,-28.422 -0.619,-31.098c2.54,-7.765 43.816,-39.902 48.059,-41.112l3.997,-0.901h12.472C210.405,118.002 212.353,114.98 212.353,114.98zM202.266,179.079l11.689,0.892l13.628,-49.979c-2.276,-0.082 -22.95,-1.93 -25.636,-2.431L202.266,179.079zM200.245,187.091l0.064,12.208l5.917,0.492l6.391,0.446l1.875,-11.944l-6.737,-0.31C207.756,187.983 200.245,187.091 200.245,187.091z"/>
+</vector>
