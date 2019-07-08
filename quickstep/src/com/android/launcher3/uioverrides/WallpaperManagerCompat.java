@@ -297,8 +297,9 @@ public class WallpaperManagerCompat {
             String value = VERSION_PREFIX + wallpaperId;
 
             if (bitmap != null) {
+                int hints = calculateDarkHints(bitmap);
                 int color = findDominantColorByHue(bitmap, MAX_WALLPAPER_EXTRACTION_AREA);
-                value += "," + color;
+                value += "," + hints + "," + color;
             }
 
             // Send the result
