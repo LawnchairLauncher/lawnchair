@@ -427,6 +427,7 @@
     <string name="pref_notification_count_summary">Mostrar número de notificações no interior dos pontos</string>
     <string name="pref_center_wallpaper">Centrar papel de parede</string>
     <string name="pref_center_wallpaper_summary">Esta opção desativa a deslocação do papel de parede</string>
+    <string name="pref_icon_popup_menu">Itens do menu popup</string>
     <string name="pref_appcategorization_enable_title">Categorizar aplicações</string>
     <string name="pref_appcategorization_enable_summary">Corrigir menu de aplicações.</string>
     <string name="pref_appcategorization_style_text">Estilo</string>
@@ -530,4 +531,6 @@
     <string name="web_search_yandex">Yandex (web)</string>
     <string name="web_search_naver">Naver (web)</string>
     <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">Pode causa das restrições MIUI, a forma do ícone pode não ser alterada.\nNão deve tratar esta situação como um erro.</string>
+    <string name="button_organize_screens">Organizar ecrãs</string>
 </resources>
