@@ -99,7 +99,6 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private val isRtl by lazy { Utilities.isRtl(resources) }
     private val provider by lazy { BlurWallpaperProvider.getInstance(context) }
     private val useFlatColor get() = mLauncher.deviceProfile.isVerticalBarLayout
-    private val blurRadius get() = if (useFlatColor) 0f else mRadius
     private var blurDrawable: BlurDrawable? = null
     private val shadowHelper by lazy { NinePatchDrawHelper() }
     private val shadowBlur by lazy { resources.getDimension(R.dimen.all_apps_scrim_blur) }
@@ -133,7 +132,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private fun createBlurDrawable(): BlurDrawable? {
         blurDrawable?.let { if (isAttachedToWindow) it.stopListening() }
         return if (BlurWallpaperProvider.isEnabled) {
-            provider.createDrawable(blurRadius, false)?.apply {
+            provider.createDrawable(mRadius, 0f).apply {
                 callback = blurDrawableCallback
                 setBounds(left, top, right, bottom)
                 if (isAttachedToWindow) startListening()
@@ -148,7 +147,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         val searchBox = mLauncher.hotseatSearchBox
         return if (searchBox?.isVisible == true && BlurWallpaperProvider.isEnabled) {
             val height = searchBox.height - searchBox.paddingTop - searchBox.paddingBottom
-            provider.createDrawable(AbstractQsbLayout.getCornerRadius(context, height / 2f), false).apply {
+            provider.createDrawable(AbstractQsbLayout.getCornerRadius(context, height / 2f)).apply {
                 callback = blurDrawableCallback
                 setBounds(left, top, right, bottom)
                 if (isAttachedToWindow) startListening()
@@ -194,6 +193,9 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         when (key) {
             key_radius -> {
                 mRadius = dpToPx(prefs.dockRadius)
+                blurDrawable?.also {
+                    it.blurRadii = BlurDrawable.Radii(mRadius, 0f)
+                }
             }
             key_opacity -> {
                 mEndAlpha = prefs.allAppsOpacity.takeIf { it >= 0 } ?: DEFAULT_END_ALPHA
@@ -330,7 +332,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
     override fun onDrawRoundRect(canvas: Canvas, left: Float, top: Float, right: Float, bottom: Float, rx: Float, ry: Float, paint: Paint) {
         blurDrawable?.run {
-            setBounds(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
+            setBlurBounds(left, top, right, bottom)
             draw(canvas)
         }
         if (enableShadow) {
@@ -353,7 +355,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         searchBlurDrawable?.run {
             val hotseat = mLauncher.hotseat
             val searchBox = mLauncher.hotseatSearchBox
-            val adjustment = Math.round(hotseat.top + hotseat.translationY + searchBox.translationY + 1)
+            val adjustment = hotseat.top + hotseat.translationY + searchBox.translationY + 1
             val left = searchBox.left + searchBox.paddingLeft
             val top = searchBox.top + adjustment + searchBox.paddingTop
             val right = searchBox.right - searchBox.paddingRight
@@ -361,13 +363,13 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             val isBubbleUi = (searchBox as? AbstractQsbLayout)?.useTwoBubbles() != false
             val bubbleAdjustmentLeft = if (isBubbleUi && isRtl) micWidth + bubbleGap else 0
             val bubbleAdjustmentRight = if (isBubbleUi && !isRtl) micWidth + bubbleGap else 0
-            setBounds(left + bubbleAdjustmentLeft, top, right - bubbleAdjustmentRight, bottom)
+            setBlurBounds((left + bubbleAdjustmentLeft).toFloat(), top,
+                          (right - bubbleAdjustmentRight).toFloat(), bottom)
             alpha = (searchBox.alpha * 255).toInt()
             draw(canvas)
             if (isBubbleUi) {
-                setBounds(if (!isRtl) right - micWidth else left,
-                        top,
-                        if (isRtl) left + micWidth else right,
+                setBlurBounds((if (!isRtl) right - micWidth else left).toFloat(),
+                        top, (if (isRtl) left + micWidth else right).toFloat(),
                         bottom)
                 draw(canvas)
             }

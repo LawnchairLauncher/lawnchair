@@ -238,11 +238,17 @@ class BlurWallpaperProvider(val context: Context) {
     }
 
     fun createDrawable(): BlurDrawable {
-        return BlurDrawable(this, FloatArray(8), false)
+        return ShaderBlurDrawable(this)
     }
 
-    fun createDrawable(radius: Float, allowTransparencyMode: Boolean): BlurDrawable {
-        return BlurDrawable(this, FloatArray(8) { radius }, allowTransparencyMode)
+    fun createDrawable(radius: Float): BlurDrawable {
+        return ShaderBlurDrawable(this)
+                .apply { blurRadii = BlurDrawable.Radii(radius) }
+    }
+
+    fun createDrawable(topRadius: Float, bottomRadius: Float): BlurDrawable {
+        return ShaderBlurDrawable(this)
+                .apply { blurRadii = BlurDrawable.Radii(topRadius, bottomRadius) }
     }
 
     fun setWallpaperOffset(offset: Float) {

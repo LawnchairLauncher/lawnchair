@@ -93,7 +93,7 @@ class LawnchairBackgroundView(context: Context, attrs: AttributeSet) : View(cont
     private fun createFullBlurDrawable() {
         fullBlurDrawable?.let { if (isAttachedToWindow) it.stopListening() }
         fullBlurDrawable = if (BlurWallpaperProvider.isEnabled) {
-            blurProvider.createDrawable(0f, false).apply {
+            blurProvider.createDrawable().apply {
                 callback = blurDrawableCallback
                 setBounds(left, top, right, bottom)
                 if (isAttachedToWindow) startListening()
