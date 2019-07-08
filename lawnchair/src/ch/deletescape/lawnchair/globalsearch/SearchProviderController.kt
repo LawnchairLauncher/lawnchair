@@ -124,7 +124,8 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
                 SearchLiteSearchProvider(context),
                 CoolSearchSearchProvider(context),
                 EdgeSearchProvider(context),
-                NaverWebSearchProvider(context)
+                NaverWebSearchProvider(context),
+                YahooWebSearchProvider(context)
         ).filter { it.isAvailable }
     }
 }
