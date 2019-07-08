@@ -1,3 +1,4 @@
+import org.gradle.internal.os.OperatingSystem
 import smali.SmaliTask
 
 dependencies {
@@ -48,9 +49,10 @@ task 'buildLawnchairSmali' {
 def copySmaliLibDex(dirName) {
     def libDex = 'build/lawnchairsmali/lawnchair.dex'
     println "copy $libDex into $dirName"
-    exec {
-        workingDir '.'
-        commandLine 'cp', libDex, dirName
+    copy {
+        from "build/lawnchairsmali"
+        into dirName
+        include "lawnchair.dex"
     }
 }
 

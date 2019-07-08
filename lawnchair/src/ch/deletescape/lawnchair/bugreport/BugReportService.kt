@@ -32,6 +32,7 @@ import android.support.v4.content.ContextCompat.getSystemService
 import android.widget.Toast
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 
 class BugReportService : Service() {
 
@@ -81,17 +82,38 @@ class BugReportService : Service() {
     }
 
     fun notify(report: BugReport, uploading: Boolean = false) {
+        val manager = getSystemService(this, NotificationManager::class.java)!!
         val notificationId = report.notificationId
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Lawnchair crashed!")
+                .setContentTitle(report.getTitle(this))
                 .setContentText(report.description)
                 .setSmallIcon(R.drawable.ic_bug_notification)
                 .setColor(ContextCompat.getColor(this, R.color.bugNotificationColor))
                 .setOnlyAlertOnce(true)
-                .setGroup("crashes")
+                .setGroup(GROUP_KEY)
                 .setShowWhen(true)
                 .setWhen(report.id)
-                .setAutoCancel(true)
+                // This apparently breaks grouping
+                //.setAutoCancel(true)
+
+        val count = if (Utilities.ATLEAST_MARSHMALLOW) {
+            manager.activeNotifications.filter { it.groupKey == GROUP_KEY }.count()
+        } else -1
+        val summary = if (count > 99 || count < 0) {
+            getString(R.string.bugreport_group_summary_multiple)
+        } else {
+            getString(R.string.bugreport_group_summary, count)
+        }
+        val groupBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle(getString(R.string.bugreport_channel_name))
+                .setContentText(summary)
+                .setSmallIcon(R.drawable.ic_bug_notification)
+                .setColor(ContextCompat.getColor(this, R.color.bugNotificationColor))
+                .setStyle(NotificationCompat.InboxStyle()
+                                  .setBigContentTitle(summary)
+                                  .setSummaryText(getString(R.string.bugreport_channel_name)))
+                .setGroupSummary(true)
+                .setGroup(GROUP_KEY)
 
         val fileUri = report.getFileUri(this)
         if (report.link != null) {
@@ -141,8 +163,8 @@ class BugReportService : Service() {
             builder.addAction(uploadActionBuilder.build())
         }
 
-        getSystemService(this, NotificationManager::class.java)!!
-                .notify(notificationId, builder.build())
+        manager.notify(notificationId, builder.build())
+        manager.notify(GROUP_ID, groupBuilder.build())
     }
 
     private fun startDogbinUpload(report: BugReport) {
@@ -182,6 +204,8 @@ class BugReportService : Service() {
 
         private const val CHANNEL_ID = "bugreport"
         const val STATUS_ID = "status"
+        const val GROUP_KEY = "ch.deletescape.lawnchair.CRASHES"
+        const val GROUP_ID = 0
 
         private const val PERMISSION = "${BuildConfig.APPLICATION_ID}.permission.BROADCAST_BUGREPORT"
         private const val COPY_ACTION = "${BuildConfig.APPLICATION_ID}.bugreport.COPY"

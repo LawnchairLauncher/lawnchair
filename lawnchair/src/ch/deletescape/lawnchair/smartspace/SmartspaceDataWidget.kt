@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.smartspace
 
 import android.app.Activity
+import android.app.PendingIntent
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
@@ -31,24 +32,26 @@ import android.support.annotation.Keep
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
+import android.view.View
 import android.widget.ImageView
 import android.widget.RemoteViews
 import android.widget.TextView
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.util.Temperature
+import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
 @Keep
 class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : LawnchairSmartspaceController.DataProvider(controller) {
 
-    private val context = controller.context
     private val prefs = Utilities.getLawnchairPrefs(context)
     private val smartspaceWidgetHost = SmartspaceWidgetHost()
     private var smartspaceView: SmartspaceWidgetHostView? = null
     private val widgetIdPref = prefs::smartspaceWidgetId
     private val providerInfo = getSmartspaceWidgetProvider(context)
     private var isWidgetBound = false
+    private val pendingIntentTagId = context.resources.getIdentifier("pending_intent_tag", "id", "android")
 
     init {
         if (!Utilities.ATLEAST_NOUGAT) throw IllegalStateException("only available on Nougat and above")
@@ -114,17 +117,28 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
         smartspaceWidgetHost.stopListening()
     }
 
-    fun updateData(weatherIcon: Bitmap?, temperature: String?, cardIcon: Bitmap?, title: TextView?, subtitle: TextView?, subtitle2: TextView?) {
+    fun updateData(weatherIcon: Bitmap?, temperature: TextView?, cardIcon: Bitmap?, title: TextView?, subtitle: TextView?, subtitle2: TextView?) {
         val weather = parseWeatherData(weatherIcon, temperature)
         val card = if (cardIcon != null && title != null && subtitle != null) {
+            val pendingIntent = getPendingIntent(title.parent.parent.parent as? View)
             val ttl = title.text.toString() + if (subtitle2 != null) subtitle.text.toString() else ""
             val sub = subtitle2 ?: subtitle
-            LawnchairSmartspaceController.CardData(cardIcon,
-                    ttl, title.ellipsize, sub.text.toString(), sub.ellipsize)
+            LawnchairSmartspaceController.CardData(cardIcon, ttl, title.ellipsize,
+                                                   sub.text.toString(), sub.ellipsize,
+                                                   pendingIntent = pendingIntent)
         } else {
             null
         }
         updateData(weather, card)
+    }
+
+    private fun parseWeatherData(weatherIcon: Bitmap?, temperatureText: TextView?): LawnchairSmartspaceController.WeatherData? {
+        val temperature = temperatureText?.text?.toString()
+        return parseWeatherData(weatherIcon, temperature, getPendingIntent(temperatureText))
+    }
+
+    private fun getPendingIntent(view: View?): PendingIntent? {
+        return view?.getTag(pendingIntentTagId) as? PendingIntent
     }
 
     inner class SmartspaceWidgetHost : AppWidgetHost(context, 1027) {
@@ -144,15 +158,15 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
             val texts = (childs.filter { it is TextView } as List<TextView>).filter { !TextUtils.isEmpty(it.text) }
             val images = childs.filter { it is ImageView } as List<ImageView>
             var weatherIconView: ImageView? = null
-            var temperature = "0C"
             var cardIconView: ImageView? = null
             var title: TextView? = null
             var subtitle: TextView? = null
             var subtitle2: TextView? = null
+            var temperatureText: TextView? = null
             if (texts.isEmpty()) return
             if (images.size >= 2) {
                 weatherIconView = images.last()
-                temperature = texts.last().text.toString()
+                temperatureText = texts.last()
             }
             if (images.isNotEmpty() && images.size != 2) {
                 cardIconView = images.first()
@@ -162,7 +176,7 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
                     subtitle2 = texts[2]
                 }
             }
-            updateData(extractBitmap(weatherIconView), temperature, extractBitmap(cardIconView), title, subtitle, subtitle2)
+            updateData(extractBitmap(weatherIconView), temperatureText, extractBitmap(cardIconView), title, subtitle, subtitle2)
         }
     }
 
@@ -203,7 +217,7 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
             }
         }
 
-        fun parseWeatherData(weatherIcon: Bitmap?, temperature: String?): LawnchairSmartspaceController.WeatherData? {
+        fun parseWeatherData(weatherIcon: Bitmap?, temperature: String?, intent: PendingIntent? = null): LawnchairSmartspaceController.WeatherData? {
             return if (weatherIcon != null && temperature != null) {
                 try {
                     val value = temperature.substring(0, temperature.indexOfFirst { (it < '0' || it > '9') && it != '-' }).toInt()
@@ -212,7 +226,7 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
                         temperature.contains("F") -> Temperature.Unit.Fahrenheit
                         temperature.contains("K") -> Temperature.Unit.Kelvin
                         else -> throw IllegalArgumentException("only supports C, F and K")
-                    }))
+                    }), pendingIntent = intent)
                 } catch (e: NumberFormatException) {
                     null
                 } catch (e: IllegalArgumentException) {

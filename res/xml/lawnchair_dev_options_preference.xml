@@ -80,6 +80,11 @@
         android:defaultValue="false"
         android:dependency="pref_showCrashNotifications" />
 
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        android:key="pref_debugDisplayState"
+        android:title="Debug information overlay"
+        android:summary="Display informations such as the current Launcher State"/>
+
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_wipOptions"
         android:title="Other"

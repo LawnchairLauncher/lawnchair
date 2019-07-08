@@ -21,7 +21,7 @@ import android.content.Context
 import android.support.v7.preference.ListPreference
 import android.util.AttributeSet
 import ch.deletescape.lawnchair.animations.AnimationType
-import ch.deletescape.lawnchair.util.EntriesBuilder
+import ch.deletescape.lawnchair.util.buildEntries
 
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -29,23 +29,20 @@ import com.android.launcher3.Utilities
 class AnimationTypePreference(context: Context, attrs: AttributeSet?) : ListPreference(context, attrs) {
 
     init {
-        val builder = EntriesBuilder(context)
-        builder.addEntry(R.string.animation_type_default, "")
-        if (AnimationType.hasControlRemoteAppTransitionPermission(context)) {
-            builder.addEntry(R.string.animation_type_pie, AnimationType.TYPE_PIE)
-        } else {
-            builder.addEntry(R.string.animation_type_pie_like, AnimationType.TYPE_PIE)
+        buildEntries {
+            addEntry(R.string.animation_type_default, "")
+            if (AnimationType.hasControlRemoteAppTransitionPermission(context)) {
+                addEntry(R.string.animation_type_pie, AnimationType.TYPE_PIE)
+            } else {
+                addEntry(R.string.animation_type_pie_like, AnimationType.TYPE_PIE)
+            }
+            if (Utilities.ATLEAST_MARSHMALLOW) {
+                addEntry(R.string.animation_type_reveal, AnimationType.TYPE_REVEAL)
+            }
+            addEntry(R.string.animation_type_slide_up, AnimationType.TYPE_SLIDE_UP)
+            addEntry(R.string.animation_type_scale_up, AnimationType.TYPE_SCALE_UP)
+            addEntry(R.string.animation_type_blink, AnimationType.TYPE_BLINK)
+            addEntry(R.string.animation_type_fade, AnimationType.TYPE_FADE)
         }
-        if (Utilities.ATLEAST_MARSHMALLOW) {
-            builder.addEntry(R.string.animation_type_reveal, AnimationType.TYPE_REVEAL)
-        }
-        builder.addEntry(R.string.animation_type_slide_up, AnimationType.TYPE_SLIDE_UP)
-        builder.addEntry(R.string.animation_type_scale_up, AnimationType.TYPE_SCALE_UP)
-        builder.addEntry(R.string.animation_type_blink, AnimationType.TYPE_BLINK)
-        builder.addEntry(R.string.animation_type_fade, AnimationType.TYPE_FADE)
-
-        val (entries, entryValues) = builder.build()
-        setEntries(entries)
-        setEntryValues(entryValues)
     }
 }

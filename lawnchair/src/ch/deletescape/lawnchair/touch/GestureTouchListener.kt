@@ -24,6 +24,8 @@ import android.view.View
 import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.LauncherState
+import com.android.launcher3.R
+import com.android.launcher3.views.OptionsPopupView
 
 open class GestureTouchListener(context: Context) : View.OnTouchListener {
 
@@ -71,7 +73,20 @@ open class GestureTouchListener(context: Context) : View.OnTouchListener {
     }
 
     fun onLongPress() {
-        gestureController.onLongPress()
+        if (launcher.isInState(LauncherState.NORMAL)) {
+            gestureController.onLongPress()
+        } else if (launcher.isInState(LauncherState.OPTIONS)) {
+            // Don't go to normal on up
+            clickPossible = false
+            OptionsPopupView.show(launcher, touchDownX, touchDownY, listOf(
+                    OptionsPopupView.OptionItem(
+                            R.string.remove_drop_target_label,
+                            R.drawable.ic_remove_no_shadow,
+                            -1) {
+                        launcher.workspace.removeScreen(launcher.currentWorkspaceScreen, true)
+                        true
+                    }))
+        }
     }
 
     fun setTouchDownPoint(touchDownPoint: PointF) {

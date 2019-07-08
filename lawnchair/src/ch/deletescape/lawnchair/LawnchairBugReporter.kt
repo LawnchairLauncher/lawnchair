@@ -21,12 +21,15 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Environment
+import android.os.strictmode.Violation
+import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import ch.deletescape.lawnchair.bugreport.BugReport
 import ch.deletescape.lawnchair.bugreport.BugReportClient
 import ch.deletescape.lawnchair.bugreport.BugReportFileManager
 import ch.deletescape.lawnchair.util.extensions.e
 import com.android.launcher3.BuildConfig
+import com.android.launcher3.R
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
@@ -41,16 +44,22 @@ class LawnchairBugReporter(private val context: Context, private val crashHandle
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
     private val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Lawnchair/logs")
     private val cacheFolder by lazy { BugReportFileManager.getFolder(context) }
+    private val appName by lazy { context.getString(R.string.derived_app_name) }
 
     override fun uncaughtException(t: Thread?, e: Throwable?) {
         handleException(e)
         crashHandler.uncaughtException(t, e)
     }
 
+    @RequiresApi(Build.VERSION_CODES.P)
+    fun reportVmViolation(v: Violation) {
+        writeReport(BugReport.TYPE_STRICT_MODE_VIOLATION, v)
+    }
+
     private fun handleException(e: Throwable?) {
         if (e == null) return
 
-        writeReport("Uncaught exception", e)
+        writeReport(BugReport.TYPE_UNCAUGHT_EXCEPTION, e)
     }
 
     fun writeReport(error: String, throwable: Throwable?) {
@@ -61,7 +70,7 @@ class LawnchairBugReporter(private val context: Context, private val crashHandle
 
     inner class Report(val error: String, val throwable: Throwable? = null) {
 
-        private val fileName = "Lawnchair bug report ${SimpleDateFormat.getDateTimeInstance().format(Date())}"
+        private val fileName = "$appName bug report ${SimpleDateFormat.getDateTimeInstance().format(Date())}"
 
         fun send(reportFile: File?) {
             if (!context.lawnchairPrefs.showCrashNotifications) return
@@ -71,7 +80,7 @@ class LawnchairBugReporter(private val context: Context, private val crashHandle
                 writeContents(it)
             }
             val contents = String(baos.toByteArray(), StandardCharsets.UTF_8)
-            val report = BugReport(getDescription(throwable ?: return), contents, reportFile)
+            val report = BugReport(error, getDescription(throwable ?: return), contents, reportFile)
             try {
                 BugReportClient.getInstance(context).sendReport(report)
             } catch (t: Throwable) {
@@ -103,7 +112,7 @@ class LawnchairBugReporter(private val context: Context, private val crashHandle
 
         private fun writeContents(stream: PrintStream) {
             stream.println(fileName)
-            stream.println("Lawnchair version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
+            stream.println("$appName version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
             stream.println("build.brand: ${Build.BRAND}")
             stream.println("build.device: ${Build.DEVICE}")
             stream.println("build.display: ${Build.DISPLAY}")

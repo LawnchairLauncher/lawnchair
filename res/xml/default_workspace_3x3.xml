@@ -16,6 +16,14 @@
 
 <favorites xmlns:launcher="http://schemas.android.com/apk/res-auto">
 
+    <custom-appwidget
+        launcher:providerId="1"
+        launcher:screen="0"
+        launcher:x="0"
+        launcher:y="0"
+        launcher:spanX="3"
+        launcher:spanY="1" />
+
     <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
     <!-- Messaging, [All Apps], Dialer -->
 

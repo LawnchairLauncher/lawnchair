@@ -275,12 +275,12 @@ open class LawnchairLauncher : NexusLauncherActivity(),
         currentEditIcon = when (itemInfo) {
             is AppInfo -> IconPackManager.getInstance(this).getEntryForComponent(component!!)?.drawable
             is ShortcutInfo -> BitmapDrawable(resources, itemInfo.iconBitmap)
-            is FolderInfo -> itemInfo.getFolderIcon(this)
+            is FolderInfo -> itemInfo.getDefaultIcon(this)
             else -> null
         }
         currentEditInfo = itemInfo
         val intent = EditIconActivity.newIntent(this, infoProvider.getTitle(itemInfo), itemInfo is FolderInfo, component)
-        val flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
+        val flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS or Intent.FLAG_ACTIVITY_CLEAR_TASK
         BlankActivity.startActivityForResult(this, intent, CODE_EDIT_ICON,
                 flags) { resultCode, data -> handleEditIconResult(resultCode, data) }
     }

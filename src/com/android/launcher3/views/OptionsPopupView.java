@@ -33,6 +33,7 @@ import android.view.View.OnLongClickListener;
 import android.widget.Toast;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.popup.ArrowPopup;
@@ -135,14 +136,17 @@ public class OptionsPopupView extends ArrowPopup
         popup.reorderAndShow(popup.getChildCount());
     }
 
-    public static void showDefaultOptions(Launcher launcher, float x, float y) {
+    public static void show(Launcher launcher, float x, float y, List<OptionItem> items) {
         float halfSize = launcher.getResources().getDimension(R.dimen.options_menu_thumb_size) / 2;
         if (x < 0 || y < 0) {
             x = launcher.getDragLayer().getWidth() / 2;
             y = launcher.getDragLayer().getHeight() / 2;
         }
         RectF target = new RectF(x - halfSize, y - halfSize, x + halfSize, y + halfSize);
+        show(launcher, target, items);
+    }
 
+    public static void showDefaultOptions(Launcher launcher, float x, float y) {
         ArrayList<OptionItem> options = new ArrayList<>();
         options.add(new OptionItem(R.string.wallpaper_button_text, R.drawable.ic_wallpaper,
                 ControlType.WALLPAPER_BUTTON, OptionsPopupView::startWallpaperPicker));
@@ -150,10 +154,12 @@ public class OptionsPopupView extends ArrowPopup
             options.add(new OptionItem(R.string.widget_button_text, R.drawable.ic_widget,
                     ControlType.WIDGETS_BUTTON, OptionsPopupView::onWidgetsClicked));
         }
+        options.add(new OptionItem(R.string.button_organize_screens, R.drawable.ic_pages, -1,
+                OptionsPopupView::startOrganizer));
         options.add(new OptionItem(R.string.settings_button_text, R.drawable.ic_setting,
                 ControlType.SETTINGS_BUTTON, OptionsPopupView::startSettings));
 
-        show(launcher, target, options);
+        show(launcher, x, y, options);
     }
 
     public static boolean onWidgetsClicked(View view) {
@@ -175,6 +181,12 @@ public class OptionsPopupView extends ArrowPopup
         launcher.startActivitySafely(view, new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
                 .setPackage(launcher.getPackageName())
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), null);
+        return true;
+    }
+
+    public static boolean startOrganizer(View view) {
+        Launcher launcher = Launcher.getLauncher(view.getContext());
+        launcher.getStateManager().goToState(LauncherState.OPTIONS, true);
         return true;
     }
 

@@ -55,7 +55,7 @@ public class IconNormalizer {
     private static final float LINEAR_SCALE_SLOPE =
             (MAX_CIRCLE_AREA_FACTOR - MAX_SQUARE_AREA_FACTOR) / (1 - CIRCLE_AREA_BY_RECT);
 
-    private static final int MIN_VISIBLE_ALPHA = 0xEE;
+    private static final int MIN_VISIBLE_ALPHA = 40;
 
     // Shape detection related constants
     private static final float BOUND_RATIO_MARGIN = .05f;
@@ -114,7 +114,7 @@ public class IconNormalizer {
      * Returns if the shape of the icon is same as the path.
      * For this method to work, the shape path bounds should be in [0,1]x[0,1] bounds.
      */
-    private boolean isShape(Path maskPath) {
+    private boolean isShape(Path maskPath, int minVisibleAlpha) {
         // Condition1:
         // If width and height of the path not close to a square, then the icon shape is
         // not same as the mask shape.
@@ -143,13 +143,13 @@ public class IconNormalizer {
         mCanvas.drawPath(mShapePath, mPaintMaskShapeOutline);
 
         // Check if the result is almost transparent
-        return isTransparentBitmap();
+        return isTransparentBitmap(minVisibleAlpha);
     }
 
     /**
      * Used to determine if certain the bitmap is transparent.
      */
-    private boolean isTransparentBitmap() {
+    private boolean isTransparentBitmap(int minVisibleAlpha) {
         ByteBuffer buffer = ByteBuffer.wrap(mPixels);
         buffer.rewind();
         mBitmap.copyPixelsToBuffer(buffer);
@@ -164,7 +164,7 @@ public class IconNormalizer {
         for (; y < mBounds.bottom; y++) {
             index += mBounds.left;
             for (int x = mBounds.left; x < mBounds.right; x++) {
-                if ((mPixels[index] & 0xFF) > MIN_VISIBLE_ALPHA) {
+                if ((mPixels[index] & 0xFF) > minVisibleAlpha) {
                     sum++;
                 }
                 index++;
@@ -174,6 +174,11 @@ public class IconNormalizer {
 
         float percentageDiffPixels = ((float) sum) / (mBounds.width() * mBounds.height());
         return percentageDiffPixels < PIXEL_DIFF_PERCENTAGE_THRESHOLD;
+    }
+
+    public synchronized float getScale(@NonNull Drawable d, @Nullable RectF outBounds,
+            @Nullable Path path, @Nullable boolean[] outMaskShape) {
+        return getScale(d, outBounds, path, outMaskShape, MIN_VISIBLE_ALPHA);
     }
 
     /**
@@ -191,7 +196,7 @@ public class IconNormalizer {
      * @param outBounds optional rect to receive the fraction distance from each edge.
      */
     public synchronized float getScale(@NonNull Drawable d, @Nullable RectF outBounds,
-            @Nullable Path path, @Nullable boolean[] outMaskShape) {
+            @Nullable Path path, @Nullable boolean[] outMaskShape, int minVisibleAlpha) {
         if (Utilities.ATLEAST_OREO && d instanceof AdaptiveIconDrawable) {
             if (mAdaptiveIconScale != SCALE_NOT_INITIALIZED) {
                 if (outBounds != null) {
@@ -243,7 +248,7 @@ public class IconNormalizer {
         for (int y = 0; y < height; y++) {
             firstX = lastX = -1;
             for (int x = 0; x < width; x++) {
-                if ((mPixels[index] & 0xFF) > MIN_VISIBLE_ALPHA) {
+                if ((mPixels[index] & 0xFF) > minVisibleAlpha) {
                     if (firstX == -1) {
                         firstX = x;
                     }
@@ -308,7 +313,7 @@ public class IconNormalizer {
         }
 
         if (outMaskShape != null && outMaskShape.length > 0) {
-            outMaskShape[0] = isShape(path);
+            outMaskShape[0] = isShape(path, minVisibleAlpha);
         }
         float areaScale = area / (width * height);
         // Use sqrt of the final ratio as the images is scaled across both width and height.

@@ -33,6 +33,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     private static final String TAG_FAVORITES = "favorites";
     protected static final String TAG_FAVORITE = "favorite";
     private static final String TAG_APPWIDGET = "appwidget";
+    private static final String TAG_CUSTOM_APPWIDGET = "custom-appwidget";
     protected static final String TAG_SHORTCUT = "shortcut";
     private static final String TAG_FOLDER = "folder";
     private static final String TAG_PARTNER_FOLDER = "partner-folder";
@@ -68,6 +69,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
         ArrayMap<String, TagParser> parsers = new ArrayMap<>();
         parsers.put(TAG_FAVORITE, new AppShortcutWithUriParser());
         parsers.put(TAG_APPWIDGET, new AppWidgetParser());
+        parsers.put(TAG_CUSTOM_APPWIDGET, new CustomAppWidgetParser());
         parsers.put(TAG_SHORTCUT, new UriShortcutParser(mSourceRes));
         parsers.put(TAG_RESOLVE, new ResolveParser());
         parsers.put(TAG_FOLDER, new MyFolderParser());

@@ -676,6 +676,42 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
     }
 
+    public void removeScreen(int index, final boolean animate) {
+        if (mLauncher.isWorkspaceLoading()) {
+            return;
+        }
+
+        int currentPage = getNextPage();
+        snapToPage(index, SNAP_OFF_EMPTY_SCREEN_DURATION);
+        long id = getScreenIdForPageIndex(index);
+        fadeAndRemoveScreen(id, SNAP_OFF_EMPTY_SCREEN_DURATION,
+                FADE_EMPTY_SCREEN_DURATION, null, false);
+
+        CellLayout cl = mWorkspaceScreens.get(id);
+        mWorkspaceScreens.remove(id);
+        mScreenOrder.remove(id);
+
+        boolean isInAccessibleDrag = mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
+
+        boolean pageShift = indexOfChild(cl) < currentPage;
+
+        if (isInAccessibleDrag) {
+            cl.enableAccessibleDrag(false, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
+        }
+
+        removeView(cl);
+
+        LauncherModel.updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
+
+        if (getChildCount() == 0) {
+            addExtraEmptyScreen();
+        }
+
+        if (pageShift) {
+            setCurrentPage(currentPage - 1);
+        }
+    }
+
     public void removeExtraEmptyScreen(final boolean animate, boolean stripEmptyScreens) {
         removeExtraEmptyScreenDelayed(animate, null, 0, stripEmptyScreens);
     }
@@ -723,18 +759,23 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     private void fadeAndRemoveEmptyScreen(int delay, int duration, final Runnable onComplete,
             final boolean stripEmptyScreens) {
+        fadeAndRemoveScreen(EXTRA_EMPTY_SCREEN_ID, delay, duration, onComplete, stripEmptyScreens);
+    }
+
+    private void fadeAndRemoveScreen(long id, int delay, int duration, final Runnable onComplete,
+            final boolean stripEmptyScreens) {
         // XXX: Do we need to update LM workspace screens below?
         PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 0f);
         PropertyValuesHolder bgAlpha = PropertyValuesHolder.ofFloat("backgroundAlpha", 0f);
 
-        final CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID);
+        final CellLayout cl = mWorkspaceScreens.get(id);
 
         mRemoveEmptyScreenRunnable = new Runnable() {
             @Override
             public void run() {
                 if (hasExtraEmptyScreen()) {
-                    mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
-                    mScreenOrder.remove(EXTRA_EMPTY_SCREEN_ID);
+                    mWorkspaceScreens.remove(id);
+                    mScreenOrder.remove(id);
                     removeView(cl);
                     if (stripEmptyScreens) {
                         stripEmptyScreens();
@@ -1612,6 +1653,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     + "View: " + child + "  tag: " + child.getTag();
             throw new IllegalStateException(msg);
         }
+
+        if (child instanceof FolderIcon && ((FolderIcon) child).isCoverMode()) {
+            child.setVisibility(View.VISIBLE);
+            child = ((FolderIcon) child).getFolderName();
+        }
+
         beginDragShared(child, source, (ItemInfo) dragObject,
                 new DragPreviewProvider(child), options);
     }
@@ -1660,6 +1707,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (child instanceof BubbleTextView) {
             BubbleTextView icon = (BubbleTextView) child;
             icon.clearPressedBackground();
+        } else if (child instanceof FolderIcon) {
+            ((FolderIcon) child).clearPressedBackground();
         }
 
         if (child.getParent() instanceof ShortcutAndWidgetContainer) {
@@ -3342,11 +3391,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             public boolean evaluate(ItemInfo info, View v) {
                 if (info instanceof FolderInfo && folderIds.contains(info.id)
                         && v instanceof FolderIcon) {
-                    FolderBadgeInfo folderBadgeInfo = new FolderBadgeInfo();
-                    for (ShortcutInfo si : ((FolderInfo) info).contents) {
-                        folderBadgeInfo.addBadgeInfo(mLauncher.getBadgeInfoForItem(si));
-                    }
-                    ((FolderIcon) v).setBadgeInfo(folderBadgeInfo);
+                    ((FolderIcon) v).updateIconBadges(updatedBadges, packageUserKey);
                 }
                 // process all the shortcuts
                 return false;

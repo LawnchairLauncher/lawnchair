@@ -23,6 +23,7 @@ import android.util.AttributeSet
 import ch.deletescape.lawnchair.FeedBridge
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.smartspace.*
+import ch.deletescape.lawnchair.util.buildEntries
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
@@ -33,8 +34,11 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
     private val forWeather by lazy { key == "pref_smartspace_widget_provider" }
 
     init {
-        entryValues = getProviders().toTypedArray()
-        entries = entryValues.map { context.getString(displayNames[it]!!) }.toTypedArray()
+        buildEntries {
+            getProviders().forEach {
+                addEntry(LawnchairSmartspaceController.getDisplayName(it), it)
+            }
+        }
     }
 
     override fun onSetInitialValue(restoreValue: Boolean, defaultValue: Any?) {
@@ -42,7 +46,7 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
     }
 
     private fun getProviders(): List<String> {
-        return if (forWeather) getWeatherProviders() else getEventProviders()
+        return if (forWeather) getWeatherProviders() else SmartspaceEventProvidersAdapter.getEventProviders(context)
     }
 
     private fun getWeatherProviders(): List<String> {
@@ -58,18 +62,6 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
             list.add(PEWeatherDataProvider::class.java.name)
         if (OnePlusWeatherDataProvider.isAvailable(context))
             list.add(OnePlusWeatherDataProvider::class.java.name)
-        if (prefs.showDebugInfo)
-            list.add(FakeDataProvider::class.java.name)
-        return list
-    }
-
-    private fun getEventProviders(): List<String> {
-        val list = ArrayList<String>()
-        list.add(BlankDataProvider::class.java.name)
-        if (Utilities.ATLEAST_NOUGAT)
-            list.add(SmartspaceDataWidget::class.java.name)
-        if (FeedBridge.getInstance(context).resolveBridge()?.supportsSmartspace == true)
-            list.add(SmartspacePixelBridge::class.java.name)
         if (prefs.showDebugInfo)
             list.add(FakeDataProvider::class.java.name)
         return list
@@ -107,18 +99,5 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
     override fun persistString(value: String?): Boolean {
         prefs.sharedPrefs.edit().putString(key, value ?: BlankDataProvider::class.java.name).apply()
         return true
-    }
-
-    companion object {
-
-        val displayNames = mapOf(
-                Pair(BlankDataProvider::class.java.name, R.string.weather_provider_disabled),
-                Pair(SmartspaceDataWidget::class.java.name, R.string.google_app),
-                Pair(SmartspacePixelBridge::class.java.name, R.string.smartspace_provider_bridge),
-                Pair(OWMWeatherDataProvider::class.java.name, R.string.weather_provider_owm),
-                Pair(AccuWeatherDataProvider::class.java.name, R.string.weather_provider_accu),
-                Pair(PEWeatherDataProvider::class.java.name, R.string.weather_provider_pe),
-                Pair(OnePlusWeatherDataProvider::class.java.name, R.string.weather_provider_oneplus_weather),
-                Pair(FakeDataProvider::class.java.name, R.string.weather_provider_testing))
     }
 }

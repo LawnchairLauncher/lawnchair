@@ -49,6 +49,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener;
 
+import com.android.launcher3.widget.custom.CustomAppWidgetProviderInfo;
 import java.util.ArrayList;
 
 /**
@@ -122,6 +123,10 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         super.setAppWidget(appWidgetId, info);
         if (info != null && Utilities.getLawnchairPrefs(getContext()).getAllowFullWidthWidgets()) {
             setPadding(0, 0, 0, 0);
+        } else if (info instanceof CustomAppWidgetProviderInfo) {
+            if (((CustomAppWidgetProviderInfo) info).noPadding) {
+                setPadding(0, 0, 0, 0);
+            }
         }
     }
 

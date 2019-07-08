@@ -43,7 +43,6 @@ import kotlin.math.roundToInt
 class AccuWeatherDataProvider(controller: LawnchairSmartspaceController) :
         LawnchairSmartspaceController.PeriodicDataProvider(controller), LawnchairPreferences.OnPreferenceChangeListener {
 
-    private val context = controller.context
     private val prefs = Utilities.getLawnchairPrefs(context)
 
     private val locationAccess get() = context.checkLocationAccess()

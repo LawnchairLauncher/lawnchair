@@ -30,6 +30,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.getColorEngineAccent
 import ch.deletescape.lawnchair.iconpack.IconPackList
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.isVisible
@@ -178,7 +179,10 @@ class IconPackAdapter(context: Context) : RecyclerView.Adapter<IconPackAdapter.H
     class HeaderHolder(itemView: View) : Holder(itemView) {
 
         init {
-            itemView.findViewById<TextView>(android.R.id.text1).setText(R.string.enabled_icon_packs)
+            itemView.findViewById<TextView>(android.R.id.text1).apply {
+                setText(R.string.enabled_icon_packs)
+                setTextColor(context.getColorEngineAccent())
+            }
         }
     }
 
@@ -232,6 +236,10 @@ class IconPackAdapter(context: Context) : RecyclerView.Adapter<IconPackAdapter.H
     inner class DividerHolder(itemView: View) : IconPackHolder(itemView) {
 
         val text: TextView = itemView.findViewById(android.R.id.text1)
+
+        init {
+            text.setTextColor(text.context.getColorEngineAccent())
+        }
 
         override fun bind(item: Item) {
             super.bind(item)

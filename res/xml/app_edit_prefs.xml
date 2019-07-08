@@ -29,7 +29,16 @@
 
     <ch.deletescape.lawnchair.gestures.ui.LauncherGesturePreference
         android:key="pref_swipe_up_gesture"
-        android:title="@string/gesture_swipe_up"/>
+        android:title="@string/gesture_swipe_up"
+        android:dependency="pref_cover_mode"/>
+
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        android:key="pref_cover_mode"
+        android:title="@string/folder_cover_mode"
+        android:summary="@string/folder_cover_mode_desc"
+        android:defaultValue="false"
+        android:disableDependentsState="true"
+        android:persistent="false"/>
 
     <!--
     <ch.deletescape.lawnchair.preferences.StyledSwitchPreference

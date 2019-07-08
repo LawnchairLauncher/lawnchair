@@ -415,8 +415,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
         requestFocus();
         super.onAttachedToWindow();
         if (mFolderIcon != null && mFolderIcon.isCustomIcon && Utilities.getLawnchairPrefs(getContext()).getFolderBgColored()) {
-            int color = ColorExtractor.findDominantColorByHue(Utilities.drawableToBitmap(mFolderIcon.customIcon));
-            setBackgroundTintList(ColorStateList.valueOf(color));
+            setBackgroundTintList(ColorStateList.valueOf(mFolderIcon.getFolderName().getBadgeColor()));
         }
     }
 
@@ -520,6 +519,9 @@ public class Folder extends AbstractFloatingView implements DragSource,
         }
 
         mIsOpen = true;
+        if (mFolderIcon.isCustomIcon) {
+            mFolderIcon.mFolderName.setIconVisible(false);
+        }
 
         DragLayer dragLayer = mLauncher.getDragLayer();
         // Just verify that the folder hasn't already been added to the DragLayer.
@@ -627,6 +629,9 @@ public class Folder extends AbstractFloatingView implements DragSource,
     @Override
     protected void handleClose(boolean animate) {
         mIsOpen = false;
+        if (mFolderIcon.isCustomIcon) {
+            mFolderIcon.mFolderName.setIconVisible(true);
+        }
 
         if (isEditingName()) {
             mFolderName.dispatchBackKey();
@@ -678,7 +683,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
         if (mFolderIcon != null) {
             mFolderIcon.setVisibility(View.VISIBLE);
             mFolderIcon.setBackgroundVisible(true);
-            mFolderIcon.mFolderName.setTextVisibility(true);
+            mFolderIcon.mFolderName.setTextVisibility(mFolderIcon.mFolderName.shouldTextBeVisible());
             if (wasAnimated) {
                 mFolderIcon.mBackground.fadeInBackgroundShadow();
                 mFolderIcon.mBackground.animateBackgroundStroke();
@@ -1346,6 +1351,10 @@ public class Folder extends AbstractFloatingView implements DragSource,
             mItemsInvalidated = false;
         }
         return mItemsInReadingOrder;
+    }
+
+    public void iterateOverItems(ItemOperator op) {
+        mContent.iterateOverItems(op);
     }
 
     public List<BubbleTextView> getItemsOnPage(int page) {

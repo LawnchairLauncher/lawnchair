@@ -67,6 +67,7 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -454,14 +455,27 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         playIconAnimators(appOpenAnimator, v, windowTargetBounds, false);
     }
 
-    protected void playIconAnimators(AnimatorSet appOpenAnimator, View v, Rect windowTargetBounds,
+    protected void playIconAnimators(AnimatorSet appOpenAnimator, View v2, Rect windowTargetBounds,
             boolean reversed) {
+        View v;
+        if (v2 instanceof FolderIcon) {
+            v = ((FolderIcon) v2).getFolderName();
+        } else {
+            v = v2;
+        }
+
         final boolean isBubbleTextView = v instanceof BubbleTextView;
         mFloatingView = new View(mLauncher);
         if (isBubbleTextView && v.getTag() instanceof ItemInfoWithIcon ) {
             // Create a copy of the app icon
             mFloatingView.setBackground(
                     DrawableFactory.get(mLauncher).newIcon((ItemInfoWithIcon) v.getTag()));
+        } else if (v.getTag() instanceof FolderInfo) {
+            FolderInfo folderInfo = (FolderInfo) v.getTag();
+            if (folderInfo.isCoverMode()) {
+                mFloatingView.setBackground(
+                        DrawableFactory.get(mLauncher).newIcon(folderInfo.getCoverInfo()));
+            }
         }
 
         // Position the floating view exactly on top of the original
@@ -627,6 +641,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
     protected ValueAnimator getOpeningWindowAnimators(View v, RemoteAnimationTargetCompat[] targets,
             Rect windowTargetBounds, boolean reversed) {
+        if (v instanceof FolderIcon) {
+            v = ((FolderIcon) v).getFolderName();
+        }
+
         int targetMode = reversed ? MODE_CLOSING : MODE_OPENING;
         Rect bounds = new Rect();
         if (v.getParent() instanceof DeepShortcutView) {

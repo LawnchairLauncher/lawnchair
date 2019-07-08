@@ -55,7 +55,9 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.os.Process;
 import android.os.StrictMode;
+import android.os.StrictMode.OnVmViolationListener;
 import android.os.UserHandle;
+import android.os.strictmode.Violation;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -76,6 +78,8 @@ import android.widget.Toast;
 
 import ch.deletescape.lawnchair.*;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
+import ch.deletescape.lawnchair.bugreport.BugReport;
+import ch.deletescape.lawnchair.bugreport.BugReportClient;
 import ch.deletescape.lawnchair.theme.ThemeOverride;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.LauncherStateManager.StateListener;
@@ -114,6 +118,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
@@ -154,7 +159,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
-    static final boolean DEBUG_STRICT_MODE = false;
+    static final boolean DEBUG_STRICT_MODE = BuildConfig.DEBUG_STRICT_MODE;
 
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
@@ -257,18 +262,28 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (DEBUG_STRICT_MODE) {
+        if (DEBUG_STRICT_MODE && Utilities.ATLEAST_P) {
+            // TODO: Revise policy and potentially change this to send bug reports too
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                    .detectDiskReads()
-                    .detectDiskWrites()
+                    //.detectDiskReads()
+                    //.detectDiskWrites()
                     .detectNetwork()   // or .detectAll() for all detectable problems
                     .penaltyLog()
                     .build());
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
                     .detectLeakedSqlLiteObjects()
                     .detectLeakedClosableObjects()
+                    .detectActivityLeaks()
                     .penaltyLog()
-                    .penaltyDeath()
+                    //.penaltyDeath()
+                    .penaltyListener(new LooperExecutor(getMainLooper()),
+                            new OnVmViolationListener() {
+                                @Override
+                                public void onVmViolation(Violation v) {
+                                    LawnchairAppKt.getLawnchairApp(Launcher.this)
+                                            .getBugReporter().reportVmViolation(v);
+                                }
+                            })
                     .build());
         }
 
@@ -304,6 +319,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         setupViews();
         mPopupDataProvider = new PopupDataProvider(this);
+        LauncherNotifications.getInstance().addListener(mPopupDataProvider);
 
         mRotationHelper = new RotationHelper(this);
         mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
@@ -779,7 +795,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mLauncherCallbacks.onStart();
         }
         mAppWidgetHost.setListenIfResumed(true);
-        NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
+        NotificationListener.setNotificationsChangedListener(LauncherNotifications.getInstance());
         UiFactory.onStart(this);
     }
 
@@ -1749,6 +1765,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             BubbleTextView btv = (BubbleTextView) v;
             btv.setStayPressed(true);
             setOnResumeCallback(btv);
+        } else if (success && v instanceof FolderIcon) {
+            FolderIcon folderIcon = (FolderIcon) v;
+            folderIcon.setStayPressed(true);
+            setOnResumeCallback(folderIcon);
         }
         return success;
     }

@@ -15,17 +15,21 @@
      limitations under the License.
 -->
 
-<widgets>
-    <!-- Sample widget definition
-        <widget
-            android:label="My custom widget"
-            android:initialLayout="@layout/sample_widget_layout"
-            android:icon="@drawable/ic_launcher_home"
-            android:resizeMode="horizontal|vertical"
-            launcher:numRows="2"
-            launcher:numColumns="3"
-            launcher:numMinRows="1"
-            launcher:numMinColumns="2"
-            launcher:providerId="1" />
-    -->
+<widgets xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto">
+
+    <widget
+        android:label="@string/home_widget"
+        android:initialLayout="@layout/smartspace_widget"
+        android:icon="@mipmap/ic_launcher"
+        android:resizeMode="horizontal|vertical"
+        launcher:numRows="1"
+        launcher:numColumns="5"
+        launcher:numMinRows="1"
+        launcher:numMinColumns="3"
+        launcher:providerId="1"
+        launcher:noPadding="true"
+        launcher:customizeTitle="@string/home_widget"
+        launcher:customizeScreen="@xml/lawnchair_smartspace_preferences"
+        launcher:customizeHasPreview="true" />
 </widgets>

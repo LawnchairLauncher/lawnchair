@@ -24,8 +24,8 @@ import android.util.AttributeSet
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.theme.ThemeManager
-import ch.deletescape.lawnchair.util.EntriesBuilder
 import ch.deletescape.lawnchair.util.addFlag
+import ch.deletescape.lawnchair.util.buildEntries
 import ch.deletescape.lawnchair.util.removeFlag
 import com.android.launcher3.R
 
@@ -36,16 +36,13 @@ class ThemeDarkModeListPreference(context: Context, attrs: AttributeSet?) : List
     private val prefs = context.lawnchairPrefs
 
     init {
-        val builder = EntriesBuilder(context)
-        builder.addEntry(R.string.theme_dark_theme_mode_follow_wallpaper, ThemeManager.THEME_FOLLOW_WALLPAPER)
-        builder.addEntry(R.string.theme_dark_theme_mode_follow_system, ThemeManager.THEME_FOLLOW_NIGHT_MODE)
-        builder.addEntry(R.string.theme_dark_theme_mode_follow_daylight, ThemeManager.THEME_FOLLOW_DAYLIGHT)
-        builder.addEntry(R.string.theme_dark_theme_mode_on, ThemeManager.THEME_DARK)
-        builder.addEntry(R.string.theme_dark_theme_mode_off, 0)
-
-        val (entries, entryValues) = builder.build()
-        setEntries(entries)
-        setEntryValues(entryValues)
+        buildEntries {
+            addEntry(R.string.theme_dark_theme_mode_follow_wallpaper, ThemeManager.THEME_FOLLOW_WALLPAPER)
+            addEntry(R.string.theme_dark_theme_mode_follow_system, ThemeManager.THEME_FOLLOW_NIGHT_MODE)
+            addEntry(R.string.theme_dark_theme_mode_follow_daylight, ThemeManager.THEME_FOLLOW_DAYLIGHT)
+            addEntry(R.string.theme_dark_theme_mode_on, ThemeManager.THEME_DARK)
+            addEntry(R.string.theme_dark_theme_mode_off, 0)
+        }
     }
 
     override fun onAttached() {

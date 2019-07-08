@@ -18,9 +18,11 @@
 package ch.deletescape.lawnchair
 
 import android.app.Activity
+import android.app.Notification
 import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.PackageInfo.REQUESTED_PERMISSION_GRANTED
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.content.res.Configuration
@@ -31,6 +33,7 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.provider.OpenableColumns
+import android.service.notification.StatusBarNotification
 import android.support.animation.FloatPropertyCompat
 import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
@@ -53,6 +56,7 @@ import android.widget.*
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.font.CustomFontManager
 import ch.deletescape.lawnchair.util.JSONMap
+import ch.deletescape.lawnchair.util.hasFlag
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
@@ -155,6 +159,14 @@ fun Context.getDrawableAttr(attr: Int): Drawable? {
     val drawable = ta.getDrawable(0)
     ta.recycle()
     return drawable
+}
+
+fun Context.getDrawableAttrNullable(attr: Int): Drawable? {
+    return try {
+        getDrawableAttr(attr)
+    } catch (e: Resources.NotFoundException) {
+        null
+    }
 }
 
 fun Context.getDimenAttr(attr: Int): Int {
@@ -500,9 +512,9 @@ fun BgDataModel.workspaceContains(packageName: String): Boolean {
     return this.workspaceItems.any { it.targetComponent?.packageName == packageName }
 }
 
-fun findInViews(op: Workspace.ItemOperator, vararg views: ViewGroup): View? {
+fun findInViews(op: Workspace.ItemOperator, vararg views: ViewGroup?): View? {
     views.forEach { view ->
-        if (view.width == 0 || view.height == 0) return@forEach
+        if (view == null || view.width == 0 || view.height == 0) return@forEach
         view.forEachChild { item ->
             val info = item.tag as ItemInfo?
             if (op.evaluate(info, item)) {
@@ -839,3 +851,32 @@ fun createPill(color: Int, radius: Float): Drawable {
 }
 
 val Long.Companion.random get() = Random.nextLong()
+
+fun StatusBarNotification.loadSmallIcon(context: Context): Drawable? {
+    return if (Utilities.ATLEAST_MARSHMALLOW) {
+        notification.smallIcon?.loadDrawable(context)
+    } else {
+        context.resourcesForApplication(packageName)?.getDrawable(notification.icon)
+    }
+}
+
+fun Context.checkPackagePermission(packageName: String, permissionName: String): Boolean {
+    try {
+        val info = packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
+        info.requestedPermissions.forEachIndexed { index, s ->
+            if (s == permissionName) {
+                return info.requestedPermissionsFlags[index].hasFlag(REQUESTED_PERMISSION_GRANTED)
+            }
+        }
+    } catch (e: PackageManager.NameNotFoundException) {
+    }
+    return false
+}
+
+inline val Calendar.hourOfDay get() = get(Calendar.HOUR_OF_DAY)
+inline val Calendar.dayOfYear get() = get(Calendar.DAY_OF_YEAR)
+
+inline val Int.red get() = Color.red(this)
+inline val Int.green get() = Color.green(this)
+inline val Int.blue get() = Color.blue(this)
+inline val Int.alpha get() = Color.alpha(this)

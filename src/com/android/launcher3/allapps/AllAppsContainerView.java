@@ -68,6 +68,9 @@ import com.android.launcher3.views.BottomUserEducationView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
 import com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -104,6 +107,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private final Point mFastScrollerOffset = new Point();
 
     private AllAppsTabsController mTabsController;
+
+    private String mLastSearchQuery;
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -421,6 +426,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     public void onTabChanged(int pos) {
+        pos = Utilities.boundToRange(pos, 0, mTabsController.getTabsCount() - 1);
         mHeader.setCurrentActive(pos);
         reset(true /* animate */, true);
         if (mAH[pos].recyclerView != null) {
@@ -429,7 +435,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                     .getDrawerTab().getColorResolver().value());
 
             mTabsController.bindButtons(findViewById(R.id.tabs), mViewPager);
-
         }
         if (mAH[pos].isWork) {
             BottomUserEducationView.showIfNeeded(mLauncher);
@@ -438,6 +443,14 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     public AlphabeticalAppsList getApps() {
         return mAH[AdapterHolder.MAIN].appsList;
+    }
+
+    public Collection<AlphabeticalAppsList> getAppsLists() {
+        List<AlphabeticalAppsList> results = new ArrayList<>();
+        for (AdapterHolder holder : mAH) {
+            results.add(holder.appsList);
+        }
+        return results;
     }
 
     public FloatingHeaderView getFloatingHeaderView() {
@@ -469,6 +482,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     public void setLastSearchQuery(String query) {
+        mLastSearchQuery = query;
         for (int i = 0; i < mAH.length; i++) {
             mAH[i].adapter.setLastSearchQuery(query);
         }

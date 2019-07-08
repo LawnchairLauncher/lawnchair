@@ -273,7 +273,7 @@
     <dimen name="hotseat_qsb_bottom_margin">2dp</dimen>
 
 <!-- Pixel 1 -->
-    <dimen name="qsb_overlap_margin">-50dp</dimen>
+    <dimen name="qsb_overlap_margin">0dp</dimen>
     <dimen name="qsb_button_height">56dp</dimen>
     <dimen name="qsb_button_elevation">3dp</dimen>
     <dimen name="qsb_touch_extension">20dp</dimen>

@@ -31,7 +31,6 @@ import java.lang.RuntimeException
 class PEWeatherDataProvider(controller: LawnchairSmartspaceController) :
         LawnchairSmartspaceController.PeriodicDataProvider(controller) {
 
-    private val context = controller.context
     private val contentResolver = context.contentResolver
 
     init {

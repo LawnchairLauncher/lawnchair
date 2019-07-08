@@ -196,7 +196,7 @@
     <string name="smartspace_widget_provider_not_found">Instale ou atualize o aplicativo do Google.</string>
     <string name="apps_label">Aplicativos</string>
     <string name="all_apps_label">Todos os apps</string>
-    <string name="all_apps_label_pref_title">Mostrar rotulo \"Todos os Apps\"</string>
+    <string name="all_apps_label_pref_title">Mostrar rótulo \"Todos os Apps\"</string>
     <string name="separate_work_apps_pref_title">Segunda aba para aplicativos de trabalho</string>
     <string name="title_search_hidden_apps">Mostrar aplicativos ocultados</string>
     <string name="summary_search_hidden_apps">Mostrar aplicativos ocultados nos resultados</string>
@@ -347,7 +347,7 @@
     <string name="selected_count">%1$d selecionado</string>
     <string name="tab_manage_apps">Gerenciar aplicativos</string>
     <string name="tab_bottom_sheet_save">Salvar</string>
-    <string name="tab_hide_from_main">Ocultar na gaveta</string>
+    <string name="tab_hide_from_main">Esconder da aba principal</string>
     <string name="tab_color">Cor da aba</string>
     <string name="delete">Excluir</string>
     <string name="none">Nenhum</string>
@@ -367,6 +367,7 @@
     <string name="pref_sesame_show_shortcuts">Atalhos de aplicativos</string>
     <string name="pref_sesame_show_shortcuts_summary">Exibir atalhos do Sesame no ícone das bolhas</string>
     <string name="allow">Permitir</string>
+    <string name="deny">Negar</string>
     <string name="sesame_enable_integration_title">Ativar integração</string>
     <string name="sesame_enable_integration_description"><![CDATA[Permite o compartilhamento de dados entre o Lawnchair e o Sesame. Você pode alterar isso nas configurações do Lawnchair ou Sesame.]]></string>
     <string name="sesame_version">Versão de integração</string>
@@ -423,8 +424,112 @@
     <string name="pref_search_bar_radius">Arredondamento da barra de pesquisa</string>
     <string name="icon_text_scale_pref_title">Tamanho do texto</string>
     <string name="text_color">Cor do Texto</string>
+    <string name="background_color">Cor de plano de fundo</string>
     <string name="pref_notification_count_title">Mostrar número de notificações</string>
     <string name="pref_notification_count_summary">Mostrar o número de notificações nos pontos</string>
     <string name="pref_center_wallpaper">Sempre centralizar o papel de parede</string>
     <string name="pref_center_wallpaper_summary">Isso irá desativar o deslizamento do papel de parede</string>
+    <string name="pref_icon_popup_menu">Itens no menu pop-up</string>
+    <string name="pref_appcategorization_enable_title">Categorizar Apps</string>
+    <string name="pref_appcategorization_enable_summary">Conserte minha gaveta bagunçada.</string>
+    <string name="pref_appcategorization_style_text">Estilo</string>
+    <string name="pref_app_groups_edit_tip">Toque pra editar, arraste pra reorganizar.</string>
+    <string name="pref_app_groups_create">Criar</string>
+    <string name="pref_appcategorization_folders_title">Pastas</string>
+    <string name="pref_appcategorization_folders_summary">Aperte pra abrir pop-up.</string>
+    <string name="pref_appcategorization_tabs_title">Abas</string>
+    <string name="pref_appcategorization_tabs_summary">Deslize entre os grupos.</string>
+    <string name="default_folder_name">Nova pasta</string>
+    <string name="drawer_folders">Pastas</string>
+    <string name="category_business_and_productivity">Negócios e Produtividade</string>
+    <string name="category_communication">Comunicação</string>
+    <string name="category_entertainment">Entretenimento</string>
+    <string name="category_food_and_drink">Comida e Bebida</string>
+    <string name="category_game">Jogos</string>
+    <string name="category_health_and_fitness">Saúde e bem estar</string>
+    <string name="category_knowledge_and_reference">Aprendizado e referência</string>
+    <string name="category_lifestyle">Compras e estilo de vida</string>
+    <string name="category_music">Música</string>
+    <string name="category_news">Noticias</string>
+    <string name="category_personalization">Personalização</string>
+    <string name="category_photography">Fotografia</string>
+    <string name="category_tools">Utilidades</string>
+    <string name="category_travel_and_navigation">Viagem e navegação</string>
+    <string name="lock_desktop">Impedir mudanças</string>
+    <string name="reset_custom_icons">Resetar ícones customizados</string>
+    <string name="reset_custom_icons_confirmation">Tem certeza que quer resetar todos os ícones customizados? Essa ação não é reversível.</string>
+    <string name="open_image_picker">Abrir selecionador de imagens</string>
+    <string name="import_icon">Importar icone</string>
+    <string name="import_as_adaptive">Como um ícone adaptivo</string>
+    <string name="bugreport_channel_name">Relatório de erros</string>
+    <string name="status_channel_name">Status de upload do relatório de erro</string>
+    <string name="bugreport_group_summary">%d novos relatórios</string>
+    <string name="bugreport_group_summary_multiple">Vários novos relatórios</string>
+    <string name="dogbin_uploading">Upload em progresso</string>
+    <string name="action_dogbin_upload">Enviar pra dogbin</string>
+    <string name="action_dogbin_upload_error">Upload falhou</string>
+    <string name="action_dogbin_copy_link">Copiar link</string>
+    <string name="lawnchair_bug_report">Lawnchair relatório de erro</string>
+    <string name="copied_toast">Copiado</string>
+    <string name="action_copy">Copiar</string>
+    <string name="action_copy_link">Copiar link</string>
+    <string name="action_share">Compartilhar</string>
+    <string name="animation_type_title">Animação ao abrir app</string>
+    <string name="animation_type_default">Padrão</string>
+    <string name="animation_type_pie">Pie</string>
+    <string name="animation_type_pie_like">Igual-ao-pie</string>
+    <string name="animation_type_reveal">Revelar</string>
+    <string name="animation_type_slide_up">Deslizar pra cima</string>
+    <string name="animation_type_scale_up">Escala pra cima</string>
+    <string name="animation_type_blink">Piscar</string>
+    <string name="animation_type_fade">Desvanecer</string>
+    <string name="permission_iplocate">Permitir acesso a localização aproximada baseada em rede?</string>
+    <string name="permission_iplocate_twilight_explanation">Isso permite cálculos da hora do dia mais precisos sem precisar saber sua localização.</string>
+    <string name="pref_appcategorization_flowerpot_title">Categoria</string>
+    <string name="pref_appcategorization_flowerpot_summary">Apps são automaticamente selecionados baseados em seus metadados.</string>
+    <string name="select_tab_type">Tipo de aba</string>
+    <string name="tab_type_custom">Aba customizada</string>
+    <string name="tab_type_custom_desc">Manualmente selecione apps pra essa aba.</string>
+    <string name="tab_type_smart">Aba inteligente</string>
+    <string name="categorization">Categorização</string>
+    <string name="folder_cover_mode">Modo capa</string>
+    <string name="folder_cover_mode_desc">Toque pra abrir o primeiro app, deslize pra cima pra abrir a pasta</string>
+    <string name="pref_smartspace_event_providers">Fontes de eventos</string>
+    <string name="event_provider_now_playing">Tocando agora</string>
+    <string name="battery_status">Estado da bateria</string>
+    <string name="battery_charging">Bateria carregando</string>
+    <string name="battery_full">Bateria carregada</string>
+    <string name="battery_low">Bateria fraca</string>
+    <string name="event_provider_unread_notifications">Notificações não lidas</string>
+    <string name="event_provider_missing_notification_access">Para usar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ative as notificações do aplicativo para <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Para usar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ative os pontos de notificação.</string>
+    <string name="zen_mode_enabled">Não perturbe está ativado</string>
+    <string name="crash_report_notif_title">%1$s parou!</string>
+    <string name="personality_provider">Mensagens contextuais</string>
+    <string-array name="greetings_morning">
+        <item>Bom dia!</item>
+        <item>Que dia lindo!</item>
+        <item>Você já olhou pra fora hoje?</item>
+        <item>Tenha um ótimo dia!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Boa noite!</item>
+        <item>Durma bem!</item>
+        <item>Te vejo amanhã!</item>
+        <item>Bons sonhos!</item>
+        <item>Não fique acordado por muito tempo</item>
+        <item>Como foi seu dia?</item>
+        <item>Oque você fez hoje?</item>
+    </string-array>
+    <string name="onbording_settings_summary">Pressione na sua tela inicial</string>
+    <string name="onboarding_swipe_up">Deslize pra cima pra ver todos os seus aplicativos</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Never (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
 </resources>

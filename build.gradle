@@ -7,7 +7,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0-alpha11'
+        classpath 'com.android.tools.build:gradle:3.4.1'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.8'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
@@ -27,6 +27,8 @@ File localPropsFile = project.rootProject.file('local.properties')
 if (localPropsFile.exists()) {
     localProps.load(localPropsFile.newDataInputStream())
 }
+
+def isPublicBuild = System.getenv("CI_BUILD") == "true" && System.getenv("DRONE_BRANCH") == "alpha"
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -59,9 +61,10 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
-        def isPublicBuild = System.getenv("CI_BUILD") == "true" && System.getenv("DRONE_BRANCH") == "alpha"
         buildConfigField "boolean", "FEATURE_QUINOA", "true"
         buildConfigField "boolean", "FEATURE_SETTINGS_SEARCH", "true"
+        buildConfigField "boolean", "DEBUG_STRICT_MODE", isPublicBuild ? "false" : "true"
+        buildConfigField "boolean", "HAS_LEAKCANARY", "false"
 
         def githubToken = localProps.getProperty('githubToken') ?: '"' + System.getenv("GITHUB_TOKEN") + '"'
         buildConfigField "String", "GITHUB_TOKEN", githubToken
@@ -86,6 +89,12 @@ android {
                     signingConfig signingConfigs.ci
                 }
             }
+
+            dexOptions {
+                matchingFallbacks = ['debug']
+            }
+
+            buildConfigField "boolean", "HAS_LEAKCANARY", isPublicBuild ? "false" : "true"
         }
 
         optimized {
@@ -108,6 +117,10 @@ android {
                 if (System.getenv("CI_EVENT_TYPE") != "pull_request") {
                     signingConfig signingConfigs.ci
                 }
+            }
+
+            dexOptions {
+                matchingFallbacks = ['release']
             }
         }
     }
@@ -152,7 +165,10 @@ android {
 
         dev {
             dimension "build"
-            applicationIdSuffix ".dev"
+            // Use v1 dev package name for compatibility testing
+            if (localProps.getProperty("v1compat") != "true") {
+                applicationIdSuffix ".dev"
+            }
             versionNameSuffix "-dev"
         }
 
@@ -246,11 +262,13 @@ afterEvaluate {
 
 apply from: 'lawnchair/smali.gradle'
 
-repositories {
-    google()
-    mavenCentral()
-    jcenter()
-    maven { url 'https://jitpack.io' }
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
 }
 
 dependencies {
@@ -278,7 +296,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.8.0'
 
     implementation 'eu.chainfire:libsuperuser:1.0.0.201704021214'
-    implementation 'eu.chainfire:librootjava:1.0.0'
+    implementation 'eu.chainfire:librootjava:1.3.0'
     implementation 'com.luckycatlabs:SunriseSunsetCalculator:1.2'
     implementation 'me.mvdw.recyclerviewmergeadapter:recyclerviewmergeadapter:2.1.0'
     implementation 'com.squareup.retrofit2:retrofit:2.6.0'
@@ -286,8 +304,18 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.0.0-RC1'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
 
-    quickstepImplementation fileTree(dir: "quickstep/libs", include: 'sysui_shared.jar')
+    quickstepImplementation project(':systemui-shared')
     lawnchairImplementation files('lawnchair/libs/sesame-lib.aar')
+
+    if (!isPublicBuild) {
+        // TODO: update to 2.x when we're on AndroidX
+        debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+        debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.3'
+        optimizedImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+        optimizedImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.3'
+    } else {
+        implementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+    }
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation "org.mockito:mockito-core:1.9.5"

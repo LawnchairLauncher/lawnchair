@@ -58,6 +58,7 @@ import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.badge.BadgeRenderer;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.PreloadIconDrawable;
@@ -165,7 +166,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             mLayoutHorizontal = false;
             mIconSize = 0;
             mCenterVertically = true;
-            mLongPressHelper = null;
+            mLongPressHelper = new CheckLongPressHelper(this);
             mStylusEventHelper = null;
             mSlop = 0;
             return;
@@ -322,6 +323,20 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         }
     }
 
+    public void applyIcon(ItemInfoWithIcon info) {
+        FastBitmapDrawable iconDrawable = DrawableFactory.get(getContext()).newIcon(info);
+        mBadgeColor = IconPalette.getMutedColor(getContext(), info.iconColor, 0.54f);
+
+        setIcon(iconDrawable);
+    }
+
+    public void applyIcon(BitmapInfo info) {
+        FastBitmapDrawable iconDrawable = new FastBitmapDrawable(info);
+        mBadgeColor = IconPalette.getMutedColor(getContext(), info.color, 0.54f);
+
+        setIcon(iconDrawable);
+    }
+
     private void applySwipeUpAction(ShortcutInfo info) {
         GestureHandler handler = GestureController.Companion.createGestureHandler(
                 getContext(), info.swipeUpAction, new BlankGestureHandler(getContext(), null));
@@ -416,7 +431,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         return result;
     }
 
-    void setStayPressed(boolean stayPressed) {
+    public void setStayPressed(boolean stayPressed) {
         mStayPressed = stayPressed;
         refreshDrawableState();
     }
@@ -658,6 +673,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mIcon = icon;
     }
 
+    public void clearIcon() {
+        mIcon = null;
+        setCompoundDrawables(null, null, null, null);
+    }
+
     public void setIconVisible(boolean visible) {
         mIsIconVisible = visible;
         Drawable icon = visible ? mIcon : new ColorDrawable(Color.TRANSPARENT);
@@ -665,6 +685,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     protected void applyCompoundDrawables(Drawable icon) {
+        if (icon == null) return;
+
         // If we had already set an icon before, disable relayout as the icon size is the
         // same as before.
         mDisableRelayout = mIcon != null;
@@ -737,5 +759,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     protected boolean isTextHidden() {
         return mHideText;
+    }
+
+    public int getBadgeColor() {
+        return mBadgeColor;
     }
 }

@@ -19,10 +19,13 @@ package ch.deletescape.lawnchair.groups
 
 import android.content.Context
 import ch.deletescape.lawnchair.*
+import ch.deletescape.lawnchair.util.extensions.d
+import com.android.launcher3.AppInfo
 import com.android.launcher3.FolderInfo
 import com.android.launcher3.R
 import com.android.launcher3.ShortcutInfo
 import com.android.launcher3.allapps.AlphabeticalAppsList
+import com.android.launcher3.util.ComponentKey
 
 class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFolders.Folder>(manager, AppGroupsManager.CategorizationType.Folders) {
 
@@ -44,14 +47,24 @@ class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFol
         changeCallback.reloadDrawer()
     }
 
-    fun getFolderInfos(apps: AlphabeticalAppsList): List<FolderInfo> = getGroups()
+    fun getFolderInfos(apps: AlphabeticalAppsList) = getFolderInfos(buildAppsMap(apps)::get)
+
+    private fun buildAppsMap(apps: AlphabeticalAppsList): Map<ComponentKey, AppInfo> {
+        return apps.apps.associateBy { it.toComponentKey() }
+    }
+
+    private fun getFolderInfos(getAppInfo: (ComponentKey) -> AppInfo?): List<DrawerFolderInfo> = getGroups()
+            .asSequence()
             .filter { !it.isEmpty }
-            .map { it.toFolderInfo(apps) }
+            .map { it.toFolderInfo(getAppInfo) }
+            .toList()
 
     fun getHiddenComponents() = getGroups()
+            .asSequence()
             .filterIsInstance<CustomFolder>()
             .filter { it.hideFromAllApps.value() }
-            .flatMap { it.contents.value() }
+            .mapNotNull { it.contents.value }
+            .flatMapTo(mutableSetOf()) { it.asSequence() }
 
     abstract class Folder(val context: Context, type: Int, titleRes: Int) : Group(type, context, titleRes) {
         // Ensure icon customization sticks across group changes
@@ -63,7 +76,7 @@ class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFol
             addCustomization(id)
         }
 
-        open fun toFolderInfo(apps: AlphabeticalAppsList) = DrawerFolderInfo(this).apply {
+        open fun toFolderInfo(getAppInfo: (ComponentKey) -> AppInfo?) = DrawerFolderInfo(this).apply {
             setTitle(this@Folder.getTitle())
             id = this@Folder.id.value()
             contents = ArrayList()
@@ -93,10 +106,10 @@ class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFol
 
         fun getFilter(context: Context): Filter<*> = CustomFilter(context, contents.value())
 
-        override fun toFolderInfo(apps: AlphabeticalAppsList) = super.toFolderInfo(apps).apply {
+        override fun toFolderInfo(getAppInfo: (ComponentKey) -> AppInfo?) = super.toFolderInfo(getAppInfo).apply {
             // ✨
             this@CustomFolder.contents.value?.mapNotNullTo(contents) { key ->
-                apps.apps.firstOrNull { it.toComponentKey() == key }?.makeShortcut()
+                getAppInfo(key)?.makeShortcut()
             }?.sortWith(comparator)
         }
     }

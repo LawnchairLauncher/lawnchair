@@ -94,7 +94,6 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 icon.setImageBitmap(((ItemInfoWithIcon) itemInfo).iconBitmap);
             } else if (itemInfo instanceof FolderInfo) {
                 FolderInfo folderInfo = (FolderInfo) itemInfo;
-                //icon.setImageDrawable(mLauncher.getDrawable(R.drawable.ic_lawnstep));
                 icon.setImageDrawable(folderInfo.getIcon(mLauncher));
                 // Drawer folder
                 if (folderInfo.container == ItemInfo.NO_ID) {
@@ -104,7 +103,19 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             }
             if (mInfoProvider != null) {
                 LawnchairLauncher launcher = LawnchairLauncher.Companion.getLauncher(getContext());
-                icon.setOnClickListener(v -> launcher.startEditIcon(mItemInfo, mInfoProvider));
+                icon.setOnClickListener(v -> {
+                    ItemInfo editItem;
+                    if (mItemInfo instanceof FolderInfo && ((FolderInfo) mItemInfo).isCoverMode()) {
+                        editItem = ((FolderInfo) mItemInfo).getCoverInfo();
+                    } else {
+                        editItem = mItemInfo;
+                    }
+                    CustomInfoProvider editProvider
+                            = CustomInfoProvider.Companion.forItem(getContext(), editItem);
+                    if (editProvider != null) {
+                        launcher.startEditIcon(editItem, editProvider);
+                    }
+                });
             }
         }
         if (mInfoProvider != null && allowTitleEdit) {
@@ -170,6 +181,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         private SwitchPreference mPrefHidePredictions;
         private LauncherGesturePreference mSwipeUpPref;
         private MultiSelectTabPreference mTabsPref;
+        private SwitchPreference mPrefCoverMode;
         private LawnchairPreferences prefs;
 
         private ComponentKey mKey;
@@ -206,8 +218,11 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             prefs = Utilities.getLawnchairPrefs(getActivity());
             mSwipeUpPref = (LauncherGesturePreference) screen.findPreference("pref_swipe_up_gesture");
             mTabsPref = (MultiSelectTabPreference) screen.findPreference("pref_show_in_tabs");
-            mKey = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
+            if (!(itemInfo instanceof FolderInfo)) {
+                mKey = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
+            }
             mPrefHide = (SwitchPreference) findPreference(PREF_HIDE);
+            mPrefCoverMode = (SwitchPreference) findPreference("pref_cover_mode");
 
             if (isApp) {
                 mPrefHide.setChecked(CustomAppFilter.isHiddenApp(context, mKey));
@@ -239,7 +254,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 mPrefHidePredictions.setOnPreferenceChangeListener(this);
             }
 
-            if (prefs.getShowDebugInfo() && mKey.componentName != null) {
+            if (prefs.getShowDebugInfo() && mKey != null && mKey.componentName != null) {
                 Preference componentPref = getPreferenceScreen().findPreference("componentName");
                 componentPref.setOnPreferenceClickListener(this);
                 componentPref.setSummary(mKey.toString());
@@ -252,6 +267,12 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             if ((!prefs.getShowPredictions() || HIDE_PREDICTION_OPTION)
                     && mPrefHidePredictions != null) {
                 getPreferenceScreen().removePreference(mPrefHidePredictions);
+            }
+
+            if (itemInfo instanceof FolderInfo) {
+                mPrefCoverMode.setChecked(((FolderInfo) itemInfo).isCoverMode());
+            } else {
+                getPreferenceScreen().removePreference(mPrefCoverMode);
             }
 
             // TODO: Add link to edit bottom sheet for drawer folder
@@ -316,6 +337,16 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
             if (mTabsPref.getEdited()) {
                 prefs.getDrawerTabs().saveToJson();
+            }
+
+            if (itemInfo instanceof FolderInfo) {
+                FolderInfo folderInfo = (FolderInfo) itemInfo;
+                boolean coverEnabled = mPrefCoverMode.isChecked();
+                if (folderInfo.isCoverMode() != coverEnabled) {
+                    Launcher launcher = Launcher.getLauncher(getActivity());
+                    folderInfo.setCoverMode(coverEnabled, launcher.getModelWriter());
+                    folderInfo.onIconChanged();
+                }
             }
         }
 

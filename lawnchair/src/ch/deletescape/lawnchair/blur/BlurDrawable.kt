@@ -81,6 +81,7 @@ class BlurDrawable internal constructor(
     private var mRoundPath = Path()
     private val mBounds = Rect()
     private val mNormalBounds = Rect()
+    private val mNonRoundedBounds = Rect()
 
     private var mWidth = 0
 
@@ -110,6 +111,7 @@ class BlurDrawable internal constructor(
         val height = bottom - top
         mBounds.set(left, top, right, bottom)
         mNormalBounds.set(left, top, right, bottom)
+        mNonRoundedBounds.set(left, top, right, bottom)
         mRect.set(mBounds)
         if (mTopRounded) {
             mNormalBounds.top += mTopRadius.toInt()
@@ -142,8 +144,16 @@ class BlurDrawable internal constructor(
     }
 
     override fun draw(canvas: Canvas) {
+        draw(canvas, false)
+    }
+
+    fun draw(canvas: Canvas, noRadius: Boolean) {
         val toDraw = bitmap
         if (!mShouldDraw || toDraw == null || toDraw.isRecycled) return
+
+        val rounded = mRounded && !noRadius
+        val topRounded = mTopRounded && !noRadius
+        val bottomRounded = mBottomRounded && !noRadius
 
         // Don't draw when completely off screen
         if (mBounds.top > canvas.height) return
@@ -158,16 +168,16 @@ class BlurDrawable internal constructor(
         val bottomY = mBounds.bottom - mBottomRadius
 
         val saveCount = canvas.save()
-        canvas.clipRect(mNormalBounds)
+        canvas.clipRect(if (noRadius) mNonRoundedBounds else mNormalBounds)
 
         mRect.set(mBounds)
-        if (mRounded) {
-            if (mTopRounded) {
+        if (rounded) {
+            if (topRounded) {
                 mTopCanvas.save()
                 mTopCanvas.drawPaint(mClearPaint)
                 mTopCanvas.drawPath(mRoundPath, mClipPaint)
             }
-            if (mBottomRounded) {
+            if (bottomRounded) {
                 mBottomCanvas.save()
                 mBottomCanvas.translate(0f, -mTopRadius)
                 mBottomCanvas.drawPaint(mClearPaint)
@@ -190,10 +200,10 @@ class BlurDrawable internal constructor(
         } catch (e: Exception) {
             Log.e("BlurDrawable", "Failed to draw blurred bitmasp", e)
         }
-        if (mTopRounded) {
+        if (topRounded) {
             mTopCanvas.drawBitmap(toDraw, blurTranslateX - mRect.left, translateY - mProvider.wallpaperYOffset - mRect.top, mCornerPaint)
         }
-        if (mBottomRounded) {
+        if (bottomRounded) {
             mBottomCanvas.drawBitmap(toDraw, blurTranslateX - mRect.left, translateY - mProvider.wallpaperYOffset - bottomY, mCornerPaint)
         }
 
@@ -227,20 +237,20 @@ class BlurDrawable internal constructor(
 
         if (mOverlayColor != 0) {
             canvas.drawRect(mRect, mColorPaint)
-            if (mTopRounded) {
+            if (topRounded) {
                 mTopCanvas.drawPaint(mColorCornerPaint)
             }
-            if (mBottomRounded) {
+            if (bottomRounded) {
                 mBottomCanvas.drawPaint(mColorCornerPaint)
             }
         }
 
         canvas.restoreToCount(saveCount)
 
-        if (mTopRounded) {
+        if (topRounded) {
             mTopRoundBitmap?.run { canvas.drawBitmap(this, mRect.left, mRect.top, mPaint) }
         }
-        if (mBottomRounded) {
+        if (bottomRounded) {
             mBottomRoundBitmap?.run { canvas.drawBitmap(this, mRect.left, bottomY, mPaint) }
         }
     }

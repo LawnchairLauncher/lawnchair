@@ -33,6 +33,7 @@ import android.view.View
 import android.widget.*
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.provider.RestoreDbTask
@@ -196,6 +197,8 @@ class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader
                     Utilities.getLawnchairPrefs(this@RestoreBackupActivity).blockingEdit {
                         restoreSuccess = true
                     }
+                } else {
+                    LauncherAppState.getInstance(context).iconCache.clear()
                 }
 
                 if (result and LawnchairBackup.INCLUDE_HOMESCREEN != 0) {
@@ -245,7 +248,7 @@ class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader
                 val tintList = ColorStateList.valueOf(resolveInfo.color)
                 startButton.apply {
                     DrawableCompat.setTint(background, resolveInfo.color)
-                    DrawableCompat.setTint(drawable, resolveInfo.color)
+                    DrawableCompat.setTint(drawable, resolveInfo.foregroundColor)
                     backgroundTintList = tintList
                 }
                 backupName.apply {

@@ -315,13 +315,16 @@
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
     </style>
 
-    <style name="Theme.Transparent" parent="android:Theme">
+    <style name="Theme.Transparent" parent="Theme.AppCompat.Light">
         <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="alertDialogTheme">@style/SettingsTheme.V2.Dialog</item>
     </style>
 
     <style name="TextAppearance.Settings.Tab" parent="@style/TextAppearance.MaterialComponents.Tab">

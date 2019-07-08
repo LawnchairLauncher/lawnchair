@@ -21,12 +21,14 @@ import ch.deletescape.lawnchair.globalsearch.SearchProvider;
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
 import ch.deletescape.lawnchair.globalsearch.providers.AppSearchSearchProvider;
 import ch.deletescape.lawnchair.globalsearch.providers.GoogleSearchProvider;
+import ch.deletescape.lawnchair.globalsearch.providers.web.WebSearchProvider;
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.SearchUiManager;
+import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm;
 import com.google.android.apps.nexuslauncher.search.SearchThread;
 import org.jetbrains.annotations.NotNull;
 
@@ -241,6 +243,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         return !Utilities
                 .getLawnchairPrefs(getContext()).getAllAppsGlobalSearch()
                 || provider instanceof AppSearchSearchProvider
+                || provider instanceof WebSearchProvider
                 || (!Utilities.ATLEAST_NOUGAT && provider instanceof GoogleSearchProvider);
     }
 

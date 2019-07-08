@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
-        android:key="pref_smartspace"
-        android:title="@string/home_widget"
-        android:summary="@string/smartspace_preferences_in_settings_desc"
-        android:defaultValue="@bool/config_enable_smartspace"
-        android:persistent="true" />
   
     <ch.deletescape.lawnchair.preferences.PreviewPreference
         android:key="pref_smartspace_preview"
-        android:dependency="pref_smartspace"
         app:previewLayout="@layout/smartspace_preview" />
     
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
@@ -51,7 +43,6 @@
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_use_pill_qsb"
-            android:dependency="pref_smartspace"
             android:title="@string/title_use_pill_qsb"
             android:disableDependentsState="true"
             android:defaultValue="false"
@@ -72,7 +63,6 @@
 
         <ch.deletescape.lawnchair.preferences.SmartspaceProviderPreference
             android:key="pref_smartspace_widget_provider"
-            android:dependency="pref_smartspace"
             android:title="@string/pref_smartspace_widget_provider"
             android:summary="%s"
             />
@@ -98,11 +88,10 @@
             android:summary="%s"
             android:title="@string/pref_weather_units" />
 
-        <ch.deletescape.lawnchair.preferences.SmartspaceProviderPreference
-            android:key="pref_smartspace_event_provider"
+        <ch.deletescape.lawnchair.preferences.SmartspaceEventProvidersPreference
+            android:key="pref_smartspace_event_providers"
             android:dependency="pref_use_pill_qsb"
-            android:title="@string/pref_smartspace_event_provider"
-            android:summary="%s"
+            android:title="@string/pref_smartspace_event_providers"
             />
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 </android.support.v7.preference.PreferenceScreen>

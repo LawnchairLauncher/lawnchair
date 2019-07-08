@@ -19,37 +19,26 @@ package com.android.launcher3;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Process;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
-import android.view.View.MeasureSpec;
 import android.widget.FrameLayout;
-import android.widget.FrameLayout.LayoutParams;
 import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.folder.FirstItemProvider;
 import ch.deletescape.lawnchair.iconpack.IconPack;
 import ch.deletescape.lawnchair.iconpack.IconPackManager;
 import ch.deletescape.lawnchair.iconpack.IconPackManager.CustomIconEntry;
 import ch.deletescape.lawnchair.override.CustomInfoProvider;
-import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
-import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.BitmapRenderer;
+import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
 
 import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.concurrent.ExecutionException;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -74,6 +63,8 @@ public class FolderInfo extends ItemInfo {
      */
     public static final int FLAG_MULTI_PAGE_ANIMATION = 0x00000004;
 
+    public static final int FLAG_COVER_MODE = 0x00000008;
+
     public int options;
 
     /**
@@ -84,6 +75,8 @@ public class FolderInfo extends ItemInfo {
     ArrayList<FolderListener> listeners = new ArrayList<FolderListener>();
 
     public String swipeUpAction;
+
+    private FirstItemProvider firstItemProvider = new FirstItemProvider(this);
 
     public FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
@@ -207,7 +200,18 @@ public class FolderInfo extends ItemInfo {
         if (icn != null)  {
             return icn;
         }
+        if (isCoverMode()) {
+            return DrawableFactory.get(context).newIcon(getCoverInfo());
+        }
         return getFolderIcon(launcher);
+    }
+
+    public Drawable getDefaultIcon(Launcher launcher) {
+        if (isCoverMode()) {
+            return new FastBitmapDrawable(getCoverInfo().iconBitmap);
+        } else {
+            return getFolderIcon(launcher);
+        }
     }
 
     public Drawable getFolderIcon(Launcher launcher) {
@@ -222,10 +226,21 @@ public class FolderInfo extends ItemInfo {
             // out.drawColor(Color.RED);
             icon.draw(out);
         });
+        icon.unbind();
         return new BitmapDrawable(launcher.getResources(), b);
     }
 
-    public boolean hasCustomIcon(Context context) {
+    public boolean useIconMode(Context context) {
+        return isCoverMode() || hasCustomIcon(context);
+    }
+
+    public boolean usingCustomIcon(Context context) {
+        if (isCoverMode()) return false;
+        Launcher launcher = LawnchairLauncher.getLauncher(context);
+        return getIconInternal(launcher) != null;
+    }
+
+    private boolean hasCustomIcon(Context context) {
         Launcher launcher = LawnchairLauncher.getLauncher(context);
         return getIconInternal(launcher) != null;
     }
@@ -235,6 +250,30 @@ public class FolderInfo extends ItemInfo {
         CustomInfoProvider<FolderInfo> infoProvider = CustomInfoProvider.Companion.forItem(launcher, this);
         if (infoProvider != null) {
             infoProvider.setIcon(this, null);
+        }
+    }
+
+    public boolean isCoverMode() {
+        return hasOption(FLAG_COVER_MODE);
+    }
+
+    public void setCoverMode(boolean enable, ModelWriter modelWriter) {
+        setOption(FLAG_COVER_MODE, enable, modelWriter);
+    }
+
+    public ShortcutInfo getCoverInfo() {
+        return firstItemProvider.getFirstItem();
+    }
+
+    public CharSequence getIconTitle() {
+        if (isCoverMode()) {
+            ShortcutInfo info = getCoverInfo();
+            if (info.customTitle != null) {
+                return info.customTitle;
+            }
+            return info.title;
+        } else {
+            return title;
         }
     }
 
