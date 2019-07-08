@@ -220,7 +220,8 @@ public class ConfigBuilder {
         AllAppsRecyclerView appsView = getAppsView();
         GridLayoutManager.SpanSizeLookup spanSizeLookup = ((GridLayoutManager) appsView.getLayoutManager())
                 .getSpanSizeLookup();
-        int allAppsCols = Math.min(mActivity.getDeviceProfile().inv.numColumns, appsView.getChildCount());
+        int allAppsCols = Math
+                .min(mActivity.getDeviceProfile().inv.numColsDrawer, appsView.getChildCount());
         int childCount = appsView.getChildCount();
         BubbleTextView[] bubbleTextViewArr = new BubbleTextView[allAppsCols];
         int i4 = -1;
