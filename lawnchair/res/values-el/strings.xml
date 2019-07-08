@@ -501,7 +501,7 @@
     <string name="battery_low">Χαμηλή μπαταρία</string>
     <string name="event_provider_unread_notifications">Μη αναγνωσμένες ειδοποιήσεις</string>
     <string name="event_provider_missing_notification_access">Για χρήση <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ενεργοποιήστε την πρόσβαση της εφαρμογής στις ειδοποιήσεις για <xliff:g example="My App" id="name">%2$s</xliff:g></string>
-    <string name="event_provider_missing_notification_dots">Για χρήση <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ενεργοποίησε την πρόσβαση ειδοποιήσεων</string>
+    <string name="event_provider_missing_notification_dots">Για χρήση <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ενεργοποιήστε τις κουκίδες ειδοποίησης</string>
     <string name="zen_mode_enabled">Η λειτουργία \"Μην ενοχλείτε\" είναι ενεργοποιημένη</string>
     <string name="crash_report_notif_title">%1$s κράσαρε!</string>
     <string name="personality_provider">Συγκεκριμένα μηνύματα</string>
