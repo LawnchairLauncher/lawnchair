@@ -109,7 +109,7 @@
             android:key="pref_dockColoredGoogle"
             android:title="@string/dock_colored_google"
             android:dependency="pref_dockSearchBar"
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:persistent="true" />
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 </android.support.v7.preference.PreferenceScreen>
