@@ -496,7 +496,7 @@
     <string name="pref_smartspace_event_providers">Fuentes de los eventos</string>
     <string name="event_provider_now_playing">Reproduciendo</string>
     <string name="battery_status">Estado de la batería</string>
-    <string name="battery_charging">Batería cargando</string>
+    <string name="battery_charging">Cargando la batería</string>
     <string name="battery_full">Batería llena</string>
     <string name="battery_low">Batería baja</string>
     <string name="event_provider_unread_notifications">Notificaciones no leídas</string>
@@ -532,6 +532,6 @@
     <string name="web_search_yandex">Yandex (web)</string>
     <string name="web_search_naver">Naver (web)</string>
     <string name="web_search_baidu">Baidu (web)</string>
-    <string name="icon_shape_override_miui_explaination">Debido a una restricción en MIUI, la forma de los íconos puede no cambiar y mantenerse cuadrada.\nPor favor no reporte esto como un error.</string>
-    <string name="button_organize_screens">Organiza pantallas</string>
+    <string name="icon_shape_override_miui_explaination">Debido a una restricción en MIUI, la forma de los íconos puede no cambiar y mantenerse de forma cuadrada.\nPor favor no reporte esto como un error.</string>
+    <string name="button_organize_screens">Organizar pantallas</string>
 </resources>
