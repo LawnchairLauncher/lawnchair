@@ -186,7 +186,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val dockGridSize by dockGridSizeDelegate
     val twoRowDock by BooleanPref("pref_twoRowDock", false, restart)
     val dockRowsCount get() = if (twoRowDock) 2 else 1
-    var dockScale by FloatPref("pref_dockScale", 1f, recreate)
+    var dockScale by FloatPref("pref_dockScale", 0f, recreate)
 
     // Drawer
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
@@ -878,8 +878,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         if (!prefs.getBoolean("pref_hotseatShouldUseCustomOpacity", false)) {
             putFloat("pref_hotseatCustomOpacity", -1f / 255)
         }
-        // Slightly reduce the value so it actually looks more like it used to look in v1
-        putFloat("pref_dockScale", prefs.getFloat("pref_hotseatHeightScale", 1f) - .3f)
+        putFloat("pref_dockScale", prefs.getFloat("pref_hotseatHeightScale", 1f))
 
         // Home widget
         val pillQsb = prefs.getBoolean("pref_showPixelBar", true)
