@@ -529,4 +529,6 @@
     <string name="web_search_yandex">Yandex (เว็บ)</string>
     <string name="web_search_naver">Naver (เว็บ)</string>
     <string name="web_search_baidu">Baidu (เว็บ)</string>
+    <string name="icon_shape_override_miui_explaination">ด้วยข้อจำกัดใน MIUI, รูปร่างไอคอนของคุณอาจไม่เปลี่ยนแปลงและยังคงเป็นสี่เหลื่ยม\nกรุณาอย่ารายงานบั๊กนี้</string>
+    <string name="button_organize_screens">จัดระเบียบหน้าจอ</string>
 </resources>
