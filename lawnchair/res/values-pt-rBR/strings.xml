@@ -533,4 +533,6 @@
     <string name="web_search_yandex">Yandex (web)</string>
     <string name="web_search_naver">Never (web)</string>
     <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">Devido a uma restrição na MIUI, seu formato de ícone pode não mudar e permanecer quadrado.\nPor favor, não relate isso como um bug.</string>
+    <string name="button_organize_screens">Organize telas</string>
 </resources>
