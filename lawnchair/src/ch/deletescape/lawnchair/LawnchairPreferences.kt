@@ -170,7 +170,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     // Dock
     val dockStyles = DockStyle.StyleManager(this, reloadDockStyle, resetAllApps)
-    val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", false, doNothing)
+    val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", true, doNothing)
     var dockSearchBarPref by BooleanPref(
             "pref_dockSearchBar", Utilities.ATLEAST_MARSHMALLOW, recreate
                                         )
