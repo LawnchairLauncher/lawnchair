@@ -533,4 +533,6 @@
     <string name="web_search_yandex">Yandex (web)</string>
     <string name="web_search_naver">Naver (web)</string>
     <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">Datorită restricțiilor din MIUI, este posibil ca forma pictogramelor să nu se modifice și să rămână pătrată. \nVă rugăm nu raportați ca bug.</string>
+    <string name="button_organize_screens">Organizare ecrane</string>
 </resources>
