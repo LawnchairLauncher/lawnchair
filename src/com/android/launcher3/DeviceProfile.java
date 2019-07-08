@@ -25,6 +25,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Surface;
 import android.view.WindowManager;
 import ch.deletescape.lawnchair.LawnchairPreferences;
@@ -327,14 +328,21 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         // Calculate again to apply text size
         updateAvailableDimensions(dm, res);
 
+        int extraSpaceFromY = getCellSizeOriginal().y - iconSizeOriginalPx
+                - iconDrawablePaddingOriginalPx * 2 - verticalDragHandleSizePx;
+        int extraSpaceFromScale;
+        if (dockScale < 1f) {
+            extraSpaceFromScale = extraSpaceFromY;
+        } else {
+            extraSpaceFromScale = (int) (hotseatBarSizePx * (dockScale - 1));
+        }
         // Now that we have all of the variables calculated, we can tune certain sizes.
         if (!isVerticalBarLayout() && isPhone && isTallDevice) {
             // We increase the hotseat size when there is extra space.
             // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
             // in portrait mode closer together by adding more height to the hotseat.
             // Note: This calculation was created after noticing a pattern in the design spec.
-            int extraSpace = (int) ((getCellSizeOriginal().y - iconSizeOriginalPx
-                    - iconDrawablePaddingOriginalPx * 2 - verticalDragHandleSizePx) * dockScale);
+            int extraSpace = Math.min(extraSpaceFromY, extraSpaceFromScale);
             hotseatBarSizePx += extraSpace;
             if (prefs.getDockGradientStyle()) {
                 hotseatBarBottomPaddingPx += extraSpace;
@@ -345,6 +353,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
 
             // Recalculate the available dimensions using the new hotseat size.
             updateAvailableDimensions(dm, res);
+            extraSpaceFromScale -= extraSpace;
         }
 
         if (dockHidden) {
@@ -352,12 +361,13 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
             verticalDragHandleSizePx = 0;
 
             updateAvailableDimensions(dm, res);
-        } else if (!isVerticalBarLayout()) {
+        } else if (!isVerticalBarLayout() && extraSpaceFromScale > 0) {
+            float adjustedDockScale = (float) extraSpaceFromScale / hotseatBarSizePx + 1;
             int qsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
-            verticalDragHandleSizePx *= dockScale;
-            int bottomPaddingNew = Math.max((int)(hotseatBarBottomPaddingPx * dockScale), dockSearchBar ? qsbHeight : 0);
+            verticalDragHandleSizePx *= adjustedDockScale;
+            int bottomPaddingNew = Math.max((int)(hotseatBarBottomPaddingPx * adjustedDockScale), dockSearchBar ? qsbHeight : 0);
             if (prefs.getDockGradientStyle()) {
-                hotseatBarTopPaddingPx *= dockScale;
+                hotseatBarTopPaddingPx *= adjustedDockScale;
                 hotseatBarBottomPaddingPx = bottomPaddingNew;
             } else {
                 int difference = hotseatBarBottomPaddingPx - bottomPaddingNew;
@@ -365,9 +375,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
                 hotseatBarBottomPaddingPx = bottomPaddingNew;
             }
 
-            // TODO: Fix icon cut off on smaller devices with lower values
-            int minHeight = hotseatCellHeightPx * dockRows + hotseatBarBottomPaddingPx + hotseatBarTopPaddingPx;
-            hotseatBarSizePx = Math.max(minHeight, (int) (hotseatBarSizePx * dockScale));
+            hotseatBarSizePx = (int) (hotseatBarSizePx * adjustedDockScale);
         }
 
         updateWorkspacePadding();
