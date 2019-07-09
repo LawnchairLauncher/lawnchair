@@ -20,7 +20,6 @@ import static androidx.test.InstrumentationRegistry.getInstrumentation;
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import static java.lang.System.exit;
 
@@ -38,10 +37,7 @@ import android.util.Log;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.BySelector;
-import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiDevice;
-import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.Launcher;
@@ -50,12 +46,12 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.MainThreadExecutor;
-import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.launcher3.util.rule.LauncherActivityRule;
@@ -86,8 +82,7 @@ public abstract class AbstractLauncherUiTest {
     public static final long DEFAULT_ACTIVITY_TIMEOUT = TimeUnit.SECONDS.toMillis(10);
     public static final long DEFAULT_BROADCAST_TIMEOUT_SECS = 5;
 
-    public static final long SHORT_UI_TIMEOUT = 300;
-    public static final long DEFAULT_UI_TIMEOUT = 10000;
+    public static final long DEFAULT_UI_TIMEOUT = 60000; // b/136278866
     private static final String TAG = "AbstractLauncherUiTest";
 
     protected MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
@@ -115,6 +110,23 @@ public abstract class AbstractLauncherUiTest {
     @Rule
     public ShellCommandRule mDisableHeadsUpNotification =
             ShellCommandRule.disableHeadsUpNotification();
+
+    protected void clearPackageData(String pkg) throws IOException, InterruptedException {
+        final CountDownLatch count = new CountDownLatch(2);
+        final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                count.countDown();
+            }
+        };
+        mTargetContext.registerReceiver(broadcastReceiver,
+                PackageManagerHelper.getPackageFilter(pkg,
+                        Intent.ACTION_PACKAGE_RESTARTED, Intent.ACTION_PACKAGE_DATA_CLEARED));
+
+        mDevice.executeShellCommand("pm clear " + pkg);
+        assertTrue(pkg + " didn't restart", count.await(10, TimeUnit.SECONDS));
+        mTargetContext.unregisterReceiver(broadcastReceiver);
+    }
 
     // Annotation for tests that need to be run in portrait and landscape modes.
     @Retention(RetentionPolicy.RUNTIME)
@@ -170,38 +182,13 @@ public abstract class AbstractLauncherUiTest {
         }
     }
 
-    protected void clearLauncherData() throws IOException {
+    protected void clearLauncherData() throws IOException, InterruptedException {
         if (TestHelpers.isInLauncherProcess()) {
             LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
                     LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
             resetLoaderState();
         } else {
-            mDevice.executeShellCommand("pm clear " + mDevice.getLauncherPackageName());
-        }
-    }
-
-    /**
-     * Scrolls the {@param container} until it finds an object matching {@param condition}.
-     *
-     * @return the matching object.
-     */
-    protected UiObject2 scrollAndFind(UiObject2 container, BySelector condition) {
-        final int margin = ResourceUtils.getNavbarSize(
-                ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, mLauncher.getResources()) + 1;
-        container.setGestureMargins(0, 0, 0, margin);
-
-        int i = 0;
-        for (; ; ) {
-            // findObject can only execute after spring settles.
-            mDevice.wait(Until.findObject(condition), SHORT_UI_TIMEOUT);
-            UiObject2 widget = container.findObject(condition);
-            if (widget != null && widget.getVisibleBounds().intersects(
-                    0, 0, mDevice.getDisplayWidth(),
-                    mDevice.getDisplayHeight() - margin)) {
-                return widget;
-            }
-            if (++i > 40) fail("Too many attempts");
-            container.scroll(Direction.DOWN, 1f);
+            clearPackageData(mDevice.getLauncherPackageName());
         }
     }
 
