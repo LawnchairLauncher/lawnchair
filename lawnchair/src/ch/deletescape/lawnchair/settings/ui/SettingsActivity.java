@@ -1043,8 +1043,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
     }
 
-    public static void startFragment(Context context, String fragment) {
-        startFragment(context, fragment, null);
+    public static void startFragment(Context context, String fragment, int title) {
+        startFragment(context, fragment, null, context.getString(title));
     }
 
     public static void startFragment(Context context, String fragment, @Nullable Bundle args) {

@@ -22,7 +22,7 @@ import ch.deletescape.lawnchair.util.extensions.d
 
 class AppGroupsManager(val prefs: LawnchairPreferences) {
 
-    var categorizationEnabled by prefs.BooleanPref("pref_appsCategorizationEnabled", true, ::onPrefsChanged)
+    var categorizationEnabled by prefs.BooleanPref("pref_appsCategorizationEnabled", false, ::onPrefsChanged)
     var categorizationType by prefs.EnumPref("pref_appsCategorizationType", CategorizationType.Tabs, ::onPrefsChanged)
 
     val drawerTabs by lazy { CustomTabs(this) }

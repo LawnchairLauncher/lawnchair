@@ -59,6 +59,7 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
     private val groups = ArrayList<T>()
 
     var isEnabled = manager.categorizationEnabled && manager.categorizationType == type
+        private set
 
     private val defaultGroups by lazy { getDefaultCreators().mapNotNull { it(context) } }
 

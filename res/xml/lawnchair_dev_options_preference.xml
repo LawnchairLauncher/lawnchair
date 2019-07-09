@@ -106,7 +106,7 @@
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_appsCategorizationEnabled"
             android:title="Enable apps categorization"
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:persistent="true" />
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
