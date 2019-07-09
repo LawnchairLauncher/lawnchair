@@ -231,7 +231,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 screen.removePreference(mPrefHide);
             }
 
-            if (!isApp || prefs.getDrawerTabs().getGroups().isEmpty()) {
+            if (!isApp || !prefs.getDrawerTabs().isEnabled()) {
                 screen.removePreference(mTabsPref);
             } else {
                 mTabsPref.setComponentKey(mKey);
