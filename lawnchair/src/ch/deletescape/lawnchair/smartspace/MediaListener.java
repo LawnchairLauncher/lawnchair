@@ -10,6 +10,7 @@ import android.media.session.MediaSessionManager;
 import android.media.session.MediaSessionManager.OnActiveSessionsChangedListener;
 import android.media.session.PlaybackState;
 import android.os.Bundle;
+import android.os.Handler;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 import android.util.Log;
@@ -37,12 +38,15 @@ public class MediaListener extends MediaController.Callback
     private final NotificationsManager mNotificationsManager;
     private List<MediaController> mControllers = Collections.emptyList();
     private MediaNotificationController mTracking;
+    private final Handler mHandler = new Handler();
+    private final Handler mWorkHandler;
 
-    MediaListener(Context context, Runnable onChange) {
+    MediaListener(Context context, Runnable onChange, Handler handler) {
         mComponent = new ComponentName(context, NotificationListener.class);
         mManager = (MediaSessionManager) context.getSystemService(Context.MEDIA_SESSION_SERVICE);
         mOnChange = onChange;
         mNotificationsManager = NotificationsManager.getInstance();
+        mWorkHandler = handler;
     }
 
     void onResume() {
@@ -80,6 +84,10 @@ public class MediaListener extends MediaController.Callback
 
     @Override
     public void onActiveSessionsChanged(List<MediaController> controllers) {
+        mWorkHandler.post(() -> updateTracking(controllers));
+    }
+
+    private void updateTracking(List<MediaController> controllers) {
         if (controllers == null) {
             try {
                 controllers = mManager.getActiveSessions(mComponent);
@@ -109,7 +117,8 @@ public class MediaListener extends MediaController.Callback
             }
         }
 
-        mOnChange.run();
+        mHandler.removeCallbacks(mOnChange);
+        mHandler.post(mOnChange);
     }
 
     private void pressButton(int keyCode) {
