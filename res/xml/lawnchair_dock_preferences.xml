@@ -56,11 +56,11 @@
             app:summaryMultiplier="100"
             android:persistent="true" />
 
-        <ch.deletescape.lawnchair.preferences.AutoModeSeekbarPreference
+        <ch.deletescape.lawnchair.preferences.DockScalePreference
             android:key="pref_dockScale"
             android:title="@string/dock_scale"
             android:dependency="pref_dockPreset"
-            app:minValue="1"
+            app:minValue="0.60"
             app:maxValue="1.75"
             app:defaultSeekbarValue="0"
             app:summaryFormat="%.0f%%"
