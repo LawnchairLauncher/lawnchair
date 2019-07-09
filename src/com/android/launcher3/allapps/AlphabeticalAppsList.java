@@ -437,7 +437,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
         for (AppInfo info : getFiltersAppInfos()) {
-            if (folderFilters.contains(info.toComponentKey())) {
+            if (!hasFilter() && folderFilters.contains(info.toComponentKey())) {
                 continue;
             }
             String sectionName = getAndUpdateCachedSectionName(info);
