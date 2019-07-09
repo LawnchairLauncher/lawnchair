@@ -85,7 +85,7 @@
     <string name="launcher_theme_override_label">ダークテーマを強制する</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="blur_pref_title">ぼかしを有効にする</string>
-    <string name="blur_pref_summary">アプリドロワー、ドック、設定の背景をぼかします</string>
+    <string name="blur_pref_summary">アプリドロワー、ドック、設定の背景のぼかし</string>
     <string name="blur_radius_pref_title">ぼかしの強さ</string>
     <!--Marker B-->
     <string name="dock_colored_google">色付きのアイコン</string>
@@ -146,8 +146,8 @@
     <string name="about_role_mod_support">仲介者 / サポート</string>
     <string name="about_role_family_member">仲間たち</string>
     <string name="about_role_magisk_maintainer">Magiskモジュールメンテナ</string>
-    <string name="about_bio_deletescape">Android開発者でファンですが、実はちょっとバイオ系の方が好きです。
-Lawnchairプロジェクトの創始者です。</string>
+    <string name="about_bio_deletescape">Android 開発者でファンですが、実はちょっとバイオ系の方が好きです。
+Lawnchair プロジェクトの創始者です。</string>
     <string name="about_bio_recoded">温和なコーダーで、グラフィックデザイナー</string>
     <string name="about_bio_josh">フリーランスのグラフィックデザイナー</string>
     <string name="about_bio_chris">Millennial af, idk and idc. デザインとソーシャルメディアの何か。@lawnchairapp で一緒に過ごしましょう✨</string>
@@ -200,7 +200,7 @@ Lawnchairプロジェクトの創始者です。</string>
     <!--Marker F-->
     <string name="default_city">Tokyo, JP</string>
     <string name="pref_weather_api_key_title">API キー</string>
-    <string name="pref_weather_city_summary">国コードを含めると最良の結果を返します（例: Tokyo,JP）</string>
+    <string name="pref_weather_city_summary">国コードを含めると最良の結果を返します (例: Tokyo, JP)</string>
     <string name="pref_weather_city_title">都市</string>
     <string name="pref_weather_units">温度の単位</string>
     <string name="units_metric">摂氏</string>
@@ -348,7 +348,7 @@ Lawnchairプロジェクトの創始者です。</string>
     <!--Marker J-->
     <string name="shortcut_sesame">ショートカット</string>
     <string name="pref_integrations">連携</string>
-    <string name="pref_integrations_summary">検索, Sesame, Google</string>
+    <string name="pref_integrations_summary">検索・Sesame・Google</string>
     <string name="sesame">Sesame</string>
     <string name="sesame_data_integration">データの統合</string>
     <string name="sesame_upsell">タップして Sesame をインストール</string>
@@ -407,7 +407,7 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="about_translate">翻訳</string>
     <string name="pref_show_dev_options">設定に表示</string>
     <string name="about_app_description">カスタマイズできるPixel Launcher の代わりとなるランチャー</string>
-    <string name="about_bio_paphonb">18歳の学生。Android 開発者で、 Lawnchair ランチャーの中心的な開発者の一人です.</string>
+    <string name="about_bio_paphonb">18歳の学生。Android 開発者で、 Lawnchair ランチャーの中心的な開発者の一人です。</string>
     <string name="dock_scale">ドックの大きさ</string>
     <string name="adaptify_pack_title">アイコンパック用のアダプティブアイコンを作成</string>
     <string name="adaptify_pack_summary">アイコンパックからアイコン用のアダプティブアイコンを作成する</string>
@@ -455,6 +455,8 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="import_as_adaptive">アダプティブアイコンとしてインポート</string>
     <string name="bugreport_channel_name">バグレポート</string>
     <string name="status_channel_name">バグレポートのアップロード状態</string>
+    <string name="bugreport_group_summary">%d件の新しいレポート</string>
+    <string name="bugreport_group_summary_multiple">複数の新しいレポート</string>
     <string name="dogbin_uploading">アップロードは進行中です</string>
     <string name="action_dogbin_upload">dogbin にアップロード</string>
     <string name="action_dogbin_upload_error">アップロードに失敗しました</string>
@@ -488,8 +490,41 @@ Lawnchairプロジェクトの創始者です。</string>
     <string name="event_provider_now_playing">Now Playing</string>
     <string name="battery_status">バッテリーの状態</string>
     <string name="battery_charging">充電中</string>
+    <string name="battery_full">満充電</string>
     <string name="battery_low">残量低下</string>
     <string name="event_provider_unread_notifications">未読の通知</string>
     <string name="event_provider_missing_notification_access"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g>を使用するには、<xliff:g example="My App" id="name">%2$s</xliff:g>のアプリの通知を有効にして下さい。</string>
+    <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g>を使うには通知ドットを有効化して下さい</string>
     <string name="zen_mode_enabled">マナーモードは有効です</string>
+    <string name="crash_report_notif_title">%1$sがクラッシュしました</string>
+    <string name="personality_provider">コンテキストメッセージ</string>
+    <string-array name="greetings_morning">
+        <item>おはようございます</item>
+        <item>なんて美しい日でしょう</item>
+        <item>もう窓の外を見ましたか?</item>
+        <item>よい一日を</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>おやすみなさい</item>
+        <item>よい眠りを</item>
+        <item>また明日</item>
+        <item>良い夢を</item>
+        <item>夜ふかしは良くありません</item>
+        <item>どんな1日でしたか?</item>
+        <item>今日は何をしましたか?</item>
+    </string-array>
+    <string name="onbording_settings_title">%sのセットアップ</string>
+    <string name="onbording_settings_summary">ホーム画面を長押しして下さい</string>
+    <string name="onboarding_swipe_up">上スワイプで全てのアプリを表示</string>
+    <string name="web_search_google">Google (ウェブ)</string>
+    <string name="web_search_ddg">DuckDuckGo (ウェブ)</string>
+    <string name="web_search_startpage">Startpage.com (ウェブ)</string>
+    <string name="web_search_bing">Bing (ウェブ)</string>
+    <string name="web_search_qwant">Qwant (ウェブ)</string>
+    <string name="web_search_ecosia">Ecosia (ウェブ)</string>
+    <string name="web_search_yandex">Yandex (ウェブ)</string>
+    <string name="web_search_naver">Naver (ウェブ)</string>
+    <string name="web_search_baidu">Baidu (ウェブ)</string>
+    <string name="icon_shape_override_miui_explaination">MIUI の制限により、アイコンの形が変わらず四角のままになることがあります。\nこれをバグとして報告しないで下さい。</string>
+    <string name="button_organize_screens">画面を組織化</string>
 </resources>

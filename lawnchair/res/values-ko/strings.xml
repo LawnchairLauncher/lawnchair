@@ -416,4 +416,20 @@
     <string name="battery_status">배터리 상태</string>
     <string name="battery_charging">배터리 충전중</string>
     <string name="event_provider_unread_notifications">읽지 않는 알림</string>
+    <string-array name="greetings_morning">
+        <item>굿모닝!</item>
+        <item>아름다운 날이네요!</item>
+        <item>Have you looked outside yet?</item>
+        <item>Have a great day!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>굿나잇</item>
+        <item>잘 자요</item>
+        <item>See you tomorrow!</item>
+        <item>Sweet dreams!</item>
+        <item>Don\'t stay up too long</item>
+        <item>How was your day?</item>
+        <item>What did you do today?</item>
+    </string-array>
+    <string name="onboarding_swipe_up">위로 스와이프하여 모든 앱 표시</string>
 </resources>
