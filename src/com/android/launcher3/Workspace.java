@@ -1285,6 +1285,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             ((LawnchairLauncher) mLauncher).getBackground().getBlurAlphas().getProperty(
                     LawnchairBackgroundView.ALPHA_INDEX_OVERLAY).setValue(1 - alpha);
         }
+        mLauncher.mAllAppsController.setOverlayScroll(transX);
 
         // TODO: implement this
 //        if (mPillQsb)

@@ -441,6 +441,11 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         handler?.post(reInitUiRunnable)
     }
 
+    fun setOverlayScroll(scroll: Float) {
+        blurDrawable?.viewOffsetX = scroll
+        searchBlurDrawable?.viewOffsetX = scroll
+    }
+
     companion object {
         private const val DEBUG_TEXT_SIZE = 30f
         private const val DEBUG_LINE_HEIGHT = DEBUG_TEXT_SIZE + 3f

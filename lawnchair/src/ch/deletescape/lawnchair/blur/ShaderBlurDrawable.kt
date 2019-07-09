@@ -41,6 +41,16 @@ class ShaderBlurDrawable internal constructor(
                 blurPathValid = false
             }
         }
+    private var wallpaperOffsetX = 0f
+        set(value) {
+            field = value
+            blurOffset = value + viewOffsetX
+        }
+    override var viewOffsetX = 0f
+        set(value) {
+            field = value
+            blurOffset = wallpaperOffsetX + value
+        }
     private val radii = FloatArray(8)
     override var blurRadii = Radii()
         set(value) {
@@ -122,7 +132,7 @@ class ShaderBlurDrawable internal constructor(
     }
 
     override fun onOffsetChanged(offset: Float) {
-        blurOffset = offset
+        wallpaperOffsetX = offset
     }
 
     override fun getOpacity(): Int {
