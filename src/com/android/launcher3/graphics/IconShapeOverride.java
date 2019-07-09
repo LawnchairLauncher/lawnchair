@@ -195,16 +195,6 @@ public class IconShapeOverride {
 //                        true /* indeterminate */,
 //                        false /* cancelable */);
 
-                if (Utilities.isMiui()) {
-                    AlertDialog dialog = new AlertDialog.Builder(mContext)
-                            .setTitle(R.string.icon_shape_override_label)
-                            .setMessage(R.string.icon_shape_override_miui_explaination)
-                            .setPositiveButton(android.R.string.ok, null)
-                            .setCancelable(false)
-                            .show();
-                    LawnchairUtilsKt.applyAccent(dialog);
-                }
-
                 if (preference instanceof ListPreference) {
                     ((ListPreference) preference).setValue(newValue);
                 }
