@@ -783,6 +783,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         unloadVisibleTaskData();
         setCurrentPage(0);
         mDwbToastShown = false;
+        mActivity.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, 0);
     }
 
     public @Nullable TaskView getRunningTaskView() {
