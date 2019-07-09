@@ -32,7 +32,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
@@ -45,6 +44,7 @@ import android.support.animation.SpringForce;
 import android.view.View;
 
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import ch.deletescape.lawnchair.iconpack.IconPackManager;
 import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider;
 import com.android.launcher3.*;
@@ -196,7 +196,7 @@ public class DragView extends View {
 
     /**
      * Initialize {@code #mIconDrawable} if the item can be represented using
-     * an {@link AdaptiveIconDrawable} or {@link FolderAdaptiveIcon}.
+     * an {@link AdaptiveIconCompat} or {@link FolderAdaptiveIcon}.
      */
     @TargetApi(Build.VERSION_CODES.O)
     public void setItemInfo(final ItemInfo info) {
@@ -221,7 +221,7 @@ public class DragView extends View {
                 // TODO: Actually support wiggling for custom folder icons, but with proper sizing
                 final Drawable dr = getFullDrawable(info, appState, outObj);
 
-                if (dr instanceof AdaptiveIconDrawable) {
+                if (dr instanceof AdaptiveIconCompat) {
                     int w = mBitmap.getWidth();
                     int h = mBitmap.getHeight();
                     int blurMargin = (int) mLauncher.getResources()
@@ -239,7 +239,7 @@ public class DragView extends View {
                     Utilities.scaleRectAboutCenter(bounds,
                             li.getNormalizer().getScale(dr, null, null, null));
                     li.recycle();
-                    AdaptiveIconDrawable adaptiveIcon = (AdaptiveIconDrawable) dr;
+                    AdaptiveIconCompat adaptiveIcon = (AdaptiveIconCompat) dr;
 
                     Rect fgBounds = new Rect(bounds);
                     Rect bgBounds = new Rect(bounds);
@@ -252,17 +252,17 @@ public class DragView extends View {
                     final Path mask = adaptiveIcon.getIconMask();
 
                     mTranslateX = new SpringFloatValue(DragView.this,
-                            w * AdaptiveIconDrawable.getExtraInsetFraction());
+                            w * AdaptiveIconCompat.getExtraInsetFraction());
                     mTranslateY = new SpringFloatValue(DragView.this,
-                            h * AdaptiveIconDrawable.getExtraInsetFraction());
+                            h * AdaptiveIconCompat.getExtraInsetFraction());
 
                     fgBounds.inset(
-                            (int) (-fgBounds.width() * AdaptiveIconDrawable.getExtraInsetFraction()),
-                            (int) (-fgBounds.height() * AdaptiveIconDrawable.getExtraInsetFraction())
+                            (int) (-fgBounds.width() * AdaptiveIconCompat.getExtraInsetFraction()),
+                            (int) (-fgBounds.height() * AdaptiveIconCompat.getExtraInsetFraction())
                     );
                     bgBounds.inset(
-                            (int) (-bgBounds.width() * AdaptiveIconDrawable.getExtraInsetFraction()),
-                            (int) (-bgBounds.height() * AdaptiveIconDrawable.getExtraInsetFraction())
+                            (int) (-bgBounds.width() * AdaptiveIconCompat.getExtraInsetFraction()),
+                            (int) (-bgBounds.height() * AdaptiveIconCompat.getExtraInsetFraction())
                     );
                     mBgSpringDrawable = adaptiveIcon.getBackground();
                     if (mBgSpringDrawable == null) {

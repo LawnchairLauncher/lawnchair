@@ -19,7 +19,6 @@ package ch.deletescape.lawnchair.iconpack
 
 import android.content.Context
 import android.graphics.*
-import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.Drawable
 import ch.deletescape.lawnchair.toBitmap
 import com.android.launcher3.FastBitmapDrawable
@@ -51,8 +50,8 @@ class IconMask {
         var adaptiveBackground: Drawable? = null
         // Some random magic to get an acceptable resolution
         var size = (LauncherAppState.getIDP(context).iconBitmapSize * (3 - scale)).toInt()
-        if (Utilities.ATLEAST_OREO && iconBack?.drawableId != 0 && iconBack?.drawable is AdaptiveIconDrawable) {
-            size += (size * AdaptiveIconDrawable.getExtraInsetFraction()).toInt()
+        if (Utilities.ATLEAST_OREO && iconBack?.drawableId != 0 && iconBack?.drawable is AdaptiveIconCompat) {
+            size += (size * AdaptiveIconCompat.getExtraInsetFraction()).toInt()
         }
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
@@ -79,7 +78,7 @@ class IconMask {
         // Draw iconBack
         if (iconBack != null && iconBack.drawableId != 0) {
             val drawable = iconBack.drawable
-            if (Utilities.ATLEAST_OREO && drawable is AdaptiveIconDrawable) {
+            if (Utilities.ATLEAST_OREO && drawable is AdaptiveIconCompat) {
                 adaptiveBackground = drawable.background
             } else {
                 drawable.toBitmap()!!.let {
@@ -101,16 +100,16 @@ class IconMask {
             }
         }
         if (adaptiveBackground != null) {
-            if (onlyMaskLegacy && baseIcon is AdaptiveIconDrawable) {
+            if (onlyMaskLegacy && baseIcon is AdaptiveIconCompat) {
                 return baseIcon
             }
-            return AdaptiveIconDrawable(adaptiveBackground, FastBitmapDrawable(bitmap))
+            return AdaptiveIconCompat(adaptiveBackground, FastBitmapDrawable(bitmap))
         }
         return FastBitmapDrawable(bitmap)
     }
 
     private fun getScale(iconBack: IconPackImpl.Entry?): Float {
-        return if (Utilities.ATLEAST_OREO && iconBack?.drawable is AdaptiveIconDrawable) {
+        return if (Utilities.ATLEAST_OREO && iconBack?.drawable is AdaptiveIconCompat) {
             iconScale - (1f - FixedScaleDrawable.LEGACY_ICON_SCALE)
         } else {
             iconScale

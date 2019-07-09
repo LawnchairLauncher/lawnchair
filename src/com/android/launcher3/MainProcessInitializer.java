@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.content.Context;
 
 import ch.deletescape.lawnchair.folder.FolderShape;
+import ch.deletescape.lawnchair.iconpack.IconShapeManager;
 import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.logging.FileLog;
 
@@ -35,7 +36,7 @@ public class MainProcessInitializer {
 
     protected void init(Context context) {
         FileLog.setDir(context.getApplicationContext().getFilesDir());
-        IconShapeOverride.apply(context);
+        IconShapeManager.Companion.getInstance(context);
         SessionCommitReceiver.applyDefaultUserPrefs(context);
         FolderShape.init(context);
     }

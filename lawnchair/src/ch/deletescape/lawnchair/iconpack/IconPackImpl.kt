@@ -250,7 +250,9 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
         if (drawableId != 0) {
             try {
-                var drawable = packResources.getDrawable(drawableId)
+                var drawable = AdaptiveIconCompat.wrap(
+                        packResources.getDrawableForDensity(drawableId, iconDpi) ?:
+                        packResources.getDrawable(drawableId))
                 if (Utilities.ATLEAST_OREO && packClocks.containsKey(drawableId)) {
                     drawable = CustomClock.getClock(context, drawable, packClocks[drawableId], iconDpi)
                 } else if (packDynamicDrawables.containsKey(drawableId)) {
@@ -311,7 +313,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 else -> 0
             }
             if (packClocks.containsKey(drawableId)) {
-                val drawable = packResources.getDrawable(drawableId)
+                val drawable = AdaptiveIconCompat.wrap(packResources.getDrawable(drawableId))
                 return drawableFactory.customClockDrawer.drawIcon(icon, drawable, packClocks[drawableId])
             } else if(packDynamicDrawables.containsKey(drawableId)) {
                 val iconDpi = LauncherAppState.getIDP(context).fillResIconDpi
@@ -423,7 +425,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                     throw IllegalStateException("Trying to access an unavailable entry $debugName")
                 }
                 try {
-                    return packResources.getDrawable(drawableId)
+                    return AdaptiveIconCompat.wrap(packResources.getDrawable(drawableId))
                 } catch (e: Resources.NotFoundException) {
                     throw Exception("Failed to get drawable $drawableId ($debugName)", e)
                 }

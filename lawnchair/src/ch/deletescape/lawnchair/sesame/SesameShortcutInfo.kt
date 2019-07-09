@@ -20,13 +20,13 @@ package ch.deletescape.lawnchair.sesame
 import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.VectorDrawable
 import android.os.Process
 import android.support.v7.graphics.Palette
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.compat.LauncherAppsCompat
@@ -61,7 +61,7 @@ class SesameShortcutInfo(private val context: Context, private val shortcut: Ses
     override fun getDisabledMessage() = null
     override fun toString() = shortcut.toString()
 
-    private val wrapperIcon: Drawable by lazy { context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper)!!.mutate() }
+    private val wrapperIcon = LawnchairIconProvider.getAdaptiveIconDrawableWrapper(context)
 
     fun getIcon(density: Int): Drawable {
         if (shortcut.iconUri != null) {
@@ -73,7 +73,7 @@ class SesameShortcutInfo(private val context: Context, private val shortcut: Ses
                 }
 
                 return if (Utilities.ATLEAST_OREO_MR1 && icn is VectorDrawable) {
-                    (wrapperIcon as AdaptiveIconDrawable).apply {
+                    wrapperIcon.apply {
                         mutate()
                         setBounds(0, 0, 1, 1)
                         (foreground as FixedScaleDrawable).drawable = icn
