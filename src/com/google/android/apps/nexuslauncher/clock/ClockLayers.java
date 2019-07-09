@@ -3,13 +3,12 @@ package com.google.android.apps.nexuslauncher.clock;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 
 import android.os.Process;
+import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.LauncherIcons;
 
 import java.util.Calendar;
@@ -61,8 +60,8 @@ public class ClockLayers {
         LauncherIcons launcherIcons = LauncherIcons.obtain(context);
         float[] tmp = new float[1];
         Drawable icon = getBackground().getConstantState().newDrawable();
-        if (Utilities.ATLEAST_OREO && mDrawable instanceof AdaptiveIconDrawable) {
-            icon = new AdaptiveIconDrawable(icon, null);
+        if (mDrawable instanceof AdaptiveIconCompat) {
+            icon = new AdaptiveIconCompat(icon, null);
         }
         iconBitmap = launcherIcons.createBadgedIconBitmap(icon, Process.myUserHandle(), 26, false, tmp).icon;
         scale = tmp[0];
@@ -98,8 +97,8 @@ public class ClockLayers {
         if (mDrawable instanceof LayerDrawable) {
             return (LayerDrawable) mDrawable;
         }
-        if (Utilities.ATLEAST_OREO && mDrawable instanceof AdaptiveIconDrawable) {
-            AdaptiveIconDrawable adaptiveIconDrawable = (AdaptiveIconDrawable) mDrawable;
+        if (mDrawable instanceof AdaptiveIconCompat) {
+            AdaptiveIconCompat adaptiveIconDrawable = (AdaptiveIconCompat) mDrawable;
             if (adaptiveIconDrawable.getForeground() instanceof LayerDrawable) {
                 return (LayerDrawable) adaptiveIconDrawable.getForeground();
             }
@@ -108,22 +107,22 @@ public class ClockLayers {
     }
 
     Drawable getBackground() {
-        if (Utilities.ATLEAST_OREO && mDrawable instanceof AdaptiveIconDrawable) {
-            return ((AdaptiveIconDrawable) mDrawable).getBackground();
+        if (mDrawable instanceof AdaptiveIconCompat) {
+            return ((AdaptiveIconCompat) mDrawable).getBackground();
         } else {
             return mDrawable;
         }
     }
 
     void clipToMask(Canvas canvas) {
-        if (Utilities.ATLEAST_OREO && mDrawable instanceof AdaptiveIconDrawable) {
-            canvas.clipPath(((AdaptiveIconDrawable) mDrawable).getIconMask());
+        if (mDrawable instanceof AdaptiveIconCompat) {
+            canvas.clipPath(((AdaptiveIconCompat) mDrawable).getIconMask());
         }
     }
 
     void drawForeground(Canvas canvas) {
-        if (Utilities.ATLEAST_OREO && mDrawable instanceof AdaptiveIconDrawable) {
-            ((AdaptiveIconDrawable) mDrawable).getForeground().draw(canvas);
+        if (mDrawable instanceof AdaptiveIconCompat) {
+            ((AdaptiveIconCompat) mDrawable).getForeground().draw(canvas);
         } else {
             mDrawable.draw(canvas);
         }

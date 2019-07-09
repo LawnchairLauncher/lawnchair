@@ -118,7 +118,7 @@ public class IconShapeOverride {
         return Resources.getSystem().getIdentifier("system_icon_masks", "array", "android");
     }
 
-    private static String getAppliedValue(Context context) {
+    public static String getAppliedValue(Context context) {
         String devValue = getDevicePrefs(context).getString(KEY_PREFERENCE, "");
         if (!TextUtils.isEmpty(devValue)) {
             // Migrate to general preferences to back up shape overrides

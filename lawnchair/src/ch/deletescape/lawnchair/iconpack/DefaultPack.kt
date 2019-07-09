@@ -23,21 +23,13 @@ import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
-import android.graphics.Color
-import android.graphics.RectF
-import android.graphics.drawable.AdaptiveIconDrawable
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build
-import android.support.annotation.RequiresApi
 import android.text.TextUtils
 import ch.deletescape.lawnchair.adaptive.AdaptiveIconGenerator
 import ch.deletescape.lawnchair.getLauncherActivityInfo
-import ch.deletescape.lawnchair.toBitmap
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
-import com.android.launcher3.graphics.*
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
@@ -46,13 +38,9 @@ import com.google.android.apps.nexuslauncher.clock.DynamicClock
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
-import kotlin.math.max
 
 class DefaultPack(context: Context) : IconPack(context, "") {
 
-    private val prefs by lazy { Utilities.getLawnchairPrefs(context) }
-    private val wrapperIcon: Drawable by lazy { context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper)!!.mutate() }
-    private val normalizer: IconNormalizer by lazy { LauncherIcons.obtain(context).normalizer }
     val dynamicClockDrawer by lazy { DynamicClock(context) }
     private val appMap = HashMap<ComponentKey, Entry>().apply {
         val launcherApps = LauncherAppsCompat.getInstance(context)
@@ -211,7 +199,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
         override val displayName by lazy { app.label.toString() }
         override val identifierName = ComponentKey(app.componentName, app.user).toString()
-        override val drawable get() = app.getIcon(0)!!
+        override val drawable get() = AdaptiveIconCompat.wrap(app.getIcon(0)!!)
         override val isAvailable = true
 
         override fun toCustomEntry() = IconPackManager.CustomIconEntry("", ComponentKey(app.componentName, app.user).toString())

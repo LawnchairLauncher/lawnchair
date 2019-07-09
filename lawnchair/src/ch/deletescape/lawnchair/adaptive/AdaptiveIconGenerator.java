@@ -25,7 +25,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.RectF;
-import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -33,6 +32,8 @@ import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 import android.util.SparseIntArray;
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
+import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.ColorExtractor;
@@ -71,11 +72,11 @@ public class AdaptiveIconGenerator {
     private float aWidth;
     private Drawable result;
 
-    private AdaptiveIconDrawable tmp;
+    private AdaptiveIconCompat tmp;
 
     public AdaptiveIconGenerator(Context context, @NonNull Drawable icon, String identifier) {
         this.context = context;
-        this.icon = icon;
+        this.icon = AdaptiveIconCompat.wrap(icon);
         // useful for caching or dirty hacks
         this.identifier = identifier;
         prefs = Utilities.getLawnchairPrefs(context);
@@ -87,12 +88,12 @@ public class AdaptiveIconGenerator {
     private void loop() {
         if (Utilities.ATLEAST_OREO && shouldWrap) {
             Drawable extractee = icon;
-            if (icon instanceof AdaptiveIconDrawable) {
+            if (icon instanceof AdaptiveIconCompat) {
                 if (!treatWhite) {
                     onExitLoop();
                     return;
                 }
-                AdaptiveIconDrawable aid = (AdaptiveIconDrawable) icon;
+                AdaptiveIconCompat aid = (AdaptiveIconCompat) icon;
                 // we still check this seperately as this is the only information we need from the background
                 if (!ColorExtractor.isSingleColor(aid.getBackground(), Color.WHITE)) {
                     onExitLoop();
@@ -260,16 +261,16 @@ public class AdaptiveIconGenerator {
         if (!Utilities.ATLEAST_OREO || !shouldWrap) {
             return icon;
         }
-        if (icon instanceof AdaptiveIconDrawable) {
+        if (icon instanceof AdaptiveIconCompat) {
             if (!treatWhite || !isBackgroundWhite) {
                 return icon;
             }
-            if (((AdaptiveIconDrawable) icon).getBackground() instanceof ColorDrawable) {
-                AdaptiveIconDrawable mutIcon = (AdaptiveIconDrawable) icon.mutate();
+            if (((AdaptiveIconCompat) icon).getBackground() instanceof ColorDrawable) {
+                AdaptiveIconCompat mutIcon = (AdaptiveIconCompat) icon.mutate();
                 ((ColorDrawable) mutIcon.getBackground()).setColor(backgroundColor);
                 return mutIcon;
             }
-            return new AdaptiveIconDrawable(new ColorDrawable(backgroundColor), ((AdaptiveIconDrawable) icon).getForeground());
+            return new AdaptiveIconCompat(new ColorDrawable(backgroundColor), ((AdaptiveIconCompat) icon).getForeground());
         }
         initTmpIfNeeded();
         ((FixedScaleDrawable) tmp.getForeground()).setDrawable(icon);
@@ -285,7 +286,7 @@ public class AdaptiveIconGenerator {
 
     private void initTmpIfNeeded() {
         if (tmp == null) {
-            tmp = (AdaptiveIconDrawable) context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
+            tmp = LawnchairIconProvider.getAdaptiveIconDrawableWrapper(context);
             tmp.setBounds(0, 0, 1, 1);
         }
     }

@@ -27,7 +27,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Path.Direction;
@@ -35,23 +34,20 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Region.Op;
 import android.graphics.RegionIterator;
-import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build.VERSION_CODES;
 import android.support.annotation.RequiresApi;
-import android.support.v4.graphics.PathParser;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.util.Xml;
 import android.view.ViewOutlineProvider;
+import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.folder.Folder;
-import com.android.launcher3.graphics.IconShapeOverride;
 import java.io.IOException;
 import java.util.ArrayList;
 import org.xmlpull.v1.XmlPullParser;
@@ -359,26 +355,7 @@ public abstract class FolderShape {
     @SuppressLint("RestrictedApi")
     @RequiresApi(api = VERSION_CODES.O)
     private static Path getIconMask(Context context) {
-        if (Utilities.isMiui()) {
-            String devValue = Utilities.getDevicePrefs(context).getString(IconShapeOverride.KEY_PREFERENCE, "");
-            if (!TextUtils.isEmpty(devValue)) {
-                // Migrate
-                Utilities.getPrefs(context).edit().putString(IconShapeOverride.KEY_PREFERENCE, devValue).apply();
-                Utilities.getDevicePrefs(context).edit().remove(IconShapeOverride.KEY_PREFERENCE).apply();
-            }
-            String pathData = Utilities.getPrefs(context).getString(IconShapeOverride.KEY_PREFERENCE, "");
-            if (!TextUtils.isEmpty(pathData)) {
-                try {
-                    Path mask = PathParser.createPathFromPathData(pathData);
-                    Rect bounds = new Rect(0, 0, 200, 200);
-                    Matrix matrix = new Matrix();
-                    matrix.setScale(bounds.width() / AdaptiveIconDrawable.MASK_SIZE, bounds.height() / AdaptiveIconDrawable.MASK_SIZE);
-                    mask.transform(matrix);
-                    return mask;
-                } catch (Exception ignored) {}
-            }
-        }
-        AdaptiveIconDrawable tmp = new AdaptiveIconDrawable(new ColorDrawable(Color.BLACK), new ColorDrawable(Color.BLACK));
+        AdaptiveIconCompat tmp = new AdaptiveIconCompat(new ColorDrawable(Color.BLACK), new ColorDrawable(Color.BLACK));
         tmp.setBounds(0, 0, 200, 200);
         return tmp.getIconMask();
     }

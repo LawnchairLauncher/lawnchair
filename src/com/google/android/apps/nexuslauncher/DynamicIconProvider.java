@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.UserHandle;
 
+import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import com.android.launcher3.IconProvider;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
@@ -101,7 +102,7 @@ public class DynamicIconProvider extends IconProvider {
                 Resources resourcesForApplication = mPackageManager.getResourcesForApplication(packageName);
                 int dayResId = getDayResId(metaData, resourcesForApplication);
                 if (dayResId != 0) {
-                    drawable = resourcesForApplication.getDrawableForDensity(dayResId, iconDpi);
+                    drawable = AdaptiveIconCompat.wrapNullable(resourcesForApplication.getDrawableForDensity(dayResId, iconDpi));
                 }
             } catch (NameNotFoundException ignored) {
             }
