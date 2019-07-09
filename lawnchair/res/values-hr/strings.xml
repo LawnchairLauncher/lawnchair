@@ -424,14 +424,14 @@
     <string name="pref_center_wallpaper_summary">Ovo će onemogućiti efekt pomicanja pozadine</string>
     <string name="pref_icon_popup_menu">Stavke skočnog izbornika</string>
     <string name="pref_appcategorization_enable_title">Kategoriziraj aplikacije</string>
-    <string name="pref_appcategorization_enable_summary">Sredi ladicu s aplikacijama.</string>
+    <string name="pref_appcategorization_enable_summary">Popravi moj neuredni izbornik.</string>
     <string name="pref_appcategorization_style_text">Stil</string>
     <string name="pref_app_groups_edit_tip">Dodirnite za uređivanje, povucite za promjenu poretka.</string>
     <string name="pref_app_groups_create">Stvori</string>
     <string name="pref_appcategorization_folders_title">Mape</string>
     <string name="pref_appcategorization_folders_summary">Dodirnite za skočni izbornik.</string>
     <string name="pref_appcategorization_tabs_title">Kartice</string>
-    <string name="pref_appcategorization_tabs_summary">Klizni između grupa.</string>
+    <string name="pref_appcategorization_tabs_summary">Klizanje između grupa.</string>
     <string name="default_folder_name">Nova mapa</string>
     <string name="drawer_folders">Mape</string>
     <string name="category_business_and_productivity">Posao i produktivnost</string>
@@ -454,16 +454,18 @@
     <string name="open_image_picker">Otvori birač slika</string>
     <string name="import_icon">Uvezi ikonu</string>
     <string name="import_as_adaptive">Kao prilagodljiva ikona</string>
-    <string name="bugreport_channel_name">Prijava greške</string>
-    <string name="status_channel_name">Status izvještaja o greški</string>
+    <string name="bugreport_channel_name">Izvješća o pogreškama</string>
+    <string name="status_channel_name">Status izvještaja o pogrešci</string>
+    <string name="bugreport_group_summary">%d novi izvještaji</string>
+    <string name="bugreport_group_summary_multiple">Višestruki novi izvještaji</string>
     <string name="dogbin_uploading">Prijenos u tijeku</string>
-    <string name="action_dogbin_upload">Podigni na dogbin</string>
+    <string name="action_dogbin_upload">Učitaj na dogbin</string>
     <string name="action_dogbin_upload_error">Prijenos neuspješan</string>
-    <string name="action_dogbin_copy_link">Kopiraj link</string>
+    <string name="action_dogbin_copy_link">Kopiraj vezu</string>
     <string name="lawnchair_bug_report">Lawnchair-ov izvještaj o greški</string>
     <string name="copied_toast">Kopirano</string>
     <string name="action_copy">Kopiraj</string>
-    <string name="action_copy_link">Kopiraj link</string>
+    <string name="action_copy_link">Kopiraj vezu</string>
     <string name="action_share">Podijeli</string>
     <string name="animation_type_title">Animacija kod otvaranja aplikacija</string>
     <string name="animation_type_default">Zadana</string>
@@ -484,13 +486,46 @@
     <string name="tab_type_smart">Pametna kartica</string>
     <string name="categorization">Kategorizacija</string>
     <string name="folder_cover_mode">Način prekrivanja</string>
-    <string name="folder_cover_mode_desc">Dodirni za otvaranje prve aplikacije, klizni za otvaranje mape</string>
+    <string name="folder_cover_mode_desc">Dodirnite za otvaranje prve aplikacije, kliznite za otvaranje mape</string>
     <string name="pref_smartspace_event_providers">Raspoloživi okidači</string>
-    <string name="event_provider_now_playing">Sada sviram</string>
+    <string name="event_provider_now_playing">Trenutna reprodukcija</string>
     <string name="battery_status">Status baterije</string>
     <string name="battery_charging">Baterija se puni</string>
+    <string name="battery_full">Baterija puna</string>
     <string name="battery_low">Baterija slaba</string>
     <string name="event_provider_unread_notifications">Nepročitane obavijesti</string>
     <string name="event_provider_missing_notification_access">Za uporabu <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, uključite obavijesti za <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Za upotrebu <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, treba uključiti točke obavijesti</string>
     <string name="zen_mode_enabled">Uključena opcija \'Ne ometaj\'</string>
+    <string name="crash_report_notif_title">%1$s se srušio!</string>
+    <string name="personality_provider">Kontekstualne poruke</string>
+    <string-array name="greetings_morning">
+        <item>Dobro jutro!</item>
+        <item>Kakav prekrasan dan!</item>
+        <item>Jesi li već pogledao van?</item>
+        <item>Želim ti super dan!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Laku noć!</item>
+        <item>Ugodno spavaj!</item>
+        <item>Vidimo se sutra!</item>
+        <item>Lijepe snove želim!</item>
+        <item>Ne idi kasno na spavanje</item>
+        <item>Kakav ti je bio dan?</item>
+        <item>Što si danas radio/la?</item>
+    </string-array>
+    <string name="onbording_settings_title">Postavi %s</string>
+    <string name="onbording_settings_summary">Dugi pritisak na tvoj početni zaslon</string>
+    <string name="onboarding_swipe_up">Klizni prema gore za vidjeti sve aplikacije</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">Zbog restrikcije MIUI sustava, oblik vaših ikona se možda neće promijeniti te će ostati kvadrat.\nMolimo ne prijavljujte ovo kao pogrešku.</string>
+    <string name="button_organize_screens">Organiziraj zaslone</string>
 </resources>
