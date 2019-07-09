@@ -28,6 +28,7 @@ import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
 import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
+import ch.deletescape.lawnchair.views.BlurScrimView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Launcher;
@@ -348,5 +349,11 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     @Override
     public void onColorChange(@NotNull ResolveInfo resolveInfo) {
         mIsDarkTheme = LawnchairUtilsKt.isDark(resolveInfo.getColor());
+    }
+
+    public void setOverlayScroll(float scroll) {
+        if (mScrimView instanceof BlurScrimView) {
+            ((BlurScrimView) mScrimView).setOverlayScroll(scroll);
+        }
     }
 }

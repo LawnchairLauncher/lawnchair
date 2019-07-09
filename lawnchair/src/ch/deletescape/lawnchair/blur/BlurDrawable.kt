@@ -25,6 +25,7 @@ import android.graphics.drawable.Drawable
 abstract class BlurDrawable : Drawable(), BlurWallpaperProvider.Listener {
 
     abstract var blurRadii: Radii
+    abstract var viewOffsetX: Float
 
     override fun draw(canvas: Canvas) {
         draw(canvas, false)
