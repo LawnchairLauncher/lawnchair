@@ -16,8 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-
 import android.appwidget.AppWidgetHostView;
 import android.content.ComponentName;
 import android.content.Context;
@@ -27,7 +25,6 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Surface;
 import android.view.WindowManager;
 import ch.deletescape.lawnchair.LawnchairPreferences;
@@ -303,8 +300,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
                         R.dimen.v1_dynamic_grid_hotseat_top_padding);
         int extraHotseatBottomPadding = !prefs.getDockGradientStyle() ? 0
                 : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding);
-        hotseatBarBottomPaddingPx = (isTallDevice ? 0
-                : extraHotseatBottomPadding)
+        hotseatBarBottomPaddingPx = extraHotseatBottomPadding
                 + res.getDimensionPixelSize(dockSearchBar ?
                 R.dimen.dynamic_grid_hotseat_bottom_padding :
                 R.dimen.v1_dynamic_grid_hotseat_bottom_padding);
@@ -332,10 +328,11 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         // Calculate again to apply text size
         updateAvailableDimensions(dm, res);
 
-        int extraSpaceFromY = getCellSizeOriginal().y - iconSizeOriginalPx
-                - iconDrawablePaddingOriginalPx * 2 - verticalDragHandleSizePx;
+        int extraSpaceFromY = Math.max(0, getCellSizeOriginal().y - iconSizeOriginalPx
+                - iconDrawablePaddingOriginalPx * 2 - verticalDragHandleSizePx
+                - extraHotseatBottomPadding);
         int extraSpaceFromScale;
-        if (dockScale < 1f) {
+        if (dockScale < 0f) {
             extraSpaceFromScale = extraSpaceFromY;
         } else {
             extraSpaceFromScale = (int) (hotseatBarSizePx * (dockScale - 1));
@@ -346,9 +343,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
             // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
             // in portrait mode closer together by adding more height to the hotseat.
             // Note: This calculation was created after noticing a pattern in the design spec.
-            int rawExtraSpace = Math.min(extraSpaceFromY, extraSpaceFromScale);
-            int extraSpace = (int) Utilities.mapToRange(rawExtraSpace, 0, extraSpaceFromY,
-                    extraHotseatBottomPadding, extraSpaceFromY, LINEAR);
+            int extraSpace = Utilities.boundToRange(extraSpaceFromScale, 0, extraSpaceFromY);
             hotseatBarSizePx += extraSpace;
             if (prefs.getDockGradientStyle()) {
                 hotseatBarBottomPaddingPx += extraSpace;
@@ -362,14 +357,12 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
             extraSpaceFromScale -= extraSpace;
         }
 
-        extraSpaceFromScale = Math.max(0, extraSpaceFromScale);
-
         if (dockHidden) {
             hotseatBarSizePx = 0;
             verticalDragHandleSizePx = 0;
 
             updateAvailableDimensions(dm, res);
-        } else if (!isVerticalBarLayout() && extraSpaceFromScale > 0) {
+        } else if (!isVerticalBarLayout()) {
             float adjustedDockScale = (float) extraSpaceFromScale / hotseatBarSizePx + 1;
             int qsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
             verticalDragHandleSizePx *= adjustedDockScale;
@@ -383,7 +376,8 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
                 hotseatBarBottomPaddingPx = bottomPaddingNew;
             }
 
-            hotseatBarSizePx = (int) (hotseatBarSizePx * adjustedDockScale);
+            int minHeight = hotseatCellHeightPx * dockRows + hotseatBarBottomPaddingPx + hotseatBarTopPaddingPx;
+            hotseatBarSizePx = Math.max(minHeight, (int) (hotseatBarSizePx * adjustedDockScale));
         }
 
         updateWorkspacePadding();
