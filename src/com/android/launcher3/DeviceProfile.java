@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+
 import android.appwidget.AppWidgetHostView;
 import android.content.ComponentName;
 import android.content.Context;
@@ -299,8 +301,10 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
                 res.getDimensionPixelSize(dockSearchBar ?
                         R.dimen.dynamic_grid_hotseat_top_padding :
                         R.dimen.v1_dynamic_grid_hotseat_top_padding);
+        int extraHotseatBottomPadding = !prefs.getDockGradientStyle() ? 0
+                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding);
         hotseatBarBottomPaddingPx = (isTallDevice ? 0
-                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding))
+                : extraHotseatBottomPadding)
                 + res.getDimensionPixelSize(dockSearchBar ?
                 R.dimen.dynamic_grid_hotseat_bottom_padding :
                 R.dimen.v1_dynamic_grid_hotseat_bottom_padding);
@@ -342,7 +346,9 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
             // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
             // in portrait mode closer together by adding more height to the hotseat.
             // Note: This calculation was created after noticing a pattern in the design spec.
-            int extraSpace = Math.min(extraSpaceFromY, extraSpaceFromScale);
+            int rawExtraSpace = Math.min(extraSpaceFromY, extraSpaceFromScale);
+            int extraSpace = (int) Utilities.mapToRange(rawExtraSpace, 0, extraSpaceFromY,
+                    extraHotseatBottomPadding, extraSpaceFromY, LINEAR);
             hotseatBarSizePx += extraSpace;
             if (prefs.getDockGradientStyle()) {
                 hotseatBarBottomPaddingPx += extraSpace;
@@ -355,6 +361,8 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
             updateAvailableDimensions(dm, res);
             extraSpaceFromScale -= extraSpace;
         }
+
+        extraSpaceFromScale = Math.max(0, extraSpaceFromScale);
 
         if (dockHidden) {
             hotseatBarSizePx = 0;
