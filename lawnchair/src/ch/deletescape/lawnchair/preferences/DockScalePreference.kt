@@ -27,6 +27,13 @@ import android.util.AttributeSet
 class DockScalePreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         AutoModeSeekbarPreference(context, attrs, defStyleAttr) {
 
+    override fun updateDisplayedValue() {
+        super.updateDisplayedValue()
+        if (current < low && current != -1f) {
+            persistFloat(current)
+        }
+    }
+
     override fun persistFloat(value: Float): Boolean {
         return super.persistFloat(if (value < low) -1f else value)
     }

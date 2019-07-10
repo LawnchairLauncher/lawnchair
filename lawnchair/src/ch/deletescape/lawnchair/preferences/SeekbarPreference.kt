@@ -108,7 +108,7 @@ open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: 
         updateDisplayedValue()
     }
 
-    private fun updateDisplayedValue() {
+    protected open fun updateDisplayedValue() {
         mSeekbar?.setOnSeekBarChangeListener(null)
         val progress = ((current - min) / ((max - min) / steps))
         mSeekbar!!.progress = Math.round(progress)
