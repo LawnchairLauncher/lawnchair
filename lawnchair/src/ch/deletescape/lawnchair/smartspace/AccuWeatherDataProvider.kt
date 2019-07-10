@@ -31,6 +31,8 @@ import ch.deletescape.lawnchair.locale
 import ch.deletescape.lawnchair.smartspace.accu.AccuRetrofitServiceFactory
 import ch.deletescape.lawnchair.smartspace.accu.model.AccuLocalWeatherGSon
 import ch.deletescape.lawnchair.smartspace.accu.model.sub.AccuLocationGSon
+import ch.deletescape.lawnchair.smartspace.weather.icons.WeatherIconManager
+import ch.deletescape.lawnchair.smartspace.weather.icons.WeatherIconPackProviderImpl
 import ch.deletescape.lawnchair.util.Temperature
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -97,9 +99,10 @@ class AccuWeatherDataProvider(controller: LawnchairSmartspaceController) :
 
             override fun onResponse(call: Call<AccuLocalWeatherGSon>, response: Response<AccuLocalWeatherGSon>) {
                 val conditions = response.body()?.currentConditions
+                val isDay = response.body()?.location?.isDayTime?.toBoolean() ?: true
                 if (conditions != null) {
                     updateData(LawnchairSmartspaceController.WeatherData(
-                            getIcon(context, conditions.weatherIcon),
+                            getIcon(context, conditions.weatherIcon, isDay),
                             Temperature(conditions.temperature.value.toFloat().roundToInt(), Temperature.Unit.Celsius),
                             // TODO add support for intents to open the AccuWeather app if available
                             forecastUrl = conditions.mobileLink
@@ -124,56 +127,50 @@ class AccuWeatherDataProvider(controller: LawnchairSmartspaceController) :
     companion object {
         // reference: http://apidev.accuweather.com/developers/weatherIcons
         private val ID_MAP = mapOf(
-                1 to R.drawable.weather_01,
-                2 to R.drawable.weather_01,
-                3 to R.drawable.weather_01,
-                4 to R.drawable.weather_01,
-                5 to R.drawable.weather_02,
-                6 to R.drawable.weather_02,
-                7 to R.drawable.weather_03,
-                8 to R.drawable.weather_03,
-                11 to R.drawable.weather_50,
-                12 to R.drawable.weather_09,
-                13 to R.drawable.weather_10,
-                14 to R.drawable.weather_10,
-                15 to R.drawable.weather_11,
-                16 to R.drawable.weather_11,
-                17 to R.drawable.weather_11,
-                18 to R.drawable.weather_09,
-                19 to R.drawable.weather_13,
-                20 to R.drawable.weather_13,
-                21 to R.drawable.weather_13,
-                22 to R.drawable.weather_13,
-                23 to R.drawable.weather_13,
-                24 to R.drawable.weather_10,
-                25 to R.drawable.weather_13,
-                26 to R.drawable.weather_10,
-                29 to R.drawable.weather_13,
-                33 to R.drawable.weather_01n,
-                34 to R.drawable.weather_01n,
-                35 to R.drawable.weather_02n,
-                36 to R.drawable.weather_02n,
-                37 to R.drawable.weather_03n,
-                38 to R.drawable.weather_03n,
-                39 to R.drawable.weather_10n,
-                40 to R.drawable.weather_09,
-                41 to R.drawable.weather_11,
-                42 to R.drawable.weather_11,
-                43 to R.drawable.weather_13,
-                44 to R.drawable.weather_13,
-                99 to R.drawable.weather_none_available
+                1 to WeatherIconManager.Icon.CLEAR,
+                2 to WeatherIconManager.Icon.MOSTLY_CLEAR,
+                3 to WeatherIconManager.Icon.PARTLY_CLOUDY,
+                4 to WeatherIconManager.Icon.INTERMITTENT_CLOUDS,
+                5 to WeatherIconManager.Icon.HAZY,
+                6 to WeatherIconManager.Icon.MOSTLY_CLOUDY,
+                7 to WeatherIconManager.Icon.CLOUDY,
+                8 to WeatherIconManager.Icon.OVERCAST,
+                11 to WeatherIconManager.Icon.FOG,
+                12 to WeatherIconManager.Icon.SHOWERS,
+                13 to WeatherIconManager.Icon.MOSTLY_CLOUDY_W_SHOWERS,
+                14 to WeatherIconManager.Icon.PARTLY_CLOUDY_W_SHOWERS,
+                15 to WeatherIconManager.Icon.THUNDERSTORMS,
+                16 to WeatherIconManager.Icon.MOSTLY_CLOUDY_W_THUNDERSTORMS,
+                17 to WeatherIconManager.Icon.PARTLY_CLOUDY_W_THUNDERSTORMS,
+                18 to WeatherIconManager.Icon.RAIN,
+                19 to WeatherIconManager.Icon.FLURRIES,
+                20 to WeatherIconManager.Icon.MOSTLY_CLOUDY_W_FLURRIES,
+                21 to WeatherIconManager.Icon.PARTLY_CLOUDY_W_FLURRIES,
+                22 to WeatherIconManager.Icon.SNOW,
+                23 to WeatherIconManager.Icon.MOSTLY_CLOUDY_W_SNOW,
+                24 to WeatherIconManager.Icon.ICE,
+                25 to WeatherIconManager.Icon.SLEET,
+                26 to WeatherIconManager.Icon.FREEZING_RAIN,
+                29 to WeatherIconManager.Icon.RAIN_AND_SNOW,
+                32 to WeatherIconManager.Icon.WINDY,
+                33 to WeatherIconManager.Icon.CLEAR,
+                34 to WeatherIconManager.Icon.MOSTLY_CLEAR,
+                35 to WeatherIconManager.Icon.PARTLY_CLOUDY,
+                36 to WeatherIconManager.Icon.INTERMITTENT_CLOUDS,
+                37 to WeatherIconManager.Icon.HAZY,
+                38 to WeatherIconManager.Icon.MOSTLY_CLOUDY,
+                39 to WeatherIconManager.Icon.PARTLY_CLOUDY_W_SHOWERS,
+                40 to WeatherIconManager.Icon.MOSTLY_CLOUDY_W_SHOWERS,
+                41 to WeatherIconManager.Icon.PARTLY_CLOUDY_W_THUNDERSTORMS,
+                42 to WeatherIconManager.Icon.MOSTLY_CLOUDY_W_THUNDERSTORMS,
+                43 to WeatherIconManager.Icon.MOSTLY_CLOUDY_W_FLURRIES,
+                44 to WeatherIconManager.Icon.MOSTLY_CLOUDY_W_SNOW,
+                99 to WeatherIconManager.Icon.NA
         )
 
-        const val CONDITION_UNKNOWN = 99
-
-        fun getIcon(context: Context, iconID: Int): Bitmap {
-            var resID = iconID
-            if (!ID_MAP.containsKey(resID)) {
-                Log.e("WeatherIconProvider", "No weather icon exists for condition: $resID")
-                resID = CONDITION_UNKNOWN
-            }
-
-            return BitmapFactory.decodeResource(context.resources, ID_MAP[resID]!!)
+        fun getIcon(context: Context, iconID: Int, isDay: Boolean): Bitmap {
+            return WeatherIconManager.getInstance(context)
+                    .getIcon(ID_MAP[iconID] ?: WeatherIconManager.Icon.NA, !isDay)
         }
     }
 }

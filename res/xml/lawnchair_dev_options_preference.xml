@@ -178,5 +178,10 @@
             android:key="pref_drawerTabs"
             android:title="@string/drawer_tabs"
             android:fragment="ch.deletescape.lawnchair.preferences.DrawerTabsFragment"/>
+
+        <EditTextPreference
+            android:key="pref_weatherIcons"
+            android:title="Weather icon pack"
+            android:summary="Enter a packagename of a chronus icon pack [TODO: Proper UI, support for more data providers]"/>
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 </PreferenceScreen>
