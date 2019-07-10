@@ -145,7 +145,7 @@
     <string name="about_role_dev">Desenvolvedor</string>
     <string name="about_role_dev_mod">Desenvolvedor/Moderador</string>
     <string name="about_role_designer">Designer</string>
-    <string name="about_role_ui_ux_designer">Desenhista da UI/UX</string>
+    <string name="about_role_ui_ux_designer">Designer de UI/UX</string>
     <string name="about_role_special_snowflake">Redes sociais/Relações públicas e relações com OEMs</string>
     <string name="about_role_mod_support">Moderador/Suporte</string>
     <string name="about_role_family_member">Membro da família</string>
@@ -185,7 +185,7 @@
     <string name="gesture_dock_swipe_up">Deslize para cima na dock</string>
     <string name="pref_show_assistant_title">Botão de pesquisa por voz</string>
     <string name="pref_show_assistant_summary">Exibir o botão de pesquisa por voz, se suportado</string>
-    <string name="pref_show_as_assistant_summary">Mostrar botão da assistente em vez de procura por voz</string>
+    <string name="pref_show_as_assistant_summary">Exibir o botão do assistente em vez da pesquisa por voz</string>
     <string name="smartspace_time_24_h">Formato 24 horas</string>
     <string name="weather_provider_disabled">Desativado</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
@@ -402,7 +402,7 @@
     <string name="pref_fonts_global_font">Fonte global</string>
     <string name="pref_fonts_change_global_font">Alterar</string>
     <string name="pref_fonts_home_icons">Nomes de apps e pastas</string>
-    <string name="pref_fonts_home_smartspace">Widget \'Resumo\'</string>
+    <string name="pref_fonts_home_smartspace">Widget \"Em Resumo\"</string>
     <string name="pref_fonts_home_shortcuts">Atalhos em bolhas</string>
     <string name="pref_fonts_category_drawer">Gaveta</string>
     <string name="pref_fonts_drawer_icons">Nomes dos aplicativos</string>
@@ -521,6 +521,7 @@
         <item>Como foi seu dia?</item>
         <item>Oque você fez hoje?</item>
     </string-array>
+    <string name="onbording_settings_title">Configurar %s</string>
     <string name="onbording_settings_summary">Pressione na sua tela inicial</string>
     <string name="onboarding_swipe_up">Deslize pra cima pra ver todos os seus aplicativos</string>
     <string name="web_search_google">Google (web)</string>
@@ -532,4 +533,6 @@
     <string name="web_search_yandex">Yandex (web)</string>
     <string name="web_search_naver">Never (web)</string>
     <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">Devido a uma restrição na MIUI, seu formato de ícone pode não mudar e permanecer quadrado.\nPor favor, não relate isso como um bug.</string>
+    <string name="button_organize_screens">Organizar telas</string>
 </resources>
