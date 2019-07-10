@@ -18,9 +18,8 @@ package com.android.launcher3;
 
 import android.content.Context;
 
+import ch.deletescape.lawnchair.adaptive.IconShapeManager;
 import ch.deletescape.lawnchair.folder.FolderShape;
-import ch.deletescape.lawnchair.iconpack.IconShapeManager;
-import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.logging.FileLog;
 
 /**

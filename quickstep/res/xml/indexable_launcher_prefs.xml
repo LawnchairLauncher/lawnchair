@@ -30,12 +30,12 @@
         android:persistent="true" />
 
     <ListPreference
-        android:key="pref_override_icon_shape"
+        android:key="pref_iconShape"
         android:title="@string/icon_shape_override_label"
         android:summary="@string/icon_shape_override_label_location"
-        android:entries="@array/icon_shape_override_paths_names"
-        android:entryValues="@array/icon_shape_override_paths_values"
-        android:defaultValue=""
+        android:entries="@array/icon_shape_names"
+        android:entryValues="@array/icon_shape_values"
+        android:defaultValue="circle"
         android:persistent="false" />
 
 </PreferenceScreen>

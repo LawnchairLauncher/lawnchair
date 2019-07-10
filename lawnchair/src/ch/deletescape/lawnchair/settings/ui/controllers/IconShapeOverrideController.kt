@@ -35,10 +35,9 @@ class IconShapeOverrideController(context: Context) : PreferenceController(conte
         if (!super.onPreferenceAdded(preference)) return false
         if (preference is ListPreference) {
             if (context.lawnchairPrefs.developerOptionsEnabled) {
-                preference.setEntries(R.array.alt_icon_shape_override_paths_names)
-                preference.setEntryValues(R.array.alt_icon_shape_override_paths_values)
+                preference.setEntries(R.array.alt_icon_shape_names)
+                preference.setEntryValues(R.array.alt_icon_shape_values)
             }
-            IconShapeOverride.handlePreferenceUi(preference)
         }
         return true
     }

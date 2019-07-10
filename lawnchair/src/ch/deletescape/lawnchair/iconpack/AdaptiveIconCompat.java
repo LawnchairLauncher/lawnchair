@@ -48,6 +48,7 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import ch.deletescape.lawnchair.adaptive.IconShapeManager;
 import com.android.launcher3.Utilities;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -203,12 +204,9 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
     @SuppressLint("RestrictedApi")
     private Path createMaskPath() {
         try {
-            String override = IconShapeManager.getInstanceNoCreate().getOverride();
-            if (!TextUtils.isEmpty(override)) {
-                return PathParser.createPathFromPathData(override);
-            }
+            return IconShapeManager.getInstanceNoCreate().getIconShape().getMaskPath();
         } catch (Exception e) {
-            Log.d(TAG, "Can't load mask path", e);
+            Log.d(TAG, "Can't load icon mask", e);
         }
         return new AdaptiveIconDrawable(null, null).getIconMask();
     }
