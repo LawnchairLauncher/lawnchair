@@ -871,7 +871,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     @UiThread
     private InputConsumer createNewInputProxyHandler() {
-        endRunningWindowAnim();
+        endRunningWindowAnim(true /* cancel */);
         endLauncherTransitionController();
         if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             // Hide the task view, if not already hidden
@@ -883,9 +883,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 ? InputConsumer.NO_OP : new OverviewInputConsumer(activity, null, true);
     }
 
-    private void endRunningWindowAnim() {
+    private void endRunningWindowAnim(boolean cancel) {
         if (mRunningWindowAnim != null) {
-            mRunningWindowAnim.end();
+            if (cancel) {
+                mRunningWindowAnim.cancel();
+            } else {
+                mRunningWindowAnim.end();
+            }
         }
     }
 
@@ -1177,27 +1181,37 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         // We want the window alpha to be 0 once this threshold is met, so that the
         // FolderIconView can be seen morphing into the icon shape.
         final float windowAlphaThreshold = isFloatingIconView ? 1f - SHAPE_PROGRESS_DURATION : 1f;
-        anim.addOnUpdateListener((currentRect, progress) -> {
-            homeAnim.setPlayFraction(progress);
+        anim.addOnUpdateListener(new RectFSpringAnim.OnUpdateListener() {
+            @Override
+            public void onUpdate(RectF currentRect, float progress) {
+                homeAnim.setPlayFraction(progress);
 
-            float alphaProgress = ACCEL_1_5.getInterpolation(progress);
-            float windowAlpha = Utilities.boundToRange(Utilities.mapToRange(alphaProgress, 0,
-                    windowAlphaThreshold, 1.5f, 0f, Interpolators.LINEAR), 0, 1);
-            mTransformParams.setProgress(progress)
-                    .setCurrentRectAndTargetAlpha(currentRect, windowAlpha);
-            if (isFloatingIconView) {
-                mTransformParams.setCornerRadius(endRadius * progress + startRadius
-                        * (1f - progress));
+                float alphaProgress = ACCEL_1_5.getInterpolation(progress);
+                float windowAlpha = Utilities.boundToRange(Utilities.mapToRange(alphaProgress, 0,
+                        windowAlphaThreshold, 1.5f, 0f, Interpolators.LINEAR), 0, 1);
+                mTransformParams.setProgress(progress)
+                        .setCurrentRectAndTargetAlpha(currentRect, windowAlpha);
+                if (isFloatingIconView) {
+                    mTransformParams.setCornerRadius(endRadius * progress + startRadius
+                            * (1f - progress));
+                }
+                mClipAnimationHelper.applyTransform(targetSet, mTransformParams,
+                        false /* launcherOnTop */);
+
+                if (isFloatingIconView) {
+                    ((FloatingIconView) floatingView).update(currentRect, 1f, progress,
+                            windowAlphaThreshold, mClipAnimationHelper.getCurrentCornerRadius(), false);
+                }
+
+                updateSysUiFlags(Math.max(progress, mCurrentShift.value));
             }
-            mClipAnimationHelper.applyTransform(targetSet, mTransformParams,
-                    false /* launcherOnTop */);
 
-            if (isFloatingIconView) {
-                ((FloatingIconView) floatingView).update(currentRect, 1f, progress,
-                        windowAlphaThreshold, mClipAnimationHelper.getCurrentCornerRadius(), false);
+            @Override
+            public void onCancel() {
+                if (isFloatingIconView) {
+                    ((FloatingIconView) floatingView).fastFinish();
+                }
             }
-
-            updateSysUiFlags(Math.max(progress, mCurrentShift.value));
         });
         anim.addAnimatorListener(new AnimationSuccessListener() {
             @Override
@@ -1306,7 +1320,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void invalidateHandler() {
-        endRunningWindowAnim();
+        endRunningWindowAnim(false /* cancel */);
 
         if (mGestureEndCallback != null) {
             mGestureEndCallback.run();
@@ -1471,12 +1485,34 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private interface RunningWindowAnim {
         void end();
 
+        void cancel();
+
         static RunningWindowAnim wrap(Animator animator) {
-            return animator::end;
+            return new RunningWindowAnim() {
+                @Override
+                public void end() {
+                    animator.end();
+                }
+
+                @Override
+                public void cancel() {
+                    animator.cancel();
+                }
+            };
         }
 
         static RunningWindowAnim wrap(RectFSpringAnim rectFSpringAnim) {
-            return rectFSpringAnim::end;
+            return new RunningWindowAnim() {
+                @Override
+                public void end() {
+                    rectFSpringAnim.end();
+                }
+
+                @Override
+                public void cancel() {
+                    rectFSpringAnim.cancel();
+                }
+            };
         }
     }
 }
