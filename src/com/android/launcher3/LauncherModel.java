@@ -427,6 +427,13 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
+    public void forceReloadOnNextLaunch() {
+        synchronized (this.mLock) {
+            stopLoader();
+            mModelLoaded = false;
+        }
+    }
+
     /**
      * Reloads the workspace items from the DB and re-binds the workspace. This should generally
      * not be called as DB updates are automatically followed by UI update

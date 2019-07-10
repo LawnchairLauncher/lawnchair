@@ -62,6 +62,10 @@ public class LauncherIcons implements AutoCloseable {
                 LauncherIcons m = sPool;
                 sPool = m.next;
                 m.next = null;
+                if (m.mWrapperIcon != null && !m.mWrapperIcon.isMaskValid()) {
+                    m.mWrapperIcon = null;
+                    m.mNormalizer.onAdaptiveShapeChanged();
+                }
                 return m;
             }
         }
@@ -97,7 +101,7 @@ public class LauncherIcons implements AutoCloseable {
     private IconNormalizer mNormalizer;
     private ShadowGenerator mShadowGenerator;
 
-    private Drawable mWrapperIcon;
+    private AdaptiveIconCompat mWrapperIcon;
     private int mWrapperBackgroundColor = DEFAULT_WRAPPER_BACKGROUND;
 
     private IconProvider iconProvider;

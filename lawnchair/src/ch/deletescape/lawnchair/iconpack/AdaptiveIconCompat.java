@@ -116,6 +116,7 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
     private final Path mMask;
     private final Matrix mMaskMatrix;
     private final Region mTransparentRegion;
+    private final int mMaskId;
 
     private Bitmap mMaskBitmap;
 
@@ -179,6 +180,7 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
         mMaskMatrix = new Matrix();
         mCanvas = new Canvas();
         mTransparentRegion = new Region();
+        mMaskId = sMask.hashCode();
     }
 
     private int getInt(Field field, Object obj) {
@@ -879,6 +881,10 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
         return this;
     }
 
+    public boolean isMaskValid() {
+        return sMask != null && mMaskId == sMask.hashCode();
+    }
+
     protected static @NonNull TypedArray obtainAttributes(@NonNull Resources res,
             @Nullable Theme theme, @NonNull AttributeSet set, @NonNull int[] attrs) {
         if (theme == null) {
@@ -1121,5 +1127,9 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
         } else {
             return icon;
         }
+    }
+
+    public static void resetMask() {
+        sMask = null;
     }
 }

@@ -325,6 +325,10 @@ public class IconNormalizer {
         return scale;
     }
 
+    public void onAdaptiveShapeChanged() {
+        mAdaptiveIconScale = SCALE_NOT_INITIALIZED;
+    }
+
     /**
      * Modifies {@param xCoordinates} to represent a convex border. Fills in all missing values
      * (except on either ends) with appropriate values.
