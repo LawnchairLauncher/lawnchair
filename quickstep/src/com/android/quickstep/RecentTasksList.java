@@ -16,6 +16,8 @@
 
 package com.android.quickstep;
 
+import static com.android.quickstep.TouchInteractionService.BACKGROUND_EXECUTOR;
+
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -25,7 +27,6 @@ import android.util.SparseBooleanArray;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.KeyguardManagerCompat;
 import com.android.systemui.shared.system.RecentTaskInfoCompat;
 import com.android.systemui.shared.system.TaskDescriptionCompat;
@@ -43,7 +44,6 @@ public class RecentTasksList extends TaskStackChangeListener {
 
     private final KeyguardManagerCompat mKeyguardManager;
     private final MainThreadExecutor mMainThreadExecutor;
-    private final BackgroundExecutor mBgThreadExecutor;
 
     // The list change id, increments as the task list changes in the system
     private int mChangeId;
@@ -56,7 +56,6 @@ public class RecentTasksList extends TaskStackChangeListener {
 
     public RecentTasksList(Context context) {
         mMainThreadExecutor = new MainThreadExecutor();
-        mBgThreadExecutor = BackgroundExecutor.get();
         mKeyguardManager = new KeyguardManagerCompat(context);
         mChangeId = 1;
         ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
@@ -67,7 +66,7 @@ public class RecentTasksList extends TaskStackChangeListener {
      */
     public void getTaskKeys(int numTasks, Consumer<ArrayList<Task>> callback) {
         // Kick off task loading in the background
-        mBgThreadExecutor.submit(() -> {
+        BACKGROUND_EXECUTOR.execute(() -> {
             ArrayList<Task> tasks = loadTasksInBackground(numTasks, true /* loadKeysOnly */);
             mMainThreadExecutor.execute(() -> callback.accept(tasks));
         });
@@ -93,7 +92,7 @@ public class RecentTasksList extends TaskStackChangeListener {
         }
 
         // Kick off task loading in the background
-        mBgThreadExecutor.submit(() -> {
+        BACKGROUND_EXECUTOR.execute(() -> {
             ArrayList<Task> tasks = loadTasksInBackground(Integer.MAX_VALUE, loadKeysOnly);
 
             mMainThreadExecutor.execute(() -> {

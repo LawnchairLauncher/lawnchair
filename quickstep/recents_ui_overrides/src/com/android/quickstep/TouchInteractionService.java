@@ -43,7 +43,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.RectF;
@@ -95,12 +94,12 @@ import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
+import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.SystemGestureExclusionListenerCompat;
 
 import java.io.FileDescriptor;
@@ -123,10 +122,6 @@ class ArgList extends LinkedList<String> {
 
     public String nextArg() {
         return pollFirst().toLowerCase();
-    }
-
-    public String nextArgExact() {
-        return pollFirst();
     }
 }
 
@@ -714,11 +709,7 @@ public class TouchInteractionService extends Service implements
         }
 
         // Pass null animation handler to indicate this start is preload.
-        BackgroundExecutor.get().submit(
-                () -> ActivityManagerWrapper.getInstance().startRecentsActivity(
-                        mOverviewComponentObserver.getOverviewIntentIgnoreSysUiState(),
-                        null /* assistDataReceiver */, null /* animationHandler */,
-                        null /* resultCallback */, null /* resultCallbackHandler */));
+        startRecentsActivityAsync(mOverviewComponentObserver.getOverviewIntentIgnoreSysUiState(), null);
     }
 
     @Override
@@ -795,5 +786,10 @@ public class TouchInteractionService extends Service implements
                 TOUCH_INTERACTION_LOG.clear();
                 break;
         }
+    }
+
+    public static void startRecentsActivityAsync(Intent intent, RecentsAnimationListener listener) {
+        BACKGROUND_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
+                .startRecentsActivity(intent, null, listener, null, null));
     }
 }

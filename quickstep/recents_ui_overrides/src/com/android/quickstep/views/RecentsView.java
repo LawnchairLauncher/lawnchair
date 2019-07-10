@@ -37,6 +37,7 @@ import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.CLEAR_ALL_BUTTON;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
+import static com.android.quickstep.TouchInteractionService.BACKGROUND_EXECUTOR;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -108,7 +109,6 @@ import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.LauncherEventUtil;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
@@ -226,7 +226,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 return;
             }
 
-            BackgroundExecutor.get().submit(() -> {
+            BACKGROUND_EXECUTOR.execute(() -> {
                 TaskView taskView = getTaskView(taskId);
                 if (taskView == null) {
                     return;

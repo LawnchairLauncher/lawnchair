@@ -27,6 +27,7 @@ import static com.android.quickstep.WindowTransformSwipeHandler.MAX_SWIPE_DURATI
 import static com.android.quickstep.WindowTransformSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
 import static com.android.quickstep.WindowTransformSwipeHandler.MIN_SWIPE_DURATION;
 import static com.android.quickstep.inputconsumers.OtherActivityInputConsumer.QUICKSTEP_TOUCH_SLOP_RATIO;
+import static com.android.quickstep.TouchInteractionService.startRecentsActivityAsync;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.animation.Animator;
@@ -56,7 +57,6 @@ import com.android.quickstep.util.RecentsAnimationListenerSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet.SwipeAnimationListener;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -222,9 +222,7 @@ public class FallbackNoButtonInputConsumer implements InputConsumer, SwipeAnimat
                 mSwipeSharedState.newRecentsAnimationListenerSet();
         listenerSet.addListener(this);
         Intent homeIntent = mOverviewComponentObserver.getHomeIntent();
-        BackgroundExecutor.get().submit(
-                () -> ActivityManagerWrapper.getInstance().startRecentsActivity(
-                        homeIntent, null, listenerSet, null, null));
+        startRecentsActivityAsync(homeIntent, listenerSet);
 
         ActivityManagerWrapper.getInstance().closeSystemWindows(
                 CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);

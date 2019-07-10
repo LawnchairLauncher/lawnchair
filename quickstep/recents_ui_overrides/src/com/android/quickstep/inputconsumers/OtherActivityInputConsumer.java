@@ -28,6 +28,7 @@ import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
 import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
+import static com.android.quickstep.TouchInteractionService.startRecentsActivityAsync;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.annotation.TargetApi;
@@ -61,7 +62,6 @@ import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.quickstep.util.RecentsAnimationListenerSet;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
@@ -352,9 +352,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             RecentsAnimationListenerSet newListenerSet =
                     mSwipeSharedState.newRecentsAnimationListenerSet();
             newListenerSet.addListener(handler);
-            BackgroundExecutor.get().submit(
-                    () -> ActivityManagerWrapper.getInstance().startRecentsActivity(
-                            mHomeIntent, null, newListenerSet, null, null));
+            startRecentsActivityAsync(mHomeIntent, newListenerSet);
         }
     }
 
