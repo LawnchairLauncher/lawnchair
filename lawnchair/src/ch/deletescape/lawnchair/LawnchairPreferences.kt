@@ -353,8 +353,11 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         onChangeCallback?.updateSmartspace()
     }
 
-    private fun reloadIcons() {
-        onChangeCallback?.reloadIcons()
+    fun reloadIcons() {
+        LauncherAppState.getInstance(context).reloadIconCache()
+        runOnMainThread {
+            onChangeCallback?.recreate()
+        }
     }
 
     fun addOnPreferenceChangeListener(listener: OnPreferenceChangeListener, vararg keys: String) {

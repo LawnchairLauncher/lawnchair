@@ -385,15 +385,6 @@ fun java.text.Collator.matches(query: String, target: String): Boolean {
 
 fun String.toTitleCase(): String = splitToSequence(" ").map { it.capitalize() }.joinToString(" ")
 
-fun reloadIcons(context: Context) {
-    val userManagerCompat = UserManagerCompat.getInstance(context)
-    val launcherApps = LauncherAppsCompat.getInstance(context)
-
-    reloadIcons(context, userManagerCompat.userProfiles.flatMap { user ->
-        launcherApps.getActivityList(null, user).map { PackageUserKey(it.componentName.packageName, it.user) }
-    })
-}
-
 fun reloadIconsFromComponents(context: Context, components: Collection<ComponentKey>) {
     reloadIcons(context, components.map { PackageUserKey(it.componentName.packageName, it.user) })
 }
