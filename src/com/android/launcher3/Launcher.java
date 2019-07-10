@@ -952,10 +952,14 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mHandler.removeCallbacks(mHandleDeferredResume);
         Utilities.postAsyncCallback(mHandler, mHandleDeferredResume);
 
-        for (OnResumeCallback cb : mOnResumeCallbacks) {
-            cb.onLauncherResume();
+        if (!mOnResumeCallbacks.isEmpty()) {
+            final ArrayList<OnResumeCallback> resumeCallbacks = new ArrayList<>(mOnResumeCallbacks);
+            mOnResumeCallbacks.clear();
+            for (int i = resumeCallbacks.size() - 1; i >= 0; i--) {
+                resumeCallbacks.get(i).onLauncherResume();
+            }
+            resumeCallbacks.clear();
         }
-        mOnResumeCallbacks.clear();
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
