@@ -240,6 +240,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val folderBgColored by BooleanPref("pref_folderBgColorGen", false)
     val brightnessTheme by BooleanPref("pref_brightnessTheme", false, restart)
     val debugOkHttp by BooleanPref("pref_debugOkhttp", onChange = restart)
+    val initLeakCanary by BooleanPref("pref_initLeakCanary", true, restart)
     val showCrashNotifications by BooleanPref("pref_showCrashNotifications", true, restart)
     val autoUploadBugReport by BooleanPref("pref_autoUploadBugReport", false) {
         if (showCrashNotifications) {

@@ -58,7 +58,7 @@ class LawnchairApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        if (BuildConfig.HAS_LEAKCANARY) {
+        if (BuildConfig.HAS_LEAKCANARY && lawnchairPrefs.initLeakCanary) {
             if (LeakCanary.isInAnalyzerProcess(this)) {
                 // This process is dedicated to LeakCanary for heap analysis.
                 // You should not init your app in this process.
