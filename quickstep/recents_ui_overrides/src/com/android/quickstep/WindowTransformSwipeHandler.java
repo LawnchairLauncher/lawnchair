@@ -43,7 +43,6 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_O
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
@@ -59,7 +58,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
-import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnApplyWindowInsetsListener;
@@ -97,7 +95,7 @@ import com.android.quickstep.ActivityControlHelper.HomeAnimationFactory;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.inputconsumers.InputConsumer;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
-import com.android.quickstep.util.ClipAnimationHelper;
+import com.android.quickstep.util.ClipAnimationHelper.TargetAlphaProvider;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
@@ -112,11 +110,10 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.WindowCallbacksCompat;
 
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 @TargetApi(Build.VERSION_CODES.O)
-public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
+public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> extends BaseSwipeUpHandler
         implements SwipeAnimationListener, OnApplyWindowInsetsListener {
     private static final String TAG = WindowTransformSwipeHandler.class.getSimpleName();
 
@@ -220,19 +217,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private static final long SHELF_ANIM_DURATION = 240;
     public static final long RECENTS_ATTACH_DURATION = 300;
 
-    // Start resisting when swiping past this factor of mTransitionDragLength.
-    private static final float DRAG_LENGTH_FACTOR_START_PULLBACK = 1.4f;
-    // This is how far down we can scale down, where 0f is full screen and 1f is recents.
-    private static final float DRAG_LENGTH_FACTOR_MAX_PULLBACK = 1.8f;
-    private static final Interpolator PULLBACK_INTERPOLATOR = DEACCEL;
-
     /**
      * Used as the page index for logging when we return to the last task at the end of the gesture.
      */
     private static final int LOG_NO_OP_PAGE_INDEX = -1;
-
-    private final ClipAnimationHelper mClipAnimationHelper;
-    private final ClipAnimationHelper.TransformParams mTransformParams;
 
     private Runnable mGestureEndCallback;
     private GestureEndTarget mGestureEndTarget;
@@ -240,10 +228,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private RunningWindowAnim mRunningWindowAnim;
     private boolean mIsShelfPeeking;
     private DeviceProfile mDp;
-    // The distance needed to drag to reach the task size in recents.
-    private int mTransitionDragLength;
-    // How much further we can drag past recents, as a factor of mTransitionDragLength.
-    private float mDragLengthFactor = 1;
 
     // Shift in the range of [0, 1].
     // 0 => preview snapShot is completely visible, and hotseat is completely translated down
@@ -256,7 +240,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private final Handler mMainThreadHandler = MAIN_THREAD_EXECUTOR.getHandler();
 
-    private final Context mContext;
     private final ActivityControlHelper<T> mActivityControlHelper;
     private final ActivityInitListener mActivityInitListener;
 
@@ -294,7 +277,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     public WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context,
             long touchTimeMs, ActivityControlHelper<T> controller, boolean continuingLastGesture,
             InputConsumerController inputConsumer) {
-        mContext = context;
+        super(context);
         mRunningTaskId = runningTaskInfo.id;
         mTouchTimeMs = touchTimeMs;
         mActivityControlHelper = controller;
@@ -303,8 +286,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         mContinuingLastGesture = continuingLastGesture;
         mRecentsAnimationWrapper = new RecentsAnimationWrapper(inputConsumer,
                 this::createNewInputProxyHandler);
-        mClipAnimationHelper = new ClipAnimationHelper(context);
-        mTransformParams = new ClipAnimationHelper.TransformParams();
 
         mMode = SysUINavigationMode.getMode(context);
         initStateCallbacks();
@@ -391,18 +372,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         if (mMode == Mode.NO_BUTTON) {
             // We can drag all the way to the top of the screen.
             mDragLengthFactor = (float) dp.heightPx / mTransitionDragLength;
-        }
-    }
-
-    private long getFadeInDuration() {
-        if (mCurrentShift.getCurrentAnimation() != null) {
-            ObjectAnimator anim = mCurrentShift.getCurrentAnimation();
-            long theirDuration = anim.getDuration() - anim.getCurrentPlayTime();
-
-            // TODO: Find a better heuristic
-            return Math.min(MAX_SWIPE_DURATION, Math.max(theirDuration, MIN_SWIPE_DURATION));
-        } else {
-            return MAX_SWIPE_DURATION;
         }
     }
 
@@ -583,22 +552,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     @UiThread
     public void updateDisplacement(float displacement) {
-        // We are moving in the negative x/y direction
-        displacement = -displacement;
-        if (displacement > mTransitionDragLength * mDragLengthFactor && mTransitionDragLength > 0) {
-            mCurrentShift.updateValue(mDragLengthFactor);
-        } else {
-            float translation = Math.max(displacement, 0);
-            float shift = mTransitionDragLength == 0 ? 0 : translation / mTransitionDragLength;
-            if (shift > DRAG_LENGTH_FACTOR_START_PULLBACK) {
-                float pullbackProgress = Utilities.getProgress(shift,
-                        DRAG_LENGTH_FACTOR_START_PULLBACK, mDragLengthFactor);
-                pullbackProgress = PULLBACK_INTERPOLATOR.getInterpolation(pullbackProgress);
-                shift = DRAG_LENGTH_FACTOR_START_PULLBACK + pullbackProgress
-                        * (DRAG_LENGTH_FACTOR_MAX_PULLBACK - DRAG_LENGTH_FACTOR_START_PULLBACK);
-            }
-            mCurrentShift.updateValue(shift);
-        }
+        mCurrentShift.updateValue(getShiftForDisplacement(displacement));
     }
 
     public void onMotionPauseChanged(boolean isPaused) {
@@ -666,9 +620,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         if (mIsShelfPeeking != wasShelfPeeking) {
             maybeUpdateRecentsAttachedState();
         }
-        if (mRecentsView != null && shelfState.shouldPreformHaptic) {
-            mRecentsView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
-                    HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+        if (shelfState.shouldPreformHaptic) {
+            performHapticFeedback();
         }
     }
 
@@ -722,9 +675,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         final boolean passed = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW;
         if (passed != mPassedOverviewThreshold) {
             mPassedOverviewThreshold = passed;
-            if (mRecentsView != null && mMode != Mode.NO_BUTTON) {
-                mRecentsView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
-                    HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+            if (mMode != Mode.NO_BUTTON) {
+                performHapticFeedback();
             }
         }
 
@@ -1450,13 +1402,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         mGestureEndCallback = gestureEndCallback;
     }
 
-    private void setTargetAlphaProvider(
-            BiFunction<RemoteAnimationTargetCompat, Float, Float> provider) {
+    private void setTargetAlphaProvider(TargetAlphaProvider provider) {
         mClipAnimationHelper.setTaskAlphaCallback(provider);
         updateFinalShift();
     }
 
-    public static float getHiddenTargetAlpha(RemoteAnimationTargetCompat app, Float expectedAlpha) {
+    public static float getHiddenTargetAlpha(RemoteAnimationTargetCompat app, float expectedAlpha) {
         if (!isNotInRecents(app)) {
             return 0;
         }
