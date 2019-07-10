@@ -167,6 +167,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val weatherUnit by StringBasedPref("pref_weather_units", Temperature.Unit.Celsius, ::updateSmartspaceProvider,
         Temperature.Companion::unitFromString, Temperature.Companion::unitToString) { }
     var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
+    var weatherIconPack by StringPref("pref_weatherIcons", "", updateSmartspace)
 
     // Dock
     val dockStyles = DockStyle.StyleManager(this, reloadDockStyle, resetAllApps)
