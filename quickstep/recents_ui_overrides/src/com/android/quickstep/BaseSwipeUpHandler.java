@@ -22,22 +22,32 @@ import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.quickstep.TouchInteractionService.BACKGROUND_EXECUTOR;
 
 import android.annotation.TargetApi;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
+import android.graphics.PointF;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.provider.Settings;
+import android.view.MotionEvent;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.graphics.RotationMode;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.ClipAnimationHelper.TransformParams;
+import com.android.quickstep.util.SwipeAnimationTargetSet.SwipeAnimationListener;
+import com.android.quickstep.views.RecentsView;
+
+import java.util.function.Consumer;
+
+import androidx.annotation.UiThread;
 
 /**
  * Base class for swipe up handler with some utility methods
  */
 @TargetApi(Build.VERSION_CODES.Q)
-public abstract class BaseSwipeUpHandler {
+public abstract class BaseSwipeUpHandler implements SwipeAnimationListener {
 
     // Start resisting when swiping past this factor of mTransitionDragLength.
     private static final float DRAG_LENGTH_FACTOR_START_PULLBACK = 1.4f;
@@ -56,6 +66,16 @@ public abstract class BaseSwipeUpHandler {
     protected final TransformParams mTransformParams = new TransformParams();
 
     private final Vibrator mVibrator;
+
+    // Shift in the range of [0, 1].
+    // 0 => preview snapShot is completely visible, and hotseat is completely translated down
+    // 1 => preview snapShot is completely aligned with the recents view and hotseat is completely
+    // visible.
+    protected final AnimatedFloat mCurrentShift = new AnimatedFloat(this::updateFinalShift);
+
+    protected RecentsView mRecentsView;
+
+    protected Runnable mGestureEndCallback;
 
     protected BaseSwipeUpHandler(Context context) {
         mContext = context;
@@ -80,14 +100,20 @@ public abstract class BaseSwipeUpHandler {
         BACKGROUND_EXECUTOR.execute(() -> mVibrator.vibrate(effect));
     }
 
-    protected float getShiftForDisplacement(float displacement) {
+    public Consumer<MotionEvent> getRecentsViewDispatcher(RotationMode rotationMode) {
+        return mRecentsView != null ? mRecentsView.getEventDispatcher(rotationMode) : null;
+    }
+
+    @UiThread
+    public void updateDisplacement(float displacement) {
         // We are moving in the negative x/y direction
         displacement = -displacement;
+        float shift;
         if (displacement > mTransitionDragLength * mDragLengthFactor && mTransitionDragLength > 0) {
-            return mDragLengthFactor;
+            shift = mDragLengthFactor;
         } else {
             float translation = Math.max(displacement, 0);
-            float shift = mTransitionDragLength == 0 ? 0 : translation / mTransitionDragLength;
+            shift = mTransitionDragLength == 0 ? 0 : translation / mTransitionDragLength;
             if (shift > DRAG_LENGTH_FACTOR_START_PULLBACK) {
                 float pullbackProgress = Utilities.getProgress(shift,
                         DRAG_LENGTH_FACTOR_START_PULLBACK, mDragLengthFactor);
@@ -95,7 +121,44 @@ public abstract class BaseSwipeUpHandler {
                 shift = DRAG_LENGTH_FACTOR_START_PULLBACK + pullbackProgress
                         * (DRAG_LENGTH_FACTOR_MAX_PULLBACK - DRAG_LENGTH_FACTOR_START_PULLBACK);
             }
-            return shift;
         }
+
+        mCurrentShift.updateValue(shift);
+    }
+
+    public void setGestureEndCallback(Runnable gestureEndCallback) {
+        mGestureEndCallback = gestureEndCallback;
+    }
+
+    /**
+     * Called when the value of {@link #mCurrentShift} changes
+     */
+    public abstract void updateFinalShift();
+
+
+    /**
+     * Called when motion pause is detected
+     */
+    public abstract void onMotionPauseChanged(boolean isPaused);
+
+    @UiThread
+    public void onGestureStarted() { }
+
+    @UiThread
+    public abstract void onGestureCancelled();
+
+    @UiThread
+    public abstract void onGestureEnded(float endVelocity, PointF velocity, PointF downPos);
+
+    public void onConsumerAboutToBeSwitched(SwipeSharedState sharedState) { }
+
+    public void setIsLikelyToStartNewTask(boolean isLikelyToStartNewTask) { }
+
+    public void initWhenReady() { }
+
+    public interface Factory {
+
+        BaseSwipeUpHandler newHandler(RunningTaskInfo runningTask,
+                long touchTimeMs, boolean continuingLastGesture);
     }
 }
