@@ -1,5 +1,5 @@
 /*
- *     Copyright (C) 2019 Lawnchair Team.
+ *     Copyright (C) 2019 paphonb@xda
  *
  *     This file is part of Lawnchair Launcher.
  *
@@ -17,16 +17,34 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.deletescape.lawnchair.iconpack
+package ch.deletescape.lawnchair.adaptive
 
 import android.content.Context
+import android.os.Handler
+import ch.deletescape.lawnchair.folder.FolderShape
+import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat
+import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
-import com.android.launcher3.graphics.IconShapeOverride
+import com.android.launcher3.LauncherAppState
+import com.android.launcher3.LauncherModel
 
 class IconShapeManager(private val context: Context) {
 
-    fun getOverride(): String? {
-        return IconShapeOverride.getAppliedValue(context)
+    val iconShape by context.lawnchairPrefs.StringBasedPref(
+            "pref_iconShape", IconShape.Circle, ::onShapeChanged,
+            IconShape.Companion::fromString, IconShape::toString) { /* no dispose */ }
+
+    private fun onShapeChanged() {
+        Handler(LauncherModel.getWorkerLooper()).post {
+            LauncherAppState.getInstance(context).reloadIconCache()
+
+            runOnMainThread {
+                AdaptiveIconCompat.resetMask()
+                FolderShape.init(context)
+                context.lawnchairPrefs.recreate()
+            }
+        }
     }
 
     companion object : LawnchairSingletonHolder<IconShapeManager>(::IconShapeManager) {
