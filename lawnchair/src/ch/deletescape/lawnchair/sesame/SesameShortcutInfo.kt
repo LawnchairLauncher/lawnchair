@@ -61,7 +61,7 @@ class SesameShortcutInfo(private val context: Context, private val shortcut: Ses
     override fun getDisabledMessage() = null
     override fun toString() = shortcut.toString()
 
-    private val wrapperIcon = LawnchairIconProvider.getAdaptiveIconDrawableWrapper(context)
+    private val wrapperIcon by lazy { LawnchairIconProvider.getAdaptiveIconDrawableWrapper(context) }
 
     fun getIcon(density: Int): Drawable {
         if (shortcut.iconUri != null) {
