@@ -120,6 +120,10 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     public abstract View getRootView();
 
+    public void returnToHomescreen() {
+        // no-op
+    }
+
     public Rect getViewBounds(View v) {
         int[] pos = new int[2];
         v.getLocationOnScreen(pos);

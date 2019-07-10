@@ -2568,6 +2568,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return (Launcher) fromContext(context);
     }
 
+    @Override
+    public void returnToHomescreen() {
+        super.returnToHomescreen();
+        getStateManager().goToState(LauncherState.NORMAL);
+    }
+
     /**
      * Just a wrapper around the type cast to allow easier tracking of calls.
      */
