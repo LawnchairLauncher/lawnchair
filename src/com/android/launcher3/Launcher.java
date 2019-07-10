@@ -268,13 +268,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                     //.detectDiskReads()
                     //.detectDiskWrites()
                     .detectNetwork()   // or .detectAll() for all detectable problems
-                    .penaltyLog()
+                    //.penaltyLog()
                     .build());
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
                     .detectLeakedSqlLiteObjects()
                     .detectLeakedClosableObjects()
                     .detectActivityLeaks()
-                    .penaltyLog()
+                    //.penaltyLog()
                     //.penaltyDeath()
                     .penaltyListener(new LooperExecutor(getMainLooper()),
                             new OnVmViolationListener() {

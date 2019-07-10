@@ -34,7 +34,6 @@ import android.text.TextUtils
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.override.AppInfoProvider
 import ch.deletescape.lawnchair.override.CustomInfoProvider
-import ch.deletescape.lawnchair.reloadIcons
 import ch.deletescape.lawnchair.runOnMainThread
 import com.android.launcher3.*
 import com.android.launcher3.shortcuts.ShortcutInfoCompat
@@ -179,7 +178,7 @@ class IconPackManager(private val context: Context) {
     }
 
     fun onPacksUpdated() {
-        reloadIcons(context)
+        context.lawnchairPrefs.reloadIcons()
         runOnMainThread { listeners.forEach { it.invoke() } }
     }
 
