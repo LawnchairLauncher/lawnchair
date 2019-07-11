@@ -27,6 +27,7 @@ import ch.deletescape.lawnchair.checkLocationAccess
 import ch.deletescape.lawnchair.location.IPLocation
 import ch.deletescape.lawnchair.perms.CustomPermissionManager
 import ch.deletescape.lawnchair.runOnUiWorkerThread
+import ch.deletescape.lawnchair.smartspace.weather.icons.WeatherIconManager
 import ch.deletescape.lawnchair.twilight.TwilightManager
 import ch.deletescape.lawnchair.util.Temperature
 import com.android.launcher3.R
@@ -59,6 +60,11 @@ class OnePlusWeatherDataProvider(controller: LawnchairSmartspaceController) :
         provider.registerContentObserver(context.contentResolver)
         provider.subscribeCallback(this)
         super.performSetup()
+    }
+
+    override fun forceUpdate() {
+        super.forceUpdate()
+        provider.getCurrentWeatherInformation(this)
     }
 
     override fun onWeatherUpdated(weatherData: OPWeatherProvider.WeatherData) {
@@ -99,12 +105,7 @@ class OnePlusWeatherDataProvider(controller: LawnchairSmartspaceController) :
             }
         }
 
-        val resId = if (isDay) {
-            OPWeatherProvider.getWeatherIconResourceId(data.weatherCode)
-        } else {
-            OPWeatherProvider.getNightWeatherIconResourceId(data.weatherCode)
-        }
-        return BitmapFactory.decodeResource(context.resources, resId)
+        return WeatherIconManager.getInstance(context).getIcon(data.icon, !isDay)
     }
 
     private fun getTemperatureUnit(data: OPWeatherProvider.WeatherData): Temperature.Unit {
