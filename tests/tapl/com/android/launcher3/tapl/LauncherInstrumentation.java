@@ -820,6 +820,22 @@ public final class LauncherInstrumentation {
                 endY = (int) (vertCenter - halfGestureHeight);
             }
             break;
+            case LEFT: {
+                startY = endY = rect.centerY();
+                final int horizCenter = rect.centerX();
+                final float halfGestureWidth = rect.width() * percent / 2.0f;
+                startX = (int) (horizCenter - halfGestureWidth);
+                endX = (int) (horizCenter + halfGestureWidth);
+            }
+            break;
+            case RIGHT: {
+                startY = endY = rect.centerY();
+                final int horizCenter = rect.centerX();
+                final float halfGestureWidth = rect.width() * percent / 2.0f;
+                startX = (int) (horizCenter + halfGestureWidth);
+                endX = (int) (horizCenter - halfGestureWidth);
+            }
+            break;
             default:
                 fail("Unsupported direction");
                 return;
