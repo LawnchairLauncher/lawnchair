@@ -656,8 +656,7 @@ public class FloatingIconView extends View implements
         canvas.restoreToCount(count);
     }
 
-    public void onListenerViewClosed() {
-        // Fast finish here.
+    public void fastFinish() {
         if (mEndRunnable != null) {
             mEndRunnable.run();
             mEndRunnable = null;
@@ -757,7 +756,7 @@ public class FloatingIconView extends View implements
         view.setVisibility(INVISIBLE);
         parent.addView(view);
         dragLayer.addView(view.mListenerView);
-        view.mListenerView.setListener(view::onListenerViewClosed);
+        view.mListenerView.setListener(view::fastFinish);
 
         view.mEndRunnable = () -> {
             view.mEndRunnable = null;
