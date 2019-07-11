@@ -23,22 +23,27 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
-import static com.android.quickstep.WindowTransformSwipeHandler.MAX_SWIPE_DURATION;
+import static com.android.quickstep.RecentsActivity.EXTRA_TASK_ID;
+import static com.android.quickstep.RecentsActivity.EXTRA_THUMBNAIL;
 import static com.android.quickstep.WindowTransformSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
-import static com.android.quickstep.WindowTransformSwipeHandler.MIN_SWIPE_DURATION;
+import static com.android.quickstep.inputconsumers.FallbackNoButtonInputConsumer.GestureEndTarget.HOME;
+import static com.android.quickstep.inputconsumers.FallbackNoButtonInputConsumer.GestureEndTarget.LAST_TASK;
+import static com.android.quickstep.inputconsumers.FallbackNoButtonInputConsumer.GestureEndTarget.RECENTS;
 import static com.android.quickstep.inputconsumers.OtherActivityInputConsumer.QUICKSTEP_TOUCH_SLOP_RATIO;
 import static com.android.quickstep.TouchInteractionService.startRecentsActivityAsync;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
+import android.animation.AnimatorSet;
 import android.app.ActivityManager.RunningTaskInfo;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
@@ -48,44 +53,59 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.quickstep.ActivityControlHelper;
+import com.android.quickstep.AnimatedFloat;
+import com.android.quickstep.BaseSwipeUpHandler;
 import com.android.quickstep.OverviewComponentObserver;
 import com.android.quickstep.SwipeSharedState;
-import com.android.quickstep.util.ClipAnimationHelper;
-import com.android.quickstep.util.ClipAnimationHelper.TransformParams;
+import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.NavBarPosition;
+import com.android.quickstep.util.ObjectWrapper;
 import com.android.quickstep.util.RecentsAnimationListenerSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet.SwipeAnimationListener;
+import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
-public class FallbackNoButtonInputConsumer implements InputConsumer, SwipeAnimationListener {
+public class FallbackNoButtonInputConsumer extends BaseSwipeUpHandler
+        implements InputConsumer, SwipeAnimationListener {
 
-    private static final int STATE_NOT_FINISHED = 0;
-    private static final int STATE_FINISHED_TO_HOME = 1;
-    private static final int STATE_FINISHED_TO_APP = 2;
+    public enum GestureEndTarget {
+        HOME(3, 100, 1),
+        RECENTS(1, 300, 0),
+        LAST_TASK(0, 150, 1);
 
-    private static final float PROGRESS_TO_END_GESTURE = -2;
+        private final float mEndProgress;
+        private final long mDurationMultiplier;
+        private final float mLauncherAlpha;
+        GestureEndTarget(float endProgress, long durationMultiplier, float launcherAlpha) {
+            mEndProgress = endProgress;
+            mDurationMultiplier = durationMultiplier;
+            mLauncherAlpha = launcherAlpha;
+        }
+    }
 
     private final ActivityControlHelper mActivityControlHelper;
     private final InputMonitorCompat mInputMonitor;
-    private final Context mContext;
     private final NavBarPosition mNavBarPosition;
     private final SwipeSharedState mSwipeSharedState;
     private final OverviewComponentObserver mOverviewComponentObserver;
     private final int mRunningTaskId;
 
-    private final ClipAnimationHelper mClipAnimationHelper;
-    private final TransformParams mTransformParams = new TransformParams();
-    private final float mTransitionDragLength;
     private final DeviceProfile mDP;
+    private final MotionPauseDetector mMotionPauseDetector;
+    private final float mMotionPauseMinDisplacement;
+    private final Rect mTargetRect = new Rect();
 
     private final RectF mSwipeTouchRegion;
     private final boolean mDisableHorizontalSwipe;
 
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
+
+    private final AnimatedFloat mLauncherAlpha = new AnimatedFloat(this::onLauncherAlphaChanged);
+    private final AnimatedFloat mProgress = new AnimatedFloat(this::onProgressChanged);
 
     private int mActivePointerId = -1;
     // Slop used to determine when we say that the gesture has started.
@@ -99,20 +119,25 @@ public class FallbackNoButtonInputConsumer implements InputConsumer, SwipeAnimat
     // Might be displacement in X or Y, depending on the direction we are swiping from the nav bar.
     private float mStartDisplacement;
     private SwipeAnimationTargetSet mSwipeAnimationTargetSet;
-    private float mProgress;
 
-    private int mState = STATE_NOT_FINISHED;
+    private boolean mIsMotionPaused = false;
+    private GestureEndTarget mEndTarget;
 
     public FallbackNoButtonInputConsumer(Context context,
             ActivityControlHelper activityControlHelper, InputMonitorCompat inputMonitor,
             SwipeSharedState swipeSharedState, RectF swipeTouchRegion,
             OverviewComponentObserver overviewComponentObserver,
             boolean disableHorizontalSwipe, RunningTaskInfo runningTaskInfo) {
-        mContext = context;
+        super(context);
         mActivityControlHelper = activityControlHelper;
         mInputMonitor = inputMonitor;
         mOverviewComponentObserver = overviewComponentObserver;
         mRunningTaskId = runningTaskInfo.id;
+
+        mMotionPauseDetector = new MotionPauseDetector(context);
+        mMotionPauseMinDisplacement = context.getResources().getDimension(
+                R.dimen.motion_pause_detector_min_displacement_from_app);
+        mMotionPauseDetector.setOnMotionPauseListener(this::onMotionPauseChanged);
 
         mSwipeSharedState = swipeSharedState;
         mSwipeTouchRegion = swipeTouchRegion;
@@ -124,18 +149,29 @@ public class FallbackNoButtonInputConsumer implements InputConsumer, SwipeAnimat
         mTouchSlop = QUICKSTEP_TOUCH_SLOP_RATIO
                 * ViewConfiguration.get(context).getScaledTouchSlop();
 
-        mClipAnimationHelper = new ClipAnimationHelper(context);
-
         mDP = InvariantDeviceProfile.INSTANCE.get(context).getDeviceProfile(context).copy(context);
-        Rect tempRect = new Rect();
-        mTransitionDragLength = mActivityControlHelper.getSwipeUpDestinationAndLength(
-                mDP, context, tempRect);
-        mClipAnimationHelper.updateTargetRect(tempRect);
+        mLauncherAlpha.value = 1;
+
+        mClipAnimationHelper.setBaseAlphaCallback((t, a) -> mLauncherAlpha.value);
+        initTransitionTarget();
     }
 
     @Override
     public int getType() {
         return TYPE_FALLBACK_NO_BUTTON;
+    }
+
+    private void onLauncherAlphaChanged() {
+        if (mSwipeAnimationTargetSet != null && mEndTarget == null) {
+            mClipAnimationHelper.applyTransform(mSwipeAnimationTargetSet, mTransformParams);
+        }
+    }
+
+    private void onMotionPauseChanged(boolean isPaused) {
+        mIsMotionPaused = isPaused;
+        mLauncherAlpha.animateToValue(mLauncherAlpha.value, isPaused ? 0 : 1)
+                .setDuration(150).start();
+        performHapticFeedback();
     }
 
     @Override
@@ -147,6 +183,7 @@ public class FallbackNoButtonInputConsumer implements InputConsumer, SwipeAnimat
         mVelocityTracker.addMovement(ev);
         if (ev.getActionMasked() == ACTION_POINTER_UP) {
             mVelocityTracker.clear();
+            mMotionPauseDetector.clear();
         }
 
         switch (ev.getActionMasked()) {
@@ -204,6 +241,9 @@ public class FallbackNoButtonInputConsumer implements InputConsumer, SwipeAnimat
                     }
                 } else {
                     updateDisplacement(displacement - mStartDisplacement);
+                    mMotionPauseDetector.setDisallowPause(
+                            -displacement < mMotionPauseMinDisplacement);
+                    mMotionPauseDetector.addPosition(displacement, ev.getEventTime());
                 }
                 break;
             }
@@ -230,9 +270,11 @@ public class FallbackNoButtonInputConsumer implements InputConsumer, SwipeAnimat
     }
 
     private void updateDisplacement(float displacement) {
-        mProgress = displacement / mTransitionDragLength;
-        mTransformParams.setProgress(mProgress);
+        mProgress.updateValue(getShiftForDisplacement(displacement));
+    }
 
+    private void onProgressChanged() {
+        mTransformParams.setProgress(mProgress.value);
         if (mSwipeAnimationTargetSet != null) {
             mClipAnimationHelper.applyTransform(mSwipeAnimationTargetSet, mTransformParams);
         }
@@ -251,7 +293,7 @@ public class FallbackNoButtonInputConsumer implements InputConsumer, SwipeAnimat
      */
     private void finishTouchTracking(MotionEvent ev) {
         if (ev.getAction() == ACTION_CANCEL) {
-            mState = STATE_FINISHED_TO_APP;
+            mEndTarget = LAST_TASK;
         } else {
             mVelocityTracker.computeCurrentVelocity(1000,
                     ViewConfiguration.get(mContext).getScaledMaximumFlingVelocity());
@@ -264,53 +306,68 @@ public class FallbackNoButtonInputConsumer implements InputConsumer, SwipeAnimat
                     .getDimension(R.dimen.quickstep_fling_threshold_velocity);
             boolean isFling = Math.abs(velocity) > flingThreshold;
 
-            boolean goingHome;
-            if (!isFling) {
-                goingHome = -mProgress >= MIN_PROGRESS_FOR_OVERVIEW;
+            if (isFling) {
+                mEndTarget = velocity < 0 ? HOME : LAST_TASK;
+            } else if (mIsMotionPaused) {
+                mEndTarget = RECENTS;
             } else {
-                goingHome = velocity < 0;
-            }
-
-            if (goingHome) {
-                mState = STATE_FINISHED_TO_HOME;
-            } else {
-                mState = STATE_FINISHED_TO_APP;
+                mEndTarget = mProgress.value >= MIN_PROGRESS_FOR_OVERVIEW ? HOME : LAST_TASK;
             }
         }
 
         if (mSwipeAnimationTargetSet != null) {
             finishAnimationTargetSet();
         }
+        mMotionPauseDetector.clear();
+    }
+
+    private void finishAnimationTargetSetAnimationComplete() {
+        switch (mEndTarget) {
+            case HOME:
+                mSwipeAnimationTargetSet.finishController(true, null, true);
+                break;
+            case LAST_TASK:
+                mSwipeAnimationTargetSet.finishController(false, null, false);
+                break;
+            case RECENTS: {
+                ThumbnailData thumbnail =
+                        mSwipeAnimationTargetSet.controller.screenshotTask(mRunningTaskId);
+                mSwipeAnimationTargetSet.controller.setCancelWithDeferredScreenshot(true);
+
+                ActivityOptions options = ActivityOptions.makeCustomAnimation(mContext, 0, 0);
+                Bundle extras = new Bundle();
+                extras.putBinder(EXTRA_THUMBNAIL, new ObjectWrapper<>(thumbnail));
+                extras.putInt(EXTRA_TASK_ID, mRunningTaskId);
+
+                Intent intent = new Intent(mOverviewComponentObserver.getOverviewIntent())
+                        .putExtras(extras);
+                mContext.startActivity(intent, options.toBundle());
+                mSwipeAnimationTargetSet.controller.cleanupScreenshot();
+                break;
+            }
+        }
     }
 
     private void finishAnimationTargetSet() {
-        if (mState == STATE_FINISHED_TO_APP) {
-            mSwipeAnimationTargetSet.finishController(false, null, false);
-        } else {
-            if (mProgress < PROGRESS_TO_END_GESTURE) {
-                mSwipeAnimationTargetSet.finishController(true, null, true);
-            } else {
-                long duration = (long) (Math.min(mProgress - PROGRESS_TO_END_GESTURE, 1)
-                        * MAX_SWIPE_DURATION / Math.abs(PROGRESS_TO_END_GESTURE));
-                if (duration < 0) {
-                    duration = MIN_SWIPE_DURATION;
-                }
+        float endProgress = mEndTarget.mEndProgress;
 
-                ValueAnimator anim = ValueAnimator.ofFloat(mProgress, PROGRESS_TO_END_GESTURE);
-                anim.addUpdateListener(a -> {
-                    float p = (Float) anim.getAnimatedValue();
-                    mTransformParams.setProgress(p);
-                    mClipAnimationHelper.applyTransform(mSwipeAnimationTargetSet, mTransformParams);
-                });
-                anim.setDuration(duration);
-                anim.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mSwipeAnimationTargetSet.finishController(true, null, true);
-                    }
-                });
-                anim.start();
-            }
+        if (mProgress.value != endProgress) {
+            AnimatorSet anim = new AnimatorSet();
+            anim.play(mLauncherAlpha.animateToValue(
+                    mLauncherAlpha.value, mEndTarget.mLauncherAlpha));
+            anim.play(mProgress.animateToValue(mProgress.value, endProgress));
+
+            anim.setDuration((long) (mEndTarget.mDurationMultiplier *
+                    Math.abs(endProgress - mProgress.value)));
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    finishAnimationTargetSetAnimationComplete();
+                }
+            });
+            anim.start();
+        } else {
+            finishAnimationTargetSetAnimationComplete();
         }
     }
 
@@ -321,19 +378,27 @@ public class FallbackNoButtonInputConsumer implements InputConsumer, SwipeAnimat
         RemoteAnimationTargetCompat runningTaskTarget = targetSet.findTask(mRunningTaskId);
 
         mDP.updateIsSeascape(mContext.getSystemService(WindowManager.class));
+        if (targetSet.homeContentInsets != null) {
+            mDP.updateInsets(targetSet.homeContentInsets);
+        }
+
         if (runningTaskTarget != null) {
             mClipAnimationHelper.updateSource(overviewStackBounds, runningTaskTarget);
         }
         mClipAnimationHelper.prepareAnimation(mDP, false /* isOpening */);
-
-        overviewStackBounds
-                .inset(-overviewStackBounds.width() / 5, -overviewStackBounds.height() / 5);
-        mClipAnimationHelper.updateTargetRect(overviewStackBounds);
+        initTransitionTarget();
         mClipAnimationHelper.applyTransform(mSwipeAnimationTargetSet, mTransformParams);
 
-        if (mState != STATE_NOT_FINISHED) {
+        if (mEndTarget != null) {
             finishAnimationTargetSet();
         }
+    }
+
+    private void initTransitionTarget() {
+        mTransitionDragLength = mActivityControlHelper.getSwipeUpDestinationAndLength(
+                mDP, mContext, mTargetRect);
+        mDragLengthFactor = (float) mDP.heightPx / mTransitionDragLength;
+        mClipAnimationHelper.updateTargetRect(mTargetRect);
     }
 
     @Override
