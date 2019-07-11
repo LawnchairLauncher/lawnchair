@@ -15,7 +15,6 @@
  */
 package com.android.quickstep;
 
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.UserManager;
@@ -23,29 +22,17 @@ import android.util.Log;
 
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.MainProcessInitializer;
-import com.android.launcher3.Utilities;
 import com.android.systemui.shared.system.ThreadedRendererCompat;
 
 @SuppressWarnings("unused")
 public class QuickstepProcessInitializer extends MainProcessInitializer {
 
     private static final String TAG = "QuickstepProcessInitializer";
-    private static final int HEAP_LIMIT_MB = 250;
 
     public QuickstepProcessInitializer(Context context) { }
 
     @Override
     protected void init(Context context) {
-        if (Utilities.IS_DEBUG_DEVICE) {
-            try {
-                // Trigger a heap dump if the PSS reaches beyond the target heap limit
-                final ActivityManager am = context.getSystemService(ActivityManager.class);
-                am.setWatchHeapLimit(HEAP_LIMIT_MB * 1024 * 1024);
-            } catch (SecurityException e) {
-                // Do nothing
-            }
-        }
-
         // Workaround for b/120550382, an external app can cause the launcher process to start for
         // a work profile user which we do not support. Disable the application immediately when we
         // detect this to be the case.

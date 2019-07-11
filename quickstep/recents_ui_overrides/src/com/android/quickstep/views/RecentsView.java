@@ -473,6 +473,11 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     @Override
+    protected boolean shouldBlockGestures(MotionEvent ev) {
+        return Utilities.shouldDisableGestures(ev);
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent ev) {
         super.onTouchEvent(ev);
         final int x = (int) ev.getX();
