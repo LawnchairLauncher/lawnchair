@@ -11,9 +11,9 @@
     <string name="search">Otsing</string>
     <string name="label_voice_search">Häälotsing</string>
     <string name="icon_pack">Ikoonipakk</string>
-    <string name="home_widget">Kodu Widget</string>
-    <string name="title_show_google_app">%1$s ärele jäänud</string>
-    <string name="msg_minus_one_on_left">Uudisteosa desktopi vasakul</string>
+    <string name="home_widget">Kodu vidin</string>
+    <string name="title_show_google_app">%1$s järele jäänud</string>
+    <string name="msg_minus_one_on_left">Uudisteosa desktopist vasakul</string>
     <string name="about">Teave</string>
     <string name="google_app">Google rakendus</string>
     <string name="about_app_version">Versioon</string>
@@ -53,7 +53,7 @@
     <string name="backup_error_blank_location">Vali varukoopia asukoht</string>
     <string name="backup_error_blank_contents">Lisage varukoopia sisu</string>
     <string name="backup_creating">Varukoopia loomine</string>
-    <string name="no_recent_backups">Siin ei ole midagi näidata</string>
+    <string name="no_recent_backups">Pole midagi näidata</string>
     <string name="backup_loading">Laadimine...</string>
     <string name="backup_invalid">Vigane varukoopia fail</string>
     <string name="backup_share">Jaga</string>
@@ -457,6 +457,8 @@
     <string name="import_as_adaptive">Adaptiivse ikoonina</string>
     <string name="bugreport_channel_name">Veaaruanded</string>
     <string name="status_channel_name">Veaaruande üleslaadimise staatus</string>
+    <string name="bugreport_group_summary">%d uut aruannet</string>
+    <string name="bugreport_group_summary_multiple">Mitu uut aruannet</string>
     <string name="dogbin_uploading">Üleslaadimisel</string>
     <string name="action_dogbin_upload">Laadi üles dogbin-i</string>
     <string name="action_dogbin_upload_error">Üleslaadimine ebaõnnestus</string>
@@ -484,11 +486,47 @@
     <string name="tab_type_custom_desc">Vali rakendused käsitsi sellelt kaardilt.</string>
     <string name="tab_type_smart">Nutikas kaart</string>
     <string name="categorization">Liigitamine</string>
+    <string name="folder_cover_mode">Kaanerežiim</string>
     <string name="folder_cover_mode_desc">Vajuta esimese rakenduse avamiseks. Kausta avamiseks libista üles.</string>
     <string name="pref_smartspace_event_providers">Sündmuste allikad</string>
     <string name="event_provider_now_playing">Nüüd esitamisel</string>
     <string name="battery_status">Aku olek</string>
     <string name="battery_charging">Akut laaditakse</string>
+    <string name="battery_full">Aku on täis</string>
     <string name="battery_low">Akutase on madal</string>
     <string name="event_provider_unread_notifications">Lugemata teavitused</string>
+    <string name="event_provider_missing_notification_access">Et kasutada <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, lülita rakenduse <xliff:g example="My App" id="name">%2$s</xliff:g> teatised sisse</string>
+    <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> kasutamiseks lülita sisse teavituste täpid</string>
+    <string name="zen_mode_enabled">Mitte segada on lubatud</string>
+    <string name="crash_report_notif_title">%1$s jooksis kokku!</string>
+    <string name="personality_provider">Kontekstipõhised sõnumid</string>
+    <string-array name="greetings_morning">
+        <item>Tere hommikust!</item>
+        <item>Ilus päev, kas pole!</item>
+        <item>Oled sa juba välja vaadanud?</item>
+        <item>Ilusat päeva!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Head ööd!</item>
+        <item>Head und!</item>
+        <item>Näeme homme!</item>
+        <item>Ilusaid unenägusid!</item>
+        <item>Ära ole üleval liiga kaua</item>
+        <item>Kuidas sinu päeva läks?</item>
+        <item>Mida sa täna tegid?</item>
+    </string-array>
+    <string name="onbording_settings_title">Seadista %s</string>
+    <string name="onbording_settings_summary">Pikk vajutus koduekraanil</string>
+    <string name="onboarding_swipe_up">Libista üles, et näha kõiki oma rakendusi</string>
+    <string name="web_search_google">Google (veeb)</string>
+    <string name="web_search_ddg">DuckDuckGo (veeb)</string>
+    <string name="web_search_startpage">Startpage.com (veeb)</string>
+    <string name="web_search_bing">Bing (veeb)</string>
+    <string name="web_search_qwant">Qwant (veeb)</string>
+    <string name="web_search_ecosia">Ecosia (veeb)</string>
+    <string name="web_search_yandex">Yandex (veeb)</string>
+    <string name="web_search_naver">Naver (veeb)</string>
+    <string name="web_search_baidu">Baidu (veeb)</string>
+    <string name="icon_shape_override_miui_explaination">MIUI piirangu tõttu ei pruugi teie ikooni kuju muutuda ja jääda ruudukujuliseks.\nPalun ära teata sellest kui veast.</string>
+    <string name="button_organize_screens">Korralda ekraane</string>
 </resources>
