@@ -34,6 +34,8 @@ import android.view.MotionEvent;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.util.LooperExecutor;
+import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 
@@ -136,6 +138,9 @@ public class TouchInteractionService extends Service {
     public static boolean isConnected() {
         return sConnected;
     }
+
+    public static final LooperExecutor BACKGROUND_EXECUTOR =
+            new LooperExecutor(UiThreadHelper.getBackgroundLooper());
 
     private RecentsModel mRecentsModel;
     private OverviewComponentObserver mOverviewComponentObserver;
