@@ -112,15 +112,15 @@ public abstract class FolderShape {
         public AnimatorUpdateListener newUpdateListener(Rect startRect, Rect endRect,
                 float endRadius, Path path) {
             float startRadius = startRect.width() / 2f;
-            float[] start = new float[] {startRect.left, startRect.top, startRect.right, startRect.bottom, startRadius};
-            float[] end = new float[] {endRect.left, endRect.top, endRect.right, endRect.bottom, endRadius};
-            FloatArrayEvaluator evaluator = new FloatArrayEvaluator(new float[5]);
+            float[] start = new float[] {startRect.left, startRect.top, startRect.right, startRect.bottom};
+            float[] end = new float[] {endRect.left, endRect.top, endRect.right, endRect.bottom};
+            FloatArrayEvaluator evaluator = new FloatArrayEvaluator();
             return animation -> {
                 float progress = (float) animation.getAnimatedValue();
                 float[] values = evaluator.evaluate(progress, start, end);
                 mIconShape.addToPath(path,
                         values[0], values[1], values[2], values[3],
-                        startRadius, values[4], progress);
+                        startRadius, endRadius, progress);
             };
         }
     }

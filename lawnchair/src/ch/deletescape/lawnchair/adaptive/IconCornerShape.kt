@@ -22,17 +22,23 @@ package ch.deletescape.lawnchair.adaptive
 import android.graphics.Path
 import com.android.launcher3.Utilities
 
-sealed class IconCornerShape {
+abstract class IconCornerShape {
 
     abstract fun addCorner(path: Path, position: Position, size: Float, progress: Float, offsetX: Float, offsetY: Float)
 
-    object Cut : IconCornerShape() {
+    class Cut : Cubic() {
+
+        override val normalControlDistance = 1f
 
         override fun addCorner(path: Path, position: Position, size: Float, progress: Float,
                                offsetX: Float, offsetY: Float) {
-            path.lineTo(
-                    position.endX * size + offsetX,
-                    position.endY * size + offsetY)
+            if (progress == 0f) {
+                path.lineTo(
+                        position.endX * size + offsetX,
+                        position.endY * size + offsetY)
+            } else {
+                super.addCorner(path, position, size, progress, offsetX, offsetY)
+            }
         }
 
         override fun toString(): String {
@@ -40,10 +46,10 @@ sealed class IconCornerShape {
         }
     }
 
-    object Cubic : IconCornerShape() {
+    open class Cubic : IconCornerShape() {
 
-        private const val normalControlDistance = .2f
-        private const val morphedControlDistance = .447771526f
+        protected open val normalControlDistance = .2f
+        private val morphedControlDistance = .447771526f
 
         private fun getControlDistance(progress: Float): Float {
             return Utilities.mapRange(progress, normalControlDistance, morphedControlDistance)
@@ -81,7 +87,7 @@ sealed class IconCornerShape {
         }
     }
 
-    object Arc : IconCornerShape() {
+    class Arc : IconCornerShape() {
 
         override fun addCorner(path: Path, position: Position, size: Float, progress: Float,
                                offsetX: Float, offsetY: Float) {
@@ -157,11 +163,15 @@ sealed class IconCornerShape {
 
     companion object {
 
+        val cut = Cut()
+        val cubic = Cubic()
+        val arc = Arc()
+
         fun fromString(value: String): IconCornerShape {
             return when (value) {
-                "cut" -> Cut
-                "cubic" -> Cubic
-                "arc" -> Arc
+                "cut" -> cut
+                "cubic" -> cubic
+                "arc" -> arc
                 else -> error("invalid corner shape $value")
             }
         }
