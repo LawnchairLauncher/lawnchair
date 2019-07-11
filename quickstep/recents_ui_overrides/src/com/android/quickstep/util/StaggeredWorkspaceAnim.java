@@ -134,10 +134,6 @@ public class StaggeredWorkspaceAnim {
      * @param totalRows Total number of rows.
      */
     private void addStaggeredAnimationForView(View v, int row, int totalRows) {
-        if (v == mViewToIgnore) {
-            return;
-        }
-
         // Invert the rows, because we stagger starting from the bottom of the screen.
         int invertedRow = totalRows - row;
         // Add 1 to the inverted row so that the bottom most row has a start delay.
@@ -148,6 +144,10 @@ public class StaggeredWorkspaceAnim {
                 1f, DAMPING_RATIO, STIFFNESS, mSpringTransY, 0);
         springTransY.setStartDelay(startDelay);
         mAnimators.add(springTransY);
+
+        if (v == mViewToIgnore) {
+            return;
+        }
 
         v.setAlpha(0);
         ObjectAnimator alpha = ObjectAnimator.ofFloat(v, View.ALPHA, 0f, 1f);
