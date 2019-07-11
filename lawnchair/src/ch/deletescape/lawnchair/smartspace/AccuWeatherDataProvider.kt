@@ -99,10 +99,9 @@ class AccuWeatherDataProvider(controller: LawnchairSmartspaceController) :
 
             override fun onResponse(call: Call<AccuLocalWeatherGSon>, response: Response<AccuLocalWeatherGSon>) {
                 val conditions = response.body()?.currentConditions
-                val isDay = response.body()?.location?.isDayTime?.toBoolean() ?: true
                 if (conditions != null) {
                     updateData(LawnchairSmartspaceController.WeatherData(
-                            getIcon(context, conditions.weatherIcon, isDay),
+                            getIcon(context, conditions.weatherIcon, conditions.isDayTime),
                             Temperature(conditions.temperature.value.toFloat().roundToInt(), Temperature.Unit.Celsius),
                             // TODO add support for intents to open the AccuWeather app if available
                             forecastUrl = conditions.mobileLink
