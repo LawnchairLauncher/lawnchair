@@ -21,6 +21,7 @@ package ch.deletescape.lawnchair.adaptive
 
 import android.graphics.Path
 import ch.deletescape.lawnchair.util.extensions.e
+import com.android.launcher3.Utilities
 import java.lang.Exception
 import kotlin.math.min
 
@@ -47,11 +48,11 @@ open class IconShape(private val topLeft: Corner,
 
     @JvmOverloads
     fun addToPath(path: Path, left: Float, top: Float, right: Float, bottom: Float,
-                  size : Float = 50f, maxSize: Float = size, progress: Float = 0f) {
-        val topLeftSize = min(topLeft.scale * size, maxSize)
-        val topRightSize = min(topRight.scale * size, maxSize)
-        val bottomLeftSize = min(bottomLeft.scale * size, maxSize)
-        val bottomRightSize = min(bottomRight.scale * size, maxSize)
+                  size : Float = 50f, endSize: Float = size, progress: Float = 0f) {
+        val topLeftSize = Utilities.mapRange(progress, topLeft.scale * size, endSize)
+        val topRightSize = Utilities.mapRange(progress, topRight.scale * size, endSize)
+        val bottomLeftSize = Utilities.mapRange(progress, bottomLeft.scale * size, endSize)
+        val bottomRightSize = Utilities.mapRange(progress, bottomRight.scale * size, endSize)
 
         // Start from the bottom right corner
         path.moveTo(right, bottom - bottomRightSize)
@@ -120,10 +121,10 @@ open class IconShape(private val topLeft: Corner,
         }
     }
 
-    object Circle : IconShape(IconCornerShape.Arc,
-                              IconCornerShape.Arc,
-                              IconCornerShape.Arc,
-                              IconCornerShape.Arc,
+    object Circle : IconShape(IconCornerShape.arc,
+                              IconCornerShape.arc,
+                              IconCornerShape.arc,
+                              IconCornerShape.arc,
                               1f, 1f, 1f, 1f) {
 
         override fun toString(): String {
@@ -131,10 +132,10 @@ open class IconShape(private val topLeft: Corner,
         }
     }
 
-    object Square : IconShape(IconCornerShape.Arc,
-                              IconCornerShape.Arc,
-                              IconCornerShape.Arc,
-                              IconCornerShape.Arc,
+    object Square : IconShape(IconCornerShape.arc,
+                              IconCornerShape.arc,
+                              IconCornerShape.arc,
+                              IconCornerShape.arc,
                               .16f, .16f, .16f, .16f) {
 
         override fun toString(): String {
@@ -142,10 +143,10 @@ open class IconShape(private val topLeft: Corner,
         }
     }
 
-    object RoundedSquare : IconShape(IconCornerShape.Arc,
-                                     IconCornerShape.Arc,
-                                     IconCornerShape.Arc,
-                                     IconCornerShape.Arc,
+    object RoundedSquare : IconShape(IconCornerShape.arc,
+                                     IconCornerShape.arc,
+                                     IconCornerShape.arc,
+                                     IconCornerShape.arc,
                                      .6f, .6f, .6f, .6f) {
 
         override fun toString(): String {
@@ -153,10 +154,10 @@ open class IconShape(private val topLeft: Corner,
         }
     }
 
-    object Squircle : IconShape(IconCornerShape.Cubic,
-                                IconCornerShape.Cubic,
-                                IconCornerShape.Cubic,
-                                IconCornerShape.Cubic,
+    object Squircle : IconShape(IconCornerShape.cubic,
+                                IconCornerShape.cubic,
+                                IconCornerShape.cubic,
+                                IconCornerShape.cubic,
                                 1f, 1f, 1f, 1f){
 
         override fun toString(): String {
@@ -164,10 +165,10 @@ open class IconShape(private val topLeft: Corner,
         }
     }
 
-    object Teardrop : IconShape(IconCornerShape.Arc,
-                                IconCornerShape.Arc,
-                                IconCornerShape.Arc,
-                                IconCornerShape.Arc,
+    object Teardrop : IconShape(IconCornerShape.arc,
+                                IconCornerShape.arc,
+                                IconCornerShape.arc,
+                                IconCornerShape.arc,
                                 1f, 1f, 1f, .3f){
 
         override fun toString(): String {
