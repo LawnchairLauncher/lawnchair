@@ -23,32 +23,46 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import ch.deletescape.lawnchair.getIcon
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.smartspace.WeatherIconProvider
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
+import com.android.launcher3.R
 import java.lang.RuntimeException
 
 class WeatherIconManager(private val context: Context) {
     private val pm = context.packageManager
     private val prefs = context.lawnchairPrefs
+    private val defaultPack =
+            object : WeatherIconPack(context, context.getString(R.string.weather_icons_default), "",
+                                     RecoloringMode.NEVER) {
+                override val provider = DefaultIconProvider(context)
+                override val icon = context.getIcon()
+            }
 
-    fun getIconPacks(): List<WeatherIconPack> = pm.queryIntentActivities(
-            Intent(Intent.ACTION_MAIN).addCategory(
-                    INTENT_CATEGORY), PackageManager.GET_META_DATA)?.map {
-        val recoloringMode =
-                it.activityInfo.metaData.getString(METADATA_KEY)?.let {
-                    RecoloringMode.fromName(it)
-                } ?: RecoloringMode.NEVER
-        WeatherIconPack(
-                context,
-                it.loadLabel(pm).toString(),
-                it.activityInfo.packageName,
-                recoloringMode)
-    } ?: emptyList()
+    fun getIconPacks(): List<WeatherIconPack> = mutableListOf<WeatherIconPack>(defaultPack).apply {
+        pm.queryIntentActivities(
+                Intent(Intent.ACTION_MAIN).addCategory(
+                        INTENT_CATEGORY), PackageManager.GET_META_DATA)?.map {
+            val recoloringMode =
+                    it.activityInfo.metaData.getString(METADATA_KEY)?.let {
+                        RecoloringMode.fromName(it)
+                    } ?: RecoloringMode.NEVER
+            WeatherIconPack(
+                    context,
+                    it.loadLabel(pm).toString(),
+                    it.activityInfo.packageName,
+                    recoloringMode)
+        }?.let { addAll(it) }
+    }
 
     fun getIcon(which: Icon, night: Boolean) = getProvider().getIcon(which, night)
 
-    private fun getProvider(): IconProvider = if (prefs.weatherIconPack == "")
+    fun getPack(): WeatherIconPack = getIconPacks().firstOrNull { it.pkgName == prefs.weatherIconPack }
+                                     ?: defaultPack
+
+    fun getProvider(): IconProvider = if (prefs.weatherIconPack == "")
         DefaultIconProvider(context)
     else
         getIconPacks().firstOrNull { it.pkgName == prefs.weatherIconPack }?.provider
@@ -118,9 +132,10 @@ class WeatherIconManager(private val context: Context) {
 
     }
 
-    data class WeatherIconPack(private val context: Context, val name: String, val pkgName: String,
+    open class WeatherIconPack(val context: Context, val name: String, val pkgName: String,
                                val recoloringMode: RecoloringMode) {
-        val provider by lazy { WeatherIconPackProviderImpl(context, pkgName) }
+        open val provider: IconProvider by lazy { WeatherIconPackProviderImpl(context, pkgName) }
+        open val icon by lazy { context.packageManager.getApplicationIcon(pkgName) }
     }
 
     interface IconProvider {

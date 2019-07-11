@@ -93,6 +93,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val updateBlur = { updateBlur() }
     private val resetAllApps = { onChangeCallback?.resetAllApps() ?: Unit }
     private val updateSmartspace = { updateSmartspace() }
+    private val updateSmartspaceData = { onChangeCallback?.updateSmartspaceData() ?: Unit }
     private val reloadIcons = { reloadIcons() }
     private val reloadIconPacks = { IconPackManager.getInstance(context).packList.reloadPacks() }
     private val reloadDockStyle = {
@@ -167,7 +168,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val weatherUnit by StringBasedPref("pref_weather_units", Temperature.Unit.Celsius, ::updateSmartspaceProvider,
         Temperature.Companion::unitFromString, Temperature.Companion::unitToString) { }
     var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
-    var weatherIconPack by StringPref("pref_weatherIcons", "", updateSmartspace)
+    var weatherIconPack by StringPref("pref_weatherIcons", "", updateSmartspaceData)
 
     // Dock
     val dockStyles = DockStyle.StyleManager(this, reloadDockStyle, resetAllApps)
