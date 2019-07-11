@@ -68,28 +68,12 @@ public class ItemClickHandler {
     }
 
     private static void onClick(View v, String sourceContainer) {
-        if (TestProtocol.sDebugTracing) {
-            android.util.Log.d(TestProtocol.NO_START_TAG,
-                    "onClick 1");
-        }
         // Make sure that rogue clicks don't get through while allapps is launching, or after the
         // view has detached (it's possible for this to happen if the view is removed mid touch).
-        if (v.getWindowToken() == null) {
-            if (TestProtocol.sDebugTracing) {
-                android.util.Log.d(TestProtocol.NO_START_TAG,
-                        "onClick 2");
-            }
-            return;
-        }
+        if (v.getWindowToken() == null) return;
 
         Launcher launcher = Launcher.getLauncher(v.getContext());
-        if (!launcher.getWorkspace().isFinishedSwitchingState()) {
-            if (TestProtocol.sDebugTracing) {
-                android.util.Log.d(TestProtocol.NO_START_TAG,
-                        "onClick 3");
-            }
-            return;
-        }
+        if (!launcher.getWorkspace().isFinishedSwitchingState()) return;
 
         Object tag = v.getTag();
         if (tag instanceof WorkspaceItemInfo) {
@@ -99,10 +83,6 @@ public class ItemClickHandler {
                 onClickFolderIcon(v);
             }
         } else if (tag instanceof AppInfo) {
-            if (TestProtocol.sDebugTracing) {
-                android.util.Log.d(TestProtocol.NO_START_TAG,
-                        "onClick 4");
-            }
             startAppShortcutOrInfoActivity(v, (AppInfo) tag, launcher,
                     sourceContainer == null ? CONTAINER_ALL_APPS: sourceContainer);
         } else if (tag instanceof LauncherAppWidgetInfo) {
@@ -234,10 +214,6 @@ public class ItemClickHandler {
 
     private static void startAppShortcutOrInfoActivity(View v, ItemInfo item, Launcher launcher,
             @Nullable String sourceContainer) {
-        if (TestProtocol.sDebugTracing) {
-            android.util.Log.d(TestProtocol.NO_START_TAG,
-                    "startAppShortcutOrInfoActivity");
-        }
         Intent intent;
         if (item instanceof PromiseAppInfo) {
             PromiseAppInfo promiseAppInfo = (PromiseAppInfo) item;

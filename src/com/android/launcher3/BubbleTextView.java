@@ -319,9 +319,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_START_TAG, "BubbleTextView.onTouchEvent " + event);
-        }
         // Call the superclass onTouchEvent first, because sometimes it changes the state to
         // isPressed() on an ACTION_UP
         boolean result = super.onTouchEvent(event);

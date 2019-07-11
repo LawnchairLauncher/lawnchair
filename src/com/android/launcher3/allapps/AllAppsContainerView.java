@@ -626,9 +626,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_START_TAG, "AllAppsContainerView.dispatchTouchEvent " + ev);
-        }
         final boolean result = super.dispatchTouchEvent(ev);
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
