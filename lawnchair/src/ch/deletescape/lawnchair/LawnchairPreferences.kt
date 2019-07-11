@@ -27,9 +27,7 @@ import android.provider.Settings
 import android.text.TextUtils
 import ch.deletescape.lawnchair.bugreport.BugReportClient
 import ch.deletescape.lawnchair.colors.ColorEngine
-import ch.deletescape.lawnchair.colors.RGBColorResolver
 import ch.deletescape.lawnchair.gestures.BlankGestureHandler
-import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.handlers.*
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import ch.deletescape.lawnchair.groups.AppGroupsManager
@@ -44,7 +42,6 @@ import ch.deletescape.lawnchair.smartspace.*
 import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.util.Temperature
 import ch.deletescape.lawnchair.util.extensions.d
-import ch.deletescape.lawnchair.util.extensions.e
 import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
 import com.android.quickstep.OverviewInteractionState
@@ -93,7 +90,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val updateBlur = { updateBlur() }
     private val resetAllApps = { onChangeCallback?.resetAllApps() ?: Unit }
     private val updateSmartspace = { updateSmartspace() }
-    private val updateSmartspaceData = { onChangeCallback?.updateSmartspaceData() ?: Unit }
+    private val updateWeatherData = { onChangeCallback?.updateWeatherData() ?: Unit }
     private val reloadIcons = { reloadIcons() }
     private val reloadIconPacks = { IconPackManager.getInstance(context).packList.reloadPacks() }
     private val reloadDockStyle = {
@@ -168,7 +165,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val weatherUnit by StringBasedPref("pref_weather_units", Temperature.Unit.Celsius, ::updateSmartspaceProvider,
         Temperature.Companion::unitFromString, Temperature.Companion::unitToString) { }
     var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
-    var weatherIconPack by StringPref("pref_weatherIcons", "", updateSmartspaceData)
+    var weatherIconPack by StringPref("pref_weatherIcons", "", updateWeatherData)
 
     // Dock
     val dockStyles = DockStyle.StyleManager(this, reloadDockStyle, resetAllApps)
