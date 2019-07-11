@@ -467,6 +467,8 @@
     <string name="import_as_adaptive">Адаптивная иконка</string>
     <string name="bugreport_channel_name">Отчет об ошибках</string>
     <string name="status_channel_name">Статус отчета об ошибке</string>
+    <string name="bugreport_group_summary">%d новых репортов</string>
+    <string name="bugreport_group_summary_multiple">Много новых репортов</string>
     <string name="dogbin_uploading">Загрузка в процессе</string>
     <string name="action_dogbin_upload">Загрузить в dogbin</string>
     <string name="action_dogbin_upload_error">Сбой загрузки</string>
@@ -485,8 +487,8 @@
     <string name="animation_type_scale_up">Увеличить масштаб</string>
     <string name="animation_type_blink">Мигание</string>
     <string name="animation_type_fade">Затухание</string>
-    <string name="permission_iplocate">Разрешить доступ к грубому сетевому местоположению?</string>
-    <string name="permission_iplocate_twilight_explanation">Это позволяет более точные расчеты в дневное время без необходимости знать ваше точное местоположение.</string>
+    <string name="permission_iplocate">Разрешить доступ к примерному сетевому местоположению?</string>
+    <string name="permission_iplocate_twilight_explanation">Это позволяет более точно рассчитывать время суток, не зная вашего точного местоположения.</string>
     <string name="pref_appcategorization_flowerpot_title">Категория</string>
     <string name="pref_appcategorization_flowerpot_summary">Приложения автоматически выбираются на основе метаданных.</string>
     <string name="select_tab_type">Тип вкладки</string>
@@ -500,8 +502,41 @@
     <string name="event_provider_now_playing">Сейчас играет</string>
     <string name="battery_status">Состояние батареи</string>
     <string name="battery_charging">Зарядка батареи</string>
+    <string name="battery_full">Батарея заряжена</string>
     <string name="battery_low">Низкий заряд батареи</string>
     <string name="event_provider_unread_notifications">Непрочитанные уведомления</string>
     <string name="event_provider_missing_notification_access">Чтобы использовать <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включите уведомления приложения для<xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Чтобы использовать <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включите точки уведомлений</string>
     <string name="zen_mode_enabled">Включен режим \"Не беспокоить\"</string>
+    <string name="crash_report_notif_title">%1$s был аварийно завершён!</string>
+    <string name="personality_provider">Контекстные сообщения</string>
+    <string-array name="greetings_morning">
+        <item>Доброе утро!</item>
+        <item>Какой чудесный день!</item>
+        <item>Вы уже посмотрели на улицу?</item>
+        <item>Отличного дня!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Доброй ночи!</item>
+        <item>Спокойной ночи!</item>
+        <item>Увидимся завтра!</item>
+        <item>Сладких снов!</item>
+        <item>Не засиживайся слишком долго</item>
+        <item>Как прошёл Ваш день?</item>
+        <item>Что Вы сегодня делали?</item>
+    </string-array>
+    <string name="onbording_settings_title">Настройка %s</string>
+    <string name="onbording_settings_summary">Сделайте длительное нажатие на главном экране</string>
+    <string name="onboarding_swipe_up">Свайпните вверх, чтобы увидеть список ваших приложений</string>
+    <string name="web_search_google">Google (веб)</string>
+    <string name="web_search_ddg">DuckDuckGo (веб)</string>
+    <string name="web_search_startpage">Startpage.com (веб)</string>
+    <string name="web_search_bing">Bing (веб)</string>
+    <string name="web_search_qwant">Qwant (веб)</string>
+    <string name="web_search_ecosia">Ecosia (веб)</string>
+    <string name="web_search_yandex">Яндекс (веб)</string>
+    <string name="web_search_naver">Naver (веб)</string>
+    <string name="web_search_baidu">Baidu (веб)</string>
+    <string name="icon_shape_override_miui_explaination">В связи с ограничением в MIUI, ваша форма иконок может не изменится и остаться квадратной.\nНе сообщайте про это как ошибку.</string>
+    <string name="button_organize_screens">Настроить страницы</string>
 </resources>
