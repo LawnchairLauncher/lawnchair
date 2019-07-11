@@ -12,6 +12,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import ch.deletescape.lawnchair.smartspace.weather.icons.WeatherIconManager;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -70,37 +71,33 @@ public class OPWeatherProvider {
     }
 
     private enum WEATHER_TYPE {
-        SUNNY(1001, R.drawable.weather_01, R.drawable.weather_01n),
-        SUNNY_INTERVALS(1002, R.drawable.weather_01, R.drawable.weather_01n),
-        CLOUDY(1003, R.drawable.weather_02, R.drawable.weather_02n),
-        OVERCAST(1004, R.drawable.weather_03, R.drawable.weather_03n),
-        DRIZZLE(1005, R.drawable.weather_10, R.drawable.weather_10n),
-        RAIN(1006, R.drawable.weather_10, R.drawable.weather_10n),
-        SHOWER(1007, R.drawable.weather_09, R.drawable.weather_09),
-        DOWNPOUR(1008, R.drawable.weather_09, R.drawable.weather_09),
-        RAINSTORM(1009, R.drawable.weather_09, R.drawable.weather_09),
-        SLEET(1010, R.drawable.weather_13, R.drawable.weather_13),
-        FLURRY(1011, R.drawable.weather_13, R.drawable.weather_13),
-        SNOW(1012, R.drawable.weather_13, R.drawable.weather_13),
-        SNOWSTORM(1013, R.drawable.weather_13, R.drawable.weather_13),
-        // TODO: get proper hail icon
-        HAIL(1014, R.drawable.weather_10, R.drawable.weather_10),
-        THUNDERSHOWER(1015, R.drawable.weather_11, R.drawable.weather_11),
-        // TODO: get proper icons for some more extreme conditions
-        SANDSTORM(1016, R.drawable.weather_50, R.drawable.weather_50),
-        FOG(1017, R.drawable.weather_50, R.drawable.weather_50),
-        HURRICANE(1018, R.drawable.weather_11, R.drawable.weather_11),
-        HAZE(1019, R.drawable.weather_50, R.drawable.weather_50),
-        NONE(9999, R.drawable.weather_none_available, R.drawable.weather_none_available);
+        SUNNY(1001, WeatherIconManager.Icon.CLEAR),
+        SUNNY_INTERVALS(1002, WeatherIconManager.Icon.MOSTLY_CLEAR),
+        CLOUDY(1003, WeatherIconManager.Icon.CLOUDY),
+        OVERCAST(1004, WeatherIconManager.Icon.OVERCAST),
+        DRIZZLE(1005, WeatherIconManager.Icon.PARTLY_CLOUDY_W_SHOWERS),
+        RAIN(1006, WeatherIconManager.Icon.RAIN),
+        SHOWER(1007, WeatherIconManager.Icon.SHOWERS),
+        DOWNPOUR(1008, WeatherIconManager.Icon.RAIN),
+        RAINSTORM(1009, WeatherIconManager.Icon.RAIN),
+        SLEET(1010, WeatherIconManager.Icon.SLEET),
+        FLURRY(1011, WeatherIconManager.Icon.FLURRIES),
+        SNOW(1012, WeatherIconManager.Icon.SNOW),
+        SNOWSTORM(1013, WeatherIconManager.Icon.SNOWSTORM),
+        HAIL(1014, WeatherIconManager.Icon.HAIL),
+        THUNDERSHOWER(1015, WeatherIconManager.Icon.THUNDERSTORMS),
+        SANDSTORM(1016, WeatherIconManager.Icon.SANDSTORM),
+        FOG(1017, WeatherIconManager.Icon.FOG),
+        HURRICANE(1018, WeatherIconManager.Icon.HURRICANE),
+        HAZE(1019, WeatherIconManager.Icon.HAZY),
+        NONE(9999, WeatherIconManager.Icon.NA);
 
-        int iconId;
-        int nightId;
         int weatherCode;
+        WeatherIconManager.Icon icon;
 
-        WEATHER_TYPE(@IntRange(from = 1000, to = 9999) int i, @DrawableRes int i2, @DrawableRes int night) {
+        WEATHER_TYPE(@IntRange(from = 1000, to = 9999) int i, WeatherIconManager.Icon icon) {
             weatherCode = i;
-            iconId = i2;
-            nightId = night;
+            this.icon = icon;
         }
 
         public static WEATHER_TYPE getWeather(int i) {
@@ -129,6 +126,7 @@ public class OPWeatherProvider {
         public long timestamp = 0;
         public int weatherCode = WEATHER_CODE_NONE;
         public String weatherName = WEATHER_NAME_NONE;
+        public WeatherIconManager.Icon icon = WeatherIconManager.Icon.NA;
 
         public String toString() {
             return "[timestamp] " + timestamp + "; "
@@ -176,6 +174,7 @@ public class OPWeatherProvider {
             weatherData.temperatureLow = defaultSharedPreferences.getInt(KEY_TEMPERATURE_LOW, -99);
             weatherData.temperatureUnit = defaultSharedPreferences
                     .getString(KEY_TEMPERATURE_UNIT, TEMP_UNIT_CELSIUS);
+            weatherData.icon = WEATHER_TYPE.getWeather(weatherData.weatherCode).icon;
             return weatherData;
         }
         mUiWorkerHandler.post(this::queryWeatherInformation);
@@ -216,21 +215,6 @@ public class OPWeatherProvider {
             return;
         }
         Log.d(TAG, "the target callback is not found in the callback list");
-    }
-
-    @DrawableRes
-    public static int getWeatherIconResourceId(int i) {
-        return WEATHER_TYPE.getWeather(i).iconId;
-    }
-
-    @DrawableRes
-    public static int getNightWeatherIconResourceId(int i) {
-        return WEATHER_TYPE.getWeather(i).nightId;
-    }
-
-    @DrawableRes
-    public static int getDefaultWeatherIconResourceId() {
-        return WEATHER_TYPE.NONE.iconId;
     }
 
     public void registerContentObserver(ContentResolver contentResolver) {
