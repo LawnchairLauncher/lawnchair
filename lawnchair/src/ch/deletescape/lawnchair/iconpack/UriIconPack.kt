@@ -99,7 +99,10 @@ class UriIconPack(context: Context) : IconPack(context, "lawnchairUriPack") {
         override val displayName = identifierName
 
         val bitmap by lazy { loadBitmap() }
-        override val drawable get() = BitmapDrawable(context.resources, bitmap)
+
+        override fun drawableForDensity(density: Int): Drawable {
+            return BitmapDrawable(context.resources, bitmap)
+        }
 
         override val isAvailable by lazy {
             try {
