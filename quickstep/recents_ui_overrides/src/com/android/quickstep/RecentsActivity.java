@@ -199,6 +199,12 @@ public final class RecentsActivity extends BaseRecentsActivity {
         mFallbackRecentsView.resetTaskVisuals();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mFallbackRecentsView.reset();
+    }
+
     public void onTaskLaunched() {
         mFallbackRecentsView.resetTaskVisuals();
     }

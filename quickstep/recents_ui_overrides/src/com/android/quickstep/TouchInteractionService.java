@@ -239,6 +239,11 @@ public class TouchInteractionService extends Service implements
     private final InputConsumer mResetGestureInputConsumer =
             new ResetGestureInputConsumer(sSwipeSharedState);
 
+    private final BaseSwipeUpHandler.Factory mWindowTreansformFactory =
+            this::createWindowTransformSwipeHandler;
+    private final BaseSwipeUpHandler.Factory mFallbackNoButtonFactory =
+            this::createFallbackNoButtonSwipeHandler;
+
     private ActivityManagerWrapper mAM;
     private RecentsModel mRecentsModel;
     private ISystemUiProxy mISystemUiProxy;
@@ -623,10 +628,6 @@ public class TouchInteractionService extends Service implements
         } else if (mGestureBlockingActivity != null && runningTaskInfo != null
                 && mGestureBlockingActivity.equals(runningTaskInfo.topActivity)) {
             return mResetGestureInputConsumer;
-        } else if (mMode == Mode.NO_BUTTON && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
-            return new FallbackNoButtonInputConsumer(this, activityControl,
-                    mInputMonitorCompat, sSwipeSharedState, mSwipeTouchRegion,
-                    mOverviewComponentObserver, disableHorizontalSwipe(event), runningTaskInfo);
         } else {
             return createOtherActivityInputConsumer(event, runningTaskInfo);
         }
@@ -639,17 +640,28 @@ public class TouchInteractionService extends Service implements
                 && exclusionRegion.contains((int) event.getX(), (int) event.getY());
     }
 
-    private OtherActivityInputConsumer createOtherActivityInputConsumer(MotionEvent event,
+    private InputConsumer createOtherActivityInputConsumer(MotionEvent event,
             RunningTaskInfo runningTaskInfo) {
-        final ActivityControlHelper activityControl =
-                mOverviewComponentObserver.getActivityControlHelper();
-        boolean shouldDefer = activityControl.deferStartingActivity(mActiveNavBarRegion, event);
 
-        return new OtherActivityInputConsumer(this, runningTaskInfo, mRecentsModel,
-                mOverviewComponentObserver.getOverviewIntent(), activityControl,
-                shouldDefer, mOverviewCallbacks, mInputConsumer, this::onConsumerInactive,
+        final boolean shouldDefer;
+        final BaseSwipeUpHandler.Factory factory;
+        final Intent homeIntent;
+
+        if (mMode == Mode.NO_BUTTON && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
+            shouldDefer = true;
+            factory = mFallbackNoButtonFactory;
+            homeIntent = mOverviewComponentObserver.getHomeIntent();
+        } else {
+            shouldDefer = mOverviewComponentObserver.getActivityControlHelper()
+                    .deferStartingActivity(mActiveNavBarRegion, event);
+            factory = mWindowTreansformFactory;
+            homeIntent = mOverviewComponentObserver.getOverviewIntent();
+        }
+
+        return new OtherActivityInputConsumer(this, runningTaskInfo, homeIntent,
+                shouldDefer, mOverviewCallbacks, this::onConsumerInactive,
                 sSwipeSharedState, mInputMonitorCompat, mSwipeTouchRegion,
-                disableHorizontalSwipe(event));
+                disableHorizontalSwipe(event), factory);
     }
 
     private InputConsumer createDeviceLockedInputConsumer(RunningTaskInfo taskInfo) {
@@ -786,6 +798,19 @@ public class TouchInteractionService extends Service implements
                 TOUCH_INTERACTION_LOG.clear();
                 break;
         }
+    }
+
+    private BaseSwipeUpHandler createWindowTransformSwipeHandler(RunningTaskInfo runningTask,
+            long touchTimeMs, boolean continuingLastGesture) {
+        return  new WindowTransformSwipeHandler(
+                runningTask, this, touchTimeMs,
+                mOverviewComponentObserver.getActivityControlHelper(),
+                continuingLastGesture, mInputConsumer, mRecentsModel);
+    }
+
+    private BaseSwipeUpHandler createFallbackNoButtonSwipeHandler(RunningTaskInfo runningTask,
+            long touchTimeMs, boolean continuingLastGesture) {
+        return new FallbackNoButtonInputConsumer(this, mOverviewComponentObserver, runningTask);
     }
 
     public static void startRecentsActivityAsync(Intent intent, RecentsAnimationListener listener) {
