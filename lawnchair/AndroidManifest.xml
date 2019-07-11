@@ -114,6 +114,21 @@
             </intent-filter>
         </activity>
 
+
+        <!-- TODO: Display only inside Lawnchair -->
+        <activity-alias
+            android:name="ch.deletescape.lawnchair.settings.ui.SettingsLauncherActivity"
+            android:targetActivity="ch.deletescape.lawnchair.settings.ui.SettingsActivity"
+            android:label="@string/lawnchair_settings"
+            android:icon="@mipmap/ic_settings_adaptive">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
         <activity
             android:autoRemoveFromRecents="true"
             android:label="@string/derived_app_name"

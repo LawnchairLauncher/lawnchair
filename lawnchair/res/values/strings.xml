@@ -710,4 +710,6 @@
     <string name="weather_icons_default">Default</string>
     <string name="pref_weather_icon_pack">Weather Icons</string>
     <string name="weather_icon_packs_not_supported">Not supported by your current weather source</string>
+
+    <string name="lawnchair_settings">Lawnchair Settings</string>
 </resources>
