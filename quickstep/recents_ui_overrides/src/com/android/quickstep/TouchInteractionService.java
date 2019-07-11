@@ -226,10 +226,15 @@ public class TouchInteractionService extends Service implements
     };
 
     private static boolean sConnected = false;
+    private static boolean sInputMonitorInitialized = false;
     private static final SwipeSharedState sSwipeSharedState = new SwipeSharedState();
 
     public static boolean isConnected() {
         return sConnected;
+    }
+
+    public static boolean isInputMonitorInitialized() {
+        return sInputMonitorInitialized;
     }
 
     public static SwipeSharedState getSwipeSharedState() {
@@ -330,6 +335,7 @@ public class TouchInteractionService extends Service implements
             mInputMonitorCompat.dispose();
             mInputMonitorCompat = null;
         }
+        sInputMonitorInitialized = false;
     }
 
     private void initInputMonitor() {
@@ -347,6 +353,7 @@ public class TouchInteractionService extends Service implements
             Log.e(TAG, "Unable to create input monitor", e);
         }
         initTouchBounds();
+        sInputMonitorInitialized = true;
     }
 
     private int getNavbarSize(String resName) {
