@@ -515,9 +515,6 @@ public class TouchInteractionService extends Service implements
     }
 
     private void onInputEvent(InputEvent ev) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.EVENTS_TO_OVERVIEW_MISSING_TAG, "onInputEvent " + ev);
-        }
         if (!(ev instanceof MotionEvent)) {
             Log.e(TAG, "Unknown event " + ev);
             return;
