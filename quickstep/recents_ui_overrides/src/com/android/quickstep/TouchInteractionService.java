@@ -649,20 +649,17 @@ public class TouchInteractionService extends Service implements
 
         final boolean shouldDefer;
         final BaseSwipeUpHandler.Factory factory;
-        final Intent homeIntent;
 
         if (mMode == Mode.NO_BUTTON && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
-            shouldDefer = true;
+            shouldDefer = !sSwipeSharedState.recentsAnimationFinishInterrupted;
             factory = mFallbackNoButtonFactory;
-            homeIntent = mOverviewComponentObserver.getHomeIntent();
         } else {
             shouldDefer = mOverviewComponentObserver.getActivityControlHelper()
                     .deferStartingActivity(mActiveNavBarRegion, event);
             factory = mWindowTreansformFactory;
-            homeIntent = mOverviewComponentObserver.getOverviewIntent();
         }
 
-        return new OtherActivityInputConsumer(this, runningTaskInfo, homeIntent,
+        return new OtherActivityInputConsumer(this, runningTaskInfo,
                 shouldDefer, mOverviewCallbacks, this::onConsumerInactive,
                 sSwipeSharedState, mInputMonitorCompat, mSwipeTouchRegion,
                 disableHorizontalSwipe(event), factory);
@@ -809,16 +806,15 @@ public class TouchInteractionService extends Service implements
     }
 
     private BaseSwipeUpHandler createWindowTransformSwipeHandler(RunningTaskInfo runningTask,
-            long touchTimeMs, boolean continuingLastGesture) {
-        return  new WindowTransformSwipeHandler(
-                runningTask, this, touchTimeMs,
-                mOverviewComponentObserver.getActivityControlHelper(),
-                continuingLastGesture, mInputConsumer, mRecentsModel);
+            long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
+        return  new WindowTransformSwipeHandler(runningTask, this, touchTimeMs,
+                mOverviewComponentObserver, continuingLastGesture, mInputConsumer, mRecentsModel);
     }
 
     private BaseSwipeUpHandler createFallbackNoButtonSwipeHandler(RunningTaskInfo runningTask,
-            long touchTimeMs, boolean continuingLastGesture) {
-        return new FallbackNoButtonInputConsumer(this, mOverviewComponentObserver, runningTask);
+            long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
+        return new FallbackNoButtonInputConsumer(this, mOverviewComponentObserver, runningTask,
+                mRecentsModel, mInputConsumer, isLikelyToStartNewTask, continuingLastGesture);
     }
 
     public static void startRecentsActivityAsync(Intent intent, RecentsAnimationListener listener) {

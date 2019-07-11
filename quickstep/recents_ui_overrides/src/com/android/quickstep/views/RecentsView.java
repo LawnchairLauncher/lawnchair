@@ -289,7 +289,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     @ViewDebug.ExportedProperty(category = "launcher")
     private float mContentAlpha = 1;
     @ViewDebug.ExportedProperty(category = "launcher")
-    private float mFullscreenProgress = 0;
+    protected float mFullscreenProgress = 0;
 
     // Keeps track of task id whose visual state should not be reset
     private int mIgnoreResetTaskId = -1;
@@ -604,6 +604,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             TaskView taskView = (TaskView) getChildAt(i);
             if (mIgnoreResetTaskId != taskView.getTask().key.id) {
                 taskView.resetVisualProperties();
+                taskView.setStableAlpha(mContentAlpha);
             }
         }
         if (mRunningTaskTileHidden) {
