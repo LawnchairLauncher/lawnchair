@@ -82,9 +82,6 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
 
     @Override
     public void onMotionEvent(MotionEvent ev) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.EVENTS_TO_OVERVIEW_MISSING_TAG, "onMotionEvent " + ev);
-        }
         if (!mProxyTouch) {
             return;
         }
