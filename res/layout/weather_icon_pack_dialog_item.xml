@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="?android:attr/listPreferredItemHeightSmall"
+    android:background="?selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@android:id/icon"
+        android:layout_width="@dimen/icon_preview_size"
+        android:layout_height="@dimen/icon_preview_size"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="?android:attr/listPreferredItemPaddingStart"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:scaleType="centerInside"
+        tools:src="@mipmap/ic_launcher" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingStart="8dp"
+        android:paddingEnd="16dp">
+
+        <TextView
+            android:id="@android:id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="18sp"
+            app:customFontType="preferenceTitle"
+            tools:text="Icon pack" />
+
+        <TextView
+            android:id="@android:id/summary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="14sp"
+            android:visibility="gone"
+            tools:text="com.example.iconpack"
+            tools:visibility="visible" />
+    </LinearLayout>
+
+    <RadioButton
+        android:id="@+id/select"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="?android:attr/listPreferredItemPaddingEnd"
+        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"/>
+</LinearLayout>

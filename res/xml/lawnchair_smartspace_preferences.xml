@@ -67,6 +67,11 @@
             android:summary="%s"
             />
 
+        <ch.deletescape.lawnchair.settings.ui.WeatherIconPackPreference
+            android:key="pref_weatherIcons"
+            android:title="@string/pref_weather_icon_pack"
+            app:controllerClass=".WeatherIconPackController"/>
+
         <ch.deletescape.lawnchair.preferences.OWMEditTextPreference
             android:defaultValue="@string/default_owm_key"
             android:dependency="pref_smartspace_widget_provider"
