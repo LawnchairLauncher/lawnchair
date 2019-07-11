@@ -419,21 +419,21 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
         override val displayName by lazy { drawableName.replace(Regex("""_+"""), " ").trim().toTitleCase() }
         override val identifierName = drawableName
-        override val drawable: Drawable
-            get() {
-                if (!isAvailable) {
-                    throw IllegalStateException("Trying to access an unavailable entry $debugName")
-                }
-                try {
-                    return AdaptiveIconCompat.wrap(packResources.getDrawable(drawableId))
-                } catch (e: Resources.NotFoundException) {
-                    throw Exception("Failed to get drawable $drawableId ($debugName)", e)
-                }
-            }
         override val isAvailable by lazy { drawableId != 0 && checkResourceExists() }
 
         val debugName get() = "$drawableName in $packPackageName"
         val drawableId: Int by lazy { id ?: getDrawableId(drawableName) }
+
+        override fun drawableForDensity(density: Int): Drawable {
+            if (!isAvailable) {
+                throw IllegalStateException("Trying to access an unavailable entry $debugName")
+            }
+            try {
+                return AdaptiveIconCompat.wrap(packResources.getDrawableForDensity(drawableId, density))
+            } catch (e: Resources.NotFoundException) {
+                throw Exception("Failed to get drawable $drawableId ($debugName)", e)
+            }
+        }
 
         override fun toCustomEntry() = IconPackManager.CustomIconEntry(packPackageName, drawableName)
 
