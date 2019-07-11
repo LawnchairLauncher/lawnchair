@@ -141,7 +141,7 @@
     <string name="about_our_contributors">主要貢獻者</string>
     <string name="about_our_family">我們的大家族</string>
     <string name="about_role_lead">領導開發者</string>
-    <string name="about_role_devops">DevOps</string>
+    <string name="about_role_devops">開發人員選項</string>
     <string name="about_role_dev">開發者</string>
     <string name="about_role_dev_mod">開發者/仲裁者</string>
     <string name="about_role_designer">設計師</string>
@@ -175,7 +175,7 @@
     <string name="action_open_app_with_target">開啟 %s</string>
     <string name="action_open_app_select_app">選擇應用程式</string>
     <string name="action_none">什麼也不做</string>
-    <string name="action_despacito">播放 YouTube Rewind 2018 (爆音注意)</string>
+    <string name="action_despacito">播放 YouTube Rewind 2018（爆音注意）</string>
     <string name="gesture_press_home">主螢幕按鈕</string>
     <string name="gesture_press_back">返回按鈕</string>
     <string name="gesture_double_tap">輕觸兩下</string>
@@ -292,7 +292,7 @@
     <string name="theme_auto_night_mode">使用系統主題色</string>
     <string name="theme_light">亮色</string>
     <string name="theme_dark_text">亮色暗字</string>
-    <string name="theme_with_dark_text">暗色文字</string>
+    <string name="theme_with_dark_text">深色文字</string>
     <string name="theme_dark">暗色</string>
     <string name="theme_dark_dark_text">暗色暗字</string>
     <string name="theme_black">黑色</string>
@@ -302,7 +302,7 @@
     <string name="theme_dark_theme_mode_off">關閉</string>
     <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
     <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
-    <string name="theme_dark_theme_mode_follow_daylight">隨著日出、落時間</string>
+    <string name="theme_dark_theme_mode_follow_daylight">根據日照時間</string>
     <string name="theme_use_black">使用純黑色</string>
     <string name="theme_use_dark_text">使用深色文字</string>
     <string name="pref_qsb_color">顏色</string>
@@ -328,7 +328,7 @@
     <string name="recent_task_option_popup_window">對話方塊</string>
     <string name="feed_theme_pref_title">背景色彩</string>
     <string name="recents_not_connected">未連線服務</string>
-    <string name="advanced_settings">%s進階設定</string>
+    <string name="advanced_settings">進階%s設定</string>
     <string name="adaptive_icon">自動調整圖示</string>
     <string name="drawer_tabs">分頁</string>
     <string name="add_new_tab">新增</string>
@@ -419,22 +419,22 @@
     <string name="adaptify_pack_summary">使用圖示套件時，仍建立自動調整圖示</string>
     <string name="pref_sesame_sync_look_and_feel">分享外觀與風格</string>
     <string name="pref_sesame_sync_look_and_feel_summary">與 Sesame 同步 Lawnchair 搜尋設定</string>
-    <string name="pref_search_bar_radius">搜尋列角落圓角化</string>
+    <string name="pref_search_bar_radius">搜尋列圓角</string>
     <string name="icon_text_scale_pref_title">文字大小</string>
     <string name="text_color">文字顏色</string>
     <string name="background_color">背景顏色</string>
     <string name="pref_notification_count_title">顯示通知數量</string>
-    <string name="pref_notification_count_summary">在「點」中顯示通知數</string>
+    <string name="pref_notification_count_summary">在通知圓點中顯示通知數</string>
     <string name="pref_center_wallpaper">永遠置中桌布</string>
     <string name="pref_center_wallpaper_summary">這將會關閉桌布滾動特效</string>
     <string name="pref_icon_popup_menu">彈出式選單項目</string>
-    <string name="pref_appcategorization_enable_title">分類 App</string>
-    <string name="pref_appcategorization_enable_summary">整修雜亂的抽屜。</string>
+    <string name="pref_appcategorization_enable_title">應用程式分類</string>
+    <string name="pref_appcategorization_enable_summary">整修雜亂的抽屜</string>
     <string name="pref_appcategorization_style_text">樣式</string>
-    <string name="pref_app_groups_edit_tip">輕觸編輯，拖曳則重新排序。</string>
+    <string name="pref_app_groups_edit_tip">輕觸以編輯，拖曳可重新排序</string>
     <string name="pref_app_groups_create">建立</string>
     <string name="pref_appcategorization_folders_title">資料夾</string>
-    <string name="pref_appcategorization_folders_summary">輕觸開啟彈出視窗。</string>
+    <string name="pref_appcategorization_folders_summary">輕觸以開啟彈出視窗</string>
     <string name="pref_appcategorization_tabs_title">分頁</string>
     <string name="pref_appcategorization_tabs_summary">在群組間滑動</string>
     <string name="default_folder_name">建立資料夾</string>
@@ -455,47 +455,82 @@
     <string name="category_travel_and_navigation">旅遊及導航</string>
     <string name="lock_desktop">鎖定桌面</string>
     <string name="reset_custom_icons">重設自訂圖示</string>
-    <string name="reset_custom_icons_confirmation">確認重設所有自訂圖示？此動作無法復原。</string>
-    <string name="open_image_picker">開啟圖片挑選器</string>
+    <string name="reset_custom_icons_confirmation">確定重設所有自訂圖示？此動作無法復原。</string>
+    <string name="open_image_picker">開啟圖片選取器</string>
     <string name="import_icon">匯入圖示</string>
-    <string name="import_as_adaptive">成為自動調整圖示</string>
-    <string name="bugreport_channel_name">漏洞回報</string>
-    <string name="status_channel_name">漏洞回報上傳狀態</string>
-    <string name="dogbin_uploading">上傳中</string>
+    <string name="import_as_adaptive">自動調整圖示</string>
+    <string name="bugreport_channel_name">錯誤回報</string>
+    <string name="status_channel_name">錯誤回報上傳狀態</string>
+    <string name="bugreport_group_summary">%d 個新報告</string>
+    <string name="bugreport_group_summary_multiple">多個新報告</string>
+    <string name="dogbin_uploading">正在上傳</string>
     <string name="action_dogbin_upload">上傳至 dogbin</string>
     <string name="action_dogbin_upload_error">上傳失敗</string>
     <string name="action_dogbin_copy_link">複製連結</string>
-    <string name="lawnchair_bug_report">Lawnchair 漏洞回報</string>
+    <string name="lawnchair_bug_report">Lawnchair 問題回報</string>
     <string name="copied_toast">已複製</string>
     <string name="action_copy">複製</string>
     <string name="action_copy_link">複製連結</string>
     <string name="action_share">分享</string>
-    <string name="animation_type_title">App 開啟動畫</string>
+    <string name="animation_type_title">應用程式開啟動畫</string>
     <string name="animation_type_default">預設</string>
     <string name="animation_type_pie">圓餅形</string>
     <string name="animation_type_pie_like">類似圓餅型</string>
-    <string name="animation_type_reveal">揭開</string>
+    <string name="animation_type_reveal">揭幕</string>
     <string name="animation_type_slide_up">上滑</string>
     <string name="animation_type_scale_up">放大</string>
     <string name="animation_type_blink">閃爍</string>
     <string name="animation_type_fade">淡化</string>
-    <string name="permission_iplocate">允許使用大略（基於網路）位置？</string>
-    <string name="permission_iplocate_twilight_explanation">這能使計算白天更加準確（而不需得知您的實際位置）。</string>
+    <string name="permission_iplocate">允許存取大略（基於網路）的位置資訊？</string>
+    <string name="permission_iplocate_twilight_explanation">可使日照時間計算更加準確（且不需得知您的實際位置）。</string>
     <string name="pref_appcategorization_flowerpot_title">類別</string>
-    <string name="pref_appcategorization_flowerpot_summary">App 將會依其中繼資料來自動揀選。</string>
+    <string name="pref_appcategorization_flowerpot_summary">將會依應用程式資料來自動篩選。</string>
     <string name="select_tab_type">分頁類型</string>
     <string name="tab_type_custom">自訂分頁</string>
-    <string name="tab_type_custom_desc">手動為此分頁挑選 App</string>
+    <string name="tab_type_custom_desc">手動挑選應用程式</string>
     <string name="tab_type_smart">智慧分頁</string>
     <string name="categorization">分類</string>
-    <string name="folder_cover_mode">覆蓋模式</string>
-    <string name="folder_cover_mode_desc">點按以開啓第一個應用程式，上滑打開資料夾</string>
+    <string name="folder_cover_mode">封面圖片模式</string>
+    <string name="folder_cover_mode_desc">輕觸以開啓首個應用程式，向上滑動開啟資料夾</string>
     <string name="pref_smartspace_event_providers">事件來源</string>
     <string name="event_provider_now_playing">現正播放</string>
     <string name="battery_status">電池狀態</string>
     <string name="battery_charging">充電中</string>
+    <string name="battery_full">電池電量已滿</string>
     <string name="battery_low">低電量</string>
     <string name="event_provider_unread_notifications">未讀通知</string>
-    <string name="event_provider_missing_notification_access">若要使用 <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>，請為 <xliff:g example="My App" id="name">%2$s</xliff:g> 打開應用程式通知</string>
-    <string name="zen_mode_enabled">已打開勿擾模式</string>
+    <string name="event_provider_missing_notification_access">欲使用 <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>，請為 <xliff:g example="My App" id="name">%2$s</xliff:g> 啟用應用程式通知</string>
+    <string name="event_provider_missing_notification_dots">欲使用 <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>，請啟用通知圓點</string>
+    <string name="zen_mode_enabled">已開啟勿擾模式</string>
+    <string name="crash_report_notif_title">%1$s 無回應</string>
+    <string name="personality_provider">Lawnchair 提醒</string>
+    <string-array name="greetings_morning">
+        <item>早安！</item>
+        <item>多美好的一天！</item>
+        <item>有沒有抬頭看看窗外風景呢？</item>
+        <item>祝你今天過得開心！</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>晚安！</item>
+        <item>祝您睡得香甜！</item>
+        <item>明天見！</item>
+        <item>祝您有個好夢</item>
+        <item>不要熬夜太久</item>
+        <item>你今天過得好嗎？</item>
+        <item>你今天都做了什麼？</item>
+    </string-array>
+    <string name="onbording_settings_title">設定 %s</string>
+    <string name="onbording_settings_summary">常按主畫面</string>
+    <string name="onboarding_swipe_up">向上滑動以檢視所有應用程式</string>
+    <string name="web_search_google">Google （網頁）</string>
+    <string name="web_search_ddg">DuckDuckGo（網頁）</string>
+    <string name="web_search_startpage">Startpage.com（網頁）</string>
+    <string name="web_search_bing">Bing（網頁）</string>
+    <string name="web_search_qwant">Qwant（網頁）</string>
+    <string name="web_search_ecosia">Ecosia（網頁）</string>
+    <string name="web_search_yandex">Yandex（網頁）</string>
+    <string name="web_search_naver">Naver（網頁）</string>
+    <string name="web_search_baidu">百度（網頁）</string>
+    <string name="icon_shape_override_miui_explaination">由於 MIUI 的系統限制，導致無法更改圖示形狀。\n請不要向我們回報此問題。</string>
+    <string name="button_organize_screens">管理頁面</string>
 </resources>
