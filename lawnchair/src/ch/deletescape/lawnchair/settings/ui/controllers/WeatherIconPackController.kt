@@ -20,15 +20,16 @@
 package ch.deletescape.lawnchair.settings.ui.controllers
 
 import android.content.Context
+import android.support.annotation.Keep
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.PreferenceController
 import ch.deletescape.lawnchair.smartspace.AccuWeatherDataProvider
 import ch.deletescape.lawnchair.smartspace.OnePlusWeatherDataProvider
 
+@Keep
 class WeatherIconPackController(context: Context) : PreferenceController(context) {
 
-    override val isVisible: Boolean
-        get() = context.lawnchairPrefs.weatherProvider in SUPPORTED
+    override val isVisible= context.lawnchairPrefs.weatherProvider in SUPPORTED
 
     companion object {
         private val SUPPORTED = listOf(

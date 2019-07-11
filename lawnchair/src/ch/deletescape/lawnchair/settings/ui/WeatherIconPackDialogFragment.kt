@@ -28,6 +28,7 @@ import android.view.ViewGroup
 import android.widget.*
 import ch.deletescape.lawnchair.applyColor
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.smartspace.weather.icons.WeatherIconManager
 import com.android.launcher3.R
@@ -75,8 +76,10 @@ class WeatherIconPackDialogFragment: PreferenceDialogFragmentCompat() {
                 findViewById<ImageView>(android.R.id.icon).setImageDrawable(pack.icon)
                 findViewById<TextView>(android.R.id.title).text = pack.name
                 if (showDebug) {
-                findViewById<TextView>(android.R.id.summary).text = pack.pkgName
-
+                    findViewById<TextView>(android.R.id.summary).apply {
+                        text = pack.pkgName
+                        isVisible = true
+                    }
                 }
                 findViewById<RadioButton>(R.id.select).apply {
                     isChecked = pack.pkgName == selected

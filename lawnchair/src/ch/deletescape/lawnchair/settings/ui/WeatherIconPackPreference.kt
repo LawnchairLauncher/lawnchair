@@ -25,10 +25,12 @@ import android.support.v7.preference.Preference
 import android.util.AttributeSet
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.settings.ui.controllers.WeatherIconPackController
 import ch.deletescape.lawnchair.smartspace.weather.icons.WeatherIconManager
 import com.android.launcher3.R
 
-class WeatherIconPackPreference(context: Context, attrs: AttributeSet? = null) : DialogPreference(context, attrs), LawnchairPreferences.OnPreferenceChangeListener {
+class WeatherIconPackPreference(context: Context, attrs: AttributeSet? = null) :
+        DialogPreference(context, attrs), LawnchairPreferences.OnPreferenceChangeListener {
     private val prefs = context.lawnchairPrefs
     private val manager = WeatherIconManager.getInstance(context)
     private val current get() = manager.getPack()
@@ -41,21 +43,34 @@ class WeatherIconPackPreference(context: Context, attrs: AttributeSet? = null) :
     override fun onAttached() {
         super.onAttached()
 
-        prefs.addOnPreferenceChangeListener(KEY, this)
+        prefs.addOnPreferenceChangeListener(this, KEY, KEY_PROVIDER)
     }
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
-        icon = current.icon
-        summary = current.name
+        if (key == KEY_PROVIDER) {
+            isVisible = WeatherIconPackController(context).isVisible
+        }
+        updateSummaryAndIcon()
+    }
+
+    fun updateSummaryAndIcon() {
+        if (isEnabled) {
+            icon = current.icon
+            summary = current.name
+        } else {
+            summary = context.getString(R.string.weather_icon_packs_not_supported)
+            icon = null
+        }
     }
 
     override fun onDetached() {
         super.onDetached()
 
-        prefs.removeOnPreferenceChangeListener(KEY, this)
+        prefs.removeOnPreferenceChangeListener(this, KEY_PROVIDER)
     }
 
     companion object {
         const val KEY = "pref_weatherIcons"
+        const val KEY_PROVIDER = "pref_smartspace_widget_provider"
     }
 }
