@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import android.graphics.Rect;
+
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
@@ -49,9 +51,8 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                      mLauncher.addContextLayer("want to fling forward in overview")) {
             LauncherInstrumentation.log("Overview.flingForward before fling");
             final UiObject2 overview = verifyActiveContainer();
-            overview.setGestureMargins(mLauncher.getEdgeSensitivityWidth(), 0, 0, 0);
-            overview.fling(Direction.LEFT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
-            mLauncher.waitForIdle();
+            mLauncher.scroll(overview, Direction.LEFT, 1,
+                    new Rect(mLauncher.getEdgeSensitivityWidth(), 0, 0, 0), 20);
             verifyActiveContainer();
         }
     }
@@ -86,9 +87,8 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                      mLauncher.addContextLayer("want to fling backward in overview")) {
             LauncherInstrumentation.log("Overview.flingBackward before fling");
             final UiObject2 overview = verifyActiveContainer();
-            overview.setGestureMargins(0, 0, mLauncher.getEdgeSensitivityWidth(), 0);
-            overview.fling(Direction.RIGHT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
-            mLauncher.waitForIdle();
+            mLauncher.scroll(overview, Direction.RIGHT, 1,
+                    new Rect(0, 0, mLauncher.getEdgeSensitivityWidth(), 0), 20);
             verifyActiveContainer();
         }
     }
