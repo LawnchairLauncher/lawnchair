@@ -167,7 +167,7 @@ public class FolderAnimationManager {
                 Math.round((paddingOffsetY + initialSize) / initialScale));
         Rect endRect = new Rect(0, 0, lp.width, lp.height);
         float initialRadius = initialSize / initialScale / 2f;
-        float finalRadius = Utilities.pxFromDp(2, mContext.getResources().getDisplayMetrics());
+        float finalRadius = Utilities.pxFromDp(8, mContext.getResources().getDisplayMetrics());
 
         // Create the animators.
         AnimatorSet a = LauncherAnimUtils.createAnimatorSet();
