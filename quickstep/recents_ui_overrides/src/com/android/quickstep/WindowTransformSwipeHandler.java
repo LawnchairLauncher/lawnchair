@@ -48,9 +48,7 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
-import android.graphics.Point;
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.SystemClock;
@@ -59,13 +57,11 @@ import android.view.View;
 import android.view.View.OnApplyWindowInsetsListener;
 import android.view.ViewTreeObserver.OnDrawListener;
 import android.view.WindowInsets;
-import android.view.WindowManager;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
@@ -105,8 +101,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         extends BaseSwipeUpHandler<T>
         implements OnApplyWindowInsetsListener {
     private static final String TAG = WindowTransformSwipeHandler.class.getSimpleName();
-
-    private static final Rect TEMP_RECT = new Rect();
 
     private static final String[] STATE_NAMES = DEBUG_STATES ? new String[16] : null;
 
@@ -220,9 +214,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     // To avoid UI jump when gesture is started, we offset the animation by the threshold.
     private float mShiftAtGestureStart = 0;
 
-    private final Mode mMode;
-
-    private final int mRunningTaskId;
     private ThumbnailData mTaskSnapshot;
 
     // Used to control launcher components throughout the swipe gesture.
@@ -248,16 +239,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             long touchTimeMs, OverviewComponentObserver overviewComponentObserver,
             boolean continuingLastGesture,
             InputConsumerController inputConsumer, RecentsModel recentsModel) {
-        super(context, overviewComponentObserver, recentsModel, inputConsumer);
-        mRunningTaskId = runningTaskInfo.id;
+        super(context, overviewComponentObserver, recentsModel, inputConsumer, runningTaskInfo.id);
         mTouchTimeMs = touchTimeMs;
         mContinuingLastGesture = continuingLastGesture;
-
-        mMode = SysUINavigationMode.getMode(context);
         initStateCallbacks();
-
-        DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(mContext).getDeviceProfile(mContext);
-        initTransitionEndpoints(dp);
     }
 
     private void initStateCallbacks() {
@@ -317,38 +302,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             mStateCallback.addChangeHandler(STATE_APP_CONTROLLER_RECEIVED | STATE_LAUNCHER_PRESENT
                             | STATE_SCREENSHOT_VIEW_SHOWN | STATE_CAPTURE_SCREENSHOT,
                     (b) -> mRecentsView.setRunningTaskHidden(!b));
-        }
-    }
-
-    private Rect getStackBounds(DeviceProfile dp) {
-        if (mActivity != null) {
-            int loc[] = new int[2];
-            View rootView = mActivity.getRootView();
-            rootView.getLocationOnScreen(loc);
-            return new Rect(loc[0], loc[1], loc[0] + rootView.getWidth(),
-                    loc[1] + rootView.getHeight());
-        } else {
-            return new Rect(0, 0, dp.widthPx, dp.heightPx);
-        }
-    }
-
-    private void initTransitionEndpoints(DeviceProfile dp) {
-        mDp = dp;
-
-        Rect tempRect = new Rect();
-        mTransitionDragLength = mActivityControlHelper.getSwipeUpDestinationAndLength(
-                dp, mContext, tempRect);
-        if (!dp.isMultiWindowMode) {
-            // When updating the target rect, also update the home bounds since the location on
-            // screen of the launcher window may be stale (position is not updated until first
-            // traversal after the window is resized).  We only do this for non-multiwindow because
-            // we otherwise use the minimized home bounds provided by the system.
-            mClipAnimationHelper.updateHomeBounds(getStackBounds(dp));
-        }
-        mClipAnimationHelper.updateTargetRect(tempRect);
-        if (mMode == Mode.NO_BUTTON) {
-            // We can drag all the way to the top of the screen.
-            mDragLengthFactor = (float) dp.heightPx / mTransitionDragLength;
         }
     }
 
@@ -678,30 +631,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     @Override
     public void onRecentsAnimationStart(SwipeAnimationTargetSet targetSet) {
-        DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(mContext).getDeviceProfile(mContext);
-        final Rect overviewStackBounds;
-        RemoteAnimationTargetCompat runningTaskTarget = targetSet.findTask(mRunningTaskId);
-
-        if (targetSet.minimizedHomeBounds != null && runningTaskTarget != null) {
-            overviewStackBounds = mActivityControlHelper
-                    .getOverviewWindowBounds(targetSet.minimizedHomeBounds, runningTaskTarget);
-            dp = dp.getMultiWindowProfile(mContext, new Point(
-                    targetSet.minimizedHomeBounds.width(), targetSet.minimizedHomeBounds.height()));
-        } else {
-            // If we are not in multi-window mode, home insets should be same as system insets.
-            dp = dp.copy(mContext);
-            overviewStackBounds = getStackBounds(dp);
-        }
-        dp.updateInsets(targetSet.homeContentInsets);
-        dp.updateIsSeascape(mContext.getSystemService(WindowManager.class));
-
-        if (runningTaskTarget != null) {
-            mClipAnimationHelper.updateSource(overviewStackBounds, runningTaskTarget);
-        }
-        mClipAnimationHelper.prepareAnimation(dp, false /* isOpening */);
-        initTransitionEndpoints(dp);
-
-        mRecentsAnimationWrapper.setController(targetSet);
+        super.onRecentsAnimationStart(targetSet);
         TOUCH_INTERACTION_LOG.addLog("startRecentsAnimationCallback", targetSet.apps.length);
         setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
 
