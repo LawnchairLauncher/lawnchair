@@ -21,16 +21,22 @@ package ch.deletescape.lawnchair.smartspace.weather.icons
 
 import android.content.Context
 import android.graphics.Bitmap
+import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.toBitmap
 import com.android.launcher3.R
 
 // See: https://github.com/DvTonder/Sample_icon_set
-class WeatherIconPackProviderImpl(private val context: Context, private val pkgName: String): WeatherIconManager.IconProvider {
+class WeatherIconPackProviderImpl(private val context: Context, private val pkgName: String, private val pack: WeatherIconManager.WeatherIconPack): WeatherIconManager.IconProvider {
     private val res = context.packageManager.getResourcesForApplication(pkgName)
+    private val tintColor get() = ColorEngine.getInstance(context).getResolver(ColorEngine.Resolvers.WORKSPACE_ICON_LABEL).resolveColor()
 
     override fun getIcon(which: WeatherIconManager.Icon, night: Boolean): Bitmap {
         val resId = res.getIdentifier(getResName(which, night), "drawable", pkgName)
-        return (if (resId > 0) res.getDrawable(resId) else context.getDrawable(R.drawable.weather_none_available)).toBitmap()!!
+        return (if (resId > 0) res.getDrawable(resId) else context.getDrawable(R.drawable.weather_none_available)).apply {
+            if (pack.recoloringMode == WeatherIconManager.RecoloringMode.ALWAYS) {
+                setTint(tintColor)
+            }
+        }.toBitmap()!!
     }
 
     companion object {
