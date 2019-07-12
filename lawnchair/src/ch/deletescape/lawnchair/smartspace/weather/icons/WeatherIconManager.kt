@@ -46,7 +46,7 @@ class WeatherIconManager(private val context: Context) {
                 Intent(Intent.ACTION_MAIN).addCategory(
                         INTENT_CATEGORY), PackageManager.GET_META_DATA)?.map {
             val recoloringMode =
-                    it.activityInfo.metaData.getString(METADATA_KEY)?.let {
+                    it.activityInfo.metaData?.getString(METADATA_KEY)?.let {
                         RecoloringMode.fromName(it)
                     } ?: RecoloringMode.NEVER
             WeatherIconPack(
