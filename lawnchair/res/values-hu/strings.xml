@@ -462,6 +462,8 @@ A művelet nem visszavonható.</string>
     <string name="import_as_adaptive">Alkalmazkodó ikonként</string>
     <string name="bugreport_channel_name">Hibajelentések</string>
     <string name="status_channel_name">A hibajelentés feltöltési állapota</string>
+    <string name="bugreport_group_summary">%d új jelentés</string>
+    <string name="bugreport_group_summary_multiple">Új összetett jelentések</string>
     <string name="dogbin_uploading">A feltöltés folyamatban</string>
     <string name="action_dogbin_upload">Feltöltés a dogbin-re</string>
     <string name="action_dogbin_upload_error">A feltöltés sikertelen</string>
@@ -495,8 +497,45 @@ A művelet nem visszavonható.</string>
     <string name="event_provider_now_playing">Now Playing</string>
     <string name="battery_status">Akkumulátorállapot</string>
     <string name="battery_charging">Akkumulátortöltés</string>
+    <string name="battery_full">Az akkumulátor feltöltve</string>
     <string name="battery_low">Alacsony akkuszint</string>
     <string name="event_provider_unread_notifications">Olvasatlan értesítések</string>
     <string name="event_provider_missing_notification_access"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> használatához kapcsolja be az értesítéseket a következőhöz: <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> használatához kapcsolja be az \"értesítési pöttyöket\"</string>
     <string name="zen_mode_enabled">A Ne zavarjanak (DND) engedélyezett</string>
+    <string name="crash_report_notif_title">%1$s összeomlott!</string>
+    <string name="personality_provider">Szövegkörnyezettől függő üzenetek</string>
+    <string-array name="greetings_morning">
+        <item>Jó reggelt!</item>
+        <item>Micsoda szép nap!</item>
+        <item>Szétnézett már odakinn?</item>
+        <item>Legyen szép napod!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Jó éjszakát!</item>
+        <item>Aludj jól!</item>
+        <item>Holnap találkozunk!</item>
+        <item>Szép álmokat!</item>
+        <item>Ne maradjon ébren túl későig</item>
+        <item>Milyen volt a mai napja?</item>
+        <item>Miket csinált ma?</item>
+    </string-array>
+    <string name="onbording_settings_title">%s beállítása</string>
+    <string name="onbording_settings_summary">A Kezdőképernyő hosszan nyomásával</string>
+    <string name="onboarding_swipe_up">Csúsztasson felefelé az összes alkalmazás megtekintéséhez</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">A MIUI korlátozása miatt előfordulhat, hogy az ikon alakja nem változik, és négyzet marad.\nKérjük, ne jelentse ezt hibaként.</string>
+    <string name="button_organize_screens">Képernyők rendezése</string>
+    <string name="weather_icons_default">Alapértelmezett</string>
+    <string name="pref_weather_icon_pack">Időjárás ikonok</string>
+    <string name="weather_icon_packs_not_supported">Az Ön jelenlegi időjárás-forrása nem támogatja</string>
+    <string name="lawnchair_settings">Lawnchair-beállítások</string>
 </resources>
