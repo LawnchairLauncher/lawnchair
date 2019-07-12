@@ -31,7 +31,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 
@@ -43,7 +42,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -513,11 +511,15 @@ public abstract class AbstractStateChangeTouchController
             shouldGoToTargetState = !reachedTarget;
         }
         if (shouldGoToTargetState) {
-            if (targetState != mStartState) {
-                logReachedState(logAction, targetState);
-            }
-            mLauncher.getStateManager().goToState(targetState, false /* animated */);
+            goToTargetState(targetState, logAction);
         }
+    }
+
+    protected void goToTargetState(LauncherState targetState, int logAction) {
+        if (targetState != mStartState) {
+            logReachedState(logAction, targetState);
+        }
+        mLauncher.getStateManager().goToState(targetState, false /* animated */);
     }
 
     private void logReachedState(int logAction, LauncherState targetState) {

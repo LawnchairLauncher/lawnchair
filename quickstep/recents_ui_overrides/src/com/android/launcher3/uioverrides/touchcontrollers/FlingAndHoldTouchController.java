@@ -168,6 +168,21 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
     }
 
     @Override
+    protected void goToTargetState(LauncherState targetState, int logAction) {
+        if (mPeekAnim != null && mPeekAnim.isStarted()) {
+            // Don't jump to the target state until overview is no longer peeking.
+            mPeekAnim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    FlingAndHoldTouchController.super.goToTargetState(targetState, logAction);
+                }
+            });
+        } else {
+            super.goToTargetState(targetState, logAction);
+        }
+    }
+
+    @Override
     protected void updateAnimatorBuilderOnReinit(AnimatorSetBuilder builder) {
         if (handlingOverviewAnim()) {
             // We don't want the state transition to all apps to animate overview,
