@@ -350,12 +350,31 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> extends
         }
     }
 
+    private Rect getStackBounds(DeviceProfile dp) {
+        if (mActivity != null) {
+            int loc[] = new int[2];
+            View rootView = mActivity.getRootView();
+            rootView.getLocationOnScreen(loc);
+            return new Rect(loc[0], loc[1], loc[0] + rootView.getWidth(),
+                    loc[1] + rootView.getHeight());
+        } else {
+            return new Rect(0, 0, dp.widthPx, dp.heightPx);
+        }
+    }
+
     private void initTransitionEndpoints(DeviceProfile dp) {
         mDp = dp;
 
         Rect tempRect = new Rect();
         mTransitionDragLength = mActivityControlHelper.getSwipeUpDestinationAndLength(
                 dp, mContext, tempRect);
+        if (!dp.isMultiWindowMode) {
+            // When updating the target rect, also update the home bounds since the location on
+            // screen of the launcher window may be stale (position is not updated until first
+            // traversal after the window is resized).  We only do this for non-multiwindow because
+            // we otherwise use the minimized home bounds provided by the system.
+            mClipAnimationHelper.updateHomeBounds(getStackBounds(dp));
+        }
         mClipAnimationHelper.updateTargetRect(tempRect);
         if (mMode == Mode.NO_BUTTON) {
             // We can drag all the way to the top of the screen.
@@ -714,21 +733,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> extends
                     .getOverviewWindowBounds(targetSet.minimizedHomeBounds, runningTaskTarget);
             dp = dp.getMultiWindowProfile(mContext, new Point(
                     targetSet.minimizedHomeBounds.width(), targetSet.minimizedHomeBounds.height()));
-            dp.updateInsets(targetSet.homeContentInsets);
         } else {
-            if (mActivity != null) {
-                int loc[] = new int[2];
-                View rootView = mActivity.getRootView();
-                rootView.getLocationOnScreen(loc);
-                overviewStackBounds = new Rect(loc[0], loc[1], loc[0] + rootView.getWidth(),
-                        loc[1] + rootView.getHeight());
-            } else {
-                overviewStackBounds = new Rect(0, 0, dp.widthPx, dp.heightPx);
-            }
             // If we are not in multi-window mode, home insets should be same as system insets.
             dp = dp.copy(mContext);
-            dp.updateInsets(targetSet.homeContentInsets);
+            overviewStackBounds = getStackBounds(dp);
         }
+        dp.updateInsets(targetSet.homeContentInsets);
         dp.updateIsSeascape(mContext.getSystemService(WindowManager.class));
 
         if (runningTaskTarget != null) {
