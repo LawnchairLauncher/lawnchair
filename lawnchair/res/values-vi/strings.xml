@@ -530,4 +530,8 @@
     <string name="web_search_baidu">Baidu (web)</string>
     <string name="icon_shape_override_miui_explaination">Do hạn chế trong MIUI, hình dạng biểu tượng của bạn có thể không thay đổi và vẫn là hình vuông.\nXin đừng báo cáo rằng đây là một lỗi.</string>
     <string name="button_organize_screens">Quản lý màn hình chính</string>
+    <string name="weather_icons_default">Mặc định</string>
+    <string name="pref_weather_icon_pack">Biểu tượng Thời tiết</string>
+    <string name="weather_icon_packs_not_supported">Nguồn cấp thời tiết hiện tại không hỗ trợ biểu tượng tùy chỉnh</string>
+    <string name="lawnchair_settings">Cài đặt Lawnchair</string>
 </resources>
