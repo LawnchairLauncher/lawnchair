@@ -471,4 +471,5 @@
         <item>Millainen oli päiväsi?</item>
         <item>Mitä teit tänään?</item>
     </string-array>
+    <string name="button_organize_screens">Järjestä näytöt</string>
 </resources>
