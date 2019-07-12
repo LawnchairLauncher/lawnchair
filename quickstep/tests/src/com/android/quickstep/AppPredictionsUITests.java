@@ -88,7 +88,7 @@ public class AppPredictionsUITests extends AbstractQuickStepTest {
      */
     @Test
     public void testPredictionExistsInAllApps() {
-        mActivityMonitor.startLauncher();
+        mDevice.pressHome();
         mLauncher.pressHome().switchToAllApps();
 
         // Dispatch an update
@@ -103,7 +103,7 @@ public class AppPredictionsUITests extends AbstractQuickStepTest {
      */
     @Test
     public void testPredictionsDeferredUntilHome() {
-        mActivityMonitor.startLauncher();
+        mDevice.pressHome();
         sendPredictionUpdate(mSampleApp1, mSampleApp2);
         mLauncher.pressHome().switchToAllApps();
         waitForLauncherCondition("Predictions were not updated in loading state",
@@ -120,7 +120,7 @@ public class AppPredictionsUITests extends AbstractQuickStepTest {
 
     @Test
     public void testPredictionsDisabled() {
-        mActivityMonitor.startLauncher();
+        mDevice.pressHome();
         sendPredictionUpdate();
         mLauncher.pressHome().switchToAllApps();
 
