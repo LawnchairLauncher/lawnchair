@@ -105,7 +105,7 @@ abstract class BaseFlags {
             "ENABLE_QUICKSTEP_LIVE_TILE", false, "Enable live tile in Quickstep overview");
 
     public static final TogglableFlag ENABLE_HINTS_IN_OVERVIEW = new TogglableFlag(
-            "ENABLE_HINTS_IN_OVERVIEW", true,
+            "ENABLE_HINTS_IN_OVERVIEW", false,
             "Show chip hints and gleams on the overview screen");
 
     public static final TogglableFlag FAKE_LANDSCAPE_UI = new TogglableFlag(
