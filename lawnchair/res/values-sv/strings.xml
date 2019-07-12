@@ -455,6 +455,8 @@
     <string name="import_as_adaptive">Som adaptiv ikon</string>
     <string name="bugreport_channel_name">Felrapporter</string>
     <string name="status_channel_name">Uppladdningsstatus för felrapporter</string>
+    <string name="bugreport_group_summary">%d rapporter</string>
+    <string name="bugreport_group_summary_multiple">Flera nya rapporter</string>
     <string name="dogbin_uploading">Uppladdning pågår</string>
     <string name="action_dogbin_upload">Ladda upp till Dogbin</string>
     <string name="action_dogbin_upload_error">Uppladdningen misslyckades</string>
@@ -482,4 +484,47 @@
     <string name="tab_type_custom_desc">Välj manuellt appar för denna flik.</string>
     <string name="tab_type_smart">Smart flik</string>
     <string name="categorization">Kategorisering</string>
+    <string name="folder_cover_mode">Omslagsläge</string>
+    <string name="folder_cover_mode_desc">Tryck för att öppna den första appen, svep uppåt för att öppna mappen</string>
+    <string name="pref_smartspace_event_providers">Händelse-leverantörer</string>
+    <string name="event_provider_now_playing">Nu spelas</string>
+    <string name="battery_status">Batteristatus</string>
+    <string name="battery_charging">Batteriet laddas</string>
+    <string name="battery_full">Batteriet är fulladdat</string>
+    <string name="battery_low">Låg batterinivå</string>
+    <string name="event_provider_unread_notifications">Olästa aviseringar</string>
+    <string name="event_provider_missing_notification_access">För att använda <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, aktivera aviseringsåtkomst för <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">För att använda <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, aktivera aviseringsprickar</string>
+    <string name="zen_mode_enabled">Stör ej är aktiverat</string>
+    <string name="crash_report_notif_title">%1$s kraschade!</string>
+    <string name="personality_provider">Kontextuella meddelanden</string>
+    <string-array name="greetings_morning">
+        <item>God morgon!</item>
+        <item>Vilken vacker dag!</item>
+        <item>Har du tittat ut än?</item>
+        <item>Ha en bra dag!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Godnatt!</item>
+        <item>Sov gott!</item>
+        <item>Ses imorgon!</item>
+        <item>Dröm sött!</item>
+        <item>Stanna inte uppe för länge</item>
+        <item>Hur var din dag?</item>
+        <item>Vad har du gjort idag?</item>
+    </string-array>
+    <string name="onbording_settings_title">Ställ in %s</string>
+    <string name="onbording_settings_summary">Långtryck på hemskärmen</string>
+    <string name="onboarding_swipe_up">Svep uppåt för att se alla appar</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">På grund av en begränsning i MIUI, kan det hända att din ikonform inte kan ändras och att ikonerna förblir kvadrater.\nVänligen rapportera inte detta som en bugg.</string>
+    <string name="button_organize_screens">Ordna skärmar</string>
 </resources>

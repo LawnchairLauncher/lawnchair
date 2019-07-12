@@ -6,7 +6,7 @@
     <string name="in_smartspace">В \‘Бърз поглед\’ уиджета</string>
     <string name="smartspace_time">Час</string>
     <string name="smartspace_date">Дата</string>
-    <string name="customize">Персонализирай</string>
+    <string name="customize">Персонализиране</string>
     <string name="smartspace_preferences_in_settings">Бърз поглед</string>
     <string name="smartspace_preferences_in_settings_desc">Дата, час, източник за времето</string>
     <string name="search">Търсене</string>
@@ -418,15 +418,20 @@
     <string name="icon_text_scale_pref_title">Размер на текста</string>
     <string name="text_color">Цвят на текста</string>
     <string name="background_color">Цвят на фона</string>
-    <string name="pref_notification_count_title">Покажи броя на известията</string>
+    <string name="pref_notification_count_title">Показвай броя на известията</string>
     <string name="pref_notification_count_summary">Показвай броя на известията в точките за известия</string>
     <string name="pref_center_wallpaper">Винаги центриран тапет</string>
     <string name="pref_center_wallpaper_summary">Това ще изключи ефекта на местене на тапета</string>
+    <string name="pref_icon_popup_menu">Елементи в изскачащото меню</string>
     <string name="pref_appcategorization_enable_title">Категоризиране на приложенията</string>
+    <string name="pref_appcategorization_enable_summary">Оправи разхвърляния ми списък с приложения.</string>
     <string name="pref_appcategorization_style_text">Стил</string>
+    <string name="pref_app_groups_edit_tip">Натиснете за редактиране, влачете за да пренаредите.</string>
     <string name="pref_app_groups_create">Създай</string>
     <string name="pref_appcategorization_folders_title">Папки</string>
+    <string name="pref_appcategorization_folders_summary">Натиснете, за да отворите изскачащото меню.</string>
     <string name="pref_appcategorization_tabs_title">Раздели</string>
+    <string name="pref_appcategorization_tabs_summary">Превключвайте между групите чрез плъзгане наляво и надясно.</string>
     <string name="default_folder_name">Нова папка</string>
     <string name="drawer_folders">Папки</string>
     <string name="category_business_and_productivity">Бизнес и продуктивност</string>
@@ -435,13 +440,17 @@
     <string name="category_food_and_drink">Храна и напитки</string>
     <string name="category_game">Игри</string>
     <string name="category_health_and_fitness">Здраве и Фитнес</string>
+    <string name="category_knowledge_and_reference">Знание и проучване</string>
+    <string name="category_lifestyle">Пазаруване и начин на живот</string>
     <string name="category_music">Музика</string>
     <string name="category_news">Новини</string>
     <string name="category_personalization">Персонализиране</string>
     <string name="category_photography">Фотография</string>
     <string name="category_tools">Инструменти</string>
+    <string name="category_travel_and_navigation">Пътуване и навигация</string>
     <string name="lock_desktop">Заключване на работния плот</string>
-    <string name="reset_custom_icons_confirmation">Сигурен ли си, че искате да нулираш всички потребителски икони? Това действие е необратимо.</string>
+    <string name="reset_custom_icons">Нулиране на потребителските икони</string>
+    <string name="reset_custom_icons_confirmation">Сигурни ли сте, че искате да нулирате всички потребителски икони? Това действие е необратимо.</string>
     <string name="open_image_picker">Отвори избора на изображение</string>
     <string name="import_icon">Внасяне на икона</string>
     <string name="import_as_adaptive">Като адаптивна икона</string>
@@ -468,8 +477,11 @@
     <string name="animation_type_blink">Премигване</string>
     <string name="animation_type_fade">Плавен преход</string>
     <string name="permission_iplocate">Давате ли достъп до приблизително местоположение, базирано на мрежата?</string>
+    <string name="permission_iplocate_twilight_explanation">Това позволява по-точни изчисления за времето от деня, без да е необходимо точното Ви местоположение.</string>
     <string name="pref_appcategorization_flowerpot_title">Категория</string>
+    <string name="pref_appcategorization_flowerpot_summary">Приложенията се избират автоматично въз основа на техните метаданни.</string>
     <string name="select_tab_type">Вид на раздела</string>
+    <string name="tab_type_custom">Персонализиран раздел</string>
     <string name="tab_type_custom_desc">Ръчно изберете приложения за този раздел.</string>
     <string name="tab_type_smart">Умен раздел</string>
     <string name="categorization">Категоризация</string>
@@ -484,6 +496,9 @@
     <string name="event_provider_unread_notifications">Непрочетени известия</string>
     <string name="event_provider_missing_notification_access">За да използвате <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включете известията за приложението <xliff:g example="My App" id="name">%2$s</xliff:g></string>
     <string name="event_provider_missing_notification_dots">За да използвате <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включете точките за известия</string>
+    <string name="zen_mode_enabled">Режимът \"Не безпокойте\" е включен</string>
+    <string name="crash_report_notif_title">%1$s се срина!</string>
+    <string name="personality_provider">Контексни съобщения</string>
     <string-array name="greetings_morning">
         <item>Добро утро!</item>
         <item>Какъв прекрасен ден!</item>
@@ -511,4 +526,6 @@
     <string name="web_search_yandex">Yandex (web)</string>
     <string name="web_search_naver">Naver (web)</string>
     <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">Поради ограничение в MIUI, формата на иконите може да не се промени и да остане квадратна.\nМоля, не докладвайте това като грешка.</string>
+    <string name="button_organize_screens">Организиране на екраните</string>
 </resources>

@@ -520,7 +520,7 @@
         <item>До завтра!</item>
         <item>Солодких снів!</item>
         <item>Не йди спати занадто пізно</item>
-        <item>Яким пройшов твій день?</item>
+        <item>Як пройшов твій день?</item>
         <item>Що ти робив сьогодні?</item>
     </string-array>
     <string name="onbording_settings_title">Налаштування %s</string>
@@ -535,4 +535,10 @@
     <string name="web_search_yandex">Yandex (Мережа)</string>
     <string name="web_search_naver">Naver (Мережа)</string>
     <string name="web_search_baidu">Baidu (Мережа)</string>
+    <string name="icon_shape_override_miui_explaination">У зв\'язку з обмеженням у MIUI, ваша форма піктограми може не змінитися і залишитися квадратною.\nНе повідомляйте про це як про помилку.</string>
+    <string name="button_organize_screens">Наладити екрани</string>
+    <string name="weather_icons_default">За замовчуванням</string>
+    <string name="pref_weather_icon_pack">Значки погоди</string>
+    <string name="weather_icon_packs_not_supported">Не підтримується вашим поточним джерелом погоди</string>
+    <string name="lawnchair_settings">Налаштування Lawnchair</string>
 </resources>

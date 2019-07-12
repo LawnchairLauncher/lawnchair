@@ -77,7 +77,7 @@
     <string name="developer_options_title">Opciones de desarrollador</string>
     <string name="developer_options_enabled">Opciones de desarrollador activadas</string>
     <string name="restart_lawnchair_pref_title">Reiniciar</string>
-    <string name="restart_lawnchair_pref_summary">Aplicar la configuración de nuevo</string>
+    <string name="restart_lawnchair_pref_summary">Aplicar la ajustes de nuevo</string>
     <string name="show_debug_info_pref_title">Mostrar nombres de los componentes</string>
     <string name="debug_component_name">Nombre de componente</string>
     <string name="debug_component_name_copied">Copiado</string>
@@ -462,6 +462,7 @@
     <string name="import_as_adaptive">Como icono adaptativo</string>
     <string name="bugreport_channel_name">Informe de errores</string>
     <string name="status_channel_name">Estado de carga del informe de error</string>
+    <string name="bugreport_group_summary">%d Nuevo informe</string>
     <string name="bugreport_group_summary_multiple">Múltiples reportes</string>
     <string name="dogbin_uploading">Subiendo</string>
     <string name="action_dogbin_upload">Subir a dogbin</string>
@@ -495,7 +496,7 @@
     <string name="pref_smartspace_event_providers">Fuentes de los eventos</string>
     <string name="event_provider_now_playing">Reproduciendo</string>
     <string name="battery_status">Estado de la batería</string>
-    <string name="battery_charging">Batería cargando</string>
+    <string name="battery_charging">Cargando la batería</string>
     <string name="battery_full">Batería llena</string>
     <string name="battery_low">Batería baja</string>
     <string name="event_provider_unread_notifications">Notificaciones no leídas</string>
@@ -523,4 +524,18 @@
     <string name="onbording_settings_summary">Pulsación larga en pantalla de inicio</string>
     <string name="onboarding_swipe_up">Desliza arriba para ver todas tus aplicaciones</string>
     <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">Debido a una restricción en MIUI, la forma de los íconos puede no cambiar y mantenerse de forma cuadrada.\nPor favor no reporte esto como un error.</string>
+    <string name="button_organize_screens">Organizar pantallas</string>
+    <string name="weather_icons_default">Por defecto</string>
+    <string name="pref_weather_icon_pack">Iconos del Clima</string>
+    <string name="weather_icon_packs_not_supported">No soportado por tu proveedor del clima actual</string>
+    <string name="lawnchair_settings">Configuración de Lawnchair</string>
 </resources>

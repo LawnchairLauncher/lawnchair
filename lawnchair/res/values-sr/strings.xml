@@ -462,6 +462,8 @@
     <string name="import_as_adaptive">Прилагодљива икона</string>
     <string name="bugreport_channel_name">Извештаји о грешкама</string>
     <string name="status_channel_name">Статус извештаја о грешци</string>
+    <string name="bugreport_group_summary">Нових извештаја: %d</string>
+    <string name="bugreport_group_summary_multiple">Више нових извештаја</string>
     <string name="dogbin_uploading">Отпремање је у току</string>
     <string name="action_dogbin_upload">Отпреми на dogbin</string>
     <string name="action_dogbin_upload_error">Отпремање није успело</string>
@@ -471,7 +473,7 @@
     <string name="action_copy">Копирај</string>
     <string name="action_copy_link">Копирај линк</string>
     <string name="action_share">Дели</string>
-    <string name="animation_type_title">Анимација отварања апликације</string>
+    <string name="animation_type_title">Анимација отварања апликација</string>
     <string name="animation_type_default">Подразумевана</string>
     <string name="animation_type_pie">Pie</string>
     <string name="animation_type_pie_like">У стилу Pie-а</string>
@@ -495,8 +497,41 @@
     <string name="event_provider_now_playing">Репродукује се</string>
     <string name="battery_status">Статус батерије</string>
     <string name="battery_charging">Батерија се пуни</string>
+    <string name="battery_full">Батерија је пуна</string>
     <string name="battery_low">Батерија је скоро празна</string>
     <string name="event_provider_unread_notifications">Непрочитана обавештења</string>
     <string name="event_provider_missing_notification_access">Да бисте користили <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, укључите обавештења апликације <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Да бисте користили <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, укључите тачке за обавештења</string>
     <string name="zen_mode_enabled">Укључен је режим „Не узнемиравај”</string>
+    <string name="crash_report_notif_title">%1$s је отказао!</string>
+    <string name="personality_provider">Контекстуалне поруке</string>
+    <string-array name="greetings_morning">
+        <item>Добро јутро!</item>
+        <item>Какав диван дан!</item>
+        <item>Јесте ли били напољу?</item>
+        <item>Уживајте у данашњем дану!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Лаку ноћ!</item>
+        <item>Лепо спавај!</item>
+        <item>Видимо се сутра!</item>
+        <item>Желим вам лепе снове!</item>
+        <item>Лезите на време</item>
+        <item>Како вам је прошао дан?</item>
+        <item>Шта сте радили данас?</item>
+    </string-array>
+    <string name="onbording_settings_title">Подеси %s</string>
+    <string name="onbording_settings_summary">Притисните и задржите почетни екран</string>
+    <string name="onboarding_swipe_up">Превуците нагоре да бисте видели све апликације</string>
+    <string name="web_search_google">Google (веб)</string>
+    <string name="web_search_ddg">DuckDuckGo (веб)</string>
+    <string name="web_search_startpage">Startpage.com (веб)</string>
+    <string name="web_search_bing">Bing (веб)</string>
+    <string name="web_search_qwant">Qwant (веб)</string>
+    <string name="web_search_ecosia">Ecosia (веб)</string>
+    <string name="web_search_yandex">Yandex (веб)</string>
+    <string name="web_search_naver">Naver (веб)</string>
+    <string name="web_search_baidu">Baidu (веб)</string>
+    <string name="icon_shape_override_miui_explaination">Због ограничења система MIUI, облик икона можда остане квадратни.\nНе пријављујте ово као грешку.</string>
+    <string name="button_organize_screens">Организуј екране</string>
 </resources>

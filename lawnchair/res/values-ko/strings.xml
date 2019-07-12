@@ -431,5 +431,9 @@
         <item>How was your day?</item>
         <item>What did you do today?</item>
     </string-array>
+    <string name="onbording_settings_summary">홈 화면을 길게 터치하세요.</string>
     <string name="onboarding_swipe_up">위로 스와이프하여 모든 앱 표시</string>
+    <string name="weather_icons_default">기본</string>
+    <string name="pref_weather_icon_pack">날씨 아이콘</string>
+    <string name="lawnchair_settings">Lawnchair 설정</string>
 </resources>

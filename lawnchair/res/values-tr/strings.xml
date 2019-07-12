@@ -534,4 +534,8 @@
     <string name="web_search_baidu">Baidu (web)</string>
     <string name="icon_shape_override_miui_explaination">MIUI\'daki bir kısıtlama nedeniyle, simge şekliniz değişmeyebilir ve kare kalabilir.\nLütfen bunu bir hata olarak bildirmeyin.</string>
     <string name="button_organize_screens">Ekranları düzenle</string>
+    <string name="weather_icons_default">Varsayılan</string>
+    <string name="pref_weather_icon_pack">Hava durumu simgeleri</string>
+    <string name="weather_icon_packs_not_supported">Mevcut hava durumu kaynağınız tarafından desteklenmiyor</string>
+    <string name="lawnchair_settings">Lawnchair Ayarları</string>
 </resources>
