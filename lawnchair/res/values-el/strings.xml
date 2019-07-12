@@ -17,7 +17,7 @@
     <string name="icon_pack">Πακέτο εικονιδίων</string>
     <string name="home_widget">Γραφικό στοιχείο αρχικής οθόνης</string>
     <string name="title_show_google_app">%1$s στα αριστερά</string>
-    <string name="msg_minus_one_on_left">Τροφοδοσία Google στα αριστερά της αρχικής οθόνης</string>
+    <string name="msg_minus_one_on_left">Google Feed στα αριστερά της αρχικής οθόνης</string>
     <string name="about">Σχετικά</string>
     <string name="google_app">Εφαρμογή Google</string>
     <string name="about_app_version">Έκδοση</string>
