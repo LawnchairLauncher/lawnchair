@@ -44,6 +44,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.graphics.Palette
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceGroup
+import android.support.v7.widget.AppCompatButton
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.Property
@@ -559,6 +560,10 @@ fun Button.applyColor(color: Int) {
     val rippleColor = ColorStateList.valueOf(ColorUtils.setAlphaComponent(color, 31))
     (background as RippleDrawable).setColor(rippleColor)
     DrawableCompat.setTint(background, color)
+    val tintList = ColorStateList.valueOf(color)
+    if (this is RadioButton) {
+        buttonTintList = tintList
+    }
 }
 
 inline fun <T> Iterable<T>.safeForEach(action: (T) -> Unit) {

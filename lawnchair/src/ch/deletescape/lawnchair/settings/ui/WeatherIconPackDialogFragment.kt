@@ -32,9 +32,9 @@ import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.smartspace.weather.icons.WeatherIconManager
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
 import com.android.launcher3.util.PackageManagerHelper
 
+// TODO: why in the world can't I manage to theme the buttons?!
 class WeatherIconPackDialogFragment: PreferenceDialogFragmentCompat() {
     private lateinit var manager: WeatherIconManager
     private lateinit var list: ListView
