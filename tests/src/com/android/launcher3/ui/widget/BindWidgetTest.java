@@ -267,7 +267,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         resetLoaderState();
 
         // Launch the home activity
-        mActivityMonitor.startLauncher();
+        mDevice.pressHome();
         waitForModelLoaded();
     }
 

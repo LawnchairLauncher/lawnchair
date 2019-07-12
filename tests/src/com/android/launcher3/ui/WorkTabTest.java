@@ -53,7 +53,7 @@ public class WorkTabTest extends AbstractLauncherUiTest {
 
     @Test
     public void workTabExists() {
-        mActivityMonitor.startLauncher();
+        mDevice.pressHome();
 
         executeOnLauncher(launcher -> launcher.getStateManager().goToState(ALL_APPS));
 
