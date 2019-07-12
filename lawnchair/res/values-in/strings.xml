@@ -530,5 +530,11 @@ Tindakan ini tidak bisa dibatalkan.</string>
     <string name="web_search_yandex">Yandex (web)</string>
     <string name="web_search_naver">Naver (web)</string>
     <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">Karena pembatasan dalam MIUI, bentuk ikon Anda mungkin tidak berubah dan tetap persegi. \nTolong jangan laporkan ini sebagai bug.
+ PERMINTAAN KONTEKS.</string>
     <string name="button_organize_screens">Atur layar</string>
+    <string name="weather_icons_default">Bawaan</string>
+    <string name="pref_weather_icon_pack">Ikon cuaca</string>
+    <string name="weather_icon_packs_not_supported">Tidak didukung oleh sumber cuaca Anda saat ini</string>
+    <string name="lawnchair_settings">Pengaturan Lawnchair</string>
 </resources>
