@@ -49,6 +49,11 @@ open class IconShape(private val topLeft: Corner,
         return Path().also { addToPath(it, 0f, 0f, 100f, 100f, 50f) }
     }
 
+    open fun addShape(path: Path, x: Float, y: Float, radius: Float) {
+        val size = radius * 2
+        addToPath(path, x, y, x + size, y + size, radius)
+    }
+
     @JvmOverloads
     fun addToPath(path: Path, left: Float, top: Float, right: Float, bottom: Float,
                   size : Float = 50f, endSize: Float = size, progress: Float = 0f) {
@@ -129,6 +134,10 @@ open class IconShape(private val topLeft: Corner,
                               IconCornerShape.arc,
                               IconCornerShape.arc,
                               1f, 1f, 1f, 1f) {
+
+        override fun addShape(path: Path, x: Float, y: Float, radius: Float) {
+            path.addCircle(x + radius, y + radius, radius, Path.Direction.CW)
+        }
 
         override fun toString(): String {
             return "circle"

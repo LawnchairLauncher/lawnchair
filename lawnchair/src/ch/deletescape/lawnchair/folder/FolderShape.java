@@ -110,8 +110,7 @@ public abstract class FolderShape {
 
         @Override
         public void addShape(Path path, float x, float y, float radius) {
-            float size = radius * 2;
-            mIconShape.addToPath(path, x, y, x + size, y + size, radius);
+            mIconShape.addShape(path, x, y, radius);
         }
 
         @Override
