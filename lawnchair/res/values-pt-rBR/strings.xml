@@ -517,9 +517,9 @@
         <item>Durma bem!</item>
         <item>Te vejo amanhã!</item>
         <item>Bons sonhos!</item>
-        <item>Não fique acordado por muito tempo</item>
+        <item>Não fique acordado até tarde</item>
         <item>Como foi seu dia?</item>
-        <item>Oque você fez hoje?</item>
+        <item>O que você fez hoje?</item>
     </string-array>
     <string name="onbording_settings_title">Configurar %s</string>
     <string name="onbording_settings_summary">Pressione na sua tela inicial</string>
@@ -535,4 +535,8 @@
     <string name="web_search_baidu">Baidu (web)</string>
     <string name="icon_shape_override_miui_explaination">Devido a uma restrição na MIUI, seu formato de ícone pode não mudar e permanecer quadrado.\nPor favor, não relate isso como um bug.</string>
     <string name="button_organize_screens">Organizar telas</string>
+    <string name="weather_icons_default">Padrão</string>
+    <string name="pref_weather_icon_pack">Ícones de clima</string>
+    <string name="weather_icon_packs_not_supported">Não suportado pelo serviço atual de meteorologia</string>
+    <string name="lawnchair_settings">Config. do Lawnchair</string>
 </resources>
