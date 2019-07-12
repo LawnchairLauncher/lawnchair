@@ -119,8 +119,12 @@ public class ClipAnimationHelper {
     }
 
     public void updateSource(Rect homeStackBounds, RemoteAnimationTargetCompat target) {
-        mHomeStackBounds.set(homeStackBounds);
         updateSourceStack(target);
+        updateHomeBounds(homeStackBounds);
+    }
+
+    public void updateHomeBounds(Rect homeStackBounds) {
+        mHomeStackBounds.set(homeStackBounds);
     }
 
     public void updateTargetRect(Rect targetRect) {
