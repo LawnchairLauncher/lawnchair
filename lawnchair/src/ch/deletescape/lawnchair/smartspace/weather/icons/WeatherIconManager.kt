@@ -134,7 +134,7 @@ class WeatherIconManager(private val context: Context) {
 
     open class WeatherIconPack(val context: Context, val name: String, val pkgName: String,
                                val recoloringMode: RecoloringMode) {
-        open val provider: IconProvider by lazy { WeatherIconPackProviderImpl(context, pkgName) }
+        open val provider: IconProvider by lazy { WeatherIconPackProviderImpl(context, pkgName, this) }
         open val icon by lazy { context.packageManager.getApplicationIcon(pkgName) }
     }
 
