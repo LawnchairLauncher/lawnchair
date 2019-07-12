@@ -457,8 +457,10 @@
     <string name="open_image_picker">เปิดตัวเลือกรูปภาพ</string>
     <string name="import_icon">นำเข้าไอคอน</string>
     <string name="import_as_adaptive">ตั้งเป็นไอคอนแบบปรับอัตโนมัติ</string>
-    <string name="bugreport_channel_name">แจ้งข้อผิดพลาด</string>
+    <string name="bugreport_channel_name">ข้อมูลข้อผิดพลาด</string>
     <string name="status_channel_name">สถานะการอัปโหลดข้อมูลข้อผิดพลาด</string>
+    <string name="bugreport_group_summary">%d รายงานใหม่</string>
+    <string name="bugreport_group_summary_multiple">หลายรายงานใหม่</string>
     <string name="dogbin_uploading">กำลังอัปโหลด</string>
     <string name="action_dogbin_upload">อัปโหลดไปยัง dogbin</string>
     <string name="action_dogbin_upload_error">การอัปโหลดล้มเหลว</string>
@@ -492,8 +494,45 @@
     <string name="event_provider_now_playing">กำลังเล่น</string>
     <string name="battery_status">สถานะแบตเตอรี่</string>
     <string name="battery_charging">กำลังชาร์จแบตเตอรี่</string>
+    <string name="battery_full">แบตเตอรี่เต็ม</string>
     <string name="battery_low">แบตเตอรี่ต่ำ</string>
     <string name="event_provider_unread_notifications">การแจ้งเตือนที่ยังไม่ได้อ่าน</string>
     <string name="event_provider_missing_notification_access">เพื่อใช้ <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, เปิดใช้งานการแจ้งเตือนแอปสำหรับ <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">เพื่อใช้ <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, กรุณาเปิดใช้งานจุดแจ้งเตือน</string>
     <string name="zen_mode_enabled">เปิดใช้งานโหมดห้ามรบกวนอยู่</string>
+    <string name="crash_report_notif_title">%1$s ทำงานผิดพลาด!</string>
+    <string name="personality_provider">ข้อความตามบริบท</string>
+    <string-array name="greetings_morning">
+        <item>อรุณสวัสดิ์!</item>
+        <item>วันนี้เป็นวันที่ดี!</item>
+        <item>คุณลองมองออกไปข้างนอกหรือยัง?</item>
+        <item>ขอให้วันนี้เป็นวันที่ดี!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>ราตรีสวัสดิ์!</item>
+        <item>นอนหลับฝันดีนะ!</item>
+        <item>เจอกันพรุ่งนี้!</item>
+        <item>ขอให้ฝันดี!</item>
+        <item>อย่านอนดึกเกินไปนะ</item>
+        <item>วันนี้เป็นอย่างไรบ้าง?</item>
+        <item>วันนี้คุณทำอะไรบ้าง?</item>
+    </string-array>
+    <string name="onbording_settings_title">ตั้งค่า %s</string>
+    <string name="onbording_settings_summary">แตะค้างบนหน้าจอหลักของคุณ</string>
+    <string name="onboarding_swipe_up">ปัดขึ้นเพื่อดูรายการแอปทั้งหมด</string>
+    <string name="web_search_google">Google (เว็บ)</string>
+    <string name="web_search_ddg">DuckDuckGo (เว็บ)</string>
+    <string name="web_search_startpage">Startpage.com (เว็บ)</string>
+    <string name="web_search_bing">Bing (เว็บ)</string>
+    <string name="web_search_qwant">Qwant (เว็บ)</string>
+    <string name="web_search_ecosia">Ecosia (เว็บ)</string>
+    <string name="web_search_yandex">Yandex (เว็บ)</string>
+    <string name="web_search_naver">Naver (เว็บ)</string>
+    <string name="web_search_baidu">Baidu (เว็บ)</string>
+    <string name="icon_shape_override_miui_explaination">ด้วยข้อจำกัดใน MIUI, รูปร่างไอคอนของคุณอาจไม่เปลี่ยนแปลงและยังคงเป็นสี่เหลื่ยม\nกรุณาอย่ารายงานบั๊กนี้</string>
+    <string name="button_organize_screens">จัดระเบียบหน้าจอ</string>
+    <string name="weather_icons_default">ค่าเริ่มต้น</string>
+    <string name="pref_weather_icon_pack">ไอคอนสภาพอากาศ</string>
+    <string name="weather_icon_packs_not_supported">ไม่รองรับแหล่งที่มาของสภาพอากาศนี้</string>
+    <string name="lawnchair_settings">การตั้งค่า Lawnchair</string>
 </resources>

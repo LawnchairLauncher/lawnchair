@@ -508,14 +508,14 @@
     <string name="battery_low">البطارية منخفضة</string>
     <string name="event_provider_unread_notifications">إشعارات غير مقروءة</string>
     <string name="event_provider_missing_notification_access">لإستخدام <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>، قم بتشغيل إشعارات التطبيق لـ<xliff:g example="My App" id="name">%2$s</xliff:g></string>
-    <string name="event_provider_missing_notification_dots">لاستخدام <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, قم بتشيغل نقاط الإشعارات</string>
+    <string name="event_provider_missing_notification_dots">لاستخدام <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, قم بتشغيل نقاط الإشعارات</string>
     <string name="zen_mode_enabled">عدم الإزعاج قيد التشغيل</string>
     <string name="crash_report_notif_title">%1$s تعطل!</string>
     <string name="personality_provider">الرسائل السياقية</string>
     <string-array name="greetings_morning">
         <item>صباح الخير!</item>
         <item>يا له من يوم جميل!</item>
-        <item>هل نظرت إلى الخارج بعد؟</item>
+        <item>ألم تنظر إلى الخارج بعد؟</item>
         <item>أتمنى لك يوماً عظيماً!</item>
     </string-array>
     <string-array name="greetings_evening">
@@ -530,13 +530,19 @@
     <string name="onbording_settings_title">إعداد %s</string>
     <string name="onbording_settings_summary">اضغط لفترة طويلة على الشاشة الرئيسية</string>
     <string name="onboarding_swipe_up">اسحب لأعلى لرؤية جميع تطبيقاتك</string>
-    <string name="web_search_google">Google (web)</string>
-    <string name="web_search_ddg">DuckDuckGo (web)</string>
-    <string name="web_search_startpage">Startpage.com (web)</string>
-    <string name="web_search_bing">Bing (web)</string>
-    <string name="web_search_qwant">Qwant (web)</string>
-    <string name="web_search_ecosia">Ecosia (web)</string>
-    <string name="web_search_yandex">Yandex (web)</string>
-    <string name="web_search_naver">Naver (web)</string>
-    <string name="web_search_baidu">Baidu (web)</string>
+    <string name="web_search_google">(محرك بحث) google</string>
+    <string name="web_search_ddg">(محرك بحث) DuckDuckGo</string>
+    <string name="web_search_startpage">(محرك بحث) Startpage.com</string>
+    <string name="web_search_bing">(محرك بحث) Bing</string>
+    <string name="web_search_qwant">(محرك بحث) Qwant</string>
+    <string name="web_search_ecosia">(محرك بحث) Ecosia</string>
+    <string name="web_search_yandex">(محرك بحث) Yandex</string>
+    <string name="web_search_naver">(محرك بحث) Naver</string>
+    <string name="web_search_baidu">(محرك بحث) Baidu</string>
+    <string name="icon_shape_override_miui_explaination">نظراً لتقييد MIUI ، فقد لا يتغير شكل الأيقونة ويظل مربعاً.\n الرجاء عدم الإبلاغ عن هذا على أنه خطأ.</string>
+    <string name="button_organize_screens">تنظيم الشاشات</string>
+    <string name="weather_icons_default">افتراضي</string>
+    <string name="pref_weather_icon_pack">أيقونات الطقس</string>
+    <string name="weather_icon_packs_not_supported">غير مدعوم من مصدر الطقس الحالي</string>
+    <string name="lawnchair_settings">إعدادات Lawnchair</string>
 </resources>

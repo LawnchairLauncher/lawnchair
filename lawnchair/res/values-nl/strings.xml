@@ -86,7 +86,7 @@
     <string name="backup_location_device_storage">Lawnchair map</string>
     <string name="grid_size_height">Hoogte</string>
     <string name="grid_size_width">Breedte</string>
-    <string name="launcher_theme_override_label">Donker thema gebruiken</string>
+    <string name="launcher_theme_override_label">Donker thema forceren</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="blur_pref_title">Vervaging</string>
     <string name="blur_pref_summary">Vervagingseffect voor app-overzicht, dock, instellingen achtergrond</string>
@@ -532,4 +532,10 @@
     <string name="web_search_yandex">Yandex (web)</string>
     <string name="web_search_naver">Never (web)</string>
     <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">Door een restrictie in MIUI zal je pictogramvorm mogelijk niet wijzigen en vierkant blijven.\n Gelieve dit niet te rapporteren als een fout.</string>
+    <string name="button_organize_screens">Schermen beheren</string>
+    <string name="weather_icons_default">Standaard</string>
+    <string name="pref_weather_icon_pack">Weerpictogrammen</string>
+    <string name="weather_icon_packs_not_supported">Niet ondersteund door je huidige weerbron</string>
+    <string name="lawnchair_settings">Lawnchair Instellingen</string>
 </resources>

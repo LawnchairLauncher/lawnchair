@@ -460,6 +460,8 @@ Tindakan ini tidak bisa dibatalkan.</string>
     <string name="import_as_adaptive">Sebagai ikon adaptif</string>
     <string name="bugreport_channel_name">Pelaporan Masalah</string>
     <string name="status_channel_name">Status unggah laporan masalah</string>
+    <string name="bugreport_group_summary">%d laporan baru</string>
+    <string name="bugreport_group_summary_multiple">Banyak laporan baru</string>
     <string name="dogbin_uploading">Pengunggahan dalam proses</string>
     <string name="action_dogbin_upload">Unggah ke dogbin</string>
     <string name="action_dogbin_upload_error">Gagal mengunggah</string>
@@ -492,9 +494,47 @@ Tindakan ini tidak bisa dibatalkan.</string>
     <string name="pref_smartspace_event_providers">Sumber Event</string>
     <string name="event_provider_now_playing">Sedang diputar</string>
     <string name="battery_status">Status baterai</string>
-    <string name="battery_charging">Baterai sedang diisi</string>
+    <string name="battery_charging">Mengisi baterai</string>
+    <string name="battery_full">Baterai penuh</string>
     <string name="battery_low">Baterai lemah</string>
     <string name="event_provider_unread_notifications">Notifikasi yang belum dibaca</string>
     <string name="event_provider_missing_notification_access">Untuk menggunakan <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, hidupkan pengaturan notifikasi di aplikasi <xliff:g example="My App" id="name">%2$s</xliff:g> tersebut</string>
+    <string name="event_provider_missing_notification_dots">Untuk menggunakan <xliff:g example="Penyediaku" id="providerName">%1$s</xliff:g>, hidupkan titik notifikasi</string>
     <string name="zen_mode_enabled">Jangan ganggu diaktifkan</string>
+    <string name="crash_report_notif_title">%1$s telah berhenti!</string>
+    <string name="personality_provider">Pesan kontekstual</string>
+    <string-array name="greetings_morning">
+        <item>Selamat Pagi!</item>
+        <item>Sungguh hari yang indah!</item>
+        <item>Sudahkah kamu melihat keluar?</item>
+        <item>Semoga hari mu menyenangkan!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Selamat malam!</item>
+        <item>Tidurlah dengan nyenyak!</item>
+        <item>Sampai jumpa besok!</item>
+        <item>Mimpi indah!</item>
+        <item>Jangan begadang terlalu lama</item>
+        <item>Bagaimana harimu?</item>
+        <item>Apa yang kamu lakukan hari ini?</item>
+    </string-array>
+    <string name="onbording_settings_title">Siapkan %s</string>
+    <string name="onbording_settings_summary">Tekan lama layar beranda anda</string>
+    <string name="onboarding_swipe_up">Geser keatas untuk melihat seluruh aplikasi mu</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">Karena pembatasan dalam MIUI, bentuk ikon Anda mungkin tidak berubah dan tetap persegi. \nTolong jangan laporkan ini sebagai bug.
+ PERMINTAAN KONTEKS.</string>
+    <string name="button_organize_screens">Atur layar</string>
+    <string name="weather_icons_default">Bawaan</string>
+    <string name="pref_weather_icon_pack">Ikon cuaca</string>
+    <string name="weather_icon_packs_not_supported">Tidak didukung oleh sumber cuaca Anda saat ini</string>
+    <string name="lawnchair_settings">Pengaturan Lawnchair</string>
 </resources>

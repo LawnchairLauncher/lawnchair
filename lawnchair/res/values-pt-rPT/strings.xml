@@ -427,6 +427,7 @@
     <string name="pref_notification_count_summary">Mostrar número de notificações no interior dos pontos</string>
     <string name="pref_center_wallpaper">Centrar papel de parede</string>
     <string name="pref_center_wallpaper_summary">Esta opção desativa a deslocação do papel de parede</string>
+    <string name="pref_icon_popup_menu">Itens do menu popup</string>
     <string name="pref_appcategorization_enable_title">Categorizar aplicações</string>
     <string name="pref_appcategorization_enable_summary">Corrigir menu de aplicações.</string>
     <string name="pref_appcategorization_style_text">Estilo</string>
@@ -460,6 +461,8 @@
     <string name="import_as_adaptive">Como ícone adaptativo</string>
     <string name="bugreport_channel_name">Reporte de erros</string>
     <string name="status_channel_name">Esto do envio do relatório</string>
+    <string name="bugreport_group_summary">%d novos relatórios</string>
+    <string name="bugreport_group_summary_multiple">Vários novos relatórios</string>
     <string name="dogbin_uploading">A enviar...</string>
     <string name="action_dogbin_upload">A enviar para dogbin...</string>
     <string name="action_dogbin_upload_error">Falha ao enviar</string>
@@ -487,13 +490,51 @@
     <string name="tab_type_custom_desc">Escolher aplicações para este separador.</string>
     <string name="tab_type_smart">Separador inteligente</string>
     <string name="categorization">Categorização</string>
+    <string name="folder_cover_mode">Modo capa</string>
     <string name="folder_cover_mode_desc">Toque para abrir a primeira aplicação, deslize acima para abrir a pasta</string>
     <string name="pref_smartspace_event_providers">Fonte dos eventos</string>
     <string name="event_provider_now_playing">Em reprodução</string>
     <string name="battery_status">Estado da bateria</string>
     <string name="battery_charging">A carregar</string>
+    <string name="battery_full">Bateria cheia</string>
     <string name="battery_low">Energia baixa</string>
     <string name="event_provider_unread_notifications">Notificações não lidas</string>
     <string name="event_provider_missing_notification_access">Para utilizar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ative as notificações para a aplicação <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Para utilizar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, desative os pontos de notificação</string>
     <string name="zen_mode_enabled">A opção Não incomodar está ativa</string>
+    <string name="crash_report_notif_title">%1$s terminou!</string>
+    <string name="personality_provider">Mensagens contextuais</string>
+    <string-array name="greetings_morning">
+        <item>Bom dia!</item>
+        <item>Desejo-lhe um dia feliz!</item>
+        <item>Já olhou para a rua hoje?</item>
+        <item>Tenha um bom dia!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Boa noite!</item>
+        <item>Durma bem!</item>
+        <item>Vemo-nos amanhã!</item>
+        <item>Bons sonhos!</item>
+        <item>Não fique acordado até tarde</item>
+        <item>Como foi o seu dia?</item>
+        <item>O que fez hoje?</item>
+    </string-array>
+    <string name="onbording_settings_title">Configurar %s</string>
+    <string name="onbording_settings_summary">Toque longo no ecrã</string>
+    <string name="onboarding_swipe_up">Deslize acima para ver todas as aplicações</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">Pode causa das restrições MIUI, a forma do ícone pode não ser alterada.\nNão deve tratar esta situação como um erro.</string>
+    <string name="button_organize_screens">Organizar ecrãs</string>
+    <string name="weather_icons_default">Padrão</string>
+    <string name="pref_weather_icon_pack">Ícones de meteorologia</string>
+    <string name="weather_icon_packs_not_supported">Não suportado pelo serviço atual de meteorologia</string>
+    <string name="lawnchair_settings">Lawnchair - Definições</string>
 </resources>

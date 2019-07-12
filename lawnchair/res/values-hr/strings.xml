@@ -528,4 +528,8 @@
     <string name="web_search_baidu">Baidu (web)</string>
     <string name="icon_shape_override_miui_explaination">Zbog restrikcije MIUI sustava, oblik vaših ikona se možda neće promijeniti te će ostati kvadrat.\nMolimo ne prijavljujte ovo kao pogrešku.</string>
     <string name="button_organize_screens">Organiziraj zaslone</string>
+    <string name="weather_icons_default">Zadano</string>
+    <string name="pref_weather_icon_pack">Ikone vremena</string>
+    <string name="weather_icon_packs_not_supported">Nije podržano od vašeg trenutnog pružatelja prognoze vremena</string>
+    <string name="lawnchair_settings">Postavke Lawnchaira</string>
 </resources>

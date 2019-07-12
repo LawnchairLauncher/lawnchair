@@ -453,6 +453,8 @@
     <string name="import_as_adaptive">Prilagodljiva ikona</string>
     <string name="bugreport_channel_name">Izveštaji o greškama</string>
     <string name="status_channel_name">Status izveštaja o grešci</string>
+    <string name="bugreport_group_summary">Novih izveštaja: %d</string>
+    <string name="bugreport_group_summary_multiple">Više novih izveštaja</string>
     <string name="dogbin_uploading">Otpremanje je u toku</string>
     <string name="action_dogbin_upload">Otpremi na dogbin</string>
     <string name="action_dogbin_upload_error">Otpremanje nije uspelo</string>
@@ -462,7 +464,7 @@
     <string name="action_copy">Kopiraj</string>
     <string name="action_copy_link">Kopiraj link</string>
     <string name="action_share">Deli</string>
-    <string name="animation_type_title">Animacija otvaranja aplikacije</string>
+    <string name="animation_type_title">Animacija otvaranja aplikacija</string>
     <string name="animation_type_default">Podrazumevana</string>
     <string name="animation_type_pie">Pie</string>
     <string name="animation_type_pie_like">U stilu Pie-a</string>
@@ -480,4 +482,47 @@
     <string name="tab_type_custom_desc">Ručno izaberite aplikacije za ovu karticu.</string>
     <string name="tab_type_smart">Pametna kartica</string>
     <string name="categorization">Kategorizacija</string>
+    <string name="folder_cover_mode">Režim prekrivanja</string>
+    <string name="folder_cover_mode_desc">Dodirnite da biste otvorili prvu aplikaciju, prevucite nagore da biste otvorili fasciklu</string>
+    <string name="pref_smartspace_event_providers">Izvori događaja</string>
+    <string name="event_provider_now_playing">Reprodukuje se</string>
+    <string name="battery_status">Status baterije</string>
+    <string name="battery_charging">Baterija se puni</string>
+    <string name="battery_full">Baterija je puna</string>
+    <string name="battery_low">Baterija je skoro prazna</string>
+    <string name="event_provider_unread_notifications">Nepročitana obaveštenja</string>
+    <string name="event_provider_missing_notification_access">Da biste koristili <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, uključite obaveštenja aplikacije <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Da biste koristili <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, uključite tačke za obaveštenja</string>
+    <string name="zen_mode_enabled">Uključen je režim „Ne uznemiravaj”</string>
+    <string name="crash_report_notif_title">%1$s je otkazao!</string>
+    <string name="personality_provider">Kontekstualne poruke</string>
+    <string-array name="greetings_morning">
+        <item>Dobro jutro!</item>
+        <item>Kakav divan dan!</item>
+        <item>Jeste li bili napolju?</item>
+        <item>Uživajte u današnjem danu!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Laku noć!</item>
+        <item>Lepo spavaj!</item>
+        <item>Vidimo se sutra!</item>
+        <item>Želim vam lepe snove!</item>
+        <item>Lezite na vreme</item>
+        <item>Kako vam je prošao dan?</item>
+        <item>Šta ste radili danas?</item>
+    </string-array>
+    <string name="onbording_settings_title">Podesi %s</string>
+    <string name="onbording_settings_summary">Pritisnite i zadržite početni ekran</string>
+    <string name="onboarding_swipe_up">Prevucite nagore da biste videli sve aplikacije</string>
+    <string name="web_search_google">Google (veb)</string>
+    <string name="web_search_ddg">DuckDuckGo (veb)</string>
+    <string name="web_search_startpage">Startpage.com (veb)</string>
+    <string name="web_search_bing">Bing (veb)</string>
+    <string name="web_search_qwant">Qwant (veb)</string>
+    <string name="web_search_ecosia">Ecosia (veb)</string>
+    <string name="web_search_yandex">Yandex (veb)</string>
+    <string name="web_search_naver">Naver (veb)</string>
+    <string name="web_search_baidu">Baidu (veb)</string>
+    <string name="icon_shape_override_miui_explaination">Zbog ograničenja sistema MIUI, oblik ikona možda ostane kvadratni.\nNe prijavljujte ovo kao grešku.</string>
+    <string name="button_organize_screens">Organizuj ekrane</string>
 </resources>

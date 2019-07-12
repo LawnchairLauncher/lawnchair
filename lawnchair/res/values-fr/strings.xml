@@ -426,7 +426,7 @@
     <string name="background_color">Couleur du fond</string>
     <string name="pref_notification_count_title">Affiche le nombre de notification</string>
     <string name="pref_notification_count_summary">Afficher le nombre de notification dans le point</string>
-    <string name="pref_center_wallpaper">Toujours centrée le fond d\'écran</string>
+    <string name="pref_center_wallpaper">Toujours centrer le fond d\'écran</string>
     <string name="pref_center_wallpaper_summary">Cela désactivera l\'effet de défilement du fond d\'écran</string>
     <string name="pref_icon_popup_menu">Objet du menu Popup</string>
     <string name="pref_appcategorization_enable_title">Catégorisé les applications</string>
@@ -534,4 +534,8 @@
     <string name="web_search_baidu">Baidu (web)</string>
     <string name="icon_shape_override_miui_explaination">En raison d\'une restriction dans MIUI, la forme de votre icône risque de ne pas changer et rester carrée.\nMerci de ne pas le signaler, ce n\'est pas un bogue.</string>
     <string name="button_organize_screens">Organiser les écrans</string>
+    <string name="weather_icons_default">Par défaut</string>
+    <string name="pref_weather_icon_pack">Icônes météo</string>
+    <string name="weather_icon_packs_not_supported">N\'est pas supporté par votre source météo actuelle</string>
+    <string name="lawnchair_settings">Paramètres Lawnchair</string>
 </resources>
