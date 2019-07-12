@@ -51,12 +51,12 @@
     <string name="choose_backup_path">Открыть</string>
     <string name="backup_contents">Содержимое</string>
     <string name="backup_settings">Настройки</string>
-    <string name="homescreen">Домашний экран</string>
+    <string name="homescreen">Рабочий стол</string>
     <string name="backup_wallpaper">Обои</string>
     <string name="backup_error_blank_name">Введите имя резервной копии</string>
-    <string name="backup_error_blank_location">Выберите место сохранения резервной копии</string>
+    <string name="backup_error_blank_location">Выберите расположение резервной копии</string>
     <string name="backup_error_blank_contents">Добавьте содержимое резервной копии</string>
-    <string name="backup_creating">Создание резервной записи</string>
+    <string name="backup_creating">Создание резервной копии</string>
     <string name="no_recent_backups">Нет данных для отображения</string>
     <string name="backup_loading">Загрузка...</string>
     <string name="backup_invalid">Некорректный файл резервной копии</string>
@@ -539,4 +539,8 @@
     <string name="web_search_baidu">Baidu (веб)</string>
     <string name="icon_shape_override_miui_explaination">В связи с ограничением в MIUI, ваша форма иконок может не изменится и остаться квадратной.\nНе сообщайте про это как ошибку.</string>
     <string name="button_organize_screens">Настроить страницы</string>
+    <string name="weather_icons_default">По умолчанию</string>
+    <string name="pref_weather_icon_pack">Иконки погоды</string>
+    <string name="weather_icon_packs_not_supported">Не поддерживается вашим текущим источником погоды</string>
+    <string name="lawnchair_settings">Настроить Lawnchair</string>
 </resources>
