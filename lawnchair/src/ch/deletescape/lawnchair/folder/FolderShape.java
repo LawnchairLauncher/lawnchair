@@ -100,6 +100,12 @@ public abstract class FolderShape {
         public AdaptiveIconShape(Context context) {
             mIconShape = IconShapeManager.Companion.getInstance(context).getIconShape();
             mAttrs = new SparseArray<>();
+            int qsbEdgeRadius = mIconShape.getQsbEdgeRadius();
+            if (qsbEdgeRadius != 0) {
+                TypedValue value = new TypedValue();
+                context.getResources().getValue(qsbEdgeRadius, value, false);
+                mAttrs.append(R.attr.qsbEdgeRadius, value);
+            }
         }
 
         @Override

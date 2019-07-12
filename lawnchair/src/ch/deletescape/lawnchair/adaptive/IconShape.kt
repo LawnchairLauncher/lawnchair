@@ -21,6 +21,7 @@ package ch.deletescape.lawnchair.adaptive
 
 import android.graphics.Path
 import ch.deletescape.lawnchair.util.extensions.e
+import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import java.lang.Exception
 import kotlin.math.min
@@ -41,6 +42,8 @@ open class IconShape(private val topLeft: Corner,
                                                 Corner(topRightShape, topRightScale),
                                                 Corner(bottomLeftShape, bottomLeftScale),
                                                 Corner(bottomRightShape, bottomRightScale))
+
+    open val qsbEdgeRadius = 0
 
     fun getMaskPath(): Path {
         return Path().also { addToPath(it, 0f, 0f, 100f, 100f, 50f) }
@@ -138,6 +141,8 @@ open class IconShape(private val topLeft: Corner,
                               IconCornerShape.arc,
                               .16f, .16f, .16f, .16f) {
 
+        override val qsbEdgeRadius = R.dimen.qsb_radius_square
+
         override fun toString(): String {
             return "square"
         }
@@ -149,6 +154,8 @@ open class IconShape(private val topLeft: Corner,
                                      IconCornerShape.arc,
                                      .6f, .6f, .6f, .6f) {
 
+        override val qsbEdgeRadius = R.dimen.qsb_radius_square
+
         override fun toString(): String {
             return "roundedSquare"
         }
@@ -158,7 +165,9 @@ open class IconShape(private val topLeft: Corner,
                                 IconCornerShape.squircle,
                                 IconCornerShape.squircle,
                                 IconCornerShape.squircle,
-                                1f, 1f, 1f, 1f){
+                                1f, 1f, 1f, 1f) {
+
+        override val qsbEdgeRadius = R.dimen.qsb_radius_squircle
 
         override fun toString(): String {
             return "squircle"
@@ -169,7 +178,7 @@ open class IconShape(private val topLeft: Corner,
                                 IconCornerShape.arc,
                                 IconCornerShape.arc,
                                 IconCornerShape.arc,
-                                1f, 1f, 1f, .3f){
+                                1f, 1f, 1f, .3f) {
 
         override fun toString(): String {
             return "teardrop"
