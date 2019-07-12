@@ -38,7 +38,7 @@ class WeatherIconManager(private val context: Context) {
             object : WeatherIconPack(context, context.getString(R.string.weather_icons_default), "",
                                      RecoloringMode.NEVER) {
                 override val provider = DefaultIconProvider(context)
-                override val icon = context.getIcon()
+                override val icon = context.getDrawable(R.drawable.weather_04)
             }
 
     fun getIconPacks(): List<WeatherIconPack> = mutableListOf<WeatherIconPack>(defaultPack).apply {
