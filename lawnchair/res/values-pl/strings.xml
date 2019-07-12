@@ -538,4 +538,6 @@
     <string name="web_search_yandex">Yandex (sieć)</string>
     <string name="web_search_naver">Naver (sieć)</string>
     <string name="web_search_baidu">Baidu (sieć)</string>
+    <string name="icon_shape_override_miui_explaination">Z uwagi na ograniczenie występujące w MIUI, krztałt ikony może się nie zmienić i pozostać kwadratowy.\nProszę nie zgłaszać tego jako błąd.</string>
+    <string name="button_organize_screens">Organizuj ekrany</string>
 </resources>
