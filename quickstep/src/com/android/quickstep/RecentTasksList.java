@@ -28,8 +28,6 @@ import com.android.launcher3.MainThreadExecutor;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.KeyguardManagerCompat;
-import com.android.systemui.shared.system.RecentTaskInfoCompat;
-import com.android.systemui.shared.system.TaskDescriptionCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,8 +84,9 @@ public class RecentTasksList extends TaskStackChangeListener {
                 : () -> callback.accept(copyOf(mTasks));
 
         if (mLastLoadedId == mChangeId && (!mLastLoadHadKeysOnly || loadKeysOnly)) {
-            // The list is up to date, callback with the same list
-            mMainThreadExecutor.execute(resultCallback);
+            // The list is up to date, send the callback on the next frame,
+            // so that requestID can be returned first.
+            mMainThreadExecutor.getHandler().post(resultCallback);
             return requestLoadId;
         }
 
@@ -165,15 +164,11 @@ public class RecentTasksList extends TaskStackChangeListener {
         int taskCount = rawTasks.size();
         for (int i = 0; i < taskCount; i++) {
             ActivityManager.RecentTaskInfo rawTask = rawTasks.get(i);
-            RecentTaskInfoCompat t = new RecentTaskInfoCompat(rawTask);
             Task.TaskKey taskKey = new Task.TaskKey(rawTask);
             Task task;
             if (!loadKeysOnly) {
-                ActivityManager.TaskDescription rawTd = t.getTaskDescription();
-                TaskDescriptionCompat td = new TaskDescriptionCompat(rawTd);
-                boolean isLocked = tmpLockedUsers.get(t.getUserId());
-                task = new Task(taskKey, td.getPrimaryColor(), td.getBackgroundColor(),
-                        t.supportsSplitScreenMultiWindow(), isLocked, rawTd, t.getTopActivity());
+                boolean isLocked = tmpLockedUsers.get(taskKey.userId);
+                task = Task.from(taskKey, rawTask, isLocked);
             } else {
                 task = new Task(taskKey);
             }
