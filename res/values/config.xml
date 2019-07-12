@@ -45,7 +45,7 @@
         <item>v1|arc,1|arc,0.16|arc,0.16|arc,1</item>
         <item>v1|cut,0.3|cut,0.3|cut,1|cut,1</item>
         <item>v1|cut,0.6|cut,0.6|cut,0.6|cut,0.6</item>
-        <item>v1|arc,1|cut,0.5|cubic,1|cut,0</item>
+        <item>v1|arc,1|cut,0.5|squircle,1|cut,0</item>
     </string-array>
 
     <string-array translatable="false" name="alt_icon_shape_names">

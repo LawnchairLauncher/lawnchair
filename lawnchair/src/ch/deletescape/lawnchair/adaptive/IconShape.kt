@@ -154,10 +154,10 @@ open class IconShape(private val topLeft: Corner,
         }
     }
 
-    object Squircle : IconShape(IconCornerShape.cubic,
-                                IconCornerShape.cubic,
-                                IconCornerShape.cubic,
-                                IconCornerShape.cubic,
+    object Squircle : IconShape(IconCornerShape.squircle,
+                                IconCornerShape.squircle,
+                                IconCornerShape.squircle,
+                                IconCornerShape.squircle,
                                 1f, 1f, 1f, 1f){
 
         override fun toString(): String {
