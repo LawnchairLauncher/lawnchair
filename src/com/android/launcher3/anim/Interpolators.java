@@ -144,7 +144,8 @@ public class Interpolators {
     public static Interpolator clampToProgress(Interpolator interpolator, float lowerBound,
             float upperBound) {
         if (upperBound <= lowerBound) {
-            throw new IllegalArgumentException("lowerBound must be less than upperBound");
+            throw new IllegalArgumentException(String.format(
+                    "lowerBound (%f) must be less than upperBound (%f)", lowerBound, upperBound));
         }
         return t -> {
             if (t < lowerBound) {

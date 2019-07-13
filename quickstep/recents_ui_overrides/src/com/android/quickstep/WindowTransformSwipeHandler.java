@@ -976,7 +976,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             if (Math.abs(endVelocity) > minFlingVelocity && mTransitionDragLength > 0) {
                 if (endTarget == RECENTS && mMode != Mode.NO_BUTTON) {
                     Interpolators.OvershootParams overshoot = new Interpolators.OvershootParams(
-                            startShift, endShift, endShift, velocityPxPerMs.y,
+                            startShift, endShift, endShift, endVelocity / 1000,
                             mTransitionDragLength);
                     endShift = overshoot.end;
                     interpolator = overshoot.interpolator;
