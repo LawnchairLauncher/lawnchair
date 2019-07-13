@@ -540,4 +540,8 @@
     <string name="web_search_baidu">Baidu (sieć)</string>
     <string name="icon_shape_override_miui_explaination">Z uwagi na ograniczenie występujące w MIUI, krztałt ikony może się nie zmienić i pozostać kwadratowy.\nProszę nie zgłaszać tego jako błąd.</string>
     <string name="button_organize_screens">Organizuj ekrany</string>
+    <string name="weather_icons_default">Domyślne</string>
+    <string name="pref_weather_icon_pack">Ikony pogody</string>
+    <string name="weather_icon_packs_not_supported">Nie wspierane przez wybrane źródło pogody</string>
+    <string name="lawnchair_settings">Ustawienia Lawnchaira</string>
 </resources>
