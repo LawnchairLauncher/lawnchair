@@ -345,7 +345,7 @@
         <item quantity="many">%1$d приховані</item>
         <item quantity="other">%1$d приховані</item>
     </plurals>
-    <string name="selected_count">%1$d обрані</string>
+    <string name="selected_count">%1$d обраний</string>
     <string name="tab_manage_apps">Керувати додатками</string>
     <string name="tab_bottom_sheet_save">Зберегти</string>
     <string name="tab_hide_from_main">Приховати з головної вкладки</string>
