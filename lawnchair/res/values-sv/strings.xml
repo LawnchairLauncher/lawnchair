@@ -11,7 +11,7 @@
     <string name="search">Sök</string>
     <string name="label_voice_search">Röstsökning</string>
     <string name="icon_pack">Ikonpaket</string>
-    <string name="home_widget">Hemwidget</string>
+    <string name="home_widget">Hemskärmswidget</string>
     <string name="title_show_google_app">%1$s till vänster</string>
     <string name="msg_minus_one_on_left">Flöde till vänster om skrivbordet</string>
     <string name="about">Om</string>
@@ -77,7 +77,7 @@
     <string name="debug_component_name">Komponentnamn</string>
     <string name="debug_component_name_copied">Kopierad</string>
     <string name="read_external_storage_required">Tillåt åtkomst till lagring för att spara säkerhetskopian</string>
-    <string name="local_backups">Säkerhetskopieringar på enheten</string>
+    <string name="local_backups">Säkerhetskopior på enheten</string>
     <string name="backup_location_device_storage">Lawnchair-mapp</string>
     <string name="grid_size_height">Höjd</string>
     <string name="grid_size_width">Bredd</string>
@@ -527,4 +527,8 @@
     <string name="web_search_baidu">Baidu (web)</string>
     <string name="icon_shape_override_miui_explaination">På grund av en begränsning i MIUI, kan det hända att din ikonform inte kan ändras och att ikonerna förblir kvadrater.\nVänligen rapportera inte detta som en bugg.</string>
     <string name="button_organize_screens">Ordna skärmar</string>
+    <string name="weather_icons_default">Standard</string>
+    <string name="pref_weather_icon_pack">Väderikoner</string>
+    <string name="weather_icon_packs_not_supported">Stöds inte av din nuvarande väderleverantör</string>
+    <string name="lawnchair_settings">Lawnchair-inställningar</string>
 </resources>
