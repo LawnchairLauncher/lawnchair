@@ -88,7 +88,7 @@
     <string name="grid_size_width">Largeur</string>
     <string name="launcher_theme_override_label">Forcer le thème sombre</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
-    <string name="blur_pref_title">Flou</string>
+    <string name="blur_pref_title">Activer le flou</string>
     <string name="blur_pref_summary">Effet de flou pour le tiroir d\'applications, le dock et les arrière-plans de paramètres</string>
     <string name="blur_radius_pref_title">Intensité du flou</string>
     <!--Marker B-->
@@ -497,7 +497,7 @@
     <string name="event_provider_now_playing">Lecture en cours</string>
     <string name="battery_status">État de la batterie</string>
     <string name="battery_charging">Batterie en charge</string>
-    <string name="battery_full">Batterie pleine</string>
+    <string name="battery_full">Batterie chargée</string>
     <string name="battery_low">Batterie faible</string>
     <string name="event_provider_unread_notifications">Notifications non lues</string>
     <string name="event_provider_missing_notification_access">Pour utiliser <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activez les notifications d\'application pour <xliff:g example="My App" id="name">%2$s</xliff:g></string>
