@@ -180,7 +180,7 @@
     <string name="gesture_double_tap">Подвійне натискання</string>
     <string name="gesture_long_press">Натиснути &amp; тримати</string>
     <string name="gesture_swipe_down">Провести пальцем донизу</string>
-    <string name="gesture_swipe_up">Провести плаьцем вгору</string>
+    <string name="gesture_swipe_up">Провести пальцем вгору</string>
     <string name="gesture_dock_swipe_up">Провести пальцем вгору на док барі</string>
     <string name="pref_show_assistant_title">Кнопка голосового пошуку</string>
     <string name="pref_show_assistant_summary">Відображати кнопку голосового пошуку, якщо підтримується</string>
