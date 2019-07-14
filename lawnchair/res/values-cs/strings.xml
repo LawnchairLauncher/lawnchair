@@ -11,7 +11,7 @@
     <string name="smartspace_date">Datum</string>
     <string name="customize">Přizpůsobit</string>
     <string name="smartspace_preferences_in_settings">Přehled událostí</string>
-    <string name="smartspace_preferences_in_settings_desc">Datum, čas, zdroj počasí</string>
+    <string name="smartspace_preferences_in_settings_desc">Datum, čas, poskytovatel informací o počasí</string>
     <string name="search">Hledat</string>
     <string name="label_voice_search">Hlasové vyhledávání</string>
     <string name="icon_pack">Balíček ikon</string>
@@ -91,7 +91,7 @@
     <string name="blur_pref_summary">Efekt rozostření rolety aplikací, doku a pozadí menu nastavení</string>
     <string name="blur_radius_pref_title">Míra rozostření</string>
     <!--Marker B-->
-    <string name="dock_colored_google">Barevné ikony</string>
+    <string name="dock_colored_google">Barevná ikona G</string>
     <string name="hotseat_show_arrow">Šipka</string>
     <string name="hotseat_show_page_indicator">Indikátor stránky</string>
     <string name="dock_style_pref_title">Styl doku</string>
@@ -101,7 +101,7 @@
     <string name="dock_search_bar">Vyhledávací lišta doku</string>
     <string name="opacity">Neprůhlednost</string>
     <string name="title_all_apps_google_search">Globální vyhledávání</string>
-    <string name="summary_all_apps_google_search">Najít výsledky z webu a aplikací</string>
+    <string name="summary_all_apps_google_search">Najít výsledky z webu a aplikace</string>
     <string name="num_hotseat_icons_pref_title">Počet ikon</string>
     <string name="icon_scale_pref_title">Velikost ikon</string>
     <string name="add_settings_shortcut_title">Přidat ikonu nastavení na domácí obrazovku</string>
@@ -189,7 +189,7 @@
     <string name="weather_provider_disabled">Vypnuto</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
     <string name="weather_provider_pe">PixelExperience</string>
-    <string name="pref_smartspace_widget_provider">Zdroje počasí</string>
+    <string name="pref_smartspace_widget_provider">Poskytovatel informací o počasí</string>
     <string name="pref_smartspace_event_provider">Zdroj kalendáře</string>
     <string name="title_all_apps_search">Vyhledávací lišta v roletě aplikací</string>
     <string name="smartspace_widget_provider_not_found">Něco se nepovedlo. Instalujte nebo aktualizujte aplikaci Google.</string>
@@ -198,7 +198,7 @@
     <string name="all_apps_label_pref_title">Zobrazit štítek „Všechny aplikace“</string>
     <string name="separate_work_apps_pref_title">Druhá záložka pro pracovní aplikace</string>
     <string name="title_search_hidden_apps">Najít skryté aplikace</string>
-    <string name="summary_search_hidden_apps">Zobrazit skryté aplikace ve výsledcích hledání</string>
+    <string name="summary_search_hidden_apps">Zobrazit skryté aplikace ve výsledcích vyhledávání</string>
     <!--Marker F-->
     <string name="default_city">Prague, CS</string>
     <string name="pref_weather_api_key_title">API klíč</string>
@@ -242,7 +242,7 @@
     <string name="color_wallpaper_secondary">Tapeta — sekundární</string>
     <string name="color_wallpaper_tertiary">Tapeta — terciární</string>
     <string name="pref_hide_statusbar">Skrýt stavovou lištu</string>
-    <string name="automatic_short">Automaticky</string>
+    <string name="automatic_short">Autom.</string>
     <string name="bridge_missing_message">Instalujte nebo aktualizujte Lawnfeed</string>
     <string name="quickstep_pref_title">Nedávné</string>
     <string name="quickstep_pref_summary">Gesta, rohy, rozostření</string>
@@ -271,7 +271,7 @@
     <string name="get_more_icon_packs">Získat další</string>
     <string name="enabled_icon_packs">Zapnuto</string>
     <string name="pref_icon_pack_masking">Maskování ikon</string>
-    <string name="pref_icon_pack_masking_summary">Přizpůsobit ikony bez tématu tak, aby odpovídaly balíčku ikon</string>
+    <string name="pref_icon_pack_masking_summary">Přizpůsobit ikony bez motivu tak, aby odpovídaly použitému balíčku ikon</string>
     <string name="pref_legacy_colored_backgrounds">Vybarvená pozadí</string>
     <string name="pref_legacy_colored_backgrounds_summary">Vybarvená pozadí pro generované adaptivní ikony</string>
     <string name="pref_white_only_treatment">Nahradit bílá pozadí</string>
@@ -344,7 +344,7 @@
         <item quantity="many">%1$d skryto</item>
         <item quantity="other">%1$d skryto</item>
     </plurals>
-    <string name="selected_count">%1$d vybráno</string>
+    <string name="selected_count">Počet vybraných položek: %1$d</string>
     <string name="tab_manage_apps">Spravovat aplikace</string>
     <string name="tab_bottom_sheet_save">Uložit</string>
     <string name="tab_hide_from_main">Skrýt z hlavní záložky</string>
@@ -431,7 +431,7 @@
     <string name="pref_center_wallpaper_summary">Tímto se zakáže efekt posouvání tapet</string>
     <string name="pref_icon_popup_menu">Položky vyskakovací nabídky</string>
     <string name="pref_appcategorization_enable_title">Kategorizovat aplikace</string>
-    <string name="pref_appcategorization_enable_summary">Opravit moji chaotickou roletu aplikací.</string>
+    <string name="pref_appcategorization_enable_summary">Napravit moji chaotickou roletu aplikací.</string>
     <string name="pref_appcategorization_style_text">Styl</string>
     <string name="pref_app_groups_edit_tip">Klepnutím editujete, tažením přeuspořádáte.</string>
     <string name="pref_app_groups_create">Vytvořit</string>
@@ -534,9 +534,9 @@
     <string name="web_search_naver">Naver (web)</string>
     <string name="web_search_baidu">Baidu (web)</string>
     <string name="icon_shape_override_miui_explaination">Kvůli omezení systému MIUI se nemusí změnit tvar vašich ikon a zůstanou čtvercové.\nNenahlašujte nám prosím toto chování jako chybu.</string>
-    <string name="button_organize_screens">Uspořádat obrazovky</string>
+    <string name="button_organize_screens">Uspořád. obrazovky</string>
     <string name="weather_icons_default">Výchozí</string>
     <string name="pref_weather_icon_pack">Ikony počasí</string>
-    <string name="weather_icon_packs_not_supported">Nejsou podporovány vaším aktuálně nastaveným zdrojem počasí</string>
+    <string name="weather_icon_packs_not_supported">Nejsou podporovány vaším aktuálně nastaveným poskytovatelem informací o počasí</string>
     <string name="lawnchair_settings">Nastavení Lawnchair</string>
 </resources>
