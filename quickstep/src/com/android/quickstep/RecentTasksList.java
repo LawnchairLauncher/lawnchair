@@ -119,12 +119,7 @@ public class RecentTasksList extends TaskStackChangeListener {
 
     @Override
     public void onTaskRemoved(int taskId) {
-        for (int i = mTasks.size() - 1; i >= 0; i--) {
-            if (mTasks.get(i).key.id == taskId) {
-                mTasks.remove(i);
-                return;
-            }
-        }
+        mTasks = loadTasksInBackground(Integer.MAX_VALUE, false);
     }
 
     @Override
