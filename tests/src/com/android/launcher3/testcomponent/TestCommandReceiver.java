@@ -32,12 +32,13 @@ import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.util.Base64;
 
+import androidx.test.InstrumentationRegistry;
+
+import com.android.launcher3.tapl.TestHelpers;
+
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-
-import androidx.test.InstrumentationRegistry;
 
 /**
  * Content provider to receive commands from tests
@@ -47,6 +48,7 @@ public class TestCommandReceiver extends ContentProvider {
     public static final String ENABLE_TEST_LAUNCHER = "enable-test-launcher";
     public static final String DISABLE_TEST_LAUNCHER = "disable-test-launcher";
     public static final String KILL_PROCESS = "kill-process";
+    public static final String GET_SYSTEM_HEALTH_MESSAGE = "get-system-health-message";
 
     @Override
     public boolean onCreate() {
@@ -99,6 +101,12 @@ public class TestCommandReceiver extends ContentProvider {
                         killBackgroundProcesses(arg);
                 return null;
             }
+
+            case GET_SYSTEM_HEALTH_MESSAGE: {
+                final Bundle response = new Bundle();
+                response.putString("result", TestHelpers.getSystemHealthMessage(getContext()));
+                return response;
+            }
         }
         return super.call(method, arg, extras);
     }
@@ -122,7 +130,8 @@ public class TestCommandReceiver extends ContentProvider {
             // Create an empty file so that we can pass its descriptor
             try {
                 file.createNewFile();
-            } catch (IOException e) { }
+            } catch (IOException e) {
+            }
         }
 
         return ParcelFileDescriptor.open(file, MODE_READ_WRITE);

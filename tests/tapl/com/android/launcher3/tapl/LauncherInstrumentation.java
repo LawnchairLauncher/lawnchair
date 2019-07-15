@@ -39,7 +39,6 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.DropBoxManager;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.text.TextUtils;
@@ -73,6 +72,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Supplier;
 
 /**
  * The main tapl object. The only object that can be explicitly constructed by the using code. It
@@ -133,6 +133,7 @@ public final class LauncherInstrumentation {
     private int mExpectedRotation = Surface.ROTATION_0;
     private final Uri mTestProviderUri;
     private final Deque<String> mDiagnosticContext = new LinkedList<>();
+    private Supplier<String> mSystemHealthSupplier;
 
     /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
@@ -285,79 +286,24 @@ public final class LauncherInstrumentation {
         return "Background";
     }
 
-    private static String truncateCrash(String text, int maxLines) {
-        String[] lines = text.split("\\r?\\n");
-        StringBuilder ret = new StringBuilder();
-        for (int i = 0; i < maxLines && i < lines.length; i++) {
-            ret.append(lines[i]);
-            ret.append('\n');
-        }
-        if (lines.length > maxLines) {
-            ret.append("... ");
-            ret.append(lines.length - maxLines);
-            ret.append(" more lines truncated ...\n");
-        }
-        return ret.toString();
-    }
-
-    private String checkCrash(String label) {
-        DropBoxManager dropbox = (DropBoxManager) getContext().getSystemService(
-                Context.DROPBOX_SERVICE);
-        Assert.assertNotNull("Unable access the DropBoxManager service", dropbox);
-
-        long timestamp = 0;
-        DropBoxManager.Entry entry;
-        int crashCount = 0;
-        StringBuilder errorDetails = new StringBuilder();
-        while (null != (entry = dropbox.getNextEntry(label, timestamp))) {
-            String dropboxSnippet;
-            try {
-                dropboxSnippet = entry.getText(4096);
-            } finally {
-                entry.close();
-            }
-
-            crashCount++;
-            errorDetails.append(label);
-            errorDetails.append(": ");
-            errorDetails.append(truncateCrash(dropboxSnippet, 40));
-            errorDetails.append("    ...\n");
-
-            timestamp = entry.getTimeMillis();
-        }
-        Assert.assertEquals(errorDetails.toString(), 0, crashCount);
-        return crashCount > 0 ? errorDetails.toString() : null;
+    public void setSystemHealthSupplier(Supplier<String> supplier) {
+        this.mSystemHealthSupplier = supplier;
     }
 
     private String getSystemHealthMessage() {
+        final String testPackage = getContext().getPackageName();
         try {
-            StringBuilder errors = new StringBuilder();
-
-            final String testPackage = getContext().getPackageName();
-            try {
-                mDevice.executeShellCommand("pm grant " + testPackage +
-                        " android.permission.READ_LOGS");
-                mDevice.executeShellCommand("pm grant " + testPackage +
-                        " android.permission.PACKAGE_USAGE_STATS");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            final String[] labels = {
-                    "system_server_crash",
-                    "system_server_native_crash",
-                    "system_server_anr",
-            };
-
-            for (String label : labels) {
-                final String crash = checkCrash(label);
-                if (crash != null) errors.append(crash);
-            }
-
-            return errors.length() != 0 ? errors.toString() : null;
-        } catch (Exception e) {
-            return null;
+            mDevice.executeShellCommand("pm grant " + testPackage +
+                    " android.permission.READ_LOGS");
+            mDevice.executeShellCommand("pm grant " + testPackage +
+                    " android.permission.PACKAGE_USAGE_STATS");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        return mSystemHealthSupplier != null
+                ? mSystemHealthSupplier.get()
+                : TestHelpers.getSystemHealthMessage(getContext());
     }
 
     private void fail(String message) {
