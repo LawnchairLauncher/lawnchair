@@ -533,4 +533,8 @@
     <string name="web_search_baidu">百度（網頁）</string>
     <string name="icon_shape_override_miui_explaination">由於 MIUI 的系統限制，導致無法更改圖示形狀。\n請不要向我們回報此問題。</string>
     <string name="button_organize_screens">管理頁面</string>
+    <string name="weather_icons_default">預設</string>
+    <string name="pref_weather_icon_pack">天氣圖示</string>
+    <string name="weather_icon_packs_not_supported">您當前的天氣來源不支援</string>
+    <string name="lawnchair_settings">Lawnchair 設定</string>
 </resources>
