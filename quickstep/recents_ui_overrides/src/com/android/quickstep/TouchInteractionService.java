@@ -697,6 +697,10 @@ public class TouchInteractionService extends Service implements
         if (!mIsUserUnlocked) {
             return;
         }
+        if (!mMode.hasGestures && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
+            // Prevent the overview from being started before the real home on first boot.
+            return;
+        }
 
         final ActivityControlHelper<BaseDraggingActivity> activityControl =
                 mOverviewComponentObserver.getActivityControlHelper();
