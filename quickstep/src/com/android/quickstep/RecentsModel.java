@@ -30,11 +30,14 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.BackgroundExecutor;
+import com.android.systemui.shared.system.KeyguardManagerCompat;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
@@ -68,7 +71,8 @@ public class RecentsModel extends TaskStackChangeListener {
         HandlerThread loaderThread = new HandlerThread("TaskThumbnailIconCache",
                 Process.THREAD_PRIORITY_BACKGROUND);
         loaderThread.start();
-        mTaskList = new RecentTasksList(context);
+        mTaskList = new RecentTasksList(new MainThreadExecutor(),
+                new KeyguardManagerCompat(context), ActivityManagerWrapper.getInstance());
         mIconCache = new TaskIconCache(context, loaderThread.getLooper());
         mThumbnailCache = new TaskThumbnailCache(context, loaderThread.getLooper());
         ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
