@@ -534,4 +534,8 @@
     <string name="web_search_baidu">Baidu (веб)</string>
     <string name="icon_shape_override_miui_explaination">Због ограничења система MIUI, облик икона можда остане квадратни.\nНе пријављујте ово као грешку.</string>
     <string name="button_organize_screens">Организуј екране</string>
+    <string name="weather_icons_default">Подразумевано</string>
+    <string name="pref_weather_icon_pack">Иконе временских прилика</string>
+    <string name="weather_icon_packs_not_supported">Тренутни извор временске прогнозе не подржава</string>
+    <string name="lawnchair_settings">Подешавања Lawnchair-а</string>
 </resources>
