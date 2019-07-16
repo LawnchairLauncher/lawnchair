@@ -494,7 +494,7 @@
     <string name="folder_cover_mode">Режим прекривања</string>
     <string name="folder_cover_mode_desc">Додирните да бисте отворили прву апликацију, превуците нагоре да бисте отворили фасциклу</string>
     <string name="pref_smartspace_event_providers">Извори догађаја</string>
-    <string name="event_provider_now_playing">Репродукује се</string>
+    <string name="event_provider_now_playing">Тренутно свира</string>
     <string name="battery_status">Статус батерије</string>
     <string name="battery_charging">Батерија се пуни</string>
     <string name="battery_full">Батерија је пуна</string>
