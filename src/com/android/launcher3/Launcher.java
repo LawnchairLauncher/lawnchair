@@ -890,9 +890,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onStart() {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_OVERVIEW_EVENT_TAG, "Launcher.onStart");
-        }
         RaceConditionTracker.onEvent(ON_START_EVT, ENTER);
         super.onStart();
         if (mLauncherCallbacks != null) {

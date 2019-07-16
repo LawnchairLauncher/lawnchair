@@ -194,9 +194,6 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     @Override
     public AnimationFactory prepareRecentsUI(Launcher activity, boolean activityVisible,
             boolean animateActivity, Consumer<AnimatorPlaybackController> callback) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_OVERVIEW_EVENT_TAG, "prepareRecentsUI");
-        }
         final LauncherState startState = activity.getStateManager().getState();
 
         LauncherState resetState = startState;
