@@ -20,7 +20,7 @@
     <string name="title_disable_suggestions_prompt">Isključivanje predloga aplikacija</string>
     <string name="msg_disable_suggestions_prompt">"Podaci o korišćenju će se ukloniti."</string>
     <string name="label_turn_off_suggestions">Isključi</string>
-    <string name="pixel_style_pref_title">Stil Pixel-a</string>
+    <string name="pixel_style_pref_title">Stil Pixela</string>
     <string name="about_summary_title">Rezime</string>
     <string name="action_edit">Uredi</string>
     <string name="hide_app_sum">Skriva aplikaciju sa liste aplikacija</string>
@@ -63,7 +63,7 @@
     <string name="restore_contents">Vraćanje sadržaja</string>
     <string name="restore_success">Vraćanje je završeno</string>
     <string name="failed">Nešto nije u redu</string>
-    <string name="backup_share_text">Rezervna kopija Lawnchair-a</string>
+    <string name="backup_share_text">Rezervna kopija Lawnchaira</string>
     <string name="full_width_widgets_pref_summary">Neka se vidžeti protežu do ivica ekrana</string>
     <string name="full_width_width_widgets_pref_title">Široki vidžeti</string>
     <string name="hide_apps">Skrivanje aplikacija</string>
@@ -78,7 +78,7 @@
     <string name="debug_component_name_copied">Kopirano</string>
     <string name="read_external_storage_required">Dodelite dozvolu za memorijski prostor da biste sačuvali rezervnu kopiju</string>
     <string name="local_backups">Rezervne kopije u memoriji uređaja</string>
-    <string name="backup_location_device_storage">Fascikla Lawnchair-a</string>
+    <string name="backup_location_device_storage">Fascikla Lawnchaira</string>
     <string name="grid_size_height">Visina</string>
     <string name="grid_size_width">Širina</string>
     <string name="launcher_theme_override_label">Nametni tamnu temu</string>
@@ -350,19 +350,19 @@
     <string name="pref_integrations_summary">Pretraga, Sesame, Google</string>
     <string name="sesame">Sesame</string>
     <string name="sesame_data_integration">Integracija podataka</string>
-    <string name="sesame_upsell">Dodirnite za instalaciju Sesame-a</string>
+    <string name="sesame_upsell">Dodirnite za instalaciju Sesamea</string>
     <string name="sesame_search_upsell_on">Sesame je postavljen za dobavljača pretrage</string>
     <string name="sesame_search_upsell_off">Sesame nije postavljen za dobavljača pretrage</string>
-    <string name="pref_sesame_enabled">Dele se podaci o prečicama sa Sesame-om</string>
+    <string name="pref_sesame_enabled">Dele se podaci o prečicama sa Sesameom</string>
     <string name="pref_sesame_disabled">Nema deljenih podataka</string>
     <string name="pref_sesame_show_shortcuts">Prečice aplikacija</string>
-    <string name="pref_sesame_show_shortcuts_summary">Prikazuje Sesame-ove prečice u iskačućem meniju</string>
+    <string name="pref_sesame_show_shortcuts_summary">Prikazuje Sesameove prečice u iskačućem meniju</string>
     <string name="allow">Dozvoli</string>
     <string name="deny">Odbij</string>
     <string name="sesame_enable_integration_title">Omogući integraciju</string>
-    <string name="sesame_enable_integration_description"><![CDATA[Omogućava deljenje podataka između Lawnchair-a i Sesame-a. Ovo možete promeniti u podešavanjima Lawnchair-a ili Sesame-a.]]></string>
+    <string name="sesame_enable_integration_description"><![CDATA[Omogućava deljenje podataka između Lawnchaira i Sesamea. Ovo možete promeniti u podešavanjima Lawnchaira ili Sesamea.]]></string>
     <string name="sesame_version">Verzija integracije</string>
-    <string name="sesame_shortcut_disabled">Sesame-ove prečice su nedostupne</string>
+    <string name="sesame_shortcut_disabled">Sesameove prečice su nedostupne</string>
     <string name="font_variant_italic">kurziv</string>
     <string name="font_weight_thin">tanki</string>
     <string name="font_weight_extra_light">veoma bledi</string>
@@ -405,12 +405,12 @@
     <string name="about_translate">Prevodi</string>
     <string name="pref_show_dev_options">Prikaži u podešavanjima</string>
     <string name="about_app_description">Prilagodljiva alternativa Pixel Launcher-u.</string>
-    <string name="about_bio_paphonb">Osamnaestogodišnji student i jedan od vodećih programera Lawnchair-a.</string>
+    <string name="about_bio_paphonb">Osamnaestogodišnji student i jedan od vodećih programera Lawnchaira.</string>
     <string name="dock_scale">Razmera doka</string>
     <string name="adaptify_pack_title">Napravi prilagodljive ikone za paket ikona</string>
     <string name="adaptify_pack_summary">Primenjuje prilagodljive ikone i na pakete ikona</string>
     <string name="pref_sesame_sync_look_and_feel">Deli izgled</string>
-    <string name="pref_sesame_sync_look_and_feel_summary">Sinhronizuje Lawnchair-ova podešavanja pretrage sa Sesame-om</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Sinhronizuje Lawnchairova podešavanja pretrage sa Sesameom</string>
     <string name="pref_search_bar_radius">Nivo zaobljenosti ivica</string>
     <string name="icon_text_scale_pref_title">Veličina teksta</string>
     <string name="text_color">Boja teksta</string>
@@ -459,7 +459,7 @@
     <string name="action_dogbin_upload">Otpremi na dogbin</string>
     <string name="action_dogbin_upload_error">Otpremanje nije uspelo</string>
     <string name="action_dogbin_copy_link">Kopiraj link</string>
-    <string name="lawnchair_bug_report">Izveštaj o grešci sa Lawnchair-om</string>
+    <string name="lawnchair_bug_report">Izveštaj o grešci sa Lawnchairom</string>
     <string name="copied_toast">Kopirano</string>
     <string name="action_copy">Kopiraj</string>
     <string name="action_copy_link">Kopiraj link</string>
@@ -467,7 +467,7 @@
     <string name="animation_type_title">Animacija otvaranja aplikacija</string>
     <string name="animation_type_default">Podrazumevana</string>
     <string name="animation_type_pie">Pie</string>
-    <string name="animation_type_pie_like">U stilu Pie-a</string>
+    <string name="animation_type_pie_like">U stilu Piea</string>
     <string name="animation_type_reveal">Otkrivanje</string>
     <string name="animation_type_slide_up">Pomeranje nagore</string>
     <string name="animation_type_scale_up">Zumiranje</string>
@@ -485,7 +485,7 @@
     <string name="folder_cover_mode">Režim prekrivanja</string>
     <string name="folder_cover_mode_desc">Dodirnite da biste otvorili prvu aplikaciju, prevucite nagore da biste otvorili fasciklu</string>
     <string name="pref_smartspace_event_providers">Izvori događaja</string>
-    <string name="event_provider_now_playing">Reprodukuje se</string>
+    <string name="event_provider_now_playing">Trenutno svira</string>
     <string name="battery_status">Status baterije</string>
     <string name="battery_charging">Baterija se puni</string>
     <string name="battery_full">Baterija je puna</string>
@@ -525,4 +525,8 @@
     <string name="web_search_baidu">Baidu (veb)</string>
     <string name="icon_shape_override_miui_explaination">Zbog ograničenja sistema MIUI, oblik ikona možda ostane kvadratni.\nNe prijavljujte ovo kao grešku.</string>
     <string name="button_organize_screens">Organizuj ekrane</string>
+    <string name="weather_icons_default">Podrazumevano</string>
+    <string name="pref_weather_icon_pack">Ikone vremenskih prilika</string>
+    <string name="weather_icon_packs_not_supported">Trenutni izvor vremenske prognoze ne podržava</string>
+    <string name="lawnchair_settings">Podešavanja Lawnchaira</string>
 </resources>
