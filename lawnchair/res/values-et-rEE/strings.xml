@@ -529,4 +529,8 @@
     <string name="web_search_baidu">Baidu (veeb)</string>
     <string name="icon_shape_override_miui_explaination">MIUI piirangu tõttu ei pruugi teie ikooni kuju muutuda ja jääda ruudukujuliseks.\nPalun ära teata sellest kui veast.</string>
     <string name="button_organize_screens">Korralda ekraane</string>
+    <string name="weather_icons_default">Vaikimisi</string>
+    <string name="pref_weather_icon_pack">Ilmateate ikoonid</string>
+    <string name="weather_icon_packs_not_supported">Teie praegune ilmateate allikas ei toeta seda</string>
+    <string name="lawnchair_settings">Lawnchairi seaded</string>
 </resources>
