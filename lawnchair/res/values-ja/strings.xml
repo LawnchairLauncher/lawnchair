@@ -421,7 +421,7 @@ Lawnchair プロジェクトの創始者です。</string>
     <string name="pref_notification_count_summary">ドットの代わりに通知カウントを表示する</string>
     <string name="pref_center_wallpaper">常に壁紙を中央配置</string>
     <string name="pref_center_wallpaper_summary">壁紙のスクロール効果は無効になります</string>
-    <string name="pref_icon_popup_menu">電源メニューのポップアップ</string>
+    <string name="pref_icon_popup_menu">ポップアップメニューの項目</string>
     <string name="pref_appcategorization_enable_title">アプリをカテゴリ分け</string>
     <string name="pref_appcategorization_enable_summary">厄介なドロワーを修正する</string>
     <string name="pref_appcategorization_style_text">スタイル</string>
