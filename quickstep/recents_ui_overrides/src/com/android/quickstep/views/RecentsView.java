@@ -269,7 +269,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private int mTaskListChangeId = -1;
 
     // Only valid until the launcher state changes to NORMAL
-    private int mRunningTaskId = -1;
+    protected int mRunningTaskId = -1;
     private boolean mRunningTaskTileHidden;
     private Task mTmpRunningTask;
 
@@ -532,7 +532,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return true;
     }
 
-    private void applyLoadPlan(ArrayList<Task> tasks) {
+    protected void applyLoadPlan(ArrayList<Task> tasks) {
         if (mPendingAnimation != null) {
             mPendingAnimation.addEndListener((onEndListener) -> applyLoadPlan(tasks));
             return;
@@ -855,12 +855,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      * is called.  Also scrolls the view to this task.
      */
     public void showCurrentTask(int runningTaskId) {
-        if (getChildCount() == 0) {
+        if (getTaskView(runningTaskId) == null) {
+            boolean wasEmpty = getChildCount() == 0;
             // Add an empty view for now until the task plan is loaded and applied
             final TaskView taskView = mTaskViewPool.getView();
-            addView(taskView);
-            addView(mClearAllButton);
-
+            addView(taskView, 0);
+            if (wasEmpty) {
+                addView(mClearAllButton);
+            }
             // The temporary running task is only used for the duration between the start of the
             // gesture and the task list is loaded and applied
             mTmpRunningTask = new Task(new Task.TaskKey(runningTaskId, 0, new Intent(),

@@ -70,7 +70,7 @@ import androidx.annotation.UiThread;
  * Base class for swipe up handler with some utility methods
  */
 @TargetApi(Build.VERSION_CODES.Q)
-public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity>
+public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q extends RecentsView>
         implements SwipeAnimationListener {
 
     private static final String TAG = "BaseSwipeUpHandler";
@@ -109,7 +109,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity>
     protected final RecentsAnimationWrapper mRecentsAnimationWrapper;
 
     protected T mActivity;
-    protected RecentsView mRecentsView;
+    protected Q mRecentsView;
     protected DeviceProfile mDp;
     private final int mPageSpacing;
 

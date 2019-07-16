@@ -47,10 +47,12 @@ import com.android.quickstep.util.ObjectWrapper;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.InputConsumerController;
 
-public class FallbackNoButtonInputConsumer extends BaseSwipeUpHandler<RecentsActivity> {
+public class FallbackNoButtonInputConsumer extends
+        BaseSwipeUpHandler<RecentsActivity, FallbackRecentsView> {
 
     private static final String[] STATE_NAMES = DEBUG_STATES ? new String[5] : null;
 
@@ -97,6 +99,11 @@ public class FallbackNoButtonInputConsumer extends BaseSwipeUpHandler<RecentsAct
 
     private final boolean mInQuickSwitchMode;
     private final boolean mContinuingLastGesture;
+    private final boolean mRunningOverHome;
+    private final boolean mSwipeUpOverHome;
+
+
+    private final RunningTaskInfo mRunningTaskInfo;
 
     private Animator mFinishAnimation;
 
@@ -108,9 +115,18 @@ public class FallbackNoButtonInputConsumer extends BaseSwipeUpHandler<RecentsAct
         super(context, overviewComponentObserver, recentsModel, inputConsumer, runningTaskInfo.id);
         mLauncherAlpha.value = 1;
 
+        mRunningTaskInfo = runningTaskInfo;
         mInQuickSwitchMode = isLikelyToStartNewTask || continuingLastGesture;
         mContinuingLastGesture = continuingLastGesture;
-        mClipAnimationHelper.setBaseAlphaCallback((t, a) -> mLauncherAlpha.value);
+        mRunningOverHome = ActivityManagerWrapper.isHomeTask(runningTaskInfo);
+        mSwipeUpOverHome = mRunningOverHome && !mInQuickSwitchMode;
+
+        if (mSwipeUpOverHome) {
+            mClipAnimationHelper.setBaseAlphaCallback((t, a) -> 1 - mLauncherAlpha.value);
+        } else {
+            mClipAnimationHelper.setBaseAlphaCallback((t, a) -> mLauncherAlpha.value);
+        }
+
         initStateCallbacks();
     }
 
@@ -149,10 +165,14 @@ public class FallbackNoButtonInputConsumer extends BaseSwipeUpHandler<RecentsAct
         mRecentsView.setDisallowScrollToClearAll(true);
         mRecentsView.getClearAllButton().setVisibilityAlpha(0);
 
-        ((FallbackRecentsView) mRecentsView).setZoomProgress(1);
+        mRecentsView.setZoomProgress(1);
 
         if (!mContinuingLastGesture) {
-            mRecentsView.onGestureAnimationStart(mRunningTaskId);
+            if (mRunningOverHome) {
+                mRecentsView.onGestureAnimationStart(mRunningTaskInfo);
+            } else {
+                mRecentsView.onGestureAnimationStart(mRunningTaskId);
+            }
         }
         setStateOnUiThread(STATE_RECENTS_PRESENT);
         return true;
@@ -196,7 +216,7 @@ public class FallbackNoButtonInputConsumer extends BaseSwipeUpHandler<RecentsAct
 
     @Override
     public Intent getLaunchIntent() {
-        if (mInQuickSwitchMode) {
+        if (mInQuickSwitchMode || mSwipeUpOverHome) {
             return mOverviewComponentObserver.getOverviewIntent();
         } else {
             return mOverviewComponentObserver.getHomeIntent();
@@ -282,16 +302,27 @@ public class FallbackNoButtonInputConsumer extends BaseSwipeUpHandler<RecentsAct
         mRecentsView.getClearAllButton().setVisibilityAlpha(1);
     }
 
-
     private void finishAnimationTargetSetAnimationComplete() {
         switch (mEndTarget) {
-            case HOME:
-                mRecentsAnimationWrapper.finish(true, null, true);
+            case HOME: {
+                if (mSwipeUpOverHome) {
+                    mRecentsAnimationWrapper.finish(false, null, false);
+                    // Send a home intent to clear the task stack
+                    mContext.startActivity(mOverviewComponentObserver.getHomeIntent());
+                } else {
+                    mRecentsAnimationWrapper.finish(true, null, true);
+                }
                 break;
+            }
             case LAST_TASK:
                 mRecentsAnimationWrapper.finish(false, null, false);
                 break;
             case RECENTS: {
+                if (mSwipeUpOverHome) {
+                    mRecentsAnimationWrapper.finish(true, null, true);
+                    break;
+                }
+
                 ThumbnailData thumbnail =
                         mRecentsAnimationWrapper.targetSet.controller.screenshotTask(mRunningTaskId);
                 mRecentsAnimationWrapper.setCancelWithDeferredScreenshot(true);
@@ -367,6 +398,10 @@ public class FallbackNoButtonInputConsumer extends BaseSwipeUpHandler<RecentsAct
     public void onRecentsAnimationStart(SwipeAnimationTargetSet targetSet) {
         super.onRecentsAnimationStart(targetSet);
         mRecentsAnimationWrapper.enableInputConsumer();
+
+        if (mRunningOverHome) {
+            mClipAnimationHelper.prepareAnimation(mDp, true);
+        }
         applyTransformUnchecked();
 
         setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);

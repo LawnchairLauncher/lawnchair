@@ -86,6 +86,7 @@ import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
 import com.android.quickstep.views.LiveTileOverlay;
+import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InputConsumerController;
@@ -98,7 +99,7 @@ import androidx.annotation.UiThread;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
-        extends BaseSwipeUpHandler<T>
+        extends BaseSwipeUpHandler<T, RecentsView>
         implements OnApplyWindowInsetsListener {
     private static final String TAG = WindowTransformSwipeHandler.class.getSimpleName();
 
