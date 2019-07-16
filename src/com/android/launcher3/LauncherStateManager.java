@@ -403,10 +403,6 @@ public class LauncherStateManager {
     }
 
     private void onStateTransitionStart(LauncherState state) {
-        if (TestProtocol.sDebugTracing) {
-            android.util.Log.d(TestProtocol.NO_DRAG_TAG,
-                    "onStateTransitionStart");
-        }
         if (mState != state) {
             mState.onStateDisabled(mLauncher);
         }
@@ -575,10 +571,6 @@ public class LauncherStateManager {
         private final AnimatorSet mAnim;
 
         public StartAnimRunnable(AnimatorSet anim) {
-            if (TestProtocol.sDebugTracing) {
-                android.util.Log.d(TestProtocol.NO_DRAG_TAG,
-                        "StartAnimRunnable");
-            }
             mAnim = anim;
         }
 
