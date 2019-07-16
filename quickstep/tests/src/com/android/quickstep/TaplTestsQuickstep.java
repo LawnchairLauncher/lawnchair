@@ -17,7 +17,6 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -208,7 +207,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @NavigationModeSwitch
-//    @PortraitLandscape
+    @PortraitLandscape
     public void testBackground() throws Exception {
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
         final Background background = mLauncher.getBackground();
