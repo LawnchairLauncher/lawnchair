@@ -67,7 +67,6 @@ public final class Workspace extends Home {
                     "switchToAllApps: swipeHeight = " + swipeHeight + ", slop = "
                             + mLauncher.getTouchSlop());
 
-            mLauncher.getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
             mLauncher.swipeToState(
                     start.x,
                     start.y,
@@ -75,7 +74,6 @@ public final class Workspace extends Home {
                     start.y - swipeHeight - mLauncher.getTouchSlop(),
                     60,
                     ALL_APPS_STATE_ORDINAL);
-            mLauncher.getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "swiped to all apps")) {
@@ -157,7 +155,6 @@ public final class Workspace extends Home {
     static void dragIconToWorkspace(
             LauncherInstrumentation launcher, Launchable launchable, Point dest,
             String longPressIndicator) {
-        launcher.getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
         LauncherInstrumentation.log("dragIconToWorkspace: begin");
         final Point launchableCenter = launchable.getObject().getVisibleCenter();
         final long downTime = SystemClock.uptimeMillis();
@@ -172,7 +169,6 @@ public final class Workspace extends Home {
                 downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, dest);
         LauncherInstrumentation.log("dragIconToWorkspace: end");
         launcher.waitUntilGone("drop_target_bar");
-        launcher.getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
     }
 
     /**
