@@ -87,7 +87,7 @@ public final class LauncherInstrumentation {
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
     enum ContainerType {
-        WORKSPACE, ALL_APPS, OVERVIEW, WIDGETS, BACKGROUND, BASE_OVERVIEW
+        WORKSPACE, ALL_APPS, OVERVIEW, WIDGETS, BACKGROUND, FALLBACK_OVERVIEW
     }
 
     public enum NavigationModel {ZERO_BUTTON, TWO_BUTTON, THREE_BUTTON}
@@ -451,7 +451,7 @@ public final class LauncherInstrumentation {
 
                     return waitForLauncherObject(OVERVIEW_RES_ID);
                 }
-                case BASE_OVERVIEW: {
+                case FALLBACK_OVERVIEW: {
                     return waitForFallbackLauncherObject(OVERVIEW_RES_ID);
                 }
                 case BACKGROUND: {
@@ -737,6 +737,10 @@ public final class LauncherInstrumentation {
 
     String getLauncherPackageName() {
         return mDevice.getLauncherPackageName();
+    }
+
+    boolean isFallbackOverview() {
+        return !getOverviewPackageName().equals(getLauncherPackageName());
     }
 
     @NonNull
