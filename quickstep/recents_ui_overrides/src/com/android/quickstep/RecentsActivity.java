@@ -87,12 +87,14 @@ public final class RecentsActivity extends BaseRecentsActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        int taskID = intent.getIntExtra(EXTRA_TASK_ID, 0);
-        IBinder thumbnail = intent.getExtras().getBinder(EXTRA_THUMBNAIL);
-        if (taskID != 0 && thumbnail instanceof ObjectWrapper) {
-            ThumbnailData thumbnailData = ((ObjectWrapper<ThumbnailData>) thumbnail).get();
-            mFallbackRecentsView.showCurrentTask(taskID);
-            mFallbackRecentsView.updateThumbnail(taskID, thumbnailData);
+        if (intent.getExtras() != null) {
+            int taskID = intent.getIntExtra(EXTRA_TASK_ID, 0);
+            IBinder thumbnail = intent.getExtras().getBinder(EXTRA_THUMBNAIL);
+            if (taskID != 0 && thumbnail instanceof ObjectWrapper) {
+                ThumbnailData thumbnailData = ((ObjectWrapper<ThumbnailData>) thumbnail).get();
+                mFallbackRecentsView.showCurrentTask(taskID);
+                mFallbackRecentsView.updateThumbnail(taskID, thumbnailData);
+            }
         }
         intent.removeExtra(EXTRA_TASK_ID);
         intent.removeExtra(EXTRA_THUMBNAIL);

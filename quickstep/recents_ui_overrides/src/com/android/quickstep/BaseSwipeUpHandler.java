@@ -29,7 +29,9 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -37,21 +39,27 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
+import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.inputconsumers.InputConsumer;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.ClipAnimationHelper.TransformParams;
+import com.android.quickstep.util.SwipeAnimationTargetSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet.SwipeAnimationListener;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.InputConsumerController;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 
 import java.util.function.Consumer;
@@ -66,6 +74,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity>
         implements SwipeAnimationListener {
 
     private static final String TAG = "BaseSwipeUpHandler";
+    protected static final Rect TEMP_RECT = new Rect();
 
     // Start resisting when swiping past this factor of mTransitionDragLength.
     private static final float DRAG_LENGTH_FACTOR_START_PULLBACK = 1.4f;
@@ -82,11 +91,13 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity>
     protected final OverviewComponentObserver mOverviewComponentObserver;
     protected final ActivityControlHelper<T> mActivityControlHelper;
     protected final RecentsModel mRecentsModel;
+    protected final int mRunningTaskId;
 
     protected final ClipAnimationHelper mClipAnimationHelper;
     protected final TransformParams mTransformParams = new TransformParams();
 
     private final Vibrator mVibrator;
+    protected final Mode mMode;
 
     // Shift in the range of [0, 1].
     // 0 => preview snapShot is completely visible, and hotseat is completely translated down
@@ -112,19 +123,23 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity>
 
     protected BaseSwipeUpHandler(Context context,
             OverviewComponentObserver overviewComponentObserver,
-            RecentsModel recentsModel, InputConsumerController inputConsumer) {
+            RecentsModel recentsModel, InputConsumerController inputConsumer, int runningTaskId) {
         mContext = context;
         mOverviewComponentObserver = overviewComponentObserver;
         mActivityControlHelper = overviewComponentObserver.getActivityControlHelper();
         mRecentsModel = recentsModel;
         mActivityInitListener =
                 mActivityControlHelper.createActivityInitListener(this::onActivityInit);
+        mRunningTaskId = runningTaskId;
         mRecentsAnimationWrapper = new RecentsAnimationWrapper(inputConsumer,
                 this::createNewInputProxyHandler);
+        mMode = SysUINavigationMode.getMode(context);
 
         mClipAnimationHelper = new ClipAnimationHelper(context);
         mPageSpacing = context.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
         mVibrator = context.getSystemService(Vibrator.class);
+        initTransitionEndpoints(InvariantDeviceProfile.INSTANCE.get(mContext)
+                .getDeviceProfile(mContext));
     }
 
     protected void setStateOnUiThread(int stateFlag) {
@@ -230,6 +245,65 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity>
             });
         }
         TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", true);
+    }
+
+    @Override
+    public void onRecentsAnimationStart(SwipeAnimationTargetSet targetSet) {
+        DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(mContext).getDeviceProfile(mContext);
+        final Rect overviewStackBounds;
+        RemoteAnimationTargetCompat runningTaskTarget = targetSet.findTask(mRunningTaskId);
+
+        if (targetSet.minimizedHomeBounds != null && runningTaskTarget != null) {
+            overviewStackBounds = mActivityControlHelper
+                    .getOverviewWindowBounds(targetSet.minimizedHomeBounds, runningTaskTarget);
+            dp = dp.getMultiWindowProfile(mContext, new Point(
+                    overviewStackBounds.width(), overviewStackBounds.height()));
+        } else {
+            // If we are not in multi-window mode, home insets should be same as system insets.
+            dp = dp.copy(mContext);
+            overviewStackBounds = getStackBounds(dp);
+        }
+        dp.updateInsets(targetSet.homeContentInsets);
+        dp.updateIsSeascape(mContext.getSystemService(WindowManager.class));
+        if (runningTaskTarget != null) {
+            mClipAnimationHelper.updateSource(overviewStackBounds, runningTaskTarget);
+        }
+
+        mClipAnimationHelper.prepareAnimation(dp, false /* isOpening */);
+        initTransitionEndpoints(dp);
+
+        mRecentsAnimationWrapper.setController(targetSet);
+    }
+
+    private Rect getStackBounds(DeviceProfile dp) {
+        if (mActivity != null) {
+            int loc[] = new int[2];
+            View rootView = mActivity.getRootView();
+            rootView.getLocationOnScreen(loc);
+            return new Rect(loc[0], loc[1], loc[0] + rootView.getWidth(),
+                    loc[1] + rootView.getHeight());
+        } else {
+            return new Rect(0, 0, dp.widthPx, dp.heightPx);
+        }
+    }
+
+    protected void initTransitionEndpoints(DeviceProfile dp) {
+        mDp = dp;
+
+        mTransitionDragLength = mActivityControlHelper.getSwipeUpDestinationAndLength(
+                dp, mContext, TEMP_RECT);
+        if (!dp.isMultiWindowMode) {
+            // When updating the target rect, also update the home bounds since the location on
+            // screen of the launcher window may be stale (position is not updated until first
+            // traversal after the window is resized).  We only do this for non-multiwindow because
+            // we otherwise use the minimized home bounds provided by the system.
+            mClipAnimationHelper.updateHomeBounds(getStackBounds(dp));
+        }
+        mClipAnimationHelper.updateTargetRect(TEMP_RECT);
+        if (mMode == Mode.NO_BUTTON) {
+            // We can drag all the way to the top of the screen.
+            mDragLengthFactor = (float) dp.heightPx / mTransitionDragLength;
+        }
     }
 
     /**

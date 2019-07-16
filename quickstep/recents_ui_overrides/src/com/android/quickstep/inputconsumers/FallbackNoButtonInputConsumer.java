@@ -31,11 +31,8 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.view.WindowManager;
 
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.quickstep.AnimatedFloat;
@@ -52,7 +49,6 @@ import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.InputConsumerController;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 public class FallbackNoButtonInputConsumer extends BaseSwipeUpHandler<RecentsActivity> {
 
@@ -94,10 +90,6 @@ public class FallbackNoButtonInputConsumer extends BaseSwipeUpHandler<RecentsAct
         }
     }
 
-    private final int mRunningTaskId;
-
-    private final Rect mTargetRect = new Rect();
-
     private final AnimatedFloat mLauncherAlpha = new AnimatedFloat(this::onLauncherAlphaChanged);
 
     private boolean mIsMotionPaused = false;
@@ -113,16 +105,13 @@ public class FallbackNoButtonInputConsumer extends BaseSwipeUpHandler<RecentsAct
             RunningTaskInfo runningTaskInfo, RecentsModel recentsModel,
             InputConsumerController inputConsumer,
             boolean isLikelyToStartNewTask, boolean continuingLastGesture) {
-        super(context, overviewComponentObserver, recentsModel, inputConsumer);
-        mRunningTaskId = runningTaskInfo.id;
-        mDp = InvariantDeviceProfile.INSTANCE.get(context).getDeviceProfile(context).copy(context);
+        super(context, overviewComponentObserver, recentsModel, inputConsumer, runningTaskInfo.id);
         mLauncherAlpha.value = 1;
 
         mInQuickSwitchMode = isLikelyToStartNewTask || continuingLastGesture;
         mContinuingLastGesture = continuingLastGesture;
         mClipAnimationHelper.setBaseAlphaCallback((t, a) -> mLauncherAlpha.value);
         initStateCallbacks();
-        initTransitionTarget();
     }
 
     private void initStateCallbacks() {
@@ -376,31 +365,11 @@ public class FallbackNoButtonInputConsumer extends BaseSwipeUpHandler<RecentsAct
 
     @Override
     public void onRecentsAnimationStart(SwipeAnimationTargetSet targetSet) {
-        mRecentsAnimationWrapper.setController(targetSet);
+        super.onRecentsAnimationStart(targetSet);
         mRecentsAnimationWrapper.enableInputConsumer();
-        Rect overviewStackBounds = new Rect(0, 0, mDp.widthPx, mDp.heightPx);
-        RemoteAnimationTargetCompat runningTaskTarget = targetSet.findTask(mRunningTaskId);
-
-        mDp.updateIsSeascape(mContext.getSystemService(WindowManager.class));
-        if (targetSet.homeContentInsets != null) {
-            mDp.updateInsets(targetSet.homeContentInsets);
-        }
-
-        if (runningTaskTarget != null) {
-            mClipAnimationHelper.updateSource(overviewStackBounds, runningTaskTarget);
-        }
-        mClipAnimationHelper.prepareAnimation(mDp, false /* isOpening */);
-        initTransitionTarget();
         applyTransformUnchecked();
 
         setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
-    }
-
-    private void initTransitionTarget() {
-        mTransitionDragLength = mActivityControlHelper.getSwipeUpDestinationAndLength(
-                mDp, mContext, mTargetRect);
-        mDragLengthFactor = (float) mDp.heightPx / mTransitionDragLength;
-        mClipAnimationHelper.updateTargetRect(mTargetRect);
     }
 
     @Override
