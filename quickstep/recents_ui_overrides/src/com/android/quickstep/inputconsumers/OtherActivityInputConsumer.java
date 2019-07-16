@@ -35,7 +35,6 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.Intent;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Build;
@@ -79,7 +78,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
     private final CachedEventDispatcher mRecentsViewDispatcher = new CachedEventDispatcher();
     private final RunningTaskInfo mRunningTask;
-    private final Intent mHomeIntent;
     private final OverviewCallbacks mOverviewCallbacks;
     private final SwipeSharedState mSwipeSharedState;
     private final InputMonitorCompat mInputMonitorCompat;
@@ -117,12 +115,13 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private float mStartDisplacement;
 
     private Handler mMainThreadHandler;
-    private Runnable mCancelRecentsAnimationRunnable = () ->
+    private Runnable mCancelRecentsAnimationRunnable = () -> {
         ActivityManagerWrapper.getInstance().cancelRecentsAnimation(
                 true /* restoreHomeStackPosition */);
+    };
 
     public OtherActivityInputConsumer(Context base, RunningTaskInfo runningTaskInfo,
-            Intent homeIntent, boolean isDeferredDownTarget, OverviewCallbacks overviewCallbacks,
+            boolean isDeferredDownTarget, OverviewCallbacks overviewCallbacks,
             Consumer<OtherActivityInputConsumer> onCompleteCallback,
             SwipeSharedState swipeSharedState, InputMonitorCompat inputMonitorCompat,
             RectF swipeTouchRegion, boolean disableHorizontalSwipe,
@@ -131,7 +130,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
         mMainThreadHandler = new Handler(Looper.getMainLooper());
         mRunningTask = runningTaskInfo;
-        mHomeIntent = homeIntent;
         mMode = SysUINavigationMode.getMode(base);
         mSwipeTouchRegion = swipeTouchRegion;
         mHandlerFactory = handlerFactory;
@@ -204,7 +202,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 // Start the window animation on down to give more time for launcher to draw if the
                 // user didn't start the gesture over the back button
                 if (!mIsDeferredDownTarget) {
-                    startTouchTrackingForWindowAnimation(ev.getEventTime());
+                    startTouchTrackingForWindowAnimation(ev.getEventTime(), false);
                 }
 
                 RaceConditionTracker.onEvent(DOWN_EVT, EXIT);
@@ -253,6 +251,10 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                     }
                 }
 
+                float horizontalDist = Math.abs(displacementX);
+                float upDist = -displacement;
+                boolean isLikelyToStartNewTask = horizontalDist > upDist;
+
                 if (!mPassedPilferInputSlop) {
                     float displacementY = mLastPos.y - mDownPos.y;
                     if (squaredHypot(displacementX, displacementY) >= mSquaredTouchSlop) {
@@ -268,7 +270,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         if (mIsDeferredDownTarget) {
                             // Deferred gesture, start the animation and gesture tracking once
                             // we pass the actual touch slop
-                            startTouchTrackingForWindowAnimation(ev.getEventTime());
+                            startTouchTrackingForWindowAnimation(
+                                    ev.getEventTime(), isLikelyToStartNewTask);
                         }
                         if (!mPassedWindowMoveSlop) {
                             mPassedWindowMoveSlop = true;
@@ -286,9 +289,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                     }
 
                     if (mMode == Mode.NO_BUTTON) {
-                        float horizontalDist = Math.abs(displacementX);
-                        float upDist = -displacement;
-                        boolean isLikelyToStartNewTask = horizontalDist > upDist;
                         mMotionPauseDetector.setDisallowPause(upDist < mMotionPauseMinDisplacement
                                 || isLikelyToStartNewTask);
                         mMotionPauseDetector.addPosition(displacement, ev.getEventTime());
@@ -320,12 +320,13 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mInteractionHandler.onGestureStarted();
     }
 
-    private void startTouchTrackingForWindowAnimation(long touchTimeMs) {
+    private void startTouchTrackingForWindowAnimation(
+            long touchTimeMs, boolean isLikelyToStartNewTask) {
         TOUCH_INTERACTION_LOG.addLog("startRecentsAnimation");
 
         RecentsAnimationListenerSet listenerSet = mSwipeSharedState.getActiveListener();
         final BaseSwipeUpHandler handler = mHandlerFactory.newHandler(mRunningTask, touchTimeMs,
-                listenerSet != null);
+                listenerSet != null, isLikelyToStartNewTask);
 
         mInteractionHandler = handler;
         handler.setGestureEndCallback(this::onInteractionGestureFinished);
@@ -340,7 +341,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             RecentsAnimationListenerSet newListenerSet =
                     mSwipeSharedState.newRecentsAnimationListenerSet();
             newListenerSet.addListener(handler);
-            startRecentsActivityAsync(mHomeIntent, newListenerSet);
+            startRecentsActivityAsync(handler.getLaunchIntent(), newListenerSet);
         }
     }
 

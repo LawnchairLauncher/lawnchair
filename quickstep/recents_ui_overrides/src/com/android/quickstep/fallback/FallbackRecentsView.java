@@ -88,6 +88,12 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
     }
 
     @Override
+    public void reset() {
+        super.reset();
+        resetViewUI();
+    }
+
+    @Override
     protected void getTaskSize(DeviceProfile dp, Rect outRect) {
         LayoutUtils.calculateFallbackTaskSize(getContext(), dp, outRect);
     }
@@ -112,6 +118,12 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
                 setZoomProgress(1);
             }
         }
+    }
+
+    @Override
+    public void resetTaskVisuals() {
+        super.resetTaskVisuals();
+        setFullscreenProgress(mFullscreenProgress);
     }
 
     @Override
