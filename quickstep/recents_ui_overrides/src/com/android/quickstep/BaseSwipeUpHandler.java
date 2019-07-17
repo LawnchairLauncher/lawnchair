@@ -19,12 +19,15 @@ import static android.os.VibrationEffect.EFFECT_CLICK;
 import static android.os.VibrationEffect.createPredefined;
 
 import static com.android.launcher3.Utilities.postAsyncCallback;
+import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.quickstep.TouchInteractionService.BACKGROUND_EXECUTOR;
 import static com.android.quickstep.TouchInteractionService.MAIN_THREAD_EXECUTOR;
 import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 
+import android.animation.Animator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
@@ -32,6 +35,7 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -48,12 +52,19 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.graphics.RotationMode;
+import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
+import com.android.quickstep.ActivityControlHelper.HomeAnimationFactory;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.inputconsumers.InputConsumer;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.ClipAnimationHelper.TransformParams;
+import com.android.quickstep.util.RectFSpringAnim;
+import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet.SwipeAnimationListener;
 import com.android.quickstep.views.RecentsView;
@@ -369,9 +380,117 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         return TaskView.getCurveScaleForInterpolation(interpolation);
     }
 
+    /**
+     * Creates an animation that transforms the current app window into the home app.
+     * @param startProgress The progress of {@link #mCurrentShift} to start the window from.
+     * @param homeAnimationFactory The home animation factory.
+     */
+    protected RectFSpringAnim createWindowAnimationToHome(float startProgress,
+            HomeAnimationFactory homeAnimationFactory) {
+        final RemoteAnimationTargetSet targetSet = mRecentsAnimationWrapper.targetSet;
+        final RectF startRect = new RectF(mClipAnimationHelper.applyTransform(targetSet,
+                mTransformParams.setProgress(startProgress), false /* launcherOnTop */));
+        final RectF targetRect = homeAnimationFactory.getWindowTargetRect();
+
+        final View floatingView = homeAnimationFactory.getFloatingView();
+        final boolean isFloatingIconView = floatingView instanceof FloatingIconView;
+        RectFSpringAnim anim = new RectFSpringAnim(startRect, targetRect, mContext.getResources());
+        if (isFloatingIconView) {
+            FloatingIconView fiv = (FloatingIconView) floatingView;
+            anim.addAnimatorListener(fiv);
+            fiv.setOnTargetChangeListener(anim::onTargetPositionChanged);
+        }
+
+        AnimatorPlaybackController homeAnim = homeAnimationFactory.createActivityAnimationToHome();
+
+        // End on a "round-enough" radius so that the shape reveal doesn't have to do too much
+        // rounding at the end of the animation.
+        float startRadius = mClipAnimationHelper.getCurrentCornerRadius();
+        float endRadius = startRect.width() / 6f;
+        // We want the window alpha to be 0 once this threshold is met, so that the
+        // FolderIconView can be seen morphing into the icon shape.
+        final float windowAlphaThreshold = isFloatingIconView ? 1f - SHAPE_PROGRESS_DURATION : 1f;
+        anim.addOnUpdateListener(new RectFSpringAnim.OnUpdateListener() {
+            @Override
+            public void onUpdate(RectF currentRect, float progress) {
+                homeAnim.setPlayFraction(progress);
+
+                float alphaProgress = ACCEL_1_5.getInterpolation(progress);
+                float windowAlpha = Utilities.boundToRange(Utilities.mapToRange(alphaProgress, 0,
+                        windowAlphaThreshold, 1.5f, 0f, Interpolators.LINEAR), 0, 1);
+                mTransformParams.setProgress(progress)
+                        .setCurrentRectAndTargetAlpha(currentRect, windowAlpha);
+                if (isFloatingIconView) {
+                    mTransformParams.setCornerRadius(endRadius * progress + startRadius
+                            * (1f - progress));
+                }
+                mClipAnimationHelper.applyTransform(targetSet, mTransformParams,
+                        false /* launcherOnTop */);
+
+                if (isFloatingIconView) {
+                    ((FloatingIconView) floatingView).update(currentRect, 1f, progress,
+                            windowAlphaThreshold, mClipAnimationHelper.getCurrentCornerRadius(), false);
+                }
+            }
+
+            @Override
+            public void onCancel() {
+                if (isFloatingIconView) {
+                    ((FloatingIconView) floatingView).fastFinish();
+                }
+            }
+        });
+        anim.addAnimatorListener(new AnimationSuccessListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                homeAnim.dispatchOnStart();
+            }
+
+            @Override
+            public void onAnimationSuccess(Animator animator) {
+                homeAnim.getAnimationPlayer().end();
+            }
+        });
+        return anim;
+    }
+
     public interface Factory {
 
         BaseSwipeUpHandler newHandler(RunningTaskInfo runningTask,
                 long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask);
+    }
+
+    protected interface RunningWindowAnim {
+        void end();
+
+        void cancel();
+
+        static RunningWindowAnim wrap(Animator animator) {
+            return new RunningWindowAnim() {
+                @Override
+                public void end() {
+                    animator.end();
+                }
+
+                @Override
+                public void cancel() {
+                    animator.cancel();
+                }
+            };
+        }
+
+        static RunningWindowAnim wrap(RectFSpringAnim rectFSpringAnim) {
+            return new RunningWindowAnim() {
+                @Override
+                public void end() {
+                    rectFSpringAnim.end();
+                }
+
+                @Override
+                public void cancel() {
+                    rectFSpringAnim.cancel();
+                }
+            };
+        }
     }
 }

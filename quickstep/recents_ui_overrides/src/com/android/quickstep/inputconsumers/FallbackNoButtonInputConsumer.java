@@ -18,11 +18,12 @@ package com.android.quickstep.inputconsumers;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.RecentsActivity.EXTRA_TASK_ID;
 import static com.android.quickstep.RecentsActivity.EXTRA_THUMBNAIL;
-import static com.android.quickstep.inputconsumers.FallbackNoButtonInputConsumer.GestureEndTarget.NEW_TASK;
 import static com.android.quickstep.WindowTransformSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
 import static com.android.quickstep.inputconsumers.FallbackNoButtonInputConsumer.GestureEndTarget.HOME;
 import static com.android.quickstep.inputconsumers.FallbackNoButtonInputConsumer.GestureEndTarget.LAST_TASK;
+import static com.android.quickstep.inputconsumers.FallbackNoButtonInputConsumer.GestureEndTarget.NEW_TASK;
 import static com.android.quickstep.inputconsumers.FallbackNoButtonInputConsumer.GestureEndTarget.RECENTS;
+import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -31,10 +32,13 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
+import android.graphics.RectF;
 import android.os.Bundle;
 
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.quickstep.ActivityControlHelper.HomeAnimationFactory;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.BaseSwipeUpHandler;
 import com.android.quickstep.MultiStateCallback;
@@ -44,6 +48,7 @@ import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SwipeSharedState;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.util.ObjectWrapper;
+import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -102,10 +107,10 @@ public class FallbackNoButtonInputConsumer extends
     private final boolean mRunningOverHome;
     private final boolean mSwipeUpOverHome;
 
-
     private final RunningTaskInfo mRunningTaskInfo;
 
-    private Animator mFinishAnimation;
+    private final PointF mEndVelocityPxPerMs = new PointF(0, 0.5f);
+    private RunningWindowAnim mFinishAnimation;
 
     public FallbackNoButtonInputConsumer(Context context,
             OverviewComponentObserver overviewComponentObserver,
@@ -226,6 +231,8 @@ public class FallbackNoButtonInputConsumer extends
     @Override
     public void updateFinalShift() {
         mTransformParams.setProgress(mCurrentShift.value);
+        mRecentsAnimationWrapper.setWindowThresholdCrossed(!mInQuickSwitchMode
+                && (mCurrentShift.value > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD));
         if (mRecentsAnimationWrapper.targetSet != null) {
             applyTransformUnchecked();
         }
@@ -240,6 +247,7 @@ public class FallbackNoButtonInputConsumer extends
 
     @Override
     public void onGestureEnded(float endVelocity, PointF velocity, PointF downPos) {
+        mEndVelocityPxPerMs.set(0, velocity.y / 1000);
         if (mInQuickSwitchMode) {
             // For now set it to non-null, it will be reset before starting the animation
             mEndTarget = LAST_TASK;
@@ -288,11 +296,13 @@ public class FallbackNoButtonInputConsumer extends
         }
     }
 
-
     private void onHandlerInvalidated() {
         mActivityInitListener.unregister();
         if (mGestureEndCallback != null) {
             mGestureEndCallback.run();
+        }
+        if (mFinishAnimation != null) {
+            mFinishAnimation.end();
         }
     }
 
@@ -364,31 +374,39 @@ public class FallbackNoButtonInputConsumer extends
         }
 
         float endProgress = mEndTarget.mEndProgress;
-
+        long duration = (long) (mEndTarget.mDurationMultiplier *
+                Math.abs(endProgress - mCurrentShift.value));
+        if (mRecentsView != null) {
+            duration = Math.max(duration, mRecentsView.getScroller().getDuration());
+        }
         if (mCurrentShift.value != endProgress || mInQuickSwitchMode) {
-            AnimatorSet anim = new AnimatorSet();
-            anim.play(mLauncherAlpha.animateToValue(
-                    mLauncherAlpha.value, mEndTarget.mLauncherAlpha));
-            anim.play(mCurrentShift.animateToValue(mCurrentShift.value, endProgress));
-
-
-            long duration = (long) (mEndTarget.mDurationMultiplier *
-                    Math.abs(endProgress - mCurrentShift.value));
-            if (mRecentsView != null) {
-                duration = Math.max(duration, mRecentsView.getScroller().getDuration());
-            }
-
-            anim.setDuration(duration);
-            anim.addListener(new AnimationSuccessListener() {
+            AnimationSuccessListener endListener = new AnimationSuccessListener() {
 
                 @Override
                 public void onAnimationSuccess(Animator animator) {
                     finishAnimationTargetSetAnimationComplete();
                     mFinishAnimation = null;
                 }
-            });
-            anim.start();
-            mFinishAnimation = anim;
+            };
+
+            if (mEndTarget == HOME && !mRunningOverHome) {
+                RectFSpringAnim anim = createWindowAnimationToHome(mCurrentShift.value, duration);
+                anim.addAnimatorListener(endListener);
+                anim.start(mEndVelocityPxPerMs);
+                mFinishAnimation = RunningWindowAnim.wrap(anim);
+            } else {
+
+                AnimatorSet anim = new AnimatorSet();
+                anim.play(mLauncherAlpha.animateToValue(
+                        mLauncherAlpha.value, mEndTarget.mLauncherAlpha));
+                anim.play(mCurrentShift.animateToValue(mCurrentShift.value, endProgress));
+
+                anim.setDuration(duration);
+                anim.addListener(endListener);
+                anim.start();
+                mFinishAnimation = RunningWindowAnim.wrap(anim);
+            }
+
         } else {
             finishAnimationTargetSetAnimationComplete();
         }
@@ -411,5 +429,27 @@ public class FallbackNoButtonInputConsumer extends
     public void onRecentsAnimationCanceled() {
         mRecentsAnimationWrapper.setController(null);
         setStateOnUiThread(STATE_HANDLER_INVALIDATED);
+    }
+
+    /**
+     * Creates an animation that transforms the current app window into the home app.
+     * @param startProgress The progress of {@link #mCurrentShift} to start the window from.
+     */
+    private RectFSpringAnim createWindowAnimationToHome(float startProgress, long duration) {
+        HomeAnimationFactory factory = new HomeAnimationFactory() {
+            @Override
+            public RectF getWindowTargetRect() {
+                return HomeAnimationFactory.getDefaultWindowTargetRect(mDp);
+            }
+
+            @Override
+            public AnimatorPlaybackController createActivityAnimationToHome() {
+                AnimatorSet anim = new AnimatorSet();
+                anim.play(mLauncherAlpha.animateToValue(mLauncherAlpha.value, 1));
+                anim.setDuration(duration);
+                return AnimatorPlaybackController.wrap(anim, duration);
+            }
+        };
+        return createWindowAnimationToHome(startProgress, factory);
     }
 }
