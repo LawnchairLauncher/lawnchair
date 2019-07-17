@@ -237,6 +237,6 @@ public class RectFSpringAnim {
     public interface OnUpdateListener {
         void onUpdate(RectF currentRect, float progress);
 
-        void onCancel();
+        default void onCancel() { }
     }
 }
