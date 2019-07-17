@@ -208,7 +208,7 @@ public final class LauncherInstrumentation {
         try {
             // Workaround, use constructed context because both the instrumentation context and the
             // app context are not constructed with resources that take overlays into account
-            final Context ctx = baseContext.createPackageContext("android", 0);
+            final Context ctx = baseContext.createPackageContext(getLauncherPackageName(), 0);
             for (int i = 0; i < 100; ++i) {
                 final int currentInteractionMode = getCurrentInteractionMode(ctx);
                 final NavigationModel model = getNavigationModel(currentInteractionMode);
@@ -918,7 +918,7 @@ public final class LauncherInstrumentation {
     int getEdgeSensitivityWidth() {
         try {
             final Context context = mInstrumentation.getTargetContext().createPackageContext(
-                    "android", 0);
+                    getLauncherPackageName(), 0);
             return context.getResources().getDimensionPixelSize(
                     getSystemDimensionResId(context, "config_backGestureInset")) + 1;
         } catch (PackageManager.NameNotFoundException e) {
