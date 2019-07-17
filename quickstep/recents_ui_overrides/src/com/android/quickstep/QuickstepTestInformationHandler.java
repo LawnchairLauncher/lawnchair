@@ -3,11 +3,15 @@ package com.android.quickstep;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.testing.TestInformationHandler;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.views.RecentsView;
+
+import java.util.concurrent.ExecutionException;
 
 public class QuickstepTestInformationHandler extends TestInformationHandler {
 
@@ -43,6 +47,33 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
 
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
                         PortraitStatesTouchController.getHotseatTop(mLauncher));
+                return response;
+            }
+
+            case TestProtocol.REQUEST_OVERVIEW_LEFT_GESTURE_MARGIN: {
+                try {
+                    final int leftMargin = new MainThreadExecutor().submit(() ->
+                            mLauncher.<RecentsView>getOverviewPanel().getLeftGestureMargin()).get();
+                    response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, leftMargin);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return response;
+            }
+
+            case TestProtocol.REQUEST_OVERVIEW_RIGHT_GESTURE_MARGIN: {
+                try {
+                    final int rightMargin = new MainThreadExecutor().submit(() ->
+                            mLauncher.<RecentsView>getOverviewPanel().getRightGestureMargin()).
+                            get();
+                    response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, rightMargin);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 return response;
             }
         }
