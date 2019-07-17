@@ -23,6 +23,8 @@ import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
+import com.android.launcher3.testing.TestProtocol;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -30,7 +32,6 @@ import java.util.List;
  * Common overview pane for both Launcher and fallback recents
  */
 public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
-    private static final int FLING_SPEED = LauncherInstrumentation.isAvd() ? 500 : 1500;
     private static final int FLINGS_FOR_DISMISS_LIMIT = 40;
 
     BaseOverview(LauncherInstrumentation launcher) {
@@ -51,8 +52,10 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                      mLauncher.addContextLayer("want to fling forward in overview")) {
             LauncherInstrumentation.log("Overview.flingForward before fling");
             final UiObject2 overview = verifyActiveContainer();
-            mLauncher.scroll(overview, Direction.LEFT, 1,
-                    new Rect(mLauncher.getEdgeSensitivityWidth(), 0, 0, 0), 20);
+            final int leftMargin = mLauncher.getTestInfo(
+                    TestProtocol.REQUEST_OVERVIEW_LEFT_GESTURE_MARGIN).
+                    getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+            mLauncher.scroll(overview, Direction.LEFT, 1, new Rect(leftMargin, 0, 0, 0), 20);
             verifyActiveContainer();
         }
     }
@@ -87,8 +90,10 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                      mLauncher.addContextLayer("want to fling backward in overview")) {
             LauncherInstrumentation.log("Overview.flingBackward before fling");
             final UiObject2 overview = verifyActiveContainer();
-            mLauncher.scroll(overview, Direction.RIGHT, 1,
-                    new Rect(0, 0, mLauncher.getEdgeSensitivityWidth(), 0), 20);
+            final int rightMargin = mLauncher.getTestInfo(
+                    TestProtocol.REQUEST_OVERVIEW_RIGHT_GESTURE_MARGIN).
+                    getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+            mLauncher.scroll(overview, Direction.RIGHT, 1, new Rect(0, 0, rightMargin, 0), 20);
             verifyActiveContainer();
         }
     }
