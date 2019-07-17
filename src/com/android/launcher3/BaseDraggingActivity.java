@@ -34,9 +34,9 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.DisplayRotationListener;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
 
 import androidx.annotation.Nullable;
@@ -135,7 +135,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     public boolean startActivitySafely(View v, Intent intent, @Nullable ItemInfo item,
             @Nullable String sourceContainer) {
-        if (mIsSafeModeEnabled && !Utilities.isSystemApp(this, intent)) {
+        if (mIsSafeModeEnabled && !PackageManagerHelper.isSystemApp(this, intent)) {
             Toast.makeText(this, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
             return false;
         }

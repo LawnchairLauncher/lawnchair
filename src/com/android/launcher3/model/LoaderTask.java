@@ -20,6 +20,7 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
 import static com.android.launcher3.model.LoaderResults.filterCurrentWorkspaceItems;
+import static com.android.launcher3.util.PackageManagerHelper.isSystemApp;
 
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
@@ -69,6 +70,7 @@ import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.IOUtils;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -531,7 +533,7 @@ public class LoaderTask implements Runnable {
                                 info.spanX = 1;
                                 info.spanY = 1;
                                 info.runtimeStatusFlags |= disabledState;
-                                if (isSafeMode && !Utilities.isSystemApp(context, intent)) {
+                                if (isSafeMode && !isSystemApp(context, intent)) {
                                     info.runtimeStatusFlags |= FLAG_DISABLED_SAFEMODE;
                                 }
 
@@ -703,7 +705,7 @@ public class LoaderTask implements Runnable {
                     }
                 }
             } finally {
-                Utilities.closeSilently(c);
+                IOUtils.closeSilently(c);
             }
 
             // Break early if we've stopped loading

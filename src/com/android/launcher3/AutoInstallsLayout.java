@@ -43,6 +43,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -72,7 +73,7 @@ public class AutoInstallsLayout {
 
     static AutoInstallsLayout get(Context context, AppWidgetHost appWidgetHost,
             LayoutParserCallback callback) {
-        Pair<String, Resources> customizationApkInfo = Utilities.findSystemApk(
+        Pair<String, Resources> customizationApkInfo = PackageManagerHelper.findSystemApk(
                 ACTION_LAUNCHER_CUSTOMIZATION, context.getPackageManager());
         if (customizationApkInfo == null) {
             return null;
