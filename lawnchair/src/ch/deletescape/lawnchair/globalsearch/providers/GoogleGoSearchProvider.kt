@@ -11,7 +11,7 @@ import com.android.launcher3.util.PackageManagerHelper
 @Keep
 class GoogleGoSearchProvider(context: Context) : SearchProvider(context) {
 
-    override val name = context.getString(R.string.search_provider_google_go)!!
+    override val name: String = context.getString(R.string.search_provider_google_go)
     override val supportsVoiceSearch = true
     override val supportsAssistant = false
     override val supportsFeed = true

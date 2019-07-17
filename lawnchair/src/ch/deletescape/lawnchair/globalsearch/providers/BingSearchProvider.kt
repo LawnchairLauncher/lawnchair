@@ -17,7 +17,7 @@ class BingSearchProvider(context: Context) : SearchProvider(context) {
     private val alexaInstalled: Boolean
         get() = PackageManagerHelper.isAppEnabled(context.packageManager, PACKAGE_ALEXA, 0)
 
-    override val name = context.getString(R.string.search_provider_bing)!!
+    override val name: String = context.getString(R.string.search_provider_bing)
     override val supportsVoiceSearch: Boolean
         get() = true
     override val supportsAssistant: Boolean

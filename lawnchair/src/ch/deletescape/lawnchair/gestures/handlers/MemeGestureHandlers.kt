@@ -29,7 +29,7 @@ import org.json.JSONObject
 @Keep
 open class PlayDespacitoGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override val displayName = context.getString(R.string.action_despacito)
+    override val displayName: String = context.getString(R.string.action_despacito)
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         val mp = MediaPlayer.create(context, R.raw.despacito)

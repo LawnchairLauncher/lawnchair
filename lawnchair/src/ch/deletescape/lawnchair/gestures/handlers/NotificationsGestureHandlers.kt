@@ -30,7 +30,7 @@ import java.lang.reflect.InvocationTargetException
 @Keep
 class NotificationsOpenGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override val displayName = context.getString(R.string.action_open_notifications)!!
+    override val displayName: String = context.getString(R.string.action_open_notifications)
 
     @SuppressLint("PrivateApi", "WrongConstant")
     override fun onGestureTrigger(controller: GestureController, view: View?) {
@@ -49,7 +49,7 @@ class NotificationsOpenGestureHandler(context: Context, config: JSONObject?) : G
 @Keep
 class NotificationsCloseGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override val displayName = context.getString(R.string.action_close_notifications)!!
+    override val displayName: String = context.getString(R.string.action_close_notifications)
 
     @SuppressLint("PrivateApi", "WrongConstant")
     override fun onGestureTrigger(controller: GestureController, view: View?) {

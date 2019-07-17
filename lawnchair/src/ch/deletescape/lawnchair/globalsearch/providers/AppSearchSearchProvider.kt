@@ -1,7 +1,7 @@
 package ch.deletescape.lawnchair.globalsearch.providers
 
-import android.content.*
-import android.graphics.Color
+import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.support.annotation.Keep
 import ch.deletescape.lawnchair.colors.ColorEngine
@@ -13,7 +13,7 @@ import com.android.launcher3.R
 @Keep
 class AppSearchSearchProvider(context: Context) : SearchProvider(context) {
 
-    override val name = context.getString(R.string.search_provider_appsearch)!!
+    override val name: String = context.getString(R.string.search_provider_appsearch)
     override val supportsVoiceSearch = false
     override val supportsAssistant = false
     override val supportsFeed = false
