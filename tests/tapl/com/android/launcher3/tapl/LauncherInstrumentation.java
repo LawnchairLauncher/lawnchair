@@ -396,7 +396,7 @@ public final class LauncherInstrumentation {
     }
 
     private UiObject2 verifyContainerType(ContainerType containerType) {
-        waitForTouchInteractionService();
+        //waitForTouchInteractionService();
 
         assertEquals("Unexpected display rotation",
                 mExpectedRotation, mDevice.getDisplayRotation());
