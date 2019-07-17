@@ -73,6 +73,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ListView;
@@ -1741,5 +1742,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             mOverlayEnabled = overlayEnabled;
             updateEnabledOverlays();
         }
+    }
+
+    public int getLeftGestureMargin() {
+        final WindowInsets insets = getRootWindowInsets();
+        return Math.max(insets.getSystemGestureInsets().left, insets.getSystemWindowInsetLeft());
+    }
+
+    public int getRightGestureMargin() {
+        final WindowInsets insets = getRootWindowInsets();
+        return Math.max(insets.getSystemGestureInsets().right, insets.getSystemWindowInsetRight());
     }
 }
