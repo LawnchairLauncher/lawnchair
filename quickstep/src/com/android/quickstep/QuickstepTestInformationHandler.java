@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.android.launcher3.testing.TestInformationHandler;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.states.OverviewState;
+import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
 import com.android.quickstep.util.LayoutUtils;
 
 public class QuickstepTestInformationHandler extends TestInformationHandler {
@@ -34,7 +35,15 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
             case TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED: {
                 response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
                         TouchInteractionService.isInputMonitorInitialized());
-                break;
+                return response;
+            }
+
+            case TestProtocol.REQUEST_HOTSEAT_TOP: {
+                if (mLauncher == null) return null;
+
+                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        PortraitStatesTouchController.getHotseatTop(mLauncher));
+                return response;
             }
         }
 
