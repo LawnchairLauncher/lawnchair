@@ -10,7 +10,7 @@ import com.android.launcher3.R
 @Keep
 class GoogleSearchProvider(context: Context) : SearchProvider(context) {
 
-    override val name = context.getString(R.string.google)!!
+    override val name: String = context.getString(R.string.google)
     override val supportsVoiceSearch = true
     override val supportsAssistant = true
     override val supportsFeed = true

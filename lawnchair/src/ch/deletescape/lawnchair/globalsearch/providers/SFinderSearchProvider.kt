@@ -28,7 +28,7 @@ import com.android.launcher3.util.PackageManagerHelper
 @Keep
 class SFinderSearchProvider(context: Context) : SearchProvider(context) {
 
-    override val name = context.getString(R.string.search_provider_s_finder)
+    override val name: String = context.getString(R.string.search_provider_s_finder)
     override val supportsVoiceSearch: Boolean
         get() = true
     // TODO: Support bixby

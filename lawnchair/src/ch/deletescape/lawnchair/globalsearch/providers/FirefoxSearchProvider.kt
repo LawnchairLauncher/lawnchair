@@ -29,7 +29,7 @@ import com.android.launcher3.util.PackageManagerHelper
 open class FirefoxSearchProvider(context: Context) : SearchProvider(context) {
 
 
-    override val name = context.getString(R.string.search_provider_firefox)!!
+    override val name: String = context.getString(R.string.search_provider_firefox)
     override val supportsVoiceSearch = false
     override val supportsAssistant = false
     override val supportsFeed = true

@@ -27,7 +27,6 @@ import com.android.launcher3.touch.SwipeDetector
 import java.lang.reflect.InvocationTargetException
 import android.annotation.SuppressLint
 import ch.deletescape.lawnchair.gestures.handlers.VerticalSwipeGestureHandler
-import ch.deletescape.lawnchair.util.extensions.d
 
 class VerticalSwipeGestureController(private val launcher: Launcher) : TouchController, SwipeDetector.Listener {
 
@@ -67,7 +66,7 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
             } else {
                 controller.getSwipeUpOverride(ev.downTime)
             }
-            noIntercept = !canInterceptTouch(ev) && !hasSwipeUpOverride
+            noIntercept = !canInterceptTouch() && !hasSwipeUpOverride
             if (noIntercept) {
                 return false
             }
@@ -91,7 +90,7 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
         return detector.onTouchEvent(ev)
     }
 
-    private fun canInterceptTouch(ev: MotionEvent): Boolean {
+    private fun canInterceptTouch(): Boolean {
         return AbstractFloatingView.getTopOpenView(launcher) == null &&
                 launcher.isInState(LauncherState.NORMAL)
     }
@@ -105,7 +104,7 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     private fun getSwipeDirection(ev: MotionEvent): Int {
         return when {
             controller.getSwipeUpOverride(ev.downTime) != null -> {
-                if (canInterceptTouch(ev))
+                if (canInterceptTouch())
                     SwipeDetector.DIRECTION_BOTH
                 else
                     SwipeDetector.DIRECTION_POSITIVE

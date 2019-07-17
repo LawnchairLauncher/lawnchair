@@ -45,9 +45,7 @@ import com.android.launcher3.util.PackageManagerHelper
 @Keep
 class CoolSearchSearchProvider(context: Context) : SearchProvider(context) {
 
-    val PACKAGE = "com.coolapk.searchbox"
-
-    override val name = context.getString(R.string.search_provider_cool_search)
+    override val name: String = context.getString(R.string.search_provider_cool_search)
     override val supportsVoiceSearch: Boolean
         get() = false
     override val supportsAssistant: Boolean
@@ -56,10 +54,15 @@ class CoolSearchSearchProvider(context: Context) : SearchProvider(context) {
     override val isAvailable: Boolean
         get() = PackageManagerHelper.isAppEnabled(context.packageManager, PACKAGE, 0)
 
-    override fun startSearch(callback: (intent: Intent) -> Unit) = callback(Intent(Intent.ACTION_SEARCH_LONG_PRESS).setPackage(PACKAGE))
+    override fun startSearch(callback: (intent: Intent) -> Unit) =
+            callback(Intent(Intent.ACTION_SEARCH_LONG_PRESS).setPackage(PACKAGE))
 
     override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_search)!!.mutate().apply {
              setTint(ColorEngine.getInstance(context).accent)
+    }
+
+    companion object {
+        const val PACKAGE = "com.coolapk.searchbox"
     }
 
 }

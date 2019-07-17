@@ -12,7 +12,7 @@ import com.android.launcher3.util.PackageManagerHelper
 class BaiduSearchProvider(context: Context) : SearchProvider(context) {
 
 
-    override val name = context.getString(R.string.search_provider_baidu)!!
+    override val name: String = context.getString(R.string.search_provider_baidu)
     override val supportsVoiceSearch = true
     override val supportsAssistant = false
     override val supportsFeed = true

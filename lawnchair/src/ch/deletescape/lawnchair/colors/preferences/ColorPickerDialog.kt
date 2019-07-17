@@ -80,10 +80,10 @@ class ColorPickerDialog : DialogFragment() {
                     height = WindowManager.LayoutParams.WRAP_CONTENT
                     width = resources.getDimensionPixelSize(R.dimen.chroma_dialog_width)
                 }
-                window.setLayout(width, height)
+                window?.setLayout(width, height)
 
                 // for some reason it won't respect the windowBackground attribute in the theme
-                window.setBackgroundDrawable(context.getDrawable(R.drawable.dialog_material_background))
+                window?.setBackgroundDrawable(context.getDrawable(R.drawable.dialog_material_background))
             }
         }
     }

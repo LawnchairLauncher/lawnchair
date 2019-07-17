@@ -40,6 +40,7 @@ import com.android.quickstep.TouchConsumer
 import com.android.systemui.shared.system.NavigationBarCompat
 import com.android.systemui.shared.system.WindowManagerWrapper
 import org.json.JSONObject
+import kotlin.math.abs
 
 @TargetApi(Build.VERSION_CODES.P)
 class NavigationBarGestureConsumer(private val context: Context, target: TouchConsumer,
@@ -91,7 +92,7 @@ class NavigationBarGestureConsumer(private val context: Context, target: TouchCo
                 downPos.set(ev.x, ev.y)
                 lastPos.set(downPos)
 
-                val display = context.getSystemService<WindowManager>(WindowManager::class.java)!!.defaultDisplay
+                val display = context.getSystemService(WindowManager::class.java)!!.defaultDisplay
                 display.getSize(tmpPoint)
                 displayRotation = display.rotation
                 WindowManagerWrapper.getInstance().getStableInsets(stableInsets)
@@ -111,7 +112,7 @@ class NavigationBarGestureConsumer(private val context: Context, target: TouchCo
                 lastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex))
 
                 if (!passedInitialSlop) {
-                    if (Math.abs(getVerticalDisplacement(ev)) > quickStepDragSlop) {
+                    if (abs(getVerticalDisplacement(ev)) > quickStepDragSlop) {
                         passedInitialSlop = true
 
                         if (!inQuickScrub && gestureHandler != null) {
@@ -205,7 +206,7 @@ class NavSwipeUpGesture(controller: GestureController) : Gesture(controller) {
 @Keep
 class SwitchAppsGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override val displayName = context.getString(R.string.action_switch_apps)!!
+    override val displayName: String = context.getString(R.string.action_switch_apps)
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
 

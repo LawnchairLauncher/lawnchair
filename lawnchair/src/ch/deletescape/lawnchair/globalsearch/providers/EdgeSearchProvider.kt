@@ -27,7 +27,7 @@ import com.android.launcher3.util.PackageManagerHelper
 
 @Keep
 open class EdgeSearchProvider(context: Context) : SearchProvider(context) {
-    override val name = context.getString(R.string.search_provider_edge)!!
+    override val name: String = context.getString(R.string.search_provider_edge)
     override val supportsVoiceSearch = false
     override val supportsAssistant = false
     override val supportsFeed = false
