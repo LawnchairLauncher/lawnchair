@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Task to handle changing of lock state of the user
@@ -58,9 +57,9 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
 
         HashMap<ShortcutKey, ShortcutInfo> pinnedShortcuts = new HashMap<>();
         if (isUserUnlocked) {
-            List<ShortcutInfo> shortcuts =
+            DeepShortcutManager.QueryResult shortcuts =
                     deepShortcutManager.queryForPinnedShortcuts(null, mUser);
-            if (deepShortcutManager.wasLastCallSuccess()) {
+            if (shortcuts.wasSuccess()) {
                 for (ShortcutInfo shortcut : shortcuts) {
                     pinnedShortcuts.put(ShortcutKey.fromInfo(shortcut), shortcut);
                 }

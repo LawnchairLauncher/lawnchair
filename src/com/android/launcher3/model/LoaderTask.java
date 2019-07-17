@@ -317,9 +317,9 @@ public class LoaderTask implements Runnable {
 
                     // We can only query for shortcuts when the user is unlocked.
                     if (userUnlocked) {
-                        List<ShortcutInfo> pinnedShortcuts =
+                        DeepShortcutManager.QueryResult pinnedShortcuts =
                                 mShortcutManager.queryForPinnedShortcuts(null, user);
-                        if (mShortcutManager.wasLastCallSuccess()) {
+                        if (pinnedShortcuts.wasSuccess()) {
                             for (ShortcutInfo shortcut : pinnedShortcuts) {
                                 shortcutKeyToPinnedShortcuts.put(ShortcutKey.fromInfo(shortcut),
                                         shortcut);
