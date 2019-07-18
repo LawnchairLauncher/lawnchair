@@ -782,7 +782,7 @@ public final class LauncherInstrumentation {
                 startX = endX = rect.centerX();
                 final int vertCenter = rect.centerY();
                 final float halfGestureHeight = rect.height() * percent / 2.0f;
-                startY = (int) (vertCenter + halfGestureHeight);
+                startY = (int) (vertCenter + halfGestureHeight) - 1;
                 endY = (int) (vertCenter - halfGestureHeight);
             }
             break;
@@ -798,7 +798,7 @@ public final class LauncherInstrumentation {
                 startY = endY = rect.centerY();
                 final int horizCenter = rect.centerX();
                 final float halfGestureWidth = rect.width() * percent / 2.0f;
-                startX = (int) (horizCenter + halfGestureWidth);
+                startX = (int) (horizCenter + halfGestureWidth) - 1;
                 endX = (int) (horizCenter - halfGestureWidth);
             }
             break;
