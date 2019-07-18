@@ -19,14 +19,13 @@ package com.android.launcher3.model;
 import android.os.Looper;
 import android.util.Log;
 
-import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel.CallbackTask;
-import com.android.launcher3.LauncherModel.Callbacks;
+import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.PagedView;
@@ -279,9 +278,8 @@ public abstract class BaseLoaderResults {
 
     public void bindAllApps() {
         // shallow copy
-        @SuppressWarnings("unchecked")
-        ArrayList<AppInfo> list = (ArrayList<AppInfo>) mBgAllAppsList.data.clone();
-        executeCallbacksTask(c -> c.bindAllApplications(list), mUiExecutor);
+        AppInfo[] apps = mBgAllAppsList.copyData();
+        executeCallbacksTask(c -> c.bindAllApplications(apps), mUiExecutor);
     }
 
     public abstract void bindWidgets();

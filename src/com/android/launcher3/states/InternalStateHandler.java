@@ -22,7 +22,7 @@ import android.os.IBinder;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel.Callbacks;
+import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.MainThreadExecutor;
 
 import java.lang.ref.WeakReference;
