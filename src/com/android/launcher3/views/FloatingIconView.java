@@ -574,17 +574,17 @@ public class FloatingIconView extends View implements
                     if (cancellationSignal.isCanceled()) {
                         return;
                     }
-                    if (mIconLoadResult.isIconLoaded) {
-                        setIcon(originalView, mIconLoadResult.drawable, mIconLoadResult.badge,
-                                mIconLoadResult.iconOffset);
-                    }
+
+                    setIcon(originalView, mIconLoadResult.drawable, mIconLoadResult.badge,
+                            mIconLoadResult.iconOffset);
+
                     // Delay swapping views until the icon is loaded to prevent a flash.
                     setVisibility(VISIBLE);
                     originalView.setVisibility(INVISIBLE);
                 };
+                mLoadIconSignal = cancellationSignal;
             }
         }
-        mLoadIconSignal = cancellationSignal;
     }
 
     private void setBackgroundDrawableBounds(float scale) {

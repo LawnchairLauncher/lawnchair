@@ -505,7 +505,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 initAnimFactory.run();
             }
         }
-        AbstractFloatingView.closeAllOpenViews(activity, mWasLauncherAlreadyVisible);
+        AbstractFloatingView.closeAllOpenViewsExcept(activity, mWasLauncherAlreadyVisible,
+                AbstractFloatingView.TYPE_LISTENER);
 
         if (mWasLauncherAlreadyVisible) {
             mStateCallback.setState(STATE_LAUNCHER_DRAWN);
