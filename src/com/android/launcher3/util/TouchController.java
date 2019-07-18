@@ -32,5 +32,9 @@ public interface TouchController {
      */
     boolean onControllerInterceptTouchEvent(MotionEvent ev);
 
+    default boolean allowWhenGesturesDisabled() {
+        return false;
+    }
+
     default void dump(String prefix, PrintWriter writer) { }
 }

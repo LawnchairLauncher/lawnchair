@@ -21,7 +21,6 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
-import static com.android.launcher3.Utilities.shouldDisableGestures;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -30,7 +29,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Property;
 import android.view.MotionEvent;
 import android.view.View;
@@ -152,15 +150,17 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     }
 
     private TouchController findControllerToHandleTouch(MotionEvent ev) {
-        if (shouldDisableGestures(ev)) return null;
+        boolean gesturesEnabled = !Utilities.shouldDisableGestures(ev);
 
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
-        if (topView != null && topView.onControllerInterceptTouchEvent(ev)) {
+        if (topView != null && (gesturesEnabled || topView.allowWhenGesturesDisabled())
+                && topView.onControllerInterceptTouchEvent(ev)) {
             return topView;
         }
 
         for (TouchController controller : mControllers) {
-            if (controller.onControllerInterceptTouchEvent(ev)) {
+            if ((gesturesEnabled || controller.allowWhenGesturesDisabled())
+                    && controller.onControllerInterceptTouchEvent(ev)) {
                 return controller;
             }
         }
