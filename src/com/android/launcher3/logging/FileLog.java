@@ -8,6 +8,7 @@ import android.util.Pair;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.util.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -131,7 +132,7 @@ public final class FileLog {
         private PrintWriter mCurrentWriter = null;
 
         private void closeWriter() {
-            Utilities.closeSilently(mCurrentWriter);
+            IOUtils.closeSilently(mCurrentWriter);
             mCurrentWriter = null;
         }
 
@@ -219,7 +220,7 @@ public final class FileLog {
             } catch (Exception e) {
                 // ignore
             } finally {
-                Utilities.closeSilently(in);
+                IOUtils.closeSilently(in);
             }
         }
     }

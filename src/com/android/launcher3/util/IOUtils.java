@@ -17,10 +17,13 @@
 package com.android.launcher3.util;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -35,6 +38,7 @@ import java.util.UUID;
 public class IOUtils {
 
     private static final int BUF_SIZE = 0x1000; // 4K
+    private static final String TAG = "IOUtils";
 
     public static byte[] toByteArray(File file) throws IOException {
         try (InputStream in = new FileInputStream(file)) {
@@ -76,5 +80,17 @@ public class IOUtils {
             throw new RuntimeException(e);
         }
         return file.getAbsolutePath();
+    }
+
+    public static void closeSilently(Closeable c) {
+        if (c != null) {
+            try {
+                c.close();
+            } catch (IOException e) {
+                if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                    Log.d(TAG, "Error closing", e);
+                }
+            }
+        }
     }
 }

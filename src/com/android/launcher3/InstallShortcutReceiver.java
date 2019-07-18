@@ -612,7 +612,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             // Already an activity target
             return original;
         }
-        if (!Utilities.isLauncherAppTarget(original.launchIntent)) {
+        if (!PackageManagerHelper.isLauncherAppTarget(original.launchIntent)) {
             return original;
         }
 
