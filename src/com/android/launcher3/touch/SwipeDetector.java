@@ -158,9 +158,6 @@ public class SwipeDetector {
     // SETTLING -> (View settled) -> IDLE
 
     private void setState(ScrollState newState) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_ALLAPPS_EVENT_TAG, "setState -- start: " + newState);
-        }
         if (DBG) {
             Log.d(TAG, "setState:" + mState + "->" + newState);
         }
@@ -168,9 +165,6 @@ public class SwipeDetector {
         if (newState == ScrollState.DRAGGING) {
             initializeDragging();
             if (mState == ScrollState.IDLE) {
-                if (TestProtocol.sDebugTracing) {
-                    Log.d(TestProtocol.NO_ALLAPPS_EVENT_TAG, "setState -- 1: " + newState);
-                }
                 reportDragStart(false /* recatch */);
             } else if (mState == ScrollState.SETTLING) {
                 reportDragStart(true /* recatch */);
@@ -181,11 +175,6 @@ public class SwipeDetector {
         }
 
         mState = newState;
-        if (com.android.launcher3.testing.TestProtocol.sDebugTracing) {
-            android.util.Log.e(TestProtocol.NO_ALLAPPS_EVENT_TAG,
-                    "setState: " + newState + " @ " + android.util.Log.getStackTraceString(
-                            new Throwable()));
-        }
     }
 
     public boolean isDraggingOrSettling() {
@@ -324,15 +313,9 @@ public class SwipeDetector {
                     break;
                 }
                 mDisplacement = mDir.getDisplacement(ev, pointerIndex, mDownPos, mIsRtl);
-                if (TestProtocol.sDebugTracing) {
-                    Log.d(TestProtocol.NO_ALLAPPS_EVENT_TAG, "onTouchEvent 1");
-                }
 
                 // handle state and listener calls.
                 if (mState != ScrollState.DRAGGING && shouldScrollStart(ev, pointerIndex)) {
-                    if (TestProtocol.sDebugTracing) {
-                        Log.d(TestProtocol.NO_ALLAPPS_EVENT_TAG, "onTouchEvent 2");
-                    }
                     setState(ScrollState.DRAGGING);
                 }
                 if (mState == ScrollState.DRAGGING) {

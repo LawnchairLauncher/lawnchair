@@ -301,11 +301,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     }
 
     private void refreshRecyclerView() {
-        if (TestProtocol.sDebugTracing) {
-            android.util.Log.d(TestProtocol.NO_START_TAG,
-                    "refreshRecyclerView @ " + android.util.Log.getStackTraceString(
-                            new Throwable()));
-        }
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }

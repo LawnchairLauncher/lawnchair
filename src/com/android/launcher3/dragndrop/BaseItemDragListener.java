@@ -137,9 +137,6 @@ public abstract class BaseItemDragListener extends InternalStateHandler implemen
 
     @Override
     public boolean shouldStartDrag(double distanceDragged) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_DRAG_TAG, "BIDL.shouldStartDrag");
-        }
         // Stay in pre-drag mode, if workspace is locked.
         return !mLauncher.isWorkspaceLocked();
     }

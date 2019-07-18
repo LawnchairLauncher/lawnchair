@@ -39,7 +39,6 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.DropBoxManager;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.text.TextUtils;
@@ -73,6 +72,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Supplier;
 
 /**
  * The main tapl object. The only object that can be explicitly constructed by the using code. It
@@ -133,6 +133,7 @@ public final class LauncherInstrumentation {
     private int mExpectedRotation = Surface.ROTATION_0;
     private final Uri mTestProviderUri;
     private final Deque<String> mDiagnosticContext = new LinkedList<>();
+    private Supplier<String> mSystemHealthSupplier;
 
     /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
@@ -207,7 +208,7 @@ public final class LauncherInstrumentation {
         try {
             // Workaround, use constructed context because both the instrumentation context and the
             // app context are not constructed with resources that take overlays into account
-            final Context ctx = baseContext.createPackageContext("android", 0);
+            final Context ctx = baseContext.createPackageContext(getLauncherPackageName(), 0);
             for (int i = 0; i < 100; ++i) {
                 final int currentInteractionMode = getCurrentInteractionMode(ctx);
                 final NavigationModel model = getNavigationModel(currentInteractionMode);
@@ -265,9 +266,15 @@ public final class LauncherInstrumentation {
     }
 
     private String getAnomalyMessage() {
-        final UiObject2 object = mDevice.findObject(By.res("android", "alertTitle"));
+        UiObject2 object = mDevice.findObject(By.res("android", "alertTitle"));
         if (object != null) {
             return "System alert popup is visible: " + object.getText();
+        }
+
+        object = mDevice.findObject(By.res("android", "message"));
+        if (object != null) {
+            return "Message popup by " + object.getApplicationPackage() + " is visible: "
+                    + object.getText();
         }
 
         if (hasSystemUiObject("keyguard_status_view")) return "Phone is locked";
@@ -285,79 +292,24 @@ public final class LauncherInstrumentation {
         return "Background";
     }
 
-    private static String truncateCrash(String text, int maxLines) {
-        String[] lines = text.split("\\r?\\n");
-        StringBuilder ret = new StringBuilder();
-        for (int i = 0; i < maxLines && i < lines.length; i++) {
-            ret.append(lines[i]);
-            ret.append('\n');
-        }
-        if (lines.length > maxLines) {
-            ret.append("... ");
-            ret.append(lines.length - maxLines);
-            ret.append(" more lines truncated ...\n");
-        }
-        return ret.toString();
-    }
-
-    private String checkCrash(String label) {
-        DropBoxManager dropbox = (DropBoxManager) getContext().getSystemService(
-                Context.DROPBOX_SERVICE);
-        Assert.assertNotNull("Unable access the DropBoxManager service", dropbox);
-
-        long timestamp = 0;
-        DropBoxManager.Entry entry;
-        int crashCount = 0;
-        StringBuilder errorDetails = new StringBuilder();
-        while (null != (entry = dropbox.getNextEntry(label, timestamp))) {
-            String dropboxSnippet;
-            try {
-                dropboxSnippet = entry.getText(4096);
-            } finally {
-                entry.close();
-            }
-
-            crashCount++;
-            errorDetails.append(label);
-            errorDetails.append(": ");
-            errorDetails.append(truncateCrash(dropboxSnippet, 40));
-            errorDetails.append("    ...\n");
-
-            timestamp = entry.getTimeMillis();
-        }
-        Assert.assertEquals(errorDetails.toString(), 0, crashCount);
-        return crashCount > 0 ? errorDetails.toString() : null;
+    public void setSystemHealthSupplier(Supplier<String> supplier) {
+        this.mSystemHealthSupplier = supplier;
     }
 
     private String getSystemHealthMessage() {
+        final String testPackage = getContext().getPackageName();
         try {
-            StringBuilder errors = new StringBuilder();
-
-            final String testPackage = getContext().getPackageName();
-            try {
-                mDevice.executeShellCommand("pm grant " + testPackage +
-                        " android.permission.READ_LOGS");
-                mDevice.executeShellCommand("pm grant " + testPackage +
-                        " android.permission.PACKAGE_USAGE_STATS");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            final String[] labels = {
-                    "system_server_crash",
-                    "system_server_native_crash",
-                    "system_server_anr",
-            };
-
-            for (String label : labels) {
-                final String crash = checkCrash(label);
-                if (crash != null) errors.append(crash);
-            }
-
-            return errors.length() != 0 ? errors.toString() : null;
-        } catch (Exception e) {
-            return null;
+            mDevice.executeShellCommand("pm grant " + testPackage +
+                    " android.permission.READ_LOGS");
+            mDevice.executeShellCommand("pm grant " + testPackage +
+                    " android.permission.PACKAGE_USAGE_STATS");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        return mSystemHealthSupplier != null
+                ? mSystemHealthSupplier.get()
+                : TestHelpers.getSystemHealthMessage(getContext());
     }
 
     private void fail(String message) {
@@ -444,6 +396,8 @@ public final class LauncherInstrumentation {
     }
 
     private UiObject2 verifyContainerType(ContainerType containerType) {
+        //waitForTouchInteractionService();
+
         assertEquals("Unexpected display rotation",
                 mExpectedRotation, mDevice.getDisplayRotation());
 
@@ -512,6 +466,18 @@ public final class LauncherInstrumentation {
                     return null;
             }
         }
+    }
+
+    private void waitForTouchInteractionService() {
+        for (int i = 0; i < 100; ++i) {
+            if (getTestInfo(
+                    TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED).
+                    getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD)) {
+                return;
+            }
+            SystemClock.sleep(100);
+        }
+        fail("TouchInteractionService didn't connect");
     }
 
     Parcelable executeAndWaitForEvent(Runnable command,
@@ -816,8 +782,24 @@ public final class LauncherInstrumentation {
                 startX = endX = rect.centerX();
                 final int vertCenter = rect.centerY();
                 final float halfGestureHeight = rect.height() * percent / 2.0f;
-                startY = (int) (vertCenter + halfGestureHeight);
+                startY = (int) (vertCenter + halfGestureHeight) - 1;
                 endY = (int) (vertCenter - halfGestureHeight);
+            }
+            break;
+            case LEFT: {
+                startY = endY = rect.centerY();
+                final int horizCenter = rect.centerX();
+                final float halfGestureWidth = rect.width() * percent / 2.0f;
+                startX = (int) (horizCenter - halfGestureWidth);
+                endX = (int) (horizCenter + halfGestureWidth);
+            }
+            break;
+            case RIGHT: {
+                startY = endY = rect.centerY();
+                final int horizCenter = rect.centerX();
+                final float halfGestureWidth = rect.width() * percent / 2.0f;
+                startX = (int) (horizCenter + halfGestureWidth) - 1;
+                endX = (int) (horizCenter - halfGestureWidth);
             }
             break;
             default:
@@ -936,7 +918,7 @@ public final class LauncherInstrumentation {
     int getEdgeSensitivityWidth() {
         try {
             final Context context = mInstrumentation.getTargetContext().createPackageContext(
-                    "android", 0);
+                    getLauncherPackageName(), 0);
             return context.getResources().getDimensionPixelSize(
                     getSystemDimensionResId(context, "config_backGestureInset")) + 1;
         } catch (PackageManager.NameNotFoundException e) {
