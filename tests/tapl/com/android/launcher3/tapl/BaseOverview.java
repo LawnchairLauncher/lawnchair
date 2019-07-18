@@ -41,7 +41,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
 
     @Override
     protected LauncherInstrumentation.ContainerType getContainerType() {
-        return LauncherInstrumentation.ContainerType.BASE_OVERVIEW;
+        return LauncherInstrumentation.ContainerType.FALLBACK_OVERVIEW;
     }
 
     /**
