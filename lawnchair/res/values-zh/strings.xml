@@ -145,7 +145,7 @@
     <string name="about_role_dev">开发者</string>
     <string name="about_role_dev_mod">开发者 / 管理员</string>
     <string name="about_role_designer">设计师</string>
-    <string name="about_role_ui_ux_designer">UI/UX 设计</string>
+    <string name="about_role_ui_ux_designer">UI/UX 设计师</string>
     <string name="about_role_special_snowflake">社交媒体/公关 &amp; OEM 关系</string>
     <string name="about_role_mod_support">其他管理和支持</string>
     <string name="about_role_family_member">团队成员</string>
@@ -424,7 +424,7 @@
     <string name="text_color">文字颜色</string>
     <string name="background_color">背景色</string>
     <string name="pref_notification_count_title">显示通知数量</string>
-    <string name="pref_notification_count_summary">在点内显示通知数量</string>
+    <string name="pref_notification_count_summary">在通知圆点内显示通知数量</string>
     <string name="pref_center_wallpaper">始终居中壁纸</string>
     <string name="pref_center_wallpaper_summary">这将禁用壁纸滚动效果</string>
     <string name="pref_icon_popup_menu">弹出菜单项</string>
@@ -462,7 +462,7 @@
     <string name="bugreport_channel_name">Bug 报告</string>
     <string name="status_channel_name">Bug 反馈上传状态</string>
     <string name="bugreport_group_summary">%d 份新报告</string>
-    <string name="bugreport_group_summary_multiple">多份新报告</string>
+    <string name="bugreport_group_summary_multiple">多个新反馈</string>
     <string name="dogbin_uploading">正在上传</string>
     <string name="action_dogbin_upload">上传到 Dogbin</string>
     <string name="action_dogbin_upload_error">上传失败</string>
@@ -536,5 +536,5 @@
     <string name="weather_icons_default">默认</string>
     <string name="pref_weather_icon_pack">天气图标</string>
     <string name="weather_icon_packs_not_supported">您当前的天气提供商不支持此功能</string>
-    <string name="lawnchair_settings">Lawnchair 设置</string>
+    <string name="lawnchair_settings">桌面设置</string>
 </resources>
