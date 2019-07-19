@@ -77,7 +77,6 @@ import com.android.launcher3.logging.EventLogArray;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.provider.RestoreDbTask;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -154,6 +153,7 @@ public class TouchInteractionService extends Service implements
             MAIN_THREAD_EXECUTOR.execute(TouchInteractionService.this::initInputMonitor);
             MAIN_THREAD_EXECUTOR.execute(TouchInteractionService.this::onSystemUiProxySet);
             MAIN_THREAD_EXECUTOR.execute(() -> preloadOverview(true /* fromInit */));
+            sIsInitialized = true;
         }
 
         @Override
@@ -227,15 +227,15 @@ public class TouchInteractionService extends Service implements
     };
 
     private static boolean sConnected = false;
-    private static boolean sInputMonitorInitialized = false;
+    private static boolean sIsInitialized = false;
     private static final SwipeSharedState sSwipeSharedState = new SwipeSharedState();
 
     public static boolean isConnected() {
         return sConnected;
     }
 
-    public static boolean isInputMonitorInitialized() {
-        return sInputMonitorInitialized;
+    public static boolean isInitialized() {
+        return sIsInitialized;
     }
 
     public static SwipeSharedState getSwipeSharedState() {
@@ -336,7 +336,6 @@ public class TouchInteractionService extends Service implements
             mInputMonitorCompat.dispose();
             mInputMonitorCompat = null;
         }
-        sInputMonitorInitialized = false;
     }
 
     private void initInputMonitor() {
@@ -354,7 +353,6 @@ public class TouchInteractionService extends Service implements
             Log.e(TAG, "Unable to create input monitor", e);
         }
         initTouchBounds();
-        sInputMonitorInitialized = true;
     }
 
     private int getNavbarSize(String resName) {
@@ -492,6 +490,7 @@ public class TouchInteractionService extends Service implements
 
     @Override
     public void onDestroy() {
+        sIsInitialized = false;
         if (mIsUserUnlocked) {
             mInputConsumer.unregisterInputConsumer();
             mOverviewComponentObserver.onDestroy();
