@@ -1,5 +1,6 @@
 package com.android.launcher3.ui;
 
+import android.util.Log;
 import android.view.Surface;
 
 import com.android.launcher3.tapl.TestHelpers;
@@ -9,6 +10,7 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 class PortraitLandscapeRunner implements TestRule {
+    private static final String TAG = "PortraitLandscapeRunner";
     private AbstractLauncherUiTest mTest;
 
     public PortraitLandscapeRunner(AbstractLauncherUiTest test) {
@@ -36,6 +38,9 @@ class PortraitLandscapeRunner implements TestRule {
 
                     evaluateInPortrait();
                     evaluateInLandscape();
+                } catch (Exception e) {
+                    Log.e(TAG, "Exception", e);
+                    throw e;
                 } finally {
                     mTest.mDevice.setOrientationNatural();
                     mTest.executeOnLauncher(launcher ->
