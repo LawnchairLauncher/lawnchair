@@ -50,6 +50,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -297,7 +298,11 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     @Override
     public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
-        // This is filled in {@link AllAppsRecyclerView}
+        if (getApps().hasFilter()) {
+            targetParent.containerType = ContainerType.SEARCHRESULT;
+        } else {
+            targetParent.containerType = ContainerType.ALLAPPS;
+        }
     }
 
     @Override
@@ -626,9 +631,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_START_TAG, "AllAppsContainerView.dispatchTouchEvent " + ev);
-        }
         final boolean result = super.dispatchTouchEvent(ev);
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
