@@ -168,10 +168,6 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     @Override
     public void setStateWithAnimation(LauncherState toState,
             AnimatorSetBuilder builder, AnimationConfig config) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_ALLAPPS_EVENT_TAG,
-                    "setStateWithAnimation " + toState.getClass().getSimpleName());
-        }
         float targetProgress = toState.getVerticalProgress(mLauncher);
         if (Float.compare(mProgress, targetProgress) == 0) {
             setAlphas(toState, config, builder);

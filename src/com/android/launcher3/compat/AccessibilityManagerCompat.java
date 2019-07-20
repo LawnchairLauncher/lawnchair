@@ -53,9 +53,6 @@ public class AccessibilityManagerCompat {
     }
 
     public static void sendStateEventToTest(Context context, int stateOrdinal) {
-        if (com.android.launcher3.testing.TestProtocol.sDebugTracing) {
-            android.util.Log.e(TestProtocol.NO_ALLAPPS_EVENT_TAG, "sendStateEventToTest");
-        }
         final AccessibilityManager accessibilityManager = getAccessibilityManagerForTest(context);
         if (accessibilityManager == null) return;
 

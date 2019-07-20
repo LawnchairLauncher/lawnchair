@@ -152,9 +152,6 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     }
 
     private TouchController findControllerToHandleTouch(MotionEvent ev) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.EVENTS_TO_OVERVIEW_MISSING_TAG, "findControllerToHandleTouch " + ev);
-        }
         if (shouldDisableGestures(ev)) return null;
 
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
@@ -233,10 +230,6 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (TestProtocol.sDebugTracing) {
-            android.util.Log.d(TestProtocol.NO_DRAG_TAG,
-                    "onTouchEvent " + ev);
-        }
         int action = ev.getAction();
         if (action == ACTION_UP || action == ACTION_CANCEL) {
             if (mTouchCompleteListener != null) {
@@ -246,10 +239,6 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
         }
 
         if (mActiveController != null) {
-            if (TestProtocol.sDebugTracing) {
-                android.util.Log.d(TestProtocol.NO_DRAG_TAG,
-                        "onTouchEvent 1");
-            }
             return mActiveController.onControllerTouchEvent(ev);
         } else {
             // In case no child view handled the touch event, we may not get onIntercept anymore
@@ -259,9 +248,6 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_START_TAG, "BaseDragLayer.dispatchTouchEvent " + ev);
-        }
         switch (ev.getAction()) {
             case ACTION_DOWN: {
                 float x = ev.getX();
@@ -315,9 +301,6 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
      * Proxies the touch events to the gesture handlers
      */
     public boolean proxyTouchEvent(MotionEvent ev) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.EVENTS_TO_OVERVIEW_MISSING_TAG, "proxyTouchEvent " + ev);
-        }
         boolean handled;
         if (mProxyTouchController != null) {
             handled = mProxyTouchController.onControllerTouchEvent(ev);

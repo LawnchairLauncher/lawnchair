@@ -17,6 +17,7 @@ package com.android.quickstep.fallback;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 
+import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -31,6 +32,10 @@ import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
+import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.recents.model.Task.TaskKey;
+
+import java.util.ArrayList;
 
 public class FallbackRecentsView extends RecentsView<RecentsActivity> {
 
@@ -53,6 +58,8 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
 
     private float mZoomScale = 1f;
     private float mZoomTranslationY = 0f;
+
+    private RunningTaskInfo mRunningTaskInfo;
 
     public FallbackRecentsView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -88,6 +95,12 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
     }
 
     @Override
+    public void reset() {
+        super.reset();
+        resetViewUI();
+    }
+
+    @Override
     protected void getTaskSize(DeviceProfile dp, Rect outRect) {
         LayoutUtils.calculateFallbackTaskSize(getContext(), dp, outRect);
     }
@@ -115,6 +128,12 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
     }
 
     @Override
+    public void resetTaskVisuals() {
+        super.resetTaskVisuals();
+        setFullscreenProgress(mFullscreenProgress);
+    }
+
+    @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
@@ -138,5 +157,42 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
         SCALE_PROPERTY.set(this, Utilities.mapRange(mZoomInProgress, 1, mZoomScale));
         TRANSLATION_Y.set(this, Utilities.mapRange(mZoomInProgress, 0, mZoomTranslationY));
         FULLSCREEN_PROGRESS.set(this, mZoomInProgress);
+    }
+
+    public void onGestureAnimationStart(RunningTaskInfo runningTaskInfo) {
+        mRunningTaskInfo = runningTaskInfo;
+        onGestureAnimationStart(runningTaskInfo == null ? -1 : runningTaskInfo.taskId);
+    }
+
+    @Override
+    public void setCurrentTask(int runningTaskId) {
+        super.setCurrentTask(runningTaskId);
+        if (mRunningTaskInfo != null && mRunningTaskInfo.taskId != runningTaskId) {
+            mRunningTaskInfo = null;
+        }
+    }
+
+    @Override
+    protected void applyLoadPlan(ArrayList<Task> tasks) {
+        // When quick-switching on 3p-launcher, we add a "dummy" tile corresponding to Launcher
+        // as well. This tile is never shown as we have setCurrentTaskHidden, but allows use to
+        // track the index of the next task appropriately, as it we are switching on any other app.
+        if (mRunningTaskInfo != null && mRunningTaskInfo.taskId == mRunningTaskId) {
+            // Check if the task list has running task
+            boolean found = false;
+            for (Task t : tasks) {
+                if (t.key.id == mRunningTaskId) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                ArrayList<Task> newList = new ArrayList<>(tasks.size() + 1);
+                newList.addAll(tasks);
+                newList.add(Task.from(new TaskKey(mRunningTaskInfo), mRunningTaskInfo, false));
+                tasks = newList;
+            }
+        }
+        super.applyLoadPlan(tasks);
     }
 }
