@@ -55,7 +55,7 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
 
     private void performTest() throws Throwable {
         clearHomescreen();
-        mActivityMonitor.startLauncher();
+        mDevice.pressHome();
 
         final LauncherAppWidgetProviderInfo widgetInfo =
                 TestViewHelpers.findWidgetProvider(this, false /* hasConfigureScreen */);

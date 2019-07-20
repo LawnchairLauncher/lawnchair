@@ -51,7 +51,6 @@ import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.LayoutUtils;
-import com.android.systemui.shared.system.QuickStepContract;
 
 /**
  * Touch controller for handling various state transitions in portrait UI.
@@ -296,9 +295,13 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
      * @return true if the event is over the hotseat
      */
     static boolean isTouchOverHotseat(Launcher launcher, MotionEvent ev) {
+        return (ev.getY() >= getHotseatTop(launcher));
+    }
+
+    public static int getHotseatTop(Launcher launcher) {
         DeviceProfile dp = launcher.getDeviceProfile();
         int hotseatHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
-        return (ev.getY() >= (launcher.getDragLayer().getHeight() - hotseatHeight));
+        return launcher.getDragLayer().getHeight() - hotseatHeight;
     }
 
     private static class InterpolatorWrapper implements Interpolator {

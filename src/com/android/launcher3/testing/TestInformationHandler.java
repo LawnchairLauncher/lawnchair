@@ -74,6 +74,11 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 break;
             }
 
+            case TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED: {
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, true);
+                break;
+            }
+
             case TestProtocol.REQUEST_ENABLE_DEBUG_TRACING:
                 TestProtocol.sDebugTracing = true;
                 break;

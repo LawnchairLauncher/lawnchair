@@ -23,6 +23,7 @@
     package="com.android.launcher3" >
 
     <uses-permission android:name="android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
