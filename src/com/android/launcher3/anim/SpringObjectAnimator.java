@@ -96,7 +96,10 @@ public class SpringObjectAnimator<T> extends ValueAnimator {
             }
         });
 
-        mSpring.addUpdateListener((animation, value, velocity) -> mSpringEnded = false);
+        mSpring.addUpdateListener((animation, value, velocity) -> {
+            mSpringEnded = false;
+            mEnded = false;
+        });
         mSpring.addEndListener((animation, canceled, value, velocity) -> {
             mSpringEnded = true;
             tryEnding();

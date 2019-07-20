@@ -51,6 +51,7 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
+import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
@@ -98,7 +99,11 @@ public abstract class AbstractLauncherUiTest {
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
-        if (TestHelpers.isInLauncherProcess()) Utilities.enableRunningInTestHarnessForTests();
+        if (TestHelpers.isInLauncherProcess()) {
+            Utilities.enableRunningInTestHarnessForTests();
+            mLauncher.setSystemHealthSupplier(() -> TestCommandReceiver.callCommand(
+                    TestCommandReceiver.GET_SYSTEM_HEALTH_MESSAGE).getString("result"));
+        }
     }
 
     protected final LauncherActivityRule mActivityMonitor = new LauncherActivityRule();

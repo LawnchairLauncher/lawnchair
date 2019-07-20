@@ -98,7 +98,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
         lockRotation(true);
 
         clearHomescreen();
-        mActivityMonitor.startLauncher();
+        mDevice.pressHome();
 
         final Widgets widgets = mLauncher.getWorkspace().openAllWidgets();
 

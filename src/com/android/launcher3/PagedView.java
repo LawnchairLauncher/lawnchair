@@ -47,6 +47,7 @@ import android.view.animation.Interpolator;
 import android.widget.ScrollView;
 
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.touch.OverScroll;
@@ -367,6 +368,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
      */
     protected void onPageEndTransition() {
         mWasInOverscroll = false;
+        AccessibilityManagerCompat.sendScrollFinishedEventToTest(getContext());
     }
 
     protected int getUnboundedScrollX() {

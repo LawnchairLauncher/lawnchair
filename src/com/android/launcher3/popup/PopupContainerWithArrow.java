@@ -449,11 +449,6 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
 
             @Override
             public boolean shouldStartDrag(double distanceDragged) {
-                if (TestProtocol.sDebugTracing) {
-                    Log.d(TestProtocol.NO_DRAG_TAG,
-                            "createPreDragCondition().shouldStartDrag " + distanceDragged + ", "
-                                    + mStartDragThreshold);
-                }
                 return distanceDragged > mStartDragThreshold;
             }
 
