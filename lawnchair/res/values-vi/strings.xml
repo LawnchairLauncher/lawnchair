@@ -508,11 +508,11 @@
         <item>Chúc bạn một ngày tốt lành!</item>
     </string-array>
     <string-array name="greetings_evening">
-        <item>Chúc ngủ ngon!</item>
+        <item>Chúc bạn ngủ ngon!</item>
         <item>Ngủ ngon nhé!</item>
         <item>Hẹn gặp bạn vào ngày mai!</item>
         <item>Chúc bạn có những giấc mơ đẹp!</item>
-        <item>Đừng thức quá lâu</item>
+        <item>Đừng ngủ quá muộn nhé!</item>
         <item>Ngày hôm nay của bạn thế nào?</item>
         <item>Bạn đã làm gì vào hôm nay?</item>
     </string-array>
