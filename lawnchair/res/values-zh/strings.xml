@@ -516,8 +516,8 @@
         <item>明天见！</item>
         <item>祝您好梦！</item>
         <item>不要睡得太晚了哦</item>
-        <item>今天过的还好吗？</item>
-        <item>今天做了什么呢？</item>
+        <item>你今天过的还好吗？</item>
+        <item>你今天做了什么呢？</item>
     </string-array>
     <string name="onbording_settings_title">设置 %s</string>
     <string name="onbording_settings_summary">长按你的主屏幕</string>
