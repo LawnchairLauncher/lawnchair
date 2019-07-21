@@ -43,7 +43,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.RectF;
@@ -77,6 +76,7 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.logging.EventLogArray;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
+import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.UiThreadHelper;
@@ -95,12 +95,12 @@ import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
+import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.SystemGestureExclusionListenerCompat;
 
 import java.io.FileDescriptor;
@@ -123,10 +123,6 @@ class ArgList extends LinkedList<String> {
 
     public String nextArg() {
         return pollFirst().toLowerCase();
-    }
-
-    public String nextArgExact() {
-        return pollFirst();
     }
 }
 
@@ -231,10 +227,15 @@ public class TouchInteractionService extends Service implements
     };
 
     private static boolean sConnected = false;
+    private static boolean sInputMonitorInitialized = false;
     private static final SwipeSharedState sSwipeSharedState = new SwipeSharedState();
 
     public static boolean isConnected() {
         return sConnected;
+    }
+
+    public static boolean isInputMonitorInitialized() {
+        return sInputMonitorInitialized;
     }
 
     public static SwipeSharedState getSwipeSharedState() {
@@ -243,6 +244,11 @@ public class TouchInteractionService extends Service implements
 
     private final InputConsumer mResetGestureInputConsumer =
             new ResetGestureInputConsumer(sSwipeSharedState);
+
+    private final BaseSwipeUpHandler.Factory mWindowTreansformFactory =
+            this::createWindowTransformSwipeHandler;
+    private final BaseSwipeUpHandler.Factory mFallbackNoButtonFactory =
+            this::createFallbackNoButtonSwipeHandler;
 
     private ActivityManagerWrapper mAM;
     private RecentsModel mRecentsModel;
@@ -330,6 +336,7 @@ public class TouchInteractionService extends Service implements
             mInputMonitorCompat.dispose();
             mInputMonitorCompat = null;
         }
+        sInputMonitorInitialized = false;
     }
 
     private void initInputMonitor() {
@@ -347,6 +354,7 @@ public class TouchInteractionService extends Service implements
             Log.e(TAG, "Unable to create input monitor", e);
         }
         initTouchBounds();
+        sInputMonitorInitialized = true;
     }
 
     private int getNavbarSize(String resName) {
@@ -508,9 +516,6 @@ public class TouchInteractionService extends Service implements
     }
 
     private void onInputEvent(InputEvent ev) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.EVENTS_TO_OVERVIEW_MISSING_TAG, "onInputEvent " + ev);
-        }
         if (!(ev instanceof MotionEvent)) {
             Log.e(TAG, "Unknown event " + ev);
             return;
@@ -628,10 +633,6 @@ public class TouchInteractionService extends Service implements
         } else if (mGestureBlockingActivity != null && runningTaskInfo != null
                 && mGestureBlockingActivity.equals(runningTaskInfo.topActivity)) {
             return mResetGestureInputConsumer;
-        } else if (mMode == Mode.NO_BUTTON && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
-            return new FallbackNoButtonInputConsumer(this, activityControl,
-                    mInputMonitorCompat, sSwipeSharedState, mSwipeTouchRegion,
-                    mOverviewComponentObserver, disableHorizontalSwipe(event), runningTaskInfo);
         } else {
             return createOtherActivityInputConsumer(event, runningTaskInfo);
         }
@@ -644,17 +645,25 @@ public class TouchInteractionService extends Service implements
                 && exclusionRegion.contains((int) event.getX(), (int) event.getY());
     }
 
-    private OtherActivityInputConsumer createOtherActivityInputConsumer(MotionEvent event,
+    private InputConsumer createOtherActivityInputConsumer(MotionEvent event,
             RunningTaskInfo runningTaskInfo) {
-        final ActivityControlHelper activityControl =
-                mOverviewComponentObserver.getActivityControlHelper();
-        boolean shouldDefer = activityControl.deferStartingActivity(mActiveNavBarRegion, event);
 
-        return new OtherActivityInputConsumer(this, runningTaskInfo, mRecentsModel,
-                mOverviewComponentObserver.getOverviewIntent(), activityControl,
-                shouldDefer, mOverviewCallbacks, mInputConsumer, this::onConsumerInactive,
+        final boolean shouldDefer;
+        final BaseSwipeUpHandler.Factory factory;
+
+        if (mMode == Mode.NO_BUTTON && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
+            shouldDefer = !sSwipeSharedState.recentsAnimationFinishInterrupted;
+            factory = mFallbackNoButtonFactory;
+        } else {
+            shouldDefer = mOverviewComponentObserver.getActivityControlHelper()
+                    .deferStartingActivity(mActiveNavBarRegion, event);
+            factory = mWindowTreansformFactory;
+        }
+
+        return new OtherActivityInputConsumer(this, runningTaskInfo,
+                shouldDefer, mOverviewCallbacks, this::onConsumerInactive,
                 sSwipeSharedState, mInputMonitorCompat, mSwipeTouchRegion,
-                disableHorizontalSwipe(event));
+                disableHorizontalSwipe(event), factory);
     }
 
     private InputConsumer createDeviceLockedInputConsumer(RunningTaskInfo taskInfo) {
@@ -702,6 +711,12 @@ public class TouchInteractionService extends Service implements
             return;
         }
 
+        if (RestoreDbTask.isPending(this)) {
+            // Preloading while a restore is pending may cause launcher to start the restore
+            // too early.
+            return;
+        }
+
         final ActivityControlHelper<BaseDraggingActivity> activityControl =
                 mOverviewComponentObserver.getActivityControlHelper();
         if (activityControl.getCreatedActivity() == null) {
@@ -718,11 +733,7 @@ public class TouchInteractionService extends Service implements
         }
 
         // Pass null animation handler to indicate this start is preload.
-        BackgroundExecutor.get().submit(
-                () -> ActivityManagerWrapper.getInstance().startRecentsActivity(
-                        mOverviewComponentObserver.getOverviewIntentIgnoreSysUiState(),
-                        null /* assistDataReceiver */, null /* animationHandler */,
-                        null /* resultCallback */, null /* resultCallbackHandler */));
+        startRecentsActivityAsync(mOverviewComponentObserver.getOverviewIntentIgnoreSysUiState(), null);
     }
 
     @Override
@@ -799,5 +810,22 @@ public class TouchInteractionService extends Service implements
                 TOUCH_INTERACTION_LOG.clear();
                 break;
         }
+    }
+
+    private BaseSwipeUpHandler createWindowTransformSwipeHandler(RunningTaskInfo runningTask,
+            long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
+        return  new WindowTransformSwipeHandler(runningTask, this, touchTimeMs,
+                mOverviewComponentObserver, continuingLastGesture, mInputConsumer, mRecentsModel);
+    }
+
+    private BaseSwipeUpHandler createFallbackNoButtonSwipeHandler(RunningTaskInfo runningTask,
+            long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
+        return new FallbackNoButtonInputConsumer(this, mOverviewComponentObserver, runningTask,
+                mRecentsModel, mInputConsumer, isLikelyToStartNewTask, continuingLastGesture);
+    }
+
+    public static void startRecentsActivityAsync(Intent intent, RecentsAnimationListener listener) {
+        BACKGROUND_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
+                .startRecentsActivity(intent, null, listener, null, null));
     }
 }

@@ -474,10 +474,6 @@ public class DragController implements DragDriver.EventListener, TouchController
     }
 
     private void handleMoveEvent(int x, int y) {
-        if (TestProtocol.sDebugTracing) {
-            android.util.Log.d(TestProtocol.NO_DRAG_TAG,
-                    "handleMoveEvent 1");
-        }
         mDragObject.dragView.move(x, y);
 
         // Drop on someone?
@@ -492,22 +488,8 @@ public class DragController implements DragDriver.EventListener, TouchController
         mLastTouch[0] = x;
         mLastTouch[1] = y;
 
-        if (TestProtocol.sDebugTracing) {
-           Log.d(TestProtocol.NO_DRAG_TAG,
-                    "handleMoveEvent Conditions " +
-                            mIsInPreDrag + ", " +
-                            (mIsInPreDrag && mOptions.preDragCondition != null) + ", " +
-                            (mIsInPreDrag && mOptions.preDragCondition != null
-                                    && mOptions.preDragCondition.shouldStartDrag(
-                                    mDistanceSinceScroll)));
-        }
-
         if (mIsInPreDrag && mOptions.preDragCondition != null
                 && mOptions.preDragCondition.shouldStartDrag(mDistanceSinceScroll)) {
-            if (TestProtocol.sDebugTracing) {
-                android.util.Log.d(TestProtocol.NO_DRAG_TAG,
-                        "handleMoveEvent 2");
-            }
             callOnDragStart();
         }
     }
@@ -545,10 +527,6 @@ public class DragController implements DragDriver.EventListener, TouchController
      * Call this from a drag source view.
      */
     public boolean onControllerTouchEvent(MotionEvent ev) {
-        if (TestProtocol.sDebugTracing) {
-            android.util.Log.d(TestProtocol.NO_DRAG_TAG,
-                    "onControllerTouchEvent");
-        }
         if (mDragDriver == null || mOptions == null || mOptions.isAccessibleDrag) {
             return false;
         }
