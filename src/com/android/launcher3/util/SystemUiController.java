@@ -16,10 +16,12 @@
 
 package com.android.launcher3.util;
 
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 
+import ch.deletescape.lawnchair.util.FlagUtilsKt;
 import com.android.launcher3.Utilities;
 
 import java.util.Arrays;
@@ -80,6 +82,14 @@ public class SystemUiController {
         if (newFlags != oldFlags) {
             mWindow.getDecorView().setSystemUiVisibility(newFlags);
         }
+    }
+
+    public void forceUpdateLightNavBar() {
+        if (!Utilities.ATLEAST_OREO) return;
+        int oldFlags = mWindow.getDecorView().getSystemUiVisibility();
+        int newFlags = FlagUtilsKt.toggleFlag(oldFlags, View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        mWindow.getDecorView().setSystemUiVisibility(newFlags);
+        new Handler().post(() -> mWindow.getDecorView().setSystemUiVisibility(oldFlags));
     }
 
     @Override

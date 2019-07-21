@@ -1,4 +1,6 @@
 /*
+ *     Copyright (C) 2019 Lawnchair Team.
+ *
  *     This file is part of Lawnchair Launcher.
  *
  *     Lawnchair Launcher is free software: you can redistribute it and/or modify
@@ -15,32 +17,19 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.deletescape.lawnchair.util
+package ch.deletescape.lawnchair.settings.ui.controllers
 
-fun Int.hasFlag(flag: Int): Boolean {
-    return (this and flag) != 0
-}
+import android.content.Context
+import android.support.annotation.Keep
+import ch.deletescape.lawnchair.customnavbar.CustomNavBar
+import ch.deletescape.lawnchair.lawnchairApp
+import ch.deletescape.lawnchair.settings.ui.PreferenceController
+import com.android.launcher3.Utilities
 
-fun Int.hasFlags(vararg flags: Int): Boolean {
-    return flags.all { hasFlag(it) }
-}
+@Keep
+class CustomNavBarIntegrationController(context: Context) : PreferenceController(context) {
 
-fun Int.addFlag(flag: Int): Int {
-    return this or flag
-}
-
-fun Int.removeFlag(flag: Int): Int {
-    return this and flag.inv()
-}
-
-fun Int.toggleFlag(flag: Int): Int {
-    return if (hasFlag(flag)) removeFlag(flag) else addFlag(flag)
-}
-
-fun Int.setFlag(flag: Int, value: Boolean): Int {
-    return if (value) {
-        addFlag(flag)
-    } else {
-        removeFlag(flag)
-    }
+    override val isVisible = Utilities.ATLEAST_NOUGAT
+                             && !context.lawnchairApp.recentsEnabled
+                             && CustomNavBar.getInstance(context).testVersionInstalled
 }
