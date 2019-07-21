@@ -712,4 +712,9 @@
     <string name="weather_icon_packs_not_supported">Not supported by your current weather source</string>
 
     <string name="lawnchair_settings">Lawnchair Settings</string>
+
+    <string name="customnavbar">Custom Navigation Bar</string>
+    <string name="customnavbar_install">Tap to install Custom Navigation Bar</string>
+    <string name="customnavbar_back_hiding">Back button hiding</string>
+    <string name="customnavbar_back_hiding_desc">Hide the back button when not needed</string>
 </resources>

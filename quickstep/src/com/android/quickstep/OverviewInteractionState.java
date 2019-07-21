@@ -33,6 +33,7 @@ import android.support.annotation.WorkerThread;
 import android.util.Log;
 
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.customnavbar.CustomNavBar;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.DiscoveryBounce;
@@ -195,6 +196,7 @@ public class OverviewInteractionState implements LawnchairPreferences.OnPreferen
     @WorkerThread
     private void applyBackButtonAlpha(float alpha, boolean animate) {
         if (mISystemUiProxy == null) {
+            CustomNavBar.Companion.getInstance(mContext).setBackButtonAlpha(alpha);
             return;
         }
         try {
