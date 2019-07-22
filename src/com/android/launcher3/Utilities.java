@@ -19,16 +19,13 @@ package com.android.launcher3;
 import android.Manifest;
 import android.Manifest.permission;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.WallpaperManager;
-import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInfo;
@@ -36,10 +33,15 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.hardware.input.InputManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
@@ -70,23 +72,23 @@ import android.util.Pair;
 import android.util.Property;
 import android.util.TypedValue;
 import android.view.Display;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.animation.Interpolator;
-
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
+import android.view.animation.Interpolator;
 import ch.deletescape.lawnchair.HiddenApiCompat;
-import ch.deletescape.lawnchair.LawnchairApp;
 import ch.deletescape.lawnchair.LawnchairAppKt;
+import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.backup.RestoreBackupActivity;
+import ch.deletescape.lawnchair.feed.impl.OverlayService;
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
+import ch.deletescape.lawnchair.smartspace.BrowserBoxActivity;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.config.FeatureFlags;
-
 import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.uioverrides.OverviewState;
-import com.android.systemui.shared.recents.model.Task;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
@@ -103,11 +105,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import ch.deletescape.lawnchair.LawnchairLauncher;
-import ch.deletescape.lawnchair.LawnchairPreferences;
-import ch.deletescape.lawnchair.backup.RestoreBackupActivity;
-import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -159,7 +156,7 @@ public final class Utilities {
      */
     public static final boolean IS_DEBUG_DEVICE =
             Build.TYPE.toLowerCase(Locale.ROOT).contains("debug") ||
-            Build.TYPE.toLowerCase(Locale.ROOT).equals("eng");
+                    Build.TYPE.toLowerCase(Locale.ROOT).equals("eng");
 
     // An intent extra to indicate the horizontal scroll of the wallpaper.
     public static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
@@ -191,10 +188,10 @@ public final class Utilities {
      * @param ancestor The root view to make the coordinates relative to.
      * @param coord The coordinate that we want mapped.
      * @param includeRootScroll Whether or not to account for the scroll of the descendant:
-     *          sometimes this is relevant as in a child's coordinates within the descendant.
+     * sometimes this is relevant as in a child's coordinates within the descendant.
      * @return The factor by which this descendant is scaled relative to this DragLayer. Caution
-     *         this scale factor is assumed to be equal in X and Y, and so if at any point this
-     *         assumption fails, we will need to return a pair of scale factors.
+     * this scale factor is assumed to be equal in X and Y, and so if at any point this assumption
+     * fails, we will need to return a pair of scale factors.
      */
     public static float getDescendantCoordRelativeToAncestor(
             View descendant, View ancestor, int[] coord, boolean includeRootScroll) {
@@ -203,7 +200,7 @@ public final class Utilities {
 
         float scale = 1.0f;
         View v = descendant;
-        while(v != ancestor && v != null) {
+        while (v != ancestor && v != null) {
             // For TextViews, scroll has a meaning which relates to the text position
             // which is very strange... ignore the scroll.
             if (v != descendant || includeRootScroll) {
@@ -230,7 +227,7 @@ public final class Utilities {
     public static void mapCoordInSelfToDescendant(View descendant, View root, int[] coord) {
         sMatrix.reset();
         View v = descendant;
-        while(v != root) {
+        while (v != root) {
             sMatrix.postTranslate(-v.getScrollX(), -v.getScrollY());
             sMatrix.postConcat(v.getMatrix());
             sMatrix.postTranslate(v.getLeft(), v.getTop());
@@ -247,10 +244,9 @@ public final class Utilities {
     }
 
     /**
-     * Utility method to determine whether the given point, in local coordinates,
-     * is inside the view, where the area of the view is expanded by the slop factor.
-     * This method is called while processing touch-move events to determine if the event
-     * is still within the view.
+     * Utility method to determine whether the given point, in local coordinates, is inside the
+     * view, where the area of the view is expanded by the slop factor. This method is called while
+     * processing touch-move events to determine if the event is still within the view.
      */
     public static boolean pointInView(View v, float localX, float localY, float slop) {
         return localX >= -slop && localY >= -slop && localX < (v.getWidth() + slop) &&
@@ -265,7 +261,7 @@ public final class Utilities {
         sLoc0[1] += (v0.getMeasuredHeight() * v0.getScaleY()) / 2;
         sLoc1[0] += (v1.getMeasuredWidth() * v1.getScaleX()) / 2;
         sLoc1[1] += (v1.getMeasuredHeight() * v1.getScaleY()) / 2;
-        return new int[] {sLoc1[0] - sLoc0[0], sLoc1[1] - sLoc0[1]};
+        return new int[]{sLoc1[0] - sLoc0[0], sLoc1[1] - sLoc0[1]};
     }
 
     public static void scaleRectFAboutCenter(RectF r, float scale) {
@@ -274,7 +270,7 @@ public final class Utilities {
             float cy = r.centerY();
             r.offset(-cx, -cy);
             r.left = r.left * scale;
-            r.top = r.top * scale ;
+            r.top = r.top * scale;
             r.right = r.right * scale;
             r.bottom = r.bottom * scale;
             r.offset(cx, cy);
@@ -323,6 +319,7 @@ public final class Utilities {
 
     /**
      * Maps t from one range to another range.
+     *
      * @param t The value to map.
      * @param fromMin The lower bound of the range that t is being mapped from.
      * @param fromMax The upper bound of the range that t is being mapped from.
@@ -399,7 +396,7 @@ public final class Utilities {
      * Compresses the bitmap to a byte array for serialization.
      */
     public static byte[] flattenBitmap(Bitmap bitmap) {
-        // Try go guesstimate how much space the icon will take when serialized
+        // Try go guesstimate how much space the iconView will take when serialized
         // to avoid unnecessary allocations/copies during the write.
         int size = bitmap.getWidth() * bitmap.getHeight() * 4;
         ByteArrayOutputStream out = new ByteArrayOutputStream(size);
@@ -462,9 +459,9 @@ public final class Utilities {
     }
 
     /**
-     * Returns true if the intent is a valid launch intent for a launcher activity of an app.
-     * This is used to identify shortcuts which are different from the ones exposed by the
-     * applications' manifest file.
+     * Returns true if the intent is a valid launch intent for a launcher activity of an app. This
+     * is used to identify shortcuts which are different from the ones exposed by the applications'
+     * manifest file.
      *
      * @param launchIntent The intent that will be launched when the shortcut is clicked.
      */
@@ -483,21 +480,24 @@ public final class Utilities {
         return false;
     }
 
-    public static float dpiFromPx(int size, DisplayMetrics metrics){
+    public static float dpiFromPx(int size, DisplayMetrics metrics) {
         float densityRatio = (float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT;
         return (size / densityRatio);
     }
+
     public static int pxFromDp(float size, DisplayMetrics metrics) {
         return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 size, metrics));
     }
+
     public static int pxFromSp(float size, DisplayMetrics metrics) {
         return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 size, metrics));
     }
 
     public static String createDbSelectionQuery(String columnName, Iterable<?> values) {
-        return String.format(Locale.ENGLISH, "%s IN (%s)", columnName, TextUtils.join(", ", values));
+        return String
+                .format(Locale.ENGLISH, "%s IN (%s)", columnName, TextUtils.join(", ", values));
     }
 
     public static boolean isBootCompleted() {
@@ -519,9 +519,9 @@ public final class Utilities {
     }
 
     /**
-     * Ensures that a value is within given bounds. Specifically:
-     * If value is less than lowerBound, return lowerBound; else if value is greater than upperBound,
-     * return upperBound; else return value unchanged.
+     * Ensures that a value is within given bounds. Specifically: If value is less than lowerBound,
+     * return lowerBound; else if value is greater than upperBound, return upperBound; else return
+     * value unchanged.
      */
     public static int boundToRange(int value, int lowerBound, int upperBound) {
         return Math.max(lowerBound, Math.min(value, upperBound));
@@ -542,8 +542,9 @@ public final class Utilities {
     }
 
     /**
-     * Wraps a message with a TTS span, so that a different message is spoken than
-     * what is getting displayed.
+     * Wraps a message with a TTS span, so that a different message is spoken than what is getting
+     * displayed.
+     *
      * @param msg original message
      * @param ttsMsg message to be spoken
      */
@@ -608,9 +609,8 @@ public final class Utilities {
     }
 
     /**
-     * Returns true if {@param original} contains all entries defined in {@param updates} and
-     * have the same value.
-     * The comparison uses {@link Object#equals(Object)} to compare the values.
+     * Returns true if {@param original} contains all entries defined in {@param updates} and have
+     * the same value. The comparison uses {@link Object#equals(Object)} to compare the values.
      */
     public static boolean containsAll(Bundle original, Bundle updates) {
         for (String key : updates.keySet()) {
@@ -627,7 +627,9 @@ public final class Utilities {
         return true;
     }
 
-    /** Returns whether the collection is null or empty. */
+    /**
+     * Returns whether the collection is null or empty.
+     */
     public static boolean isEmpty(Collection c) {
         return c == null || c.isEmpty();
     }
@@ -651,7 +653,7 @@ public final class Utilities {
 
         try {
             return clazz.newInstance();
-        } catch (InstantiationException|IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -678,8 +680,7 @@ public final class Utilities {
      */
     public /* private */ static void onLauncherStart() {
         Log.d(TAG, "onLauncherStart: " + onStart.size());
-        for(Runnable r : onStart)
-            r.run();
+        for (Runnable r : onStart) { r.run(); }
         onStart.clear();
     }
 
@@ -696,7 +697,7 @@ public final class Utilities {
         goToHome(context);
     }
 
-    public static void goToHome(Context context){
+    public static void goToHome(Context context) {
         PackageManager pm = context.getPackageManager();
 
         Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -727,7 +728,8 @@ public final class Utilities {
 
         // Create a pending intent so the application is restarted after System.exit(0) was called.
         // We use an AlarmManager to call this intent in 100ms
-        PendingIntent mPendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent mPendingIntent = PendingIntent
+                .getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
 
@@ -736,6 +738,13 @@ public final class Utilities {
     }
 
     public static void killLauncher() {
+        killLauncher(null);
+    }
+
+    public static void killLauncher(Context context) {
+        if (context != null) {
+            context.stopService(new Intent(context, OverlayService.class));
+        }
         System.exit(0);
     }
 
@@ -744,7 +753,7 @@ public final class Utilities {
         if (prefs.getRestoreSuccess()) {
             prefs.setRestoreSuccess(false);
             context.startActivity(new Intent(context, RestoreBackupActivity.class)
-                .putExtra(RestoreBackupActivity.EXTRA_SUCCESS, true));
+                    .putExtra(RestoreBackupActivity.EXTRA_SUCCESS, true));
         }
     }
 
@@ -775,10 +784,8 @@ public final class Utilities {
 
     public static void setLightUi(Window window) {
         int flags = window.getDecorView().getSystemUiVisibility();
-        if (ATLEAST_MARSHMALLOW)
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-        if (ATLEAST_OREO)
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+        if (ATLEAST_MARSHMALLOW) { flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR; }
+        if (ATLEAST_OREO) { flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR; }
         flags |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
         flags |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
         flags |= View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
@@ -811,13 +818,15 @@ public final class Utilities {
     }
 
     public static void pinSettingsShortcut(Context context) {
-        if (!ShortcutManagerCompat.isRequestPinShortcutSupported(context)) return;
-        ShortcutManagerCompat.requestPinShortcut(context, new ShortcutInfoCompat.Builder(context, "settings")
-                .setIntent(new Intent(context, SettingsActivity.class).setAction(Intent.ACTION_MAIN))
-                .setIcon(IconCompat.createWithResource(context, R.drawable.ic_setting))
-                .setShortLabel(context.getString(R.string.settings_button_text))
-                .setAlwaysBadged()
-                .build(), null);
+        if (!ShortcutManagerCompat.isRequestPinShortcutSupported(context)) { return; }
+        ShortcutManagerCompat
+                .requestPinShortcut(context, new ShortcutInfoCompat.Builder(context, "settings")
+                        .setIntent(new Intent(context, SettingsActivity.class)
+                                .setAction(Intent.ACTION_MAIN))
+                        .setIcon(IconCompat.createWithResource(context, R.drawable.ic_setting))
+                        .setShortLabel(context.getString(R.string.settings_button_text))
+                        .setAlwaysBadged()
+                        .build(), null);
     }
 
     public static boolean hasStoragePermission(Context context) {
@@ -830,14 +839,18 @@ public final class Utilities {
     }
 
     public static void requestStoragePermission(Activity activity) {
-        ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, LawnchairLauncher.REQUEST_PERMISSION_STORAGE_ACCESS);
+        ActivityCompat.requestPermissions(activity,
+                new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                LawnchairLauncher.REQUEST_PERMISSION_STORAGE_ACCESS);
     }
 
     public static void requestLocationPermission(Activity activity) {
-        ActivityCompat.requestPermissions(activity, new String[]{permission.ACCESS_COARSE_LOCATION}, LawnchairLauncher.REQUEST_PERMISSION_LOCATION_ACCESS);
+        ActivityCompat.requestPermissions(activity, new String[]{permission.ACCESS_COARSE_LOCATION},
+                LawnchairLauncher.REQUEST_PERMISSION_LOCATION_ACCESS);
     }
 
-    public static int parseResourceIdentifier(Resources res, String identifier, String packageName) {
+    public static int parseResourceIdentifier(Resources res, String identifier,
+            String packageName) {
         try {
             return Integer.parseInt(identifier.substring(1));
         } catch (NumberFormatException e) {
@@ -849,7 +862,7 @@ public final class Utilities {
         return (value == null) ? defValue : value;
     }
 
-    public static Boolean isEmui(){
+    public static Boolean isEmui() {
         return !TextUtils.isEmpty(getSystemProperty("ro.build.version.emui", ""));
     }
 
@@ -858,7 +871,7 @@ public final class Utilities {
                 .isEmpty(getSystemProperty("ro.hydrogen.version", ""));
     }
 
-    public static Boolean isMiui(){
+    public static Boolean isMiui() {
         return !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.code", "")) ||
                 !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.name", ""));
     }
@@ -867,65 +880,65 @@ public final class Utilities {
         openURLinBrowser(context, url, null, null);
     }
 
-    public static void openURLinBrowser(Context context, String url, Rect sourceBounds, Bundle options) {
-        try {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            if (!(context instanceof Activity)){
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            }
-            intent.setSourceBounds(sourceBounds);
-            if(options == null){
-                context.startActivity(intent);
-            } else {
-                context.startActivity(intent, options);
-            }
-        } catch (ActivityNotFoundException exc) {
-            // Believe me, this actually happens.
-            Toast.makeText(context, R.string.error_no_browser, Toast.LENGTH_SHORT).show();
+    public static void openURLinBrowser(Context context, String url, Rect sourceBounds,
+            Bundle options) {
+        if (url == null) {
+            return;
+        }
+        Intent intent = new Intent(context, BrowserBoxActivity.class);
+        intent.setData(Uri.parse(url));
+        intent.setSourceBounds(sourceBounds);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (options == null) {
+            context.startActivity(intent);
+        } else {
+            context.startActivity(intent, options);
         }
     }
 
     /**
      * @param bitmap the Bitmap to be scaled
      * @param threshold the maxium dimension (either width or height) of the scaled bitmap
-     * @param isNecessaryToKeepOrig is it necessary to keep the original bitmap? If not recycle the original bitmap to prevent memory leak.
+     * @param isNecessaryToKeepOrig is it necessary to keep the original bitmap? If not recycle the
+     * original bitmap to prevent memory leak.
      *
      * Credit: https://gist.github.com/vxhviet/873d142b41217739a1302d337b7285ba
-     * */
-    public static Bitmap getScaledDownBitmap(Bitmap bitmap, int threshold, boolean isNecessaryToKeepOrig) {
-        if (bitmap == null) return null;
+     */
+    public static Bitmap getScaledDownBitmap(Bitmap bitmap, int threshold,
+            boolean isNecessaryToKeepOrig) {
+        if (bitmap == null) { return null; }
 
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         int newWidth = width;
         int newHeight = height;
 
-        if(width > height && width > threshold){
+        if (width > height && width > threshold) {
             newWidth = threshold;
-            newHeight = (int)(height * (float)newWidth/width);
+            newHeight = (int) (height * (float) newWidth / width);
         }
 
-        if(width > height && width <= threshold){
+        if (width > height && width <= threshold) {
             //the bitmap is already smaller than our required dimension, no need to resize it
             return bitmap;
         }
 
-        if(width < height && height > threshold){
+        if (width < height && height > threshold) {
             newHeight = threshold;
-            newWidth = (int)(width * (float)newHeight/height);
+            newWidth = (int) (width * (float) newHeight / height);
         }
 
-        if(width < height && height <= threshold){
+        if (width < height && height <= threshold) {
             //the bitmap is already smaller than our required dimension, no need to resize it
             return bitmap;
         }
 
-        if(width == height && width > threshold){
+        if (width == height && width > threshold) {
             newWidth = threshold;
             newHeight = newWidth;
         }
 
-        if(width == height && width <= threshold){
+        if (width == height && width <= threshold) {
             //the bitmap is already smaller than our required dimension, no need to resize it
             return bitmap;
         }
@@ -933,7 +946,8 @@ public final class Utilities {
         return getResizedBitmap(bitmap, newWidth, newHeight, isNecessaryToKeepOrig);
     }
 
-    private static Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight, boolean isNecessaryToKeepOrig) {
+    private static Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight,
+            boolean isNecessaryToKeepOrig) {
         int width = bm.getWidth();
         int height = bm.getHeight();
         float scaleWidth = ((float) newWidth) / width;
@@ -994,8 +1008,9 @@ public final class Utilities {
         }
     }
 
-    public static float getScrimProgress(Launcher launcher, LauncherState toState, float targetProgress) {
-        if (Utilities.getLawnchairPrefs(launcher).getDockGradientStyle()) return targetProgress;
+    public static float getScrimProgress(Launcher launcher, LauncherState toState,
+            float targetProgress) {
+        if (Utilities.getLawnchairPrefs(launcher).getDockGradientStyle()) { return targetProgress; }
         if (toState == LauncherState.OVERVIEW) {
             return OverviewState.getNormalVerticalProgress(launcher);
         }
