@@ -121,7 +121,7 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
             TextView allAppsButton = (TextView)
                     inflater.inflate(R.layout.all_apps_button, mContent, false);
             Drawable d = context.getResources().getDrawable(R.drawable.all_apps_button_icon);
-            d.setBounds(0, 0, grid.iconSizePx, grid.iconSizePx);
+            d.setBounds(0, 0, grid.hotseatIconSizePx, grid.hotseatIconSizePx);
 
             int scaleDownPx = getResources().getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
             Rect bounds = d.getBounds();

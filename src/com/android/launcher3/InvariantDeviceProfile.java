@@ -86,8 +86,12 @@ public class InvariantDeviceProfile {
     public int numFolderColumns;
     public float iconSize;
     public float iconSizeOriginal;
+    public float hotseatIconSize;
+    public float hotseatIconSizeOriginal;
     public float landscapeIconSize;
     public float landscapeIconSizeOriginal;
+    public float landscapeHotseatIconSize;
+    public float landscapeHotseatIconSizeOriginal;
     public float allAppsIconSize;
     public float allAppsIconSizeOriginal;
     public float landscapeAllAppsIconSize;
@@ -177,6 +181,10 @@ public class InvariantDeviceProfile {
         iconSizeOriginal = interpolatedDeviceProfileOut.iconSize;
         landscapeIconSize = interpolatedDeviceProfileOut.landscapeIconSize;
         landscapeIconSizeOriginal = interpolatedDeviceProfileOut.landscapeIconSize;
+        hotseatIconSize = interpolatedDeviceProfileOut.iconSize;
+        hotseatIconSizeOriginal = interpolatedDeviceProfileOut.iconSize;
+        landscapeHotseatIconSize = interpolatedDeviceProfileOut.landscapeIconSize;
+        landscapeHotseatIconSizeOriginal = interpolatedDeviceProfileOut.landscapeIconSize;
         allAppsIconSize = interpolatedDeviceProfileOut.iconSize;
         allAppsIconSizeOriginal = interpolatedDeviceProfileOut.iconSize;
         landscapeAllAppsIconSize = interpolatedDeviceProfileOut.landscapeIconSize;
@@ -185,9 +193,10 @@ public class InvariantDeviceProfile {
 
         new IconScale(Utilities.getLawnchairPrefs(context), "iconSize", this);
         new IconScale(Utilities.getLawnchairPrefs(context), "allAppsIconSize", this);
+        new IconScale(Utilities.getLawnchairPrefs(context), "hotseatIconSize", "iconSize",this);
 
         // Initialize these *after* the icon scale has been applied, this ensures we load icons of proper resolution
-        iconBitmapSize = Utilities.pxFromDp(max(iconSize, allAppsIconSize), dm);
+        iconBitmapSize = Utilities.pxFromDp(max(max(iconSize, allAppsIconSize), hotseatIconSize), dm);
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         // If the partner customization apk contains any grid overrides, apply them

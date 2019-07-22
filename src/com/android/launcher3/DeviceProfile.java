@@ -93,6 +93,9 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     public int cellHeightPx;
     public int workspaceCellPaddingXPx;
 
+    public int hotseatIconSizePx;
+    public int hotseatIconSizeOriginalPx;
+
     // Folder
     public int folderIconSizePx;
     public int folderIconOffsetYPx;
@@ -310,7 +313,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         hotseatBarSidePaddingStartPx = isMultiWindowMode && isVerticalBarLayout()
                 ? edgeMarginPx : 0;
         hotseatBarSizePx = isVerticalBarLayout()
-                ? iconSizePx + hotseatBarSidePaddingStartPx
+                ? hotseatIconSizePx + hotseatBarSidePaddingStartPx
                 + hotseatBarSidePaddingEndPx
                 : res.getDimensionPixelSize(dockSearchBar ?
                         R.dimen.dynamic_grid_hotseat_size :
@@ -472,12 +475,15 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         }
 
         // Hotseat
+        float invHotseatIconSizePx = isVerticalLayout ? inv.landscapeHotseatIconSize : inv.hotseatIconSize;
+        hotseatIconSizeOriginalPx = Utilities.pxFromDp(invHotseatIconSizePx, dm);
+        hotseatIconSizePx = (int) (hotseatIconSizeOriginalPx * scale);
         if (isVerticalLayout) {
             hotseatBarSizePx =
-                    iconSizePx * prefs.getDockRowsCount()
+                    hotseatIconSizePx * prefs.getDockRowsCount()
                     + hotseatBarSidePaddingStartPx + hotseatBarSidePaddingEndPx;
         }
-        hotseatCellHeightPx = iconSizePx;
+        hotseatCellHeightPx = hotseatIconSizePx;
 
         if (!isVerticalLayout) {
             int expectedWorkspaceHeight = availableHeightPx - (dockVisible ? hotseatBarSizePx : 0)

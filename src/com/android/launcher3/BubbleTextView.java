@@ -122,7 +122,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private final float mSlop;
 
     private final boolean mLayoutHorizontal;
-    private final int mIconSize;
+    private int mIconSize;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mIsIconVisible = true;
@@ -759,6 +759,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public int getIconSize() {
         return mIconSize;
+    }
+
+    public void setIconSize(int iconSize) {
+        mIconSize = iconSize;
+        setIcon(mIcon);
     }
 
     protected boolean isTextHidden() {

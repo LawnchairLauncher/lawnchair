@@ -46,7 +46,6 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 
-import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
@@ -64,7 +63,6 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
-import com.android.launcher3.widget.WidgetCell;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -154,6 +152,7 @@ public class CellLayout extends ViewGroup {
     @ContainerType private final int mContainerType;
 
     private final float mChildScale = 1f;
+    private final int mDockIconSize;
 
     public static final int MODE_SHOW_REORDER_HINT = 0;
     public static final int MODE_DRAG_OVER = 1;
@@ -209,6 +208,8 @@ public class CellLayout extends ViewGroup {
 
         mCellWidth = mCellHeight = -1;
         mFixedCellWidth = mFixedCellHeight = -1;
+
+        mDockIconSize = grid.hotseatIconSizePx;
 
         mCountX = grid.inv.numColumns;
         mCountY = grid.inv.numRows;
@@ -565,14 +566,21 @@ public class CellLayout extends ViewGroup {
         return mContainerType == WORKSPACE;
     }
 
+    public boolean isHotseat() {
+        return mContainerType == HOTSEAT;
+    }
+
     public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params,
             boolean markCells) {
         final LayoutParams lp = params;
 
-        // Hotseat icons - remove text
+        // Hotseat icons - remove text / scale
         if (child instanceof BubbleTextView) {
             BubbleTextView bubbleChild = (BubbleTextView) child;
-            bubbleChild.setTextVisibility(mContainerType != HOTSEAT);
+            if (isHotseat()) {
+                bubbleChild.setTextVisibility(false);
+                bubbleChild.setIconSize(mDockIconSize);
+            }
         }
 
         child.setScaleX(mChildScale);
