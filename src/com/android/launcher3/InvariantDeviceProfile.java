@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static java.lang.Math.max;
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -179,12 +181,14 @@ public class InvariantDeviceProfile {
         allAppsIconSizeOriginal = interpolatedDeviceProfileOut.iconSize;
         landscapeAllAppsIconSize = interpolatedDeviceProfileOut.landscapeIconSize;
         landscapeAllAppsIconSizeOriginal = interpolatedDeviceProfileOut.landscapeIconSize;
-        iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
         iconTextSize = interpolatedDeviceProfileOut.iconTextSize;
-        fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         new IconScale(Utilities.getLawnchairPrefs(context), "iconSize", this);
         new IconScale(Utilities.getLawnchairPrefs(context), "allAppsIconSize", this);
+
+        // Initialize these *after* the icon scale has been applied, this ensures we load icons of proper resolution
+        iconBitmapSize = Utilities.pxFromDp(max(iconSize, allAppsIconSize), dm);
+        fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
@@ -195,7 +199,7 @@ public class InvariantDeviceProfile {
         // The real size never changes. smallSide and largeSide will remain the
         // same in any orientation.
         int smallSide = Math.min(realSize.x, realSize.y);
-        int largeSide = Math.max(realSize.x, realSize.y);
+        int largeSide = max(realSize.x, realSize.y);
 
         landscapeProfile = new DeviceProfile(context, this, smallestSize, largestSize,
                 largeSide, smallSide, true /* isLandscape */, false /* isMultiWindowMode */);
@@ -209,7 +213,7 @@ public class InvariantDeviceProfile {
                     (int) (largeSide * wallpaperTravelToScreenWidthRatio(largeSide, smallSide)),
                     largeSide);
         } else {
-            defaultWallpaperSize = new Point(Math.max(smallSide * 2, largeSide), largeSide);
+            defaultWallpaperSize = new Point(max(smallSide * 2, largeSide), largeSide);
         }
     }
 
