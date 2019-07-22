@@ -186,6 +186,10 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val twoRowDock by BooleanPref("pref_twoRowDock", false, restart)
     val dockRowsCount get() = if (twoRowDock) 2 else 1
     var dockScale by FloatPref("pref_dockScale", -1f, recreate)
+    val hideDockLabels by BooleanPref("pref_hideDockLabels", true, restart)
+    val dockTextScale by FloatPref("pref_dockTextScale", -1f, restart)
+    private val dockMultilineLabel by BooleanPref("pref_dockIconLabelsInTwoLines", false, recreate)
+    val dockLabelRows get() = if(dockMultilineLabel) 2 else 1
 
     // Drawer
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
