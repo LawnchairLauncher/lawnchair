@@ -80,7 +80,6 @@
 
         <ch.deletescape.lawnchair.preferences.OWMEditTextPreference
             android:defaultValue="@string/default_city"
-            android:dependency="pref_smartspace_widget_provider"
             android:key="pref_weather_city"
             android:title="@string/pref_weather_city_title" />
 

@@ -21,8 +21,19 @@ package ch.deletescape.lawnchair.smartspace.weathercom.models;
 
 import androidx.annotation.NonNull;
 import com.google.gson.Gson;
+import org.apache.commons.lang3.SerializationException;
 
 public abstract class BaseModel {
+
+    public BaseModel() {
+       try {
+           //noinspection ResultOfMethodCallIgnored
+           toString();
+       } catch (Exception e) {
+           throw new SerializationException("the class " + getClass().getName() + " is not serializable", e);
+       }
+    }
+
     @NonNull
     @Override
     public String toString() {

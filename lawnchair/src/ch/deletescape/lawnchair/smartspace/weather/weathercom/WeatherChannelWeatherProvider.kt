@@ -21,6 +21,7 @@ package ch.deletescape.lawnchair.smartspace.weather.weathercom
 
 import android.graphics.Bitmap
 import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.locale
 import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.PeriodicDataProvider
@@ -36,11 +37,16 @@ class WeatherChannelWeatherProvider(controller: LawnchairSmartspaceController) :
     override fun updateData() {
         runOnNewThread {
             if (context.lawnchairPrefs.weatherCity != "##Auto") {
-                d("updateData: updating weather (this call will fail)")
                 try {
+                    val position = WeatherComRetrofitServiceFactory.weatherComWeatherRetrofitService
+                            .searchLocationByName(context.lawnchairPrefs.weatherCity, "city",
+                                                  context.locale.language, "json").execute()
+
+                    d("updateData: position $position")
                     val currentConditions =
                             WeatherComRetrofitServiceFactory.weatherComWeatherRetrofitService.getCurrentConditions(
-                                1.19482, 1.19482).execute().body()!!
+                                position.body()!!.location.latitude.get(0),
+                                position.body()!!.location.longitude.get(0)).execute().body()!!
                     val icon: Bitmap
                     if (currentConditions.observation.dayInd == "D") {
                         icon = WeatherIconProvider(context).getIcon(

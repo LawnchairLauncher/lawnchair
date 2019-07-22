@@ -20,11 +20,19 @@
 package ch.deletescape.lawnchair.smartspace.weathercom;
 
 import ch.deletescape.lawnchair.smartspace.weathercom.models.SunV1CurrentConditionsResponse;
+import ch.deletescape.lawnchair.smartspace.weathercom.models.SunV3LocationSearchResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface WeatherComWeatherRetrofitService {
     @GET("v1/geocode/{latitude}/{longitude}/observations.json")
-    public Call<SunV1CurrentConditionsResponse> getCurrentConditions(@Path(value = "latitude") double latitude, @Path(value = "longitude") double longitude);
+    Call<SunV1CurrentConditionsResponse> getCurrentConditions(
+            @Path(value = "latitude") double latitude, @Path(value = "longitude") double longitude);
+
+    @GET("v3/location/search")
+    Call<SunV3LocationSearchResponse> searchLocationByName(
+            @Query(value = "query") String query, @Query(value = "locationType") String locationType, @Query(value = "language") String locale, @Query(value = "format") String format) ;
+
 }
