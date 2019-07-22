@@ -24,7 +24,7 @@ import android.support.annotation.Keep
 import android.util.AttributeSet
 
 @Keep
-class DockScalePreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+class AutoModeScalePreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         AutoModeSeekbarPreference(context, attrs, defStyleAttr) {
 
     override fun updateDisplayedValue() {

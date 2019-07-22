@@ -807,6 +807,9 @@ public final class Utilities {
     }
 
     public static String upperCaseFirstLetter(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return str;
+        }
         return str.substring(0, 1).toUpperCase(Locale.US) + str.substring(1);
     }
 
