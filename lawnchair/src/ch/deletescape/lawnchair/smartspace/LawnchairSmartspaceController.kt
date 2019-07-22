@@ -19,7 +19,10 @@ package ch.deletescape.lawnchair.smartspace
 
 import android.app.Notification
 import android.app.PendingIntent
-import android.content.*
+import android.content.ActivityNotFoundException
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
@@ -36,6 +39,7 @@ import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity.NOTIFICATION_BADGING
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity.SubSettingsFragment.CONTENT_RES_ID
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity.SubSettingsFragment.TITLE
+import ch.deletescape.lawnchair.smartspace.weather.weathercom.WeatherChannelWeatherProvider
 import ch.deletescape.lawnchair.util.Temperature
 import ch.deletescape.lawnchair.util.hasFlag
 import com.android.launcher3.Launcher
@@ -193,11 +197,11 @@ class LawnchairSmartspaceController(val context: Context) {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse("dynact://velour/weather/ProxyActivity")
             intent.component = ComponentName("com.google.android.googlequicksearchbox",
-                    "com.google.android.apps.gsa.velour.DynamicActivityTrampoline")
+                                             "com.google.android.apps.gsa.velour.DynamicActivityTrampoline")
             launcher.startActivitySafely(v, intent, null)
         } else {
             Utilities.openURLinBrowser(launcher, data.forecastUrl,
-                    launcher.getViewBounds(v), launcher.getActivityLaunchOptions(v).toBundle())
+                                       launcher.getViewBounds(v), launcher.getActivityLaunchOptions(v).toBundle())
         }
     }
 
@@ -523,7 +527,8 @@ class LawnchairSmartspaceController(val context: Context) {
                 Pair(BatteryStatusProvider::class.java.name, R.string.battery_status),
                 Pair(PersonalityProvider::class.java.name, R.string.personality_provider),
                 Pair(OnboardingProvider::class.java.name, R.string.onbording),
-                Pair(FakeDataProvider::class.java.name, R.string.weather_provider_testing))
+                Pair(FakeDataProvider::class.java.name, R.string.weather_provider_testing),
+                WeatherChannelWeatherProvider::class.java.name to R.string.title_weather_provider_weather_com)
 
         fun getDisplayName(providerName: String): Int {
             return displayNames[providerName] ?: error("No display name for provider $providerName")

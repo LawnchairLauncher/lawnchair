@@ -23,8 +23,8 @@ import android.util.AttributeSet
 import ch.deletescape.lawnchair.FeedBridge
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.smartspace.*
+import ch.deletescape.lawnchair.smartspace.weather.weathercom.WeatherChannelWeatherProvider
 import ch.deletescape.lawnchair.util.buildEntries
-import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
 class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
@@ -58,12 +58,14 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
             list.add(SmartspacePixelBridge::class.java.name)
         list.add(AccuWeatherDataProvider::class.java.name)
         list.add(OWMWeatherDataProvider::class.java.name)
+        list.add(WeatherChannelWeatherProvider::class.java.name)
         if (PEWeatherDataProvider.isAvailable(context))
             list.add(PEWeatherDataProvider::class.java.name)
         if (OnePlusWeatherDataProvider.isAvailable(context))
             list.add(OnePlusWeatherDataProvider::class.java.name)
         if (prefs.showDebugInfo)
             list.add(FakeDataProvider::class.java.name)
+        if (prefs.showDebugInfo) list.add(FakeDataProvider::class.java.name)
         return list
     }
 
