@@ -17,15 +17,14 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.deletescape.lawnchair.smartspace.weathercom.models;
+package ch.deletescape.lawnchair.smartspace.weathercom;
 
-import androidx.annotation.NonNull;
-import com.google.gson.Gson;
+import ch.deletescape.lawnchair.smartspace.weathercom.models.SunV1CurrentConditionsResponse;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
 
-public abstract class BaseModel {
-    @NonNull
-    @Override
-    public String toString() {
-        return new Gson().toJson(this);
-    }
+public interface WeatherComWeatherRetrofitService {
+    @GET("v1/geocode/{latitude}/{longitude}/observations.json")
+    public Call<SunV1CurrentConditionsResponse> getCurrentConditions(@Path(value = "latitude") double latitude, @Path(value = "longitude") double longitude);
 }

@@ -17,24 +17,9 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.deletescape.lawnchair.smartspace.weather;
+package ch.deletescape.lawnchair.smartspace.weathercom.models;
 
-
-public final class Constants {
-
-    private Constants() {
-
-    }
-
-    public static final class WeatherComConstants {
-
-        public static final String WEATHER_COM_API_KEY = "8de2d8b3a93542c9a2d8b3a935a2c909";
-
-        static {
-        }
-
-        private WeatherComConstants() {
-
-        }
-    }
+public class ErrorResponse extends BaseModel {
+    public String code;
+    public String message;
 }
