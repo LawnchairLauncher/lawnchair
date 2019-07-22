@@ -21,6 +21,7 @@
     <!-- Values for icon shapes. These should correspond to entries defined
      in icon_shape_names -->
     <string-array translatable="false" name="icon_shape_values">
+        <item></item>
         <item>circle</item>
         <item>square</item>
         <item>roundedSquare</item>
@@ -30,6 +31,7 @@
     </string-array>
 
     <string-array translatable="false" name="icon_shape_names">
+        <item>@string/icon_shape_system_default</item>
         <item>@string/icon_shape_circle</item>
         <item>@string/icon_shape_square</item>
         <item>@string/icon_shape_rounded_square</item>
@@ -39,6 +41,7 @@
     </string-array>
 
     <string-array translatable="false" name="alt_icon_shape_values">
+        <item></item>
         <item>circle</item>
         <item>square</item>
         <item>roundedSquare</item>
@@ -52,6 +55,7 @@
     </string-array>
 
     <string-array translatable="false" name="alt_icon_shape_names">
+        <item>@string/icon_shape_system_default</item>
         <item>@string/icon_shape_circle</item>
         <item>@string/icon_shape_square</item>
         <item>@string/icon_shape_rounded_square</item>
