@@ -25,6 +25,7 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Preconditions;
+import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.SwipeAnimationTargetSet.SwipeAnimationListener;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
@@ -40,12 +41,6 @@ import java.util.function.Consumer;
  */
 public class RecentsAnimationListenerSet implements RecentsAnimationListener {
 
-    // The actual app surface is replaced by a screenshot upon recents animation cancelation when
-    // the thumbnailData exists. Launcher takes the responsibility to clean up this screenshot
-    // after app transition is finished. This delay is introduced to cover the app transition
-    // period of time.
-    private final int TRANSITION_DELAY = 100;
-
     private final Set<SwipeAnimationListener> mListeners = new ArraySet<>();
     private final boolean mShouldMinimizeSplitScreen;
     private final Consumer<SwipeAnimationTargetSet> mOnFinishListener;
@@ -57,6 +52,8 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
             Consumer<SwipeAnimationTargetSet> onFinishListener) {
         mShouldMinimizeSplitScreen = shouldMinimizeSplitScreen;
         mOnFinishListener = onFinishListener;
+        TouchInteractionService.getSwipeSharedState().setRecentsAnimationCanceledCallback(
+                () -> mController.cleanupScreenshot());
     }
 
     @UiThread
@@ -108,14 +105,9 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
     public final void onAnimationCanceled(ThumbnailData thumbnailData) {
         Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
             for (SwipeAnimationListener listener : getListeners()) {
-                listener.onRecentsAnimationCanceled();
+                listener.onRecentsAnimationCanceled(thumbnailData);
             }
         });
-        // TODO: handle the transition better instead of simply using a transition delay.
-        if (thumbnailData != null) {
-            MAIN_EXECUTOR.getHandler().postDelayed(() -> mController.cleanupScreenshot(),
-                    TRANSITION_DELAY);
-        }
     }
 
     private SwipeAnimationListener[] getListeners() {

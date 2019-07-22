@@ -614,7 +614,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     @Override
-    public void onRecentsAnimationCanceled() {
+    public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
         mRecentsAnimationWrapper.setController(null);
         mActivityInitListener.unregister();
         setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);

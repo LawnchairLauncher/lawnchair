@@ -367,9 +367,12 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         float offsetX = mRecentsView == null ? 0 : mRecentsView.getScrollOffset();
         float offsetScale = getTaskCurveScaleForOffsetX(offsetX,
                 mClipAnimationHelper.getTargetRect().width());
-        mTransformParams.setProgress(shift).setOffsetX(offsetX).setOffsetScale(offsetScale);
-        mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet,
-                mTransformParams);
+        mTransformParams.setProgress(shift)
+                .setOffsetX(offsetX)
+                .setOffsetScale(offsetScale)
+                .setTargetSet(mRecentsAnimationWrapper.targetSet)
+                .setLauncherOnTop(true);
+        mClipAnimationHelper.applyTransform(mTransformParams);
     }
 
     private float getTaskCurveScaleForOffsetX(float offsetX, float taskWidth) {
@@ -386,8 +389,11 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected RectFSpringAnim createWindowAnimationToHome(float startProgress,
             HomeAnimationFactory homeAnimationFactory) {
         final RemoteAnimationTargetSet targetSet = mRecentsAnimationWrapper.targetSet;
-        final RectF startRect = new RectF(mClipAnimationHelper.applyTransform(targetSet,
-                mTransformParams.setProgress(startProgress), false /* launcherOnTop */));
+        final RectF startRect = new RectF(
+                mClipAnimationHelper.applyTransform(
+                        mTransformParams.setProgress(startProgress)
+                                .setTargetSet(targetSet)
+                                .setLauncherOnTop(false)));
         final RectF targetRect = homeAnimationFactory.getWindowTargetRect();
 
         final View floatingView = homeAnimationFactory.getFloatingView();
@@ -434,8 +440,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
                     mTransformParams.setCornerRadius(endRadius * progress + startRadius
                             * (1f - progress));
                 }
-                mClipAnimationHelper.applyTransform(targetSet, mTransformParams,
-                        false /* launcherOnTop */);
+                mClipAnimationHelper.applyTransform(mTransformParams);
 
                 if (isFloatingIconView) {
                     ((FloatingIconView) floatingView).update(currentRect, 1f, progress,

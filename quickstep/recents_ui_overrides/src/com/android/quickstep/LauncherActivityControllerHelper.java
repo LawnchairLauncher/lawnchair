@@ -67,6 +67,7 @@ import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.plugins.shared.LauncherOverlayManager;
+import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.BiPredicate;
@@ -489,6 +490,26 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
             om.hideOverlay(false /* animate */);
         } else {
             om.hideOverlay(150);
+        }
+    }
+
+    @Override
+    public void switchToScreenshot(ThumbnailData thumbnailData, Runnable runnable) {
+        Launcher launcher = getCreatedActivity();
+        RecentsView recentsView = launcher.getOverviewPanel();
+        if (recentsView == null) {
+            if (runnable != null) {
+                runnable.run();
+            }
+            return;
+        }
+        TaskView taskView = recentsView.getRunningTaskView();
+        if (taskView != null) {
+            taskView.setShowScreenshot(true);
+            taskView.getThumbnail().setThumbnail(taskView.getTask(), thumbnailData);
+            ViewUtils.postDraw(taskView, runnable);
+        } else if (runnable != null) {
+            runnable.run();
         }
     }
 }

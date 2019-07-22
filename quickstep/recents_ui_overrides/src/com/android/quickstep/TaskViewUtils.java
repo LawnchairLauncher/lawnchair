@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 import android.animation.Animator;
@@ -38,6 +39,11 @@ import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Utility class for helpful methods related to {@link TaskView} objects and their tasks.
@@ -115,12 +121,13 @@ public final class TaskViewUtils {
             RemoteAnimationTargetCompat[] wallpaperTargets, final ClipAnimationHelper inOutHelper) {
         SyncRtSurfaceTransactionApplierCompat applier =
                 new SyncRtSurfaceTransactionApplierCompat(v);
-        ClipAnimationHelper.TransformParams params = new ClipAnimationHelper.TransformParams()
-                .setSyncTransactionApplier(applier);
-
         final RemoteAnimationTargetSet targetSet =
                 new RemoteAnimationTargetSet(appTargets, wallpaperTargets, MODE_OPENING);
         targetSet.addDependentTransactionApplier(applier);
+        ClipAnimationHelper.TransformParams params = new ClipAnimationHelper.TransformParams()
+                .setSyncTransactionApplier(applier)
+                .setTargetSet(targetSet)
+                .setLauncherOnTop(true);
 
         final RecentsView recentsView = v.getRecentsView();
         final ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
@@ -152,7 +159,33 @@ public final class TaskViewUtils {
             public void onUpdate(float percent) {
                 // TODO: Take into account the current fullscreen progress for animating the insets
                 params.setProgress(1 - percent);
-                RectF taskBounds = inOutHelper.applyTransform(targetSet, params);
+                RectF taskBounds;
+                if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+                    List<SurfaceParams> surfaceParamsList = new ArrayList<>();
+                    // Append the surface transform params for the app that's being opened.
+                    Collections.addAll(surfaceParamsList, inOutHelper.getSurfaceParams(params));
+
+                    ClipAnimationHelper liveTileClipAnimationHelper =
+                            v.getRecentsView().getClipAnimationHelper();
+                    if (liveTileClipAnimationHelper != null) {
+                        // Append the surface transform params for the live tile app.
+                        ClipAnimationHelper.TransformParams liveTileParams =
+                                v.getRecentsView().getLiveTileParams(true /* mightNeedToRefill */);
+                        if (liveTileParams != null) {
+                            Collections.addAll(surfaceParamsList,
+                                    liveTileClipAnimationHelper.getSurfaceParams(liveTileParams));
+                        }
+                    }
+                    // Apply surface transform using the surface params list.
+                    ClipAnimationHelper.applySurfaceParams(params.syncTransactionApplier,
+                            surfaceParamsList.toArray(new SurfaceParams[surfaceParamsList.size()]));
+                    // Get the task bounds for the app that's being opened after surface transform
+                    // update.
+                    taskBounds = inOutHelper.updateCurrentRect(params);
+                } else {
+                    taskBounds = inOutHelper.applyTransform(params);
+                }
+
                 int taskIndex = recentsView.indexOfChild(v);
                 int centerTaskIndex = recentsView.getCurrentPage();
                 boolean parallaxCenterAndAdjacentTask = taskIndex != centerTaskIndex;

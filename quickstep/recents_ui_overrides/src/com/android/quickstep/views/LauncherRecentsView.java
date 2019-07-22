@@ -174,12 +174,11 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
     @Override
     protected void onTaskLaunchAnimationUpdate(float progress, TaskView tv) {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            if (mRecentsAnimationWrapper.targetSet != null && tv.isRunningTask()) {
+            if (tv.isRunningTask()) {
                 mTransformParams.setProgress(1 - progress)
                         .setSyncTransactionApplier(mSyncTransactionApplier)
                         .setForLiveTile(true);
-                mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet,
-                        mTransformParams);
+                mClipAnimationHelper.applyTransform(mTransformParams);
             } else {
                 redrawLiveTile(true);
             }
@@ -212,9 +211,18 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
 
     @Override
     public void redrawLiveTile(boolean mightNeedToRefill) {
+        ClipAnimationHelper.TransformParams transformParams = getLiveTileParams(mightNeedToRefill);
+        if (transformParams != null) {
+            mClipAnimationHelper.applyTransform(transformParams);
+        }
+    }
+
+    @Override
+    public ClipAnimationHelper.TransformParams getLiveTileParams(
+            boolean mightNeedToRefill) {
         if (!mEnableDrawingLiveTile || mRecentsAnimationWrapper == null
                 || mClipAnimationHelper == null) {
-            return;
+            return null;
         }
         TaskView taskView = getRunningTaskView();
         if (taskView != null) {
@@ -236,12 +244,11 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
             mTempRectF.set(mTempRect);
             mTransformParams.setProgress(1f)
                     .setCurrentRectAndTargetAlpha(mTempRectF, taskView.getAlpha())
-                    .setSyncTransactionApplier(mSyncTransactionApplier);
-            if (mRecentsAnimationWrapper.targetSet != null) {
-                mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet,
-                        mTransformParams);
-            }
+                    .setSyncTransactionApplier(mSyncTransactionApplier)
+                    .setTargetSet(mRecentsAnimationWrapper.targetSet)
+                    .setLauncherOnTop(true);
         }
+        return mTransformParams;
     }
 
     @Override

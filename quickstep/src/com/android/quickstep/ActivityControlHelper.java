@@ -34,6 +34,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
+import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.BiPredicate;
@@ -96,6 +97,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
     void onLaunchTaskSuccess(T activity);
 
     default void closeOverlay() { }
+
+    default void switchToScreenshot(ThumbnailData thumbnailData, Runnable runnable) {}
 
     interface AnimationFactory {
 

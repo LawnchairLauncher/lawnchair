@@ -114,6 +114,10 @@ public class SwipeAnimationTargetSet extends RemoteAnimationTargetSet {
 
         void onRecentsAnimationStart(SwipeAnimationTargetSet targetSet);
 
-        void onRecentsAnimationCanceled();
+        /**
+         * Callback from the system when the recents animation is canceled. {@param thumbnailData}
+         * is passed back for rendering screenshot to replace live tile.
+         */
+        void onRecentsAnimationCanceled(ThumbnailData thumbnailData);
     }
 }

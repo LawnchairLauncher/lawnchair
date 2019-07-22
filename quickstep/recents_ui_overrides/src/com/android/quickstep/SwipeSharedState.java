@@ -25,6 +25,7 @@ import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.util.RecentsAnimationListenerSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet.SwipeAnimationListener;
+import com.android.systemui.shared.recents.model.ThumbnailData;
 
 import java.io.PrintWriter;
 
@@ -37,6 +38,7 @@ public class SwipeSharedState implements SwipeAnimationListener {
 
     private RecentsAnimationListenerSet mRecentsAnimationListener;
     private SwipeAnimationTargetSet mLastAnimationTarget;
+    private Runnable mRecentsAnimationCanceledCallback;
 
     private boolean mLastAnimationCancelled = false;
     private boolean mLastAnimationRunning = false;
@@ -67,11 +69,30 @@ public class SwipeSharedState implements SwipeAnimationListener {
     }
 
     @Override
-    public final void onRecentsAnimationCanceled() {
+    public final void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
+        if (thumbnailData != null) {
+            mOverviewComponentObserver.getActivityControlHelper().switchToScreenshot(thumbnailData,
+                    () -> {
+                        if (mRecentsAnimationCanceledCallback != null) {
+                            mRecentsAnimationCanceledCallback.run();
+                        }
+                        clearAnimationState();
+                    });
+        } else {
+            clearAnimationState();
+        }
+    }
+
+    public void setRecentsAnimationCanceledCallback(Runnable callback) {
+        mRecentsAnimationCanceledCallback = callback;
+    }
+
+    private void clearAnimationState() {
         clearAnimationTarget();
 
         mLastAnimationCancelled = true;
         mLastAnimationRunning = false;
+        mRecentsAnimationCanceledCallback = null;
     }
 
     private void clearListenerState(boolean finishAnimation) {
@@ -127,7 +148,7 @@ public class SwipeSharedState implements SwipeAnimationListener {
         if (mLastAnimationTarget != null) {
             listener.onRecentsAnimationStart(mLastAnimationTarget);
         } else if (mLastAnimationCancelled) {
-            listener.onRecentsAnimationCanceled();
+            listener.onRecentsAnimationCanceled(null);
         }
     }
 

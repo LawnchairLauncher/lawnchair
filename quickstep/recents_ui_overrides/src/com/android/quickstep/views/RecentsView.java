@@ -869,7 +869,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         setEnableFreeScroll(true);
         setEnableDrawingLiveTile(true);
         setOnScrollChangeListener(null);
-        setRunningTaskViewShowScreenshot(true);
+        if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            setRunningTaskViewShowScreenshot(true);
+        }
         setRunningTaskHidden(false);
         animateUpRunningTaskIconScale();
     }
@@ -1801,8 +1803,17 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     }
 
+    public ClipAnimationHelper getClipAnimationHelper() {
+        return mClipAnimationHelper;
+    }
+
     public ClipAnimationHelper getTempClipAnimationHelper() {
         return mTempClipAnimationHelper;
+    }
+
+    public ClipAnimationHelper.TransformParams getLiveTileParams(
+            boolean mightNeedToRefill) {
+        return null;
     }
 
     private void updateEnabledOverlays() {

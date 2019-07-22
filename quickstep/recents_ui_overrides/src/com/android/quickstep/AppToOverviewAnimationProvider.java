@@ -148,8 +148,10 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
         valueAnimator.setDuration(RECENTS_LAUNCH_DURATION);
         valueAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
         valueAnimator.addUpdateListener((v) -> {
-            params.setProgress((float) v.getAnimatedValue());
-            clipHelper.applyTransform(targetSet, params);
+            params.setProgress((float) v.getAnimatedValue())
+                    .setTargetSet(targetSet)
+                    .setLauncherOnTop(true);
+            clipHelper.applyTransform(params);
         });
 
         if (targetSet.isAnimatingHome()) {

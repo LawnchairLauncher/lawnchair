@@ -46,6 +46,7 @@ import com.android.quickstep.SwipeSharedState;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.RecentsAnimationListenerSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
+import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -155,9 +156,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                     float dy = Math.max(mTouchDown.y - y, 0);
                     mProgress = dy / mDisplaySize.y;
                     mTransformParams.setProgress(mProgress);
-                    if (mTargetSet != null) {
-                        mClipAnimationHelper.applyTransform(mTargetSet, mTransformParams);
-                    }
+                    mClipAnimationHelper.applyTransform(mTransformParams);
                 }
                 break;
             }
@@ -228,13 +227,14 @@ public class DeviceLockedInputConsumer implements InputConsumer,
         Utilities.scaleRectAboutCenter(displaySize, SCALE_DOWN);
         displaySize.offsetTo(displaySize.left, 0);
         mClipAnimationHelper.updateTargetRect(displaySize);
-        mClipAnimationHelper.applyTransform(mTargetSet, mTransformParams);
+        mTransformParams.setTargetSet(mTargetSet).setLauncherOnTop(true);
+        mClipAnimationHelper.applyTransform(mTransformParams);
 
         mStateCallback.setState(STATE_TARGET_RECEIVED);
     }
 
     @Override
-    public void onRecentsAnimationCanceled() {
+    public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
         mTargetSet = null;
     }
 

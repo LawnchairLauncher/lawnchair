@@ -427,7 +427,7 @@ public class FallbackNoButtonInputConsumer extends
     }
 
     @Override
-    public void onRecentsAnimationCanceled() {
+    public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
         mRecentsAnimationWrapper.setController(null);
         setStateOnUiThread(STATE_HANDLER_INVALIDATED);
     }
