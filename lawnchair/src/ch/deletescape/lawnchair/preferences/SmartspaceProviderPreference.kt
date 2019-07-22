@@ -70,7 +70,7 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
     }
 
     override fun shouldDisableDependents(): Boolean {
-        return super.shouldDisableDependents() || value == BlankDataProvider::class.java.name
+        return value == BlankDataProvider::class.java.name
     }
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
