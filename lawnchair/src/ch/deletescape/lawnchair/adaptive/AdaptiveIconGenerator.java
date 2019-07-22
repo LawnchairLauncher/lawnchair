@@ -58,8 +58,6 @@ public class AdaptiveIconGenerator {
 
     private Context context;
     private Drawable icon;
-    private final String identifier;
-    private final LawnchairPreferences prefs;
 
     private final boolean extractColor;
     private final boolean treatWhite;
@@ -67,7 +65,6 @@ public class AdaptiveIconGenerator {
     private boolean ranLoop;
     private boolean shouldWrap;
     private int backgroundColor = Color.WHITE;
-    private boolean isAID;
     private boolean isFullBleed;
     private boolean noMixinNeeded;
     private boolean fullBleedChecked;
@@ -82,12 +79,10 @@ public class AdaptiveIconGenerator {
 
     private AdaptiveIconCompat tmp;
 
-    public AdaptiveIconGenerator(Context context, @NonNull Drawable icon, String identifier) {
+    public AdaptiveIconGenerator(Context context, @NonNull Drawable icon) {
         this.context = context;
         this.icon = AdaptiveIconCompat.wrap(icon);
-        // useful for caching or dirty hacks
-        this.identifier = identifier;
-        prefs = Utilities.getLawnchairPrefs(context);
+        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
         shouldWrap = prefs.getEnableLegacyTreatment();
         extractColor = shouldWrap && prefs.getColorizedLegacyTreatment();
         treatWhite = extractColor && prefs.getEnableWhiteOnlyTreatment();
@@ -140,7 +135,6 @@ public class AdaptiveIconGenerator {
 
             // Check if the icon is squareish
             final float ratio = aHeight / aWidth;
-            // todo: invert these variables so they stop confusing me so much
             boolean isSquareish = 0.999 < ratio && ratio < 1.0001;
             boolean almostSquarish = isSquareish || (0.97 < ratio && ratio < 1.005);
             if (!isSquareish) {

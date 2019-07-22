@@ -223,7 +223,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                     drawable = DynamicDrawable.getIcon(context, drawable, packDynamicDrawables[drawableId]!!, iconDpi)
                 }
                 if (prefs.adaptifyIconPacks) {
-                    val gen = AdaptiveIconGenerator(context, drawable.mutate(), "$packPackageName#$drawableId")
+                    val gen = AdaptiveIconGenerator(context, drawable.mutate())
                     return gen.result
                 }
                 return drawable.mutate()
@@ -259,7 +259,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                     drawable = DynamicDrawable.getIcon(context, drawable, packDynamicDrawables[drawableId]!!, iconDpi)
                 }
                 if (prefs.adaptifyIconPacks) {
-                    val gen = AdaptiveIconGenerator(context, drawable.mutate(), "$packPackageName#$drawableId")
+                    val gen = AdaptiveIconGenerator(context, drawable.mutate())
                     return gen.result
                 }
                 return drawable.mutate()
@@ -273,7 +273,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                     customIconEntry, iconProvider)
             val icon = packMask.getIcon(context, baseIcon, launcherActivityInfo.componentName)
             if (prefs.adaptifyIconPacks) {
-                val gen = AdaptiveIconGenerator(context, icon, "$packPackageName#${component.flattenToString()}")
+                val gen = AdaptiveIconGenerator(context, icon)
                 return gen.result
             }
             return icon
@@ -290,7 +290,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
             if (baseIcon != null) {
                 val icon = packMask.getIcon(context, baseIcon, shortcutInfo.activity)
                 if (prefs.adaptifyIconPacks) {
-                    val gen = AdaptiveIconGenerator(context, icon, "$packPackageName#${shortcutInfo.id}")
+                    val gen = AdaptiveIconGenerator(context, icon)
                     return gen.result
                 }
                 return icon
