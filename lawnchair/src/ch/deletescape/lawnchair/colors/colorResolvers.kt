@@ -56,14 +56,13 @@ class SystemAccentResolver(config: Config) : ColorEngine.ColorResolver(config) {
 
     override fun resolveColor(): Int {
         var color = themedContext.getColorAttr(android.R.attr.colorAccent)
-        if (Utilities.isOnePlusStock()) {
-            var propertyValue = Utilities.getSystemProperty("persist.sys.theme.accentcolor", "")
-            if (!TextUtils.isEmpty(propertyValue)) {
-                if (!propertyValue.startsWith('#')) propertyValue = "#$propertyValue"
-                try {
-                    color = Color.parseColor(propertyValue)
-                } catch (e: IllegalArgumentException) {
-                }
+        // Oxygen OS accent color, also used by some custom ROMs now
+        var propertyValue = Utilities.getSystemProperty("persist.sys.theme.accentcolor", "")
+        if (!TextUtils.isEmpty(propertyValue)) {
+            if (!propertyValue.startsWith('#')) propertyValue = "#$propertyValue"
+            try {
+                color = Color.parseColor(propertyValue)
+            } catch (e: IllegalArgumentException) {
             }
         }
         return color
