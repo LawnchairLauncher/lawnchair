@@ -20,11 +20,12 @@
 package ch.deletescape.lawnchair.adaptive
 
 import android.graphics.Path
+import android.graphics.PointF
 import com.android.launcher3.Utilities
 
 abstract class IconCornerShape {
 
-    abstract fun addCorner(path: Path, position: Position, size: Float, progress: Float, offsetX: Float, offsetY: Float)
+    abstract fun addCorner(path: Path, position: Position, size: PointF, progress: Float, offsetX: Float, offsetY: Float)
 
     abstract class BaseBezierPath : IconCornerShape() {
 
@@ -47,16 +48,16 @@ abstract class IconCornerShape {
             return Utilities.mapRange(controlDistance, position.controlY, position.endY)
         }
 
-        override fun addCorner(path: Path, position: Position, size: Float, progress: Float,
+        override fun addCorner(path: Path, position: Position, size: PointF, progress: Float,
                                offsetX: Float, offsetY: Float) {
             val controlDistance = Utilities.mapRange(progress, controlDistance, roundControlDistance)
             path.cubicTo(
-                    getControl1X(position, controlDistance) * size + offsetX,
-                    getControl1Y(position, controlDistance) * size + offsetY,
-                    getControl2X(position, controlDistance) * size + offsetX,
-                    getControl2Y(position, controlDistance) * size + offsetY,
-                    position.endX * size + offsetX,
-                    position.endY * size + offsetY)
+                    getControl1X(position, controlDistance) * size.x + offsetX,
+                    getControl1Y(position, controlDistance) * size.y + offsetY,
+                    getControl2X(position, controlDistance) * size.x + offsetX,
+                    getControl2Y(position, controlDistance) * size.y + offsetY,
+                    position.endX * size.x + offsetX,
+                    position.endY * size.y + offsetY)
         }
     }
 
@@ -64,12 +65,12 @@ abstract class IconCornerShape {
 
         override val controlDistance = 1f
 
-        override fun addCorner(path: Path, position: Position, size: Float, progress: Float,
+        override fun addCorner(path: Path, position: Position, size: PointF, progress: Float,
                                offsetX: Float, offsetY: Float) {
             if (progress == 0f) {
                 path.lineTo(
-                        position.endX * size + offsetX,
-                        position.endY * size + offsetY)
+                        position.endX * size.x + offsetX,
+                        position.endY * size.y + offsetY)
             } else {
                 super.addCorner(path, position, size, progress, offsetX, offsetY)
             }
