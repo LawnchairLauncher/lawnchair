@@ -19,8 +19,13 @@
 
 package ch.deletescape.lawnchair.adaptive
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.*
+import android.graphics.drawable.AdaptiveIconDrawable
 import android.os.Handler
+import android.support.v4.graphics.PathParser
+import android.text.TextUtils
 import ch.deletescape.lawnchair.folder.FolderShape
 import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat
 import ch.deletescape.lawnchair.lawnchairPrefs
@@ -28,12 +33,91 @@ import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherModel
+import com.android.launcher3.Utilities
+import com.android.launcher3.graphics.IconShapeOverride
+import java.lang.RuntimeException
 
 class IconShapeManager(private val context: Context) {
 
-    val iconShape by context.lawnchairPrefs.StringBasedPref(
-            "pref_iconShape", IconShape.Circle, ::onShapeChanged,
-            IconShape.Companion::fromString, IconShape::toString) { /* no dispose */ }
+    private val systemIconShape = getSystemShape()
+    var iconShape by context.lawnchairPrefs.StringBasedPref(
+            "pref_iconShape", systemIconShape, ::onShapeChanged,
+            {
+                IconShape.fromString(it) ?: systemIconShape
+            }, IconShape::toString) { /* no dispose */ }
+
+    init {
+        migratePref()
+    }
+
+    @SuppressLint("RestrictedApi")
+    private fun migratePref() {
+        // Migrate from old path-based override
+        val override = IconShapeOverride.getAppliedValue(context)
+        if (!TextUtils.isEmpty(override)) {
+            try {
+                iconShape = findNearestShape(PathParser.createPathFromPathData(override))
+                Utilities.getPrefs(context).edit().remove(IconShapeOverride.KEY_PREFERENCE).apply()
+            } catch (e: RuntimeException) {
+                // Just ignore the error
+            }
+        }
+    }
+
+    private fun getSystemShape(): IconShape {
+        if (!Utilities.ATLEAST_OREO) return IconShape.Circle
+
+        val iconMask = AdaptiveIconDrawable(null, null).iconMask
+        val systemShape = findNearestShape(iconMask)
+        return object : IconShape(systemShape) {
+
+            private val isCircle = systemShape is Circle
+
+            override fun getMaskPath(): Path {
+                return Path(iconMask)
+            }
+
+            override fun addShape(path: Path, x: Float, y: Float, radius: Float) {
+                if (isCircle) {
+                    path.addCircle(x + radius, y + radius, radius, Path.Direction.CW)
+                } else {
+                    super.addShape(path, x, y, radius)
+                }
+            }
+
+            override fun toString() = ""
+        }
+    }
+
+    private fun findNearestShape(comparePath: Path): IconShape {
+        val clip = Region(0, 0, 100, 100)
+        val systemRegion = Region().apply {
+            setPath(comparePath, clip)
+        }
+        val pathRegion = Region()
+        val path = Path()
+        val rect = Rect()
+        return listOf(
+                IconShape.Circle,
+                IconShape.Square,
+                IconShape.RoundedSquare,
+                IconShape.Squircle,
+                IconShape.Teardrop,
+                IconShape.Cylinder).minBy {
+            path.reset()
+            it.addShape(path, 0f, 0f, 50f)
+            pathRegion.setPath(path, clip)
+            pathRegion.op(systemRegion, Region.Op.XOR)
+
+            var difference = 0
+            val iter = RegionIterator(pathRegion)
+            while (iter.next(rect)) {
+                difference += rect.width() * rect.height()
+            }
+
+            difference
+        }!!
+    }
 
     private fun onShapeChanged() {
         Handler(LauncherModel.getWorkerLooper()).post {

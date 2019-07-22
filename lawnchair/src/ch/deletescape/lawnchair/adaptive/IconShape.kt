@@ -56,10 +56,13 @@ open class IconShape(private val topLeft: Corner,
                                                 Corner(bottomLeftShape, bottomLeftScale),
                                                 Corner(bottomRightShape, bottomRightScale))
 
+    constructor(shape: IconShape) : this(
+            shape.topLeft, shape.topRight, shape.bottomLeft, shape.bottomRight)
+
     private val tmpPoint = PointF()
     open val qsbEdgeRadius = 0
 
-    fun getMaskPath(): Path {
+    open fun getMaskPath(): Path {
         return Path().also { addToPath(it, 0f, 0f, 100f, 100f, 50f) }
     }
 
@@ -242,7 +245,7 @@ open class IconShape(private val topLeft: Corner,
 
     companion object {
 
-        fun fromString(value: String): IconShape {
+        fun fromString(value: String): IconShape? {
             return when (value) {
                 "circle" -> Circle
                 "square" -> Square
@@ -250,11 +253,12 @@ open class IconShape(private val topLeft: Corner,
                 "squircle" -> Squircle
                 "teardrop" -> Teardrop
                 "cylinder" -> Cylinder
+                "" -> null
                 else -> try {
                     parseCustomShape(value)
                 } catch (ex: Exception) {
                     e("Error creating shape $value", ex)
-                    Circle
+                    null
                 }
             }
         }
