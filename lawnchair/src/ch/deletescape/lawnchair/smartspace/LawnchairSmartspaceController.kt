@@ -193,7 +193,9 @@ class LawnchairSmartspaceController(val context: Context) {
                     Intent.FLAG_ACTIVITY_NEW_TASK, 0, opts)
         } else if (data.forecastIntent != null) {
             launcher.startActivitySafely(v, data.forecastIntent, null)
-        } else if (PackageManagerHelper.isAppEnabled(launcher.packageManager, "com.google.android.googlequicksearchbox", 0)) {
+        } else if (PackageManagerHelper.isAppEnabled(launcher.packageManager,
+                                                     "com.google.android.googlequicksearchbox",
+                                                     0)) {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse("dynact://velour/weather/ProxyActivity")
             intent.component = ComponentName("com.google.android.googlequicksearchbox",
@@ -201,7 +203,8 @@ class LawnchairSmartspaceController(val context: Context) {
             launcher.startActivitySafely(v, intent, null)
         } else {
             Utilities.openURLinBrowser(launcher, data.forecastUrl,
-                                       launcher.getViewBounds(v), launcher.getActivityLaunchOptions(v).toBundle())
+                                       launcher.getViewBounds(v),
+                                       launcher.getActivityLaunchOptions(v).toBundle())
         }
     }
 
@@ -291,14 +294,17 @@ class LawnchairSmartspaceController(val context: Context) {
 
         companion object {
 
-            private const val PERM_SUBSTITUTE_APP_NAME = "android.permission.SUBSTITUTE_NOTIFICATION_APP_NAME"
+            private const val PERM_SUBSTITUTE_APP_NAME =
+                    "android.permission.SUBSTITUTE_NOTIFICATION_APP_NAME"
             private const val EXTRA_SUBSTITUTE_APP_NAME = "android.substName"
         }
     }
 
-    abstract class PeriodicDataProvider(controller: LawnchairSmartspaceController) : DataProvider(controller) {
+    abstract class PeriodicDataProvider(controller: LawnchairSmartspaceController) :
+            DataProvider(controller) {
 
-        private val handlerThread = HandlerThread(this::class.java.simpleName).apply { if (!isAlive) start() }
+        private val handlerThread =
+                HandlerThread(this::class.java.simpleName).apply { if (!isAlive) start() }
         private val handler = Handler(handlerThread.looper)
         private val update = ::periodicUpdate
 
@@ -336,7 +342,7 @@ class LawnchairSmartspaceController(val context: Context) {
             return null
         }
 
-        open fun queryCardData() : CardData? {
+        open fun queryCardData(): CardData? {
             return null
         }
 
@@ -390,9 +396,11 @@ class LawnchairSmartspaceController(val context: Context) {
                     context.contentResolver, "enabled_notification_listeners")
             val myListener = ComponentName(context, NotificationListener::class.java)
             val listenerEnabled = enabledListeners?.let {
-                it.contains(myListener.flattenToString()) || it.contains(myListener.flattenToString())
+                it.contains(myListener.flattenToString()) || it.contains(
+                        myListener.flattenToString())
             } ?: false
-            val badgingEnabled = Settings.Secure.getInt(context.contentResolver, NOTIFICATION_BADGING, 1) == 1
+            val badgingEnabled =
+                    Settings.Secure.getInt(context.contentResolver, NOTIFICATION_BADGING, 1) == 1
             return listenerEnabled && badgingEnabled
         }
 
@@ -438,10 +446,13 @@ class LawnchairSmartspaceController(val context: Context) {
                 this(icon, lines, null as View.OnClickListener?, forceSingleLine)
 
         constructor(icon: Bitmap?,
-                    title: CharSequence, titleEllipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END,
-                    subtitle: CharSequence, subtitleEllipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END,
+                    title: CharSequence,
+                    titleEllipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END,
+                    subtitle: CharSequence,
+                    subtitleEllipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END,
                     pendingIntent: PendingIntent? = null)
-                : this(icon, listOf(Line(title, titleEllipsize), Line(subtitle, subtitleEllipsize)), pendingIntent)
+                : this(icon, listOf(Line(title, titleEllipsize), Line(subtitle, subtitleEllipsize)),
+                       pendingIntent)
 
         val isDoubleLine = !forceSingleLine && lines.size >= 2
 
@@ -457,19 +468,22 @@ class LawnchairSmartspaceController(val context: Context) {
             }
             if (forceSingleLine) {
                 title = TextUtils.join(" – ", lines.map { it.text })!!
-                titleEllipsize = if (lines.size == 1) lines.first().ellipsize else TextUtils.TruncateAt.END
+                titleEllipsize =
+                        if (lines.size == 1) lines.first().ellipsize else TextUtils.TruncateAt.END
                 subtitle = null
                 subtitleEllipsize = null
             } else {
                 title = lines.first().text
                 titleEllipsize = lines.first().ellipsize
                 subtitle = TextUtils.join(" – ", lines.subList(1, lines.size).map { it.text })!!
-                subtitleEllipsize = if (lines.size == 2) lines[1].ellipsize else TextUtils.TruncateAt.END
+                subtitleEllipsize =
+                        if (lines.size == 2) lines[1].ellipsize else TextUtils.TruncateAt.END
             }
         }
     }
 
-    open class PendingIntentClickListener(private val pendingIntent: PendingIntent?) : View.OnClickListener {
+    open class PendingIntentClickListener(private val pendingIntent: PendingIntent?) :
+            View.OnClickListener {
 
         override fun onClick(v: View) {
             if (pendingIntent == null) return
@@ -521,14 +535,17 @@ class LawnchairSmartspaceController(val context: Context) {
                 Pair(OWMWeatherDataProvider::class.java.name, R.string.weather_provider_owm),
                 Pair(AccuWeatherDataProvider::class.java.name, R.string.weather_provider_accu),
                 Pair(PEWeatherDataProvider::class.java.name, R.string.weather_provider_pe),
-                Pair(OnePlusWeatherDataProvider::class.java.name, R.string.weather_provider_oneplus_weather),
+                Pair(OnePlusWeatherDataProvider::class.java.name,
+                     R.string.weather_provider_oneplus_weather),
                 Pair(NowPlayingProvider::class.java.name, R.string.event_provider_now_playing),
-                Pair(NotificationUnreadProvider::class.java.name, R.string.event_provider_unread_notifications),
+                Pair(NotificationUnreadProvider::class.java.name,
+                     R.string.event_provider_unread_notifications),
                 Pair(BatteryStatusProvider::class.java.name, R.string.battery_status),
                 Pair(PersonalityProvider::class.java.name, R.string.personality_provider),
                 Pair(OnboardingProvider::class.java.name, R.string.onbording),
                 Pair(FakeDataProvider::class.java.name, R.string.weather_provider_testing),
-                WeatherChannelWeatherProvider::class.java.name to R.string.title_weather_provider_weather_com)
+                Pair(WeatherChannelWeatherProvider::class.java.name,
+                     R.string.title_weather_provider_weather_com))
 
         fun getDisplayName(providerName: String): Int {
             return displayNames[providerName] ?: error("No display name for provider $providerName")
@@ -541,7 +558,8 @@ class LawnchairSmartspaceController(val context: Context) {
 }
 
 @Keep
-class BlankDataProvider(controller: LawnchairSmartspaceController) : LawnchairSmartspaceController.DataProvider(controller) {
+class BlankDataProvider(controller: LawnchairSmartspaceController) :
+        LawnchairSmartspaceController.DataProvider(controller) {
 
     override fun performSetup() {
         super.performSetup()

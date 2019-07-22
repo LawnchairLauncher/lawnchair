@@ -65,7 +65,6 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
             list.add(OnePlusWeatherDataProvider::class.java.name)
         if (prefs.showDebugInfo)
             list.add(FakeDataProvider::class.java.name)
-        if (prefs.showDebugInfo) list.add(FakeDataProvider::class.java.name)
         return list
     }
 
