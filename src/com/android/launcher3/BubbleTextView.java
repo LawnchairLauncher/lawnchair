@@ -28,6 +28,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.ColorUtils;
+import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -188,8 +189,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
             int lines = prefs.getHomeLabelRows();
-            setMaxLines(lines);
-            setSingleLine(lines == 1);
+            setLineCount(lines);
             colorEngine.addColorChangeListeners(this, Resolvers.WORKSPACE_ICON_LABEL);
         } else if (display == DISPLAY_ALL_APPS) {
             mHideText = prefs.getHideAllAppsAppLabels();
@@ -197,8 +197,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
             int lines = prefs.getDrawerLabelRows();
-            setMaxLines(lines);
-            setSingleLine(lines == 1);
+            setLineCount(lines);
             colorEngine.addColorChangeListeners(this, Resolvers.ALLAPPS_ICON_LABEL);
         } else if (display == DISPLAY_FOLDER) {
             mHideText = prefs.getHideAppLabels();
@@ -206,8 +205,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
             defaultIconSize = grid.folderChildIconSizePx;
             int lines = prefs.getHomeLabelRows();
-            setMaxLines(lines);
-            setSingleLine(lines == 1);
+            setLineCount(lines);
         } else if (display == DISPLAY_DRAWER_FOLDER) {
             mHideText = prefs.getHideAllAppsAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX,
@@ -215,8 +213,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setCompoundDrawablePadding(grid.allAppsFolderChildDrawablePaddingPx);
             defaultIconSize = grid.allAppsFolderChildIconSizePx;
             int lines = prefs.getDrawerLabelRows();
-            setMaxLines(lines);
-            setSingleLine(lines == 1);
+            setLineCount(lines);
         }
         CustomFontManager customFontManager = CustomFontManager.Companion.getInstance(context);
         int customFontType = getCustomFontType(display);
@@ -234,9 +231,16 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
-        setEllipsize(TruncateAt.END);
         setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
         setTextAlpha(1f);
+    }
+
+    private void setLineCount(int lines) {
+        setMaxLines(lines);
+        setSingleLine(lines == 1);
+        setEllipsize(TextUtils.TruncateAt.END);
+        // This shouldn't even be needed, what is going on?!
+        setLines(lines);
     }
 
     protected int getCustomFontType(int display) {
