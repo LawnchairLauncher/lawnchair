@@ -166,10 +166,4 @@ public class StatusBarTouchController implements TouchController {
         mSysUiProxy = RecentsModel.INSTANCE.get(mLauncher).getSystemUiProxy();
         return mSysUiProxy != null;
     }
-
-    @Override
-    public boolean allowWhenGesturesDisabled() {
-        // Always allow intercepting touches for this controller.
-        return true;
-    }
 }

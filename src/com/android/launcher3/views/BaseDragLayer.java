@@ -150,17 +150,13 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     }
 
     private TouchController findControllerToHandleTouch(MotionEvent ev) {
-        boolean gesturesEnabled = !Utilities.shouldDisableGestures(ev);
-
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
-        if (topView != null && (gesturesEnabled || topView.allowWhenGesturesDisabled())
-                && topView.onControllerInterceptTouchEvent(ev)) {
+        if (topView != null && topView.onControllerInterceptTouchEvent(ev)) {
             return topView;
         }
 
         for (TouchController controller : mControllers) {
-            if ((gesturesEnabled || controller.allowWhenGesturesDisabled())
-                    && controller.onControllerInterceptTouchEvent(ev)) {
+            if (controller.onControllerInterceptTouchEvent(ev)) {
                 return controller;
             }
         }
