@@ -23,6 +23,7 @@ import android.graphics.Bitmap
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.locale
 import ch.deletescape.lawnchair.runOnMainThread
+import ch.deletescape.lawnchair.runOnUiWorkerThread
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.PeriodicDataProvider
 import ch.deletescape.lawnchair.smartspace.WeatherIconProvider
@@ -35,7 +36,7 @@ class WeatherChannelWeatherProvider(controller: LawnchairSmartspaceController) :
         PeriodicDataProvider(controller) {
 
     override fun updateData() {
-        runOnNewThread {
+        runOnUiWorkerThread {
             if (context.lawnchairPrefs.weatherCity != "##Auto") {
                 try {
                     val position = WeatherComRetrofitServiceFactory.weatherComWeatherRetrofitService
@@ -60,20 +61,7 @@ class WeatherChannelWeatherProvider(controller: LawnchairSmartspaceController) :
                     }
                     runOnMainThread {
                         updateData(LawnchairSmartspaceController.WeatherData(icon, Temperature(
-                            currentConditions.observation.temp, Temperature.Unit.Fahrenheit), null,
-                                                                             null, null,
-                                                                             currentConditions.metadata.latitude,
-                                                                             currentConditions.metadata.longitude,
-                                                                             if (currentConditions.observation.dayInd == "D") {
-                                                                                 Constants.WeatherComConstants.WEATHER_ICONS_DAY[currentConditions.observation.wxIcon]
-                                                                                         .second
-                                                                             } else {
-                                                                                 /*
-                                                                                  There are weird cases when there's no day/night indicator, for instance when the location is near the poles
-                                                                                  */
-                                                                                 Constants.WeatherComConstants.WEATHER_ICONS_NIGHT[currentConditions.observation.wxIcon]
-                                                                                         .second
-                                                                             }), null)
+                            currentConditions.observation.temp, Temperature.Unit.Fahrenheit)), null)
                     }
                     d("updateData: retrieved current conditions ${currentConditions}")
                 } catch (e: NullPointerException) {
