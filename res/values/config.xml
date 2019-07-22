@@ -26,6 +26,7 @@
         <item>roundedSquare</item>
         <item>squircle</item>
         <item>teardrop</item>
+        <item>cylinder</item>
     </string-array>
 
     <string-array translatable="false" name="icon_shape_names">
@@ -34,6 +35,7 @@
         <item>@string/icon_shape_rounded_square</item>
         <item>@string/icon_shape_squircle</item>
         <item>@string/icon_shape_teardrop</item>
+        <item>@string/icon_shape_cylinder</item>
     </string-array>
 
     <string-array translatable="false" name="alt_icon_shape_values">
@@ -42,6 +44,7 @@
         <item>roundedSquare</item>
         <item>squircle</item>
         <item>teardrop</item>
+        <item>cylinder</item>
         <item>v1|arc,1|arc,0.16|arc,0.16|arc,1</item>
         <item>v1|cut,0.3|cut,0.3|cut,1|cut,1</item>
         <item>v1|cut,0.6|cut,0.6|cut,0.6|cut,0.6</item>
@@ -54,6 +57,7 @@
         <item>@string/icon_shape_rounded_square</item>
         <item>@string/icon_shape_squircle</item>
         <item>@string/icon_shape_teardrop</item>
+        <item>@string/icon_shape_cylinder</item>
         <item>Lemon</item>
         <item>Diamond</item>
         <item>Octa</item>

@@ -20,6 +20,7 @@
 package ch.deletescape.lawnchair.adaptive
 
 import android.graphics.Path
+import android.graphics.PointF
 import ch.deletescape.lawnchair.util.extensions.e
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -43,6 +44,19 @@ open class IconShape(private val topLeft: Corner,
                                                 Corner(bottomLeftShape, bottomLeftScale),
                                                 Corner(bottomRightShape, bottomRightScale))
 
+    constructor(topLeftShape: IconCornerShape,
+                topRightShape: IconCornerShape,
+                bottomLeftShape: IconCornerShape,
+                bottomRightShape: IconCornerShape,
+                topLeftScale: PointF,
+                topRightScale: PointF,
+                bottomLeftScale: PointF,
+                bottomRightScale: PointF) : this(Corner(topLeftShape, topLeftScale),
+                                                Corner(topRightShape, topRightScale),
+                                                Corner(bottomLeftShape, bottomLeftScale),
+                                                Corner(bottomRightShape, bottomRightScale))
+
+    private val tmpPoint = PointF()
     open val qsbEdgeRadius = 0
 
     fun getMaskPath(): Path {
@@ -57,47 +71,63 @@ open class IconShape(private val topLeft: Corner,
     @JvmOverloads
     fun addToPath(path: Path, left: Float, top: Float, right: Float, bottom: Float,
                   size : Float = 50f, endSize: Float = size, progress: Float = 0f) {
-        val topLeftSize = Utilities.mapRange(progress, topLeft.scale * size, endSize)
-        val topRightSize = Utilities.mapRange(progress, topRight.scale * size, endSize)
-        val bottomLeftSize = Utilities.mapRange(progress, bottomLeft.scale * size, endSize)
-        val bottomRightSize = Utilities.mapRange(progress, bottomRight.scale * size, endSize)
+        val topLeftSizeX = Utilities.mapRange(progress, topLeft.scale.x * size, endSize)
+        val topLeftSizeY = Utilities.mapRange(progress, topLeft.scale.y * size, endSize)
+        val topRightSizeX = Utilities.mapRange(progress, topRight.scale.x * size, endSize)
+        val topRightSizeY = Utilities.mapRange(progress, topRight.scale.y * size, endSize)
+        val bottomLeftSizeX = Utilities.mapRange(progress, bottomLeft.scale.x * size, endSize)
+        val bottomLeftSizeY = Utilities.mapRange(progress, bottomLeft.scale.y * size, endSize)
+        val bottomRightSizeX = Utilities.mapRange(progress, bottomRight.scale.x * size, endSize)
+        val bottomRightSizeY = Utilities.mapRange(progress, bottomRight.scale.y * size, endSize)
 
         // Start from the bottom right corner
-        path.moveTo(right, bottom - bottomRightSize)
+        path.moveTo(right, bottom - bottomRightSizeY)
         bottomRight.shape.addCorner(path, IconCornerShape.Position.BottomRight,
-                                    bottomRightSize,
+                                    tmpPoint.apply {
+                                        x = bottomRightSizeX
+                                        y = bottomRightSizeY
+                                    },
                                     progress,
-                                    right - bottomRightSize,
-                                    bottom - bottomRightSize)
+                                    right - bottomRightSizeX,
+                                    bottom - bottomRightSizeY)
 
         // Move to bottom left
         addLine(path,
-                right - bottomRightSize, bottom,
-                left + bottomLeftSize, bottom)
+                right - bottomRightSizeX, bottom,
+                left + bottomLeftSizeX, bottom)
         bottomLeft.shape.addCorner(path, IconCornerShape.Position.BottomLeft,
-                                   bottomLeftSize,
+                                   tmpPoint.apply {
+                                       x = bottomLeftSizeX
+                                       y = bottomLeftSizeY
+                                   },
                                    progress,
                                    left,
-                                   bottom - bottomLeftSize)
+                                   bottom - bottomLeftSizeY)
 
         // Move to top left
         addLine(path,
-                left, bottom - bottomLeftSize,
-                left, top + topLeftSize)
+                left, bottom - bottomLeftSizeY,
+                left, top + topLeftSizeY)
         topLeft.shape.addCorner(path, IconCornerShape.Position.TopLeft,
-                                topLeftSize,
+                                tmpPoint.apply {
+                                    x = topLeftSizeX
+                                    y = topLeftSizeY
+                                },
                                 progress,
                                 left,
                                 top)
 
         // And then finally top right
         addLine(path,
-                left + topLeftSize, top,
-                right - topRightSize, top)
+                left + topLeftSizeX, top,
+                right - topRightSizeX, top)
         topRight.shape.addCorner(path, IconCornerShape.Position.TopRight,
-                                 topRightSize,
+                                 tmpPoint.apply {
+                                     x = topRightSizeX
+                                     y = topRightSizeY
+                                 },
                                  progress,
-                                 right - topRightSize,
+                                 right - topRightSizeX,
                                  top)
 
         path.close()
@@ -112,7 +142,9 @@ open class IconShape(private val topLeft: Corner,
         return "v1|$topLeft|$topRight|$bottomLeft|$bottomRight"
     }
 
-    data class Corner(val shape: IconCornerShape, val scale: Float) {
+    data class Corner(val shape: IconCornerShape, val scale: PointF) {
+
+        constructor(shape: IconCornerShape, scale: Float) : this(shape, PointF(scale, scale))
 
         override fun toString(): String {
             return "$shape$scale"
@@ -194,6 +226,20 @@ open class IconShape(private val topLeft: Corner,
         }
     }
 
+    object Cylinder : IconShape(IconCornerShape.arc,
+                                IconCornerShape.arc,
+                                IconCornerShape.arc,
+                                IconCornerShape.arc,
+                                PointF(1f, .6f),
+                                PointF(1f, .6f),
+                                PointF(1f, .6f),
+                                PointF(1f, .6f)) {
+
+        override fun toString(): String {
+            return "cylinder"
+        }
+    }
+
     companion object {
 
         fun fromString(value: String): IconShape {
@@ -203,6 +249,7 @@ open class IconShape(private val topLeft: Corner,
                 "roundedSquare" -> RoundedSquare
                 "squircle" -> Squircle
                 "teardrop" -> Teardrop
+                "cylinder" -> Cylinder
                 else -> try {
                     parseCustomShape(value)
                 } catch (ex: Exception) {
