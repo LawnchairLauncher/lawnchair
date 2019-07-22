@@ -131,6 +131,8 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     // Start is the side next to the nav bar, end is the side next to the workspace
     public int hotseatBarSidePaddingStartPx;
     public int hotseatBarSidePaddingEndPx;
+    public int hotseatIconTextSizePx;
+    public int hotseatIconTextSizeOriginalPx;
 
     // All apps
     public int allAppsCellHeightPx;
@@ -327,6 +329,12 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
 
         iconTextSizePx = (int) (iconTextSizeOriginalPx * prefs.getDesktopTextScale());
         allAppsIconTextSizePx = (int) (allAppsIconTextSizeOriginalPx * prefs.getDrawerTextScale());
+        float dockTextScale = prefs.getDockTextScale();
+        if (dockTextScale < 0) {
+            hotseatIconTextSizePx = iconTextSizePx;
+        } else {
+            hotseatIconTextSizePx = (int) (hotseatIconTextSizeOriginalPx * dockTextScale);
+        }
 
         // Calculate again to apply text size
         updateAvailableDimensions(dm, res);
@@ -426,6 +434,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         boolean dockVisible = !prefs.getDockHide();
         int labelRowCount = prefs.getHomeLabelRows();
         int drawerLabelRowCount = prefs.getDrawerLabelRows();
+        int dockLabelRowCount = prefs.getDockLabelRows();
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
         float invIconSizePx = isVerticalLayout ? inv.landscapeIconSize : inv.iconSize;
@@ -476,6 +485,9 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
 
         // Hotseat
         float invHotseatIconSizePx = isVerticalLayout ? inv.landscapeHotseatIconSize : inv.hotseatIconSize;
+        hotseatIconTextSizeOriginalPx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
+        hotseatIconTextSizePx = (int) (hotseatIconTextSizeOriginalPx * scale);
+        textHeight = Utilities.calculateTextHeight(hotseatIconTextSizePx) * dockLabelRowCount;
         hotseatIconSizeOriginalPx = Utilities.pxFromDp(invHotseatIconSizePx, dm);
         hotseatIconSizePx = (int) (hotseatIconSizeOriginalPx * scale);
         if (isVerticalLayout) {
@@ -483,7 +495,11 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
                     hotseatIconSizePx * prefs.getDockRowsCount()
                     + hotseatBarSidePaddingStartPx + hotseatBarSidePaddingEndPx;
         }
-        hotseatCellHeightPx = hotseatIconSizePx;
+        int additionalHeight =
+                prefs.getHideDockLabels() ? 0 : (int) (textHeight + (iconDrawablePaddingOriginalPx
+                        * scale));
+        hotseatCellHeightPx = hotseatIconSizePx + additionalHeight;
+        hotseatBarBottomPaddingPx -= additionalHeight;
 
         if (!isVerticalLayout) {
             int expectedWorkspaceHeight = availableHeightPx - (dockVisible ? hotseatBarSizePx : 0)
