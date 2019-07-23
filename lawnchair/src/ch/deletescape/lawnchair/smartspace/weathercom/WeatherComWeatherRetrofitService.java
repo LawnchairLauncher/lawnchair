@@ -31,8 +31,8 @@ public interface WeatherComWeatherRetrofitService {
     Call<SunV1CurrentConditionsResponse> getCurrentConditions(
             @Path(value = "latitude") double latitude, @Path(value = "longitude") double longitude);
 
-    @GET("v3/location/search")
+    @GET("v3/location/search?format=json")
     Call<SunV3LocationSearchResponse> searchLocationByName(
-            @Query(value = "query") String query, @Query(value = "locationType") String locationType, @Query(value = "language") String locale, @Query(value = "format") String format) ;
+            @Query(value = "query") String query, @Query(value = "locationType") String locationType, @Query(value = "language") String locale) ;
 
 }

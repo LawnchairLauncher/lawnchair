@@ -56,7 +56,7 @@ class WeatherChannelWeatherProvider(controller: LawnchairSmartspaceController) :
                 try {
                     val position = WeatherComRetrofitServiceFactory.weatherComWeatherRetrofitService
                             .searchLocationByName(context.lawnchairPrefs.weatherCity, "city",
-                                                  context.locale.language, "json").execute()
+                                                  context.locale.language).execute()
 
                     d("updateData: position $position")
                     val currentConditions =
