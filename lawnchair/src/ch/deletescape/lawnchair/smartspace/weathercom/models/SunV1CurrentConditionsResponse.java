@@ -78,10 +78,10 @@ public class SunV1CurrentConditionsResponse extends BaseModel {
         public String key;
 
         @SerializedName("max_temp")
-        public Integer maxTemp;
+        public Double maxTemp;
 
         @SerializedName("min_temp")
-        public Integer minTemp;
+        public Double minTemp;
 
         @SerializedName("obs_id")
         public String obsId;
@@ -90,10 +90,10 @@ public class SunV1CurrentConditionsResponse extends BaseModel {
         public String obsName;
 
         @SerializedName("precip_hrly")
-        public Integer precipHrly;
+        public Double precipHrly;
 
         @SerializedName("precip_total")
-        public Integer precipTotal;
+        public Double precipTotal;
 
         @SerializedName("pressure")
         public Double pressure;
