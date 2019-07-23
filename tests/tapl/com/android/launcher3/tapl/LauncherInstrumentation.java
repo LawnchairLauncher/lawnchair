@@ -937,4 +937,12 @@ public final class LauncherInstrumentation {
         getContext().getSystemService(WindowManager.class).getDefaultDisplay().getRealSize(size);
         return size;
     }
+
+    public void enableDebugTracing() {
+        getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
+    }
+
+    public void disableDebugTracing() {
+        getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
+    }
 }
