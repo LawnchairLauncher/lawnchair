@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
+
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiObject2;
 
@@ -23,7 +25,7 @@ import java.util.regex.Pattern;
 
 public class AddToHomeScreenPrompt {
     private static final Pattern ADD_AUTOMATICALLY =
-            Pattern.compile("ADD AUTOMATICALLY|Add automatically");
+            Pattern.compile("^Add automatically$", CASE_INSENSITIVE);
     private final LauncherInstrumentation mLauncher;
     private final UiObject2 mWidgetCell;
 
