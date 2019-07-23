@@ -19,11 +19,16 @@
 
 package ch.deletescape.lawnchair.smartspace.weather.weathercom
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Bitmap
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.locale
 import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.runOnUiWorkerThread
+import android.location.Criteria
+import android.location.LocationManager
+import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.PeriodicDataProvider
 import ch.deletescape.lawnchair.smartspace.WeatherIconProvider
@@ -31,10 +36,20 @@ import ch.deletescape.lawnchair.smartspace.weathercom.Constants
 import ch.deletescape.lawnchair.smartspace.weathercom.WeatherComRetrofitServiceFactory
 import ch.deletescape.lawnchair.util.Temperature
 import ch.deletescape.lawnchair.util.extensions.d
+import com.android.launcher3.Utilities
 
 class WeatherChannelWeatherProvider(controller: LawnchairSmartspaceController) :
         PeriodicDataProvider(controller) {
 
+    private val locationAccess by lazy { context.checkLocationAccess() }
+
+    private val locationManager: LocationManager? by lazy {
+        if (locationAccess) {
+            context.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+        } else null
+    }
+
+    @SuppressLint("MissingPermission")
     override fun updateData() {
         runOnUiWorkerThread {
             if (context.lawnchairPrefs.weatherCity != "##Auto") {
@@ -64,11 +79,37 @@ class WeatherChannelWeatherProvider(controller: LawnchairSmartspaceController) :
                             currentConditions.observation.temp, Temperature.Unit.Fahrenheit)), null)
                     }
                     d("updateData: retrieved current conditions ${currentConditions}")
-                } catch (e: NullPointerException) {
+                } catch (e: Throwable) {
                     e.printStackTrace()
                 }
             } else {
-                // TODO automatic location
+                if (!locationAccess) {
+                    Utilities
+                            .requestLocationPermission(context.lawnchairApp.activityHandler.foregroundActivity)
+                    return@runOnUiWorkerThread
+                }
+                val locationProvider = locationManager?.getBestProvider(Criteria(), true)
+                val location = locationManager?.getLastKnownLocation(locationProvider) ?: return@runOnUiWorkerThread
+                val currentConditions =
+                        WeatherComRetrofitServiceFactory.weatherComWeatherRetrofitService.getCurrentConditions(
+                                location.latitude,
+                                location.longitude).execute().body()!!
+                val icon: Bitmap
+                if (currentConditions.observation.dayInd == "D") {
+                    icon = WeatherIconProvider(context).getIcon(
+                            Constants.WeatherComConstants.WEATHER_ICONS_DAY[currentConditions.observation.wxIcon].second)
+                } else {
+                    /*
+                     There are weird cases when there's no day/night indicator
+                     */
+                    icon = WeatherIconProvider(context).getIcon(
+                            Constants.WeatherComConstants.WEATHER_ICONS_NIGHT[currentConditions.observation.wxIcon].second)
+                }
+                runOnMainThread {
+                    updateData(LawnchairSmartspaceController.WeatherData(icon, Temperature(
+                            currentConditions.observation.temp, Temperature.Unit.Fahrenheit)), null);
+                }
+                d("updateData: retrieved current conditions ${currentConditions}")
             }
         }
     }
