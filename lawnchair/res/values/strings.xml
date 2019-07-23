@@ -679,13 +679,15 @@
         <item>Have a great day!</item>
     </string-array>
     <string-array name="greetings_evening">
+        <item>How was your day?</item>
+        <item>What did you do today?</item>
+    </string-array>
+    <string-array name="greetings_night">
         <item>Good night!</item>
         <item>Sleep well!</item>
         <item>See you tomorrow!</item>
         <item>Sweet dreams!</item>
         <item>Don\'t stay up too long</item>
-        <item>How was your day?</item>
-        <item>What did you do today?</item>
     </string-array>
 
     <string name="onbording">Onboarding</string>
