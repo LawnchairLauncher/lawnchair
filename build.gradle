@@ -75,6 +75,8 @@ android {
         buildConfigField "String", "DEBUG_MENU_CODE_HASH", '"' + debugMenuCode.digest('SHA-1') + '"'
 
         def accuWeatherKey = localProps.getProperty('accu_key') ?: '"' + System.getenv("ACCU_KEY") + '"'
+        buildConfigField "String", "WEATHER_CHANNEL_KEY", '"' + (System.getenv("WC_KEY") == null ? "ce07a4c64a7555567803f0e6c38a686ae5e07cc" : System.getenv("WC_KEY")) + '"'
+        buildConfigField "String", "WEATHER_CHANNEL_FORECAST_KEY", '"' + (System.getenv("WC_FORECAST_KEY") == null ? "d522aa97197fd864d36b418f39ebb323" : System.getenv("WC_FORECAST_KEY")) + '"'
         buildConfigField "String", "ACCUWEATHER_KEY", accuWeatherKey
 
         ndk {

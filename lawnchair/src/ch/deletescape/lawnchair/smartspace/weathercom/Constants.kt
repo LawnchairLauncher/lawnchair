@@ -20,12 +20,13 @@
 package ch.deletescape.lawnchair.smartspace.weathercom
 
 import ch.deletescape.lawnchair.smartspace.WeatherIconProvider
+import com.android.launcher3.BuildConfig
 
 
 object Constants {
 
     object WeatherComConstants {
-        val WEATHER_COM_API_KEY = "8de2d8b3a93542c9a2d8b3a935a2c909"
+        val WEATHER_COM_API_KEY = BuildConfig.WEATHER_CHANNEL_KEY
         private val WEATHER_ICONS = mapOf(0 to WeatherIconProvider.CONDITION_STORM,
                                           1 to WeatherIconProvider.CONDITION_STORM,
                                           2 to WeatherIconProvider.CONDITION_STORM,
