@@ -344,4 +344,7 @@
     <string name="bottom_work_tab_user_education_close_button">Close</string>
     <string name="bottom_work_tab_user_education_closed">Closed</string>
     <string name="web_search_yahoo">Yahoo (web)</string>
+    <string name="title_preference_immersive_desktop">Immersive desktop</string>
+    <string name="description_preference_immersive_desktop">This will hide the status bar from your home screen</string>
+
 </resources>

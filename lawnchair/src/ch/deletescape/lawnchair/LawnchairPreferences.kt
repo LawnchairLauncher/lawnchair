@@ -283,6 +283,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val enableFools get() = forceEnableFools || is1stApril()
     val showFools get() = !noFools && enableFools
 
+    val immersiveDesktop by BooleanPref("pref_immersive_desktop", false, recreate)
+
     private val was1stApril = is1stApril()
 
     fun checkFools() {

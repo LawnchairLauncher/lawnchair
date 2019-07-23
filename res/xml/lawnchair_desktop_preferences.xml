@@ -90,6 +90,12 @@
         android:key="prefCat_desktopMisc"
         android:title="@string/pref_category_misc">
 
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_immersive_desktop"
+            android:title="@string/title_preference_immersive_desktop"
+            android:summary="@string/description_preference_immersive_desktop" />
+
         <ch.deletescape.lawnchair.preferences.AnimationTypePreference
             android:key="pref_animationType"
             android:defaultValue=""
