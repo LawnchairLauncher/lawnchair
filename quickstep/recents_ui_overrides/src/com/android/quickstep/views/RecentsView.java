@@ -1697,6 +1697,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      * @return How many pixels the running task is offset on the x-axis due to the current scrollX.
      */
     public float getScrollOffset() {
+        if (getRunningTaskIndex() == -1) {
+            return 0;
+        }
         int startScroll = getScrollForPage(getRunningTaskIndex());
         int offsetX = startScroll - getScrollX();
         offsetX *= getScaleX();
