@@ -25,15 +25,17 @@ import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.PreferenceController
 import ch.deletescape.lawnchair.smartspace.AccuWeatherDataProvider
 import ch.deletescape.lawnchair.smartspace.OnePlusWeatherDataProvider
+import ch.deletescape.lawnchair.smartspace.weather.weathercom.WeatherChannelWeatherProvider
 
 @Keep
 class WeatherIconPackController(context: Context) : PreferenceController(context) {
 
-    override val isVisible= context.lawnchairPrefs.weatherProvider in SUPPORTED
+    override val isVisible = context.lawnchairPrefs.weatherProvider in SUPPORTED
 
     companion object {
         private val SUPPORTED = listOf(
+                OnePlusWeatherDataProvider::class.java.name,
                 AccuWeatherDataProvider::class.java.name,
-                OnePlusWeatherDataProvider::class.java.name)
+                WeatherChannelWeatherProvider::class.java.name)
     }
 }
