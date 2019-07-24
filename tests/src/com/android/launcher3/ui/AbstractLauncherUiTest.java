@@ -17,6 +17,7 @@ package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import static com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 
 import static org.junit.Assert.assertTrue;
@@ -45,6 +46,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -52,6 +54,7 @@ import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
@@ -103,6 +106,10 @@ public abstract class AbstractLauncherUiTest {
             Utilities.enableRunningInTestHarnessForTests();
             mLauncher.setSystemHealthSupplier(() -> TestCommandReceiver.callCommand(
                     TestCommandReceiver.GET_SYSTEM_HEALTH_MESSAGE).getString("result"));
+            mLauncher.setOnSettledStateAction(
+                    containerType -> executeOnLauncher(
+                            launcher ->
+                                    checkLauncherIntegrity(launcher, containerType)));
         }
     }
 
@@ -378,5 +385,69 @@ public abstract class AbstractLauncherUiTest {
 
     protected int getAllAppsScroll(Launcher launcher) {
         return launcher.getAppsView().getActiveRecyclerView().getCurrentScrollY();
+    }
+
+    private static void checkLauncherIntegrity(
+            Launcher launcher, ContainerType expectedContainerType) {
+        if (launcher != null) {
+            final LauncherStateManager stateManager = launcher.getStateManager();
+            final LauncherState stableState = stateManager.getCurrentStableState();
+
+            assertTrue("Stable state != state: " + stableState.getClass().getSimpleName() + ", "
+                            + stateManager.getState().getClass().getSimpleName(),
+                    stableState == stateManager.getState());
+
+            final boolean isResumed = launcher.hasBeenResumed();
+            assertTrue("hasBeenResumed() != isStarted(), hasBeenResumed(): " + isResumed,
+                    isResumed == launcher.isStarted());
+            assertTrue("hasBeenResumed() != isUserActive(), hasBeenResumed(): " + isResumed,
+                    isResumed == launcher.isUserActive());
+
+            final int ordinal = stableState.ordinal;
+
+            switch (expectedContainerType) {
+                case WORKSPACE:
+                case WIDGETS: {
+                    assertTrue(
+                            "Launcher is not resumed in state: " + expectedContainerType,
+                            isResumed);
+                    assertTrue(TestProtocol.stateOrdinalToString(ordinal),
+                            ordinal == TestProtocol.NORMAL_STATE_ORDINAL);
+                    break;
+                }
+                case ALL_APPS: {
+                    assertTrue(
+                            "Launcher is not resumed in state: " + expectedContainerType,
+                            isResumed);
+                    assertTrue(TestProtocol.stateOrdinalToString(ordinal),
+                            ordinal == TestProtocol.ALL_APPS_STATE_ORDINAL);
+                    break;
+                }
+                case OVERVIEW: {
+                    assertTrue(
+                            "Launcher is not resumed in state: " + expectedContainerType,
+                            isResumed);
+                    assertTrue(TestProtocol.stateOrdinalToString(ordinal),
+                            ordinal == TestProtocol.OVERVIEW_STATE_ORDINAL);
+                    break;
+                }
+                case BACKGROUND: {
+                    assertTrue("Launcher is resumed in state: " + expectedContainerType,
+                            !isResumed);
+                    assertTrue(TestProtocol.stateOrdinalToString(ordinal),
+                            ordinal == TestProtocol.NORMAL_STATE_ORDINAL);
+                    break;
+                }
+                default:
+                    throw new IllegalArgumentException(
+                            "Illegal container: " + expectedContainerType);
+            }
+        } else {
+            assertTrue(
+                    "Container type is not BACKGROUND or FALLBACK_OVERVIEW: "
+                            + expectedContainerType,
+                    expectedContainerType == ContainerType.BACKGROUND ||
+                            expectedContainerType == ContainerType.FALLBACK_OVERVIEW);
+        }
     }
 }
