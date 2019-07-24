@@ -72,6 +72,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -86,7 +87,7 @@ public final class LauncherInstrumentation {
 
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
-    enum ContainerType {
+    public enum ContainerType {
         WORKSPACE, ALL_APPS, OVERVIEW, WIDGETS, BACKGROUND, FALLBACK_OVERVIEW
     }
 
@@ -134,6 +135,8 @@ public final class LauncherInstrumentation {
     private final Uri mTestProviderUri;
     private final Deque<String> mDiagnosticContext = new LinkedList<>();
     private Supplier<String> mSystemHealthSupplier;
+
+    private Consumer<ContainerType> mOnSettledStateAction;
 
     /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
@@ -296,6 +299,10 @@ public final class LauncherInstrumentation {
         this.mSystemHealthSupplier = supplier;
     }
 
+    public void setOnSettledStateAction(Consumer<ContainerType> onSettledStateAction) {
+        mOnSettledStateAction = onSettledStateAction;
+    }
+
     private String getSystemHealthMessage() {
         final String testPackage = getContext().getPackageName();
         try {
@@ -415,6 +422,14 @@ public final class LauncherInstrumentation {
         assertTrue(error, error == null);
         log("verifyContainerType: " + containerType);
 
+        final UiObject2 container = verifyVisibleObjects(containerType);
+
+        if (mOnSettledStateAction != null) mOnSettledStateAction.accept(containerType);
+
+        return container;
+    }
+
+    private UiObject2 verifyVisibleObjects(ContainerType containerType) {
         try (Closable c = addContextLayer(
                 "but the current state is not " + containerType.name())) {
             switch (containerType) {
