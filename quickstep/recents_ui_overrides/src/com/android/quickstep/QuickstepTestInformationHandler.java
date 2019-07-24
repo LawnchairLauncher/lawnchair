@@ -38,7 +38,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
 
             case TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED: {
                 response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                        TouchInteractionService.isInputMonitorInitialized());
+                        TouchInteractionService.isInitialized());
                 return response;
             }
 
