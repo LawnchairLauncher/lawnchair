@@ -16,10 +16,16 @@
 
 package com.android.launcher3.tapl;
 
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
+
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiObject2;
 
+import java.util.regex.Pattern;
+
 public class AddToHomeScreenPrompt {
+    private static final Pattern ADD_AUTOMATICALLY =
+            Pattern.compile("^Add automatically$", CASE_INSENSITIVE);
     private final LauncherInstrumentation mLauncher;
     private final UiObject2 mWidgetCell;
 
@@ -33,9 +39,6 @@ public class AddToHomeScreenPrompt {
     public void addAutomatically() {
         mLauncher.waitForObjectInContainer(
                 mWidgetCell.getParent().getParent().getParent().getParent(),
-                By.text(LauncherInstrumentation.isAvd()
-                        ? "ADD AUTOMATICALLY"
-                        : "Add automatically")).
-                click();
+                By.text(ADD_AUTOMATICALLY)).click();
     }
 }

@@ -848,7 +848,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
          */
 
         // Skip touch handling if there are no pages to swipe
-        if (getChildCount() <= 0 || shouldBlockGestures(ev)) return false;
+        if (getChildCount() <= 0) return false;
 
         acquireVelocityTrackerAndAddMovement(ev);
 
@@ -1093,14 +1093,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         mAllowOverScroll = enable;
     }
 
-    protected boolean shouldBlockGestures(MotionEvent ev) {
-        return false;
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         // Skip touch handling if there are no pages to swipe
-        if (getChildCount() <= 0 || shouldBlockGestures(ev)) return false;
+        if (getChildCount() <= 0) return false;
 
         acquireVelocityTrackerAndAddMovement(ev);
 

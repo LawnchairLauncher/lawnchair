@@ -80,6 +80,7 @@ public class NavigationModeSwitchRule implements TestRule {
             return new Statement() {
                 @Override
                 public void evaluate() throws Throwable {
+                    mLauncher.enableDebugTracing();
                     final Context context = getInstrumentation().getContext();
                     final int currentInteractionMode =
                             LauncherInstrumentation.getCurrentInteractionMode(context);
@@ -104,6 +105,7 @@ public class NavigationModeSwitchRule implements TestRule {
                     } finally {
                         setActiveOverlay(prevOverlayPkg, originalMode);
                     }
+                    mLauncher.disableDebugTracing();
                 }
 
                 public void evaluateWithoutChangingSetting(Statement base) throws Throwable {
