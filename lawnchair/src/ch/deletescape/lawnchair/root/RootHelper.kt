@@ -44,6 +44,10 @@ class RootHelper : IRootHelper.Stub() {
         return IconBlacklistHelper.getCurrentPreference()
     }
 
+    override fun setIconBlacklistPreference(preference: IconBlacklistPreference) {
+        IconBlacklistHelper.setCurrentPreference(preference)
+    }
+
     companion object {
 
         @JvmStatic

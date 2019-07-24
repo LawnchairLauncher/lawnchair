@@ -42,15 +42,16 @@ import android.view.WindowManager
 import ch.deletescape.lawnchair.animations.LawnchairAppTransitionManagerImpl
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.bugreport.BugReportClient
+import ch.deletescape.lawnchair.clockhide.IconBlacklistHelper
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.iconpack.EditIconActivity
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.override.CustomInfoProvider
-import ch.deletescape.lawnchair.root.RootHelper
 import ch.deletescape.lawnchair.root.RootHelperManager
 import ch.deletescape.lawnchair.sensors.BrightnessManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
+import ch.deletescape.lawnchair.util.extensions.d
 import ch.deletescape.lawnchair.views.LawnchairBackgroundView
 import ch.deletescape.lawnchair.views.OptionsPanel
 import com.android.launcher3.*
@@ -59,7 +60,6 @@ import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.SystemUiController
 import com.android.quickstep.views.LauncherRecentsView
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity
-import eu.chainfire.librootjava.RootJava
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.Semaphore
@@ -105,6 +105,22 @@ open class LawnchairLauncher : NexusLauncherActivity(),
         ColorEngine.getInstance(this).addColorChangeListeners(this, *colorsToWatch)
 
         performSignatureVerification()
+        if (lawnchairPrefs.immersiveDesktop) {
+            runOnUiWorkerThread {
+                if (!isPrivilegedApp(applicationInfo)) {
+                    if (RootHelperManager.isAvailable) {
+                        RootHelperManager(this).run {
+                            it.iconBlacklistPreference = it.iconBlacklistPreference.remove("clock")
+                        }
+                    }
+                } else {
+                    d("onCreate: icon blacklist ${IconBlacklistHelper.setCurrentPreference(
+                            IconBlacklistHelper.getCurrentPreference().add(
+                                    "clock"))} ${IconBlacklistHelper.getCurrentPreference().add(
+                            "clock")}")
+                }
+            }
+        }
     }
 
     override fun startActivitySafely(v: View?, intent: Intent, item: ItemInfo?): Boolean {
@@ -220,6 +236,23 @@ open class LawnchairLauncher : NexusLauncherActivity(),
     override fun onResume() {
         super.onResume()
 
+        if (lawnchairPrefs.immersiveDesktop) {
+            runOnUiWorkerThread {
+                if (!isPrivilegedApp(applicationInfo)) {
+                    if (RootHelperManager.isAvailable) {
+                        RootHelperManager(this).run {
+                            it.iconBlacklistPreference = it.iconBlacklistPreference.add("clock")
+                        }
+                    }
+                } else {
+                    d("onResume: icon blacklist ${IconBlacklistHelper.setCurrentPreference(
+                            IconBlacklistHelper.getCurrentPreference().add(
+                                    "clock"))} ${IconBlacklistHelper.getCurrentPreference().add(
+                            "clock")}")
+                }
+            }
+        }
+
         restartIfPending()
         // lawnchairPrefs.checkFools()
 
@@ -233,6 +266,21 @@ open class LawnchairLauncher : NexusLauncherActivity(),
         super.onPause()
 
         BrightnessManager.getInstance(this).stopListening()
+
+        if (lawnchairPrefs.immersiveDesktop) {
+            runOnUiWorkerThread {
+                if (!isPrivilegedApp(applicationInfo)) {
+                    if (RootHelperManager.isAvailable) {
+                        RootHelperManager(this).run {
+                            it.iconBlacklistPreference = it.iconBlacklistPreference.remove("clock")
+                        }
+                    }
+                } else {
+                    IconBlacklistHelper.setCurrentPreference(
+                            IconBlacklistHelper.getCurrentPreference().remove("clock"));
+                }
+            }
+        }
 
         paused = true
     }

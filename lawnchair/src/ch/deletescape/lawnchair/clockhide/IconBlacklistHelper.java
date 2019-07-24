@@ -20,9 +20,6 @@
 package ch.deletescape.lawnchair.clockhide;
 
 import ch.deletescape.lawnchair.root.RootHelper;
-import ch.deletescape.lawnchair.root.RootHelperUtils;
-import com.android.systemui.shared.recents.IOverviewProxy;
-import eu.chainfire.librootjava.RootJava;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import org.apache.commons.io.IOUtils;
@@ -34,31 +31,15 @@ public class IconBlacklistHelper {
     }
 
     public static synchronized IconBlacklistPreference getCurrentPreference() throws IOException {
-        if (RootHelper.getCallingUid() != 0) {
-            throw new RootException("Functions in this class must be run as root!");
-        } else {
-            Process process = Runtime.getRuntime().exec(new String[] {"settings", "get", "secure", "icon_blacklist"});
-            String output = IOUtils.toString(process.getInputStream(), Charset.defaultCharset());
-            return new IconBlacklistPreference(output);
-        }
+        Process process = Runtime.getRuntime()
+                .exec(new String[]{"settings", "get", "secure", "icon_blacklist"});
+        String output = IOUtils.toString(process.getInputStream(), Charset.defaultCharset());
+        return new IconBlacklistPreference(output);
     }
 
-    public static class RootException extends IOException {
-
-        public RootException() {
-            super();
-        }
-
-        public RootException(String message) {
-            super(message);
-        }
-
-        public RootException(String message, Throwable cause) {
-            super(message, cause);
-        }
-
-        public RootException(Throwable cause) {
-            super(cause);
-        }
+    public static synchronized void setCurrentPreference(IconBlacklistPreference preference)
+            throws IOException {
+        Runtime.getRuntime().exec(new String[]{"settings", "put", "secure", "icon_blacklist",
+                preference.toString()});
     }
 }
