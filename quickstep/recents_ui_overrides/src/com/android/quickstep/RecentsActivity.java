@@ -161,7 +161,7 @@ public final class RecentsActivity extends BaseRecentsActivity {
                         mFallbackRecentsView.resetViewUI();
                     }
                 });
-                result.setAnimation(anim);
+                result.setAnimation(anim, RecentsActivity.this);
             }
         };
         return ActivityOptionsCompat.makeRemoteAnimation(new RemoteAnimationAdapterCompat(

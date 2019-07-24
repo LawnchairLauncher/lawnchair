@@ -218,7 +218,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                         anim.addListener(mForceInvisibleListener);
                     }
 
-                    result.setAnimation(anim);
+                    result.setAnimation(anim, mLauncher);
                 }
             };
 
@@ -819,7 +819,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             }
 
             mLauncher.clearForceInvisibleFlag(INVISIBLE_ALL);
-            result.setAnimation(anim);
+            result.setAnimation(anim, mLauncher);
         }
     }
 }
