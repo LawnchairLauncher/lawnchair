@@ -33,11 +33,13 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_N
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_ASSISTANT;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
+import android.app.TaskInfo;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -103,6 +105,7 @@ import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.SystemGestureExclusionListenerCompat;
 
+import com.android.systemui.shared.system.TaskInfoCompat;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -154,6 +157,7 @@ public class TouchInteractionService extends Service implements
             MAIN_THREAD_EXECUTOR.execute(TouchInteractionService.this::initInputMonitor);
             MAIN_THREAD_EXECUTOR.execute(TouchInteractionService.this::onSystemUiProxySet);
             MAIN_THREAD_EXECUTOR.execute(() -> preloadOverview(true /* fromInit */));
+            sIsInitialized = true;
         }
 
         @Override
@@ -227,15 +231,15 @@ public class TouchInteractionService extends Service implements
     };
 
     private static boolean sConnected = false;
-    private static boolean sInputMonitorInitialized = false;
+    private static boolean sIsInitialized = false;
     private static final SwipeSharedState sSwipeSharedState = new SwipeSharedState();
 
     public static boolean isConnected() {
         return sConnected;
     }
 
-    public static boolean isInputMonitorInitialized() {
-        return sInputMonitorInitialized;
+    public static boolean isInitialized() {
+        return sIsInitialized;
     }
 
     public static SwipeSharedState getSwipeSharedState() {
@@ -336,25 +340,32 @@ public class TouchInteractionService extends Service implements
             mInputMonitorCompat.dispose();
             mInputMonitorCompat = null;
         }
-        sInputMonitorInitialized = false;
     }
 
     private void initInputMonitor() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "initInputMonitor 1");
+        }
         if (!mMode.hasGestures || mISystemUiProxy == null) {
             return;
         }
         disposeEventHandlers();
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "initInputMonitor 2");
+        }
 
         try {
             mInputMonitorCompat = InputMonitorCompat.fromBundle(mISystemUiProxy
                     .monitorGestureInput("swipe-up", mDefaultDisplayId), KEY_EXTRA_INPUT_MONITOR);
             mInputEventReceiver = mInputMonitorCompat.getInputReceiver(Looper.getMainLooper(),
                     mMainChoreographer, this::onInputEvent);
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "initInputMonitor 3");
+            }
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to create input monitor", e);
         }
         initTouchBounds();
-        sInputMonitorInitialized = true;
     }
 
     private int getNavbarSize(String resName) {
@@ -408,6 +419,9 @@ public class TouchInteractionService extends Service implements
 
     @Override
     public void onNavigationModeChanged(Mode newMode) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "onNavigationModeChanged " + newMode);
+        }
         if (mMode.hasGestures != newMode.hasGestures) {
             if (newMode.hasGestures) {
                 getSystemService(DisplayManager.class).registerDisplayListener(
@@ -492,6 +506,7 @@ public class TouchInteractionService extends Service implements
 
     @Override
     public void onDestroy() {
+        sIsInitialized = false;
         if (mIsUserUnlocked) {
             mInputConsumer.unregisterInputConsumer();
             mOverviewComponentObserver.onDestroy();
@@ -516,6 +531,9 @@ public class TouchInteractionService extends Service implements
     }
 
     private void onInputEvent(InputEvent ev) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "onInputEvent " + ev);
+        }
         if (!(ev instanceof MotionEvent)) {
             Log.e(TAG, "Unknown event " + ev);
             return;
@@ -567,7 +585,7 @@ public class TouchInteractionService extends Service implements
             if (isInValidSystemUiState) {
                 // This handles apps launched in direct boot mode (e.g. dialer) as well as apps
                 // launched while device is locked even after exiting direct boot mode (e.g. camera).
-                return createDeviceLockedInputConsumer(mAM.getRunningTask(0));
+                return createDeviceLockedInputConsumer(mAM.getRunningTask(ACTIVITY_TYPE_ASSISTANT));
             } else {
                 return mResetGestureInputConsumer;
             }
@@ -605,7 +623,7 @@ public class TouchInteractionService extends Service implements
     }
 
     private InputConsumer newBaseConsumer(boolean useSharedState, MotionEvent event) {
-        final RunningTaskInfo runningTaskInfo = mAM.getRunningTask(0);
+        RunningTaskInfo runningTaskInfo = mAM.getRunningTask(0);
         if (!useSharedState) {
             sSwipeSharedState.clearAllState(false /* finishAnimation */);
         }
@@ -617,6 +635,17 @@ public class TouchInteractionService extends Service implements
         final ActivityControlHelper activityControl =
                 mOverviewComponentObserver.getActivityControlHelper();
 
+        boolean forceOverviewInputConsumer = false;
+        if (isExcludedAssistant(runningTaskInfo)) {
+            // In the case where we are in the excluded assistant state, ignore it and treat the
+            // running activity as the task behind the assistant
+            runningTaskInfo = mAM.getRunningTask(ACTIVITY_TYPE_ASSISTANT);
+            final ComponentName homeComponent =
+                    mOverviewComponentObserver.getHomeIntent().getComponent();
+            forceOverviewInputConsumer =
+                    runningTaskInfo.baseIntent.getComponent().equals(homeComponent);
+        }
+
         if (runningTaskInfo == null && !sSwipeSharedState.goingToLauncher
                 && !sSwipeSharedState.recentsAnimationFinishInterrupted) {
             return mResetGestureInputConsumer;
@@ -626,7 +655,8 @@ public class TouchInteractionService extends Service implements
             RunningTaskInfo info = new ActivityManager.RunningTaskInfo();
             info.id = sSwipeSharedState.nextRunningTaskId;
             return createOtherActivityInputConsumer(event, info);
-        } else if (sSwipeSharedState.goingToLauncher || activityControl.isResumed()) {
+        } else if (sSwipeSharedState.goingToLauncher || activityControl.isResumed()
+                || forceOverviewInputConsumer) {
             return createOverviewInputConsumer(event);
         } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() && activityControl.isInLiveTileMode()) {
             return createOverviewInputConsumer(event);
@@ -636,6 +666,12 @@ public class TouchInteractionService extends Service implements
         } else {
             return createOtherActivityInputConsumer(event, runningTaskInfo);
         }
+    }
+
+    private boolean isExcludedAssistant(TaskInfo info) {
+        return info != null
+                && TaskInfoCompat.getActivityType(info) == ACTIVITY_TYPE_ASSISTANT
+                && (info.baseIntent.getFlags() & Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) != 0;
     }
 
     private boolean disableHorizontalSwipe(MotionEvent event) {

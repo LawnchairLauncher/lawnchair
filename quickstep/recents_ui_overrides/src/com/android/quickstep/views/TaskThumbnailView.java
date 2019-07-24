@@ -410,4 +410,11 @@ public class TaskThumbnailView extends View {
 
         return new ColorMatrixColorFilter(COLOR_MATRIX);
     }
+
+    public Bitmap getThumbnail() {
+        if (mThumbnailData == null) {
+            return null;
+        }
+        return mThumbnailData.thumbnail;
+    }
 }
