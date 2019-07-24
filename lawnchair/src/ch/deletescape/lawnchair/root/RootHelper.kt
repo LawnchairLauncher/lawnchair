@@ -17,11 +17,13 @@
 
 package ch.deletescape.lawnchair.root
 
-import com.android.launcher3.BuildConfig
-import eu.chainfire.librootjava.RootIPC
 import android.view.InputDevice
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
+import ch.deletescape.lawnchair.clockhide.IconBlacklistHelper
+import ch.deletescape.lawnchair.clockhide.IconBlacklistPreference
+import com.android.launcher3.BuildConfig
+import eu.chainfire.librootjava.RootIPC
 
 class RootHelper : IRootHelper.Stub() {
 
@@ -36,6 +38,10 @@ class RootHelper : IRootHelper.Stub() {
                 flags or KeyEvent.FLAG_FROM_SYSTEM or KeyEvent.FLAG_VIRTUAL_HARD_KEY,
                 InputDevice.SOURCE_KEYBOARD)
         RootHelperUtils.injectInputEvent(ev)
+    }
+
+    override fun getIconBlacklistPreference(): IconBlacklistPreference {
+        return IconBlacklistHelper.getCurrentPreference()
     }
 
     companion object {
