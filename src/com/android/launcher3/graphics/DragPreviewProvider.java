@@ -29,6 +29,7 @@ import android.os.Handler;
 import android.view.View;
 
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
@@ -87,6 +88,9 @@ public class DragPreviewProvider {
             Rect bounds = getDrawableBounds(d);
             destCanvas.translate(blurSizeOutline / 2 - bounds.left,
                     blurSizeOutline / 2 - bounds.top);
+            if (d instanceof FastBitmapDrawable) {
+                ((FastBitmapDrawable) d).setScale(1);
+            }
             d.draw(destCanvas);
         } else {
             final Rect clipRect = mTempRect;

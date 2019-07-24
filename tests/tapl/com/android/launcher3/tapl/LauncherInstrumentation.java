@@ -72,6 +72,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -86,8 +87,8 @@ public final class LauncherInstrumentation {
 
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
-    enum ContainerType {
-        WORKSPACE, ALL_APPS, OVERVIEW, WIDGETS, BACKGROUND, BASE_OVERVIEW
+    public enum ContainerType {
+        WORKSPACE, ALL_APPS, OVERVIEW, WIDGETS, BACKGROUND, FALLBACK_OVERVIEW
     }
 
     public enum NavigationModel {ZERO_BUTTON, TWO_BUTTON, THREE_BUTTON}
@@ -134,6 +135,8 @@ public final class LauncherInstrumentation {
     private final Uri mTestProviderUri;
     private final Deque<String> mDiagnosticContext = new LinkedList<>();
     private Supplier<String> mSystemHealthSupplier;
+
+    private Consumer<ContainerType> mOnSettledStateAction;
 
     /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
@@ -296,6 +299,10 @@ public final class LauncherInstrumentation {
         this.mSystemHealthSupplier = supplier;
     }
 
+    public void setOnSettledStateAction(Consumer<ContainerType> onSettledStateAction) {
+        mOnSettledStateAction = onSettledStateAction;
+    }
+
     private String getSystemHealthMessage() {
         final String testPackage = getContext().getPackageName();
         try {
@@ -396,7 +403,7 @@ public final class LauncherInstrumentation {
     }
 
     private UiObject2 verifyContainerType(ContainerType containerType) {
-        //waitForTouchInteractionService();
+        waitForLauncherInitialized();
 
         assertEquals("Unexpected display rotation",
                 mExpectedRotation, mDevice.getDisplayRotation());
@@ -415,6 +422,14 @@ public final class LauncherInstrumentation {
         assertTrue(error, error == null);
         log("verifyContainerType: " + containerType);
 
+        final UiObject2 container = verifyVisibleObjects(containerType);
+
+        if (mOnSettledStateAction != null) mOnSettledStateAction.accept(containerType);
+
+        return container;
+    }
+
+    private UiObject2 verifyVisibleObjects(ContainerType containerType) {
         try (Closable c = addContextLayer(
                 "but the current state is not " + containerType.name())) {
             switch (containerType) {
@@ -451,7 +466,7 @@ public final class LauncherInstrumentation {
 
                     return waitForLauncherObject(OVERVIEW_RES_ID);
                 }
-                case BASE_OVERVIEW: {
+                case FALLBACK_OVERVIEW: {
                     return waitForFallbackLauncherObject(OVERVIEW_RES_ID);
                 }
                 case BACKGROUND: {
@@ -468,7 +483,7 @@ public final class LauncherInstrumentation {
         }
     }
 
-    private void waitForTouchInteractionService() {
+    private void waitForLauncherInitialized() {
         for (int i = 0; i < 100; ++i) {
             if (getTestInfo(
                     TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED).
@@ -477,7 +492,7 @@ public final class LauncherInstrumentation {
             }
             SystemClock.sleep(100);
         }
-        fail("TouchInteractionService didn't connect");
+        fail("Launcher didn't initialize");
     }
 
     Parcelable executeAndWaitForEvent(Runnable command,
@@ -739,6 +754,10 @@ public final class LauncherInstrumentation {
         return mDevice.getLauncherPackageName();
     }
 
+    boolean isFallbackOverview() {
+        return !getOverviewPackageName().equals(getLauncherPackageName());
+    }
+
     @NonNull
     public UiDevice getDevice() {
         return mDevice;
@@ -774,7 +793,7 @@ public final class LauncherInstrumentation {
                 startX = endX = rect.centerX();
                 final int vertCenter = rect.centerY();
                 final float halfGestureHeight = rect.height() * percent / 2.0f;
-                startY = (int) (vertCenter - halfGestureHeight);
+                startY = (int) (vertCenter - halfGestureHeight) + 1;
                 endY = (int) (vertCenter + halfGestureHeight);
             }
             break;
@@ -790,7 +809,7 @@ public final class LauncherInstrumentation {
                 startY = endY = rect.centerY();
                 final int horizCenter = rect.centerX();
                 final float halfGestureWidth = rect.width() * percent / 2.0f;
-                startX = (int) (horizCenter - halfGestureWidth);
+                startX = (int) (horizCenter - halfGestureWidth) + 1;
                 endX = (int) (horizCenter + halfGestureWidth);
             }
             break;
@@ -817,6 +836,7 @@ public final class LauncherInstrumentation {
     // Inject a swipe gesture. Inject exactly 'steps' motion points, incrementing event time by a
     // fixed interval each time.
     void linearGesture(int startX, int startY, int endX, int endY, int steps) {
+        log("linearGesture: " + startX + ", " + startY + " -> " + endX + ", " + endY);
         final long downTime = SystemClock.uptimeMillis();
         final Point start = new Point(startX, startY);
         final Point end = new Point(endX, endY);
@@ -931,5 +951,13 @@ public final class LauncherInstrumentation {
         final Point size = new Point();
         getContext().getSystemService(WindowManager.class).getDefaultDisplay().getRealSize(size);
         return size;
+    }
+
+    public void enableDebugTracing() {
+        getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
+    }
+
+    public void disableDebugTracing() {
+        getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
     }
 }
