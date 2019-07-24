@@ -526,13 +526,15 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     protected void loadPreferences(SharedPreferences sharedPreferences) {
-        mShowAssistant = sharedPreferences.getBoolean("opa_assistant", true);
-        mLogoIconView.setImageDrawable(getIcon());
-        mMicIconView.setVisibility(sharedPreferences.getBoolean("opa_enabled", true) ? View.VISIBLE : View.GONE);
-        mMicIconView.setImageDrawable(getMicIcon());
-        mUseTwoBubbles = useTwoBubbles();
-        mRadius = Utilities.getLawnchairPrefs(getContext()).getSearchBarRadius();
-        invalidate();
+        post(() -> {
+            mShowAssistant = sharedPreferences.getBoolean("opa_assistant", true);
+            mLogoIconView.setImageDrawable(getIcon());
+            mMicIconView.setVisibility(sharedPreferences.getBoolean("opa_enabled", true) ? View.VISIBLE : View.GONE);
+            mMicIconView.setImageDrawable(getMicIcon());
+            mUseTwoBubbles = useTwoBubbles();
+            mRadius = Utilities.getLawnchairPrefs(getContext()).getSearchBarRadius();
+            invalidate();
+        });
     }
 
     protected Drawable getIcon() {
