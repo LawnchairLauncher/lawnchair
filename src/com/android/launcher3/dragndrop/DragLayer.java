@@ -48,12 +48,13 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.DropTargetBar;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.graphics.OverviewScrim;
+import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.uioverrides.UiFactory;
@@ -92,7 +93,8 @@ public class DragLayer extends BaseDragLayer<Launcher> {
 
     // Related to adjacent page hints
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
-    private final WorkspaceAndHotseatScrim mScrim;
+    private final WorkspaceAndHotseatScrim mWorkspaceScrim;
+    private final OverviewScrim mOverviewScrim;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -108,12 +110,13 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         setChildrenDrawingOrderEnabled(true);
 
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
-        mScrim = new WorkspaceAndHotseatScrim(this);
+        mWorkspaceScrim = new WorkspaceAndHotseatScrim(this);
+        mOverviewScrim = new OverviewScrim(this);
     }
 
     public void setup(DragController dragController, Workspace workspace) {
         mDragController = dragController;
-        mScrim.setWorkspace(workspace);
+        mWorkspaceScrim.setWorkspace(workspace);
         recreateControllers();
     }
 
@@ -529,25 +532,39 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         // Draw the background below children.
-        mScrim.draw(canvas);
+        mWorkspaceScrim.draw(canvas);
+        mOverviewScrim.updateCurrentScrimmedView(this);
         mFocusIndicatorHelper.draw(canvas);
         super.dispatchDraw(canvas);
     }
 
     @Override
+    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
+        if (child == mOverviewScrim.getScrimmedView()) {
+            mOverviewScrim.draw(canvas);
+        }
+        return super.drawChild(canvas, child, drawingTime);
+    }
+
+    @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mScrim.setSize(w, h);
+        mWorkspaceScrim.setSize(w, h);
     }
 
     @Override
     public void setInsets(Rect insets) {
         super.setInsets(insets);
-        mScrim.onInsetsChanged(insets);
+        mWorkspaceScrim.onInsetsChanged(insets);
+        mOverviewScrim.onInsetsChanged(insets);
     }
 
     public WorkspaceAndHotseatScrim getScrim() {
-        return mScrim;
+        return mWorkspaceScrim;
+    }
+
+    public OverviewScrim getOverviewScrim() {
+        return mOverviewScrim;
     }
 
     @Override

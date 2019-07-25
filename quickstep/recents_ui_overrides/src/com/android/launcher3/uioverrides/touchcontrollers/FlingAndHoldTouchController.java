@@ -102,6 +102,9 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
                 mPeekAnim.start();
                 recentsView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+
+                mLauncher.getDragLayer().getScrim().animateToSysuiMultiplier(isPaused ? 0 : 1,
+                        peekDuration, 0);
             });
         }
     }
