@@ -51,9 +51,9 @@
     <string name="widget_dims_format">%1$d \u00d7 %2$d</string>
     <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
     <string name="widget_accessible_dims_format">%1$d wide by %2$d high</string>
-    <!-- Message to tell the user to press and hold a widget/iconView to add it  -->
+    <!-- Message to tell the user to press and hold a widget/icon to add it  -->
     <string name="add_item_request_drag_hint">Touch &amp; hold to place manually</string>
-    <!-- Button label to automatically add iconView on home screen [CHAR_LIMIT=50] -->
+    <!-- Button label to automatically add icon on home screen [CHAR_LIMIT=50] -->
     <string name="place_automatically">Add automatically</string>
 
     <!-- All Apps -->
