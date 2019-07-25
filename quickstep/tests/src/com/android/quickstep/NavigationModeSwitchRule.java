@@ -102,6 +102,9 @@ public class NavigationModeSwitchRule implements TestRule {
                         if (mode == THREE_BUTTON || mode == ALL) {
                             evaluateWithThreeButtons();
                         }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Exception", e);
+                        throw e;
                     } finally {
                         setActiveOverlay(prevOverlayPkg, originalMode);
                     }
