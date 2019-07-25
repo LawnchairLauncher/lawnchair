@@ -30,6 +30,7 @@ import android.os.DropBoxManager;
 
 import org.junit.Assert;
 
+import java.util.Date;
 import java.util.List;
 
 public class TestHelpers {
@@ -104,28 +105,21 @@ public class TestHelpers {
         DropBoxManager dropbox = (DropBoxManager) context.getSystemService(Context.DROPBOX_SERVICE);
         Assert.assertNotNull("Unable access the DropBoxManager service", dropbox);
 
-        long timestamp = 0;
+        long timestamp = System.currentTimeMillis() - 5 * 60000;
         DropBoxManager.Entry entry;
-        int crashCount = 0;
         StringBuilder errorDetails = new StringBuilder();
         while (null != (entry = dropbox.getNextEntry(label, timestamp))) {
-            String dropboxSnippet;
-            try {
-                dropboxSnippet = entry.getText(4096);
-            } finally {
-                entry.close();
-            }
-
-            crashCount++;
-            errorDetails.append(label);
-            errorDetails.append(": ");
-            errorDetails.append(truncateCrash(dropboxSnippet, 40));
-            errorDetails.append("    ...\n");
-
             timestamp = entry.getTimeMillis();
+            errorDetails.append(new Date(timestamp));
+            errorDetails.append(": ");
+            errorDetails.append(entry.getTag());
+            errorDetails.append(": ");
+            final String dropboxSnippet = entry.getText(4096);
+            if (dropboxSnippet != null) errorDetails.append(truncateCrash(dropboxSnippet, 40));
+            errorDetails.append("    ...\n");
+            entry.close();
         }
-        Assert.assertEquals(errorDetails.toString(), 0, crashCount);
-        return crashCount > 0 ? errorDetails.toString() : null;
+        return errorDetails.length() != 0 ? errorDetails.toString() : null;
     }
 
     public static String getSystemHealthMessage(Context context) {
@@ -133,9 +127,15 @@ public class TestHelpers {
             StringBuilder errors = new StringBuilder();
 
             final String[] labels = {
+                    "system_app_anr",
+                    "system_app_crash",
+                    "system_app_native_crash",
+                    "system_app_wtf",
+                    "system_server_anr",
                     "system_server_crash",
                     "system_server_native_crash",
-                    "system_server_anr",
+                    "system_server_watchdog",
+                    "system_server_wtf",
             };
 
             for (String label : labels) {
