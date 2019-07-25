@@ -39,6 +39,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import ch.deletescape.lawnchair.BlankActivity.Companion.requestPermission
 import ch.deletescape.lawnchair.animations.LawnchairAppTransitionManagerImpl
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.bugreport.BugReportClient
@@ -52,6 +53,7 @@ import ch.deletescape.lawnchair.root.RootHelperManager
 import ch.deletescape.lawnchair.sensors.BrightnessManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.util.extensions.d
+import ch.deletescape.lawnchair.util.extensions.w
 import ch.deletescape.lawnchair.views.LawnchairBackgroundView
 import ch.deletescape.lawnchair.views.OptionsPanel
 import com.android.launcher3.*
@@ -60,8 +62,10 @@ import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.SystemUiController
 import com.android.quickstep.views.LauncherRecentsView
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity
+import eu.chainfire.librootjava.RootJava
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.util.concurrent.Semaphore
 
 open class LawnchairLauncher : NexusLauncherActivity(),

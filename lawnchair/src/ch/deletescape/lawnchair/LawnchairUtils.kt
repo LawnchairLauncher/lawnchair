@@ -269,8 +269,9 @@ fun Float.clamp(min: Float, max: Float): Float {
 }
 
 fun isPrivilegedApp(ai: ApplicationInfo): Boolean {
-    val method = ApplicationInfo::class.java.getDeclaredMethod("isPrivilegedApp")
-    return method.invoke(ai) as Boolean
+    /* val method = ApplicationInfo::class.java.getDeclaredMethod("isPrivilegedApp")
+    return method.invoke(ai) as Boolean */
+    return false
 }
 
 fun Float.round() = roundToInt().toFloat()
