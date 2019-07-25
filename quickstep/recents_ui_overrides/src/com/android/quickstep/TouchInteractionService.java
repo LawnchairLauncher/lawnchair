@@ -723,7 +723,7 @@ public class TouchInteractionService extends Service implements
             return new OverviewInputConsumer(activity, mInputMonitorCompat,
                     false /* startingInActivityBounds */);
         } else {
-            return new OverviewWithoutFocusInputConsumer(this, mInputMonitorCompat,
+            return new OverviewWithoutFocusInputConsumer(activity, mInputMonitorCompat,
                     disableHorizontalSwipe(event));
         }
     }
