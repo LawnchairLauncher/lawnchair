@@ -116,6 +116,14 @@ public final class OverviewComponentObserver {
                 .getHomeActivities(new ArrayList<>());
 
         mIsDefaultHome = Objects.equals(mMyHomeIntent.getComponent(), defaultHome);
+
+        // Set assistant visibility to 0 from launcher's perspective, ensures any elements that
+        // launcher made invisible become visible again before the new activity control helper
+        // becomes active.
+        if (mActivityControlHelper != null) {
+            mActivityControlHelper.onAssistantVisibilityChanged(0.f);
+        }
+
         if ((mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED) == 0
                 && (defaultHome == null || mIsDefaultHome)) {
             // User default home is same as out home app. Use Overview integrated in Launcher.
@@ -131,6 +139,7 @@ public final class OverviewComponentObserver {
             }
         } else {
             // The default home app is a different launcher. Use the fallback Overview instead.
+
             mActivityControlHelper = new FallbackActivityControllerHelper();
             mIsHomeAndOverviewSame = false;
             mOverviewIntent = mFallbackIntent;
