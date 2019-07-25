@@ -30,10 +30,7 @@ import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.ResultReceiver
+import android.os.*
 import android.support.v4.app.ActivityCompat
 import android.view.LayoutInflater
 import android.view.View
@@ -42,7 +39,6 @@ import android.view.WindowManager
 import ch.deletescape.lawnchair.animations.LawnchairAppTransitionManagerImpl
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.bugreport.BugReportClient
-import ch.deletescape.lawnchair.clockhide.ClockhideService
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.iconpack.EditIconActivity
@@ -105,18 +101,11 @@ open class LawnchairLauncher : NexusLauncherActivity(),
 
         performSignatureVerification()
         if (lawnchairPrefs.immersiveDesktop) {
-            runOnUiWorkerThread {
-                if (!isPrivilegedApp(applicationInfo)) {
-                    if (RootHelperManager.isAvailable) {
-                        RootHelperManager(this).run {
-                            it.iconBlacklistPreference = it.iconBlacklistPreference.remove("clock")
-                        }
+            if (RootHelperManager.isAvailable) {
+                RootHelperManager.getInstance(this).run {
+                    runOnUiWorkerThread {
+                        it.iconBlacklistPreference = it.iconBlacklistPreference.remove("clock")
                     }
-                } else {
-                    d("onCreate: icon blacklist ${IconBlacklistHelper.setCurrentPreference(
-                            IconBlacklistHelper.getCurrentPreference().add(
-                                    "clock"))} ${IconBlacklistHelper.getCurrentPreference().add(
-                            "clock")}")
                 }
             }
         }
@@ -252,6 +241,28 @@ open class LawnchairLauncher : NexusLauncherActivity(),
         BugReportClient.getInstance(this).rebindIfNeeded()
 
         paused = false
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (!hasFocus && RootHelperManager.isAvailable) {
+            RootHelperManager.getInstance(this.applicationContext).run {
+                try {
+                    it.iconBlacklistPreference =
+                            it.iconBlacklistPreference.remove("clock")
+                } catch (e: RemoteException) {
+                    e.printStackTrace()
+                }
+            }
+        } else if (RootHelperManager.isAvailable) {
+            RootHelperManager.getInstance(this.applicationContext).run {
+                try {
+                    it.iconBlacklistPreference = it.iconBlacklistPreference.add("clock")
+                } catch (e: RemoteException) {
+                    e.printStackTrace()
+                }
+            }
+        }
     }
 
     override fun onPause() {

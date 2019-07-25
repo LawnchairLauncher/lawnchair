@@ -28,12 +28,15 @@ import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.root.RootHelperManager
 import java.util.concurrent.Executors
 
+@Deprecated("No longer used and scheduled for removal")
 class ClockhideService : Service() {
+
+    val executor =  Executors.newSingleThreadExecutor()
 
     @SuppressLint("WrongConstant")
     /* This fixes weird lint errors with return statements in lambdas */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Executors.newSingleThreadExecutor().submit {
+       executor.submit {
             while (true) {
                 if (!Thread.interrupted()) {
                     if (!LawnchairLauncher.getLauncher(
@@ -61,6 +64,10 @@ class ClockhideService : Service() {
             }
         }
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    override fun onDestroy() {
+        executor.shutdownNow()
     }
 
     override fun onBind(intent: Intent?): IBinder? {
