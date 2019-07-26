@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Provides data for the popup menu that appears after long-clicking on apps.
@@ -167,12 +168,14 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         return count == null ? 0 : count;
     }
 
-    public DotInfo getDotInfoForItem(ItemInfo info) {
-        if (!DeepShortcutManager.supportsShortcuts(info)) {
+    public @Nullable DotInfo getDotInfoForItem(@NonNull ItemInfo info) {
+        DotInfo dotInfo = mPackageUserToDotInfos.get(PackageUserKey.fromItemInfo(info));
+        List<NotificationKeyData> notifications =
+                dotInfo == null ? Collections.EMPTY_LIST : dotInfo.getNotificationKeys();
+        if (!DeepShortcutManager.supportsNotificationDots(info, notifications)) {
             return null;
         }
-
-        return mPackageUserToDotInfos.get(PackageUserKey.fromItemInfo(info));
+        return dotInfo;
     }
 
     public @NonNull List<NotificationKeyData> getNotificationKeysForItem(ItemInfo info) {

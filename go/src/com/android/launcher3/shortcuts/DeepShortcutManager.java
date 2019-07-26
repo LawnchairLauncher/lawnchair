@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.UserHandle;
 
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.notification.NotificationKeyData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,11 @@ public class DeepShortcutManager {
     private DeepShortcutManager() { }
 
     public static boolean supportsShortcuts(ItemInfo info) {
+        return false;
+    }
+
+    public static boolean supportsNotificationDots(
+            ItemInfo info, List<NotificationKeyData> notifications) {
         return false;
     }
 
