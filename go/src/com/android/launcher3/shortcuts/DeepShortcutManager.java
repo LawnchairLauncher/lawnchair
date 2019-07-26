@@ -49,18 +49,6 @@ public class DeepShortcutManager {
     private DeepShortcutManager(Context context) {
     }
 
-    public static boolean supportsShortcuts(ItemInfo info) {
-        return false;
-    }
-
-    public static boolean supportsDeepShortcuts(ItemInfo info) {
-        return false;
-    }
-
-    public static String getShortcutIdIfApplicable(ItemInfo info) {
-        return null;
-    }
-
     public boolean wasLastCallSuccess() {
         return false;
     }

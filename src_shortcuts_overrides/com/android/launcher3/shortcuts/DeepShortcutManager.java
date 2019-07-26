@@ -27,10 +27,6 @@ import android.os.Bundle;
 import android.os.UserHandle;
 import android.util.Log;
 
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.WorkspaceItemInfo;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -61,29 +57,6 @@ public class DeepShortcutManager {
 
     private DeepShortcutManager(Context context) {
         mLauncherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
-    }
-
-    public static boolean supportsShortcuts(ItemInfo info) {
-        return isActive(info) && (isApp(info) || isPinnedShortcut(info));
-    }
-
-    public static boolean supportsDeepShortcuts(ItemInfo info) {
-        return isActive(info) && isApp(info);
-    }
-
-    public static String getShortcutIdIfApplicable(ItemInfo info) {
-        return isActive(info) && isPinnedShortcut(info) ?
-                ShortcutKey.fromItemInfo(info).getId() : null;
-    }
-
-    private static boolean isApp(ItemInfo info) {
-        return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
-    }
-
-    private static boolean isPinnedShortcut(ItemInfo info) {
-        return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
-                && info.container != ItemInfo.NO_ID
-                && info instanceof WorkspaceItemInfo;
     }
 
     public boolean wasLastCallSuccess() {
@@ -197,12 +170,6 @@ public class DeepShortcutManager {
             shortcutIds.add(shortcut.getId());
         }
         return shortcutIds;
-    }
-
-    private static boolean isActive(ItemInfo info) {
-        boolean isLoading = info instanceof WorkspaceItemInfo
-                && ((WorkspaceItemInfo) info).hasPromiseIconUi();
-        return !isLoading && !info.isDisabled();
     }
 
     /**

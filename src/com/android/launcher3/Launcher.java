@@ -127,6 +127,7 @@ import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.RaceConditionTracker;
+import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
@@ -2502,7 +2503,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                         KeyEvent.KEYCODE_O, KeyEvent.META_CTRL_ON));
             }
             if (currentFocus.getTag() instanceof ItemInfo
-                    && DeepShortcutManager.supportsShortcuts((ItemInfo) currentFocus.getTag())) {
+                    && ShortcutUtil.supportsShortcuts((ItemInfo) currentFocus.getTag())) {
                 shortcutInfos.add(new KeyboardShortcutInfo(
                         getString(R.string.shortcuts_menu_with_notifications_description),
                         KeyEvent.KEYCODE_S, KeyEvent.META_CTRL_ON));
