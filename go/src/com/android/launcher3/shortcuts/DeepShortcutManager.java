@@ -45,18 +45,6 @@ public class DeepShortcutManager {
 
     private DeepShortcutManager() { }
 
-    public static boolean supportsShortcuts(ItemInfo info) {
-        return false;
-    }
-
-    public static boolean supportsDeepShortcuts(ItemInfo info) {
-        return false;
-    }
-
-    public static String getShortcutIdIfApplicable(ItemInfo info) {
-        return null;
-    }
-
     /**
      * Queries for the shortcuts with the package name and provided ids.
      *

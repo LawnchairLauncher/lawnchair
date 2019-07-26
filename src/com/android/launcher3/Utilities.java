@@ -21,6 +21,7 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_ICON_BADGED;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
+import android.app.Person;
 import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -96,6 +97,9 @@ public final class Utilities {
     private static final int[] sLoc1 = new int[2];
     private static final Matrix sMatrix = new Matrix();
     private static final Matrix sInverseMatrix = new Matrix();
+
+    public static final String[] EMPTY_STRING_ARRAY = new String[0];
+    public static final Person[] EMPTY_PERSON_ARRAY = new Person[0];
 
     public static final boolean ATLEAST_Q = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
