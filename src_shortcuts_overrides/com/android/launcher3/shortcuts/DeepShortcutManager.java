@@ -30,6 +30,7 @@ import android.util.Log;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.notification.NotificationKeyData;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,10 +65,40 @@ public class DeepShortcutManager {
     }
 
     public static boolean supportsShortcuts(ItemInfo info) {
-        boolean isItemPromise = info instanceof WorkspaceItemInfo
-                && ((WorkspaceItemInfo) info).hasPromiseIconUi();
-        return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
-                && !info.isDisabled() && !isItemPromise;
+        return isActive(info) && isApp(info);
+    }
+
+    public static boolean supportsNotificationDots(
+            ItemInfo info, List<NotificationKeyData> notifications) {
+        if (!isActive(info)) {
+            return false;
+        }
+        return isApp(info) || (isPinnedShortcut(info)
+                && shouldShowNotificationDotForPinnedShortcut(info, notifications));
+    }
+
+    private static boolean isApp(ItemInfo info) {
+        return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+    }
+
+    private static boolean isPinnedShortcut(ItemInfo info) {
+        return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
+                && info.container != ItemInfo.NO_ID
+                && info instanceof WorkspaceItemInfo;
+    }
+
+    private static boolean shouldShowNotificationDotForPinnedShortcut(
+            ItemInfo info, List<NotificationKeyData> notifications) {
+        String shortcutId = ((WorkspaceItemInfo) info).getDeepShortcutId();
+        if (shortcutId == null) {
+            return false;
+        }
+        for (NotificationKeyData notification : notifications) {
+            if (shortcutId.equals(notification.shortcutId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean wasLastCallSuccess() {
@@ -181,6 +212,12 @@ public class DeepShortcutManager {
             shortcutIds.add(shortcut.getId());
         }
         return shortcutIds;
+    }
+
+    private static boolean isActive(ItemInfo info) {
+        boolean isLoading = info instanceof WorkspaceItemInfo
+                && ((WorkspaceItemInfo) info).hasPromiseIconUi();
+        return !isLoading && !info.isDisabled();
     }
 
     /**
