@@ -115,6 +115,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
     protected InstantAppResolver mInstantAppResolver;
     private boolean mAppOrTaskLaunch;
     private UserEventDelegate mDelegate;
+    private boolean mPreviousHomeGesture;
 
     //                      APP_ICON    SHORTCUT    WIDGET
     // --------------------------------------------------------------
@@ -399,11 +400,22 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         mElapsedContainerMillis = SystemClock.uptimeMillis();
     }
 
+    public final void setPreviousHomeGesture(boolean homeGesture) {
+        mPreviousHomeGesture = homeGesture;
+    }
+
+    public final boolean isPreviousHomeGesture() {
+        return mPreviousHomeGesture;
+    }
+
     public final void resetActionDurationMillis() {
         mActionDurationMillis = SystemClock.uptimeMillis();
     }
 
     public void dispatchUserEvent(LauncherEvent ev, Intent intent) {
+        if (mPreviousHomeGesture) {
+            mPreviousHomeGesture = false;
+        }
         mAppOrTaskLaunch = false;
         ev.elapsedContainerMillis = SystemClock.uptimeMillis() - mElapsedContainerMillis;
         ev.elapsedSessionMillis = SystemClock.uptimeMillis() - mElapsedSessionMillis;
@@ -426,6 +438,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
                 ev.actionDurationMillis);
         log += "\n\n";
         Log.d(TAG, log);
+        return;
     }
 
     private static String getTargetsStr(Target[] targets) {

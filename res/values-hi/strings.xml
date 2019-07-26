@@ -88,7 +88,7 @@
     <string name="notification_dots_title" msgid="9062440428204120317">"नई सूचनाएं बताने वाला गोल निशान"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"चालू"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"चालू"</string>
-    <string name="title_missing_notification_access" msgid="7503287056163941064">"सूचना के एक्सेस की ज़रूरत है"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"सूचना के ऐक्सेस की ज़रूरत है"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचना बिंदु दिखाने के लिए, <xliff:g id="NAME">%1$s</xliff:g> के ऐप्लिकेशन सूचना चालू करें"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिंग बदलें"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"नई सूचनाएं बताने वाला गोल निशान दिखाएं"</string>
