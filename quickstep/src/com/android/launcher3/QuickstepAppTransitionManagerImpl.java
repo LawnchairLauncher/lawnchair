@@ -32,6 +32,7 @@ import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_TRANSITIONS;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
+import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
@@ -495,6 +496,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             endCrop = windowTargetBounds.height();
         }
 
+        final float initialWindowRadius = supportsRoundedCornersOnWindows(mLauncher.getResources())
+                ? startCrop / 2f : 0f;
         final float windowRadius = mDeviceProfile.isMultiWindowMode
                 ? 0 : getWindowCornerRadius(mLauncher.getResources());
         appAnimator.addUpdateListener(new MultiValueUpdateListener() {
@@ -506,7 +509,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                     alphaDuration, LINEAR);
             FloatProp mCroppedSize = new FloatProp(startCrop, endCrop, 0, CROP_DURATION,
                     EXAGGERATED_EASE);
-            FloatProp mWindowRadius = new FloatProp(startCrop / 2f, windowRadius, 0,
+            FloatProp mWindowRadius = new FloatProp(initialWindowRadius, windowRadius, 0,
                     RADIUS_DURATION, EXAGGERATED_EASE);
 
             @Override
