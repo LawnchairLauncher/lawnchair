@@ -86,6 +86,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.uioverrides.OverviewState;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.systemui.shared.recents.model.Task;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -867,6 +868,10 @@ public final class Utilities {
     public static Boolean isMiui(){
         return !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.code", "")) ||
                 !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.name", ""));
+    }
+
+    public static Boolean hasKnoxSecureFolder(Context context) {
+        return PackageManagerHelper.isAppInstalled(context.getPackageManager(), "com.samsung.knox.securefolder", 0);
     }
 
     public static void openURLinBrowser(Context context, String url) {
