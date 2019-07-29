@@ -69,6 +69,7 @@ import android.view.WindowManager;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.UiThread;
+import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.MainThreadExecutor;
@@ -146,6 +147,11 @@ public class TouchInteractionService extends Service implements
 
     private static final String TAG = "TouchInteractionService";
 
+    private static final String KEY_BACK_NOTIFICATION_COUNT = "backNotificationCount";
+    private static final String NOTIFY_ACTION_BACK = "com.android.quickstep.action.BACK_GESTURE";
+    private static final int MAX_BACK_NOTIFICATION_COUNT = 3;
+    private int mBackGestureNotificationCounter = -1;
+
     private final IBinder mMyBinder = new IOverviewProxy.Stub() {
 
         public void onActiveNavBarRegionChanges(Region region) {
@@ -206,6 +212,10 @@ public class TouchInteractionService extends Service implements
                     mOverviewComponentObserver.getActivityControlHelper();
             UserEventDispatcher.newInstance(getBaseContext()).logActionBack(completed, downX, downY,
                     isButton, gestureSwipeLeft, activityControl.getContainerType());
+
+            if (completed && !isButton && shouldNotifyBackGesture()) {
+                BACKGROUND_EXECUTOR.execute(TouchInteractionService.this::tryNotifyBackGesture);
+            }
         }
 
         public void onSystemUiStateChanged(int stateFlags) {
@@ -480,6 +490,8 @@ public class TouchInteractionService extends Service implements
 
         // Temporarily disable model preload
         // new ModelPreload().start(this);
+        mBackGestureNotificationCounter = Math.max(0, Utilities.getDevicePrefs(this)
+                .getInt(KEY_BACK_NOTIFICATION_COUNT, MAX_BACK_NOTIFICATION_COUNT));
 
         Utilities.unregisterReceiverSafely(this, mUserUnlockedReceiver);
     }
@@ -864,6 +876,22 @@ public class TouchInteractionService extends Service implements
             long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
         return new FallbackNoButtonInputConsumer(this, mOverviewComponentObserver, runningTask,
                 mRecentsModel, mInputConsumer, isLikelyToStartNewTask, continuingLastGesture);
+    }
+
+    protected boolean shouldNotifyBackGesture() {
+        return mBackGestureNotificationCounter > 0 &&
+                mGestureBlockingActivity != null;
+    }
+
+    @WorkerThread
+    protected void tryNotifyBackGesture() {
+        if (shouldNotifyBackGesture()) {
+            mBackGestureNotificationCounter--;
+            Utilities.getDevicePrefs(this).edit()
+                    .putInt(KEY_BACK_NOTIFICATION_COUNT, mBackGestureNotificationCounter).apply();
+            sendBroadcast(new Intent(NOTIFY_ACTION_BACK).setPackage(
+                    mGestureBlockingActivity.getPackageName()));
+        }
     }
 
     public static void startRecentsActivityAsync(Intent intent, RecentsAnimationListener listener) {
