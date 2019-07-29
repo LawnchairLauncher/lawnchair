@@ -105,6 +105,7 @@ import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.logging.UserEventDispatcher.UserEventDelegate;
 import com.android.launcher3.model.AppLaunchTracker;
+import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.popup.PopupContainerWithArrow;
@@ -112,7 +113,6 @@ import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.states.RotationHelper;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -163,7 +163,7 @@ import androidx.annotation.Nullable;
  * Default launcher application.
  */
 public class Launcher extends BaseDraggingActivity implements LauncherExterns,
-        LauncherModel.Callbacks, LauncherProviderChangeListener, UserEventDelegate,
+        Callbacks, LauncherProviderChangeListener, UserEventDelegate,
         InvariantDeviceProfile.OnIDPChangeListener {
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
@@ -2335,7 +2335,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindAllApplications(ArrayList<AppInfo> apps) {
+    public void bindAllApplications(AppInfo[] apps) {
         mAppsView.getAppsStore().setApps(apps);
     }
 
@@ -2346,16 +2346,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     public void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMapCopy) {
         mPopupDataProvider.setDeepShortcutMap(deepShortcutMapCopy);
-    }
-
-    /**
-     * A package was updated.
-     *
-     * Implementation of the method from LauncherModel.Callbacks.
-     */
-    @Override
-    public void bindAppsAddedOrUpdated(ArrayList<AppInfo> apps) {
-        mAppsView.getAppsStore().addOrUpdateApps(apps);
     }
 
     @Override
@@ -2402,11 +2392,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public void bindWorkspaceComponentsRemoved(final ItemInfoMatcher matcher) {
         mWorkspace.removeItemsByMatcher(matcher);
         mDragController.onAppsRemoved(matcher);
-    }
-
-    @Override
-    public void bindAppInfosRemoved(final ArrayList<AppInfo> appInfos) {
-        mAppsView.getAppsStore().removeApps(appInfos);
     }
 
     @Override

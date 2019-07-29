@@ -279,7 +279,7 @@ public class PredictionRowView extends LinearLayout implements
     }
 
     private List<ItemInfoWithIcon> processPredictedAppComponents(List<ComponentKeyMapper> components) {
-        if (getAppsStore().getApps().isEmpty()) {
+        if (getAppsStore().getApps().length == 0) {
             // Apps have not been bound yet.
             return Collections.emptyList();
         }

@@ -29,10 +29,18 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
 
+import java.util.Comparator;
+
 /**
  * Represents an app in AllAppsView.
  */
 public class AppInfo extends ItemInfoWithIcon {
+
+    public static AppInfo[] EMPTY_ARRAY = new AppInfo[0];
+    public static Comparator<AppInfo> COMPONENT_KEY_COMPARATOR = (a, b) -> {
+        int uc = a.user.hashCode() - b.user.hashCode();
+        return uc != 0 ? uc : a.componentName.compareTo(b.componentName);
+    };
 
     /**
      * The intent used to start the application.

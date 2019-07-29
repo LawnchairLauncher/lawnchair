@@ -40,7 +40,6 @@ import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.MutableInt;
 
-import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.InstallShortcutReceiver;
@@ -831,7 +830,7 @@ public class LoaderTask implements Runnable {
             }
         }
 
-        mBgAllAppsList.added = new ArrayList<>();
+        mBgAllAppsList.getAndResetChangeFlag();
         return allActivityList;
     }
 

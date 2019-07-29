@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 
-import com.android.launcher3.AllAppsList;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
