@@ -178,6 +178,7 @@ public final class LauncherInstrumentation {
         PackageManager pm = getContext().getPackageManager();
         ProviderInfo pi = pm.resolveContentProvider(
                 testProviderAuthority, MATCH_ALL | MATCH_DISABLED_COMPONENTS);
+        assertNotNull("Cannot find content provider for " + testProviderAuthority, pi);
         ComponentName cn = new ComponentName(pi.packageName, pi.name);
 
         if (pm.getComponentEnabledSetting(cn) != COMPONENT_ENABLED_STATE_ENABLED) {
