@@ -724,4 +724,6 @@
     <string name="icon_shape_corner_round">Round</string>
     <string name="icon_shape_corner_squircle">Squircle</string>
     <string name="icon_shape_corner_cut">Cut</string>
+
+    <string name="smartspace_add_to_home">Add to homescreen</string>
 </resources>
