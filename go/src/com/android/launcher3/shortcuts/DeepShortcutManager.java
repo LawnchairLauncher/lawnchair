@@ -49,9 +49,12 @@ public class DeepShortcutManager {
         return false;
     }
 
-    public static boolean supportsNotificationDots(
-            ItemInfo info, List<NotificationKeyData> notifications) {
+    public static boolean supportsDeepShortcuts(ItemInfo info) {
         return false;
+    }
+
+    public static String getShortcutIdIfApplicable(ItemInfo info) {
+        return null;
     }
 
     /**
