@@ -717,4 +717,11 @@
     <string name="customnavbar_install">Tap to install Custom Navigation Bar</string>
     <string name="customnavbar_back_hiding">Back button hiding</string>
     <string name="customnavbar_back_hiding_desc">Hide the back button when not needed</string>
+    <string name="icon_shape_top_left">Top left</string>
+    <string name="icon_shape_top_right">Top right</string>
+    <string name="icon_shape_bottom_left">Bottom left</string>
+    <string name="icon_shape_bottom_right">Bottom right</string>
+    <string name="icon_shape_corner_round">Round</string>
+    <string name="icon_shape_corner_squircle">Squircle</string>
+    <string name="icon_shape_corner_cut">Cut</string>
 </resources>
