@@ -22,9 +22,9 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
 import static com.android.launcher3.LauncherStateManager.ATOMIC_OVERVIEW_SCALE_COMPONENT;
 import static com.android.launcher3.LauncherStateManager.NON_ATOMIC_COMPONENT;
-import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
+import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -54,8 +54,6 @@ import com.android.launcher3.util.TouchController;
  */
 public abstract class AbstractStateChangeTouchController
         implements TouchController, SwipeDetector.Listener {
-
-    private static final String TAG = "ASCTouchController";
 
     // Progress after which the transition is assumed to be a success in case user does not fling
     public static final float SUCCESS_TRANSITION_PROGRESS = 0.5f;
@@ -396,8 +394,8 @@ public abstract class AbstractStateChangeTouchController
                 duration = 0;
                 startProgress = 1;
             } else {
-                startProgress = Utilities.boundToRange(
-                        progress + velocity * SINGLE_FRAME_MS * mProgressMultiplier, 0f, 1f);
+                startProgress = Utilities.boundToRange(progress
+                        + velocity * getSingleFrameMs(mLauncher) * mProgressMultiplier, 0f, 1f);
                 duration = SwipeDetector.calculateDuration(velocity,
                         endProgress - Math.max(progress, 0)) * durationMultiplier;
             }
@@ -414,8 +412,8 @@ public abstract class AbstractStateChangeTouchController
                 duration = 0;
                 startProgress = 0;
             } else {
-                startProgress = Utilities.boundToRange(
-                        progress + velocity * SINGLE_FRAME_MS * mProgressMultiplier, 0f, 1f);
+                startProgress = Utilities.boundToRange(progress
+                        + velocity * getSingleFrameMs(mLauncher) * mProgressMultiplier, 0f, 1f);
                 duration = SwipeDetector.calculateDuration(velocity,
                         Math.min(progress, 1) - endProgress) * durationMultiplier;
             }
