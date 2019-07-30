@@ -5,6 +5,11 @@
     <ch.deletescape.lawnchair.preferences.PreviewPreference
         android:key="pref_smartspace_preview"
         app:previewLayout="@layout/smartspace_preview" />
+
+    <ch.deletescape.lawnchair.preferences.SmartspaceAddToHomePreference
+        android:key="pref_smartspace_add_to_home"
+        android:title="@string/smartspace_add_to_home"
+        app:indexable="false" />
     
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="homewidgetStyle"

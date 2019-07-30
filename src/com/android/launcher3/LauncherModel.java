@@ -685,6 +685,12 @@ public class LauncherModel extends BroadcastReceiver
         });
     }
 
+    public List<LauncherAppWidgetInfo> getLoadedWidgets() {
+        synchronized (sBgDataModel) {
+            return new ArrayList<>(sBgDataModel.appWidgets);
+        }
+    }
+
     public void dumpState(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
         if (args.length > 0 && TextUtils.equals(args[0], "--all")) {
             writer.println(prefix + "All apps list: size=" + mBgAllAppsList.data.size());
