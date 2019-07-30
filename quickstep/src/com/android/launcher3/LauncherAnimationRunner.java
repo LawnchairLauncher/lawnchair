@@ -15,8 +15,8 @@
  */
 package com.android.launcher3;
 
-import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.Utilities.postAsyncCallback;
+import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 import static com.android.systemui.shared.recents.utilities.Utilities
         .postAtFrontOfQueueAsynchronously;
 
@@ -24,6 +24,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 
@@ -66,7 +67,7 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
 
     /**
      * Called on the UI thread when the animation targets are received. The implementation must
-     * call {@link AnimationResult#setAnimation(AnimatorSet)} with the target animation to be run.
+     * call {@link AnimationResult#setAnimation} with the target animation to be run.
      */
     @UiThread
     public abstract void onCreateAnimation(
@@ -110,7 +111,7 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
         }
 
         @UiThread
-        public void setAnimation(AnimatorSet animation) {
+        public void setAnimation(AnimatorSet animation, Context context) {
             if (mInitialized) {
                 throw new IllegalStateException("Animation already initialized");
             }
@@ -134,7 +135,7 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
 
                 // Because t=0 has the app icon in its original spot, we can skip the
                 // first frame and have the same movement one frame earlier.
-                mAnimator.setCurrentPlayTime(SINGLE_FRAME_MS);
+                mAnimator.setCurrentPlayTime(getSingleFrameMs(context));
             }
         }
     }
