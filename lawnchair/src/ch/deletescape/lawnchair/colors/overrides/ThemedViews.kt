@@ -29,7 +29,7 @@ import android.widget.EditText
 import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.colors.ColorEngine
 
-class ThemedListPreferenceDialogFragment : ListPreferenceDialogFragmentCompat() {
+open class ThemedListPreferenceDialogFragment : ListPreferenceDialogFragmentCompat() {
 
     override fun onStart() {
         super.onStart()

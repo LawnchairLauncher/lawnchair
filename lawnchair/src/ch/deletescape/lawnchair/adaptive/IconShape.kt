@@ -27,10 +27,10 @@ import com.android.launcher3.Utilities
 import java.lang.Exception
 import kotlin.math.min
 
-open class IconShape(private val topLeft: Corner,
-                     private val topRight: Corner,
-                     private val bottomLeft: Corner,
-                     private val bottomRight: Corner) {
+open class IconShape(val topLeft: Corner,
+                     val topRight: Corner,
+                     val bottomLeft: Corner,
+                     val bottomRight: Corner) {
 
     constructor(topLeftShape: IconCornerShape,
                 topRightShape: IconCornerShape,
@@ -160,7 +160,7 @@ open class IconShape(private val topLeft: Corner,
         constructor(shape: IconCornerShape, scale: Float) : this(shape, PointF(scale, scale))
 
         override fun toString(): String {
-            return "$shape$scale"
+            return "$shape,${scale.x},${scale.y}"
         }
 
         companion object {
@@ -169,9 +169,11 @@ open class IconShape(private val topLeft: Corner,
 
             fun fromString(value: String): Corner {
                 val parts = value.split(",")
-                val scale = parts[1].toFloat()
-                if (scale !in 0f..1f) error("scale must be in [0, 1]")
-                return Corner(IconCornerShape.fromString(parts[0]), scale)
+                val scaleX = parts[1].toFloat()
+                val scaleY = if (parts.size >= 3) parts[2].toFloat() else scaleX
+                if (scaleX !in 0f..1f) error("scaleX must be in [0, 1]")
+                if (scaleY !in 0f..1f) error("scaleY must be in [0, 1]")
+                return Corner(IconCornerShape.fromString(parts[0]), PointF(scaleX, scaleY))
             }
         }
     }
