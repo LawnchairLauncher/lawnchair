@@ -11,12 +11,15 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.util.ContentWriter;
 
 import androidx.annotation.WorkerThread;
+
+import static android.os.Process.myUserHandle;
 
 public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
 
@@ -77,9 +80,14 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
                 state = LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY;
             }
 
-            String[] widgetIdParams = new String[] { Integer.toString(oldWidgetIds[i]) };
+            // b/135926478: Work profile widget restore is broken in platform. This forces us to
+            // recreate the widget during loading with the correct host provider.
+            long mainProfileId = UserManagerCompat.getInstance(context)
+                    .getSerialNumberForUser(myUserHandle());
+            String oldWidgetId = Integer.toString(oldWidgetIds[i]);
             int result = new ContentWriter(context, new ContentWriter.CommitParams(
-                    "appWidgetId=? and (restored & 1) = 1", widgetIdParams))
+                    "appWidgetId=? and (restored & 1) = 1 and profileId=?",
+                    new String[] { oldWidgetId, Long.toString(mainProfileId) }))
                     .put(LauncherSettings.Favorites.APPWIDGET_ID, newWidgetIds[i])
                     .put(LauncherSettings.Favorites.RESTORED, state)
                     .commit();
@@ -87,7 +95,7 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
             if (result == 0) {
                 Cursor cursor = cr.query(Favorites.CONTENT_URI,
                         new String[] {Favorites.APPWIDGET_ID},
-                        "appWidgetId=?", widgetIdParams, null);
+                        "appWidgetId=?", new String[] { oldWidgetId }, null);
                 try {
                     if (!cursor.moveToFirst()) {
                         // The widget no long exists.
