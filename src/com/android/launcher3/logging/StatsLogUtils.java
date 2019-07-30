@@ -1,9 +1,12 @@
 package com.android.launcher3.logging;
 
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType.DEFAULT_CONTAINERTYPE;
+
 import android.view.View;
 import android.view.ViewParent;
 
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 import androidx.annotation.Nullable;
@@ -63,5 +66,21 @@ public class StatsLogUtils {
             }
         }
         return null;
+    }
+
+    public static int getContainerTypeFromState(int state) {
+        int containerType = DEFAULT_CONTAINERTYPE;
+        switch (state) {
+            case StatsLogUtils.LAUNCHER_STATE_ALLAPPS:
+                containerType = ContainerType.ALLAPPS;
+                break;
+            case StatsLogUtils.LAUNCHER_STATE_HOME:
+                containerType = ContainerType.WORKSPACE;
+                break;
+            case StatsLogUtils.LAUNCHER_STATE_OVERVIEW:
+                containerType = ContainerType.OVERVIEW;
+                break;
+        }
+        return containerType;
     }
 }
