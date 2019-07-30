@@ -109,6 +109,7 @@ public class TestHelpers {
         DropBoxManager.Entry entry;
         StringBuilder errorDetails = new StringBuilder();
         while (null != (entry = dropbox.getNextEntry(label, timestamp))) {
+            if (errorDetails.length() != 0) errorDetails.append("------------------------------");
             timestamp = entry.getTimeMillis();
             errorDetails.append(new Date(timestamp));
             errorDetails.append(": ");
@@ -135,7 +136,6 @@ public class TestHelpers {
                     "system_server_crash",
                     "system_server_native_crash",
                     "system_server_watchdog",
-                    "system_server_wtf",
             };
 
             for (String label : labels) {
@@ -143,7 +143,9 @@ public class TestHelpers {
                 if (crash != null) errors.append(crash);
             }
 
-            return errors.length() != 0 ? errors.toString() : null;
+            return errors.length() != 0
+                    ? "Current time: " + new Date(System.currentTimeMillis()) + "\n" + errors
+                    : null;
         } catch (Exception e) {
             return "Failed to get system health diags, maybe build your test via .bp instead of "
                     + ".mk? " + android.util.Log.getStackTraceString(e);

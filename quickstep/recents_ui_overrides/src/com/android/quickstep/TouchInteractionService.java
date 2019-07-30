@@ -335,6 +335,9 @@ public class TouchInteractionService extends Service implements
         if (mInputEventReceiver != null) {
             mInputEventReceiver.dispose();
             mInputEventReceiver = null;
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "disposeEventHandlers");
+            }
         }
         if (mInputMonitorCompat != null) {
             mInputMonitorCompat.dispose();
@@ -723,7 +726,7 @@ public class TouchInteractionService extends Service implements
             return new OverviewInputConsumer(activity, mInputMonitorCompat,
                     false /* startingInActivityBounds */);
         } else {
-            return new OverviewWithoutFocusInputConsumer(this, mInputMonitorCompat,
+            return new OverviewWithoutFocusInputConsumer(activity, mInputMonitorCompat,
                     disableHorizontalSwipe(event));
         }
     }
@@ -816,8 +819,9 @@ public class TouchInteractionService extends Service implements
             pw.println("  assistantAvailable=" + mAssistantAvailable);
             pw.println("  assistantDisabled="
                     + QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags));
-            pw.println("  resumed="
-                    + mOverviewComponentObserver.getActivityControlHelper().isResumed());
+            boolean resumed = mOverviewComponentObserver != null
+                    && mOverviewComponentObserver.getActivityControlHelper().isResumed();
+            pw.println("  resumed=" + resumed);
             pw.println("  useSharedState=" + mConsumer.useSharedSwipeState());
             if (mConsumer.useSharedSwipeState()) {
                 sSwipeSharedState.dump("    ", pw);
