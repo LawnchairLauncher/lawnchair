@@ -71,18 +71,8 @@ class IconShapeManager(private val context: Context) {
         val systemShape = findNearestShape(iconMask)
         return object : IconShape(systemShape) {
 
-            private val isCircle = systemShape is Circle
-
             override fun getMaskPath(): Path {
                 return Path(iconMask)
-            }
-
-            override fun addShape(path: Path, x: Float, y: Float, radius: Float) {
-                if (isCircle) {
-                    path.addCircle(x + radius, y + radius, radius, Path.Direction.CW)
-                } else {
-                    super.addShape(path, x, y, radius)
-                }
             }
 
             override fun toString() = ""

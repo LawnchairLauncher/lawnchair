@@ -59,6 +59,12 @@ open class IconShape(private val topLeft: Corner,
     constructor(shape: IconShape) : this(
             shape.topLeft, shape.topRight, shape.bottomLeft, shape.bottomRight)
 
+    private val isCircle =
+            topLeft == Corner.fullArc &&
+            topRight == Corner.fullArc &&
+            bottomLeft == Corner.fullArc &&
+            bottomRight == Corner.fullArc
+
     private val tmpPoint = PointF()
     open val qsbEdgeRadius = 0
 
@@ -67,8 +73,12 @@ open class IconShape(private val topLeft: Corner,
     }
 
     open fun addShape(path: Path, x: Float, y: Float, radius: Float) {
-        val size = radius * 2
-        addToPath(path, x, y, x + size, y + size, radius)
+        if (isCircle) {
+            path.addCircle(x + radius, y + radius, radius, Path.Direction.CW)
+        } else {
+            val size = radius * 2
+            addToPath(path, x, y, x + size, y + size, radius)
+        }
     }
 
     @JvmOverloads
@@ -155,6 +165,8 @@ open class IconShape(private val topLeft: Corner,
 
         companion object {
 
+            val fullArc = Corner(IconCornerShape.arc, 1f)
+
             fun fromString(value: String): Corner {
                 val parts = value.split(",")
                 val scale = parts[1].toFloat()
@@ -169,10 +181,6 @@ open class IconShape(private val topLeft: Corner,
                               IconCornerShape.arc,
                               IconCornerShape.arc,
                               1f, 1f, 1f, 1f) {
-
-        override fun addShape(path: Path, x: Float, y: Float, radius: Float) {
-            path.addCircle(x + radius, y + radius, radius, Path.Direction.CW)
-        }
 
         override fun toString(): String {
             return "circle"
