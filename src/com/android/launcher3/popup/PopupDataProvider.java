@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -130,7 +131,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         for (PackageUserKey packageUserKey : mPackageUserToDotInfos.keySet()) {
             DotInfo prevDot = updatedDots.get(packageUserKey);
             DotInfo newDot = mPackageUserToDotInfos.get(packageUserKey);
-            if (prevDot == null) {
+            if (prevDot == null
+                    || prevDot.getNotificationCount() != newDot.getNotificationCount()) {
                 updatedDots.put(packageUserKey, newDot);
             } else {
                 // No need to update the dot if it already existed (no visual change).
@@ -156,7 +158,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     }
 
     public int getShortcutCountForItem(ItemInfo info) {
-        if (!DeepShortcutManager.supportsShortcuts(info)) {
+        if (!DeepShortcutManager.supportsDeepShortcuts(info)) {
             return 0;
         }
         ComponentName component = info.getTargetComponent();
@@ -169,10 +171,16 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     }
 
     public @Nullable DotInfo getDotInfoForItem(@NonNull ItemInfo info) {
+        if (!DeepShortcutManager.supportsShortcuts(info)) {
+            return null;
+        }
         DotInfo dotInfo = mPackageUserToDotInfos.get(PackageUserKey.fromItemInfo(info));
-        List<NotificationKeyData> notifications =
-                dotInfo == null ? Collections.EMPTY_LIST : dotInfo.getNotificationKeys();
-        if (!DeepShortcutManager.supportsNotificationDots(info, notifications)) {
+        if (dotInfo == null) {
+            return null;
+        }
+        List<NotificationKeyData> notifications = getNotificationsForItem(
+                info, dotInfo.getNotificationKeys());
+        if (notifications.isEmpty()) {
             return null;
         }
         return dotInfo;
@@ -180,7 +188,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
 
     public @NonNull List<NotificationKeyData> getNotificationKeysForItem(ItemInfo info) {
         DotInfo dotInfo = getDotInfoForItem(info);
-        return dotInfo == null ? Collections.EMPTY_LIST : dotInfo.getNotificationKeys();
+        return dotInfo == null ? Collections.EMPTY_LIST
+                : getNotificationsForItem(info, dotInfo.getNotificationKeys());
     }
 
     /** This makes a potentially expensive binder call and should be run on a background thread. */
@@ -227,6 +236,20 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             }
         }
         return null;
+    }
+
+    /**
+     * Returns a list of notifications that are relevant to given ItemInfo.
+     */
+    public static @NonNull List<NotificationKeyData> getNotificationsForItem(
+            @NonNull ItemInfo info, @NonNull List<NotificationKeyData> notifications) {
+        String shortcutId = DeepShortcutManager.getShortcutIdIfApplicable(info);
+        if (shortcutId == null) {
+            return notifications;
+        }
+        return notifications.stream().filter((NotificationKeyData notification) ->
+                shortcutId.equals(notification.shortcutId)
+        ).collect(Collectors.toList());
     }
 
     public interface PopupDataChangeListener {

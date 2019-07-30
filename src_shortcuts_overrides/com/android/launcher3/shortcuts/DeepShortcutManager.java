@@ -30,7 +30,6 @@ import android.util.Log;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.notification.NotificationKeyData;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,16 +64,16 @@ public class DeepShortcutManager {
     }
 
     public static boolean supportsShortcuts(ItemInfo info) {
+        return isActive(info) && (isApp(info) || isPinnedShortcut(info));
+    }
+
+    public static boolean supportsDeepShortcuts(ItemInfo info) {
         return isActive(info) && isApp(info);
     }
 
-    public static boolean supportsNotificationDots(
-            ItemInfo info, List<NotificationKeyData> notifications) {
-        if (!isActive(info)) {
-            return false;
-        }
-        return isApp(info) || (isPinnedShortcut(info)
-                && shouldShowNotificationDotForPinnedShortcut(info, notifications));
+    public static String getShortcutIdIfApplicable(ItemInfo info) {
+        return isActive(info) && isPinnedShortcut(info) ?
+                ShortcutKey.fromItemInfo(info).getId() : null;
     }
 
     private static boolean isApp(ItemInfo info) {
@@ -85,20 +84,6 @@ public class DeepShortcutManager {
         return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
                 && info.container != ItemInfo.NO_ID
                 && info instanceof WorkspaceItemInfo;
-    }
-
-    private static boolean shouldShowNotificationDotForPinnedShortcut(
-            ItemInfo info, List<NotificationKeyData> notifications) {
-        String shortcutId = ((WorkspaceItemInfo) info).getDeepShortcutId();
-        if (shortcutId == null) {
-            return false;
-        }
-        for (NotificationKeyData notification : notifications) {
-            if (shortcutId.equals(notification.shortcutId)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public boolean wasLastCallSuccess() {
