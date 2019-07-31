@@ -16,10 +16,10 @@
 package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ACCESSIBLE;
-import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
+import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -266,8 +266,8 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             animationDuration *= LauncherAnimUtils.blockedFlingDurationFactor(velocity);
         }
 
-        float nextFrameProgress = Utilities.boundToRange(
-                progress + velocity * SINGLE_FRAME_MS / Math.abs(mEndDisplacement), 0f, 1f);
+        float nextFrameProgress = Utilities.boundToRange(progress
+                + velocity * getSingleFrameMs(mActivity) / Math.abs(mEndDisplacement), 0f, 1f);
 
         mCurrentAnimation.setEndAction(() -> onCurrentAnimationEnd(goingToEnd, logAction));
 

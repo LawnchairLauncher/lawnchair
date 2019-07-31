@@ -68,7 +68,7 @@ public class RecentsActivityTracker<T extends BaseRecentsActivity> implements Ac
             Context context, Handler handler, long duration) {
         register();
 
-        Bundle options = animProvider.toActivityOptions(handler, duration).toBundle();
+        Bundle options = animProvider.toActivityOptions(handler, duration, context).toBundle();
         context.startActivity(intent, options);
     }
 
