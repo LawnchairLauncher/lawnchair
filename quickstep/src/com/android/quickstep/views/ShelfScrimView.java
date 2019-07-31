@@ -98,7 +98,7 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
 
     public ShelfScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mMaxScrimAlpha = Math.round(OVERVIEW.getWorkspaceScrimAlpha(mLauncher) * 255);
+        mMaxScrimAlpha = Math.round(OVERVIEW.getOverviewScrimAlpha(mLauncher) * 255);
 
         mEndAlpha = Color.alpha(mEndScrim);
         mRadius = BOTTOM_CORNER_RADIUS_RATIO * Themes.getDialogCornerRadius(context);
