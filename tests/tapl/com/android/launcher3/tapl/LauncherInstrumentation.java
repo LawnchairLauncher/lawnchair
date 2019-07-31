@@ -331,8 +331,10 @@ public final class LauncherInstrumentation {
 
         final String systemHealth = getSystemHealthMessage();
         if (systemHealth != null) {
-            message = message + ", which might be a consequence of system health problems:\n<<<\n"
-                    + systemHealth + "\n>>>";
+            message = message
+                    + ", which might be a consequence of system health "
+                    + "problems:\n<<<<<<<<<<<<<<<<<<\n"
+                    + systemHealth + "\n>>>>>>>>>>>>>>>>>>";
         }
 
         log("Hierarchy dump for: " + message);
