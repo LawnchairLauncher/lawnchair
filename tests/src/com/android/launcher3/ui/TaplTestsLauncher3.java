@@ -190,7 +190,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 launcher -> assertTrue("ensureScrollable didn't make workspace scrollable",
                         isWorkspaceScrollable(launcher)));
         assertNotNull("ensureScrollable didn't add Chrome app",
-                workspace.tryGetWorkspaceAppIcon("Chrome"));
+                workspace.getWorkspaceAppIcon("Chrome"));
 
         // Test flinging workspace.
         workspace.flingBackward();
@@ -206,7 +206,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         assertTrue("Launcher internal state is not Home", isInState(LauncherState.NORMAL));
 
         // Test starting a workspace app.
-        final AppIcon app = workspace.tryGetWorkspaceAppIcon("Chrome");
+        final AppIcon app = workspace.getWorkspaceAppIcon("Chrome");
         assertNotNull("No Chrome app in workspace", app);
     }
 
