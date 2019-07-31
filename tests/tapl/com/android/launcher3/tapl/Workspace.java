@@ -108,10 +108,13 @@ public final class Workspace extends Home {
      */
     @NonNull
     public AppIcon getWorkspaceAppIcon(String appName) {
-        return new AppIcon(mLauncher,
-                mLauncher.getObjectInContainer(
-                        verifyActiveContainer(),
-                        AppIcon.getAppIconSelector(appName, mLauncher)));
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to get a workspace icon")) {
+            return new AppIcon(mLauncher,
+                    mLauncher.waitForObjectInContainer(
+                            verifyActiveContainer(),
+                            AppIcon.getAppIconSelector(appName, mLauncher)));
+        }
     }
 
     /**
@@ -142,13 +145,13 @@ public final class Workspace extends Home {
 
     @NonNull
     public AppIcon getHotseatAppIcon(String appName) {
-        return new AppIcon(mLauncher, mLauncher.getObjectInContainer(
+        return new AppIcon(mLauncher, mLauncher.waitForObjectInContainer(
                 mHotseat, AppIcon.getAppIconSelector(appName, mLauncher)));
     }
 
     @NonNull
     public Folder getHotseatFolder(String appName) {
-        return new Folder(mLauncher, mLauncher.getObjectInContainer(
+        return new Folder(mLauncher, mLauncher.waitForObjectInContainer(
                 mHotseat, Folder.getSelector(appName, mLauncher)));
     }
 
