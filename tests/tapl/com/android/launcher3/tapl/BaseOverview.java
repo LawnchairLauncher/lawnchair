@@ -74,7 +74,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                 flingForward();
             }
 
-            mLauncher.getObjectInContainer(verifyActiveContainer(), clearAllSelector).click();
+            mLauncher.waitForObjectInContainer(verifyActiveContainer(), clearAllSelector).click();
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "dismissed all tasks")) {
                 return new Workspace(mLauncher);
