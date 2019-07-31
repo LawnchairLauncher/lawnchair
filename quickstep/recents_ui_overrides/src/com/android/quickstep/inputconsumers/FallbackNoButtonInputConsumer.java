@@ -50,6 +50,7 @@ import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.util.ObjectWrapper;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
+import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -335,7 +336,8 @@ public class FallbackNoButtonInputConsumer extends
 
                 ThumbnailData thumbnail =
                         mRecentsAnimationWrapper.targetSet.controller.screenshotTask(mRunningTaskId);
-                mRecentsAnimationWrapper.setCancelWithDeferredScreenshot(true);
+                mRecentsAnimationWrapper.setDeferCancelUntilNextTransition(true /* defer */,
+                        false /* screenshot */);
 
                 ActivityOptions options = ActivityOptions.makeCustomAnimation(mContext, 0, 0);
                 ActivityOptionsCompat.setFreezeRecentTasksList(options);

@@ -188,9 +188,9 @@ public class RecentsAnimationWrapper {
         return true;
     }
 
-    public void setCancelWithDeferredScreenshot(boolean deferredWithScreenshot) {
+    public void setDeferCancelUntilNextTransition(boolean defer, boolean screenshot) {
         if (targetSet != null) {
-            targetSet.controller.setCancelWithDeferredScreenshot(deferredWithScreenshot);
+            targetSet.controller.setDeferCancelUntilNextTransition(defer, screenshot);
         }
     }
 
