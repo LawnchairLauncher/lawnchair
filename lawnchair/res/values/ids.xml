@@ -20,4 +20,5 @@
     <item name="action_dismiss_suggestion" type="id" />
     <item name="dismiss_drop_target_label" type="id" />
     <item name="preference_highlighted" type="id"/>
+    <item name="font_switcher" type="id"/>
 </resources>
