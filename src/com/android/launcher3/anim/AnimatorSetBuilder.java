@@ -39,6 +39,8 @@ public class AnimatorSetBuilder {
     public static final int ANIM_OVERVIEW_TRANSLATE_Y = 8;
     public static final int ANIM_OVERVIEW_FADE = 9;
     public static final int ANIM_ALL_APPS_FADE = 10;
+    public static final int ANIM_OVERVIEW_SCRIM_FADE = 11;
+    public static final int ANIM_ALL_APPS_HEADER_FADE = 12; // e.g. predictions
 
     public static final int FLAG_DONT_ANIMATE_OVERVIEW = 1 << 0;
 
