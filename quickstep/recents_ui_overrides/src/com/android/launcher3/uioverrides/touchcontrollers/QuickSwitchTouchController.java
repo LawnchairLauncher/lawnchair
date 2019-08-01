@@ -154,7 +154,7 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
     }
 
     @Override
-    protected int getLogContainerTypeForNormalState() {
+    protected int getLogContainerTypeForNormalState(MotionEvent ev) {
         return LauncherLogProto.ContainerType.NAVBAR;
     }
 
