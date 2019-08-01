@@ -56,6 +56,10 @@
         <Preference
             android:key="componentName"
             android:title="@string/debug_component_name" />
+
+        <Preference
+            android:key="versionName"
+            android:title="Version" />
     </ch.deletescape.lawnchair.preferences.LauncherStyledPreferenceCategory>
 
 </PreferenceScreen>
