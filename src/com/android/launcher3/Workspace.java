@@ -3251,6 +3251,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
     }
 
+    public boolean isOverlayShown() {
+        return mOverlayShown;
+    }
+
     void moveToDefaultScreen() {
         int page = DEFAULT_PAGE;
         if (!workspaceInModalState() && getNextPage() != page) {
