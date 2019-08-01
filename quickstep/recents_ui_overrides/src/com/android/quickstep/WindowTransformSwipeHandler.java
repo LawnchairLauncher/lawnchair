@@ -1186,7 +1186,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private void setupLauncherUiAfterSwipeUpToRecentsAnimation() {
         endLauncherTransitionController();
         mActivityControlHelper.onSwipeUpToRecentsComplete(mActivity);
-        mRecentsAnimationWrapper.setCancelWithDeferredScreenshot(true);
+        mRecentsAnimationWrapper.setDeferCancelUntilNextTransition(true /* defer */,
+                true /* screenshot */);
         mRecentsView.onSwipeUpAnimationSuccess();
 
         RecentsModel.INSTANCE.get(mContext).onOverviewShown(false, TAG);
