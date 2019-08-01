@@ -1133,17 +1133,16 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         }
         if (start == end || duration <= 0) {
             mLauncherTransitionController.dispatchSetInterpolator(t -> end);
-            mLauncherTransitionController.getAnimationPlayer().end();
         } else {
             mLauncherTransitionController.dispatchSetInterpolator(adjustedInterpolator);
             mAnimationFactory.adjustActivityControllerInterpolators();
-            mLauncherTransitionController.getAnimationPlayer().setDuration(duration);
-
-            if (QUICKSTEP_SPRINGS.get()) {
-                mLauncherTransitionController.dispatchOnStartWithVelocity(end, velocityPxPerMs.y);
-            }
-            mLauncherTransitionController.getAnimationPlayer().start();
         }
+        mLauncherTransitionController.getAnimationPlayer().setDuration(Math.max(0, duration));
+
+        if (QUICKSTEP_SPRINGS.get()) {
+            mLauncherTransitionController.dispatchOnStartWithVelocity(end, velocityPxPerMs.y);
+        }
+        mLauncherTransitionController.getAnimationPlayer().start();
         mHasLauncherTransitionControllerStarted = true;
     }
 
