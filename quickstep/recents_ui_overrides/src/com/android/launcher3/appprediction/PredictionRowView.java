@@ -80,7 +80,7 @@ public class PredictionRowView extends LinearLayout implements
 
                 @Override
                 public Integer get(PredictionRowView view) {
-                    return view.mIconCurrentTextAlpha;
+                    return view.mIconLastSetTextAlpha;
                 }
             };
 
