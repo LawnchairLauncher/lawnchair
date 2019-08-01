@@ -52,6 +52,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.widget.WidgetsBottomSheet;
 
 public class CustomBottomSheet extends WidgetsBottomSheet {
@@ -177,7 +178,6 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         private final static boolean HIDE_PREDICTION_OPTION = true;
         public final static int requestCode = "swipeUp".hashCode() & 65535;
 
-        private SwitchPreference mPrefHide;
         private SwitchPreference mPrefHidePredictions;
         private LauncherGesturePreference mSwipeUpPref;
         private MultiSelectTabPreference mTabsPref;
@@ -193,9 +193,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         private Runnable unsetForceOpen;
         private Runnable reopen;
 
-        private String previousSwipeUpAction;
-
-        CustomInfoProvider mProvider;
+        private CustomInfoProvider mProvider;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -221,7 +219,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             if (!(itemInfo instanceof FolderInfo)) {
                 mKey = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
             }
-            mPrefHide = (SwitchPreference) findPreference(PREF_HIDE);
+            SwitchPreference mPrefHide = (SwitchPreference) findPreference(PREF_HIDE);
             mPrefCoverMode = (SwitchPreference) findPreference("pref_cover_mode");
 
             if (isApp) {
@@ -239,7 +237,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             }
 
             if (mProvider != null && mProvider.supportsSwipeUp(itemInfo)) {
-                previousSwipeUpAction = mProvider.getSwipeUpAction(itemInfo);
+                String previousSwipeUpAction = mProvider.getSwipeUpAction(itemInfo);
                 mSwipeUpPref.setValue(previousSwipeUpAction);
                 mSwipeUpPref.setOnSelectHandler(gestureHandler -> {
                     onSelectHandler(gestureHandler);
@@ -256,8 +254,12 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
             if (prefs.getShowDebugInfo() && mKey != null && mKey.componentName != null) {
                 Preference componentPref = getPreferenceScreen().findPreference("componentName");
+                Preference versionPref  = getPreferenceScreen().findPreference("versionName");
+
                 componentPref.setOnPreferenceClickListener(this);
+                versionPref.setOnPreferenceClickListener(this);
                 componentPref.setSummary(mKey.toString());
+                versionPref.setSummary(new PackageManagerHelper(context).getPackageVersion(mKey.componentName.getPackageName()));
             } else {
                 getPreferenceScreen().removePreference(getPreferenceScreen().findPreference("debug"));
             }
@@ -366,10 +368,17 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
         @Override
         public boolean onPreferenceClick(Preference preference) {
-            ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText(getString(R.string.debug_component_name), mKey.componentName.flattenToString());
-            clipboard.setPrimaryClip(clip);
-            Toast.makeText(getActivity(), R.string.debug_component_name_copied, Toast.LENGTH_SHORT).show();
+            switch (preference.getKey()) {
+                case "componentName":
+                case "versionName":
+                    ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText(getString(R.string.debug_component_name), preference.getSummary());
+                    clipboard.setPrimaryClip(clip);
+                    Toast.makeText(getActivity(), R.string.debug_component_name_copied, Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    break;
+            }
             return true;
         }
     }
