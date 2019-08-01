@@ -875,9 +875,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStop();
         }
-
-        getUserEventDispatcher().logActionCommand(Action.Command.STOP,
-                mStateManager.getState().containerType, -1);
+        logStopAndResume(Action.Command.STOP);
 
         mAppWidgetHost.setListenIfResumed(false);
 
@@ -903,8 +901,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     private void handleDeferredResume() {
         if (hasBeenResumed() && !mStateManager.getState().disableInteraction) {
-            getUserEventDispatcher().logActionCommand(Action.Command.RESUME,
-                    mStateManager.getState().containerType, -1);
+            logStopAndResume(Action.Command.RESUME);
             getUserEventDispatcher().startSession();
 
             UiFactory.onLauncherStateOrResumeChanged(this);
@@ -929,6 +926,17 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         } else {
             mDeferredResumePending = true;
         }
+    }
+
+    private void logStopAndResume(int command) {
+        int containerType = mStateManager.getState().containerType;
+        if (containerType == ContainerType.WORKSPACE && mWorkspace != null) {
+            getUserEventDispatcher().logActionCommand(command,
+                containerType, -1, mWorkspace.isOverlayShown() ? -1 : 0);
+        } else {
+            getUserEventDispatcher().logActionCommand(command, containerType, -1);
+        }
+
     }
 
     protected void onStateSet(LauncherState state) {
