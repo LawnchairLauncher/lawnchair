@@ -311,9 +311,8 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
                 R.dimen.v1_dynamic_grid_hotseat_bottom_padding);
         hotseatBarSidePaddingEndPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding);
-        // Add a bit of space between nav bar and hotseat in multi-window vertical bar layout.
-        hotseatBarSidePaddingStartPx = isMultiWindowMode && isVerticalBarLayout()
-                ? edgeMarginPx : 0;
+        // Add a bit of space between nav bar and hotseat.
+        hotseatBarSidePaddingStartPx = res.getDimensionPixelSize(R.dimen.hotseat_navbar_padding);
         hotseatBarSizePx = isVerticalBarLayout()
                 ? hotseatIconSizePx + hotseatBarSidePaddingStartPx
                 + hotseatBarSidePaddingEndPx
