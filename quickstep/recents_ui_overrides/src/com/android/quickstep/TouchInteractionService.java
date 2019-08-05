@@ -657,10 +657,12 @@ public class TouchInteractionService extends Service implements
             // In the case where we are in the excluded assistant state, ignore it and treat the
             // running activity as the task behind the assistant
             runningTaskInfo = mAM.getRunningTask(ACTIVITY_TYPE_ASSISTANT);
-            final ComponentName homeComponent =
+            if (!ActivityManagerWrapper.isHomeTask(runningTaskInfo)) {
+                final ComponentName homeComponent =
                     mOverviewComponentObserver.getHomeIntent().getComponent();
-            forceOverviewInputConsumer =
+                forceOverviewInputConsumer =
                     runningTaskInfo.baseIntent.getComponent().equals(homeComponent);
+            }
         }
 
         if (runningTaskInfo == null && !sSwipeSharedState.goingToLauncher
