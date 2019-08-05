@@ -25,9 +25,12 @@ import android.os.Build;
 import android.os.HandlerThread;
 import android.os.Process;
 import android.os.RemoteException;
+import android.os.UserHandle;
 import android.util.Log;
 
 import com.android.launcher3.MainThreadExecutor;
+import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.LauncherAppsCompat.OnAppsChangedCallbackCompat;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
@@ -71,6 +74,7 @@ public class RecentsModel extends TaskStackChangeListener {
         mIconCache = new TaskIconCache(context, loaderThread.getLooper());
         mThumbnailCache = new TaskThumbnailCache(context, loaderThread.getLooper());
         ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
+        setupPackageListener();
     }
 
     public TaskIconCache getIconCache() {
@@ -169,6 +173,7 @@ public class RecentsModel extends TaskStackChangeListener {
     public void onTaskRemoved(int taskId) {
         Task.TaskKey dummyKey = new Task.TaskKey(taskId, 0, null, null, 0, 0);
         mThumbnailCache.remove(dummyKey);
+        mIconCache.onTaskRemoved(dummyKey);
     }
 
     public void setSystemUiProxy(ISystemUiProxy systemUiProxy) {
@@ -201,6 +206,21 @@ public class RecentsModel extends TaskStackChangeListener {
                     "Failed to notify SysUI of overview shown from " + (fromHome ? "home" : "app")
                             + ": ", e);
         }
+    }
+
+    private void setupPackageListener() {
+        LauncherAppsCompat.getInstance(mContext)
+                .addOnAppsChangedCallback(new OnAppsChangedCallbackCompat() {
+                    @Override
+                    public void onPackageRemoved(String packageName, UserHandle user) {
+                        mIconCache.invalidatePackage(packageName);
+                    }
+
+                    @Override
+                    public void onPackageChanged(String packageName, UserHandle user) {
+                        mIconCache.invalidatePackage(packageName);
+                    }
+                });
     }
 
     public void addThumbnailChangeListener(TaskThumbnailChangeListener listener) {

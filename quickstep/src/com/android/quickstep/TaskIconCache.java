@@ -31,17 +31,18 @@ import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.cache.HandlerRunnable;
-import com.android.launcher3.uioverrides.RecentsUiFactory;
 import com.android.launcher3.util.Preconditions;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.recents.model.TaskKeyLruCache;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
  * Manages the caching of task icons and related data.
- * TODO: This class should later be merged into IconCache.
+ * TODO(b/138944598): This class should later be merged into IconCache.
  */
 public class TaskIconCache {
 
@@ -147,6 +148,21 @@ public class TaskIconCache {
                 task.key.userId, task.taskDescription);
         mContentDescriptionCache.put(task.key, label);
         return label;
+    }
+
+
+    void onTaskRemoved(TaskKey taskKey) {
+        mIconCache.remove(taskKey);
+    }
+
+    void invalidatePackage(String packageName) {
+        // TODO(b/138944598): Merge this class into IconCache so we can do this at the base level
+        Map<ComponentName, ActivityInfo> activityInfoCache = mActivityInfoCache.snapshot();
+        for (ComponentName cn : activityInfoCache.keySet()) {
+            if (cn.getPackageName().equals(packageName)) {
+                mActivityInfoCache.remove(cn);
+            }
+        }
     }
 
     public static abstract class IconLoadRequest extends HandlerRunnable {
