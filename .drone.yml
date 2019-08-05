@@ -25,7 +25,7 @@ pipeline:
   deploy:
     image: lawnchairlauncher/drone-telegram:latest
     secrets: [ bot_token, channel_id, dev_channel_id ]
-    apk_path: build/outputs/apk/quickstepLawnchairCi/optimized/src-quickstep-lawnchair-ci-optimized.apk
+    apk_path: build/outputs/apk/quickstepLawnchairCi/optimized/LawnchairAlpha-quickstep-lawnchair-ci-optimized.apk
     mapping_path: build/outputs/mapping/quickstepLawnchairCi/optimized/mapping.txt
     channel_id: "-1001083653933"
     public_branch: alpha
