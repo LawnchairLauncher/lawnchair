@@ -79,4 +79,5 @@ public final class TestProtocol {
     public static final String REQUEST_DISABLE_DEBUG_TRACING = "disable-debug-tracing";
 
     public static final String NO_BACKGROUND_TO_OVERVIEW_TAG = "b/138251824";
+    public static final String NO_DRAG_TO_WORKSPACE = "b/138729456";
 }
