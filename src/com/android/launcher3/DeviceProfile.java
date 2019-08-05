@@ -499,7 +499,6 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
                 prefs.getHideDockLabels() ? 0 : (int) (textHeight + (iconDrawablePaddingOriginalPx
                         * scale));
         hotseatCellHeightPx = hotseatIconSizePx + additionalHeight;
-        hotseatBarBottomPaddingPx -= additionalHeight;
 
         if (!isVerticalLayout) {
             int expectedWorkspaceHeight = availableHeightPx - (dockVisible ? hotseatBarSizePx : 0)
