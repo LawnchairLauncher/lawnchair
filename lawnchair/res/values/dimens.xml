@@ -64,4 +64,5 @@
 
     <dimen name="qsb_radius_square">8dp</dimen>
     <dimen name="qsb_radius_squircle">16dp</dimen>
+    <dimen name="hotseat_navbar_padding">24dp</dimen>
 </resources>
