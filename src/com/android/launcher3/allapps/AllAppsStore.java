@@ -88,6 +88,10 @@ public class AllAppsStore {
         }
     }
 
+    public void disableDeferUpdatesSilently(int flag) {
+        mDeferUpdatesFlags &= ~flag;
+    }
+
     public int getDeferUpdatesFlags() {
         return mDeferUpdatesFlags;
     }

@@ -1907,6 +1907,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (mPendingExecutor != null) {
             mPendingExecutor.markCompleted();
             mPendingExecutor = null;
+
+            // We might have set this flag previously and forgot to clear it.
+            mAppsView.getAppsStore()
+                    .disableDeferUpdatesSilently(AllAppsStore.DEFER_UPDATES_NEXT_DRAW);
         }
     }
 
@@ -2259,9 +2263,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public void executeOnNextDraw(ViewOnDrawExecutor executor) {
-        if (mPendingExecutor != null) {
-            mPendingExecutor.markCompleted();
-        }
+        clearPendingBinds();
         mPendingExecutor = executor;
         if (!isInState(ALL_APPS)) {
             mAppsView.getAppsStore().enableDeferUpdates(AllAppsStore.DEFER_UPDATES_NEXT_DRAW);
