@@ -20,6 +20,9 @@
 
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"/>
 
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
+    <uses-permission android:name="android.permission.READ_LOGS"/>
+
     <application android:debuggable="true">
         <uses-library android:name="android.test.runner"/>
 
