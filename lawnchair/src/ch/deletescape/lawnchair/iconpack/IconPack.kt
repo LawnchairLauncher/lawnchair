@@ -69,6 +69,8 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
 
     abstract fun getEntryForComponent(key: ComponentKey): Entry?
 
+    open fun getMaskEntryForComponent(key: ComponentKey): Entry? = null
+
     open fun getIcon(name: String, iconDpi: Int): Drawable? {
         return null
     }
