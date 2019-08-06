@@ -38,7 +38,7 @@ public class PackageUserKey {
      * @return Whether this PackageUserKey was successfully updated - it shouldn't be used if not.
      */
     public boolean updateFromItemInfo(ItemInfo info) {
-        if (DeepShortcutManager.supportsShortcuts(info)) {
+        if (ShortcutUtil.supportsShortcuts(info)) {
             update(info.getTargetComponent().getPackageName(), info.user);
             return true;
         }
