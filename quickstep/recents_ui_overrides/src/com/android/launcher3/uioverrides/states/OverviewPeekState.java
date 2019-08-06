@@ -15,7 +15,9 @@
  */
 package com.android.launcher3.uioverrides.states;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCRIM_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE_X;
+import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
 
@@ -43,6 +45,7 @@ public class OverviewPeekState extends OverviewState {
         if (this == OVERVIEW_PEEK && fromState == NORMAL) {
             builder.setInterpolator(ANIM_OVERVIEW_FADE, INSTANT);
             builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, OVERSHOOT_1_7);
+            builder.setInterpolator(ANIM_OVERVIEW_SCRIM_FADE, FAST_OUT_SLOW_IN);
         }
     }
 }
