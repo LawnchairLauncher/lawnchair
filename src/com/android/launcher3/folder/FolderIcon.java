@@ -95,7 +95,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     PreviewBackground mBackground = new PreviewBackground();
     private boolean mBackgroundIsVisible = true;
 
-    FolderIconPreviewVerifier mPreviewVerifier;
+    FolderGridOrganizer mPreviewVerifier;
     ClippedFolderIconLayoutRule mPreviewLayoutRule;
     private PreviewItemManager mPreviewItemManager;
     private PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
@@ -212,7 +212,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private void setFolder(Folder folder) {
         mFolder = folder;
-        mPreviewVerifier = new FolderIconPreviewVerifier(mLauncher.getDeviceProfile().inv);
+        mPreviewVerifier = new FolderGridOrganizer(mLauncher.getDeviceProfile().inv);
         mPreviewVerifier.setFolderInfo(mFolder.getInfo());
         updatePreviewItems(false);
     }
@@ -230,11 +230,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public void addItem(WorkspaceItemInfo item) {
-        addItem(item, true);
-    }
-
-    public void addItem(WorkspaceItemInfo item, boolean animate) {
-        mInfo.add(item, animate);
+        mInfo.add(item, true);
     }
 
     public void removeItem(WorkspaceItemInfo item, boolean animate) {
@@ -294,8 +290,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     private void onDrop(final WorkspaceItemInfo item, DragView animateView, Rect finalRect,
-            float scaleRelativeToDragLayer, int index,
-            boolean itemReturnedOnFailedDrop) {
+            float scaleRelativeToDragLayer, int index, boolean itemReturnedOnFailedDrop) {
         item.cellX = -1;
         item.cellY = -1;
 
@@ -327,9 +322,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             boolean itemAdded = false;
             if (itemReturnedOnFailedDrop || index >= MAX_NUM_ITEMS_IN_PREVIEW) {
                 List<BubbleTextView> oldPreviewItems = new ArrayList<>(mCurrentPreviewItems);
-                addItem(item, false);
+                mInfo.add(item, index, false);
                 mCurrentPreviewItems.clear();
-                mCurrentPreviewItems.addAll(getPreviewItems());
+                mCurrentPreviewItems.addAll(getPreviewIconsOnPage(0));
 
                 if (!oldPreviewItems.equals(mCurrentPreviewItems)) {
                     for (int i = 0; i < mCurrentPreviewItems.size(); ++i) {
@@ -349,13 +344,13 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             }
 
             if (!itemAdded) {
-                addItem(item);
+                mInfo.add(item, index, true);
             }
 
             int[] center = new int[2];
             float scale = getLocalCenterForIndex(index, numItemsInPreview, center);
-            center[0] = (int) Math.round(scaleRelativeToDragLayer * center[0]);
-            center[1] = (int) Math.round(scaleRelativeToDragLayer * center[1]);
+            center[0] = Math.round(scaleRelativeToDragLayer * center[0]);
+            center[1] = Math.round(scaleRelativeToDragLayer * center[1]);
 
             to.offset(center[0] - animateView.getMeasuredWidth() / 2,
                     center[1] - animateView.getMeasuredHeight() / 2);
@@ -396,7 +391,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             item = (WorkspaceItemInfo) d.dragInfo;
         }
         mFolder.notifyDrop();
-        onDrop(item, d.dragView, null, 1.0f, mInfo.contents.size(),
+        onDrop(item, d.dragView, null, 1.0f,
+                itemReturnedOnFailedDrop ? item.rank : mInfo.contents.size(),
                 itemReturnedOnFailedDrop);
     }
 
@@ -493,8 +489,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             mBackground.drawBackground(canvas);
         }
 
-        if (mFolder == null) return;
-        if (mFolder.getItemCount() == 0 && !mAnimating) return;
+        if (mCurrentPreviewItems.isEmpty() && !mAnimating) return;
 
         final int saveCount = canvas.save();
         canvas.clipPath(mBackground.getClipPath());
@@ -536,31 +531,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     /**
-     * Returns the list of preview items displayed in the icon.
-     */
-    public List<BubbleTextView> getPreviewItems() {
-        return getPreviewItemsOnPage(0);
-    }
-
-    /**
      * Returns the list of "preview items" on {@param page}.
      */
-    public List<BubbleTextView> getPreviewItemsOnPage(int page) {
-        mPreviewVerifier.setFolderInfo(mFolder.getInfo());
-
-        List<BubbleTextView> itemsToDisplay = new ArrayList<>();
-        List<BubbleTextView> itemsOnPage = mFolder.getItemsOnPage(page);
-        int numItems = itemsOnPage.size();
-        for (int rank = 0; rank < numItems; ++rank) {
-            if (mPreviewVerifier.isItemInPreview(page, rank)) {
-                itemsToDisplay.add(itemsOnPage.get(rank));
-            }
-
-            if (itemsToDisplay.size() == MAX_NUM_ITEMS_IN_PREVIEW) {
-                break;
-            }
-        }
-        return itemsToDisplay;
+    public List<BubbleTextView> getPreviewIconsOnPage(int page) {
+        return mPreviewVerifier.setFolderInfo(mFolder.mInfo)
+                .previewItemsForPage(page, mFolder.getIconsInReadingOrder());
     }
 
     @Override
@@ -578,7 +553,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private void updatePreviewItems(boolean animate) {
         mPreviewItemManager.updatePreviewItems(animate);
         mCurrentPreviewItems.clear();
-        mCurrentPreviewItems.addAll(getPreviewItems());
+        mCurrentPreviewItems.addAll(getPreviewIconsOnPage(0));
     }
 
     @Override

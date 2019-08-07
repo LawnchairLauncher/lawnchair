@@ -38,9 +38,9 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
@@ -50,6 +50,7 @@ import com.android.launcher3.util.Thunk;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.ToIntFunction;
 
 public class FolderPagedView extends PagedView<PageIndicatorDots> {
 
@@ -73,12 +74,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
 
     @Thunk final ArrayMap<View, Runnable> mPendingAnimations = new ArrayMap<>();
 
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private final int mMaxCountX;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private final int mMaxCountY;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private final int mMaxItemsPerPage;
+    private final FolderGridOrganizer mOrganizer;
 
     private int mAllocatedContentSize;
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -91,10 +87,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     public FolderPagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
         InvariantDeviceProfile profile = LauncherAppState.getIDP(context);
-        mMaxCountX = profile.numFolderColumns;
-        mMaxCountY = profile.numFolderRows;
-
-        mMaxItemsPerPage = mMaxCountX * mMaxCountY;
+        mOrganizer = new FolderGridOrganizer(profile);
 
         mInflater = LayoutInflater.from(context);
 
@@ -111,57 +104,13 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     }
 
     /**
-     * Calculates the grid size such that {@param count} items can fit in the grid.
-     * The grid size is calculated such that countY <= countX and countX = ceil(sqrt(count)) while
-     * maintaining the restrictions of {@link #mMaxCountX} &amp; {@link #mMaxCountY}.
-     */
-    public static void calculateGridSize(int count, int countX, int countY, int maxCountX,
-            int maxCountY, int maxItemsPerPage, int[] out) {
-        boolean done;
-        int gridCountX = countX;
-        int gridCountY = countY;
-
-        if (count >= maxItemsPerPage) {
-            gridCountX = maxCountX;
-            gridCountY = maxCountY;
-            done = true;
-        } else {
-            done = false;
-        }
-
-        while (!done) {
-            int oldCountX = gridCountX;
-            int oldCountY = gridCountY;
-            if (gridCountX * gridCountY < count) {
-                // Current grid is too small, expand it
-                if ((gridCountX <= gridCountY || gridCountY == maxCountY)
-                        && gridCountX < maxCountX) {
-                    gridCountX++;
-                } else if (gridCountY < maxCountY) {
-                    gridCountY++;
-                }
-                if (gridCountY == 0) gridCountY++;
-            } else if ((gridCountY - 1) * gridCountX >= count && gridCountY >= gridCountX) {
-                gridCountY = Math.max(0, gridCountY - 1);
-            } else if ((gridCountX - 1) * gridCountY >= count) {
-                gridCountX = Math.max(0, gridCountX - 1);
-            }
-            done = gridCountX == oldCountX && gridCountY == oldCountY;
-        }
-
-        out[0] = gridCountX;
-        out[1] = gridCountY;
-    }
-
-    /**
      * Sets up the grid size such that {@param count} items can fit in the grid.
      */
-    public void setupContentDimensions(int count) {
+    private void setupContentDimensions(int count) {
         mAllocatedContentSize = count;
-        calculateGridSize(count, mGridCountX, mGridCountY, mMaxCountX, mMaxCountY, mMaxItemsPerPage,
-                sTmpArray);
-        mGridCountX = sTmpArray[0];
-        mGridCountY = sTmpArray[1];
+        mOrganizer.setContentSize(count);
+        mGridCountX = mOrganizer.getCountX();
+        mGridCountY = mOrganizer.getCountY();
 
         // Update grid size
         for (int i = getPageCount() - 1; i >= 0; i--) {
@@ -183,13 +132,13 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         for (WorkspaceItemInfo item : items) {
             icons.add(createNewView(item));
         }
-        arrangeChildren(icons, icons.size(), false);
+        arrangeChildren(icons);
     }
 
     public void allocateSpaceForRank(int rank) {
-        ArrayList<View> views = new ArrayList<>(mFolder.getItemsInReadingOrder());
+        ArrayList<View> views = new ArrayList<>(mFolder.getIconsInReadingOrder());
         views.add(rank, null);
-        arrangeChildren(views, views.size(), false);
+        arrangeChildren(views);
     }
 
     /**
@@ -199,7 +148,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     public int allocateRankForNewItem() {
         int rank = getItemCount();
         allocateSpaceForRank(rank);
-        setCurrentPage(rank / mMaxItemsPerPage);
+        setCurrentPage(rank / mOrganizer.getMaxItemsPerPage());
         return rank;
     }
 
@@ -215,16 +164,10 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
      * related attributes. It assumes that {@param item} is already attached to the view.
      */
     public void addViewForRank(View view, WorkspaceItemInfo item, int rank) {
-        int pagePos = rank % mMaxItemsPerPage;
-        int pageNo = rank / mMaxItemsPerPage;
-
-        item.rank = rank;
-        item.cellX = pagePos % mGridCountX;
-        item.cellY = pagePos / mGridCountX;
+        int pageNo = rank / mOrganizer.getMaxItemsPerPage();
 
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
-        lp.cellX = item.cellX;
-        lp.cellY = item.cellY;
+        lp.setXY(mOrganizer.getPosForRank(rank));
         getPageAt(pageNo).addViewToCellLayout(view, -1, item.getViewId(), lp, true);
     }
 
@@ -295,16 +238,10 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
      * page.
      *
      * @param list the ordered list of children.
-     * @param itemCount if greater than the total children count, empty spaces are left
-     * at the end, otherwise it is ignored.
-     *
      */
-    public void arrangeChildren(ArrayList<View> list, int itemCount) {
-        arrangeChildren(list, itemCount, true);
-    }
-
     @SuppressLint("RtlHardcoded")
-    private void arrangeChildren(ArrayList<View> list, int itemCount, boolean saveChanges) {
+    public void arrangeChildren(ArrayList<View> list) {
+        int itemCount = list.size();
         ArrayList<CellLayout> pages = new ArrayList<>();
         for (int i = 0; i < getChildCount(); i++) {
             CellLayout page = (CellLayout) getChildAt(i);
@@ -317,15 +254,12 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         CellLayout currentPage = null;
 
         int position = 0;
-        int newX, newY, rank;
+        int rank = 0;
 
-        FolderIconPreviewVerifier verifier = new FolderIconPreviewVerifier(
-                Launcher.getLauncher(getContext()).getDeviceProfile().inv);
-        verifier.setFolderInfo(mFolder.getInfo());
-        rank = 0;
+        mOrganizer.setFolderInfo(mFolder.getInfo());
         for (int i = 0; i < itemCount; i++) {
             View v = list.size() > i ? list.get(i) : null;
-            if (currentPage == null || position >= mMaxItemsPerPage) {
+            if (currentPage == null || position >= mOrganizer.getMaxItemsPerPage()) {
                 // Next page
                 if (pageItr.hasNext()) {
                     currentPage = pageItr.next();
@@ -337,28 +271,16 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
 
             if (v != null) {
                 CellLayout.LayoutParams lp = (CellLayout.LayoutParams) v.getLayoutParams();
-                newX = position % mGridCountX;
-                newY = position / mGridCountX;
                 ItemInfo info = (ItemInfo) v.getTag();
-                if (info.cellX != newX || info.cellY != newY || info.rank != rank) {
-                    info.cellX = newX;
-                    info.cellY = newY;
-                    info.rank = rank;
-                    if (saveChanges) {
-                        mFolder.mLauncher.getModelWriter().addOrMoveItemInDatabase(info,
-                                mFolder.mInfo.id, 0, info.cellX, info.cellY);
-                    }
-                }
-                lp.cellX = info.cellX;
-                lp.cellY = info.cellY;
+                lp.setXY(mOrganizer.getPosForRank(rank));
                 currentPage.addViewToCellLayout(v, -1, info.getViewId(), lp, true);
 
-                if (verifier.isItemInPreview(rank) && v instanceof BubbleTextView) {
+                if (mOrganizer.isItemInPreview(rank) && v instanceof BubbleTextView) {
                     ((BubbleTextView) v).verifyHighRes();
                 }
             }
 
-            rank ++;
+            rank++;
             position++;
         }
 
@@ -398,7 +320,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
             return 0;
         }
         return getPageAt(lastPageIndex).getShortcutsAndWidgets().getChildCount()
-                + lastPageIndex * mMaxItemsPerPage;
+                + lastPageIndex * mOrganizer.getMaxItemsPerPage();
     }
 
     /**
@@ -412,31 +334,28 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
             sTmpArray[0] = page.getCountX() - sTmpArray[0] - 1;
         }
         return Math.min(mAllocatedContentSize - 1,
-                pageIndex * mMaxItemsPerPage + sTmpArray[1] * mGridCountX + sTmpArray[0]);
+                pageIndex * mOrganizer.getMaxItemsPerPage()
+                        + sTmpArray[1] * mGridCountX + sTmpArray[0]);
     }
 
     public View getFirstItem() {
-        if (getChildCount() < 1) {
-            return null;
-        }
-        ShortcutAndWidgetContainer currContainer = getCurrentCellLayout().getShortcutsAndWidgets();
-        if (mGridCountX > 0) {
-            return currContainer.getChildAt(0, 0);
-        } else {
-            return currContainer.getChildAt(0);
-        }
+        return getViewInCurrentPage(c -> 0);
     }
 
     public View getLastItem() {
+        return getViewInCurrentPage(c -> c.getChildCount() - 1);
+    }
+
+    private View getViewInCurrentPage(ToIntFunction<ShortcutAndWidgetContainer> rankProvider) {
         if (getChildCount() < 1) {
             return null;
         }
-        ShortcutAndWidgetContainer currContainer = getCurrentCellLayout().getShortcutsAndWidgets();
-        int lastRank = currContainer.getChildCount() - 1;
+        ShortcutAndWidgetContainer container = getCurrentCellLayout().getShortcutsAndWidgets();
+        int rank = rankProvider.applyAsInt(container);
         if (mGridCountX > 0) {
-            return currContainer.getChildAt(lastRank % mGridCountX, lastRank / mGridCountX);
+            return container.getChildAt(rank % mGridCountX, rank / mGridCountX);
         } else {
-            return currContainer.getChildAt(lastRank);
+            return container.getChildAt(rank);
         }
     }
 
@@ -517,7 +436,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     }
 
     public boolean rankOnCurrentPage(int rank) {
-        int p = rank / mMaxItemsPerPage;
+        int p = rank / mOrganizer.getMaxItemsPerPage();
         return p == getNextPage();
     }
 
@@ -563,15 +482,16 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
 
         // Animation only happens on the current page.
         int pageToAnimate = getNextPage();
+        int maxItemsPerPage = mOrganizer.getMaxItemsPerPage();
 
-        int pageT = target / mMaxItemsPerPage;
-        int pagePosT = target % mMaxItemsPerPage;
+        int pageT = target / maxItemsPerPage;
+        int pagePosT = target % maxItemsPerPage;
 
         if (pageT != pageToAnimate) {
             Log.e(TAG, "Cannot animate when the target cell is invisible");
         }
-        int pagePosE = empty % mMaxItemsPerPage;
-        int pageE = empty / mMaxItemsPerPage;
+        int pagePosE = empty % maxItemsPerPage;
+        int pageE = empty / maxItemsPerPage;
 
         int startPos, endPos;
         int moveStart, moveEnd;
@@ -588,7 +508,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
             if (pageE < pageToAnimate) {
                 moveStart = empty;
                 // Instantly move the first item in the current page.
-                moveEnd = pageToAnimate * mMaxItemsPerPage;
+                moveEnd = pageToAnimate * maxItemsPerPage;
                 // Animate the 2nd item in the current page, as the first item was already moved to
                 // the last page.
                 startPos = 0;
@@ -606,10 +526,10 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
                 // Move the items immediately.
                 moveStart = empty;
                 // Instantly move the last item in the current page.
-                moveEnd = (pageToAnimate + 1) * mMaxItemsPerPage - 1;
+                moveEnd = (pageToAnimate + 1) * maxItemsPerPage - 1;
 
                 // Animations start with the second last item in the page
-                startPos = mMaxItemsPerPage - 1;
+                startPos = maxItemsPerPage - 1;
             } else {
                 moveStart = moveEnd = -1;
                 startPos = pagePosE;
@@ -621,8 +541,8 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         // Instant moving views.
         while (moveStart != moveEnd) {
             int rankToMove = moveStart + direction;
-            int p = rankToMove / mMaxItemsPerPage;
-            int pagePos = rankToMove % mMaxItemsPerPage;
+            int p = rankToMove / maxItemsPerPage;
+            int pagePos = rankToMove % maxItemsPerPage;
             int x = pagePos % mGridCountX;
             int y = pagePos / mGridCountX;
 
@@ -667,9 +587,6 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         for (int i = startPos; i != endPos; i += direction) {
             int nextPos = i + direction;
             View v = page.getChildAt(nextPos % mGridCountX, nextPos / mGridCountX);
-            if (v != null) {
-                ((ItemInfo) v.getTag()).rank -= direction;
-            }
             if (page.animateChildToPosition(v, i % mGridCountX, i / mGridCountX,
                     REORDER_ANIMATION_DURATION, delay, true, true)) {
                 delay += delayAmount;
@@ -679,6 +596,6 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     }
 
     public int itemsPerPage() {
-        return mMaxItemsPerPage;
+        return mOrganizer.getMaxItemsPerPage();
     }
 }

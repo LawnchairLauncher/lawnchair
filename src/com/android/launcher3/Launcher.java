@@ -79,6 +79,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
@@ -94,8 +96,8 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.folder.Folder;
+import com.android.launcher3.folder.FolderGridOrganizer;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.folder.FolderIconPreviewVerifier;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.keyboard.CustomActionsPopup;
@@ -110,7 +112,6 @@ import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.touch.ItemClickHandler;
@@ -157,8 +158,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Predicate;
-
-import androidx.annotation.Nullable;
 
 /**
  * Default launcher application.
@@ -605,10 +604,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (info.container >= 0) {
             View folderIcon = getWorkspace().getHomescreenIconByItemId(info.container);
             if (folderIcon instanceof FolderIcon && folderIcon.getTag() instanceof FolderInfo) {
-                FolderIconPreviewVerifier verifier =
-                        new FolderIconPreviewVerifier(getDeviceProfile().inv);
-                verifier.setFolderInfo((FolderInfo) folderIcon.getTag());
-                if (verifier.isItemInPreview(info.rank)) {
+                if (new FolderGridOrganizer(getDeviceProfile().inv)
+                        .setFolderInfo((FolderInfo) folderIcon.getTag())
+                        .isItemInPreview(info.rank)) {
                     folderIcon.invalidate();
                 }
             }
@@ -1724,8 +1722,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
         return true;
     }
-
-
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {

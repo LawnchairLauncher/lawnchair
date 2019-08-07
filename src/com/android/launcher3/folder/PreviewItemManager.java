@@ -30,14 +30,14 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.WorkspaceItemInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 /**
  * Manages the drawing and animations of {@link PreviewItemDrawingParams} for a {@link FolderIcon}.
@@ -200,7 +200,7 @@ public class PreviewItemManager {
     }
 
     void buildParamsForPage(int page, ArrayList<PreviewItemDrawingParams> params, boolean animate) {
-        List<BubbleTextView> items = mIcon.getPreviewItemsOnPage(page);
+        List<BubbleTextView> items = mIcon.getPreviewIconsOnPage(page);
         int prevNumItems = params.size();
 
         // We adjust the size of the list to match the number of items in the preview.

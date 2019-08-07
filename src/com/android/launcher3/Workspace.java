@@ -67,9 +67,9 @@ import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -3102,7 +3102,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             ItemInfo info = (ItemInfo) item.getTag();
             if (recurse && info instanceof FolderInfo && item instanceof FolderIcon) {
                 FolderIcon folder = (FolderIcon) item;
-                ArrayList<View> folderChildren = folder.getFolder().getItemsInReadingOrder();
+                ArrayList<View> folderChildren = folder.getFolder().getIconsInReadingOrder();
                 // map over all the children in the folder
                 final int childCount = folderChildren.size();
                 for (int childIdx = 0; childIdx < childCount; childIdx++) {
