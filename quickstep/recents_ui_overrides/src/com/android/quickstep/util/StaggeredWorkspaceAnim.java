@@ -15,6 +15,11 @@
  */
 package com.android.quickstep.util;
 
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
+import static com.android.launcher3.LauncherState.BACKGROUND_APP;
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
@@ -35,14 +40,10 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.SpringObjectAnimator;
+import com.android.launcher3.graphics.OverviewScrim;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
-import static com.android.launcher3.LauncherState.BACKGROUND_APP;
-import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 /**
  * Creates an animation where all the workspace items are moved into their final location,
@@ -122,8 +123,8 @@ public class StaggeredWorkspaceAnim {
             addStaggeredAnimationForView(qsb, grid.inv.numRows + 2, totalRows);
         }
 
-        addWorkspaceScrimAnimationForState(launcher, BACKGROUND_APP, 0);
-        addWorkspaceScrimAnimationForState(launcher, NORMAL, ALPHA_DURATION_MS);
+        addScrimAnimationForState(launcher, BACKGROUND_APP, 0);
+        addScrimAnimationForState(launcher, NORMAL, ALPHA_DURATION_MS);
 
         AnimatorListener resetClipListener = new AnimatorListenerAdapter() {
             int numAnimations = mAnimators.size();
@@ -191,13 +192,17 @@ public class StaggeredWorkspaceAnim {
         mAnimators.add(alpha);
     }
 
-    private void addWorkspaceScrimAnimationForState(Launcher launcher, LauncherState state,
-            long duration) {
+    private void addScrimAnimationForState(Launcher launcher, LauncherState state, long duration) {
         AnimatorSetBuilder scrimAnimBuilder = new AnimatorSetBuilder();
         AnimationConfig scrimAnimConfig = new AnimationConfig();
         scrimAnimConfig.duration = duration;
         PropertySetter scrimPropertySetter = scrimAnimConfig.getPropertySetter(scrimAnimBuilder);
         launcher.getWorkspace().getStateTransitionAnimation().setScrim(scrimPropertySetter, state);
         mAnimators.add(scrimAnimBuilder.build());
+        Animator fadeOverviewScrim = ObjectAnimator.ofFloat(
+                launcher.getDragLayer().getOverviewScrim(), OverviewScrim.SCRIM_PROGRESS,
+                state.getOverviewScrimAlpha(launcher));
+        fadeOverviewScrim.setDuration(duration);
+        mAnimators.add(fadeOverviewScrim);
     }
 }

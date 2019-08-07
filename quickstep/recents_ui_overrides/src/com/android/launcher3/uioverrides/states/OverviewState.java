@@ -43,7 +43,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.SysUINavigationMode;
@@ -128,14 +127,15 @@ public class OverviewState extends LauncherState {
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
             return VERTICAL_SWIPE_INDICATOR | RECENTS_CLEAR_ALL_BUTTON;
         } else {
+            boolean hasAllAppsHeaderExtra = launcher.getAppsView() != null
+                    && launcher.getAppsView().getFloatingHeaderView().hasVisibleContent();
             return HOTSEAT_SEARCH_BOX | VERTICAL_SWIPE_INDICATOR | RECENTS_CLEAR_ALL_BUTTON |
-                    (launcher.getAppsView().getFloatingHeaderView().hasVisibleContent()
-                            ? ALL_APPS_HEADER_EXTRA : HOTSEAT_ICONS);
+                    (hasAllAppsHeaderExtra ? ALL_APPS_HEADER_EXTRA : HOTSEAT_ICONS);
         }
     }
 
     @Override
-    public float getWorkspaceScrimAlpha(Launcher launcher) {
+    public float getOverviewScrimAlpha(Launcher launcher) {
         return 0.5f;
     }
 
