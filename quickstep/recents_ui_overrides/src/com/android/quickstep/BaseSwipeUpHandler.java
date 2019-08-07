@@ -411,15 +411,27 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         // FolderIconView can be seen morphing into the icon shape.
         final float windowAlphaThreshold = isFloatingIconView ? 1f - SHAPE_PROGRESS_DURATION : 1f;
         anim.addOnUpdateListener(new RectFSpringAnim.OnUpdateListener() {
+
+            // Alpha interpolates between [1, 0] between progress values [start, end]
+            final float start = 0f;
+            final float end = 0.85f;
+
+            private float getWindowAlpha(float progress) {
+                if (progress <= start) {
+                    return 1f;
+                }
+                if (progress >= end) {
+                    return 0f;
+                }
+                return Utilities.mapToRange(progress, start, end, 1, 0, ACCEL_1_5);
+            }
+
             @Override
             public void onUpdate(RectF currentRect, float progress) {
                 homeAnim.setPlayFraction(progress);
 
-                float alphaProgress = ACCEL_1_5.getInterpolation(progress);
-                float windowAlpha = Utilities.boundToRange(Utilities.mapToRange(alphaProgress, 0,
-                        windowAlphaThreshold, 1.5f, 0f, Interpolators.LINEAR), 0, 1);
                 mTransformParams.setProgress(progress)
-                        .setCurrentRectAndTargetAlpha(currentRect, windowAlpha);
+                        .setCurrentRectAndTargetAlpha(currentRect, getWindowAlpha(progress));
                 if (isFloatingIconView) {
                     mTransformParams.setCornerRadius(endRadius * progress + startRadius
                             * (1f - progress));
@@ -429,7 +441,8 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
                 if (isFloatingIconView) {
                     ((FloatingIconView) floatingView).update(currentRect, 1f, progress,
-                            windowAlphaThreshold, mClipAnimationHelper.getCurrentCornerRadius(), false);
+                            windowAlphaThreshold, mClipAnimationHelper.getCurrentCornerRadius(),
+                            false);
                 }
             }
 
