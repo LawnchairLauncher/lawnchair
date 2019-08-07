@@ -119,8 +119,12 @@ public class RecentTasksList extends TaskStackChangeListener {
     }
 
     @Override
-    public void onRecentTaskListUpdated() {
+    public synchronized void onTaskStackChanged() {
         mChangeId++;
+    }
+
+    @Override
+    public void onTaskRemoved(int taskId) {
         mTasks = loadTasksInBackground(Integer.MAX_VALUE, false);
     }
 

@@ -31,7 +31,6 @@ import com.android.systemui.shared.recents.model.TaskKeyLruCache;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.function.Consumer;
 
 public class TaskThumbnailCache {
@@ -178,10 +177,6 @@ public class TaskThumbnailCache {
         };
         Utilities.postAsyncCallback(mBackgroundHandler, request);
         return request;
-    }
-
-    public Collection<TaskKey> getTaskKeys() {
-        return mCache.getValues();
     }
 
     /**
