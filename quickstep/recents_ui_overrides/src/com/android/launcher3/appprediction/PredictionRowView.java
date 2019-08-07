@@ -32,6 +32,9 @@ import android.view.View;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
@@ -62,9 +65,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 @TargetApi(Build.VERSION_CODES.P)
 public class PredictionRowView extends LinearLayout implements
         LogContainerProvider, OnDeviceProfileChangeListener, FloatingHeaderRow {
@@ -80,7 +80,7 @@ public class PredictionRowView extends LinearLayout implements
 
                 @Override
                 public Integer get(PredictionRowView view) {
-                    return view.mIconCurrentTextAlpha;
+                    return view.mIconLastSetTextAlpha;
                 }
             };
 
@@ -103,6 +103,8 @@ public class PredictionRowView extends LinearLayout implements
 
     private final int mIconTextColor;
     private final int mIconFullTextAlpha;
+    private int mIconLastSetTextAlpha;
+    // Might use mIconFullTextAlpha instead of mIconLastSetTextAlpha if we are translucent.
     private int mIconCurrentTextAlpha;
 
     private FloatingHeaderView mParent;
@@ -315,12 +317,25 @@ public class PredictionRowView extends LinearLayout implements
         }
     }
 
-    public void setTextAlpha(int alpha) {
-        mIconCurrentTextAlpha = alpha;
+    public void setTextAlpha(int textAlpha) {
+        mIconLastSetTextAlpha = textAlpha;
+        if (getAlpha() < 1 && textAlpha > 0) {
+            // If the entire header is translucent, make sure the text is at full opacity so it's
+            // not double-translucent. However, we support keeping the text invisible (alpha == 0).
+            textAlpha = mIconFullTextAlpha;
+        }
+        mIconCurrentTextAlpha = textAlpha;
         int iconColor = setColorAlphaBound(mIconTextColor, mIconCurrentTextAlpha);
         for (int i = 0; i < getChildCount(); i++) {
             ((BubbleTextView) getChildAt(i)).setTextColor(iconColor);
         }
+    }
+
+    @Override
+    public void setAlpha(float alpha) {
+        super.setAlpha(alpha);
+        // Reapply text alpha so that we update it to be full alpha if the row is now translucent.
+        setTextAlpha(mIconLastSetTextAlpha);
     }
 
     @Override
@@ -351,23 +366,15 @@ public class PredictionRowView extends LinearLayout implements
     }
 
     @Override
-    public void setContentVisibility(boolean hasHeaderExtra, boolean hasContent,
-            PropertySetter setter, Interpolator fadeInterpolator) {
-        boolean isDrawn = getAlpha() > 0;
-        int textAlpha = hasHeaderExtra
-                ? (hasContent ? mIconFullTextAlpha : 0) // Text follows the content visibility
-                : mIconCurrentTextAlpha; // Leave as before
-        if (!isDrawn) {
-            // If the header is not drawn, no need to animate the text alpha
-            setTextAlpha(textAlpha);
-        } else {
-            setter.setInt(this, TEXT_ALPHA, textAlpha, fadeInterpolator);
-        }
-
+    public void setContentVisibility(boolean hasHeaderExtra, boolean hasAllAppsContent,
+            PropertySetter setter, Interpolator headerFade, Interpolator allAppsFade) {
+        // Text follows all apps visibility
+        int textAlpha = hasHeaderExtra && hasAllAppsContent ? mIconFullTextAlpha : 0;
+        setter.setInt(this, TEXT_ALPHA, textAlpha, allAppsFade);
         setter.setFloat(mOverviewScrollFactor, AnimatedFloat.VALUE,
-                (hasHeaderExtra && !hasContent) ? 1 : 0, LINEAR);
+                (hasHeaderExtra && !hasAllAppsContent) ? 1 : 0, LINEAR);
         setter.setFloat(mContentAlphaFactor, AnimatedFloat.VALUE, hasHeaderExtra ? 1 : 0,
-                fadeInterpolator);
+                headerFade);
     }
 
     @Override

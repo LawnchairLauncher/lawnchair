@@ -28,6 +28,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.Launcher;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
@@ -66,15 +68,19 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
         return mBadge;
     }
 
-    public static FolderAdaptiveIcon createFolderAdaptiveIcon(
+    public static @Nullable FolderAdaptiveIcon createFolderAdaptiveIcon(
             Launcher launcher, int folderId, Point dragViewSize) {
         Preconditions.assertNonUiThread();
         int margin = launcher.getResources()
                 .getDimensionPixelSize(R.dimen.blur_size_medium_outline);
 
         // Allocate various bitmaps on the background thread, because why not!
-        final Bitmap badge = Bitmap.createBitmap(
-                dragViewSize.x - margin, dragViewSize.y - margin, Bitmap.Config.ARGB_8888);
+        int width = dragViewSize.x - margin;
+        int height = dragViewSize.y - margin;
+        if (width <= 0 || height <= 0) {
+            return null;
+        }
+        final Bitmap badge = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
         // Create the actual drawable on the UI thread to avoid race conditions with
         // FolderIcon draw pass
