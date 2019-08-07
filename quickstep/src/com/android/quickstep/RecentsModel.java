@@ -16,12 +16,15 @@
 package com.android.quickstep;
 
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
+import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SUPPORTS_WINDOW_CORNERS;
+import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_WINDOW_CORNER_RADIUS;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.HandlerThread;
 import android.os.Process;
 import android.os.RemoteException;
@@ -33,11 +36,12 @@ import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.KeyguardManagerCompat;
+import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -128,7 +132,7 @@ public class RecentsModel extends TaskStackChangeListener {
     }
 
     @Override
-    public void onRecentTaskListUpdated() {
+    public void onTaskStackChangedBackground() {
         if (!mThumbnailCache.isPreloadingEnabled()) {
             // Skip if we aren't preloading
             return;
@@ -143,11 +147,7 @@ public class RecentsModel extends TaskStackChangeListener {
         // Keep the cache up to date with the latest thumbnails
         int runningTaskId = RecentsModel.getRunningTaskId();
         mTaskList.getTaskKeys(mThumbnailCache.getCacheSize(), tasks -> {
-            Collection<Task.TaskKey> currentKeys = mThumbnailCache.getTaskKeys();
-            List<Task.TaskKey> newKeys = new ArrayList<>(currentKeys.size());
-
             for (Task task : tasks) {
-                newKeys.add(task.key);
                 if (task.key.id == runningTaskId) {
                     // Skip the running task, it's not going to have an up-to-date snapshot by the
                     // time the user next enters overview
@@ -155,13 +155,6 @@ public class RecentsModel extends TaskStackChangeListener {
                 }
                 mThumbnailCache.updateThumbnailInCache(task);
             }
-
-            // Remove all keys we had before but no longer are in recents now
-            currentKeys.removeAll(newKeys);
-            for (Task.TaskKey tk : currentKeys) {
-                mThumbnailCache.remove(tk);
-            }
-
         });
     }
 
@@ -175,6 +168,12 @@ public class RecentsModel extends TaskStackChangeListener {
                 task.thumbnail = snapshot;
             }
         }
+    }
+
+    @Override
+    public void onTaskRemoved(int taskId) {
+        Task.TaskKey dummyKey = new Task.TaskKey(taskId, 0, null, null, 0, 0);
+        mThumbnailCache.remove(dummyKey);
     }
 
     public void setSystemUiProxy(ISystemUiProxy systemUiProxy) {
