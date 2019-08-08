@@ -518,6 +518,7 @@ public abstract class AbstractStateChangeTouchController
             logReachedState(logAction, targetState);
         }
         mLauncher.getStateManager().goToState(targetState, false /* animated */);
+        mLauncher.getDragLayer().getScrim().animateToSysuiMultiplier(1, 0, 0);
     }
 
     private void logReachedState(int logAction, LauncherState targetState) {

@@ -62,7 +62,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     /**
      * The progress at which all apps content will be fully visible when swiping up from overview.
      */
-    private static final float ALL_APPS_CONTENT_FADE_THRESHOLD = 0.08f;
+    protected static final float ALL_APPS_CONTENT_FADE_THRESHOLD = 0.08f;
 
     /**
      * The progress at which recents will begin fading out when swiping up from overview.
