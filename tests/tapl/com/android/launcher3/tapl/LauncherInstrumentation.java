@@ -956,4 +956,9 @@ public final class LauncherInstrumentation {
     public void disableDebugTracing() {
         getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
     }
+
+    public long getAllocatedMemory() {
+        return getTestInfo(TestProtocol.REQUEST_ALLOCATED_MEMORY).
+                getLong(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
 }
