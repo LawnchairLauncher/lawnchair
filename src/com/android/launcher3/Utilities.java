@@ -1030,4 +1030,9 @@ public final class Utilities {
             return object.getScaleX();
         }
     };
+
+    public static boolean hasWriteSecureSettingsPermission(Context context) {
+        return ContextCompat.checkSelfPermission(context,
+                android.Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED;
+    }
 }
