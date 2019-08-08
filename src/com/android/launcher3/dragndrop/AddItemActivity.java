@@ -153,16 +153,6 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         PinItemDragListener listener = new PinItemDragListener(mRequest, bounds,
                 img.getBitmap().getWidth(), img.getWidth());
 
-        Intent homeIntent = listener.addToIntent(
-                new Intent(Intent.ACTION_MAIN)
-                        .addCategory(Intent.CATEGORY_HOME)
-                        .setPackage(getPackageName())
-                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-
-        listener.initWhenReady();
-        startActivity(homeIntent,
-                ActivityOptions.makeCustomAnimation(this, 0, android.R.anim.fade_out).toBundle());
-        mFinishOnPause = true;
 
         // Start a system drag and drop. We use a transparent bitmap as preview for system drag
         // as the preview is handled internally by launcher.
@@ -179,6 +169,18 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
                 outShadowTouchPoint.set(SHADOW_SIZE / 2, SHADOW_SIZE / 2);
             }
         }, null, View.DRAG_FLAG_GLOBAL);
+
+
+        Intent homeIntent = listener.addToIntent(
+                new Intent(Intent.ACTION_MAIN)
+                        .addCategory(Intent.CATEGORY_HOME)
+                        .setPackage(getPackageName())
+                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+
+        listener.initWhenReady();
+        startActivity(homeIntent,
+                ActivityOptions.makeCustomAnimation(this, 0, android.R.anim.fade_out).toBundle());
+        mFinishOnPause = true;
         return false;
     }
 
