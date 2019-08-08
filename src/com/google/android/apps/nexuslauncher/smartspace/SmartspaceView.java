@@ -231,7 +231,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         bindWeather(data, mTitleWeatherContent, mTitleWeatherText, mTitleWeatherIcon);
         bindClockAndSeparator(false);
         int clockAboveTextSize;
-        float clockAboveWeight;
         if (data.isCardAvailable()) {
             mSubtitleLine.setVisibility(View.VISIBLE);
             mSubtitleText.setText(data.getCard().getTitle());
@@ -249,15 +248,12 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             }
 
             clockAboveTextSize = R.dimen.smartspace_title_size;
-            clockAboveWeight = 0f;
         } else {
             mSubtitleLine.setVisibility(View.GONE);
             clockAboveTextSize = R.dimen.smartspace_clock_above_size;
-            clockAboveWeight = 1.25f;
         }
         mClockAboveView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 getResources().getDimensionPixelSize(clockAboveTextSize));
-        ((LinearLayout.LayoutParams) mClockAboveView.getLayoutParams()).weight = clockAboveWeight;
     }
 
     private void bindClockAndSeparator(boolean forced) {
