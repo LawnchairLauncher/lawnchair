@@ -219,4 +219,9 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         }
         return cn;
     }
+
+    @Override
+    public ItemInfoWithIcon clone() {
+        return new WorkspaceItemInfo(this);
+    }
 }

@@ -32,8 +32,17 @@ public class PackageItemInfo extends ItemInfoWithIcon {
         this.packageName = packageName;
     }
 
+    public PackageItemInfo(PackageItemInfo copy) {
+        this.packageName = copy.packageName;
+    }
+
     @Override
     protected String dumpProperties() {
         return super.dumpProperties() + " packageName=" + packageName;
+    }
+
+    @Override
+    public PackageItemInfo clone() {
+        return new PackageItemInfo(this);
     }
 }

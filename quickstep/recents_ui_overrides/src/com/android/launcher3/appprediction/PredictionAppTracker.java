@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.appprediction;
 
-import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_GRID;
-
 import android.annotation.TargetApi;
 import android.app.prediction.AppPredictionContext;
 import android.app.prediction.AppPredictionManager;
@@ -34,13 +32,15 @@ import android.os.UserHandle;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+import androidx.annotation.WorkerThread;
+
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.util.UiThreadHelper;
 
-import androidx.annotation.UiThread;
-import androidx.annotation.WorkerThread;
+import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_GRID;
 
 /**
  * Subclass of app tracker which publishes the data to the prediction engine and gets back results.
@@ -174,6 +174,7 @@ public class PredictionAppTracker extends AppLaunchTracker {
                 new AppTargetId("shortcut:" + shortcutId), packageName, user)
                 .setClassName(shortcutId)
                 .build();
+
         sendLaunch(target, container);
     }
 
@@ -189,11 +190,32 @@ public class PredictionAppTracker extends AppLaunchTracker {
         }
     }
 
+    @Override
     @UiThread
-    private void sendLaunch(AppTarget target, String container) {
-        AppTargetEvent event = new AppTargetEvent.Builder(target, AppTargetEvent.ACTION_LAUNCH)
+    public void onDismissApp(ComponentName cn, UserHandle user, String container) {
+        if (cn == null) return;
+        AppTarget target = new AppTarget.Builder(
+                new AppTargetId("app: " + cn), cn.getPackageName(), user)
+                .setClassName(cn.getClassName())
+                .build();
+        sendDismiss(target, container);
+    }
+
+    @UiThread
+    private void sendEvent(AppTarget target, String container, int eventId) {
+        AppTargetEvent event = new AppTargetEvent.Builder(target, eventId)
                 .setLaunchLocation(container == null ? CONTAINER_DEFAULT : container)
                 .build();
         Message.obtain(mMessageHandler, MSG_LAUNCH, event).sendToTarget();
+    }
+
+    @UiThread
+    private void sendLaunch(AppTarget target, String container) {
+        sendEvent(target, container, AppTargetEvent.ACTION_LAUNCH);
+    }
+
+    @UiThread
+    private void sendDismiss(AppTarget target, String container) {
+        sendEvent(target, container, AppTargetEvent.ACTION_DISMISS);
     }
 }

@@ -116,6 +116,10 @@ abstract class BaseFlags {
             "APP_SEARCH_IMPROVEMENTS", false,
             "Adds localized title and keyword search and ranking");
 
+    public static final TogglableFlag ENABLE_PREDICTION_DISMISS = new TogglableFlag(
+            "ENABLE_PREDICTION_DISMISS", false, "Allow option to dimiss apps from predicted list");
+
+
     public static void initialize(Context context) {
         // Avoid the disk read for user builds
         if (Utilities.IS_DEBUG_DEVICE) {

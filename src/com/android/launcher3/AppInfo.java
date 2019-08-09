@@ -85,6 +85,8 @@ public class AppInfo extends ItemInfoWithIcon {
         componentName = info.componentName;
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
+        user = info.user;
+        runtimeStatusFlags = info.runtimeStatusFlags;
     }
 
     @Override
@@ -126,5 +128,10 @@ public class AppInfo extends ItemInfoWithIcon {
             // The icon for a non-primary user is badged, hence it's not exactly an adaptive icon.
             info.runtimeStatusFlags |= FLAG_ADAPTIVE_ICON;
         }
+    }
+
+    @Override
+    public AppInfo clone() {
+        return new AppInfo(this);
     }
 }
