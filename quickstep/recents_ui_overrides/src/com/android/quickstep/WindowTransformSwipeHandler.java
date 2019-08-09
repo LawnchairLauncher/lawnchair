@@ -926,18 +926,19 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                                 : LAST_TASK;
             }
         } else {
-            if (mMode == Mode.NO_BUTTON && endVelocity < 0 && !mIsShelfPeeking) {
+            // If swiping at a diagonal, base end target on the faster velocity.
+            boolean isSwipeUp = endVelocity < 0;
+            boolean willGoToNewTaskOnSwipeUp =
+                    goingToNewTask && Math.abs(velocity.x) > Math.abs(endVelocity);
+
+            if (mMode == Mode.NO_BUTTON && isSwipeUp && !willGoToNewTaskOnSwipeUp) {
+                endTarget = HOME;
+            } else if (mMode == Mode.NO_BUTTON && isSwipeUp && !mIsShelfPeeking) {
                 // If swiping at a diagonal, base end target on the faster velocity.
-                endTarget = goingToNewTask && Math.abs(velocity.x) > Math.abs(endVelocity)
-                        ? NEW_TASK : HOME;
-            } else if (endVelocity < 0) {
-                if (reachedOverviewThreshold) {
-                    endTarget = RECENTS;
-                } else {
-                    // If swiping at a diagonal, base end target on the faster velocity.
-                    endTarget = goingToNewTask && Math.abs(velocity.x) > Math.abs(endVelocity)
-                            ? NEW_TASK : RECENTS;
-                }
+                endTarget = NEW_TASK;
+            } else if (isSwipeUp) {
+                endTarget = !reachedOverviewThreshold && willGoToNewTaskOnSwipeUp
+                        ? NEW_TASK : RECENTS;
             } else {
                 endTarget = goingToNewTask ? NEW_TASK : LAST_TASK;
             }
