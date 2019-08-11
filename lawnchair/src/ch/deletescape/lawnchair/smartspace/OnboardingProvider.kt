@@ -20,11 +20,9 @@
 package ch.deletescape.lawnchair.smartspace
 
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
-import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.allapps.DiscoveryBounce
@@ -40,15 +38,15 @@ class OnboardingProvider(controller: LawnchairSmartspaceController) :
     private val devicePrefs = Utilities.getDevicePrefs(context)
     private val prefs = Utilities.getPrefs(context)
 
-    override fun performSetup() {
-        super.performSetup()
+    override fun startListening() {
+        super.startListening()
         devicePrefs.registerOnSharedPreferenceChangeListener(this)
         prefs.registerOnSharedPreferenceChangeListener(this)
         update()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun stopListening() {
+        super.stopListening()
         devicePrefs.unregisterOnSharedPreferenceChangeListener(this)
         prefs.unregisterOnSharedPreferenceChangeListener(this)
     }

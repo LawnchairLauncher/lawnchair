@@ -66,8 +66,8 @@ class BatteryStatusProvider(controller: LawnchairSmartspaceController) :
                 forceSingleLine = true)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun stopListening() {
+        super.stopListening()
         context.unregisterReceiver(batteryReceiver)
     }
 }

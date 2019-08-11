@@ -19,11 +19,9 @@ package ch.deletescape.lawnchair.smartspace
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.location.Criteria
 import android.location.LocationManager
 import android.support.annotation.Keep
-import android.util.Log
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.checkLocationAccess
 import ch.deletescape.lawnchair.lawnchairApp
@@ -32,9 +30,7 @@ import ch.deletescape.lawnchair.smartspace.accu.AccuRetrofitServiceFactory
 import ch.deletescape.lawnchair.smartspace.accu.model.AccuLocalWeatherGSon
 import ch.deletescape.lawnchair.smartspace.accu.model.sub.AccuLocationGSon
 import ch.deletescape.lawnchair.smartspace.weather.icons.WeatherIconManager
-import ch.deletescape.lawnchair.smartspace.weather.icons.WeatherIconPackProviderImpl
 import ch.deletescape.lawnchair.util.Temperature
-import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import retrofit2.Call
 import retrofit2.Callback
@@ -112,8 +108,8 @@ class AccuWeatherDataProvider(controller: LawnchairSmartspaceController) :
         })
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun stopListening() {
+        super.stopListening()
         prefs.removeOnPreferenceChangeListener(this, "pref_weather_city")
     }
 

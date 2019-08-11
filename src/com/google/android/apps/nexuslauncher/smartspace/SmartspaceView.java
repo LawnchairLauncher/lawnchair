@@ -32,6 +32,10 @@ import ch.deletescape.lawnchair.LawnchairAppKt;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController;
+import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.CardData;
+import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.Line;
+import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.WeatherData;
+import ch.deletescape.lawnchair.views.SmartspacePreview;
 import com.android.launcher3.*;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.graphics.ShadowGenerator;
@@ -40,7 +44,13 @@ import com.google.android.apps.nexuslauncher.DynamicIconProvider;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 import com.google.android.apps.nexuslauncher.graphics.DoubleShadowTextView;
 import com.google.android.apps.nexuslauncher.graphics.IcuDateTextView;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAnimator.AnimatorUpdateListener,
         View.OnClickListener, View.OnLongClickListener, Runnable, LawnchairSmartspaceController.Listener {
@@ -64,7 +74,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     private final OnClickListener mCalendarClickListener;
     private final OnClickListener mClockClickListener;
     private final OnClickListener mWeatherClickListener;
-    private final OnClickListener mEventClickListener;
+    private OnClickListener mEventClickListener;
     private View mSubtitleLine;
     private ImageView mSubtitleIcon;
     private TextView mSubtitleText;
@@ -88,6 +98,8 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
 
     private Paint mTextPaint = new Paint();
     private Rect mTextBounds = new Rect();
+
+    private boolean mPerformingSetup = false;
 
     public SmartspaceView(final Context context, AttributeSet set) {
         super(context, set);
@@ -121,11 +133,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         mWeatherClickListener = v -> {
             if (mController != null)
                 mController.openWeather(v);
-        };
-
-        mEventClickListener = v -> {
-            if (mController != null)
-                mController.openEvent(v);
         };
 
         dp = SmartspaceController.get(context);
@@ -194,50 +201,72 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         }
     }
 
+    private void setupIfNeeded() {
+        if (!mPerformingSetup && mController.getRequiresSetup()) {
+            mPerformingSetup = true;
+            mController.startSetup(() -> {
+                mPerformingSetup = false;
+                return null;
+            });
+        }
+    }
+
     @Override
-    public void onDataUpdated(@NotNull LawnchairSmartspaceController.DataContainer data) {
-        if (mDoubleLine != data.isDoubleLine()) {
-            mDoubleLine = data.isDoubleLine();
+    public void onDataUpdated(@Nullable WeatherData weather, @Nullable CardData card) {
+        if (mController.getRequiresSetup()) {
+            if (getParent() instanceof SmartspacePreview) {
+                setupIfNeeded();
+            } else {
+                List<Line> lines = new ArrayList<>();
+                lines.add(new Line(getContext().getString(R.string.smartspace_setup_text)));
+                card = new CardData(null, lines, v -> setupIfNeeded(), false);
+            }
+        }
+
+        mEventClickListener = card != null ? card.getOnClickListener() : null;
+        boolean doubleLine = card != null && card.isDoubleLine();
+        if (mDoubleLine != doubleLine) {
+            mDoubleLine = doubleLine;
             cs();
         }
         setOnClickListener(this);
         setOnLongClickListener(co());
-        mWeatherAvailable = data.isWeatherAvailable();
+        mWeatherAvailable = weather != null;
         if (mDoubleLine) {
-            loadDoubleLine(data);
+            loadDoubleLine(weather, card);
         } else {
-            loadSingleLine(data);
+            loadSingleLine(weather, card);
         }
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void loadDoubleLine(final LawnchairSmartspaceController.DataContainer data) {
+    private void loadDoubleLine(@Nullable WeatherData weather, @NotNull CardData card) {
         setOnClickListener(mEventClickListener);
         setBackgroundResource(mSmartspaceBackgroundRes);
-        mTitleText.setText(data.getCard().getTitle());
-        mTitleText.setEllipsize(data.getCard().getTitleEllipsize());
-        mSubtitleText.setText(data.getCard().getSubtitle());
-        mSubtitleText.setEllipsize(data.getCard().getSubtitleEllipsize());
+        mTitleText.setText(card.getTitle());
+        mTitleText.setEllipsize(card.getTitleEllipsize());
+        mSubtitleText.setText(card.getSubtitle());
+        mSubtitleText.setEllipsize(card.getSubtitleEllipsize());
         mSubtitleIcon.setImageTintList(dH);
-        mSubtitleIcon.setImageBitmap(data.getCard().getIcon());
-        bindWeather(data, mSubtitleWeatherContent, mSubtitleWeatherText, mSubtitleWeatherIcon);
+        mSubtitleIcon.setImageBitmap(card.getIcon());
+        bindWeather(weather, mSubtitleWeatherContent, mSubtitleWeatherText, mSubtitleWeatherIcon);
         bindClockAbove(false);
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void loadSingleLine(final LawnchairSmartspaceController.DataContainer data) {
+    private void loadSingleLine(@Nullable WeatherData weather, @Nullable CardData card) {
         setOnClickListener(null);
         setBackgroundResource(0);
-        bindWeather(data, mTitleWeatherContent, mTitleWeatherText, mTitleWeatherIcon);
+        bindWeather(weather, mTitleWeatherContent, mTitleWeatherText, mTitleWeatherIcon);
         bindClockAndSeparator(false);
         int clockAboveTextSize;
-        if (data.isCardAvailable()) {
+        if (card != null) {
             mSubtitleLine.setVisibility(View.VISIBLE);
-            mSubtitleText.setText(data.getCard().getTitle());
-            mSubtitleText.setEllipsize(data.getCard().getTitleEllipsize());
+            mSubtitleText.setText(card.getTitle());
+            mSubtitleText.setEllipsize(card.getTitleEllipsize());
             mSubtitleText.setOnClickListener(mEventClickListener);
 
-            Bitmap icon = data.getCard().getIcon();
+            Bitmap icon = card.getIcon();
             if (icon != null) {
                 mSubtitleIcon.setVisibility(View.VISIBLE);
                 mSubtitleIcon.setImageTintList(dH);
@@ -250,6 +279,8 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             clockAboveTextSize = R.dimen.smartspace_title_size;
         } else {
             mSubtitleLine.setVisibility(View.GONE);
+            mSubtitleText.setOnClickListener(null);
+            mSubtitleIcon.setOnClickListener(null);
             clockAboveTextSize = R.dimen.smartspace_clock_above_size;
         }
         mClockAboveView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
@@ -288,15 +319,15 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         }
     }
 
-    private void bindWeather(LawnchairSmartspaceController.DataContainer data, View container, TextView title, ImageView icon) {
-        mWeatherAvailable = data.isWeatherAvailable();
+    private void bindWeather(@Nullable WeatherData weather, View container, TextView title, ImageView icon) {
+        mWeatherAvailable = weather != null;
         if (mWeatherAvailable) {
             container.setVisibility(View.VISIBLE);
             container.setOnClickListener(mWeatherClickListener);
             container.setOnLongClickListener(co());
-            title.setText(data.getWeather().getTitle(
+            title.setText(weather.getTitle(
                     Utilities.getLawnchairPrefs(getContext()).getWeatherUnit()));
-            icon.setImageBitmap(addShadowToBitmap(data.getWeather().getIcon()));
+            icon.setImageBitmap(addShadowToBitmap(weather.getIcon()));
         } else {
             container.setVisibility(View.GONE);
         }

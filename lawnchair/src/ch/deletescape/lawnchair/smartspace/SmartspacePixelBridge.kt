@@ -31,15 +31,15 @@ class SmartspacePixelBridge(controller: LawnchairSmartspaceController) :
     private var data: SmartspaceDataContainer? = null
     private var ds = false
 
-    override fun performSetup() {
-        super.performSetup()
+    override fun startListening() {
+        super.startListening()
 
         updateData(null, null)
         smartspaceController.da(this)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun stopListening() {
+        super.stopListening()
         smartspaceController.da(null)
     }
 

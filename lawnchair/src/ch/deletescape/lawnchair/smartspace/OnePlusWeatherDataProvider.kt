@@ -19,7 +19,6 @@ package ch.deletescape.lawnchair.smartspace
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.location.Criteria
 import android.location.LocationManager
 import android.support.annotation.Keep
@@ -32,8 +31,6 @@ import ch.deletescape.lawnchair.twilight.TwilightManager
 import ch.deletescape.lawnchair.util.Temperature
 import com.android.launcher3.R
 import com.android.launcher3.util.PackageManagerHelper
-import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator
-import com.luckycatlabs.sunrisesunset.dto.Location
 import net.oneplus.launcher.OPWeatherProvider
 import java.util.*
 import java.util.Calendar.HOUR_OF_DAY
@@ -56,10 +53,10 @@ class OnePlusWeatherDataProvider(controller: LawnchairSmartspaceController) :
         }
     }
 
-    override fun performSetup() {
+    override fun startListening() {
         provider.registerContentObserver(context.contentResolver)
         provider.subscribeCallback(this)
-        super.performSetup()
+        super.startListening()
     }
 
     override fun forceUpdate() {
@@ -79,13 +76,11 @@ class OnePlusWeatherDataProvider(controller: LawnchairSmartspaceController) :
     }
 
     private fun update(weatherData: OPWeatherProvider.WeatherData) {
-        runOnUiWorkerThread {
-            updateData(LawnchairSmartspaceController.WeatherData(
-                    getConditionIcon(weatherData),
-                    Temperature(weatherData.temperature, getTemperatureUnit(weatherData)),
-                    forecastIntent = Intent().setClassName(OPWeatherProvider.WEATHER_PACKAGE_NAME, OPWeatherProvider.WEATHER_LAUNCH_ACTIVITY)
-            ), null)
-        }
+        updateData(LawnchairSmartspaceController.WeatherData(
+                getConditionIcon(weatherData),
+                Temperature(weatherData.temperature, getTemperatureUnit(weatherData)),
+                forecastIntent = Intent().setClassName(OPWeatherProvider.WEATHER_PACKAGE_NAME, OPWeatherProvider.WEATHER_LAUNCH_ACTIVITY)
+        ), null)
     }
 
     private fun getConditionIcon(data: OPWeatherProvider.WeatherData):Bitmap {
@@ -115,8 +110,8 @@ class OnePlusWeatherDataProvider(controller: LawnchairSmartspaceController) :
     }
 
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun stopListening() {
+        super.stopListening()
         provider.unregisterContentObserver(context.contentResolver)
         provider.unsubscribeCallback(this)
     }

@@ -29,7 +29,6 @@ import android.support.annotation.Keep
 import ch.deletescape.lawnchair.dayOfYear
 import ch.deletescape.lawnchair.hourOfDay
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
 import java.util.*
 import kotlin.math.abs
 import kotlin.random.Random
@@ -62,8 +61,8 @@ class PersonalityProvider(controller: LawnchairSmartspaceController) :
 
     private fun currentTime() = Calendar.getInstance()
 
-    override fun performSetup() {
-        super.performSetup()
+    override fun startListening() {
+        super.startListening()
         context.registerReceiver(
                 timeReceiver,
                 IntentFilter().apply {
@@ -84,8 +83,8 @@ class PersonalityProvider(controller: LawnchairSmartspaceController) :
         handler.postDelayed(onUpdateRunnable, updateInterval - now % updateInterval)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun stopListening() {
+        super.stopListening()
         handler.removeCallbacks(onUpdateRunnable)
     }
 
