@@ -35,8 +35,8 @@ class NowPlayingProvider(controller: LawnchairSmartspaceController) :
     private val media = MediaListener(context, this::reload, Handler(LauncherModel.getUiWorkerLooper()))
     private val defaultIcon = context.getDrawable(R.drawable.ic_music_note)!!.toBitmap()!!
 
-    override fun waitForSetup() {
-        super.waitForSetup()
+    override fun startListening() {
+        super.startListening()
 
         media.onResume()
     }
@@ -72,8 +72,8 @@ class NowPlayingProvider(controller: LawnchairSmartspaceController) :
         updateData(null, getEventCard())
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun stopListening() {
+        super.stopListening()
         media.onPause()
     }
 }

@@ -17,7 +17,6 @@
 
 package ch.deletescape.lawnchair.smartspace
 
-import android.Manifest
 import android.content.Context
 import android.location.Criteria
 import android.location.LocationManager
@@ -28,7 +27,6 @@ import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.checkLocationAccess
 import ch.deletescape.lawnchair.lawnchairApp
 import ch.deletescape.lawnchair.util.Temperature
-import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.kwabenaberko.openweathermaplib.constants.Units
@@ -96,8 +94,8 @@ class OWMWeatherDataProvider(controller: LawnchairSmartspaceController) :
         updateData(null, null)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun stopListening() {
+        super.stopListening()
         prefs.removeOnPreferenceChangeListener(this, "pref_weatherApiKey", "pref_weather_city", "pref_weather_units")
     }
 
