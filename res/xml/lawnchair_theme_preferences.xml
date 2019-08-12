@@ -20,7 +20,7 @@
             app:controllerClass=".IconPackMaskingController"/>
 
         <ch.deletescape.lawnchair.adaptive.IconShapePreference
-            android:defaultValue="circle"
+            android:defaultValue=""
             android:entries="@array/icon_shape_names"
             android:entryValues="@array/icon_shape_values"
             android:key="pref_iconShape"
