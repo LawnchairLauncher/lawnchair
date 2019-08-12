@@ -10,7 +10,6 @@ import ch.deletescape.lawnchair.iconpack.IconPackManager;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.shortcuts.DeepShortcutManager;

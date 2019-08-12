@@ -34,6 +34,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
 
+import ch.deletescape.lawnchair.allapps.FuzzyAppSearchAlgorithm;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Insettable;
@@ -143,7 +144,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         mApps = appsView.getApps();
         mAppsView = appsView;
         mSearchBarController.initialize(
-                new DefaultAppSearchAlgorithm(getContext(), mApps.getApps()), this, mLauncher, this);
+                new FuzzyAppSearchAlgorithm(getContext(), mApps.getApps()), this, mLauncher, this);
     }
 
     @Override

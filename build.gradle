@@ -306,6 +306,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.0.0-RC1'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
 
+    implementation 'me.xdrop:fuzzywuzzy:1.2.0'
+
     quickstepImplementation project(':systemui-shared')
     lawnchairImplementation files('lawnchair/libs/sesame-lib.aar')
 
