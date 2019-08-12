@@ -443,7 +443,9 @@
     <string name="app_actions_pref_title">Actions</string>
     <string name="app_actions_pref_title_in_search">Action suggestions</string>
     <string name="app_actions_pref_desc">Shortcuts to frequently opened screens</string>
-    
+    <string name="app_actions_reset_pref_title">Reset hidden actions</string>
+    <string name="app_actions_reset_pref_summary">Resets actions which were previously hidden by dragging them to the \"don\’t show\" button</string>
+
     <string name="change_default_home">Set as home screen</string>
     <string name="recent_task_option_popup_window">Dialog window</string>
     <string name="feed_theme_pref_title">Background color</string>
