@@ -63,7 +63,7 @@ class FuzzyAppSearchAlgorithm(private val context: Context, private val apps: Li
     }
 
     companion object {
-        const val MIN_SCORE = 60
+        const val MIN_SCORE = 65
 
         @JvmStatic
         fun getApps(context: Context, defaultApps: List<AppInfo>,
@@ -90,10 +90,13 @@ class FuzzyAppSearchAlgorithm(private val context: Context, private val apps: Li
         @JvmStatic
         fun query(context: Context, query: String, defaultApps: List<AppInfo>,
                   filter: AppFilter): List<AppInfo> {
-            return FuzzySearch.extractSorted(query, getApps(context, defaultApps, filter),
-                                             ToStringFunction<AppInfo> { item ->
-                                                 item?.title.toString()
-                                             }, WinklerWeightedRatio(), MIN_SCORE).map { it.referent }
+            return FuzzySearch.extractAll(query, getApps(context, defaultApps, filter),
+                                          ToStringFunction<AppInfo> { item ->
+                                              item?.title.toString()
+                                          }, WinklerWeightedRatio(), MIN_SCORE)
+                    .sortedBy { it.referent.title.toString() }
+                    .sortedByDescending { it.score }
+                    .map { it.referent }
         }
     }
 }
