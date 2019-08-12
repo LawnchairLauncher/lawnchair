@@ -330,6 +330,10 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
 
     fun getActions(callback: (ArrayList<Action>) -> Unit) {
         cleanActions()
+        if (!isActionsEnabled) {
+            callback(ArrayList())
+            return
+        }
         runOnUiWorkerThread {
             if (Sesame.isAvailable(context)) {
                 val lst = SesameFrontend.getUsageCounts(System.currentTimeMillis() - TimeUnit.HOURS.toMillis(4),
@@ -369,7 +373,12 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
             }
         } else if (key == SettingsActivity.SHOW_ACTIONS_PREF) {
             if (!isActionsEnabled) {
-                actionList.clear()
+                getActions {
+                    actions ->
+                    runOnMainThread {
+                        actionsRow.onUpdated(actions)
+                    }
+                }
             }
         } else if (key == SettingsActivity.HIDDEN_ACTIONS_PREF) {
             updateActions()
