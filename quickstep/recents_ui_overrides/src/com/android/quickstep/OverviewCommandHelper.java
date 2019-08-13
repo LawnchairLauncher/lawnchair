@@ -109,7 +109,7 @@ public class OverviewCommandHelper {
                 TaskView taskView = rv.getNextTaskView();
                 if (taskView == null) {
                     if (rv.getTaskViewCount() > 0) {
-                        taskView = (TaskView) rv.getPageAt(0);
+                        taskView = rv.getTaskViewAt(0);
                         taskView.requestFocus();
                     } else {
                         rv.requestFocus();

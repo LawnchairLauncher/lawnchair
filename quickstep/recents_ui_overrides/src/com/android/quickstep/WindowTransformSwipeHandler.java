@@ -479,8 +479,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             recentsAttachedToAppWindow = mIsShelfPeeking || mIsLikelyToStartNewTask;
             if (animate) {
                 // Only animate if an adjacent task view is visible on screen.
-                TaskView adjacentTask1 = mRecentsView.getTaskViewAt(runningTaskIndex + 1);
-                TaskView adjacentTask2 = mRecentsView.getTaskViewAt(runningTaskIndex - 1);
+                TaskView adjacentTask1 = mRecentsView.getNextTaskView();
+                TaskView adjacentTask2 = mRecentsView.getPreviousTaskView();
                 float prevTranslationX = mRecentsView.getTranslationX();
                 mRecentsView.setTranslationX(0);
                 animate = (adjacentTask1 != null && adjacentTask1.getGlobalVisibleRect(TEMP_RECT))
@@ -590,8 +590,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
      */
     private void updateSysUiFlags(float windowProgress) {
         if (mRecentsView != null) {
-            TaskView centermostTask = mRecentsView.getTaskViewAt(mRecentsView
-                    .getPageNearestToCenterOfScreen());
+            TaskView centermostTask = mRecentsView.getTaskViewNearestToCenterOfScreen();
             int centermostTaskFlags = centermostTask == null ? 0
                     : centermostTask.getThumbnail().getSysUiStatusNavFlags();
             boolean useHomeScreenFlags = windowProgress > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD;

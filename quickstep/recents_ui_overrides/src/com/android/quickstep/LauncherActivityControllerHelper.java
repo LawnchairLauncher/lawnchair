@@ -268,7 +268,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                         INDEX_RECENTS_FADE_ANIM, attached ? 1 : 0);
 
                 int runningTaskIndex = recentsView.getRunningTaskIndex();
-                if (runningTaskIndex == 0) {
+                if (runningTaskIndex == recentsView.getTaskViewStartIndex()) {
                     // If we are on the first task (we haven't quick switched), translate recents in
                     // from the side. Calculate the start translation based on current scale/scroll.
                     float currScale = recentsView.getScaleX();
@@ -351,8 +351,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     private void playScaleDownAnim(AnimatorSet anim, Launcher launcher, LauncherState fromState,
             LauncherState endState) {
         RecentsView recentsView = launcher.getOverviewPanel();
-        TaskView v = recentsView.getTaskViewAt(recentsView.getCurrentPage());
-        if (v == null) {
+        if (recentsView.getCurrentPageTaskView() == null) {
             return;
         }
 
@@ -380,7 +379,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
             // recents as a whole needs to translate further to keep up with the app window.
             TaskView runningTaskView = recentsView.getRunningTaskView();
             if (runningTaskView == null) {
-                runningTaskView = recentsView.getTaskViewAt(recentsView.getCurrentPage());
+                runningTaskView = recentsView.getCurrentPageTaskView();
             }
             TimeInterpolator oldInterpolator = translateY.getInterpolator();
             Rect fallbackInsets = launcher.getDeviceProfile().getInsets();
