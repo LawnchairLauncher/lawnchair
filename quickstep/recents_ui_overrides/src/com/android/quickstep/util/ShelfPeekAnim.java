@@ -30,6 +30,7 @@ import com.android.launcher3.uioverrides.states.OverviewState;
 /**
  * Animates the shelf between states HIDE, PEEK, and OVERVIEW.
  */
+
 public class ShelfPeekAnim {
 
     public static final Interpolator INTERPOLATOR = OVERSHOOT_1_2;

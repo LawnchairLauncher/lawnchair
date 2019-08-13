@@ -39,6 +39,7 @@ public class Interpolators {
     public static final Interpolator LINEAR = new LinearInterpolator();
 
     public static final Interpolator ACCEL = new AccelerateInterpolator();
+    public static final Interpolator ACCEL_0_75 = new AccelerateInterpolator(0.75f);
     public static final Interpolator ACCEL_1_5 = new AccelerateInterpolator(1.5f);
     public static final Interpolator ACCEL_2 = new AccelerateInterpolator(2);
 
@@ -48,6 +49,7 @@ public class Interpolators {
     public static final Interpolator DEACCEL_2 = new DecelerateInterpolator(2);
     public static final Interpolator DEACCEL_2_5 = new DecelerateInterpolator(2.5f);
     public static final Interpolator DEACCEL_3 = new DecelerateInterpolator(3f);
+    public static final Interpolator DEACCEL_5 = new DecelerateInterpolator(5f);
 
     public static final Interpolator ACCEL_DEACCEL = new AccelerateDecelerateInterpolator();
 
