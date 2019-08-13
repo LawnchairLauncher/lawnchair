@@ -27,7 +27,7 @@ import android.view.ViewGroup;
  */
 public class AlphaUpdateListener extends AnimationSuccessListener
         implements AnimatorUpdateListener {
-    private static final float ALPHA_CUTOFF_THRESHOLD = 0.01f;
+    public static final float ALPHA_CUTOFF_THRESHOLD = 0.01f;
 
     private View mView;
 
