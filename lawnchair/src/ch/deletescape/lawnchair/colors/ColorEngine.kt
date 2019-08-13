@@ -50,7 +50,11 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
     }
 
     private fun onColorChanged(key: String, colorResolver: ColorResolver) {
-        runOnMainThread { colorListeners[key]?.forEach { it.onColorChange(ResolveInfo(key, colorResolver)) } }
+        synchronized(colorListeners) {
+            runOnMainThread {
+                colorListeners[key]?.forEach { it.onColorChange(ResolveInfo(key, colorResolver)) }
+            }
+        }
     }
 
     fun addColorChangeListeners(listener: OnColorChangeListener, vararg keys: String) {
@@ -116,7 +120,7 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
     }
 
     fun setColor(resolver: String, color: Int) {
-        var needsApply = prefs.editor == null
+        val needsApply = prefs.editor == null
         val editor = prefs.editor ?: prefs.sharedPrefs.edit()
         setColor(editor, resolver, color)
         if (needsApply) {
