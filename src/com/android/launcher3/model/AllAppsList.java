@@ -23,6 +23,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
+import android.os.LocaleList;
 import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
@@ -30,6 +31,7 @@ import android.util.Log;
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.PromiseAppInfo;
+import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
@@ -68,12 +70,15 @@ public class AllAppsList {
     private boolean mDataChanged = false;
     private Consumer<AppInfo> mRemoveListener = NO_OP_CONSUMER;
 
+    private AlphabeticIndexCompat mIndex;
+
     /**
      * Boring constructor.
      */
     public AllAppsList(IconCache iconCache, AppFilter appFilter) {
         mIconCache = iconCache;
         mAppFilter = appFilter;
+        mIndex = new AlphabeticIndexCompat(LocaleList.getDefault());
     }
 
     /**
@@ -99,6 +104,7 @@ public class AllAppsList {
             return;
         }
         mIconCache.getTitleAndIcon(info, activityInfo, true /* useLowResIcon */);
+        info.sectionName = mIndex.computeSectionName(info.title);
 
         data.add(info);
         mDataChanged = true;
@@ -112,6 +118,8 @@ public class AllAppsList {
         if (applicationInfo == null) {
             PromiseAppInfo info = new PromiseAppInfo(installInfo);
             mIconCache.getTitleAndIcon(info, info.usingLowResIcon());
+            info.sectionName = mIndex.computeSectionName(info.title);
+
             data.add(info);
             mDataChanged = true;
         }
@@ -148,6 +156,8 @@ public class AllAppsList {
     public void clear() {
         data.clear();
         mDataChanged = false;
+        // Reset the index as locales might have changed
+        mIndex = new AlphabeticIndexCompat(LocaleList.getDefault());
     }
 
     /**
@@ -194,6 +204,7 @@ public class AllAppsList {
         for (AppInfo info : data) {
             if (info.user.equals(user) && packages.contains(info.componentName.getPackageName())) {
                 mIconCache.updateTitleAndIcon(info);
+                info.sectionName = mIndex.computeSectionName(info.title);
                 mDataChanged = true;
             }
         }
@@ -228,6 +239,8 @@ public class AllAppsList {
                     add(new AppInfo(context, info, user), info);
                 } else {
                     mIconCache.getTitleAndIcon(applicationInfo, info, true /* useLowResIcon */);
+                    applicationInfo.sectionName = mIndex.computeSectionName(applicationInfo.title);
+
                     mDataChanged = true;
                 }
             }

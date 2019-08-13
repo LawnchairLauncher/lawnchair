@@ -49,6 +49,9 @@ public class AppInfo extends ItemInfoWithIcon {
 
     public ComponentName componentName;
 
+    // Section name used for indexing.
+    public String sectionName = "";
+
     public AppInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
     }
