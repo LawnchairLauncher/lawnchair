@@ -26,12 +26,12 @@ import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.text.InputType;
 import android.text.Selection;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
@@ -126,9 +126,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     private static final Rect sTempRect = new Rect();
     private static final int MIN_FOLDERS_FOR_HARDWARE_OPTIMIZATION = 10;
 
-    private static String sDefaultFolderName;
-    private static String sHintText;
-
     private final Alarm mReorderAlarm = new Alarm();
     private final Alarm mOnExitAlarm = new Alarm();
     private final Alarm mOnScrollHintAlarm = new Alarm();
@@ -195,8 +192,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     public Folder(Context context, AttributeSet attrs) {
         super(context, attrs);
         setAlwaysDrawnWithCacheEnabled(false);
-
-        setLocaleDependentFields(getResources(), false /* force */);
 
         mLauncher = Launcher.getLauncher(context);
         // We need this view to be focusable in touch mode so that when text editing of the folder
@@ -318,7 +313,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mInfo.setTitle(newTitle);
         mLauncher.getModelWriter().updateItemInDatabase(mInfo);
 
-        mFolderName.setHint(sDefaultFolderName.contentEquals(newTitle) ? sHintText : null);
+        if (TextUtils.isEmpty(mInfo.title)) {
+            mFolderName.setHint(R.string.folder_hint_text);
+        } else {
+            mFolderName.setHint(null);
+        }
 
         sendCustomAccessibilityEvent(
                 this, AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
@@ -400,12 +399,12 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         updateTextViewFocus();
         mInfo.addListener(this);
 
-        if (!sDefaultFolderName.contentEquals(mInfo.title)) {
+        if (TextUtils.isEmpty(mInfo.title)) {
             mFolderName.setText(mInfo.title);
             mFolderName.setHint(null);
         } else {
             mFolderName.setText("");
-            mFolderName.setHint(sHintText);
+            mFolderName.setHint(R.string.folder_hint_text);
         }
 
         // In case any children didn't come across during loading, clean up the folder accordingly
@@ -1481,15 +1480,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             }
         }
         return false;
-    }
-
-    public static void setLocaleDependentFields(Resources res, boolean force) {
-        if (sDefaultFolderName == null || force) {
-            sDefaultFolderName = res.getString(R.string.folder_name);
-        }
-        if (sHintText == null || force) {
-            sHintText = res.getString(R.string.folder_hint_text);
-        }
     }
 
     /**

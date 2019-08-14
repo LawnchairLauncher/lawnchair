@@ -549,7 +549,7 @@ public class AutoInstallsLayout {
             if (titleResId != 0) {
                 title = mSourceRes.getString(titleResId);
             } else {
-                title = mContext.getResources().getString(R.string.folder_name);
+                title = "";
             }
 
             mValues.put(Favorites.TITLE, title);
