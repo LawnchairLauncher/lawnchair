@@ -488,4 +488,9 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     public void onLaunchTaskFailed(Launcher launcher) {
         launcher.getStateManager().goToState(OVERVIEW);
     }
+
+    @Override
+    public void onLaunchTaskSuccess(Launcher launcher) {
+        launcher.getStateManager().moveToRestState();
+    }
 }

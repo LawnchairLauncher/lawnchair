@@ -104,4 +104,9 @@ public final class LauncherActivityControllerHelper extends GoActivityControlHel
         return launcher != null ? launcher.getStateManager().getState().containerType
                 : LauncherLogProto.ContainerType.APP;
     }
+
+    @Override
+    public void onLaunchTaskSuccess(Launcher launcher) {
+        launcher.getStateManager().moveToRestState();
+    }
 }
