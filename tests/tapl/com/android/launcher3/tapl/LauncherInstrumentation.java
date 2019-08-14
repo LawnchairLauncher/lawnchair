@@ -124,7 +124,7 @@ public final class LauncherInstrumentation {
     private static final String APPS_RES_ID = "apps_view";
     private static final String OVERVIEW_RES_ID = "overview_panel";
     private static final String WIDGETS_RES_ID = "widgets_list_view";
-    public static final int WAIT_TIME_MS = 60000;
+    public static final int WAIT_TIME_MS = 10000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
     private static WeakReference<VisibleContainer> sActiveContainer = new WeakReference<>(null);
