@@ -17,6 +17,7 @@ package com.android.launcher3.touch;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -60,7 +61,7 @@ public class ItemLongClickListener {
         if (info.container >= 0) {
             Folder folder = Folder.getOpen(launcher);
             if (folder != null) {
-                if (!folder.getItemsInReadingOrder().contains(v)) {
+                if (!folder.getIconsInReadingOrder().contains(v)) {
                     folder.close(true);
                 } else {
                     folder.startDrag(v, dragOptions);

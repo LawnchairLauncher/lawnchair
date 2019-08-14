@@ -57,7 +57,7 @@ import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
-import com.android.launcher3.folder.FolderIconPreviewVerifier;
+import com.android.launcher3.folder.FolderGridOrganizer;
 import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
 import com.android.launcher3.icons.IconCache;
@@ -744,8 +744,8 @@ public class LoaderTask implements Runnable {
             }
 
             // Sort the folder items, update ranks, and make sure all preview items are high res.
-            FolderIconPreviewVerifier verifier =
-                    new FolderIconPreviewVerifier(mApp.getInvariantDeviceProfile());
+            FolderGridOrganizer verifier =
+                    new FolderGridOrganizer(mApp.getInvariantDeviceProfile());
             for (FolderInfo folder : mBgDataModel.folders) {
                 Collections.sort(folder.contents, Folder.ITEM_POS_COMPARATOR);
                 verifier.setFolderInfo(folder);

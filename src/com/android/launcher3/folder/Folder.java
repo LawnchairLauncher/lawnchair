@@ -385,6 +385,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mInfo = info;
         ArrayList<WorkspaceItemInfo> children = info.contents;
         Collections.sort(children, ITEM_POS_COMPARATOR);
+        updateItemLocationsInDatabaseBatch();
         mContent.bindItems(children);
 
         DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
@@ -822,9 +823,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
     }
 
+    @Override
     public void onDropCompleted(final View target, final DragObject d,
             final boolean success) {
-
         if (success) {
             if (mDeleteFolderOnDropCompleted && !mItemAddedBackToSelfViaIcon && target != this) {
                 replaceFolderWithFinalItem();
@@ -834,9 +835,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             WorkspaceItemInfo info = (WorkspaceItemInfo) d.dragInfo;
             View icon = (mCurrentDragView != null && mCurrentDragView.getTag() == info)
                     ? mCurrentDragView : mContent.createNewView(info);
-            ArrayList<View> views = getItemsInReadingOrder();
+            ArrayList<View> views = getIconsInReadingOrder();
             views.add(info.rank, icon);
-            mContent.arrangeChildren(views, views.size());
+            mContent.arrangeChildren(views);
             mItemsInvalidated = true;
 
             try (SuppressInfoChanges s = new SuppressInfoChanges()) {
@@ -874,16 +875,21 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     private void updateItemLocationsInDatabaseBatch() {
-        ArrayList<View> list = getItemsInReadingOrder();
-        ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
-        for (int i = 0; i < list.size(); i++) {
-            View v = list.get(i);
-            ItemInfo info = (ItemInfo) v.getTag();
-            info.rank = i;
-            items.add(info);
+        FolderGridOrganizer verifier = new FolderGridOrganizer(
+                mLauncher.getDeviceProfile().inv).setFolderInfo(mInfo);
+
+        ArrayList<ItemInfo> items = new ArrayList<>();
+        int total = mInfo.contents.size();
+        for (int i = 0; i < total; i++) {
+            WorkspaceItemInfo itemInfo = mInfo.contents.get(i);
+            if (verifier.updateRankAndPos(itemInfo, i)) {
+                items.add(itemInfo);
+            }
         }
 
-        mLauncher.getModelWriter().moveItemsInDatabase(items, mInfo.id, 0);
+        if (!items.isEmpty()) {
+            mLauncher.getModelWriter().moveItemsInDatabase(items, mInfo.id, 0);
+        }
     }
 
     public void notifyDrop() {
@@ -1021,17 +1027,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * Rearranges the children based on their rank.
      */
     public void rearrangeChildren() {
-        rearrangeChildren(-1);
-    }
-
-    /**
-     * Rearranges the children based on their rank.
-     * @param itemCount if greater than the total children count, empty spaces are left at the end,
-     * otherwise it is ignored.
-     */
-    public void rearrangeChildren(int itemCount) {
-        ArrayList<View> views = getItemsInReadingOrder();
-        mContent.arrangeChildren(views, Math.max(itemCount, views.size()));
+        mContent.arrangeChildren(getIconsInReadingOrder());
         mItemsInvalidated = true;
     }
 
@@ -1124,6 +1120,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
     }
 
+    @Override
     public void onDrop(DragObject d, DragOptions options) {
         // If the icon was dropped while the page was being scrolled, we need to compute
         // the target location again such that the icon is placed of the final page.
@@ -1171,12 +1168,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 // before creating the view, so that WorkspaceItemInfo is updated appropriately.
                 mLauncher.getModelWriter().addOrMoveItemInDatabase(
                         si, mInfo.id, 0, si.cellX, si.cellY);
-
-                // We only need to update the locations if it doesn't get handled in
-                // #onDropCompleted.
-                if (d.dragSource != this) {
-                    updateItemLocationsInDatabaseBatch();
-                }
                 mIsExternalDrag = false;
             } else {
                 currentDragView = mCurrentDragView;
@@ -1203,7 +1194,13 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
             // Temporarily suppress the listener, as we did all the work already here.
             try (SuppressInfoChanges s = new SuppressInfoChanges()) {
-                mInfo.add(si, false);
+                mInfo.add(si, mEmptyCellRank, false);
+            }
+
+            // We only need to update the locations if it doesn't get handled in
+            // #onDropCompleted.
+            if (d.dragSource != this) {
+                updateItemLocationsInDatabaseBatch();
             }
         }
 
@@ -1226,22 +1223,29 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     // to correspond to the animation of the icon back into the folder. This is
     public void hideItem(WorkspaceItemInfo info) {
         View v = getViewForInfo(info);
-        v.setVisibility(INVISIBLE);
+        if (v != null) {
+            v.setVisibility(INVISIBLE);
+        }
     }
     public void showItem(WorkspaceItemInfo info) {
         View v = getViewForInfo(info);
-        v.setVisibility(VISIBLE);
+        if (v != null) {
+            v.setVisibility(VISIBLE);
+        }
     }
 
     @Override
     public void onAdd(WorkspaceItemInfo item, int rank) {
-        View view = mContent.createAndAddViewForRank(item, rank);
+        FolderGridOrganizer verifier = new FolderGridOrganizer(
+                mLauncher.getDeviceProfile().inv).setFolderInfo(mInfo);
+        verifier.updateRankAndPos(item, rank);
         mLauncher.getModelWriter().addOrMoveItemInDatabase(item, mInfo.id, 0, item.cellX,
                 item.cellY);
+        updateItemLocationsInDatabaseBatch();
 
-        ArrayList<View> items = new ArrayList<>(getItemsInReadingOrder());
-        items.add(rank, view);
-        mContent.arrangeChildren(items, items.size());
+        ArrayList<View> items = new ArrayList<>(getIconsInReadingOrder());
+        items.add(rank, mContent.createAndAddViewForRank(item, rank));
+        mContent.arrangeChildren(items);
         mItemsInvalidated = true;
     }
 
@@ -1264,13 +1268,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     private View getViewForInfo(final WorkspaceItemInfo item) {
-        return mContent.iterateOverItems(new ItemOperator() {
-
-            @Override
-            public boolean evaluate(ItemInfo info, View view) {
-                return info == item;
-            }
-        });
+        return mContent.iterateOverItems((info, view) -> info == item);
     }
 
     @Override
@@ -1286,7 +1284,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     public void onTitleChanged(CharSequence title) {
     }
 
-    public ArrayList<View> getItemsInReadingOrder() {
+    /**
+     * Returns the sorted list of all the icons in the folder
+     */
+    public ArrayList<View> getIconsInReadingOrder() {
         if (mItemsInvalidated) {
             mItemsInReadingOrder.clear();
             mContent.iterateOverItems(new ItemOperator() {
@@ -1303,7 +1304,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     public List<BubbleTextView> getItemsOnPage(int page) {
-        ArrayList<View> allItems = getItemsInReadingOrder();
+        ArrayList<View> allItems = getIconsInReadingOrder();
         int lastPage = mContent.getPageCount() - 1;
         int totalItemsInFolder = allItems.size();
         int itemsPerPage = mContent.itemsPerPage();
