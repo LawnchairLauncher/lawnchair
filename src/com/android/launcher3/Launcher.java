@@ -1893,7 +1893,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             // recents animation into launcher. Defer launching the activity until Launcher is
             // next resumed.
             addOnResumeCallback(() -> startActivitySafely(v, intent, item, sourceContainer));
-            UiFactory.clearSwipeSharedState(true /* finishAnimation */);
+            UiFactory.clearSwipeSharedState(this, true /* finishAnimation */);
             return true;
         }
 

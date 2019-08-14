@@ -89,5 +89,5 @@ public abstract class RecentsUiFactory {
         return RotationMode.NORMAL;
     }
 
-    public static void clearSwipeSharedState(boolean finishAnimation) {}
+    public static void clearSwipeSharedState(Launcher launcher, boolean finishAnimation) { }
 }

@@ -107,6 +107,7 @@ import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RecentsModel.TaskThumbnailChangeListener;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
+import com.android.quickstep.ViewUtils;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -380,12 +381,21 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return null;
     }
 
-    public TaskView updateThumbnail(int taskId, ThumbnailData thumbnailData) {
+    /**
+     * Update the thumbnail of the task.
+     * @param refreshNow Refresh immediately if it's true.
+     */
+    public TaskView updateThumbnail(int taskId, ThumbnailData thumbnailData, boolean refreshNow) {
         TaskView taskView = getTaskView(taskId);
         if (taskView != null) {
-            taskView.getThumbnail().setThumbnail(taskView.getTask(), thumbnailData);
+            taskView.getThumbnail().setThumbnail(taskView.getTask(), thumbnailData, refreshNow);
         }
         return taskView;
+    }
+
+    /** See {@link #updateThumbnail(int, ThumbnailData, boolean)} */
+    public TaskView updateThumbnail(int taskId, ThumbnailData thumbnailData) {
+        return updateThumbnail(taskId, thumbnailData, true /* refreshNow */);
     }
 
     @Override
@@ -1818,5 +1828,20 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public int getRightGestureMargin() {
         final WindowInsets insets = getRootWindowInsets();
         return Math.max(insets.getSystemGestureInsets().right, insets.getSystemWindowInsetRight());
+    }
+
+    /** If it's in the live tile mode, switch the running task into screenshot mode. */
+    public void switchToScreenshot(Runnable onFinishRunnable) {
+        TaskView taskView = getRunningTaskView();
+        if (taskView == null) {
+            if (onFinishRunnable != null) {
+                onFinishRunnable.run();
+            }
+            return;
+        }
+
+        taskView.setShowScreenshot(true);
+        taskView.getThumbnail().refresh();
+        ViewUtils.postDraw(taskView, onFinishRunnable);
     }
 }

@@ -134,16 +134,35 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     }
 
     /**
-     * Updates this thumbnail.
+     * Updates the thumbnail.
+     * @param refreshNow whether the {@code thumbnailData} will be used to redraw immediately.
+     *                   In most cases, we use the {@link #setThumbnail(Task, ThumbnailData)}
+     *                   version with {@code refreshNow} is true. The only exception is
+     *                   in the live tile case that we grab a screenshot when user enters Overview
+     *                   upon swipe up so that a usable screenshot is accessible immediately when
+     *                   recents animation needs to be finished / cancelled.
      */
-    public void setThumbnail(Task task, ThumbnailData thumbnailData) {
+    public void setThumbnail(Task task, ThumbnailData thumbnailData, boolean refreshNow) {
         mTask = task;
-        if (thumbnailData != null && thumbnailData.thumbnail != null) {
-            Bitmap bm = thumbnailData.thumbnail;
+        mThumbnailData =
+                (thumbnailData != null && thumbnailData.thumbnail != null) ? thumbnailData : null;
+        if (refreshNow) {
+            refresh();
+        }
+    }
+
+    /** See {@link #setThumbnail(Task, ThumbnailData, boolean)} */
+    public void setThumbnail(Task task, ThumbnailData thumbnailData) {
+        setThumbnail(task, thumbnailData, true /* refreshNow */);
+    }
+
+    /** Updates the shader, paint, matrix to redraw. */
+    public void refresh() {
+        if (mThumbnailData != null && mThumbnailData.thumbnail != null) {
+            Bitmap bm = mThumbnailData.thumbnail;
             bm.prepareToDraw();
             mBitmapShader = new BitmapShader(bm, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
             mPaint.setShader(mBitmapShader);
-            mThumbnailData = thumbnailData;
             updateThumbnailMatrix();
         } else {
             mBitmapShader = null;
