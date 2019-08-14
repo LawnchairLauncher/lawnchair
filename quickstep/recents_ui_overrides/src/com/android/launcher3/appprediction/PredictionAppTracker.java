@@ -95,6 +95,10 @@ public class PredictionAppTracker extends AppLaunchTracker {
     private AppPredictor createPredictor(Client client, int count) {
         AppPredictionManager apm = mContext.getSystemService(AppPredictionManager.class);
 
+        if (apm == null) {
+          return null;
+        }
+
         AppPredictor predictor = apm.createAppPredictionSession(
                 new AppPredictionContext.Builder(mContext)
                         .setUiSurface(client.id)
