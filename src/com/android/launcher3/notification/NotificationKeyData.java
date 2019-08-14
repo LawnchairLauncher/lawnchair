@@ -20,15 +20,13 @@ import android.app.Notification;
 import android.app.Person;
 import android.service.notification.StatusBarNotification;
 
-import com.android.launcher3.Utilities;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.android.launcher3.Utilities;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The key data associated with the notification, used to determine what to include
@@ -39,8 +37,9 @@ import androidx.annotation.Nullable;
 public class NotificationKeyData {
     public final String notificationKey;
     public final String shortcutId;
+    @NonNull
+    public final String[] personKeysFromNotification;
     public int count;
-    @NonNull public final String[] personKeysFromNotification;
 
     private NotificationKeyData(String notificationKey, String shortcutId, int count,
             String[] personKeysFromNotification) {
@@ -70,7 +69,8 @@ public class NotificationKeyData {
         if (people == null || people.isEmpty()) {
             return Utilities.EMPTY_STRING_ARRAY;
         }
-        return people.stream().map(Person::getKey).sorted().toArray(String[]::new);
+        return people.stream().filter(person -> person.getKey() != null)
+                .map(Person::getKey).sorted().toArray(String[]::new);
     }
 
     @Override
