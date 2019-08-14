@@ -112,6 +112,10 @@ abstract class BaseFlags {
             "FAKE_LANDSCAPE_UI", false,
             "Rotate launcher UI instead of using transposed layout");
 
+    public static final TogglableFlag APP_SEARCH_IMPROVEMENTS = new TogglableFlag(
+            "APP_SEARCH_IMPROVEMENTS", false,
+            "Adds localized title and keyword search and ranking");
+
     public static void initialize(Context context) {
         // Avoid the disk read for user builds
         if (Utilities.IS_DEBUG_DEVICE) {
