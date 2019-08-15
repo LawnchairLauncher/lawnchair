@@ -18,20 +18,16 @@ package com.android.launcher3.config;
 
 import static androidx.core.util.Preconditions.checkNotNull;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.ContentObserver;
-import android.os.Handler;
-import android.os.Looper;
-import android.provider.Settings;
 
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Keep;
-import androidx.annotation.VisibleForTesting;
 
+import androidx.annotation.VisibleForTesting;
 import com.android.launcher3.Utilities;
 
+import com.android.launcher3.uioverrides.TogglableFlag;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
@@ -41,11 +37,9 @@ import java.util.TreeMap;
  * Defines a set of flags used to control various launcher behaviors.
  *
  * <p>All the flags should be defined here with appropriate default values.
- *
- * <p>This class is kept package-private to prevent direct access.
  */
 @Keep
-abstract class BaseFlags {
+public abstract class BaseFlags {
 
     private static final Object sLock = new Object();
     @GuardedBy("sLock")
@@ -124,7 +118,7 @@ abstract class BaseFlags {
         // Avoid the disk read for user builds
         if (Utilities.IS_DEBUG_DEVICE) {
             synchronized (sLock) {
-                for (TogglableFlag flag : sFlags) {
+                for (BaseTogglableFlag flag : sFlags) {
                     flag.initialize(context);
                 }
             }
@@ -140,27 +134,27 @@ abstract class BaseFlags {
         SortedMap<String, TogglableFlag> flagsByKey = new TreeMap<>();
         synchronized (sLock) {
             for (TogglableFlag flag : sFlags) {
-                flagsByKey.put(flag.key, flag);
+                flagsByKey.put(((BaseTogglableFlag) flag).getKey(), flag);
             }
         }
         return new ArrayList<>(flagsByKey.values());
     }
 
-    public static class TogglableFlag {
+    public static abstract class BaseTogglableFlag {
         private final String key;
         private final boolean defaultValue;
         private final String description;
         private boolean currentValue;
 
-        TogglableFlag(
+        public BaseTogglableFlag(
                 String key,
                 boolean defaultValue,
                 String description) {
             this.key = checkNotNull(key);
-            this.currentValue = this.defaultValue = defaultValue;
+            this.currentValue = this.defaultValue = getInitialValue(defaultValue);
             this.description = checkNotNull(description);
             synchronized (sLock) {
-                sFlags.add(this);
+                sFlags.add((TogglableFlag)this);
             }
         }
 
@@ -170,13 +164,15 @@ abstract class BaseFlags {
             currentValue = value;
         }
 
-        @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
         public String getKey() {
             return key;
         }
+
         void initialize(Context context) {
             currentValue = getFromStorage(context, defaultValue);
         }
+
+        protected abstract boolean getInitialValue(boolean value);
 
         public void updateStorage(Context context, boolean value) {
             SharedPreferences.Editor editor = context.getSharedPreferences(FLAGS_PREF_NAME,
@@ -221,7 +217,7 @@ abstract class BaseFlags {
                 return true;
             }
             if (o instanceof TogglableFlag) {
-                TogglableFlag that = (TogglableFlag) o;
+                BaseTogglableFlag that = (BaseTogglableFlag) o;
                 return (this.key.equals(that.getKey()))
                         && (this.defaultValue == that.getDefaultValue())
                         && (this.description.equals(that.getDescription()));
@@ -239,50 +235,6 @@ abstract class BaseFlags {
             h$ *= 1000003;
             h$ ^= description.hashCode();
             return h$;
-        }
-    }
-
-    /**
-     * Stores the FeatureFlag's value in Settings.Global instead of our SharedPrefs.
-     * This is useful if we want to be able to control this flag from another process.
-     */
-    public static final class ToggleableGlobalSettingsFlag extends TogglableFlag {
-        private ContentResolver contentResolver;
-
-        ToggleableGlobalSettingsFlag(String key, boolean defaultValue, String description) {
-            super(key, defaultValue, description);
-        }
-
-        @Override
-        public void initialize(Context context) {
-            contentResolver = context.getContentResolver();
-            contentResolver.registerContentObserver(Settings.Global.getUriFor(getKey()), true,
-                    new ContentObserver(new Handler(Looper.getMainLooper())) {
-                        @Override
-                        public void onChange(boolean selfChange) {
-                            superInitialize(context);
-                    }});
-            superInitialize(context);
-        }
-
-        private void superInitialize(Context context) {
-            super.initialize(context);
-        }
-
-        @Override
-        public void updateStorage(Context context, boolean value) {
-            if (contentResolver == null) {
-                return;
-            }
-            Settings.Global.putInt(contentResolver, getKey(), value ? 1 : 0);
-        }
-
-        @Override
-        boolean getFromStorage(Context context, boolean defaultValue) {
-            if (contentResolver == null) {
-                return defaultValue;
-            }
-            return Settings.Global.getInt(contentResolver, getKey(), defaultValue ? 1 : 0) == 1;
         }
     }
 }
