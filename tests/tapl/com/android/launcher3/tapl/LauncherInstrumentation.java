@@ -961,4 +961,12 @@ public final class LauncherInstrumentation {
         return getTestInfo(TestProtocol.REQUEST_TOTAL_PSS_KB).
                 getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
+
+    public void produceJavaLeak() {
+        getTestInfo(TestProtocol.REQUEST_JAVA_LEAK);
+    }
+
+    public void produceNativeLeak() {
+        getTestInfo(TestProtocol.REQUEST_NATIVE_LEAK);
+    }
 }
