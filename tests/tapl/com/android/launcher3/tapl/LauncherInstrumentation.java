@@ -882,6 +882,7 @@ public final class LauncherInstrumentation {
     }
 
     long movePointer(long downTime, long startTime, long duration, Point from, Point to) {
+        log("movePointer: " + from + " to " + to);
         final Point point = new Point();
         long steps = duration / GESTURE_STEP_MS;
         long currentTime = startTime;
