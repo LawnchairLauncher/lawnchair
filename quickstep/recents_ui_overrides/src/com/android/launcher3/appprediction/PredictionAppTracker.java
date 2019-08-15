@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.appprediction;
 
+import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_GRID;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+
 import android.annotation.TargetApi;
 import android.app.prediction.AppPredictionContext;
 import android.app.prediction.AppPredictionManager;
@@ -38,9 +41,6 @@ import androidx.annotation.WorkerThread;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
 import com.android.launcher3.model.AppLaunchTracker;
-import com.android.launcher3.util.UiThreadHelper;
-
-import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_GRID;
 
 /**
  * Subclass of app tracker which publishes the data to the prediction engine and gets back results.
@@ -65,7 +65,7 @@ public class PredictionAppTracker extends AppLaunchTracker {
 
     public PredictionAppTracker(Context context) {
         mContext = context;
-        mMessageHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleMessage);
+        mMessageHandler = new Handler(UI_HELPER_EXECUTOR.getLooper(), this::handleMessage);
         InvariantDeviceProfile.INSTANCE.get(mContext).addOnChangeListener(this::onIdpChanged);
 
         mMessageHandler.sendEmptyMessage(MSG_INIT);

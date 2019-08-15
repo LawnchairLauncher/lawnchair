@@ -16,11 +16,20 @@
 
 package com.android.quickstep;
 
+import static junit.framework.TestCase.assertNull;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import android.app.ActivityManager;
 
 import androidx.test.filters.SmallTest;
 
-import com.android.launcher3.MainThreadExecutor;
+import com.android.launcher3.util.LooperExecutor;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.KeyguardManagerCompat;
@@ -30,14 +39,6 @@ import org.junit.Test;
 
 import java.util.Collections;
 import java.util.List;
-
-import static junit.framework.TestCase.assertNull;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @SmallTest
 public class RecentTasksListTest {
@@ -49,7 +50,7 @@ public class RecentTasksListTest {
 
     @Before
     public void setup() {
-        MainThreadExecutor mockMainThreadExecutor = mock(MainThreadExecutor.class);
+        LooperExecutor mockMainThreadExecutor = mock(LooperExecutor.class);
         KeyguardManagerCompat mockKeyguardManagerCompat = mock(KeyguardManagerCompat.class);
         mockActivityManagerWrapper = mock(ActivityManagerWrapper.class);
         mRecentTasksList = new RecentTasksList(mockMainThreadExecutor, mockKeyguardManagerCompat,

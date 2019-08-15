@@ -16,22 +16,22 @@
 
 package com.android.launcher3.compat;
 
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionCallback;
 import android.content.pm.PackageInstaller.SessionInfo;
-import android.os.Handler;
 import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
-import com.android.launcher3.Utilities;
-import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -47,7 +47,6 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
     @Thunk final PackageInstaller mInstaller;
     private final IconCache mCache;
-    private final Handler mWorker;
     private final Context mAppContext;
     private final HashMap<String,Boolean> mSessionVerifiedMap = new HashMap<>();
     private final LauncherAppsCompat mLauncherApps;
@@ -56,8 +55,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         mAppContext = context.getApplicationContext();
         mInstaller = context.getPackageManager().getPackageInstaller();
         mCache = LauncherAppState.getInstance(context).getIconCache();
-        mWorker = new Handler(LauncherModel.getWorkerLooper());
-        mInstaller.registerSessionCallback(mCallback, mWorker);
+        mInstaller.registerSessionCallback(mCallback, MODEL_EXECUTOR.getHandler());
         mLauncherApps = LauncherAppsCompat.getInstance(context);
     }
 

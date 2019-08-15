@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.uioverrides.RecentsUiFactory.GO_LOW_RAM_RECENTS_ENABLED;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -27,7 +28,6 @@ import android.os.Looper;
 import android.util.LruCache;
 import android.view.accessibility.AccessibilityManager;
 
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.cache.HandlerRunnable;
@@ -47,7 +47,6 @@ import java.util.function.Consumer;
 public class TaskIconCache {
 
     private final Handler mBackgroundHandler;
-    private final MainThreadExecutor mMainThreadExecutor;
     private final AccessibilityManager mAccessibilityManager;
 
     private final NormalizedIconLoader mIconLoader;
@@ -68,7 +67,6 @@ public class TaskIconCache {
 
     public TaskIconCache(Context context, Looper backgroundLooper) {
         mBackgroundHandler = new Handler(backgroundLooper);
-        mMainThreadExecutor = new MainThreadExecutor();
         mAccessibilityManager = context.getSystemService(AccessibilityManager.class);
 
         Resources res = context.getResources();
@@ -104,7 +102,7 @@ public class TaskIconCache {
                     // We don't call back to the provided callback in this case
                     return;
                 }
-                mMainThreadExecutor.execute(() -> {
+                MAIN_EXECUTOR.execute(() -> {
                     task.icon = icon;
                     task.titleDescription = contentDescription;
                     callback.accept(task);

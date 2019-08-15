@@ -18,19 +18,20 @@ package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
 import static com.android.launcher3.config.FeatureFlags.IS_DOGFOOD_BUILD;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Looper;
 import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
@@ -65,8 +66,6 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
-import androidx.annotation.Nullable;
-
 /**
  * Maintains in-memory state of the Launcher. It is expected that there should be only one
  * LauncherModel object held in a static. Also provide APIs for updating the database state
@@ -78,20 +77,11 @@ public class LauncherModel extends BroadcastReceiver
 
     static final String TAG = "Launcher.Model";
 
-    private final MainThreadExecutor mUiExecutor = new MainThreadExecutor();
     @Thunk final LauncherAppState mApp;
     @Thunk final Object mLock = new Object();
     @Thunk
     LoaderTask mLoaderTask;
     @Thunk boolean mIsLoaderTaskRunning;
-
-    @Thunk static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
-    private static final Looper mWorkerLooper;
-    static {
-        sWorkerThread.start();
-        mWorkerLooper = sWorkerThread.getLooper();
-    }
-    @Thunk static final Handler sWorker = new Handler(mWorkerLooper);
 
     // Indicates whether the current model data is valid or not.
     // We start off with everything not loaded. After that, we assume that
@@ -318,7 +308,7 @@ public class LauncherModel extends BroadcastReceiver
             if (mCallbacks != null && mCallbacks.get() != null) {
                 final Callbacks oldCallbacks = mCallbacks.get();
                 // Clear any pending bind-runnables from the synchronized load process.
-                mUiExecutor.execute(oldCallbacks::clearPendingBinds);
+                MAIN_EXECUTOR.execute(oldCallbacks::clearPendingBinds);
 
                 // If there is already one running, tell it to stop.
                 stopLoader();
@@ -362,7 +352,7 @@ public class LauncherModel extends BroadcastReceiver
 
             // Always post the loader task, instead of running directly (even on same thread) so
             // that we exit any nested synchronized blocks
-            sWorker.post(mLoaderTask);
+            MODEL_EXECUTOR.post(mLoaderTask);
         }
     }
 
@@ -429,8 +419,8 @@ public class LauncherModel extends BroadcastReceiver
      * use partial updates similar to {@link UserManagerCompat}
      */
     public void refreshShortcutsIfRequired() {
-        sWorker.removeCallbacks(mShortcutPermissionCheckRunnable);
-        sWorker.post(mShortcutPermissionCheckRunnable);
+        MODEL_EXECUTOR.getHandler().removeCallbacks(mShortcutPermissionCheckRunnable);
+        MODEL_EXECUTOR.post(mShortcutPermissionCheckRunnable);
     }
 
     /**
@@ -457,14 +447,8 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     public void enqueueModelUpdateTask(ModelUpdateTask task) {
-        task.init(mApp, this, sBgDataModel, mBgAllAppsList, mUiExecutor);
-
-        if (sWorkerThread.getThreadId() == Process.myTid()) {
-            task.run();
-        } else {
-            // If we are not on the worker thread, then post to the worker handler
-            sWorker.post(task);
-        }
+        task.init(mApp, this, sBgDataModel, mBgAllAppsList, MAIN_EXECUTOR);
+        MODEL_EXECUTOR.execute(task);
     }
 
     /**
@@ -540,14 +524,4 @@ public class LauncherModel extends BroadcastReceiver
         return mCallbacks != null ? mCallbacks.get() : null;
     }
 
-    /**
-     * @return the looper for the worker thread which can be used to start background tasks.
-     */
-    public static Looper getWorkerLooper() {
-        return mWorkerLooper;
-    }
-
-    public static void setWorkerPriority(final int priority) {
-        Process.setThreadPriority(sWorkerThread.getThreadId(), priority);
-    }
 }

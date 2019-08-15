@@ -1,9 +1,10 @@
 package com.android.quickstep;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
 import android.content.Context;
 import android.os.Bundle;
 
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.testing.TestInformationHandler;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.states.OverviewState;
@@ -52,7 +53,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
 
             case TestProtocol.REQUEST_OVERVIEW_LEFT_GESTURE_MARGIN: {
                 try {
-                    final int leftMargin = new MainThreadExecutor().submit(() ->
+                    final int leftMargin = MAIN_EXECUTOR.submit(() ->
                             mLauncher.<RecentsView>getOverviewPanel().getLeftGestureMargin()).get();
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, leftMargin);
                 } catch (ExecutionException e) {
@@ -65,7 +66,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
 
             case TestProtocol.REQUEST_OVERVIEW_RIGHT_GESTURE_MARGIN: {
                 try {
-                    final int rightMargin = new MainThreadExecutor().submit(() ->
+                    final int rightMargin = MAIN_EXECUTOR.submit(() ->
                             mLauncher.<RecentsView>getOverviewPanel().getRightGestureMargin()).
                             get();
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, rightMargin);

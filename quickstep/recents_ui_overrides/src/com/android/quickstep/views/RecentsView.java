@@ -35,9 +35,9 @@ import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.CLEAR_ALL_BUTTON;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
-import static com.android.quickstep.TouchInteractionService.BACKGROUND_EXECUTOR;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -228,7 +228,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 return;
             }
 
-            BACKGROUND_EXECUTOR.execute(() -> {
+            UI_HELPER_EXECUTOR.execute(() -> {
                 TaskView taskView = getTaskView(taskId);
                 if (taskView == null) {
                     return;

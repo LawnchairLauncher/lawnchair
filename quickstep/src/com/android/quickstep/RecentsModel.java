@@ -15,6 +15,10 @@
  */
 package com.android.quickstep;
 
+import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
+
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.createAndStartNewLooper;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 
 import android.annotation.TargetApi;
@@ -22,13 +26,12 @@ import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.os.Build;
-import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Log;
 
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.LauncherAppsCompat.OnAppsChangedCallbackCompat;
 import com.android.launcher3.util.MainThreadInitializedObject;
@@ -66,13 +69,12 @@ public class RecentsModel extends TaskStackChangeListener {
 
     private RecentsModel(Context context) {
         mContext = context;
-        HandlerThread loaderThread = new HandlerThread("TaskThumbnailIconCache",
-                Process.THREAD_PRIORITY_BACKGROUND);
-        loaderThread.start();
-        mTaskList = new RecentTasksList(new MainThreadExecutor(),
+        Looper looper =
+                createAndStartNewLooper("TaskThumbnailIconCache", THREAD_PRIORITY_BACKGROUND);
+        mTaskList = new RecentTasksList(MAIN_EXECUTOR,
                 new KeyguardManagerCompat(context), ActivityManagerWrapper.getInstance());
-        mIconCache = new TaskIconCache(context, loaderThread.getLooper());
-        mThumbnailCache = new TaskThumbnailCache(context, loaderThread.getLooper());
+        mIconCache = new TaskIconCache(context, looper);
+        mThumbnailCache = new TaskThumbnailCache(context, looper);
         ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
         setupPackageListener();
     }

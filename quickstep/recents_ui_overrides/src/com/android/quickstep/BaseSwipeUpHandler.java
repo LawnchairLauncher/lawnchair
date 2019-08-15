@@ -22,9 +22,9 @@ import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
-import static com.android.quickstep.TouchInteractionService.BACKGROUND_EXECUTOR;
-import static com.android.quickstep.TouchInteractionService.MAIN_THREAD_EXECUTOR;
 import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 
 import android.animation.Animator;
@@ -47,6 +47,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Interpolator;
 
+import androidx.annotation.UiThread;
+
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -54,7 +56,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
@@ -74,8 +75,6 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 
 import java.util.function.Consumer;
-
-import androidx.annotation.UiThread;
 
 /**
  * Base class for swipe up handler with some utility methods
@@ -126,7 +125,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
     protected Runnable mGestureEndCallback;
 
-    protected final Handler mMainThreadHandler = MAIN_THREAD_EXECUTOR.getHandler();
+    protected final Handler mMainThreadHandler = MAIN_EXECUTOR.getHandler();
     protected MultiStateCallback mStateCallback;
 
     protected boolean mCanceled;
@@ -174,7 +173,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         if (effect == null) {
             return;
         }
-        BACKGROUND_EXECUTOR.execute(() -> mVibrator.vibrate(effect));
+        UI_HELPER_EXECUTOR.execute(() -> mVibrator.vibrate(effect));
     }
 
     public Consumer<MotionEvent> getRecentsViewDispatcher(RotationMode rotationMode) {

@@ -16,6 +16,8 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
 import android.os.Looper;
 import android.util.Log;
 
@@ -25,11 +27,10 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel.CallbackTask;
-import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LooperIdleLock;
@@ -64,7 +65,7 @@ public abstract class BaseLoaderResults {
 
     public BaseLoaderResults(LauncherAppState app, BgDataModel dataModel,
             AllAppsList allAppsList, int pageToBindFirst, WeakReference<Callbacks> callbacks) {
-        mUiExecutor = new MainThreadExecutor();
+        mUiExecutor = MAIN_EXECUTOR;
         mApp = app;
         mBgDataModel = dataModel;
         mBgAllAppsList = allAppsList;

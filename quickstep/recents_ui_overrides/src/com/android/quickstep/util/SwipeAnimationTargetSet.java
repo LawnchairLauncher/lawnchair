@@ -15,8 +15,8 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.quickstep.TouchInteractionService.BACKGROUND_EXECUTOR;
-import static com.android.quickstep.TouchInteractionService.MAIN_THREAD_EXECUTOR;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.graphics.Rect;
@@ -68,25 +68,25 @@ public class SwipeAnimationTargetSet extends RemoteAnimationTargetSet {
 
     public void finishController(boolean toRecents, Runnable callback, boolean sendUserLeaveHint) {
         mOnFinishListener.accept(this);
-        BACKGROUND_EXECUTOR.execute(() -> {
+        UI_HELPER_EXECUTOR.execute(() -> {
             controller.setInputConsumerEnabled(false);
             controller.finish(toRecents, sendUserLeaveHint);
 
             if (callback != null) {
-                MAIN_THREAD_EXECUTOR.execute(callback);
+                MAIN_EXECUTOR.execute(callback);
             }
         });
     }
 
     public void enableInputConsumer() {
-        BACKGROUND_EXECUTOR.submit(() -> {
+        UI_HELPER_EXECUTOR.submit(() -> {
             controller.hideCurrentInputMethod();
             controller.setInputConsumerEnabled(true);
         });
     }
 
     public void setWindowThresholdCrossed(boolean thresholdCrossed) {
-        BACKGROUND_EXECUTOR.execute(() -> {
+        UI_HELPER_EXECUTOR.execute(() -> {
             controller.setAnimationTargetsBehindSystemBars(!thresholdCrossed);
             if (mShouldMinimizeSplitScreen && thresholdCrossed) {
                 // NOTE: As a workaround for conflicting animations (Launcher animating the task

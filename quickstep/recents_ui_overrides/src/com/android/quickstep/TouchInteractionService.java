@@ -23,6 +23,8 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_HINTS_IN_OVERVIEW
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.config.FeatureFlags.FAKE_LANDSCAPE_UI;
 import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_INPUT_MONITOR;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
@@ -72,7 +74,6 @@ import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
@@ -82,8 +83,6 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.util.LooperExecutor;
-import com.android.launcher3.util.UiThreadHelper;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
@@ -106,8 +105,8 @@ import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.SystemGestureExclusionListenerCompat;
-
 import com.android.systemui.shared.system.TaskInfoCompat;
+
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -138,10 +137,6 @@ class ArgList extends LinkedList<String> {
 public class TouchInteractionService extends Service implements
         NavigationModeChangeListener, DisplayListener {
 
-    public static final MainThreadExecutor MAIN_THREAD_EXECUTOR = new MainThreadExecutor();
-    public static final LooperExecutor BACKGROUND_EXECUTOR =
-            new LooperExecutor(UiThreadHelper.getBackgroundLooper());
-
     public static final EventLogArray TOUCH_INTERACTION_LOG =
             new EventLogArray("touch_interaction_log", 40);
 
@@ -161,9 +156,9 @@ public class TouchInteractionService extends Service implements
         public void onInitialize(Bundle bundle) {
             mISystemUiProxy = ISystemUiProxy.Stub
                     .asInterface(bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
-            MAIN_THREAD_EXECUTOR.execute(TouchInteractionService.this::initInputMonitor);
-            MAIN_THREAD_EXECUTOR.execute(TouchInteractionService.this::onSystemUiProxySet);
-            MAIN_THREAD_EXECUTOR.execute(() -> preloadOverview(true /* fromInit */));
+            MAIN_EXECUTOR.execute(TouchInteractionService.this::initInputMonitor);
+            MAIN_EXECUTOR.execute(TouchInteractionService.this::onSystemUiProxySet);
+            MAIN_EXECUTOR.execute(() -> preloadOverview(true /* fromInit */));
             sIsInitialized = true;
         }
 
@@ -198,7 +193,7 @@ public class TouchInteractionService extends Service implements
         @Override
         public void onAssistantVisibilityChanged(float visibility) {
             mLastAssistantVisibility = visibility;
-            MAIN_THREAD_EXECUTOR.execute(
+            MAIN_EXECUTOR.execute(
                     TouchInteractionService.this::onAssistantVisibilityChanged);
         }
 
@@ -214,13 +209,13 @@ public class TouchInteractionService extends Service implements
                     isButton, gestureSwipeLeft, activityControl.getContainerType());
 
             if (completed && !isButton && shouldNotifyBackGesture()) {
-                BACKGROUND_EXECUTOR.execute(TouchInteractionService.this::tryNotifyBackGesture);
+                UI_HELPER_EXECUTOR.execute(TouchInteractionService.this::tryNotifyBackGesture);
             }
         }
 
         public void onSystemUiStateChanged(int stateFlags) {
             mSystemUiStateFlags = stateFlags;
-            MAIN_THREAD_EXECUTOR.execute(TouchInteractionService.this::onSystemUiFlagsChanged);
+            MAIN_EXECUTOR.execute(TouchInteractionService.this::onSystemUiFlagsChanged);
         }
 
         /** Deprecated methods **/
@@ -439,7 +434,7 @@ public class TouchInteractionService extends Service implements
         if (mMode.hasGestures != newMode.hasGestures) {
             if (newMode.hasGestures) {
                 getSystemService(DisplayManager.class).registerDisplayListener(
-                        this, MAIN_THREAD_EXECUTOR.getHandler());
+                        this, MAIN_EXECUTOR.getHandler());
             } else {
                 getSystemService(DisplayManager.class).unregisterDisplayListener(this);
             }
@@ -897,7 +892,7 @@ public class TouchInteractionService extends Service implements
     }
 
     public static void startRecentsActivityAsync(Intent intent, RecentsAnimationListener listener) {
-        BACKGROUND_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
+        UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
                 .startRecentsActivity(intent, null, listener, null, null));
     }
 }

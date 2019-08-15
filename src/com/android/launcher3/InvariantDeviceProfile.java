@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 
 import android.annotation.TargetApi;
@@ -42,6 +43,9 @@ import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.IntArray;
@@ -54,9 +58,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
 
 public class InvariantDeviceProfile {
 
@@ -280,7 +281,7 @@ public class InvariantDeviceProfile {
     public void setCurrentGrid(Context context, String gridName) {
         Context appContext = context.getApplicationContext();
         Utilities.getPrefs(appContext).edit().putString(KEY_IDP_GRID_NAME, gridName).apply();
-        new MainThreadExecutor().execute(() -> onConfigChanged(appContext));
+        MAIN_EXECUTOR.execute(() -> onConfigChanged(appContext));
     }
 
     private void onConfigChanged(Context context) {

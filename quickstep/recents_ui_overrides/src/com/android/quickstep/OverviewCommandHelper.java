@@ -15,8 +15,8 @@
  */
 package com.android.quickstep;
 
-import static com.android.systemui.shared.system.ActivityManagerWrapper
-        .CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -28,7 +28,6 @@ import android.os.SystemClock;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
@@ -47,7 +46,6 @@ public class OverviewCommandHelper {
     private final Context mContext;
     private final ActivityManagerWrapper mAM;
     private final RecentsModel mRecentsModel;
-    private final MainThreadExecutor mMainThreadExecutor;
     private final OverviewComponentObserver mOverviewComponentObserver;
 
     private long mLastToggleTime;
@@ -55,7 +53,6 @@ public class OverviewCommandHelper {
     public OverviewCommandHelper(Context context, OverviewComponentObserver observer) {
         mContext = context;
         mAM = ActivityManagerWrapper.getInstance();
-        mMainThreadExecutor = new MainThreadExecutor();
         mRecentsModel = RecentsModel.INSTANCE.get(mContext);
         mOverviewComponentObserver = observer;
     }
@@ -67,19 +64,19 @@ public class OverviewCommandHelper {
         }
 
         mAM.closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-        mMainThreadExecutor.execute(new RecentsActivityCommand<>());
+        MAIN_EXECUTOR.execute(new RecentsActivityCommand<>());
     }
 
     public void onOverviewShown(boolean triggeredFromAltTab) {
-        mMainThreadExecutor.execute(new ShowRecentsCommand(triggeredFromAltTab));
+        MAIN_EXECUTOR.execute(new ShowRecentsCommand(triggeredFromAltTab));
     }
 
     public void onOverviewHidden() {
-        mMainThreadExecutor.execute(new HideRecentsCommand());
+        MAIN_EXECUTOR.execute(new HideRecentsCommand());
     }
 
     public void onTip(int actionType, int viewType) {
-        mMainThreadExecutor.execute(() ->
+        MAIN_EXECUTOR.execute(() ->
                 UserEventDispatcher.newInstance(mContext).logActionTip(actionType, viewType));
     }
 
@@ -178,7 +175,7 @@ public class OverviewCommandHelper {
             // Otherwise, start overview.
             mListener = mHelper.createActivityInitListener(this::onActivityReady);
             mListener.registerAndStartActivity(mOverviewComponentObserver.getOverviewIntent(),
-                    this::createWindowAnimation, mContext, mMainThreadExecutor.getHandler(),
+                    this::createWindowAnimation, mContext, MAIN_EXECUTOR.getHandler(),
                     mAnimationProvider.getRecentsLaunchDuration());
         }
 

@@ -20,6 +20,7 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
 import static com.android.launcher3.model.LoaderResults.filterCurrentWorkspaceItems;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.PackageManagerHelper.isSystemApp;
 
 import android.appwidget.AppWidgetProviderInfo;
@@ -32,7 +33,6 @@ import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.ShortcutInfo;
-import android.os.Handler;
 import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
@@ -772,7 +772,7 @@ public class LoaderTask implements Runnable {
                         new SdCardAvailableReceiver(mApp, pendingPackages),
                         new IntentFilter(Intent.ACTION_BOOT_COMPLETED),
                         null,
-                        new Handler(LauncherModel.getWorkerLooper()));
+                        MODEL_EXECUTOR.getHandler());
             }
         }
     }

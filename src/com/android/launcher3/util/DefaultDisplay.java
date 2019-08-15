@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.util;
 
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+
 import android.content.Context;
 import android.graphics.Point;
 import android.hardware.display.DisplayManager;
@@ -54,7 +56,7 @@ public class DefaultDisplay implements DisplayListener {
         mChangeHandler = new Handler(this::onChange);
 
         context.getSystemService(DisplayManager.class)
-                .registerDisplayListener(this, new Handler(UiThreadHelper.getBackgroundLooper()));
+                .registerDisplayListener(this, UI_HELPER_EXECUTOR.getHandler());
     }
 
     @Override

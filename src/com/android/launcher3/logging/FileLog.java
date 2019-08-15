@@ -1,5 +1,7 @@
 package com.android.launcher3.logging;
 
+import static com.android.launcher3.util.Executors.createAndStartNewLooper;
+
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -92,9 +94,8 @@ public final class FileLog {
     private static Handler getHandler() {
         synchronized (DATE_FORMAT) {
             if (sHandler == null) {
-                HandlerThread thread = new HandlerThread("file-logger");
-                thread.start();
-                sHandler = new Handler(thread.getLooper(), new LogWriterCallback());
+                sHandler = new Handler(createAndStartNewLooper("file-logger"),
+                        new LogWriterCallback());
             }
         }
         return sHandler;

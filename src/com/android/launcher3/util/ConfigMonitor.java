@@ -16,6 +16,9 @@ package com.android.launcher3.util;
  * limitations under the License.
  */
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,12 +27,9 @@ import android.content.res.Configuration;
 import android.graphics.Point;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.DisplayManager.DisplayListener;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
-
-import com.android.launcher3.MainThreadExecutor;
 
 import java.util.function.Consumer;
 
@@ -78,7 +78,7 @@ public class ConfigMonitor extends BroadcastReceiver implements DisplayListener 
 
         // Listen for display manager change
         mContext.getSystemService(DisplayManager.class)
-                .registerDisplayListener(this, new Handler(UiThreadHelper.getBackgroundLooper()));
+                .registerDisplayListener(this, UI_HELPER_EXECUTOR.getHandler());
     }
 
     @Override
@@ -122,7 +122,7 @@ public class ConfigMonitor extends BroadcastReceiver implements DisplayListener 
         if (mCallback != null) {
             Consumer<Context> callback = mCallback;
             mCallback = null;
-            new MainThreadExecutor().execute(() -> callback.accept(mContext));
+            MAIN_EXECUTOR.execute(() -> callback.accept(mContext));
         }
     }
 

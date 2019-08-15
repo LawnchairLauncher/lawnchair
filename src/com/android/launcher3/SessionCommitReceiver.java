@@ -30,13 +30,13 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Process;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.util.Executors;
 
 import java.util.List;
 
@@ -103,7 +103,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
             // grid.
             prefs.edit().putBoolean(ADD_ICON_PREFERENCE_KEY, true).apply();
         } else if (!prefs.contains(ADD_ICON_PREFERENCE_INITIALIZED_KEY)) {
-            new PrefInitTask(context).executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
+            new PrefInitTask(context).executeOnExecutor(Executors.THREAD_POOL_EXECUTOR);
         }
     }
 

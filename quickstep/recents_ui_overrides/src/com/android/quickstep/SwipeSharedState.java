@@ -15,7 +15,7 @@
  */
 package com.android.quickstep;
 
-import static com.android.quickstep.TouchInteractionService.MAIN_THREAD_EXECUTOR;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.util.Log;
 
@@ -25,6 +25,7 @@ import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.util.RecentsAnimationListenerSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet.SwipeAnimationListener;
+
 import java.io.PrintWriter;
 
 /**
@@ -77,7 +78,7 @@ public class SwipeSharedState implements SwipeAnimationListener {
             mRecentsAnimationListener.removeListener(this);
             mRecentsAnimationListener.cancelListener();
             if (mLastAnimationRunning && mLastAnimationTarget != null) {
-                Utilities.postAsyncCallback(MAIN_THREAD_EXECUTOR.getHandler(),
+                Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(),
                         finishAnimation
                                 ? mLastAnimationTarget::finishAnimation
                                 : mLastAnimationTarget::cancelAnimation);
