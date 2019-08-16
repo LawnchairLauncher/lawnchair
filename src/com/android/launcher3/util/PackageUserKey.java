@@ -3,8 +3,9 @@ package com.android.launcher3.util;
 import android.os.UserHandle;
 import android.service.notification.StatusBarNotification;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
 
 import java.util.Arrays;
 
@@ -15,7 +16,9 @@ public class PackageUserKey {
     public UserHandle mUser;
     private int mHashCode;
 
+    @Nullable
     public static PackageUserKey fromItemInfo(ItemInfo info) {
+        if (info.getTargetComponent() == null) return null;
         return new PackageUserKey(info.getTargetComponent().getPackageName(), info.user);
     }
 
@@ -38,6 +41,7 @@ public class PackageUserKey {
      * @return Whether this PackageUserKey was successfully updated - it shouldn't be used if not.
      */
     public boolean updateFromItemInfo(ItemInfo info) {
+        if (info.getTargetComponent() == null) return false;
         if (ShortcutUtil.supportsShortcuts(info)) {
             update(info.getTargetComponent().getPackageName(), info.user);
             return true;
