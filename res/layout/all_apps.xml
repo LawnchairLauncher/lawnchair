@@ -13,7 +13,7 @@
 <!-- The top and bottom paddings are defined in this container, but since we want
      the list view to span the full width (for touch interception purposes), we
      will bake the left/right padding into that view's background itself. -->
-<com.android.launcher3.allapps.AllAppsContainerView
+<ch.deletescape.lawnchair.allapps.AllAppsSearchContainerView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/apps_view"
     android:layout_width="match_parent"
@@ -32,4 +32,4 @@
         layout="@layout/search_container_all_apps_google"/>
 
     <include layout="@layout/all_apps_fast_scroller" />
-</com.android.launcher3.allapps.AllAppsContainerView>
+</ch.deletescape.lawnchair.allapps.AllAppsSearchContainerView>
