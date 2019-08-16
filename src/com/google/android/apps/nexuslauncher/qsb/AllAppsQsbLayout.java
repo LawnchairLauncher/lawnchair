@@ -47,7 +47,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     private LawnchairPreferences prefs;
     private int mForegroundColor;
 
-    private final boolean mAllowClearPaint;
+    private final boolean mLowPerformanceMode;
 
     public AllAppsQsbLayout(Context context) {
         this(context, null);
@@ -67,7 +67,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         setClipToPadding(false);
         prefs = LawnchairPreferences.Companion.getInstanceNoCreate();
 
-        mAllowClearPaint = !prefs.getLowPerformanceMode();
+        mLowPerformanceMode = prefs.getLowPerformanceMode();
     }
 
     protected void onFinishInflate() {
@@ -179,7 +179,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
                 setShadowAlpha(((BaseRecyclerView) recyclerView).getCurrentScrollY());
             }
         });
-        mAppsView.setRecyclerViewVerticalFadingEdgeEnabled(true);
+        mAppsView.setRecyclerViewVerticalFadingEdgeEnabled(!mLowPerformanceMode);
     }
 
     public final void dM() {
@@ -362,14 +362,14 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     @Override
     protected void clearMainPillBg(Canvas canvas) {
-        if (mAllowClearPaint && mClearBitmap != null) {
+        if (!mLowPerformanceMode && mClearBitmap != null) {
             drawPill(mClearShadowHelper, mClearBitmap, canvas);
         }
     }
 
     @Override
     protected void clearPillBg(Canvas canvas, int left, int top, int right) {
-        if (mAllowClearPaint && mClearBitmap != null) {
+        if (!mLowPerformanceMode && mClearBitmap != null) {
             mClearShadowHelper.draw(mClearBitmap, canvas, left, top, right);
         }
     }
