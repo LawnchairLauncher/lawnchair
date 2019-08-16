@@ -170,8 +170,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     private boolean mDeleteFolderOnDropCompleted = false;
     private boolean mSuppressFolderDeletion = false;
     private boolean mItemAddedBackToSelfViaIcon = false;
-    @Thunk float mFolderIconPivotX;
-    @Thunk float mFolderIconPivotY;
     private boolean mIsEditingName = false;
 
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -310,7 +308,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         // Convert to a string here to ensure that no other state associated with the text field
         // gets saved.
         String newTitle = mFolderName.getText().toString();
-        mInfo.setTitle(newTitle);
+        mInfo.title = newTitle;
+        mFolderIcon.onTitleChanged(newTitle);
         mLauncher.getModelWriter().updateItemInDatabase(mInfo);
 
         if (TextUtils.isEmpty(mInfo.title)) {
@@ -385,7 +384,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         ArrayList<WorkspaceItemInfo> children = info.contents;
         Collections.sort(children, ITEM_POS_COMPARATOR);
         updateItemLocationsInDatabaseBatch();
-        mContent.bindItems(children);
 
         DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
         if (lp == null) {
@@ -393,13 +391,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             lp.customPosition = true;
             setLayoutParams(lp);
         }
-        centerAboutIcon();
-
         mItemsInvalidated = true;
-        updateTextViewFocus();
         mInfo.addListener(this);
 
-        if (TextUtils.isEmpty(mInfo.title)) {
+        if (!TextUtils.isEmpty(mInfo.title)) {
             mFolderName.setText(mInfo.title);
             mFolderName.setHint(null);
         } else {
@@ -408,11 +403,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
 
         // In case any children didn't come across during loading, clean up the folder accordingly
-        mFolderIcon.post(new Runnable() {
-            public void run() {
-                if (getItemCount() <= 1) {
-                    replaceFolderWithFinalItem();
-                }
+        mFolderIcon.post(() -> {
+            if (getItemCount() <= 1) {
+                replaceFolderWithFinalItem();
             }
         });
     }
@@ -473,16 +466,48 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     /**
+     * Opens the folder as part of a drag operation
+     */
+    public void beginExternalDrag() {
+        mIsExternalDrag = true;
+        mDragInProgress = true;
+
+        // Since this folder opened by another controller, it might not get onDrop or
+        // onDropComplete. Perform cleanup once drag-n-drop ends.
+        mDragController.addDragListener(this);
+
+        ArrayList<WorkspaceItemInfo> items = new ArrayList<>(mInfo.contents);
+        mEmptyCellRank = items.size();
+        items.add(null);    // Add an empty spot at the end
+
+        animateOpen(items, mEmptyCellRank / mContent.itemsPerPage());
+    }
+
+    /**
      * Opens the user folder described by the specified tag. The opening of the folder
      * is animated relative to the specified View. If the View is null, no animation
      * is played.
      */
     public void animateOpen() {
+        animateOpen(mInfo.contents, 0);
+    }
+
+    /**
+     * Opens the user folder described by the specified tag. The opening of the folder
+     * is animated relative to the specified View. If the View is null, no animation
+     * is played.
+     */
+    private void animateOpen(List<WorkspaceItemInfo> items, int pageNo) {
         Folder openFolder = getOpen(mLauncher);
         if (openFolder != null && openFolder != this) {
             // Close any open folder before opening a folder.
             openFolder.close(true);
         }
+
+        mContent.bindItems(items);
+        centerAboutIcon();
+        mItemsInvalidated = true;
+        updateTextViewFocus();
 
         mIsOpen = true;
 
@@ -500,10 +525,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
 
         mContent.completePendingPageChanges();
-        if (!mDragInProgress) {
-            // Open on the first page.
-            mContent.snapToPageImmediately(0);
-        }
+        mContent.snapToPageImmediately(pageNo);
 
         // This is set to true in close(), but isn't reset to false until onDropCompleted(). This
         // leads to an inconsistent state if you drag out of the folder and drag back in without
@@ -572,16 +594,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
 
         mContent.verifyVisibleHighResIcons(mContent.getNextPage());
-    }
-
-    public void beginExternalDrag() {
-        mEmptyCellRank = mContent.allocateRankForNewItem();
-        mIsExternalDrag = true;
-        mDragInProgress = true;
-
-        // Since this folder opened by another controller, it might not get onDrop or
-        // onDropComplete. Perform cleanup once drag-n-drop ends.
-        mDragController.addDragListener(this);
     }
 
     @Override
@@ -668,6 +680,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             } else if (mDragInProgress) {
                 mDeleteFolderOnDropCompleted = true;
             }
+        } else if (!mDragInProgress) {
+            mContent.unbindItems();
         }
         mSuppressFolderDeletion = false;
         clearDragInfo();
@@ -953,22 +967,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         setPivotX(folderPivotX);
         setPivotY(folderPivotY);
 
-        mFolderIconPivotX = (int) (mFolderIcon.getMeasuredWidth() *
-                (1.0f * folderPivotX / width));
-        mFolderIconPivotY = (int) (mFolderIcon.getMeasuredHeight() *
-                (1.0f * folderPivotY / height));
-
         lp.width = width;
         lp.height = height;
         lp.x = left;
         lp.y = top;
-    }
-
-    public float getPivotXForIconAnimation() {
-        return mFolderIconPivotX;
-    }
-    public float getPivotYForIconAnimation() {
-        return mFolderIconPivotY;
     }
 
     private int getContentAreaHeight() {
@@ -1031,7 +1033,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     public int getItemCount() {
-        return mContent.getItemCount();
+        return mInfo.contents.size();
     }
 
     @Thunk void replaceFolderWithFinalItem() {
@@ -1039,7 +1041,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         Runnable onCompleteRunnable = new Runnable() {
             @Override
             public void run() {
-                int itemCount = mInfo.contents.size();
+                int itemCount = getItemCount();
                 if (itemCount <= 1) {
                     View newIcon = null;
 
@@ -1116,6 +1118,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                     return false;
                 }
             });
+        } else {
+            setOnKeyListener(null);
         }
     }
 
@@ -1242,9 +1246,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 item.cellY);
         updateItemLocationsInDatabaseBatch();
 
-        ArrayList<View> items = new ArrayList<>(getIconsInReadingOrder());
-        items.add(rank, mContent.createAndAddViewForRank(item, rank));
-        mContent.arrangeChildren(items);
+        if (mContent.areViewsBound()) {
+            mContent.createAndAddViewForRank(item, rank);
+        }
         mItemsInvalidated = true;
     }
 
@@ -1275,12 +1279,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         updateTextViewFocus();
     }
 
-    @Override
-    public void prepareAutoUpdate() {
-        close(false);
-    }
-
-    public void onTitleChanged(CharSequence title) {
+    /**
+     * Utility methods to iterate over items of the view
+     */
+    public void iterateOverItems(ItemOperator op) {
+        mContent.iterateOverItems(op);
     }
 
     /**
@@ -1289,14 +1292,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     public ArrayList<View> getIconsInReadingOrder() {
         if (mItemsInvalidated) {
             mItemsInReadingOrder.clear();
-            mContent.iterateOverItems(new ItemOperator() {
-
-                @Override
-                public boolean evaluate(ItemInfo info, View view) {
-                    mItemsInReadingOrder.add(view);
-                    return false;
-                }
-            });
+            mContent.iterateOverItems((i, v) -> !mItemsInReadingOrder.add(v));
             mItemsInvalidated = false;
         }
         return mItemsInReadingOrder;

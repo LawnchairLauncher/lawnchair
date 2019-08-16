@@ -69,6 +69,7 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
@@ -99,7 +100,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     ClippedFolderIconLayoutRule mPreviewLayoutRule;
     private PreviewItemManager mPreviewItemManager;
     private PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
-    private List<BubbleTextView> mCurrentPreviewItems = new ArrayList<>();
+    private List<WorkspaceItemInfo> mCurrentPreviewItems = new ArrayList<>();
 
     boolean mAnimating = false;
 
@@ -255,7 +256,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     OnAlarmListener mOnOpenListener = new OnAlarmListener() {
         public void onAlarm(Alarm alarm) {
             mFolder.beginExternalDrag();
-            mFolder.animateOpen();
         }
     };
 
@@ -321,18 +321,17 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             int numItemsInPreview = Math.min(MAX_NUM_ITEMS_IN_PREVIEW, index + 1);
             boolean itemAdded = false;
             if (itemReturnedOnFailedDrop || index >= MAX_NUM_ITEMS_IN_PREVIEW) {
-                List<BubbleTextView> oldPreviewItems = new ArrayList<>(mCurrentPreviewItems);
+                List<WorkspaceItemInfo> oldPreviewItems = new ArrayList<>(mCurrentPreviewItems);
                 mInfo.add(item, index, false);
                 mCurrentPreviewItems.clear();
-                mCurrentPreviewItems.addAll(getPreviewIconsOnPage(0));
+                mCurrentPreviewItems.addAll(getPreviewItemsOnPage(0));
 
                 if (!oldPreviewItems.equals(mCurrentPreviewItems)) {
-                    for (int i = 0; i < mCurrentPreviewItems.size(); ++i) {
-                        if (mCurrentPreviewItems.get(i).getTag().equals(item)) {
-                            // If the item dropped is going to be in the preview, we update the
-                            // index here to reflect its position in the preview.
-                            index = i;
-                        }
+                    int newIndex = mCurrentPreviewItems.indexOf(item);
+                    if (newIndex >= 0) {
+                        // If the item dropped is going to be in the preview, we update the
+                        // index here to reflect its position in the preview.
+                        index = newIndex;
                     }
 
                     mPreviewItemManager.hidePreviewItem(index, true);
@@ -531,11 +530,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     /**
-     * Returns the list of "preview items" on {@param page}.
+     * Returns the list of items which should be visible in the preview
      */
-    public List<BubbleTextView> getPreviewIconsOnPage(int page) {
-        return mPreviewVerifier.setFolderInfo(mFolder.mInfo)
-                .previewItemsForPage(page, mFolder.getIconsInReadingOrder());
+    public List<WorkspaceItemInfo> getPreviewItemsOnPage(int page) {
+        return mPreviewVerifier.setFolderInfo(mInfo).previewItemsForPage(page, mInfo.contents);
     }
 
     @Override
@@ -553,11 +551,14 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private void updatePreviewItems(boolean animate) {
         mPreviewItemManager.updatePreviewItems(animate);
         mCurrentPreviewItems.clear();
-        mCurrentPreviewItems.addAll(getPreviewIconsOnPage(0));
+        mCurrentPreviewItems.addAll(getPreviewItemsOnPage(0));
     }
 
-    @Override
-    public void prepareAutoUpdate() {
+    /**
+     * Updates the preview items which match the provided condition
+     */
+    public void updatePreviewItems(Predicate<WorkspaceItemInfo> itemCheck) {
+        mPreviewItemManager.updatePreviewItems(itemCheck);
     }
 
     @Override
@@ -580,7 +581,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         requestLayout();
     }
 
-    @Override
     public void onTitleChanged(CharSequence title) {
         mFolderName.setText(title);
         setContentDescription(getContext().getString(R.string.folder_name_format, title));

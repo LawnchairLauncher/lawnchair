@@ -2340,6 +2340,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         // override the previous page so we don't log the page switch.
         mWorkspace.setCurrentPage(pageBoundFirst, pageBoundFirst /* overridePrevPage */);
 
+        // Cache one page worth of icons
+        getViewCache().setCacheSize(R.layout.folder_application,
+                mDeviceProfile.inv.numFolderColumns * mDeviceProfile.inv.numFolderRows);
+        getViewCache().setCacheSize(R.layout.folder_page, 2);
+
         TraceHelper.endSection("finishBindingItems");
     }
 
