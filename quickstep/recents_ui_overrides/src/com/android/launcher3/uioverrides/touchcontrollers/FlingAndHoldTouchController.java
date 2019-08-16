@@ -173,7 +173,7 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
     }
 
     @Override
-    public void onDragEnd(float velocity, boolean fling) {
+    public void onDragEnd(float velocity) {
         if (mMotionPauseDetector.isPaused() && handlingOverviewAnim()) {
             if (mPeekAnim != null) {
                 mPeekAnim.cancel();
@@ -196,7 +196,7 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
             });
             overviewAnim.start();
         } else {
-            super.onDragEnd(velocity, fling);
+            super.onDragEnd(velocity);
         }
 
         View searchView = mLauncher.getAppsView().getSearchView();
