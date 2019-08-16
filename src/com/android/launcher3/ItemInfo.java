@@ -22,6 +22,8 @@ import android.content.Intent;
 import android.os.Process;
 import android.os.UserHandle;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.util.ContentWriter;
 
 /**
@@ -134,6 +136,7 @@ public class ItemInfo {
         return null;
     }
 
+    @Nullable
     public ComponentName getTargetComponent() {
         Intent intent = getIntent();
         if (intent != null) {

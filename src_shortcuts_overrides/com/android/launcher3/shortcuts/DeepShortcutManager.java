@@ -27,6 +27,8 @@ import android.os.Bundle;
 import android.os.UserHandle;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -78,8 +80,9 @@ public class DeepShortcutManager {
      * Gets all the manifest and dynamic shortcuts associated with the given package and user,
      * to be displayed in the shortcuts container on long press.
      */
-    public List<ShortcutInfo> queryForShortcutsContainer(ComponentName activity,
+    public List<ShortcutInfo> queryForShortcutsContainer(@Nullable ComponentName activity,
             UserHandle user) {
+        if (activity == null) return Collections.EMPTY_LIST;
         return query(ShortcutQuery.FLAG_MATCH_MANIFEST | ShortcutQuery.FLAG_MATCH_DYNAMIC,
                 activity.getPackageName(), activity, null, user);
     }
