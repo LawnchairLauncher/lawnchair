@@ -91,6 +91,12 @@
         android:title="Debug information overlay"
         android:summary="Display informations such as the current Launcher State"/>
 
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        android:key="pref_lowPerformanceMode"
+        android:title="@string/low_performance_mode_pref_title"
+        android:defaultValue="false"
+        android:persistent="true" />
+
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_wipOptions"
         android:title="Other"
@@ -118,12 +124,6 @@
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_forceEnableFools"
             android:title="Enable April Fools"
-            android:defaultValue="false"
-            android:persistent="true" />
-
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
-            android:key="pref_lowPerformanceMode"
-            android:title="@string/low_performance_mode_pref_title"
             android:defaultValue="false"
             android:persistent="true" />
 
