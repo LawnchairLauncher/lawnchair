@@ -39,7 +39,7 @@ class UriIconPack(context: Context) : IconPack(context, "lawnchairUriPack") {
     override val packInfo = IconPackList.DefaultPackInfo(context)
     override val entries = listOf<Entry>()
 
-    private val entryCache = mutableMapOf<String, UriEntry>()
+    private val entryCache = mutableMapOf<Pair<String, Boolean>, UriEntry>()
 
     override fun loadPack() {
 
@@ -53,19 +53,17 @@ class UriIconPack(context: Context) : IconPack(context, "lawnchairUriPack") {
         throw NotImplementedError()
     }
 
-    private fun getUriEntry(name: String?): UriEntry? {
-        if (TextUtils.isEmpty(name)) return null
-        val entry = entryCache.getOrPut(name!!) { UriEntry.fromSpec(context, name) }
-        if (!entry.isAvailable) return null
-        return entry
+    private fun getUriEntry(entry: IconPackManager.CustomIconEntry?): UriEntry? {
+        if (entry == null) return null
+        if (TextUtils.isEmpty(entry.icon)) return null
+        val key = entry.icon!! to (entry.arg == "true")
+        val uriEntry = entryCache.getOrPut(key) { UriEntry.fromSpec(context, entry.icon, entry.arg) }
+        if (!uriEntry.isAvailable) return null
+        return uriEntry
     }
 
-    private fun getUriEntry(customIconEntry: IconPackManager.CustomIconEntry?): UriEntry? {
-        return getUriEntry(customIconEntry?.icon)
-    }
-
-    override fun getIcon(name: String, iconDpi: Int): Drawable? {
-        return getUriEntry(name)?.drawable ?: super.getIcon(name, iconDpi)
+    override fun getIcon(entry: IconPackManager.CustomIconEntry, iconDpi: Int): Drawable? {
+        return getUriEntry(entry)?.drawable ?: super.getIcon(entry, iconDpi)
     }
 
     override fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
@@ -122,16 +120,13 @@ class UriIconPack(context: Context) : IconPack(context, "lawnchairUriPack") {
         }
 
         override fun toCustomEntry(): IconPackManager.CustomIconEntry {
-            return IconPackManager.CustomIconEntry("lawnchairUriPack", "$uri|$adaptive")
+            return IconPackManager.CustomIconEntry("lawnchairUriPack", "$uri", "$adaptive")
         }
 
         companion object {
 
-            fun fromSpec(context: Context, spec: String?): UriEntry {
-                val parts = spec!!.split("|")
-                val uri = Uri.parse(parts[0])
-                val adaptive = parts.size > 1 && parts[1] == "true"
-                return UriEntry(context, uri, adaptive)
+            fun fromSpec(context: Context, spec: String?, arg: String?): UriEntry {
+                return UriEntry(context, Uri.parse(spec), arg == "true")
             }
         }
     }
