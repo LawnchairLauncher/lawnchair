@@ -25,6 +25,7 @@ import android.support.annotation.Keep
 import ch.deletescape.lawnchair.checkLocationAccess
 import ch.deletescape.lawnchair.location.IPLocation
 import ch.deletescape.lawnchair.perms.CustomPermissionManager
+import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.runOnUiWorkerThread
 import ch.deletescape.lawnchair.smartspace.weather.icons.WeatherIconManager
 import ch.deletescape.lawnchair.twilight.TwilightManager
@@ -76,11 +77,14 @@ class OnePlusWeatherDataProvider(controller: LawnchairSmartspaceController) :
     }
 
     private fun update(weatherData: OPWeatherProvider.WeatherData) {
-        updateData(LawnchairSmartspaceController.WeatherData(
-                getConditionIcon(weatherData),
-                Temperature(weatherData.temperature, getTemperatureUnit(weatherData)),
-                forecastIntent = Intent().setClassName(OPWeatherProvider.WEATHER_PACKAGE_NAME, OPWeatherProvider.WEATHER_LAUNCH_ACTIVITY)
-        ), null)
+        runOnUiWorkerThread {
+            val weather = LawnchairSmartspaceController.WeatherData(
+                    getConditionIcon(weatherData),
+                    Temperature(weatherData.temperature, getTemperatureUnit(weatherData)),
+                    forecastIntent = Intent().setClassName(OPWeatherProvider.WEATHER_PACKAGE_NAME, OPWeatherProvider.WEATHER_LAUNCH_ACTIVITY)
+            )
+            runOnMainThread { updateData(weather, null) }
+        }
     }
 
     private fun getConditionIcon(data: OPWeatherProvider.WeatherData):Bitmap {
