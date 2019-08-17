@@ -217,8 +217,8 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         return MaskEntry(key)
     }
 
-    override fun getIcon(name: String, iconDpi: Int): Drawable? {
-        val drawableId = getDrawableId(name)
+    override fun getIcon(entry: IconPackManager.CustomIconEntry, iconDpi: Int): Drawable? {
+        val drawableId = getDrawableId(entry.icon ?: return null)
         if (drawableId != 0) {
             try {
                 var drawable = packResources.getDrawable(drawableId)
@@ -233,7 +233,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 }
                 return drawable.mutate()
             } catch (ex: Resources.NotFoundException) {
-                e("Can't get drawable for name $name ($drawableId)", ex)
+                e("Can't get drawable for name ${entry.icon} ($drawableId)", ex)
             }
         }
         return null

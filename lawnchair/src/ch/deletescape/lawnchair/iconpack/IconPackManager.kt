@@ -203,13 +203,22 @@ class IconPackManager(private val context: Context) {
                 if (string == null) return null
                 if (string.contains("|")) {
                     val parts = string.split("|")
+                    if (parts[0].contains("/")) return parseLegacy(string)
                     if (parts.size == 1) {
                         return CustomIconEntry(parts[0])
                     }
                     return CustomIconEntry(parts[0], parts[1].asNonEmpty(), parts[2].asNonEmpty())
                 }
+                return parseLegacy(string)
+            }
+
+            private fun parseLegacy(string: String): CustomIconEntry? {
                 val parts = string.split("/")
                 val icon = TextUtils.join("/", parts.subList(1, parts.size))
+                if (parts[0] == "lawnchairUriPack" && !icon.isNullOrBlank()) {
+                    val iconParts = icon.split("|")
+                    return CustomIconEntry(parts[0], iconParts[0].asNonEmpty(), iconParts[1].asNonEmpty())
+                }
                 return CustomIconEntry(parts[0], icon.asNonEmpty())
             }
         }
