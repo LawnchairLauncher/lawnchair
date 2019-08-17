@@ -4,11 +4,14 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import ch.deletescape.lawnchair.predictions.LawnchairEventPredictor;
+import ch.deletescape.lawnchair.sesame.Sesame;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.SecondaryDropTarget;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.util.ComponentKey;
 
 public class NexusSecondaryDropTarget extends SecondaryDropTarget {
 
@@ -60,7 +63,16 @@ public class NexusSecondaryDropTarget extends SecondaryDropTarget {
         if (this.mCurrentAccessibilityAction != DISMISS) {
             return super.performDropAction(view, info);
         }
-        ActionsController.get(getContext()).onActionDismissed(((ActionsRowView) mLauncher.findViewById(R.id.actions_row)).getAction(info));
+
+        Action action = ((ActionsRowView) mLauncher.findViewById(R.id.actions_row)).getAction(info);
+        LawnchairEventPredictor eventPredictor = (LawnchairEventPredictor) mLauncher
+                .getUserEventDispatcher();
+        if (eventPredictor.isActionsEnabled()) {
+            eventPredictor.setHiddenAction(action.toString());
+            mLauncher.getUserEventDispatcher().updateActions();
+        } else {
+            ActionsController.get(getContext()).onActionDismissed(action);
+        }
         return null;
     }
 }

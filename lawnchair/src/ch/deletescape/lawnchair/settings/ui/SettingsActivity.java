@@ -43,6 +43,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
+import android.support.v7.preference.Preference.OnPreferenceClickListener;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceFragmentCompat.OnPreferenceDisplayDialogCallback;
 import android.support.v7.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCallback;
@@ -129,11 +130,13 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
     public final static String SHOW_PREDICTIONS_PREF = "pref_show_predictions";
     public final static String SHOW_ACTIONS_PREF = "pref_show_suggested_actions";
+    public final static String HIDDEN_ACTIONS_PREF = "pref_hidden_prediction_action_set";
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
     public final static String FEED_THEME_PREF = "pref_feedTheme";
     public final static String SMARTSPACE_PREF = "pref_smartspace";
     public final static String ALLOW_OVERLAP_PREF = "pref_allowOverlap";
     private final static String BRIDGE_TAG = "tag_bridge";
+    private final static String RESET_HIDDEN_ACTIONS_PREF = "pref_reset_hidden_suggested_actions";
 
     public final static String EXTRA_TITLE = "title";
 
@@ -651,6 +654,18 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     return true;
                 });
             } else if (getContent() == R.xml.lawnchair_app_drawer_preferences) {
+                SwitchPreference showActionsPref = (SwitchPreference) findPreference(SHOW_ACTIONS_PREF);
+                Preference resetHiddenActionsPref = findPreference(RESET_HIDDEN_ACTIONS_PREF);
+                resetHiddenActionsPref.setEnabled(showActionsPref.isChecked());
+                showActionsPref.setOnPreferenceClickListener(preference -> {
+                    resetHiddenActionsPref.setEnabled(((SwitchPreference) preference).isChecked());
+                    return false;
+                });
+                resetHiddenActionsPref.setOnPreferenceClickListener(preference -> {
+                    Utilities.getLawnchairPrefs(mContext).getSharedPrefs().edit()
+                            .remove(HIDDEN_ACTIONS_PREF).apply();
+                    return true;
+                });
                 findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
             } else if (getContent() == R.xml.lawnchair_dev_options_preference) {
                 findPreference("kill").setOnPreferenceClickListener(this);
