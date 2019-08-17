@@ -99,12 +99,20 @@ class ClockVisibilityManager(private val context: Context) {
             if (iconBlacklist.contains(CLOCK)) return
             iconBlacklist.add(CHECK)
             iconBlacklist.add(CLOCK)
-            Settings.System.putInt(resolver, STATUS_BAR_CLOCK, 0)
+            try {
+                Settings.System.putInt(resolver, STATUS_BAR_CLOCK, 0)
+            } catch (e: IllegalArgumentException) {
+
+            }
         } else {
             if (!iconBlacklist.contains(CHECK)) return
             iconBlacklist.remove(CHECK)
             iconBlacklist.remove(CLOCK)
-            Settings.System.putInt(resolver, STATUS_BAR_CLOCK, 1)
+            try {
+                Settings.System.putInt(resolver, STATUS_BAR_CLOCK, 1)
+            } catch (e: IllegalArgumentException) {
+                
+            }
         }
         val blacklistString = TextUtils.join(",", iconBlacklist)
         if (blacklistString == DEFAULT_BLACKLIST) {
