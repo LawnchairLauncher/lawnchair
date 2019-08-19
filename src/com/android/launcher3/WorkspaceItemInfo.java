@@ -50,24 +50,26 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
      * The icon was added as an auto-install app, and is not ready to be used. This flag can't
      * be present along with {@link #FLAG_RESTORED_ICON}, and is set during default layout
      * parsing.
+     *
+     * OR this icon was added due to it being an active install session created by the user.
      */
-    public static final int FLAG_AUTOINSTALL_ICON = 2; //0B10;
+    public static final int FLAG_AUTOINSTALL_ICON = 1 << 1;
 
     /**
      * The icon is being installed. If {@link #FLAG_RESTORED_ICON} or {@link #FLAG_AUTOINSTALL_ICON}
      * is set, then the icon is either being installed or is in a broken state.
      */
-    public static final int FLAG_INSTALL_SESSION_ACTIVE = 4; // 0B100;
+    public static final int FLAG_INSTALL_SESSION_ACTIVE = 1 << 2;
 
     /**
      * Indicates that the widget restore has started.
      */
-    public static final int FLAG_RESTORE_STARTED = 8; //0B1000;
+    public static final int FLAG_RESTORE_STARTED = 1 << 3;
 
     /**
      * Web UI supported.
      */
-    public static final int FLAG_SUPPORTS_WEB_UI = 16; //0B10000;
+    public static final int FLAG_SUPPORTS_WEB_UI = 1 << 4;
 
     /**
      * The intent used to start the application.
@@ -210,7 +212,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     public ComponentName getTargetComponent() {
         ComponentName cn = super.getTargetComponent();
         if (cn == null && (itemType == Favorites.ITEM_TYPE_SHORTCUT
-                || hasStatusFlag(FLAG_SUPPORTS_WEB_UI))) {
+                || hasStatusFlag(FLAG_SUPPORTS_WEB_UI | FLAG_AUTOINSTALL_ICON))) {
             // Legacy shortcuts and promise icons with web UI may not have a componentName but just
             // a packageName. In that case create a dummy componentName instead of adding additional
             // check everywhere.
