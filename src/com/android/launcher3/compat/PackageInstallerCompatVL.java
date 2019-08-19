@@ -23,15 +23,20 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionCallback;
 import android.content.pm.PackageInstaller.SessionInfo;
-import android.os.Process;
+import android.content.pm.PackageManager;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
-import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel;
+import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.IntSet;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -39,17 +44,20 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.android.launcher3.Utilities.getPrefs;
+
 public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
     private static final boolean DEBUG = false;
 
-    @Thunk final SparseArray<String> mActiveSessions = new SparseArray<>();
+    @Thunk final SparseArray<PackageUserKey> mActiveSessions = new SparseArray<>();
 
     @Thunk final PackageInstaller mInstaller;
     private final IconCache mCache;
     private final Context mAppContext;
     private final HashMap<String,Boolean> mSessionVerifiedMap = new HashMap<>();
     private final LauncherAppsCompat mLauncherApps;
+    private final IntSet mPromiseIconIds;
 
     PackageInstallerCompatVL(Context context) {
         mAppContext = context.getApplicationContext();
@@ -57,17 +65,38 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         mCache = LauncherAppState.getInstance(context).getIconCache();
         mInstaller.registerSessionCallback(mCallback, MODEL_EXECUTOR.getHandler());
         mLauncherApps = LauncherAppsCompat.getInstance(context);
+        mPromiseIconIds = IntSet.wrap(IntArray.fromConcatString(
+                getPrefs(context).getString(PROMISE_ICON_IDS, "")));
+
+        cleanUpPromiseIconIds();
+    }
+
+    private void cleanUpPromiseIconIds() {
+        IntArray existingIds = new IntArray();
+        for (SessionInfo info : updateAndGetActiveSessionCache().values()) {
+            existingIds.add(info.getSessionId());
+        }
+        IntArray idsToRemove = new IntArray();
+
+        for (int i = mPromiseIconIds.size() - 1; i >= 0; --i) {
+            if (!existingIds.contains(mPromiseIconIds.getArray().get(i))) {
+                idsToRemove.add(mPromiseIconIds.getArray().get(i));
+            }
+        }
+        for (int i = idsToRemove.size() - 1; i >= 0; --i) {
+            mPromiseIconIds.getArray().removeValue(idsToRemove.get(i));
+        }
     }
 
     @Override
     public HashMap<String, SessionInfo> updateAndGetActiveSessionCache() {
         HashMap<String, SessionInfo> activePackages = new HashMap<>();
-        UserHandle primaryUser = Process.myUserHandle();
         for (SessionInfo info : getAllVerifiedSessions()) {
-            addSessionInfoToCache(info, Utilities.ATLEAST_Q ? info.getUser() : primaryUser);
+            addSessionInfoToCache(info, getUserHandle(info));
             if (info.getAppPackageName() != null) {
                 activePackages.put(info.getAppPackageName(), info);
-                mActiveSessions.put(info.getSessionId(), info.getAppPackageName());
+                mActiveSessions.put(info.getSessionId(),
+                        new PackageUserKey(info.getAppPackageName(), getUserHandle(info)));
             }
         }
         return activePackages;
@@ -76,7 +105,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     public SessionInfo getActiveSessionInfo(UserHandle user, String pkg) {
         for (SessionInfo info : getAllVerifiedSessions()) {
             boolean match = pkg.equals(info.getAppPackageName());
-            if (Utilities.ATLEAST_Q && !user.equals(info.getUser())) {
+            if (Utilities.ATLEAST_Q && !user.equals(getUserHandle(info))) {
                 match = false;
             }
             if (match) {
@@ -118,19 +147,38 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
                             PackageInstallInfo.fromInstallingState(sessionInfo));
                 }
             }
+
+            if (Utilities.ATLEAST_OREO && FeatureFlags.PROMISE_APPS_NEW_INSTALLS.get()
+                    && SessionCommitReceiver.isEnabled(mAppContext)
+                    && sessionInfo != null
+                    && sessionInfo.getInstallReason() == PackageManager.INSTALL_REASON_USER) {
+                SessionCommitReceiver.queuePromiseAppIconAddition(mAppContext, sessionInfo);
+                if (!mPromiseIconIds.contains(sessionInfo.getSessionId())) {
+                    mPromiseIconIds.add(sessionInfo.getSessionId());
+                    updatePromiseIconPrefs();
+                }
+            }
         }
 
         @Override
         public void onFinished(int sessionId, boolean success) {
             // For a finished session, we can't get the session info. So use the
             // packageName from our local cache.
-            String packageName = mActiveSessions.get(sessionId);
+            PackageUserKey key = mActiveSessions.get(sessionId);
             mActiveSessions.remove(sessionId);
 
-            if (packageName != null) {
-                sendUpdate(PackageInstallInfo.fromState(
-                        success ? STATUS_INSTALLED : STATUS_FAILED,
-                        packageName));
+            if (key != null && key.mPackageName != null) {
+                String packageName = key.mPackageName;
+                sendUpdate(PackageInstallInfo.fromState(success ? STATUS_INSTALLED : STATUS_FAILED,
+                        packageName, key.mUser));
+
+                if (!success && FeatureFlags.PROMISE_APPS_NEW_INSTALLS.get()) {
+                    LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
+                    if (appState != null) {
+                        LauncherModel model = appState.getModel();
+                        model.onPackageRemoved(packageName, key.mUser);
+                    }
+                }
             }
         }
 
@@ -153,8 +201,9 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         private SessionInfo pushSessionDisplayToLauncher(int sessionId) {
             SessionInfo session = verify(mInstaller.getSessionInfo(sessionId));
             if (session != null && session.getAppPackageName() != null) {
-                mActiveSessions.put(sessionId, session.getAppPackageName());
-                addSessionInfoToCache(session, Process.myUserHandle());
+                mActiveSessions.put(session.getSessionId(),
+                        new PackageUserKey(session.getAppPackageName(), getUserHandle(session)));
+                addSessionInfoToCache(session, getUserHandle(session));
                 LauncherAppState app = LauncherAppState.getInstanceNoCreate();
                 if (app != null) {
                     app.getModel().updateSessionDisplayInfo(session.getAppPackageName());
@@ -176,7 +225,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
             if (!mSessionVerifiedMap.containsKey(pkg)) {
                 LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(mAppContext);
                 boolean hasSystemFlag = launcherApps.getApplicationInfo(pkg,
-                        ApplicationInfo.FLAG_SYSTEM, Process.myUserHandle()) != null;
+                        ApplicationInfo.FLAG_SYSTEM, getUserHandle(sessionInfo)) != null;
                 mSessionVerifiedMap.put(pkg, DEBUG || hasSystemFlag);
             }
         }
@@ -195,5 +244,24 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
             }
         }
         return list;
+    }
+
+    @Override
+    public boolean promiseIconAddedForId(int sessionId) {
+        return mPromiseIconIds.contains(sessionId);
+    }
+
+    @Override
+    public void removePromiseIconId(int sessionId) {
+        if (mPromiseIconIds.contains(sessionId)) {
+            mPromiseIconIds.getArray().removeValue(sessionId);
+            updatePromiseIconPrefs();
+        }
+    }
+
+    private void updatePromiseIconPrefs() {
+        getPrefs(mAppContext).edit()
+                .putString(PROMISE_ICON_IDS, mPromiseIconIds.getArray().toConcatString())
+                .apply();
     }
 }

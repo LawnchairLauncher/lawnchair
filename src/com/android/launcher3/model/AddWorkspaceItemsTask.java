@@ -16,6 +16,8 @@
 package com.android.launcher3.model;
 
 import android.content.Intent;
+import android.content.pm.LauncherActivityInfo;
+import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.UserHandle;
 import android.util.LongSparseArray;
 import android.util.Pair;
@@ -30,6 +32,8 @@ import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -84,6 +88,10 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                 }
             }
 
+            PackageInstallerCompat packageInstaller =
+                    PackageInstallerCompat.getInstance(app.getContext());
+            LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(app.getContext());
+
             for (ItemInfo item : filteredItems) {
                 // Find appropriate space for the item.
                 int[] coords = findSpaceForItem(app, dataModel, workspaceScreens,
@@ -98,6 +106,38 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                     itemInfo = ((AppInfo) item).makeWorkspaceItem();
                 } else {
                     throw new RuntimeException("Unexpected info type");
+                }
+
+                if (item instanceof WorkspaceItemInfo && ((WorkspaceItemInfo) item).isPromise()) {
+                    WorkspaceItemInfo workspaceInfo = (WorkspaceItemInfo) item;
+                    String packageName = item.getTargetComponent() != null
+                            ? item.getTargetComponent().getPackageName() : null;
+                    if (packageName == null) {
+                        continue;
+                    }
+                    SessionInfo sessionInfo = packageInstaller.getActiveSessionInfo(item.user,
+                            packageName);
+                    if (sessionInfo == null) {
+                        List<LauncherActivityInfo> activities = launcherApps
+                                .getActivityList(packageName, item.user);
+                        if (activities != null && !activities.isEmpty()) {
+                            // App was installed while launcher was in the background.
+                            itemInfo = new AppInfo(app.getContext(), activities.get(0), item.user)
+                                    .makeWorkspaceItem();
+                            PackageItemInfo info = new PackageItemInfo(packageName);
+                            WorkspaceItemInfo wii = (WorkspaceItemInfo) itemInfo;
+                            app.getIconCache().getTitleAndIconForApp(info, wii.usingLowResIcon());
+                            wii.title = info.title;
+                            wii.contentDescription = info.contentDescription;
+                            wii.iconBitmap = info.iconBitmap;
+                            wii.iconColor = info.iconColor;
+                        } else {
+                            // Session was cancelled, do not add.
+                            continue;
+                        }
+                    } else {
+                        workspaceInfo.setInstallProgress((int) sessionInfo.getProgress());
+                    }
                 }
 
                 // Add the shortcut to the db
