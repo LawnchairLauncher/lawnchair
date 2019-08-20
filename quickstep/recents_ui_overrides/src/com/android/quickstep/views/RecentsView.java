@@ -824,7 +824,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      */
     public void onSwipeUpAnimationSuccess() {
         if (getRunningTaskView() != null) {
-            float startProgress = ENABLE_QUICKSTEP_LIVE_TILE.get()
+            float startProgress = ENABLE_QUICKSTEP_LIVE_TILE.get() && mLiveTileOverlay != null
                     ? mLiveTileOverlay.cancelIconAnimation()
                     : 0f;
             animateUpRunningTaskIconScale(startProgress);
