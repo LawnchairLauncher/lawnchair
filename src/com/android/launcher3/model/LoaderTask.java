@@ -66,6 +66,7 @@ import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.cache.IconCacheUpdateHandler;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.provider.ImportDataTask;
+import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
@@ -580,10 +581,19 @@ public class LoaderTask implements Runnable {
 
                             int appWidgetId = c.getInt(appWidgetIdIndex);
                             String savedProvider = c.getString(appWidgetProviderIndex);
+                            final ComponentName component;
 
-                            final ComponentName component =
-                                    ComponentName.unflattenFromString(savedProvider);
-
+                            boolean isSearchWidget = (c.getInt(optionsIndex)
+                                    & LauncherAppWidgetInfo.OPTION_SEARCH_WIDGET) != 0;
+                            if (isSearchWidget) {
+                                component  = QsbContainerView.getSearchComponentName(context);
+                                if (component == null) {
+                                    c.markDeleted("Discarding SearchWidget without packagename ");
+                                    continue;
+                                }
+                            } else {
+                                component = ComponentName.unflattenFromString(savedProvider);
+                            }
                             final boolean isIdValid = !c.hasRestoreFlag(
                                     LauncherAppWidgetInfo.FLAG_ID_NOT_VALID);
                             final boolean wasProviderReady = !c.hasRestoreFlag(
@@ -593,9 +603,7 @@ public class LoaderTask implements Runnable {
                                 widgetProvidersMap = mAppWidgetManager.getAllProvidersMap();
                             }
                             final AppWidgetProviderInfo provider = widgetProvidersMap.get(
-                                    new ComponentKey(
-                                            ComponentName.unflattenFromString(savedProvider),
-                                            c.user));
+                                    new ComponentKey(component, c.user));
 
                             final boolean isProviderReady = isValidProvider(provider);
                             if (!isSafeMode && !customWidget &&
@@ -659,6 +667,7 @@ public class LoaderTask implements Runnable {
                                 c.applyCommonProperties(appWidgetInfo);
                                 appWidgetInfo.spanX = c.getInt(spanXIndex);
                                 appWidgetInfo.spanY = c.getInt(spanYIndex);
+                                appWidgetInfo.options = c.getInt(optionsIndex);
                                 appWidgetInfo.user = c.user;
 
                                 if (appWidgetInfo.spanX <= 0 || appWidgetInfo.spanY <= 0) {

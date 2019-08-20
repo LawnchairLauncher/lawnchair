@@ -39,6 +39,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.AppWidgetResizeFrame;
@@ -59,6 +60,72 @@ import com.android.launcher3.graphics.FragmentWithPreview;
 public class QsbContainerView extends FrameLayout {
 
     public static final String SEARCH_PROVIDER_SETTINGS_KEY = "SEARCH_PROVIDER_PACKAGE_NAME";
+
+    /**
+     * Returns the package name for user configured search provider or from searchManager
+     * @param context
+     * @return String
+     */
+    @Nullable
+    public static String getSearchWidgetPackageName(@NonNull Context context) {
+        String providerPkg = Settings.Global.getString(context.getContentResolver(),
+                SEARCH_PROVIDER_SETTINGS_KEY);
+        if (providerPkg == null) {
+            SearchManager searchManager = context.getSystemService(SearchManager.class);
+            ComponentName componentName = searchManager.getGlobalSearchActivity();
+            if (componentName != null) {
+                providerPkg = searchManager.getGlobalSearchActivity().getPackageName();
+            }
+        }
+        return providerPkg;
+    }
+
+    /**
+     * returns it's AppWidgetProviderInfo using package name from getSearchWidgetPackageName
+     * @param context
+     * @return AppWidgetProviderInfo
+     */
+    @Nullable
+    public static AppWidgetProviderInfo getSearchWidgetProviderInfo(@NonNull Context context) {
+        String providerPkg = getSearchWidgetPackageName(context);
+        if (providerPkg == null) {
+            return null;
+        }
+
+        AppWidgetProviderInfo defaultWidgetForSearchPackage = null;
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        for (AppWidgetProviderInfo info :
+                appWidgetManager.getInstalledProvidersForPackage(providerPkg, null)) {
+            if (info.provider.getPackageName().equals(providerPkg) && info.configure == null) {
+                if ((info.widgetCategory
+                        & AppWidgetProviderInfo.WIDGET_CATEGORY_SEARCHBOX) != 0) {
+                    return info;
+                } else if (defaultWidgetForSearchPackage == null) {
+                    defaultWidgetForSearchPackage = info;
+                }
+            }
+        }
+        return defaultWidgetForSearchPackage;
+    }
+
+    /**
+     * returns componentName for searchWidget if package name is known.
+     */
+    @Nullable
+    public static ComponentName getSearchComponentName(@NonNull  Context context) {
+        AppWidgetProviderInfo providerInfo =
+                QsbContainerView.getSearchWidgetProviderInfo(context);
+        if (providerInfo != null) {
+            return providerInfo.provider;
+        } else {
+            String pkgName = QsbContainerView.getSearchWidgetPackageName(context);
+            if (pkgName != null) {
+                //we don't know the class name yet. we'll put the package name as placeholder
+                return new ComponentName(pkgName, pkgName);
+            }
+            return null;
+        }
+    }
 
     public QsbContainerView(Context context) {
         super(context);
@@ -118,6 +185,7 @@ public class QsbContainerView extends FrameLayout {
             mWrapper = new FrameLayout(getContext());
             // Only add the view when enabled
             if (isQsbEnabled()) {
+                mQsbWidgetHost.startListening();
                 mWrapper.addView(createQsb(mWrapper));
             }
             return mWrapper;
@@ -159,7 +227,8 @@ public class QsbContainerView extends FrameLayout {
             }
 
             if (isWidgetBound) {
-                mQsb = (QsbWidgetHostView) mQsbWidgetHost.createView(context, widgetId, mWidgetInfo);
+                mQsb = (QsbWidgetHostView) mQsbWidgetHost.createView(context, widgetId,
+                        mWidgetInfo);
                 mQsb.setId(R.id.qsb_widget);
 
                 if (!isInPreviewMode()) {
@@ -167,7 +236,6 @@ public class QsbContainerView extends FrameLayout {
                             .getAppWidgetOptions(widgetId), opts)) {
                         mQsb.updateAppWidgetOptions(opts);
                     }
-                    mQsbWidgetHost.startListening();
                 }
                 return mQsb;
             }
@@ -250,24 +318,6 @@ public class QsbContainerView extends FrameLayout {
             return v;
         }
 
-        /**
-         * returns the package name string from global settings or from system search service.
-         *
-         * @return String (package name) or null if neither exist
-         */
-        @Nullable
-        protected String getSearchProviderPackageName() {
-            String providerPkg = Settings.Global.getString(getContext().getContentResolver(),
-                    SEARCH_PROVIDER_SETTINGS_KEY);
-            if (providerPkg == null) {
-                SearchManager searchManager = getContext().getSystemService(SearchManager.class);
-                ComponentName componentName = searchManager.getGlobalSearchActivity();
-                if (componentName != null) {
-                    providerPkg = searchManager.getGlobalSearchActivity().getPackageName();
-                }
-            }
-            return providerPkg;
-        }
 
         /**
          * Returns a widget with category {@link AppWidgetProviderInfo#WIDGET_CATEGORY_SEARCHBOX}
@@ -276,23 +326,7 @@ public class QsbContainerView extends FrameLayout {
          * provided by the package.
          */
         protected AppWidgetProviderInfo getSearchWidgetProvider() {
-            String providerPkg = getSearchProviderPackageName();
-            if (providerPkg == null) {
-                return null;
-            }
-            AppWidgetProviderInfo defaultWidgetForSearchPackage = null;
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getContext());
-            for (AppWidgetProviderInfo info : appWidgetManager.getInstalledProviders()) {
-                if (info.provider.getPackageName().equals(providerPkg) && info.configure == null) {
-                    if ((info.widgetCategory
-                            & AppWidgetProviderInfo.WIDGET_CATEGORY_SEARCHBOX) != 0) {
-                        return info;
-                    } else if (defaultWidgetForSearchPackage == null) {
-                        defaultWidgetForSearchPackage = info;
-                    }
-                }
-            }
-            return defaultWidgetForSearchPackage;
+            return getSearchWidgetProviderInfo(getContext());
         }
     }
 
@@ -362,4 +396,5 @@ public class QsbContainerView extends FrameLayout {
         }
         return true;
     }
+
 }
