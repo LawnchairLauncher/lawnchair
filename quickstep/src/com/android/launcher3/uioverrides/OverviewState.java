@@ -19,6 +19,7 @@ import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 
+import android.util.Log;
 import android.view.View;
 
 import ch.deletescape.lawnchair.LawnchairPreferences;
@@ -52,6 +53,7 @@ public class OverviewState extends LauncherState {
 
     @Override
     public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
+        Log.i("bruh", "running getWorkspaceScaleAndTranslation");
         RecentsView recentsView = launcher.getOverviewPanel();
         Workspace workspace = launcher.getWorkspace();
         View workspacePage = workspace.getPageAt(workspace.getCurrentPage());
@@ -129,6 +131,7 @@ public class OverviewState extends LauncherState {
     }
 
     public static float getNormalVerticalProgress(Launcher launcher) {
+        Log.i("bruh", "running getNormalVerticalProgress");
         return 1 - (getDefaultSwipeHeight(launcher)
                 / launcher.getAllAppsController().getShiftRange());
     }

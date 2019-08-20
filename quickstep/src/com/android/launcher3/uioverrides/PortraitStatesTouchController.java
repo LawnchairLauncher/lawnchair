@@ -30,6 +30,7 @@ import static com.android.quickstep.TouchInteractionService.EDGE_NAV_BAR;
 
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.Interpolator;
 
@@ -83,6 +84,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
     @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
+        //Log.i("bruh", "running canInterceptTouch");
         DeviceProfile dp = mLauncher.getDeviceProfile();
         int hotseatHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
         mStartedFromHotseat = ev.getY() >= (mLauncher.getDragLayer().getHeight() - hotseatHeight);
@@ -188,6 +190,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     @Override
     protected AnimatorSetBuilder getAnimatorSetBuilderForStates(LauncherState fromState,
             LauncherState toState) {
+        //Log.i("bruh", "running getAnimatorSetBuilderForStates");
         AnimatorSetBuilder builder = new AnimatorSetBuilder();
         if (fromState == NORMAL && toState == OVERVIEW) {
             builder = getNormalToOverviewAnimation();
@@ -255,6 +258,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     @Override
     protected void updateSwipeCompleteAnimation(ValueAnimator animator, long expectedDuration,
             LauncherState targetState, float velocity, boolean isFling) {
+        Log.i("bruh", "running updateSwipeCompleteAnimation");
         super.updateSwipeCompleteAnimation(animator, expectedDuration, targetState,
                 velocity, isFling);
         handleFirstSwipeToOverview(animator, expectedDuration, targetState, velocity, isFling);
@@ -263,6 +267,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     private void handleFirstSwipeToOverview(final ValueAnimator animator,
             final long expectedDuration, final LauncherState targetState, final float velocity,
             final boolean isFling) {
+        //Log.i("bruh", "running handleFirstSwipeToOverview");
         if (mFromState == NORMAL && mToState == OVERVIEW && targetState == OVERVIEW) {
             mFinishFastOnSecondTouch = true;
             if (isFling && expectedDuration != 0) {
@@ -280,6 +285,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
     @Override
     protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
+        //Log.i("bruh", "running onSwipeInteractionCompleted");
         super.onSwipeInteractionCompleted(targetState, logAction);
         if (mStartState == NORMAL && targetState == OVERVIEW) {
             RecentsModel.getInstance(mLauncher).onOverviewShown(true, TAG);

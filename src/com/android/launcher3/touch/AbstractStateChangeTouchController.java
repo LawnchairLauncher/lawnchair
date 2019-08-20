@@ -30,6 +30,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 
@@ -112,6 +113,7 @@ public abstract class AbstractStateChangeTouchController
     @Override
     public final boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            //Log.i("bruh", "this will run canInterceptTouch");
             mNoIntercept = !canInterceptTouch(ev);
             if (mNoIntercept) {
                 return false;
@@ -281,6 +283,7 @@ public abstract class AbstractStateChangeTouchController
     }
 
     protected void updateProgress(float fraction) {
+        Log.i("bruh", "running updateProgress");
         mCurrentAnimation.setPlayFraction(fraction);
         if (mAtomicComponentsController != null) {
             // Make sure we don't divide by 0, and have at least a small runway.
@@ -337,6 +340,7 @@ public abstract class AbstractStateChangeTouchController
                 }
             });
             mAtomicAnim.start();
+            Log.i("bruh", "started atomicAnim");
             mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
         }
     }

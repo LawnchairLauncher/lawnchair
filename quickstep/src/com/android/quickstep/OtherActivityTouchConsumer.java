@@ -37,6 +37,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Choreographer;
 import android.view.Display;
@@ -268,6 +269,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     @Override
     public void onCommand(int command) {
+        Log.i("bruh", "runnig onCommand");
         RecentsAnimationState state = mAnimationStates.get(command);
         if (state != null) {
             state.execute();

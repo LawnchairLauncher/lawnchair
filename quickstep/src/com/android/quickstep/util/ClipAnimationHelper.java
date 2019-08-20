@@ -24,6 +24,7 @@ import android.annotation.TargetApi;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
+import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -146,6 +147,7 @@ public class ClipAnimationHelper {
 
     public RectF applyTransform(RemoteAnimationTargetSet targetSet, float progress,
             @Nullable SyncRtSurfaceTransactionApplier syncTransactionApplier) {
+        Log.i("bruh", "apply*ing*Transform");
         RectF currentRect;
         mTmpRectF.set(mTargetRect);
         Utilities.scaleRectFAboutCenter(mTmpRectF, mTargetScale);
@@ -162,9 +164,9 @@ public class ClipAnimationHelper {
         mClipRect.left = (int) (mSourceWindowClipInsets.left * progress);
         mClipRect.top = (int) (mSourceWindowClipInsets.top * progress);
         mClipRect.right = (int)
-                (mSourceStackBounds.width() - (mSourceWindowClipInsets.right * progress));
+                (mSourceStackBounds.width() - (mSourceWindowClipInsets.right * progress) -30);
         mClipRect.bottom = (int)
-                (mSourceStackBounds.height() - (mSourceWindowClipInsets.bottom * progress));
+                (mSourceStackBounds.height() - (mSourceWindowClipInsets.bottom * progress) - 30);
 
         SurfaceParams[] params = new SurfaceParams[targetSet.unfilteredApps.length];
         for (int i = 0; i < targetSet.unfilteredApps.length; i++) {
@@ -233,6 +235,7 @@ public class ClipAnimationHelper {
 
     public void fromTaskThumbnailView(TaskThumbnailView ttv, RecentsView rv,
             @Nullable RemoteAnimationTargetCompat target) {
+        Log.i("bruh", "running fromTaskThumbnailView");
         BaseDraggingActivity activity = BaseDraggingActivity.fromContext(ttv.getContext());
         BaseDragLayer dl = activity.getDragLayer();
 
@@ -297,15 +300,22 @@ public class ClipAnimationHelper {
         // Align the task to bottom left/right edge (closer to nav bar).
         int left = activity.getDeviceProfile().isSeascape() ? insets.left
                 : (insets.left + fullDp.availableWidthPx - taskWidth);
-        mSourceStackBounds.set(0, 0, taskWidth, taskHeight);
+        mSourceStackBounds.set(0 + 30, 0, taskWidth, taskHeight);
         mSourceStackBounds.offset(left, insets.top + fullDp.availableHeightPx - taskHeight);
     }
 
     public void drawForProgress(TaskThumbnailView ttv, Canvas canvas, float progress) {
+        Log.i("bruh", "running drawForProgress");
         RectF currentRect =  mRectFEvaluator.evaluate(progress, mSourceRect, mTargetRect);
         canvas.translate(mSourceStackBounds.left - mHomeStackBounds.left,
                 mSourceStackBounds.top - mHomeStackBounds.top);
         mTmpMatrix.setRectToRect(mTargetRect, currentRect, ScaleToFit.FILL);
+
+
+//        Path mClipPath = new Path();
+//        float [] radii = new float[] {25, 25, 25, 25, 25, 25, 25, 25};
+//        mClipPath.addRoundRect(mTargetRect, radii, Path.Direction.CW);
+//        canvas.clipPath(mClipPath);
 
         canvas.concat(mTmpMatrix);
         canvas.translate(mTargetRect.left, mTargetRect.top);

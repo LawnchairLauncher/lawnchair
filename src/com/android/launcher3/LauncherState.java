@@ -23,6 +23,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.animation.Interpolator;
 
 import ch.deletescape.lawnchair.states.HomeState;
@@ -213,6 +214,7 @@ public class LauncherState {
      * @see com.android.launcher3.allapps.AllAppsTransitionController
      */
     public float getVerticalProgress(Launcher launcher) {
+        //Log.i("bruh", "gettingVerticalProgressOrSomething");
         return 1f;
     }
 

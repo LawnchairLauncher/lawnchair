@@ -44,6 +44,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
+import android.util.Log;
 import android.view.View;
 
 import com.android.launcher3.BaseDraggingActivity;
@@ -261,6 +262,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             AnimatorSet anim = new AnimatorSet();
 
             if (!activity.getDeviceProfile().isVerticalBarLayout()) {
+                Log.i("bruh", "going through");
                 AllAppsTransitionController controller = activity.getAllAppsController();
                 float scrollRange = Math.max(controller.getShiftRange(), 1);
                 float progressDelta = (transitionLength / scrollRange);
@@ -300,6 +302,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
          * Scale down recents from the center task being full screen to being in overview.
          */
         private void playScaleDownAnim(AnimatorSet anim, Launcher launcher) {
+            Log.i("bruh", "playScaleDownAnim");
             RecentsView recentsView = launcher.getOverviewPanel();
             TaskView v = recentsView.getTaskViewAt(recentsView.getCurrentPage());
             if (v == null) {
@@ -312,12 +315,15 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                         / clipHelper.getTargetRect().width();
                 float fromTranslationY = clipHelper.getSourceRect().centerY()
                         - clipHelper.getTargetRect().centerY();
+//                float fromCorners = clipHelper.
                 Animator scale = ObjectAnimator.ofFloat(recentsView, SCALE_PROPERTY, fromScale, 1);
                 Animator translateY = ObjectAnimator.ofFloat(recentsView, TRANSLATION_Y,
                         fromTranslationY, 0);
+//                Animator rounderer = ObjectAnimator
                 scale.setInterpolator(LINEAR);
                 translateY.setInterpolator(LINEAR);
-                anim.playTogether(scale, translateY);
+//                rounderer.setInterpolator(LINEAR);
+                anim.playTogether(scale, translateY/*, rounderer*/);
             }
         }
 

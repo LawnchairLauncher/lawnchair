@@ -90,6 +90,7 @@ import com.android.systemui.shared.system.WindowCallbacksCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
+import java.util.Arrays;
 import java.util.StringJoiner;
 import java.util.function.BiFunction;
 
@@ -344,7 +345,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     private void initTransitionEndpoints(DeviceProfile dp) {
         mDp = dp;
-
+        Log.i("bruh", "running initTransitionEndpoints");
         TransformedRect tempRect = new TransformedRect();
         mTransitionDragLength = mActivityControlHelper
                 .getSwipeUpDestinationAndLength(dp, mContext, mInteractionType, tempRect);
@@ -542,6 +543,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     @WorkerThread
     public void updateDisplacement(float displacement) {
         // We are moving in the negative x/y direction
+        Log.i("bruh", "running updateDisplacement");
         displacement = -displacement;
         if (displacement > mTransitionDragLength) {
             mCurrentShift.updateValue(1);
@@ -579,6 +581,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     @WorkerThread
     private void updateFinalShift() {
+        Log.i("bruh", "updateFinalShift");
         float shift = mCurrentShift.value;
 
         RecentsAnimationControllerCompat controller = mRecentsAnimationWrapper.getController();
@@ -619,6 +622,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     public void onRecentsAnimationStart(RecentsAnimationControllerCompat controller,
             RemoteAnimationTargetSet targets, Rect homeContentInsets, Rect minimizedHomeBounds) {
         LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
+        Log.i("bruh", "running onRecentsAnimationStart");
         InvariantDeviceProfile idp = appState == null ?
                 new InvariantDeviceProfile(mContext) : appState.getInvariantDeviceProfile();
         DeviceProfile dp = idp.getDeviceProfile(mContext);
@@ -636,7 +640,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 int loc[] = new int[2];
                 View rootView = mActivity.getRootView();
                 rootView.getLocationOnScreen(loc);
-                overviewStackBounds = new Rect(loc[0], loc[1], loc[0] + rootView.getWidth(),
+                Log.i("bruh", Arrays.toString(loc));
+                overviewStackBounds = new Rect(loc[0] - 25, loc[1] - 25, loc[0] + rootView.getWidth(),
                         loc[1] + rootView.getHeight());
             } else {
                 overviewStackBounds = new Rect(0, 0, dp.widthPx, dp.heightPx);
