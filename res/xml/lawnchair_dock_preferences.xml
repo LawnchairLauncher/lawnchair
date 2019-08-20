@@ -56,13 +56,13 @@
             app:summaryMultiplier="100"
             android:persistent="true" />
 
-        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+        <ch.deletescape.lawnchair.preferences.AutoModeScalePreference
             android:key="pref_dockScale"
             android:title="@string/dock_scale"
             android:dependency="pref_dockPreset"
-            app:minValue="0.25"
+            app:minValue="0.60"
             app:maxValue="1.75"
-            app:defaultSeekbarValue="1"
+            app:defaultSeekbarValue="0"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
             android:persistent="true" />
@@ -88,6 +88,52 @@
             android:title="@string/num_hotseat_icons_pref_title" />
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="true"
+            android:disableDependentsState="true"
+            android:key="pref_hideDockLabels"
+            android:persistent="true"
+            android:title="@string/hide_icon_labels_pref_title" />
+
+        <ch.deletescape.lawnchair.colors.preferences.ColorPickerPreference
+            android:key="pref_hotseatLabelColorResolver"
+            android:title="@string/text_color"
+            android:dependency="pref_hideDockLabels"
+            app:colorMode="RGB"
+            app:resolvers="@array/resolvers_workspace_labels"/>
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_dockIconLabelsInTwoLines"
+            android:title="@string/pref_mutliline_labels"
+            android:defaultValue="false"
+            android:dependency="pref_hideDockLabels"
+            android:persistent="true" />
+
+        <!-- TODO: For some reason this doesn't wanna work at all and I have absolutely no idea why
+        <ch.deletescape.lawnchair.preferences.AutoModeScalePreference
+            android:key="pref_dockTextScale"
+            android:persistent="true"
+            android:title="@string/icon_text_scale_pref_title"
+            android:dependency="pref_hideDockLabels"
+            app:defaultSeekbarValue="0"
+            app:maxValue="1.8"
+            app:minValue="0.3"
+            app:steps="150"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"/>
+            -->
+
+        <ch.deletescape.lawnchair.preferences.AutoModeScalePreference
+            android:key="pref_hotseatIconSize"
+            android:persistent="true"
+            android:title="@string/icon_scale_pref_title"
+            app:defaultSeekbarValue="0"
+            app:maxValue="2.0"
+            app:minValue="0.3"
+            app:steps="170"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_twoRowDock"
             android:title="@string/two_row_dock"
             android:defaultValue="false"
@@ -109,7 +155,7 @@
             android:key="pref_dockColoredGoogle"
             android:title="@string/dock_colored_google"
             android:dependency="pref_dockSearchBar"
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:persistent="true" />
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 </android.support.v7.preference.PreferenceScreen>

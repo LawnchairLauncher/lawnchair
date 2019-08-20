@@ -74,15 +74,6 @@
         android:defaultValue=""
         android:persistent="true" />
 
-    <ListPreference
-        android:key="pref_override_icon_shape"
-        android:title="@string/icon_shape_override_label"
-        android:summary="%s"
-        android:entries="@array/icon_shape_override_paths_names"
-        android:entryValues="@array/icon_shape_override_paths_values"
-        android:defaultValue=""
-        android:persistent="false" />
-
     <com.google.android.apps.nexuslauncher.CustomIconPreference
         android:key="pref_icon_pack"
         android:title="@string/icon_pack"

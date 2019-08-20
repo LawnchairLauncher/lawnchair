@@ -43,7 +43,7 @@ import java.lang.reflect.Method
 
 @Keep
 class SleepGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
-    override val displayName = context.getString(R.string.action_sleep)
+    override val displayName: String = context.getString(R.string.action_sleep)
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         method!!.sleep(controller)
@@ -133,7 +133,7 @@ class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod
 @Keep
 class SleepGestureHandlerTimeout(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override val displayName = context.getString(R.string.action_sleep_timeout)!!
+    override val displayName: String = context.getString(R.string.action_sleep_timeout)
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         val launcher = controller.launcher

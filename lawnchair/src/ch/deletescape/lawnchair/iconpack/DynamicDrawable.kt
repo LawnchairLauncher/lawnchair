@@ -21,7 +21,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RotateDrawable
@@ -88,7 +87,7 @@ class DynamicDrawable {
 
     class Metadata(val xml: String, val packageName: String) {
         internal var type: Type? = null
-        internal var items: List<DynamicDrawable.Item>? = null
+        internal var items: List<Item>? = null
         internal var clockMetadata: ClockMetadata? = null
         internal var loaded: Boolean = false
 
@@ -118,6 +117,7 @@ class DynamicDrawable {
                     Type.CLOCK -> {
                         loadClock(context, iconDpi)
                     }
+                    else -> {}
                 }
                 loaded = true
             }

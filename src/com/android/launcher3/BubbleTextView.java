@@ -28,6 +28,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.ColorUtils;
+import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -121,7 +122,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private final float mSlop;
 
     private final boolean mLayoutHorizontal;
-    private final int mIconSize;
+    private int mIconSize;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mIsIconVisible = true;
@@ -188,8 +189,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
             int lines = prefs.getHomeLabelRows();
-            setMaxLines(lines);
-            setSingleLine(lines == 1);
+            setLineCount(lines);
             colorEngine.addColorChangeListeners(this, Resolvers.WORKSPACE_ICON_LABEL);
         } else if (display == DISPLAY_ALL_APPS) {
             mHideText = prefs.getHideAllAppsAppLabels();
@@ -197,8 +197,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
             int lines = prefs.getDrawerLabelRows();
-            setMaxLines(lines);
-            setSingleLine(lines == 1);
+            setLineCount(lines);
             colorEngine.addColorChangeListeners(this, Resolvers.ALLAPPS_ICON_LABEL);
         } else if (display == DISPLAY_FOLDER) {
             mHideText = prefs.getHideAppLabels();
@@ -206,8 +205,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
             defaultIconSize = grid.folderChildIconSizePx;
             int lines = prefs.getHomeLabelRows();
-            setMaxLines(lines);
-            setSingleLine(lines == 1);
+            setLineCount(lines);
         } else if (display == DISPLAY_DRAWER_FOLDER) {
             mHideText = prefs.getHideAllAppsAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX,
@@ -215,8 +213,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setCompoundDrawablePadding(grid.allAppsFolderChildDrawablePaddingPx);
             defaultIconSize = grid.allAppsFolderChildIconSizePx;
             int lines = prefs.getDrawerLabelRows();
-            setMaxLines(lines);
-            setSingleLine(lines == 1);
+            setLineCount(lines);
         }
         CustomFontManager customFontManager = CustomFontManager.Companion.getInstance(context);
         int customFontType = getCustomFontType(display);
@@ -234,9 +231,21 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
-        setEllipsize(TruncateAt.END);
         setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
         setTextAlpha(1f);
+    }
+
+    public void setLineCount(int lines) {
+        setMaxLines(lines);
+        setSingleLine(lines == 1);
+        setEllipsize(TextUtils.TruncateAt.END);
+        // This shouldn't even be needed, what is going on?!
+        setLines(lines);
+    }
+
+    public void setColorResolver(String resolver) {
+        colorEngine.removeColorChangeListeners(this);
+        colorEngine.addColorChangeListeners(this, resolver);
     }
 
     protected int getCustomFontType(int display) {
@@ -549,10 +558,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     public boolean shouldTextBeVisible() {
-        // Text should be visible everywhere but the hotseat.
         Object tag = getParent() instanceof FolderIcon ? ((View) getParent()).getTag() : getTag();
         ItemInfo info = tag instanceof ItemInfo ? (ItemInfo) tag : null;
-        return info == null || info.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+        if (info != null && info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            return !Utilities.getLawnchairPrefs(getContext()).getHideDockLabels();
+        }
+        return true;
     }
 
     public void setTextVisibility(boolean visible) {
@@ -755,6 +766,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public int getIconSize() {
         return mIconSize;
+    }
+
+    public void setIconSize(int iconSize) {
+        mIconSize = iconSize;
+        setIcon(mIcon);
     }
 
     protected boolean isTextHidden() {

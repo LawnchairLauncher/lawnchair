@@ -463,6 +463,8 @@
     <string name="import_as_adaptive">Jako adaptivní ikonu</string>
     <string name="bugreport_channel_name">Hlášení o chybách</string>
     <string name="status_channel_name">Stav nahrávání hlášení o chybách</string>
+    <string name="bugreport_group_summary">Počet nových hlášení: %d</string>
+    <string name="bugreport_group_summary_multiple">Vícero nových hlášení</string>
     <string name="dogbin_uploading">Probíhá nahrávání</string>
     <string name="action_dogbin_upload">Nahrát na dogbin</string>
     <string name="action_dogbin_upload_error">Nahrávání selhalo</string>
@@ -496,8 +498,45 @@
     <string name="event_provider_now_playing">Nyní se přehrává</string>
     <string name="battery_status">Stav baterie</string>
     <string name="battery_charging">Nabíjení baterie</string>
+    <string name="battery_full">Baterie je plně nabita</string>
     <string name="battery_low">Nízký stav baterie</string>
     <string name="event_provider_unread_notifications">Nepřečtená oznámení</string>
     <string name="event_provider_missing_notification_access">Pro použití <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> zapněte oznámení aplikace pro <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Pro použití <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> zapněte puntíky s oznámením</string>
     <string name="zen_mode_enabled">Režim Nerušit je zapnutý</string>
+    <string name="crash_report_notif_title">%1$s havaroval!</string>
+    <string name="personality_provider">Kontextové zprávy</string>
+    <string-array name="greetings_morning">
+        <item>Dobré ráno!</item>
+        <item>Dneska je venku hezky!</item>
+        <item>Už jsi vykoukl ven?</item>
+        <item>Mějte se fanfárově!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Dobrou noc!</item>
+        <item>Dobře se vyspěte!</item>
+        <item>Uvidíme se zítra!</item>
+        <item>Sladké sny!</item>
+        <item>Moc dlouho neponocuj</item>
+        <item>Jaký jste měli den?</item>
+        <item>Co jste dnes dělali?</item>
+    </string-array>
+    <string name="onbording_settings_title">Nastavit %s</string>
+    <string name="onbording_settings_summary">Dlouze přidržte prst na domovské obrazovce</string>
+    <string name="onboarding_swipe_up">Přejetím prstu nahoru zobrazíte všechny aplikace</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">Kvůli omezení systému MIUI se nemusí změnit tvar vašich ikon a zůstanou čtvercové.\nNenahlašujte nám prosím toto chování jako chybu.</string>
+    <string name="button_organize_screens">Uspořádat obrazovky</string>
+    <string name="weather_icons_default">Výchozí</string>
+    <string name="pref_weather_icon_pack">Ikony počasí</string>
+    <string name="weather_icon_packs_not_supported">Nejsou podporovány vaším aktuálně nastaveným zdrojem počasí</string>
+    <string name="lawnchair_settings">Nastavení Lawnchair</string>
 </resources>

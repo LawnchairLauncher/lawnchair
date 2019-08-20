@@ -463,6 +463,8 @@
     <string name="import_as_adaptive">Ca pictogramă adaptivă</string>
     <string name="bugreport_channel_name">Raport despre erori</string>
     <string name="status_channel_name">Stare încărcare a raportului de eroare</string>
+    <string name="bugreport_group_summary">%d rapoarte noi</string>
+    <string name="bugreport_group_summary_multiple">Rapoarte noi multiple</string>
     <string name="dogbin_uploading">Încărcare în curs</string>
     <string name="action_dogbin_upload">Încărcați în dogbin</string>
     <string name="action_dogbin_upload_error">Încărcare eșuată</string>
@@ -496,8 +498,45 @@
     <string name="event_provider_now_playing">Redare acum</string>
     <string name="battery_status">Stare baterie</string>
     <string name="battery_charging">Se încarcă bateria</string>
+    <string name="battery_full">Baterie încărcată</string>
     <string name="battery_low">Baterie descărcată</string>
     <string name="event_provider_unread_notifications">Notificări necitite</string>
     <string name="event_provider_missing_notification_access">Pentru a utiliza <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activați notificările aplicației <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Pentru a folosi <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> activați punctele de notificare</string>
     <string name="zen_mode_enabled">Nu deranjați este activată</string>
+    <string name="crash_report_notif_title">%1$s distrus!</string>
+    <string name="personality_provider">Mesaje contextuale</string>
+    <string-array name="greetings_morning">
+        <item>Bună dimineața!</item>
+        <item>Ce zi minunată!</item>
+        <item>Te-ai uitat afară?</item>
+        <item>O zi bună!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Noapte bună!</item>
+        <item>Somn ușor!</item>
+        <item>Pe mâine!</item>
+        <item>Vise plăcute!</item>
+        <item>Nu sta prea mult</item>
+        <item>Cum ți-a fost ziua?</item>
+        <item>Ce ai făcut azi?</item>
+    </string-array>
+    <string name="onbording_settings_title">Setare %s</string>
+    <string name="onbording_settings_summary">Apasă lung pe ecranul principal</string>
+    <string name="onboarding_swipe_up">Glisați în sus pentru a vedea toate aplicațiile</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">Datorită restricțiilor din MIUI, este posibil ca forma pictogramelor să nu se modifice și să rămână pătrată. \nVă rugăm nu raportați ca bug.</string>
+    <string name="button_organize_screens">Organizare ecrane</string>
+    <string name="weather_icons_default">Implicit</string>
+    <string name="pref_weather_icon_pack">Pictograme meteo</string>
+    <string name="weather_icon_packs_not_supported">Nesuportat de către sursa meteo curentă</string>
+    <string name="lawnchair_settings">Setări Lawnchair</string>
 </resources>

@@ -533,4 +533,10 @@
     <string name="web_search_yandex">Yandex (web)</string>
     <string name="web_search_naver">Naver (web)</string>
     <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">A causa di una restrizione della MIUI, la forma delle icone potrebbe non cambiare e rimanere quadrata. \nPer favore non segnalarlo come bug.</string>
+    <string name="button_organize_screens">Organizza schermate</string>
+    <string name="weather_icons_default">Predefinite</string>
+    <string name="pref_weather_icon_pack">Icone meteo</string>
+    <string name="weather_icon_packs_not_supported">Non supportato dalla tua fonte meteo attuale</string>
+    <string name="lawnchair_settings">Impostazioni di Lawnchair</string>
 </resources>

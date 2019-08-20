@@ -294,8 +294,8 @@ public class LauncherStateManager {
             if (isWorkspaceVisible) {
                 CellLayout currentChild = (CellLayout) workspace.getChildAt(
                         workspace.getCurrentPage());
-                isWorkspaceVisible = currentChild.getVisibility() == VISIBLE
-                        && currentChild.getShortcutsAndWidgets().getAlpha() > 0;
+                isWorkspaceVisible = currentChild != null && (currentChild.getVisibility() == VISIBLE
+                        && currentChild.getShortcutsAndWidgets().getAlpha() > 0);
             }
             if (!isWorkspaceVisible) {
                 workspace.setScaleX(0.92f);

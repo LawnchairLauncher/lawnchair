@@ -458,6 +458,8 @@
     <string name="import_as_adaptive">Biểu tượng thích ứng</string>
     <string name="bugreport_channel_name">Bản báo lỗi</string>
     <string name="status_channel_name">Trạng thái tải lên bản báo lỗi</string>
+    <string name="bugreport_group_summary">%d báo cáo mới</string>
+    <string name="bugreport_group_summary_multiple">Nhiều báo cáo mới</string>
     <string name="dogbin_uploading">Đang tải lên</string>
     <string name="action_dogbin_upload">Tải lên dogbin</string>
     <string name="action_dogbin_upload_error">Tải lên thất bại</string>
@@ -491,8 +493,45 @@
     <string name="event_provider_now_playing">Đang phát</string>
     <string name="battery_status">Trạng thái pin</string>
     <string name="battery_charging">Đang sạc</string>
+    <string name="battery_full">Pin đầy</string>
     <string name="battery_low">Pin yếu</string>
     <string name="event_provider_unread_notifications">Thông báo chưa đọc</string>
-    <string name="event_provider_missing_notification_access">Để sử dụng <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, bật thông báo ứng dụng cho <xliff:g example="My App" id="name">%2$s</xliff:g></string>
-    <string name="zen_mode_enabled">Không làm phiền được kích hoạt</string>
+    <string name="event_provider_missing_notification_access">Để sử dụng <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, bật thông báo cho ứng dụng <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Để sử dụng <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, bật dấu chấm thông báo</string>
+    <string name="zen_mode_enabled">Không làm phiền đang bật</string>
+    <string name="crash_report_notif_title">%1$s đã bị dừng!</string>
+    <string name="personality_provider">Tin nhắn theo ngữ cảnh</string>
+    <string-array name="greetings_morning">
+        <item>Chào buổi sáng!</item>
+        <item>Thật là một ngày đẹp trời!</item>
+        <item>Bạn đã thử nhìn ra ngoài chưa?</item>
+        <item>Chúc bạn một ngày tốt lành!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Chúc ngủ ngon!</item>
+        <item>Ngủ ngon nhé!</item>
+        <item>Hẹn gặp bạn vào ngày mai!</item>
+        <item>Chúc bạn có những giấc mơ đẹp!</item>
+        <item>Đừng thức quá lâu</item>
+        <item>Ngày hôm nay của bạn thế nào?</item>
+        <item>Bạn đã làm gì vào hôm nay?</item>
+    </string-array>
+    <string name="onbording_settings_title">Cài đặt %s</string>
+    <string name="onbording_settings_summary">Nhấn và giữ màn hình chính</string>
+    <string name="onboarding_swipe_up">Vuốt lên để xem tất cả ứng dụng của bạn</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">Do hạn chế trong MIUI, hình dạng biểu tượng của bạn có thể không thay đổi và vẫn là hình vuông.\nXin đừng báo cáo rằng đây là một lỗi.</string>
+    <string name="button_organize_screens">Quản lý màn hình chính</string>
+    <string name="weather_icons_default">Mặc định</string>
+    <string name="pref_weather_icon_pack">Biểu tượng Thời tiết</string>
+    <string name="weather_icon_packs_not_supported">Nguồn cấp thời tiết hiện tại không hỗ trợ biểu tượng tùy chỉnh</string>
+    <string name="lawnchair_settings">Cài đặt Lawnchair</string>
 </resources>

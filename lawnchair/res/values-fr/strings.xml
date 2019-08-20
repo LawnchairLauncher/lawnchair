@@ -426,7 +426,7 @@
     <string name="background_color">Couleur du fond</string>
     <string name="pref_notification_count_title">Affiche le nombre de notification</string>
     <string name="pref_notification_count_summary">Afficher le nombre de notification dans le point</string>
-    <string name="pref_center_wallpaper">Toujours centrée le fond d\'écran</string>
+    <string name="pref_center_wallpaper">Toujours centrer le fond d\'écran</string>
     <string name="pref_center_wallpaper_summary">Cela désactivera l\'effet de défilement du fond d\'écran</string>
     <string name="pref_icon_popup_menu">Objet du menu Popup</string>
     <string name="pref_appcategorization_enable_title">Catégorisé les applications</string>
@@ -462,7 +462,7 @@
     <string name="import_as_adaptive">Comme une icône adaptative</string>
     <string name="bugreport_channel_name">Signaler un problème</string>
     <string name="status_channel_name">Statuts d\'envoi du signalement de problème</string>
-    <string name="bugreport_group_summary">Nouveau rapport</string>
+    <string name="bugreport_group_summary">%d nouveaux rapports</string>
     <string name="bugreport_group_summary_multiple">Plusieurs nouveaux rapports</string>
     <string name="dogbin_uploading">Envoie en cours</string>
     <string name="action_dogbin_upload">Transférer vers dogbin</string>
@@ -497,11 +497,13 @@
     <string name="event_provider_now_playing">Lecture en cours</string>
     <string name="battery_status">État de la batterie</string>
     <string name="battery_charging">Batterie en charge</string>
-    <string name="battery_full">Batterie rechargée</string>
+    <string name="battery_full">Batterie pleine</string>
     <string name="battery_low">Batterie faible</string>
     <string name="event_provider_unread_notifications">Notifications non lues</string>
     <string name="event_provider_missing_notification_access">Pour utiliser <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activez les notifications d\'application pour <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Pour utiliser <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activer les points de notification</string>
     <string name="zen_mode_enabled">Ne pas déranger est activé</string>
+    <string name="crash_report_notif_title">%1$s a planté !</string>
     <string name="personality_provider">Messages contextuelles</string>
     <string-array name="greetings_morning">
         <item>Bonjour !</item>
@@ -518,6 +520,7 @@
         <item>Comment s\'est passé votre journée ?</item>
         <item>Qu\'avez-vous fait aujourd\'hui ?</item>
     </string-array>
+    <string name="onbording_settings_title">Paramétrer %s</string>
     <string name="onbording_settings_summary">Appuyez longuement sur l\'écran d’accueil</string>
     <string name="onboarding_swipe_up">Glissez vers le haut pour afficher toutes vos applications</string>
     <string name="web_search_google">Google (web)</string>
@@ -529,4 +532,10 @@
     <string name="web_search_yandex">Yandex (web)</string>
     <string name="web_search_naver">Naver (web)</string>
     <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">En raison d\'une restriction dans MIUI, la forme de votre icône risque de ne pas changer et rester carrée.\nMerci de ne pas le signaler, ce n\'est pas un bogue.</string>
+    <string name="button_organize_screens">Organiser les écrans</string>
+    <string name="weather_icons_default">Par défaut</string>
+    <string name="pref_weather_icon_pack">Icônes météo</string>
+    <string name="weather_icon_packs_not_supported">N\'est pas supporté par votre source météo actuelle</string>
+    <string name="lawnchair_settings">Paramètres Lawnchair</string>
 </resources>

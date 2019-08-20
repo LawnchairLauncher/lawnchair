@@ -13,7 +13,7 @@ import ninja.sesame.lib.bridge.v1_1.LookFeelKeys
 
 class SesameSearchProvider(context: Context) : SearchProvider(context), LawnchairPreferences.OnPreferenceChangeListener {
 
-    override val name = context.getString(R.string.sesame)!!
+    override val name: String = context.getString(R.string.sesame)
     override val supportsVoiceSearch: Boolean
         get() = true
     override val supportsAssistant: Boolean

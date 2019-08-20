@@ -5,6 +5,11 @@
     <ch.deletescape.lawnchair.preferences.PreviewPreference
         android:key="pref_smartspace_preview"
         app:previewLayout="@layout/smartspace_preview" />
+
+    <ch.deletescape.lawnchair.preferences.SmartspaceAddToHomePreference
+        android:key="pref_smartspace_add_to_home"
+        android:title="@string/smartspace_add_to_home"
+        app:indexable="false" />
     
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="homewidgetStyle"
@@ -66,6 +71,11 @@
             android:title="@string/pref_smartspace_widget_provider"
             android:summary="%s"
             />
+
+        <ch.deletescape.lawnchair.settings.ui.WeatherIconPackPreference
+            android:key="pref_weatherIcons"
+            android:title="@string/pref_weather_icon_pack"
+            app:controllerClass=".WeatherIconPackController"/>
 
         <ch.deletescape.lawnchair.preferences.OWMEditTextPreference
             android:defaultValue="@string/default_owm_key"

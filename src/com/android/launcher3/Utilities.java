@@ -86,6 +86,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.uioverrides.OverviewState;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.systemui.shared.recents.model.Task;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -807,6 +808,9 @@ public final class Utilities {
     }
 
     public static String upperCaseFirstLetter(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return str;
+        }
         return str.substring(0, 1).toUpperCase(Locale.US) + str.substring(1);
     }
 
@@ -854,13 +858,20 @@ public final class Utilities {
     }
 
     public static Boolean isOnePlusStock() {
-        return !TextUtils.isEmpty(getSystemProperty("ro.oxygen.version", "")) || !TextUtils
-                .isEmpty(getSystemProperty("ro.hydrogen.version", ""));
+        return !TextUtils.isEmpty(getSystemProperty("ro.oxygen.version", ""))
+                || !TextUtils.isEmpty(getSystemProperty("ro.hydrogen.version", ""))
+                // ro.{oxygen|hydrogen}.version has been removed from the 7 series onwards
+                || getSystemProperty("ro.rom.version", "").contains("Oxygen OS")
+                || getSystemProperty("ro.rom.version", "").contains("Hydrogen OS");
     }
 
     public static Boolean isMiui(){
         return !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.code", "")) ||
                 !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.name", ""));
+    }
+
+    public static Boolean hasKnoxSecureFolder(Context context) {
+        return PackageManagerHelper.isAppInstalled(context.getPackageManager(), "com.samsung.knox.securefolder", 0);
     }
 
     public static void openURLinBrowser(Context context, String url) {

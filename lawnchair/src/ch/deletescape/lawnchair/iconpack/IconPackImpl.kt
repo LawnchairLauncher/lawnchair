@@ -223,7 +223,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                     drawable = DynamicDrawable.getIcon(context, drawable, packDynamicDrawables[drawableId]!!, iconDpi)
                 }
                 if (prefs.adaptifyIconPacks) {
-                    val gen = AdaptiveIconGenerator(context, drawable.mutate(), "$packPackageName#$drawableId")
+                    val gen = AdaptiveIconGenerator(context, drawable.mutate())
                     return gen.result
                 }
                 return drawable.mutate()
@@ -250,14 +250,16 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
         if (drawableId != 0) {
             try {
-                var drawable = packResources.getDrawable(drawableId)
+                var drawable = AdaptiveIconCompat.wrap(
+                        packResources.getDrawableForDensity(drawableId, iconDpi) ?:
+                        packResources.getDrawable(drawableId))
                 if (Utilities.ATLEAST_OREO && packClocks.containsKey(drawableId)) {
                     drawable = CustomClock.getClock(context, drawable, packClocks[drawableId], iconDpi)
                 } else if (packDynamicDrawables.containsKey(drawableId)) {
                     drawable = DynamicDrawable.getIcon(context, drawable, packDynamicDrawables[drawableId]!!, iconDpi)
                 }
                 if (prefs.adaptifyIconPacks) {
-                    val gen = AdaptiveIconGenerator(context, drawable.mutate(), "$packPackageName#$drawableId")
+                    val gen = AdaptiveIconGenerator(context, drawable.mutate())
                     return gen.result
                 }
                 return drawable.mutate()
@@ -271,7 +273,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                     customIconEntry, iconProvider)
             val icon = packMask.getIcon(context, baseIcon, launcherActivityInfo.componentName)
             if (prefs.adaptifyIconPacks) {
-                val gen = AdaptiveIconGenerator(context, icon, "$packPackageName#${component.flattenToString()}")
+                val gen = AdaptiveIconGenerator(context, icon)
                 return gen.result
             }
             return icon
@@ -288,7 +290,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
             if (baseIcon != null) {
                 val icon = packMask.getIcon(context, baseIcon, shortcutInfo.activity)
                 if (prefs.adaptifyIconPacks) {
-                    val gen = AdaptiveIconGenerator(context, icon, "$packPackageName#${shortcutInfo.id}")
+                    val gen = AdaptiveIconGenerator(context, icon)
                     return gen.result
                 }
                 return icon
@@ -311,7 +313,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 else -> 0
             }
             if (packClocks.containsKey(drawableId)) {
-                val drawable = packResources.getDrawable(drawableId)
+                val drawable = AdaptiveIconCompat.wrap(packResources.getDrawable(drawableId))
                 return drawableFactory.customClockDrawer.drawIcon(icon, drawable, packClocks[drawableId])
             } else if(packDynamicDrawables.containsKey(drawableId)) {
                 val iconDpi = LauncherAppState.getIDP(context).fillResIconDpi
@@ -417,21 +419,21 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
         override val displayName by lazy { drawableName.replace(Regex("""_+"""), " ").trim().toTitleCase() }
         override val identifierName = drawableName
-        override val drawable: Drawable
-            get() {
-                if (!isAvailable) {
-                    throw IllegalStateException("Trying to access an unavailable entry $debugName")
-                }
-                try {
-                    return packResources.getDrawable(drawableId)
-                } catch (e: Resources.NotFoundException) {
-                    throw Exception("Failed to get drawable $drawableId ($debugName)", e)
-                }
-            }
         override val isAvailable by lazy { drawableId != 0 && checkResourceExists() }
 
         val debugName get() = "$drawableName in $packPackageName"
         val drawableId: Int by lazy { id ?: getDrawableId(drawableName) }
+
+        override fun drawableForDensity(density: Int): Drawable {
+            if (!isAvailable) {
+                throw IllegalStateException("Trying to access an unavailable entry $debugName")
+            }
+            try {
+                return AdaptiveIconCompat.wrap(packResources.getDrawableForDensity(drawableId, density))
+            } catch (e: Resources.NotFoundException) {
+                throw Exception("Failed to get drawable $drawableId ($debugName)", e)
+            }
+        }
 
         override fun toCustomEntry() = IconPackManager.CustomIconEntry(packPackageName, drawableName)
 

@@ -46,6 +46,7 @@ open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: 
     private var multiplier: Int = 0
     private var format: String? = null
     protected var steps: Int = 100
+    private var lastPersist = Float.NaN
 
     private val handlerThread = HandlerThread("debounce").apply { start() }
     private val persistHandler = Handler(handlerThread.looper)
@@ -107,7 +108,7 @@ open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: 
         updateDisplayedValue()
     }
 
-    private fun updateDisplayedValue() {
+    protected open fun updateDisplayedValue() {
         mSeekbar?.setOnSeekBarChangeListener(null)
         val progress = ((current - min) / ((max - min) / steps))
         mSeekbar!!.progress = Math.round(progress)
@@ -119,10 +120,6 @@ open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: 
         current = min + (max - min) / steps * progress
         current = Math.round(current * 100f) / 100f //round to .00 places
         updateSummary()
-
-        // debounce
-        persistHandler.removeCallbacksAndMessages(TOKEN)
-        persistHandler.postAtTime({ persistFloat(current) }, TOKEN, SystemClock.uptimeMillis() + 100)
     }
 
     protected open fun updateSummary() {
@@ -131,7 +128,15 @@ open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: 
 
     override fun onStartTrackingTouch(seekBar: SeekBar) {}
 
-    override fun onStopTrackingTouch(seekBar: SeekBar) {}
+    override fun onStopTrackingTouch(seekBar: SeekBar) {
+        persistFloat(current)
+    }
+
+    override fun persistFloat(value: Float): Boolean {
+        if (value == lastPersist) return true
+        lastPersist = value
+        return super.persistFloat(value)
+    }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
         menu.setHeaderTitle(title)
@@ -144,9 +149,5 @@ open class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: 
     override fun onMenuItemClick(item: MenuItem): Boolean {
         setValue(defaultValue)
         return true
-    }
-
-    companion object {
-        const val TOKEN = "tokenaf"
     }
 }

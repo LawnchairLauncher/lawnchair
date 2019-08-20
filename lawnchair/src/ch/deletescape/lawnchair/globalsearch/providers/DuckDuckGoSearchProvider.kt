@@ -13,7 +13,7 @@ import com.android.launcher3.util.PackageManagerHelper
 @Keep
 class DuckDuckGoSearchProvider(context: Context) : SearchProvider(context) {
 
-    override val name = context.getString(R.string.search_provider_ddg)!!
+    override val name: String = context.getString(R.string.search_provider_ddg)
     override val supportsVoiceSearch: Boolean
         get() = false
     override val supportsAssistant: Boolean

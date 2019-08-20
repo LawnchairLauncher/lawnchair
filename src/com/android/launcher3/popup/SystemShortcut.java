@@ -107,7 +107,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
                 Bundle opts = activity.getActivityLaunchOptionsAsBundle(view);
                 Intent intent = new PackageManagerHelper(activity).startDetailsActivityForInfo(
                         itemInfo, sourceBounds, opts);
-                if (activity instanceof LawnchairLauncher) {
+                if (intent != null && activity instanceof LawnchairLauncher) {
                     LauncherAppTransitionManager manager =
                             ((LawnchairLauncher) activity).getLauncherAppTransitionManager();
                     ((LawnchairAppTransitionManagerImpl) manager).playLaunchAnimation(

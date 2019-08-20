@@ -22,12 +22,16 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Process
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,9 +44,11 @@ import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import ch.deletescape.lawnchair.util.extensions.d
+import com.android.launcher3.FastBitmapDrawable
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.graphics.LauncherIcons
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
 import java.lang.ref.WeakReference
@@ -233,10 +239,10 @@ class EditIconActivity : SettingsBaseActivity() {
             }
 
             open fun bind(item: AdapterItem) {
-                val entry = (item as IconItem).entry
+                if (item !is IconItem) return
                 try {
                     itemView.visibility = View.VISIBLE
-                    (itemView as ImageView).setImageDrawable(entry.drawable)
+                    (itemView as ImageView).setImageDrawable(item.iconDrawable)
                 } catch (e: Exception) {
                     itemView.visibility = View.GONE
                 }
@@ -331,7 +337,11 @@ class EditIconActivity : SettingsBaseActivity() {
 
     abstract class AdapterItem : Comparable<AdapterItem>
 
-    class IconItem(val entry: IconPack.Entry, val isDefault: Boolean, val title: String) : AdapterItem() {
+    inner class IconItem(val entry: IconPack.Entry, val isDefault: Boolean, val title: String) : AdapterItem() {
+
+        private val normalizedIconBitmap = LauncherIcons.obtain(this@EditIconActivity).createBadgedIconBitmap(
+                entry.drawableForDensity(getIconDensity()), component?.user ?: Process.myUserHandle(), Build.VERSION.SDK_INT)
+        val iconDrawable = BitmapDrawable(resources, normalizedIconBitmap.icon)
 
         override fun compareTo(other: AdapterItem): Int {
             if (other is IconItem) {
@@ -340,6 +350,25 @@ class EditIconActivity : SettingsBaseActivity() {
                 return title.compareTo(other.title)
             }
             return -1
+        }
+
+        private fun getIconDensity(requiredSize: Int = resources.getDimensionPixelSize(R.dimen.icon_preview_size)): Int {
+            // Densities typically defined by an app.
+            val densityBuckets =
+                    intArrayOf(DisplayMetrics.DENSITY_LOW, DisplayMetrics.DENSITY_MEDIUM,
+                               DisplayMetrics.DENSITY_TV, DisplayMetrics.DENSITY_HIGH,
+                               DisplayMetrics.DENSITY_XHIGH, DisplayMetrics.DENSITY_XXHIGH,
+                               DisplayMetrics.DENSITY_XXXHIGH)
+
+            var density = DisplayMetrics.DENSITY_XXXHIGH
+            for (i in densityBuckets.indices.reversed()) {
+                val expectedSize = 48 * densityBuckets[i] / DisplayMetrics.DENSITY_DEFAULT
+                if (expectedSize >= requiredSize) {
+                    density = densityBuckets[i]
+                }
+            }
+
+            return density
         }
     }
 

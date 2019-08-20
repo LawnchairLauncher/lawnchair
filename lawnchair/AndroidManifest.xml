@@ -91,6 +91,8 @@
     <uses-permission android:name="${applicationId}.permission.BROADCAST_BUGREPORT"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
+    <uses-permission android:name="xyz.paphonb.systemuituner.permission.MODIFY_NAVBAR"/>
+
     <application
         android:networkSecurityConfig="@xml/network_security_config"
         android:name="ch.deletescape.lawnchair.LawnchairApp">
@@ -113,6 +115,21 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+
+
+        <!-- TODO: Display only inside Lawnchair -->
+        <activity-alias
+            android:name="ch.deletescape.lawnchair.settings.ui.SettingsLauncherActivity"
+            android:targetActivity="ch.deletescape.lawnchair.settings.ui.SettingsActivity"
+            android:label="@string/lawnchair_settings"
+            android:icon="@mipmap/ic_settings_adaptive">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
 
         <activity
             android:autoRemoveFromRecents="true"

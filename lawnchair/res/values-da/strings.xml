@@ -460,6 +460,8 @@
     <string name="import_as_adaptive">Som adaptivt ikon</string>
     <string name="bugreport_channel_name">Fejlrapporter</string>
     <string name="status_channel_name">Fejlrapport upload-status</string>
+    <string name="bugreport_group_summary">%d nye rapporter</string>
+    <string name="bugreport_group_summary_multiple">Flere nye rapporter</string>
     <string name="dogbin_uploading">Igangværende upload</string>
     <string name="action_dogbin_upload">Upload til dogbin</string>
     <string name="action_dogbin_upload_error">Upload mislykkedes</string>
@@ -493,8 +495,45 @@
     <string name="event_provider_now_playing">Afspilles nu</string>
     <string name="battery_status">Batteristatus</string>
     <string name="battery_charging">Batteri oplades</string>
+    <string name="battery_full">Batteri fuldt</string>
     <string name="battery_low">Lavt batteriniveau</string>
     <string name="event_provider_unread_notifications">Ulæste notifikationer</string>
     <string name="event_provider_missing_notification_access">For at benytte <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, slå app-notifikationer til for <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">For at bruge <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, slå notifikationsprikker til</string>
     <string name="zen_mode_enabled">Forstyr ikke er aktiveret</string>
+    <string name="crash_report_notif_title">%1$s gået ned!</string>
+    <string name="personality_provider">Kontekstuelle meddelelser</string>
+    <string-array name="greetings_morning">
+        <item>Godmorgen!</item>
+        <item>Hvilken smuk dag!</item>
+        <item>Har du kigget udenfor endnu?</item>
+        <item>Hav en god dag!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Godnat!</item>
+        <item>Sov godt!</item>
+        <item>Ses i morgen!</item>
+        <item>Drøm sødt!</item>
+        <item>Bliv ikke oppe for længe</item>
+        <item>Hvordan var din dag?</item>
+        <item>Hvad lavede du i dag?</item>
+    </string-array>
+    <string name="onbording_settings_title">Opsæt %s</string>
+    <string name="onbording_settings_summary">Langt tryk på Hjemskærmen</string>
+    <string name="onboarding_swipe_up">Stryg opad for at se alle apps</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">Grundet en restriktion i MIUI kan din ikonform mpske ikke ændres og forblive firkantet.\nRapprtér ikke dette som en fejl.</string>
+    <string name="button_organize_screens">Organisér skærme</string>
+    <string name="weather_icons_default">Standard</string>
+    <string name="pref_weather_icon_pack">Vejrikoner</string>
+    <string name="weather_icon_packs_not_supported">Ikke understøttet af din aktuelle vejrkilde</string>
+    <string name="lawnchair_settings">Lawnchair-indstillinger</string>
 </resources>

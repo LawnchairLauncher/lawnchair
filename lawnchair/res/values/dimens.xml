@@ -61,4 +61,7 @@
     <dimen name="snackbar_min_text_size">12sp</dimen>
     <dimen name="button_corner_radius">4dp</dimen>
     <dimen name="dialog_horizontal_padding">24dp</dimen>
+
+    <dimen name="qsb_radius_square">8dp</dimen>
+    <dimen name="qsb_radius_squircle">16dp</dimen>
 </resources>

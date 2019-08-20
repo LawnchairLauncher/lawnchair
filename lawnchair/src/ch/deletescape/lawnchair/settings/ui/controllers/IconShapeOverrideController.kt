@@ -30,16 +30,4 @@ import com.android.launcher3.graphics.IconShapeOverride
 class IconShapeOverrideController(context: Context) : PreferenceController(context) {
 
     override val isVisible = IconShapeOverride.isSupported(context)
-
-    override fun onPreferenceAdded(preference: Preference): Boolean {
-        if (!super.onPreferenceAdded(preference)) return false
-        if (preference is ListPreference) {
-            if (context.lawnchairPrefs.developerOptionsEnabled) {
-                preference.setEntries(R.array.alt_icon_shape_override_paths_names)
-                preference.setEntryValues(R.array.alt_icon_shape_override_paths_values)
-            }
-            IconShapeOverride.handlePreferenceUi(preference)
-        }
-        return true
-    }
 }

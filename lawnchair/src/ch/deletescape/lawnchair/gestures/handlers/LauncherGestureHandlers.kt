@@ -43,13 +43,14 @@ import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.views.OptionsPopupView
 import com.android.launcher3.widget.WidgetsFullSheet
+import ninja.sesame.lib.bridge.v1.SesameFrontend
 import org.json.JSONObject
 
 @Keep
 open class OpenDrawerGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config),
         VerticalSwipeGestureHandler, StateChangeGestureHandler {
 
-    override val displayName = context.getString(R.string.action_open_drawer)!!
+    override val displayName: String = context.getString(R.string.action_open_drawer)
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.mipmap.ic_allapps_adaptive) }
     override val requiresForeground = true
 
@@ -67,7 +68,7 @@ open class OpenDrawerGestureHandler(context: Context, config: JSONObject?) : Ges
 @Keep
 class OpenWidgetsGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override val displayName = context.getString(R.string.action_open_widgets)!!
+    override val displayName: String = context.getString(R.string.action_open_widgets)
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_widget) }
     override val requiresForeground = true
 
@@ -79,7 +80,7 @@ class OpenWidgetsGestureHandler(context: Context, config: JSONObject?) : Gesture
 @Keep
 class OpenSettingsGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override val displayName = context.getString(R.string.action_open_settings)!!
+    override val displayName: String = context.getString(R.string.action_open_settings)
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_setting) }
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
@@ -92,7 +93,7 @@ class OpenSettingsGestureHandler(context: Context, config: JSONObject?) : Gestur
 @Keep
 class OpenOverviewGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override val displayName = context.getString(R.string.action_open_overview)!!
+    override val displayName: String = context.getString(R.string.action_open_overview)
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_setting) }
     override val requiresForeground = true
 
@@ -110,7 +111,7 @@ class OpenOverviewGestureHandler(context: Context, config: JSONObject?) : Gestur
 class StartGlobalSearchGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
     private val searchProvider get() = SearchProviderController.getInstance(context).searchProvider
-    override val displayName = context.getString(R.string.action_global_search)!!
+    override val displayName: String = context.getString(R.string.action_global_search)
     override val icon: Drawable by lazy { searchProvider.getIcon() }
     override val requiresForeground = true
 
@@ -131,7 +132,7 @@ class StartGlobalSearchGestureHandler(context: Context, config: JSONObject?) : G
 @Keep
 class StartAppSearchGestureHandler(context: Context, config: JSONObject?) : OpenDrawerGestureHandler(context, config) {
 
-    override val displayName = context.getString(R.string.action_app_search)!!
+    override val displayName: String = context.getString(R.string.action_app_search)
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_search_shadow) }
 
     override fun getOnCompleteRunnable(controller: GestureController): Runnable? {
@@ -142,7 +143,7 @@ class StartAppSearchGestureHandler(context: Context, config: JSONObject?) : Open
 @Keep
 class OpenOverlayGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override val displayName = context.getString(R.string.action_overlay)!!
+    override val displayName: String = context.getString(R.string.action_overlay)
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_super_g_color) }
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
@@ -166,24 +167,22 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
     override val displayName get() = if (target != null)
         String.format(displayNameWithTarget, appName) else displayNameWithoutTarget
     override val icon: Drawable
-        get() = if (intent != null) {
-            try {
+        get() = when {
+            intent != null -> try {
                 context.packageManager.getActivityIcon(intent)
             } catch (e: Exception) {
                 context.getIcon()
             }
-        } else if (target != null) {
-            try {
+            target != null -> try {
                 context.packageManager.getApplicationIcon(target?.componentName?.packageName)
             } catch (e: Exception) {
                 context.getIcon()
             }
-        } else {
-            context.getIcon()
+            else -> context.getIcon()
         }
 
-    private val displayNameWithoutTarget = context.getString(R.string.action_open_app)!!
-    private val displayNameWithTarget = context.getString(R.string.action_open_app_with_target)!!
+    private val displayNameWithoutTarget: String = context.getString(R.string.action_open_app)
+    private val displayNameWithTarget: String = context.getString(R.string.action_open_app_with_target)
 
     var type: String? = null
     var appName: String? = null
@@ -268,8 +267,12 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
                         Intent().setComponent(target!!.componentName))
             }
             "shortcut" -> {
-                DeepShortcutManager.getInstance(context)
-                        .startShortcut(packageName, id, intent, opts, user)
+                if (id?.startsWith("sesame_") == true) {
+                    context.startActivity(SesameFrontend.addPackageAuth(context, intent!!), opts)
+                } else {
+                    DeepShortcutManager.getInstance(context)
+                            .startShortcut(packageName, id, intent, opts, user)
+                }
             }
         }
     }
@@ -281,7 +284,7 @@ class StartAssistantGestureHandler(context: Context, config: JSONObject?) : Gest
 
     private val searchProvider get() = SearchProviderController.getInstance(context).searchProvider
     override val isAvailable get() = searchProvider.supportsAssistant
-    override val displayName = context.getString(R.string.action_assistant)
+    override val displayName: String = context.getString(R.string.action_assistant)
     override val icon: Drawable? by lazy { searchProvider.getAssistantIcon() }
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
@@ -300,7 +303,7 @@ class StartVoiceSearchGestureHandler(context: Context, config: JSONObject?) : Ge
 
     private val searchProvider get() = SearchProviderController.getInstance(context).searchProvider
     override val isAvailable get() = searchProvider.supportsVoiceSearch
-    override val displayName = context.getString(R.string.label_voice_search)
+    override val displayName: String = context.getString(R.string.label_voice_search)
     override val icon: Drawable? by lazy { searchProvider.getVoiceIcon() }
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {

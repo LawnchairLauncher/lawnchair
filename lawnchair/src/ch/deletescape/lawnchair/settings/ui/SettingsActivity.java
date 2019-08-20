@@ -68,6 +68,7 @@ import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairPreferencesChangeCallback;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
+import ch.deletescape.lawnchair.adaptive.IconShapePreference;
 import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.overrides.ThemedEditTextPreferenceDialogFragmentCompat;
 import ch.deletescape.lawnchair.colors.overrides.ThemedListPreferenceDialogFragment;
@@ -715,6 +716,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
             } else if (preference instanceof PreferenceDialogPreference) {
                 f = PreferenceScreenDialogFragment.Companion
                         .newInstance((PreferenceDialogPreference) preference);
+            } else if (preference instanceof IconShapePreference) {
+                f = ((IconShapePreference) preference).createDialogFragment();
             } else if (preference instanceof ListPreference) {
                 Log.d("success", "onDisplayPreferenceDialog: yay");
                 f = ThemedListPreferenceDialogFragment.Companion.newInstance(preference.getKey());
@@ -726,6 +729,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
                         .newInstance(preference.getKey());
             } else if (preference instanceof SmartspaceEventProvidersPreference) {
                 f = SmartspaceEventProvidersFragment.Companion.newInstance(preference.getKey());
+            } else if (preference instanceof WeatherIconPackPreference) {
+                f = WeatherIconPackDialogFragment.Companion.newInstance();
             } else {
                 super.onDisplayPreferenceDialog(preference);
                 return;
@@ -1043,8 +1048,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
     }
 
-    public static void startFragment(Context context, String fragment) {
-        startFragment(context, fragment, null);
+    public static void startFragment(Context context, String fragment, int title) {
+        startFragment(context, fragment, null, context.getString(title));
     }
 
     public static void startFragment(Context context, String fragment, @Nullable Bundle args) {

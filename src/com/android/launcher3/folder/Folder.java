@@ -28,7 +28,6 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.text.InputType;
@@ -44,7 +43,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
-import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -77,7 +75,6 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.graphics.ColorExtractor;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -1546,5 +1543,9 @@ public class Folder extends AbstractFloatingView implements DragSource,
 
     public boolean isInAppDrawer() {
         return mInfo.container == ItemInfo.NO_ID;
+    }
+
+    public static String getDefaultFolderName() {
+        return sDefaultFolderName;
     }
 }

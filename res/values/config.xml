@@ -18,47 +18,54 @@
     <!-- String representing the intent to delete a package.-->
     <string name="delete_package_intent" translatable="false">#Intent;action=android.intent.action.DELETE;launchFlags=0x10800000;end</string>
 
-    <!-- Values for icon shape overrides. These should correspond to entries defined
-     in icon_shape_override_paths_names -->
-    <string-array translatable="false" name="icon_shape_override_paths_values">
+    <!-- Values for icon shapes. These should correspond to entries defined
+     in icon_shape_names -->
+    <string-array translatable="false" name="icon_shape_values">
         <item></item>
-        <item>M50,0L100,0 100,100 0,100 0,0z</item>
-        <item>M50,0L70,0 A30,30,0,0 1 100,30 L100,70 A30,30,0,0 1 70,100 L30,100 A30,30,0,0 1 0,70 L 0,30 A30,30,0,0 1 30,0z</item>
-        <item>M50,0 C10,0 0,10 0,50 0,90 10,100 50,100 90,100 100,90 100,50 100,10 90,0 50,0 Z</item>
-        <item>M50 0A50 50,0,1,1,50 100A50 50,0,1,1,50 0</item>
-        <item>M50,0A50,50,0,0 1 100,50 L100,85 A15,15,0,0 1 85,100 L50,100 A50,50,0,0 1 50,0z</item>
-        <item>M50,0A50,30 0,0,1 100,30V70A50,30 0,0,1 0,70V30A50,30 0,0,1 50,0z</item>
+        <item>circle</item>
+        <item>square</item>
+        <item>roundedSquare</item>
+        <item>squircle</item>
+        <item>teardrop</item>
+        <item>cylinder</item>
     </string-array>
 
-    <string-array translatable="false" name="icon_shape_override_paths_names">
-        <!-- Option to not change the icon shape on home screen. [CHAR LIMIT=50] -->
+    <string-array translatable="false" name="icon_shape_names">
         <item>@string/icon_shape_system_default</item>
+        <item>@string/icon_shape_circle</item>
         <item>@string/icon_shape_square</item>
         <item>@string/icon_shape_rounded_square</item>
         <item>@string/icon_shape_squircle</item>
-        <item>@string/icon_shape_circle</item>
         <item>@string/icon_shape_teardrop</item>
         <item>@string/icon_shape_cylinder</item>
     </string-array>
 
-    <string-array translatable="false" name="alt_icon_shape_override_paths_values">
+    <string-array translatable="false" name="alt_icon_shape_values">
         <item></item>
-        <item>M50,0L100,0 100,100 0,100 0,0z</item>
-        <item>M50,0L70,0 A30,30,0,0 1 100,30 L100,70 A30,30,0,0 1 70,100 L30,100 A30,30,0,0 1 0,70 L 0,30 A30,30,0,0 1 30,0z</item>
-        <item>M50,0 C10,0 0,10 0,50 0,90 10,100 50,100 90,100 100,90 100,50 100,10 90,0 50,0 Z</item>
-        <item>M50 0A50 50,0,1,1,50 100A50 50,0,1,1,50 0</item>
-        <item>M50,0A50,50,0,0 1 100,50 L100,85 A15,15,0,0 1 85,100 L50,100 A50,50,0,0 1 50,0z</item>
-        <item>M42.1,78.3c2.9,0.5,6.4-0.5,8.6-3c2-2.2,1.6-4.2,2.6-8.6c1.3-5.3,2.8-10.5,4.5-10.6c9.8-0.3,15.9-4.8,29.8-8.1c0.4-0.1,8.1,2.4,8.1,5.5c0,2.4-4.4,3.6-4.1,6.3c0.2,1.4,1.5,2.5,2.6,2.8c3.2,1,7.7-2.7,7.8-5.8c0-1.8-1.4-2.9-1-5.3c0.2-1.1,0.6-1,0.7-2c0.1-2.5-1.6-3.5-2.5-5.8c-0.9-2.3-0.4-4.3-0.2-6.1c0.6-5.1-0.7-12.9-3-16.4c-6.7-10-34.6-2.7-35.3-6.1c-0.1-0.7,1-0.9,1.5-2.6c0.9-2.9-1-6.4-3-8.3c-4.6-4.3-14-3.4-17.4,1.5c-0.3,0.4-2,3-1.5,6c0.6,3.6,4,4.5,3.6,6.1c-0.5,2.6-9.2,0.3-15.9,5.1c-3.9,2.8-2.2,4.5-7.8,10.9C19.4,34.8,10.3,45.2,4.8,43c-1.6-0.7-2.5-2.2-3.5-1.8c-1.2,0.5-1.3,3.3-1,5.1c0.5,3.1,2.6,6.1,5.5,7.8c4.4,2.6,7.6-1.4,15.4,0.2c12.1,2.5,7.5,3.8,19.7,6.1c4.9,0.9,4,10.4,1.5,13.1c-1.5,1.6-4.1,1.6-4.1,2.6C38.2,77.1,40.4,78,42.1,78.3z</item>
+        <item>circle</item>
+        <item>square</item>
+        <item>roundedSquare</item>
+        <item>squircle</item>
+        <item>teardrop</item>
+        <item>cylinder</item>
+        <item>v1|arc,1|arc,0.16|arc,0.16|arc,1</item>
+        <item>v1|cut,0.3|cut,0.3|cut,1|cut,1</item>
+        <item>v1|cut,0.6|cut,0.6|cut,0.6|cut,0.6</item>
+        <item>v1|arc,1|cut,0.5|squircle,1|cut,0</item>
     </string-array>
 
-    <string-array translatable="false" name="alt_icon_shape_override_paths_names">
+    <string-array translatable="false" name="alt_icon_shape_names">
         <item>@string/icon_shape_system_default</item>
+        <item>@string/icon_shape_circle</item>
         <item>@string/icon_shape_square</item>
         <item>@string/icon_shape_rounded_square</item>
         <item>@string/icon_shape_squircle</item>
-        <item>@string/icon_shape_circle</item>
         <item>@string/icon_shape_teardrop</item>
-        <item>Boar Vessel 600-500 BC Etruscan ceramic</item>
+        <item>@string/icon_shape_cylinder</item>
+        <item>Lemon</item>
+        <item>Diamond</item>
+        <item>Octa</item>
+        <item>epic shape af 2019</item>
     </string-array>
 
 <!-- DragController -->

@@ -24,16 +24,15 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
@@ -197,7 +196,7 @@ public class IconNormalizer {
      */
     public synchronized float getScale(@NonNull Drawable d, @Nullable RectF outBounds,
             @Nullable Path path, @Nullable boolean[] outMaskShape, int minVisibleAlpha) {
-        if (Utilities.ATLEAST_OREO && d instanceof AdaptiveIconDrawable) {
+        if (d instanceof AdaptiveIconCompat) {
             if (mAdaptiveIconScale != SCALE_NOT_INITIALIZED) {
                 if (outBounds != null) {
                     outBounds.set(mAdaptiveIconBounds);
@@ -206,7 +205,7 @@ public class IconNormalizer {
             }
             if (d instanceof FolderAdaptiveIcon) {
                 // Since we just want the scale, avoid heavy drawing operations
-                d = new AdaptiveIconDrawable(new ColorDrawable(Color.BLACK), null);
+                d = new AdaptiveIconCompat(new ColorDrawable(Color.BLACK), null);
             }
         }
         int width = d.getIntrinsicWidth();
@@ -318,12 +317,16 @@ public class IconNormalizer {
         float areaScale = area / (width * height);
         // Use sqrt of the final ratio as the images is scaled across both width and height.
         float scale = areaScale > scaleRequired ? (float) Math.sqrt(scaleRequired / areaScale) : 1;
-        if (Utilities.ATLEAST_OREO && d instanceof AdaptiveIconDrawable &&
+        if (d instanceof AdaptiveIconCompat &&
                 mAdaptiveIconScale == SCALE_NOT_INITIALIZED) {
             mAdaptiveIconScale = scale;
             mAdaptiveIconBounds.set(mBounds);
         }
         return scale;
+    }
+
+    public void onAdaptiveShapeChanged() {
+        mAdaptiveIconScale = SCALE_NOT_INITIALIZED;
     }
 
     /**

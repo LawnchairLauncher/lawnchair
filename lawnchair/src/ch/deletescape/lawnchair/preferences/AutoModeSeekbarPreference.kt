@@ -25,10 +25,9 @@ import com.android.launcher3.R
 @Keep
 open class AutoModeSeekbarPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : SeekbarPreference(context, attrs, defStyleAttr) {
 
-    private val low: Float
+    protected val low: Float = min
 
     init {
-        low = min
         min -= (max - min) / steps
         steps += 1
         defaultValue = min

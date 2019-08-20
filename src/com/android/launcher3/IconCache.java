@@ -259,6 +259,12 @@ public class IconCache {
                 new String[]{packageName + "/%", Long.toString(userSerial)});
     }
 
+    public synchronized void removeAllIcons() {
+        Preconditions.assertWorkerThread();
+        mCache.clear();
+        mIconDb.delete(null, null);
+    }
+
     public void updateDbIcons(Set<String> ignorePackagesForMainUser) {
         // Remove all active icon update tasks.
         mWorkerHandler.removeCallbacksAndMessages(ICON_UPDATE_TOKEN);
@@ -815,7 +821,7 @@ public class IconCache {
 
     private static final class IconDB extends SQLiteCacheHelper {
 
-        private final static int RELEASE_VERSION = 26;
+        private final static int RELEASE_VERSION = 28;
 
         private final static String TABLE_NAME = "icons";
         private final static String COLUMN_ROWID = "rowid";

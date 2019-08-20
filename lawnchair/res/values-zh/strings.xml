@@ -461,6 +461,8 @@
     <string name="import_as_adaptive">作为自适应图标</string>
     <string name="bugreport_channel_name">Bug 反馈</string>
     <string name="status_channel_name">Bug 反馈上传状态</string>
+    <string name="bugreport_group_summary">%d 份新报告</string>
+    <string name="bugreport_group_summary_multiple">多份新报告</string>
     <string name="dogbin_uploading">正在上传</string>
     <string name="action_dogbin_upload">上传到 Dogbin</string>
     <string name="action_dogbin_upload_error">上传失败</string>
@@ -494,8 +496,45 @@
     <string name="event_provider_now_playing">正在播放</string>
     <string name="battery_status">电池状态</string>
     <string name="battery_charging">充电中</string>
+    <string name="battery_full">已充满</string>
     <string name="battery_low">低电量</string>
     <string name="event_provider_unread_notifications">未读通知</string>
     <string name="event_provider_missing_notification_access">若要使用 <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>，请为 <xliff:g example="My App" id="name">%2$s</xliff:g> 开启应用通知</string>
+    <string name="event_provider_missing_notification_dots">要使用 <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>，请开启通知圆点</string>
     <string name="zen_mode_enabled">勿扰模式已启用</string>
+    <string name="crash_report_notif_title">%1$s 崩溃了！</string>
+    <string name="personality_provider">上下文消息</string>
+    <string-array name="greetings_morning">
+        <item>早上好！</item>
+        <item>多么美好的一天！</item>
+        <item>有没有看看外面的风光呢？</item>
+        <item>祝您生活愉快！</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>晚上好！</item>
+        <item>晚安！</item>
+        <item>明天见！</item>
+        <item>助您好梦！</item>
+        <item>不要睡得太晚了哦</item>
+        <item>今天过的还好吗？</item>
+        <item>今天做了什么呢？</item>
+    </string-array>
+    <string name="onbording_settings_title">设置 %s</string>
+    <string name="onbording_settings_summary">长按你的主屏幕</string>
+    <string name="onboarding_swipe_up">向上滑动以查看所有应用</string>
+    <string name="web_search_google">Google (网页)</string>
+    <string name="web_search_ddg">DuckDuckGo (网页)</string>
+    <string name="web_search_startpage">Startpage.com (网页)</string>
+    <string name="web_search_bing">必应 (网页)</string>
+    <string name="web_search_qwant">Qwant (网页)</string>
+    <string name="web_search_ecosia">Ecosia (网页)</string>
+    <string name="web_search_yandex">Yandex (网页)</string>
+    <string name="web_search_naver">Naver (网页)</string>
+    <string name="web_search_baidu">百度 (网页)</string>
+    <string name="icon_shape_override_miui_explaination">由于 MIUI 的系统限制，你的图标形状也许无法正常变更并保持为方形。\n请不要将此问题报告为 Bug。</string>
+    <string name="button_organize_screens">布置屏幕</string>
+    <string name="weather_icons_default">默认</string>
+    <string name="pref_weather_icon_pack">天气图标</string>
+    <string name="weather_icon_packs_not_supported">您当前的天气提供商不支持此功能</string>
+    <string name="lawnchair_settings">Lawnchair 设置</string>
 </resources>

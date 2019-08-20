@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Process;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.widget.FrameLayout;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.folder.FirstItemProvider;
@@ -31,6 +32,7 @@ import ch.deletescape.lawnchair.iconpack.IconPack;
 import ch.deletescape.lawnchair.iconpack.IconPackManager;
 import ch.deletescape.lawnchair.iconpack.IconPackManager.CustomIconEntry;
 import ch.deletescape.lawnchair.override.CustomInfoProvider;
+import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.graphics.DrawableFactory;
@@ -266,14 +268,16 @@ public class FolderInfo extends ItemInfo {
     }
 
     public CharSequence getIconTitle() {
-        if (isCoverMode()) {
+        if (!TextUtils.equals(Folder.getDefaultFolderName(), title)) {
+            return title;
+        } else if (isCoverMode()) {
             ShortcutInfo info = getCoverInfo();
             if (info.customTitle != null) {
                 return info.customTitle;
             }
             return info.title;
         } else {
-            return title;
+            return Folder.getDefaultFolderName();
         }
     }
 

@@ -18,9 +18,4 @@
 
 <shapes xmlns:launcher="http://schemas.android.com/apk/res-auto">
     <Circle launcher:folderIconRadius="1.0" />
-    <RoundedSquare launcher:folderIconRadius="0.16" launcher:qsbEdgeRadius="8dp" />
-    <RoundedSquare launcher:folderIconRadius="0.6" launcher:qsbEdgeRadius="8dp" />
-    <RoundedSquare launcher:folderIconRadius="0.0" launcher:qsbEdgeRadius="8dp" />
-    <TearDrop launcher:folderIconRadius="0.3" />
-    <Squircle launcher:folderIconRadius="0.2" launcher:qsbEdgeRadius="16dp" />
 </shapes>

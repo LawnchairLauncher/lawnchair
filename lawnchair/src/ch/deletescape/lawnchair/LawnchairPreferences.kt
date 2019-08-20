@@ -27,9 +27,7 @@ import android.provider.Settings
 import android.text.TextUtils
 import ch.deletescape.lawnchair.bugreport.BugReportClient
 import ch.deletescape.lawnchair.colors.ColorEngine
-import ch.deletescape.lawnchair.colors.RGBColorResolver
 import ch.deletescape.lawnchair.gestures.BlankGestureHandler
-import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.handlers.*
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import ch.deletescape.lawnchair.groups.AppGroupsManager
@@ -44,7 +42,6 @@ import ch.deletescape.lawnchair.smartspace.*
 import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.util.Temperature
 import ch.deletescape.lawnchair.util.extensions.d
-import ch.deletescape.lawnchair.util.extensions.e
 import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
 import com.android.quickstep.OverviewInteractionState
@@ -93,6 +90,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val updateBlur = { updateBlur() }
     private val resetAllApps = { onChangeCallback?.resetAllApps() ?: Unit }
     private val updateSmartspace = { updateSmartspace() }
+    private val updateWeatherData = { onChangeCallback?.updateWeatherData() ?: Unit }
     private val reloadIcons = { reloadIcons() }
     private val reloadIconPacks = { IconPackManager.getInstance(context).packList.reloadPacks() }
     private val reloadDockStyle = {
@@ -167,10 +165,11 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val weatherUnit by StringBasedPref("pref_weather_units", Temperature.Unit.Celsius, ::updateSmartspaceProvider,
         Temperature.Companion::unitFromString, Temperature.Companion::unitToString) { }
     var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
+    var weatherIconPack by StringPref("pref_weatherIcons", "", updateWeatherData)
 
     // Dock
     val dockStyles = DockStyle.StyleManager(this, reloadDockStyle, resetAllApps)
-    val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", false, doNothing)
+    val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", true, doNothing)
     var dockSearchBarPref by BooleanPref(
             "pref_dockSearchBar", Utilities.ATLEAST_MARSHMALLOW, recreate
                                         )
@@ -186,7 +185,11 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val dockGridSize by dockGridSizeDelegate
     val twoRowDock by BooleanPref("pref_twoRowDock", false, restart)
     val dockRowsCount get() = if (twoRowDock) 2 else 1
-    var dockScale by FloatPref("pref_dockScale", 1f, recreate)
+    var dockScale by FloatPref("pref_dockScale", -1f, recreate)
+    val hideDockLabels by BooleanPref("pref_hideDockLabels", true, restart)
+    val dockTextScale by FloatPref("pref_dockTextScale", -1f, restart)
+    private val dockMultilineLabel by BooleanPref("pref_dockIconLabelsInTwoLines", false, recreate)
+    val dockLabelRows get() = if(dockMultilineLabel) 2 else 1
 
     // Drawer
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
@@ -240,6 +243,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val folderBgColored by BooleanPref("pref_folderBgColorGen", false)
     val brightnessTheme by BooleanPref("pref_brightnessTheme", false, restart)
     val debugOkHttp by BooleanPref("pref_debugOkhttp", onChange = restart)
+    val initLeakCanary by BooleanPref("pref_initLeakCanary", true, restart)
     val showCrashNotifications by BooleanPref("pref_showCrashNotifications", true, restart)
     val autoUploadBugReport by BooleanPref("pref_autoUploadBugReport", false) {
         if (showCrashNotifications) {
@@ -352,8 +356,11 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         onChangeCallback?.updateSmartspace()
     }
 
-    private fun reloadIcons() {
-        onChangeCallback?.reloadIcons()
+    fun reloadIcons() {
+        LauncherAppState.getInstance(context).reloadIconCache()
+        runOnMainThread {
+            onChangeCallback?.recreate()
+        }
     }
 
     fun addOnPreferenceChangeListener(listener: OnPreferenceChangeListener, vararg keys: String) {
@@ -878,8 +885,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         if (!prefs.getBoolean("pref_hotseatShouldUseCustomOpacity", false)) {
             putFloat("pref_hotseatCustomOpacity", -1f / 255)
         }
-        // Slightly reduce the value so it actually looks more like it used to look in v1
-        putFloat("pref_dockScale", prefs.getFloat("pref_hotseatHeightScale", 1f) - .3f)
+        putFloat("pref_dockScale", prefs.getFloat("pref_hotseatHeightScale", 1f))
 
         // Home widget
         val pillQsb = prefs.getBoolean("pref_showPixelBar", true)

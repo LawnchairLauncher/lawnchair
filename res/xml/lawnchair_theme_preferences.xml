@@ -19,12 +19,11 @@
             android:title="@string/pref_icon_pack_masking"
             app:controllerClass=".IconPackMaskingController"/>
 
-        <ch.deletescape.lawnchair.settings.ui.ControlledListPreference
-            android:defaultValue=""
-            android:entries="@array/icon_shape_override_paths_names"
-            android:entryValues="@array/icon_shape_override_paths_values"
-            android:key="pref_override_icon_shape"
-            android:persistent="false"
+        <ch.deletescape.lawnchair.adaptive.IconShapePreference
+            android:defaultValue="circle"
+            android:entries="@array/icon_shape_names"
+            android:entryValues="@array/icon_shape_values"
+            android:key="pref_iconShape"
             android:summary="%s"
             android:title="@string/icon_shape_override_label"
             app:controllerClass=".IconShapeOverrideController" />

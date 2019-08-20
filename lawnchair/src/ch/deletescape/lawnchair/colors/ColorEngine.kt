@@ -68,10 +68,8 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
     }
 
     fun removeColorChangeListeners(listener: OnColorChangeListener, vararg keys: String) {
-        if (keys.isEmpty()) {
-            throw RuntimeException("At least one key is required")
-        }
-        for (key in keys) {
+        val keyz = if (keys.isEmpty()) colorListeners.keys.toTypedArray() else keys
+        for (key in keyz) {
             colorListeners[key]?.remove(listener)
             if (colorListeners[key]?.isEmpty() == true) {
                 colorListeners.remove(key)
@@ -166,6 +164,7 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
             const val ALLAPPS_QSB_BG = "pref_allappsQsbColorResolver"
             const val ALLAPPS_ICON_LABEL = "pref_allAppsLabelColorResolver"
             const val WORKSPACE_ICON_LABEL = "pref_workspaceLabelColorResolver"
+            const val HOTSEAT_ICON_LABEL = "pref_hotseatLabelColorResolver"
             const val DOCK_BACKGROUND = "pref_dockBackgroundColorResolver"
             const val ALLAPPS_BACKGROUND = "pref_allAppsBackgroundColorResolver"
             const val SUPERG_BACKGROUND = "pref_superGBackgroundColorResolver"
@@ -183,6 +182,9 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
                         DrawerLabelAutoResolver(createConfig(key, engine))
                     }
                     WORKSPACE_ICON_LABEL -> {
+                        WorkspaceLabelAutoResolver(createConfig(key, engine))
+                    }
+                    HOTSEAT_ICON_LABEL -> {
                         WorkspaceLabelAutoResolver(createConfig(key, engine))
                     }
                     DOCK_BACKGROUND, ALLAPPS_BACKGROUND -> {

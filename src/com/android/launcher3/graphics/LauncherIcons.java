@@ -24,12 +24,12 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.*;
 import android.graphics.drawable.*;
-import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import ch.deletescape.lawnchair.NonAdaptiveIconDrawable;
+import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider;
 import com.android.launcher3.*;
 import com.android.launcher3.model.PackageItemInfo;
@@ -62,6 +62,10 @@ public class LauncherIcons implements AutoCloseable {
                 LauncherIcons m = sPool;
                 sPool = m.next;
                 m.next = null;
+                if (m.mWrapperIcon != null && !m.mWrapperIcon.isMaskValid()) {
+                    m.mWrapperIcon = null;
+                    m.mNormalizer.onAdaptiveShapeChanged();
+                }
                 return m;
             }
         }
@@ -97,7 +101,7 @@ public class LauncherIcons implements AutoCloseable {
     private IconNormalizer mNormalizer;
     private ShadowGenerator mShadowGenerator;
 
-    private Drawable mWrapperIcon;
+    private AdaptiveIconCompat mWrapperIcon;
     private int mWrapperBackgroundColor = DEFAULT_WRAPPER_BACKGROUND;
 
     private IconProvider iconProvider;
@@ -191,7 +195,7 @@ public class LauncherIcons implements AutoCloseable {
         }
         icon = normalizeAndWrapToAdaptiveIcon(icon, iconAppTargetSdk, null, scale);
         Bitmap bitmap = createIconBitmap(icon, scale[0]);
-        if (Utilities.ATLEAST_OREO && icon instanceof AdaptiveIconDrawable) {
+        if (icon instanceof AdaptiveIconCompat) {
             mCanvas.setBitmap(bitmap);
             getShadowGenerator().recreateIcon(Bitmap.createBitmap(bitmap), mCanvas);
             mCanvas.setBitmap(null);
@@ -240,10 +244,9 @@ public class LauncherIcons implements AutoCloseable {
         if (Utilities.ATLEAST_OREO) {
             boolean[] outShape = new boolean[1];
             if (mWrapperIcon == null) {
-                mWrapperIcon = mContext.getDrawable(R.drawable.adaptive_icon_drawable_wrapper)
-                        .mutate();
+                mWrapperIcon = LawnchairIconProvider.getAdaptiveIconDrawableWrapper(mContext);
             }
-            AdaptiveIconDrawable dr = (AdaptiveIconDrawable) mWrapperIcon;
+            AdaptiveIconCompat dr = (AdaptiveIconCompat) mWrapperIcon;
             dr.setBounds(0, 0, 1, 1);
             scale = getNormalizer().getScale(icon, outIconBounds, dr.getIconMask(), outShape);
             if (!outShape[0] && (icon instanceof NonAdaptiveIconDrawable)) {
@@ -325,7 +328,7 @@ public class LauncherIcons implements AutoCloseable {
         final int top = (textureHeight-height) / 2;
 
         mOldBounds.set(icon.getBounds());
-        if (Utilities.ATLEAST_OREO && icon instanceof AdaptiveIconDrawable) {
+        if (icon instanceof AdaptiveIconCompat) {
             int offset = Math.max((int) Math.ceil(BLUR_FACTOR * textureWidth), Math.max(left, top));
             int size = Math.max(width, height);
             icon.setBounds(offset, offset, size - offset, size - offset);

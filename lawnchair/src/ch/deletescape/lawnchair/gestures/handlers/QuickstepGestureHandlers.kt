@@ -40,7 +40,7 @@ import org.json.JSONObject
 open class OpenRecentsGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config),
         VerticalSwipeGestureHandler, StateChangeGestureHandler {
 
-    override val displayName = context.getString(R.string.action_switch_apps)!!
+    override val displayName: String = context.getString(R.string.action_switch_apps)
     override val isAvailable: Boolean
         get() = TouchInteractionService.isConnected()
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_lawnstep) }
@@ -60,7 +60,7 @@ open class OpenRecentsGestureHandler(context: Context, config: JSONObject?) : Ge
 @TargetApi(Build.VERSION_CODES.P)
 open class LaunchMostRecentTaskGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override val displayName = context.getString(R.string.action_last_task)!!
+    override val displayName: String = context.getString(R.string.action_last_task)
     override val isAvailable: Boolean
         get() = TouchInteractionService.isConnected()
 

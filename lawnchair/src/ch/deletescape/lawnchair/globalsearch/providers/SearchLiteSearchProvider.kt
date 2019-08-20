@@ -28,7 +28,7 @@ import com.android.launcher3.util.PackageManagerHelper
 @Keep
 class SearchLiteSearchProvider(context: Context) : SearchProvider(context) {
 
-    override val name = context.getString(R.string.search_provider_search_lite)
+    override val name: String = context.getString(R.string.search_provider_search_lite)
     override val supportsVoiceSearch: Boolean
         get() = false
     override val supportsAssistant: Boolean

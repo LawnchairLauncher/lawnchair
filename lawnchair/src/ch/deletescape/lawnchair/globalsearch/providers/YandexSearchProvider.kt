@@ -11,7 +11,7 @@ import com.android.launcher3.util.PackageManagerHelper
 @Keep
 class YandexSearchProvider(context: Context) : SearchProvider(context) {
 
-    override val name = context.getString(R.string.search_provider_yandex)!!
+    override val name: String = context.getString(R.string.search_provider_yandex)
     override val supportsVoiceSearch = true
     override val supportsAssistant = true
     override val supportsFeed = true

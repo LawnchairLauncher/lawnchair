@@ -12,7 +12,7 @@
     <string name="customize">Özelleştirme</string>
     <string name="smartspace_preferences_in_settings">Bir bakışta</string>
     <string name="smartspace_preferences_in_settings_desc">Tarih, saat, hava durumu kaynağı</string>
-    <string name="search">Ara</string>
+    <string name="search">Arama</string>
     <string name="label_voice_search">Sesli arama</string>
     <string name="icon_pack">Simge paketi</string>
     <string name="home_widget">Ana ekran widget\'ı</string>
@@ -29,11 +29,11 @@
     <string name="about_summary_title">Özet</string>
     <string name="action_edit">Düzenle</string>
     <string name="hide_app_sum">Uygulama çekmecesinden gizle</string>
-    <string name="hide_app">Uygulama gizle</string>
+    <string name="hide_app">Uygulamayı gizle</string>
     <string name="icon_shape_rounded_square">Yuvarlatılmış kare</string>
     <string name="pixel_ui_pref_summary">Simge paketi, bulanıklık, renkler</string>
     <string name="app_drawer_pref_title">Uygulama çekmecesi</string>
-    <string name="app_drawer_pref_summary">Şeffaflık, öneriler, uygulamaları gizle</string>
+    <string name="app_drawer_pref_summary">Opaklık, öneriler, uygulamaları gizle</string>
     <string name="search_pref_summary">Renk, arama motoru, simgeler</string>
     <string name="general_pref_title">Ana ekran</string>
     <string name="general_pref_summary">Izgara, simge düzeni, durum çubuğu</string>
@@ -69,7 +69,7 @@
     <string name="restore_success">Geri yükleme tamamlandı</string>
     <string name="failed">Bir sorun oluştu</string>
     <string name="backup_share_text">Lawnchair yedekleme</string>
-    <string name="full_width_widgets_pref_summary">Widget\'ların ekran kenarlarına yayılmasını sağlayın</string>
+    <string name="full_width_widgets_pref_summary">Widget\'ların ekran kenarlarına yayılmasını sağla</string>
     <string name="full_width_width_widgets_pref_title">Geniş widget\'lar</string>
     <string name="hide_apps">Uygulamaları gizle</string>
     <string name="hide_apps_sum">Uygulamaları çekmeceden kaldır</string>
@@ -175,7 +175,7 @@
     <string name="action_open_app_with_target">%s aç</string>
     <string name="action_open_app_select_app">Uygulama seçin</string>
     <string name="action_none">Hiç bir şey yapma</string>
-    <string name="action_despacito">Play YouTube Rewind 2018 (distorted)</string>
+    <string name="action_despacito">Play YouTube Rewind 2018</string>
     <string name="gesture_press_home">Ana ekran tuşu</string>
     <string name="gesture_press_back">Geri tuşu</string>
     <string name="gesture_double_tap">Çift dokunma</string>
@@ -215,7 +215,7 @@
     <string name="icon_pack_external_picker">Harici seçiciyi aç</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
-    <string name="title_use_pill_qsb">Hap stili arama çubuğunu kullanın</string>
+    <string name="title_use_pill_qsb">Hap stili arama çubuğunu kullan</string>
     <string name="weather_provider_testing">Hata ayıklama</string>
     <!--Marker G-->
     <string name="backup_generate_report">Hata raporu oluştur</string>
@@ -243,7 +243,7 @@
     <string name="color_wallpaper_secondary">Duvar kağıdı - ikincil</string>
     <string name="color_wallpaper_tertiary">Duvar kağıdı - üçüncül</string>
     <string name="pref_hide_statusbar">Durum çubuğunu gizle</string>
-    <string name="automatic_short">Otomatik</string>
+    <string name="automatic_short">Oto</string>
     <string name="bridge_missing_title">Lawnfeed</string>
     <string name="bridge_missing_message">Lawnfeed\'i yükle veya güncelle</string>
     <string name="quickstep_pref_title">Son uygulamalar</string>
@@ -273,7 +273,7 @@
     <string name="get_more_icon_packs">Daha fazlasını edinin</string>
     <string name="enabled_icon_packs">Etkin</string>
     <string name="pref_icon_pack_masking">Simge maskesi</string>
-    <string name="pref_icon_pack_masking_summary">Temalanmamış simgelerin uygulanan simge paketiyle eşleşmesini sağlayın</string>
+    <string name="pref_icon_pack_masking_summary">Temalanmamış simgelerin uygulanan simge paketiyle eşleşmesini sağla</string>
     <string name="pref_legacy_colored_backgrounds">Renkli arka planlar</string>
     <string name="pref_legacy_colored_backgrounds_summary">Oluşturulan uyarlanabilir simgeler için renkli arka planlar</string>
     <string name="pref_white_only_treatment">Beyaz arka planları değiştir</string>
@@ -303,7 +303,7 @@
     <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
     <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
     <string name="theme_dark_theme_mode_follow_daylight">Gün ışığını takip et</string>
-    <string name="theme_use_black">Saf siyah kullanın</string>
+    <string name="theme_use_black">Saf siyah kullan</string>
     <string name="theme_use_dark_text">Koyu metin kullan</string>
     <string name="pref_qsb_color">Renk</string>
     <string name="hide_from_predictions">Önerilerden gizle</string>
@@ -323,7 +323,7 @@
     <string name="summary_app_suggestions_lawnstep">Son uygulamalar ekranı ve uygulama çekmecesinde</string>
     <string name="app_actions_pref_title">Eylemler</string>
     <string name="app_actions_pref_title_in_search">Eylem önerileri</string>
-    <string name="app_actions_pref_desc">Sık açılan ekranları için kısayollar</string>
+    <string name="app_actions_pref_desc">Sık açılan ekranlar için kısayollar</string>
     <string name="change_default_home">Ana ekran olarak ayarla</string>
     <string name="recent_task_option_popup_window">İletişim penceresi</string>
     <string name="feed_theme_pref_title">Arka plan rengi</string>
@@ -394,9 +394,9 @@
     <string name="units_reaumur">Reaumur</string>
     <string name="units_romer">Romer</string>
     <string name="owm_get_your_own_key">Lütfen api.openweathermap.org adresinden kendi API anahtarınızı edinin</string>
-    <string name="pref_smartspace_time_above">Büyük saati göster</string>
+    <string name="pref_smartspace_time_above">Saati ayrı göster</string>
     <string name="pref_smartspace_time_above_summary">Saati widget\'ın üstünde göster</string>
-    <string name="pref_fonts_title">Yazı tipleri</string>
+    <string name="pref_fonts_title">Yazı tipi</string>
     <string name="pref_fonts_summary">Farklı öğelerin yazı tipini değiştirme</string>
     <string name="pref_fonts_global_font">Genel yazı tipi</string>
     <string name="pref_fonts_change_global_font">Değiştir</string>
@@ -416,7 +416,7 @@
     <string name="about_app_description">Özelleştirilebilir bir Pixel Launcher alternatifi.</string>
     <string name="about_bio_paphonb">18 yaşında bir öğrenci, Android Geliştirici ve Lawnchair Launcher\'ın en iyi geliştiricilerinden biri.</string>
     <string name="dock_scale">Alt panel boyutu</string>
-    <string name="adaptify_pack_title">Simge paketleri için uyarlanabilir simgeler oluştur</string>
+    <string name="adaptify_pack_title">Simge paketi için uyarlanabilir simgeler oluştur</string>
     <string name="adaptify_pack_summary">Simge paketlerinden simgeler için uyarlanabilir simgeler oluştur</string>
     <string name="pref_sesame_sync_look_and_feel">Görünümü paylaş</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Lawnchair arama ayarlarını Sesame ile senkronize et</string>
@@ -532,4 +532,10 @@
     <string name="web_search_yandex">Yandex (web)</string>
     <string name="web_search_naver">Naver (web)</string>
     <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">MIUI\'daki bir kısıtlama nedeniyle, simge şekliniz değişmeyebilir ve kare kalabilir.\nLütfen bunu bir hata olarak bildirmeyin.</string>
+    <string name="button_organize_screens">Ekranları düzenle</string>
+    <string name="weather_icons_default">Varsayılan</string>
+    <string name="pref_weather_icon_pack">Hava durumu simgeleri</string>
+    <string name="weather_icon_packs_not_supported">Mevcut hava durumu kaynağınız tarafından desteklenmiyor</string>
+    <string name="lawnchair_settings">Lawnchair Ayarları</string>
 </resources>

@@ -33,6 +33,10 @@ fun Int.removeFlag(flag: Int): Int {
     return this and flag.inv()
 }
 
+fun Int.toggleFlag(flag: Int): Int {
+    return if (hasFlag(flag)) removeFlag(flag) else addFlag(flag)
+}
+
 fun Int.setFlag(flag: Int, value: Boolean): Int {
     return if (value) {
         addFlag(flag)

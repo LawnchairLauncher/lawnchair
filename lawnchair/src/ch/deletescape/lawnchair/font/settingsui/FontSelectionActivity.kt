@@ -278,8 +278,7 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
         }
 
         open inner class FamilyHolder(parent: ViewGroup) : Holder(parent, R.layout.font_item),
-                FontCache.Font.LoadCallback, View.OnClickListener,
-                AdapterView.OnItemSelectedListener {
+                View.OnClickListener, AdapterView.OnItemSelectedListener {
 
             private val radioButton: RadioButton = itemView.findViewById(R.id.radio_button)
             private val title: TextView = itemView.findViewById(android.R.id.title)
@@ -299,16 +298,6 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
                 }
 
             private var selectedVariant = 0
-
-            private var cache: FamilyCache? = null
-                set(value) {
-                    field?.default?.callback = null
-                    field = value
-                    field?.let {
-                        it.default.callback = this
-                        it.default.loadFont()
-                    }
-                }
 
             override fun onClick(v: View) {
                 when (v.id) {
@@ -348,7 +337,7 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
                 spinner.onItemSelectedListener = null
                 title.text = family.displayName
                 title.typeface = Typeface.DEFAULT
-                this.cache = family
+                FontSwitcher.get(title).toLoad = family.default
                 adapter.clear()
                 adapter.addAll(family.variants)
                 setSpinnerItem(family)
@@ -375,10 +364,6 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
                 }
                 selectedVariant = selectedPosition ?: defaultPosition
                 spinner.setSelection(selectedVariant)
-            }
-
-            override fun onFontLoaded(typeface: Typeface?) {
-                title.typeface = typeface ?: Typeface.DEFAULT
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -445,10 +430,53 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
         }
     }
 
+    class FontSwitcher private constructor(private val textView: TextView) : FontCache.Font.LoadCallback {
+
+        var toLoad: FontAdapter.Cache? = null
+            set(value) {
+                textView.typeface = Typeface.DEFAULT
+                field?.callback = null
+                field = value
+                field?.let {
+                    it.callback = this
+                    it.loadFont()
+                }
+            }
+
+        init {
+            textView.setTag(R.id.font_switcher, this)
+        }
+
+        override fun onFontLoaded(typeface: Typeface?) {
+            textView.typeface = typeface ?: Typeface.DEFAULT
+        }
+
+        companion object {
+
+            fun get(textView: TextView): FontSwitcher {
+                return textView.getTag(R.id.font_switcher) as? FontSwitcher ?: FontSwitcher(textView)
+            }
+        }
+    }
+
     class FamilySpinner(context: Context) : ArrayAdapter<FontAdapter.Cache>(context, android.R.layout.simple_spinner_item) {
 
         init {
             setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+
+        private fun setFont(view: View, position: Int): View {
+            return view.apply {
+                FontSwitcher.get(findViewById(android.R.id.text1)).toLoad = getItem(position)
+            }
+        }
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            return setFont(super.getView(position, convertView, parent), position)
+        }
+
+        override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+            return setFont(super.getDropDownView(position, convertView, parent), position)
         }
     }
 

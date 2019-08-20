@@ -31,6 +31,7 @@ import android.os.UserHandle;
 import android.support.annotation.UiThread;
 import android.util.ArrayMap;
 import android.util.Log;
+import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider;
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.R;
@@ -89,7 +90,7 @@ public class DrawableFactory {
         if (Utilities.ATLEAST_OREO) {
             try {
                 // Try to load the path from Mask Icon
-                Drawable icon = context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper);
+                Drawable icon = LawnchairIconProvider.getAdaptiveIconDrawableWrapper(context);
                 icon.setBounds(0, 0,
                         PreloadIconDrawable.PATH_SIZE, PreloadIconDrawable.PATH_SIZE);
                 return (Path) icon.getClass().getMethod("getIconMask").invoke(icon);

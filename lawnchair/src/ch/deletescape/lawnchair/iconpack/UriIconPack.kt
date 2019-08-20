@@ -21,10 +21,7 @@ import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.ParcelFileDescriptor
@@ -82,7 +79,7 @@ class UriIconPack(context: Context) : IconPack(context, "lawnchairUriPack") {
         val icon = entry?.drawable
         if (icon != null) {
             return if (Utilities.ATLEAST_OREO && entry.adaptive) {
-                AdaptiveIconGenerator(context, icon, entry.identifierName).result
+                AdaptiveIconGenerator(context, icon).result
             } else icon
         }
         return null
@@ -102,7 +99,10 @@ class UriIconPack(context: Context) : IconPack(context, "lawnchairUriPack") {
         override val displayName = identifierName
 
         val bitmap by lazy { loadBitmap() }
-        override val drawable get() = BitmapDrawable(context.resources, bitmap)
+
+        override fun drawableForDensity(density: Int): Drawable {
+            return BitmapDrawable(context.resources, bitmap)
+        }
 
         override val isAvailable by lazy {
             try {

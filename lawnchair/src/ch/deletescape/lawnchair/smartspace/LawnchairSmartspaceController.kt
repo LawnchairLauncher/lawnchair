@@ -83,12 +83,16 @@ class LawnchairSmartspaceController(val context: Context) {
         notifyListeners()
     }
 
-    private fun forceUpdate() {
+    fun forceUpdate() {
         val allProviders = stockProviders.asSequence() + eventDataProviders.asSequence()
         val eventData = allProviders
                 .mapNotNull { eventDataMap[it] }
                 .firstOrNull()
         updateData(weatherData, eventData)
+    }
+
+    fun forceUpdateWeather() {
+        weatherDataProvider.forceUpdate()
     }
 
     private fun notifyListeners() {
