@@ -217,6 +217,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private AnimationFactory mAnimationFactory = (t) -> { };
     private LiveTileOverlay mLiveTileOverlay = new LiveTileOverlay();
+    private boolean mLiveTileOverlayAttached = false;
 
     private boolean mWasLauncherAlreadyVisible;
 
@@ -323,8 +324,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
         mRecentsView = activity.getOverviewPanel();
         linkRecentsViewScroll();
-        mRecentsView.setLiveTileOverlay(mLiveTileOverlay);
-        mActivity.getRootView().getOverlay().add(mLiveTileOverlay);
+        addLiveTileOverlay();
 
         mStateCallback.setState(STATE_LAUNCHER_PRESENT);
         if (alreadyOnHome) {
@@ -972,7 +972,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             @Override
             public void onAnimationStart(Animator animation) {
                 if (mActivity != null) {
-                    mActivity.getRootView().getOverlay().remove(mLiveTileOverlay);
+                    removeLiveTileOverlay();
                 }
             }
 
@@ -1071,7 +1071,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         mRecentsView.onGestureAnimationEnd();
 
         mActivity.getRootView().setOnApplyWindowInsetsListener(null);
-        mActivity.getRootView().getOverlay().remove(mLiveTileOverlay);
+        removeLiveTileOverlay();
     }
 
     private void endLauncherTransitionController() {
@@ -1199,6 +1199,22 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private void setTargetAlphaProvider(TargetAlphaProvider provider) {
         mClipAnimationHelper.setTaskAlphaCallback(provider);
         updateFinalShift();
+    }
+
+    private synchronized void addLiveTileOverlay() {
+        if (!mLiveTileOverlayAttached) {
+            mActivity.getRootView().getOverlay().add(mLiveTileOverlay);
+            mRecentsView.setLiveTileOverlay(mLiveTileOverlay);
+            mLiveTileOverlayAttached = true;
+        }
+    }
+
+    private synchronized void removeLiveTileOverlay() {
+        if (mLiveTileOverlayAttached) {
+            mActivity.getRootView().getOverlay().remove(mLiveTileOverlay);
+            mRecentsView.setLiveTileOverlay(null);
+            mLiveTileOverlayAttached = false;
+        }
     }
 
     public static float getHiddenTargetAlpha(RemoteAnimationTargetCompat app, float expectedAlpha) {
