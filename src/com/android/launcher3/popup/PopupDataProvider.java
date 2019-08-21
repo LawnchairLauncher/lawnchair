@@ -29,17 +29,22 @@ import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.widget.WidgetListRowEntry;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Provides data for the popup menu that appears after long-clicking on apps.
@@ -129,7 +134,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         for (PackageUserKey packageUserKey : mPackageUserToDotInfos.keySet()) {
             DotInfo prevDot = updatedDots.get(packageUserKey);
             DotInfo newDot = mPackageUserToDotInfos.get(packageUserKey);
-            if (prevDot == null) {
+            if (prevDot == null
+                    || prevDot.getNotificationCount() != newDot.getNotificationCount()) {
                 updatedDots.put(packageUserKey, newDot);
             } else {
                 // No need to update the dot if it already existed (no visual change).
@@ -155,7 +161,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     }
 
     public int getShortcutCountForItem(ItemInfo info) {
-        if (!DeepShortcutManager.supportsShortcuts(info)) {
+        if (!ShortcutUtil.supportsDeepShortcuts(info)) {
             return 0;
         }
         ComponentName component = info.getTargetComponent();
@@ -167,17 +173,26 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         return count == null ? 0 : count;
     }
 
-    public DotInfo getDotInfoForItem(ItemInfo info) {
-        if (!DeepShortcutManager.supportsShortcuts(info)) {
+    public @Nullable DotInfo getDotInfoForItem(@NonNull ItemInfo info) {
+        if (!ShortcutUtil.supportsShortcuts(info)) {
             return null;
         }
-
-        return mPackageUserToDotInfos.get(PackageUserKey.fromItemInfo(info));
+        DotInfo dotInfo = mPackageUserToDotInfos.get(PackageUserKey.fromItemInfo(info));
+        if (dotInfo == null) {
+            return null;
+        }
+        List<NotificationKeyData> notifications = getNotificationsForItem(
+                info, dotInfo.getNotificationKeys());
+        if (notifications.isEmpty()) {
+            return null;
+        }
+        return dotInfo;
     }
 
     public @NonNull List<NotificationKeyData> getNotificationKeysForItem(ItemInfo info) {
         DotInfo dotInfo = getDotInfoForItem(info);
-        return dotInfo == null ? Collections.EMPTY_LIST : dotInfo.getNotificationKeys();
+        return dotInfo == null ? Collections.EMPTY_LIST
+                : getNotificationsForItem(info, dotInfo.getNotificationKeys());
     }
 
     /** This makes a potentially expensive binder call and should be run on a background thread. */
@@ -224,6 +239,27 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             }
         }
         return null;
+    }
+
+    /**
+     * Returns a list of notifications that are relevant to given ItemInfo.
+     */
+    public static @NonNull List<NotificationKeyData> getNotificationsForItem(
+            @NonNull ItemInfo info, @NonNull List<NotificationKeyData> notifications) {
+        String shortcutId = ShortcutUtil.getShortcutIdIfPinnedShortcut(info);
+        if (shortcutId == null) {
+            return notifications;
+        }
+        String[] personKeys = ShortcutUtil.getPersonKeysIfPinnedShortcut(info);
+        return notifications.stream().filter((NotificationKeyData notification) -> {
+                    if (notification.shortcutId != null) {
+                        return notification.shortcutId.equals(shortcutId);
+                    }
+                    if (notification.personKeysFromNotification.length != 0) {
+                        return Arrays.equals(notification.personKeysFromNotification, personKeys);
+                    }
+                    return false;
+                }).collect(Collectors.toList());
     }
 
     public interface PopupDataChangeListener {

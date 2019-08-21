@@ -16,15 +16,12 @@
 package com.android.quickstep;
 
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
-import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SUPPORTS_WINDOW_CORNERS;
-import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_WINDOW_CORNER_RADIUS;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.HandlerThread;
 import android.os.Process;
 import android.os.RemoteException;
@@ -35,7 +32,6 @@ import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
@@ -52,7 +48,7 @@ public class RecentsModel extends TaskStackChangeListener {
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<RecentsModel> INSTANCE =
-            new MainThreadInitializedObject<>(c -> new RecentsModel(c));
+            new MainThreadInitializedObject<>(RecentsModel::new);
 
     private final List<TaskThumbnailChangeListener> mThumbnailChangeListeners = new ArrayList<>();
     private final Context mContext;

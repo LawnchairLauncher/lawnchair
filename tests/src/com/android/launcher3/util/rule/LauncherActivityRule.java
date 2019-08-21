@@ -19,6 +19,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.Application.ActivityLifecycleCallbacks;
 import android.os.Bundle;
+
 import androidx.test.InstrumentationRegistry;
 
 import com.android.launcher3.Launcher;
@@ -84,19 +85,27 @@ public class LauncherActivityRule implements TestRule {
         }
 
         @Override
-        public void onActivityStarted(Activity activity) { }
+        public void onActivityStarted(Activity activity) {
+            if (activity instanceof Launcher) {
+                mActivity.getRotationHelper().forceAllowRotationForTesting(true);
+            }
+        }
 
         @Override
-        public void onActivityResumed(Activity activity) { }
+        public void onActivityResumed(Activity activity) {
+        }
 
         @Override
-        public void onActivityPaused(Activity activity) { }
+        public void onActivityPaused(Activity activity) {
+        }
 
         @Override
-        public void onActivityStopped(Activity activity) { }
+        public void onActivityStopped(Activity activity) {
+        }
 
         @Override
-        public void onActivitySaveInstanceState(Activity activity, Bundle bundle) { }
+        public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+        }
 
         @Override
         public void onActivityDestroyed(Activity activity) {

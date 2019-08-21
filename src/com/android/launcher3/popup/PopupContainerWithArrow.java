@@ -72,6 +72,7 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.ArrayList;
@@ -201,7 +202,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
             return null;
         }
         ItemInfo itemInfo = (ItemInfo) icon.getTag();
-        if (!DeepShortcutManager.supportsShortcuts(itemInfo)) {
+        if (!ShortcutUtil.supportsShortcuts(itemInfo)) {
             return null;
         }
 

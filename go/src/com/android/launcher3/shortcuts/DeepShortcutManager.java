@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.UserHandle;
 
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.notification.NotificationKeyData;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,10 +47,6 @@ public class DeepShortcutManager {
     }
 
     private DeepShortcutManager(Context context) {
-    }
-
-    public static boolean supportsShortcuts(ItemInfo info) {
-        return false;
     }
 
     public boolean wasLastCallSuccess() {
