@@ -137,7 +137,15 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 if (DBG) {
                     Log.d(TAG, "Ignoring shortcut for absent package: " + info.launchIntent);
                 }
+                continue;
             }
+
+            // Generate a shortcut info to add into the model
+            installQueue.add(info.getItemInfo());
+        }
+        prefs.edit().remove(APPS_PENDING_INSTALL).apply();
+        if (!installQueue.isEmpty()) {
+            model.addAndBindAddedWorkspaceItems(installQueue);
         }
     }
 

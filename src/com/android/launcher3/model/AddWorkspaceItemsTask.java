@@ -124,13 +124,11 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                             // App was installed while launcher was in the background.
                             itemInfo = new AppInfo(app.getContext(), activities.get(0), item.user)
                                     .makeWorkspaceItem();
-                            PackageItemInfo info = new PackageItemInfo(packageName);
                             WorkspaceItemInfo wii = (WorkspaceItemInfo) itemInfo;
-                            app.getIconCache().getTitleAndIconForApp(info, wii.usingLowResIcon());
-                            wii.title = info.title;
-                            wii.contentDescription = info.contentDescription;
-                            wii.iconBitmap = info.iconBitmap;
-                            wii.iconColor = info.iconColor;
+                            wii.title = "";
+                            wii.applyFrom(app.getIconCache().getDefaultIcon(item.user));
+                            app.getIconCache().getTitleAndIcon(wii,
+                                    ((WorkspaceItemInfo) itemInfo).usingLowResIcon());
                         } else {
                             // Session was cancelled, do not add.
                             continue;
