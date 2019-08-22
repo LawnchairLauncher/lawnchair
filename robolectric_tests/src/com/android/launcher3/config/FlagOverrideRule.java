@@ -1,6 +1,8 @@
 package com.android.launcher3.config;
 
 
+import com.android.launcher3.config.BaseFlags.BaseTogglableFlag;
+import com.android.launcher3.uioverrides.TogglableFlag;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -70,7 +72,7 @@ public final class FlagOverrideRule implements TestRule {
         };
     }
 
-    private void override(BaseFlags.TogglableFlag flag, boolean newValue) {
+    private void override(BaseTogglableFlag flag, boolean newValue) {
         if (!ruleInProgress) {
             throw new IllegalStateException(
                     "Rule isn't in progress. Did you remember to mark it with @Rule?");
@@ -93,7 +95,7 @@ public final class FlagOverrideRule implements TestRule {
 
     private void applyAnnotation(FlagOverride flagOverride) {
         boolean found = false;
-        for (BaseFlags.TogglableFlag flag : FeatureFlags.getTogglableFlags()) {
+        for (TogglableFlag flag : FeatureFlags.getTogglableFlags()) {
             if (flag.getKey().equals(flagOverride.key())) {
                 override(flag, flagOverride.value());
                 found = true;
@@ -109,7 +111,7 @@ public final class FlagOverrideRule implements TestRule {
      * Resets all flags to their default values.
      */
     private void clearOverrides() {
-        for (BaseFlags.TogglableFlag flag : FeatureFlags.getTogglableFlags()) {
+        for (BaseTogglableFlag flag : FeatureFlags.getTogglableFlags()) {
             flag.setForTests(flag.getDefaultValue());
         }
     }

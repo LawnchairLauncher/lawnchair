@@ -18,11 +18,12 @@ package com.android.launcher3.util;
 import android.content.Context;
 import android.os.Looper;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.android.launcher3.MainThreadExecutor;
+import com.android.launcher3.util.ResourceBasedOverride.Overrides;
 
 import java.util.concurrent.ExecutionException;
-
-import androidx.annotation.VisibleForTesting;
 
 /**
  * Utility class for defining singletons which are initiated on main thread.
@@ -58,6 +59,14 @@ public class MainThreadInitializedObject<T> {
     @VisibleForTesting
     public void initializeForTesting(T value) {
         mValue = value;
+    }
+
+    /**
+     * Initializes a provider based on resource overrides
+     */
+    public static <T extends ResourceBasedOverride> MainThreadInitializedObject<T> forOverride(
+            Class<T> clazz, int resourceId) {
+        return new MainThreadInitializedObject<>(c -> Overrides.getObject(clazz, c, resourceId));
     }
 
     public interface ObjectProvider<T> {

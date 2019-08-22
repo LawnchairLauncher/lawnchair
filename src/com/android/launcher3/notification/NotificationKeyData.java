@@ -17,12 +17,18 @@
 package com.android.launcher3.notification;
 
 import android.app.Notification;
+import android.app.Person;
 import android.service.notification.StatusBarNotification;
 
+import com.android.launcher3.Utilities;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * The key data associated with the notification, used to determine what to include
@@ -34,24 +40,37 @@ public class NotificationKeyData {
     public final String notificationKey;
     public final String shortcutId;
     public int count;
+    @NonNull public final String[] personKeysFromNotification;
 
-    private NotificationKeyData(String notificationKey, String shortcutId, int count) {
+    private NotificationKeyData(String notificationKey, String shortcutId, int count,
+            String[] personKeysFromNotification) {
         this.notificationKey = notificationKey;
         this.shortcutId = shortcutId;
         this.count = Math.max(1, count);
+        this.personKeysFromNotification = personKeysFromNotification;
     }
 
     public static NotificationKeyData fromNotification(StatusBarNotification sbn) {
         Notification notif = sbn.getNotification();
-        return new NotificationKeyData(sbn.getKey(), notif.getShortcutId(), notif.number);
+        return new NotificationKeyData(sbn.getKey(), notif.getShortcutId(), notif.number,
+                extractPersonKeyOnly(notif.extras.getParcelableArrayList(
+                        Notification.EXTRA_PEOPLE_LIST)));
     }
 
-    public static List<String> extractKeysOnly(@NonNull List<NotificationKeyData> notificationKeys) {
+    public static List<String> extractKeysOnly(
+            @NonNull List<NotificationKeyData> notificationKeys) {
         List<String> keysOnly = new ArrayList<>(notificationKeys.size());
         for (NotificationKeyData notificationKeyData : notificationKeys) {
             keysOnly.add(notificationKeyData.notificationKey);
         }
         return keysOnly;
+    }
+
+    private static String[] extractPersonKeyOnly(@Nullable ArrayList<Person> people) {
+        if (people == null || people.isEmpty()) {
+            return Utilities.EMPTY_STRING_ARRAY;
+        }
+        return people.stream().map(Person::getKey).sorted().toArray(String[]::new);
     }
 
     @Override
