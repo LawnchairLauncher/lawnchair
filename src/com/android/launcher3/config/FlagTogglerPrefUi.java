@@ -26,12 +26,13 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.android.launcher3.R;
-import com.android.launcher3.config.BaseFlags.TogglableFlag;
 
 import androidx.preference.PreferenceDataStore;
 import androidx.preference.PreferenceFragment;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.SwitchPreference;
+import com.android.launcher3.config.BaseFlags.BaseTogglableFlag;
+import com.android.launcher3.uioverrides.TogglableFlag;
 
 /**
  * Dev-build only UI allowing developers to toggle flag settings. See {@link FeatureFlags}.
@@ -62,7 +63,7 @@ public final class FlagTogglerPrefUi {
 
         @Override
         public boolean getBoolean(String key, boolean defaultValue) {
-            for (TogglableFlag flag : FeatureFlags.getTogglableFlags()) {
+            for (BaseTogglableFlag flag : FeatureFlags.getTogglableFlags()) {
                 if (flag.getKey().equals(key)) {
                     return flag.getFromStorage(mContext, defaultValue);
                 }
@@ -83,7 +84,7 @@ public final class FlagTogglerPrefUi {
         // flag with a different value than the default. That way, when we flip flags in
         // future, engineers will pick up the new value immediately. To accomplish this, we use a
         // custom preference data store.
-        for (TogglableFlag flag : FeatureFlags.getTogglableFlags()) {
+        for (BaseTogglableFlag flag : FeatureFlags.getTogglableFlags()) {
             SwitchPreference switchPreference = new SwitchPreference(mContext);
             switchPreference.setKey(flag.getKey());
             switchPreference.setDefaultValue(flag.getDefaultValue());
@@ -99,7 +100,7 @@ public final class FlagTogglerPrefUi {
     /**
      * Updates the summary to show the description and whether the flag overrides the default value.
      */
-    private void updateSummary(SwitchPreference switchPreference, TogglableFlag flag) {
+    private void updateSummary(SwitchPreference switchPreference, BaseTogglableFlag flag) {
         String onWarning = flag.getDefaultValue() ? "" : "<b>OVERRIDDEN</b><br>";
         String offWarning = flag.getDefaultValue() ? "<b>OVERRIDDEN</b><br>" : "";
         switchPreference.setSummaryOn(Html.fromHtml(onWarning + flag.getDescription()));
@@ -134,7 +135,7 @@ public final class FlagTogglerPrefUi {
         }
     }
 
-    private boolean getFlagStateFromSharedPrefs(TogglableFlag flag) {
+    private boolean getFlagStateFromSharedPrefs(BaseTogglableFlag flag) {
         return mDataStore.getBoolean(flag.getKey(), flag.getDefaultValue());
     }
 

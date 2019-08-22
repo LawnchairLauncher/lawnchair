@@ -16,16 +16,22 @@
 
 package com.android.launcher3;
 
+import android.app.Person;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.ContentWriter;
+
+import java.util.Arrays;
 
 /**
  * Represents a launchable icon on the workspaces and in folders.
@@ -83,9 +89,16 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     public int status;
 
     /**
+     * A set of person's Id associated with the WorkspaceItemInfo, this is only used if the item
+     * represents a deep shortcut.
+     */
+    @NonNull private String[] personKeys = Utilities.EMPTY_STRING_ARRAY;
+
+    /**
      * The installation progress [0-100] of the package that this shortcut represents.
      */
     private int mInstallProgress;
+
 
     public WorkspaceItemInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
@@ -98,6 +111,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         iconResource = info.iconResource;
         status = info.status;
         mInstallProgress = info.mInstallProgress;
+        personKeys = info.personKeys.clone();
     }
 
     /** TODO: Remove this.  It's only called by ApplicationInfo.makeWorkspaceItem. */
@@ -175,12 +189,21 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
             runtimeStatusFlags |= FLAG_DISABLED_BY_PUBLISHER;
         }
         disabledMessage = shortcutInfo.getDisabledMessage();
+
+        Person[] persons = UiFactory.getPersons(shortcutInfo);
+        personKeys = persons.length == 0 ? Utilities.EMPTY_STRING_ARRAY
+            : Arrays.stream(persons).map(Person::getKey).sorted().toArray(String[]::new);
     }
 
     /** Returns the WorkspaceItemInfo id associated with the deep shortcut. */
     public String getDeepShortcutId() {
         return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT ?
                 getIntent().getStringExtra(ShortcutKey.EXTRA_SHORTCUT_ID) : null;
+    }
+
+    @NonNull
+    public String[] getPersonKeys() {
+        return personKeys;
     }
 
     @Override

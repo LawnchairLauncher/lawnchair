@@ -1562,12 +1562,20 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         final boolean pagesFlipped = isPageOrderFlipped();
         info.setScrollable(getPageCount() > 1);
         if (getCurrentPage() < getPageCount() - 1) {
-            info.addAction(pagesFlipped ? AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD
-                    : AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+            info.addAction(pagesFlipped ?
+                AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_BACKWARD
+                : AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD);
+            info.addAction(mIsRtl ?
+                AccessibilityNodeInfo.AccessibilityAction.ACTION_PAGE_LEFT
+                : AccessibilityNodeInfo.AccessibilityAction.ACTION_PAGE_RIGHT);
         }
         if (getCurrentPage() > 0) {
-            info.addAction(pagesFlipped ? AccessibilityNodeInfo.ACTION_SCROLL_FORWARD
-                    : AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+            info.addAction(pagesFlipped ?
+                AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD
+                : AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_BACKWARD);
+            info.addAction(mIsRtl ?
+                AccessibilityNodeInfo.AccessibilityAction.ACTION_PAGE_RIGHT
+                : AccessibilityNodeInfo.AccessibilityAction.ACTION_PAGE_LEFT);
         }
 
         // Accessibility-wise, PagedView doesn't support long click, so disabling it.
@@ -1607,8 +1615,21 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 if (pagesFlipped ? scrollRight() : scrollLeft()) {
                     return true;
                 }
+            } break;
+            case android.R.id.accessibilityActionPageRight: {
+                if (!mIsRtl) {
+                  return scrollRight();
+                } else {
+                  return scrollLeft();
+                }
             }
-            break;
+            case android.R.id.accessibilityActionPageLeft: {
+                if (!mIsRtl) {
+                  return scrollLeft();
+                } else {
+                  return scrollRight();
+                }
+            }
         }
         return false;
     }

@@ -112,6 +112,13 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 }
                 break;
             }
+
+            case TestProtocol.REQUEST_ALLOCATED_MEMORY: {
+                final Runtime runtime = Runtime.getRuntime();
+                response.putLong(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        runtime.totalMemory() - runtime.freeMemory());
+                break;
+            }
         }
         return response;
     }

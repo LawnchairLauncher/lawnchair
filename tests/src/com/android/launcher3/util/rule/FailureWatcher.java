@@ -15,7 +15,6 @@ import java.io.IOException;
 
 public class FailureWatcher extends TestWatcher {
     private static final String TAG = "FailureWatcher";
-    private static int sScreenshotCount = 0;
     final private UiDevice mDevice;
 
     public FailureWatcher(UiDevice device) {
@@ -40,7 +39,8 @@ public class FailureWatcher extends TestWatcher {
     protected void failed(Throwable e, Description description) {
         if (mDevice == null) return;
         final String pathname = getInstrumentation().getTargetContext().
-                getFilesDir().getPath() + "/TaplTestScreenshot" + sScreenshotCount++ + ".png";
+                getFilesDir().getPath() + "/TestScreenshot-" + description.getMethodName()
+                + ".png";
         Log.e(TAG, "Failed test " + description.getMethodName() +
                 ", screenshot will be saved to " + pathname +
                 ", track trace is below, UI object dump is further below:\n" +

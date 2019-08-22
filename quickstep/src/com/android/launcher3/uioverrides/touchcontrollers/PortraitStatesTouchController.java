@@ -147,8 +147,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     }
 
     @Override
-    protected int getLogContainerTypeForNormalState() {
-        return ContainerType.HOTSEAT;
+    protected int getLogContainerTypeForNormalState(MotionEvent ev) {
+        return isTouchOverHotseat(mLauncher, ev) ? ContainerType.HOTSEAT : ContainerType.WORKSPACE;
     }
 
     private AnimatorSetBuilder getNormalToOverviewAnimation() {
