@@ -166,7 +166,10 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     }
 
     public OnClickListener getItemClickListener() {
-        return ItemClickHandler.INSTANCE;
+        return (view) -> {
+            ItemClickHandler.INSTANCE.onClick(view);
+            close(true);
+        };
     }
 
     @Override
@@ -564,9 +567,9 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
 
     @Override
     protected void closeComplete() {
-        super.closeComplete();
         mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());
         mOriginalIcon.forceHideDot(false);
+        super.closeComplete();
     }
 
     @Override
