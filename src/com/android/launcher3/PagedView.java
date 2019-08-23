@@ -1299,6 +1299,9 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                         vscroll = -event.getAxisValue(MotionEvent.AXIS_VSCROLL);
                         hscroll = event.getAxisValue(MotionEvent.AXIS_HSCROLL);
                     }
+                    if (Math.abs(vscroll) > Math.abs(hscroll) && !isVerticalScrollable()) {
+                        return true;
+                    }
                     if (hscroll != 0 || vscroll != 0) {
                         boolean isForwardScroll = mIsRtl ? (hscroll < 0 || vscroll < 0)
                                                          : (hscroll > 0 || vscroll > 0);
@@ -1313,6 +1316,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             }
         }
         return super.onGenericMotionEvent(event);
+    }
+
+    protected boolean isVerticalScrollable() {
+        return true;
     }
 
     private void acquireVelocityTrackerAndAddMovement(MotionEvent ev) {
