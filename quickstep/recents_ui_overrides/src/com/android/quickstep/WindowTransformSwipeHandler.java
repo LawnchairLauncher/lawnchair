@@ -505,7 +505,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 initAnimFactory.run();
             }
         }
-        AbstractFloatingView.closeAllOpenViews(activity, mWasLauncherAlreadyVisible);
+        AbstractFloatingView.closeAllOpenViewsExcept(activity, mWasLauncherAlreadyVisible,
+                AbstractFloatingView.TYPE_LISTENER);
 
         if (mWasLauncherAlreadyVisible) {
             mStateCallback.setState(STATE_LAUNCHER_DRAWN);
@@ -1132,17 +1133,16 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         }
         if (start == end || duration <= 0) {
             mLauncherTransitionController.dispatchSetInterpolator(t -> end);
-            mLauncherTransitionController.getAnimationPlayer().end();
         } else {
             mLauncherTransitionController.dispatchSetInterpolator(adjustedInterpolator);
             mAnimationFactory.adjustActivityControllerInterpolators();
-            mLauncherTransitionController.getAnimationPlayer().setDuration(duration);
-
-            if (QUICKSTEP_SPRINGS.get()) {
-                mLauncherTransitionController.dispatchOnStartWithVelocity(end, velocityPxPerMs.y);
-            }
-            mLauncherTransitionController.getAnimationPlayer().start();
         }
+        mLauncherTransitionController.getAnimationPlayer().setDuration(Math.max(0, duration));
+
+        if (QUICKSTEP_SPRINGS.get()) {
+            mLauncherTransitionController.dispatchOnStartWithVelocity(end, velocityPxPerMs.y);
+        }
+        mLauncherTransitionController.getAnimationPlayer().start();
         mHasLauncherTransitionControllerStarted = true;
     }
 
