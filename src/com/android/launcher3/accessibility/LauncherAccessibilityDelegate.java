@@ -40,6 +40,7 @@ import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
@@ -115,7 +116,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
         // If the request came from keyboard, do not add custom shortcuts as that is already
         // exposed as a direct shortcut
-        if (!fromKeyboard && DeepShortcutManager.supportsShortcuts(item)) {
+        if (!fromKeyboard && ShortcutUtil.supportsShortcuts(item)) {
             info.addAction(mActions.get(NotificationListener.getInstanceIfConnected() != null
                     ? SHORTCUTS_AND_NOTIFICATIONS : DEEP_SHORTCUTS));
         }

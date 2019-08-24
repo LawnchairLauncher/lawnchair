@@ -69,6 +69,7 @@ public abstract class AbstractStateChangeTouchController
     protected final SwipeDetector.Direction mSwipeDirection;
 
     private boolean mNoIntercept;
+    private boolean mIsLogContainerSet;
     protected int mStartContainerType;
 
     protected LauncherState mStartState;
@@ -180,7 +181,7 @@ public abstract class AbstractStateChangeTouchController
     /**
      * Returns the container that the touch started from when leaving NORMAL state.
      */
-    protected abstract int getLogContainerTypeForNormalState();
+    protected abstract int getLogContainerTypeForNormalState(MotionEvent ev);
 
     private boolean reinitCurrentAnimation(boolean reachedToState, boolean isDragTowardPositive) {
         LauncherState newFromState = mFromState == null ? mLauncher.getStateManager().getState()
@@ -231,13 +232,7 @@ public abstract class AbstractStateChangeTouchController
     @Override
     public void onDragStart(boolean start) {
         mStartState = mLauncher.getStateManager().getState();
-        if (mStartState == ALL_APPS) {
-            mStartContainerType = LauncherLogProto.ContainerType.ALLAPPS;
-        } else if (mStartState == NORMAL) {
-            mStartContainerType = getLogContainerTypeForNormalState();
-        } else if (mStartState == OVERVIEW){
-            mStartContainerType = LauncherLogProto.ContainerType.TASKSWITCHER;
-        }
+        mIsLogContainerSet = false;
         if (mCurrentAnimation == null) {
             mFromState = mStartState;
             mToState = null;
@@ -283,6 +278,21 @@ public abstract class AbstractStateChangeTouchController
         }
 
         return true;
+    }
+
+    @Override
+    public boolean onDrag(float displacement, MotionEvent ev) {
+        if (!mIsLogContainerSet) {
+            if (mStartState == ALL_APPS) {
+                mStartContainerType = LauncherLogProto.ContainerType.ALLAPPS;
+            } else if (mStartState == NORMAL) {
+                mStartContainerType = getLogContainerTypeForNormalState(ev);
+            } else if (mStartState == OVERVIEW) {
+                mStartContainerType = LauncherLogProto.ContainerType.TASKSWITCHER;
+            }
+            mIsLogContainerSet = true;
+        }
+        return onDrag(displacement);
     }
 
     protected void updateProgress(float fraction) {

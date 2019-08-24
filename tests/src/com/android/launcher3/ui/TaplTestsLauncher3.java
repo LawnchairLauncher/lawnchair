@@ -173,6 +173,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @Test
     public void testWorkspace() throws Exception {
+        mLauncher.enableDebugTracing();
         final Workspace workspace = mLauncher.getWorkspace();
 
         // Test that ensureWorkspaceIsScrollable adds a page by dragging an icon there.
@@ -190,7 +191,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 launcher -> assertTrue("ensureScrollable didn't make workspace scrollable",
                         isWorkspaceScrollable(launcher)));
         assertNotNull("ensureScrollable didn't add Chrome app",
-                workspace.tryGetWorkspaceAppIcon("Chrome"));
+                workspace.getWorkspaceAppIcon("Chrome"));
 
         // Test flinging workspace.
         workspace.flingBackward();
@@ -206,8 +207,9 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         assertTrue("Launcher internal state is not Home", isInState(LauncherState.NORMAL));
 
         // Test starting a workspace app.
-        final AppIcon app = workspace.tryGetWorkspaceAppIcon("Chrome");
+        final AppIcon app = workspace.getWorkspaceAppIcon("Chrome");
         assertNotNull("No Chrome app in workspace", app);
+        mLauncher.disableDebugTracing();
     }
 
     public static void runIconLaunchFromAllAppsTest(AbstractLauncherUiTest test, AllApps allApps) {
@@ -298,6 +300,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     public void testDragAppIcon() throws Throwable {
+        mLauncher.enableDebugTracing();
         // 1. Open all apps and wait for load complete.
         // 2. Drag icon to homescreen.
         // 3. Verify that the icon works on homescreen.
@@ -314,11 +317,13 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 "Launcher activity is the top activity; expecting another activity to be the top "
                         + "one",
                 isInBackground(launcher)));
+        mLauncher.disableDebugTracing();
     }
 
     @Test
     @PortraitLandscape
     public void testDragShortcut() throws Throwable {
+        mLauncher.enableDebugTracing();
         // 1. Open all apps and wait for load complete.
         // 2. Find the app and long press it to show shortcuts.
         // 3. Press icon center until shortcuts appear
@@ -338,6 +343,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         } finally {
             allApps.unfreeze();
         }
+        mLauncher.disableDebugTracing();
     }
 
     public static String getAppPackageName() {

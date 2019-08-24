@@ -36,11 +36,15 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
+import android.os.LocaleList;
 import android.os.Looper;
 import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.BitmapInfo;
@@ -56,8 +60,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
-
-import androidx.annotation.NonNull;
 
 public abstract class BaseIconCache {
 
@@ -84,6 +86,7 @@ public abstract class BaseIconCache {
 
     protected int mIconDpi;
     protected IconDB mIconDb;
+    protected LocaleList mLocaleList = LocaleList.getEmptyLocaleList();
     protected String mSystemState = "";
 
     private final String mDbFileName;
@@ -227,12 +230,12 @@ public abstract class BaseIconCache {
 
     /**
      * Refreshes the system state definition used to check the validity of the cache. It
-     * incorporates all the properties that can affect the cache like locale and system-version.
+     * incorporates all the properties that can affect the cache like the list of enabled locale
+     * and system-version.
      */
     private void updateSystemState() {
-        final String locale =
-                mContext.getResources().getConfiguration().getLocales().toLanguageTags();
-        mSystemState = locale + "," + Build.VERSION.SDK_INT;
+        mLocaleList = mContext.getResources().getConfiguration().getLocales();
+        mSystemState = mLocaleList.toLanguageTags() + "," + Build.VERSION.SDK_INT;
     }
 
     protected String getIconSystemState(String packageName) {
@@ -269,7 +272,7 @@ public abstract class BaseIconCache {
         mCache.put(key, entry);
 
         ContentValues values = newContentValues(entry, entry.title.toString(),
-                componentName.getPackageName());
+                componentName.getPackageName(), cachingLogic.getKeywords(object, mLocaleList));
         addIconToDB(values, componentName, info, userSerial);
     }
 
@@ -445,7 +448,7 @@ public abstract class BaseIconCache {
                     // Add the icon in the DB here, since these do not get written during
                     // package updates.
                     ContentValues values = newContentValues(
-                            iconInfo, entry.title.toString(), packageName);
+                            iconInfo, entry.title.toString(), packageName, null);
                     addIconToDB(values, cacheKey.componentName, info, getSerialNumberForUser(user));
 
                 } catch (NameNotFoundException e) {
@@ -504,23 +507,35 @@ public abstract class BaseIconCache {
         return false;
     }
 
-    static final class IconDB extends SQLiteCacheHelper {
-        private final static int RELEASE_VERSION = 26;
+    /**
+     * Returns a cursor for an arbitrary query to the cache db
+     */
+    public synchronized Cursor queryCacheDb(String[] columns, String selection,
+            String[] selectionArgs) {
+        return mIconDb.query(columns, selection, selectionArgs);
+    }
 
-        public final static String TABLE_NAME = "icons";
-        public final static String COLUMN_ROWID = "rowid";
-        public final static String COLUMN_COMPONENT = "componentName";
-        public final static String COLUMN_USER = "profileId";
-        public final static String COLUMN_LAST_UPDATED = "lastUpdated";
-        public final static String COLUMN_VERSION = "version";
-        public final static String COLUMN_ICON = "icon";
-        public final static String COLUMN_ICON_COLOR = "icon_color";
-        public final static String COLUMN_LABEL = "label";
-        public final static String COLUMN_SYSTEM_STATE = "system_state";
+    /**
+     * Cache class to store the actual entries on disk
+     */
+    public static final class IconDB extends SQLiteCacheHelper {
+        private static final int RELEASE_VERSION = 27;
 
-        public final static String[] COLUMNS_HIGH_RES = new String[] {
+        public static final String TABLE_NAME = "icons";
+        public static final String COLUMN_ROWID = "rowid";
+        public static final String COLUMN_COMPONENT = "componentName";
+        public static final String COLUMN_USER = "profileId";
+        public static final String COLUMN_LAST_UPDATED = "lastUpdated";
+        public static final String COLUMN_VERSION = "version";
+        public static final String COLUMN_ICON = "icon";
+        public static final String COLUMN_ICON_COLOR = "icon_color";
+        public static final String COLUMN_LABEL = "label";
+        public static final String COLUMN_SYSTEM_STATE = "system_state";
+        public static final String COLUMN_KEYWORDS = "keywords";
+
+        public static final String[] COLUMNS_HIGH_RES = new String[] {
                 IconDB.COLUMN_ICON_COLOR, IconDB.COLUMN_LABEL, IconDB.COLUMN_ICON };
-        public final static String[] COLUMNS_LOW_RES = new String[] {
+        public static final String[] COLUMNS_LOW_RES = new String[] {
                 IconDB.COLUMN_ICON_COLOR, IconDB.COLUMN_LABEL };
 
         public IconDB(Context context, String dbFileName, int iconPixelSize) {
@@ -529,21 +544,23 @@ public abstract class BaseIconCache {
 
         @Override
         protected void onCreateTable(SQLiteDatabase db) {
-            db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
-                    COLUMN_COMPONENT + " TEXT NOT NULL, " +
-                    COLUMN_USER + " INTEGER NOT NULL, " +
-                    COLUMN_LAST_UPDATED + " INTEGER NOT NULL DEFAULT 0, " +
-                    COLUMN_VERSION + " INTEGER NOT NULL DEFAULT 0, " +
-                    COLUMN_ICON + " BLOB, " +
-                    COLUMN_ICON_COLOR + " INTEGER NOT NULL DEFAULT 0, " +
-                    COLUMN_LABEL + " TEXT, " +
-                    COLUMN_SYSTEM_STATE + " TEXT, " +
-                    "PRIMARY KEY (" + COLUMN_COMPONENT + ", " + COLUMN_USER + ") " +
-                    ");");
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " ("
+                    + COLUMN_COMPONENT + " TEXT NOT NULL, "
+                    + COLUMN_USER + " INTEGER NOT NULL, "
+                    + COLUMN_LAST_UPDATED + " INTEGER NOT NULL DEFAULT 0, "
+                    + COLUMN_VERSION + " INTEGER NOT NULL DEFAULT 0, "
+                    + COLUMN_ICON + " BLOB, "
+                    + COLUMN_ICON_COLOR + " INTEGER NOT NULL DEFAULT 0, "
+                    + COLUMN_LABEL + " TEXT, "
+                    + COLUMN_SYSTEM_STATE + " TEXT, "
+                    + COLUMN_KEYWORDS + " TEXT, "
+                    + "PRIMARY KEY (" + COLUMN_COMPONENT + ", " + COLUMN_USER + ") "
+                    + ");");
         }
     }
 
-    private ContentValues newContentValues(BitmapInfo bitmapInfo, String label, String packageName) {
+    private ContentValues newContentValues(BitmapInfo bitmapInfo, String label,
+            String packageName, @Nullable String keywords) {
         ContentValues values = new ContentValues();
         values.put(IconDB.COLUMN_ICON,
                 bitmapInfo.isLowRes() ? null : GraphicsUtils.flattenBitmap(bitmapInfo.icon));
@@ -551,7 +568,7 @@ public abstract class BaseIconCache {
 
         values.put(IconDB.COLUMN_LABEL, label);
         values.put(IconDB.COLUMN_SYSTEM_STATE, getIconSystemState(packageName));
-
+        values.put(IconDB.COLUMN_KEYWORDS, keywords);
         return values;
     }
 

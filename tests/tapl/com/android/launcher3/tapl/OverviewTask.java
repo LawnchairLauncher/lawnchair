@@ -16,18 +16,16 @@
 
 package com.android.launcher3.tapl;
 
+import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
+
 import android.graphics.Rect;
 
 import androidx.test.uiautomator.UiObject2;
-import androidx.test.uiautomator.Until;
-
-import com.android.launcher3.testing.TestProtocol;
 
 /**
  * A recent task in the overview panel carousel.
  */
 public final class OverviewTask {
-    private static final long WAIT_TIME_MS = 60000;
     private final LauncherInstrumentation mLauncher;
     private final UiObject2 mTask;
     private final BaseOverview mOverview;
@@ -66,9 +64,11 @@ public final class OverviewTask {
         verifyActiveContainer();
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "clicking an overview task")) {
-            mLauncher.assertTrue("Launching task didn't open a new window: " +
-                            mTask.getParent().getContentDescription(),
-                    mTask.clickAndWait(Until.newWindow(), WAIT_TIME_MS));
+            mLauncher.executeAndWaitForEvent(
+                    () -> mTask.click(),
+                    event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
+                    "Launching task didn't open a new window: " +
+                            mTask.getParent().getContentDescription());
         }
         return new Background(mLauncher);
     }

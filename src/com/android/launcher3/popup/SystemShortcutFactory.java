@@ -15,6 +15,10 @@
  */
 package com.android.launcher3.popup;
 
+import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
+
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -24,13 +28,10 @@ import com.android.launcher3.util.ResourceBasedOverride;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-
 public class SystemShortcutFactory implements ResourceBasedOverride {
 
     public static final MainThreadInitializedObject<SystemShortcutFactory> INSTANCE =
-            new MainThreadInitializedObject<>(c -> Overrides.getObject(
-                    SystemShortcutFactory.class, c, R.string.system_shortcut_factory_class));
+            forOverride(SystemShortcutFactory.class, R.string.system_shortcut_factory_class);
 
     /** Note that these are in order of priority. */
     private final SystemShortcut[] mAllShortcuts;

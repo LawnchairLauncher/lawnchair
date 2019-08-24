@@ -49,8 +49,8 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
@@ -61,7 +61,7 @@ import com.android.launcher3.folder.FolderIconPreviewVerifier;
 import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.icons.LauncherActivtiyCachingLogic;
+import com.android.launcher3.icons.LauncherActivityCachingLogic;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.cache.IconCacheUpdateHandler;
 import com.android.launcher3.logging.FileLog;
@@ -196,7 +196,7 @@ public class LoaderTask implements Runnable {
             IconCacheUpdateHandler updateHandler = mIconCache.getUpdateHandler();
             setIgnorePackages(updateHandler);
             updateHandler.updateIcons(allActivityList,
-                    new LauncherActivtiyCachingLogic(mApp.getIconCache()),
+                    LauncherActivityCachingLogic.newInstance(mApp.getContext()),
                     mApp.getModel()::onPackageIconsUpdated);
 
             // Take a break

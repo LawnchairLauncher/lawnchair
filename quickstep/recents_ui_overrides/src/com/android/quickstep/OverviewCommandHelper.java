@@ -99,6 +99,7 @@ public class OverviewCommandHelper {
 
         @Override
         protected void onTransitionComplete() {
+            // TODO(b/138729100) This doesn't execute first time launcher is run
             if (mTriggeredFromAltTab) {
                 RecentsView rv = (RecentsView) mHelper.getVisibleRecentsView();
                 if (rv == null) {

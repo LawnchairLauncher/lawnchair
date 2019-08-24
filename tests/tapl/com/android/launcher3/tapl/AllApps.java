@@ -120,7 +120,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
             mLauncher.assertTrue("Unable to scroll to a clickable icon: " + appName,
                     hasClickableIcon(allAppsContainer, appListRecycler, appIconSelector));
 
-            final UiObject2 appIcon = mLauncher.getObjectInContainer(appListRecycler,
+            final UiObject2 appIcon = mLauncher.waitForObjectInContainer(appListRecycler,
                     appIconSelector);
             return new AppIcon(mLauncher, appIcon);
         }

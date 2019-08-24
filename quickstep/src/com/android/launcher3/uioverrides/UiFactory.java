@@ -32,9 +32,11 @@ import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_SEEN;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.app.Person;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.ShortcutInfo;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.util.Base64;
@@ -243,5 +245,10 @@ public class UiFactory extends RecentsUiFactory {
             return new ScaleAndTranslation(1f, offscreenTranslationX, 0f);
         }
         return new ScaleAndTranslation(1.1f, 0f, 0f);
+    }
+
+    public static Person[] getPersons(ShortcutInfo si) {
+        Person[] persons = si.getPersons();
+        return persons == null ? Utilities.EMPTY_PERSON_ARRAY : persons;
     }
 }

@@ -109,7 +109,7 @@ public class TestHelpers {
         DropBoxManager.Entry entry;
         StringBuilder errorDetails = new StringBuilder();
         while (null != (entry = dropbox.getNextEntry(label, timestamp))) {
-            if (errorDetails.length() != 0) errorDetails.append("------------------------------");
+            errorDetails.append("------------------------------\n");
             timestamp = entry.getTimeMillis();
             errorDetails.append(new Date(timestamp));
             errorDetails.append(": ");
