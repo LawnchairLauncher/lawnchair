@@ -50,7 +50,6 @@ import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.util.ObjectWrapper;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
-import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;

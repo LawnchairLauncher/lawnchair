@@ -45,6 +45,7 @@ public class SwipeSharedState implements SwipeAnimationListener {
     public boolean goingToLauncher;
     public boolean recentsAnimationFinishInterrupted;
     public int nextRunningTaskId = -1;
+    private int mLogId;
 
     public void setOverviewComponentObserver(OverviewComponentObserver observer) {
         mOverviewComponentObserver = observer;
@@ -156,5 +157,10 @@ public class SwipeSharedState implements SwipeAnimationListener {
         pw.println(prefix + "nextRunningTaskId=" + nextRunningTaskId);
         pw.println(prefix + "lastAnimationCancelled=" + mLastAnimationCancelled);
         pw.println(prefix + "lastAnimationRunning=" + mLastAnimationRunning);
+        pw.println(prefix + "logTraceId=" + mLogId);
+    }
+
+    public void setLogTraceId(int logId) {
+        this.mLogId = logId;
     }
 }
