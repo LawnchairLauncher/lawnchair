@@ -157,7 +157,7 @@ public class ClipAnimationHelper {
 
         synchronized (mTargetOffset) {
             // Stay lined up with the center of the target, since it moves for quick scrub.
-            currentRect.offset(mTargetOffset.x * mOffsetScale * progress,
+            currentRect.offset(mTargetOffset.x + 50 * mOffsetScale * progress,
                     mTargetOffset.y  * offsetYProgress);
         }
 
