@@ -16,7 +16,6 @@
 package com.android.quickstep;
 
 import static android.view.MotionEvent.ACTION_DOWN;
-
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
 import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_HINTS_IN_OVERVIEW;
@@ -68,11 +67,9 @@ import android.view.InputEvent;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.WindowManager;
-
 import androidx.annotation.BinderThread;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
-
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
@@ -136,6 +133,13 @@ class ArgList extends LinkedList<String> {
 @TargetApi(Build.VERSION_CODES.Q)
 public class TouchInteractionService extends Service implements
         NavigationModeChangeListener, DisplayListener {
+
+    /**
+     * NOTE: This value should be kept same as
+     * ActivityTaskManagerService#INTENT_EXTRA_LOG_TRACE_ID in platform
+     */
+    public static final String INTENT_EXTRA_LOG_TRACE_ID = "INTENT_EXTRA_LOG_TRACE_ID";
+
 
     public static final EventLogArray TOUCH_INTERACTION_LOG =
             new EventLogArray("touch_interaction_log", 40);
@@ -239,6 +243,7 @@ public class TouchInteractionService extends Service implements
     private static boolean sConnected = false;
     private static boolean sIsInitialized = false;
     private static final SwipeSharedState sSwipeSharedState = new SwipeSharedState();
+    private int mLogId;
 
     public static boolean isConnected() {
         return sConnected;
@@ -549,9 +554,12 @@ public class TouchInteractionService extends Service implements
             Log.e(TAG, "Unknown event " + ev);
             return;
         }
+
         MotionEvent event = (MotionEvent) ev;
-        TOUCH_INTERACTION_LOG.addLog("onMotionEvent", event.getActionMasked());
         if (event.getAction() == ACTION_DOWN) {
+            mLogId = TOUCH_INTERACTION_LOG.generateAndSetLogId();
+            sSwipeSharedState.setLogTraceId(mLogId);
+
             if (mSwipeTouchRegion.contains(event.getX(), event.getY())) {
                 boolean useSharedState = mConsumer.useSharedSwipeState();
                 mConsumer.onConsumerAboutToBeSwitched();
@@ -571,6 +579,8 @@ public class TouchInteractionService extends Service implements
                 mUncheckedConsumer = InputConsumer.NO_OP;
             }
         }
+
+        TOUCH_INTERACTION_LOG.addLog("onMotionEvent", event.getActionMasked());
         mUncheckedConsumer.onMotionEvent(event);
     }
 
@@ -656,7 +666,7 @@ public class TouchInteractionService extends Service implements
                 final ComponentName homeComponent =
                     mOverviewComponentObserver.getHomeIntent().getComponent();
                 forceOverviewInputConsumer =
-                    runningTaskInfo.baseIntent.getComponent().equals(homeComponent);
+                    runningTaskInfo.baseIntent.getComponent(). equals(homeComponent);
             }
         }
 
@@ -713,13 +723,13 @@ public class TouchInteractionService extends Service implements
         return new OtherActivityInputConsumer(this, runningTaskInfo,
                 shouldDefer, mOverviewCallbacks, this::onConsumerInactive,
                 sSwipeSharedState, mInputMonitorCompat, mSwipeTouchRegion,
-                disableHorizontalSwipe(event), factory);
+                disableHorizontalSwipe(event), factory, mLogId);
     }
 
     private InputConsumer createDeviceLockedInputConsumer(RunningTaskInfo taskInfo) {
         if (mMode == Mode.NO_BUTTON && taskInfo != null) {
             return new DeviceLockedInputConsumer(this, sSwipeSharedState, mInputMonitorCompat,
-                    mSwipeTouchRegion, taskInfo.taskId);
+                    mSwipeTouchRegion, taskInfo.taskId, mLogId);
         } else {
             return mResetGestureInputConsumer;
         }
@@ -783,7 +793,8 @@ public class TouchInteractionService extends Service implements
         }
 
         // Pass null animation handler to indicate this start is preload.
-        startRecentsActivityAsync(mOverviewComponentObserver.getOverviewIntentIgnoreSysUiState(), null);
+        startRecentsActivityAsync(mOverviewComponentObserver.getOverviewIntentIgnoreSysUiState(),
+                null);
     }
 
     @Override
