@@ -55,9 +55,11 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
 
     init {
         if (!Utilities.ATLEAST_NOUGAT) throw IllegalStateException("only available on Nougat and above")
+
+        bindWidget { }
     }
 
-    private fun startBinding() {
+    private fun bindWidget(onSetupComplete: () -> Unit) {
         val widgetManager = AppWidgetManager.getInstance(context)
 
         var widgetId = widgetIdPref.get()
@@ -86,7 +88,7 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
                     .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, providerInfo.provider)
             BlankActivity.startActivityForResult(context, bindIntent, 1028, 0) { resultCode, _ ->
                 if (resultCode == Activity.RESULT_OK) {
-                    startBinding()
+                    bindWidget(onSetupComplete)
                 } else {
                     smartspaceWidgetHost.deleteAppWidgetId(widgetId)
                     widgetId = -1
@@ -101,23 +103,23 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
         }
     }
 
-    override fun performSetup() {
-        startBinding()
+    override fun requiresSetup(): Boolean {
+        return !isWidgetBound
     }
 
-    override fun waitForSetup() {
-        super.waitForSetup()
-
-        if (!isWidgetBound) throw IllegalStateException("widget must be bound")
+    override fun startSetup(onFinish: (Boolean) -> Unit) {
+        bindWidget {
+            onFinish(isWidgetBound)
+        }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun stopListening() {
+        super.stopListening()
 
         smartspaceWidgetHost.stopListening()
     }
 
-    fun updateData(weatherIcon: Bitmap?, temperature: TextView?, cardIcon: Bitmap?, title: TextView?, subtitle: TextView?, subtitle2: TextView?) {
+    private fun updateData(weatherIcon: Bitmap?, temperature: TextView?, cardIcon: Bitmap?, title: TextView?, subtitle: TextView?, subtitle2: TextView?) {
         val weather = parseWeatherData(weatherIcon, temperature)
         val card = if (cardIcon != null && title != null && subtitle != null) {
             val pendingIntent = getPendingIntent(title.parent.parent.parent as? View)

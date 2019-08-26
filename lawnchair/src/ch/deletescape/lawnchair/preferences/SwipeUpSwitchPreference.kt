@@ -13,14 +13,14 @@ import ch.deletescape.lawnchair.getColorEngineAccent
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.search.SearchIndex
 import ch.deletescape.lawnchair.util.extensions.d
+import com.android.launcher3.Utilities
 import com.android.quickstep.OverviewInteractionState
 import com.android.systemui.shared.system.SettingsCompat
 
 class SwipeUpSwitchPreference(context: Context, attrs: AttributeSet? = null) : StyledSwitchPreferenceCompat(context, attrs) {
 
     private val secureOverrideMode = OverviewInteractionState.isSwipeUpSettingsAvailable()
-    private val hasWriteSecurePermission = ContextCompat.checkSelfPermission(context,
-            android.Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED
+    private val hasWriteSecurePermission = Utilities.hasWriteSecureSettingsPermission(context)
 
     init {
         if (secureOverrideMode && !hasWriteSecurePermission) {
@@ -50,8 +50,7 @@ class SwipeUpSwitchPreference(context: Context, attrs: AttributeSet? = null) : S
     class SwipeUpSwitchSlice(context: Context, attrs: AttributeSet) : SwitchSlice(context, attrs) {
 
         private val secureOverrideMode = OverviewInteractionState.isSwipeUpSettingsAvailable()
-        private val hasWriteSecurePermission = ContextCompat.checkSelfPermission(context,
-                android.Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED
+        private val hasWriteSecurePermission = Utilities.hasWriteSecureSettingsPermission(context)
 
         override fun createSliceView(): View {
             return Switch(context).apply {

@@ -39,6 +39,14 @@
             android:dependency="pref_smartspace_time"
             />
 
+        <ch.deletescape.lawnchair.preferences.SmartspaceHideClockPreference
+            android:key="pref_hide_statusbar_clock"
+            android:title="@string/pref_hide_statusbar_clock"
+            android:summary="@string/root_access_required"
+            android:defaultValue="false"
+            android:dependency="pref_smartspace_time"
+            />
+
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_smartspace_time_24_h"
             android:title="@string/smartspace_time_24_h"

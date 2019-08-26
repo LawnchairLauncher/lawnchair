@@ -444,7 +444,9 @@
     <string name="app_actions_pref_title">Actions</string>
     <string name="app_actions_pref_title_in_search">Action suggestions</string>
     <string name="app_actions_pref_desc">Shortcuts to frequently opened screens</string>
-    
+    <string name="app_actions_reset_pref_title">Reset hidden actions</string>
+    <string name="app_actions_reset_pref_summary">Resets actions which were previously hidden by dragging them to the \"don\’t show\" button</string>
+
     <string name="change_default_home">Set as home screen</string>
     <string name="recent_task_option_popup_window">Dialog window</string>
     <string name="feed_theme_pref_title">Background color</string>
@@ -729,4 +731,7 @@
     <string name="icon_shape_corner_cut">Cut</string>
 
     <string name="smartspace_add_to_home">Add to homescreen</string>
+    <string name="pref_hide_statusbar_clock">Hide statusbar clock</string>
+    <string name="root_access_required">Root access required</string>
+    <string name="smartspace_setup_text">Tap to set-up</string>
 </resources>

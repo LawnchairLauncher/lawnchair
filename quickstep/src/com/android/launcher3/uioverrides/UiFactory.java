@@ -36,6 +36,8 @@ import android.os.CancellationSignal;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 
+import ch.deletescape.lawnchair.ClockVisibilityManager;
+import ch.deletescape.lawnchair.ClockVisibilityManager.ClockStateHandler;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.gestures.VerticalSwipeGestureController;
 import ch.deletescape.lawnchair.touch.PinchStateChangeTouchController;
@@ -98,7 +100,8 @@ public class UiFactory {
 
     public static StateHandler[] getStateHandler(Launcher launcher) {
         return new StateHandler[] {launcher.getAllAppsController(), launcher.getWorkspace(),
-                new RecentsViewStateController(launcher), new BackButtonAlphaHandler(launcher)};
+                new RecentsViewStateController(launcher), new BackButtonAlphaHandler(launcher),
+                new ClockStateHandler(launcher)};
     }
 
     /**
@@ -107,15 +110,20 @@ public class UiFactory {
     public static void onLauncherStateOrFocusChanged(Launcher launcher) {
         boolean shouldBackButtonBeHidden = launcher != null
                 && launcher.getStateManager().getState().hideBackButton
-                && launcher.hasWindowFocus()
-                && !hasBackGesture(launcher);
-        if (shouldBackButtonBeHidden) {
+                && launcher.hasWindowFocus();
+        boolean shouldClockBeHidden = launcher != null
+                && launcher.hasWindowFocus();
+        if (shouldBackButtonBeHidden || shouldClockBeHidden) {
             // Show the back button if there is a floating view visible.
-            shouldBackButtonBeHidden = AbstractFloatingView.getTopOpenViewWithType(launcher,
+            boolean noFloatingView = AbstractFloatingView.getTopOpenViewWithType(launcher,
                     TYPE_ALL & ~TYPE_HIDE_BACK_BUTTON) == null;
+            shouldBackButtonBeHidden &= noFloatingView;
+            shouldClockBeHidden &= noFloatingView;
         }
         OverviewInteractionState.getInstance(launcher)
-                .setBackButtonAlpha(shouldBackButtonBeHidden ? 0 : 1, true /* animate */);
+                .setBackButtonAlpha(shouldBackButtonBeHidden && !hasBackGesture(launcher) ? 0 : 1, true /* animate */);
+
+        ClockVisibilityManager.Companion.getInstance(launcher).setLauncherIsFocused(shouldClockBeHidden);
     }
 
     public static boolean hasBackGesture(Launcher launcher) {

@@ -94,7 +94,7 @@
             android:key="pref_allappsQsbColorResolver"
             android:title="@string/pref_qsb_color"
             android:dependency="pref_allAppsSearch"
-            app:colorMode="RGB"
+            app:colorMode="ARGB"
             app:resolvers="@array/resolvers_allapps_qsb"/>
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 </android.support.v7.preference.PreferenceScreen>

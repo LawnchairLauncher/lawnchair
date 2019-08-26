@@ -28,7 +28,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.SearchUiManager;
-import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm;
 import com.google.android.apps.nexuslauncher.search.SearchThread;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,6 +47,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     private LawnchairPreferences prefs;
     private int mForegroundColor;
 
+    private final boolean mLowPerformanceMode;
+
     public AllAppsQsbLayout(Context context) {
         this(context, null);
     }
@@ -65,6 +66,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         this.Dy = getResources().getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset);
         setClipToPadding(false);
         prefs = LawnchairPreferences.Companion.getInstanceNoCreate();
+
+        mLowPerformanceMode = prefs.getLowPerformanceMode();
     }
 
     protected void onFinishInflate() {
@@ -176,7 +179,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
                 setShadowAlpha(((BaseRecyclerView) recyclerView).getCurrentScrollY());
             }
         });
-        mAppsView.setRecyclerViewVerticalFadingEdgeEnabled(true);
+        mAppsView.setRecyclerViewVerticalFadingEdgeEnabled(!mLowPerformanceMode);
     }
 
     public final void dM() {
@@ -308,7 +311,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
                 this.Dv = c(
                         getResources().getDimension(R.dimen.hotseat_qsb_scroll_shadow_blur_radius),
                         getResources().getDimension(R.dimen.hotseat_qsb_scroll_key_shadow_offset),
-                        0);
+                        0, true);
             }
             this.mShadowHelper.paint.setAlpha(this.mShadowAlpha);
             a(this.Dv, canvas);
@@ -355,5 +358,19 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     @Override
     protected String getClipboardText() {
         return shouldUseFallbackSearch() ? super.getClipboardText() : null;
+    }
+
+    @Override
+    protected void clearMainPillBg(Canvas canvas) {
+        if (!mLowPerformanceMode && mClearBitmap != null) {
+            drawPill(mClearShadowHelper, mClearBitmap, canvas);
+        }
+    }
+
+    @Override
+    protected void clearPillBg(Canvas canvas, int left, int top, int right) {
+        if (!mLowPerformanceMode && mClearBitmap != null) {
+            mClearShadowHelper.draw(mClearBitmap, canvas, left, top, right);
+        }
     }
 }

@@ -38,7 +38,6 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import kotlin.collections.EmptyList;
 
 /**
  * The default search implementation.

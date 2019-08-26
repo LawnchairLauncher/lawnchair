@@ -50,8 +50,8 @@ class NotificationUnreadProvider(controller: LawnchairSmartspaceController) :
         zenModeEnabled = it
     }
 
-    override fun waitForSetup() {
-        super.waitForSetup()
+    override fun startListening() {
+        super.startListening()
 
         manager.addListener(this)
         zenModeListener.startListening()
@@ -64,7 +64,9 @@ class NotificationUnreadProvider(controller: LawnchairSmartspaceController) :
     }
 
     override fun onNotificationsChanged() {
-        updateData(null, getEventCard())
+        runOnMainThread {
+            updateData(null, getEventCard())
+        }
     }
 
     private fun isCommunicationApp(sbn: StatusBarNotification): Boolean {
@@ -122,8 +124,8 @@ class NotificationUnreadProvider(controller: LawnchairSmartspaceController) :
         return arrayOf(title)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun stopListening() {
+        super.stopListening()
         manager.removeListener(this)
         zenModeListener.stopListening()
     }

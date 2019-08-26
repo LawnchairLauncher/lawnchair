@@ -43,6 +43,7 @@ import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.util.Temperature
 import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.*
+import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm
 import com.android.launcher3.util.ComponentKey
 import com.android.quickstep.OverviewInteractionState
 import com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader
@@ -218,6 +219,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val showActions by BooleanPref("pref_show_suggested_actions", true, doNothing)
     val sortDrawerByColors by BooleanPref("pref_allAppsColorSorted", false, reloadAll)
     val drawerTextScale by FloatPref("pref_allAppsIconTextScale", 1f, recreate)
+    val searchHiddenApps by BooleanPref(DefaultAppSearchAlgorithm.SEARCH_HIDDEN_APPS, false)
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_showDevOptions", false, doNothing)
@@ -230,7 +232,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val showDebugInfo by BooleanPref("pref_showDebugInfo", false, doNothing)
     val alwaysClearIconCache by BooleanPref("pref_alwaysClearIconCache", false, restart)
     val debugLegacyTreatment by BooleanPref("pref_debugLegacyTreatment", false, restart)
-    val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, doNothing)
+    val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, recreate)
     val enablePhysics get() = !lowPerformanceMode
     val backupScreenshot by BooleanPref("pref_backupScreenshot", false, doNothing)
     var useScaleAnim by BooleanPref("pref_useScaleAnim", false, doNothing)
@@ -300,6 +302,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     var hiddenPredictionAppSet by StringSetPref("pref_hidden_prediction_set", Collections.emptySet(), doNothing)
+    var hiddenPredictActionSet by StringSetPref(SettingsActivity.HIDDEN_ACTIONS_PREF, Collections.emptySet(), doNothing)
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadAll) {
         override fun flattenKey(key: ComponentKey) = key.toString()
         override fun unflattenKey(key: String) = ComponentKey(context, key)

@@ -75,10 +75,13 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
     override fun getEntryForComponent(key: ComponentKey) = appMap[key]
 
-    override fun getIcon(name: String, iconDpi: Int): Drawable? {
+    override fun getIcon(entry: IconPackManager.CustomIconEntry, iconDpi: Int): Drawable? {
+        return getIcon(ComponentKey(context, entry.icon), iconDpi)
+    }
+
+    fun getIcon(key: ComponentKey, iconDpi: Int): Drawable? {
         ensureInitialLoadComplete()
 
-        val key = ComponentKey(context, name)
         val info = key.getLauncherActivityInfo(context) ?: return null
         val component = key.componentName
         val originalIcon = info.getIcon(iconDpi).apply { mutate() }
