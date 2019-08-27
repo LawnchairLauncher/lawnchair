@@ -57,7 +57,7 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
     }
 
     @Override
-    protected int getLogContainerTypeForNormalState() {
+    protected int getLogContainerTypeForNormalState(MotionEvent ev) {
         return mLauncher.getDragLayer().isEventOverView(mLauncher.getHotseat(), mTouchDownEvent) ?
                 ContainerType.HOTSEAT : ContainerType.WORKSPACE;
     }

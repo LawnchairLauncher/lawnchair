@@ -29,6 +29,8 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconProvider;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -36,8 +38,8 @@ import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.MainThreadExecutor;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
@@ -49,8 +51,6 @@ import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.Preconditions;
 
 import java.util.function.Supplier;
-
-import androidx.annotation.NonNull;
 
 /**
  * Cache of application icons.  Icons can be made from any thread.
@@ -75,11 +75,11 @@ public class IconCache extends BaseIconCache {
         super(context, LauncherFiles.APP_ICONS_DB, LauncherModel.getWorkerLooper(),
                 inv.fillResIconDpi, inv.iconBitmapSize, true /* inMemoryCache */);
         mComponentWithLabelCachingLogic = new ComponentCachingLogic(context);
-        mLauncherActivityInfoCachingLogic = new LauncherActivtiyCachingLogic(this);
+        mLauncherActivityInfoCachingLogic = LauncherActivityCachingLogic.newInstance(context);
         mLauncherApps = LauncherAppsCompat.getInstance(mContext);
         mUserManager = UserManagerCompat.getInstance(mContext);
         mInstantAppResolver = InstantAppResolver.newInstance(mContext);
-        mIconProvider = IconProvider.newInstance(context);
+        mIconProvider = IconProvider.INSTANCE.get(context);
     }
 
     @Override

@@ -124,7 +124,7 @@ public final class LauncherInstrumentation {
     private static final String APPS_RES_ID = "apps_view";
     private static final String OVERVIEW_RES_ID = "overview_panel";
     private static final String WIDGETS_RES_ID = "widgets_list_view";
-    public static final int WAIT_TIME_MS = 60000;
+    public static final int WAIT_TIME_MS = 10000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
     private static WeakReference<VisibleContainer> sActiveContainer = new WeakReference<>(null);
@@ -178,6 +178,7 @@ public final class LauncherInstrumentation {
         PackageManager pm = getContext().getPackageManager();
         ProviderInfo pi = pm.resolveContentProvider(
                 testProviderAuthority, MATCH_ALL | MATCH_DISABLED_COMPONENTS);
+        assertNotNull("Cannot find content provider for " + testProviderAuthority, pi);
         ComponentName cn = new ComponentName(pi.packageName, pi.name);
 
         if (pm.getComponentEnabledSetting(cn) != COMPONENT_ENABLED_STATE_ENABLED) {
@@ -678,13 +679,6 @@ public final class LauncherInstrumentation {
     }
 
     @NonNull
-    UiObject2 getObjectInContainer(UiObject2 container, BySelector selector) {
-        final UiObject2 object = container.findObject(selector);
-        assertNotNull("Can't find an object with selector: " + selector, object);
-        return object;
-    }
-
-    @NonNull
     List<UiObject2> getObjectsInContainer(UiObject2 container, String resName) {
         return container.findObjects(getLauncherObjectSelector(resName));
     }
@@ -888,6 +882,7 @@ public final class LauncherInstrumentation {
     }
 
     long movePointer(long downTime, long startTime, long duration, Point from, Point to) {
+        log("movePointer: " + from + " to " + to);
         final Point point = new Point();
         long steps = duration / GESTURE_STEP_MS;
         long currentTime = startTime;
@@ -961,5 +956,10 @@ public final class LauncherInstrumentation {
 
     public void disableDebugTracing() {
         getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
+    }
+
+    public long getAllocatedMemory() {
+        return getTestInfo(TestProtocol.REQUEST_ALLOCATED_MEMORY).
+                getLong(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 }

@@ -25,6 +25,7 @@ import static android.stats.launcher.nano.Launcher.ALLAPPS;
 import static android.stats.launcher.nano.Launcher.HOME;
 import static android.stats.launcher.nano.Launcher.LAUNCH_APP;
 import static android.stats.launcher.nano.Launcher.LAUNCH_TASK;
+import static android.stats.launcher.nano.Launcher.DISMISS_TASK;
 import static android.stats.launcher.nano.Launcher.BACKGROUND;
 import static android.stats.launcher.nano.Launcher.OVERVIEW;
 
@@ -71,6 +72,16 @@ public class StatsLogCompatManager extends StatsLogManager {
         int srcState = OVERVIEW;
         fillInLauncherExtension(v, ext);
         StatsLogCompat.write(LAUNCH_TASK, srcState, BACKGROUND /* dstState */,
+                MessageNano.toByteArray(ext), true);
+    }
+
+    @Override
+    public void logTaskDismiss(View v, ComponentKey componentKey) {
+        LauncherExtension ext = new LauncherExtension();
+        ext.srcTarget = new LauncherTarget[SUPPORTED_TARGET_DEPTH];
+        int srcState = OVERVIEW;
+        fillInLauncherExtension(v, ext);
+        StatsLogCompat.write(DISMISS_TASK, srcState, BACKGROUND /* dstState */,
                 MessageNano.toByteArray(ext), true);
     }
 

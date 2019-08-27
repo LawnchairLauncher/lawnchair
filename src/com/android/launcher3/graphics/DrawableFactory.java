@@ -17,6 +17,7 @@
 package com.android.launcher3.graphics;
 
 import static com.android.launcher3.graphics.IconShape.getShapePath;
+import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -31,6 +32,8 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.util.ArrayMap;
 
+import androidx.annotation.UiThread;
+
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.R;
@@ -38,16 +41,13 @@ import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.ResourceBasedOverride;
 
-import androidx.annotation.UiThread;
-
 /**
  * Factory for creating new drawables.
  */
 public class DrawableFactory implements ResourceBasedOverride {
 
     public static final MainThreadInitializedObject<DrawableFactory> INSTANCE =
-            new MainThreadInitializedObject<>(c -> Overrides.getObject(DrawableFactory.class,
-                        c.getApplicationContext(), R.string.drawable_factory_class));
+            forOverride(DrawableFactory.class, R.string.drawable_factory_class);
 
     protected final UserHandle mMyUser = Process.myUserHandle();
     protected final ArrayMap<UserHandle, Bitmap> mUserBadges = new ArrayMap<>();

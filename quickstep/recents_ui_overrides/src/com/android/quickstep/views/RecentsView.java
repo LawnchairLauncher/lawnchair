@@ -97,6 +97,7 @@ import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.OverScroller;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.Themes;
@@ -1051,9 +1052,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (task != null) {
             ActivityManagerWrapper.getInstance().removeTask(task.key.id);
             if (shouldLog) {
+                ComponentKey componentKey = TaskUtils.getLaunchComponentKeyForTask(task.key);
                 mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
-                        onEndListener.logAction, Direction.UP, index,
-                        TaskUtils.getLaunchComponentKeyForTask(task.key));
+                        onEndListener.logAction, Direction.UP, index, componentKey);
+                mActivity.getStatsLogManager().logTaskDismiss(this, componentKey);
             }
         }
     }
