@@ -32,6 +32,7 @@ import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
 import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 
+import android.content.Context;
 import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
@@ -115,10 +116,10 @@ public class OverviewState extends LauncherState {
     }
 
     public static float getDefaultSwipeHeight(Launcher launcher) {
-        return getDefaultSwipeHeight(launcher.getDeviceProfile());
+        return getDefaultSwipeHeight(launcher, launcher.getDeviceProfile());
     }
 
-    public static float getDefaultSwipeHeight(DeviceProfile dp) {
+    public static float getDefaultSwipeHeight(Context context, DeviceProfile dp) {
         return dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx;
     }
 
