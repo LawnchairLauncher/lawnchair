@@ -1289,6 +1289,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if ((event.getSource() & InputDevice.SOURCE_CLASS_POINTER) != 0) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_SCROLL: {
+                    Launcher launcher = Launcher.getLauncher(getContext());
+                    if (launcher != null) {
+                        AbstractFloatingView.closeAllOpenViews(launcher);
+                    }
                     // Handle mouse (or ext. device) by shifting the page depending on the scroll
                     final float vscroll;
                     final float hscroll;
