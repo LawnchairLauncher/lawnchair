@@ -30,6 +30,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Process;
@@ -356,11 +357,16 @@ public abstract class AbstractLauncherUiTest {
                 mDevice.wait(Until.hasObject(selector), DEFAULT_UI_TIMEOUT));
     }
 
-    public static String resolveSystemApp(String category) {
+    public static ActivityInfo resolveSystemAppInfo(String category) {
         return getInstrumentation().getContext().getPackageManager().resolveActivity(
                 new Intent(Intent.ACTION_MAIN).addCategory(category),
                 PackageManager.MATCH_SYSTEM_ONLY).
-                activityInfo.packageName;
+                activityInfo;
+    }
+
+
+    public static String resolveSystemApp(String category) {
+        return resolveSystemAppInfo(category).packageName;
     }
 
     protected void closeLauncherActivity() {
