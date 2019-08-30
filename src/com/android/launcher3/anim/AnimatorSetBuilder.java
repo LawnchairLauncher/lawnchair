@@ -43,6 +43,7 @@ public class AnimatorSetBuilder {
     public static final int ANIM_ALL_APPS_HEADER_FADE = 12; // e.g. predictions
 
     public static final int FLAG_DONT_ANIMATE_OVERVIEW = 1 << 0;
+    public static final int FLAG_DONT_UPDATE_ALL_APPS_VISIBILITY = 1 << 1;
 
     protected final ArrayList<Animator> mAnims = new ArrayList<>();
 

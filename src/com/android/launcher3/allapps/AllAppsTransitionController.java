@@ -1,5 +1,7 @@
 package com.android.launcher3.allapps;
 
+import static android.view.View.ALPHA;
+
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
@@ -10,6 +12,7 @@ import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_HEADER_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS;
+import static com.android.launcher3.anim.AnimatorSetBuilder.FLAG_DONT_UPDATE_ALL_APPS_VISIBILITY;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
@@ -18,7 +21,7 @@ import static com.android.launcher3.util.SystemUiController.UI_STATE_ALL_APPS;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.util.FloatProperty;
-import android.util.Log;
+import android.view.View;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
@@ -32,7 +35,6 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.SpringObjectAnimator;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
 
@@ -213,7 +215,12 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
 
         Interpolator allAppsFade = builder.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
         Interpolator headerFade = builder.getInterpolator(ANIM_ALL_APPS_HEADER_FADE, allAppsFade);
-        setter.setViewAlpha(mAppsView.getContentView(), hasAllAppsContent ? 1 : 0, allAppsFade);
+        View allAppsContent = mAppsView.getContentView();
+        if (!hasAllAppsContent && builder.hasFlag(FLAG_DONT_UPDATE_ALL_APPS_VISIBILITY)) {
+            setter.setFloat(allAppsContent, ALPHA, 0, allAppsFade);
+        } else {
+            setter.setViewAlpha(allAppsContent, hasAllAppsContent ? 1 : 0, allAppsFade);
+        }
         setter.setViewAlpha(mAppsView.getScrollBar(), hasAllAppsContent ? 1 : 0, allAppsFade);
         mAppsView.getFloatingHeaderView().setContentVisibility(hasHeaderExtra, hasAllAppsContent,
                 setter, headerFade, allAppsFade);

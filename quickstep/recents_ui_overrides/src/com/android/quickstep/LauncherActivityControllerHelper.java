@@ -40,7 +40,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.os.UserHandle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -58,7 +57,6 @@ import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
@@ -174,6 +172,8 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                 AnimatorSetBuilder builder = new AnimatorSetBuilder();
                 // setRecentsAttachedToAppWindow() will animate recents out.
                 builder.addFlag(AnimatorSetBuilder.FLAG_DONT_ANIMATE_OVERVIEW);
+                // We want to keep all apps content as GONE to avoid relayout during home animation.
+                builder.addFlag(AnimatorSetBuilder.FLAG_DONT_UPDATE_ALL_APPS_VISIBILITY);
                 stateManager.createAtomicAnimation(BACKGROUND_APP, NORMAL, builder, ANIM_ALL, 0);
                 builder.build().start();
 
