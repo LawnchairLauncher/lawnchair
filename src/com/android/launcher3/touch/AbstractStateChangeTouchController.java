@@ -281,7 +281,9 @@ public abstract class AbstractStateChangeTouchController
     }
 
     protected void updateProgress(float fraction) {
-        mCurrentAnimation.setPlayFraction(fraction);
+        if (mCurrentAnimation != null) {
+            mCurrentAnimation.setPlayFraction(fraction);
+        }
         if (mAtomicComponentsController != null) {
             // Make sure we don't divide by 0, and have at least a small runway.
             float start = Math.min(mAtomicComponentsStartProgress, 0.9f);
