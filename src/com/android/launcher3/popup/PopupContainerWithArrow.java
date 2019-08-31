@@ -300,7 +300,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         }
 
         mLauncher.getDragController().addDragListener(this);
-        mOriginalIcon.forceHideDot(true);
+        mOriginalIcon.setForceHideDot(true);
 
         // All views are added. Animate layout from now on.
         setLayoutTransition(new LayoutTransition());
@@ -562,13 +562,13 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     protected void onCreateCloseAnimation(AnimatorSet anim) {
         // Animate original icon's text back in.
         anim.play(mOriginalIcon.createTextAlphaAnimator(true /* fadeIn */));
-        mOriginalIcon.forceHideDot(false);
+        mOriginalIcon.setForceHideDot(false);
     }
 
     @Override
     protected void closeComplete() {
         mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());
-        mOriginalIcon.forceHideDot(false);
+        mOriginalIcon.setForceHideDot(false);
         super.closeComplete();
     }
 
