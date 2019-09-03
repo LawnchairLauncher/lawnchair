@@ -523,5 +523,4 @@ public class LauncherModel extends BroadcastReceiver
     public Callbacks getCallback() {
         return mCallbacks != null ? mCallbacks.get() : null;
     }
-
 }
