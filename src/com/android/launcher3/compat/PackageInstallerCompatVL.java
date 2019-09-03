@@ -135,6 +135,25 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         }
     }
 
+    /**
+     * Add a promise app icon to the workspace iff:
+     * - The settings for it are enabled
+     * - The user installed the app
+     * - There is a provided app icon (For apps with no launching activity, no icon is provided).
+     */
+    private void tryQueuePromiseAppIcon(SessionInfo sessionInfo) {
+        if (Utilities.ATLEAST_OREO && FeatureFlags.PROMISE_APPS_NEW_INSTALLS.get()
+                && SessionCommitReceiver.isEnabled(mAppContext)
+                && sessionInfo != null
+                && sessionInfo.getInstallReason() == PackageManager.INSTALL_REASON_USER
+                && sessionInfo.getAppIcon() != null
+                && !mPromiseIconIds.contains(sessionInfo.getSessionId())) {
+            SessionCommitReceiver.queuePromiseAppIconAddition(mAppContext, sessionInfo);
+            mPromiseIconIds.add(sessionInfo.getSessionId());
+            updatePromiseIconPrefs();
+        }
+    }
+
     private final SessionCallback mCallback = new SessionCallback() {
 
         @Override
@@ -148,16 +167,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
                 }
             }
 
-            if (Utilities.ATLEAST_OREO && FeatureFlags.PROMISE_APPS_NEW_INSTALLS.get()
-                    && SessionCommitReceiver.isEnabled(mAppContext)
-                    && sessionInfo != null
-                    && sessionInfo.getInstallReason() == PackageManager.INSTALL_REASON_USER) {
-                SessionCommitReceiver.queuePromiseAppIconAddition(mAppContext, sessionInfo);
-                if (!mPromiseIconIds.contains(sessionInfo.getSessionId())) {
-                    mPromiseIconIds.add(sessionInfo.getSessionId());
-                    updatePromiseIconPrefs();
-                }
-            }
+            tryQueuePromiseAppIcon(sessionInfo);
         }
 
         @Override
@@ -195,7 +205,10 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
         @Override
         public void onBadgingChanged(int sessionId) {
-            pushSessionDisplayToLauncher(sessionId);
+            SessionInfo sessionInfo = pushSessionDisplayToLauncher(sessionId);
+            if (sessionInfo != null) {
+                tryQueuePromiseAppIcon(sessionInfo);
+            }
         }
 
         private SessionInfo pushSessionDisplayToLauncher(int sessionId) {
