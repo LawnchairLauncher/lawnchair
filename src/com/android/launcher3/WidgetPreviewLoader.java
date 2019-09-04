@@ -30,6 +30,7 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 import android.util.LongSparseArray;
+import android.util.Pair;
 
 import androidx.annotation.Nullable;
 
@@ -289,14 +290,25 @@ public class WidgetPreviewLoader {
         return null;
     }
 
-    private Bitmap generatePreview(BaseActivity launcher, WidgetItem item, Bitmap recycle,
+    /**
+     * Returns generatedPreview for a widget and if the preview should be saved in persistent
+     * storage.
+     * @param launcher
+     * @param item
+     * @param recycle
+     * @param previewWidth
+     * @param previewHeight
+     * @return Pair<Bitmap, Boolean>
+     */
+    private Pair<Bitmap, Boolean> generatePreview(BaseActivity launcher, WidgetItem item,
+            Bitmap recycle,
             int previewWidth, int previewHeight) {
         if (item.widgetInfo != null) {
             return generateWidgetPreview(launcher, item.widgetInfo,
                     previewWidth, recycle, null);
         } else {
-            return generateShortcutPreview(launcher, item.activityInfo,
-                    previewWidth, previewHeight, recycle);
+            return new Pair<>(generateShortcutPreview(launcher, item.activityInfo,
+                    previewWidth, previewHeight, recycle), false);
         }
     }
 
@@ -309,9 +321,10 @@ public class WidgetPreviewLoader {
      * @param maxPreviewWidth             width of the preview on either workspace or tray
      * @param preview                     bitmap that can be recycled
      * @param preScaledWidthOut           return the width of the returned bitmap
-     * @return
+     * @return Pair<Bitmap (the preview) , Boolean (should be stored in db)>
      */
-    public Bitmap generateWidgetPreview(BaseActivity launcher, LauncherAppWidgetProviderInfo info,
+    public Pair<Bitmap, Boolean> generateWidgetPreview(BaseActivity launcher,
+            LauncherAppWidgetProviderInfo info,
             int maxPreviewWidth, Bitmap preview, int[] preScaledWidthOut) {
         // Load the preview image if possible
         if (maxPreviewWidth < 0) maxPreviewWidth = Integer.MAX_VALUE;
@@ -340,6 +353,8 @@ public class WidgetPreviewLoader {
 
         int previewWidth;
         int previewHeight;
+
+        boolean savePreviewImage = widgetPreviewExists || info.previewImage == 0;
 
         if (widgetPreviewExists && drawable.getIntrinsicWidth() > 0
                 && drawable.getIntrinsicHeight() > 0) {
@@ -427,10 +442,12 @@ public class WidgetPreviewLoader {
                     icon.setBounds(hoffset, yoffset, hoffset + iconSize, yoffset + iconSize);
                     icon.draw(c);
                 }
-            } catch (Resources.NotFoundException e) { }
+            } catch (Resources.NotFoundException e) {
+                savePreviewImage = false;
+            }
             c.setBitmap(null);
         }
-        return preview;
+        return new Pair<>(preview, savePreviewImage);
     }
 
     private RectF drawBoxWithShadow(Canvas c, int width, int height) {
@@ -533,6 +550,8 @@ public class WidgetPreviewLoader {
         @Thunk long[] mVersions;
         @Thunk Bitmap mBitmapToRecycle;
 
+        private boolean mSaveToDB = false;
+
         PreviewLoadTask(WidgetCacheKey key, WidgetItem info, int previewWidth,
                 int previewHeight, WidgetCell caller) {
             mKey = key;
@@ -588,7 +607,10 @@ public class WidgetPreviewLoader {
                         : null;
 
                 // it's not in the db... we need to generate it
-                preview = generatePreview(mActivity, mInfo, unusedBitmap, mPreviewWidth, mPreviewHeight);
+                Pair<Bitmap, Boolean> pair = generatePreview(mActivity, mInfo, unusedBitmap,
+                        mPreviewWidth, mPreviewHeight);
+                preview = pair.first;
+                this.mSaveToDB = pair.second;
             }
             return preview;
         }
@@ -602,7 +624,7 @@ public class WidgetPreviewLoader {
                 MODEL_EXECUTOR.post(new Runnable() {
                     @Override
                     public void run() {
-                        if (!isCancelled()) {
+                        if (!isCancelled() && mSaveToDB) {
                             // If we are still using this preview, then write it to the DB and then
                             // let the normal clear mechanism recycle the bitmap
                             writeToDb(mKey, mVersions, preview);
