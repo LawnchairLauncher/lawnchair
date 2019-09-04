@@ -133,7 +133,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
             String pkg = getIntentPackage(info.launchIntent);
             if (!TextUtils.isEmpty(pkg)
-                    && !launcherApps.isPackageEnabledForProfile(pkg, info.user)) {
+                    && !launcherApps.isPackageEnabledForProfile(pkg, info.user)
+                    && !info.isActivity) {
                 if (DBG) {
                     Log.d(TAG, "Ignoring shortcut for absent package: " + info.launchIntent);
                 }
