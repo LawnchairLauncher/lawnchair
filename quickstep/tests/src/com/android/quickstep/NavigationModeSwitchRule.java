@@ -118,7 +118,6 @@ public class NavigationModeSwitchRule implements TestRule {
                         assertTrue("Couldn't set overlay",
                                 setActiveOverlay(prevOverlayPkg, originalMode));
                     }
-                    mLauncher.disableDebugTracing();
                 }
 
                 private void evaluateWithThreeButtons() throws Throwable {

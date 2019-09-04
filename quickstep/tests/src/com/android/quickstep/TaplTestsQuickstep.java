@@ -97,7 +97,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @PortraitLandscape
     public void testOverview() throws Exception {
-        mLauncher.enableDebugTracing();
         startTestApps();
         Overview overview = mLauncher.pressHome().switchToOverview();
         assertTrue("Launcher internal state didn't switch to Overview",
@@ -177,7 +176,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         executeOnLauncher(
                 launcher -> assertEquals("Still have tasks after dismissing all",
                         0, getTaskCount(launcher)));
-        mLauncher.disableDebugTracing();
     }
 
     private int getCurrentOverviewPage(Launcher launcher) {
