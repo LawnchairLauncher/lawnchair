@@ -112,6 +112,7 @@ public abstract class AbstractLauncherUiTest {
                             launcher ->
                                     checkLauncherIntegrity(launcher, containerType)));
         }
+        mLauncher.enableDebugTracing();
     }
 
     protected final LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
@@ -202,6 +203,7 @@ public abstract class AbstractLauncherUiTest {
             resetLoaderState();
         } else {
             clearPackageData(mDevice.getLauncherPackageName());
+            mLauncher.enableDebugTracing();
         }
     }
 
