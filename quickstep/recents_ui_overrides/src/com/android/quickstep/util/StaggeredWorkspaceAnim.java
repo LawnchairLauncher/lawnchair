@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -40,7 +41,9 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.SpringObjectAnimator;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.OverviewScrim;
+import com.android.launcher3.views.IconLabelDotView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +65,9 @@ public class StaggeredWorkspaceAnim {
 
     private final float mVelocity;
     private final float mSpringTransY;
-    private final View mViewToIgnore;
+
+    // The original view of the {@link FloatingIconView}.
+    private final View mOriginalView;
 
     private final List<Animator> mAnimators = new ArrayList<>();
 
@@ -72,9 +77,7 @@ public class StaggeredWorkspaceAnim {
     public StaggeredWorkspaceAnim(Launcher launcher, @Nullable View floatingViewOriginalView,
             float velocity) {
         mVelocity = velocity;
-        // We ignore this view since it's visibility and position is controlled by
-        // the FloatingIconView.
-        mViewToIgnore = floatingViewOriginalView;
+        mOriginalView = floatingViewOriginalView;
 
         // Scale the translationY based on the initial velocity to better sync the workspace items
         // with the floating view.
@@ -86,16 +89,21 @@ public class StaggeredWorkspaceAnim {
         Workspace workspace = launcher.getWorkspace();
         CellLayout cellLayout = (CellLayout) workspace.getChildAt(workspace.getCurrentPage());
         ShortcutAndWidgetContainer currentPage = cellLayout.getShortcutsAndWidgets();
+        ViewGroup hotseat = launcher.getHotseat();
 
         boolean workspaceClipChildren = workspace.getClipChildren();
         boolean workspaceClipToPadding = workspace.getClipToPadding();
         boolean cellLayoutClipChildren = cellLayout.getClipChildren();
         boolean cellLayoutClipToPadding = cellLayout.getClipToPadding();
+        boolean hotseatClipChildren = hotseat.getClipChildren();
+        boolean hotseatClipToPadding = hotseat.getClipToPadding();
 
         workspace.setClipChildren(false);
         workspace.setClipToPadding(false);
         cellLayout.setClipChildren(false);
         cellLayout.setClipToPadding(false);
+        hotseat.setClipChildren(false);
+        hotseat.setClipToPadding(false);
 
         // Hotseat and QSB takes up two additional rows.
         int totalRows = grid.inv.numRows + (grid.isVerticalBarLayout() ? 0 : 2);
@@ -108,16 +116,18 @@ public class StaggeredWorkspaceAnim {
         }
 
         // Set up springs for the hotseat and qsb.
+        ViewGroup hotseatChild = (ViewGroup) hotseat.getChildAt(0);
         if (grid.isVerticalBarLayout()) {
-            ViewGroup hotseat = (ViewGroup) launcher.getHotseat().getChildAt(0);
-            for (int i = hotseat.getChildCount() - 1; i >= 0; i--) {
-                View child = hotseat.getChildAt(i);
+            for (int i = hotseatChild.getChildCount() - 1; i >= 0; i--) {
+                View child = hotseatChild.getChildAt(i);
                 CellLayout.LayoutParams lp = ((CellLayout.LayoutParams) child.getLayoutParams());
                 addStaggeredAnimationForView(child, lp.cellY + 1, totalRows);
             }
         } else {
-            View hotseat = launcher.getHotseat().getChildAt(0);
-            addStaggeredAnimationForView(hotseat, grid.inv.numRows + 1, totalRows);
+            for (int i = hotseatChild.getChildCount() - 1; i >= 0; i--) {
+                View child = hotseatChild.getChildAt(i);
+                addStaggeredAnimationForView(child, grid.inv.numRows + 1, totalRows);
+            }
 
             View qsb = launcher.findViewById(R.id.search_container_all_apps);
             addStaggeredAnimationForView(qsb, grid.inv.numRows + 2, totalRows);
@@ -140,6 +150,8 @@ public class StaggeredWorkspaceAnim {
                 workspace.setClipToPadding(workspaceClipToPadding);
                 cellLayout.setClipChildren(cellLayoutClipChildren);
                 cellLayout.setClipToPadding(cellLayoutClipToPadding);
+                hotseat.setClipChildren(hotseatClipChildren);
+                hotseat.setClipToPadding(hotseatClipToPadding);
             }
         };
 
@@ -180,16 +192,35 @@ public class StaggeredWorkspaceAnim {
         springTransY.setStartDelay(startDelay);
         mAnimators.add(springTransY);
 
-        if (v == mViewToIgnore) {
-            return;
+        ObjectAnimator alpha = getAlphaAnimator(v, startDelay);
+        if (v == mOriginalView) {
+            // For IconLabelDotViews, we just want the label to fade in.
+            // Icon, badge, and dots will animate in separately (controlled via FloatingIconView)
+            if (v instanceof IconLabelDotView) {
+                alpha.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        IconLabelDotView view = (IconLabelDotView) v;
+                        view.setIconVisible(false);
+                        view.setForceHideDot(true);
+                    }
+                });
+            } else {
+                return;
+            }
         }
 
         v.setAlpha(0);
+        mAnimators.add(alpha);
+    }
+
+    private ObjectAnimator getAlphaAnimator(View v, long startDelay) {
         ObjectAnimator alpha = ObjectAnimator.ofFloat(v, View.ALPHA, 0f, 1f);
         alpha.setInterpolator(LINEAR);
         alpha.setDuration(ALPHA_DURATION_MS);
         alpha.setStartDelay(startDelay);
-        mAnimators.add(alpha);
+        return alpha;
+
     }
 
     private void addScrimAnimationForState(Launcher launcher, LauncherState state, long duration) {
