@@ -39,6 +39,7 @@
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Ładuję aplikacje…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Nie znaleziono aplikacji pasujących do zapytania „<xliff:g id="QUERY">%1$s</xliff:g>”"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Wyszukaj więcej aplikacji"</string>
+    <string name="label_application" msgid="8531721983832654978">"Aplikacja"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Powiadomienia"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Kliknij i przytrzymaj, by wybrać skrót."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Kliknij dwukrotnie i przytrzymaj, by wybrać skrót lub użyć działań niestandardowych."</string>
@@ -64,7 +65,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"To aplikacja systemowa i nie można jej odinstalować."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Folder bez nazwy"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> jest wyłączona"</string>
-    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="few"><xliff:g id="APP_NAME_2">%1$s</xliff:g> – <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> powiadomienia</item>
       <item quantity="many"><xliff:g id="APP_NAME_2">%1$s</xliff:g> – <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> powiadomień</item>
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> – <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> powiadomienia</item>
@@ -81,27 +82,20 @@
     <string name="folder_name_format" msgid="6629239338071103179">"Folder: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widżety"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Tapety"</string>
+    <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Style i tapety"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Ustawienia strony głównej"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Funkcja wyłączona przez administratora"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Zezwalaj na obrót ekranu głównego"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Po obróceniu telefonu"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"Plakietki z powiadomieniami"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"Włączono"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"Wyłączono"</string>
+    <string name="notification_dots_title" msgid="9062440428204120317">"Plakietki z powiadomieniami"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Włączono"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Wyłączono"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Wymagany jest dostęp do powiadomień"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Aby pokazać plakietki z powiadomieniami, włącz powiadomienia aplikacji <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Zmień ustawienia"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"Pokaż plakietki z powiadomieniami"</string>
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"Pokaż plakietki z powiadomieniami"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Dodaj ikonę do ekranu głównego"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"W przypadku nowych aplikacji"</string>
-    <string name="icon_shape_override_label" msgid="2977264953998281004">"Zmień kształt ikon"</string>
-    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"na ekranie głównym"</string>
-    <string name="icon_shape_system_default" msgid="1709762974822753030">"Użyj ustawienia domyślnego"</string>
-    <string name="icon_shape_square" msgid="633575066111622774">"Kwadrat"</string>
-    <string name="icon_shape_squircle" msgid="5658049910802669495">"Zaokrąglony kwadrat"</string>
-    <string name="icon_shape_circle" msgid="6550072265930144217">"Okrąg"</string>
-    <string name="icon_shape_teardrop" msgid="4525869388200835463">"Łza"</string>
-    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Zmieniam kształt ikon"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Brak informacji"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Usuń"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Szukaj"</string>
@@ -112,10 +106,11 @@
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> – widżety"</string>
     <string name="widgets_list" msgid="796804551140113767">"Lista widgetów"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Lista widgetów zamknięta"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"Dodaj do strony głównej"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"Dodaj do ekranu głównego"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Przenieś element tutaj"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Element został dodany do ekranu głównego"</string>
     <string name="item_removed" msgid="851119963877842327">"Element został usunięty"</string>
+    <string name="undo" msgid="4151576204245173321">"Cofnij"</string>
     <string name="action_move" msgid="4339390619886385032">"Przenieś element"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"Przenieś do wiersza <xliff:g id="NUMBER_0">%1$s</xliff:g> w kolumnie <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"Przenieś do pozycji <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
@@ -146,4 +141,5 @@
     <string name="work_mode_off_label" msgid="3194894777601421047">"Powiadomienia i aplikacje są wyłączone"</string>
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Zamknij"</string>
     <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Zamknięto"</string>
+    <string name="remote_action_failed" msgid="1383965239183576790">"Niepowodzenie: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

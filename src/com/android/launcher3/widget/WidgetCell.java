@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.View.OnLayoutChangeListener;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -179,8 +180,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             return;
         }
         if (bitmap != null) {
-            mWidgetImage.setBitmap(bitmap,
-                    DrawableFactory.get(getContext()).getBadgeForUser(mItem.user, getContext()));
+            mWidgetImage.setBitmap(bitmap, DrawableFactory.INSTANCE.get(getContext())
+                    .getBadgeForUser(mItem.user, getContext()));
             if (mAnimatePreview) {
                 mWidgetImage.setAlpha(0f);
                 ViewPropertyAnimator anim = mWidgetImage.animate();
@@ -235,5 +236,11 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     @Override
     public CharSequence getAccessibilityClassName() {
         return WidgetCell.class.getName();
+    }
+
+    @Override
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
+        info.removeAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_CLICK);
     }
 }

@@ -44,8 +44,8 @@ public class LauncherInitListener extends InternalStateHandler implements Activi
     @Override
     protected boolean init(Launcher launcher, boolean alreadyOnHome) {
         if (mRemoteAnimationProvider != null) {
-            LauncherAppTransitionManagerImpl appTransitionManager =
-                    (LauncherAppTransitionManagerImpl) launcher.getAppTransitionManager();
+            QuickstepAppTransitionManagerImpl appTransitionManager =
+                    (QuickstepAppTransitionManagerImpl) launcher.getAppTransitionManager();
 
             // Set a one-time animation provider. After the first call, this will get cleared.
             // TODO: Probably also check the intended target id.

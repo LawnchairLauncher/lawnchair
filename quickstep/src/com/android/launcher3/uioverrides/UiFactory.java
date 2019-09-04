@@ -16,76 +16,70 @@
 
 package com.android.launcher3.uioverrides;
 
-import static android.view.View.VISIBLE;
+import static android.app.Activity.RESULT_CANCELED;
+
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.allapps.DiscoveryBounce.BOUNCE_MAX_COUNT;
+import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_COUNT;
 import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
+import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_COUNT;
 import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_SEEN;
 
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentSender;
+import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.util.Base64;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppTransitionManagerImpl;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.QuickstepAppTransitionManagerImpl;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.util.TouchController;
+import com.android.launcher3.proxy.ProxyActivityStarter;
+import com.android.launcher3.proxy.StartActivityParams;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsModel;
+import com.android.quickstep.SysUINavigationMode;
+import com.android.quickstep.SysUINavigationMode.Mode;
+import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
-import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityCompat;
-import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.zip.Deflater;
 
-public class UiFactory {
+public class UiFactory extends RecentsUiFactory {
 
-    public static TouchController[] createTouchControllers(Launcher launcher) {
-        boolean swipeUpEnabled = OverviewInteractionState.getInstance(launcher)
-                .isSwipeUpGestureEnabled();
-        if (!swipeUpEnabled) {
-            return new TouchController[] {
-                    launcher.getDragController(),
-                    new OverviewToAllAppsTouchController(launcher),
-                    new LauncherTaskViewController(launcher)};
-        }
-        if (launcher.getDeviceProfile().isVerticalBarLayout()) {
-            return new TouchController[] {
-                    launcher.getDragController(),
-                    new OverviewToAllAppsTouchController(launcher),
-                    new LandscapeEdgeSwipeController(launcher),
-                    new LauncherTaskViewController(launcher)};
-        } else {
-            return new TouchController[] {
-                    launcher.getDragController(),
-                    new PortraitStatesTouchController(launcher),
-                    new LauncherTaskViewController(launcher)};
-        }
-    }
-
-    public static void setOnTouchControllersChangedListener(Context context, Runnable listener) {
-        OverviewInteractionState.getInstance(context).setOnSwipeUpSettingChangedListener(listener);
+    public static Runnable enableLiveUIChanges(Launcher launcher) {
+        NavigationModeChangeListener listener = m -> {
+            launcher.getDragLayer().recreateControllers();
+            launcher.getRotationHelper().setRotationHadDifferentUI(m != Mode.NO_BUTTON);
+        };
+        SysUINavigationMode mode = SysUINavigationMode.INSTANCE.get(launcher);
+        SysUINavigationMode.Mode m = mode.addModeChangeListener(listener);
+        launcher.getRotationHelper().setRotationHadDifferentUI(m != Mode.NO_BUTTON);
+        return () -> mode.removeModeChangeListener(listener);
     }
 
     public static StateHandler[] getStateHandler(Launcher launcher) {
-        return new StateHandler[] {launcher.getAllAppsController(), launcher.getWorkspace(),
-                new RecentsViewStateController(launcher), new BackButtonAlphaHandler(launcher)};
+        return new StateHandler[] {
+                launcher.getAllAppsController(),
+                launcher.getWorkspace(),
+                createRecentsViewStateController(launcher),
+                new BackButtonAlphaHandler(launcher)};
     }
 
     /**
@@ -100,34 +94,29 @@ public class UiFactory {
             shouldBackButtonBeHidden = AbstractFloatingView.getTopOpenViewWithType(launcher,
                     TYPE_ALL & ~TYPE_HIDE_BACK_BUTTON) == null;
         }
-        OverviewInteractionState.getInstance(launcher)
+        OverviewInteractionState.INSTANCE.get(launcher)
                 .setBackButtonAlpha(shouldBackButtonBeHidden ? 0 : 1, true /* animate */);
-    }
-
-    public static void resetOverview(Launcher launcher) {
-        RecentsView recents = launcher.getOverviewPanel();
-        recents.reset();
+        if (launcher != null && launcher.getDragLayer() != null) {
+            launcher.getRootView().setDisallowBackGesture(shouldBackButtonBeHidden);
+        }
     }
 
     public static void onCreate(Launcher launcher) {
         if (!launcher.getSharedPrefs().getBoolean(HOME_BOUNCE_SEEN, false)) {
             launcher.getStateManager().addStateListener(new LauncherStateManager.StateListener() {
                 @Override
-                public void onStateSetImmediately(LauncherState state) {
-                }
-
-                @Override
                 public void onStateTransitionStart(LauncherState toState) {
                 }
 
                 @Override
                 public void onStateTransitionComplete(LauncherState finalState) {
-                    boolean swipeUpEnabled = OverviewInteractionState.getInstance(launcher)
-                            .isSwipeUpGestureEnabled();
+                    boolean swipeUpEnabled = SysUINavigationMode.INSTANCE.get(launcher).getMode()
+                            .hasGestures;
                     LauncherState prevState = launcher.getStateManager().getLastState();
 
                     if (((swipeUpEnabled && finalState == OVERVIEW) || (!swipeUpEnabled
-                            && finalState == ALL_APPS && prevState == NORMAL))) {
+                            && finalState == ALL_APPS && prevState == NORMAL) || BOUNCE_MAX_COUNT <=
+                            launcher.getSharedPrefs().getInt(HOME_BOUNCE_COUNT, 0))) {
                         launcher.getSharedPrefs().edit().putBoolean(HOME_BOUNCE_SEEN, true).apply();
                         launcher.getStateManager().removeStateListener(this);
                     }
@@ -138,10 +127,6 @@ public class UiFactory {
         if (!launcher.getSharedPrefs().getBoolean(SHELF_BOUNCE_SEEN, false)) {
             launcher.getStateManager().addStateListener(new LauncherStateManager.StateListener() {
                 @Override
-                public void onStateSetImmediately(LauncherState state) {
-                }
-
-                @Override
                 public void onStateTransitionStart(LauncherState toState) {
                 }
 
@@ -149,7 +134,8 @@ public class UiFactory {
                 public void onStateTransitionComplete(LauncherState finalState) {
                     LauncherState prevState = launcher.getStateManager().getLastState();
 
-                    if (finalState == ALL_APPS && prevState == OVERVIEW) {
+                    if ((finalState == ALL_APPS && prevState == OVERVIEW) || BOUNCE_MAX_COUNT <=
+                            launcher.getSharedPrefs().getInt(SHELF_BOUNCE_COUNT, 0)) {
                         launcher.getSharedPrefs().edit().putBoolean(SHELF_BOUNCE_SEEN, true).apply();
                         launcher.getStateManager().removeStateListener(this);
                     }
@@ -158,36 +144,16 @@ public class UiFactory {
         }
     }
 
-    public static void onStart(Context context) {
-        RecentsModel model = RecentsModel.getInstance(context);
-        if (model != null) {
-            model.onStart();
-        }
-    }
-
     public static void onEnterAnimationComplete(Context context) {
         // After the transition to home, enable the high-res thumbnail loader if it wasn't enabled
-        // as a part of quickstep/scrub, so that high-res thumbnails can load the next time we
-        // enter overview
-        RecentsModel.getInstance(context).getRecentsTaskLoader()
-                .getHighResThumbnailLoader().setVisible(true);
-    }
-
-    public static void onLauncherStateOrResumeChanged(Launcher launcher) {
-        LauncherState state = launcher.getStateManager().getState();
-        DeviceProfile profile = launcher.getDeviceProfile();
-        WindowManagerWrapper.getInstance().setShelfHeight(
-                (state == NORMAL || state == OVERVIEW) && launcher.isUserActive()
-                        && !profile.isVerticalBarLayout(),
-                profile.hotseatBarSizePx);
-
-        if (state == NORMAL) {
-            launcher.<RecentsView>getOverviewPanel().setSwipeDownShouldLaunchApp(false);
-        }
+        // as a part of quickstep, so that high-res thumbnails can load the next time we enter
+        // overview
+        RecentsModel.INSTANCE.get(context).getThumbnailCache()
+                .getHighResLoadingState().setVisible(true);
     }
 
     public static void onTrimMemory(Context context, int level) {
-        RecentsModel model = RecentsModel.getInstance(context);
+        RecentsModel model = RecentsModel.INSTANCE.get(context);
         if (model != null) {
             model.onTrimMemory(level);
         }
@@ -195,8 +161,8 @@ public class UiFactory {
 
     public static void useFadeOutAnimationForLauncherStart(Launcher launcher,
             CancellationSignal cancellationSignal) {
-        LauncherAppTransitionManagerImpl appTransitionManager =
-                (LauncherAppTransitionManagerImpl) launcher.getAppTransitionManager();
+        QuickstepAppTransitionManagerImpl appTransitionManager =
+                (QuickstepAppTransitionManagerImpl) launcher.getAppTransitionManager();
         appTransitionManager.setRemoteAnimationProvider((targets) -> {
 
             // On the first call clear the reference.
@@ -236,27 +202,46 @@ public class UiFactory {
         return true;
     }
 
-    public static void prepareToShowOverview(Launcher launcher) {
-        RecentsView overview = launcher.getOverviewPanel();
-        if (overview.getVisibility() != VISIBLE || overview.getContentAlpha() == 0) {
-            SCALE_PROPERTY.set(overview, 1.33f);
-        }
+    public static boolean startIntentSenderForResult(Activity activity, IntentSender intent,
+            int requestCode, Intent fillInIntent, int flagsMask, int flagsValues, int extraFlags,
+            Bundle options) {
+        StartActivityParams params = new StartActivityParams(activity, requestCode);
+        params.intentSender = intent;
+        params.fillInIntent = fillInIntent;
+        params.flagsMask = flagsMask;
+        params.flagsValues = flagsValues;
+        params.extraFlags = extraFlags;
+        params.options = options;
+        ((Context) activity).startActivity(ProxyActivityStarter.getLaunchIntent(activity, params));
+        return true;
     }
 
-    private static class LauncherTaskViewController extends TaskViewTouchController<Launcher> {
+    public static boolean startActivityForResult(Activity activity, Intent intent, int requestCode,
+            Bundle options) {
+        StartActivityParams params = new StartActivityParams(activity, requestCode);
+        params.intent = intent;
+        params.options = options;
+        activity.startActivity(ProxyActivityStarter.getLaunchIntent(activity, params));
+        return true;
+    }
 
-        public LauncherTaskViewController(Launcher activity) {
-            super(activity);
-        }
+    /**
+     * Removes any active ProxyActivityStarter task and sends RESULT_CANCELED to Launcher.
+     *
+     * ProxyActivityStarter is started with clear task to reset the task after which it removes the
+     * task itself.
+     */
+    public static void resetPendingActivityResults(Launcher launcher, int requestCode) {
+        launcher.onActivityResult(requestCode, RESULT_CANCELED, null);
+        launcher.startActivity(ProxyActivityStarter.getLaunchIntent(launcher, null));
+    }
 
-        @Override
-        protected boolean isRecentsInteractive() {
-            return mActivity.isInState(OVERVIEW);
+    public static ScaleAndTranslation getOverviewScaleAndTranslationForNormalState(Launcher l) {
+        if (SysUINavigationMode.getMode(l) == Mode.NO_BUTTON) {
+            float offscreenTranslationX = l.getDeviceProfile().widthPx
+                    - l.getOverviewPanel().getPaddingStart();
+            return new ScaleAndTranslation(1f, offscreenTranslationX, 0f);
         }
-
-        @Override
-        protected void onUserControlledAnimationCreated(AnimatorPlaybackController animController) {
-            mActivity.getStateManager().setCurrentUserControlledAnimation(animController);
-        }
+        return new ScaleAndTranslation(1.1f, 0f, 0f);
     }
 }

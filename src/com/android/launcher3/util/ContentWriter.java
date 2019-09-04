@@ -25,8 +25,8 @@ import android.os.UserHandle;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.icons.GraphicsUtils;
 
 /**
  * A wrapper around {@link ContentValues} with some utility methods.
@@ -97,7 +97,7 @@ public class ContentWriter {
         Preconditions.assertNonUiThread();
         if (mIcon != null && !LauncherAppState.getInstance(context).getIconCache()
                 .isDefaultIcon(mIcon, mUser)) {
-            mValues.put(LauncherSettings.Favorites.ICON, Utilities.flattenBitmap(mIcon));
+            mValues.put(LauncherSettings.Favorites.ICON, GraphicsUtils.flattenBitmap(mIcon));
             mIcon = null;
         }
         return mValues;

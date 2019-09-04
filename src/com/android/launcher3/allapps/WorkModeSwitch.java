@@ -20,10 +20,12 @@ import android.os.AsyncTask;
 import android.os.Process;
 import android.os.UserHandle;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.widget.Switch;
 
 import com.android.launcher3.compat.UserManagerCompat;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class WorkModeSwitch extends Switch {
@@ -60,35 +62,63 @@ public class WorkModeSwitch extends Switch {
         setEnabled(true);
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return ev.getActionMasked() == MotionEvent.ACTION_MOVE || super.onTouchEvent(ev);
+    }
+
     private void trySetQuietModeEnabledToAllProfilesAsync(boolean enabled) {
-        new AsyncTask<Void, Void, Boolean>() {
+        new SetQuietModeEnabledAsyncTask(enabled, new WeakReference<>(this)).execute();
+    }
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                setEnabled(false);
+    private static final class SetQuietModeEnabledAsyncTask
+            extends AsyncTask<Void, Void, Boolean> {
+
+        private final boolean enabled;
+        private final WeakReference<WorkModeSwitch> switchWeakReference;
+
+        SetQuietModeEnabledAsyncTask(boolean enabled,
+                                     WeakReference<WorkModeSwitch> switchWeakReference) {
+            this.enabled = enabled;
+            this.switchWeakReference = switchWeakReference;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            WorkModeSwitch workModeSwitch = switchWeakReference.get();
+            if (workModeSwitch != null) {
+                workModeSwitch.setEnabled(false);
             }
+        }
 
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                UserManagerCompat userManager = UserManagerCompat.getInstance(getContext());
-                List<UserHandle> userProfiles = userManager.getUserProfiles();
-                boolean showConfirm = false;
-                for (UserHandle userProfile : userProfiles) {
-                    if (Process.myUserHandle().equals(userProfile)) {
-                        continue;
-                    }
-                    showConfirm |= !userManager.requestQuietModeEnabled(enabled, userProfile);
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            WorkModeSwitch workModeSwitch = switchWeakReference.get();
+            if (workModeSwitch == null) {
+                return false;
+            }
+            UserManagerCompat userManager =
+                    UserManagerCompat.getInstance(workModeSwitch.getContext());
+            List<UserHandle> userProfiles = userManager.getUserProfiles();
+            boolean showConfirm = false;
+            for (UserHandle userProfile : userProfiles) {
+                if (Process.myUserHandle().equals(userProfile)) {
+                    continue;
                 }
-                return showConfirm;
+                showConfirm |= !userManager.requestQuietModeEnabled(enabled, userProfile);
             }
+            return showConfirm;
+        }
 
-            @Override
-            protected void onPostExecute(Boolean showConfirm) {
-                if (showConfirm) {
-                    setEnabled(true);
+        @Override
+        protected void onPostExecute(Boolean showConfirm) {
+            if (showConfirm) {
+                WorkModeSwitch workModeSwitch = switchWeakReference.get();
+                if (workModeSwitch != null) {
+                    workModeSwitch.setEnabled(true);
                 }
             }
-        }.execute();
+        }
     }
 }

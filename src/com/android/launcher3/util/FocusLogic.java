@@ -201,10 +201,6 @@ public class FocusLogic {
         ViewGroup hotseatParent = hotseatLayout.getShortcutsAndWidgets();
 
         boolean isHotseatHorizontal = !dp.isVerticalBarLayout();
-        boolean moreIconsInHotseatThanWorkspace = !FeatureFlags.NO_ALL_APPS_ICON &&
-                (isHotseatHorizontal
-                        ? hotseatLayout.getCountX() > iconLayout.getCountX()
-                        : hotseatLayout.getCountY() > iconLayout.getCountY());
 
         int m, n;
         if (isHotseatHorizontal) {
@@ -215,19 +211,7 @@ public class FocusLogic {
             n = hotseatLayout.getCountY();
         }
         int[][] matrix = createFullMatrix(m, n);
-        if (moreIconsInHotseatThanWorkspace) {
-            int allappsiconRank = dp.inv.getAllAppsButtonRank();
-            if (isHotseatHorizontal) {
-                for (int j = 0; j < n; j++) {
-                    matrix[allappsiconRank][j] = ALL_APPS_COLUMN;
-                }
-            } else {
-                for (int j = 0; j < m; j++) {
-                    matrix[j][allappsiconRank] = ALL_APPS_COLUMN;
-                }
-            }
-        }
-        // Iterate thru the children of the workspace.
+        // Iterate through the children of the workspace.
         for (int i = 0; i < iconParent.getChildCount(); i++) {
             View cell = iconParent.getChildAt(i);
             if (!cell.isFocusable()) {
@@ -235,17 +219,6 @@ public class FocusLogic {
             }
             int cx = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellX;
             int cy = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellY;
-            if (moreIconsInHotseatThanWorkspace) {
-                int allappsiconRank = dp.inv.getAllAppsButtonRank();
-                if (isHotseatHorizontal && cx >= allappsiconRank) {
-                    // Add 1 to account for the All Apps button.
-                    cx++;
-                }
-                if (!isHotseatHorizontal && cy >= allappsiconRank) {
-                    // Add 1 to account for the All Apps button.
-                    cy++;
-                }
-            }
             matrix[cx][cy] = i;
         }
 
