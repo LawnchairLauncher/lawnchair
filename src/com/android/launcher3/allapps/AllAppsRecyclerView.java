@@ -419,13 +419,4 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     public boolean hasOverlappingRendering() {
         return false;
     }
-
-    @Override
-    public void onScrollStateChanged(int state) {
-        super.onScrollStateChanged(state);
-
-        if (state == SCROLL_STATE_IDLE) {
-            AccessibilityManagerCompat.sendScrollFinishedEventToTest(getContext());
-        }
-    }
 }
