@@ -763,8 +763,7 @@ public final class LauncherInstrumentation {
         final Bundle parcel = (Bundle) executeAndWaitForEvent(
                 () -> linearGesture(startX, startY, endX, endY, steps),
                 event -> TestProtocol.SWITCHED_TO_STATE_MESSAGE.equals(event.getClassName()),
-                "Swipe failed to receive an event for the swipe end: " + startX + ", " + startY
-                        + ", " + endX + ", " + endY);
+                "Swipe failed to receive an event for the swipe end");
         assertEquals("Swipe switched launcher to a wrong state;",
                 TestProtocol.stateOrdinalToString(expectedState),
                 TestProtocol.stateOrdinalToString(parcel.getInt(TestProtocol.STATE_FIELD)));
