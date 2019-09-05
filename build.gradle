@@ -30,7 +30,8 @@ if (localPropsFile.exists()) {
     localProps.load(localPropsFile.newDataInputStream())
 }
 
-def isPublicBuild = System.getenv("CI_BUILD") == "true" && System.getenv("DRONE_BRANCH") == "alpha"
+def ciBuild = localProps.getProperty("ciBuild") == "true" || System.getenv("CI_BUILD") == "true"
+def isPublicBuild = localProps.getProperty("public") == "true" || (ciBuild && System.getenv("DRONE_BRANCH") == "alpha")
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -43,18 +44,21 @@ android {
     signingConfigs {
         ci {
             storeFile file("debug.jks")
-            storePassword System.getenv("STORE_PASSWORD")
+            storePassword localProps.getProperty("storePass") ?: System.getenv("STORE_PASSWORD")
             keyAlias "Lawnchair"
-            keyPassword System.getenv("KEY_PASSWORD")
+            keyPassword localProps.getProperty("keyPass") ?:System.getenv("KEY_PASSWORD")
         }
     }
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 28
 
-        if (System.getenv("CI_BUILD") == "true") {
-            versionCode = Integer.valueOf(System.getenv("CI_BUILD_NUMBER"))
-            versionName = System.getenv("MAJOR_MINOR") + (System.getenv("DRONE") ? "-" : ".") + System.getenv("CI_BUILD_NUMBER")
+        if (ciBuild) {
+            def ciBuildNumber = localProps.getProperty("buildNumber") ?: System.getenv("CI_BUILD_NUMBER")
+            versionCode = Integer.valueOf(ciBuildNumber)
+            def majorMinor = localProps.getProperty("majorMinor") ?: System.getenv("MAJOR_MINOR")
+            def drone = localProps.getProperty("public") == "true" || System.getenv("DRONE")
+            versionName = majorMinor + (drone ? "-" : ".") + ciBuildNumber
         } else {
             versionCode 1
             versionName "2.0"
@@ -86,7 +90,7 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
-            if (System.getenv("CI_BUILD") == "true") {
+            if (ciBuild) {
                 if (System.getenv("CI_EVENT_TYPE") != "pull_request") {
                     signingConfig signingConfigs.ci
                 }
@@ -104,7 +108,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard.flags'
-            if (System.getenv("CI_BUILD") == "true") {
+            if (ciBuild) {
                 if (System.getenv("CI_EVENT_TYPE") != "pull_request") {
                     signingConfig signingConfigs.ci
                 }
@@ -115,7 +119,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard.flags'
-            if (System.getenv("CI_BUILD") == "true") {
+            if (ciBuild) {
                 if (System.getenv("CI_EVENT_TYPE") != "pull_request") {
                     signingConfig signingConfigs.ci
                 }
@@ -177,7 +181,7 @@ android {
         ci {
             dimension "build"
             applicationIdSuffix ".ci"
-            versionNameSuffix "-ci-" + System.getenv("DRONE_BRANCH")
+            versionNameSuffix "-ci-" + (localProps.getProperty("branch") ?: System.getenv("DRONE_BRANCH"))
 
             buildConfigField "boolean", "SIGNATURE_VERIFICATION", "true"
         }

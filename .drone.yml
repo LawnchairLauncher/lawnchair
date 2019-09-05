@@ -55,4 +55,4 @@ pipeline:
       status: success
 
 branches:
-  exclude: [ l10n_alpha2, lawnchair-v1 ]
+  exclude: [ l10n_alpha2, lawnchair-v1, beta ]
