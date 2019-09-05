@@ -109,6 +109,14 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         // Ensure recents is at the correct position for NORMAL state. For example, when we detach
         // recents, we assume the first task is invisible, making translation off by one task.
         activity.getStateManager().reapplyState();
+        setLauncherHideBackArrow(false);
+    }
+
+    private void setLauncherHideBackArrow(boolean hideBackArrow) {
+        Launcher launcher = getCreatedActivity();
+        if (launcher != null) {
+            launcher.getRootView().setForceHideBackArrow(hideBackArrow);
+        }
     }
 
     @Override
@@ -139,7 +147,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                 ? FloatingIconView.getFloatingIconView(activity, workspaceView,
                         true /* hideOriginal */, iconLocation, false /* isOpening */)
                 : null;
-
+        setLauncherHideBackArrow(true);
         return new HomeAnimationFactory() {
             @Nullable
             @Override
