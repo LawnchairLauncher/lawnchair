@@ -26,7 +26,6 @@ import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.rule.ShellCommandRule;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,19 +40,8 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
     @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
     @Test
-    public void testDragIcon_portrait() throws Throwable {
-        lockRotation(true);
-        performTest();
-    }
-
-    @Test
-    @Ignore // b/121280703
-    public void testDragIcon_landscape() throws Throwable {
-        lockRotation(false);
-        performTest();
-    }
-
-    private void performTest() throws Throwable {
+    @PortraitLandscape
+    public void testDragIcon() throws Throwable {
         clearHomescreen();
         mDevice.pressHome();
 

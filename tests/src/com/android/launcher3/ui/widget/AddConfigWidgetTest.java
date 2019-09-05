@@ -41,7 +41,6 @@ import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ShellCommandRule;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -69,34 +68,22 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @PortraitLandscape
     public void testWidgetConfig() throws Throwable {
-        runTest(false, true);
+        runTest(true);
     }
 
     @Test
-    @Ignore // b/121280703
-    public void testWidgetConfig_rotate() throws Throwable {
-        runTest(true, true);
-    }
-
-    @Test
+    @PortraitLandscape
     public void testConfigCancelled() throws Throwable {
-        runTest(false, false);
+        runTest(false);
     }
 
-    @Test
-    @Ignore // b/121280703
-    public void testConfigCancelled_rotate() throws Throwable {
-        runTest(true, false);
-    }
 
     /**
-     * @param rotateConfig should the config screen be rotated
      * @param acceptConfig accept the config activity
      */
-    private void runTest(boolean rotateConfig, boolean acceptConfig) throws Throwable {
-        lockRotation(true);
-
+    private void runTest(boolean acceptConfig) throws Throwable {
         clearHomescreen();
         mDevice.pressHome();
 
@@ -109,13 +96,6 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
                 dragToWorkspace();
         // Widget id for which the config activity was opened
         mWidgetId = monitor.getWidgetId();
-
-        if (rotateConfig) {
-            // Rotate the screen and verify that the config activity is recreated
-            monitor = new WidgetConfigStartupMonitor();
-            lockRotation(false);
-            assertEquals(mWidgetId, monitor.getWidgetId());
-        }
 
         // Verify that the widget id is valid and bound
         assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
