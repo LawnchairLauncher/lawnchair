@@ -172,8 +172,6 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                 AnimatorSetBuilder builder = new AnimatorSetBuilder();
                 // setRecentsAttachedToAppWindow() will animate recents out.
                 builder.addFlag(AnimatorSetBuilder.FLAG_DONT_ANIMATE_OVERVIEW);
-                // We want to keep all apps content as GONE to avoid relayout during home animation.
-                builder.addFlag(AnimatorSetBuilder.FLAG_DONT_UPDATE_ALL_APPS_VISIBILITY);
                 stateManager.createAtomicAnimation(BACKGROUND_APP, NORMAL, builder, ANIM_ALL, 0);
                 builder.build().start();
 
@@ -201,9 +199,6 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         // Since all apps is not visible, we can safely reset the scroll position.
         // This ensures then the next swipe up to all-apps starts from scroll 0.
         activity.getAppsView().reset(false /* animate */);
-
-        // Optimization, hide the all apps view to prevent layout while initializing
-        activity.getAppsView().getContentView().setVisibility(View.GONE);
 
         return new AnimationFactory() {
             private ShelfAnimState mShelfState;
