@@ -21,6 +21,7 @@ import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static junit.framework.TestCase.assertTrue;
 
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -40,6 +41,7 @@ public final class Workspace extends Home {
     private static final float FLING_SPEED =
             LauncherInstrumentation.isAvd() ? 1500.0F : 3500.0F;
     private static final int DRAG_DURACTION = 2000;
+    private static final int FLING_STEPS = 10;
     private final UiObject2 mHotseat;
 
     Workspace(LauncherInstrumentation launcher) {
@@ -180,9 +182,9 @@ public final class Workspace extends Home {
      */
     public void flingForward() {
         final UiObject2 workspace = verifyActiveContainer();
-        workspace.setGestureMargins(0, 0, mLauncher.getEdgeSensitivityWidth(), 0);
-        workspace.fling(Direction.RIGHT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
-        mLauncher.waitForIdle();
+        mLauncher.scroll(workspace, Direction.RIGHT, 1f,
+                new Rect(0, 0, mLauncher.getEdgeSensitivityWidth(), 0),
+                FLING_STEPS);
         verifyActiveContainer();
     }
 
@@ -192,9 +194,9 @@ public final class Workspace extends Home {
      */
     public void flingBackward() {
         final UiObject2 workspace = verifyActiveContainer();
-        workspace.setGestureMargins(mLauncher.getEdgeSensitivityWidth(), 0, 0, 0);
-        workspace.fling(Direction.LEFT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
-        mLauncher.waitForIdle();
+        mLauncher.scroll(workspace, Direction.LEFT, 1f,
+                new Rect(mLauncher.getEdgeSensitivityWidth(), 0, 0, 0),
+                FLING_STEPS);
         verifyActiveContainer();
     }
 

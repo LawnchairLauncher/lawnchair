@@ -19,6 +19,7 @@ package com.android.launcher3.tapl;
 import static org.junit.Assert.fail;
 
 import android.graphics.Point;
+import android.graphics.Rect;
 
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
@@ -31,7 +32,8 @@ import com.android.launcher3.ResourceUtils;
  * All widgets container.
  */
 public final class Widgets extends LauncherInstrumentation.VisibleContainer {
-    private static final int FLING_SPEED = 1500;
+    private static final Rect MARGINS = new Rect(100, 100, 100, 100);
+    private static final int FLING_STEPS = 10;
 
     Widgets(LauncherInstrumentation launcher) {
         super(launcher);
@@ -46,11 +48,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 "want to fling forward in widgets")) {
             LauncherInstrumentation.log("Widgets.flingForward enter");
             final UiObject2 widgetsContainer = verifyActiveContainer();
-            widgetsContainer.setGestureMargins(0, 0, 0,
-                    ResourceUtils.getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE,
-                            mLauncher.getResources()) + 1);
-            widgetsContainer.fling(Direction.DOWN,
-                    (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
+            mLauncher.scroll(widgetsContainer, Direction.DOWN, 1f, MARGINS, FLING_STEPS);
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("flung forward")) {
                 verifyActiveContainer();
             }
@@ -66,10 +64,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 "want to fling backwards in widgets")) {
             LauncherInstrumentation.log("Widgets.flingBackward enter");
             final UiObject2 widgetsContainer = verifyActiveContainer();
-            widgetsContainer.setGestureMargin(100);
-            widgetsContainer.fling(Direction.UP,
-                    (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
-            mLauncher.waitForIdle();
+            mLauncher.scroll(widgetsContainer, Direction.UP, 1f, MARGINS, FLING_STEPS);
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("flung back")) {
                 verifyActiveContainer();
             }
@@ -101,7 +96,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 return new Widget(mLauncher, widget);
             }
             if (++i > 40) fail("Too many attempts");
-            widgetsContainer.scroll(Direction.DOWN, 1f);
+            mLauncher.scroll(widgetsContainer, Direction.DOWN, 1f, MARGINS, 50);
         }
     }
 }
