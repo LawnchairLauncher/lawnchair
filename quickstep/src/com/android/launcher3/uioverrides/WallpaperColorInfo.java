@@ -35,6 +35,10 @@ import java.util.ArrayList;
 @TargetApi(Build.VERSION_CODES.P)
 public class WallpaperColorInfo implements OnColorsChangedListener {
 
+    private static final int MAIN_COLOR_LIGHT = 0xffdadce0;
+    private static final int MAIN_COLOR_DARK = 0xff202124;
+    private static final int MAIN_COLOR_REGULAR = 0xff000000;
+
     private static final Object sInstanceLock = new Object();
     private static WallpaperColorInfo sInstance;
 
@@ -77,6 +81,10 @@ public class WallpaperColorInfo implements OnColorsChangedListener {
 
     public boolean supportsDarkText() {
         return mExtractionInfo.supportsDarkText;
+    }
+
+    public boolean isMainColorDark() {
+        return mExtractionInfo.mainColor == MAIN_COLOR_DARK;
     }
 
     @Override

@@ -39,6 +39,7 @@
     <string name="all_apps_loading_message" msgid="5813968043155271636">"යෙදුම් පූරණය වෙමින්…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" සමග ගැළපෙන යෙදුම් හමු නොවිණි"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"තව යෙදුම් සඳහා සොයන්න"</string>
+    <string name="label_application" msgid="8531721983832654978">"යෙදුම"</string>
     <string name="notifications_header" msgid="1404149926117359025">"දැනුම්දීම්"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"කෙටි මගක් තෝරා ගැනීමට ස්පර්ශ කර අල්ලාගෙන සිටින්න."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"විජට් එකක් තෝරා ගැනීමට හෝ අභිරුචි භාවිත කිරීමට දෙවරක් තට්ටු කර අල්ලා ගෙන සිටින්න."</string>
@@ -64,7 +65,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"මෙය පද්ධති යෙදුමක් වන අතර අස්ථාපනය කළ නොහැක."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"නම් නොකළ ෆෝල්ඩරය"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> අබල කෙරිණි"</string>
-    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, දැනුම්දීම් <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g>ක් ඇත</item>
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, දැනුම්දීම් <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g>ක් ඇත</item>
     </plurals>
@@ -79,27 +80,20 @@
     <string name="folder_name_format" msgid="6629239338071103179">"ෆෝල්ඩරය: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"විජට්"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"වෝල්පේපර"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Home සැකසීම්"</string>
+    <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"විලාස සහ වෝල්පේපර"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"නිවසේ සැකසීම්"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ඔබගේ පරිපාලක විසින් අබල කරන ලදී"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"මුල් පිටු තිරය කරකැවීමට ඉඩ දෙන්න"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"දුරකථනය කරකවන විට"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"දැනුම්දීම් තිත්"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"ක්‍රියාත්මකයි"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"ක්‍රියාවිරහිතයි"</string>
+    <string name="notification_dots_title" msgid="9062440428204120317">"දැනුම්දීම් තිත්"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"ක්‍රියාත්මකයි"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"ක්‍රියාවිරහිතයි"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"දැනුම්දීම් ප්‍රවේශය අවශ්‍යයි"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"දැනුම්දීම් තිත් පෙන්වීමට, <xliff:g id="NAME">%1$s</xliff:g> සඳහා යෙදුම් දැනුම්දීම් සබල කරන්න"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"සැකසීම් වෙනස් කරන්න"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"දැනුම් දීමේ තිත් පෙන්වන්න"</string>
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"දැනුම්දීම් තිත් පෙන්වන්න"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"මුල් පිටු තිරය වෙත අයිකනය එක් කරන්න"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"නව යෙදුම් සඳහා"</string>
-    <string name="icon_shape_override_label" msgid="2977264953998281004">"නිරූපක හැඩය වෙනස් කරන්න"</string>
-    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"මුල් පිටු තිරය මත"</string>
-    <string name="icon_shape_system_default" msgid="1709762974822753030">"පද්ධති පෙරනිමි භාවිත කරන්න"</string>
-    <string name="icon_shape_square" msgid="633575066111622774">"සමචතුරස්‍රය"</string>
-    <string name="icon_shape_squircle" msgid="5658049910802669495">"හතරැස් කවය"</string>
-    <string name="icon_shape_circle" msgid="6550072265930144217">"කවය"</string>
-    <string name="icon_shape_teardrop" msgid="4525869388200835463">"කඳුළු බිංදුව"</string>
-    <string name="icon_shape_override_progress" msgid="3461735694970239908">"නිරූපක හැඩය වෙනස් කිරීම් යොදමින්"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"නොදනී"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ඉවත් කරන්න"</string>
     <string name="abandoned_search" msgid="891119232568284442">"සොයන්න"</string>
@@ -114,6 +108,7 @@
     <string name="action_move_here" msgid="2170188780612570250">"මෙතනට අයිතමය ගෙන එන්න"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"අයිතමය මුල් තිරය වෙත එකතු කරන ලදි"</string>
     <string name="item_removed" msgid="851119963877842327">"අයිතමය ඉවත් කරන ලදි"</string>
+    <string name="undo" msgid="4151576204245173321">"අස් කරන්න"</string>
     <string name="action_move" msgid="4339390619886385032">"අයිතමය ගෙනයන්න"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"පේළිය <xliff:g id="NUMBER_0">%1$s</xliff:g> තීරුව <xliff:g id="NUMBER_1">%2$s</xliff:g> වෙත ගෙන යන්න"</string>
     <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g> ස්ථානය වෙත ගෙන යන්න"</string>
@@ -144,4 +139,5 @@
     <string name="work_mode_off_label" msgid="3194894777601421047">"දැනුම්දීම් සහ යෙදුම් ක්‍රියාවිරහිතයි"</string>
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"වසන්න"</string>
     <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"වසා ඇත"</string>
+    <string name="remote_action_failed" msgid="1383965239183576790">"අසාර්ථකයි: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

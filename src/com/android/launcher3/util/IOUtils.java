@@ -16,12 +16,18 @@
 
 package com.android.launcher3.util;
 
+import android.content.Context;
+
+import com.android.launcher3.config.FeatureFlags;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.UUID;
 
 /**
  * Supports various IO utility functions
@@ -51,5 +57,24 @@ public class IOUtils {
             total += r;
         }
         return total;
+    }
+
+    /**
+     * Utility method to debug binary data
+     */
+    public static String createTempFile(Context context, byte[] data) {
+        if (!FeatureFlags.IS_DOGFOOD_BUILD) {
+            throw new IllegalStateException("Method only allowed in development mode");
+        }
+
+        String name = UUID.randomUUID().toString();
+        File file = new File(context.getCacheDir(), name);
+        try (FileOutputStream fo = new FileOutputStream(file)) {
+            fo.write(data);
+            fo.flush();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return file.getAbsolutePath();
     }
 }

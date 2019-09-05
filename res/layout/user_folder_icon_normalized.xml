@@ -18,7 +18,7 @@
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/round_rect_primary"
+    android:background="@drawable/round_rect_folder"
     android:elevation="5dp"
     android:orientation="vertical" >
 
@@ -56,9 +56,9 @@
             android:paddingBottom="@dimen/folder_label_padding_bottom"
             android:paddingTop="@dimen/folder_label_padding_top"
             android:singleLine="true"
-            android:textColor="?android:attr/textColorTertiary"
+            android:textColor="?attr/folderTextColor"
             android:textColorHighlight="?android:attr/colorControlHighlight"
-            android:textColorHint="?android:attr/textColorHint"
+            android:textColorHint="?attr/folderTextColor"
             android:textSize="@dimen/folder_label_text_size" />
 
         <com.android.launcher3.pageindicators.PageIndicatorDots

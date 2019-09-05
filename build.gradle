@@ -4,27 +4,28 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0-alpha12'
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.3'
+        classpath GRADLE_CLASS_PATH
+        classpath PROTOBUF_CLASS_PATH
     }
 }
 
-final String SUPPORT_LIBS_VERSION = '28.0.0-SNAPSHOT'
+final String ANDROID_TOP = "${rootDir}/../../.."
+final String FRAMEWORK_PREBUILTS_DIR = "${ANDROID_TOP}/prebuilts/framework_intermediates/"
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.protobuf'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.0'
+    compileSdkVersion COMPILE_SDK
+    buildToolsVersion BUILD_TOOLS_VERSION
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 25
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -38,39 +39,56 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    flavorDimensions "default"
+    // The flavor dimensions for build variants (e.g. aospWithQuickstep, aospWithoutQuickstep)
+    // See: https://developer.android.com/studio/build/build-variants#flavor-dimensions
+    flavorDimensions "app", "recents"
 
     productFlavors {
         aosp {
-            dimension "default"
+            dimension "app"
             applicationId 'com.android.launcher3'
             testApplicationId 'com.android.launcher3.tests'
         }
 
         l3go {
-            dimension "default"
+            dimension "app"
             applicationId 'com.android.launcher3'
             testApplicationId 'com.android.launcher3.tests'
         }
 
-        quickstep {
-            dimension "default"
-            applicationId 'com.android.launcher3'
-            testApplicationId 'com.android.launcher3.tests'
+        withQuickstep {
+            dimension "recents"
+
+            minSdkVersion 28
+        }
+
+        withQuickstepIconRecents {
+            dimension "recents"
+
+            minSdkVersion 28
+        }
+
+        withoutQuickstep {
+            dimension "recents"
         }
     }
 
     // Disable release builds for now
     android.variantFilter { variant ->
         if (variant.buildType.name.endsWith('release')) {
-            variant.setIgnore(true);
+            variant.setIgnore(true)
+        }
+
+        // Icon recents is Go only
+        if (name.contains("WithQuickstepIconRecents") && !name.contains("l3go")) {
+            variant.setIgnore(true)
         }
     }
 
     sourceSets {
         main {
             res.srcDirs = ['res']
-            java.srcDirs = ['src']
+            java.srcDirs = ['src', 'src_plugins']
             manifest.srcFile 'AndroidManifest-common.xml'
             proto {
                 srcDir 'protos/'
@@ -84,7 +102,7 @@ android {
 
         androidTest {
             res.srcDirs = ['tests/res']
-            java.srcDirs = ['tests/src']
+            java.srcDirs = ['tests/src', 'tests/tapl']
             manifest.srcFile "tests/AndroidManifest-common.xml"
         }
 
@@ -93,18 +111,29 @@ android {
         }
 
         aosp {
-            java.srcDirs = ['src_flags', "src_ui_overrides"]
+            java.srcDirs = ['src_flags', 'src_shortcuts_overrides']
+            manifest.srcFile "AndroidManifest.xml"
         }
 
         l3go {
             res.srcDirs = ['go/res']
-            java.srcDirs = ['go/src_flags', "src_ui_overrides"]
+            java.srcDirs = ['go/src']
             manifest.srcFile "go/AndroidManifest.xml"
         }
 
-        quickstep {
-            res.srcDirs = ['quickstep/res']
-            java.srcDirs = ['src_flags', 'quickstep/src']
+        withoutQuickstep {
+            java.srcDirs = ['src_ui_overrides']
+        }
+
+        withQuickstep {
+            res.srcDirs = ['quickstep/res', 'quickstep/recents_ui_overrides/res']
+            java.srcDirs = ['quickstep/src', 'quickstep/recents_ui_overrides/src']
+            manifest.srcFile "quickstep/AndroidManifest.xml"
+        }
+
+        withQuickstepIconRecents {
+            res.srcDirs = ['quickstep/res', 'go/quickstep/res']
+            java.srcDirs = ['quickstep/src', 'go/quickstep/src']
             manifest.srcFile "quickstep/AndroidManifest.xml"
         }
     }
@@ -118,12 +147,20 @@ repositories {
 }
 
 dependencies {
-    implementation "com.android.support:support-v4:${SUPPORT_LIBS_VERSION}"
-    implementation "com.android.support:support-dynamic-animation:${SUPPORT_LIBS_VERSION}"
-    implementation "com.android.support:recyclerview-v7:${SUPPORT_LIBS_VERSION}"
-    implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
+    implementation "androidx.dynamicanimation:dynamicanimation:${ANDROID_X_VERSION}"
+    implementation "androidx.recyclerview:recyclerview:${ANDROID_X_VERSION}"
+    implementation "androidx.preference:preference:${ANDROID_X_VERSION}"
+    implementation project(':IconLoader')
+    implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'launcher_protos.jar')
 
-    quickstepImplementation fileTree(dir: "quickstep/libs", include: 'sysui_shared.jar')
+    // Recents lib dependency
+    withQuickstepImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/quickstep/libs", include: 'sysui_shared.jar')
+
+    // Recents lib dependency for Go
+    withQuickstepIconRecentsImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/quickstep/libs", include: 'sysui_shared.jar')
+
+    // Required for AOSP to compile. This is already included in the sysui_shared.jar
+    withoutQuickstepImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'plugin_core.jar')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation "org.mockito:mockito-core:1.9.5"
@@ -132,7 +169,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.0'
     androidTestImplementation 'com.android.support.test:rules:1.0.0'
     androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
-    androidTestImplementation "com.android.support:support-annotations:${SUPPORT_LIBS_VERSION}"
+    androidTestImplementation "androidx.annotation:annotation:${ANDROID_X_VERSION}"
 }
 
 protobuf {

@@ -18,14 +18,15 @@ package com.android.launcher3.notification;
 
 import android.app.Notification;
 import android.service.notification.StatusBarNotification;
-import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+
 /**
  * The key data associated with the notification, used to determine what to include
- * in badges and dummy popup views before they are populated.
+ * in dots and dummy popup views before they are populated.
  *
  * @see NotificationInfo for the full data used when populating the dummy views.
  */

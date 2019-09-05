@@ -35,14 +35,8 @@ public abstract class UserManagerCompat {
             if (sInstance == null) {
                 if (Utilities.ATLEAST_P) {
                     sInstance = new UserManagerCompatVP(context.getApplicationContext());
-                } else if (Utilities.ATLEAST_NOUGAT_MR1) {
-                    sInstance = new UserManagerCompatVNMr1(context.getApplicationContext());
-                } else if (Utilities.ATLEAST_NOUGAT) {
-                    sInstance = new UserManagerCompatVN(context.getApplicationContext());
-                } else if (Utilities.ATLEAST_MARSHMALLOW) {
-                    sInstance = new UserManagerCompatVM(context.getApplicationContext());
                 } else {
-                    sInstance = new UserManagerCompatVL(context.getApplicationContext());
+                    sInstance = new UserManagerCompatVNMr1(context.getApplicationContext());
                 }
             }
             return sInstance;
@@ -57,11 +51,12 @@ public abstract class UserManagerCompat {
     public abstract List<UserHandle> getUserProfiles();
     public abstract long getSerialNumberForUser(UserHandle user);
     public abstract UserHandle getUserForSerialNumber(long serialNumber);
-    public abstract CharSequence getBadgedLabelForUser(CharSequence label, UserHandle user);
     public abstract boolean isQuietModeEnabled(UserHandle user);
     public abstract boolean isUserUnlocked(UserHandle user);
 
     public abstract boolean isDemoUser();
     public abstract boolean requestQuietModeEnabled(boolean enableQuietMode, UserHandle user);
     public abstract boolean isAnyProfileQuietModeEnabled();
+
+    public abstract boolean hasWorkProfile();
 }

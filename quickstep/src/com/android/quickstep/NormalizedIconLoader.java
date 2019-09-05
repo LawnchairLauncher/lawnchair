@@ -28,9 +28,9 @@ import android.util.LruCache;
 import android.util.SparseArray;
 
 import com.android.launcher3.FastBitmapDrawable;
-import com.android.launcher3.graphics.BitmapInfo;
+import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.graphics.DrawableFactory;
-import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.systemui.shared.recents.model.IconLoader;
 import com.android.systemui.shared.recents.model.TaskKeyLruCache;
 
@@ -42,12 +42,14 @@ public class NormalizedIconLoader extends IconLoader {
 
     private final SparseArray<BitmapInfo> mDefaultIcons = new SparseArray<>();
     private final DrawableFactory mDrawableFactory;
-    private LauncherIcons mLauncherIcons;
+    private final boolean mDisableColorExtraction;
 
     public NormalizedIconLoader(Context context, TaskKeyLruCache<Drawable> iconCache,
-            LruCache<ComponentName, ActivityInfo> activityInfoCache) {
+            LruCache<ComponentName, ActivityInfo> activityInfoCache,
+            boolean disableColorExtraction) {
         super(context, iconCache, activityInfoCache);
-        mDrawableFactory = DrawableFactory.get(context);
+        mDrawableFactory = DrawableFactory.INSTANCE.get(context);
+        mDisableColorExtraction = disableColorExtraction;
     }
 
     @Override
@@ -70,16 +72,18 @@ public class NormalizedIconLoader extends IconLoader {
                 false));
     }
 
-    private synchronized BitmapInfo getBitmapInfo(Drawable drawable, int userId,
+    private BitmapInfo getBitmapInfo(Drawable drawable, int userId,
             int primaryColor, boolean isInstantApp) {
-        if (mLauncherIcons == null) {
-            mLauncherIcons = LauncherIcons.obtain(mContext);
-        }
+        try (LauncherIcons la = LauncherIcons.obtain(mContext)) {
+            if (mDisableColorExtraction) {
+                la.disableColorExtraction();
+            }
+            la.setWrapperBackgroundColor(primaryColor);
 
-        mLauncherIcons.setWrapperBackgroundColor(primaryColor);
-        // User version code O, so that the icon is always wrapped in an adaptive icon container.
-        return mLauncherIcons.createBadgedIconBitmap(drawable, UserHandle.of(userId),
-                Build.VERSION_CODES.O, isInstantApp);
+            // User version code O, so that the icon is always wrapped in an adaptive icon container
+            return la.createBadgedIconBitmap(drawable, UserHandle.of(userId),
+                    Build.VERSION_CODES.O, isInstantApp);
+        }
     }
 
     @Override
@@ -90,6 +94,6 @@ public class NormalizedIconLoader extends IconLoader {
                 userId,
                 desc.getPrimaryColor(),
                 activityInfo.applicationInfo.isInstantApp());
-        return mDrawableFactory.newIcon(bitmapInfo, activityInfo);
+        return mDrawableFactory.newIcon(mContext, bitmapInfo, activityInfo);
     }
 }

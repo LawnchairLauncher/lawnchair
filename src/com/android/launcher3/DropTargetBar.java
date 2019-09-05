@@ -104,7 +104,7 @@ public class DropTargetBar extends FrameLayout
                         / (2 * (grid.inv.numColumns + 1)))
                         + grid.edgeMarginPx;
             } else {
-                gap = grid.desiredWorkspaceLeftRightMarginPx - grid.defaultWidgetPadding.right;
+                gap = grid.desiredWorkspaceLeftRightMarginPx - grid.inv.defaultWidgetPadding.right;
             }
             lp.width = grid.availableWidthPx - 2 * gap;
 
@@ -204,7 +204,7 @@ public class DropTargetBar extends FrameLayout
         return visibleCount;
     }
 
-    private void animateToVisibility(boolean isVisible) {
+    public void animateToVisibility(boolean isVisible) {
         if (mVisible != isVisible) {
             mVisible = isVisible;
 

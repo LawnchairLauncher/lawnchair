@@ -19,8 +19,8 @@ package com.android.launcher3.dragndrop;
 import android.content.Context;
 import android.view.DragEvent;
 import android.view.MotionEvent;
+
 import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.Utilities;
 
 /**
  * Base class for driving a drag/drop operation.
@@ -83,7 +83,7 @@ public abstract class DragDriver {
 
     public static DragDriver create(Context context, DragController dragController,
             DragObject dragObject, DragOptions options) {
-        if (Utilities.ATLEAST_NOUGAT && options.systemDndStartPoint != null) {
+        if (options.systemDndStartPoint != null) {
             return new SystemDragDriver(dragController, context, dragObject);
         } else {
             return new InternalDragDriver(dragController);

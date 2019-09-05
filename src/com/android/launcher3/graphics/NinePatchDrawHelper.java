@@ -33,7 +33,9 @@ public class NinePatchDrawHelper {
 
     private final Rect mSrc = new Rect();
     private final RectF mDst = new RectF();
-    public final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    // Enable filtering to always get a nice edge. This avoids jagged line, when bitmap is
+    // translated by half pixel.
+    public final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
 
     /**
      * Draws the bitmap split into three parts horizontally, with the middle part having width
