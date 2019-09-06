@@ -17,7 +17,6 @@ package com.android.launcher3.util;
  */
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -25,11 +24,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Point;
-import android.hardware.display.DisplayManager;
-import android.hardware.display.DisplayManager.DisplayListener;
 import android.util.Log;
-import android.view.Display;
-import android.view.WindowManager;
 
 import java.util.function.Consumer;
 
@@ -37,7 +32,8 @@ import java.util.function.Consumer;
  * {@link BroadcastReceiver} which watches configuration changes and
  * notifies the callback in case changes which affect the device profile occur.
  */
-public class ConfigMonitor extends BroadcastReceiver implements DisplayListener {
+public class ConfigMonitor extends BroadcastReceiver implements
+        DefaultDisplay.DisplayInfoChangeListener {
 
     private static final String TAG = "ConfigMonitor";
 
@@ -61,24 +57,19 @@ public class ConfigMonitor extends BroadcastReceiver implements DisplayListener 
         mFontScale = config.fontScale;
         mDensity = config.densityDpi;
 
-        Display display = getDefaultDisplay(context);
-        mDisplayId = display.getDisplayId();
+        DefaultDisplay display = DefaultDisplay.INSTANCE.get(context);
+        display.addChangeListener(this);
+        DefaultDisplay.Info displayInfo = display.getInfo();
+        mDisplayId = displayInfo.id;
 
-        mRealSize = new Point();
-        display.getRealSize(mRealSize);
-
-        mSmallestSize = new Point();
-        mLargestSize = new Point();
-        display.getCurrentSizeRange(mSmallestSize, mLargestSize);
+        mRealSize = new Point(displayInfo.realSize);
+        mSmallestSize = new Point(displayInfo.smallestSize);
+        mLargestSize = new Point(displayInfo.largestSize);
 
         mCallback = callback;
 
         // Listen for configuration change
         mContext.registerReceiver(this, new IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED));
-
-        // Listen for display manager change
-        mContext.getSystemService(DisplayManager.class)
-                .registerDisplayListener(this, UI_HELPER_EXECUTOR.getHandler());
     }
 
     @Override
@@ -91,26 +82,19 @@ public class ConfigMonitor extends BroadcastReceiver implements DisplayListener 
     }
 
     @Override
-    public void onDisplayAdded(int displayId) { }
-
-    @Override
-    public void onDisplayRemoved(int displayId) { }
-
-    @Override
-    public void onDisplayChanged(int displayId) {
-        if (displayId != mDisplayId) {
+    public void onDisplayInfoChanged(DefaultDisplay.Info info, int flags) {
+        if (info.id != mDisplayId) {
             return;
         }
-        Display display = getDefaultDisplay(mContext);
-        display.getRealSize(mTmpPoint1);
-
+        mTmpPoint1.set(info.realSize.x, info.realSize.y);
         if (!mRealSize.equals(mTmpPoint1) && !mRealSize.equals(mTmpPoint1.y, mTmpPoint1.x)) {
             Log.d(TAG, String.format("Display size changed from %s to %s", mRealSize, mTmpPoint1));
             notifyChange();
             return;
         }
 
-        display.getCurrentSizeRange(mTmpPoint1, mTmpPoint2);
+        mTmpPoint1.set(info.smallestSize.x, info.smallestSize.y);
+        mTmpPoint2.set(info.largestSize.x, info.largestSize.y);
         if (!mSmallestSize.equals(mTmpPoint1) || !mLargestSize.equals(mTmpPoint2)) {
             Log.d(TAG, String.format("Available size changed from [%s, %s] to [%s, %s]",
                     mSmallestSize, mLargestSize, mTmpPoint1, mTmpPoint2));
@@ -126,14 +110,11 @@ public class ConfigMonitor extends BroadcastReceiver implements DisplayListener 
         }
     }
 
-    private Display getDefaultDisplay(Context context) {
-        return context.getSystemService(WindowManager.class).getDefaultDisplay();
-    }
-
     public void unregister() {
         try {
             mContext.unregisterReceiver(this);
-            mContext.getSystemService(DisplayManager.class).unregisterDisplayListener(this);
+            DefaultDisplay display = DefaultDisplay.INSTANCE.get(mContext);
+            display.removeChangeListener(this);
         } catch (Exception e) {
             Log.e(TAG, "Failed to unregister config monitor", e);
         }

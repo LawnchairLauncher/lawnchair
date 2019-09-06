@@ -18,6 +18,7 @@ package com.android.quickstep.inputconsumers;
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
+
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
@@ -35,9 +36,10 @@ import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
-import android.view.WindowManager;
+
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.DefaultDisplay;
 import com.android.quickstep.LockScreenRecentsActivity;
 import com.android.quickstep.MultiStateCallback;
 import com.android.quickstep.SwipeSharedState;
@@ -103,8 +105,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
         mRunningTaskId = runningTaskId;
 
         // Do not use DeviceProfile as the user data might be locked
-        mDisplaySize = new Point();
-        context.getSystemService(WindowManager.class).getDefaultDisplay().getRealSize(mDisplaySize);
+        mDisplaySize = DefaultDisplay.INSTANCE.get(context).getInfo().realSize;
 
         // Init states
         mStateCallback = new MultiStateCallback(STATE_NAMES);

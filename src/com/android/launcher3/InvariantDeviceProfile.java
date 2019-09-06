@@ -40,14 +40,13 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.util.Xml;
-import android.view.Display;
-import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.util.ConfigMonitor;
+import com.android.launcher3.util.DefaultDisplay;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Themes;
@@ -173,19 +172,17 @@ public class InvariantDeviceProfile {
     }
 
     private String initGrid(Context context, String gridName) {
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        DisplayMetrics dm = new DisplayMetrics();
-        display.getMetrics(dm);
+        DefaultDisplay.Info displayInfo = DefaultDisplay.INSTANCE.get(context).getInfo();
 
-        Point smallestSize = new Point();
-        Point largestSize = new Point();
-        display.getCurrentSizeRange(smallestSize, largestSize);
+        Point smallestSize = new Point(displayInfo.smallestSize);
+        Point largestSize = new Point(displayInfo.largestSize);
 
         ArrayList<DisplayOption> allOptions = getPredefinedDeviceProfiles(context, gridName);
         // This guarantees that width < height
-        float minWidthDps = Utilities.dpiFromPx(Math.min(smallestSize.x, smallestSize.y), dm);
-        float minHeightDps = Utilities.dpiFromPx(Math.min(largestSize.x, largestSize.y), dm);
+        float minWidthDps = Utilities.dpiFromPx(Math.min(smallestSize.x, smallestSize.y),
+                displayInfo.metrics);
+        float minHeightDps = Utilities.dpiFromPx(Math.min(largestSize.x, largestSize.y),
+                displayInfo.metrics);
         // Sort the profiles based on the closeness to the device size
         Collections.sort(allOptions, (a, b) ->
                 Float.compare(dist(minWidthDps, minHeightDps, a.minWidthDps, a.minHeightDps),
@@ -211,16 +208,15 @@ public class InvariantDeviceProfile {
         iconSize = interpolatedDisplayOption.iconSize;
         iconShapePath = getIconShapePath(context);
         landscapeIconSize = interpolatedDisplayOption.landscapeIconSize;
-        iconBitmapSize = ResourceUtils.pxFromDp(iconSize, dm);
+        iconBitmapSize = ResourceUtils.pxFromDp(iconSize, displayInfo.metrics);
         iconTextSize = interpolatedDisplayOption.iconTextSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
-        applyPartnerDeviceProfileOverrides(context, dm);
+        applyPartnerDeviceProfileOverrides(context, displayInfo.metrics);
 
-        Point realSize = new Point();
-        display.getRealSize(realSize);
+        Point realSize = new Point(displayInfo.realSize);
         // The real size never changes. smallSide and largeSide will remain the
         // same in any orientation.
         int smallSide = Math.min(realSize.x, realSize.y);

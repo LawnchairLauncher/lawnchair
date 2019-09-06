@@ -44,7 +44,6 @@ import android.os.Vibrator;
 import android.provider.Settings;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.UiThread;
@@ -274,7 +273,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             overviewStackBounds = getStackBounds(dp);
         }
         dp.updateInsets(targetSet.homeContentInsets);
-        dp.updateIsSeascape(mContext.getSystemService(WindowManager.class));
+        dp.updateIsSeascape(mContext);
         if (runningTaskTarget != null) {
             mClipAnimationHelper.updateSource(overviewStackBounds, runningTaskTarget);
         }

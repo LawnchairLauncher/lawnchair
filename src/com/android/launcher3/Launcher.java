@@ -500,6 +500,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         // Load configuration-specific DeviceProfile
         mDeviceProfile = idp.getDeviceProfile(this);
         if (isInMultiWindowMode()) {
+            // Note: Calls to getSize() can't rely on our cached DefaultDisplay since it can return
+            // the app window size
             Display display = getWindowManager().getDefaultDisplay();
             Point mwSize = new Point();
             display.getSize(mwSize);

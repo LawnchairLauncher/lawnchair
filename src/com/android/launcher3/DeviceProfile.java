@@ -24,12 +24,12 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.view.Surface;
-import android.view.WindowManager;
 
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconNormalizer;
+import com.android.launcher3.util.DefaultDisplay;
 
 public class DeviceProfile {
 
@@ -544,9 +544,10 @@ public class DeviceProfile {
     /**
      * Updates orientation information and returns true if it has changed from the previous value.
      */
-    public boolean updateIsSeascape(WindowManager wm) {
+    public boolean updateIsSeascape(Context context) {
         if (isVerticalBarLayout()) {
-            boolean isSeascape = wm.getDefaultDisplay().getRotation() == Surface.ROTATION_270;
+            boolean isSeascape = DefaultDisplay.INSTANCE.get(context).getInfo().rotation
+                    == Surface.ROTATION_270;
             if (mIsSeascape != isSeascape) {
                 mIsSeascape = isSeascape;
                 return true;
