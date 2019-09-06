@@ -507,11 +507,6 @@
     <string-array name="greetings_evening">
         <item>Godnatt!</item>
         <item>Sov gott!</item>
-        <item>Ses imorgon!</item>
-        <item>Dröm sött!</item>
-        <item>Stanna inte uppe för länge</item>
-        <item>Hur var din dag?</item>
-        <item>Vad har du gjort idag?</item>
     </string-array>
     <string name="onbording_settings_title">Ställ in %s</string>
     <string name="onbording_settings_summary">Långtryck på hemskärmen</string>
