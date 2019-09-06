@@ -47,7 +47,10 @@ import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
 import com.android.launcher3.MainThreadExecutor;
+import com.android.launcher3.R;
 import com.android.launcher3.util.TraceHelper;
+import com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget;
+import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.AssistDataReceiver;
@@ -92,6 +95,8 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private int mDisplayRotation;
     private Rect mStableInsets = new Rect();
 
+    private MotionPauseDetector mMotionPauseDetector;
+    private final float mMotionPauseMinDisplacement;
     private VelocityTracker mVelocityTracker;
     private MotionEventQueue mEventQueue;
     private boolean mIsGoingToHome;
@@ -106,6 +111,9 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mRunningTask = runningTaskInfo;
         mRecentsModel = recentsModel;
         mHomeIntent = homeIntent;
+        mMotionPauseDetector = new MotionPauseDetector(base);
+        mMotionPauseMinDisplacement = base.getResources().getDimension(
+                R.dimen.motion_pause_detector_min_displacement_from_app);
         mVelocityTracker = velocityTracker;
         mActivityControlHelper = activityControl;
         mMainThreadExecutor = mainThreadExecutor;
@@ -165,6 +173,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 }
                 mLastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex));
                 float displacement = getDisplacement(ev);
+                float displacementX = mLastPos.x - mDownPos.x;
                 if (!mPassedInitialSlop) {
                     if (!mIsDeferredDownTarget) {
                         // Normal gesture, ensure we pass the drag slop before we start tracking
@@ -180,6 +189,14 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                     // Move
                     mInteractionHandler.updateDisplacement(displacement - mStartDisplacement);
                 }
+
+                float horizontalDist = Math.abs(displacementX);
+                float upDist = -displacement;
+                boolean isLikelyToStartNewTask = horizontalDist > upDist;
+                mMotionPauseDetector.setDisallowPause(upDist < mMotionPauseMinDisplacement
+                        || isLikelyToStartNewTask);
+                mMotionPauseDetector.addPosition(displacement, ev.getEventTime());
+//                mInteractionHandler.setIsLikelyToStartNewTask(isLikelyToStartNewTask);
                 break;
             }
             case ACTION_CANCEL:
@@ -232,6 +249,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 switchToMainChoreographer();
             }
         });
+        mMotionPauseDetector.setOnMotionPauseListener(handler::onMotionPauseChanged);
         handler.initWhenReady();
 
         TraceHelper.beginSection("RecentsController");
@@ -280,15 +298,22 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
      */
     private void finishTouchTracking(MotionEvent ev) {
         if (mPassedInitialSlop && mInteractionHandler != null) {
-            mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
+            if (ev.getActionMasked() == ACTION_CANCEL) {
+                mInteractionHandler.onGestureCancelled();
+            } else {
+                mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
 
-            mVelocityTracker.computeCurrentVelocity(1000,
-                    ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
+                mVelocityTracker.computeCurrentVelocity(1000,
+                        ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
 
-            float velocity = isNavBarOnRight() ? mVelocityTracker.getXVelocity(mActivePointerId)
-                    : isNavBarOnLeft() ? -mVelocityTracker.getXVelocity(mActivePointerId)
-                            : mVelocityTracker.getYVelocity(mActivePointerId);
-            mInteractionHandler.onGestureEnded(velocity);
+                float velocityX = mVelocityTracker.getXVelocity(mActivePointerId);
+                float velocityY = mVelocityTracker.getYVelocity(mActivePointerId);
+                float velocity = isNavBarOnRight() ? velocityX
+                        : isNavBarOnLeft() ? -velocityX
+                                : mVelocityTracker.getYVelocity(mActivePointerId);
+                mInteractionHandler
+                        .onGestureEnded(velocity, new PointF(velocityX, velocityY), mDownPos);
+            }
         } else {
             // Since we start touch tracking on DOWN, we may reach this state without actually
             // starting the gesture. In that case, just cleanup immediately.
@@ -301,6 +326,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         }
         mVelocityTracker.recycle();
         mVelocityTracker = null;
+        mMotionPauseDetector.clear();
     }
 
     @Override
@@ -309,7 +335,8 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         if (mInteractionHandler != null) {
             final WindowTransformSwipeHandler handler = mInteractionHandler;
             mInteractionHandler = null;
-            mIsGoingToHome = handler.mIsGoingToHome;
+            GestureEndTarget endTarget = handler.getGestureEndTarget();
+            mIsGoingToHome = endTarget != null && endTarget.isLauncher;
             mMainThreadExecutor.execute(handler::reset);
         }
     }
@@ -383,6 +410,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
            mVelocityTracker.addMovement(ev);
            if (ev.getActionMasked() == ACTION_POINTER_UP) {
                mVelocityTracker.clear();
+               mMotionPauseDetector.clear();
            }
         }
     }

@@ -100,14 +100,16 @@ public class LauncherStateManager {
     // non atomic components as well.
     @IntDef(flag = true, value = {
             NON_ATOMIC_COMPONENT,
-            ATOMIC_COMPONENT
+            ATOMIC_COMPONENT,
+            ATOMIC_OVERVIEW_PEEK_COMPONENT
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface AnimationComponents {}
     public static final int NON_ATOMIC_COMPONENT = 1 << 0;
     public static final int ATOMIC_COMPONENT = 1 << 1;
+    public static final int ATOMIC_OVERVIEW_PEEK_COMPONENT = 1 << 2;
 
-    public static final int ANIM_ALL = NON_ATOMIC_COMPONENT | ATOMIC_COMPONENT;
+    public static final int ANIM_ALL = NON_ATOMIC_COMPONENT | ATOMIC_COMPONENT | ATOMIC_OVERVIEW_PEEK_COMPONENT;
 
     private final AnimationConfig mConfig = new AnimationConfig();
     private final Handler mUiHandler;
@@ -304,6 +306,18 @@ public class LauncherStateManager {
         } else if (fromState == OPTIONS || toState == OPTIONS) {
             builder.setInterpolator(ANIM_WORKSPACE_FADE, LINEAR);
         }
+    }
+
+    public AnimatorSet createAtomicAnimation(LauncherState fromState, LauncherState toState,
+            AnimatorSetBuilder builder, @AnimationComponents int atomicComponent, long duration) {
+        prepareForAtomicAnimation(fromState, toState, builder);
+        AnimationConfig config = new AnimationConfig();
+        config.animComponents = atomicComponent;
+        config.duration = duration;
+        for (StateHandler handler : mLauncher.getStateManager().getStateHandlers()) {
+            handler.setStateWithAnimation(toState, builder, config);
+        }
+        return builder.build();
     }
 
     /**
