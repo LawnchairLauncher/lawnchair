@@ -80,6 +80,7 @@ import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.views.ClipPathView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import com.google.android.apps.nexuslauncher.CustomBottomSheet;
@@ -93,7 +94,8 @@ import java.util.List;
  */
 public class Folder extends AbstractFloatingView implements DragSource,
         View.OnLongClickListener, DropTarget, FolderListener, TextView.OnEditorActionListener,
-        View.OnFocusChangeListener, DragListener, ExtendedEditText.OnBackKeyListener {
+        View.OnFocusChangeListener, DragListener, ExtendedEditText.OnBackKeyListener,
+        ClipPathView {
     private static final String TAG = "Launcher.Folder";
 
     /**
@@ -390,6 +392,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
         return mFolderIcon;
     }
 
+    @Override
     public void setClipPath(Path path) {
         mClipPath = path;
         invalidate();

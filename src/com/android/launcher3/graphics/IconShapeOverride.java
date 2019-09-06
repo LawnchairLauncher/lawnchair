@@ -22,19 +22,14 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.text.TextUtils;
 import android.util.Log;
 
-import ch.deletescape.lawnchair.LawnchairLauncher;
-import ch.deletescape.lawnchair.LawnchairUtilsKt;
-import ch.deletescape.lawnchair.folder.FolderShape;
 import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
 import com.android.launcher3.util.LooperExecutor;
@@ -231,7 +226,7 @@ public class IconShapeOverride {
 
             mHandler.post(() -> {
                 AdaptiveIconCompat.resetMask();
-                FolderShape.init(mContext);
+                IconShape.init(mContext);
                 Utilities.getLawnchairPrefs(mContext).getRecreate().invoke();
             });
 

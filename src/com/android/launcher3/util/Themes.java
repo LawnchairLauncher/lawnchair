@@ -22,6 +22,9 @@ import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.drawable.Drawable;
 
+import android.util.AttributeSet;
+import android.util.SparseArray;
+import android.util.TypedValue;
 import ch.deletescape.lawnchair.colors.ColorEngine;
 
 /**
@@ -109,5 +112,28 @@ public class Themes {
         target.getArray()[9] = Color.green(dstColor) - Color.green(srcColor);
         target.getArray()[14] = Color.blue(dstColor) - Color.blue(srcColor);
         target.getArray()[19] = Color.alpha(dstColor) - Color.alpha(srcColor);
+    }
+
+    /**
+     * Creates a map for attribute-name to value for all the values in {@param attrs} which can be
+     * held in memory for later use.
+     */
+    public static SparseArray<TypedValue> createValueMap(Context context, AttributeSet attrSet) {
+        int count = attrSet.getAttributeCount();
+        int[] attrNames = new int[count];
+        for (int i = 0; i < count; i++) {
+            attrNames[i] = attrSet.getAttributeNameResource(i);
+        }
+
+        SparseArray<TypedValue> result = new SparseArray<>(attrNames.length);
+        TypedArray ta = context.obtainStyledAttributes(attrSet, attrNames);
+        for (int i = 0; i < attrNames.length; i++) {
+            TypedValue tv = new TypedValue();
+            ta.getValue(i, tv);
+            result.put(attrNames[i], tv);
+        }
+        ta.recycle();
+
+        return result;
     }
 }
