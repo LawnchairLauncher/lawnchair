@@ -20,6 +20,7 @@ package ch.deletescape.lawnchair.backup
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.WallpaperManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -89,6 +90,11 @@ class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnColorChangeListe
 
         startButton.setOnClickListener {
             onStartBackup()
+        }
+
+        if (ContextCompat.getSystemService(this, WallpaperManager::class.java)?.wallpaperInfo != null) {
+            backupWallpaper.isChecked = false
+            backupWallpaper.isEnabled = false
         }
     }
 
