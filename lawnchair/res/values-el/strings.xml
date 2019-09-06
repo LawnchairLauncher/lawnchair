@@ -514,11 +514,6 @@
     <string-array name="greetings_evening">
         <item>Καληνύχτα!</item>
         <item>Κοιμήσου καλά!</item>
-        <item>Τα λέμε αύριο!</item>
-        <item>Όνειρα γλυκά!</item>
-        <item>Μην μένεις ξύπνιος μέχρι αργά</item>
-        <item>Πώς ήταν η ημέρα σου;</item>
-        <item>Τι έκανες σήμερα;</item>
     </string-array>
     <string name="onbording_settings_title">Ρύθμιση %s</string>
     <string name="onbording_settings_summary">Πιέστε παρατεταμένα στην αρχική σας οθόνη</string>
