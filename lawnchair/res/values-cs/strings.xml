@@ -15,8 +15,8 @@
     <string name="search">Hledat</string>
     <string name="label_voice_search">Hlasové vyhledávání</string>
     <string name="icon_pack">Balíček ikon</string>
-    <string name="home_widget">Widget domovské obrazovky</string>
-    <string name="title_show_google_app">%1$s na levé straně</string>
+    <string name="home_widget">Domovský widget</string>
+    <string name="title_show_google_app">%1$s vlevo</string>
     <string name="msg_minus_one_on_left">Feed vlevo od plochy</string>
     <string name="about">O aplikaci</string>
     <string name="google_app">Aplikace Google</string>
@@ -39,7 +39,7 @@
     <string name="about_pref_summary">Tým, odkazy, licence</string>
     <string name="hide_app_selected">&#160; skryto</string>
     <string name="hide_app_apply">Použít</string>
-    <string name="hide_dock_gradient">Zakázat přechody</string>
+    <string name="hide_dock_gradient">Zakázat gradient</string>
     <string name="dock_pref_summary">Styl, neprůhlednost, indikátor stránky</string>
     <string name="dock_pref_title">Dok</string>
     <string name="hide_icon_labels_pref_title">Skrýt názvy aplikací</string>
@@ -162,7 +162,7 @@
     <string name="action_last_task">Otevřít poslední aplikaci</string>
     <string name="action_open_widgets">Otevřít roletu s widgety</string>
     <string name="action_open_settings">Otevřít nastavení launcheru</string>
-    <string name="action_open_overview">Zobrazit vyskakovací bublinu nastavení domovské obrazovky</string>
+    <string name="action_open_overview">Otevřít vyskakovací bublinu nastavení domovské obrazovky</string>
     <string name="action_global_search">Otevřít globální vyhledávání</string>
     <string name="action_app_search">Otevřít vyhledávání aplikací</string>
     <string name="action_overlay">Otevřít Google Feed (Discover)</string>
@@ -288,10 +288,10 @@
     <string name="lawnchair_actions">Akce</string>
     <string name="theme_auto">Podle tapety</string>
     <string name="theme_auto_night_mode">Podle motivu systému</string>
-    <string name="theme_light">Světlý</string>
+    <string name="theme_light">Světlá</string>
     <string name="theme_dark_text">Světlý s tmavým textem</string>
     <string name="theme_with_dark_text">tmavý text</string>
-    <string name="theme_dark">Tmavý</string>
+    <string name="theme_dark">Tmavá</string>
     <string name="theme_dark_dark_text">Tmavý s tmavým textem</string>
     <string name="theme_black">Černý</string>
     <string name="theme_black_dark_text">Černý s tmavým textem</string>
@@ -515,11 +515,6 @@
     <string-array name="greetings_evening">
         <item>Dobrou noc!</item>
         <item>Dobře se vyspěte!</item>
-        <item>Uvidíme se zítra!</item>
-        <item>Sladké sny!</item>
-        <item>Moc dlouho neponocuj</item>
-        <item>Jaký jste měli den?</item>
-        <item>Co jste dnes dělali?</item>
     </string-array>
     <string name="onbording_settings_title">Nastavit %s</string>
     <string name="onbording_settings_summary">Dlouze přidržte prst na domovské obrazovce</string>
@@ -533,8 +528,8 @@
     <string name="web_search_yandex">Yandex (web)</string>
     <string name="web_search_naver">Naver (web)</string>
     <string name="web_search_baidu">Baidu (web)</string>
-    <string name="icon_shape_override_miui_explaination">Kvůli omezení systému MIUI se nemusí změnit tvar vašich ikon a zůstanou čtvercové.\nNenahlašujte nám prosím toto chování jako chybu.</string>
-    <string name="button_organize_screens">Uspořád. obrazovky</string>
+    <string name="icon_shape_override_miui_explaination">Z důvodu omezení systému MIUI se nemusí změnit tvar vašich ikon, které zůstanou čtvercové.\nNenahlašujte nám, prosím, toto chování jako chybu.</string>
+    <string name="button_organize_screens">Uspořádat plochy</string>
     <string name="weather_icons_default">Výchozí</string>
     <string name="pref_weather_icon_pack">Ikony počasí</string>
     <string name="weather_icon_packs_not_supported">Nejsou podporovány vaším aktuálně nastaveným poskytovatelem informací o počasí</string>
