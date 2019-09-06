@@ -121,7 +121,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
                         if (contents and INCLUDE_HOMESCREEN == 0) continue
                         context.deleteDatabase(dbFile.path)
                         dbFile
-                    } else if (entry.name == settingsFile.name) {
+                    } else if (entry.name.endsWith("_preferences.xml")) {
                         if (contents and INCLUDE_SETTINGS == 0) continue
                         settingsFile
                     } else if (entry.name == WALLPAPER_FILE_NAME) {
