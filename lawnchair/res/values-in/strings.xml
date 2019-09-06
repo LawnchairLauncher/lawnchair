@@ -6,7 +6,7 @@
     <string name="icu_abbrev_time">HH:mm</string>
     <string name="icu_abbrev_time_12h">hh:mm aa</string>
     <string name="icu_abbrev_date"> dd MMMM</string>
-    <string name="in_smartspace">Di \‘Sekilas\‘ widget</string>
+    <string name="in_smartspace">Di widget \‘Sekilas\‘</string>
     <string name="smartspace_time">Waktu</string>
     <string name="smartspace_date">Tanggal</string>
     <string name="customize">Ubahsuai</string>
@@ -16,7 +16,7 @@
     <string name="label_voice_search">Pencarian suara</string>
     <string name="icon_pack">Paket ikon</string>
     <string name="home_widget">Widget beranda</string>
-    <string name="title_show_google_app">%1$s tersisa</string>
+    <string name="title_show_google_app">%1$s di sisi kiri</string>
     <string name="msg_minus_one_on_left">Umpan berita di sebelah kiri desktop</string>
     <string name="about">Tentang</string>
     <string name="google_app">Aplikasi Google</string>
@@ -89,7 +89,7 @@
     <string name="launcher_theme_override_label">Paksa gunakan tema gelap</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="blur_pref_title">Efek blur</string>
-    <string name="blur_pref_summary">Efek blur untuk laci aplikasi, bilah bar, dan latar pengaturan</string>
+    <string name="blur_pref_summary">Efek blur untuk laci aplikasi, dok, dan latar pengaturan</string>
     <string name="blur_radius_pref_title">Kekuatan efek blur</string>
     <!--Marker B-->
     <string name="dock_colored_google">Ikon berwarna</string>
@@ -110,7 +110,7 @@
     <string name="loading">Memuat…</string>
     <string name="low_performance_mode_pref_title">Mode hemat daya</string>
     <string name="title_storage_permission_required">Izin akses penyimpanan diperlukan</string>
-    <string name="content_storage_permission_required">Izinkan penyimpanan untuk memperbarui latar belakang</string>
+    <string name="content_storage_permission_required">Izinkan akses penyimpanan untuk mengatur wallpaper</string>
     <string name="reset_to_default">Atur ulang ke standar</string>
     <string name="dock_shadow">Bayangan</string>
     <string name="dock_fill">Latar belakang</string>
@@ -119,12 +119,12 @@
     <!--Marker C-->
     <string name="pref_category_icons">Ikon</string>
     <string name="pref_category_aag">Sekilas</string>
-    <string name="pref_category_pixel_searchbar">Bar pencarian Pixel</string>
+    <string name="pref_category_pixel_searchbar">Bilah pencarian Pixel</string>
     <string name="pref_category_weather">Cuaca</string>
     <string name="pref_category_misc">Lainnya</string>
     <string name="pref_category_layout">Susun atur</string>
     <string name="pref_category_theme">Gaya</string>
-    <string name="pref_category_searchbar">Bar pencarian</string>
+    <string name="pref_category_searchbar">Bilah pencarian</string>
     <!--Marker D-->
     <string name="title_attribouter_licenses">Lisensi sumber terbuka</string>
     <string name="title_attribouter_email">Email</string>
@@ -182,18 +182,18 @@
     <string name="gesture_long_press">Tekan &amp; tahan</string>
     <string name="gesture_swipe_down">Gesek ke bawah</string>
     <string name="gesture_swipe_up">Gesek ke atas</string>
-    <string name="gesture_dock_swipe_up">Gesek ke atas pada dock</string>
-    <string name="pref_show_assistant_title">Butang pencarian suara</string>
-    <string name="pref_show_assistant_summary">Tampilkan butang pencarian suara jika disokong</string>
-    <string name="pref_show_as_assistant_summary">Tukar pencarian suara menjadi butang asisten</string>
+    <string name="gesture_dock_swipe_up">Gesek ke atas pada dok</string>
+    <string name="pref_show_assistant_title">Tombol pencarian suara</string>
+    <string name="pref_show_assistant_summary">Tampilkan tombol pencarian suara jika didukung</string>
+    <string name="pref_show_as_assistant_summary">Ganti tombol pencarian suara dengan tombol asisten</string>
     <string name="smartspace_time_24_h">Format 24 Jam</string>
     <string name="weather_provider_disabled">Dinonaktifkan</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
     <string name="weather_provider_pe">PixelExperience</string>
     <string name="pref_smartspace_widget_provider">Sumber Cuaca</string>
     <string name="pref_smartspace_event_provider">Sumber Kalender</string>
-    <string name="title_all_apps_search">Bar pencarian laci</string>
-    <string name="smartspace_widget_provider_not_found">Terjadi kesalahan. Pasang atau memperbarui aplikasi Google.</string>
+    <string name="title_all_apps_search">Bilah pencarian laci</string>
+    <string name="smartspace_widget_provider_not_found">Pasang atau perbarui aplikasi Google.</string>
     <string name="apps_label">Aplikasi</string>
     <string name="all_apps_label">Semua aplikasi</string>
     <string name="all_apps_label_pref_title">Tampilkan label \"Semua Aplikasi\"</string>
@@ -215,12 +215,12 @@
     <string name="icon_pack_external_picker">Buka pemilih ikon dari luar</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="full_wday_month_day_no_year">EEE, d MMMM</string>
-    <string name="title_use_pill_qsb">Gunakan kotak pencarian berbentuk pil</string>
+    <string name="title_use_pill_qsb">Gunakan bentuk pil pada kotak pencarian</string>
     <string name="weather_provider_testing">Debug</string>
     <!--Marker G-->
     <string name="backup_generate_report">Membuat laporan bug</string>
     <string name="show_top_shadow_pref_title">Bayangan atas</string>
-    <string name="show_top_shadow_pref_summary">Bayangan dibawah status bar</string>
+    <string name="show_top_shadow_pref_summary">Bayangan di bawah bilah status</string>
     <string name="two_row_dock">Dua baris</string>
     <string name="keep_scroll_state_pref_title">Ingat posisi scroll</string>
     <string name="reset">Setel ulang</string>
@@ -242,11 +242,11 @@
     <string name="color_wallpaper_main">Wallpaper - primer</string>
     <string name="color_wallpaper_secondary">Wallpaper - sekunder</string>
     <string name="color_wallpaper_tertiary">Wallpaper - tertier</string>
-    <string name="pref_hide_statusbar">Sembunyikan status bar</string>
+    <string name="pref_hide_statusbar">Sembunyikan bilah status</string>
     <string name="automatic_short">Otomatis</string>
     <string name="bridge_missing_title">Lawnfeed</string>
     <string name="bridge_missing_message">Pasang atau perbarui Lawnfeed</string>
-    <string name="quickstep_pref_title">Recents</string>
+    <string name="quickstep_pref_title">Baru digunakan</string>
     <string name="quickstep_pref_summary">Gestur, sudut, pengaburan</string>
     <string name="swipe_up_to_switch_apps_title">Usap ke atas untuk berganti aplikasi</string>
     <string name="swipe_left_to_go_back_title">Usap ke kiri untuk kembali</string>
@@ -306,7 +306,7 @@
     <string name="pref_qsb_color">Warna</string>
     <string name="hide_from_predictions">Sembunyikan dari panel saran</string>
     <string name="hide_from_predictions_summary">Jangan pernah tampilkan di panel saran</string>
-    <string name="bubble_searchbar">Bar pencarian ganda</string>
+    <string name="bubble_searchbar">Bilah tombol pencarian ganda</string>
     <string name="search_clear_history">Bersihkan riwayat</string>
     <string name="search_no_results">Tidak ditemukan</string>
     <string name="search_menu">Mencari Menu Pengaturan</string>
@@ -317,7 +317,7 @@
     <string name="suggestion_pref_screen_title">Saran</string>
     <string name="title_app_suggestions">Aplikasi</string>
     <string name="title_app_suggestions_in_search">Panel saran aplikasi</string>
-    <string name="summary_app_suggestions">Aplikasi yg akhir-akhir ini digunakan</string>
+    <string name="summary_app_suggestions">Aplikasi yg baru-baru ini digunakan</string>
     <string name="summary_app_suggestions_lawnstep">Di layar aplikasi dan laci aplikasi terbaru</string>
     <string name="app_actions_pref_title">Tindakan</string>
     <string name="app_actions_pref_title_in_search">Saran tindakan</string>
@@ -412,7 +412,7 @@
     <string name="pref_show_dev_options">Tampilkan di pengaturan</string>
     <string name="about_app_description">Sebuah alternatif Pixel Launcher yang dapat dikostumisasi.</string>
     <string name="about_bio_paphonb">Seorang pelajar dengan umur 18 tahun, Pengembang Android dan salah satu pengembang teratas di Peluncur Lawnchair.</string>
-    <string name="dock_scale">Ukuran bilah bar</string>
+    <string name="dock_scale">Skala dok</string>
     <string name="adaptify_pack_title">Buat adaptif ikon untuk paket ikon</string>
     <string name="adaptify_pack_summary">Buat adaptif ikon untuk ikon dari paket ikon</string>
     <string name="pref_sesame_sync_look_and_feel">Bagikan tampilan dan nuansa</string>
@@ -461,7 +461,7 @@ Tindakan ini tidak bisa dibatalkan.</string>
     <string name="bugreport_channel_name">Pelaporan Masalah</string>
     <string name="status_channel_name">Status unggah laporan masalah</string>
     <string name="bugreport_group_summary">%d laporan baru</string>
-    <string name="bugreport_group_summary_multiple">Banyak laporan baru</string>
+    <string name="bugreport_group_summary_multiple">Beberapa laporan baru</string>
     <string name="dogbin_uploading">Pengunggahan dalam proses</string>
     <string name="action_dogbin_upload">Unggah ke dogbin</string>
     <string name="action_dogbin_upload_error">Gagal mengunggah</string>
@@ -512,11 +512,6 @@ Tindakan ini tidak bisa dibatalkan.</string>
     <string-array name="greetings_evening">
         <item>Selamat malam!</item>
         <item>Tidurlah dengan nyenyak!</item>
-        <item>Sampai jumpa besok!</item>
-        <item>Mimpi indah!</item>
-        <item>Jangan begadang terlalu lama</item>
-        <item>Bagaimana harimu?</item>
-        <item>Apa yang kamu lakukan hari ini?</item>
     </string-array>
     <string name="onbording_settings_title">Siapkan %s</string>
     <string name="onbording_settings_summary">Tekan lama layar beranda anda</string>
@@ -532,7 +527,7 @@ Tindakan ini tidak bisa dibatalkan.</string>
     <string name="web_search_baidu">Baidu (web)</string>
     <string name="icon_shape_override_miui_explaination">Karena pembatasan dalam MIUI, bentuk ikon Anda mungkin tidak berubah dan tetap persegi. \nTolong jangan laporkan ini sebagai bug.
  PERMINTAAN KONTEKS.</string>
-    <string name="button_organize_screens">Atur layar</string>
+    <string name="button_organize_screens">Kelola layar</string>
     <string name="weather_icons_default">Bawaan</string>
     <string name="pref_weather_icon_pack">Ikon cuaca</string>
     <string name="weather_icon_packs_not_supported">Tidak didukung oleh sumber cuaca Anda saat ini</string>
