@@ -459,7 +459,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     }
 
     public void dump(String prefix, PrintWriter writer) {
-        writer.println(prefix + "DragLayer");
+        writer.println(prefix + "DragLayer:");
         if (mActiveController != null) {
             writer.println(prefix + "\tactiveController: " + mActiveController);
             mActiveController.dump(prefix + "\t", writer);

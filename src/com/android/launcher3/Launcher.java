@@ -945,14 +945,19 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     }
 
-    protected void onStateSet(LauncherState state) {
-        getAppWidgetHost().setResumed(state == LauncherState.NORMAL);
+    public void onStateSetStart(LauncherState state) {
         if (mDeferredResumePending) {
             handleDeferredResume();
         }
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStateChanged();
         }
+    }
+
+    public void onStateSetEnd(LauncherState state) {
+        getAppWidgetHost().setResumed(state == LauncherState.NORMAL);
+        getWorkspace().setClipChildren(!state.disablePageClipping);
+        finishAutoCancelActionMode();
     }
 
     @Override
@@ -2467,14 +2472,16 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
 
         writer.println(prefix + "Misc:");
-        writer.print(prefix + "\tmWorkspaceLoading=" + mWorkspaceLoading);
-        writer.print(" mPendingRequestArgs=" + mPendingRequestArgs);
-        writer.println(" mPendingActivityResult=" + mPendingActivityResult);
-        writer.println(" mRotationHelper: " + mRotationHelper);
+        dumpMisc(prefix + "\t", writer);
+        writer.println(prefix + "\tmWorkspaceLoading=" + mWorkspaceLoading);
+        writer.println(prefix + "\tmPendingRequestArgs=" + mPendingRequestArgs
+                + " mPendingActivityResult=" + mPendingActivityResult);
+        writer.println(prefix + "\tmRotationHelper: " + mRotationHelper);
+        writer.println(prefix + "\tmAppWidgetHost.isListening: " + mAppWidgetHost.isListening());
+
         // Extra logging for b/116853349
         mDragLayer.dump(prefix, writer);
         mStateManager.dump(prefix, writer);
-        dumpMisc(writer);
 
         try {
             FileLog.flushAll(writer);
