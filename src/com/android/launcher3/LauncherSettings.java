@@ -59,6 +59,10 @@ public class LauncherSettings {
         public static final String ITEM_TYPE = "itemType";
 
         /**
+         * The gesture is a package
+         */
+        public static final int ITEM_TYPE_NON_ACTIONABLE = -1;
+        /**
          * The gesture is an application
          */
         public static final int ITEM_TYPE_APPLICATION = 0;
