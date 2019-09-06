@@ -116,6 +116,7 @@ import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.touch.ItemClickHandler;
+import com.android.launcher3.uioverrides.DejankBinderTracker;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -309,6 +310,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        DejankBinderTracker.allowBinderTrackingInTests();
         RaceConditionTracker.onEvent(ON_CREATE_EVT, ENTER);
         if (DEBUG_STRICT_MODE) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
@@ -430,6 +432,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 }
             }
         });
+        DejankBinderTracker.disallowBinderTrackingInTests();
     }
 
     protected LauncherOverlayManager getDefaultOverlay() {
@@ -941,6 +944,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onStart() {
+        DejankBinderTracker.allowBinderTrackingInTests();
         RaceConditionTracker.onEvent(ON_START_EVT, ENTER);
         super.onStart();
         if (!mDeferOverlayCallbacks) {
@@ -949,6 +953,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         mAppWidgetHost.setListenIfResumed(true);
         RaceConditionTracker.onEvent(ON_START_EVT, EXIT);
+        DejankBinderTracker.disallowBinderTrackingInTests();
     }
 
     private void handleDeferredResume() {
@@ -1043,6 +1048,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onResume() {
+        DejankBinderTracker.allowBinderTrackingInTests();
         RaceConditionTracker.onEvent(ON_RESUME_EVT, ENTER);
         TraceHelper.beginSection("ON_RESUME");
         super.onResume();
@@ -1068,6 +1074,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         TraceHelper.endSection("ON_RESUME");
         RaceConditionTracker.onEvent(ON_RESUME_EVT, EXIT);
+        DejankBinderTracker.disallowBinderTrackingInTests();
     }
 
     @Override

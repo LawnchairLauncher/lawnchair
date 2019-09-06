@@ -22,6 +22,7 @@ import android.os.Looper;
 
 import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.uioverrides.DejankBinderTracker;
 import com.android.launcher3.util.ResourceBasedOverride.Overrides;
 
 import java.util.concurrent.ExecutionException;
@@ -41,7 +42,8 @@ public class MainThreadInitializedObject<T> {
     public T get(Context context) {
         if (mValue == null) {
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                mValue = mProvider.get(context.getApplicationContext());
+                mValue = DejankBinderTracker.whitelistIpcs(() ->
+                        mProvider.get(context.getApplicationContext()));
             } else {
                 try {
                     return MAIN_EXECUTOR.submit(() -> get(context)).get();

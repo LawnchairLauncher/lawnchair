@@ -68,6 +68,7 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.uioverrides.DejankBinderTracker;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -423,9 +424,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private void initializeLauncherAnimationController() {
         buildAnimationController();
 
-        if (LatencyTrackerCompat.isEnabled(mContext)) {
-            LatencyTrackerCompat.logToggleRecents((int) (mLauncherFrameDrawnTime - mTouchTimeMs));
-        }
+        DejankBinderTracker.whitelistIpcs(() -> {
+            // Only used in debug builds
+            if (LatencyTrackerCompat.isEnabled(mContext)) {
+                LatencyTrackerCompat.logToggleRecents(
+                        (int) (mLauncherFrameDrawnTime - mTouchTimeMs));
+            }
+        });
 
         // This method is only called when STATE_GESTURE_STARTED is set, so we can enable the
         // high-res thumbnail loader here once we are sure that we will end up in an overview state
