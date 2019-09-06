@@ -369,14 +369,14 @@
     <string name="sesame_shortcut_disabled">Phím tắt Sesame không có sẵn</string>
     <string name="font_variant_italic">Nghiêng</string>
     <string name="font_weight_thin">Mảnh</string>
-    <string name="font_weight_extra_light">ExtraLight</string>
-    <string name="font_weight_light">Light</string>
+    <string name="font_weight_extra_light">Rất nhạt</string>
+    <string name="font_weight_light">Nhạt</string>
     <string name="font_weight_regular">Bình thường</string>
     <string name="font_weight_medium">Trung bình</string>
-    <string name="font_weight_semi_bold">SemiBold</string>
-    <string name="font_weight_bold">Bold</string>
-    <string name="font_weight_extra_bold">ExtraBold</string>
-    <string name="font_weight_extra_black">Black</string>
+    <string name="font_weight_semi_bold">Nữa đậm</string>
+    <string name="font_weight_bold">Đậm</string>
+    <string name="font_weight_extra_bold">Rất đậm</string>
+    <string name="font_weight_extra_black">Đen</string>
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
@@ -508,13 +508,8 @@
         <item>Chúc bạn một ngày tốt lành!</item>
     </string-array>
     <string-array name="greetings_evening">
-        <item>Chúc bạn ngủ ngon!</item>
+        <item>Chúc ngủ ngon!</item>
         <item>Ngủ ngon nhé!</item>
-        <item>Hẹn gặp bạn vào ngày mai!</item>
-        <item>Chúc bạn có những giấc mơ đẹp!</item>
-        <item>Đừng ngủ quá muộn nhé!</item>
-        <item>Ngày hôm nay của bạn thế nào?</item>
-        <item>Bạn đã làm gì vào hôm nay?</item>
     </string-array>
     <string name="onbording_settings_title">Cài đặt %s</string>
     <string name="onbording_settings_summary">Nhấn và giữ màn hình chính</string>
