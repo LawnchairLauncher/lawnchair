@@ -34,6 +34,7 @@ import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.states.HomeState
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherState
+import com.android.launcher3.LauncherState.BACKGROUND_APP
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.anim.Interpolators
@@ -391,6 +392,12 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
         if (!useFlatColor) {
             mShelfColor = getColorForProgress(mProgress)
+            if (mProgress >= 1 && prefs.swipeHome) {
+                if (mLauncher.stateManager.state == BACKGROUND_APP) {
+                    // Show the shelf background when peeking during swipe up.
+                    mShelfColor = ColorUtils.setAlphaComponent(mShelfColor, super.getMidAlpha())
+                }
+            }
         }
     }
 
