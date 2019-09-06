@@ -10,14 +10,14 @@
     <string name="smartspace_time">Час</string>
     <string name="smartspace_date">Дата</string>
     <string name="customize">Персоналізувати</string>
-    <string name="smartspace_preferences_in_settings">Стислий огляд</string>
+    <string name="smartspace_preferences_in_settings">Віджет At a Glance</string>
     <string name="smartspace_preferences_in_settings_desc">Дата, час, постачальник погоди</string>
     <string name="search">Пошук</string>
     <string name="label_voice_search">Голосовий пошук</string>
     <string name="icon_pack">Набір значків</string>
     <string name="home_widget">Віджет на головному екрані</string>
     <string name="title_show_google_app">%1$s зліва</string>
-    <string name="msg_minus_one_on_left">Стрічка новин зліва робочого столу</string>
+    <string name="msg_minus_one_on_left">Стрічка новин зліва на робочому столі</string>
     <string name="about">Про додаток</string>
     <string name="google_app">Додаток Google</string>
     <string name="about_app_version">Версія</string>
@@ -480,9 +480,9 @@
     <string name="animation_type_default">За замовчуванням</string>
     <string name="animation_type_pie">Pie</string>
     <string name="animation_type_pie_like">У стилі Pie</string>
-    <string name="animation_type_reveal">Задній фон</string>
-    <string name="animation_type_slide_up">Зрушення вверх</string>
-    <string name="animation_type_scale_up">Збільшити масштаб</string>
+    <string name="animation_type_reveal">Розкриття</string>
+    <string name="animation_type_slide_up">Слайд</string>
+    <string name="animation_type_scale_up">Масштабування</string>
     <string name="animation_type_blink">Миготіння</string>
     <string name="animation_type_fade">Затухання</string>
     <string name="permission_iplocate">Дозволити доступ до приблизного мережевого розташування?</string>
@@ -517,11 +517,6 @@
     <string-array name="greetings_evening">
         <item>На добраніч!</item>
         <item>Приємних снів!</item>
-        <item>До завтра!</item>
-        <item>Солодких снів!</item>
-        <item>Не йди спати занадто пізно</item>
-        <item>Як пройшов твій день?</item>
-        <item>Що ти робив сьогодні?</item>
     </string-array>
     <string name="onbording_settings_title">Налаштування %s</string>
     <string name="onbording_settings_summary">Тривале натискання на головному екрані</string>
