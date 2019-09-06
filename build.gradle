@@ -30,8 +30,9 @@ if (localPropsFile.exists()) {
     localProps.load(localPropsFile.newDataInputStream())
 }
 
+def publicBranches = ["alpha", "beta"]
 def ciBuild = localProps.getProperty("ciBuild") == "true" || System.getenv("CI_BUILD") == "true"
-def isPublicBuild = localProps.getProperty("public") == "true" || (ciBuild && System.getenv("DRONE_BRANCH") == "alpha")
+def isPublicBuild = localProps.getProperty("public") == "true" || (ciBuild && publicBranches.contains(System.getenv("DRONE_BRANCH")))
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -317,10 +318,8 @@ dependencies {
 
     if (!isPublicBuild) {
         // TODO: update to 2.x when we're on AndroidX
-        debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
-        debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.3'
-        optimizedImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
-        optimizedImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.3'
+        implementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+        implementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.3'
     } else {
         implementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
     }

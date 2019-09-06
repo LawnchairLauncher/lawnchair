@@ -19,13 +19,13 @@ pipeline:
       - CI_BUILD_NUMBER=${DRONE_BUILD_NUMBER}
       - CI_EVENT_TYPE=${DRONE_BUILD_EVENT}
     commands:
-      - bash ./gradlew assembleQuickstepLawnchairCiOptimized;
+      - bash ./build-ci.sh
 
   # Step 3: Upload to Telegram, APKMirror or Transfer.sh, depending on the event or branch
   deploy:
     image: lawnchairlauncher/drone-telegram:latest
     secrets: [ bot_token, channel_id, dev_channel_id ]
-    apk_path: build/outputs/apk/quickstepLawnchairCi/optimized/LawnchairAlpha-quickstep-lawnchair-ci-optimized.apk
+    apk_path: build/outputs/apk/*/*/*.apk
     mapping_path: build/outputs/mapping/quickstepLawnchairCi/optimized/mapping.txt
     channel_id: "-1001083653933"
     public_branch: alpha
@@ -55,4 +55,4 @@ pipeline:
       status: success
 
 branches:
-  exclude: [ l10n_alpha2, lawnchair-v1, beta ]
+  exclude: [ l10n_alpha2, lawnchair-v1 ]
