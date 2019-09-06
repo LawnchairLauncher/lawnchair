@@ -16,10 +16,13 @@
 
 package com.android.launcher3.widget;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.IntProperty;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -42,6 +45,20 @@ import java.util.List;
  * Bottom sheet for the "Widgets" system shortcut in the long-press popup.
  */
 public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
+
+    private static final IntProperty<View> PADDING_BOTTOM =
+            new IntProperty<View>("paddingBottom") {
+                @Override
+                public void setValue(View view, int paddingBottom) {
+                    view.setPadding(view.getPaddingLeft(), view.getPaddingTop(),
+                            view.getPaddingRight(), paddingBottom);
+                }
+
+                @Override
+                public Integer get(View view) {
+                    return view.getPaddingBottom();
+                }
+            };
 
     private static final int DEFAULT_CLOSE_DURATION = 200;
     private ItemInfo mOriginalItemInfo;
@@ -185,5 +202,10 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
     protected Pair<View, String> getAccessibilityTarget() {
         return Pair.create(findViewById(R.id.title),  getContext().getString(
                 mIsOpen ? R.string.widgets_list : R.string.widgets_list_closed));
+    }
+
+    @Override
+    public Animator createHintCloseAnim(float distanceToMove) {
+        return ObjectAnimator.ofInt(this, PADDING_BOTTOM, (int) (distanceToMove + mInsets.bottom));
     }
 }

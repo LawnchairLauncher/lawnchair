@@ -55,4 +55,6 @@
     <dimen name="shelf_surface_radius">16dp</dimen>
     <!-- same as vertical_drag_handle_size -->
     <dimen name="shelf_surface_offset">18dp</dimen>
+
+    <dimen name="home_pullback_distance">28dp</dimen>
 </resources>

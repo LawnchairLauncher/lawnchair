@@ -23,6 +23,7 @@ import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CH
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 
+import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.IntDef;
@@ -121,6 +122,14 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     protected abstract void handleClose(boolean animate);
+
+    /**
+     * Creates a user-controlled animation to hint that the view will be closed if completed.
+     * @param distanceToMove The max distance that elements should move from their starting point.
+     */
+    public Animator createHintCloseAnim(float distanceToMove) {
+        return null;
+    }
 
     public abstract void logActionCommand(int command);
 
