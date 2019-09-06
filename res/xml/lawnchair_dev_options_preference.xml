@@ -44,6 +44,12 @@
         android:persistent="true" />
 
     <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        android:key="pref_swipeHome"
+        android:title="Swipe up to go home"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
         android:key="pref_dismissTasksOnKill"
         android:title="Dismiss tasks from app switcher when killed"
         android:defaultValue="true"

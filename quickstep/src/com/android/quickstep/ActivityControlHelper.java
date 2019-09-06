@@ -75,6 +75,7 @@ import com.android.launcher3.uioverrides.FastOverviewState;
 import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
+import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.LayoutUtils;
@@ -225,23 +226,21 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
         @Override
         public HomeAnimationFactory prepareHomeUI(Launcher activity) {
             final DeviceProfile dp = activity.getDeviceProfile();
-//            final RecentsView recentsView = activity.getOverviewPanel();
-//            final TaskView runningTaskView = recentsView.getRunningTaskView();
-//            final View workspaceView;
-//            if (runningTaskView != null && runningTaskView.getTask().key.getComponent() != null) {
-//                workspaceView = activity.getWorkspace().getFirstMatchForAppClose(
-//                        runningTaskView.getTask().key.getComponent().getPackageName(),
-//                        UserHandle.of(runningTaskView.getTask().key.userId));
-//            } else {
-//                workspaceView = null;
-//            }
-            final Rect iconLocation = new Rect();
-//            final FloatingIconView floatingView = workspaceView == null ? null
-//                    : FloatingIconView.getFloatingIconView(activity, workspaceView,
-//                            true /* hideOriginal */, false /* useDrawableAsIs */,
-//                            activity.getDeviceProfile().getAspectRatioWithInsets(), iconLocation, null);
-            View workspaceView = null;
-            View floatingView = null;
+            final RecentsView recentsView = activity.getOverviewPanel();
+            final TaskView runningTaskView = recentsView.getRunningTaskView();
+            final View workspaceView;
+            if (runningTaskView != null && runningTaskView.getTask().key.getComponent() != null) {
+                workspaceView = activity.getWorkspace().getFirstMatchForAppClose(
+                        runningTaskView.getTask().key.getComponent().getPackageName(),
+                        UserHandle.of(runningTaskView.getTask().key.userId));
+            } else {
+                workspaceView = null;
+            }
+            final RectF iconLocation = new RectF();
+            final FloatingIconView floatingView = workspaceView != null
+                    ? FloatingIconView.getFloatingIconView(activity, workspaceView,
+                    true /* hideOriginal */, iconLocation, false /* isOpening */, null /* recycle */)
+                    : null;
 
             return new HomeAnimationFactory() {
                 @Nullable
