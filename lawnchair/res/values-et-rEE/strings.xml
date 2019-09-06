@@ -509,11 +509,6 @@
     <string-array name="greetings_evening">
         <item>Head ööd!</item>
         <item>Head und!</item>
-        <item>Näeme homme!</item>
-        <item>Ilusaid unenägusid!</item>
-        <item>Ära ole üleval liiga kaua</item>
-        <item>Kuidas sinu päeva läks?</item>
-        <item>Mida sa täna tegid?</item>
     </string-array>
     <string name="onbording_settings_title">Seadista %s</string>
     <string name="onbording_settings_summary">Pikk vajutus koduekraanil</string>
