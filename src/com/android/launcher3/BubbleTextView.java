@@ -32,7 +32,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Property;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -54,8 +53,8 @@ import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconCache.IconLoadRequest;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.model.PackageItemInfo;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.IconLabelDotView;
 
 import java.text.NumberFormat;
 
@@ -64,7 +63,8 @@ import java.text.NumberFormat;
  * because we want to make the bubble taller than the text and TextView's clip is
  * too aggressive.
  */
-public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, OnResumeCallback {
+public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, OnResumeCallback,
+        IconLabelDotView {
 
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
@@ -413,7 +413,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         }
     }
 
-    public void forceHideDot(boolean forceHideDot) {
+    @Override
+    public void setForceHideDot(boolean forceHideDot) {
         if (mForceHideDot == forceHideDot) {
             return;
         }
@@ -602,6 +603,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         }
     }
 
+    @Override
     public void setIconVisible(boolean visible) {
         mIsIconVisible = visible;
         Drawable icon = visible ? mIcon : new ColorDrawable(Color.TRANSPARENT);
