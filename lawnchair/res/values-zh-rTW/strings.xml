@@ -328,7 +328,7 @@
     <string name="recent_task_option_popup_window">對話方塊</string>
     <string name="feed_theme_pref_title">背景色彩</string>
     <string name="recents_not_connected">未連線服務</string>
-    <string name="advanced_settings">進階%s設定</string>
+    <string name="advanced_settings">%s進階設定</string>
     <string name="adaptive_icon">自動調整圖示</string>
     <string name="drawer_tabs">分頁</string>
     <string name="add_new_tab">新增</string>
@@ -437,7 +437,7 @@
     <string name="pref_appcategorization_folders_summary">輕觸以開啟彈出視窗</string>
     <string name="pref_appcategorization_tabs_title">分頁</string>
     <string name="pref_appcategorization_tabs_summary">在群組間滑動</string>
-    <string name="default_folder_name">建立資料夾</string>
+    <string name="default_folder_name">新建資料夾</string>
     <string name="drawer_folders">資料夾</string>
     <string name="category_business_and_productivity">商業及生產力</string>
     <string name="category_communication">通訊</string>
@@ -451,7 +451,7 @@
     <string name="category_news">新聞</string>
     <string name="category_personalization">個人化</string>
     <string name="category_photography">攝影</string>
-    <string name="category_tools">工具</string>
+    <string name="category_tools">工具/實用</string>
     <string name="category_travel_and_navigation">旅遊及導航</string>
     <string name="lock_desktop">鎖定桌面</string>
     <string name="reset_custom_icons">重設自訂圖示</string>
@@ -462,8 +462,8 @@
     <string name="bugreport_channel_name">錯誤回報</string>
     <string name="status_channel_name">錯誤回報上傳狀態</string>
     <string name="bugreport_group_summary">%d 個新報告</string>
-    <string name="bugreport_group_summary_multiple">多個新報告</string>
-    <string name="dogbin_uploading">正在上傳</string>
+    <string name="bugreport_group_summary_multiple">多個新錯誤報告</string>
+    <string name="dogbin_uploading">上傳中</string>
     <string name="action_dogbin_upload">上傳至 dogbin</string>
     <string name="action_dogbin_upload_error">上傳失敗</string>
     <string name="action_dogbin_copy_link">複製連結</string>
@@ -513,11 +513,6 @@
     <string-array name="greetings_evening">
         <item>晚安！</item>
         <item>祝您睡得香甜！</item>
-        <item>明天見！</item>
-        <item>祝您有個好夢</item>
-        <item>不要熬夜太久</item>
-        <item>你今天過得好嗎？</item>
-        <item>你今天都做了什麼？</item>
     </string-array>
     <string name="onbording_settings_title">設定 %s</string>
     <string name="onbording_settings_summary">常按主畫面</string>
