@@ -119,4 +119,16 @@ public class LayoutUtils {
         outRect.set(Math.round(x), Math.round(y),
                 Math.round(x + outWidth), Math.round(y + outHeight));
     }
+
+    public static int getShelfTrackingDistance(Context context, DeviceProfile dp) {
+        if (Utilities.getLawnchairPrefs(context).getSwipeHome()) {
+            // Track the bottom of the window rather than the top of the shelf.
+            int shelfHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
+            int spaceBetweenShelfAndRecents = (int) context.getResources().getDimension(
+                    R.dimen.task_card_vert_space);
+            return shelfHeight + spaceBetweenShelfAndRecents;
+        }
+        // Start from a third of bottom inset to provide some shelf overlap.
+        return dp.hotseatBarSizePx + dp.getInsets().bottom / 3 - dp.edgeMarginPx * 2;
+    }
 }
