@@ -514,11 +514,6 @@ A művelet nem visszavonható.</string>
     <string-array name="greetings_evening">
         <item>Jó éjszakát!</item>
         <item>Aludj jól!</item>
-        <item>Holnap találkozunk!</item>
-        <item>Szép álmokat!</item>
-        <item>Ne maradjon ébren túl későig</item>
-        <item>Milyen volt a mai napja?</item>
-        <item>Miket csinált ma?</item>
     </string-array>
     <string name="onbording_settings_title">%s beállítása</string>
     <string name="onbording_settings_summary">A Kezdőképernyő hosszan nyomásával</string>

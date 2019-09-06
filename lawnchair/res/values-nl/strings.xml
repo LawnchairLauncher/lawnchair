@@ -513,11 +513,6 @@
     <string-array name="greetings_evening">
         <item>Goedenacht!</item>
         <item>Slaap lekker!</item>
-        <item>Tot morgen!</item>
-        <item>Droom zacht!</item>
-        <item>Niet te lang opblijven</item>
-        <item>Hoe was je dag?</item>
-        <item>Wat heb je gedaan vandaag?</item>
     </string-array>
     <string name="onbording">Onboarding</string>
     <string name="onbording_settings_title">%s instellen</string>

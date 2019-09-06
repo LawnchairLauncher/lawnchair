@@ -509,11 +509,6 @@
     <string-array name="greetings_evening">
         <item>Bona nit!</item>
         <item>Que dormiu bé!</item>
-        <item>Fins demà!</item>
-        <item>Dolços somnis!</item>
-        <item>No us aneu a dormir molt tard</item>
-        <item>Com ha anat el dia?</item>
-        <item>Què heu fet avui?</item>
     </string-array>
     <string name="onbording_settings_title">Configura %s</string>
     <string name="onbording_settings_summary">Mantingueu premuda la pantalla d\'inici</string>
@@ -527,4 +522,10 @@
     <string name="web_search_yandex">Yandex (web)</string>
     <string name="web_search_naver">Naver (web)</string>
     <string name="web_search_baidu">Baidu (web)</string>
+    <string name="icon_shape_override_miui_explaination">A causa d\'una restricció a MIUI, la forma de la vostra icona pot no canviar-se i romandre quadrada.\nNo informeu això com un error.</string>
+    <string name="button_organize_screens">Organitza les pantalles</string>
+    <string name="weather_icons_default">Per defecte</string>
+    <string name="pref_weather_icon_pack">Icones del temps</string>
+    <string name="weather_icon_packs_not_supported">No és compatible amb la vostra font meteorològica actual</string>
+    <string name="lawnchair_settings">Configuració del Lawnchair</string>
 </resources>

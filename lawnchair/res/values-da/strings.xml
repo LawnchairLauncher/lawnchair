@@ -512,11 +512,6 @@
     <string-array name="greetings_evening">
         <item>Godnat!</item>
         <item>Sov godt!</item>
-        <item>Ses i morgen!</item>
-        <item>Drøm sødt!</item>
-        <item>Bliv ikke oppe for længe</item>
-        <item>Hvordan var din dag?</item>
-        <item>Hvad lavede du i dag?</item>
     </string-array>
     <string name="onbording_settings_title">Opsæt %s</string>
     <string name="onbording_settings_summary">Langt tryk på Hjemskærmen</string>

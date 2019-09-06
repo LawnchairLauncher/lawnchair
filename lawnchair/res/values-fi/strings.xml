@@ -291,6 +291,7 @@
     <string name="theme_black_dark_text">Musta tummalla tekstillä</string>
     <string name="theme_dark_theme_mode">Tumma teema</string>
     <string name="theme_dark_theme_mode_on">Käytössä</string>
+    <string name="theme_dark_theme_mode_off">Pois päältä</string>
     <string name="theme_dark_theme_mode_follow_daylight">Seuraa päivänvaloa</string>
     <string name="theme_use_black">Käytä puhdasta mustaa</string>
     <string name="theme_use_dark_text">Käytä tummaa tekstiä</string>
@@ -336,6 +337,7 @@
     <string name="selected_count">%1$d valittu</string>
     <string name="tab_manage_apps">Hallinnoi sovelluksia</string>
     <string name="tab_bottom_sheet_save">Tallenna</string>
+    <string name="tab_hide_from_main">Piilota päävälilehdeltä</string>
     <string name="tab_color">Välilehden väri</string>
     <string name="delete">Poista</string>
     <string name="none">Ei mitään</string>
@@ -355,6 +357,7 @@
     <string name="pref_sesame_show_shortcuts">Sovelluspikakuvakkeet</string>
     <string name="pref_sesame_show_shortcuts_summary">Näytä Sesame-pikakuvakkeet sovelluspikakuvakkeiden kuplissa</string>
     <string name="allow">Salli</string>
+    <string name="deny">Estä</string>
     <string name="sesame_enable_integration_title">Ota integrointi käyttöön</string>
     <string name="sesame_enable_integration_description"><![CDATA[Ottaa käyttöön tietojen jakamisen Lawnchairin ja Sesamen välillä. Voit muuttaa tämän Lawnchairin tai Sesamen asetuksista.]]></string>
     <string name="sesame_version">Integraatioversio</string>
@@ -414,11 +417,15 @@
     <string name="pref_notification_count_title">Näytä ilmoitusten lukumäärä</string>
     <string name="pref_notification_count_summary">Näytä ilmoitusten lukumäärä pisteen sisällä</string>
     <string name="pref_center_wallpaper">Keskitä taustakuva aina</string>
+    <string name="pref_center_wallpaper_summary">Tämä poistaa taustakuvan vieritystehosteen</string>
     <string name="pref_appcategorization_enable_title">Sovellusten luokittelu</string>
+    <string name="pref_appcategorization_enable_summary">Korjaa sekava sovellusvalikkoni.</string>
     <string name="pref_appcategorization_style_text">Tyyli</string>
+    <string name="pref_app_groups_edit_tip">Napauta muokataksesi, raahaa järjestelläksesi.</string>
     <string name="pref_app_groups_create">Luo</string>
     <string name="pref_appcategorization_folders_title">Kansiot</string>
     <string name="pref_appcategorization_tabs_title">Välilehdet</string>
+    <string name="pref_appcategorization_tabs_summary">Pyyhkäise ryhmien välillä.</string>
     <string name="default_folder_name">Uusi kansio</string>
     <string name="drawer_folders">Kansiot</string>
     <string name="category_communication">Viestintä</string>
@@ -430,15 +437,22 @@
     <string name="category_news">Uutiset</string>
     <string name="category_personalization">Personointi</string>
     <string name="category_photography">Valokuvaus</string>
+    <string name="category_travel_and_navigation">Matkustus ja Navigaatio</string>
     <string name="lock_desktop">Lukitse aloitusnäyttö</string>
+    <string name="reset_custom_icons">Nollaa muokatut kuvakkeet</string>
+    <string name="import_icon">Tuo kuvake</string>
     <string name="import_as_adaptive">Adaptiivisena kuvakkeena</string>
     <string name="bugreport_channel_name">Virheraportit</string>
+    <string name="dogbin_uploading">Lähetys käynnissä</string>
+    <string name="action_dogbin_upload">Lähetä dogbiniin</string>
     <string name="action_dogbin_upload_error">Lähetys epäonnistui</string>
     <string name="action_dogbin_copy_link">Kopioi linkki</string>
+    <string name="lawnchair_bug_report">Lawnchair virheraportti</string>
     <string name="copied_toast">Kopioitu</string>
     <string name="action_copy">Kopioi</string>
     <string name="action_copy_link">Kopioi linkki</string>
     <string name="action_share">Jaa</string>
+    <string name="animation_type_title">Sovelluksen avausanimaatio</string>
     <string name="animation_type_default">Oletus</string>
     <string name="animation_type_pie">Pie</string>
     <string name="animation_type_pie_like">Pie -tyylinen</string>
@@ -455,7 +469,9 @@
     <string name="battery_full">Akku täynnä</string>
     <string name="battery_low">Akku vähissä</string>
     <string name="event_provider_unread_notifications">Lukemattomat ilmoitukset</string>
+    <string name="zen_mode_enabled">Älä häiritse ‑tila on käytössä</string>
     <string name="crash_report_notif_title">%1$s kaatui!</string>
+    <string name="personality_provider">Asiayhteydelliset viestit</string>
     <string-array name="greetings_morning">
         <item>Hyvää huomenta!</item>
         <item>Miten hieno päivä!</item>
@@ -465,11 +481,21 @@
     <string-array name="greetings_evening">
         <item>Hyvää yötä!</item>
         <item>Nuku hyvin!</item>
-        <item>Nähdään huomenna!</item>
-        <item>Kauniita unia!</item>
-        <item>Älä valvo liian myöhään</item>
-        <item>Millainen oli päiväsi?</item>
-        <item>Mitä teit tänään?</item>
     </string-array>
+    <string name="onbording_settings_title">Määritä %s</string>
+    <string name="onbording_settings_summary">Paina pitkään aloitusnäyttöäsi</string>
+    <string name="onboarding_swipe_up">Pyyhkäise ylös nähdäksesi kaikki sovelluksesi</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
     <string name="button_organize_screens">Järjestä näytöt</string>
+    <string name="weather_icons_default">Oletus</string>
+    <string name="pref_weather_icon_pack">Sääkuvakkeet</string>
+    <string name="lawnchair_settings">Lawnchair Asetukset</string>
 </resources>

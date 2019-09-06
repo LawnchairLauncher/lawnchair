@@ -515,11 +515,6 @@
     <string-array name="greetings_evening">
         <item>Noapte bună!</item>
         <item>Somn ușor!</item>
-        <item>Pe mâine!</item>
-        <item>Vise plăcute!</item>
-        <item>Nu sta prea mult</item>
-        <item>Cum ți-a fost ziua?</item>
-        <item>Ce ai făcut azi?</item>
     </string-array>
     <string name="onbording_settings_title">Setare %s</string>
     <string name="onbording_settings_summary">Apasă lung pe ecranul principal</string>

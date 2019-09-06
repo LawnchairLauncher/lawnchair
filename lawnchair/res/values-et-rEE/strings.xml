@@ -509,11 +509,6 @@
     <string-array name="greetings_evening">
         <item>Head ööd!</item>
         <item>Head und!</item>
-        <item>Näeme homme!</item>
-        <item>Ilusaid unenägusid!</item>
-        <item>Ära ole üleval liiga kaua</item>
-        <item>Kuidas sinu päeva läks?</item>
-        <item>Mida sa täna tegid?</item>
     </string-array>
     <string name="onbording_settings_title">Seadista %s</string>
     <string name="onbording_settings_summary">Pikk vajutus koduekraanil</string>
@@ -529,4 +524,8 @@
     <string name="web_search_baidu">Baidu (veeb)</string>
     <string name="icon_shape_override_miui_explaination">MIUI piirangu tõttu ei pruugi teie ikooni kuju muutuda ja jääda ruudukujuliseks.\nPalun ära teata sellest kui veast.</string>
     <string name="button_organize_screens">Korralda ekraane</string>
+    <string name="weather_icons_default">Vaikimisi</string>
+    <string name="pref_weather_icon_pack">Ilmateate ikoonid</string>
+    <string name="weather_icon_packs_not_supported">Teie praegune ilmateate allikas ei toeta seda</string>
+    <string name="lawnchair_settings">Lawnchairi seaded</string>
 </resources>

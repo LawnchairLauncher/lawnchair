@@ -44,7 +44,7 @@
     <string name="dock_pref_summary">Estilo, opacidade, indicador de página</string>
     <string name="dock_pref_title">Doca</string>
     <string name="hide_icon_labels_pref_title">Ocultar nomes das aplicações</string>
-    <string name="backups">Cópias de Segurança</string>
+    <string name="backups">Backups</string>
     <string name="new_backup">Criar</string>
     <string name="restore_backup">Restaurar</string>
     <string name="backup_location">Localização</string>
@@ -54,35 +54,35 @@
     <string name="homescreen">Ecrã principal</string>
     <string name="backup_wallpaper">Papel de parede</string>
     <string name="backup_error_blank_name">Insira o nome da cópia de segurança</string>
-    <string name="backup_error_blank_location">Selecione o local para a cópia de segurança</string>
+    <string name="backup_error_blank_location">Selecione o local para o backup</string>
     <string name="backup_error_blank_contents">Adicionar conteúdo da cópia de segurança</string>
-    <string name="backup_creating">A criar cópia de segurança</string>
+    <string name="backup_creating">A criar backup</string>
     <string name="no_recent_backups">Nada para mostrar</string>
     <string name="backup_loading">A carregar...</string>
     <string name="backup_invalid">Ficheiro de backup incorreto</string>
     <string name="backup_share">Partilhar</string>
-    <string name="backup_pref_summary">Salvar ecrã principal, restaurar cópias de segurança</string>
+    <string name="backup_pref_summary">Guardar ecrã principal, restaurar backups</string>
     <string name="backup_timestamp">Data de criação</string>
     <string name="backup_restoring">A restaurar...</string>
     <string name="backup_restarting">A reiniciar...</string>
     <string name="restore_contents">Restaurar conteúdo</string>
     <string name="restore_success">Restauro concluído</string>
     <string name="failed">Algo errado aconteceu</string>
-    <string name="backup_share_text">Cópia de segurança do Lawnchair</string>
+    <string name="backup_share_text">Backup do Lawnchair</string>
     <string name="full_width_widgets_pref_summary">Permitir que widgets estendam até ao limite do ecrã</string>
     <string name="full_width_width_widgets_pref_title">Widgets largos</string>
     <string name="hide_apps">Ocultar aplicações</string>
     <string name="hide_apps_sum">Remover aplicações do menu</string>
     <string name="grid_size">Tamanho da grelha</string>
     <string name="developer_options_title">Opções de programador</string>
-    <string name="developer_options_enabled">Opções do desenvolvedor ativada</string>
+    <string name="developer_options_enabled">Opções do programador ativas</string>
     <string name="restart_lawnchair_pref_title">Reiniciar</string>
     <string name="restart_lawnchair_pref_summary">Aplicar definições novamente</string>
     <string name="show_debug_info_pref_title">Mostrar nome do componente</string>
     <string name="debug_component_name">Nome do componente</string>
     <string name="debug_component_name_copied">Copiado</string>
-    <string name="read_external_storage_required">Para salvar a cópia de segurança, conceda permissão de armazenamento</string>
-    <string name="local_backups">Cópias de segurança no armazenamento</string>
+    <string name="read_external_storage_required">Para guardar o backup, tem que conceder o acesso ao armazenamento</string>
+    <string name="local_backups">Backups no armazenamento</string>
     <string name="backup_location_device_storage">Pasta do Lawnchair</string>
     <string name="grid_size_height">Altura</string>
     <string name="grid_size_width">Largura</string>
@@ -150,7 +150,7 @@
     <string name="about_role_mod_support">Moderador/Suporte</string>
     <string name="about_role_family_member">Membro da família</string>
     <string name="about_role_magisk_maintainer">Responsável pelo módulo Magisk</string>
-    <string name="about_bio_deletescape">Desenvolvedor e entusiasta de sistemas Android, adora memes (demasiado). Criador do projeto Lawnchair.</string>
+    <string name="about_bio_deletescape">Programador e entusiasta de sistemas Android, adora memes (demasiado). Criador do projeto Lawnchair.</string>
     <string name="about_bio_recoded">Programador e designer.</string>
     <string name="about_bio_josh">Designer como trabalhador independente.</string>
     <string name="about_bio_chris">Millenial como tudo, não sei e não quero saber. Algo relacionado com redes sociais. Partilhemos experiências em @lawnchairapp ✨</string>
@@ -344,7 +344,7 @@
     </plurals>
     <string name="selected_count">%1$d selecionado(s)</string>
     <string name="tab_manage_apps">Gerir aplicações</string>
-    <string name="tab_bottom_sheet_save">Salvar</string>
+    <string name="tab_bottom_sheet_save">Guardar</string>
     <string name="tab_hide_from_main">Ocultar do separador principal</string>
     <string name="tab_color">Cor do separador</string>
     <string name="delete">Apagar</string>
@@ -513,11 +513,6 @@
     <string-array name="greetings_evening">
         <item>Boa noite!</item>
         <item>Durma bem!</item>
-        <item>Vemo-nos amanhã!</item>
-        <item>Bons sonhos!</item>
-        <item>Não fique acordado até tarde</item>
-        <item>Como foi o seu dia?</item>
-        <item>O que fez hoje?</item>
     </string-array>
     <string name="onbording_settings_title">Configurar %s</string>
     <string name="onbording_settings_summary">Toque longo no ecrã</string>

@@ -508,11 +508,6 @@
     <string-array name="greetings_evening">
         <item>Laku noć!</item>
         <item>Ugodno spavaj!</item>
-        <item>Vidimo se sutra!</item>
-        <item>Lijepe snove želim!</item>
-        <item>Ne idi kasno na spavanje</item>
-        <item>Kakav ti je bio dan?</item>
-        <item>Što si danas radio/la?</item>
     </string-array>
     <string name="onbording_settings_title">Postavi %s</string>
     <string name="onbording_settings_summary">Dugi pritisak na tvoj početni zaslon</string>
