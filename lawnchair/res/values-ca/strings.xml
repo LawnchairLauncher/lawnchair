@@ -509,11 +509,6 @@
     <string-array name="greetings_evening">
         <item>Bona nit!</item>
         <item>Que dormiu bé!</item>
-        <item>Fins demà!</item>
-        <item>Dolços somnis!</item>
-        <item>No us aneu a dormir molt tard</item>
-        <item>Com ha anat el dia?</item>
-        <item>Què heu fet avui?</item>
     </string-array>
     <string name="onbording_settings_title">Configura %s</string>
     <string name="onbording_settings_summary">Mantingueu premuda la pantalla d\'inici</string>
