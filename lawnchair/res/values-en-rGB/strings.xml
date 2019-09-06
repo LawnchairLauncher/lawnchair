@@ -505,11 +505,6 @@
     <string-array name="greetings_evening">
         <item>Good night!</item>
         <item>Sleep well!</item>
-        <item>See you tomorrow!</item>
-        <item>Sweet dreams!</item>
-        <item>Don\'t stay up too long</item>
-        <item>How was your day?</item>
-        <item>What did you do today?</item>
     </string-array>
     <string name="onbording_settings_title">Set-up %s</string>
     <string name="onbording_settings_summary">Long press your home screen</string>
