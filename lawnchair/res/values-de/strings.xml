@@ -515,6 +515,13 @@
         <item>Gute Nacht!</item>
         <item>Schlaf gut!</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>Gute Nacht!</item>
+        <item>Schlaf gut!</item>
+        <item>Bis morgen!</item>
+        <item>Träum süß!</item>
+        <item>Bleib nicht zulange auf</item>
+    </string-array>
     <string name="onbording">Onboarding</string>
     <string name="onbording_settings_title">Stelle %s ein</string>
     <string name="onbording_settings_summary">Lange Tippen auf dem Startbildschirm</string>
@@ -534,4 +541,13 @@
     <string name="pref_weather_icon_pack">Wetter-Icons</string>
     <string name="weather_icon_packs_not_supported">Deine aktuelle Wetter-Quelle unterstützt das leider nicht.</string>
     <string name="lawnchair_settings">Lawnchair-Einstellungen</string>
+    <string name="icon_shape_top_left">Oben links</string>
+    <string name="icon_shape_top_right">Oben rechts</string>
+    <string name="icon_shape_bottom_left">Unten links</string>
+    <string name="icon_shape_bottom_right">Unten rechts</string>
+    <string name="icon_shape_corner_round">Rund</string>
+    <string name="icon_shape_corner_squircle">Squircle</string>
+    <string name="smartspace_add_to_home">Zum Startbildschirm hinzufügen</string>
+    <string name="root_access_required">Root-Zugriff erforderlich</string>
+    <string name="smartspace_setup_text">Zum Einrichten tippen</string>
 </resources>
