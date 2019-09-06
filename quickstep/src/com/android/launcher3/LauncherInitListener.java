@@ -25,7 +25,6 @@ import android.os.Handler;
 
 import com.android.launcher3.states.InternalStateHandler;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
-import com.android.quickstep.OverviewCallbacks;
 import com.android.quickstep.util.RemoteAnimationProvider;
 
 import java.util.function.BiPredicate;
@@ -63,7 +62,7 @@ public class LauncherInitListener extends InternalStateHandler implements Activi
                 return null;
             }, cancellationSignal);
         }
-        OverviewCallbacks.get(launcher).onInitOverviewTransition();
+        launcher.deferOverlayCallbacksUntilNextResumeOrStop();
         return mOnInitListener.test(launcher, alreadyOnHome);
     }
 

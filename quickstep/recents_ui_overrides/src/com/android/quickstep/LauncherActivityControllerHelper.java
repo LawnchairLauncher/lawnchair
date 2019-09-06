@@ -66,6 +66,7 @@ import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
+import com.android.systemui.plugins.shared.LauncherOverlayManager;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.BiPredicate;
@@ -478,5 +479,19 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     @Override
     public void onLaunchTaskSuccess(Launcher launcher) {
         launcher.getStateManager().moveToRestState();
+    }
+
+    @Override
+    public void closeOverlay() {
+        Launcher launcher = getCreatedActivity();
+        if (launcher == null) {
+            return;
+        }
+        LauncherOverlayManager om = launcher.getOverlayManager();
+        if (!launcher.isStarted() || launcher.isForceInvisible()) {
+            om.hideOverlay(false /* animate */);
+        } else {
+            om.hideOverlay(150);
+        }
     }
 }

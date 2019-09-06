@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.systemui.plugins.shared;
 
 import android.content.SharedPreferences;
+
+import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay;
 
 /**
  * This interface defines the set of methods that the Launcher activity exposes. Methods
@@ -24,9 +26,24 @@ import android.content.SharedPreferences;
  */
 public interface LauncherExterns {
 
-    boolean setLauncherCallbacks(LauncherCallbacks callbacks);
-
+    /**
+     * Returns the shared main preference
+     */
     SharedPreferences getSharedPrefs();
 
-    void setLauncherOverlay(Launcher.LauncherOverlay overlay);
+    /**
+     * Returns the device specific preference
+     */
+    SharedPreferences getDevicePrefs();
+
+    /**
+     * Sets the overlay on the target activity
+     */
+    void setLauncherOverlay(LauncherOverlay overlay);
+
+    /**
+     * Executes the command, next time the overlay is hidden
+     */
+    void runOnOverlayHidden(Runnable runnable);
+
 }

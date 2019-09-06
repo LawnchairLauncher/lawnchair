@@ -65,10 +65,6 @@ import android.view.InputEvent;
 import android.view.MotionEvent;
 import android.view.Surface;
 
-import androidx.annotation.BinderThread;
-import androidx.annotation.UiThread;
-import androidx.annotation.WorkerThread;
-
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
@@ -109,6 +105,10 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import androidx.annotation.BinderThread;
+import androidx.annotation.UiThread;
+import androidx.annotation.WorkerThread;
 
 /**
  * Wrapper around a list for processing arguments.
@@ -271,7 +271,6 @@ public class TouchInteractionService extends Service implements
     private OverviewCommandHelper mOverviewCommandHelper;
     private OverviewComponentObserver mOverviewComponentObserver;
     private OverviewInteractionState mOverviewInteractionState;
-    private OverviewCallbacks mOverviewCallbacks;
     private TaskOverlayFactory mTaskOverlayFactory;
     private InputConsumerController mInputConsumer;
     private boolean mAssistantAvailable;
@@ -468,7 +467,6 @@ public class TouchInteractionService extends Service implements
 
         mOverviewCommandHelper = new OverviewCommandHelper(this, mOverviewComponentObserver);
         mOverviewInteractionState = OverviewInteractionState.INSTANCE.get(this);
-        mOverviewCallbacks = OverviewCallbacks.get(this);
         mTaskOverlayFactory = TaskOverlayFactory.INSTANCE.get(this);
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
         mIsUserUnlocked = true;
@@ -701,20 +699,20 @@ public class TouchInteractionService extends Service implements
 
         final boolean shouldDefer;
         final BaseSwipeUpHandler.Factory factory;
+        ActivityControlHelper activityControlHelper =
+                mOverviewComponentObserver.getActivityControlHelper();
 
         if (mMode == Mode.NO_BUTTON && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
             shouldDefer = !sSwipeSharedState.recentsAnimationFinishInterrupted;
             factory = mFallbackNoButtonFactory;
         } else {
-            shouldDefer = mOverviewComponentObserver.getActivityControlHelper()
-                    .deferStartingActivity(mActiveNavBarRegion, event);
+            shouldDefer = activityControlHelper.deferStartingActivity(mActiveNavBarRegion, event);
             factory = mWindowTreansformFactory;
         }
 
-        return new OtherActivityInputConsumer(this, runningTaskInfo,
-                shouldDefer, mOverviewCallbacks, this::onConsumerInactive,
-                sSwipeSharedState, mInputMonitorCompat, mSwipeTouchRegion,
-                disableHorizontalSwipe(event), factory, mLogId);
+        return new OtherActivityInputConsumer(this, runningTaskInfo, shouldDefer,
+                this::onConsumerInactive, sSwipeSharedState, mInputMonitorCompat, mSwipeTouchRegion,
+                disableHorizontalSwipe(event), activityControlHelper, factory, mLogId);
     }
 
     private InputConsumer createDeviceLockedInputConsumer(RunningTaskInfo taskInfo) {
@@ -736,10 +734,10 @@ public class TouchInteractionService extends Service implements
 
         if (activity.getRootView().hasWindowFocus() || sSwipeSharedState.goingToLauncher) {
             return new OverviewInputConsumer(activity, mInputMonitorCompat,
-                    false /* startingInActivityBounds */);
+                    false /* startingInActivityBounds */, activityControl);
         } else {
             return new OverviewWithoutFocusInputConsumer(activity, mInputMonitorCompat,
-                    disableHorizontalSwipe(event));
+                    activityControl, disableHorizontalSwipe(event));
         }
     }
 

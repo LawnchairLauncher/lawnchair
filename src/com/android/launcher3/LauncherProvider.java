@@ -223,7 +223,6 @@ public class LauncherProvider extends ContentProvider {
         mOpenHelper.onAddOrDeleteOp(db);
 
         uri = ContentUris.withAppendedId(uri, rowId);
-        notifyListeners();
         reloadLauncherIfExternal();
         return uri;
     }
@@ -283,7 +282,6 @@ public class LauncherProvider extends ContentProvider {
             t.commit();
         }
 
-        notifyListeners();
         reloadLauncherIfExternal();
         return values.length;
     }
@@ -329,7 +327,6 @@ public class LauncherProvider extends ContentProvider {
         int count = db.delete(args.table, args.where, args.args);
         if (count > 0) {
             mOpenHelper.onAddOrDeleteOp(db);
-            notifyListeners();
             reloadLauncherIfExternal();
         }
         return count;
@@ -343,8 +340,6 @@ public class LauncherProvider extends ContentProvider {
         addModifiedTime(values);
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count = db.update(args.table, values, args.where, args.args);
-        if (count > 0) notifyListeners();
-
         reloadLauncherIfExternal();
         return count;
     }
@@ -436,13 +431,6 @@ public class LauncherProvider extends ContentProvider {
             Log.e(TAG, ex.getMessage(), ex);
             return new IntArray();
         }
-    }
-
-    /**
-     * Overridden in tests
-     */
-    protected void notifyListeners() {
-        mListenerHandler.sendEmptyMessage(ChangeListenerWrapper.MSG_LAUNCHER_PROVIDER_CHANGED);
     }
 
     @Thunk static void addModifiedTime(ContentValues values) {
@@ -1042,7 +1030,6 @@ public class LauncherProvider extends ContentProvider {
 
     private static class ChangeListenerWrapper implements Handler.Callback {
 
-        private static final int MSG_LAUNCHER_PROVIDER_CHANGED = 1;
         private static final int MSG_APP_WIDGET_HOST_RESET = 2;
 
         private LauncherProviderChangeListener mListener;
@@ -1051,9 +1038,6 @@ public class LauncherProvider extends ContentProvider {
         public boolean handleMessage(Message msg) {
             if (mListener != null) {
                 switch (msg.what) {
-                    case MSG_LAUNCHER_PROVIDER_CHANGED:
-                        mListener.onLauncherProviderChanged();
-                        break;
                     case MSG_APP_WIDGET_HOST_RESET:
                         mListener.onAppWidgetHostReset();
                         break;
