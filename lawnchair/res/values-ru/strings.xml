@@ -140,7 +140,7 @@
     <string name="about_our_team">Наша команда</string>
     <string name="about_our_contributors">Наши главные помощники</string>
     <string name="about_our_family">Другие члены нашей семьи</string>
-    <string name="about_role_lead">Ведущий разработчик</string>
+    <string name="about_role_lead">Вед. разработчик</string>
     <string name="about_role_devops">Операционные разработки</string>
     <string name="about_role_dev">Разработчик</string>
     <string name="about_role_dev_mod">Разработчик/Модератор</string>
@@ -417,7 +417,7 @@
     <string name="pref_fonts_missing_font">Шрифт не найден</string>
     <string name="about_translate">Перевод</string>
     <string name="pref_show_dev_options">Показать в настройках</string>
-    <string name="about_app_description">Кастомизируемая альтернатива Пиксель лаунчеру.</string>
+    <string name="about_app_description">Кастомизируемая альтернатива Pixel лаунчера.</string>
     <string name="about_bio_paphonb">18-летний студент,  Android разработчик и один из лучших разработчиков Lawnchair Launcher.</string>
     <string name="dock_scale">Размер док-бара</string>
     <string name="adaptify_pack_title">Создать адаптивные иконки для набора иконок</string>
@@ -432,9 +432,9 @@
     <string name="pref_notification_count_summary">Показывать количество уведомлений внутри точки</string>
     <string name="pref_center_wallpaper">Обои всегда по центру</string>
     <string name="pref_center_wallpaper_summary">Отключит эффект прокрутки обоев</string>
-    <string name="pref_icon_popup_menu">Всплывающее меню</string>
-    <string name="pref_appcategorization_enable_title">Выбрать категорию приложений</string>
-    <string name="pref_appcategorization_enable_summary">Зафиксировать мой порядок приложений в списке</string>
+    <string name="pref_icon_popup_menu">Элементы всплывающего меню</string>
+    <string name="pref_appcategorization_enable_title">Классифицировать приложения</string>
+    <string name="pref_appcategorization_enable_summary">Рассортировать мой бардак в приложениях.</string>
     <string name="pref_appcategorization_style_text">Стиль</string>
     <string name="pref_app_groups_edit_tip">Нажать для редактирования, потянуть чтобы переупорядочить</string>
     <string name="pref_app_groups_create">Создать</string>
@@ -482,11 +482,11 @@
     <string name="animation_type_default">По умолчанию</string>
     <string name="animation_type_pie">Pie</string>
     <string name="animation_type_pie_like">В стиле Pie</string>
-    <string name="animation_type_reveal">Задний фон</string>
-    <string name="animation_type_slide_up">Скользить вверх</string>
-    <string name="animation_type_scale_up">Увеличить масштаб</string>
+    <string name="animation_type_reveal">Раскрытие</string>
+    <string name="animation_type_slide_up">Как слайд</string>
+    <string name="animation_type_scale_up">Масштабирование</string>
     <string name="animation_type_blink">Мигание</string>
-    <string name="animation_type_fade">Затухание</string>
+    <string name="animation_type_fade">Прозрачность</string>
     <string name="permission_iplocate">Разрешить доступ к примерному сетевому местоположению?</string>
     <string name="permission_iplocate_twilight_explanation">Это позволяет более точно рассчитывать время суток, не зная вашего точного местоположения.</string>
     <string name="pref_appcategorization_flowerpot_title">Категория</string>
@@ -519,11 +519,6 @@
     <string-array name="greetings_evening">
         <item>Доброй ночи!</item>
         <item>Спокойной ночи!</item>
-        <item>Увидимся завтра!</item>
-        <item>Сладких снов!</item>
-        <item>Не засиживайся слишком долго</item>
-        <item>Как прошёл Ваш день?</item>
-        <item>Что Вы сегодня делали?</item>
     </string-array>
     <string name="onbording_settings_title">Настройка %s</string>
     <string name="onbording_settings_summary">Сделайте длительное нажатие на главном экране</string>
@@ -542,5 +537,5 @@
     <string name="weather_icons_default">По умолчанию</string>
     <string name="pref_weather_icon_pack">Иконки погоды</string>
     <string name="weather_icon_packs_not_supported">Не поддерживается вашим текущим источником погоды</string>
-    <string name="lawnchair_settings">Настроить Lawnchair</string>
+    <string name="lawnchair_settings">Настройки Lawnchair</string>
 </resources>
