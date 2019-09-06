@@ -36,7 +36,11 @@ class ZenModeListener(
     }
 
     override fun onChange(selfChange: Boolean) {
-        listener(Settings.Global.getInt(contentResolver, ZEN_MODE) != 0)
+        try {
+            listener(Settings.Global.getInt(contentResolver, ZEN_MODE) != 0)
+        } catch (ignored: Settings.SettingNotFoundException) {
+            listener(false)
+        }
     }
 
     companion object {
