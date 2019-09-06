@@ -869,6 +869,10 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         // Set flags
         putBoolean("pref_legacyUpgrade", true)
         putBoolean("pref_restoreSuccess", false)
+        // Reset icon shape to system shape
+        // TODO: possibly create some sort of migration shape which uses a path stored in another pref
+        // TODO: where we would move the current value of this to
+        putString("pref_iconShape", "")
 
         // Dt2s
         putString("pref_gesture_double_tap",
