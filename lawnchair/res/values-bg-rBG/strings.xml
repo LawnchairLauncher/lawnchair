@@ -508,11 +508,6 @@
     <string-array name="greetings_evening">
         <item>Лека нощ!</item>
         <item>Лека нощ!</item>
-        <item>До утре!</item>
-        <item>Сладки сънища!</item>
-        <item>Не стой до късно</item>
-        <item>Как беше деня ти?</item>
-        <item>Какво прави днес?</item>
     </string-array>
     <string name="onbording_settings_title">Настройте %s</string>
     <string name="onbording_settings_summary">Задръжте на началния екран</string>
