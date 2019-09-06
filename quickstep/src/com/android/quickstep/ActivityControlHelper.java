@@ -347,7 +347,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             if (v == null) {
                 return;
             }
-            ClipAnimationHelper clipHelper = new ClipAnimationHelper();
+            ClipAnimationHelper clipHelper = new ClipAnimationHelper(launcher);
             clipHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(), null);
             if (!clipHelper.getSourceRect().isEmpty() && !clipHelper.getTargetRect().isEmpty()) {
                 float fromScale = clipHelper.getSourceRect().width()

@@ -149,8 +149,8 @@ public class TaskUtils {
      */
     public static ValueAnimator getRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
             RemoteAnimationTargetCompat[] targets, final ClipAnimationHelper inOutHelper) {
-        SyncRtSurfaceTransactionApplier syncTransactionApplier =
-                new SyncRtSurfaceTransactionApplier(v);
+        ClipAnimationHelper.TransformParams params = new ClipAnimationHelper.TransformParams()
+                .setSyncTransactionApplier(new SyncRtSurfaceTransactionApplier(v));
         final ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
         appAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
         appAnimator.addUpdateListener(new MultiValueUpdateListener() {
@@ -178,8 +178,8 @@ public class TaskUtils {
 
             @Override
             public void onUpdate(float percent) {
-                RectF taskBounds = inOutHelper.applyTransform(mTargetSet, 1 - percent,
-                        syncTransactionApplier);
+                params.setProgress(1 - percent);
+                RectF taskBounds = inOutHelper.applyTransform(mTargetSet, params);
                 if (!skipViewChanges) {
                     float scale = taskBounds.width() / mThumbnailRect.width();
                     if (!Float.isNaN(scale)) {
