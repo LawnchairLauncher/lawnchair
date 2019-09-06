@@ -80,7 +80,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> {
     }
 
     @Override
-    protected void startHome() {
+    public void startHome() {
         mActivity.getStateManager().goToState(NORMAL);
     }
 
