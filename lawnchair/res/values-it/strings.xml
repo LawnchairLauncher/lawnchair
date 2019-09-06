@@ -515,11 +515,6 @@
     <string-array name="greetings_evening">
         <item>Buona notte!</item>
         <item>Dormi bene!</item>
-        <item>Ci vediamo domani!</item>
-        <item>Sogni d\'oro!</item>
-        <item>Non stare sveglio troppo a lungo</item>
-        <item>Com\'è stata la tua giornata?</item>
-        <item>Cosa hai fatto oggi?</item>
     </string-array>
     <string name="onbording_settings_title">Imposta %s</string>
     <string name="onbording_settings_summary">Tieni premuto sulla schermata home</string>
