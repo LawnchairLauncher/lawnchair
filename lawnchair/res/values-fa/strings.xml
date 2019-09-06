@@ -12,8 +12,8 @@
     <string name="label_voice_search">جست‌وجوی صوتی</string>
     <string name="icon_pack">آیکون پک</string>
     <string name="home_widget">ابزارک صفحه خانه</string>
-    <string name="title_show_google_app">مانده</string>
-    <string name="msg_minus_one_on_left">محتوای سمت چپ صفحه</string>
+    <string name="title_show_google_app">%1$s روز مانده</string>
+    <string name="msg_minus_one_on_left">اخبار در سمت چپ صفحه</string>
     <string name="about">درباره</string>
     <string name="google_app">برنامه گوگل</string>
     <string name="about_app_version">نسخه</string>
@@ -33,7 +33,7 @@
     <string name="general_pref_title">دسکتاپ</string>
     <string name="general_pref_summary">شبکه، طرح آیکون، نوار وضعیت</string>
     <string name="about_pref_summary">تیم، لینک ها، مجوزها</string>
-    <string name="hide_app_selected">پنهان کردن</string>
+    <string name="hide_app_selected">&#160; پنهان</string>
     <string name="hide_app_apply">اعمال‌ کردن</string>
     <string name="hide_dock_gradient">غیر فعال کردن گرادیانت</string>
     <string name="dock_pref_summary">سبک ، شفافیت ، نشانگر صفحه</string>
@@ -285,6 +285,7 @@
     <string name="theme_auto_night_mode">بر اساس تم سیستم</string>
     <string name="theme_light">روشن</string>
     <string name="theme_dark_text">روشن با نوشته‌های تیره</string>
+    <string name="theme_with_dark_text">متن تیره</string>
     <string name="theme_dark">تیره</string>
     <string name="theme_dark_dark_text">تیره با نوشته‌های تیره</string>
     <string name="theme_black">مشکی</string>
@@ -292,6 +293,8 @@
     <string name="theme_dark_theme_mode">تم تاریک</string>
     <string name="theme_dark_theme_mode_on">روشن</string>
     <string name="theme_dark_theme_mode_off">خاموش</string>
+    <string name="theme_dark_theme_mode_follow_daylight">مطابق نور روز</string>
+    <string name="theme_use_black">استفاده از سیاه مطلق</string>
     <string name="theme_use_dark_text">استفاده از تم تیره</string>
     <string name="pref_qsb_color">رنگ</string>
     <string name="hide_from_predictions">پنهان کردن از پیشنهادات</string>
@@ -335,6 +338,7 @@
     <string name="selected_count">‏%1$d انتخاب شد</string>
     <string name="tab_manage_apps">مدیریت برنامه‌ها</string>
     <string name="tab_bottom_sheet_save">ذخیره</string>
+    <string name="tab_hide_from_main">پنهان کردن از تب اصلی</string>
     <string name="tab_color">رنگ زبانه</string>
     <string name="delete">حذف</string>
     <string name="none">هیچ‌کدام</string>
@@ -354,6 +358,7 @@
     <string name="pref_sesame_show_shortcuts">میانبر های برنامه</string>
     <string name="pref_sesame_show_shortcuts_summary">نشان دادن میانبر sesame در آیکن حباب</string>
     <string name="allow">مجاز</string>
+    <string name="deny">رد کردن</string>
     <string name="sesame_enable_integration_title">فعال‌سازی ضمیمه</string>
     <string name="sesame_enable_integration_description"><![CDATA[اشتراک‌گذاری داده را بین Lawnchair و Sesame فعال می‌کند. این مورد را می‌توانید در تنظیمات Lawnchair یا Sesame تغییر دهید.]]></string>
     <string name="sesame_version">نسخه ضمیمه</string>
@@ -406,9 +411,109 @@
     <string name="adaptify_pack_summary">آیکون‌های تطبیقی برای آیکون‌های آیکون پک‌ها ایجاد شود</string>
     <string name="pref_sesame_sync_look_and_feel">به اشتراک گذاشتن قیافه</string>
     <string name="pref_sesame_sync_look_and_feel_summary">همگام کردن تنظیمات lawnchair با sesame</string>
+    <string name="pref_search_bar_radius">گردی دور نوار جستجو</string>
     <string name="icon_text_scale_pref_title">ابعاد متن</string>
     <string name="text_color">رنگ متن</string>
     <string name="background_color">رنگ پس‌زمینه</string>
     <string name="pref_notification_count_title">نمایش تعداد اعلان ها</string>
+    <string name="pref_notification_count_summary">نشان دادن تعداد اعلان‌ها در توار دات</string>
+    <string name="pref_center_wallpaper">تصویر پس زمینه در وسط</string>
+    <string name="pref_center_wallpaper_summary">حالت چرخش پس زمینه را غیر فعال خواهد کرد</string>
+    <string name="pref_icon_popup_menu">آیتم‌ها در منوی پاپ آپ</string>
+    <string name="pref_appcategorization_enable_title">طبقه بندی برنامه‌ها</string>
+    <string name="pref_appcategorization_style_text">سبک</string>
+    <string name="pref_app_groups_create">ايجاد كردن</string>
+    <string name="pref_appcategorization_folders_title">پوشه ها</string>
+    <string name="pref_appcategorization_folders_summary">ضربه زدن برای بازکردن پاپ-آپ</string>
+    <string name="pref_appcategorization_tabs_title">سربرگ‌ها</string>
+    <string name="pref_appcategorization_tabs_summary">گردش میان مجموعه‌ها.</string>
+    <string name="default_folder_name">پوشه جدید</string>
+    <string name="drawer_folders">پوشه ها</string>
+    <string name="category_communication">ارتباط</string>
+    <string name="category_entertainment">سرگرمی</string>
+    <string name="category_food_and_drink">غذا و نوشیدنی</string>
+    <string name="category_game">بازی‌ها</string>
+    <string name="category_health_and_fitness">سلامتی و تناسب اندام</string>
+    <string name="category_knowledge_and_reference">دانش و مرجع</string>
+    <string name="category_lifestyle">فروشگاه و سبک زندگی</string>
+    <string name="category_music">موسیقی</string>
+    <string name="category_news">اخبار</string>
+    <string name="category_personalization">شخصی سازی</string>
+    <string name="category_photography">عکاسی</string>
+    <string name="category_tools">کاربردی</string>
     <string name="lock_desktop">دسکتاپ را قفل کن</string>
+    <string name="reset_custom_icons">آیکون‌های دلخواه را به حالت اصلی برگردان</string>
+    <string name="reset_custom_icons_confirmation">از این‌که تمامی آیکون‌ها را به حالت اصلی برگردانید مطمئن هستید؟ این تغییر غیر قابل بازگشت است.</string>
+    <string name="open_image_picker">انتخاب عکس</string>
+    <string name="import_icon">انتخاب آیکون</string>
+    <string name="import_as_adaptive">به عنوان آیکون تطبیقی</string>
+    <string name="bugreport_channel_name">گزارش مشکل</string>
+    <string name="status_channel_name">فرستادن حالت‌های گزارش مشکل</string>
+    <string name="bugreport_group_summary">گزارش‌های جدید</string>
+    <string name="bugreport_group_summary_multiple">گزارش‌های چندگانه‌ی جدید</string>
+    <string name="dogbin_uploading">آپلود در جریان است</string>
+    <string name="action_dogbin_upload">آپلود به dogbin</string>
+    <string name="action_dogbin_upload_error">آپلود ناموفق بود</string>
+    <string name="action_dogbin_copy_link">کپی لینک</string>
+    <string name="lawnchair_bug_report">گزارش خطای Lawnchair</string>
+    <string name="copied_toast">کپی شد</string>
+    <string name="action_copy">کپی</string>
+    <string name="action_copy_link">کپی لینک</string>
+    <string name="action_share">اشتراک گذاری</string>
+    <string name="animation_type_title">حالت انیمیشن باز شدن برنامه</string>
+    <string name="animation_type_default">پیش‌فرض</string>
+    <string name="animation_type_pie">Pie</string>
+    <string name="animation_type_pie_like">شبيه-Pie</string>
+    <string name="animation_type_reveal">یافتن</string>
+    <string name="animation_type_slide_up">بالا رونده</string>
+    <string name="animation_type_scale_up">به بالا</string>
+    <string name="animation_type_blink">چشمک زدن</string>
+    <string name="animation_type_fade">محو شدن</string>
+    <string name="pref_appcategorization_flowerpot_title">دسته بندی</string>
+    <string name="pref_appcategorization_flowerpot_summary">برنامه‌ها به صورت اتوماتیک انتخاب کردند بر اساس اطلاعات قبلی گرفته از شما</string>
+    <string name="select_tab_type">نوع سربرگ</string>
+    <string name="tab_type_custom">سربرگ ساختن</string>
+    <string name="tab_type_custom_desc">بصورت دستی برنامه‌های این سربرگ را بردار.</string>
+    <string name="tab_type_smart">سربرگ هوشمند</string>
+    <string name="categorization">دسته بندی</string>
+    <string name="folder_cover_mode">حالت کاور بندی</string>
+    <string name="folder_cover_mode_desc">ضربه بزن تا اولین برنامه باز شود، به بالا بلغزان تا پوشه باز شود</string>
+    <string name="pref_smartspace_event_providers">منابع اتفاقات</string>
+    <string name="event_provider_now_playing">درحال پخش</string>
+    <string name="battery_status">وضعیت باتری</string>
+    <string name="battery_charging">بااتری در حال شارژ</string>
+    <string name="battery_full">باتری شارژ شد</string>
+    <string name="battery_low">باتری ضعیف است</string>
+    <string name="event_provider_unread_notifications">اعلان‌های خوانده نشده</string>
+    <string name="event_provider_missing_notification_access">با استفاده از <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>، اعلان برنامه را روشن کنید برای <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">با استفاده از <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, نقطات اعلان را روشن کنید</string>
+    <string name="zen_mode_enabled">حالت مزاحم نشوید روشن شد</string>
+    <string name="crash_report_notif_title">%1$s خراب شد!</string>
+    <string-array name="greetings_morning">
+        <item>صبح بخیر!</item>
+        <item>چه روز زیبایی!</item>
+        <item>هنوز بیرون رو نگاه نکردی؟</item>
+        <item>روز خوبی داشته باشی!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>روزت چجوری گذشت؟</item>
+        <item>امروز چه کارهای انجام دادی؟</item>
+    </string-array>
+    <string name="onbording_settings_summary">لمس طولانی در صفحه‌‌ی اصلی</string>
+    <string name="onboarding_swipe_up">به بالا بکش و تمام برنامه‌ها را ببین</string>
+    <string name="web_search_google">(وبسایت) google</string>
+    <string name="web_search_ddg">(وبسایت) DuckDuckGo</string>
+    <string name="web_search_startpage">(وبسایت) Startpage.com</string>
+    <string name="web_search_bing">(وبسایت) Bing</string>
+    <string name="web_search_qwant">(وبسایت) Qwant</string>
+    <string name="web_search_ecosia">(وبسایت) Ecosia</string>
+    <string name="web_search_yandex">(وبسایت) Yandex</string>
+    <string name="web_search_naver">(وبسایت) Naver</string>
+    <string name="web_search_baidu">(وبسایت) Baidu</string>
+    <string name="icon_shape_override_miui_explaination">در MIUI این حالت محدود شده است، شکل آیکون ممکن است به حالت مربعی نشوند. لطفا این را به عنوان خطا گزارش ندهید.</string>
+    <string name="button_organize_screens">تنظیم صفحه</string>
+    <string name="weather_icons_default">پیش‌فرض</string>
+    <string name="pref_weather_icon_pack">آیکون‌ها آب و هوا</string>
+    <string name="weather_icon_packs_not_supported">با منبع هواشناسی شما پشتیبانی نمی‌شود</string>
+    <string name="lawnchair_settings">تنظیمات Lawnchair</string>
 </resources>
