@@ -255,7 +255,7 @@
     <string name="gesture_nav_swipe_up_right">Từ phải</string>
     <string name="action_switch_apps">Chuyển đổi ứng dụng</string>
     <string name="pref_global_search_provider">Công cụ tìm kiếm</string>
-    <string name="searchbar_appearance_title">Ngoại hình</string>
+    <string name="searchbar_appearance_title">Giao diện</string>
     <string name="google">Google</string>
     <string name="search_provider_google_go">Google Go</string>
     <string name="search_provider_yandex">Yandex</string>
@@ -300,7 +300,7 @@
     <string name="theme_dark_theme_mode_on">Bật</string>
     <string name="theme_dark_theme_mode_off">Tắt</string>
     <string name="theme_dark_theme_mode_follow_daylight">Theo dõi ánh sáng ban ngày</string>
-    <string name="theme_use_black">Sử dụng màu đen tinh khiết</string>
+    <string name="theme_use_black">Sử dụng màu đen hoàn toàn</string>
     <string name="theme_use_dark_text">Sử dụng văn bản tối</string>
     <string name="pref_qsb_color">Màu sắc</string>
     <string name="hide_from_predictions">Ẩn từ đề xuất</string>
@@ -367,16 +367,16 @@
     <string name="sesame_enable_integration_description"><![CDATA[Cho phép chia sẻ dữ liệu giữa Lawn và Sesame. Bạn có thể thay đổi điều này trong cài đặt Lawn Lawn hoặc Sesame.]]></string>
     <string name="sesame_version">Phiên bản tích hợp</string>
     <string name="sesame_shortcut_disabled">Phím tắt Sesame không có sẵn</string>
-    <string name="font_variant_italic">Italic</string>
-    <string name="font_weight_thin">Thin</string>
-    <string name="font_weight_extra_light">ExtraLight</string>
-    <string name="font_weight_light">Light</string>
-    <string name="font_weight_regular">Regular</string>
-    <string name="font_weight_medium">Medium</string>
-    <string name="font_weight_semi_bold">SemiBold</string>
-    <string name="font_weight_bold">Bold</string>
-    <string name="font_weight_extra_bold">ExtraBold</string>
-    <string name="font_weight_extra_black">Black</string>
+    <string name="font_variant_italic">Nghiêng</string>
+    <string name="font_weight_thin">Mảnh</string>
+    <string name="font_weight_extra_light">Rất nhạt</string>
+    <string name="font_weight_light">Nhạt</string>
+    <string name="font_weight_regular">Bình thường</string>
+    <string name="font_weight_medium">Trung bình</string>
+    <string name="font_weight_semi_bold">Nữa đậm</string>
+    <string name="font_weight_bold">Đậm</string>
+    <string name="font_weight_extra_bold">Rất đậm</string>
+    <string name="font_weight_extra_black">Đen</string>
     <!--Marker K-->
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
@@ -510,11 +510,6 @@
     <string-array name="greetings_evening">
         <item>Chúc ngủ ngon!</item>
         <item>Ngủ ngon nhé!</item>
-        <item>Hẹn gặp bạn vào ngày mai!</item>
-        <item>Chúc bạn có những giấc mơ đẹp!</item>
-        <item>Đừng thức quá lâu</item>
-        <item>Ngày hôm nay của bạn thế nào?</item>
-        <item>Bạn đã làm gì vào hôm nay?</item>
     </string-array>
     <string name="onbording_settings_title">Cài đặt %s</string>
     <string name="onbording_settings_summary">Nhấn và giữ màn hình chính</string>

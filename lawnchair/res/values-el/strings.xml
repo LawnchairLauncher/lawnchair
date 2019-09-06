@@ -514,11 +514,6 @@
     <string-array name="greetings_evening">
         <item>Καληνύχτα!</item>
         <item>Κοιμήσου καλά!</item>
-        <item>Τα λέμε αύριο!</item>
-        <item>Όνειρα γλυκά!</item>
-        <item>Μην μένεις ξύπνιος μέχρι αργά</item>
-        <item>Πώς ήταν η ημέρα σου;</item>
-        <item>Τι έκανες σήμερα;</item>
     </string-array>
     <string name="onbording_settings_title">Ρύθμιση %s</string>
     <string name="onbording_settings_summary">Πιέστε παρατεταμένα στην αρχική σας οθόνη</string>
@@ -534,4 +529,8 @@
     <string name="web_search_baidu">Baidu (ιστός)</string>
     <string name="icon_shape_override_miui_explaination">Εξαιτίας ενός περιορισμού στο MIUI, το σχήμα των εικονιδίων σας ενδέχεται να μην είναι δυνατό να αλλάξει και να παραμείνει τετράγωνο.\nΠαρακαλώ μην αναφέρετε τον προαναφερόμενο περιορισμό ως ένα σφάλμα της εφαρμογής.</string>
     <string name="button_organize_screens">Οργάνωση οθονών</string>
+    <string name="weather_icons_default">Προεπιλογή</string>
+    <string name="pref_weather_icon_pack">Εικονίδια καιρού</string>
+    <string name="weather_icon_packs_not_supported">Δεν υποστηρίζεται από την τρέχουσα πηγή καιρού</string>
+    <string name="lawnchair_settings">Ρυθμίσεις Lawnchair</string>
 </resources>

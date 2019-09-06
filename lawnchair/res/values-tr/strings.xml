@@ -514,11 +514,6 @@
     <string-array name="greetings_evening">
         <item>İyi geceler!</item>
         <item>İyi uykular!</item>
-        <item>Yarın görüşürüz!</item>
-        <item>Tatlı rüyalar!</item>
-        <item>Çok uzun süre kalma</item>
-        <item>Günün nasıldı?</item>
-        <item>Bugün ne yaptın?</item>
     </string-array>
     <string name="onbording_settings_title">%s ayarla</string>
     <string name="onbording_settings_summary">Ana ekranınıza uzun basın</string>

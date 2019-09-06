@@ -88,7 +88,7 @@
     <string name="grid_size_width">Largeur</string>
     <string name="launcher_theme_override_label">Forcer le thème sombre</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
-    <string name="blur_pref_title">Flou</string>
+    <string name="blur_pref_title">Activer le flou</string>
     <string name="blur_pref_summary">Effet de flou pour le tiroir d\'applications, le dock et les arrière-plans de paramètres</string>
     <string name="blur_radius_pref_title">Intensité du flou</string>
     <!--Marker B-->
@@ -196,7 +196,7 @@
     <string name="smartspace_widget_provider_not_found">Installe ou mets à jours Google app.</string>
     <string name="apps_label">Applis</string>
     <string name="all_apps_label">Toutes les applis</string>
-    <string name="all_apps_label_pref_title">Afficher le label de \"toutes les applications\"</string>
+    <string name="all_apps_label_pref_title">Afficher le label \"Toutes les applications\"</string>
     <string name="separate_work_apps_pref_title">Deuxième onglet pour les applications professionnelles</string>
     <string name="title_search_hidden_apps">Trouver des applications cachées</string>
     <string name="summary_search_hidden_apps">Afficher les applications masquées dans les résultats</string>
@@ -416,8 +416,8 @@
     <string name="about_app_description">Une alternative paramétrable du \"Pixel Launcher\"</string>
     <string name="about_bio_paphonb">Un étudiant de 18ans, Développeur Android et l\'un des meilleurs développeurs de Lawnchair launcher.</string>
     <string name="dock_scale">Taille du Dock</string>
-    <string name="adaptify_pack_title">Créer des icônes adaptative pour les pack d\'icônes</string>
-    <string name="adaptify_pack_summary">Créé ds icônes adaptative pour des icônes provenant de pack d\'icônes</string>
+    <string name="adaptify_pack_title">Icônes adaptative pour les icônes provenant de pack d\'icônes</string>
+    <string name="adaptify_pack_summary">Adapte les icônes provenant de pack d\'icônes</string>
     <string name="pref_sesame_sync_look_and_feel">Partager le Style</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Synchroniser Lawnchair avec les paramètres Sesame</string>
     <string name="pref_search_bar_radius">Rondeur de la barre de recherche</string>
@@ -497,7 +497,7 @@
     <string name="event_provider_now_playing">Lecture en cours</string>
     <string name="battery_status">État de la batterie</string>
     <string name="battery_charging">Batterie en charge</string>
-    <string name="battery_full">Batterie pleine</string>
+    <string name="battery_full">Batterie chargée</string>
     <string name="battery_low">Batterie faible</string>
     <string name="event_provider_unread_notifications">Notifications non lues</string>
     <string name="event_provider_missing_notification_access">Pour utiliser <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activez les notifications d\'application pour <xliff:g example="My App" id="name">%2$s</xliff:g></string>
@@ -508,17 +508,12 @@
     <string-array name="greetings_morning">
         <item>Bonjour !</item>
         <item>Quelle belle journée !</item>
-        <item>Avez-vous déjà regardé dehors ?</item>
+        <item>As-tu déjà regardé dehors ?</item>
         <item>Bonne journée !</item>
     </string-array>
     <string-array name="greetings_evening">
         <item>Bonne nuit !</item>
         <item>Dormez bien !</item>
-        <item>A demain !</item>
-        <item>Faites de beaux rêves !</item>
-        <item>Ne reste pas debout trop longtemps</item>
-        <item>Comment s\'est passé votre journée ?</item>
-        <item>Qu\'avez-vous fait aujourd\'hui ?</item>
     </string-array>
     <string name="onbording_settings_title">Paramétrer %s</string>
     <string name="onbording_settings_summary">Appuyez longuement sur l\'écran d’accueil</string>

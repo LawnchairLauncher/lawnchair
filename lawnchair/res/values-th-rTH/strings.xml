@@ -9,13 +9,13 @@
     <string name="in_smartspace">ในข้อมูลโดยย่อ</string>
     <string name="smartspace_time">แสดงเวลา</string>
     <string name="smartspace_date">แสดงวันที่</string>
-    <string name="customize">ค่ากำหนด</string>
+    <string name="customize">ปรับแต่ง</string>
     <string name="smartspace_preferences_in_settings">ข้อมูลโดยย่อ</string>
     <string name="smartspace_preferences_in_settings_desc">วันที่, เวลา, สภาพอากาศ</string>
     <string name="search">ค้นหา</string>
     <string name="label_voice_search">ค้นหาด้วยเสียง</string>
     <string name="icon_pack">ชุดไอคอน</string>
-    <string name="home_widget">ข้อมูลโดยย่อ</string>
+    <string name="home_widget">วิดเจ็ตหน้าจอหลัก</string>
     <string name="title_show_google_app">แสดง %1$s</string>
     <string name="msg_minus_one_on_left">ที่ด้านซ้ายของหน้าจอหลัก</string>
     <string name="about">เกี่ยวกับ</string>
@@ -511,11 +511,6 @@
     <string-array name="greetings_evening">
         <item>ราตรีสวัสดิ์!</item>
         <item>นอนหลับฝันดีนะ!</item>
-        <item>เจอกันพรุ่งนี้!</item>
-        <item>ขอให้ฝันดี!</item>
-        <item>อย่านอนดึกเกินไปนะ</item>
-        <item>วันนี้เป็นอย่างไรบ้าง?</item>
-        <item>วันนี้คุณทำอะไรบ้าง?</item>
     </string-array>
     <string name="onbording_settings_title">ตั้งค่า %s</string>
     <string name="onbording_settings_summary">แตะค้างบนหน้าจอหลักของคุณ</string>

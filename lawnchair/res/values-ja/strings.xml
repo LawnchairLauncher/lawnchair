@@ -171,7 +171,7 @@ Lawnchair プロジェクトの創始者です。</string>
     <string name="action_open_app">アプリを開く</string>
     <string name="action_open_app_with_target">%s を開く</string>
     <string name="action_open_app_select_app">アプリを選ぶ</string>
-    <string name="action_none">何もしない</string>
+    <string name="action_none">なし</string>
     <string name="action_despacito">YouTube Rewind 2018 (distorted) を再生</string>
     <string name="gesture_press_home">ホームボタン</string>
     <string name="gesture_press_back">戻るボタン</string>
@@ -421,7 +421,7 @@ Lawnchair プロジェクトの創始者です。</string>
     <string name="pref_notification_count_summary">ドットの代わりに通知カウントを表示する</string>
     <string name="pref_center_wallpaper">常に壁紙を中央配置</string>
     <string name="pref_center_wallpaper_summary">壁紙のスクロール効果は無効になります</string>
-    <string name="pref_icon_popup_menu">電源メニューのポップアップ</string>
+    <string name="pref_icon_popup_menu">ポップアップメニューの項目</string>
     <string name="pref_appcategorization_enable_title">アプリをカテゴリ分け</string>
     <string name="pref_appcategorization_enable_summary">厄介なドロワーを修正する</string>
     <string name="pref_appcategorization_style_text">スタイル</string>
@@ -507,11 +507,6 @@ Lawnchair プロジェクトの創始者です。</string>
     <string-array name="greetings_evening">
         <item>おやすみなさい</item>
         <item>よい眠りを</item>
-        <item>また明日</item>
-        <item>良い夢を</item>
-        <item>夜ふかしは良くありません</item>
-        <item>どんな1日でしたか?</item>
-        <item>今日は何をしましたか?</item>
     </string-array>
     <string name="onbording_settings_title">%sのセットアップ</string>
     <string name="onbording_settings_summary">ホーム画面を長押しして下さい</string>
