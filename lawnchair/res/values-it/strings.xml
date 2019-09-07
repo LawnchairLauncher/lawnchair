@@ -324,6 +324,8 @@
     <string name="app_actions_pref_title">Azioni</string>
     <string name="app_actions_pref_title_in_search">Suggerimenti azioni</string>
     <string name="app_actions_pref_desc">Scorciatoie alle azioni aperte di recente</string>
+    <string name="app_actions_reset_pref_title">Ripristina azioni nascoste</string>
+    <string name="app_actions_reset_pref_summary">Ripristina azioni che erano state nascoste trascinandole sul pulsante \"non mostrare\"</string>
     <string name="change_default_home">Imposta come schermata home</string>
     <string name="recent_task_option_popup_window">Finestra di dialogo</string>
     <string name="feed_theme_pref_title">Colore di sfondo</string>
@@ -516,6 +518,13 @@
         <item>Buona notte!</item>
         <item>Dormi bene!</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>Buona notte!</item>
+        <item>Dormi bene!</item>
+        <item>Ci vediamo domani!</item>
+        <item>Sogni d\'oro!</item>
+        <item>Non stare sveglio troppo a lungo</item>
+    </string-array>
     <string name="onbording_settings_title">Imposta %s</string>
     <string name="onbording_settings_summary">Tieni premuto sulla schermata home</string>
     <string name="onboarding_swipe_up">Scorri verso l\'alto per vedere tutte le tue app</string>
@@ -534,4 +543,18 @@
     <string name="pref_weather_icon_pack">Icone meteo</string>
     <string name="weather_icon_packs_not_supported">Non supportato dalla tua fonte meteo attuale</string>
     <string name="lawnchair_settings">Impostazioni di Lawnchair</string>
+    <string name="customnavbar_install">Premi per installare Custom Navigation Bar</string>
+    <string name="customnavbar_back_hiding">Nascondi tasto indietro</string>
+    <string name="customnavbar_back_hiding_desc">Nascondi il tasto indietro quando non è necessario</string>
+    <string name="icon_shape_top_left">In alto a sinistra</string>
+    <string name="icon_shape_top_right">In alto a destra</string>
+    <string name="icon_shape_bottom_left">In basso a sinistra</string>
+    <string name="icon_shape_bottom_right">In basso a destra</string>
+    <string name="icon_shape_corner_round">Rotondo</string>
+    <string name="icon_shape_corner_squircle">Squadrato</string>
+    <string name="icon_shape_corner_cut">Tagliato</string>
+    <string name="smartspace_add_to_home">Aggiungi alla schermata home</string>
+    <string name="pref_hide_statusbar_clock">Nascondi l\'orologio della statusbar</string>
+    <string name="root_access_required">Accesso root necessario</string>
+    <string name="smartspace_setup_text">Premi per configurare</string>
 </resources>
