@@ -932,7 +932,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
         // Gestures
         putString("pref_gesture_swipe_down",
-                  when (prefs.getInt("pref_pulldownAction", 1)) {
+                  when (Integer.parseInt(prefs.getString("pref_pulldownAction", "1"))) {
                       1 -> NotificationsOpenGestureHandler(context, null)
                       2 -> StartGlobalSearchGestureHandler(context, null)
                       3 -> StartAppSearchGestureHandler(context, null)
