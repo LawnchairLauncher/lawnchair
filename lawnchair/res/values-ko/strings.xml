@@ -504,8 +504,15 @@
         <item>좋은 하루 보내세요!</item>
     </string-array>
     <string-array name="greetings_evening">
+        <item>오늘 하루는 어떠셨나요?</item>
+        <item>오늘 계획이 어떻게 되세요?</item>
+    </string-array>
+    <string-array name="greetings_night">
         <item>굿나잇</item>
         <item>잘 자요</item>
+        <item>내일 봐요!</item>
+        <item>좋은 꿈 꿔요!</item>
+        <item>너무 늦게까지 깨어있지 마세요.</item>
     </string-array>
     <string name="onbording_settings_title">%s 설정</string>
     <string name="onbording_settings_summary">홈 화면을 길게 터치하세요.</string>
@@ -525,4 +532,6 @@
     <string name="pref_weather_icon_pack">날씨 아이콘</string>
     <string name="weather_icon_packs_not_supported">현재 날씨 제공자에서 지원되지 않습니다</string>
     <string name="lawnchair_settings">Lawnchair 설정</string>
+    <string name="customnavbar_install">사용자 지정 내비게이션 바를 설치하려면 클릭하세요</string>
+    <string name="smartspace_add_to_home">홈화면에 추가하기</string>
 </resources>
