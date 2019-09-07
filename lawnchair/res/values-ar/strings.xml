@@ -322,6 +322,8 @@
     <string name="app_actions_pref_title">الاجراءت</string>
     <string name="app_actions_pref_title_in_search">إقتراحات الإجراء</string>
     <string name="app_actions_pref_desc">إختصارات للشاشات المفتوحة باستمرار</string>
+    <string name="app_actions_reset_pref_title">إعادة ضبط الإجراءات المخفية</string>
+    <string name="app_actions_reset_pref_summary">إعادة تعيين الإجراءات التي كانت مخفية في السابق عن طريق سحبها إلى زر \"لا تظهر\"</string>
     <string name="change_default_home">تعيين كـ مُشغل افتراضي</string>
     <string name="recent_task_option_popup_window">نافذة الحوار</string>
     <string name="feed_theme_pref_title">لون الخلفية</string>
@@ -519,8 +521,15 @@
         <item>أتمنى لك يوماً عظيماً!</item>
     </string-array>
     <string-array name="greetings_evening">
+        <item>كيف كان يومك؟</item>
+        <item>ماذا فعلت اليوم؟</item>
+    </string-array>
+    <string-array name="greetings_night">
         <item>ليلة سعيدة!</item>
         <item>نوماً هنيئاً!</item>
+        <item>أراك غداً!</item>
+        <item>أحلام جميلة!</item>
+        <item>لا تبقى مستيقظاً طويلاً</item>
     </string-array>
     <string name="onbording_settings_title">إعداد %s</string>
     <string name="onbording_settings_summary">اضغط لفترة طويلة على الشاشة الرئيسية</string>
@@ -540,4 +549,18 @@
     <string name="pref_weather_icon_pack">أيقونات الطقس</string>
     <string name="weather_icon_packs_not_supported">غير مدعوم من مصدر الطقس الحالي</string>
     <string name="lawnchair_settings">إعدادات Lawnchair</string>
+    <string name="customnavbar_install">انقر لتثبيت شريط التنقل المخصص</string>
+    <string name="customnavbar_back_hiding">زر العودة يختفي</string>
+    <string name="customnavbar_back_hiding_desc">إخفاء زر العودة عندما لا تكون هناك حاجة</string>
+    <string name="icon_shape_top_left">أعلى اليسار</string>
+    <string name="icon_shape_top_right">أعلى اليمين</string>
+    <string name="icon_shape_bottom_left">أسفل اليسار</string>
+    <string name="icon_shape_bottom_right">أسفل اليمين</string>
+    <string name="icon_shape_corner_round">دائرية</string>
+    <string name="icon_shape_corner_squircle">مربع دائري</string>
+    <string name="icon_shape_corner_cut">قص</string>
+    <string name="smartspace_add_to_home">إضافة إلى الشاشة الرئيسية</string>
+    <string name="pref_hide_statusbar_clock">إخفاء شريط الحالة</string>
+    <string name="root_access_required">يتطلب صلاحية الروت</string>
+    <string name="smartspace_setup_text">أنقر للإعداد</string>
 </resources>
