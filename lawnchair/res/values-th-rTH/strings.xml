@@ -322,6 +322,8 @@
     <string name="app_actions_pref_title">การดำเนินการ</string>
     <string name="app_actions_pref_title_in_search">แสดงคำแนะนำการดำเนินการ</string>
     <string name="app_actions_pref_desc">ที่ด้านบนของรายการแอปทั้งหมด</string>
+    <string name="app_actions_reset_pref_title">รีเซ็ตการดำเนินการที่ถูกซ่อน</string>
+    <string name="app_actions_reset_pref_summary">รีเซ็ตการดำเนินการที่เคยถูกซ่อนโดยการลากไปที่ปุ่ม \"ไม่แสดง\"</string>
     <string name="change_default_home">ตั้งเป็นหน้าจอหลัก</string>
     <string name="recent_task_option_popup_window">หน้าต่างป๊อปอัป</string>
     <string name="feed_theme_pref_title">สีพื้นหลัง</string>
@@ -512,6 +514,13 @@
         <item>ราตรีสวัสดิ์!</item>
         <item>นอนหลับฝันดีนะ!</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>ราตรีสวัสดิ์!</item>
+        <item>นอนหลับฝันดี!</item>
+        <item>เจอกันพรุ่งนี้!</item>
+        <item>ขอให้ฝันดี!</item>
+        <item>อย่านอนดึกเกินไป</item>
+    </string-array>
     <string name="onbording_settings_title">ตั้งค่า %s</string>
     <string name="onbording_settings_summary">แตะค้างบนหน้าจอหลักของคุณ</string>
     <string name="onboarding_swipe_up">ปัดขึ้นเพื่อดูรายการแอปทั้งหมด</string>
@@ -530,4 +539,18 @@
     <string name="pref_weather_icon_pack">ไอคอนสภาพอากาศ</string>
     <string name="weather_icon_packs_not_supported">ไม่รองรับแหล่งที่มาของสภาพอากาศนี้</string>
     <string name="lawnchair_settings">การตั้งค่า Lawnchair</string>
+    <string name="customnavbar_install">แตะเพื่อติดตั้งการปรับแต่งแถบนำทาง</string>
+    <string name="customnavbar_back_hiding">ซ่อนปุ่มย้อนกลับ</string>
+    <string name="customnavbar_back_hiding_desc">ซ่อนปุ่มย้อนกลับเมื่อไม่จำเป็น</string>
+    <string name="icon_shape_top_left">มุมบนซ้าย</string>
+    <string name="icon_shape_top_right">มุมบนขวา</string>
+    <string name="icon_shape_bottom_left">มุมล่างซ้าย</string>
+    <string name="icon_shape_bottom_right">มุมล่างขวา</string>
+    <string name="icon_shape_corner_round">โค้งมน</string>
+    <string name="icon_shape_corner_squircle">สี่เหลี่ยมขอบมน</string>
+    <string name="icon_shape_corner_cut">ตัด</string>
+    <string name="smartspace_add_to_home">เพิ่มไปยังหน้าจอหลัก</string>
+    <string name="pref_hide_statusbar_clock">ซ่อนนาฬิกาในแถบสถานะ</string>
+    <string name="root_access_required">ต้องการสิทธิ์รูต</string>
+    <string name="smartspace_setup_text">แตะเพื่อตั้งค่า</string>
 </resources>
