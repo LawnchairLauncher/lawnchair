@@ -321,6 +321,8 @@
     <string name="app_actions_pref_title">Hành động</string>
     <string name="app_actions_pref_title_in_search">Gợi ý hành động</string>
     <string name="app_actions_pref_desc">Các phím tắt để màn hình thường xuyên mở</string>
+    <string name="app_actions_reset_pref_title">Đặt lại hành động ẩn</string>
+    <string name="app_actions_reset_pref_summary">Đặt lại các hành động đã bị ẩn trước đó bằng cách kéo chúng vào nút \"không hiển thị\"</string>
     <string name="change_default_home">Đặt làm màn hình chính</string>
     <string name="recent_task_option_popup_window">Cửa sổ hộp thoại</string>
     <string name="feed_theme_pref_title">Màu nền</string>
@@ -508,8 +510,15 @@
         <item>Chúc bạn một ngày tốt lành!</item>
     </string-array>
     <string-array name="greetings_evening">
-        <item>Chúc ngủ ngon!</item>
+        <item>Ngày hôm nay của bạn thế nào?</item>
+        <item>Bạn đã làm gì vào hôm nay?</item>
+    </string-array>
+    <string-array name="greetings_night">
+        <item>Chúc bạn ngủ ngon!</item>
         <item>Ngủ ngon nhé!</item>
+        <item>Hẹn gặp bạn vào ngày mai!</item>
+        <item>Chúc bạn có những giấc mơ đẹp!</item>
+        <item>Đừng ngủ quá muộn nhé</item>
     </string-array>
     <string name="onbording_settings_title">Cài đặt %s</string>
     <string name="onbording_settings_summary">Nhấn và giữ màn hình chính</string>
@@ -529,4 +538,18 @@
     <string name="pref_weather_icon_pack">Biểu tượng Thời tiết</string>
     <string name="weather_icon_packs_not_supported">Nguồn cấp thời tiết hiện tại không hỗ trợ biểu tượng tùy chỉnh</string>
     <string name="lawnchair_settings">Cài đặt Lawnchair</string>
+    <string name="customnavbar_install">Nhấn để cài đặt Custom Navigation Bar</string>
+    <string name="customnavbar_back_hiding">Ẩn nút Quay lại</string>
+    <string name="customnavbar_back_hiding_desc">Ẩn nút Quay lại khi không cần thiết</string>
+    <string name="icon_shape_top_left">Trên cùng bên trái</string>
+    <string name="icon_shape_top_right">Trên cùng bên phải</string>
+    <string name="icon_shape_bottom_left">Dưới cùng bên trái</string>
+    <string name="icon_shape_bottom_right">Dưới cùng bên phải</string>
+    <string name="icon_shape_corner_round">Tròn</string>
+    <string name="icon_shape_corner_squircle">Cạnh bo tròn</string>
+    <string name="icon_shape_corner_cut">Cắt</string>
+    <string name="smartspace_add_to_home">Thêm vào màn hình chính</string>
+    <string name="pref_hide_statusbar_clock">Ẩn đồng hồ thanh trạng thái</string>
+    <string name="root_access_required">Yêu cầu quyền root</string>
+    <string name="smartspace_setup_text">Nhấn để thiết lập</string>
 </resources>
