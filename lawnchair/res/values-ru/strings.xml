@@ -323,6 +323,8 @@
     <string name="app_actions_pref_title">Действия</string>
     <string name="app_actions_pref_title_in_search">Подсказки действий</string>
     <string name="app_actions_pref_desc">Ярлыки к часто открываемым экранам</string>
+    <string name="app_actions_reset_pref_title">Сбросить скрытые действия</string>
+    <string name="app_actions_reset_pref_summary">Сбрасывает действия, которые ранее были скрыты, перетаскивая их на кнопку \"не показывать\"</string>
     <string name="change_default_home">Установить как главный экран</string>
     <string name="recent_task_option_popup_window">Окно подтверждения</string>
     <string name="feed_theme_pref_title">Цвет фона</string>
@@ -520,6 +522,13 @@
         <item>Доброй ночи!</item>
         <item>Спокойной ночи!</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>Спокойной ночи!</item>
+        <item>Хорошо выспись!</item>
+        <item>Увидимся позже!</item>
+        <item>Сладких снов!</item>
+        <item>Не засиживайся слишком долго</item>
+    </string-array>
     <string name="onbording_settings_title">Настройка %s</string>
     <string name="onbording_settings_summary">Сделайте длительное нажатие на главном экране</string>
     <string name="onboarding_swipe_up">Свайпните вверх, чтобы увидеть список ваших приложений</string>
@@ -538,4 +547,18 @@
     <string name="pref_weather_icon_pack">Иконки погоды</string>
     <string name="weather_icon_packs_not_supported">Не поддерживается вашим текущим источником погоды</string>
     <string name="lawnchair_settings">Настройки Lawnchair</string>
+    <string name="customnavbar_install">Нажмите, чтобы установить пользовательскую панель навигации</string>
+    <string name="customnavbar_back_hiding">Скрытие кнопки возврата</string>
+    <string name="customnavbar_back_hiding_desc">Скрыть кнопку возврата, когда она не нужна</string>
+    <string name="icon_shape_top_left">Сверху слева</string>
+    <string name="icon_shape_top_right">Сверху справа</string>
+    <string name="icon_shape_bottom_left">Внизу слева</string>
+    <string name="icon_shape_bottom_right">Снизу справа</string>
+    <string name="icon_shape_corner_round">Скруглённый</string>
+    <string name="icon_shape_corner_squircle">Округлый квадрат</string>
+    <string name="icon_shape_corner_cut">Вырезать</string>
+    <string name="smartspace_add_to_home">Добавить на главный экран</string>
+    <string name="pref_hide_statusbar_clock">Скрыть часы в строке состояния</string>
+    <string name="root_access_required">Необходим Root доступ</string>
+    <string name="smartspace_setup_text">Нажмите, чтобы настроить</string>
 </resources>
