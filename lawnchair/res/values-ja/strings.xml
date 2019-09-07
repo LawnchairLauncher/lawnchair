@@ -318,6 +318,8 @@ Lawnchair プロジェクトの創始者です。</string>
     <string name="app_actions_pref_title">アクション</string>
     <string name="app_actions_pref_title_in_search">アクションの候補</string>
     <string name="app_actions_pref_desc">頻繁に開かれているショートカット</string>
+    <string name="app_actions_reset_pref_title">隠されたアクションをリセット</string>
+    <string name="app_actions_reset_pref_summary">以前に非表示ボタンにドラッグしたアクションをリセットする</string>
     <string name="change_default_home">ホーム画面に設定</string>
     <string name="recent_task_option_popup_window">ダイアログウインドウ</string>
     <string name="feed_theme_pref_title">背景色</string>
@@ -508,6 +510,13 @@ Lawnchair プロジェクトの創始者です。</string>
         <item>おやすみなさい</item>
         <item>よい眠りを</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>おやすみなさい</item>
+        <item>よい眠りを</item>
+        <item>また明日</item>
+        <item>良い夢を</item>
+        <item>夜ふかしは良くありません</item>
+    </string-array>
     <string name="onbording_settings_title">%sのセットアップ</string>
     <string name="onbording_settings_summary">ホーム画面を長押しして下さい</string>
     <string name="onboarding_swipe_up">上スワイプで全てのアプリを表示</string>
@@ -526,4 +535,18 @@ Lawnchair プロジェクトの創始者です。</string>
     <string name="pref_weather_icon_pack">天気アイコン</string>
     <string name="weather_icon_packs_not_supported">あなたの現在の天気情報ソースはサポートしていません</string>
     <string name="lawnchair_settings">Lawnchair 設定</string>
+    <string name="customnavbar_install">タップしてカスタムナビゲーションバーをインストール</string>
+    <string name="customnavbar_back_hiding">戻るボタンを隠す</string>
+    <string name="customnavbar_back_hiding_desc">不要時は戻るボタンを隠す</string>
+    <string name="icon_shape_top_left">左上</string>
+    <string name="icon_shape_top_right">右上</string>
+    <string name="icon_shape_bottom_left">左下</string>
+    <string name="icon_shape_bottom_right">右下</string>
+    <string name="icon_shape_corner_round">ラウンド</string>
+    <string name="icon_shape_corner_squircle">スクワークル</string>
+    <string name="icon_shape_corner_cut">カット</string>
+    <string name="smartspace_add_to_home">ホーム画面に追加</string>
+    <string name="pref_hide_statusbar_clock">ステータスバーの時計を隠す</string>
+    <string name="root_access_required">ルートアクセスが必要です</string>
+    <string name="smartspace_setup_text">タップしてセットアップ</string>
 </resources>
