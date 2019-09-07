@@ -324,6 +324,8 @@
     <string name="app_actions_pref_title">动作</string>
     <string name="app_actions_pref_title_in_search">动作建议</string>
     <string name="app_actions_pref_desc">在抽屉顶部显示常用的快捷方式</string>
+    <string name="app_actions_reset_pref_title">重置已隐藏动作</string>
+    <string name="app_actions_reset_pref_summary">重置之前使用“不再显示”按钮隐藏的动作</string>
     <string name="change_default_home">设为主屏幕</string>
     <string name="recent_task_option_popup_window">对话框窗口</string>
     <string name="feed_theme_pref_title">背景色</string>
@@ -514,6 +516,13 @@
         <item>晚上好！</item>
         <item>晚安！</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>晚上好！</item>
+        <item>晚安！</item>
+        <item>明天见！</item>
+        <item>祝您好梦！</item>
+        <item>不要睡得太晚了哦</item>
+    </string-array>
     <string name="onbording_settings_title">设置 %s</string>
     <string name="onbording_settings_summary">长按你的主屏幕</string>
     <string name="onboarding_swipe_up">向上滑动以查看所有应用</string>
@@ -532,4 +541,18 @@
     <string name="pref_weather_icon_pack">天气图标</string>
     <string name="weather_icon_packs_not_supported">您当前的天气提供商不支持此功能</string>
     <string name="lawnchair_settings">桌面设置</string>
+    <string name="customnavbar_install">点击安装自定义导航栏</string>
+    <string name="customnavbar_back_hiding">返回键隐藏</string>
+    <string name="customnavbar_back_hiding_desc">当不必要时隐藏返回键</string>
+    <string name="icon_shape_top_left">左上角</string>
+    <string name="icon_shape_top_right">右上角</string>
+    <string name="icon_shape_bottom_left">左下角</string>
+    <string name="icon_shape_bottom_right">右下方</string>
+    <string name="icon_shape_corner_round">圆形</string>
+    <string name="icon_shape_corner_squircle">圆角矩形</string>
+    <string name="icon_shape_corner_cut">剪切</string>
+    <string name="smartspace_add_to_home">添加到主屏幕</string>
+    <string name="pref_hide_statusbar_clock">隐藏状态栏时钟</string>
+    <string name="root_access_required">需要 Root 访问权限</string>
+    <string name="smartspace_setup_text">点击设置</string>
 </resources>
