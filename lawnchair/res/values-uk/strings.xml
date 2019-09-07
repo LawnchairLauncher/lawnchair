@@ -321,6 +321,8 @@
     <string name="app_actions_pref_title">Дії</string>
     <string name="app_actions_pref_title_in_search">Пропозиції дій</string>
     <string name="app_actions_pref_desc">Ярлики до часто відкритих екранів</string>
+    <string name="app_actions_reset_pref_title">Скинути приховані дії</string>
+    <string name="app_actions_reset_pref_summary">Відміняє дії, які раніше були приховані, перетягуючи їх на кнопку \"не показувати\"</string>
     <string name="change_default_home">Встановити в якості домашнього екрану</string>
     <string name="recent_task_option_popup_window">Діалогове вікно</string>
     <string name="feed_theme_pref_title">Колір фону</string>
@@ -515,8 +517,15 @@
         <item>Гарного дня!</item>
     </string-array>
     <string-array name="greetings_evening">
+        <item>Як пройшов твій день?</item>
+        <item>Що ти робив сьогодні?</item>
+    </string-array>
+    <string-array name="greetings_night">
         <item>На добраніч!</item>
-        <item>Приємних снів!</item>
+        <item>Добре поспи!</item>
+        <item>До завтра!</item>
+        <item>Солодких снів!</item>
+        <item>Не йди спати занадто пізно</item>
     </string-array>
     <string name="onbording_settings_title">Налаштування %s</string>
     <string name="onbording_settings_summary">Тривале натискання на головному екрані</string>
@@ -536,4 +545,18 @@
     <string name="pref_weather_icon_pack">Значки погоди</string>
     <string name="weather_icon_packs_not_supported">Не підтримується вашим поточним джерелом погоди</string>
     <string name="lawnchair_settings">Налаштування Lawnchair</string>
+    <string name="customnavbar_install">Нажміть, щоб встановити власну панель навігації</string>
+    <string name="customnavbar_back_hiding">Сховати кнопку повернення</string>
+    <string name="customnavbar_back_hiding_desc">Ховати кнопку повернення коли не використовується</string>
+    <string name="icon_shape_top_left">Зверху зліва</string>
+    <string name="icon_shape_top_right">Зверху справа</string>
+    <string name="icon_shape_bottom_left">Знизу ліворуч</string>
+    <string name="icon_shape_bottom_right">Знизу праворуч</string>
+    <string name="icon_shape_corner_round">Округлі</string>
+    <string name="icon_shape_corner_squircle">Округлий квадрат</string>
+    <string name="icon_shape_corner_cut">Виріз</string>
+    <string name="smartspace_add_to_home">Додати на головний екран</string>
+    <string name="pref_hide_statusbar_clock">Приховувати годинник в рядку стану</string>
+    <string name="root_access_required">Потрібен Root-доступ</string>
+    <string name="smartspace_setup_text">Торкніться, щоб налаштувати</string>
 </resources>
