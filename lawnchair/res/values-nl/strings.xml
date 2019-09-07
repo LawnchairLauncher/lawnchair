@@ -322,6 +322,8 @@
     <string name="app_actions_pref_title">Acties</string>
     <string name="app_actions_pref_title_in_search">Actie-suggesties</string>
     <string name="app_actions_pref_desc">Snelkoppelingen naar vaak geopende schermen</string>
+    <string name="app_actions_reset_pref_title">Verborgen acties opnieuw instellen</string>
+    <string name="app_actions_reset_pref_summary">Herstelt acties die verborgen waren door ze te verslepen naar de \'Niet weergeven\'-knop</string>
     <string name="change_default_home">Als startpagina instellen</string>
     <string name="recent_task_option_popup_window">Dialoogscherm</string>
     <string name="feed_theme_pref_title">Achtergrondkleur</string>
@@ -514,6 +516,13 @@
         <item>Goedenacht!</item>
         <item>Slaap lekker!</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>Goede nacht!</item>
+        <item>Slaap lekker!</item>
+        <item>Tot morgen!</item>
+        <item>Droom zacht!</item>
+        <item>Niet te lang opblijven</item>
+    </string-array>
     <string name="onbording">Onboarding</string>
     <string name="onbording_settings_title">%s instellen</string>
     <string name="onbording_settings_summary">Startscherm lang aanraken</string>
@@ -533,4 +542,18 @@
     <string name="pref_weather_icon_pack">Weerpictogrammen</string>
     <string name="weather_icon_packs_not_supported">Niet ondersteund door je huidige weerbron</string>
     <string name="lawnchair_settings">Lawnchair Instellingen</string>
+    <string name="customnavbar_install">Tik om aangepaste navigatiebalk te installeren</string>
+    <string name="customnavbar_back_hiding">Terugknop verbergen</string>
+    <string name="customnavbar_back_hiding_desc">Terugknop verbergen indien niet nodig</string>
+    <string name="icon_shape_top_left">Linksboven</string>
+    <string name="icon_shape_top_right">Rechtsboven</string>
+    <string name="icon_shape_bottom_left">Linksonder</string>
+    <string name="icon_shape_bottom_right">Rechtsonder</string>
+    <string name="icon_shape_corner_round">Rond</string>
+    <string name="icon_shape_corner_squircle">Vierkantcirkel</string>
+    <string name="icon_shape_corner_cut">Afgesneden</string>
+    <string name="smartspace_add_to_home">Toevoegen aan startscherm</string>
+    <string name="pref_hide_statusbar_clock">Statusbalkklok verbergen</string>
+    <string name="root_access_required">Roottoegang benodigd</string>
+    <string name="smartspace_setup_text">Tik om in te stellen</string>
 </resources>
