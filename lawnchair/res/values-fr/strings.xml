@@ -323,6 +323,8 @@
     <string name="app_actions_pref_title">Actions</string>
     <string name="app_actions_pref_title_in_search">Suggestions d\'action</string>
     <string name="app_actions_pref_desc">Raccourcis vers les écrans fréquemment ouverts</string>
+    <string name="app_actions_reset_pref_title">Réinitialiser les actions cachées</string>
+    <string name="app_actions_reset_pref_summary">Réinitialise les actions précédemment masquées en les faisant glisser vers le bouton \"Ne pas afficher\"</string>
     <string name="change_default_home">Définir comme écran d\'accueil</string>
     <string name="recent_task_option_popup_window">Fenêtre de dialogue</string>
     <string name="feed_theme_pref_title">Couleur de fond</string>
@@ -512,8 +514,15 @@
         <item>Bonne journée !</item>
     </string-array>
     <string-array name="greetings_evening">
+        <item>Comment s\'est passé ta journée ?</item>
+        <item>Qu\'as-tu fait aujourd\'hui ?</item>
+    </string-array>
+    <string-array name="greetings_night">
         <item>Bonne nuit !</item>
         <item>Dormez bien !</item>
+        <item>À demain !</item>
+        <item>Faites de beaux rêves !</item>
+        <item>Ne reste pas debout trop longtemps</item>
     </string-array>
     <string name="onbording_settings_title">Paramétrer %s</string>
     <string name="onbording_settings_summary">Appuyez longuement sur l\'écran d’accueil</string>
@@ -533,4 +542,18 @@
     <string name="pref_weather_icon_pack">Icônes météo</string>
     <string name="weather_icon_packs_not_supported">N\'est pas supporté par votre source météo actuelle</string>
     <string name="lawnchair_settings">Paramètres Lawnchair</string>
+    <string name="customnavbar_install">Appuyez pour installer la barre de navigation personnalisée</string>
+    <string name="customnavbar_back_hiding">Bouton de retour caché</string>
+    <string name="customnavbar_back_hiding_desc">Masquer le bouton de retour lorsqu\'il n\'est pas nécessaire</string>
+    <string name="icon_shape_top_left">En haut à gauche</string>
+    <string name="icon_shape_top_right">En haut à droite</string>
+    <string name="icon_shape_bottom_left">En bas à gauche</string>
+    <string name="icon_shape_bottom_right">En Bas à Droite</string>
+    <string name="icon_shape_corner_round">Circulaire</string>
+    <string name="icon_shape_corner_squircle">Carré aux coins ronds</string>
+    <string name="icon_shape_corner_cut">Couper</string>
+    <string name="smartspace_add_to_home">Ajouter à l\'écran d\'accueil</string>
+    <string name="pref_hide_statusbar_clock">Masquer l\'horloge de la barre d\'état</string>
+    <string name="root_access_required">Droits Root requis</string>
+    <string name="smartspace_setup_text">Appuyez pour configurer</string>
 </resources>
