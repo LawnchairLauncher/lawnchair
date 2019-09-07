@@ -25,6 +25,8 @@ import android.view.InputEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import com.android.launcher3.MainThreadExecutor;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.inputconsumers.InputConsumer;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
@@ -48,11 +50,16 @@ public class RecentsAnimationWrapper {
 
     private boolean mWindowThresholdCrossed = false;
 
+    private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
     private final InputConsumerController mInputConsumerController;
     private final Supplier<InputConsumer> mInputProxySupplier;
 
+    private boolean mInputConsumerUnregistered;
+    private boolean mTouchProxyEnabled;
+
     private InputConsumer mInputConsumer;
     private boolean mTouchInProgress;
+    private boolean mInputConsumerUnregisterPending;
 
     private boolean mFinishPending;
 
@@ -60,6 +67,9 @@ public class RecentsAnimationWrapper {
             Supplier<InputConsumer> inputProxySupplier) {
         mInputConsumerController = inputConsumerController;
         mInputProxySupplier = inputProxySupplier;
+        if (!Utilities.ATLEAST_Q) {
+            mMainThreadExecutor.execute(mInputConsumerController::registerInputConsumer);
+        }
     }
 
     public boolean hasTargets() {
@@ -151,8 +161,26 @@ public class RecentsAnimationWrapper {
         }
     }
 
+    public void unregisterInputConsumer() {
+        if (!Utilities.ATLEAST_Q) {
+            mMainThreadExecutor.execute(this::unregisterInputConsumerUi);
+        }
+    }
+
+    private void unregisterInputConsumerUi() {
+        if (mTouchProxyEnabled && mTouchInProgress) {
+            mInputConsumerUnregisterPending = true;
+        } else {
+            mInputConsumerUnregistered = true;
+            mInputConsumerController.unregisterInputConsumer();
+        }
+    }
+
     public void enableInputProxy() {
-        mInputConsumerController.setInputListener(this::onInputConsumerEvent);
+        if (!mInputConsumerUnregistered) {
+            mTouchProxyEnabled = true;
+            mInputConsumerController.setInputListener(this::onInputConsumerEvent);
+        }
     }
 
     private boolean onInputConsumerEvent(InputEvent ev) {
@@ -178,6 +206,10 @@ public class RecentsAnimationWrapper {
         } else if (action == ACTION_CANCEL || action == ACTION_UP) {
             // Finish any pending actions
             mTouchInProgress = false;
+            if (mInputConsumerUnregisterPending) {
+                mInputConsumerUnregisterPending = false;
+                mInputConsumerController.unregisterInputConsumer();
+            }
             if (mFinishPending) {
                 mFinishPending = false;
                 finishAndClear(true /* toRecents */, null, false /* sendUserLeaveHint */);

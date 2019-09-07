@@ -1319,6 +1319,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         }
 
         mActivityInitListener.unregister();
+        mRecentsAnimationWrapper.unregisterInputConsumer();
         mTaskSnapshot = null;
     }
 

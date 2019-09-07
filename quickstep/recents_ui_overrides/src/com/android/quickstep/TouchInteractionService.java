@@ -454,7 +454,9 @@ public class TouchInteractionService extends Service implements
         mIsUserUnlocked = true;
 
         sSwipeSharedState.setOverviewComponentObserver(mOverviewComponentObserver);
-        mInputConsumer.registerInputConsumer();
+        if (Utilities.ATLEAST_Q) {
+            mInputConsumer.registerInputConsumer();
+        }
         onSystemUiProxySet();
         onSystemUiFlagsChanged();
         onAssistantVisibilityChanged();
@@ -492,7 +494,9 @@ public class TouchInteractionService extends Service implements
     @Override
     public void onDestroy() {
         if (mIsUserUnlocked) {
-            mInputConsumer.unregisterInputConsumer();
+            if (Utilities.ATLEAST_Q) {
+                mInputConsumer.unregisterInputConsumer();
+            }
             mOverviewComponentObserver.onDestroy();
         }
         disposeEventHandlers();
