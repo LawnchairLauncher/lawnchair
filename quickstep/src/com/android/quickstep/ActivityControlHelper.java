@@ -26,9 +26,11 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.allapps.AllAppsTransitionController.SCRIM_PROGRESS;
+import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
+import static com.android.quickstep.WindowTransformSwipeHandler.RECENTS_ATTACH_DURATION;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_ROTATION;
@@ -303,6 +305,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             return new AnimationFactory() {
                 private Animator mShelfAnim;
                 private ShelfAnimState mShelfState;
+                private Animator mAttachToWindowAnim;
+                private boolean mIsAttachedToWindow;
 
                 @Override
                 public void createActivityController(long transitionLength,
@@ -349,6 +353,28 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                     mShelfAnim.setInterpolator(interpolator);
                     mShelfAnim.setDuration(duration);
                     mShelfAnim.start();
+                }
+
+                @Override
+                public void setRecentsAttachedToAppWindow(boolean attached, boolean animate) {
+                    if (mIsAttachedToWindow == attached && animate) {
+                        return;
+                    }
+                    mIsAttachedToWindow = attached;
+                    if (mAttachToWindowAnim != null) {
+                        mAttachToWindowAnim.cancel();
+                    }
+                    mAttachToWindowAnim = ObjectAnimator.ofFloat(activity.getOverviewPanel(),
+                            RecentsView.CONTENT_ALPHA, attached ? 1 : 0);
+                    mAttachToWindowAnim.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mAttachToWindowAnim = null;
+                        }
+                    });
+                    mAttachToWindowAnim.setInterpolator(ACCEL_DEACCEL);
+                    mAttachToWindowAnim.setDuration(animate ? RECENTS_ATTACH_DURATION : 0);
+                    mAttachToWindowAnim.start();
                 }
             };
         }
@@ -789,6 +815,13 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         default void setShelfState(ShelfAnimState animState, Interpolator interpolator,
                 long duration) { }
+
+        /**
+         * @param attached Whether to show RecentsView alongside the app window. If false, recents
+         *                 will be hidden by some property we can animate, e.g. alpha.
+         * @param animate Whether to animate recents to/from its new attached state.
+         */
+        default void setRecentsAttachedToAppWindow(boolean attached, boolean animate) { }
     }
 
     interface HomeAnimationFactory {

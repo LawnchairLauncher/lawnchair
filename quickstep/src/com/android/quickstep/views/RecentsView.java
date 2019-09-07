@@ -699,6 +699,11 @@ public abstract class RecentsView<T extends BaseDraggingActivity> extends PagedV
         return getTaskView(mRunningTaskId);
     }
 
+    public int getRunningTaskIndex() {
+        TaskView tv = getRunningTaskView();
+        return tv == null ? -1 : indexOfChild(tv);
+    }
+
     /**
      * Hides the tile associated with {@link #mRunningTaskId}
      */

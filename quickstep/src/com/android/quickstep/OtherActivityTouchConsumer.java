@@ -196,7 +196,9 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 mMotionPauseDetector.setDisallowPause(upDist < mMotionPauseMinDisplacement
                         || isLikelyToStartNewTask);
                 mMotionPauseDetector.addPosition(displacement, ev.getEventTime());
-//                mInteractionHandler.setIsLikelyToStartNewTask(isLikelyToStartNewTask);
+                if (mInteractionHandler != null) {
+                    mInteractionHandler.setIsLikelyToStartNewTask(isLikelyToStartNewTask);
+                }
                 break;
             }
             case ACTION_CANCEL:
