@@ -6,7 +6,7 @@
     <string name="icu_abbrev_time">HH:mm</string>
     <string name="icu_abbrev_time_12h">hh:mm aa</string>
     <string name="icu_abbrev_date"> dd MMMM</string>
-    <string name="in_smartspace">Ve widgetu „Přehled událostí“</string>
+    <string name="in_smartspace">Ve widgetu <i>Přehled událostí</i></string>
     <string name="smartspace_time">Čas</string>
     <string name="smartspace_date">Datum</string>
     <string name="customize">Přizpůsobit</string>
@@ -22,7 +22,7 @@
     <string name="google_app">Aplikace Google</string>
     <string name="about_app_version">Verze</string>
     <string name="title_disable_suggestions_prompt">Zakázat návrhy aplikací</string>
-    <string name="msg_disable_suggestions_prompt">"Data o používání budou smazána"</string>
+    <string name="msg_disable_suggestions_prompt">"Data o\u00a0používání budou smazána"</string>
     <string name="label_turn_off_suggestions">Vypnout</string>
     <string name="pixel_style_pref_title">Styl Pixel</string>
     <string name="about_summary_title">Shrnutí</string>
@@ -157,7 +157,7 @@
     <!--Marker E-->
     <string name="debug_crash_launcher">Shoď launcher</string>
     <string name="gestures_pref_title">Gesta</string>
-    <string name="gestures_pref_summary">Dvojité poklepání, tlačítko domů, přejetí dolů</string>
+    <string name="gestures_pref_summary">Dvojité poklepání, tlačítko <i>Domů</i>, přejetí dolů</string>
     <string name="action_open_drawer">Otevřít roletu aplikací</string>
     <string name="action_last_task">Otevřít poslední aplikaci</string>
     <string name="action_open_widgets">Otevřít roletu s\u00a0widgety</string>
@@ -175,7 +175,7 @@
     <string name="action_open_app_select_app">Vybrat aplikaci</string>
     <string name="action_none">Nic nedělat</string>
     <string name="action_despacito">Přehrát YouTube Rewind 2018 (zkreslený)</string>
-    <string name="gesture_press_home">Tlačítko Domů</string>
+    <string name="gesture_press_home">Tlačítko <i>Domů</i></string>
     <string name="gesture_press_back">Tlačítko Zpět</string>
     <string name="gesture_double_tap">Dvojité poklepání</string>
     <string name="gesture_long_press">Dotyk s\u00a0podržením</string>
@@ -231,8 +231,8 @@
     <string name="pref_open_source_licenses_title">Licence</string>
     <string name="pref_legacy_treatment_title">Vytvořit adaptivní ikony</string>
     <string name="pref_legacy_treatment_summary">Automatické adaptivní ikony pro všechny aplikace</string>
-    <string name="dt2s_admin_hint">Pro použití uzamčení dvojím poklepáním povolte administrátorské oprávnění</string>
-    <string name="dt2s_admin_warning">Zámek na dvojité klepnutí bude deaktivován</string>
+    <string name="dt2s_admin_hint">Pro použití uzamčení dvojitým poklepáním povolte administrátorské oprávnění</string>
+    <string name="dt2s_admin_warning">Uzamčení dvojitým poklepáním bude deaktivováno</string>
     <string name="icon_pack_applied_toast">%s použito</string>
     <string name="color_system_accent">Systémový odstín</string>
     <string name="color_pixel_accent">Pixel modrá</string>
@@ -242,9 +242,9 @@
     <string name="color_wallpaper_secondary">Tapeta — sekundární</string>
     <string name="color_wallpaper_tertiary">Tapeta — terciární</string>
     <string name="pref_hide_statusbar">Skrýt stavový řádek</string>
-    <string name="automatic_short">Autom.</string>
+    <string name="automatic_short">Auto.</string>
     <string name="bridge_missing_message">Instalujte nebo aktualizujte Lawnfeed</string>
-    <string name="quickstep_pref_title">Nedávné</string>
+    <string name="quickstep_pref_title">Nedávné aplikace</string>
     <string name="quickstep_pref_summary">Gesta, rohy, rozostření</string>
     <string name="swipe_up_to_switch_apps_title">Potáhnutím nahoru přepnete aplikace</string>
     <string name="swipe_left_to_go_back_title">Přejet doleva pro návrat</string>
@@ -404,7 +404,7 @@
     <string name="pref_fonts_global_font">Globální písmo</string>
     <string name="pref_fonts_change_global_font">Změnit</string>
     <string name="pref_fonts_home_icons">Aplikace a\u00a0názvy složek</string>
-    <string name="pref_fonts_home_smartspace">Widget „Přehled událostí“</string>
+    <string name="pref_fonts_home_smartspace">Widget <i>Přehled událostí</i></string>
     <string name="pref_fonts_home_shortcuts">Bubliny se zkratkami</string>
     <string name="pref_fonts_category_drawer">Roleta</string>
     <string name="pref_fonts_drawer_icons">Názvy aplikací</string>
@@ -544,8 +544,8 @@
     <string name="weather_icon_packs_not_supported">Nejsou podporovány vaším aktuálně nastaveným poskytovatelem informací o\u00a0počasí</string>
     <string name="lawnchair_settings">Nastavení Lawnchair</string>
     <string name="customnavbar_install">Klepnutím nainstalujete vlastní navigační panel</string>
-    <string name="customnavbar_back_hiding">Skrývat tlačítko Zpět</string>
-    <string name="customnavbar_back_hiding_desc">Skrývat tlačítko Zpět, když není potřeba</string>
+    <string name="customnavbar_back_hiding">Skrývat tlačítko <i>Zpět</i></string>
+    <string name="customnavbar_back_hiding_desc">Skrývat tlačítko <i>Zpět</i>, když není potřeba</string>
     <string name="icon_shape_top_left">Vlevo nahoře</string>
     <string name="icon_shape_top_right">Vpravo nahoře</string>
     <string name="icon_shape_bottom_left">Vlevo dole</string>
