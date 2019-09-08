@@ -321,6 +321,8 @@
     <string name="app_actions_pref_title">Handlinger</string>
     <string name="app_actions_pref_title_in_search">Handlingsforslag</string>
     <string name="app_actions_pref_desc">Genveje til nyligt åbnede skærme</string>
+    <string name="app_actions_reset_pref_title">Nulstil skjulte handlinger</string>
+    <string name="app_actions_reset_pref_summary">Nulstiller handlinger, som blev skjult tidligere ved at trække dem til knappen \"Vis ikke\"</string>
     <string name="change_default_home">Sæt som Hjemskærm</string>
     <string name="recent_task_option_popup_window">Dialogvindue</string>
     <string name="feed_theme_pref_title">Baggrundsfarve</string>
@@ -510,8 +512,15 @@
         <item>Hav en god dag!</item>
     </string-array>
     <string-array name="greetings_evening">
+        <item>Hvordan var din dag?</item>
+        <item>Hvad lavede du i dag?</item>
+    </string-array>
+    <string-array name="greetings_night">
         <item>Godnat!</item>
         <item>Sov godt!</item>
+        <item>Ses i morgen!</item>
+        <item>Drøm sødt!</item>
+        <item>Bliv ikke oppe for længe</item>
     </string-array>
     <string name="onbording_settings_title">Opsæt %s</string>
     <string name="onbording_settings_summary">Langt tryk på Hjemskærmen</string>
@@ -531,4 +540,18 @@
     <string name="pref_weather_icon_pack">Vejrikoner</string>
     <string name="weather_icon_packs_not_supported">Ikke understøttet af din aktuelle vejrkilde</string>
     <string name="lawnchair_settings">Lawnchair-indstillinger</string>
+    <string name="customnavbar_install">Tryk for at installere Tilpasset Navigeringsbjælke</string>
+    <string name="customnavbar_back_hiding">Skjul af Tilbage-knap</string>
+    <string name="customnavbar_back_hiding_desc">Skjul Tilbage-knap, når den ikke behøves</string>
+    <string name="icon_shape_top_left">Øverst til venstre</string>
+    <string name="icon_shape_top_right">Øverst til højre</string>
+    <string name="icon_shape_bottom_left">Nederst til venstre</string>
+    <string name="icon_shape_bottom_right">Nederst til højre</string>
+    <string name="icon_shape_corner_round">Rund</string>
+    <string name="icon_shape_corner_squircle">Kvadrat med runde hjørner</string>
+    <string name="icon_shape_corner_cut">Klip</string>
+    <string name="smartspace_add_to_home">Føj til Startskærm</string>
+    <string name="pref_hide_statusbar_clock">Skjul statusbjælke</string>
+    <string name="root_access_required">Root-adgang kræves</string>
+    <string name="smartspace_setup_text">Tryk for at opsættee</string>
 </resources>
