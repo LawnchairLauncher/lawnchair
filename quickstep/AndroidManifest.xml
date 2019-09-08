@@ -88,6 +88,14 @@
                   android:showOnLockScreen="true"
                   android:directBootAware="true" />
 
+        <meta-data
+            android:name="xyz.paphonb.quickstepswitcher.minSdk"
+            android:value="${quickstepTarget}" />
+
+        <meta-data
+            android:name="xyz.paphonb.quickstepswitcher.maxSdk"
+            android:value="${quickstepTarget}" />
+
     </application>
 
 </manifest>
