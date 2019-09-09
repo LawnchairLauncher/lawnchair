@@ -28,11 +28,11 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 
-import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-
 import androidx.annotation.BinderThread;
 import androidx.annotation.UiThread;
+
+import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 @TargetApi(Build.VERSION_CODES.P)
 public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
@@ -50,19 +50,27 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
         mStartAtFrontOfQueue = startAtFrontOfQueue;
     }
 
+    // Called only in R+ platform
     @BinderThread
-    @Override
-    public void onAnimationStart(RemoteAnimationTargetCompat[] targetCompats, Runnable runnable) {
+    public void onAnimationStart(RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets, Runnable runnable) {
         Runnable r = () -> {
             finishExistingAnimation();
             mAnimationResult = new AnimationResult(runnable);
-            onCreateAnimation(targetCompats, mAnimationResult);
+            onCreateAnimation(appTargets, mAnimationResult);
         };
         if (mStartAtFrontOfQueue) {
             postAtFrontOfQueueAsynchronously(mHandler, r);
         } else {
             postAsyncCallback(mHandler, r);
         }
+    }
+
+    // Called only in Q platform
+    @BinderThread
+    @Deprecated
+    public void onAnimationStart(RemoteAnimationTargetCompat[] appTargets, Runnable runnable) {
+        onAnimationStart(appTargets, new RemoteAnimationTargetCompat[0], runnable);
     }
 
     /**
