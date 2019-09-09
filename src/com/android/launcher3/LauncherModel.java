@@ -321,6 +321,13 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
+    public void forceReloadOnNextLaunch() {
+        synchronized (this.mLock) {
+            stopLoader();
+            mModelLoaded = false;
+        }
+    }
+
     public void forceReload() {
         forceReload(-1);
     }

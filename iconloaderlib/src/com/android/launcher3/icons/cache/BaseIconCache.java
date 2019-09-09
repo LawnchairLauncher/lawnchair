@@ -220,6 +220,11 @@ public abstract class BaseIconCache {
                 new String[]{packageName + "/%", Long.toString(userSerial)});
     }
 
+    public synchronized void removeAllIcons() {
+        mCache.clear();
+        mIconDb.delete(null, null);
+    }
+
     public IconCacheUpdateHandler getUpdateHandler() {
         updateSystemState();
         return new IconCacheUpdateHandler(this);

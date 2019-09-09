@@ -174,9 +174,8 @@ public class LauncherAppState {
     }
 
     public void reloadIconCache() {
-        // TODO: implement this
-        // mIconCache.removeAllIcons();
-        // mModel.forceReloadOnNextLaunch();
+        mIconCache.removeAllIcons();
+        mModel.forceReloadOnNextLaunch();
     }
 
     /**
