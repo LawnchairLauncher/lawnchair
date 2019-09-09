@@ -1,9 +1,10 @@
 #!/bin/bash
 
 if [ $DRONE_BRANCH = "beta" ]; then
-    BUILD_COMMAND="assembleQuickstepLawnchairPlahRelease"
+    BUILD_COMMAND="assembleAospWithQuickstepPieLawnchairPlahRelease"
 else
-    BUILD_COMMAND="assembleQuickstepLawnchairCiOptimized"
+    # TODO: switch to "optimized" variant
+    BUILD_COMMAND="assembleAospWithQuickstepPieLawnchairCiDebug"
 fi
 
 echo "Running $BUILD_COMMAND"

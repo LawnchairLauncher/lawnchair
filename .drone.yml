@@ -26,7 +26,7 @@ pipeline:
     image: lawnchairlauncher/drone-telegram:latest
     secrets: [ bot_token, channel_id, dev_channel_id ]
     apk_path: build/outputs/apk/*/*/*.apk
-    mapping_path: build/outputs/mapping/quickstepLawnchairCi/optimized/mapping.txt
+    mapping_path: build/outputs/mapping/*/*/mapping.txt
     channel_id: "-1001083653933"
     public_branch: alpha
     environment:
@@ -37,8 +37,8 @@ pipeline:
   mirror:
     image: lawnchairlauncher/drone-apkmirror:latest
     secrets: [ bot_token, notify_email, mail_server, mail_user, mail_password ]
-    apk_path: build/outputs/apk/quickstepLawnchairCi/optimized/src-quickstep-lawnchair-ci-optimized.apk
-    mapping_path: build/outputs/mapping/quickstepLawnchairCi/optimized/mapping.txt
+    apk_path: build/outputs/apk/*/*/*.apk
+    mapping_path: build/outputs/mapping/*/*/mapping.txt
     channel_id: "-1001400906236"
     mail_from: "buildbot@lawnchair.info"
     environment:
