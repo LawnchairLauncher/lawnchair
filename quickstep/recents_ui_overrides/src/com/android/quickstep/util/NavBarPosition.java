@@ -23,6 +23,7 @@ import android.content.Context;
 import android.view.Surface;
 import android.view.WindowManager;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.quickstep.SysUINavigationMode;
 
@@ -40,12 +41,16 @@ public class NavBarPosition {
                 .getDefaultDisplay().getRotation();
     }
 
+    private boolean forceBottom() {
+        return mMode == NO_BUTTON && Utilities.ATLEAST_Q;
+    }
+
     public boolean isRightEdge() {
-        return mMode != NO_BUTTON && mDisplayRotation == Surface.ROTATION_90;
+        return !forceBottom() && mDisplayRotation == Surface.ROTATION_90;
     }
 
     public boolean isLeftEdge() {
-        return mMode != NO_BUTTON && mDisplayRotation == Surface.ROTATION_270;
+        return !forceBottom() && mDisplayRotation == Surface.ROTATION_270;
     }
 
     public RotationMode getRotationMode() {
