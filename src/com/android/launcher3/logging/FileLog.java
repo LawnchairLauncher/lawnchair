@@ -8,8 +8,6 @@ import android.os.Message;
 import android.util.Log;
 import android.util.Pair;
 
-import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.IOUtils;
 
 import java.io.BufferedReader;
@@ -32,8 +30,7 @@ import java.util.concurrent.TimeUnit;
  */
 public final class FileLog {
 
-    protected static final boolean ENABLED =
-            FeatureFlags.IS_DOGFOOD_BUILD || Utilities.IS_DEBUG_DEVICE;
+    protected static final boolean ENABLED = true;
     private static final String FILE_NAME_PREFIX = "log-";
     private static final DateFormat DATE_FORMAT =
             DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
