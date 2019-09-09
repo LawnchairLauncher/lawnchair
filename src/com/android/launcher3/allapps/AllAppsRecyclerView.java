@@ -34,6 +34,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.allapps.AllAppsGridAdapter.AppsGridLayoutManager;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -112,6 +113,13 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         // Ensure we reattach the scrollbar if it was previously detached while fast-scrolling
         if (mScrollbar != null) {
             mScrollbar.reattachThumbToScroll();
+        }
+        if (getLayoutManager() instanceof AppsGridLayoutManager) {
+            AppsGridLayoutManager layoutManager = (AppsGridLayoutManager) getLayoutManager();
+            if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                // We are at the top, so don't scrollToPosition (would cause unnecessary relayout).
+                return;
+            }
         }
         scrollToPosition(0);
     }
