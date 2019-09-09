@@ -720,7 +720,7 @@ public class FloatingIconView extends View implements
      */
     @UiThread
     public static IconLoadResult fetchIcon(Launcher l, View v, ItemInfo info, boolean isOpening) {
-        IconLoadResult result = new IconLoadResult();
+        IconLoadResult result = new IconLoadResult(info);
         MODEL_EXECUTOR.getHandler().postAtFrontOfQueue(() -> {
             RectF position = new RectF();
             getLocationBoundsForView(l, v, isOpening, position);
@@ -749,10 +749,13 @@ public class FloatingIconView extends View implements
 
         // Get the drawable on the background thread
         boolean shouldLoadIcon = originalView.getTag() instanceof ItemInfo && hideOriginal;
-        view.mIconLoadResult = sIconLoadResult;
-        if (shouldLoadIcon && view.mIconLoadResult == null) {
-            view.mIconLoadResult = fetchIcon(launcher, originalView,
-                    (ItemInfo) originalView.getTag(), isOpening);
+        if (shouldLoadIcon) {
+            if (sIconLoadResult != null && sIconLoadResult.itemInfo == originalView.getTag()) {
+                view.mIconLoadResult = sIconLoadResult;
+            } else {
+                view.mIconLoadResult = fetchIcon(launcher, originalView,
+                        (ItemInfo) originalView.getTag(), isOpening);
+            }
         }
         sIconLoadResult = null;
 
@@ -894,10 +897,15 @@ public class FloatingIconView extends View implements
     }
 
     private static class IconLoadResult {
+        final ItemInfo itemInfo;
         Drawable drawable;
         Drawable badge;
         int iconOffset;
         Runnable onIconLoaded;
         boolean isIconLoaded;
+
+        public IconLoadResult(ItemInfo itemInfo) {
+            this.itemInfo = itemInfo;
+        }
     }
 }
