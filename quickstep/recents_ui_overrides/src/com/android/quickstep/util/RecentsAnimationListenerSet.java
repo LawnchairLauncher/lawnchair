@@ -20,6 +20,7 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import android.graphics.Rect;
 import android.util.ArraySet;
 
+import androidx.annotation.BinderThread;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.Utilities;
@@ -70,12 +71,14 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
         mListeners.remove(listener);
     }
 
-    @Override
+    // Called only in R+ platform
+    @BinderThread
     public final void onAnimationStart(RecentsAnimationControllerCompat controller,
-            RemoteAnimationTargetCompat[] targets, Rect homeContentInsets,
-            Rect minimizedHomeBounds) {
+            RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets,
+            Rect homeContentInsets, Rect minimizedHomeBounds) {
         mController = controller;
-        SwipeAnimationTargetSet targetSet = new SwipeAnimationTargetSet(controller, targets,
+        SwipeAnimationTargetSet targetSet = new SwipeAnimationTargetSet(controller, appTargets,
                 homeContentInsets, minimizedHomeBounds, mShouldMinimizeSplitScreen,
                 mOnFinishListener);
 
@@ -90,6 +93,17 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
         }
     }
 
+    // Called only in Q platform
+    @BinderThread
+    @Deprecated
+    public final void onAnimationStart(RecentsAnimationControllerCompat controller,
+            RemoteAnimationTargetCompat[] appTargets, Rect homeContentInsets,
+            Rect minimizedHomeBounds) {
+        onAnimationStart(controller, appTargets, new RemoteAnimationTargetCompat[0],
+                homeContentInsets, minimizedHomeBounds);
+    }
+
+    @BinderThread
     @Override
     public final void onAnimationCanceled(ThumbnailData thumbnailData) {
         Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
