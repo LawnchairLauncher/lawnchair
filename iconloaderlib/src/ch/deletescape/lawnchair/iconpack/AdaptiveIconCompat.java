@@ -38,6 +38,7 @@ import android.graphics.Shader;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -46,8 +47,6 @@ import android.util.TypedValue;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import ch.deletescape.lawnchair.adaptive.IconShapeManager;
-import com.android.launcher3.Utilities;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -140,17 +139,20 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
     private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG |
             Paint.FILTER_BITMAP_FLAG);
 
+    private static Method methodGetAdaptiveIconMaskPath;
     private static Method methodExtractThemeAttrs;
     private static Method methodCreateFromXmlInnerForDensity;
 
     static {
         try {
+            Class classIconShapeManager = Class.forName("ch.deletescape.lawnchair.adaptive.IconShapeManager");
+            methodGetAdaptiveIconMaskPath = classIconShapeManager.getMethod("getAdaptiveIconMaskPath");
             methodExtractThemeAttrs = TypedArray.class.getDeclaredMethod("extractThemeAttrs");
             methodCreateFromXmlInnerForDensity = Drawable.class.getDeclaredMethod(
                     "createFromXmlInnerForDensity", Resources.class,
                     XmlPullParser.class, AttributeSet.class, int.class, Theme.class);
             methodCreateFromXmlInnerForDensity.setAccessible(true);
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -202,7 +204,7 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
     @SuppressLint("RestrictedApi")
     private Path createMaskPath() {
         try {
-            return IconShapeManager.getInstanceNoCreate().getIconShape().getMaskPath();
+            return (Path) methodGetAdaptiveIconMaskPath.invoke(null);
         } catch (Exception e) {
             Log.d(TAG, "Can't load icon mask", e);
         }
@@ -1107,7 +1109,7 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
 
     @NonNull
     public static Drawable wrap(@NonNull Drawable icon) {
-        if (Utilities.ATLEAST_OREO && icon instanceof AdaptiveIconDrawable) {
+        if (VERSION.SDK_INT >= VERSION_CODES.O && icon instanceof AdaptiveIconDrawable) {
             AdaptiveIconDrawable adaptive = (AdaptiveIconDrawable) icon;
             return new AdaptiveIconCompat(adaptive.getBackground(), adaptive.getForeground());
         } else {
@@ -1117,7 +1119,7 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
 
     @Nullable
     public static Drawable wrapNullable(@Nullable Drawable icon) {
-        if (Utilities.ATLEAST_OREO && icon instanceof AdaptiveIconDrawable) {
+        if (VERSION.SDK_INT >= VERSION_CODES.O && icon instanceof AdaptiveIconDrawable) {
             AdaptiveIconDrawable adaptive = (AdaptiveIconDrawable) icon;
             return new AdaptiveIconCompat(adaptive.getBackground(), adaptive.getForeground());
         } else {

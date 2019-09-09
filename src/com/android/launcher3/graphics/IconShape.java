@@ -33,7 +33,6 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Region.Op;
-import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -43,6 +42,7 @@ import android.util.Xml;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 
+import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
@@ -378,7 +378,7 @@ public abstract class IconShape {
     }
 
     /**
-     * Initializes the shape which is closest to the {@link AdaptiveIconDrawable}
+     * Initializes the shape which is closest to the {@link AdaptiveIconCompat}
      */
     public static void init(Context context) {
         if (!Utilities.ATLEAST_OREO) {
@@ -442,7 +442,7 @@ public abstract class IconShape {
 
         Region full = new Region(0, 0, size, size);
         Region iconR = new Region();
-        AdaptiveIconDrawable drawable = new AdaptiveIconDrawable(
+        AdaptiveIconCompat drawable = new AdaptiveIconCompat(
                 new ColorDrawable(Color.BLACK), new ColorDrawable(Color.BLACK));
         drawable.setBounds(0, 0, size, size);
         iconR.setPath(drawable.getIconMask(), full);

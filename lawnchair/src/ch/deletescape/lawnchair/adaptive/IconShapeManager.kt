@@ -25,6 +25,7 @@ import android.graphics.*
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.os.Handler
 import android.text.TextUtils
+import androidx.annotation.Keep
 import androidx.core.graphics.PathParser
 import ch.deletescape.lawnchair.folder.FolderShape
 import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat
@@ -123,7 +124,8 @@ class IconShapeManager(private val context: Context) {
 
     companion object : LawnchairSingletonHolder<IconShapeManager>(::IconShapeManager) {
 
+        @Keep
         @JvmStatic
-        fun getInstanceNoCreate() = dangerousGetInstance()
+        fun getAdaptiveIconMaskPath() = dangerousGetInstance()!!.iconShape.getMaskPath()
     }
 }

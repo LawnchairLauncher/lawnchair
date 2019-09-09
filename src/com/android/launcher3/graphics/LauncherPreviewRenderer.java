@@ -28,7 +28,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Handler;
@@ -42,6 +41,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextClock;
 
+import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
@@ -99,7 +99,7 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
 
         BaseIconFactory iconFactory =
                 new BaseIconFactory(context, mIdp.fillResIconDpi, mIdp.iconBitmapSize) { };
-        BitmapInfo iconInfo = iconFactory.createBadgedIconBitmap(new AdaptiveIconDrawable(
+        BitmapInfo iconInfo = iconFactory.createBadgedIconBitmap(new AdaptiveIconCompat(
                         new ColorDrawable(Color.WHITE), new ColorDrawable(Color.WHITE)),
                 Process.myUserHandle(),
                 Build.VERSION.SDK_INT);

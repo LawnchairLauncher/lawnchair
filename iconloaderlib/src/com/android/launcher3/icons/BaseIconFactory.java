@@ -15,13 +15,13 @@ import android.graphics.Color;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
+import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 
 /**
  * This class will be moved to androidx library. There shouldn't be any dependency outside
@@ -161,7 +161,7 @@ public class BaseIconFactory implements AutoCloseable {
         }
         icon = normalizeAndWrapToAdaptiveIcon(icon, shrinkNonAdaptiveIcons, null, scale);
         Bitmap bitmap = createIconBitmap(icon, scale[0]);
-        if (ATLEAST_OREO && icon instanceof AdaptiveIconDrawable) {
+        if (ATLEAST_OREO && icon instanceof AdaptiveIconCompat) {
             mCanvas.setBitmap(bitmap);
             getShadowGenerator().recreateIcon(Bitmap.createBitmap(bitmap), mCanvas);
             mCanvas.setBitmap(null);
@@ -210,14 +210,14 @@ public class BaseIconFactory implements AutoCloseable {
 
         if (shrinkNonAdaptiveIcons && ATLEAST_OREO) {
             if (mWrapperIcon == null) {
-                mWrapperIcon = mContext.getDrawable(R.drawable.adaptive_icon_drawable_wrapper)
-                        .mutate();
+                mWrapperIcon = AdaptiveIconCompat.wrap(
+                        mContext.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate());
             }
-            AdaptiveIconDrawable dr = (AdaptiveIconDrawable) mWrapperIcon;
+            AdaptiveIconCompat dr = (AdaptiveIconCompat) mWrapperIcon;
             dr.setBounds(0, 0, 1, 1);
             boolean[] outShape = new boolean[1];
             scale = getNormalizer().getScale(icon, outIconBounds, dr.getIconMask(), outShape);
-            if (!(icon instanceof AdaptiveIconDrawable) && !outShape[0]) {
+            if (!(icon instanceof AdaptiveIconCompat) && !outShape[0]) {
                 FixedScaleDrawable fsd = ((FixedScaleDrawable) dr.getForeground());
                 fsd.setDrawable(icon);
                 fsd.setScale(scale);
@@ -269,7 +269,7 @@ public class BaseIconFactory implements AutoCloseable {
         mCanvas.setBitmap(bitmap);
         mOldBounds.set(icon.getBounds());
 
-        if (ATLEAST_OREO && icon instanceof AdaptiveIconDrawable) {
+        if (ATLEAST_OREO && icon instanceof AdaptiveIconCompat) {
             int offset = Math.max((int) Math.ceil(BLUR_FACTOR * size),
                     Math.round(size * (1 - scale) / 2 ));
             icon.setBounds(offset, offset, size - offset, size - offset);

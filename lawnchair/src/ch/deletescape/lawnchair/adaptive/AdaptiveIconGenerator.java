@@ -36,7 +36,6 @@ import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider;
 
 import com.android.launcher3.Utilities;
-import com.android.launcher3.icons.ColorExtractor;
 import com.android.launcher3.icons.FixedScaleDrawable;
 import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.icons.LauncherIcons;

@@ -319,7 +319,8 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 else -> 0
             }
             if (packClocks.containsKey(drawableId)) {
-                val drawable = AdaptiveIconCompat.wrap(packResources.getDrawable(drawableId))
+                val drawable = AdaptiveIconCompat
+                        .wrap(packResources.getDrawable(drawableId))
                 return drawableFactory.customClockDrawer.drawIcon(icon, drawable, packClocks[drawableId])
             } else if(packDynamicDrawables.containsKey(drawableId)) {
                 val iconDpi = LauncherAppState.getIDP(context).fillResIconDpi
@@ -435,7 +436,8 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 throw IllegalStateException("Trying to access an unavailable entry $debugName")
             }
             try {
-                return AdaptiveIconCompat.wrap(packResources.getDrawableForDensity(drawableId, density)!!)
+                return AdaptiveIconCompat
+                        .wrap(packResources.getDrawableForDensity(drawableId, density)!!)
             } catch (e: Resources.NotFoundException) {
                 throw Exception("Failed to get drawable $drawableId ($debugName)", e)
             }

@@ -36,7 +36,6 @@ import android.graphics.Outline;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -50,6 +49,7 @@ import android.view.ViewOutlineProvider;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageView;
 
+import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.InsettableFrameLayout.LayoutParams;
 import com.android.launcher3.ItemInfo;
@@ -408,7 +408,7 @@ public class FloatingIconView extends View implements
             int height = isFolderIcon ? originalView.getHeight() : (int) pos.height();
             if (supportsAdaptiveIcons) {
                 drawable = getFullDrawable(l, info, width, height, false, sTmpObjArray);
-                if (drawable instanceof AdaptiveIconDrawable) {
+                if (drawable instanceof AdaptiveIconCompat) {
                     badge = getBadge(l, info, sTmpObjArray[0]);
                 } else {
                     // The drawable we get back is not an adaptive icon, so we need to use the
@@ -452,11 +452,11 @@ public class FloatingIconView extends View implements
             int iconOffset) {
         mBadge = badge;
 
-        mIsAdaptiveIcon = drawable instanceof AdaptiveIconDrawable;
+        mIsAdaptiveIcon = drawable instanceof AdaptiveIconCompat;
         if (mIsAdaptiveIcon) {
             boolean isFolderIcon = drawable instanceof FolderAdaptiveIcon;
 
-            AdaptiveIconDrawable adaptiveIcon = (AdaptiveIconDrawable) drawable;
+            AdaptiveIconCompat adaptiveIcon = (AdaptiveIconCompat) drawable;
             Drawable background = adaptiveIcon.getBackground();
             if (background == null) {
                 background = new ColorDrawable(Color.TRANSPARENT);
@@ -603,7 +603,7 @@ public class FloatingIconView extends View implements
     @SuppressWarnings("WrongThread")
     private static int getOffsetForIconBounds(Launcher l, Drawable drawable, RectF position) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O ||
-                !(drawable instanceof AdaptiveIconDrawable)) {
+                !(drawable instanceof AdaptiveIconCompat)) {
             return 0;
         }
         int blurSizeOutline =
@@ -619,8 +619,8 @@ public class FloatingIconView extends View implements
         }
 
         bounds.inset(
-                (int) (-bounds.width() * AdaptiveIconDrawable.getExtraInsetFraction()),
-                (int) (-bounds.height() * AdaptiveIconDrawable.getExtraInsetFraction())
+                (int) (-bounds.width() * AdaptiveIconCompat.getExtraInsetFraction()),
+                (int) (-bounds.height() * AdaptiveIconCompat.getExtraInsetFraction())
         );
 
         return bounds.left;

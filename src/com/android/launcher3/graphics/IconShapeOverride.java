@@ -27,13 +27,10 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
-import ch.deletescape.lawnchair.LawnchairLauncher;
-import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.folder.FolderShape;
 import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
 import com.android.launcher3.util.LooperExecutor;
