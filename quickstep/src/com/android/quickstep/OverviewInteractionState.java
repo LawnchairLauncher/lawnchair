@@ -106,6 +106,13 @@ public class OverviewInteractionState {
         switch (msg.what) {
             case MSG_SET_PROXY:
                 mISystemUiProxy = (ISystemUiProxy) msg.obj;
+                if (!Utilities.ATLEAST_Q && mISystemUiProxy != null) {
+                    try {
+                        mISystemUiProxy.setInteractionState(2);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
                 break;
             case MSG_SET_BACK_BUTTON_ALPHA:
                 applyBackButtonAlpha((float) msg.obj, msg.arg1 == 1);

@@ -103,6 +103,7 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import xyz.paphonb.launcher.util.MotionEventQueue;
 
 /**
  * Wrapper around a list for processing arguments.
@@ -218,10 +219,20 @@ public class TouchInteractionService extends Service implements
         public void onPreMotionEvent(int downHitTarget) { }
 
         public void onMotionEvent(MotionEvent ev) {
-            ev.recycle();
+            if (!Utilities.ATLEAST_Q) {
+                onQuickStepInputEvent(ev);
+            } else {
+                ev.recycle();
+            }
         }
 
-        public void onBind(ISystemUiProxy iSystemUiProxy) { }
+        public void onBind(ISystemUiProxy iSystemUiProxy) {
+            if (!Utilities.ATLEAST_Q) {
+                mISystemUiProxy = iSystemUiProxy;
+                MAIN_THREAD_EXECUTOR.execute(TouchInteractionService.this::initInputMonitor);
+                MAIN_THREAD_EXECUTOR.execute(TouchInteractionService.this::onSystemUiProxySet);
+            }
+        }
     };
 
     private static boolean sConnected = false;
@@ -264,6 +275,7 @@ public class TouchInteractionService extends Service implements
     private InputConsumer mUncheckedConsumer = InputConsumer.NO_OP;
     private InputConsumer mConsumer = InputConsumer.NO_OP;
     private Choreographer mMainChoreographer;
+    private MotionEventQueue mEventQueue;
 
     private Region mActiveNavBarRegion = new Region();
 
@@ -287,6 +299,7 @@ public class TouchInteractionService extends Service implements
         // Initialize anything here that is needed in direct boot mode.
         // Everything else should be initialized in initWhenUserUnlocked() below.
         mMainChoreographer = Choreographer.getInstance();
+        mEventQueue = new MotionEventQueue(mMainChoreographer, this::onInputEvent);
         mAM = ActivityManagerWrapper.getInstance();
 
         if (UserManagerCompat.getInstance(this).isUserUnlocked(Process.myUserHandle())) {
@@ -356,7 +369,7 @@ public class TouchInteractionService extends Service implements
         Point realSize = new Point();
         defaultDisplay.getRealSize(realSize);
         mSwipeTouchRegion.set(0, 0, realSize.x, realSize.y);
-        if (mMode == Mode.NO_BUTTON) {
+        if (mMode == Mode.NO_BUTTON && Utilities.ATLEAST_Q) {
             int touchHeight = getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
             mSwipeTouchRegion.top = mSwipeTouchRegion.bottom - touchHeight;
 
@@ -499,6 +512,14 @@ public class TouchInteractionService extends Service implements
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "Touch service connected");
         return mMyBinder;
+    }
+
+    private void onQuickStepInputEvent(InputEvent ev) {
+        if (!(ev instanceof MotionEvent)) {
+            Log.e(TAG, "Unknown event " + ev);
+            return;
+        }
+        mEventQueue.queue((MotionEvent) ev);
     }
 
     private void onInputEvent(InputEvent ev) {

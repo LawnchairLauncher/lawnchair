@@ -112,6 +112,7 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.WindowCallbacksCompat;
 
+import com.android.systemui.shared.system.WindowManagerWrapper;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
@@ -789,7 +790,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             }
             // If we are not in multi-window mode, home insets should be same as system insets.
             dp = dp.copy(mContext);
-            dp.updateInsets(targetSet.homeContentInsets);
+            if (Utilities.ATLEAST_Q) {
+                dp.updateInsets(targetSet.homeContentInsets);
+            } else {
+                Rect insets = new Rect();
+                WindowManagerWrapper.getInstance().getStableInsets(insets);
+                dp.updateInsets(insets);
+            }
         }
         dp.updateIsSeascape(mContext.getSystemService(WindowManager.class));
 
