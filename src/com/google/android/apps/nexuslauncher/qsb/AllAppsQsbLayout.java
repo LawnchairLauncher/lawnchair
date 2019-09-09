@@ -1,5 +1,8 @@
 package com.google.android.apps.nexuslauncher.qsb;
 
+import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
+import static com.android.launcher3.LauncherState.HOTSEAT_SEARCH_BOX;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -308,6 +311,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         setTranslationX((float) ((view.getPaddingLeft() + (
                 (((view.getWidth() - view.getPaddingLeft()) - view.getPaddingRight()) - (i3 - i))
                         / 2)) - i));
+        offsetTopAndBottom((int) Dy);
     }
 
     public void draw(Canvas canvas) {
@@ -382,6 +386,12 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     @Override
     public void setContentVisibility(int visibleElements, PropertySetter setter,
             Interpolator interpolator) {
-
+        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(getContext());
+        boolean hotseatQsbEnabled = prefs.getDockSearchBar();
+        boolean drawerQsbEnabled = true;
+        boolean hotseatQsbVisible = (visibleElements & HOTSEAT_SEARCH_BOX) != 0;
+        boolean drawerQsbVisible = (visibleElements & ALL_APPS_HEADER) != 0;
+        boolean qsbVisible = (hotseatQsbEnabled && hotseatQsbVisible) || (drawerQsbEnabled && drawerQsbVisible);
+        setter.setViewAlpha(this, qsbVisible ? 1 : 0, interpolator);
     }
 }
