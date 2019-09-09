@@ -19,10 +19,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
+import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
@@ -283,13 +285,17 @@ public class ConfigBuilder {
             mNano.ez = viewBounds3;
         }
         bW();
-        List<ComponentKeyMapper> predictedApps = ((PredictionsFloatingHeader) mActivity.getAppsView().getFloatingHeaderView()).getPredictionRowView().getPredictedAppComponents();
+        List<ItemInfoWithIcon> predictedApps = mActivity.getAppsView().getFloatingHeaderView().findFixedRowByType(
+                PredictionRowView.class).getPredictedApps();
         List<b_search> bSearches = new ArrayList<>();
         final int count = Math.min(predictedApps.size(), allAppsCols);
         for (int i = 0; i < count; i++) {
-            b_search bSearch = bZ(mActivity.getAppsView().getAppsStore().getApp(predictedApps.get(i).getComponentKey()), i);
-            if (bSearch != null) {
-                bSearches.add(bSearch);
+            ItemInfoWithIcon item = predictedApps.get(i);
+            if (item instanceof AppInfo) {
+                b_search bSearch = bZ((AppInfo) item, i);
+                if (bSearch != null) {
+                    bSearches.add(bSearch);
+                }
             }
         }
         mNano.eo = new b_search[bSearches.size()];

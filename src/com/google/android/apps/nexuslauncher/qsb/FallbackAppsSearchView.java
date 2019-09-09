@@ -14,7 +14,6 @@ import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController.Callbacks;
 import com.android.launcher3.util.ComponentKey;
-import com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,8 +97,7 @@ public class FallbackAppsSearchView extends ExtendedEditText implements OnUpdate
     }
 
     private void x(boolean z) {
-        PredictionsFloatingHeader predictionsFloatingHeader = (PredictionsFloatingHeader) mAppsView.getFloatingHeaderView();
-        predictionsFloatingHeader.setCollapsed(z);
+        mAppsView.getFloatingHeaderView().setCollapsed(z);
     }
 
     private void dV() {
