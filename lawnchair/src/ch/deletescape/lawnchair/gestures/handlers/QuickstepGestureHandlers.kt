@@ -18,22 +18,16 @@
 package ch.deletescape.lawnchair.gestures.handlers
 
 import android.annotation.TargetApi
-import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.support.annotation.Keep
-import android.util.Log
+import androidx.annotation.Keep
 import android.view.View
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
-import ch.deletescape.lawnchair.mainHandler
-import ch.deletescape.lawnchair.mostRecentTask
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
-import com.android.quickstep.RecentsModel
 import com.android.quickstep.TouchInteractionService
-import com.android.systemui.shared.system.ActivityManagerWrapper
 import org.json.JSONObject
 
 @Keep
@@ -65,6 +59,7 @@ open class LaunchMostRecentTaskGestureHandler(context: Context, config: JSONObje
         get() = TouchInteractionService.isConnected()
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
+        /* TODO: implement this
         RecentsModel.getInstance(context).loadTasks(-1) {
             val opts = ActivityOptions.makeBasic()
             it.taskStack.mostRecentTask?.let { mostRecentTask -> {
@@ -75,5 +70,7 @@ open class LaunchMostRecentTaskGestureHandler(context: Context, config: JSONObje
                 }, mainHandler)
             } }
         }
+
+         */
     }
 }

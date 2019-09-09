@@ -16,12 +16,12 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Process;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
 import android.view.View;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.graphics.ColorUtils;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
@@ -177,7 +177,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     }
 
     protected final int aA(int i) {
-        View view = this.mActivity.getHotseat().getLayout();
+        View view = this.mActivity.getHotseat();
         return (i - view.getPaddingLeft()) - view.getPaddingRight();
     }
 
@@ -189,7 +189,8 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         } else {
             controller.getSearchProvider().startSearch(intent -> {
                 mActivity.openQsb();
-                getContext().startActivity(intent, ActivityOptionsCompat.makeClipRevealAnimation(this, 0, 0, getWidth(), getHeight()).toBundle());
+                getContext().startActivity(intent, ActivityOptionsCompat
+                        .makeClipRevealAnimation(this, 0, 0, getWidth(), getHeight()).toBundle());
                 return null;
             });
         }
@@ -247,7 +248,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
                     LauncherAppsCompat.getInstance(getContext())
                             .showAppDetailsForProfile(
                                     new ComponentName(GOOGLE_QSB, ".SearchActivity"),
-                                    Process.myUserHandle());
+                                    Process.myUserHandle(), null, null);
                 } catch (PackageManager.NameNotFoundException ignored2) {
                 }
             }

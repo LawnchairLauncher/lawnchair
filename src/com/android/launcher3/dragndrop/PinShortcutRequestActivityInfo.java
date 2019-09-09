@@ -22,6 +22,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.PinItemRequest;
+import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -29,15 +30,15 @@ import android.os.Process;
 
 import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider;
 import com.android.launcher3.FastBitmapDrawable;
-import com.android.launcher3.IconCache;
 import com.android.launcher3.IconProvider;
+import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.compat.LauncherAppsCompatVO;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 
 /**
  * Extension of ShortcutConfigActivityInfo to be used in the confirmation prompt for pin item
@@ -70,7 +71,7 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
     }
 
     @Override
-    public CharSequence getLabel() {
+    public CharSequence getLabel(PackageManager pm) {
         return mInfo.getShortLabel();
     }
 
@@ -79,7 +80,7 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
         int iconDpi = LauncherAppState.getIDP(mContext).fillResIconDpi;
         Drawable d;
         if (mIconProvider instanceof LawnchairIconProvider) {
-            d = ((LawnchairIconProvider) mIconProvider).getIcon(new ShortcutInfoCompat(mInfo), iconDpi);
+            d = ((LawnchairIconProvider) mIconProvider).getIcon(mInfo, iconDpi);
         } else {
             d = mContext.getSystemService(LauncherApps.class)
                     .getShortcutIconDrawable(mInfo, iconDpi);
@@ -91,13 +92,13 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
     }
 
     @Override
-    public com.android.launcher3.ShortcutInfo createShortcutInfo() {
+    public WorkspaceItemInfo createWorkspaceItemInfo() {
         // Total duration for the drop animation to complete.
         long duration = mContext.getResources().getInteger(R.integer.config_dropAnimMaxDuration) +
                 LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY +
                 LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
         // Delay the actual accept() call until the drop animation is complete.
-        return LauncherAppsCompatVO.createShortcutInfoFromPinItemRequest(
+        return LauncherAppsCompatVO.createWorkspaceItemFromPinItemRequest(
                 mContext, mRequest, duration);
     }
 

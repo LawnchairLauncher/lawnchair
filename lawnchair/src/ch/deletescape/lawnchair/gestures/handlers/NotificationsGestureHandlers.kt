@@ -19,8 +19,8 @@ package ch.deletescape.lawnchair.gestures.handlers
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.annotation.Keep
 import android.view.View
+import androidx.annotation.Keep
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import com.android.launcher3.R

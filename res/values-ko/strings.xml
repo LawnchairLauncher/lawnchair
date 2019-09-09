@@ -33,12 +33,13 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"위젯을 선택하려면 두 번 탭한 다음 길게 터치하거나 맞춤 액션을 사용합니다."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d×%2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"너비 %1$d, 높이 %2$d"</string>
-    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"길게 터치하여 직접 장소 추가"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"길게 터치하여 직접 추가"</string>
     <string name="place_automatically" msgid="8064208734425456485">"자동으로 추가"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"앱 검색"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"앱 로드 중…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\'<xliff:g id="QUERY">%1$s</xliff:g>\'과(와) 일치하는 앱이 없습니다."</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"더 많은 앱 검색"</string>
+    <string name="label_application" msgid="8531721983832654978">"앱"</string>
     <string name="notifications_header" msgid="1404149926117359025">"알림"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"바로가기를 선택하려면 길게 터치하세요."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"바로가기를 선택하려면 두 번 탭한 다음 길게 터치하거나 맞춤 동작을 사용하세요."</string>
@@ -64,9 +65,9 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"시스템 앱은 제거할 수 없습니다."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"이름이 없는 폴더"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> 사용 안함"</string>
-    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
-      <item quantity="other"><xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g>개의 <xliff:g id="APP_NAME_2">%1$s</xliff:g> 알림 있음</item>
-      <item quantity="one"><xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g>개의 <xliff:g id="APP_NAME_0">%1$s</xliff:g> 알림 있음</item>
+    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>에 <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g>개의 알림이 있음</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g>에 <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g>개의 알림이 있음</item>
     </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"페이지 %1$d/%2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"홈 화면 %1$d/%2$d"</string>
@@ -79,27 +80,20 @@
     <string name="folder_name_format" msgid="6629239338071103179">"폴더: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"위젯"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"배경화면"</string>
+    <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"스타일 및 배경화면"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"홈 설정"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"관리자가 사용 중지함"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"홈 화면 회전 허용"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"휴대전화 회전 시"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"알림 표시 점"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"사용"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"사용 안함"</string>
+    <string name="notification_dots_title" msgid="9062440428204120317">"알림 표시 점"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"사용"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"사용 안함"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"알림 액세스 권한 필요"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"알림 표시점을 표시하려면 <xliff:g id="NAME">%1$s</xliff:g>의 앱 알림을 사용 설정하세요."</string>
     <string name="title_change_settings" msgid="1376365968844349552">"설정 변경"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"알림 표시 점 보기"</string>
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"알림 표시 점 보기"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"홈 화면에 아이콘 추가"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"새로 설치한 앱에 적용"</string>
-    <string name="icon_shape_override_label" msgid="2977264953998281004">"아이콘 모양 변경"</string>
-    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"홈 화면에 표시"</string>
-    <string name="icon_shape_system_default" msgid="1709762974822753030">"시스템 기본값 사용"</string>
-    <string name="icon_shape_square" msgid="633575066111622774">"정사각형"</string>
-    <string name="icon_shape_squircle" msgid="5658049910802669495">"모서리가 둥근 정사각형"</string>
-    <string name="icon_shape_circle" msgid="6550072265930144217">"원"</string>
-    <string name="icon_shape_teardrop" msgid="4525869388200835463">"눈물방울"</string>
-    <string name="icon_shape_override_progress" msgid="3461735694970239908">"아이콘 모양 변경사항을 적용하는 중입니다."</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"알 수 없음"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"삭제"</string>
     <string name="abandoned_search" msgid="891119232568284442">"검색"</string>
@@ -114,6 +108,7 @@
     <string name="action_move_here" msgid="2170188780612570250">"여기에 항목을 이동"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"홈 화면에 항목 추가됨"</string>
     <string name="item_removed" msgid="851119963877842327">"항목 삭제됨"</string>
+    <string name="undo" msgid="4151576204245173321">"실행취소"</string>
     <string name="action_move" msgid="4339390619886385032">"항목 이동"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"<xliff:g id="NUMBER_0">%1$s</xliff:g>행 <xliff:g id="NUMBER_1">%2$s</xliff:g>열로 이동"</string>
     <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g>번 위치로 이동"</string>
@@ -170,4 +165,5 @@
     <string name="work_mode_off_label" msgid="3194894777601421047">"알림 및 앱 사용 중지됨"</string>
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"닫기"</string>
     <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"종료됨"</string>
+    <string name="remote_action_failed" msgid="1383965239183576790">"실패: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

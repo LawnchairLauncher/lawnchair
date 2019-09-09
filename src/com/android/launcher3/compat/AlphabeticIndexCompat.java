@@ -1,16 +1,15 @@
 package com.android.launcher3.compat;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.icu.text.AlphabeticIndex;
-import android.os.Build;
 import android.os.LocaleList;
 import android.util.Log;
 
 import com.android.launcher3.Utilities;
 
-import java.lang.reflect.Method;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
 
 public class AlphabeticIndexCompat {
     private static final String TAG = "AlphabeticIndexCompat";
@@ -23,18 +22,9 @@ public class AlphabeticIndexCompat {
         BaseIndex index = null;
 
         try {
-            if (Utilities.ATLEAST_NOUGAT) {
-                index = new AlphabeticIndexVN(context);
-            }
+            index = new AlphabeticIndexVN(context);
         } catch (Exception e) {
             Log.d(TAG, "Unable to load the system index", e);
-        }
-        if (index == null) {
-            try {
-                index = new AlphabeticIndexV16(context);
-            } catch (Exception e) {
-                Log.d(TAG, "Unable to load the system index", e);
-            }
         }
 
         mBaseIndex = index == null ? new BaseIndex() : index;
@@ -53,7 +43,7 @@ public class AlphabeticIndexCompat {
     /**
      * Computes the section name for an given string {@param s}.
      */
-    public String computeSectionName(CharSequence cs) {
+    public String computeSectionName(@NonNull CharSequence cs) {
         String s = Utilities.trim(cs);
         String sectionName = mBaseIndex.getBucketLabel(mBaseIndex.getBucketIndex(s));
         if (Utilities.trim(sectionName).isEmpty() && s.length() > 0) {
@@ -89,7 +79,7 @@ public class AlphabeticIndexCompat {
         /**
          * Returns the index of the bucket in which the given string should appear.
          */
-        protected int getBucketIndex(String s) {
+        protected int getBucketIndex(@NonNull String s) {
             if (s.isEmpty()) {
                 return UNKNOWN_BUCKET_INDEX;
             }
@@ -109,59 +99,8 @@ public class AlphabeticIndexCompat {
     }
 
     /**
-     * Reflected libcore.icu.AlphabeticIndex implementation, falls back to the base
-     * alphabetic index.
-     */
-    private static class AlphabeticIndexV16 extends BaseIndex {
-
-        private Object mAlphabeticIndex;
-        private Method mGetBucketIndexMethod;
-        private Method mGetBucketLabelMethod;
-
-        public AlphabeticIndexV16(Context context) throws Exception {
-            Locale curLocale = context.getResources().getConfiguration().locale;
-            Class clazz = Class.forName("libcore.icu.AlphabeticIndex");
-            mGetBucketIndexMethod = clazz.getDeclaredMethod("getBucketIndex", String.class);
-            mGetBucketLabelMethod = clazz.getDeclaredMethod("getBucketLabel", int.class);
-            mAlphabeticIndex = clazz.getConstructor(Locale.class).newInstance(curLocale);
-
-            if (!curLocale.getLanguage().equals(Locale.ENGLISH.getLanguage())) {
-                clazz.getDeclaredMethod("addLabels", Locale.class)
-                        .invoke(mAlphabeticIndex, Locale.ENGLISH);
-            }
-        }
-
-        /**
-         * Returns the index of the bucket in which {@param s} should appear.
-         * Function is synchronized because underlying routine walks an iterator
-         * whose state is maintained inside the index object.
-         */
-        protected int getBucketIndex(String s) {
-            try {
-                return (Integer) mGetBucketIndexMethod.invoke(mAlphabeticIndex, s);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return super.getBucketIndex(s);
-        }
-
-        /**
-         * Returns the label for the bucket at the given index (as returned by getBucketIndex).
-         */
-        protected String getBucketLabel(int index) {
-            try {
-                return (String) mGetBucketLabelMethod.invoke(mAlphabeticIndex, index);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return super.getBucketLabel(index);
-        }
-    }
-
-    /**
      * Implementation based on {@link AlphabeticIndex}.
      */
-    @TargetApi(Build.VERSION_CODES.N)
     private static class AlphabeticIndexVN extends BaseIndex {
 
         private final AlphabeticIndex.ImmutableIndex mAlphabeticIndex;

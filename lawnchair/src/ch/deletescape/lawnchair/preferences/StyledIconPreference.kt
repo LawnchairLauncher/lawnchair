@@ -18,11 +18,11 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
-import android.support.v7.preference.Preference
-import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.preference.Preference
+import androidx.preference.PreferenceViewHolder
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.colors.ColorPalette
 import ch.deletescape.lawnchair.forEachIndexed
@@ -35,7 +35,7 @@ open class StyledIconPreference(context: Context, attrs: AttributeSet) : Prefere
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        holder.findViewById(android.support.v7.preference.R.id.icon)?.let { it as? ImageView }?.apply {
+        holder.findViewById(androidx.preference.R.id.icon)?.let { it as? ImageView }?.apply {
             val size = resources.getDimensionPixelSize(R.dimen.dashboard_tile_image_size)
             layoutParams = ViewGroup.LayoutParams(size, size)
         }

@@ -25,6 +25,7 @@ import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.comparing
 import ch.deletescape.lawnchair.then
 import com.android.launcher3.AppFilter
+import com.android.launcher3.Utilities.makeComponentKey
 import com.android.launcher3.util.ComponentKey
 import java.util.Comparator
 import kotlin.reflect.KMutableProperty0
@@ -111,7 +112,7 @@ abstract class SelectableAppsAdapter(context: Context, private val callback: Cal
                        callback: Callback? = null, filter: AppFilter? = null)
                 = object : SelectableAppsAdapter(context, callback, filter) {
 
-            override fun getInitialSelections() = HashSet(property.get().map { ComponentKey(context, it) })
+            override fun getInitialSelections() = HashSet(property.get().map { makeComponentKey(context, it) })
 
             override fun setSelections(selections: Set<ComponentKey>) {
                 property.set(HashSet(selections.map { it.toString() }))

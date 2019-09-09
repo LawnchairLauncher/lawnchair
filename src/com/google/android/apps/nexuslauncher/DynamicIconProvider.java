@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ShortcutInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
@@ -22,7 +23,6 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.google.android.apps.nexuslauncher.clock.DynamicClock;
 
 import java.util.Calendar;
@@ -40,17 +40,10 @@ public class DynamicIconProvider extends IconProvider {
         mDateChangeReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (!Utilities.ATLEAST_NOUGAT) {
-                    int dateOfMonth = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-                    if (dateOfMonth == mDateOfMonth) {
-                        return;
-                    }
-                    mDateOfMonth = dateOfMonth;
-                }
                 for (UserHandle user : UserManagerCompat.getInstance(context).getUserProfiles()) {
                     LauncherModel model = LauncherAppState.getInstance(context).getModel();
                     model.onPackageChanged(GOOGLE_CALENDAR, user);
-                    List<ShortcutInfoCompat> shortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(GOOGLE_CALENDAR, user);
+                    List<ShortcutInfo> shortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(GOOGLE_CALENDAR, user);
                     if (!shortcuts.isEmpty()) {
                         model.updatePinnedShortcuts(GOOGLE_CALENDAR, shortcuts, user);
                     }
@@ -61,9 +54,6 @@ public class DynamicIconProvider extends IconProvider {
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_DATE_CHANGED);
         intentFilter.addAction(Intent.ACTION_TIME_CHANGED);
         intentFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
-        if (!Utilities.ATLEAST_NOUGAT) {
-            intentFilter.addAction(Intent.ACTION_TIME_TICK);
-        }
         mContext.registerReceiver(mDateChangeReceiver, intentFilter, null, new Handler(LauncherModel.getWorkerLooper()));
         mPackageManager = mContext.getPackageManager();
     }
@@ -116,7 +106,8 @@ public class DynamicIconProvider extends IconProvider {
     }
 
     @Override
-    public String getIconSystemState(final String s) {
-        return isCalendar(s) ? mSystemState + " " + getDayOfMonth() : mSystemState;
+    public String getSystemStateForPackage(String systemState, String packageName) {
+        String suffix = isCalendar(packageName) ? " " + getDayOfMonth() : "";
+        return super.getSystemStateForPackage(systemState, packageName) + suffix;
     }
 }

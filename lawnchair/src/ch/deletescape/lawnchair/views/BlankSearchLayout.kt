@@ -18,17 +18,14 @@
 package ch.deletescape.lawnchair.views
 
 import android.content.Context
-import android.support.animation.FloatValueHolder
-import android.support.animation.SpringAnimation
-import android.support.animation.SpringForce
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
-import com.android.launcher3.Launcher
+import android.view.animation.Interpolator
 import com.android.launcher3.allapps.AllAppsContainerView
-import com.android.launcher3.allapps.AllAppsRecyclerView
-import com.android.launcher3.allapps.AlphabeticalAppsList
 import com.android.launcher3.allapps.SearchUiManager
+import com.android.launcher3.anim.PropertySetter
 
 class BlankSearchLayout(context: Context, attrs: AttributeSet?) : View(context, attrs), SearchUiManager {
 
@@ -54,5 +51,14 @@ class BlankSearchLayout(context: Context, attrs: AttributeSet?) : View(context, 
 
     override fun startSearch() {
 
+    }
+
+    override fun setContentVisibility(visibleElements: Int, setter: PropertySetter?,
+                                      interpolator: Interpolator?) {
+
+    }
+
+    override fun getScrollRangeDelta(insets: Rect): Float {
+        return 0f
     }
 }

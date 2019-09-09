@@ -20,12 +20,12 @@ package ch.deletescape.lawnchair.views
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Canvas
-import android.support.animation.SpringAnimation
-import android.support.animation.SpringForce
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.EdgeEffectFactory.*
 import android.view.View
 import android.widget.EdgeEffect
+import androidx.dynamicanimation.animation.SpringAnimation
+import androidx.dynamicanimation.animation.SpringForce
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.EdgeEffectFactory.*
 import ch.deletescape.lawnchair.KFloatProperty
 import ch.deletescape.lawnchair.KFloatPropertyCompat
 import ch.deletescape.lawnchair.lawnchairPrefs

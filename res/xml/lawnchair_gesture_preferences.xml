@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ch.deletescape.lawnchair.gestures.ui.GesturePreference
@@ -50,4 +50,4 @@
         android:persistent="true"
         android:title="@string/gesture_dock_swipe_up"
         app:gestureClass="ch.deletescape.lawnchair.gestures.gestures.VerticalSwipeGesture"/>
-</android.support.v7.preference.PreferenceScreen>
+</androidx.preference.PreferenceScreen>

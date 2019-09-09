@@ -17,26 +17,13 @@
 
 package ch.deletescape.lawnchair.animations
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.AnimatorSet
-import android.animation.ValueAnimator
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.view.View
-import android.view.ViewGroup
 import ch.deletescape.lawnchair.lawnchairPrefs
-import ch.deletescape.lawnchair.util.extensions.w
 import com.android.launcher3.*
-import com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS
-import com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE
-import com.android.launcher3.anim.Interpolators.LINEAR
-import com.android.launcher3.folder.FolderIcon
-import com.android.launcher3.shortcuts.DeepShortcutView
-import com.android.quickstep.util.MultiValueUpdateListener
-import java.lang.ref.WeakReference
 
 abstract class AnimationType {
 
@@ -46,8 +33,7 @@ abstract class AnimationType {
         return null
     }
 
-    open fun playLaunchAnimation(launcher: Launcher, v: View?, intent: Intent,
-                                 manager: LawnchairAppTransitionManagerImpl) {
+    open fun playLaunchAnimation(launcher: Launcher, v: View?, intent: Intent) {
 
     }
 
@@ -124,154 +110,8 @@ abstract class AnimationType {
     class RevealAnimation : AnimationType() {
 
         override fun getActivityLaunchOptions(launcher: Launcher, v: View?): ActivityOptions? {
-            if (!Utilities.ATLEAST_MARSHMALLOW) return super.getActivityLaunchOptions(launcher, v)
             val bounds = getBounds(v) ?: return super.getActivityLaunchOptions(launcher, v)
             return ActivityOptions.makeClipRevealAnimation(v, bounds.left, bounds.top, bounds.width(), bounds.height())
-        }
-    }
-
-    class PieAnimation : AnimationType() {
-
-        private var lastView: WeakReference<View>? = null
-
-        override fun getActivityLaunchOptions(launcher: Launcher, v: View?): ActivityOptions? {
-            if (hasControlRemoteAppTransitionPermission(launcher)) return null
-            lastView = v?.let { WeakReference(it) }
-            return ActivityOptions.makeCustomAnimation(
-                    launcher, R.anim.dummy_anim_enter, R.anim.dummy_anim_exit)
-        }
-
-        override fun playLaunchAnimation(launcher: Launcher, v: View?, intent: Intent,
-                                         manager: LawnchairAppTransitionManagerImpl) {
-            val view = v ?: lastView?.get() ?: return
-            if (!hasControlRemoteAppTransitionPermission(launcher)) {
-                val prefs = launcher.lawnchairPrefs
-                if (prefs.useScaleAnim) {
-                    w("scale anim is not supported, turning it off")
-                    prefs.useScaleAnim = false
-                }
-
-                val anim = AnimatorSet()
-
-                val splashData = SplashResolver.getInstance(launcher).loadSplash(intent)
-                val splashView = SplashLayout(launcher).apply {
-                    alpha = 0f
-                    applySplash(splashData)
-                }
-                val dp = launcher.deviceProfile
-                val rootView = launcher.dragLayer.parent as ViewGroup
-                rootView.addView(splashView, dp.widthPx, dp.heightPx)
-
-                // Set the state animation first so that any state listeners are called
-                // before our internal listeners.
-                launcher.stateManager.setCurrentAnimation(anim)
-
-                val windowTargetBounds = getWindowTargetBounds(launcher)
-                manager.playIconAnimators(anim, view, windowTargetBounds)
-                val launcherContentAnimator = manager.getLauncherContentAnimator(true /* isAppOpening */)
-                anim.play(launcherContentAnimator.first)
-                anim.addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationStart(animation: Animator) {
-                        launcher.addForceInvisibleFlag(INVISIBLE_BY_APP_TRANSITIONS)
-                    }
-
-                    override fun onAnimationEnd(animation: Animator) {
-                        launcher.clearForceInvisibleFlag(INVISIBLE_BY_APP_TRANSITIONS)
-                    }
-                })
-                anim.play(getOpeningWindowAnimators(
-                        launcher, view, splashView, manager.floatingView, windowTargetBounds))
-
-                launcher.addOnResumeCallback {
-                    rootView.removeView(splashView)
-                    launcherContentAnimator.second.run()
-                }
-
-                anim.start()
-            }
-        }
-
-        override fun overrideResumeAnimation(launcher: Launcher) {
-            if (!hasControlRemoteAppTransitionPermission(launcher)) {
-                launcher.overridePendingTransition(R.anim.pie_like_close_enter, R.anim.pie_like_close_exit)
-            }
-        }
-
-        private fun getWindowTargetBounds(launcher: Launcher): Rect {
-            return Rect(0, 0, launcher.deviceProfile.widthPx, launcher.deviceProfile.heightPx)
-        }
-
-        private fun getOpeningWindowAnimators(launcher: Launcher, v2: View, splashView: SplashLayout,
-                                              floatingView: View,
-                                              windowTargetBounds: Rect): ValueAnimator {
-            val v = if (v2 is FolderIcon) v2.folderName else v2
-
-            val bounds = Rect()
-            when {
-                v.parent is DeepShortcutView -> {
-                    // Deep shortcut views have their icon drawn in a separate view.
-                    val view = v.parent as DeepShortcutView
-                    launcher.dragLayer.getDescendantRectRelativeToSelf(view.iconView, bounds)
-                }
-                v is BubbleTextView -> v.getIconBounds(bounds)
-                else -> launcher.dragLayer.getDescendantRectRelativeToSelf(v, bounds)
-            }
-            val floatingViewBounds = IntArray(2)
-
-            val crop = Rect()
-
-            val appAnimator = ValueAnimator.ofFloat(0f, 1f)
-            appAnimator.duration = 500.toLong()
-            appAnimator.addUpdateListener(object : MultiValueUpdateListener() {
-                // Fade alpha for the app window.
-                val mAlpha = createFloatProp(0f, 1f, 0f, 60f, LINEAR)
-
-                override fun onUpdate(percent: Float) {
-                    val easePercent = (AGGRESSIVE_EASE)
-                            .getInterpolation(percent)
-
-                    // Calculate app icon size.
-                    val iconWidth = bounds.width() * floatingView.scaleX
-                    val iconHeight = bounds.height() * floatingView.scaleY
-
-                    // Scale the app window to match the icon size.
-                    val scaleX = iconWidth / windowTargetBounds.width()
-                    val scaleY = iconHeight / windowTargetBounds.height()
-                    val scale = Math.min(1f, Math.min(scaleX, scaleY))
-
-                    // Position the scaled window on top of the icon
-                    val windowWidth = windowTargetBounds.width()
-                    val windowHeight = windowTargetBounds.height()
-                    val scaledWindowWidth = windowWidth * scale
-                    val scaledWindowHeight = windowHeight * scale
-
-                    val offsetX = (scaledWindowWidth - iconWidth) / 2
-                    val offsetY = (scaledWindowHeight - iconHeight) / 2
-                    floatingView.getLocationOnScreen(floatingViewBounds)
-
-                    val transX0 = floatingViewBounds[0] - offsetX
-                    val transY0 = floatingViewBounds[1] - offsetY
-
-                    // Animate the window crop so that it starts off as a square, and then reveals
-                    // horizontally.
-                    val cropHeight = windowHeight * easePercent + windowWidth * (1 - easePercent)
-                    val initialTop = (windowHeight - windowWidth) / 2f
-                    crop.left = 0
-                    crop.top = (initialTop * (1 - easePercent)).toInt()
-                    crop.right = windowWidth
-                    crop.bottom = (crop.top + cropHeight).toInt()
-
-                    splashView.pivotX = 0f
-                    splashView.pivotY = 0f
-                    splashView.scaleX = scale
-                    splashView.scaleY = scale
-                    splashView.translationX = transX0
-                    splashView.translationY = transY0
-                    splashView.alpha = mAlpha.value
-                    splashView.setCrop(crop)
-                }
-            })
-            return appAnimator
         }
     }
 
@@ -289,7 +129,6 @@ abstract class AnimationType {
 
         fun fromString(type: String): AnimationType {
             return when (type) {
-                TYPE_PIE -> PieAnimation()
                 TYPE_REVEAL -> RevealAnimation()
                 TYPE_SLIDE_UP -> SlideUpAnimation()
                 TYPE_SCALE_UP -> ScaleUpAnimation()
@@ -301,7 +140,6 @@ abstract class AnimationType {
 
         fun toString(type: AnimationType): String {
             return when (type) {
-                is PieAnimation -> TYPE_PIE
                 is RevealAnimation -> TYPE_REVEAL
                 is SlideUpAnimation -> TYPE_SLIDE_UP
                 is ScaleUpAnimation -> TYPE_SCALE_UP

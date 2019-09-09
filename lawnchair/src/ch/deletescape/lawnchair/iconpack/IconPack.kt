@@ -19,13 +19,13 @@ package ch.deletescape.lawnchair.iconpack
 
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.ShortcutInfo
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import com.android.launcher3.FastBitmapDrawable
 import com.android.launcher3.ItemInfo
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.compat.AlphabeticIndexCompat
-import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
 import java.util.concurrent.Semaphore
@@ -80,7 +80,7 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
                          customIconEntry: IconPackManager.CustomIconEntry?,
                          iconProvider: LawnchairIconProvider?): Drawable?
 
-    abstract fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable?
+    abstract fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable?
 
     abstract fun newIcon(icon: Bitmap, itemInfo: ItemInfo,
                          customIconEntry: IconPackManager.CustomIconEntry?,

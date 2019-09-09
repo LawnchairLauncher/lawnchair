@@ -18,13 +18,7 @@
 package ch.deletescape.lawnchair.iconpack
 
 import android.content.Context
-import android.content.pm.ActivityInfo
-import android.graphics.Bitmap
-import com.android.launcher3.FastBitmapDrawable
-import com.android.launcher3.ItemInfo
-import com.android.launcher3.ItemInfoWithIcon
-import com.android.launcher3.ShortcutInfo
-import com.android.launcher3.graphics.BitmapInfo
+import com.android.launcher3.*
 import com.google.android.apps.nexuslauncher.DynamicDrawableFactory
 import com.google.android.apps.nexuslauncher.clock.CustomClock
 
@@ -33,8 +27,8 @@ class LawnchairDrawableFactory(context: Context) : DynamicDrawableFactory(contex
     private val iconPackManager = IconPackManager.getInstance(context)
     val customClockDrawer by lazy { CustomClock(context) }
 
-    override fun newIcon(info: ItemInfoWithIcon): FastBitmapDrawable {
-        return iconPackManager.newIcon((info as? ShortcutInfo)?.customIcon ?: info.iconBitmap,
+    override fun newIcon(context: Context, info: ItemInfoWithIcon): FastBitmapDrawable {
+        return iconPackManager.newIcon((info as? WorkspaceItemInfo)?.customIcon ?: info.iconBitmap,
                 info, this).also { it.setIsDisabled(info.isDisabled) }
     }
 }

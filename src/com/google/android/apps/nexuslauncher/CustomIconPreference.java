@@ -1,9 +1,9 @@
 package com.google.android.apps.nexuslauncher;
 
 import android.content.Context;
-import android.support.v7.preference.ListPreference;
 import android.util.AttributeSet;
 
+import androidx.preference.ListPreference;
 import com.android.launcher3.R;
 
 import java.util.HashMap;

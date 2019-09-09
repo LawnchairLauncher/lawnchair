@@ -25,18 +25,18 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.widget.AppCompatEditText
 import android.view.View
 import android.widget.*
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.graphics.drawable.DrawableCompat
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.provider.RestoreDbTask
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 
 class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader.Callback, ColorEngine.OnColorChangeListener {
     private val backupName by lazy { findViewById<AppCompatEditText>(R.id.name) }
@@ -50,7 +50,7 @@ class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader
         if (intent.hasExtra(EXTRA_URI))
             LawnchairBackup(this, Uri.parse(intent.getStringExtra(EXTRA_URI)))
         else
-            LawnchairBackup(this, intent.data)
+            LawnchairBackup(this, intent.data!!)
     }
     private val backupMetaLoader by lazy { LawnchairBackup.MetaLoader(backup) }
 
@@ -161,6 +161,10 @@ class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader
     @SuppressLint("StaticFieldLeak")
     private inner class RestoreBackupTask(val context: Context) : AsyncTask<Void, Void, Int>() {
 
+        var includeHomescreen = false
+        var includeSettings = false
+        var includeWallpaper = false
+
         override fun onPreExecute() {
             super.onPreExecute()
 
@@ -171,17 +175,21 @@ class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader
             progressText.visibility = View.VISIBLE
 
             inProgress = true
+
+            includeHomescreen = backupHomescreen.isChecked
+            includeSettings = backupSettings.isChecked
+            includeWallpaper = backupWallpaper.isChecked
         }
 
         override fun doInBackground(vararg params: Void?): Int {
             var contents = 0
-            if (backupHomescreen.isChecked) {
+            if (includeHomescreen) {
                 contents = contents or LawnchairBackup.INCLUDE_HOMESCREEN
             }
-            if (backupSettings.isChecked) {
+            if (includeSettings) {
                 contents = contents or LawnchairBackup.INCLUDE_SETTINGS
             }
-            if (backupWallpaper.isChecked) {
+            if (includeWallpaper) {
                 contents = contents or LawnchairBackup.INCLUDE_WALLPAPER
             }
             return if (backup.restore(contents)) contents else -1

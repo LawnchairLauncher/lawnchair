@@ -18,8 +18,8 @@
 package ch.deletescape.lawnchair.settings.ui
 
 import android.content.Context
-import android.support.v7.preference.Preference
 import android.util.AttributeSet
+import androidx.preference.Preference
 
 open class BasePreference(context: Context, attrs: AttributeSet?) : Preference(context, attrs),
-        ControlledPreference by ControlledPreference.Delegate(context, attrs)
+                                                                    ControlledPreference by ControlledPreference.Delegate(context, attrs)

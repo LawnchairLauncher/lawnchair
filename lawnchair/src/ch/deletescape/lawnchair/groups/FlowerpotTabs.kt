@@ -18,11 +18,11 @@
 package ch.deletescape.lawnchair.groups
 
 import android.content.Context
-import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import ch.deletescape.lawnchair.allapps.AllAppsTabsController
 import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.flowerpot.Flowerpot

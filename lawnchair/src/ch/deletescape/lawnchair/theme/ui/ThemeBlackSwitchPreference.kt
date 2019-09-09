@@ -18,8 +18,8 @@
 package ch.deletescape.lawnchair.theme.ui
 
 import android.content.Context
-import android.support.annotation.Keep
 import android.util.AttributeSet
+import androidx.annotation.Keep
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.util.hasFlag

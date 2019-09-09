@@ -18,8 +18,8 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
-import android.support.annotation.Keep
 import android.util.AttributeSet
+import androidx.annotation.Keep
 import com.android.launcher3.R
 
 @Keep

@@ -19,8 +19,8 @@ package ch.deletescape.lawnchair.colors.preferences
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
+import androidx.appcompat.widget.AppCompatTextView
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.createRipple
 import ch.deletescape.lawnchair.font.CustomFontManager

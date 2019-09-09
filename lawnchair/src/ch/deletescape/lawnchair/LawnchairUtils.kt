@@ -18,7 +18,6 @@
 package ch.deletescape.lawnchair
 
 import android.app.Activity
-import android.app.Notification
 import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
@@ -34,17 +33,6 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.OpenableColumns
 import android.service.notification.StatusBarNotification
-import android.support.animation.FloatPropertyCompat
-import android.support.annotation.ColorInt
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.ColorUtils
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v4.view.PagerAdapter
-import android.support.v7.app.AlertDialog
-import android.support.v7.graphics.Palette
-import android.support.v7.preference.Preference
-import android.support.v7.preference.PreferenceGroup
-import android.support.v7.widget.AppCompatButton
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.Property
@@ -54,6 +42,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Interpolator
 import android.widget.*
+import androidx.annotation.ColorInt
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.dynamicanimation.animation.FloatPropertyCompat
+import androidx.palette.graphics.Palette
+import androidx.preference.Preference
+import androidx.preference.PreferenceGroup
+import androidx.viewpager.widget.PagerAdapter
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.font.CustomFontManager
 import ch.deletescape.lawnchair.util.JSONMap
@@ -68,12 +66,12 @@ import com.android.launcher3.util.LooperExecutor
 import com.android.launcher3.util.PackageUserKey
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.OptionsPopupView
-import com.android.systemui.shared.recents.model.TaskStack
 import com.google.android.apps.nexuslauncher.CustomAppPredictor
 import com.google.android.apps.nexuslauncher.CustomIconUtils
 import org.json.JSONArray
 import org.json.JSONObject
 import org.xmlpull.v1.XmlPullParser
+import java.lang.IllegalArgumentException
 import java.lang.reflect.Field
 import java.security.MessageDigest
 import java.util.*
@@ -347,7 +345,7 @@ fun openPopupMenu(view: View, rect: RectF?, vararg items: OptionsPopupView.Optio
 fun Context.getLauncherOrNull(): Launcher? {
     return try {
         Launcher.getLauncher(this)
-    } catch (e: ClassCastException) {
+    } catch (e: IllegalArgumentException) {
         null
     }
 }
@@ -414,9 +412,6 @@ fun reloadIcons(context: Context, packages: Collection<PackageUserKey>) {
 }
 
 fun Context.getIcon():Drawable = packageManager.getApplicationIcon(applicationInfo)
-
-val TaskStack.mostRecentTask
-    get() = this.tasks.getOrNull(this.taskCount - 1)
 
 fun <T, A>ensureOnMainThread(creator: (A) -> T): (A) -> T {
     return { it ->
@@ -534,8 +529,8 @@ class ReverseInputInterpolator(private val base: Interpolator) : Interpolator {
 fun Switch.applyColor(color: Int) {
     val colorForeground = Themes.getAttrColor(context, android.R.attr.colorForeground)
     val alphaDisabled = Themes.getAlpha(context, android.R.attr.disabledAlpha)
-    val switchThumbNormal = context.resources.getColor(android.support.v7.preference.R.color.switch_thumb_normal_material_light)
-    val switchThumbDisabled = context.resources.getColor(android.support.v7.appcompat.R.color.switch_thumb_disabled_material_light)
+    val switchThumbNormal = context.resources.getColor(androidx.preference.R.color.switch_thumb_normal_material_light)
+    val switchThumbDisabled = context.resources.getColor(androidx.appcompat.R.color.switch_thumb_disabled_material_light)
     val thstateList = ColorStateList(arrayOf(
             intArrayOf(-android.R.attr.state_enabled),
             intArrayOf(android.R.attr.state_checked),
@@ -605,9 +600,7 @@ fun <E> MutableSet<E>.addOrRemove(obj: E, exists: Boolean): Boolean {
 
 fun CheckedTextView.applyAccent() {
     val tintList = ColorStateList.valueOf(ColorEngine.getInstance(context).accent)
-    if (Utilities.ATLEAST_MARSHMALLOW) {
-        compoundDrawableTintList = tintList
-    }
+    compoundDrawableTintList = tintList
     backgroundTintList = tintList
 }
 
@@ -822,13 +815,7 @@ fun String.hash(type: String): String {
 }
 
 val Context.locale: Locale
-    get() {
-        return if (Utilities.ATLEAST_NOUGAT) {
-            this.resources.configuration.locales[0] ?: this.resources.configuration.locale
-        } else {
-            this.resources.configuration.locale
-        }
-    }
+    get() = this.resources.configuration.locales[0] ?: this.resources.configuration.locale
 
 fun createRipplePill(context: Context, color: Int, radius: Float): Drawable {
     return RippleDrawable(
@@ -849,11 +836,7 @@ fun createPill(color: Int, radius: Float): Drawable {
 val Long.Companion.random get() = Random.nextLong()
 
 fun StatusBarNotification.loadSmallIcon(context: Context): Drawable? {
-    return if (Utilities.ATLEAST_MARSHMALLOW) {
-        notification.smallIcon?.loadDrawable(context)
-    } else {
-        context.resourcesForApplication(packageName)?.getDrawable(notification.icon)
-    }
+    return notification.smallIcon?.loadDrawable(context)
 }
 
 fun Context.checkPackagePermission(packageName: String, permissionName: String): Boolean {

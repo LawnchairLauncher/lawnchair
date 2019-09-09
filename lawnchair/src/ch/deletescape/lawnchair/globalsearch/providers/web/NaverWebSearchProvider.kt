@@ -20,7 +20,7 @@
 package ch.deletescape.lawnchair.globalsearch.providers.web
 
 import android.content.Context
-import android.support.v4.graphics.ColorUtils
+import androidx.core.graphics.ColorUtils
 import com.android.launcher3.R
 
 class NaverWebSearchProvider(context: Context) : WebSearchProvider(context) {

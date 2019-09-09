@@ -25,8 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import ch.deletescape.lawnchair.LawnchairAppKt;
 import ch.deletescape.lawnchair.LawnchairPreferences;
@@ -38,17 +36,14 @@ import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.Weather
 import ch.deletescape.lawnchair.views.SmartspacePreview;
 import com.android.launcher3.*;
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.graphics.ShadowGenerator;
+import com.android.launcher3.icons.ShadowGenerator;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.DynamicIconProvider;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 import com.google.android.apps.nexuslauncher.graphics.DoubleShadowTextView;
 import com.google.android.apps.nexuslauncher.graphics.IcuDateTextView;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -107,7 +102,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         mController = LawnchairAppKt.getLawnchairApp(context).getSmartspace();
         mPrefs = Utilities.getLawnchairPrefs(context);
 
-        mShadowGenerator = new ShadowGenerator(context);
+        mShadowGenerator = new ShadowGenerator(ResourceUtils.pxFromDp(48, getResources().getDisplayMetrics()));
 
         mCalendarClickListener = v -> {
             final Uri content_URI = CalendarContract.CONTENT_URI;
@@ -117,17 +112,17 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
                     .setData(appendPath.build())
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             try {
-                Launcher.getLauncher(getContext()).startActivitySafely(v, addFlags, null);
+                Launcher.getLauncher(getContext()).startActivitySafely(v, addFlags, null, null);
             } catch (ActivityNotFoundException ex) {
                 LauncherAppsCompat.getInstance(getContext()).showAppDetailsForProfile(
-                        new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle());
+                        new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle(), null, null);
             }
         };
 
         mClockClickListener = v -> {
             Launcher.getLauncher(getContext()).startActivitySafely(v,
                     new Intent(AlarmClock.ACTION_SHOW_ALARMS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                            | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED), null);
+                            | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED), null, null);
         };
 
         mWeatherClickListener = v -> {
@@ -158,7 +153,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             if (launcher instanceof NexusLauncherActivity) {
                 ((NexusLauncherActivity) launcher).registerSmartspaceView(this);
             }
-        } catch (ClassCastException e) {
+        } catch (IllegalArgumentException e) {
 
         }
     }
@@ -295,9 +290,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             if (forced)
                 mClockView.reloadDateFormat(true);
             LawnchairUtilsKt.setVisible(mTitleSeparator, mWeatherAvailable);
-            if (!Utilities.ATLEAST_NOUGAT) {
-                mClockView.onVisibilityAggregated(true);
-            }
         } else {
             mClockView.setVisibility(View.GONE);
             mTitleSeparator.setVisibility(View.GONE);
@@ -312,8 +304,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             mClockAboveView.setOnLongClickListener(co());
             if (forced)
                 mClockAboveView.reloadDateFormat(true);
-            if (!Utilities.ATLEAST_NOUGAT)
-                mClockAboveView.onVisibilityAggregated(true);
         } else {
             mClockAboveView.setVisibility(GONE);
         }
@@ -363,10 +353,8 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         mSubtitleWeatherContent = findViewById(R.id.subtitle_weather_content);
         mTitleWeatherText = findViewById(R.id.title_weather_text);
         mSubtitleWeatherText = findViewById(R.id.subtitle_weather_text);
-        backportClockVisibility(false);
         mClockView = findViewById(R.id.clock);
         mClockAboveView = findViewById(R.id.time_above);
-        backportClockVisibility(true);
         mTitleSeparator = findViewById(R.id.title_sep);
     }
 
@@ -488,17 +476,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
 
     public void onPause() {
         mHandler.removeCallbacks(this);
-        backportClockVisibility(false);
-    }
-
-    public void onResume() {
-        backportClockVisibility(true);
-    }
-
-    private void backportClockVisibility(boolean show) {
-        if (!Utilities.ATLEAST_NOUGAT && mClockView != null) {
-            mClockView.onVisibilityAggregated(show && !mDoubleLine);
-        }
     }
 
     @Override
@@ -526,10 +503,10 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             try {
                 final Context context = dZ.getContext();
-                Launcher.getLauncher(context).startActivitySafely(view, addFlags, null);
+                Launcher.getLauncher(context).startActivitySafely(view, addFlags, null, null);
             } catch (ActivityNotFoundException ex) {
                 LauncherAppsCompat.getInstance(dZ.getContext()).showAppDetailsForProfile(
-                        new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle());
+                        new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle(), null, null);
             }
         }
     }

@@ -20,9 +20,9 @@ package ch.deletescape.lawnchair.smartspace
 import android.content.Context
 import android.location.Criteria
 import android.location.LocationManager
-import android.support.annotation.Keep
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.Keep
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.checkLocationAccess
 import ch.deletescape.lawnchair.lawnchairApp

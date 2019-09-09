@@ -39,11 +39,12 @@
     <string name="all_apps_loading_message" msgid="5813968043155271636">"अनुप्रयोगहरू लोड गर्दै…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" सँग मिल्दो कुनै अनुप्रयोग भेटिएन"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"थप अनुप्रयोगहरू खोज्नुहोस्"</string>
+    <string name="label_application" msgid="8531721983832654978">"अनुप्रयोग"</string>
     <string name="notifications_header" msgid="1404149926117359025">"सूचनाहरू"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"कुनै सर्टकट छनौट गर्न छोइराख्नुहोस्।"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"कुनै सर्टकट छनौट गर्न वा रोजेका कारबाहीहरू प्रयोग गर्न डबल ट्याप गरेर छोइराख्नुहोस्।"</string>
     <string name="out_of_space" msgid="4691004494942118364">"यो गृह स्क्रिनमा कुनै थप ठाउँ छैन।"</string>
-    <string name="hotseat_out_of_space" msgid="7448809638125333693">"मनपर्ने ट्रे अब कुनै ठाँउ छैन"</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"मन पर्ने ट्रे अब कुनै ठाँउ छैन"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"अनुप्रयोगको सूची"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"व्यक्तिगत अनुप्रयोगहरूको सूची"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"कार्यसम्बन्धी अनुप्रयोगहरूको सूची"</string>
@@ -64,9 +65,9 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"यो प्रणाली अनुप्रयोग हो र यसलाई स्थापना रद्द गर्न सकिँदैन।"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"बेनाम फोल्डर"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"असक्षम पारिएको <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
-    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
-      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, यसमा <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> सूचनाहरू छन्‌</item>
-      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g>, यसमा <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> सूचना छ</item>
+    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, का <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> सूचनाहरू छन्</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g>, को <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> सूचना छ</item>
     </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"पृष्ठ %2$d को %1$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"गृह स्क्रिन %1$d को %2$d"</string>
@@ -79,27 +80,20 @@
     <string name="folder_name_format" msgid="6629239338071103179">"फोल्डर: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"विजेटहरू"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"वालपेपरहरु"</string>
+    <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"शैली तथा वालपेपरहरू"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"गृहपृष्ठका सेटिङहरू"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"तपाईँको प्रशासकद्वारा असक्षम गरिएको"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"गृह स्क्रिनलाई घुम्ने अनुमति दिनुहोस्"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फोनलाई घुमाइँदा"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"सूचनाको प्रतीक जनाउने थोप्लोहरू"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"सक्रिय छ"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"निष्क्रिय छ"</string>
+    <string name="notification_dots_title" msgid="9062440428204120317">"सूचनाको प्रतीक जनाउने थोप्लाहरू"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"सक्रिय"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"निष्क्रिय"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"सूचनासम्बन्धी पहुँच आवश्यक हुन्छ"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउन <xliff:g id="NAME">%1$s</xliff:g> को अनुप्रयोगसम्बन्धी सूचनाहरूलाई सक्रिय गर्नुहोस्"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिङहरू बदल्नुहोस्"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउनुहोस्"</string>
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउनुहोस्"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"गृह स्क्रिनमा आइकन थप्नुहोस्"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नयाँ अनुप्रयोगका लागि"</string>
-    <string name="icon_shape_override_label" msgid="2977264953998281004">"आइकनको आकार परिवर्तन गर्नुहोस्"</string>
-    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"गृह स्क्रिनमा"</string>
-    <string name="icon_shape_system_default" msgid="1709762974822753030">"प्रणालीको पूर्वनिर्धारित सेटिङ प्रयोग गर्नुहोस्"</string>
-    <string name="icon_shape_square" msgid="633575066111622774">"वर्ग"</string>
-    <string name="icon_shape_squircle" msgid="5658049910802669495">"वर्गाकार वृत्त"</string>
-    <string name="icon_shape_circle" msgid="6550072265930144217">"वृत्त"</string>
-    <string name="icon_shape_teardrop" msgid="4525869388200835463">"आँसुको थोपा"</string>
-    <string name="icon_shape_override_progress" msgid="3461735694970239908">"आइकनको आकारमा गरिएका परिवर्तनहरू लागू गरिँदैछन्"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"हटाउनुहोस्"</string>
     <string name="abandoned_search" msgid="891119232568284442">"खोजी गर्नुहोस्"</string>
@@ -108,18 +102,17 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> डाउनलोड गर्दै, <xliff:g id="PROGRESS">%2$s</xliff:g> सम्पन्‍न"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> स्थापना गर्न प्रतीक्षा गर्दै"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> विजेटहरू"</string>
-    <!-- no translation found for widgets_list (796804551140113767) -->
-    <skip />
-    <!-- no translation found for widgets_list_closed (6141506579418771922) -->
-    <skip />
+    <string name="widgets_list" msgid="796804551140113767">"विजेटहरूको सूची"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"विजेटहरूको सूची बन्द गरियो"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"गृह स्क्रिनमा थप्नुहोस्"</string>
     <string name="action_move_here" msgid="2170188780612570250">"वस्तु यहाँ सार्नुहोस्"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"वस्तु गृह स्क्रिनमा थपियो"</string>
     <string name="item_removed" msgid="851119963877842327">"वस्तु हटाइयो"</string>
+    <string name="undo" msgid="4151576204245173321">"अन्डू गर्नुहोस्"</string>
     <string name="action_move" msgid="4339390619886385032">"वस्तु सार्नुहोस्"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"पङ्क्ति <xliff:g id="NUMBER_0">%1$s</xliff:g> स्तम्भ <xliff:g id="NUMBER_1">%2$s</xliff:g> मा सार्नुहोस्"</string>
     <string name="move_to_position" msgid="6750008980455459790">"स्थिति <xliff:g id="NUMBER">%1$s</xliff:g> मा सार्नुहोस्"</string>
-    <string name="move_to_hotseat_position" msgid="6295412897075147808">"मनपर्ने स्थिति <xliff:g id="NUMBER">%1$s</xliff:g> मा सार्नुहोस्"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"मन पर्ने स्थिति <xliff:g id="NUMBER">%1$s</xliff:g> मा सार्नुहोस्"</string>
     <string name="item_moved" msgid="4606538322571412879">"वस्तु सारियो"</string>
     <string name="add_to_folder" msgid="9040534766770853243">"फोल्डर: <xliff:g id="NAME">%1$s</xliff:g> मा थप्नुहोस्"</string>
     <string name="add_to_folder_with_app" msgid="4534929978967147231">"फोल्डरमा <xliff:g id="NAME">%1$s</xliff:g> सँग थप्नुहोस्"</string>
@@ -168,4 +161,5 @@
     <string name="work_mode_off_label" msgid="3194894777601421047">"सूचना र अनुप्रयोगहरू निष्क्रिय छन्‌"</string>
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"बन्द गर्नुहोस्"</string>
     <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"बन्द गरियो"</string>
+    <string name="remote_action_failed" msgid="1383965239183576790">"कार्य पूरा गर्न सकिएन: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

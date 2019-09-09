@@ -22,18 +22,17 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheet
-import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheetDialog
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.google.android.material.snackbar.Snackbar
 
 class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
 
@@ -175,7 +174,7 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             if (resultData != null) {
-                adapter.addItem(LawnchairBackup(this, resultData.data))
+                adapter.addItem(LawnchairBackup(this, resultData.data!!))
                 saveChanges()
             }
         } else if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
@@ -183,8 +182,8 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
                 val takeFlags = intent.flags and
                         (Intent.FLAG_GRANT_READ_URI_PERMISSION or
                                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-                contentResolver.takePersistableUriPermission(resultData.data, takeFlags)
-                val uri = resultData.data
+                contentResolver.takePersistableUriPermission(resultData.data!!, takeFlags)
+                val uri = resultData.data!!
                 if (!Utilities.getLawnchairPrefs(this).recentBackups.contains(uri)) {
                     adapter.addItem(LawnchairBackup(this, uri))
                     saveChanges()

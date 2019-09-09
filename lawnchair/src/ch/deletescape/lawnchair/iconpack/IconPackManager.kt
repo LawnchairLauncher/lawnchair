@@ -25,6 +25,7 @@ import android.content.IntentFilter
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
+import android.content.pm.ShortcutInfo
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Handler
@@ -38,7 +39,6 @@ import ch.deletescape.lawnchair.override.CustomInfoProvider
 import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.*
-import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
 import java.util.*
 import kotlin.collections.HashMap
@@ -70,9 +70,7 @@ class IconPackManager(private val context: Context) {
         }, IntentFilter(Intent.ACTION_DATE_CHANGED).apply {
             addAction(Intent.ACTION_TIME_CHANGED)
             addAction(Intent.ACTION_TIMEZONE_CHANGED)
-            if (!Utilities.ATLEAST_NOUGAT) {
-                addAction(Intent.ACTION_TIME_TICK)
-            }
+            addAction(Intent.ACTION_TIME_TICK)
         }, null, Handler(LauncherModel.getWorkerLooper()))
     }
 
@@ -119,7 +117,7 @@ class IconPackManager(private val context: Context) {
         return defaultPack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null, iconProvider)
     }
 
-    fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
+    fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
         packList.iterator().forEach { pack ->
             pack.getIcon(shortcutInfo, iconDpi)?.let { return it }
         }

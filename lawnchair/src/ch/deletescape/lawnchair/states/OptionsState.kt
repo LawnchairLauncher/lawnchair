@@ -21,18 +21,23 @@ import ch.deletescape.lawnchair.LawnchairLauncher
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS
 import com.android.launcher3.LauncherState
+import com.android.launcher3.anim.AnimatorSetBuilder
+import com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE
+import com.android.launcher3.anim.Interpolators.LINEAR
 import com.android.launcher3.states.RotationHelper
 import com.android.launcher3.userevent.nano.LauncherLogProto
+import kotlin.math.max
 
+// TODO: fix this
 class OptionsState(id: Int) : LauncherState(id, LauncherLogProto.ContainerType.OVERVIEW,
         SPRING_LOADED_TRANSITION_MS, STATE_FLAGS) {
 
-    override fun getWorkspaceScaleAndTranslation(launcher: Launcher): FloatArray {
+    override fun getWorkspaceScaleAndTranslation(launcher: Launcher): ScaleAndTranslation {
         val grid = launcher.deviceProfile
         val ws = launcher.workspace
 
         if (grid.isVerticalBarLayout) {
-            val scale = grid.workspaceOptionsShrinkFactor
+            val scale = .3f //grid.workspaceOptionsShrinkFactor
             val optionsView = LawnchairLauncher.getLauncher(launcher).optionsView
 
             val wsHeightWithoutInsets = ws.height - grid.insets.top - grid.insets.bottom
@@ -42,10 +47,10 @@ class OptionsState(id: Int) : LauncherState(id, LauncherLogProto.ContainerType.O
             val desiredBottom = grid.heightPx - optionsView.height
             val actualBottom = ws.height * 0.5f + (ws.height * 0.5f * scale)
 
-            return floatArrayOf(scale, 0f, Math.max(desiredCenter - actualCenter, desiredBottom - actualBottom))
+            return ScaleAndTranslation(scale, 0f, max(desiredCenter - actualCenter, desiredBottom - actualBottom))
         }
 
-        val scale = grid.workspaceOptionsShrinkFactor
+        val scale = .3f //grid.workspaceOptionsShrinkFactor
         val insets = launcher.dragLayer.insets
 
         val scaledHeight = scale * ws.normalChildHeight
@@ -61,7 +66,7 @@ class OptionsState(id: Int) : LauncherState(id, LauncherLogProto.ContainerType.O
         val myCenter = ws.top + halfHeight
         val cellTopFromCenter = halfHeight - ws.getChildAt(0).top
         val actualCellTop = myCenter - cellTopFromCenter * scale
-        return floatArrayOf(scale, 0f, (desiredCellTop - actualCellTop) / scale)
+        return ScaleAndTranslation(scale, 0f, (desiredCellTop - actualCellTop) / scale)
     }
 
     override fun getWorkspaceScrimAlpha(launcher: Launcher?): Float {
@@ -79,6 +84,12 @@ class OptionsState(id: Int) : LauncherState(id, LauncherLogProto.ContainerType.O
     override fun onStateEnabled(launcher: Launcher) {
         super.onStateEnabled(launcher)
         launcher.rotationHelper.setCurrentStateRequest(RotationHelper.REQUEST_LOCK)
+    }
+
+    override fun prepareForAtomicAnimation(launcher: Launcher?, fromState: LauncherState?,
+                                           builder: AnimatorSetBuilder) {
+        super.prepareForAtomicAnimation(launcher, fromState, builder)
+        builder.setInterpolator(ANIM_WORKSPACE_FADE, LINEAR)
     }
 
     companion object {

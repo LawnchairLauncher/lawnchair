@@ -36,6 +36,7 @@ import ch.deletescape.lawnchair.colors.preferences.TabbedPickerView
 import ch.deletescape.lawnchair.preferences.SelectableAppsActivity
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.R
+import com.android.launcher3.Utilities.makeComponentKey
 import com.android.launcher3.util.ComponentKey
 import me.priyesh.chroma.ColorMode
 import me.priyesh.chroma.orientation
@@ -458,7 +459,7 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
             }
 
             override fun unflatten(context: Context, value: String): ComponentKey {
-                return ComponentKey(context, value)
+                return makeComponentKey(context, value)
             }
 
             override fun flatten(value: ComponentKey): String {

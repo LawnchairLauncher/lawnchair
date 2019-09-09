@@ -26,15 +26,17 @@ import android.os.Handler
 import android.os.Process
 import android.os.ResultReceiver
 import android.os.UserHandle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.Log
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.LawnchairAppFilter
 import ch.deletescape.lawnchair.groups.DrawerTabs
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import com.android.launcher3.AppFilter
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
+import com.android.launcher3.Utilities.makeComponentKey
 import com.android.launcher3.util.ComponentKey
 
 class SelectableAppsActivity : SettingsActivity() {
@@ -79,7 +81,7 @@ class SelectableAppsActivity : SettingsActivity() {
         override fun onDestroy() {
             super.onDestroy()
             
-            val receiver = arguments!!.getParcelable(KEY_CALLBACK) as ResultReceiver
+            val receiver = arguments!!.getParcelable<ResultReceiver>(KEY_CALLBACK)!!
             if (changed) {
                 receiver.send(Activity.RESULT_OK, Bundle(1).apply {
                     putStringArrayList(KEY_SELECTION, ArrayList(selection))
@@ -120,7 +122,7 @@ class SelectableAppsActivity : SettingsActivity() {
                     override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
                         if (resultCode == Activity.RESULT_OK) {
                             callback(resultData!!.getStringArrayList(KEY_SELECTION)!!.map {
-                                ComponentKey(context, it)
+                                makeComponentKey(context, it)
                             })
                         } else {
                             callback(null)

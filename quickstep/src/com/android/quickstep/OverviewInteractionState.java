@@ -15,79 +15,36 @@
  */
 package com.android.quickstep;
 
-import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_DISABLE_QUICK_SCRUB;
-import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_DISABLE_SWIPE_UP;
-import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_SHOW_OVERVIEW_BUTTON;
-import static com.android.systemui.shared.system.SettingsCompat.SWIPE_UP_SETTING_NAME;
-
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.res.Resources;
-import android.database.ContentObserver;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
-import android.provider.Settings;
-import android.support.annotation.WorkerThread;
 import android.util.Log;
 
-import ch.deletescape.lawnchair.LawnchairPreferences;
-import ch.deletescape.lawnchair.customnavbar.CustomNavBar;
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.DiscoveryBounce;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.ISystemUiProxy;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.concurrent.ExecutionException;
+import androidx.annotation.WorkerThread;
 
 /**
- * Sets overview interaction flags, such as:
- *
- *   - FLAG_DISABLE_QUICK_SCRUB
- *   - FLAG_DISABLE_SWIPE_UP
- *   - FLAG_SHOW_OVERVIEW_BUTTON
- *
- * @see com.android.systemui.shared.system.NavigationBarCompat.InteractionType and associated flags.
+ * Sets alpha for the back button
  */
-public class OverviewInteractionState implements LawnchairPreferences.OnPreferenceChangeListener {
+public class OverviewInteractionState {
 
     private static final String TAG = "OverviewFlags";
 
     private static final String HAS_ENABLED_QUICKSTEP_ONCE = "launcher.has_enabled_quickstep_once";
-    private static final String SWIPE_UP_SETTING_AVAILABLE_RES_NAME =
-            "config_swipe_up_gesture_setting_available";
-    private static final String CUSTOM_SWIPE_UP_SETTING_AVAILABLE_RES_NAME =
-            "config_custom_swipe_up_gesture_setting_available";
-    private static final String SWIPE_UP_ENABLED_DEFAULT_RES_NAME =
-            "config_swipe_up_gesture_default";
 
     // We do not need any synchronization for this variable as its only written on UI thread.
-    private static OverviewInteractionState INSTANCE;
-
-    public static OverviewInteractionState getInstance(final Context context) {
-        if (INSTANCE == null) {
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                INSTANCE = new OverviewInteractionState(context.getApplicationContext());
-            } else {
-                try {
-                    return new MainThreadExecutor().submit(
-                            () -> OverviewInteractionState.getInstance(context)).get();
-                } catch (InterruptedException|ExecutionException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        return INSTANCE;
-    }
+    public static final MainThreadInitializedObject<OverviewInteractionState> INSTANCE =
+            new MainThreadInitializedObject<>(OverviewInteractionState::new);
 
     private static final int MSG_SET_PROXY = 200;
     private static final int MSG_SET_BACK_BUTTON_ALPHA = 201;
-    private static final int MSG_SET_SWIPE_UP_ENABLED = 202;
-
-    private final SwipeUpGestureEnabledSettingObserver mSwipeUpSettingObserver;
 
     private final Context mContext;
     private final Handler mUiHandler;
@@ -95,10 +52,9 @@ public class OverviewInteractionState implements LawnchairPreferences.OnPreferen
 
     // These are updated on the background thread
     private ISystemUiProxy mISystemUiProxy;
-    private boolean mSwipeUpEnabled = false;
     private float mBackButtonAlpha = 1;
 
-    private Runnable mOnSwipeUpSettingChangedListener;
+    private int mSystemUiStateFlags;
 
     private OverviewInteractionState(Context context) {
         mContext = context;
@@ -109,19 +65,8 @@ public class OverviewInteractionState implements LawnchairPreferences.OnPreferen
         mUiHandler = new Handler(this::handleUiMessage);
         mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleBgMessage);
 
-        if (isSwipeUpSettingsAvailable()) {
-            mSwipeUpSettingObserver = new SwipeUpGestureEnabledSettingObserver(mUiHandler,
-                    context.getContentResolver());
-            mSwipeUpSettingObserver.register();
-        } else {
-            mSwipeUpSettingObserver = null;
-            Utilities.getLawnchairPrefs(context).addOnPreferenceChangeListener("pref_swipe_up_to_switch_apps_enabled", this);
-            mSwipeUpEnabled = getSystemBooleanRes(SWIPE_UP_ENABLED_DEFAULT_RES_NAME);
-        }
-    }
-
-    public boolean isSwipeUpGestureEnabled() {
-        return mSwipeUpEnabled;
+        onNavigationModeChanged(SysUINavigationMode.INSTANCE.get(context)
+                .addModeChangeListener(this::onNavigationModeChanged));
     }
 
     public float getBackButtonAlpha() {
@@ -129,10 +74,8 @@ public class OverviewInteractionState implements LawnchairPreferences.OnPreferen
     }
 
     public void setBackButtonAlpha(float alpha, boolean animate) {
-        if (!mSwipeUpEnabled) {
+        if (!modeSupportsGestures()) {
             alpha = 1;
-        } else if (Utilities.getLawnchairPrefs(mContext).getSwipeLeftToGoBack()) {
-            alpha = 0;
         }
         mUiHandler.removeMessages(MSG_SET_BACK_BUTTON_ALPHA);
         mUiHandler.obtainMessage(MSG_SET_BACK_BUTTON_ALPHA, animate ? 1 : 0, 0, alpha)
@@ -141,6 +84,14 @@ public class OverviewInteractionState implements LawnchairPreferences.OnPreferen
 
     public void setSystemUiProxy(ISystemUiProxy proxy) {
         mBgHandler.obtainMessage(MSG_SET_PROXY, proxy).sendToTarget();
+    }
+
+    public void setSystemUiStateFlags(int stateFlags) {
+        mSystemUiStateFlags = stateFlags;
+    }
+
+    public int getSystemUiStateFlags() {
+        return mSystemUiStateFlags;
     }
 
     private boolean handleUiMessage(Message msg) {
@@ -159,44 +110,13 @@ public class OverviewInteractionState implements LawnchairPreferences.OnPreferen
             case MSG_SET_BACK_BUTTON_ALPHA:
                 applyBackButtonAlpha((float) msg.obj, msg.arg1 == 1);
                 return true;
-            case MSG_SET_SWIPE_UP_ENABLED:
-                mSwipeUpEnabled = msg.arg1 != 0;
-                resetHomeBounceSeenOnQuickstepEnabledFirstTime();
-
-                if (mOnSwipeUpSettingChangedListener != null) {
-                    mOnSwipeUpSettingChangedListener.run();
-                }
-                break;
         }
-        applyFlags();
         return true;
-    }
-
-    public void setOnSwipeUpSettingChangedListener(Runnable listener) {
-        mOnSwipeUpSettingChangedListener = listener;
-    }
-
-    @WorkerThread
-    private void applyFlags() {
-        if (mISystemUiProxy == null) {
-            return;
-        }
-
-        int flags = 0;
-        if (!mSwipeUpEnabled) {
-            flags = FLAG_DISABLE_SWIPE_UP | FLAG_DISABLE_QUICK_SCRUB | FLAG_SHOW_OVERVIEW_BUTTON;
-        }
-        try {
-            mISystemUiProxy.setInteractionState(flags);
-        } catch (RemoteException e) {
-            Log.w(TAG, "Unable to update overview interaction flags", e);
-        }
     }
 
     @WorkerThread
     private void applyBackButtonAlpha(float alpha, boolean animate) {
         if (mISystemUiProxy == null) {
-            CustomNavBar.Companion.getInstance(mContext).setBackButtonAlpha(alpha);
             return;
         }
         try {
@@ -206,67 +126,12 @@ public class OverviewInteractionState implements LawnchairPreferences.OnPreferen
         }
     }
 
-    private class SwipeUpGestureEnabledSettingObserver extends ContentObserver {
-        private Handler mHandler;
-        private ContentResolver mResolver;
-        private final int defaultValue;
-
-        SwipeUpGestureEnabledSettingObserver(Handler handler, ContentResolver resolver) {
-            super(handler);
-            mHandler = handler;
-            mResolver = resolver;
-            defaultValue = getSystemBooleanRes(SWIPE_UP_ENABLED_DEFAULT_RES_NAME) ? 1 : 0;
-        }
-
-        public void register() {
-            mResolver.registerContentObserver(Settings.Secure.getUriFor(SWIPE_UP_SETTING_NAME),
-                    false, this);
-            mSwipeUpEnabled = getValue();
-            resetHomeBounceSeenOnQuickstepEnabledFirstTime();
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            super.onChange(selfChange);
-            mHandler.removeMessages(MSG_SET_SWIPE_UP_ENABLED);
-            mHandler.obtainMessage(MSG_SET_SWIPE_UP_ENABLED, getValue() ? 1 : 0, 0).sendToTarget();
-        }
-
-        private boolean getValue() {
-            return Settings.Secure.getInt(mResolver, SWIPE_UP_SETTING_NAME, defaultValue) == 1;
-        }
-    }
-
-    public static boolean isSwipeUpSettingsAvailable() {
-        return getSystemBooleanRes(CUSTOM_SWIPE_UP_SETTING_AVAILABLE_RES_NAME,
-                SWIPE_UP_SETTING_AVAILABLE_RES_NAME);
-    }
-
-    private static boolean getSystemBooleanRes(String resName, String fallback) {
-        Resources res = Resources.getSystem();
-        int resId = res.getIdentifier(resName, "bool", "android");
-
-        if (resId != 0) {
-            return res.getBoolean(resId);
-        } else {
-            return getSystemBooleanRes(fallback);
-        }
-    }
-
-    private static boolean getSystemBooleanRes(String resName) {
-        Resources res = Resources.getSystem();
-        int resId = res.getIdentifier(resName, "bool", "android");
-
-        if (resId != 0) {
-            return res.getBoolean(resId);
-        } else {
-            Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
-            return false;
-        }
+    private void onNavigationModeChanged(SysUINavigationMode.Mode mode) {
+        resetHomeBounceSeenOnQuickstepEnabledFirstTime();
     }
 
     private void resetHomeBounceSeenOnQuickstepEnabledFirstTime() {
-        if (mSwipeUpEnabled && !Utilities.getPrefs(mContext).getBoolean(
+        if (modeSupportsGestures() && !Utilities.getPrefs(mContext).getBoolean(
                 HAS_ENABLED_QUICKSTEP_ONCE, true)) {
             Utilities.getPrefs(mContext).edit()
                     .putBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)
@@ -275,9 +140,7 @@ public class OverviewInteractionState implements LawnchairPreferences.OnPreferen
         }
     }
 
-    @Override
-    public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs, boolean force) {
-        mBgHandler.removeMessages(MSG_SET_SWIPE_UP_ENABLED);
-        mBgHandler.obtainMessage(MSG_SET_SWIPE_UP_ENABLED, prefs.getSwipeUpToSwitchApps() ? 1 : 0, 0).sendToTarget();
+    private boolean modeSupportsGestures() {
+        return SysUINavigationMode.getMode(mContext).hasGestures;
     }
 }

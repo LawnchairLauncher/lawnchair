@@ -14,19 +14,60 @@
 #
 
 LOCAL_PATH := $(call my-dir)
+
+#
+# Build rule for Tapl library.
+#
+include $(CLEAR_VARS)
+LOCAL_STATIC_JAVA_LIBRARIES := \
+	androidx.annotation_annotation \
+	androidx.test.runner \
+	androidx.test.rules \
+	androidx.test.uiautomator_uiautomator
+
+ifneq (,$(wildcard frameworks/base))
+else
+    LOCAL_STATIC_JAVA_LIBRARIES += libSharedSystemUI
+
+    LOCAL_SRC_FILES := $(call all-java-files-under, tapl) \
+        ../src/com/android/launcher3/ResourceUtils.java \
+        ../src/com/android/launcher3/util/SecureSettingsObserver.java \
+        ../src/com/android/launcher3/testing/TestProtocol.java
+endif
+
+LOCAL_MODULE := ub-launcher-aosp-tapl
+LOCAL_SDK_VERSION := current
+
+include $(BUILD_STATIC_JAVA_LIBRARY)
+
+#
+# Build rule for Launcher3Tests
+#
 include $(CLEAR_VARS)
 
 LOCAL_MODULE_TAGS := tests
-LOCAL_STATIC_JAVA_LIBRARIES := android-support-test ub-uiautomator mockito-target-minus-junit4
+LOCAL_STATIC_JAVA_LIBRARIES := \
+    androidx.test.runner \
+    androidx.test.rules \
+    androidx.test.uiautomator_uiautomator \
+    mockito-target-minus-junit4
+
+ifneq (,$(wildcard frameworks/base))
+    LOCAL_PRIVATE_PLATFORM_APIS := true
+    LOCAL_STATIC_JAVA_LIBRARIES += launcher-aosp-tapl
+else
+    LOCAL_SDK_VERSION := 28
+    LOCAL_MIN_SDK_VERSION := 21
+    LOCAL_STATIC_JAVA_LIBRARIES += ub-launcher-aosp-tapl
+endif
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 LOCAL_FULL_LIBS_MANIFEST_FILES := $(LOCAL_PATH)/AndroidManifest-common.xml
-
-LOCAL_SDK_VERSION := 28
-LOCAL_MIN_SDK_VERSION := 21
 
 LOCAL_PACKAGE_NAME := Launcher3Tests
 
 LOCAL_INSTRUMENTATION_FOR := Launcher3
 
 include $(BUILD_PACKAGE)
+
+include $(call all-makefiles-under,$(LOCAL_PATH))

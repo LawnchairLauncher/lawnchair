@@ -18,9 +18,9 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
-import android.support.v7.preference.EditTextPreference
 import android.text.TextUtils
 import android.util.AttributeSet
+import androidx.preference.EditTextPreference
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.smartspace.AccuWeatherDataProvider
 import ch.deletescape.lawnchair.smartspace.OWMWeatherDataProvider

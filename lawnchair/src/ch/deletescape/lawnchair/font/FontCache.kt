@@ -21,9 +21,9 @@ import android.content.Context
 import android.content.res.AssetManager
 import android.graphics.Typeface
 import android.net.Uri
-import android.support.annotation.Keep
-import android.support.v4.provider.FontRequest
-import android.support.v4.provider.FontsContractCompat
+import androidx.annotation.Keep
+import androidx.core.provider.FontRequest
+import androidx.core.provider.FontsContractCompat
 import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.font.googlefonts.GoogleFontsListing
 import ch.deletescape.lawnchair.uiWorkerHandler

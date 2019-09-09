@@ -75,7 +75,7 @@
         android:id="@+id/search_bar_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/search_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
             app:cardCornerRadius="8dp"
             app:cardBackgroundColor="?attr/settingsSearchBackground"
             app:cardElevation="2dp">
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/search_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/search_bar_height"
@@ -100,8 +100,8 @@
                     android:iconifiedByDefault="false"
                     android:imeOptions="actionSearch|flagNoExtractUi"
                     android:searchIcon="@null"/>
-            </android.support.v7.widget.Toolbar>
-        </android.support.v7.widget.CardView>
+            </androidx.appcompat.widget.Toolbar>
+        </androidx.cardview.widget.CardView>
     </FrameLayout>
 
 </ch.deletescape.lawnchair.views.SettingsSearchLayout>

@@ -18,12 +18,8 @@
 package ch.deletescape.lawnchair.settings.ui.controllers
 
 import android.content.Context
-import android.support.annotation.Keep
-import android.support.v7.preference.ListPreference
-import android.support.v7.preference.Preference
-import ch.deletescape.lawnchair.lawnchairPrefs
+import androidx.annotation.Keep
 import ch.deletescape.lawnchair.settings.ui.PreferenceController
-import com.android.launcher3.R
 import com.android.launcher3.graphics.IconShapeOverride
 
 @Keep

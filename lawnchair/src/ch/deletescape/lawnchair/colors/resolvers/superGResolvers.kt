@@ -17,8 +17,8 @@
 
 package ch.deletescape.lawnchair.colors.resolvers
 
-import android.support.annotation.Keep
-import android.support.v4.content.ContextCompat
+import androidx.annotation.Keep
+import androidx.core.content.ContextCompat
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.theme.ThemeManager
 import com.android.launcher3.R
@@ -31,7 +31,7 @@ class SuperGAutoResolver(config: Config) : ColorEngine.ColorResolver(config) {
 
     override fun resolveColor(): Int {
         return ContextCompat.getColor(engine.context,
-                if (isDark) R.color.qsb_background_dark else R.color.qsb_background)
+                                      if (isDark) R.color.qsb_background_dark else R.color.qsb_background)
     }
 
     override fun getDisplayName() = engine.context.resources.getString(R.string.theme_based)

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
@@ -96,18 +96,18 @@
             android:title="@string/animation_type_title"
             android:summary="%s" />
 
-        <com.android.launcher3.views.ButtonPreference
+        <com.android.launcher3.settings.NotificationDotsPreference
             android:key="pref_icon_badging"
+            android:title="@string/notification_dots_title"
             android:persistent="false"
-            android:title="@string/icon_badging_title"
-            android:widgetLayout="@layout/notification_pref_warning">
+            android:widgetLayout="@layout/notification_pref_warning" >
             <intent android:action="android.settings.NOTIFICATION_SETTINGS">
-                <!-- This extra highlights the "Allow icon badges" field in Notification settings -->
+                <!-- This extra highlights the "Allow notification dots" field in Notification settings -->
                 <extra
                     android:name=":settings:fragment_args_key"
                     android:value="notification_badging" />
             </intent>
-        </com.android.launcher3.views.ButtonPreference>
+        </com.android.launcher3.settings.NotificationDotsPreference>
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_displayNotificationCount"
@@ -147,4 +147,4 @@
             android:summary="@string/show_top_shadow_pref_summary"
             android:title="@string/show_top_shadow_pref_title" />
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
-</android.support.v7.preference.PreferenceScreen>
+</androidx.preference.PreferenceScreen>

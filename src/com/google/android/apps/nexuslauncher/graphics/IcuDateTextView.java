@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.icu.text.DateFormat;
 import android.icu.text.DisplayContext;
-import android.support.annotation.RequiresApi;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import ch.deletescape.lawnchair.LawnchairPreferences;
@@ -35,19 +34,12 @@ public class IcuDateTextView extends DoubleShadowTextView {
     }
 
     public void reloadDateFormat(boolean forcedChange) {
-        String format;
-        if (Utilities.ATLEAST_NOUGAT) {
-            mDateFormat = getDateFormat(getContext(), forcedChange, mDateFormat, getId() == R.id.time_above);
-            format = mDateFormat.format(System.currentTimeMillis());
-        } else {
-            format = DateUtils.formatDateTime(getContext(), System.currentTimeMillis(),
-                    DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_MONTH);
-        }
+        mDateFormat = getDateFormat(getContext(), forcedChange, mDateFormat, getId() == R.id.time_above);
+        String format = mDateFormat.format(System.currentTimeMillis());
         setText(format);
         setContentDescription(format);
     }
 
-    @RequiresApi(24)
     public static DateFormat getDateFormat(Context context, boolean forcedChange, DateFormat oldFormat, boolean isTimeAbove) {
         if (oldFormat == null || forcedChange) {
             (oldFormat = DateFormat.getInstanceForSkeleton(context
@@ -82,9 +74,7 @@ public class IcuDateTextView extends DoubleShadowTextView {
     }
 
     public void onVisibilityAggregated(boolean isVisible) {
-        if (Utilities.ATLEAST_NOUGAT) {
-            super.onVisibilityAggregated(isVisible);
-        }
+        super.onVisibilityAggregated(isVisible);
         if (!mIsVisible && isVisible) {
             mIsVisible = true;
             registerReceiver();

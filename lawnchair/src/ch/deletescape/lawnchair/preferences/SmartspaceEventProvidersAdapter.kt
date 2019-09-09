@@ -19,13 +19,13 @@ package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
 import android.os.Handler
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.FeedBridge
 import ch.deletescape.lawnchair.getColorEngineAccent
 import ch.deletescape.lawnchair.isVisible
@@ -33,7 +33,6 @@ import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.smartspace.*
 import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
 import kotlin.collections.ArrayList
 
 class SmartspaceEventProvidersAdapter(private val context: Context)
@@ -284,8 +283,7 @@ class SmartspaceEventProvidersAdapter(private val context: Context)
 
         fun getEventProviders(context: Context): List<String> {
             val list = ArrayList<String>()
-            if (Utilities.ATLEAST_NOUGAT)
-                list.add(SmartspaceDataWidget::class.java.name)
+            list.add(SmartspaceDataWidget::class.java.name)
             if (FeedBridge.getInstance(context).resolveBridge()?.supportsSmartspace == true)
                 list.add(SmartspacePixelBridge::class.java.name)
             list.add(NowPlayingProvider::class.java.name)

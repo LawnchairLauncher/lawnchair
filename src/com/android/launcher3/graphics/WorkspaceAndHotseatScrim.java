@@ -19,6 +19,8 @@ package com.android.launcher3.graphics;
 import static android.content.Intent.ACTION_SCREEN_OFF;
 import static android.content.Intent.ACTION_USER_PRESENT;
 
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
+
 import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -34,7 +36,6 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
-import android.support.v4.graphics.ColorUtils;
 import android.util.DisplayMetrics;
 import android.util.Property;
 import android.view.View;
@@ -43,10 +44,13 @@ import ch.deletescape.lawnchair.theme.ThemeManager;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
+
+import androidx.core.graphics.ColorUtils;
 
 /**
  * View scrim which draws behind hotseat and workspace
@@ -121,7 +125,6 @@ public class WorkspaceAndHotseatScrim implements
 
     private Workspace mWorkspace;
 
-    private final boolean mHasSysUiScrim;
     private boolean mDrawTopScrim, mDrawBottomScrim;
 
     private final RectF mFinalMaskRect = new RectF();
@@ -147,12 +150,12 @@ public class WorkspaceAndHotseatScrim implements
         mLauncher = Launcher.getLauncher(view.getContext());
         mWallpaperColorInfo = WallpaperColorInfo.getInstance(mLauncher);
 
-        mMaskHeight = Utilities.pxFromDp(ALPHA_MASK_BITMAP_DP,
+        mMaskHeight = ResourceUtils.pxFromDp(ALPHA_MASK_BITMAP_DP,
                 view.getResources().getDisplayMetrics());
 
-        mHasSysUiScrim = !ThemeManager.Companion.getInstance(mLauncher).getSupportsDarkText()
-                && Utilities.getLawnchairPrefs(mLauncher).getShowTopShadow();
-        if (mHasSysUiScrim) {
+        mHideSysUiScrim = ThemeManager.Companion.getInstance(mLauncher).getSupportsDarkText()
+                || !Utilities.getLawnchairPrefs(mLauncher).getShowTopShadow();
+        if (!mHideSysUiScrim) {
             mTopScrim = Themes.getAttrDrawable(view.getContext(), R.attr.workspaceStatusBarScrim);
             mBottomMask = createDitheredAlphaMask();
         } else {
@@ -175,18 +178,18 @@ public class WorkspaceAndHotseatScrim implements
             mWorkspace.computeScrollWithoutInvalidation();
             CellLayout currCellLayout = mWorkspace.getCurrentDragOverlappingLayout();
             canvas.save();
-            if (currCellLayout != null && currCellLayout != mLauncher.getHotseat().getLayout()) {
+            if (currCellLayout != null && currCellLayout != mLauncher.getHotseat()) {
                 // Cut a hole in the darkening scrim on the page that should be highlighted, if any.
                 mLauncher.getDragLayer()
                         .getDescendantRectRelativeToSelf(currCellLayout, mHighlightRect);
                 canvas.clipRect(mHighlightRect, Region.Op.DIFFERENCE);
             }
 
-            canvas.drawColor(ColorUtils.setAlphaComponent(mFullScrimColor, mScrimAlpha));
+            canvas.drawColor(setColorAlphaBound(mFullScrimColor, mScrimAlpha));
             canvas.restore();
         }
 
-        if (!mHideSysUiScrim && mHasSysUiScrim) {
+        if (!mHideSysUiScrim) {
             if (mSysUiProgress <= 0) {
                 mAnimateScrimOnNextDraw = false;
                 return;
@@ -214,8 +217,9 @@ public class WorkspaceAndHotseatScrim implements
     }
 
     public void onInsetsChanged(Rect insets) {
-        mDrawTopScrim = insets.top > 0;
-        mDrawBottomScrim = !mLauncher.getDeviceProfile().isVerticalBarLayout();
+        mDrawTopScrim = mTopScrim != null && insets.top > 0;
+        mDrawBottomScrim = mBottomMask != null &&
+                !mLauncher.getDeviceProfile().isVerticalBarLayout();
     }
 
     private void setScrimProgress(float progress) {
@@ -231,7 +235,7 @@ public class WorkspaceAndHotseatScrim implements
         mWallpaperColorInfo.addOnChangeListener(this);
         onExtractedColorsChanged(mWallpaperColorInfo);
 
-        if (mHasSysUiScrim) {
+        if (mTopScrim != null) {
             IntentFilter filter = new IntentFilter(ACTION_SCREEN_OFF);
             filter.addAction(ACTION_USER_PRESENT); // When the device wakes up + keyguard is gone
             mRoot.getContext().registerReceiver(mReceiver, filter);
@@ -241,7 +245,7 @@ public class WorkspaceAndHotseatScrim implements
     @Override
     public void onViewDetachedFromWindow(View view) {
         mWallpaperColorInfo.removeOnChangeListener(this);
-        if (mHasSysUiScrim) {
+        if (mTopScrim != null) {
             mRoot.getContext().unregisterReceiver(mReceiver);
         }
     }
@@ -260,14 +264,14 @@ public class WorkspaceAndHotseatScrim implements
     }
 
     public void setSize(int w, int h) {
-        if (mHasSysUiScrim) {
+        if (mTopScrim != null) {
             mTopScrim.setBounds(0, 0, w, h);
             mFinalMaskRect.set(0, h - mMaskHeight, w, h);
         }
     }
 
     public void hideSysUiScrim(boolean hideSysUiScrim) {
-        mHideSysUiScrim = hideSysUiScrim;
+        mHideSysUiScrim = hideSysUiScrim || (mTopScrim == null);
         if (!hideSysUiScrim) {
             mAnimateScrimOnNextDraw = true;
         }
@@ -282,18 +286,18 @@ public class WorkspaceAndHotseatScrim implements
     }
 
     private void reapplySysUiAlpha() {
-        if (mHasSysUiScrim) {
-            reapplySysUiAlphaNoInvalidate();
-            if (!mHideSysUiScrim) {
-                invalidate();
-            }
+        reapplySysUiAlphaNoInvalidate();
+        if (!mHideSysUiScrim) {
+            invalidate();
         }
     }
 
     private void reapplySysUiAlphaNoInvalidate() {
         float factor = mSysUiProgress * mSysUiAnimMultiplier;
         mBottomMaskPaint.setAlpha(Math.round(MAX_HOTSEAT_SCRIM_ALPHA * factor));
-        mTopScrim.setAlpha(Math.round(255 * factor));
+        if (mTopScrim != null) {
+            mTopScrim.setAlpha(Math.round(255 * factor));
+        }
     }
 
     public void invalidate() {
@@ -302,15 +306,15 @@ public class WorkspaceAndHotseatScrim implements
 
     public Bitmap createDitheredAlphaMask() {
         DisplayMetrics dm = mLauncher.getResources().getDisplayMetrics();
-        int width = Utilities.pxFromDp(ALPHA_MASK_WIDTH_DP, dm);
-        int gradientHeight = Utilities.pxFromDp(ALPHA_MASK_HEIGHT_DP, dm);
+        int width = ResourceUtils.pxFromDp(ALPHA_MASK_WIDTH_DP, dm);
+        int gradientHeight = ResourceUtils.pxFromDp(ALPHA_MASK_HEIGHT_DP, dm);
         Bitmap dst = Bitmap.createBitmap(width, mMaskHeight, Bitmap.Config.ALPHA_8);
         Canvas c = new Canvas(dst);
         Paint paint = new Paint(Paint.DITHER_FLAG);
         LinearGradient lg = new LinearGradient(0, 0, 0, gradientHeight,
                 new int[]{
                         0x00FFFFFF,
-                        ColorUtils.setAlphaComponent(Color.WHITE, (int) (0xFF * 0.95)),
+                        setColorAlphaBound(Color.WHITE, (int) (0xFF * 0.95)),
                         0xFFFFFFFF},
                 new float[]{0f, 0.8f, 1f},
                 Shader.TileMode.CLAMP);

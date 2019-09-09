@@ -28,14 +28,14 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import android.support.annotation.Keep
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.RemoteViews
 import android.widget.TextView
+import androidx.annotation.Keep
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.util.Temperature
 import ch.deletescape.lawnchair.util.extensions.d
@@ -54,8 +54,6 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
     private val pendingIntentTagId = context.resources.getIdentifier("pending_intent_tag", "id", "android")
 
     init {
-        if (!Utilities.ATLEAST_NOUGAT) throw IllegalStateException("only available on Nougat and above")
-
         bindWidget { }
     }
 

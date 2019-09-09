@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -24,7 +24,7 @@ public class ItemDragListener extends BaseItemDragListener {
     protected PendingItemDragHelper createDragHelper() {
         PendingAddShortcutInfo tag = new PendingAddShortcutInfo(new ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVO(mActivityInfo) {
             @Override
-            public ShortcutInfo createShortcutInfo() {
+            public WorkspaceItemInfo createWorkspaceItemInfo() {
                 return InstallShortcutReceiver.fromActivityInfo(mActivityInfo, mLauncher);
             }
         });

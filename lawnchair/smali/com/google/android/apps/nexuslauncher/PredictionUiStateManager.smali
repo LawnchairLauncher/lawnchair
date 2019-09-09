@@ -5,7 +5,7 @@
 # interfaces
 .implements Landroid/content/SharedPreferences$OnSharedPreferenceChangeListener;
 .implements Landroid/view/ViewTreeObserver$OnGlobalLayoutListener;
-.implements Lcom/android/launcher3/IconCache$ItemInfoUpdateReceiver;
+.implements Lcom/android/launcher3/icons/IconCache$ItemInfoUpdateReceiver;
 
 
 # annotations
@@ -31,7 +31,7 @@
 
 .field private mCurrentState:Lcom/google/android/apps/nexuslauncher/PredictionUiStateManager$PredictionState;
 
-.field private final mIconCache:Lcom/android/launcher3/IconCache;
+.field private final mIconCache:Lcom/android/launcher3/icons/IconCache;
 
 .field private final mInstantAppsController:Lcom/google/android/apps/nexuslauncher/b/b;
 
@@ -98,11 +98,11 @@
 
     move-result-object p1
 
-    invoke-virtual {p1}, Lcom/android/launcher3/LauncherAppState;->getIconCache()Lcom/android/launcher3/IconCache;
+    invoke-virtual {p1}, Lcom/android/launcher3/LauncherAppState;->getIconCache()Lcom/android/launcher3/icons/IconCache;
 
     move-result-object p1
 
-    iput-object p1, p0, Lcom/google/android/apps/nexuslauncher/PredictionUiStateManager;->mIconCache:Lcom/android/launcher3/IconCache;
+    iput-object p1, p0, Lcom/google/android/apps/nexuslauncher/PredictionUiStateManager;->mIconCache:Lcom/android/launcher3/icons/IconCache;
 
     .line 106
     sget-object p1, Lcom/google/android/apps/nexuslauncher/PredictionUiStateManager$Client;->HOME:Lcom/google/android/apps/nexuslauncher/PredictionUiStateManager$Client;
@@ -740,9 +740,9 @@
     if-eqz v7, :cond_2
 
     .line 264
-    iget-object v7, p0, Lcom/google/android/apps/nexuslauncher/PredictionUiStateManager;->mIconCache:Lcom/android/launcher3/IconCache;
+    iget-object v7, p0, Lcom/google/android/apps/nexuslauncher/PredictionUiStateManager;->mIconCache:Lcom/android/launcher3/icons/IconCache;
 
-    invoke-virtual {v7, p0, v6}, Lcom/android/launcher3/IconCache;->updateIconInBackground(Lcom/android/launcher3/IconCache$ItemInfoUpdateReceiver;Lcom/android/launcher3/ItemInfoWithIcon;)Lcom/android/launcher3/IconCache$IconLoadRequest;
+    invoke-virtual {v7, p0, v6}, Lcom/android/launcher3/icons/IconCache;->updateIconInBackground(Lcom/android/launcher3/icons/IconCache$ItemInfoUpdateReceiver;Lcom/android/launcher3/ItemInfoWithIcon;)Lcom/android/launcher3/icons/IconCache$IconLoadRequest;
 
     :cond_2
     :goto_1

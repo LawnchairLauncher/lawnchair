@@ -21,13 +21,14 @@ import android.app.WallpaperManager;
 import android.app.WallpaperManager.OnColorsChangedListener;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import static android.app.WallpaperManager.FLAG_SYSTEM;
+
+import androidx.annotation.Nullable;
 
 @TargetApi(27)
 public class WallpaperManagerCompatVOMR1 extends WallpaperManagerCompat {

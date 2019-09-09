@@ -19,10 +19,9 @@ package ch.deletescape.lawnchair.settings.ui.controllers
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.support.annotation.Keep
-import android.support.v7.preference.Preference
 import android.text.TextUtils
-import android.util.Log
+import androidx.annotation.Keep
+import androidx.preference.Preference
 import ch.deletescape.lawnchair.FeedBridge
 import ch.deletescape.lawnchair.settings.ui.PreferenceController
 import com.android.launcher3.R
@@ -39,10 +38,6 @@ class MinusOneController(context: Context) : PreferenceController(context) {
         } else {
             true
         }
-    }
-
-    override fun onPreferenceAdded(preference: Preference): Boolean {
-        return super.onPreferenceAdded(preference)
     }
 
     private fun getDisplayGoogleTitle(): String {

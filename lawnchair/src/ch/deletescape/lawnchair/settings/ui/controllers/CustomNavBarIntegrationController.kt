@@ -20,16 +20,14 @@
 package ch.deletescape.lawnchair.settings.ui.controllers
 
 import android.content.Context
-import android.support.annotation.Keep
+import androidx.annotation.Keep
 import ch.deletescape.lawnchair.customnavbar.CustomNavBar
 import ch.deletescape.lawnchair.lawnchairApp
 import ch.deletescape.lawnchair.settings.ui.PreferenceController
-import com.android.launcher3.Utilities
 
 @Keep
 class CustomNavBarIntegrationController(context: Context) : PreferenceController(context) {
 
-    override val isVisible = Utilities.ATLEAST_NOUGAT
-                             && !context.lawnchairApp.recentsEnabled
+    override val isVisible = !context.lawnchairApp.recentsEnabled
                              && CustomNavBar.getInstance(context).testVersionInstalled
 }

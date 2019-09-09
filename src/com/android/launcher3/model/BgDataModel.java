@@ -16,6 +16,7 @@
 package com.android.launcher3.model;
 
 import android.content.Context;
+import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,19 +27,20 @@ import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.DumpTargetWrapper;
 import com.android.launcher3.model.nano.LauncherDumpProto;
 import com.android.launcher3.model.nano.LauncherDumpProto.ContainerType;
 import com.android.launcher3.model.nano.LauncherDumpProto.DumpTarget;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.LongArrayMap;
-import com.android.launcher3.util.MultiHashMap;
+import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.IntSet;
+import com.android.launcher3.util.IntSparseArrayMap;
 import com.google.protobuf.nano.MessageNano;
 
 import java.io.FileDescriptor;
@@ -63,7 +65,7 @@ public class BgDataModel {
      * Map of all the ItemInfos (shortcuts, folders, and widgets) created by
      * LauncherModel to their ids
      */
-    public final LongArrayMap<ItemInfo> itemsIdMap = new LongArrayMap<>();
+    public final IntSparseArrayMap<ItemInfo> itemsIdMap = new IntSparseArrayMap<>();
 
     /**
      * List of all the folders and shortcuts directly on the home screen (no widgets
@@ -79,12 +81,7 @@ public class BgDataModel {
     /**
      * Map of id to FolderInfos of all the folders created by LauncherModel
      */
-    public final LongArrayMap<FolderInfo> folders = new LongArrayMap<>();
-
-    /**
-     * Ordered list of workspace screens ids.
-     */
-    public final ArrayList<Long> workspaceScreens = new ArrayList<>();
+    public final IntSparseArrayMap<FolderInfo> folders = new IntSparseArrayMap<>();
 
     /**
      * Map of ShortcutKey to the number of times it is pinned.
@@ -97,9 +94,9 @@ public class BgDataModel {
     public boolean hasShortcutHostPermission;
 
     /**
-     * Maps all launcher activities to the id's of their shortcuts (if they have any).
+     * Maps all launcher activities to counts of their shortcuts.
      */
-    public final MultiHashMap<ComponentKey, String> deepShortcutMap = new MultiHashMap<>();
+    public final HashMap<ComponentKey, Integer> deepShortcutMap = new HashMap<>();
 
     /**
      * Entire list of widgets.
@@ -119,9 +116,24 @@ public class BgDataModel {
         appWidgets.clear();
         folders.clear();
         itemsIdMap.clear();
-        workspaceScreens.clear();
         pinnedShortcutCounts.clear();
         deepShortcutMap.clear();
+    }
+
+    /**
+     * Creates an array of valid workspace screens based on current items in the model.
+     */
+    public synchronized IntArray collectWorkspaceScreens() {
+        IntSet screenSet = new IntSet();
+        for (ItemInfo item: itemsIdMap) {
+            if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                screenSet.add(item.screenId);
+            }
+        }
+        if (FeatureFlags.QSB_ON_FIRST_SCREEN || screenSet.isEmpty()) {
+            screenSet.add(Workspace.FIRST_SCREEN_ID);
+        }
+        return screenSet.getArray();
     }
 
     public synchronized void dump(String prefix, FileDescriptor fd, PrintWriter writer,
@@ -131,11 +143,6 @@ public class BgDataModel {
             return;
         }
         writer.println(prefix + "Data Model:");
-        writer.print(prefix + " ---- workspace screens: ");
-        for (int i = 0; i < workspaceScreens.size(); i++) {
-            writer.print(" " + workspaceScreens.get(i).toString());
-        }
-        writer.println();
         writer.println(prefix + " ---- workspace items ");
         for (int i = 0; i < workspaceItems.size(); i++) {
             writer.println(prefix + '\t' + workspaceItems.get(i).toString());
@@ -154,14 +161,11 @@ public class BgDataModel {
         }
 
         if (args.length > 0 && TextUtils.equals(args[0], "--all")) {
-            writer.println(prefix + "shortcuts");
-            for (ArrayList<String> map : deepShortcutMap.values()) {
-                writer.print(prefix + "  ");
-                for (String str : map) {
-                    writer.print(str + ", ");
-                }
-                writer.println();
+            writer.println(prefix + "shortcut counts ");
+            for (Integer count : deepShortcutMap.values()) {
+                writer.print(count + ", ");
             }
+            writer.println();
         }
     }
 
@@ -170,7 +174,8 @@ public class BgDataModel {
 
         // Add top parent nodes. (L1)
         DumpTargetWrapper hotseat = new DumpTargetWrapper(ContainerType.HOTSEAT, 0);
-        LongArrayMap<DumpTargetWrapper> workspaces = new LongArrayMap<>();
+        IntSparseArrayMap<DumpTargetWrapper> workspaces = new IntSparseArrayMap<>();
+        IntArray workspaceScreens = collectWorkspaceScreens();
         for (int i = 0; i < workspaceScreens.size(); i++) {
             workspaces.put(workspaceScreens.get(i),
                     new DumpTargetWrapper(ContainerType.WORKSPACE, i));
@@ -181,7 +186,7 @@ public class BgDataModel {
             FolderInfo fInfo = folders.valueAt(i);
             dtw = new DumpTargetWrapper(ContainerType.FOLDER, folders.size());
             dtw.writeToDumpTarget(fInfo);
-            for(ShortcutInfo sInfo: fInfo.contents) {
+            for(WorkspaceItemInfo sInfo: fInfo.contents) {
                 DumpTargetWrapper child = new DumpTargetWrapper(sInfo);
                 child.writeToDumpTarget(sInfo);
                 dtw.add(child);
@@ -270,17 +275,15 @@ public class BgDataModel {
                     workspaceItems.remove(item);
                     break;
                 case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
-                    if (Utilities.ATLEAST_NOUGAT_MR1) {
-                        // Decrement pinned shortcut count
-                        ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
-                        MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
-                        if ((count == null || --count.value == 0)
-                                && !InstallShortcutReceiver.getPendingShortcuts(context)
-                                .contains(pinnedShortcut)) {
-                            DeepShortcutManager.getInstance(context).unpinShortcut(pinnedShortcut);
-                        }
-                        // Fall through.
+                    // Decrement pinned shortcut count
+                    ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
+                    MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
+                    if ((count == null || --count.value == 0)
+                            && !InstallShortcutReceiver.getPendingShortcuts(context)
+                            .contains(pinnedShortcut)) {
+                        DeepShortcutManager.getInstance(context).unpinShortcut(pinnedShortcut);
                     }
+                    // Fall through.
                 }
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
@@ -303,23 +306,21 @@ public class BgDataModel {
                 workspaceItems.add(item);
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
-                if (Utilities.ATLEAST_NOUGAT_MR1) {
-                    // Increment the count for the given shortcut
-                    ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
-                    MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
-                    if (count == null) {
-                        count = new MutableInt(1);
-                        pinnedShortcutCounts.put(pinnedShortcut, count);
-                    } else {
-                        count.value++;
-                    }
-
-                    // Since this is a new item, pin the shortcut in the system server.
-                    if (newItem && count.value == 1) {
-                        DeepShortcutManager.getInstance(context).pinShortcut(pinnedShortcut);
-                    }
-                    // Fall through
+                // Increment the count for the given shortcut
+                ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
+                MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
+                if (count == null) {
+                    count = new MutableInt(1);
+                    pinnedShortcutCounts.put(pinnedShortcut, count);
+                } else {
+                    count.value++;
                 }
+
+                // Since this is a new item, pin the shortcut in the system server.
+                if (newItem && count.value == 1) {
+                    DeepShortcutManager.getInstance(context).pinShortcut(pinnedShortcut);
+                }
+                // Fall through
             }
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
@@ -335,7 +336,7 @@ public class BgDataModel {
                             Log.e(TAG, msg);
                         }
                     } else {
-                        findOrMakeFolder(item.container).add((ShortcutInfo) item, false);
+                        findOrMakeFolder(item.container).add((WorkspaceItemInfo) item, false);
                     }
 
                 }
@@ -351,7 +352,7 @@ public class BgDataModel {
      * Return an existing FolderInfo object if we have encountered this ID previously,
      * or make a new one.
      */
-    public synchronized FolderInfo findOrMakeFolder(long id) {
+    public synchronized FolderInfo findOrMakeFolder(int id) {
         // See if a placeholder was created for us already
         FolderInfo folderInfo = folders.get(id);
         if (folderInfo == null) {
@@ -363,10 +364,10 @@ public class BgDataModel {
     }
 
     /**
-     * Clear all the deep shortcuts for the given package, and re-add the new shortcuts.
+     * Clear all the deep shortcut counts for the given package, and re-add the new shortcut counts.
      */
-    public synchronized void updateDeepShortcutMap(
-            String packageName, UserHandle user, List<ShortcutInfoCompat> shortcuts) {
+    public synchronized void updateDeepShortcutCounts(
+            String packageName, UserHandle user, List<ShortcutInfo> shortcuts) {
         if (packageName != null) {
             Iterator<ComponentKey> keysIter = deepShortcutMap.keySet().iterator();
             while (keysIter.hasNext()) {
@@ -379,13 +380,15 @@ public class BgDataModel {
         }
 
         // Now add the new shortcuts to the map.
-        for (ShortcutInfoCompat shortcut : shortcuts) {
+        for (ShortcutInfo shortcut : shortcuts) {
             boolean shouldShowInContainer = shortcut.isEnabled()
                     && (shortcut.isDeclaredInManifest() || shortcut.isDynamic());
             if (shouldShowInContainer) {
                 ComponentKey targetComponent
                         = new ComponentKey(shortcut.getActivity(), shortcut.getUserHandle());
-                deepShortcutMap.addToList(targetComponent, shortcut.getId());
+
+                Integer previousCount = deepShortcutMap.get(targetComponent);
+                deepShortcutMap.put(targetComponent, previousCount == null ? 1 : previousCount + 1);
             }
         }
     }

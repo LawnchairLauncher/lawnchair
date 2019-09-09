@@ -18,12 +18,12 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
-import android.support.v7.preference.Preference
-import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.preference.Preference
+import androidx.preference.PreferenceViewHolder
 import com.android.launcher3.R
 
 class PreviewPreference(context: Context, attrs: AttributeSet) : Preference(context, attrs) {

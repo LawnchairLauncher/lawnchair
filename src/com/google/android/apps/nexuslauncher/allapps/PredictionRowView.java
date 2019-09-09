@@ -6,11 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.support.annotation.ColorInt;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.ColorUtils;
 import android.text.Layout;
 import android.text.Layout.Alignment;
 import android.text.StaticLayout.Builder;
@@ -22,11 +17,15 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 import ch.deletescape.lawnchair.allapps.PredictionsDividerLayout;
 import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
 import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
-import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
 import ch.deletescape.lawnchair.font.CustomFontManager;
 import ch.deletescape.lawnchair.font.FontLoader.FontReceiver;
 import com.android.launcher3.AppInfo;
@@ -38,14 +37,14 @@ import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsStore.OnUpdateListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.keyboard.FocusIndicatorHelper;
 import com.android.launcher3.keyboard.FocusIndicatorHelper.SimpleFocusIndicatorHelper;
-import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
+import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -57,7 +56,7 @@ import java.util.Collections;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
-public class PredictionRowView extends PredictionsDividerLayout implements LogContainerProvider,
+public class PredictionRowView extends PredictionsDividerLayout implements StatsLogUtils.LogContainerProvider,
         OnUpdateListener, OnDeviceProfileChangeListener, FontReceiver, OnColorChangeListener {
     private static final Interpolator ALPHA_FACTOR_INTERPOLATOR = input -> input < 0.8f ? 0.0f : (input - 0.8f) / 0.2f;
     private static final String TAG = "PredictionRowView";
@@ -282,7 +281,6 @@ public class PredictionRowView extends PredictionsDividerLayout implements LogCo
                 BubbleTextView bubbleTextView = (BubbleTextView) mLauncher.getLayoutInflater().inflate(R.layout.all_apps_icon, this, false);
                 bubbleTextView.setOnClickListener(ItemClickHandler.INSTANCE);
                 bubbleTextView.setOnLongClickListener(ItemLongClickListener.INSTANCE_ALL_APPS);
-                bubbleTextView.setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
                 bubbleTextView.setOnFocusChangeListener(mFocusHelper);
                 LayoutParams layoutParams = (LayoutParams) bubbleTextView.getLayoutParams();
                 layoutParams.height = getExpectedHeight();
@@ -300,8 +298,8 @@ public class PredictionRowView extends PredictionsDividerLayout implements LogCo
                 bubbleTextView2.setVisibility(View.VISIBLE);
                 if (mPredictedApps.get(i) instanceof AppInfo) {
                     bubbleTextView2.applyFromApplicationInfo((AppInfo) mPredictedApps.get(i));
-                } else if (mPredictedApps.get(i) instanceof ShortcutInfo) {
-                    bubbleTextView2.applyFromShortcutInfo((ShortcutInfo) mPredictedApps.get(i));
+                } else if (mPredictedApps.get(i) instanceof WorkspaceItemInfo) {
+                    bubbleTextView2.applyFromWorkspaceItem((WorkspaceItemInfo) mPredictedApps.get(i));
                 }
                 bubbleTextView2.setTextColor(alphaComponent);
             } else {

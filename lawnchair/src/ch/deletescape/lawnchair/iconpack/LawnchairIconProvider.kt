@@ -19,12 +19,12 @@ package ch.deletescape.lawnchair.iconpack
 
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.ShortcutInfo
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.Drawable
 import com.android.launcher3.ItemInfo
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.google.android.apps.nexuslauncher.DynamicIconProvider
 
 class LawnchairIconProvider(context: Context) : DynamicIconProvider(context) {
@@ -39,7 +39,7 @@ class LawnchairIconProvider(context: Context) : DynamicIconProvider(context) {
         return iconPackManager.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, itemInfo, this).assertNotAdaptiveIconDrawable(launcherActivityInfo)
     }
 
-    fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
+    fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
         return iconPackManager.getIcon(shortcutInfo, iconDpi).assertNotAdaptiveIconDrawable(shortcutInfo)
     }
 

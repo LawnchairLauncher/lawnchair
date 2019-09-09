@@ -33,12 +33,13 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"വിജറ്റ് തിരഞ്ഞെടുക്കാനോ ഇഷ്ടാനുസൃത പ്രവർത്തനങ്ങൾ ഉപയോഗിക്കാനോ രണ്ടുതവണ ടാപ്പുചെയ്ത് പിടിക്കുക."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d വീതിയും %2$d ഉയരവും"</string>
-    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"സ്വമേധയാ സ്ഥാപിക്കുന്നതിന് സ്‌പർശിച്ചുപിടിക്കുക"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"നേരിട്ട് സ്ഥാപിക്കുന്നതിന് സ്‌പർശിച്ചുപിടിക്കുക"</string>
     <string name="place_automatically" msgid="8064208734425456485">"സ്വയമേവ ചേർക്കുക"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ആപ്പുകൾ തിരയുക"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ആപ്പുകൾ ലോഡുചെയ്യുന്നു..."</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" എന്നതുമായി പൊരുത്തപ്പെടുന്ന ആപ്പുകളൊന്നും കണ്ടെത്തിയില്ല"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"കൂടുതൽ ആപ്പുകൾക്ക് തിരയുക"</string>
+    <string name="label_application" msgid="8531721983832654978">"ആപ്പ്"</string>
     <string name="notifications_header" msgid="1404149926117359025">"അറിയിപ്പുകൾ"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"തിരഞ്ഞെടുക്കുന്നതിന് കുറുക്കുവഴി സ്‌പർശിച്ച് പിടിക്കുക."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"കുറുക്കുവഴി തിരഞ്ഞെടുക്കാനോ ഇഷ്‌ടാനുസൃത പ്രവർത്തനങ്ങൾ ഉപയോഗിക്കാനോ 2 തവണ ടാപ്പ് ചെയ്‌ത് പിടിക്കുക."</string>
@@ -64,9 +65,9 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ഇതൊരു സിസ്‌റ്റം അപ്ലിക്കേഷനായതിനാൽ അൺഇൻസ്‌റ്റാളുചെയ്യാനാവില്ല."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"പേരുനൽകാത്ത ഫോൾഡർ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> പ്രവർത്തനരഹിതമാക്കി"</string>
-    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
-      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>-ന്, <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> അറിയിപ്പുകൾ ഉണ്ട്</item>
-      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g>-ന്, <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> അറിയിപ്പ് ഉണ്ട്</item>
+    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> എന്ന ആപ്പിന്, <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> അറിയിപ്പുകൾ ഉണ്ട്</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g> എന്ന ആപ്പിന്, <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> അറിയിപ്പുണ്ട്</item>
     </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"പേജ് %1$d / %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"ഹോം സ്‌ക്രീൻ %1$d / %2$d"</string>
@@ -77,29 +78,22 @@
     <string name="folder_closed" msgid="4100806530910930934">"ഫോൾഡർ അടച്ചു"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"ഫോൾഡറിന്റെ പേര് <xliff:g id="NAME">%1$s</xliff:g> എന്നായി മാറ്റി"</string>
     <string name="folder_name_format" msgid="6629239338071103179">"ഫോൾഡർ: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="widget_button_text" msgid="2880537293434387943">"വിജറ്റുകൾ"</string>
+    <string name="widget_button_text" msgid="2880537293434387943">"വിഡ്ജെറ്റുകൾ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"വാൾപേപ്പർ"</string>
+    <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"സ്‌റ്റൈലുകളും വാൾപേപ്പറുകളും"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ഹോം ക്രമീകരണം"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"അഡ്മിൻ പ്രവർത്തനരഹിതമാക്കിയിരിക്കുന്നു"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"ഹോം സ്ക്രീൻ തിരിക്കൽ അനുവദിക്കുക"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ഫോൺ തിരിച്ച നിലയിലായിരിക്കുമ്പോൾ"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"അറിയിപ്പ് ഡോട്ടുകൾ"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"ഓൺ"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"ഓഫ്"</string>
+    <string name="notification_dots_title" msgid="9062440428204120317">"അറിയിപ്പ് ഡോട്ടുകൾ"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"ഓണാണ്"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"ഓഫാണ്"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"അറിയിപ്പിനായുള്ള ആക്‌സസ് ആവശ്യമാണ്"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"അറിയിപ്പ് ഡോട്ടുകൾ കാണിക്കുന്നതിന്, <xliff:g id="NAME">%1$s</xliff:g> എന്നയാളിനായുള്ള ആപ്പ് അറിയിപ്പുകൾ ഓണാക്കുക"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ക്രമീകരണം മാറ്റുക"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"അറിയിപ്പ് ഡോട്ടുകൾ കാണിക്കുക"</string>
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"അറിയിപ്പ് ഡോട്ടുകൾ കാണിക്കുക"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ഹോം സ്ക്രീനിലേക്ക് ഐക്കൺ ചേർക്കുക"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"പുതിയ ആപ്പുകൾക്ക്"</string>
-    <string name="icon_shape_override_label" msgid="2977264953998281004">"ഐക്കണിന്റെ ആകാരം മാറ്റുക"</string>
-    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"ഹോം സ്‌ക്രീനിൽ"</string>
-    <string name="icon_shape_system_default" msgid="1709762974822753030">"സിസ്‌റ്റം ഡിഫോൾട്ട് ഉപയോഗിക്കുക"</string>
-    <string name="icon_shape_square" msgid="633575066111622774">"ചതുരം"</string>
-    <string name="icon_shape_squircle" msgid="5658049910802669495">"ചതുരവൃത്തം"</string>
-    <string name="icon_shape_circle" msgid="6550072265930144217">"വൃത്തം"</string>
-    <string name="icon_shape_teardrop" msgid="4525869388200835463">"കണ്ണുനീര്‍ തുള്ളി"</string>
-    <string name="icon_shape_override_progress" msgid="3461735694970239908">"ഐക്കൺ ആകാര മാറ്റങ്ങൾ പ്രയോഗിക്കുന്നു"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"അജ്ഞാതം"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"നീക്കംചെയ്യുക"</string>
     <string name="abandoned_search" msgid="891119232568284442">"തിരയുക"</string>
@@ -108,14 +102,13 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ഡൗൺലോഡ് ചെയ്യുന്നു, <xliff:g id="PROGRESS">%2$s</xliff:g> പൂർത്തിയായി"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"ഇൻസ്റ്റാൾ ചെയ്യാൻ <xliff:g id="NAME">%1$s</xliff:g> കാക്കുന്നു"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> വിജറ്റുകൾ"</string>
-    <!-- no translation found for widgets_list (796804551140113767) -->
-    <skip />
-    <!-- no translation found for widgets_list_closed (6141506579418771922) -->
-    <skip />
+    <string name="widgets_list" msgid="796804551140113767">"വിജറ്റുകളുടെ ലിസ്‌റ്റ്"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"വിജറ്റുകളുടെ ലിസ്‌റ്റ് അവസാനിപ്പിച്ചു"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"ഹോം സ്ക്രീനിൽ ചേർക്കുക"</string>
     <string name="action_move_here" msgid="2170188780612570250">"ഇനം ഇവിടേക്ക് നീക്കുക"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"ഹോം സ്‌ക്രീനിൽ ഇനം ചേർത്തു"</string>
     <string name="item_removed" msgid="851119963877842327">"ഇനം നീക്കംചെയ്‌തു"</string>
+    <string name="undo" msgid="4151576204245173321">"പഴയപടിയാക്കുക"</string>
     <string name="action_move" msgid="4339390619886385032">"ഇനം നീക്കുക"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"വരി <xliff:g id="NUMBER_0">%1$s</xliff:g> നിര <xliff:g id="NUMBER_1">%2$s</xliff:g>-ലേക്ക് നീക്കുക"</string>
     <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g>-ലേക്ക് നീക്കുക"</string>
@@ -169,4 +162,5 @@
     <string name="work_mode_off_label" msgid="3194894777601421047">"അറിയിപ്പുകളും ആപ്പുകളും ഓഫാണ്"</string>
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"അടയ്ക്കുക"</string>
     <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"അടച്ചു"</string>
+    <string name="remote_action_failed" msgid="1383965239183576790">"പരാജയപ്പെട്ടു: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

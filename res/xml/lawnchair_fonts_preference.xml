@@ -16,7 +16,7 @@
   ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<android.support.v7.preference.PreferenceScreen
+<androidx.preference.PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ch.deletescape.lawnchair.font.settingsui.FontPreference
@@ -43,4 +43,4 @@
         android:key="pref_font_drawerTab"
         android:icon="@android:color/transparent"
         android:title="@string/pref_fonts_drawer_tabs" />
-</android.support.v7.preference.PreferenceScreen>
+</androidx.preference.PreferenceScreen>

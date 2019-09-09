@@ -127,6 +127,9 @@
     <style name="SettingsTheme.PreferenceTheme" parent="@style/PreferenceThemeOverlay.v14.Material">
         <item name="preferenceFragmentCompatStyle">@style/SettingsTheme.PreferenceTheme.Fragment</item>
         <item name="preferenceCategoryStyle">@style/SettingsTheme.PreferenceTheme.Category</item>
+        <item name="preferenceStyle">@style/SettingsTheme.PreferenceTheme.Preference</item>
+        <item name="dialogPreferenceStyle">@style/SettingsTheme.PreferenceTheme.DialogPreference</item>
+        <item name="switchPreferenceStyle">@style/SettingsTheme.PreferenceTheme.SwitchPreference</item>
         <item name="android:textAppearanceListItem">@style/SettingsTheme.PreferenceTheme.Preference.Title</item>
     </style>
     <style name="SettingsTheme.PreferenceTheme.Fragment" parent="@style/PreferenceFragment.Material">
@@ -134,6 +137,15 @@
     </style>
     <style name="SettingsTheme.PreferenceTheme.Category" parent="@style/Preference.Category.Material">
         <item name="android:layout">@layout/settings_category_material</item>
+    </style>
+    <style name="SettingsTheme.PreferenceTheme.Preference" parent="@style/Preference.Material">
+        <item name="iconSpaceReserved">false</item>
+    </style>
+    <style name="SettingsTheme.PreferenceTheme.DialogPreference" parent="@style/Preference.DialogPreference.Material">
+        <item name="iconSpaceReserved">false</item>
+    </style>
+    <style name="SettingsTheme.PreferenceTheme.SwitchPreference" parent="@style/Preference.SwitchPreference.Material">
+        <item name="iconSpaceReserved">false</item>
     </style>
     <style name="SettingsTheme.PreferenceTheme.Preference.Title" parent="@style/TextAppearance.AppCompat.Subhead">
         <item name="customFontType">preferenceTitle</item>

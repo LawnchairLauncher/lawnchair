@@ -18,10 +18,9 @@
 package ch.deletescape.lawnchair.allapps
 
 import android.content.Context
-import android.support.v4.graphics.ColorUtils
+import androidx.core.graphics.ColorUtils
 import com.android.launcher3.AppInfo
 import com.android.launcher3.allapps.AppInfoComparator
-import com.android.launcher3.graphics.ColorExtractor.posterize
 
 // Reference: https://www.alanzucconi.com/2015/09/30/colour-sorting/ - Step sorting
 class AppColorComparator(context: Context) : AppInfoComparator(context) {

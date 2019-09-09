@@ -27,6 +27,7 @@ import com.android.launcher3.touch.SwipeDetector
 import java.lang.reflect.InvocationTargetException
 import android.annotation.SuppressLint
 import ch.deletescape.lawnchair.gestures.handlers.VerticalSwipeGestureHandler
+import kotlin.math.abs
 
 class VerticalSwipeGestureController(private val launcher: Launcher) : TouchController, SwipeDetector.Listener {
 
@@ -54,6 +55,10 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     private var pointerCount = 0
 
     private var overrideDragging = false
+
+    private var currentMillis = 0L
+    private var currentVelocity = 0f
+    private var currentDisplacement = 0f
 
     override fun onControllerInterceptTouchEvent(ev: MotionEvent): Boolean {
         downTime = ev.downTime
@@ -121,7 +126,13 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
         overrideDragging = true
     }
 
-    override fun onDrag(displacement: Float, velocity: Float): Boolean {
+    override fun onDrag(displacement: Float): Boolean {
+        return true
+    }
+
+    override fun onDrag(displacement: Float, ev: MotionEvent): Boolean {
+        val velocity = computeVelocity(displacement - currentDisplacement, ev.eventTime)
+        currentDisplacement = displacement
         if (state != GestureState.Locked) {
             val wasFree = state == GestureState.Free
             if (overrideDragging) {
@@ -157,6 +168,35 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
             }
         }
         return true
+    }
+
+    private fun computeVelocity(delta: Float, millis: Long): Float {
+        val previousMillis = currentMillis
+        currentMillis = millis
+
+        val deltaTimeMillis = (currentMillis - previousMillis).toFloat()
+        val velocity = if (deltaTimeMillis > 0) delta / deltaTimeMillis else 0f
+        currentVelocity = if (abs(currentVelocity) < 0.001f) {
+            velocity
+        } else {
+            val alpha = computeDampeningFactor(deltaTimeMillis)
+            interpolate(currentVelocity, velocity, alpha)
+        }
+        return currentVelocity
+    }
+
+    /**
+     * Returns a time-dependent dampening factor using delta time.
+     */
+    private fun computeDampeningFactor(deltaTime: Float): Float {
+        return deltaTime / (SCROLL_VELOCITY_DAMPENING_RC + deltaTime)
+    }
+
+    /**
+     * Returns the linear interpolation between two values
+     */
+    private fun interpolate(from: Float, to: Float, alpha: Float): Float {
+        return (1.0f - alpha) * from + alpha * to
     }
 
     override fun onDragEnd(velocity: Float, fling: Boolean) {
@@ -228,5 +268,10 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
             false
         }
 
+    }
+
+    companion object {
+
+        private const val SCROLL_VELOCITY_DAMPENING_RC = 1000f / (2f * Math.PI.toFloat() * 10f)
     }
 }

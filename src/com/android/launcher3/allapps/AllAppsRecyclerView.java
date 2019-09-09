@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.SparseIntArray;
 import android.view.MotionEvent;
@@ -35,14 +34,17 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.graphics.DrawableFactory;
-import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
+import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * A RecyclerView with custom fast scroll support for the all apps view.
@@ -157,8 +159,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
 
         if (mApps.hasNoFilteredResults()) {
             if (mEmptySearchBackground == null) {
-                mEmptySearchBackground = DrawableFactory.get(getContext())
-                        .getAllAppsBackground(getContext());
+                mEmptySearchBackground = new AllAppsBackgroundDrawable(getContext());
                 mEmptySearchBackground.setAlpha(0);
                 mEmptySearchBackground.setCallback(this);
                 updateEmptySearchBackgroundBounds();
@@ -433,5 +434,13 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
 
     public void setScrollbarColor(ColorResolver colorResolver) {
         mScrollbar.setColor(colorResolver.resolveColor(), colorResolver.computeForegroundColor());
+    }
+
+    public void onScrollStateChanged(int state) {
+        super.onScrollStateChanged(state);
+
+        if (state == SCROLL_STATE_IDLE) {
+            AccessibilityManagerCompat.sendScrollFinishedEventToTest(getContext());
+        }
     }
 }

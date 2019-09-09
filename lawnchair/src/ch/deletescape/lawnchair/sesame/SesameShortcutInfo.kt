@@ -23,22 +23,22 @@ import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.VectorDrawable
 import android.os.Process
-import android.support.v7.graphics.Palette
+import androidx.palette.graphics.Palette
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.compat.LauncherAppsCompat
-import com.android.launcher3.graphics.FixedScaleDrawable
-import com.android.launcher3.shortcuts.ShortcutInfoCompat
+import com.android.launcher3.icons.FixedScaleDrawable
+import com.android.launcher3.shortcuts.ShortcutInfoCompatBackport
 import com.bumptech.glide.Glide
 import ninja.sesame.lib.bridge.v1.SesameFrontend
 import ninja.sesame.lib.bridge.v1.SesameShortcut
 import java.lang.Exception
 
 // TODO: Half of the compat work here is probably not even needed anymore now that we treat these as legacy shortcuts
-class SesameShortcutInfo(private val context: Context, private val shortcut: SesameShortcut) : ShortcutInfoCompat(null) {
+class SesameShortcutInfo(private val context: Context, private val shortcut: SesameShortcut) : ShortcutInfoCompatBackport(null) {
 
     override fun makeIntent() = SesameFrontend.addPackageAuth(context, shortcut.actions[0].intent).putExtra(Sesame.EXTRA_TAG, true)
     override fun getShortcutInfo() = null

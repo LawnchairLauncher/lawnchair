@@ -52,6 +52,7 @@ $(call add-clean-step, rm -rf $(OUT_DIR)/target/common/obj/APPS/Launcher2_interm
 $(call add-clean-step, rm -rf $(PRODUCT_OUT)/system/app/Launcher2.apk)
 $(call add-clean-step, rm -rf $(OUT_DIR)/target/common/obj/APPS/Launcher2_intermediates)
 $(call add-clean-step, rm -rf $(PRODUCT_OUT)/system/app/Launcher2.apk)
+$(call add-clean-step, rm -rf $(PRODUCT_OUT)/system/priv-app/Launcher3QuickStep)
 
 # ************************************************
 # NEWER CLEAN STEPS MUST BE AT THE END OF THE LIST

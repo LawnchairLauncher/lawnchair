@@ -2,16 +2,15 @@ package ch.deletescape.lawnchair.globalsearch.ui
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
-import android.support.v7.preference.PreferenceDialogFragmentCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckedTextView
+import androidx.appcompat.app.AlertDialog
+import androidx.preference.PreferenceDialogFragmentCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
@@ -74,9 +73,7 @@ class SelectSearchProviderFragment : PreferenceDialogFragmentCompat() {
             val text = itemView.findViewById<CheckedTextView>(android.R.id.text1)!!.apply {
                 setOnClickListener(this@Holder)
                 val tintList = ColorStateList.valueOf(ColorEngine.getInstance(context).accent)
-                if (Utilities.ATLEAST_MARSHMALLOW) {
-                    compoundDrawableTintList = tintList
-                }
+                compoundDrawableTintList = tintList
                 backgroundTintList = tintList
             }
 

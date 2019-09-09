@@ -28,21 +28,21 @@ import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
-import android.support.design.widget.TextInputLayout
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.widget.AppCompatEditText
 import android.view.View
 import android.widget.*
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.lawnchairApp
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import ch.deletescape.lawnchair.theme.ThemeManager
 import com.android.launcher3.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -102,7 +102,7 @@ class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnColorChangeListe
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                                                                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 Snackbar.make(findViewById(R.id.content), R.string.read_external_storage_required,
                         Snackbar.LENGTH_SHORT).show()
             }
@@ -171,7 +171,7 @@ class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnColorChangeListe
                 val takeFlags = intent.flags and
                         (Intent.FLAG_GRANT_READ_URI_PERMISSION or
                                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-                contentResolver.takePersistableUriPermission(resultData.data, takeFlags)
+                contentResolver.takePersistableUriPermission(resultData.data!!, takeFlags)
                 backupUri = resultData.data
                 startBackup()
             }
@@ -227,6 +227,11 @@ class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnColorChangeListe
     @SuppressLint("StaticFieldLeak")
     private inner class CreateBackupTask(val context: Context) : AsyncTask<Void, Void, Exception?>() {
 
+        var includeHomescreen = false
+        var includeSettings = false
+        var includeWallpaper = false
+        lateinit var backupNameString: String
+
         override fun onPreExecute() {
             super.onPreExecute()
 
@@ -236,22 +241,27 @@ class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnColorChangeListe
             progress.visibility = View.VISIBLE
 
             inProgress = true
+
+            includeHomescreen = backupHomescreen.isChecked
+            includeSettings = backupSettings.isChecked
+            includeWallpaper = backupWallpaper.isChecked
+            backupNameString = backupName.text.toString()
         }
 
         override fun doInBackground(vararg params: Void?): Exception? {
             var contents = 0
-            if (backupHomescreen.isChecked) {
+            if (includeHomescreen) {
                 contents = contents or LawnchairBackup.INCLUDE_HOMESCREEN
             }
-            if (backupSettings.isChecked) {
+            if (includeSettings) {
                 contents = contents or LawnchairBackup.INCLUDE_SETTINGS
             }
-            if (backupWallpaper.isChecked) {
+            if (includeWallpaper) {
                 contents = contents or LawnchairBackup.INCLUDE_WALLPAPER
             }
             return LawnchairBackup.create(
                     context = context,
-                    name = backupName.text.toString(),
+                    name = backupNameString,
                     location = backupUri,
                     contents = contents
             )

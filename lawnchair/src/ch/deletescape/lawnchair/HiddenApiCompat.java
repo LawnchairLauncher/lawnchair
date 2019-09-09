@@ -26,8 +26,8 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.view.ThreadedRenderer;
+import androidx.annotation.RequiresApi;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -68,10 +68,6 @@ public class HiddenApiCompat {
         } catch (NoSuchMethodException e) {
             return false;
         }
-    }
-
-    public static boolean supportsMultiWindow(Context context) {
-        return ActivityManager.supportsMultiWindow(context);
     }
 
     public static boolean isResizeableMode(int mode) {

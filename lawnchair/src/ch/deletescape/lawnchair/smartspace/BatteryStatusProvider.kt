@@ -22,7 +22,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
-import android.support.annotation.Keep
+import androidx.annotation.Keep
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.Line
 import com.android.launcher3.R
 

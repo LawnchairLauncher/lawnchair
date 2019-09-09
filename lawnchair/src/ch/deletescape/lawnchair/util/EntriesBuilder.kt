@@ -18,7 +18,7 @@
 package ch.deletescape.lawnchair.util
 
 import android.content.Context
-import android.support.v7.preference.ListPreference
+import androidx.preference.ListPreference
 
 class EntriesBuilder(private val context: Context) {
 

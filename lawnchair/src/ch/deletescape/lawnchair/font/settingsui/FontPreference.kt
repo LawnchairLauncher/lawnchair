@@ -20,16 +20,12 @@ package ch.deletescape.lawnchair.font.settingsui
 import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
-import android.os.Bundle
-import android.support.v7.preference.Preference
-import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
 import android.widget.TextView
+import androidx.preference.PreferenceViewHolder
 import ch.deletescape.lawnchair.font.CustomFontManager
 import ch.deletescape.lawnchair.font.FontCache
 import ch.deletescape.lawnchair.settings.ui.BasePreference
-import ch.deletescape.lawnchair.settings.ui.ControlledPreference
-import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 
 open class FontPreference(context: Context, attrs: AttributeSet) : BasePreference(context, attrs),
         FontCache.Font.LoadCallback {

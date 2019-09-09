@@ -20,18 +20,18 @@ package ch.deletescape.lawnchair.settings.ui.search
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import com.android.launcher3.R
 import kotlinx.android.synthetic.main.activity_settings_search.*
-import android.support.v7.util.DiffUtil
 import android.text.TextUtils
 import android.view.MenuItem
 import android.widget.*
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY
@@ -152,7 +152,8 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
         }
 
         fun postSearchResults(newResults: List<SearchIndex.SettingsEntry>) {
-            val diffResult = DiffUtil.calculateDiff(SearchResultDiffCallback(searchResults, newResults))
+            val diffResult = DiffUtil
+                    .calculateDiff(SearchResultDiffCallback(searchResults, newResults))
             searchResults.clear()
             searchResults.addAll(newResults)
             diffResult.dispatchUpdatesTo(this)

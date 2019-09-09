@@ -19,7 +19,7 @@ package ch.deletescape.lawnchair.globalsearch.providers
 
 import android.content.*
 import android.graphics.drawable.Drawable
-import android.support.annotation.Keep
+import androidx.annotation.Keep
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.globalsearch.SearchProvider
 import com.android.launcher3.R

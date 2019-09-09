@@ -43,7 +43,6 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
     val hasBackGesture
         get() = pressBackGesture.handler !is BlankGestureHandler
     val verticalSwipeGesture by lazy { VerticalSwipeGesture(this) }
-    val navSwipeUpGesture by lazy { NavSwipeUpGesture(this) }
 
     var touchDownPoint = PointF()
 
@@ -142,7 +141,6 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
         }
 
         fun getGestureHandlers(context: Context, isSwipeUp: Boolean, hasBlank: Boolean) = mutableListOf(
-                SwitchAppsGestureHandler(context, null),
                 // BlankGestureHandler(context, null), -> Added in apply block
                 SleepGestureHandler(context, null),
                 SleepGestureHandlerTimeout(context, null),

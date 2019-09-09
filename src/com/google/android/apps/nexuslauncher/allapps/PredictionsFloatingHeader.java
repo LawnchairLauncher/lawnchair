@@ -56,8 +56,8 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mPredictionRowView = findViewById(R.id.prediction_row);
-        mActionsRowView = findViewById(R.id.actions_row);
+        // mPredictionRowView = findViewById(R.id.prediction_row);
+        // mActionsRowView = findViewById(R.id.actions_row);
         updateShowAllAppsLabel();
     }
 
@@ -121,6 +121,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         }
     }
 
+    /*
     @Override
     protected void applyScroll(int uncappedY, int currentY) {
         if (uncappedY < currentY - mHeaderTopPadding) {
@@ -140,6 +141,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         mPredictionRowView.setScrolledOut(false);
         mPredictionRowView.setScrollTranslation(translationY);
     }
+     */
 
     @Override
     public void setContentVisibility(boolean hasHeader, boolean hasContent, PropertySetter propertySetter, Interpolator interpolator) {
@@ -152,7 +154,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     }
 
     public void updateShowAllAppsLabel() {
-        setShowAllAppsLabel(Utilities.ATLEAST_MARSHMALLOW && Utilities.getLawnchairPrefs(getContext()).getShowAllAppsLabel());
+        setShowAllAppsLabel(Utilities.getLawnchairPrefs(getContext()).getShowAllAppsLabel());
     }
 
     public void setShowAllAppsLabel(boolean show) {

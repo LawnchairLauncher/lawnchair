@@ -6,22 +6,20 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.ColorUtils;
 import android.text.Layout;
 import android.text.Layout.Alignment;
 import android.text.StaticLayout.Builder;
 import android.text.TextPaint;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.LinearLayout;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 import ch.deletescape.lawnchair.allapps.PredictionsDividerLayout;
 import ch.deletescape.lawnchair.font.CustomFontManager;
 import ch.deletescape.lawnchair.font.FontLoader.FontReceiver;
@@ -31,9 +29,8 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
-import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
+import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
@@ -87,7 +84,7 @@ public class ActionsRowView extends PredictionsDividerLayout implements UpdateLi
                 ActionsRowView.this.mLauncher.getStateManager().goToState(LauncherState.NORMAL, true,
                         () -> {
                             mLauncher.getModelWriter().addItemToDatabase(
-                                    itemInfo2, -100, findSpaceOnWorkspace, iArr[0], iArr[1]);
+                                    itemInfo2, -100, (int) findSpaceOnWorkspace, iArr[0], iArr[1]);
                             List<ItemInfo> arrayList = new ArrayList<>();
                             arrayList.add(itemInfo2);
                             mLauncher.bindItems(arrayList, true);
@@ -128,7 +125,7 @@ public class ActionsRowView extends PredictionsDividerLayout implements UpdateLi
         if (this.mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             return (i - this.mLauncher.getAppsView().getActiveRecyclerView().getPaddingLeft()) - this.mLauncher.getAppsView().getActiveRecyclerView().getPaddingRight();
         }
-        View layout = this.mLauncher.getHotseat().getLayout();
+        View layout = this.mLauncher.getHotseat();
         return (i - layout.getPaddingLeft()) - layout.getPaddingRight();
     }
 
@@ -179,9 +176,10 @@ public class ActionsRowView extends PredictionsDividerLayout implements UpdateLi
         for (i = 0; i < getChildCount(); i++) {
             ActionView actionView2 = (ActionView) getChildAt(i);
             actionView2.reset();
-            if (min > i) {
+            if (min > i && false) {
                 actionView2.setVisibility(View.VISIBLE);
                 Action action = arrayList.get(i);
+                /*
                 ShortcutInfo shortcutInfo = action.shortcutInfo;
                 shortcutInfo.contentDescription = getContext().getString(R.string.suggested_action_content_description,
                         action.contentDescription, action.openingPackageDescription);
@@ -190,6 +188,7 @@ public class ActionsRowView extends PredictionsDividerLayout implements UpdateLi
                 if (TextUtils.isEmpty(actionView2.getText())) {
                     Log.e(TAG, "Empty ActionView text: action=" + action);
                 }
+                */
             } else {
                 actionView2.setVisibility(View.INVISIBLE);
                 actionView2.setAction(null, -1);

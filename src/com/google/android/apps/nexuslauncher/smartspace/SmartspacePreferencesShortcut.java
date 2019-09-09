@@ -20,7 +20,7 @@ public class SmartspacePreferencesShortcut extends OptionsPopupView.OptionItem {
         launcher.startActivitySafely(view, new Intent(launcher, SettingsActivity.class)
                 .putExtra(SettingsActivity.SubSettingsFragment.TITLE, launcher.getString(R.string.home_widget))
                 .putExtra(SettingsActivity.SubSettingsFragment.CONTENT_RES_ID, R.xml.lawnchair_smartspace_preferences)
-                .putExtra(SettingsActivity.SubSettingsFragment.HAS_PREVIEW, true), null);
+                .putExtra(SettingsActivity.SubSettingsFragment.HAS_PREVIEW, true), null, null);
         return true;
     }
 }

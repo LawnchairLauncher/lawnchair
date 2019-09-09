@@ -19,11 +19,8 @@ package com.android.launcher3.dragndrop;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.ColorFilter;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -36,7 +33,8 @@ import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
-import com.android.launcher3.graphics.BitmapRenderer;
+import com.android.launcher3.graphics.ShiftedBitmapDrawable;
+import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.util.Preconditions;
 
 /**
@@ -48,11 +46,15 @@ public class FolderAdaptiveIcon extends AdaptiveIconCompat {
 
     private final Drawable mBadge;
     private final Path mMask;
+    private final ConstantState mConstantState;
 
     private FolderAdaptiveIcon(Drawable bg, Drawable fg, Drawable badge, Path mask) {
         super(bg, fg);
         mBadge = badge;
         mMask = mask;
+
+        mConstantState = new MyConstantState(bg.getConstantState(), fg.getConstantState(),
+                badge.getConstantState(), mask);
     }
 
     @Override
@@ -65,7 +67,7 @@ public class FolderAdaptiveIcon extends AdaptiveIconCompat {
     }
 
     public static FolderAdaptiveIcon createFolderAdaptiveIcon(
-            Launcher launcher, long folderId, Point dragViewSize) {
+            Launcher launcher, int folderId, Point dragViewSize) {
         Preconditions.assertNonUiThread();
         int margin = launcher.getResources()
                 .getDimensionPixelSize(R.dimen.blur_size_medium_outline);
@@ -102,7 +104,7 @@ public class FolderAdaptiveIcon extends AdaptiveIconCompat {
         c.setBitmap(badgeBitmap);
         bg.drawShadow(c);
         bg.drawBackgroundStroke(c);
-        icon.drawBadge(c);
+        icon.drawDot(c);
 
         // Initialize preview
         final float sizeScaleFactor = 1 + 2 * AdaptiveIconCompat.getExtraInsetFraction();
@@ -134,38 +136,34 @@ public class FolderAdaptiveIcon extends AdaptiveIconCompat {
         return new FolderAdaptiveIcon(new ColorDrawable(bg.getBgColor()), foreground, badge, mask);
     }
 
-    /**
-     * A simple drawable which draws a bitmap at a fixed position irrespective of the bounds
-     */
-    private static class ShiftedBitmapDrawable extends Drawable {
+    @Override
+    public ConstantState getConstantState() {
+        return mConstantState;
+    }
 
-        private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
-        private final Bitmap mBitmap;
-        private final float mShiftX;
-        private final float mShiftY;
+    private static class MyConstantState extends ConstantState {
+        private final ConstantState mBg;
+        private final ConstantState mFg;
+        private final ConstantState mBadge;
+        private final Path mMask;
 
-        ShiftedBitmapDrawable(Bitmap bitmap, float shiftX, float shiftY) {
-            mBitmap = bitmap;
-            mShiftX = shiftX;
-            mShiftY = shiftY;
+        MyConstantState(ConstantState bg, ConstantState fg, ConstantState badge, Path mask) {
+            mBg = bg;
+            mFg = fg;
+            mBadge = badge;
+            mMask = mask;
         }
 
         @Override
-        public void draw(Canvas canvas) {
-            canvas.drawBitmap(mBitmap, mShiftX, mShiftY, mPaint);
+        public Drawable newDrawable() {
+            return new FolderAdaptiveIcon(mBg.newDrawable(), mFg.newDrawable(),
+                    mBadge.newDrawable(), mMask);
         }
 
         @Override
-        public void setAlpha(int i) { }
-
-        @Override
-        public void setColorFilter(ColorFilter colorFilter) {
-            mPaint.setColorFilter(colorFilter);
-        }
-
-        @Override
-        public int getOpacity() {
-            return PixelFormat.TRANSLUCENT;
+        public int getChangingConfigurations() {
+            return mBg.getChangingConfigurations() & mFg.getChangingConfigurations()
+                    & mBadge.getChangingConfigurations();
         }
     }
 }

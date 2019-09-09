@@ -18,12 +18,10 @@
 package ch.deletescape.lawnchair.settings.ui
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.os.Environment
-import android.support.design.widget.Snackbar
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -34,12 +32,8 @@ import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.getBooleanAttr
 import ch.deletescape.lawnchair.getColorAttr
 import ch.deletescape.lawnchair.getDimenAttr
-import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.util.parents
-import com.android.launcher3.Insettable
-import com.android.launcher3.InsettableFrameLayout
-import com.android.launcher3.R
-import com.android.launcher3.Utilities
+import com.android.launcher3.*
 import java.io.File
 
 @SuppressLint("ViewConstructor")
@@ -145,10 +139,6 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
     override fun onClick(v: View?) {
         if (tapCount == 6 && allowDevOptions()) {
             Utilities.getLawnchairPrefs(context).developerOptionsEnabled = true
-            Snackbar.make(
-                    findViewById(R.id.content),
-                    R.string.developer_options_enabled,
-                    Snackbar.LENGTH_LONG).show()
             tapCount++
         } else if (tapCount < 6) {
             tapCount++
@@ -191,7 +181,7 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
         private val insetsRect = RectF()
         private val contentRect = RectF()
 
-        private val dividerSize = Utilities.pxFromDp(1f, resources.displayMetrics).toFloat()
+        private val dividerSize = ResourceUtils.pxFromDp(1f, resources.displayMetrics).toFloat()
 
         override fun onAttachedToWindow() {
             super.onAttachedToWindow()

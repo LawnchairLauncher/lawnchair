@@ -96,7 +96,7 @@ public class DynamicClock extends BroadcastReceiver
                     }
                     if (layers.mSecondIndex < 0 || layers.mSecondIndex >= numberOfLayers) {
                         layers.mSecondIndex = -1;
-                    } else if (Utilities.ATLEAST_MARSHMALLOW) {
+                    } else {
                         layerDrawable.setDrawable(layers.mSecondIndex, null);
                         layers.mSecondIndex = -1;
                     }

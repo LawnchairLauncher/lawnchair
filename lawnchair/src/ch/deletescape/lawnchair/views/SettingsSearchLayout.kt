@@ -18,15 +18,9 @@
 package ch.deletescape.lawnchair.views
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Rect
-import android.support.v7.widget.CardView
 import android.util.AttributeSet
-import ch.deletescape.lawnchair.folder.FolderShape
 import com.android.launcher3.InsettableFrameLayout
-import com.android.launcher3.R
-import com.android.launcher3.Utilities
-import com.android.launcher3.graphics.IconShapeOverride
 
 class SettingsSearchLayout(context: Context, attrs: AttributeSet?) : InsettableFrameLayout(context, attrs) {
 

@@ -23,7 +23,7 @@ import android.content.res.Resources
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
-import android.support.v4.content.FileProvider
+import androidx.core.content.FileProvider
 import com.android.launcher3.BuildConfig
 
 import com.android.launcher3.R

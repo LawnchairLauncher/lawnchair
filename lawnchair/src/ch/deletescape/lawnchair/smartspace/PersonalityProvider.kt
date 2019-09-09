@@ -25,7 +25,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Handler
 import android.os.Looper
-import android.support.annotation.Keep
+import androidx.annotation.Keep
 import ch.deletescape.lawnchair.dayOfYear
 import ch.deletescape.lawnchair.hourOfDay
 import com.android.launcher3.R

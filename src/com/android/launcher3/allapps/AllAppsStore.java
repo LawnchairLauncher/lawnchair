@@ -20,12 +20,8 @@ import android.view.ViewGroup;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.PromiseAppInfo;
-import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.Workspace.ItemOperator;
-import com.android.launcher3.badge.FolderBadgeInfo;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
@@ -39,11 +35,20 @@ import java.util.List;
 import java.util.Set;
 import java.util.WeakHashMap;
 import org.jetbrains.annotations.Nullable;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * A utility class to maintain the collection of all apps.
  */
 public class AllAppsStore {
+
+    // Defer updates flag used to defer all apps updates to the next draw.
+    public static final int DEFER_UPDATES_NEXT_DRAW = 1 << 0;
+    // Defer updates flag used to defer all apps updates while the user interacts with all apps.
+    public static final int DEFER_UPDATES_USER_INTERACTION = 1 << 1;
+    // Defer updates flag used to defer all apps updates by a test's request.
+    public static final int DEFER_UPDATES_TEST = 1 << 2;
 
     private PackageUserKey mTempKey = new PackageUserKey(null, null);
     private final HashMap<ComponentKey, AppInfo> mComponentToAppMap = new HashMap<>();
@@ -51,7 +56,7 @@ public class AllAppsStore {
     private final ArrayList<ViewGroup> mIconContainers = new ArrayList<>();
     private final Set<FolderIcon> mFolderIcons = Collections.newSetFromMap(new WeakHashMap<>());
 
-    private boolean mDeferUpdates = false;
+    private int mDeferUpdatesFlags = 0;
     private boolean mUpdatePending = false;
 
     public Collection<AppInfo> getApps() {
@@ -80,15 +85,20 @@ public class AllAppsStore {
         return null;
     }
 
-    public void setDeferUpdates(boolean deferUpdates) {
-        if (mDeferUpdates != deferUpdates) {
-            mDeferUpdates = deferUpdates;
+    public void enableDeferUpdates(int flag) {
+        mDeferUpdatesFlags |= flag;
+    }
 
-            if (!mDeferUpdates && mUpdatePending) {
-                notifyUpdate();
-                mUpdatePending = false;
-            }
+    public void disableDeferUpdates(int flag) {
+        mDeferUpdatesFlags &= ~flag;
+        if (mDeferUpdatesFlags == 0 && mUpdatePending) {
+            notifyUpdate();
+            mUpdatePending = false;
         }
+    }
+
+    public int getDeferUpdatesFlags() {
+        return mDeferUpdatesFlags;
     }
 
     /**
@@ -113,7 +123,7 @@ public class AllAppsStore {
 
 
     private void notifyUpdate() {
-        if (mDeferUpdates) {
+        if (mDeferUpdatesFlags != 0) {
             mUpdatePending = true;
             return;
         }
@@ -145,12 +155,12 @@ public class AllAppsStore {
         mFolderIcons.add(folderIcon);
     }
 
-    public void updateIconBadges(Set<PackageUserKey> updatedBadges) {
+    public void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
         updateAllIcons((child) -> {
             if (child.getTag() instanceof ItemInfo) {
                 ItemInfo info = (ItemInfo) child.getTag();
-                if (mTempKey.updateFromItemInfo(info) && updatedBadges.contains(mTempKey)) {
-                    child.applyBadgeState(info, true /* animate */);
+                if (mTempKey.updateFromItemInfo(info) && updatedDots.test(mTempKey)) {
+                    child.applyDotState(info, true /* animate */);
                 }
             }
         });
@@ -158,9 +168,9 @@ public class AllAppsStore {
         Set<FolderIcon> foldersToUpdate = new HashSet<>();
         for (FolderIcon folderIcon : mFolderIcons) {
             folderIcon.getFolder().iterateOverItems((info, view) -> {
-                if (mTempKey.updateFromItemInfo(info) && updatedBadges.contains(mTempKey)) {
+                if (mTempKey.updateFromItemInfo(info) && updatedDots.test(mTempKey)) {
                     if (view instanceof BubbleTextView) {
-                        ((BubbleTextView) view).applyBadgeState(info, true);
+                        ((BubbleTextView) view).applyDotState(info, true);
                     }
                     foldersToUpdate.add(folderIcon);
                 }
@@ -169,7 +179,7 @@ public class AllAppsStore {
         }
 
         for (FolderIcon folderIcon : foldersToUpdate) {
-            folderIcon.updateIconBadges(updatedBadges, mTempKey);
+            folderIcon.updateIconDots(updatedDots, mTempKey);
         }
     }
 
@@ -181,7 +191,7 @@ public class AllAppsStore {
         });
     }
 
-    private void updateAllIcons(IconAction action) {
+    private void updateAllIcons(Consumer<BubbleTextView> action) {
         for (int i = mIconContainers.size() - 1; i >= 0; i--) {
             ViewGroup parent = mIconContainers.get(i);
             int childCount = parent.getChildCount();
@@ -189,7 +199,7 @@ public class AllAppsStore {
             for (int j = 0; j < childCount; j++) {
                 View child = parent.getChildAt(j);
                 if (child instanceof BubbleTextView) {
-                    action.apply((BubbleTextView) child);
+                    action.accept((BubbleTextView) child);
                 }
             }
         }
@@ -197,9 +207,5 @@ public class AllAppsStore {
 
     public interface OnUpdateListener {
         void onAppsUpdated();
-    }
-
-    public interface IconAction {
-        void apply(BubbleTextView icon);
     }
 }

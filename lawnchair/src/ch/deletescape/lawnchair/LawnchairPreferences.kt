@@ -43,6 +43,7 @@ import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.util.Temperature
 import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.*
+import com.android.launcher3.Utilities.makeComponentKey
 import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm
 import com.android.launcher3.util.ComponentKey
 import com.android.quickstep.OverviewInteractionState
@@ -95,7 +96,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val reloadIcons = { reloadIcons() }
     private val reloadIconPacks = { IconPackManager.getInstance(context).packList.reloadPacks() }
     private val reloadDockStyle = {
-        LauncherAppState.getIDP(context).onDockStyleChanged(this)
+        // TODO: implement this
+        // LauncherAppState.getIDP(context).onDockStyleChanged(this)
         recreate()
     }
 
@@ -171,9 +173,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     // Dock
     val dockStyles = DockStyle.StyleManager(this, reloadDockStyle, resetAllApps)
     val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", true, doNothing)
-    var dockSearchBarPref by BooleanPref(
-            "pref_dockSearchBar", Utilities.ATLEAST_MARSHMALLOW, recreate
-                                        )
+    var dockSearchBarPref by BooleanPref("pref_dockSearchBar", true, recreate)
     inline val dockSearchBar get() = !dockHide && dockSearchBarPref
     val dockRadius get() = dockStyles.currentStyle.radius
     val dockShadow get() = dockStyles.currentStyle.enableShadow
@@ -268,7 +268,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     var swipeUpToSwitchApps by BooleanPref("pref_swipe_up_to_switch_apps_enabled", true, doNothing)
     val recentsRadius by DimensionPref("pref_recents_radius", context.resources.getInteger(R.integer.task_corner_radius).toFloat(), doNothing)
     val swipeLeftToGoBack by BooleanPref("pref_swipe_left_to_go_back", false) {
-        OverviewInteractionState.getInstance(context).setBackButtonAlpha(1f, true)
+        OverviewInteractionState.INSTANCE.get(context).setBackButtonAlpha(1f, true)
     }
     val recentsBlurredBackground by BooleanPref("pref_recents_blur_background", true) {
         onChangeCallback?.launcher?.background?.onEnabledChanged()
@@ -305,13 +305,13 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     var hiddenPredictActionSet by StringSetPref(SettingsActivity.HIDDEN_ACTIONS_PREF, Collections.emptySet(), doNothing)
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadAll) {
         override fun flattenKey(key: ComponentKey) = key.toString()
-        override fun unflattenKey(key: String) = ComponentKey(context, key)
+        override fun unflattenKey(key: String) = makeComponentKey(context, key)
         override fun flattenValue(value: String) = value
         override fun unflattenValue(value: String) = value
     }
     val customAppIcon = object : MutableMapPref<ComponentKey, IconPackManager.CustomIconEntry>("pref_appIconMap", reloadAll) {
         override fun flattenKey(key: ComponentKey) = key.toString()
-        override fun unflattenKey(key: String) = ComponentKey(context, key)
+        override fun unflattenKey(key: String) = makeComponentKey(context, key)
         override fun flattenValue(value: IconPackManager.CustomIconEntry) = value.toString()
         override fun unflattenValue(value: String) = IconPackManager.CustomIconEntry.fromString(value)
     }

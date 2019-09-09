@@ -44,7 +44,7 @@ public class WallpaperColorInfoVL extends WallpaperColorInfo implements Wallpape
     WallpaperColorInfoVL(Context context) {
         mWallpaperManager = WallpaperManagerCompat.getInstance(context);
         mWallpaperManager.addOnColorsChangedListener(this);
-        mExtractionType = ColorExtractionAlgorithm.newInstance(context);
+        mExtractionType = ColorExtractionAlgorithm.newInstance();
         update(mWallpaperManager.getWallpaperColors(FLAG_SYSTEM));
     }
 

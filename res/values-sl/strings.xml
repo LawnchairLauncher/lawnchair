@@ -39,6 +39,7 @@
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Nalaganje aplikacij …"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Ni aplikacij, ki bi ustrezale poizvedbi »<xliff:g id="QUERY">%1$s</xliff:g>«"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Iskanje več aplikacij"</string>
+    <string name="label_application" msgid="8531721983832654978">"Aplikacija"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Obvestila"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Pridržite bližnjico, da jo izberete."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Dvakrat se dotaknite bližnjice in jo pridržite, da jo izberete, ali pa uporabite dejanja po meri."</string>
@@ -49,7 +50,7 @@
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Seznam delovnih aplikacij"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Začetni zaslon"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Odstrani"</string>
-    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Odstrani"</string>
+    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Odmesti"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Podatki o aplikaciji"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Namesti"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"namestitev bližnjic"</string>
@@ -64,11 +65,11 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"To je sistemska aplikacija in je ni mogoče odstraniti."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Neimenovana mapa"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> je onemogočena"</string>
-    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
-      <item quantity="one">Aplikacija <xliff:g id="APP_NAME_2">%1$s</xliff:g> ima <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> obvestilo</item>
-      <item quantity="two">Aplikacija <xliff:g id="APP_NAME_2">%1$s</xliff:g> ima <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> obvestili</item>
-      <item quantity="few">Aplikacija <xliff:g id="APP_NAME_2">%1$s</xliff:g> ima <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> obvestila</item>
-      <item quantity="other">Aplikacija <xliff:g id="APP_NAME_2">%1$s</xliff:g> ima <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> obvestil</item>
+    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
+      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g> ima <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> obvestilo</item>
+      <item quantity="two"><xliff:g id="APP_NAME_2">%1$s</xliff:g> ima <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> obvestili</item>
+      <item quantity="few"><xliff:g id="APP_NAME_2">%1$s</xliff:g> ima <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> obvestila</item>
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> ima <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> obvestil</item>
     </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Stran %1$d od %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Začetni zaslon %1$d od %2$d"</string>
@@ -81,27 +82,20 @@
     <string name="folder_name_format" msgid="6629239338071103179">"Mapa: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Pripomočki"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Ozadja"</string>
+    <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Slogi in ozadja"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Nastavitve začetnega zaslona"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Onemogočil skrbnik."</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Omogočanje sukanja začetnega zaslona"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Ko se telefon zasuka"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"Obvestilne pike"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"Vklopljeno"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"Izklopljeno"</string>
+    <string name="notification_dots_title" msgid="9062440428204120317">"Obvestilne pike"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Vklopljeno"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Izklopljeno"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Potreben je dostop do obvestil"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Za prikaz obvestilnih pik vklopite obvestila aplikacije <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Spremeni nastavitve"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"Pokaži obvestilne pike"</string>
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"Pokaži obvestilne pike"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Dodaj ikono na začetni zaslon"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Za nove aplikacije"</string>
-    <string name="icon_shape_override_label" msgid="2977264953998281004">"Spremeni obliko ikon"</string>
-    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"na začetnem zaslonu"</string>
-    <string name="icon_shape_system_default" msgid="1709762974822753030">"Uporabi privzeto nastavitev sistema"</string>
-    <string name="icon_shape_square" msgid="633575066111622774">"Kvadrat"</string>
-    <string name="icon_shape_squircle" msgid="5658049910802669495">"Zaobljen kvadrat"</string>
-    <string name="icon_shape_circle" msgid="6550072265930144217">"Krog"</string>
-    <string name="icon_shape_teardrop" msgid="4525869388200835463">"Solza"</string>
-    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Uveljavljanje spremenjene oblike ikon"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Neznano"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Odstrani"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Iskanje"</string>
@@ -116,6 +110,7 @@
     <string name="action_move_here" msgid="2170188780612570250">"Premik elementa sem"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Element je bil dodan na začetni zaslon"</string>
     <string name="item_removed" msgid="851119963877842327">"Element je bil odstranjen"</string>
+    <string name="undo" msgid="4151576204245173321">"Razveljavi"</string>
     <string name="action_move" msgid="4339390619886385032">"Premik elementa"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"Premik v <xliff:g id="NUMBER_0">%1$s</xliff:g>. vrstico <xliff:g id="NUMBER_1">%2$s</xliff:g>. stolpca"</string>
     <string name="move_to_position" msgid="6750008980455459790">"Premk na mesto št. <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
@@ -170,4 +165,5 @@
     <string name="work_mode_off_label" msgid="3194894777601421047">"Obvestila in aplikacije – izklopljeno"</string>
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Zapri"</string>
     <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Zaprto"</string>
+    <string name="remote_action_failed" msgid="1383965239183576790">"Ni uspelo: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

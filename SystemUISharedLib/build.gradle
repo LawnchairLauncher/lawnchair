@@ -1,0 +1,65 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion BUILD_TOOLS_VERSION
+
+
+    defaultConfig {
+        minSdkVersion 26
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "quickstepTarget"
+
+    productFlavors {
+        pie {
+            dimension "quickstepTarget"
+        }
+
+        ten {
+            dimension "quickstepTarget"
+        }
+    }
+
+    sourceSets {
+        pie {
+            aidl.srcDirs = ['src/pie/java']
+        }
+        ten {
+            aidl.srcDirs = ['src/ten/java']
+        }
+    }
+
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            if (name.contains("Pie")) {
+                options.compilerArgs.add('-Xbootclasspath/p:prebuilts/libs/framework_pie.jar')
+            } else {
+                options.compilerArgs.add('-Xbootclasspath/p:prebuilts/libs/framework.jar')
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation fileTree(dir: "../prebuilts/libs", include: 'plugin_core.jar')
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+}

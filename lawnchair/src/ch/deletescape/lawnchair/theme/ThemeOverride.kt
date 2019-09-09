@@ -149,7 +149,7 @@ class ThemeOverride(private val themeSet: ThemeSet, val listener: ThemeOverrideL
 
         fun getTheme(themeFlags: Int): Int {
             val isDark = ThemeManager.isDark(themeFlags)
-            val isDarkText = ThemeManager.isDarkText(themeFlags) && Utilities.ATLEAST_MARSHMALLOW
+            val isDarkText = ThemeManager.isDarkText(themeFlags)
             val isBlack = isDark && ThemeManager.isBlack(themeFlags)
             return when {
                 isBlack && isDarkText -> blackDarkTextTheme

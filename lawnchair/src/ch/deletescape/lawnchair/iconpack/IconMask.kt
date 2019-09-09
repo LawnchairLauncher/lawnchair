@@ -24,7 +24,7 @@ import ch.deletescape.lawnchair.toBitmap
 import com.android.launcher3.FastBitmapDrawable
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
-import com.android.launcher3.graphics.FixedScaleDrawable
+import com.android.launcher3.icons.FixedScaleDrawable
 
 class IconMask {
     val hasMask by lazy { validBacks.isNotEmpty() || validMasks.isNotEmpty() || validUpons.isNotEmpty() }

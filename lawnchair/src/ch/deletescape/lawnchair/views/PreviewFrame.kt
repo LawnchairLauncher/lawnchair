@@ -52,40 +52,38 @@ class PreviewFrame(context: Context, attrs: AttributeSet?) :
 
     override fun onLongClick(v: View): Boolean {
         childs.filterIsInstance<CustomWidgetPreview>().firstOrNull()?.also {
-            if (Utilities.ATLEAST_NOUGAT) {
-                val provider = it.provider
-                val bounds = clipBounds
-                val listener = CustomWidgetDragListener(provider, bounds,
-                        width, width)
+            val provider = it.provider
+            val bounds = clipBounds
+            val listener = CustomWidgetDragListener(provider, bounds,
+                    width, width)
 
-                val homeIntent = listener.addToIntent(
-                        Intent(Intent.ACTION_MAIN)
-                                .addCategory(Intent.CATEGORY_HOME)
-                                .setPackage(context.packageName)
-                                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            val homeIntent = listener.addToIntent(
+                    Intent(Intent.ACTION_MAIN)
+                            .addCategory(Intent.CATEGORY_HOME)
+                            .setPackage(context.packageName)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
 
-                listener.initWhenReady()
-                context.startActivity(
-                        homeIntent,
-                        ActivityOptions.makeCustomAnimation(
-                                context, 0, android.R.anim.fade_out).toBundle())
+            listener.initWhenReady()
+            context.startActivity(
+                    homeIntent,
+                    ActivityOptions.makeCustomAnimation(
+                            context, 0, android.R.anim.fade_out).toBundle())
 
-                // Start a system drag and drop. We use a transparent bitmap as preview for system drag
-                // as the preview is handled internally by launcher.
-                val description = ClipDescription("", arrayOf(listener.mimeType))
-                val data = ClipData(description, ClipData.Item(""))
-                startDragAndDrop(data, object : DragShadowBuilder(this) {
+            // Start a system drag and drop. We use a transparent bitmap as preview for system drag
+            // as the preview is handled internally by launcher.
+            val description = ClipDescription("", arrayOf(listener.mimeType))
+            val data = ClipData(description, ClipData.Item(""))
+            startDragAndDrop(data, object : DragShadowBuilder(this) {
 
-                    override fun onDrawShadow(canvas: Canvas) {}
+                override fun onDrawShadow(canvas: Canvas) {}
 
-                    override fun onProvideShadowMetrics(
-                            outShadowSize: Point, outShadowTouchPoint: Point
-                                                       ) {
-                        outShadowSize.set(10, 10)
-                        outShadowTouchPoint.set(5, 5)
-                    }
-                }, null, View.DRAG_FLAG_GLOBAL)
-            }
+                override fun onProvideShadowMetrics(
+                        outShadowSize: Point, outShadowTouchPoint: Point
+                                                   ) {
+                    outShadowSize.set(10, 10)
+                    outShadowTouchPoint.set(5, 5)
+                }
+            }, null, View.DRAG_FLAG_GLOBAL)
         }
         return false
     }

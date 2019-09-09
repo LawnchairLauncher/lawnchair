@@ -22,8 +22,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.android.launcher3" >
 
-    <uses-sdk android:targetSdkVersion="28" android:minSdkVersion="28"/>
     <uses-permission android:name="android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS" />
+
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
         android:fullBackupOnly="true"
@@ -59,10 +59,10 @@
             android:resumeWhilePausing="true"
             android:taskAffinity="" />
 
-        <!-- Content provider to settings search -->
+        <!-- Content provider to settings search. The autority should be same as the packageName -->
         <provider
             android:name="com.android.quickstep.LauncherSearchIndexablesProvider"
-            android:authorities="${applicationId}"
+            android:authorities="${packageName}"
             android:grantUriPermissions="true"
             android:multiprocess="true"
             android:permission="android.permission.READ_SEARCH_INDEXABLES"
@@ -72,10 +72,21 @@
             </intent-filter>
         </provider>
 
-
         <service
             android:name="com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL$ColorExtractionService"
             tools:node="remove" />
+
+        <activity
+            android:name="com.android.launcher3.proxy.ProxyActivityStarter"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+            android:launchMode="singleTask"
+            android:clearTaskOnLaunch="true"
+            android:exported="false" />
+
+        <activity android:name="com.android.quickstep.LockScreenRecentsActivity"
+                  android:theme="@android:style/Theme.NoDisplay"
+                  android:showOnLockScreen="true"
+                  android:directBootAware="true" />
 
     </application>
 

@@ -16,7 +16,7 @@
   ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<android.support.v7.preference.PreferenceScreen
+<androidx.preference.PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -67,4 +67,4 @@
             android:icon="@android:color/transparent"
             android:title="@string/pref_fonts_drawer_tabs" />
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
-</android.support.v7.preference.PreferenceScreen>
+</androidx.preference.PreferenceScreen>

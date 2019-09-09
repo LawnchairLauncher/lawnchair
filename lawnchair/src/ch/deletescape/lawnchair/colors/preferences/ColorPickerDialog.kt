@@ -21,10 +21,10 @@ package ch.deletescape.lawnchair.colors.preferences
 import android.app.Dialog
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.os.Bundle
-import android.support.annotation.ColorInt
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AlertDialog
 import android.view.WindowManager
+import androidx.annotation.ColorInt
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import ch.deletescape.lawnchair.applyAccent
 import com.android.launcher3.R
 import me.priyesh.chroma.*

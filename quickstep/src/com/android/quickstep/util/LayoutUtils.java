@@ -20,13 +20,14 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.support.annotation.AnyThread;
-import android.support.annotation.IntDef;
-import ch.deletescape.lawnchair.LawnchairPreferences;
+
+import androidx.annotation.AnyThread;
+import androidx.annotation.IntDef;
+
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.uioverrides.OverviewState;
+import com.android.launcher3.config.FeatureFlags;
+
 import java.lang.annotation.Retention;
 
 public class LayoutUtils {
@@ -43,15 +44,7 @@ public class LayoutUtils {
         if (dp.isVerticalBarLayout()) {
             extraSpace = 0;
         } else {
-            LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
-            if (prefs.getShowPredictions()) {
-                Resources res = context.getResources();
-                int qsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
-                extraSpace = OverviewState.getDefaultSwipeHeight(dp)
-                        + qsbHeight + dp.verticalDragHandleSizePx;
-            } else {
-                extraSpace = dp.hotseatBarSizePx + dp.verticalDragHandleSizePx;
-            }
+            extraSpace = dp.hotseatBarSizePx + dp.verticalDragHandleSizePx;
         }
         calculateTaskSize(context, dp, extraSpace, MULTI_WINDOW_STRATEGY_HALF_SCREEN, outRect);
     }
@@ -109,14 +102,22 @@ public class LayoutUtils {
         float availableWidth = launcherVisibleWidth - paddingHorz;
 
         float scale = Math.min(availableWidth / taskWidth, availableHeight / taskHeight);
-        float outWidth = (float) Math.round(scale * taskWidth);
-        float outHeight = (float) Math.round(scale * taskHeight);
+        float outWidth = scale * taskWidth;
+        float outHeight = scale * taskHeight;
 
         // Center in the visible space
         float x = insets.left + (launcherVisibleWidth - outWidth) / 2;
         float y = insets.top + Math.max(topIconMargin,
                 (launcherVisibleHeight - extraVerticalSpace - outHeight) / 2);
         outRect.set(Math.round(x), Math.round(y),
-                Math.round(x + outWidth), Math.round(y + outHeight));
+                Math.round(x) + Math.round(outWidth), Math.round(y) + Math.round(outHeight));
+    }
+
+    public static int getShelfTrackingDistance(Context context, DeviceProfile dp) {
+        // Track the bottom of the window.
+        int shelfHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
+        int spaceBetweenShelfAndRecents = (int) context.getResources().getDimension(
+                R.dimen.task_card_vert_space);
+        return shelfHeight + spaceBetweenShelfAndRecents;
     }
 }

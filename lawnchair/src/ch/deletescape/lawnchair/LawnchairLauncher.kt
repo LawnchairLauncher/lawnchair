@@ -34,12 +34,11 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.ResultReceiver
-import android.support.v4.app.ActivityCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import ch.deletescape.lawnchair.animations.LawnchairAppTransitionManagerImpl
+import androidx.core.app.ActivityCompat
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.bugreport.BugReportClient
 import ch.deletescape.lawnchair.colors.ColorEngine
@@ -53,10 +52,8 @@ import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.views.LawnchairBackgroundView
 import ch.deletescape.lawnchair.views.OptionsPanel
 import com.android.launcher3.*
-import com.android.launcher3.uioverrides.OverviewState
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.SystemUiController
-import com.android.quickstep.views.LauncherRecentsView
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity
 import java.io.File
 import java.io.FileOutputStream
@@ -104,24 +101,9 @@ open class LawnchairLauncher : NexusLauncherActivity(),
         performSignatureVerification()
     }
 
-    override fun startActivitySafely(v: View?, intent: Intent, item: ItemInfo?): Boolean {
-        val success = super.startActivitySafely(v, intent, item)
-        if (success) {
-            (launcherAppTransitionManager as LawnchairAppTransitionManagerImpl)
-                    .playLaunchAnimation(this, v, intent)
-        }
-        return success
-    }
-
-    override fun onStart() {
-        super.onStart()
-        (launcherAppTransitionManager as LawnchairAppTransitionManagerImpl)
-                .overrideResumeAnimation(this)
-    }
-
     private fun performSignatureVerification() {
         if (!verifySignature()) {
-            val message = "The \"${BuildConfig.FLAVOR_build}\" build flavor is reserved for " +
+            val message = "The \"${BuildConfig.FLAVOR_dist}\" build flavor is reserved for " +
                     "official Lawnchair distributions only. Please do not use it.\n" +
                     "\n" +
                     "If you're a ROM developer and including Lawnchair in your ROM, please use " +
@@ -152,16 +134,6 @@ open class LawnchairLauncher : NexusLauncherActivity(),
             }
             return info.signatures.isNotEmpty()
         }
-    }
-
-    override fun finishBindingItems() {
-        super.finishBindingItems()
-        Utilities.onLauncherStart()
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        Utilities.onLauncherStart()
     }
 
     inline fun prepareDummyView(view: View, crossinline callback: (View) -> Unit) {
@@ -204,14 +176,6 @@ open class LawnchairLauncher : NexusLauncherActivity(),
                 systemUiController.updateUiState(SystemUiController.UI_STATE_BASE_WINDOW, resolveInfo.isDark)
             }
         }
-    }
-
-    override fun onBackPressed() {
-        if (isInState(LauncherState.OVERVIEW) && getOverviewPanel<LauncherRecentsView>().onBackPressed()) {
-            // Handled
-            return
-        }
-        super.onBackPressed()
     }
 
     override fun onResume() {
@@ -268,13 +232,13 @@ open class LawnchairLauncher : NexusLauncherActivity(),
     fun startEditIcon(itemInfo: ItemInfo, infoProvider: CustomInfoProvider<ItemInfo>) {
         val component: ComponentKey? = when (itemInfo) {
             is AppInfo -> itemInfo.toComponentKey()
-            is ShortcutInfo -> itemInfo.targetComponent?.let { ComponentKey(it, itemInfo.user) }
+            is WorkspaceItemInfo -> itemInfo.targetComponent?.let { ComponentKey(it, itemInfo.user) }
             is FolderInfo -> itemInfo.toComponentKey()
             else -> null
         }
         currentEditIcon = when (itemInfo) {
             is AppInfo -> IconPackManager.getInstance(this).getEntryForComponent(component!!)?.drawable
-            is ShortcutInfo -> BitmapDrawable(resources, itemInfo.iconBitmap)
+            is WorkspaceItemInfo -> BitmapDrawable(resources, itemInfo.iconBitmap)
             is FolderInfo -> itemInfo.getDefaultIcon(this)
             else -> null
         }
@@ -294,7 +258,8 @@ open class LawnchairLauncher : NexusLauncherActivity(),
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>?, grantResults: IntArray?) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
+                                            grantResults: IntArray) {
         if (requestCode == REQUEST_PERMISSION_STORAGE_ACCESS) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)){
                 AlertDialog.Builder(this)
@@ -318,15 +283,6 @@ open class LawnchairLauncher : NexusLauncherActivity(),
         BlurWallpaperProvider.getInstance(this).updateAsync()
     }
 
-    fun getShelfHeight(): Int {
-        return if (lawnchairPrefs.showPredictions) {
-            val qsbHeight = resources.getDimensionPixelSize(R.dimen.qsb_widget_height)
-            (OverviewState.getDefaultSwipeHeight(deviceProfile) + qsbHeight).toInt()
-        } else {
-            deviceProfile.hotseatBarSizePx
-        }
-    }
-
     override fun getSystemService(name: String): Any? {
         if (name == Context.LAYOUT_INFLATER_SERVICE) {
             return customLayoutInflater
@@ -336,6 +292,7 @@ open class LawnchairLauncher : NexusLauncherActivity(),
 
     fun shouldRecreate() = !sRestart
 
+    @Deprecated("Not used anymore")
     class Screenshot : LawnchairLauncher() {
 
         override val isScreenshotMode = true
@@ -344,12 +301,10 @@ open class LawnchairLauncher : NexusLauncherActivity(),
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
             super.onCreate(savedInstanceState)
-
-            findViewById<LauncherRootView>(R.id.launcher).setHideContent(true)
         }
 
-        override fun finishBindingItems() {
-            super.finishBindingItems()
+        override fun finishBindingItems(pageBoundFirst: Int) {
+            super.finishBindingItems(pageBoundFirst)
 
             findViewById<LauncherRootView>(R.id.launcher).post(::takeScreenshot)
         }
@@ -358,9 +313,7 @@ open class LawnchairLauncher : NexusLauncherActivity(),
             val rootView = findViewById<LauncherRootView>(R.id.launcher)
             val bitmap = Bitmap.createBitmap(rootView.width, rootView.height, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(bitmap)
-            rootView.setHideContent(false)
             rootView.draw(canvas)
-            rootView.setHideContent(true)
             val folder = File(filesDir, "tmp")
             folder.mkdirs()
             val file = File(folder, "screenshot.png")

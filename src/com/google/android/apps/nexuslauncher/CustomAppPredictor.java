@@ -1,5 +1,7 @@
 package com.google.android.apps.nexuslauncher;
 
+import static com.android.launcher3.Utilities.makeComponentKey;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -118,17 +120,17 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
     }
 
     @Override
-    public void logAppLaunch(View v, Intent intent, UserHandle user) {
-        super.logAppLaunch(v, intent, user);
+    public void logAppLaunch(View v, Intent intent) {
+        super.logAppLaunch(v, intent);
         if (isPredictorEnabled() && recursiveIsDrawer(v)) {
             ComponentName componentInfo = intent.getComponent();
-            if (componentInfo != null && mAppFilter.shouldShowApp(componentInfo, user)) {
+            if (componentInfo != null && mAppFilter.shouldShowApp(componentInfo, Process.myUserHandle())) {
                 clearNonExistingComponents();
                 
                 Set<String> predictionSet = getStringSetCopy();
                 SharedPreferences.Editor edit = mPrefs.edit();
 
-                String prediction = new ComponentKey(componentInfo, user).toString();
+                String prediction = new ComponentKey(componentInfo, Process.myUserHandle()).toString();
                 if (predictionSet.contains(prediction)) {
                     edit.putInt(PREDICTION_PREFIX + prediction, getLaunchCount(prediction) + BOOST_ON_OPEN);
                 } else if (predictionSet.size() < MAX_PREDICTIONS || decayHasSpotFree(predictionSet, edit)) {
@@ -210,7 +212,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
     }
 
     protected ComponentKeyMapper getComponentFromString(String str) {
-        return new ComponentKeyMapper(mContext, new ComponentKey(mContext, str));
+        return new ComponentKeyMapper(mContext, makeComponentKey(mContext, str));
     }
 
     private void clearNonExistingComponents() {
@@ -219,7 +221,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
 
         SharedPreferences.Editor edit = mPrefs.edit();
         for (String prediction : originalSet) {
-            ComponentName cn = new ComponentKey(mContext, prediction).componentName;
+            ComponentName cn = makeComponentKey(mContext, prediction).componentName;
             try {
                 mPackageManager.getActivityInfo(cn, 0);
             } catch (PackageManager.NameNotFoundException e) {

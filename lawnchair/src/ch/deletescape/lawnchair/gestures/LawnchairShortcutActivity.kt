@@ -21,13 +21,13 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.gestures.ui.HandlerListAdapter
 import ch.deletescape.lawnchair.gestures.ui.RunHandlerActivity
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.R
-import com.android.launcher3.graphics.LauncherIcons
+import com.android.launcher3.icons.LauncherIcons
 
 class LawnchairShortcutActivity : SettingsBaseActivity() {
     private var selectedHandler: GestureHandler? = null

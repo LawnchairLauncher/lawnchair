@@ -15,13 +15,20 @@
  */
 package com.android.launcher3.ui.widget;
 
+import static androidx.test.InstrumentationRegistry.getInstrumentation;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
-import android.support.test.filters.LargeTest;
-import android.support.test.runner.AndroidJUnit4;
-import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.UiObject2;
 import android.view.View;
+
+import androidx.test.filters.LargeTest;
+import androidx.test.runner.AndroidJUnit4;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.UiObject2;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
@@ -29,21 +36,17 @@ import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.testcomponent.WidgetConfigActivity;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
-import com.android.launcher3.util.rule.LauncherActivityRule;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.WidgetCell;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test to verify widget configuration is properly shown.
@@ -52,8 +55,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class AddConfigWidgetTest extends AbstractLauncherUiTest {
 
-    @Rule public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
-    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grandWidgetBind();
+    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
     private LauncherAppWidgetProviderInfo mWidgetInfo;
     private AppWidgetManager mAppWidgetManager;
@@ -64,26 +66,30 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        mWidgetInfo = findWidgetProvider(true /* hasConfigureScreen */);
+        mWidgetInfo = TestViewHelpers.findWidgetProvider(this, true /* hasConfigureScreen */);
         mAppWidgetManager = AppWidgetManager.getInstance(mTargetContext);
     }
 
     @Test
+    // Convert test to TAPL b/131116002
     public void testWidgetConfig() throws Throwable {
         runTest(false, true);
     }
 
     @Test
+    @Ignore // b/121280703
     public void testWidgetConfig_rotate() throws Throwable {
         runTest(true, true);
     }
 
     @Test
+    // Convert test to TAPL b/131116002
     public void testConfigCancelled() throws Throwable {
         runTest(false, false);
     }
 
     @Test
+    @Ignore // b/121280703
     public void testConfigCancelled_rotate() throws Throwable {
         runTest(true, false);
     }
@@ -99,14 +105,14 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
         mActivityMonitor.startLauncher();
 
         // Open widget tray and wait for load complete.
-        final UiObject2 widgetContainer = openWidgetsTray();
-        assertTrue(Wait.atMost(Condition.minChildCount(widgetContainer, 2), DEFAULT_UI_TIMEOUT));
+        final UiObject2 widgetContainer = TestViewHelpers.openWidgetsTray();
+        Wait.atMost(null, Condition.minChildCount(widgetContainer, 2), DEFAULT_UI_TIMEOUT);
 
         // Drag widget to homescreen
         WidgetConfigStartupMonitor monitor = new WidgetConfigStartupMonitor();
         UiObject2 widget = scrollAndFind(widgetContainer, By.clazz(WidgetCell.class)
                 .hasDescendant(By.text(mWidgetInfo.getLabel(mTargetContext.getPackageManager()))));
-        dragToWorkspace(widget, false);
+        TestViewHelpers.dragToWorkspace(widget, false);
         // Widget id for which the config activity was opened
         mWidgetId = monitor.getWidgetId();
 
@@ -122,21 +128,16 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
 
         setResult(acceptConfig);
         if (acceptConfig) {
-            assertTrue(Wait.atMost(new WidgetSearchCondition(), DEFAULT_ACTIVITY_TIMEOUT));
+            Wait.atMost(null, new WidgetSearchCondition(), DEFAULT_ACTIVITY_TIMEOUT);
             assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
         } else {
             // Verify that the widget id is deleted.
-            assertTrue(Wait.atMost(new Condition() {
-                @Override
-                public boolean isTrue() throws Throwable {
-                    return mAppWidgetManager.getAppWidgetInfo(mWidgetId) == null;
-                }
-            }, DEFAULT_ACTIVITY_TIMEOUT));
+            Wait.atMost(null, () -> mAppWidgetManager.getAppWidgetInfo(mWidgetId) == null,
+                    DEFAULT_ACTIVITY_TIMEOUT);
         }
     }
 
     private void setResult(boolean success) {
-
         getInstrumentation().getTargetContext().sendBroadcast(
                 WidgetConfigActivity.getCommandIntent(WidgetConfigActivity.class,
                         success ? "clickOK" : "clickCancel"));
@@ -145,8 +146,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
     /**
      * Condition for searching widget id
      */
-    private class WidgetSearchCondition extends Condition
-            implements Workspace.ItemOperator {
+    private class WidgetSearchCondition implements Condition, Workspace.ItemOperator {
 
         @Override
         public boolean isTrue() throws Throwable {
@@ -156,7 +156,8 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
         @Override
         public boolean evaluate(ItemInfo info, View view) {
             return info instanceof LauncherAppWidgetInfo &&
-                    ((LauncherAppWidgetInfo) info).providerName.equals(mWidgetInfo.provider) &&
+                    ((LauncherAppWidgetInfo) info).providerName.getClassName().equals(
+                            mWidgetInfo.provider.getClassName()) &&
                     ((LauncherAppWidgetInfo) info).appWidgetId == mWidgetId;
         }
     }

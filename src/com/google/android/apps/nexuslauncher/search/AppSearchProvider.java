@@ -11,9 +11,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import ch.deletescape.lawnchair.LawnchairAppFilter;
 import ch.deletescape.lawnchair.allapps.FuzzyAppSearchAlgorithm;
 import com.android.launcher3.AllAppsList;
@@ -207,13 +207,7 @@ public class AppSearchProvider extends ContentProvider
                 Log.d("AppSearchProvider", "Loading workspace failed");
                 return Collections.emptyList();
             }
-            final List<AppInfo> results = FuzzyAppSearchAlgorithm.query(mApp.getContext(), mQuery, mAllAppsList.data, getBaseFilter());
-            for (AppInfo appInfo : results) {
-                if (appInfo.usingLowResIcon) {
-                    mApp.getIconCache().getTitleAndIcon(appInfo, false);
-                }
-            }
-            return results;
+            return FuzzyAppSearchAlgorithm.query(mApp.getContext(), mQuery, mAllAppsList.data, getBaseFilter());
         }
 
         public void init(final LauncherAppState mApp, final LauncherModel mModel, final BgDataModel mBgDataModel, final AllAppsList mAllAppsList, final Executor executor) {

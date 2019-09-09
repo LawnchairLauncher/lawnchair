@@ -22,15 +22,12 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.util.Property
 import android.view.View
 import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
-import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.util.InvertedMultiValueAlpha
 import com.android.launcher3.Insettable
-import com.android.launcher3.Utilities
 
 class LawnchairBackgroundView(context: Context, attrs: AttributeSet) : View(context, attrs),
         Insettable, BlurWallpaperProvider.Listener {
@@ -45,15 +42,15 @@ class LawnchairBackgroundView(context: Context, attrs: AttributeSet) : View(cont
 
     private val blurDrawableCallback by lazy {
         object : Drawable.Callback {
-            override fun unscheduleDrawable(who: Drawable?, what: Runnable?) {
+            override fun unscheduleDrawable(who: Drawable, what: Runnable) {
 
             }
 
-            override fun invalidateDrawable(who: Drawable?) {
+            override fun invalidateDrawable(who: Drawable) {
                 runOnMainThread { invalidate() }
             }
 
-            override fun scheduleDrawable(who: Drawable?, what: Runnable?, `when`: Long) {
+            override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
 
             }
         }

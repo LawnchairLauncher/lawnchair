@@ -17,8 +17,8 @@
 
 package ch.deletescape.lawnchair.smartspace
 
-import android.support.annotation.Keep
 import android.text.TextUtils
+import androidx.annotation.Keep
 import ch.deletescape.lawnchair.util.Temperature
 
 @Keep

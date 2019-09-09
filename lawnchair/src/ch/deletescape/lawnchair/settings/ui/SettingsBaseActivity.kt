@@ -23,11 +23,11 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import ch.deletescape.lawnchair.LawnchairLayoutInflater
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.getBooleanAttr
@@ -69,12 +69,10 @@ open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnColorChange
         setSupportActionBar(toolbar)
 
         var flags = window.decorView.systemUiVisibility
-        if (Utilities.ATLEAST_MARSHMALLOW) {
-            val useLightBars = getBooleanAttr(R.attr.useLightSystemBars)
-            flags = Utilities.setFlag(flags, View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR, useLightBars)
-            if (Utilities.ATLEAST_OREO) {
-                flags = Utilities.setFlag(flags, View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR, useLightBars)
-            }
+        val useLightBars = getBooleanAttr(R.attr.useLightSystemBars)
+        flags = Utilities.setFlag(flags, View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR, useLightBars)
+        if (Utilities.ATLEAST_OREO) {
+            flags = Utilities.setFlag(flags, View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR, useLightBars)
         }
         flags = flags or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         flags = flags or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION

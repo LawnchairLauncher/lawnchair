@@ -22,8 +22,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.UserHandle;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
@@ -37,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 public abstract class AppWidgetManagerCompat {
 

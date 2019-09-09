@@ -51,9 +51,9 @@ public class NexusSecondaryDropTarget extends SecondaryDropTarget {
 
     @Override
     public boolean supportsAccessibilityDrop(ItemInfo info, View view) {
-        if (((ActionsRowView) this.mLauncher.findViewById(R.id.actions_row)).getAction(info) == null) {
-            return super.supportsAccessibilityDrop(info, view);
-        }
+        // if (((ActionsRowView) this.mLauncher.findViewById(R.id.actions_row)).getAction(info) == null) {
+        //     return super.supportsAccessibilityDrop(info, view);
+        // }
         setupUi(R.id.action_dismiss_suggestion);
         return true;
     }
@@ -64,6 +64,7 @@ public class NexusSecondaryDropTarget extends SecondaryDropTarget {
             return super.performDropAction(view, info);
         }
 
+        /*
         Action action = ((ActionsRowView) mLauncher.findViewById(R.id.actions_row)).getAction(info);
         LawnchairEventPredictor eventPredictor = (LawnchairEventPredictor) mLauncher
                 .getUserEventDispatcher();
@@ -73,6 +74,7 @@ public class NexusSecondaryDropTarget extends SecondaryDropTarget {
         } else {
             ActionsController.get(getContext()).onActionDismissed(action);
         }
+        */
         return null;
     }
 }

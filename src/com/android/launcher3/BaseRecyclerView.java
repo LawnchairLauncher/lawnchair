@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,6 +27,8 @@ import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
 import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import org.jetbrains.annotations.NotNull;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 
 /**
@@ -143,12 +144,12 @@ public abstract class BaseRecyclerView extends RecyclerView implements OnColorCh
      * @param ev MotionEvent in {@param eventSource}
      */
     public boolean shouldContainerScroll(MotionEvent ev, View eventSource) {
-        int[] point = new int[2];
-        point[0] = (int) ev.getX();
-        point[1] = (int) ev.getY();
+        float[] point = new float[2];
+        point[0] = ev.getX();
+        point[1] = ev.getY();
         Utilities.mapCoordInSelfToDescendant(mScrollbar, eventSource, point);
         // IF the MotionEvent is inside the thumb, container should not be pulled down.
-        if (mScrollbar.shouldBlockIntercept(point[0], point[1])) {
+        if (mScrollbar.shouldBlockIntercept((int) point[0], (int) point[1])) {
             return false;
         }
 

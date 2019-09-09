@@ -39,6 +39,7 @@
     <string name="all_apps_loading_message" msgid="5813968043155271636">"መተግበሪያዎችን በመጫን ላይ…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"ከ«<xliff:g id="QUERY">%1$s</xliff:g>» ጋር የሚዛመዱ ምንም መተግበሪያዎች አልተገኙም"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"ተጨማሪ መተግበሪያዎች ይፈልጉ"</string>
+    <string name="label_application" msgid="8531721983832654978">"መተግበሪያ"</string>
     <string name="notifications_header" msgid="1404149926117359025">"ማሳወቂያዎች"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"አንድ አቋራጭ ለመውሰድ ነክተው ይያዙ።"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"አንድ አቋራጭ ለመውሰድ ወይም ብጁ እርምጃዎችን ለመጠቀም ሁለቴ መታ አድርገው ይያዙ።"</string>
@@ -64,9 +65,9 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ይህ የስርዓት መተግበሪያ ነው እና ማራገፍ አይቻልም።"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"ስም-አልባ አቃፊ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ተሰናክሏል"</string>
-    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
-      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>፣ <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ማሳወቂያዎች አለው</item>
-      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>፣ <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ማሳወቂያዎች አለው</item>
+    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
+      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>፣ <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ማሳወቂያ አለው</item>
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>፣ <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ማሳወቂያ አለው</item>
     </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"ገጽ %1$d ከ%2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"መነሻ ማያ ገጽ %1$d ከ%2$d"</string>
@@ -79,27 +80,20 @@
     <string name="folder_name_format" msgid="6629239338071103179">"አቃፊ፦ <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"ፍርግሞች"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"የግድግዳ ወረቀቶች"</string>
+    <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"ቅጦች እና ልጣፎች"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"የመነሻ ቅንብሮች"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"በእርስዎ አስተዳዳሪ የተሰናከለ"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"የመነሻ ማያ ገጽ ማሽከርከርን ይፍቀዱ"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ስልኩ ሲዞር"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"የማሳወቂያ ነጥቦች"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"በርቷል"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"ጠፍቷል"</string>
+    <string name="notification_dots_title" msgid="9062440428204120317">"የማሳወቂያ ነጥቦች"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"አብራ"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"ጠፍቷል"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"የማሳወቂያ መዳረሻ ያስፈልጋል"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"የማሳወቂያ ነጥቦችን ለማሳየት የመተግብሪያ ማሳወቂያዎችን ለ<xliff:g id="NAME">%1$s</xliff:g> ያብሩ"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ቅንብሮችን ቀይር"</string>
-    <string name="icon_badging_service_title" msgid="2309733118428242174">"የማሳወቂያ ነጥቦችን አሳይ"</string>
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"የማሳወቂያ ነጥቦችን አሳይ"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"አዶ ወደ የመነሻ ማያ ገጽ አክል"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ለአዲስ መተግበሪያዎች"</string>
-    <string name="icon_shape_override_label" msgid="2977264953998281004">"የአዶ ቅርፅ ለውጥ"</string>
-    <string name="icon_shape_override_label_location" msgid="3841607380657692863">"በመነሻ ማያ ገጽ ላይ"</string>
-    <string name="icon_shape_system_default" msgid="1709762974822753030">"የሥርዓቱን ነባሪ ተጠቀም"</string>
-    <string name="icon_shape_square" msgid="633575066111622774">"ካሬ"</string>
-    <string name="icon_shape_squircle" msgid="5658049910802669495">"Squircle"</string>
-    <string name="icon_shape_circle" msgid="6550072265930144217">"ክብ"</string>
-    <string name="icon_shape_teardrop" msgid="4525869388200835463">"የእንባ ጠብታ"</string>
-    <string name="icon_shape_override_progress" msgid="3461735694970239908">"የአዶ ቅርች ለውጦች"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"የማይታወቅ"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"አስወግድ"</string>
     <string name="abandoned_search" msgid="891119232568284442">"ፈልግ"</string>
@@ -114,6 +108,7 @@
     <string name="action_move_here" msgid="2170188780612570250">"ንጥልን ወደዚህ ውሰድ"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"ወደ መነሻ ማያ ገጽ ንጥል ታክሏል"</string>
     <string name="item_removed" msgid="851119963877842327">"ንጥል ነገር ተንቀሳቅሷል"</string>
+    <string name="undo" msgid="4151576204245173321">"ቀልብስ"</string>
     <string name="action_move" msgid="4339390619886385032">"ንጥልን አንቀሳቅስ"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"ወደ ረድፍ <xliff:g id="NUMBER_0">%1$s</xliff:g> ዓምድ <xliff:g id="NUMBER_1">%2$s</xliff:g> አንቀሳቅስ"</string>
     <string name="move_to_position" msgid="6750008980455459790">"ወደ አቀማመጥ <xliff:g id="NUMBER">%1$s</xliff:g> አንቀሳቅስ"</string>
@@ -167,4 +162,5 @@
     <string name="work_mode_off_label" msgid="3194894777601421047">"ማሳወቂያዎች እና መተግበሪያዎች ጠፍተዋል"</string>
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"ዝጋ"</string>
     <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"ዝግ"</string>
+    <string name="remote_action_failed" msgid="1383965239183576790">"አልተሳካም፦ <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

@@ -1,24 +1,21 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
-import android.content.pm.PackageManager
 import android.provider.Settings
-import android.support.annotation.Keep
-import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Switch
+import androidx.annotation.Keep
 import ch.deletescape.lawnchair.applyColor
 import ch.deletescape.lawnchair.getColorEngineAccent
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.search.SearchIndex
-import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.Utilities
 import com.android.quickstep.OverviewInteractionState
-import com.android.systemui.shared.system.SettingsCompat
 
 class SwipeUpSwitchPreference(context: Context, attrs: AttributeSet? = null) : StyledSwitchPreferenceCompat(context, attrs) {
 
+    /* TODO: implement this for P
     private val secureOverrideMode = OverviewInteractionState.isSwipeUpSettingsAvailable()
     private val hasWriteSecurePermission = Utilities.hasWriteSecureSettingsPermission(context)
 
@@ -26,7 +23,7 @@ class SwipeUpSwitchPreference(context: Context, attrs: AttributeSet? = null) : S
         if (secureOverrideMode && !hasWriteSecurePermission) {
             isEnabled = false
         }
-        isChecked = OverviewInteractionState.getInstance(context).isSwipeUpGestureEnabled
+        isChecked = OverviewInteractionState.INSTANCE.get(context).isSwipeUpGestureEnabled
     }
 
     override fun onSetInitialValue(restoreValue: Boolean, defaultValue: Any?) {
@@ -55,7 +52,7 @@ class SwipeUpSwitchPreference(context: Context, attrs: AttributeSet? = null) : S
         override fun createSliceView(): View {
             return Switch(context).apply {
                 applyColor(context.getColorEngineAccent())
-                isChecked = OverviewInteractionState.getInstance(context).isSwipeUpGestureEnabled
+                isChecked = OverviewInteractionState.INSTANCE.get(context).isSwipeUpGestureEnabled
                 setOnCheckedChangeListener { _, isChecked ->
                     persistBoolean(isChecked)
                 }
@@ -76,10 +73,12 @@ class SwipeUpSwitchPreference(context: Context, attrs: AttributeSet? = null) : S
 
     companion object {
 
-        private const val securePrefName = SettingsCompat.SWIPE_UP_SETTING_NAME
+        private const val securePrefName = "swipe_up_to_switch_apps_enabled"
 
         @Keep
         @JvmStatic
         val sliceProvider = SearchIndex.SliceProvider.fromLambda(::SwipeUpSwitchSlice)
     }
+
+     */
 }

@@ -30,12 +30,12 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 
+import androidx.core.content.ContextCompat;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.icons.BitmapRenderer;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -149,7 +149,7 @@ public class ShadowDrawable extends Drawable {
             d.draw(canvas);
         }
 
-        if (Utilities.ATLEAST_OREO) {
+        if (BitmapRenderer.USE_HARDWARE_BITMAP) {
             bitmap = bitmap.copy(Bitmap.Config.HARDWARE, false);
         }
         mState.mLastDrawnBitmap = bitmap;

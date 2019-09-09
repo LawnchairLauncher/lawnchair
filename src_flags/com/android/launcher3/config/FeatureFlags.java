@@ -21,12 +21,6 @@ package com.android.launcher3.config;
  */
 public final class FeatureFlags extends BaseFlags {
 
-    // When enabled, icons not supporting {@link AdaptiveIconDrawable} will be wrapped in {@link FixedScaleDrawable}.
-    public static final boolean LEGACY_ICON_TREATMENT = true;
-
-    // When enabled, app shortcuts are extracted from the package XML.
-    public static final boolean LAUNCHER3_BACKPORT_SHORTCUTS = true;
-
     // Feature flag to enable moving the QSB on the 0th screen of the workspace.
     public static final boolean QSB_ON_FIRST_SCREEN = false;
 
@@ -34,5 +28,7 @@ public final class FeatureFlags extends BaseFlags {
 
     public static boolean FORCE_FEED_BRIDGE = false;
 
-    private FeatureFlags() {}
+    private FeatureFlags() {
+        // Prevent instantiation
+    }
 }

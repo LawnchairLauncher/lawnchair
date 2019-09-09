@@ -4,10 +4,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.UserHandle;
 
-public class AppFilter {
+import com.android.launcher3.util.ResourceBasedOverride;
+
+public class AppFilter implements ResourceBasedOverride {
 
     public static AppFilter newInstance(Context context) {
-        return Utilities.getOverrideObject(AppFilter.class, context, R.string.app_filter_class);
+        return Overrides.getObject(AppFilter.class, context, R.string.app_filter_class);
     }
 
     public boolean shouldShowApp(ComponentName app, UserHandle user) {

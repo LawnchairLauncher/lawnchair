@@ -20,7 +20,7 @@ package ch.deletescape.lawnchair.preferences
 import android.content.Context
 import android.util.AttributeSet
 import ch.deletescape.lawnchair.settings.ui.ControlledPreference
-import android.support.v7.preference.Preference as SupportPreference
+import androidx.preference.Preference as SupportPreference
 
 class Preference(context: Context, attrs: AttributeSet?) : SupportPreference(context, attrs),
         ControlledPreference by ControlledPreference.Delegate(context, attrs)

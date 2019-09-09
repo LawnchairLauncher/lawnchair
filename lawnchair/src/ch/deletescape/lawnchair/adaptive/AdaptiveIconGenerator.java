@@ -27,20 +27,21 @@ import android.graphics.Color;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 import android.util.SparseIntArray;
+import androidx.annotation.NonNull;
+import androidx.core.graphics.ColorUtils;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider;
 
 import com.android.launcher3.Utilities;
-import com.android.launcher3.graphics.ColorExtractor;
-import com.android.launcher3.graphics.FixedScaleDrawable;
-import com.android.launcher3.graphics.IconNormalizer;
-import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.icons.ColorExtractor;
+import com.android.launcher3.icons.FixedScaleDrawable;
+import com.android.launcher3.icons.IconNormalizer;
+import com.android.launcher3.icons.LauncherIcons;
 
+// TODO: fix this
 // TODO: Make this thing async somehow (maybe using some drawable wrappers?)
 public class AdaptiveIconGenerator {
 
@@ -98,10 +99,10 @@ public class AdaptiveIconGenerator {
                 }
                 AdaptiveIconCompat aid = (AdaptiveIconCompat) icon;
                 // we still check this seperately as this is the only information we need from the background
-                if (!ColorExtractor.isSingleColor(aid.getBackground(), Color.WHITE)) {
-                    onExitLoop();
-                    return;
-                }
+                // if (!ColorExtractor.isSingleColor(aid.getBackground(), Color.WHITE)) {
+                //     onExitLoop();
+                //     return;
+                // }
                 isBackgroundWhite = true;
                 extractee = aid.getForeground();
             }
@@ -120,7 +121,7 @@ public class AdaptiveIconGenerator {
             RectF bounds = new RectF();
 
             initTmpIfNeeded();
-            scale = normalizer.getScale(extractee, bounds, tmp.getIconMask(), outShape, MIN_VISIBLE_ALPHA);
+            scale = normalizer.getScale(extractee, bounds, tmp.getIconMask(), outShape);
             matchesMaskShape = outShape[0];
 
             if (extractee instanceof ColorDrawable) {
@@ -200,7 +201,7 @@ public class AdaptiveIconGenerator {
                     continue;
                 }
                 // Reduce color complexity.
-                int rgb = ColorExtractor.posterize(pixel);
+                int rgb = pixel; //ColorExtractor.posterize(pixel);
                 if (rgb < 0) {
                     // Defensively avoid array bounds violations.
                     continue;
@@ -307,9 +308,11 @@ public class AdaptiveIconGenerator {
     }
 
     public Drawable getResult() {
+        /*
         if (!ranLoop) {
             loop();
         }
-        return result;
+         */
+        return icon;
     }
 }

@@ -21,8 +21,6 @@ import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,8 +32,6 @@ import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
 import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
 import ch.deletescape.lawnchair.preferences.DrawerTabEditBottomSheet;
-import ch.deletescape.lawnchair.groups.DrawerTabs;
-import ch.deletescape.lawnchair.groups.DrawerTabs.CustomTab;
 import ch.deletescape.lawnchair.views.ColoredButton;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -43,6 +39,9 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.util.Themes;
 import org.jetbrains.annotations.NotNull;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Supports two indicator colors, dedicated for personal and work tabs.
@@ -53,7 +52,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     private static final int POSITION_PERSONAL = 0;
     private static final int POSITION_WORK = 1;
 
-    private static final String KEY_SHOWED_PEEK_WORK_TAB = "showed_peek_work_tab";
+    public static final String KEY_SHOWED_PEEK_WORK_TAB = "showed_peek_work_tab";
 
     private final Paint mSelectedIndicatorPaint;
     private final Paint mDividerPaint;

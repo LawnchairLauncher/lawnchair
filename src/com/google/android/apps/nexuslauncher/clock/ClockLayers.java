@@ -9,8 +9,8 @@ import android.graphics.drawable.LayerDrawable;
 import android.os.Process;
 import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.graphics.LauncherIcons;
 
+import com.android.launcher3.icons.LauncherIcons;
 import java.util.Calendar;
 import java.util.TimeZone;
 

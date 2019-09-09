@@ -19,17 +19,17 @@ package ch.deletescape.lawnchair.groups
 
 import android.content.Context
 import android.os.Process
-import com.android.launcher3.ShortcutInfo
+import com.android.launcher3.WorkspaceItemInfo
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.util.LabelComparator
 
-class ShortcutInfoComparator(context: Context) : Comparator<ShortcutInfo> {
+class ShortcutInfoComparator(context: Context) : Comparator<WorkspaceItemInfo> {
 
     private val userManager = UserManagerCompat.getInstance(context)
     private val myUser = Process.myUserHandle()
     private val labelComparator = LabelComparator()
 
-    override fun compare(a: ShortcutInfo, b: ShortcutInfo): Int {
+    override fun compare(a: WorkspaceItemInfo, b: WorkspaceItemInfo): Int {
         // Order by the title in the current locale
         val result = labelComparator.compare(a.title.toString(), b.title.toString())
         if (result != 0) {

@@ -43,6 +43,28 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
 
+
+    <!--
+    Permissions required for read/write access to the workspace data. These permission name
+    should not conflict with that defined in other apps, as such an app should embed its package
+    name in the permissions. eq com.mypackage.permission.READ_SETTINGS
+    -->
+    <permission
+        android:name="${packageName}.permission.READ_SETTINGS"
+        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
+        android:protectionLevel="signatureOrSystem"
+        android:label="@string/permlab_read_settings"
+        android:description="@string/permdesc_read_settings"/>
+    <permission
+        android:name="${packageName}.permission.WRITE_SETTINGS"
+        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
+        android:protectionLevel="signatureOrSystem"
+        android:label="@string/permlab_write_settings"
+        android:description="@string/permdesc_write_settings"/>
+
+    <uses-permission android:name="${packageName}.permission.READ_SETTINGS" />
+    <uses-permission android:name="${packageName}.permission.WRITE_SETTINGS" />
+
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
         android:fullBackupOnly="true"
@@ -87,8 +109,8 @@
 
         <service
             android:name="com.android.launcher3.notification.NotificationListener"
-            android:label="@string/icon_badging_service_title"
-            android:enabled="@bool/notification_badging_enabled"
+            android:label="@string/notification_dots_service_title"
+            android:enabled="@bool/notification_dots_enabled"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
@@ -99,7 +121,7 @@
             android:value="true" />
 
         <activity android:name="com.android.launcher3.dragndrop.AddItemActivity"
-            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog.Alert"
+            android:theme="@style/AppItemActivityTheme"
             android:excludeFromRecents="true"
             android:autoRemoveFromRecents="true"
             android:label="@string/action_add_to_workspace" >
@@ -117,5 +139,48 @@
             android:name="com.android.launcher3.launcher_dump_provider"
             android:value="com.android.launcher3.LauncherProvider" />
 
+        <!--
+        The settings provider contains Home's data, like the workspace favorites. The permissions
+        should be changed to what is defined above. The authorities should also be changed to
+        represent the package name.
+        -->
+        <provider
+            android:name="com.android.launcher3.LauncherProvider"
+            android:authorities="${packageName}.settings"
+            android:exported="true"
+            android:writePermission="${packageName}.permission.WRITE_SETTINGS"
+            android:readPermission="${packageName}.permission.READ_SETTINGS" />
+
+        <!--
+        The content provider for exposing various launcher grid options.
+        TODO: Add proper permissions
+        -->
+        <provider
+            android:name="com.android.launcher3.graphics.GridOptionsProvider"
+            android:authorities="${packageName}.grid_control"
+            android:enabled="false"
+            android:exported="true" />
+
+        <!--
+        The settings activity. To extend point settings_fragment_name to appropriate fragment class
+        -->
+        <activity
+            android:name="com.android.launcher3.settings.SettingsActivity"
+            android:label="@string/settings_button_text"
+            android:theme="@android:style/Theme.DeviceDefault.Settings"
+            android:autoRemoveFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <provider
+            android:name="com.android.launcher3.testing.TestInformationProvider"
+            android:authorities="${packageName}.TestInfo"
+            android:readPermission="android.permission.WRITE_SECURE_SETTINGS"
+            android:writePermission="android.permission.WRITE_SECURE_SETTINGS"
+            android:exported="true"
+            android:enabled="false" />
     </application>
 </manifest>

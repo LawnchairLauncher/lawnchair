@@ -38,7 +38,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.anim.Interpolators;
@@ -178,9 +178,9 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     /**
      * Binds items to the layout.
      */
-    public void bindItems(ArrayList<ShortcutInfo> items) {
+    public void bindItems(ArrayList<WorkspaceItemInfo> items) {
         ArrayList<View> icons = new ArrayList<>();
-        for (ShortcutInfo item : items) {
+        for (WorkspaceItemInfo item : items) {
             icons.add(createNewView(item));
         }
         arrangeChildren(icons, icons.size(), false);
@@ -203,7 +203,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         return rank;
     }
 
-    public View createAndAddViewForRank(ShortcutInfo item, int rank) {
+    public View createAndAddViewForRank(WorkspaceItemInfo item, int rank) {
         View icon = createNewView(item);
         allocateSpaceForRank(rank);
         addViewForRank(icon, item, rank);
@@ -214,7 +214,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
      * Adds the {@param view} to the layout based on {@param rank} and updated the position
      * related attributes. It assumes that {@param item} is already attached to the view.
      */
-    public void addViewForRank(View view, ShortcutInfo item, int rank) {
+    public void addViewForRank(View view, WorkspaceItemInfo item, int rank) {
         int pagePos = rank % mMaxItemsPerPage;
         int pageNo = rank / mMaxItemsPerPage;
 
@@ -225,16 +225,16 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
         lp.cellX = item.cellX;
         lp.cellY = item.cellY;
-        getPageAt(pageNo).addViewToCellLayout(
-                view, -1, mFolder.mLauncher.getViewIdForItem(item), lp, true);
+        getPageAt(pageNo).addViewToCellLayout(view, -1, item.getViewId(), lp, true);
     }
 
     @SuppressLint("InflateParams")
-    public View createNewView(ShortcutInfo item) {
+    public View createNewView(WorkspaceItemInfo item) {
         int layout = mFolder.isInAppDrawer() ? R.layout.all_apps_folder_application
                 : R.layout.folder_application;
-        final BubbleTextView textView = (BubbleTextView) mInflater.inflate(layout, null, false);
-        textView.applyFromShortcutInfo(item);
+        final BubbleTextView textView = (BubbleTextView) mInflater.inflate(
+                layout, null, false);
+        textView.applyFromWorkspaceItem(item);
         textView.setHapticFeedbackEnabled(false);
         textView.setOnClickListener(ItemClickHandler.INSTANCE);
         textView.setOnLongClickListener(mFolder);
@@ -258,7 +258,9 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
         CellLayout page = (CellLayout) mInflater.inflate(R.layout.folder_page, this, false);
         if (mFolder.isInAppDrawer()) {
-            page.setCellDimensions(grid.allAppsFolderCellWidthPx, grid.allAppsFolderCellHeightPx);
+            // TODO: implement this
+            // page.setCellDimensions(grid.allAppsFolderCellWidthPx, grid.allAppsFolderCellHeightPx);
+            page.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
         } else {
             page.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
         }
@@ -327,6 +329,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
 
         FolderIconPreviewVerifier verifier = new FolderIconPreviewVerifier(
                 Launcher.getLauncher(getContext()).getDeviceProfile().inv);
+        verifier.setFolderInfo(mFolder.getInfo());
         rank = 0;
         for (int i = 0; i < itemCount; i++) {
             View v = list.size() > i ? list.get(i) : null;
@@ -356,8 +359,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
                 }
                 lp.cellX = info.cellX;
                 lp.cellY = info.cellY;
-                currentPage.addViewToCellLayout(
-                        v, -1, mFolder.mLauncher.getViewIdForItem(info), lp, true);
+                currentPage.addViewToCellLayout(v, -1, info.getViewId(), lp, true);
 
                 if (verifier.isItemInPreview(rank) && v instanceof BubbleTextView) {
                     ((BubbleTextView) v).verifyHighRes();
@@ -498,7 +500,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         int delta = scroll - getScrollX();
         if (delta != 0) {
             mScroller.setInterpolator(Interpolators.DEACCEL);
-            mScroller.startScroll(getScrollX(), 0, delta, 0, Folder.SCROLL_HINT_DURATION);
+            mScroller.startScroll(getScrollX(), delta, Folder.SCROLL_HINT_DURATION);
             invalidate();
         }
     }
@@ -637,7 +639,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
             if (v != null) {
                 if (pageToAnimate != p) {
                     page.removeView(v);
-                    addViewForRank(v, (ShortcutInfo) v.getTag(), moveStart);
+                    addViewForRank(v, (WorkspaceItemInfo) v.getTag(), moveStart);
                 } else {
                     // Do a fake animation before removing it.
                     final int newRank = moveStart;
@@ -650,7 +652,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
                             mPendingAnimations.remove(v);
                             v.setTranslationX(oldTranslateX);
                             ((CellLayout) v.getParent().getParent()).removeView(v);
-                            addViewForRank(v, (ShortcutInfo) v.getTag(), newRank);
+                            addViewForRank(v, (WorkspaceItemInfo) v.getTag(), newRank);
                         }
                     };
                     v.animate()

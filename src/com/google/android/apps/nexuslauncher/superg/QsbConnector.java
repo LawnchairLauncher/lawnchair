@@ -3,12 +3,12 @@ package com.google.android.apps.nexuslauncher.superg;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
+import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.R;
 
 public class QsbConnector extends View  {

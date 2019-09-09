@@ -19,13 +19,13 @@ package ch.deletescape.lawnchair.colors.overrides
 
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
-import android.support.v7.preference.EditTextPreferenceDialogFragmentCompat
-import android.support.v7.preference.ListPreferenceDialogFragmentCompat
-import android.support.v7.preference.MultiSelectListPreferenceDialogFragmentCompat
-import android.support.v7.preference.PreferenceDialogFragmentCompat
 import android.view.View
 import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
+import androidx.preference.EditTextPreferenceDialogFragmentCompat
+import androidx.preference.ListPreferenceDialogFragmentCompat
+import androidx.preference.MultiSelectListPreferenceDialogFragmentCompat
+import androidx.preference.PreferenceDialogFragmentCompat
 import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.colors.ColorEngine
 

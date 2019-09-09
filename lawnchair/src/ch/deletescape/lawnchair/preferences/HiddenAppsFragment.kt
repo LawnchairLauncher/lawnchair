@@ -18,10 +18,9 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.LawnchairAppFilter
 import com.android.launcher3.R
 import com.android.launcher3.Utilities

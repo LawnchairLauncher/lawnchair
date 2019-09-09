@@ -9,6 +9,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.util.ComponentKey;
 
 import java.text.Collator;
@@ -29,11 +30,11 @@ public class WidgetItem extends ComponentKey implements Comparable<WidgetItem> {
     public final String label;
     public final int spanX, spanY;
 
-    public WidgetItem(LauncherAppWidgetProviderInfo info, PackageManager pm,
-            InvariantDeviceProfile idp) {
+    public WidgetItem(LauncherAppWidgetProviderInfo info,
+            InvariantDeviceProfile idp, IconCache iconCache) {
         super(info.provider, info.getProfile());
 
-        label = Utilities.trim(info.getLabel(pm));
+        label = iconCache.getTitleNoCache(info);
         widgetInfo = info;
         activityInfo = null;
 
@@ -41,9 +42,10 @@ public class WidgetItem extends ComponentKey implements Comparable<WidgetItem> {
         spanY = Math.min(info.spanY, idp.numRows);
     }
 
-    public WidgetItem(ShortcutConfigActivityInfo info) {
+    public WidgetItem(ShortcutConfigActivityInfo info, IconCache iconCache, PackageManager pm) {
         super(info.getComponent(), info.getUser());
-        label = Utilities.trim(info.getLabel());
+        label = info.isPersistable() ? iconCache.getTitleNoCache(info) :
+                Utilities.trim(info.getLabel(pm));
         widgetInfo = null;
         activityInfo = info;
         spanX = spanY = 1;

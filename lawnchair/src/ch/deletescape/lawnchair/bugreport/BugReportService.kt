@@ -26,10 +26,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
-import android.support.v4.app.NotificationCompat
-import android.support.v4.content.ContextCompat
-import android.support.v4.content.ContextCompat.getSystemService
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -82,7 +81,7 @@ class BugReportService : Service() {
     }
 
     fun notify(report: BugReport, uploading: Boolean = false) {
-        val manager = getSystemService(this, NotificationManager::class.java)!!
+        val manager = ContextCompat.getSystemService(this, NotificationManager::class.java)!!
         val notificationId = report.notificationId
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(report.getTitle(this))
@@ -96,9 +95,7 @@ class BugReportService : Service() {
                 // This apparently breaks grouping
                 //.setAutoCancel(true)
 
-        val count = if (Utilities.ATLEAST_MARSHMALLOW) {
-            manager.activeNotifications.filter { it.groupKey == GROUP_KEY }.count()
-        } else -1
+        val count = manager.activeNotifications.filter { it.groupKey == GROUP_KEY }.count()
         val summary = if (count > 99 || count < 0) {
             getString(R.string.bugreport_group_summary_multiple)
         } else {
@@ -175,7 +172,7 @@ class BugReportService : Service() {
 
     private fun copyReport(report: BugReport) {
         val clipData = ClipData.newPlainText(getString(R.string.lawnchair_bug_report), report.link ?: report.contents)
-        getSystemService(this, ClipboardManager::class.java)!!.primaryClip = clipData
+        ContextCompat.getSystemService(this, ClipboardManager::class.java)!!.setPrimaryClip(clipData)
 
         Toast.makeText(this, R.string.copied_toast, Toast.LENGTH_LONG).show()
     }

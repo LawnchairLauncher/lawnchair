@@ -18,8 +18,8 @@
 package ch.deletescape.lawnchair.colors.resolvers
 
 import android.graphics.Color
-import android.support.annotation.Keep
-import android.support.v4.graphics.ColorUtils
+import androidx.annotation.Keep
+import androidx.core.graphics.ColorUtils
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.colors.ThemeAttributeColorResolver

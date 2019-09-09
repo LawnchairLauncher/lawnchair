@@ -26,8 +26,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.InsetDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Process;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
@@ -40,6 +38,8 @@ import android.view.View.OnLongClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import ch.deletescape.lawnchair.folder.FolderShape;
 import ch.deletescape.lawnchair.globalsearch.SearchProvider;
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
@@ -48,10 +48,11 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.graphics.NinePatchDrawHelper;
-import com.android.launcher3.graphics.ShadowGenerator.Builder;
+import com.android.launcher3.icons.ShadowGenerator.Builder;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TransformingTouchDelegate;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
@@ -471,7 +472,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
 
     protected float getCornerRadius() {
         return getCornerRadius(getContext(),
-                Utilities.pxFromDp(100, getResources().getDisplayMetrics()));
+                ResourceUtils.pxFromDp(100, getResources().getDisplayMetrics()));
     }
 
     public static float getCornerRadius(Context context, float defaultRadius) {
@@ -529,7 +530,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         try {
             getContext().startActivity(new Intent(str).addFlags(268468224).setPackage("com.google.android.googlequicksearchbox"));
         } catch (ActivityNotFoundException e) {
-            LauncherAppsCompat.getInstance(getContext()).showAppDetailsForProfile(new ComponentName("com.google.android.googlequicksearchbox", ".SearchActivity"), Process.myUserHandle());
+            LauncherAppsCompat.getInstance(getContext()).showAppDetailsForProfile(new ComponentName("com.google.android.googlequicksearchbox", ".SearchActivity"), Process.myUserHandle(), null, null);
         }
     }
 
@@ -602,9 +603,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         if (settingsIntent == null && settingsBroadcast == null && clipboardText == null) {
             return false;
         }
-        if (Utilities.ATLEAST_MARSHMALLOW) {
-            startActionMode(new QsbActionMode(this, clipboardText, settingsBroadcast, settingsIntent), 1);
-        }
+        startActionMode(new QsbActionMode(this, clipboardText, settingsBroadcast, settingsIntent), 1);
         return true;
     }
 

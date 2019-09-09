@@ -20,8 +20,8 @@ package ch.deletescape.lawnchair.gestures.ui
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.TypedArray
-import android.support.v7.preference.DialogPreference
 import android.util.AttributeSet
+import androidx.preference.DialogPreference
 import ch.deletescape.lawnchair.gestures.*
 import com.android.launcher3.R
 
@@ -38,7 +38,7 @@ class GesturePreference(context: Context, attrs: AttributeSet?) : DialogPreferen
         val ta = context.obtainStyledAttributes(attrs, R.styleable.GesturePreference)
         val className = ta.getString(R.styleable.GesturePreference_gestureClass) ?: ""
         when (className) {
-            NavSwipeUpGesture::class.java.name -> isSwipeUp = true
+            // NavSwipeUpGesture::class.java.name -> isSwipeUp = true
         }
 
         ta.recycle()

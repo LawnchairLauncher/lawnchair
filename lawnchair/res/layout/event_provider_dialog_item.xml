@@ -47,7 +47,7 @@
         android:layout_height="match_parent"
         android:paddingStart="?android:attr/listPreferredItemPaddingEnd"
         android:paddingEnd="21dp"
-        android:src="@drawable/deep_shortcuts_drag_handle"
+        android:src="@drawable/ic_drag_handle"
         android:background="@android:color/transparent"
         android:clickable="false"
         android:duplicateParentState="true"

@@ -25,29 +25,30 @@ import static com.android.systemui.shared.system.LauncherEventUtil.DISMISS;
 import static com.android.systemui.shared.system.LauncherEventUtil.RECENTS_QUICK_SCRUB_ONBOARDING_TIP;
 import static com.android.systemui.shared.system.LauncherEventUtil.RECENTS_SWIPE_UP_ONBOARDING_TIP;
 
-import ch.deletescape.lawnchair.predictions.LawnchairEventPredictor;
+import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.systemui.shared.system.MetricsLoggerCompat;
 
 /**
  * This class handles AOSP MetricsLogger function calls and logging around
  * quickstep interactions.
  */
 @SuppressWarnings("unused")
-public class UserEventDispatcherExtension extends LawnchairEventPredictor {
+public class UserEventDispatcherExtension extends UserEventDispatcher {
+
+    public static final int ALL_APPS_PREDICTION_TIPS = 2;
 
     private static final String TAG = "UserEventDispatcher";
 
-    public UserEventDispatcherExtension(Context context) {
-        super(context);
-    }
+    public UserEventDispatcherExtension(Context context) { }
 
-    public void logStateChangeAction(int action, int dir, int srcChildTargetType,
-                                     int srcParentContainerType, int dstContainerType,
-                                     int pageIndex) {
-//        new MetricsLoggerCompat().visibility(MetricsLoggerCompat.OVERVIEW_ACTIVITY,
-//                dstContainerType == LauncherLogProto.ContainerType.TASKSWITCHER);
-        super.logStateChangeAction(action, dir, srcChildTargetType, srcParentContainerType,
-                dstContainerType, pageIndex);
+    public void logStateChangeAction(int action, int dir, int downX, int downY,
+                                     int srcChildTargetType, int srcParentContainerType,
+                                     int dstContainerType, int pageIndex) {
+        new MetricsLoggerCompat().visibility(MetricsLoggerCompat.OVERVIEW_ACTIVITY,
+                dstContainerType == LauncherLogProto.ContainerType.TASKSWITCHER);
+        super.logStateChangeAction(action, dir, downX, downY, srcChildTargetType,
+                srcParentContainerType, dstContainerType, pageIndex);
     }
 
     public void logActionTip(int actionType, int viewType) {

@@ -22,16 +22,15 @@ import android.bluetooth.BluetoothProfile
 import android.content.*
 import android.content.pm.PackageManager
 import android.os.*
-import android.util.Log
 import android.view.View
 import ch.deletescape.lawnchair.runOnMainThread
-import ch.deletescape.lawnchair.runOnThread
 import ch.deletescape.lawnchair.runOnUiWorkerThread
 import ch.deletescape.lawnchair.sesame.Sesame
 import ch.deletescape.lawnchair.sesame.SesameShortcutInfo
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import com.android.launcher3.*
-import com.android.launcher3.graphics.LauncherIcons
+import com.android.launcher3.icons.BitmapInfo
+import com.android.launcher3.icons.LauncherIcons
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
@@ -171,9 +170,9 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
         }
     }
 
-    override fun logAppLaunch(v: View?, intent: Intent?, user: UserHandle?) {
-        super.logAppLaunch(v, intent, user)
-        logAppLaunchImpl(v, intent, user ?: Process.myUserHandle())
+    override fun logAppLaunch(v: View?, intent: Intent?) {
+        super.logAppLaunch(v, intent)
+        logAppLaunchImpl(v, intent, Process.myUserHandle())
     }
 
     private fun logAppLaunchImpl(v: View?, intent: Intent?, user: UserHandle) {
@@ -209,7 +208,8 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
                 runOnMainThread {
                     updateActions()
                 }
-            } else if (info is ShortcutInfo && info.shortcutInfo != null) {
+                /* TODO: implement this
+            } else if (info is WorkspaceItemInfo && info.shortcutInfo != null) {
                 runOnThread(handler) {
                     cleanActions()
 
@@ -225,6 +225,7 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
                         Log.d("EventPredictor", "Stayed same")
                     }
                 }
+                 */
             }
         }
     }
@@ -440,9 +441,12 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
             val list = deepShortcutManager.queryForFullDetails(publisher, listOf(id), Process.myUserHandle())
             if (!list.isEmpty()) {
                 val shortcutInfo = list[0]
-                val info = ShortcutInfo(shortcutInfo, context)
+                val info = WorkspaceItemInfo(shortcutInfo, context)
                 val li = LauncherIcons.obtain(context)
-                li.createShortcutIcon(shortcutInfo, true, null).applyTo(info)
+                val bitmapInfo = BitmapInfo()
+                li.createShortcutIcon(shortcutInfo, true, null).applyTo(bitmapInfo)
+                info.iconBitmap = bitmapInfo.icon
+                info.iconColor = bitmapInfo.color
                 li.recycle()
                 val appName = try {
                     packageManager.getApplicationInfo(badge, 0).loadLabel(packageManager)
@@ -453,6 +457,7 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
                         context.getString(R.string.package_state_unknown)
                     }
                 }
+                /* TODO: implement this
                 return Action(
                         id,
                         id,
@@ -464,6 +469,7 @@ open class LawnchairEventPredictor(private val context: Context): CustomAppPredi
                         info,
                         position
                 )
+                 */
             }
         } catch (ignore: Throwable) { }
         return null

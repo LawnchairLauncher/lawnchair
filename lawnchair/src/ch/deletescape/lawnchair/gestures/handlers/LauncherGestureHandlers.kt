@@ -22,11 +22,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.UserHandle
-import android.support.annotation.Keep
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import ch.deletescape.lawnchair.animations.LawnchairAppTransitionManagerImpl
+import androidx.annotation.Keep
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import ch.deletescape.lawnchair.gestures.ui.SelectAppActivity
@@ -35,6 +34,7 @@ import com.android.launcher3.LauncherState
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import ch.deletescape.lawnchair.lawnchairPrefs
 import com.android.launcher3.R
+import com.android.launcher3.Utilities.makeComponentKey
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
@@ -195,7 +195,7 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
             appName = config.getString("appName")
             type = if (config.has("type")) config.getString("type") else "app"
             if (type == "app") {
-                target = ComponentKey(context, config.getString("target"))
+                target = makeComponentKey(context, config.getString("target"))
             } else {
                 intent = Intent.parseUri(config.getString("intent"), 0)
                 user = UserManagerCompat.getInstance(context).getUserForSerialNumber(config.getLong("user"))
@@ -229,7 +229,7 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
             type = data.getStringExtra("type")
             when (type) {
                 "app" -> {
-                    target = ComponentKey(context, data.getStringExtra("target"))
+                    target = makeComponentKey(context, data.getStringExtra("target"))
                 }
                 "shortcut" -> {
                     intent = Intent.parseUri(data.getStringExtra("intent"), 0)
@@ -259,17 +259,13 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
                     // App is probably not installed anymore, show a Toast
                     Toast.makeText(context, R.string.failed, Toast.LENGTH_LONG).show()
                 }
-                val transitionManager = controller.launcher.launcherAppTransitionManager
-                        as? LawnchairAppTransitionManagerImpl
-                transitionManager?.playLaunchAnimation(controller.launcher, view,
-                        Intent().setComponent(target!!.componentName))
             }
             "shortcut" -> {
                 if (id?.startsWith("sesame_") == true) {
                     context.startActivity(SesameFrontend.addPackageAuth(context, intent!!), opts)
                 } else {
                     DeepShortcutManager.getInstance(context)
-                            .startShortcut(packageName, id, intent, opts, user)
+                            .startShortcut(packageName, id, null, opts, user)
                 }
             }
         }

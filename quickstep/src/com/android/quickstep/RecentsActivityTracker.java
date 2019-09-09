@@ -30,17 +30,18 @@ import java.lang.ref.WeakReference;
 import java.util.function.BiPredicate;
 
 /**
- * Utility class to track create/destroy for RecentsActivity
+ * Utility class to track create/destroy for some {@link BaseRecentsActivity}.
  */
 @TargetApi(Build.VERSION_CODES.P)
-public class RecentsActivityTracker implements ActivityInitListener {
+public class RecentsActivityTracker<T extends BaseRecentsActivity> implements ActivityInitListener {
 
-    private static WeakReference<RecentsActivity> sCurrentActivity = new WeakReference<>(null);
+    private static WeakReference<BaseRecentsActivity> sCurrentActivity =
+            new WeakReference<>(null);
     private static final Scheduler sScheduler = new Scheduler();
 
-    private final BiPredicate<RecentsActivity, Boolean> mOnInitListener;
+    private final BiPredicate<T, Boolean> mOnInitListener;
 
-    public RecentsActivityTracker(BiPredicate<RecentsActivity, Boolean> onInitListener) {
+    public RecentsActivityTracker(BiPredicate<T, Boolean> onInitListener) {
         mOnInitListener = onInitListener;
     }
 
@@ -54,12 +55,12 @@ public class RecentsActivityTracker implements ActivityInitListener {
         sScheduler.clearReference(this);
     }
 
-    private boolean init(RecentsActivity activity, boolean visible) {
+    private boolean init(T activity, boolean visible) {
         return mOnInitListener.test(activity, visible);
     }
 
-    public static RecentsActivity getCurrentActivity() {
-        return sCurrentActivity.get();
+    public static <T extends BaseRecentsActivity> T getCurrentActivity() {
+        return (T) sCurrentActivity.get();
     }
 
     @Override
@@ -71,17 +72,17 @@ public class RecentsActivityTracker implements ActivityInitListener {
         context.startActivity(intent, options);
     }
 
-    public static void onRecentsActivityCreate(RecentsActivity activity) {
+    public static void onRecentsActivityCreate(BaseRecentsActivity activity) {
         sCurrentActivity = new WeakReference<>(activity);
         sScheduler.initIfPending(activity, false);
     }
 
 
-    public static void onRecentsActivityNewIntent(RecentsActivity activity) {
+    public static void onRecentsActivityNewIntent(BaseRecentsActivity activity) {
         sScheduler.initIfPending(activity, activity.isStarted());
     }
 
-    public static void onRecentsActivityDestroy(RecentsActivity activity) {
+    public static void onRecentsActivityDestroy(BaseRecentsActivity activity) {
         if (sCurrentActivity.get() == activity) {
             sCurrentActivity.clear();
         }
@@ -103,13 +104,14 @@ public class RecentsActivityTracker implements ActivityInitListener {
 
         @Override
         public void run() {
-            RecentsActivity activity = sCurrentActivity.get();
+            BaseRecentsActivity activity = sCurrentActivity.get();
             if (activity != null) {
                 initIfPending(activity, activity.isStarted());
             }
         }
 
-        public synchronized boolean initIfPending(RecentsActivity activity, boolean alreadyOnHome) {
+        public synchronized boolean initIfPending(BaseRecentsActivity activity,
+                boolean alreadyOnHome) {
             RecentsActivityTracker tracker = mPendingTracker.get();
             if (tracker != null) {
                 if (!tracker.init(activity, alreadyOnHome)) {

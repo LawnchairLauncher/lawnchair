@@ -19,11 +19,11 @@ package ch.deletescape.lawnchair.perms
 
 import android.content.Context
 import android.content.DialogInterface
-import android.support.annotation.DrawableRes
-import android.support.annotation.StringRes
-import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.FrameLayout
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AlertDialog
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.util.ThemedContextProvider

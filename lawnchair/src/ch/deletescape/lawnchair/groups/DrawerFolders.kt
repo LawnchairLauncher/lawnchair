@@ -19,11 +19,8 @@ package ch.deletescape.lawnchair.groups
 
 import android.content.Context
 import ch.deletescape.lawnchair.*
-import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.AppInfo
-import com.android.launcher3.FolderInfo
 import com.android.launcher3.R
-import com.android.launcher3.ShortcutInfo
 import com.android.launcher3.allapps.AlphabeticalAppsList
 import com.android.launcher3.util.ComponentKey
 
@@ -78,7 +75,7 @@ class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFol
 
         open fun toFolderInfo(getAppInfo: (ComponentKey) -> AppInfo?) = DrawerFolderInfo(this).apply {
             setTitle(this@Folder.getTitle())
-            id = this@Folder.id.value()
+            id = this@Folder.id.value().toInt()
             contents = ArrayList()
         }
     }
@@ -109,7 +106,7 @@ class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFol
         override fun toFolderInfo(getAppInfo: (ComponentKey) -> AppInfo?) = super.toFolderInfo(getAppInfo).apply {
             // ✨
             this@CustomFolder.contents.value?.mapNotNullTo(contents) { key ->
-                getAppInfo(key)?.makeShortcut()
+                getAppInfo(key)?.makeWorkspaceItem()
             }?.sortWith(comparator)
         }
     }

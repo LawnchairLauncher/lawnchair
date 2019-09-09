@@ -21,12 +21,11 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.ShortcutInfo
 import android.content.res.ColorStateList
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Handler
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -35,6 +34,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider
 import ch.deletescape.lawnchair.isVisible
@@ -42,7 +43,6 @@ import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
-import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
 
 open class AppsAdapterWithShortcuts(
@@ -171,14 +171,14 @@ open class AppsAdapterWithShortcuts(
         }
 
         private fun loadShortcuts(): List<ShortcutItem> {
-            val shortcuts = shortcutManager.queryForComponent(key) as? List<ShortcutInfoCompat> ?: emptyList()
+            val shortcuts = shortcutManager.queryForShortcutsContainer(key.componentName, key.user) as? List<ShortcutInfo> ?: emptyList()
             return shortcuts.map { ShortcutItem(it) }
         }
 
         fun clone(context: Context, expanded: Boolean) = AppItem(context, info).also { it.expanded = expanded }
     }
 
-    inner class ShortcutItem(val info: ShortcutInfoCompat) : Item {
+    inner class ShortcutItem(val info: ShortcutInfo) : Item {
 
         val label = if (!TextUtils.isEmpty(info.longLabel)) info.longLabel else info.shortLabel
         // TODO: debug why wrong icons are loaded from the provider at times

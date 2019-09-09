@@ -18,7 +18,7 @@ import ch.deletescape.lawnchair.FeedBridge;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.graphics.ShadowGenerator;
+import com.android.launcher3.icons.GraphicsUtils;
 import com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.b;
 import com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.c;
 import com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.e;
@@ -219,7 +219,7 @@ public class SmartspaceCard {
         }
         byte[] flattenBitmap;
         if (cp != null) {
-            flattenBitmap = Utilities.flattenBitmap(cp);
+            flattenBitmap = GraphicsUtils.flattenBitmap(cp);
         } else {
             flattenBitmap = new byte[0];
         }
@@ -287,16 +287,6 @@ public class SmartspaceCard {
                 break;
             }
             case 1: {
-                if (!Utilities.ATLEAST_NOUGAT) {
-                    try {
-                        Intent internal = Intent.parseUri(intent.getExtras()
-                                .getString("com.google.android.apps.gsa.smartspace.extra.SMARTSPACE_INTENT"), Intent.URI_INTENT_SCHEME);
-                        launcher.startActivity(internal);
-                        return;
-                    } catch (URISyntaxException | NullPointerException | SecurityException e) {
-                        e.printStackTrace();
-                    }
-                }
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setSourceBounds(launcher.getViewBounds(view));
                 intent.setPackage(FeedBridge.Companion.getInstance(mContext).resolveSmartspace());
@@ -304,7 +294,7 @@ public class SmartspaceCard {
                 break;
             }
             case 2: {
-                launcher.startActivitySafely(view, intent, null);
+                launcher.startActivitySafely(view, intent, null, null);
                 break;
             }
         }

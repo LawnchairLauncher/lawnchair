@@ -21,7 +21,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.location.Criteria
 import android.location.LocationManager
-import android.support.annotation.Keep
+import androidx.annotation.Keep
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.checkLocationAccess
 import ch.deletescape.lawnchair.lawnchairApp

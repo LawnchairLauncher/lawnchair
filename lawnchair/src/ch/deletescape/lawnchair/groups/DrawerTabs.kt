@@ -31,6 +31,7 @@ import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.preferences.SelectableAppsActivity
 import ch.deletescape.lawnchair.tintDrawable
 import com.android.launcher3.R
+import com.android.launcher3.Utilities.makeComponentKey
 import com.android.launcher3.util.ComponentKey
 
 abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.CategorizationType)
@@ -103,7 +104,7 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
 
         override fun getSummary(context: Context): String? {
             val hidden = context.lawnchairPrefs.hiddenAppSet
-                    .map { ComponentKey(context, it) }
+                    .map { makeComponentKey(context, it) }
                     .filter(getWorkFilter(filterIsWork))
             val size = hidden.size
             if (size == 0) {
@@ -161,14 +162,14 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
 
         private fun filteredValue(context: Context): Collection<ComponentKey> {
             return context.lawnchairPrefs.hiddenAppSet
-                    .map { ComponentKey(context, it) }
+                    .map { makeComponentKey(context, it) }
                     .filter(predicate)
         }
 
         private fun setHiddenApps(context: Context, hidden: Collection<ComponentKey>) {
             val prefs = context.lawnchairPrefs
             val hiddenSet = ArrayList(prefs.hiddenAppSet
-                    .map { ComponentKey(context, it) }
+                    .map { makeComponentKey(context, it) }
                     .filter { !predicate(it) })
             hiddenSet.addAll(hidden)
             prefs.hiddenAppSet = hiddenSet.map(ComponentKey::toString).toSet()

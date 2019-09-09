@@ -18,8 +18,6 @@
 package ch.deletescape.lawnchair.groups.ui
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.text.TextUtils
 import android.util.LayoutDirection
 import android.view.LayoutInflater
@@ -28,6 +26,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ItemTouchHelper
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.createDisabledColor
 import ch.deletescape.lawnchair.groups.AppGroups

@@ -40,33 +40,8 @@
         <item>@string/icon_shape_cylinder</item>
     </string-array>
 
-    <string-array translatable="false" name="alt_icon_shape_values">
-        <item></item>
-        <item>circle</item>
-        <item>square</item>
-        <item>roundedSquare</item>
-        <item>squircle</item>
-        <item>teardrop</item>
-        <item>cylinder</item>
-        <item>v1|arc,1|arc,0.16|arc,0.16|arc,1</item>
-        <item>v1|cut,0.3|cut,0.3|cut,1|cut,1</item>
-        <item>v1|cut,0.6|cut,0.6|cut,0.6|cut,0.6</item>
-        <item>v1|arc,1|cut,0.5|squircle,1|cut,0</item>
-    </string-array>
-
-    <string-array translatable="false" name="alt_icon_shape_names">
-        <item>@string/icon_shape_system_default</item>
-        <item>@string/icon_shape_circle</item>
-        <item>@string/icon_shape_square</item>
-        <item>@string/icon_shape_rounded_square</item>
-        <item>@string/icon_shape_squircle</item>
-        <item>@string/icon_shape_teardrop</item>
-        <item>@string/icon_shape_cylinder</item>
-        <item>Lemon</item>
-        <item>Diamond</item>
-        <item>Octa</item>
-        <item>epic shape af 2019</item>
-    </string-array>
+    <!-- String representing the fragment class for settings activity.-->
+    <string name="settings_fragment_name" translatable="false">com.android.launcher3.settings.SettingsActivity$LauncherSettingsFragment</string>
 
 <!-- DragController -->
     <item type="id" name="drag_event_parity" />
@@ -107,39 +82,24 @@
 <!-- Hotseat -->
     <bool name="hotseat_transpose_layout_with_orientation">true</bool>
 
-    <!-- Name of a subclass of com.android.launcher3.AppFilter used to
-         filter the activities shown in the launcher. Can be empty. -->
+    <!-- Various classes overriden by projects/build flavors. -->
     <string name="app_filter_class" translatable="false">com.google.android.apps.nexuslauncher.CustomAppFilter</string>
-
-    <!-- Name of an icon provider class. -->
     <string name="icon_provider_class" translatable="false">ch.deletescape.lawnchair.iconpack.LawnchairIconProvider</string>
-
-    <!-- Name of a drawable factory class. -->
     <string name="drawable_factory_class" translatable="false">ch.deletescape.lawnchair.iconpack.LawnchairDrawableFactory</string>
-
-    <!-- Name of a user event dispatcher class. -->
     <string name="user_event_dispatcher_class" translatable="false">com.google.android.apps.nexuslauncher.CustomAppPredictor</string>
-
-    <!-- Name of a custom shortcut class. -->
-    <string name="custom_shortcut_class" translatable="false">com.google.android.apps.nexuslauncher.CustomEditShortcut</string>
-
-    <!-- Name of an app transition manager class. -->
+    <string name="stats_log_manager_class" translatable="false"></string>
     <string name="app_transition_manager_class" translatable="false"></string>
-
-    <!-- Name of a color extraction implementation class. -->
-    <string name="color_extraction_impl_class" translatable="false"></string>
-
-    <!-- Name of a subclass of com.android.launcher3.util.InstantAppResolver. Can be empty. -->
     <string name="instant_app_resolver_class" translatable="false"></string>
-
-    <!-- Name of a main process initializer class. -->
     <string name="main_process_initializer_class" translatable="false"></string>
+    <string name="system_shortcut_factory_class" translatable="false"></string>
+    <string name="app_launch_tracker_class" translatable="false"></string>
+    <string name="test_information_handler_class" translatable="false"></string>
 
     <!-- Package name of the default wallpaper picker. -->
     <string name="wallpaper_picker_package" translatable="false">com.google.android.apps.wallpaper</string>
 
     <!-- Whitelisted package to retrieve packagename for badge. Can be empty. -->
-    <string name="shortcutinfocompat_badgepkg_whitelist" translatable="false"></string>
+    <string name="shortcutinfo_badgepkg_whitelist" translatable="false"></string>
 
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />
@@ -147,16 +107,15 @@
     <!-- View ID used by cell layout to jail its content -->
     <item type="id" name="cell_layout_jail_id" />
 
-    <!-- Tag id used for view scrim -->
-    <item type="id" name="view_scrim" />
-
     <!-- View IDs to store item highlight information -->
     <item type="id" name="view_unhighlight_background" />
-    <item type="id" name="view_highlighted" />
 
-<!-- Popup items -->
+    <!-- Menu id for feature flags -->
+    <item type="id" name="menu_apply_flags" />
+
+    <!-- Popup items -->
     <integer name="config_popupOpenCloseDuration">150</integer>
-    <integer name="config_popupArrowOpenDuration">80</integer>
+    <integer name="config_popupArrowOpenCloseDuration">40</integer>
     <integer name="config_removeNotificationViewDuration">300</integer>
 
 <!-- Accessibility actions -->
@@ -173,10 +132,10 @@
     <item type="id" name="action_shortcuts_and_notifications"/>
     <item type="id" name="action_dismiss_notification" />
     <item type="id" name="action_customize" />
+    <item type="id" name="action_remote_action_shortcut" />
 
 <!-- QSB IDs. DO not change -->
     <item type="id" name="search_container_workspace" />
-    <item type="id" name="search_container_hotseat" />
     <item type="id" name="search_container_all_apps" />
 
 <!-- View ID to use for blocked area on the first screen -->
@@ -184,8 +143,4 @@
 
 <!-- Recents -->
     <item type="id" name="overview_panel"/>
-    <integer name="config_recentsMaxThumbnailCacheSize">6</integer>
-    <integer name="config_recentsMaxIconCacheSize">12</integer>
-
-    <item name="workspace_page_container" type="id" />
 </resources>

@@ -34,7 +34,7 @@
         android:layout_gravity="center_horizontal"
         android:paddingBottom="12dp"/>
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         style="@style/TextTitle"
         android:id="@+id/title"
         android:layout_width="match_parent"

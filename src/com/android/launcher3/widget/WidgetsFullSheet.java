@@ -17,6 +17,8 @@ package com.android.launcher3.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Rect;
@@ -26,6 +28,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
@@ -153,13 +158,13 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     @Override
-    protected void onWidgetsBound() {
+    public void onWidgetsBound() {
         mAdapter.setWidgets(mLauncher.getPopupDataProvider().getAllWidgets());
     }
 
     private void open(boolean animate) {
         if (animate) {
-            if (mLauncher.getDragLayer().getInsets().bottom > 0) {
+            if (getPopupContainer().getInsets().bottom > 0) {
                 mContent.setAlpha(0);
                 setTranslationShift(VERTICAL_START_POSITION);
             }
@@ -206,10 +211,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mNoIntercept = false;
             RecyclerViewFastScroller scroller = mRecyclerView.getScrollbar();
             if (scroller.getThumbOffsetY() >= 0 &&
-                    mLauncher.getDragLayer().isEventOverView(scroller, ev)) {
+                    getPopupContainer().isEventOverView(scroller, ev)) {
                 mNoIntercept = true;
-            } else if (mLauncher.getDragLayer().isEventOverView(mContent, ev)) {
-                mNoIntercept = !mRecyclerView.shouldContainerScroll(ev, mLauncher.getDragLayer());
+            } else if (getPopupContainer().isEventOverView(mContent, ev)) {
+                mNoIntercept = !mRecyclerView.shouldContainerScroll(ev, getPopupContainer());
             }
         }
         return super.onControllerInterceptTouchEvent(ev);
@@ -218,14 +223,28 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     public static WidgetsFullSheet show(Launcher launcher, boolean animate) {
         WidgetsFullSheet sheet = (WidgetsFullSheet) launcher.getLayoutInflater()
                 .inflate(R.layout.widgets_full_sheet, launcher.getDragLayer(), false);
+        sheet.attachToContainer();
         sheet.mIsOpen = true;
-        launcher.getDragLayer().addView(sheet);
         sheet.open(animate);
         return sheet;
+    }
+
+    @VisibleForTesting
+    public static WidgetsRecyclerView getWidgetsView(Launcher launcher) {
+        return launcher.findViewById(R.id.widgets_list_view);
     }
 
     @Override
     protected int getElementsRowCount() {
         return mAdapter.getItemCount();
+    }
+
+    @Nullable
+    @Override
+    public Animator createHintCloseAnim(float distanceToMove) {
+        AnimatorSet anim = new AnimatorSet();
+        anim.play(ObjectAnimator.ofFloat(mRecyclerView, TRANSLATION_Y, -distanceToMove));
+        anim.play(ObjectAnimator.ofFloat(mRecyclerView, ALPHA, 0.5f));
+        return anim;
     }
 }

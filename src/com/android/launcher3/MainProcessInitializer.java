@@ -20,15 +20,18 @@ import android.content.Context;
 
 import ch.deletescape.lawnchair.adaptive.IconShapeManager;
 import ch.deletescape.lawnchair.folder.FolderShape;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.util.ResourceBasedOverride;
 
 /**
  * Utility class to handle one time initializations of the main process
  */
-public class MainProcessInitializer {
+public class MainProcessInitializer implements ResourceBasedOverride {
 
     public static void initialize(Context context) {
-        Utilities.getOverrideObject(
+        Overrides.getObject(
                 MainProcessInitializer.class, context, R.string.main_process_initializer_class)
                 .init(context);
     }
@@ -38,5 +41,8 @@ public class MainProcessInitializer {
         IconShapeManager.Companion.getInstance(context);
         SessionCommitReceiver.applyDefaultUserPrefs(context);
         FolderShape.init(context);
+        FeatureFlags.initialize(context);
+        SessionCommitReceiver.applyDefaultUserPrefs(context);
+        IconShape.init(context);
     }
 }

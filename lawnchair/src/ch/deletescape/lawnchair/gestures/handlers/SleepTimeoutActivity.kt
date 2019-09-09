@@ -66,7 +66,7 @@ class SleepTimeoutActivity : Activity() {
     }
 
     private fun putSettings(timeout: Int, stayOnWhilePluggedIn: Int) {
-        if (Utilities.ATLEAST_MARSHMALLOW && !Settings.System.canWrite(this)) return
+        if (!Settings.System.canWrite(this)) return
         Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, timeout)
         Settings.System.putInt(contentResolver, Settings.Global.STAY_ON_WHILE_PLUGGED_IN, stayOnWhilePluggedIn)
         Log.d("SleepTimeoutActivity", "Screen timeout settings set to $timeout $stayOnWhilePluggedIn")

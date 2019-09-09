@@ -19,11 +19,11 @@ package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
 import android.preference.DialogPreference
-import android.support.v7.view.ContextThemeWrapper
-import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.view.ContextThemeWrapper
+import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.font.CustomFontManager
 import ch.deletescape.lawnchair.setCustomFont
 import ch.deletescape.lawnchair.theme.ThemeOverride

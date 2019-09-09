@@ -18,13 +18,13 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
-import android.support.annotation.Keep
-import android.support.v14.preference.SwitchPreference
-import android.support.v7.preference.AndroidResources
-import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Switch
+import androidx.annotation.Keep
+import androidx.preference.AndroidResources
+import androidx.preference.PreferenceViewHolder
+import androidx.preference.SwitchPreference
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.applyColor
 import ch.deletescape.lawnchair.colors.ColorEngine

@@ -32,13 +32,14 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.util.PackageUserKey;
 
 /**
  * An object that contains relevant information from a {@link StatusBarNotification}. This should
  * only be created when we need to show the notification contents on the UI; until then, a
- * {@link com.android.launcher3.badge.BadgeInfo} with only the notification key should
+ * {@link DotInfo} with only the notification key should
  * be passed around, and then this can be constructed using the StatusBarNotification from
  * {@link NotificationListener#getNotificationsForKeys(java.util.List)}.
  */
@@ -52,7 +53,6 @@ public class NotificationInfo implements View.OnClickListener {
     public final boolean autoCancel;
     public final boolean dismissable;
 
-    private int mBadgeIcon;
     private Drawable mIconDrawable;
     private int mIconColor;
     private boolean mIsIconLarge;
@@ -67,36 +67,25 @@ public class NotificationInfo implements View.OnClickListener {
         title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);
         text = notification.extras.getCharSequence(Notification.EXTRA_TEXT);
 
-        if (Utilities.ATLEAST_OREO) mBadgeIcon = notification.getBadgeIconType();
-        else mBadgeIcon = Utilities.ATLEAST_MARSHMALLOW ? 2 : 1;
+        int iconType = Utilities.ATLEAST_OREO ? notification.getBadgeIconType() : 2;
         // Load the icon. Since it is backed by ashmem, we won't copy the entire bitmap
         // into our process as long as we don't touch it and it exists in systemui.
-        Icon icon = mBadgeIcon == Notification.BADGE_ICON_SMALL ? null : notification.getLargeIcon();
-        Resources res = LawnchairUtilsKt.resourcesForApplication(context, statusBarNotification.getPackageName());
+        Icon icon = iconType == Notification.BADGE_ICON_SMALL ? null : notification.getLargeIcon();
         if (icon == null) {
             // Use the small icon.
-            if (Utilities.ATLEAST_MARSHMALLOW) {
-                icon = notification.getSmallIcon();
-                mIconDrawable = icon == null ? null : icon.loadDrawable(context);
-            } else {
-                mIconDrawable = res.getDrawable(notification.icon);
-            }
+            icon = notification.getSmallIcon();
+            mIconDrawable = icon == null ? null : icon.loadDrawable(context);
             mIconColor = statusBarNotification.getNotification().color;
             mIsIconLarge = false;
         } else {
             // Use the large icon.
-            if (Utilities.ATLEAST_MARSHMALLOW) {
-                mIconDrawable = icon.loadDrawable(context);
-            } else {
-                mIconDrawable = new BitmapDrawable(res, notification.largeIcon);
-            }
+            mIconDrawable = icon.loadDrawable(context);
             mIsIconLarge = true;
         }
         if (mIconDrawable == null) {
             mIconDrawable = new BitmapDrawable(context.getResources(), LauncherAppState
                     .getInstance(context).getIconCache()
                     .getDefaultIcon(statusBarNotification.getUser()).icon);
-            mBadgeIcon = Notification.BADGE_ICON_NONE;
         }
         intent = notification.contentIntent;
         autoCancel = (notification.flags & Notification.FLAG_AUTO_CANCEL) != 0;
@@ -110,13 +99,9 @@ public class NotificationInfo implements View.OnClickListener {
         }
         final Launcher launcher = Launcher.getLauncher(view.getContext());
         try {
-            if (Utilities.ATLEAST_MARSHMALLOW) {
-                Bundle activityOptions = ActivityOptions.makeClipRevealAnimation(
-                        view, 0, 0, view.getWidth(), view.getHeight()).toBundle();
-                intent.send(null, 0, null, null, null, null, activityOptions);
-            } else {
-                intent.send();
-            }
+            Bundle activityOptions = ActivityOptions.makeClipRevealAnimation(
+                    view, 0, 0, view.getWidth(), view.getHeight()).toBundle();
+            intent.send(null, 0, null, null, null, null, activityOptions);
             launcher.getUserEventDispatcher().logNotificationLaunch(view, intent);
         } catch (PendingIntent.CanceledException e) {
             e.printStackTrace();
@@ -140,16 +125,5 @@ public class NotificationInfo implements View.OnClickListener {
         icon.setTintList(null);
         icon.setTint(mIconColor);
         return icon;
-    }
-
-    public boolean isIconLarge() {
-        return mIsIconLarge;
-    }
-
-    public boolean shouldShowIconInBadge() {
-        // If the icon we're using for this notification matches what the Notification
-        // specified should show in the badge, then return true.
-        return mIsIconLarge && mBadgeIcon == Notification.BADGE_ICON_LARGE
-                || !mIsIconLarge && mBadgeIcon == Notification.BADGE_ICON_SMALL;
     }
 }

@@ -49,8 +49,8 @@ import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.widget.WidgetsBottomSheet;
@@ -89,8 +89,8 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
         if (itemInfo instanceof ItemInfoWithIcon || mInfoProvider.supportsIcon()) {
             ImageView icon = findViewById(R.id.icon);
-            if (itemInfo instanceof ShortcutInfo && ((ShortcutInfo) itemInfo).customIcon != null) {
-                icon.setImageBitmap(((ShortcutInfo) itemInfo).customIcon);
+            if (itemInfo instanceof WorkspaceItemInfo && ((WorkspaceItemInfo) itemInfo).customIcon != null) {
+                icon.setImageBitmap(((WorkspaceItemInfo) itemInfo).customIcon);
             } else if (itemInfo instanceof  ItemInfoWithIcon) {
                 icon.setImageBitmap(((ItemInfoWithIcon) itemInfo).iconBitmap);
             } else if (itemInfo instanceof FolderInfo) {
@@ -169,7 +169,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
     }
 
     @Override
-    protected void onWidgetsBound() {
+    public void onWidgetsBound() {
     }
 
     public static class PrefsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {

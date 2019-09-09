@@ -16,16 +16,18 @@
 
 package com.android.launcher3.graphics;
 
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
+
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 
-import ch.deletescape.lawnchair.LawnchairUtilsKt;
+import androidx.core.content.ContextCompat;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
+
+import androidx.core.graphics.ColorUtils;
 
 /**
  * Contains colors based on the dominant color of an icon.
@@ -147,8 +149,8 @@ public class IconPalette {
         return ColorUtils.LABToColor(low, a, b);
     }
 
-    public static int getMutedColor(Context context, int color, float scrimAlpha) {
-        int scrim = ColorUtils.setAlphaComponent(Color.WHITE, (int) (255 * scrimAlpha));
-        return ColorUtils.compositeColors(scrim, color);
+    public static int getMutedColor(int color, float whiteScrimAlpha) {
+        int whiteScrim = setColorAlphaBound(Color.WHITE, (int) (255 * whiteScrimAlpha));
+        return ColorUtils.compositeColors(whiteScrim, color);
     }
 }

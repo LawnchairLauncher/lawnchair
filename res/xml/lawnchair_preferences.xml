@@ -10,7 +10,7 @@
      limitations under the License.
 -->
 
-<android.support.v7.preference.PreferenceScreen android:title="Settings"
+<androidx.preference.PreferenceScreen android:title="Settings"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -117,4 +117,4 @@
         android:layout="@layout/home_preference"
         android:key="about"/>
 
-</android.support.v7.preference.PreferenceScreen>
+</androidx.preference.PreferenceScreen>

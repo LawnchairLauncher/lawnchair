@@ -18,17 +18,13 @@
 package ch.deletescape.lawnchair.groups
 
 import android.content.Context
-import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.groups.ui.AppGroupsAdapter
 import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.preferences.DrawerTabTypeSelectionBottomSheet
-import ch.deletescape.lawnchair.theme.ThemeOverride
-import ch.deletescape.lawnchair.util.ThemedContextProvider
 import com.android.launcher3.R
 import com.android.launcher3.compat.UserManagerCompat
 

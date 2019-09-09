@@ -10,6 +10,7 @@ import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.LogAccelerateInterpolator;
 import com.android.launcher3.LogDecelerateInterpolator;
 import com.android.launcher3.Utilities;
@@ -110,9 +111,9 @@ public class PinchStateChangeTouchController extends AnimatorListenerAdapter imp
         }
         float currentSpan = scaleGestureDetector.getCurrentSpan() - scaleGestureDetector.getPreviousSpan();
         int width = mWorkspace.getWidth() * 6;
-        float f = LauncherState.OPTIONS.getWorkspaceScaleAndTranslation(mLauncher)[0];
+        float f = LauncherState.OPTIONS.getWorkspaceScaleAndTranslation(mLauncher).scale;
         currentSpan = mInterpolator.getInterpolation((Math.max(f,
-                Math.min(mFromState.getWorkspaceScaleAndTranslation(mLauncher)[0] + currentSpan /  width, 1)) - f) / (1 - f));
+                Math.min(mFromState.getWorkspaceScaleAndTranslation(mLauncher).scale + currentSpan /  width, 1)) - f) / (1 - f));
         if (mToState == LauncherState.OPTIONS) {
             currentSpan = 1.0f - currentSpan;
         }
@@ -188,10 +189,6 @@ public class PinchStateChangeTouchController extends AnimatorListenerAdapter imp
             i2 = !z;
         }
         if (i2) {
-            if (launcherState != mFromState) {
-                mLauncher.getUserEventDispatcher().logStateChangeAction(i, getDirectionForLog(), 6,
-                        mFromState.containerType, mToState.containerType, mLauncher.getWorkspace().getCurrentPage());
-            }
             mLauncher.getStateManager().goToState(launcherState, false);
         }
     }

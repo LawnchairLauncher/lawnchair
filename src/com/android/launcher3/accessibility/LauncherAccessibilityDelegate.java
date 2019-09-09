@@ -31,7 +31,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -40,6 +40,7 @@ import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.touch.ItemLongClickListener;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
@@ -128,9 +129,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         }
 
         // Do not add move actions for keyboard request as this uses virtual nodes.
-        if (!fromKeyboard && ((item instanceof ShortcutInfo)
-                || (item instanceof LauncherAppWidgetInfo)
-                || (item instanceof FolderInfo))) {
+        if (!fromKeyboard && itemSupportsAccessibleDrag(item)) {
             info.addAction(mActions.get(MOVE));
 
             if (item.container >= 0) {
@@ -147,6 +146,15 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         }
     }
 
+    private boolean itemSupportsAccessibleDrag(ItemInfo item) {
+        if (item instanceof WorkspaceItemInfo) {
+            // Support the action unless the item is in a context menu.
+            return item.screenId >= 0;
+        }
+        return (item instanceof LauncherAppWidgetInfo)
+                || (item instanceof FolderInfo);
+    }
+
     @Override
     public boolean performAccessibilityAction(View host, int action, Bundle args) {
         if ((host.getTag() instanceof ItemInfo)
@@ -161,13 +169,13 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             beginAccessibleDrag(host, item);
         } else if (action == ADD_TO_WORKSPACE) {
             final int[] coordinates = new int[2];
-            final long screenId = findSpaceOnWorkspace(item, coordinates);
+            final int screenId = findSpaceOnWorkspace(item, coordinates);
             mLauncher.getStateManager().goToState(NORMAL, true, new Runnable() {
 
                 @Override
                 public void run() {
                     if (item instanceof AppInfo) {
-                        ShortcutInfo info = ((AppInfo) item).makeShortcut();
+                        WorkspaceItemInfo info = ((AppInfo) item).makeWorkspaceItem();
                         mLauncher.getModelWriter().addItemToDatabase(info,
                                 Favorites.CONTAINER_DESKTOP,
                                 screenId, coordinates[0], coordinates[1]);
@@ -189,11 +197,11 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         } else if (action == MOVE_TO_WORKSPACE) {
             Folder folder = Folder.getOpen(mLauncher);
             folder.close(true);
-            ShortcutInfo info = (ShortcutInfo) item;
+            WorkspaceItemInfo info = (WorkspaceItemInfo) item;
             folder.getInfo().remove(info, false);
 
             final int[] coordinates = new int[2];
-            final long screenId = findSpaceOnWorkspace(item, coordinates);
+            final int screenId = findSpaceOnWorkspace(item, coordinates);
             mLauncher.getModelWriter().moveItemInDatabase(info,
                     LauncherSettings.Favorites.CONTAINER_DESKTOP,
                     screenId, coordinates[0], coordinates[1]);
@@ -212,7 +220,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             });
         } else if (action == RESIZE) {
             final LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) item;
-            final ArrayList<Integer> actions = getSupportedResizeActions(host, info);
+            final IntArray actions = getSupportedResizeActions(host, info);
             CharSequence[] labels = new CharSequence[actions.size()];
             for (int i = 0; i < actions.size(); i++) {
                 labels[i] = mLauncher.getText(actions.get(i));
@@ -245,8 +253,8 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         return false;
     }
 
-    private ArrayList<Integer> getSupportedResizeActions(View host, LauncherAppWidgetInfo info) {
-        ArrayList<Integer> actions = new ArrayList<>();
+    private IntArray getSupportedResizeActions(View host, LauncherAppWidgetInfo info) {
+        IntArray actions = new IntArray();
 
         AppWidgetProviderInfo providerInfo = ((LauncherAppWidgetHostView) host).getAppWidgetInfo();
         if (providerInfo == null) {
@@ -395,10 +403,10 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     /**
      * Find empty space on the workspace and returns the screenId.
      */
-    protected long findSpaceOnWorkspace(ItemInfo info, int[] outCoordinates) {
+    protected int findSpaceOnWorkspace(ItemInfo info, int[] outCoordinates) {
         Workspace workspace = mLauncher.getWorkspace();
-        ArrayList<Long> workspaceScreens = workspace.getScreenOrder();
-        long screenId;
+        IntArray workspaceScreens = workspace.getScreenOrder();
+        int screenId;
 
         // First check if there is space on the current screen.
         int screenIndex = workspace.getCurrentPage();

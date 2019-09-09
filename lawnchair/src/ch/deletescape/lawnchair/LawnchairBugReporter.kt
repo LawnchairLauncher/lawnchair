@@ -22,8 +22,8 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Environment
 import android.os.strictmode.Violation
-import android.support.annotation.RequiresApi
-import android.support.v4.content.ContextCompat
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import ch.deletescape.lawnchair.bugreport.BugReport
 import ch.deletescape.lawnchair.bugreport.BugReportClient
 import ch.deletescape.lawnchair.bugreport.BugReportFileManager

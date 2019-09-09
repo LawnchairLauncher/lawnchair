@@ -5,10 +5,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 
-class LogContainerProvider extends FrameLayout implements UserEventDispatcher.LogContainerProvider {
+class LogContainerProvider extends FrameLayout implements StatsLogUtils.LogContainerProvider {
     private final int mPredictedRank;
 
     public LogContainerProvider(Context context, int predictedRank) {

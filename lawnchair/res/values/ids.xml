@@ -21,4 +21,8 @@
     <item name="dismiss_drop_target_label" type="id" />
     <item name="preference_highlighted" type="id"/>
     <item name="font_switcher" type="id"/>
+    <item name="view_scrim" type="id"/>
+
+    <!-- TODO: remove this -->
+    <item name="search_container_hotseat" type="id"/>
 </resources>

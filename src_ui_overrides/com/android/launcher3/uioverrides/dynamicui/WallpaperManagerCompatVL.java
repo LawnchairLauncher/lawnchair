@@ -18,7 +18,6 @@ package com.android.launcher3.uioverrides.dynamicui;
 import static android.app.WallpaperManager.FLAG_SYSTEM;
 
 import static com.android.launcher3.Utilities.getDevicePrefs;
-import static com.android.launcher3.graphics.ColorExtractor.findDominantColorByHue;
 
 import android.app.WallpaperInfo;
 import android.app.WallpaperManager;
@@ -43,15 +42,15 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.ParcelFileDescriptor;
-import android.support.annotation.Nullable;
-import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 import android.util.Pair;
 
-import com.android.launcher3.Utilities;
+import com.android.launcher3.icons.ColorExtractor;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import androidx.annotation.Nullable;
 
 public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
 
@@ -61,6 +60,8 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
     private static final String KEY_COLORS = "wallpaper_parsed_colors";
     private static final String ACTION_EXTRACTION_COMPLETE =
             "com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL.EXTRACTION_COMPLETE";
+
+    public static final int WALLPAPER_COMPAT_JOB_ID = 1;
 
     private final ArrayList<OnColorsChangedListenerCompat> mListeners = new ArrayList<>();
 
@@ -130,7 +131,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
     }
 
     private void reloadColors() {
-        JobInfo job = new JobInfo.Builder(Utilities.WALLPAPER_COMPAT_JOB_ID,
+        JobInfo job = new JobInfo.Builder(WALLPAPER_COMPAT_JOB_ID,
                 new ComponentName(mContext, ColorExtractionService.class))
                 .setMinimumLatency(0).build();
         ((JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE)).schedule(job);
@@ -145,24 +146,6 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
     }
 
     private static final int getWallpaperId(Context context) {
-        if (!Utilities.ATLEAST_NOUGAT) {
-            Drawable wallpaper = null;
-            try {
-                wallpaper = WallpaperManager.getInstance(context).getDrawable();
-            } catch (RuntimeException e) {
-                Log.e(TAG, "Failed to create a wallpaper ID", e);
-            }
-            if (wallpaper != null) {
-                Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-                Canvas cv = new Canvas(bm);
-                wallpaper.setBounds(0, 0, cv.getWidth(), cv.getHeight());
-                wallpaper.draw(cv);
-                int c = bm.getPixel(0, 0);
-                bm.recycle();
-                return c;
-            }
-            return -1;
-        }
         return context.getSystemService(WallpaperManager.class).getWallpaperId(FLAG_SYSTEM);
     }
 
@@ -203,6 +186,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
 
         private HandlerThread mWorkerThread;
         private Handler mWorkerHandler;
+        private ColorExtractor mColorExtractor;
 
         @Override
         public void onCreate() {
@@ -210,6 +194,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
             mWorkerThread = new HandlerThread("ColorExtractionService");
             mWorkerThread.start();
             mWorkerHandler = new Handler(mWorkerThread.getLooper());
+            mColorExtractor = new ColorExtractor();
         }
 
         @Override
@@ -246,27 +231,25 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
                 // For live wallpaper, extract colors from thumbnail
                 drawable = info.loadThumbnail(getPackageManager());
             } else {
-                if (Utilities.ATLEAST_NOUGAT) {
-                    try (ParcelFileDescriptor fd = wm.getWallpaperFile(FLAG_SYSTEM)) {
-                        BitmapRegionDecoder decoder = BitmapRegionDecoder
-                                .newInstance(fd.getFileDescriptor(), false);
+                try (ParcelFileDescriptor fd = wm.getWallpaperFile(FLAG_SYSTEM)) {
+                    BitmapRegionDecoder decoder = BitmapRegionDecoder
+                            .newInstance(fd.getFileDescriptor(), false);
 
-                        int requestedArea = decoder.getWidth() * decoder.getHeight();
-                        BitmapFactory.Options options = new BitmapFactory.Options();
+                    int requestedArea = decoder.getWidth() * decoder.getHeight();
+                    BitmapFactory.Options options = new BitmapFactory.Options();
 
-                        if (requestedArea > MAX_WALLPAPER_EXTRACTION_AREA) {
-                            double areaRatio =
-                                    (double) requestedArea / MAX_WALLPAPER_EXTRACTION_AREA;
-                            double nearestPowOf2 =
-                                    Math.floor(Math.log(areaRatio) / (2 * Math.log(2)));
-                            options.inSampleSize = (int) Math.pow(2, nearestPowOf2);
-                        }
-                        Rect region = new Rect(0, 0, decoder.getWidth(), decoder.getHeight());
-                        bitmap = decoder.decodeRegion(region, options);
-                        decoder.recycle();
-                    } catch (IOException | RuntimeException e) {
-                        Log.e(TAG, "Fetching partial bitmap failed, trying old method", e);
+                    if (requestedArea > MAX_WALLPAPER_EXTRACTION_AREA) {
+                        double areaRatio =
+                                (double) requestedArea / MAX_WALLPAPER_EXTRACTION_AREA;
+                        double nearestPowOf2 =
+                                Math.floor(Math.log(areaRatio) / (2 * Math.log(2)));
+                        options.inSampleSize = (int) Math.pow(2, nearestPowOf2);
                     }
+                    Rect region = new Rect(0, 0, decoder.getWidth(), decoder.getHeight());
+                    bitmap = decoder.decodeRegion(region, options);
+                    decoder.recycle();
+                } catch (IOException | NullPointerException e) {
+                    Log.e(TAG, "Fetching partial bitmap failed, trying old method", e);
                 }
                 if (bitmap == null) {
                     try {
@@ -296,7 +279,8 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
             String value = VERSION_PREFIX + wallpaperId;
 
             if (bitmap != null) {
-                int color = findDominantColorByHue(bitmap, MAX_WALLPAPER_EXTRACTION_AREA);
+                int color = mColorExtractor.findDominantColorByHue(bitmap,
+                        MAX_WALLPAPER_EXTRACTION_AREA);
                 value += "," + color;
             }
 

@@ -6,13 +6,14 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.Interpolator;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
@@ -20,7 +21,6 @@ import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
 import ch.deletescape.lawnchair.globalsearch.SearchProvider;
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
 import ch.deletescape.lawnchair.globalsearch.providers.AppSearchSearchProvider;
-import ch.deletescape.lawnchair.globalsearch.providers.GoogleSearchProvider;
 import ch.deletescape.lawnchair.globalsearch.providers.web.WebSearchProvider;
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.Launcher;
@@ -28,6 +28,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.SearchUiManager;
+import com.android.launcher3.anim.PropertySetter;
 import com.google.android.apps.nexuslauncher.search.SearchThread;
 import org.jetbrains.annotations.NotNull;
 
@@ -75,18 +76,16 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         mHint = findViewById(R.id.qsb_hint);
     }
 
-    public void setInsets(Rect rect) {
-        c(Utilities.getDevicePrefs(getContext()));
-        MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
-        mlp.topMargin = getTopMargin(rect);
-        requestLayout();
+    @Override
+    public float getScrollRangeDelta(Rect insets) {
         if (mActivity.getDeviceProfile().isVerticalBarLayout()) {
-            mActivity.getAllAppsController().setScrollRangeDelta(0);
+            return 0;
         } else {
             float delta = HotseatQsbWidget.getBottomMargin(mActivity) + Dy;
             LawnchairPreferences prefs = LawnchairPreferences.Companion.getInstance(getContext());
             if (!prefs.getDockHide()) {
-                delta += mlp.height + mlp.topMargin;
+                MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
+                delta += mlp.height + getTopMargin(insets);
                 if (!prefs.getDockSearchBar()) {
                     delta -= mlp.height;
                     delta -= mlp.topMargin;
@@ -96,8 +95,15 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
             } else {
                 delta -= mActivity.getResources().getDimensionPixelSize(R.dimen.vertical_drag_handle_size);
             }
-            mActivity.getAllAppsController().setScrollRangeDelta(Math.round(delta));
+            return Math.round(delta);
         }
+    }
+
+    public void setInsets(Rect rect) {
+        c(Utilities.getDevicePrefs(getContext()));
+        MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
+        mlp.topMargin = getTopMargin(rect);
+        requestLayout();
     }
 
     public int getTopMargin(Rect rect) {
@@ -166,7 +172,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
             return (i - this.mAppsView.getActiveRecyclerView().getPaddingLeft()) - this.mAppsView
                     .getActiveRecyclerView().getPaddingRight();
         }
-        View view = this.mActivity.getHotseat().getLayout();
+        View view = this.mActivity.getHotseat();
         return (i - view.getPaddingLeft()) - view.getPaddingRight();
     }
 
@@ -246,8 +252,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         return !Utilities
                 .getLawnchairPrefs(getContext()).getAllAppsGlobalSearch()
                 || provider instanceof AppSearchSearchProvider
-                || provider instanceof WebSearchProvider
-                || (!Utilities.ATLEAST_NOUGAT && provider instanceof GoogleSearchProvider);
+                || provider instanceof WebSearchProvider;
     }
 
     public void searchFallback(String query) {
@@ -372,5 +377,11 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         if (!mLowPerformanceMode && mClearBitmap != null) {
             mClearShadowHelper.draw(mClearBitmap, canvas, left, top, right);
         }
+    }
+
+    @Override
+    public void setContentVisibility(int visibleElements, PropertySetter setter,
+            Interpolator interpolator) {
+
     }
 }

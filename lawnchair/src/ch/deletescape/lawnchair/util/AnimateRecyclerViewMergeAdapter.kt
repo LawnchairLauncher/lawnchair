@@ -17,7 +17,7 @@
 
 package ch.deletescape.lawnchair.util
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import me.mvdw.recyclerviewmergeadapter.adapter.RecyclerViewMergeAdapter
 
 open class AnimateRecyclerViewMergeAdapter : RecyclerViewMergeAdapter() {

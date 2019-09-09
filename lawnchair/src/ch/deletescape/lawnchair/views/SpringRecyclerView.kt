@@ -19,11 +19,11 @@ package ch.deletescape.lawnchair.views
 
 import android.content.Context
 import android.graphics.Canvas
-import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
-import android.support.annotation.Keep
+import androidx.annotation.Keep
+import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.getColorAccent
 import ch.deletescape.lawnchair.getColorAttr

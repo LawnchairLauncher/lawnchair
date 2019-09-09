@@ -25,6 +25,7 @@ import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.util.Log;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -39,8 +40,10 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.GridSizeMigrationTask;
+import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.util.GridOccupancy;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.widget.custom.CustomWidgetParser;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,16 +51,18 @@ import java.util.List;
 
 public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
 
+    private static final String TAG = "HomeWidgetMigrationTask";
+
     public static final String PREF_MIGRATION_STATUS = "pref_migratedSmartspace";
 
     private final Context mContext;
     private final int mTrgX, mTrgY;
 
     private HomeWidgetMigrationTask(Context context,
-            InvariantDeviceProfile idp,
+            SQLiteDatabase db,
             HashSet<String> validPackages,
             Point size) {
-        super(context, idp, validPackages, size, size);
+        super(context, db, validPackages, size, size);
 
         mContext = context;
 
@@ -67,7 +72,7 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
 
     @Override
     protected boolean migrateWorkspace() throws Exception {
-        ArrayList<Long> allScreens = LauncherModel.loadWorkspaceScreensDb(mContext);
+        IntArray allScreens = getWorkspaceScreenIds(mDb);
         if (allScreens.isEmpty()) {
             throw new Exception("Unable to get workspace screens");
         }
@@ -78,7 +83,8 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
 
         if (!allowOverlap) {
             ArrayList<DbEntry> firstScreenItems = new ArrayList<>();
-            for (long screenId : allScreens) {
+            for (int i = 0; i < allScreens.size(); i++) {
+                int screenId = allScreens.get(i);
                 ArrayList<DbEntry> items = loadWorkspaceEntries(screenId);
                 if (screenId == Workspace.FIRST_SCREEN_ID) {
                     firstScreenItems.addAll(items);
@@ -113,12 +119,11 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
                 values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_CUSTOM_APPWIDGET);
                 values.put(Favorites.APPWIDGET_ID, widgetId);
                 values.put(Favorites.APPWIDGET_PROVIDER, provider.provider.flattenToString());
-                mUpdateOperations.add(ContentProviderOperation
-                        .newInsert(Favorites.CONTENT_URI).withValues(values).build());
+                mDb.insert(Favorites.TABLE_NAME, null, values);
             }
         }
 
-        return applyOperations();
+        return true;
     }
 
     @SuppressLint("ApplySharedPref")
@@ -126,7 +131,7 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
         SharedPreferences prefs = Utilities.getPrefs(context);
 
         boolean needsMigration = !prefs.getBoolean(PREF_MIGRATION_STATUS, false)
-                && prefs.getBoolean(SMARTSPACE_PREF, true);
+                && prefs.getBoolean(SMARTSPACE_PREF, false);
         if (!needsMigration) return;
         // Save the pref so we only run migration once
         prefs.edit().putBoolean(PREF_MIGRATION_STATUS, true).commit();
@@ -136,13 +141,19 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
         InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
         Point size = new Point(idp.numColumns, idp.numRows);
 
-        try {
-            if (!new HomeWidgetMigrationTask(context, LauncherAppState.getIDP(context),
+        long migrationStartTime = System.currentTimeMillis();
+        try (SQLiteTransaction transaction = (SQLiteTransaction) Settings.call(
+                context.getContentResolver(), Settings.METHOD_NEW_TRANSACTION)
+                .getBinder(Settings.EXTRA_VALUE)) {
+            if (!new HomeWidgetMigrationTask(context, transaction.getDb(),
                     validPackages, size).migrateWorkspace()) {
                 throw new RuntimeException("Failed to migrate Smartspace");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error during grid migration", e);
+        } finally {
+            Log.v(TAG, "Home widget migration completed in "
+                    + (System.currentTimeMillis() - migrationStartTime));
         }
     }
 }

@@ -18,18 +18,11 @@
 package ch.deletescape.lawnchair.sesame.preferences
 
 import android.content.Context
-import android.os.Parcelable
-import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
-import android.widget.Toast
-import ch.deletescape.lawnchair.*
-import ch.deletescape.lawnchair.globalsearch.providers.SesameSearchProvider
-import ch.deletescape.lawnchair.preferences.ResumablePreference
+import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
 import ch.deletescape.lawnchair.sesame.Sesame
 import com.android.launcher3.R
-import com.android.launcher3.util.PackageManagerHelper
-import ninja.sesame.lib.bridge.v1.SesameFrontend
 
 class SesameSearchUpsellPreference(context: Context, attrs: AttributeSet?): StyledSwitchPreferenceCompat(context, attrs) {
     private val prefs = context.lawnchairPrefs

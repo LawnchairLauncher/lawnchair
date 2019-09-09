@@ -21,7 +21,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.location.Criteria
 import android.location.LocationManager
-import android.support.annotation.Keep
+import androidx.annotation.Keep
 import ch.deletescape.lawnchair.checkLocationAccess
 import ch.deletescape.lawnchair.location.IPLocation
 import ch.deletescape.lawnchair.perms.CustomPermissionManager

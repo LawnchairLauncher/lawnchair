@@ -18,11 +18,11 @@
 package ch.deletescape.lawnchair.folder
 
 import com.android.launcher3.FolderInfo
-import com.android.launcher3.ShortcutInfo
+import com.android.launcher3.WorkspaceItemInfo
 
 class FirstItemProvider(private val info: FolderInfo) : FolderInfo.FolderListener {
 
-    var firstItem: ShortcutInfo? = findFirstItem()
+    var firstItem: WorkspaceItemInfo? = findFirstItem()
         private set
 
     init {
@@ -35,8 +35,8 @@ class FirstItemProvider(private val info: FolderInfo) : FolderInfo.FolderListene
         firstItem = findFirstItem()
     }
 
-    override fun onAdd(item: ShortcutInfo?, rank: Int) = Unit
-    override fun onRemove(item: ShortcutInfo?) = Unit
+    override fun onAdd(item: WorkspaceItemInfo?, rank: Int) = Unit
+    override fun onRemove(item: WorkspaceItemInfo?) = Unit
     override fun onTitleChanged(title: CharSequence?) = Unit
     override fun prepareAutoUpdate() = Unit
 }

@@ -16,8 +16,6 @@
 
 package com.android.launcher3;
 
-import android.appwidget.AppWidgetHostView;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -27,14 +25,14 @@ import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.view.Surface;
 import android.view.WindowManager;
-import ch.deletescape.lawnchair.LawnchairPreferences;
+
 import com.android.launcher3.CellLayout.ContainerType;
-import com.android.launcher3.badge.BadgeRenderer;
-import com.android.launcher3.graphics.IconNormalizer;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.IconShape;
+import com.android.launcher3.icons.DotRenderer;
+import com.android.launcher3.icons.IconNormalizer;
 
-public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeListener {
-
-    private Context mContext;
+public class DeviceProfile {
 
     public final InvariantDeviceProfile inv;
 
@@ -43,16 +41,18 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     public final boolean isLargeTablet;
     public final boolean isPhone;
     public final boolean transposeLayoutWithOrientation;
-    public boolean isTallDevice;
 
     // Device properties in current orientation
     public final boolean isLandscape;
     public final boolean isMultiWindowMode;
 
-    public int widthPx;
-    public int heightPx;
-    public int availableWidthPx;
-    public int availableHeightPx;
+    public final int widthPx;
+    public final int heightPx;
+    public final int availableWidthPx;
+    public final int availableHeightPx;
+
+    public final float aspectRatio;
+
     /**
      * The maximum amount of left/right workspace padding as a percentage of the screen width.
      * To be clear, this means that up to 7% of the screen width can be used as left padding, and
@@ -67,25 +67,19 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
 
     // Workspace
     public final int desiredWorkspaceLeftRightMarginPx;
-    public int cellLayoutPaddingLeftRightPx;
+    public final int cellLayoutPaddingLeftRightPx;
     public final int cellLayoutBottomPaddingPx;
     public final int edgeMarginPx;
-    public final Rect defaultWidgetPadding;
-    public final int defaultPageSpacingPx;
-    private final int topWorkspacePadding;
     public float workspaceSpringLoadShrinkFactor;
     public final int workspaceSpringLoadedBottomSpace;
-    public float workspaceOptionsShrinkFactor;
 
     // Drag handle
-    public int verticalDragHandleSizePx;
+    public final int verticalDragHandleSizePx;
     private final int verticalDragHandleOverlapWorkspace;
 
     // Workspace icons
     public int iconSizePx;
-    public int iconSizeOriginalPx;
     public int iconTextSizePx;
-    public int iconTextSizeOriginalPx;
     public int iconDrawablePaddingPx;
     public int iconDrawablePaddingOriginalPx;
 
@@ -93,53 +87,34 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     public int cellHeightPx;
     public int workspaceCellPaddingXPx;
 
-    public int hotseatIconSizePx;
-    public int hotseatIconSizeOriginalPx;
-
     // Folder
     public int folderIconSizePx;
     public int folderIconOffsetYPx;
 
-    // Drawer folder
-    public int allAppsFolderIconSizePx;
-    public int allAppsFolderIconOffsetYPx;
-
     // Folder cell
     public int folderCellWidthPx;
     public int folderCellHeightPx;
-
-    // Drawer folder cell
-    public int allAppsFolderCellWidthPx;
-    public int allAppsFolderCellHeightPx;
 
     // Folder child
     public int folderChildIconSizePx;
     public int folderChildTextSizePx;
     public int folderChildDrawablePaddingPx;
 
-    // Drawer folder child
-    public int allAppsFolderChildIconSizePx;
-    public int allAppsFolderChildTextSizePx;
-    public int allAppsFolderChildDrawablePaddingPx;
-
     // Hotseat
     public int hotseatCellHeightPx;
     // In portrait: size = height, in landscape: size = width
     public int hotseatBarSizePx;
-    public int hotseatBarTopPaddingPx;
+    public final int hotseatBarTopPaddingPx;
     public int hotseatBarBottomPaddingPx;
     // Start is the side next to the nav bar, end is the side next to the workspace
-    public int hotseatBarSidePaddingStartPx;
-    public int hotseatBarSidePaddingEndPx;
-    public int hotseatIconTextSizePx;
-    public int hotseatIconTextSizeOriginalPx;
+    public final int hotseatBarSidePaddingStartPx;
+    public final int hotseatBarSidePaddingEndPx;
 
     // All apps
     public int allAppsCellHeightPx;
     public int allAppsIconSizePx;
     public int allAppsIconDrawablePaddingPx;
     public float allAppsIconTextSizePx;
-    public float allAppsIconTextSizeOriginalPx;
 
     // Widgets
     public final PointF appWidgetScale = new PointF(1.0f, 1.0f);
@@ -151,25 +126,17 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     private final Rect mInsets = new Rect();
     public final Rect workspacePadding = new Rect();
     private final Rect mHotseatPadding = new Rect();
+    // When true, nav bar is on the left side of the screen.
     private boolean mIsSeascape;
 
-    // Icon badges
-    public BadgeRenderer mBadgeRenderer;
-
-    private final Point minSize;
-    private final Point maxSize;
-
-    private final LawnchairPreferences prefs;
+    // Notification dots
+    public DotRenderer mDotRenderer;
 
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
             Point minSize, Point maxSize,
             int width, int height, boolean isLandscape, boolean isMultiWindowMode) {
 
-        widthPx = width;
-        heightPx = height;
         this.inv = inv;
-        this.minSize = minSize;
-        this.maxSize = maxSize;
         this.isLandscape = isLandscape;
         this.isMultiWindowMode = isMultiWindowMode;
 
@@ -185,11 +152,14 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         }
 
         Resources res = context.getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
 
         // Constants from resources
         isTablet = res.getBoolean(R.bool.is_tablet);
         isLargeTablet = res.getBoolean(R.bool.is_large_tablet);
         isPhone = !isTablet && !isLargeTablet;
+        aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
+        boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
 
         // Some more constants
         transposeLayoutWithOrientation =
@@ -198,27 +168,27 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         context = getContext(context, isVerticalBarLayout()
                 ? Configuration.ORIENTATION_LANDSCAPE
                 : Configuration.ORIENTATION_PORTRAIT);
-        mContext = context;
         res = context.getResources();
 
-
-        ComponentName cn = new ComponentName(context.getPackageName(),
-                this.getClass().getName());
-        defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         desiredWorkspaceLeftRightMarginPx = isVerticalBarLayout() ? 0 : edgeMarginPx;
+
         int cellLayoutPaddingLeftRightMultiplier = !isVerticalBarLayout() && isTablet
                 ? PORTRAIT_TABLET_LEFT_RIGHT_PADDING_MULTIPLIER : 1;
-        cellLayoutPaddingLeftRightPx = cellLayoutPaddingLeftRightMultiplier *
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
-        cellLayoutBottomPaddingPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_bottom_padding);
+        int cellLayoutPadding = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
+        if (isLandscape) {
+            cellLayoutPaddingLeftRightPx = 0;
+            cellLayoutBottomPaddingPx = cellLayoutPadding;
+        } else {
+            cellLayoutPaddingLeftRightPx = cellLayoutPaddingLeftRightMultiplier * cellLayoutPadding;
+            cellLayoutBottomPaddingPx = 0;
+        }
+
+        verticalDragHandleSizePx = res.getDimensionPixelSize(
+                R.dimen.vertical_drag_handle_size);
         verticalDragHandleOverlapWorkspace =
                 res.getDimensionPixelSize(R.dimen.vertical_drag_handle_overlap_workspace);
-        defaultPageSpacingPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_page_spacing);
-        topWorkspacePadding =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_top_padding);
+
         iconDrawablePaddingOriginalPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_icon_drawable_padding);
         dropTargetBarSizePx = res.getDimensionPixelSize(R.dimen.dynamic_grid_drop_target_size);
@@ -227,11 +197,42 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
 
         workspaceCellPaddingXPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_padding_x);
 
-        prefs = Utilities.getLawnchairPrefs(context);
-        prefs.addOnPreferenceChangeListener(this, "pref_fullWidthWidgets", "pref_dockSearchBar",
-                "pref_twoRowDock", "pref_compactDock", "pref_allAppsPaddingScale", "pref_dockScale",
-                "pref_iconTextScaleSB", "pref_allAppsIconTextScale",
-                "pref_displayNotificationCount");
+        hotseatBarTopPaddingPx =
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
+        hotseatBarBottomPaddingPx = (isTallDevice ? 0
+                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding))
+                + res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_padding);
+        hotseatBarSidePaddingEndPx =
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding);
+        // Add a bit of space between nav bar and hotseat in vertical bar layout.
+        hotseatBarSidePaddingStartPx = isVerticalBarLayout() ? verticalDragHandleSizePx : 0;
+        hotseatBarSizePx = ResourceUtils.pxFromDp(inv.iconSize, dm) + (isVerticalBarLayout()
+                ? (hotseatBarSidePaddingStartPx + hotseatBarSidePaddingEndPx)
+                : (res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_extra_vertical_size)
+                        + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx));
+
+        // Calculate all of the remaining variables.
+        updateAvailableDimensions(dm, res);
+
+        // Now that we have all of the variables calculated, we can tune certain sizes.
+        if (!isVerticalBarLayout() && isPhone && isTallDevice) {
+            // We increase the hotseat size when there is extra space.
+            // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
+            // in portrait mode closer together by adding more height to the hotseat.
+            // Note: This calculation was created after noticing a pattern in the design spec.
+            int extraSpace = getCellSize().y - iconSizePx - iconDrawablePaddingPx * 2
+                    - verticalDragHandleSizePx;
+            hotseatBarSizePx += extraSpace;
+            hotseatBarBottomPaddingPx += extraSpace;
+
+            // Recalculate the available dimensions using the new hotseat size.
+            updateAvailableDimensions(dm, res);
+        }
+        updateWorkspacePadding();
+
+        // This is done last, after iconSizePx is calculated above.
+        mDotRenderer = new DotRenderer(iconSizePx, IconShape.getShapePath(),
+                IconShape.DEFAULT_PATH_SIZE);
     }
 
     public DeviceProfile copy(Context context) {
@@ -270,130 +271,10 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
 
     /**
      * Inverse of {@link #getMultiWindowProfile(Context, Point)}
-     *
      * @return device profile corresponding to the current orientation in non multi-window mode.
      */
     public DeviceProfile getFullScreenProfile() {
         return isLandscape ? inv.landscapeProfile : inv.portraitProfile;
-    }
-
-    /**
-     * All values which (even indirectly) depend on preferences have to be calculated here. This
-     * removes the need to completely restart the launcher to apply changes. A simple recreate
-     * should be enough to apply this.
-     */
-    @Override
-    public void onValueChanged(String key, LawnchairPreferences prefs, boolean force) {
-        Resources res = mContext.getResources();
-        DisplayMetrics dm = res.getDisplayMetrics();
-
-        boolean fullWidthWidgets = prefs.getAllowFullWidthWidgets();
-        boolean dockSearchBar = prefs.getDockSearchBar();
-        boolean dockHidden = prefs.getDockHide();
-        int dockRows = prefs.getDockRowsCount();
-        float dockScale = prefs.getDockScale();
-
-        cellLayoutPaddingLeftRightPx = (!isVerticalBarLayout() && fullWidthWidgets) ? 0
-                : res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
-
-        float aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
-        isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
-
-        hotseatBarTopPaddingPx =
-                res.getDimensionPixelSize(dockSearchBar ?
-                        R.dimen.dynamic_grid_hotseat_top_padding :
-                        R.dimen.v1_dynamic_grid_hotseat_top_padding);
-        int extraHotseatBottomPadding = !prefs.getDockGradientStyle() ? 0
-                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding);
-        hotseatBarBottomPaddingPx = extraHotseatBottomPadding
-                + res.getDimensionPixelSize(dockSearchBar ?
-                R.dimen.dynamic_grid_hotseat_bottom_padding :
-                R.dimen.v1_dynamic_grid_hotseat_bottom_padding);
-        hotseatBarSidePaddingEndPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding);
-        // Add a bit of space between nav bar and hotseat.
-        hotseatBarSidePaddingStartPx = res.getDimensionPixelSize(R.dimen.hotseat_navbar_padding);
-        hotseatBarSizePx = isVerticalBarLayout()
-                ? hotseatIconSizePx + hotseatBarSidePaddingStartPx
-                + hotseatBarSidePaddingEndPx
-                : res.getDimensionPixelSize(dockSearchBar ?
-                        R.dimen.dynamic_grid_hotseat_size :
-                        R.dimen.v1_dynamic_grid_hotseat_size) * dockRows
-                        + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
-        verticalDragHandleSizePx = res.getDimensionPixelSize(
-                R.dimen.vertical_drag_handle_size);
-
-        // Calculate all of the remaining variables.
-        updateAvailableDimensions(dm, res);
-
-        iconTextSizePx = (int) (iconTextSizeOriginalPx * prefs.getDesktopTextScale());
-        allAppsIconTextSizePx = (int) (allAppsIconTextSizeOriginalPx * prefs.getDrawerTextScale());
-        float dockTextScale = prefs.getDockTextScale();
-        if (dockTextScale < 0) {
-            hotseatIconTextSizePx = iconTextSizePx;
-        } else {
-            hotseatIconTextSizePx = (int) (hotseatIconTextSizeOriginalPx * dockTextScale);
-        }
-
-        // Calculate again to apply text size
-        updateAvailableDimensions(dm, res);
-
-        int extraSpaceFromY = Math.max(0, getCellSizeOriginal().y - iconSizeOriginalPx
-                - iconDrawablePaddingOriginalPx * 2 - verticalDragHandleSizePx
-                - extraHotseatBottomPadding);
-        int extraSpaceFromScale;
-        if (dockScale < 0f) {
-            extraSpaceFromScale = extraSpaceFromY;
-        } else {
-            extraSpaceFromScale = (int) (hotseatBarSizePx * (dockScale - 1));
-        }
-        // Now that we have all of the variables calculated, we can tune certain sizes.
-        if (!isVerticalBarLayout() && isPhone && isTallDevice) {
-            // We increase the hotseat size when there is extra space.
-            // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
-            // in portrait mode closer together by adding more height to the hotseat.
-            // Note: This calculation was created after noticing a pattern in the design spec.
-            int extraSpace = Utilities.boundToRange(extraSpaceFromScale, 0, extraSpaceFromY);
-            hotseatBarSizePx += extraSpace;
-            if (prefs.getDockGradientStyle()) {
-                hotseatBarBottomPaddingPx += extraSpace;
-            } else {
-                hotseatBarBottomPaddingPx += extraSpace / 2;
-                hotseatBarTopPaddingPx += extraSpace / 2;
-            }
-
-            // Recalculate the available dimensions using the new hotseat size.
-            updateAvailableDimensions(dm, res);
-            extraSpaceFromScale -= extraSpace;
-        }
-
-        if (dockHidden) {
-            hotseatBarSizePx = 0;
-            verticalDragHandleSizePx = 0;
-
-            updateAvailableDimensions(dm, res);
-        } else if (!isVerticalBarLayout()) {
-            float adjustedDockScale = (float) extraSpaceFromScale / hotseatBarSizePx + 1;
-            int qsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
-            verticalDragHandleSizePx *= adjustedDockScale;
-            int bottomPaddingNew = Math.max((int)(hotseatBarBottomPaddingPx * adjustedDockScale), dockSearchBar ? qsbHeight : 0);
-            if (prefs.getDockGradientStyle()) {
-                hotseatBarTopPaddingPx *= adjustedDockScale;
-                hotseatBarBottomPaddingPx = bottomPaddingNew;
-            } else {
-                int difference = hotseatBarBottomPaddingPx - bottomPaddingNew;
-                hotseatBarTopPaddingPx -= difference;
-                hotseatBarBottomPaddingPx = bottomPaddingNew;
-            }
-
-            int minHeight = hotseatCellHeightPx * dockRows + hotseatBarBottomPaddingPx + hotseatBarTopPaddingPx;
-            hotseatBarSizePx = Math.max(minHeight, (int) (hotseatBarSizePx * adjustedDockScale));
-        }
-
-        updateWorkspacePadding();
-
-        // This is done last, after iconSizePx is calculated above.
-        mBadgeRenderer = new BadgeRenderer(iconSizePx, prefs.getDisplayNotificationCount());
     }
 
     /**
@@ -405,14 +286,12 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         iconDrawablePaddingPx = 0;
         cellHeightPx = iconSizePx;
 
-        int labelRows = prefs.getDrawerLabelRows();
-
         // In normal cases, All Apps cell height should equal the Workspace cell height.
         // Since we are removing labels from the Workspace, we need to manually compute the
         // All Apps cell height.
         int topBottomPadding = allAppsIconDrawablePaddingPx * (isVerticalBarLayout() ? 2 : 1);
         allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx
-                + Utilities.calculateTextHeight(allAppsIconTextSizePx) * labelRows
+                + Utilities.calculateTextHeight(allAppsIconTextSizePx)
                 + topBottomPadding * 2;
     }
 
@@ -430,23 +309,15 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     }
 
     private void updateIconSize(float scale, Resources res, DisplayMetrics dm) {
-        boolean dockVisible = !prefs.getDockHide();
-        int labelRowCount = prefs.getHomeLabelRows();
-        int drawerLabelRowCount = prefs.getDrawerLabelRows();
-        int dockLabelRowCount = prefs.getDockLabelRows();
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
         float invIconSizePx = isVerticalLayout ? inv.landscapeIconSize : inv.iconSize;
-        iconSizeOriginalPx = Utilities.pxFromDp(invIconSizePx, dm);
-        iconSizePx = (int) (iconSizeOriginalPx * scale);
-        iconTextSizeOriginalPx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
-        iconTextSizePx = (int) (iconTextSizePx * scale);
-        iconDrawablePaddingPx =
-                (int) (iconDrawablePaddingOriginalPx * scale) -
-                        (iconTextSizeOriginalPx - iconTextSizePx);
+        iconSizePx = Math.max(1, (int) (ResourceUtils.pxFromDp(invIconSizePx, dm) * scale));
+        iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
+        iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
 
-        int textHeight = Utilities.calculateTextHeight(iconTextSizePx) * labelRowCount;
-        cellHeightPx = iconSizePx + iconDrawablePaddingPx + textHeight;
+        cellHeightPx = iconSizePx + iconDrawablePaddingPx
+                + Utilities.calculateTextHeight(iconTextSizePx);
         int cellYPadding = (getCellSize().y - cellHeightPx) / 2;
         if (iconDrawablePaddingPx > cellYPadding && !isVerticalLayout
                 && !isMultiWindowMode) {
@@ -459,23 +330,10 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         cellWidthPx = iconSizePx + iconDrawablePaddingPx;
 
         // All apps
-        float invAllAppsIconSizePx = isVerticalLayout ? inv.landscapeAllAppsIconSize : inv.allAppsIconSize;
-        allAppsIconTextSizeOriginalPx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
-        allAppsIconTextSizePx = (int) (allAppsIconTextSizePx * scale);
-        textHeight = Utilities.calculateTextHeight(allAppsIconTextSizePx) * drawerLabelRowCount;
-        allAppsIconSizePx = (int) (Utilities.pxFromDp(invAllAppsIconSizePx, dm) * scale);
-        allAppsIconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale) -
-                (int) (allAppsIconTextSizeOriginalPx - allAppsIconTextSizePx);
-
-        int additionalPadding = (int) (
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_drawer_additional_padding) * prefs
-                        .getDrawerPaddingScale());
-        allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx + textHeight
-                + additionalPadding;
-
-        // TODO: We might eventually also need some calculations to ensure that the label is close
-        // TODO: enough to the label, but I couldn't yet figure out how to make a variant of
-        // TODO: #getCellSize which properly works for all apps cells
+        allAppsIconTextSizePx = iconTextSizePx;
+        allAppsIconSizePx = iconSizePx;
+        allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
+        allAppsCellHeightPx = getCellSize().y;
 
         if (isVerticalLayout) {
             // Always hide the Workspace text with vertical bar layout.
@@ -483,25 +341,15 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         }
 
         // Hotseat
-        float invHotseatIconSizePx = isVerticalLayout ? inv.landscapeHotseatIconSize : inv.hotseatIconSize;
-        hotseatIconTextSizeOriginalPx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
-        hotseatIconTextSizePx = (int) (hotseatIconTextSizeOriginalPx * scale);
-        textHeight = Utilities.calculateTextHeight(hotseatIconTextSizePx) * dockLabelRowCount;
-        hotseatIconSizeOriginalPx = Utilities.pxFromDp(invHotseatIconSizePx, dm);
-        hotseatIconSizePx = (int) (hotseatIconSizeOriginalPx * scale);
         if (isVerticalLayout) {
-            hotseatBarSizePx =
-                    hotseatIconSizePx * prefs.getDockRowsCount()
-                    + hotseatBarSidePaddingStartPx + hotseatBarSidePaddingEndPx;
+            hotseatBarSizePx = iconSizePx + hotseatBarSidePaddingStartPx
+                    + hotseatBarSidePaddingEndPx;
         }
-        int additionalHeight =
-                prefs.getHideDockLabels() ? 0 : (int) (textHeight + (iconDrawablePaddingOriginalPx
-                        * scale));
-        hotseatCellHeightPx = hotseatIconSizePx + additionalHeight;
+        hotseatCellHeightPx = iconSizePx;
 
         if (!isVerticalLayout) {
-            int expectedWorkspaceHeight = availableHeightPx - (dockVisible ? hotseatBarSizePx : 0)
-                    - verticalDragHandleSizePx - topWorkspacePadding;
+            int expectedWorkspaceHeight = availableHeightPx - hotseatBarSizePx
+                    - verticalDragHandleSizePx - edgeMarginPx;
             float minRequiredHeight = dropTargetBarSizePx + workspaceSpringLoadedBottomSpace;
             workspaceSpringLoadShrinkFactor = Math.min(
                     res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f,
@@ -510,14 +358,10 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
             workspaceSpringLoadShrinkFactor =
                     res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
         }
-        workspaceOptionsShrinkFactor =
-                res.getInteger(R.integer.config_workspaceOptionsShrinkPercentage) / 100.0f;
 
         // Folder icon
         folderIconSizePx = IconNormalizer.getNormalizedCircleSize(iconSizePx);
         folderIconOffsetYPx = (iconSizePx - folderIconSizePx) / 2;
-        allAppsFolderIconSizePx = IconNormalizer.getNormalizedCircleSize(allAppsIconSizePx);
-        allAppsFolderIconOffsetYPx = (allAppsIconSizePx - allAppsFolderIconSizePx) / 2;
     }
 
     private void updateAvailableFolderCellDimensions(DisplayMetrics dm, Resources res) {
@@ -525,12 +369,10 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
                 + res.getDimensionPixelSize(R.dimen.folder_label_padding_bottom)
                 + Utilities.calculateTextHeight(res.getDimension(R.dimen.folder_label_text_size));
 
-        // Home Folders
-
         updateFolderCellSize(1f, dm, res);
 
         // Don't let the folder get too close to the edges of the screen.
-        int folderMargin = edgeMarginPx;
+        int folderMargin = edgeMarginPx * 2;
         Point totalWorkspacePadding = getTotalWorkspacePadding();
 
         // Check if the icons fit within the available height.
@@ -547,35 +389,14 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         if (scale < 1f) {
             updateFolderCellSize(scale, dm, res);
         }
-
-        // Drawer Folders
-        updateDrawerFolderCellSize(1f, dm, res);
-
-        // Check if the icons fit within the available height.
-        usedHeight = allAppsFolderCellHeightPx * inv.numFolderRows + folderBottomPanelSize;
-        maxHeight = availableHeightPx - totalWorkspacePadding.y - folderMargin;
-        scaleY = maxHeight / usedHeight;
-
-        // Check if the icons fit within the available width.
-        usedWidth = allAppsFolderCellWidthPx * inv.numFolderColumns;
-        maxWidth = availableWidthPx - totalWorkspacePadding.x - folderMargin;
-        scaleX = maxWidth / usedWidth;
-
-        scale = Math.min(scaleX, scaleY);
-        if (scale < 1f) {
-            updateDrawerFolderCellSize(scale, dm, res);
-        }
     }
 
     private void updateFolderCellSize(float scale, DisplayMetrics dm, Resources res) {
-        // Home Folders
-        int folderLabelRowCount = prefs.getHomeLabelRows();
-        
-        folderChildIconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * scale);
+        folderChildIconSizePx = (int) (ResourceUtils.pxFromDp(inv.iconSize, dm) * scale);
         folderChildTextSizePx =
                 (int) (res.getDimensionPixelSize(R.dimen.folder_child_text_size) * scale);
 
-        int textHeight = Utilities.calculateTextHeight(folderChildTextSizePx) * folderLabelRowCount;
+        int textHeight = Utilities.calculateTextHeight(folderChildTextSizePx);
         int cellPaddingX = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_x_padding) * scale);
         int cellPaddingY = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_y_padding) * scale);
 
@@ -585,30 +406,15 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
                 (folderCellHeightPx - folderChildIconSizePx - textHeight) / 3);
     }
 
-    private void updateDrawerFolderCellSize(float scale, DisplayMetrics dm, Resources res) {
-        // Drawer folders
-        int folderLabelRowCount = prefs.getHomeLabelRows();
-
-        allAppsFolderChildIconSizePx = (int) (Utilities.pxFromDp(inv.allAppsIconSize, dm) * scale);
-        allAppsFolderChildTextSizePx =
-                (int) (res.getDimensionPixelSize(R.dimen.folder_child_text_size) * scale);
-
-        int textHeight =
-                Utilities.calculateTextHeight(allAppsFolderChildTextSizePx) * folderLabelRowCount;
-        int cellPaddingX = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_x_padding) * scale);
-        int cellPaddingY = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_y_padding) * scale);
-
-        allAppsFolderCellWidthPx = allAppsFolderChildIconSizePx + 2 * cellPaddingX;
-        allAppsFolderCellHeightPx = allAppsFolderChildIconSizePx + 2 * cellPaddingY + textHeight;
-        allAppsFolderChildDrawablePaddingPx = Math.max(0,
-                (allAppsFolderCellHeightPx - allAppsFolderChildIconSizePx - textHeight) / 3);
-    }
-
     public void updateInsets(Rect insets) {
         mInsets.set(insets);
         updateWorkspacePadding();
     }
 
+    /**
+     * The current device insets. This is generally same as the insets being dispatched to
+     * {@link Insettable} elements, but can differ if the element is using a different profile.
+     */
     public Rect getInsets() {
         return mInsets;
     }
@@ -625,18 +431,6 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         return result;
     }
 
-    public Point getCellSizeOriginal() {
-        Point result = new Point();
-        // Since we are only concerned with the overall padding, layout direction does
-        // not matter.
-        Point padding = getTotalWorkspacePadding();
-        result.x = calculateCellWidth(availableWidthPx - padding.x
-                - cellLayoutPaddingLeftRightPx * 2, inv.numColumnsOriginal);
-        result.y = calculateCellHeight(availableHeightPx - padding.y
-                - cellLayoutBottomPaddingPx, inv.numRowsOriginal);
-        return result;
-    }
-
     public Point getTotalWorkspacePadding() {
         updateWorkspacePadding();
         return new Point(workspacePadding.left + workspacePadding.right,
@@ -648,20 +442,19 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
      * new workspace padding
      */
     private void updateWorkspacePadding() {
-        boolean dockVisible = !prefs.getDockHide();
         Rect padding = workspacePadding;
         if (isVerticalBarLayout()) {
             padding.top = 0;
             padding.bottom = edgeMarginPx;
             if (isSeascape()) {
-                padding.left = dockVisible ? hotseatBarSizePx : 0;
+                padding.left = hotseatBarSizePx;
                 padding.right = verticalDragHandleSizePx;
             } else {
                 padding.left = verticalDragHandleSizePx;
-                padding.right = dockVisible ? hotseatBarSizePx : 0;
+                padding.right = hotseatBarSizePx;
             }
         } else {
-            int paddingBottom = (dockVisible ? hotseatBarSizePx : 0) + verticalDragHandleSizePx
+            int paddingBottom = hotseatBarSizePx + verticalDragHandleSizePx
                     - verticalDragHandleOverlapWorkspace;
             if (isTablet) {
                 // Pad the left and right of the workspace to ensure consistent spacing
@@ -671,19 +464,16 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
                         ((inv.numColumns - 1) * cellWidthPx)));
                 availablePaddingX = (int) Math.min(availablePaddingX,
                         widthPx * MAX_HORIZONTAL_PADDING_PERCENT);
-                int availablePaddingY = Math.max(0, heightPx - topWorkspacePadding - paddingBottom
+                int availablePaddingY = Math.max(0, heightPx - edgeMarginPx - paddingBottom
                         - (2 * inv.numRows * cellHeightPx) - hotseatBarTopPaddingPx
                         - hotseatBarBottomPaddingPx);
-                padding.set(availablePaddingX / 2, topWorkspacePadding + availablePaddingY / 2,
+                padding.set(availablePaddingX / 2, edgeMarginPx + availablePaddingY / 2,
                         availablePaddingX / 2, paddingBottom + availablePaddingY / 2);
             } else {
-                int horizontalPadding = Utilities.getLawnchairPrefs(mContext)
-                        .getAllowFullWidthWidgets() ? 0 : desiredWorkspaceLeftRightMarginPx;
-
                 // Pad the top and bottom of the workspace with search/hotseat bar sizes
-                padding.set(horizontalPadding,
-                        topWorkspacePadding,
-                        horizontalPadding,
+                padding.set(desiredWorkspaceLeftRightMarginPx,
+                        edgeMarginPx,
+                        desiredWorkspaceLeftRightMarginPx,
                         paddingBottom);
             }
         }

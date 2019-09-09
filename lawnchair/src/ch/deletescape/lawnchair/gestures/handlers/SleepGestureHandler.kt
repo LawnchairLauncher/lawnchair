@@ -29,8 +29,8 @@ import android.os.Build
 import android.os.PowerManager
 import android.os.SystemClock
 import android.provider.Settings
-import android.support.annotation.Keep
 import android.view.View
+import androidx.annotation.Keep
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import ch.deletescape.lawnchair.lawnchairApp
@@ -69,7 +69,7 @@ class SleepGestureHandler(context: Context, config: JSONObject?) : GestureHandle
 
 @TargetApi(Build.VERSION_CODES.M)
 class SleepMethodPowerManager(context: Context) : SleepGestureHandler.SleepMethod(context) {
-    override val supported = Utilities.ATLEAST_MARSHMALLOW && Utilities.hasPermission(context, "android.permission.DEVICE_POWER")
+    override val supported = Utilities.hasPermission(context, "android.permission.DEVICE_POWER")
 
     private val clazz by lazy { PowerManager::class.java }
     private val powerManager: PowerManager by lazy { context.getSystemService(clazz) }
@@ -137,7 +137,7 @@ class SleepGestureHandlerTimeout(context: Context, config: JSONObject?) : Gestur
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         val launcher = controller.launcher
-        if (!Utilities.ATLEAST_MARSHMALLOW || Settings.System.canWrite(launcher)) {
+        if (Settings.System.canWrite(launcher)) {
             launcher.startActivity(Intent(launcher, SleepTimeoutActivity::class.java))
         } else {
             val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)

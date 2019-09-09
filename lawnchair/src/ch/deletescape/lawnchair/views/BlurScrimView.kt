@@ -20,10 +20,10 @@ package ch.deletescape.lawnchair.views
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.ColorUtils
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
@@ -40,8 +40,7 @@ import com.android.launcher3.anim.Interpolators
 import com.android.launcher3.anim.Interpolators.ACCEL
 import com.android.launcher3.anim.Interpolators.ACCEL_2
 import com.android.launcher3.graphics.NinePatchDrawHelper
-import com.android.launcher3.graphics.ShadowGenerator
-import com.android.launcher3.uioverrides.OverviewState
+import com.android.launcher3.icons.ShadowGenerator
 import com.android.launcher3.util.Themes
 import com.android.quickstep.views.ShelfScrimView
 import com.google.android.apps.nexuslauncher.qsb.AbstractQsbLayout
@@ -80,15 +79,15 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
     private val blurDrawableCallback by lazy {
         object : Drawable.Callback {
-            override fun unscheduleDrawable(who: Drawable?, what: Runnable?) {
+            override fun unscheduleDrawable(who: Drawable, what: Runnable) {
 
             }
 
-            override fun invalidateDrawable(who: Drawable?) {
+            override fun invalidateDrawable(who: Drawable) {
                 runOnMainThread { invalidate() }
             }
 
-            override fun scheduleDrawable(who: Drawable?, what: Runnable?, `when`: Long) {
+            override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
 
             }
         }
@@ -129,6 +128,8 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         typeface = Typeface.DEFAULT_BOLD
     }
 
+    private val defaultEndAlpha = Color.alpha(mEndScrim)
+
     private fun createBlurDrawable(): BlurDrawable? {
         blurDrawable?.let { if (isAttachedToWindow) it.stopListening() }
         return if (BlurWallpaperProvider.isEnabled) {
@@ -144,7 +145,8 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
     private fun createSearchBlurDrawable(): BlurDrawable? {
         searchBlurDrawable?.let { if (isAttachedToWindow) it.stopListening() }
-        val searchBox = mLauncher.hotseatSearchBox
+        // TODO: check if this is still feasible or not
+        val searchBox = null as View? //mLauncher.hotseatSearchBox
         return if (searchBox?.isVisible == true && BlurWallpaperProvider.isEnabled) {
             val height = searchBox.height - searchBox.paddingTop - searchBox.paddingBottom
             provider.createDrawable(AbstractQsbLayout.getCornerRadius(context, height / 2f)).apply {
@@ -183,7 +185,8 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
         prefs.addOnPreferenceChangeListener(this, *prefsToWatch)
         ColorEngine.getInstance(context).addColorChangeListeners(this, *colorsToWatch)
-        mLauncher.hotseatSearchBox?.addOnLayoutChangeListener(this)
+        // TODO: check if this is still feasible or not
+        // mLauncher.hotseatSearchBox?.addOnLayoutChangeListener(this)
         BlurWallpaperProvider.getInstance(context).addListener(this)
         blurDrawable?.startListening()
         searchBlurDrawable?.startListening()
@@ -198,7 +201,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
                 }
             }
             key_opacity -> {
-                mEndAlpha = prefs.allAppsOpacity.takeIf { it >= 0 } ?: DEFAULT_END_ALPHA
+                mEndAlpha = prefs.allAppsOpacity.takeIf { it >= 0 } ?: defaultEndAlpha
                 calculateEndScrim()
                 mEndFlatColorAlpha = Color.alpha(mEndFlatColor)
                 postReInitUi()
@@ -295,7 +298,8 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
         prefs.removeOnPreferenceChangeListener(this, *prefsToWatch)
         ColorEngine.getInstance(context).removeColorChangeListeners(this, *colorsToWatch)
-        mLauncher.hotseatSearchBox?.removeOnLayoutChangeListener(this)
+        // TODO: check if this is still feasible or not
+        // mLauncher.hotseatSearchBox?.removeOnLayoutChangeListener(this)
         BlurWallpaperProvider.getInstance(context).removeListener(this)
         blurDrawable?.stopListening()
         searchBlurDrawable?.stopListening()
@@ -303,13 +307,6 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-
-        if (!Utilities.ATLEAST_MARSHMALLOW && !isDarkTheme) {
-            val scrimProgress = Utilities.boundToRange(Utilities.mapToRange(mProgress,
-                    0f, SCRIM_CATCHUP_THRESHOLD, 0f, 1f, Interpolators.LINEAR), 0f, 1f)
-            statusBarPaint.alpha = ((1 - scrimProgress) * 97).toInt()
-            canvas.drawRect(0f, 0f, width.toFloat(), insets.top.toFloat(), statusBarPaint)
-        }
 
         if (shouldDrawDebug) {
             drawDebug(canvas)
@@ -352,6 +349,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
     private fun drawSearchBlur(canvas: Canvas) {
         if (blurDrawable?.alpha == 255) return // Already blurred
+        /* TODO: see if this is still feasible or not
         searchBlurDrawable?.run {
             val hotseat = mLauncher.hotseat
             val searchBox = mLauncher.hotseatSearchBox
@@ -374,6 +372,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
                 draw(canvas)
             }
         }
+        */
     }
 
     override fun updateColors() {
@@ -411,9 +410,11 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     }
 
     override fun getMidProgress(): Float {
+        /* TODO: implement this
         if (!prefs.dockGradientStyle) {
             return Math.max(HomeState.getNormalProgress(mLauncher), OverviewState.getNormalVerticalProgress(mLauncher))
         }
+         */
         return super.getMidProgress()
     }
 

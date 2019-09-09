@@ -18,12 +18,12 @@
 package ch.deletescape.lawnchair
 
 import android.content.Context
-import android.support.v7.app.AppCompatDelegate
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import ch.deletescape.lawnchair.font.CustomFontManager
 import org.xmlpull.v1.XmlPullParser
 

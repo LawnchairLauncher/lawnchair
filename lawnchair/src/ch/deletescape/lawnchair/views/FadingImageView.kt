@@ -20,8 +20,8 @@ package ch.deletescape.lawnchair.views
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
-import android.support.v7.widget.AppCompatImageView
 import android.util.AttributeSet
+import androidx.appcompat.widget.AppCompatImageView
 
 class FadingImageView(context: Context?, attrs: AttributeSet?) : AppCompatImageView(context, attrs) {
 

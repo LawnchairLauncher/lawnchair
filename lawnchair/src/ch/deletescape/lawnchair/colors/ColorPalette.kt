@@ -17,8 +17,8 @@
 
 package ch.deletescape.lawnchair.colors
 
-import android.support.annotation.ColorInt
-import android.support.v4.graphics.ColorUtils
+import androidx.annotation.ColorInt
+import androidx.core.graphics.ColorUtils
 import kotlin.math.max
 
 class ColorPalette private constructor(@ColorInt color: Int, size: Int) {

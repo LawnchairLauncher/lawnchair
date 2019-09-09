@@ -19,11 +19,11 @@ package ch.deletescape.lawnchair.gestures.ui
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckedTextView
+import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.gestures.GestureController

@@ -18,8 +18,8 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
-import android.support.v7.preference.ListPreference
 import android.util.AttributeSet
+import androidx.preference.ListPreference
 import ch.deletescape.lawnchair.FeedBridge
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.smartspace.*
@@ -52,8 +52,7 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
     private fun getWeatherProviders(): List<String> {
         val list = ArrayList<String>()
         list.add(BlankDataProvider::class.java.name)
-        if (Utilities.ATLEAST_NOUGAT)
-            list.add(SmartspaceDataWidget::class.java.name)
+        list.add(SmartspaceDataWidget::class.java.name)
         if (FeedBridge.getInstance(context).resolveBridge()?.supportsSmartspace == true)
             list.add(SmartspacePixelBridge::class.java.name)
         list.add(AccuWeatherDataProvider::class.java.name)

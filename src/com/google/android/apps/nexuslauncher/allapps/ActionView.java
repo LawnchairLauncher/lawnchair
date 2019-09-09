@@ -5,14 +5,14 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewConfiguration;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.font.CustomFontManager;
 import com.android.launcher3.BaseDraggingActivity;
@@ -28,8 +28,8 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
-import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.graphics.DragPreviewProvider;
+import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
 
@@ -78,7 +78,6 @@ public class ActionView extends BubbleTextView implements OnLongClickListener {
         this.mIsRTL = Utilities.isRtl(getResources());
         setOnClickListener(ItemClickHandler.INSTANCE);
         setOnLongClickListener(this);
-        setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
         setCompoundDrawablePadding(getResources().getDimensionPixelSize(R.dimen.action_view_compound_drawable_padding));
 
         BaseDraggingActivity activity = LawnchairUtilsKt.getBaseDraggingActivityOrNull(context);

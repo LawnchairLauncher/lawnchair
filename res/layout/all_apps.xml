@@ -21,11 +21,44 @@
     android:clipChildren="true"
     android:clipToPadding="false"
     android:focusable="false"
-    android:saveEnabled="false" >
+    android:saveEnabled="false">
 
-    <include layout="@layout/all_apps_rv_layout" />
+    <include
+        layout="@layout/all_apps_rv_layout"
+        android:visibility="gone" />
 
-    <include layout="@layout/all_apps_floating_header" />
+    <com.android.launcher3.allapps.FloatingHeaderView
+        android:id="@+id/all_apps_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_container_all_apps"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/all_apps_header_top_padding"
+        android:orientation="vertical" >
+
+        <include layout="@layout/floating_header_content" />
+
+        <HorizontalScrollView
+            android:id="@+id/tabs_scroller"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:paddingLeft="@dimen/all_apps_tabs_side_padding"
+            android:paddingRight="@dimen/all_apps_tabs_side_padding"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:fillViewport="true"
+            android:scrollbars="none">
+
+            <com.android.launcher3.allapps.PersonalWorkSlidingTabStrip
+                android:id="@+id/tabs"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/all_apps_header_tab_height"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+    </com.android.launcher3.allapps.FloatingHeaderView>
 
     <include
         android:id="@id/search_container_all_apps"

@@ -20,10 +20,9 @@ package ch.deletescape.lawnchair.colors.preferences
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.support.v4.app.FragmentManager
-import android.support.v7.preference.Preference
 import android.util.AttributeSet
-import ch.deletescape.lawnchair.LawnchairPreferences
+import androidx.fragment.app.FragmentManager
+import androidx.preference.Preference
 import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.R
 import me.priyesh.chroma.ColorMode

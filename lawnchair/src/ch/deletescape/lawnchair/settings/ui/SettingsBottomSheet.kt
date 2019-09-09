@@ -23,9 +23,7 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Rect
-import android.support.v4.graphics.ColorUtils
 import android.util.AttributeSet
 import android.util.Property
 import android.view.LayoutInflater
@@ -33,11 +31,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.core.graphics.ColorUtils
 import ch.deletescape.lawnchair.getColorAttr
+import ch.deletescape.lawnchair.graphics.ColorScrim
 import com.android.launcher3.*
 import com.android.launcher3.anim.Interpolators
 import com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity
-import com.android.launcher3.graphics.ColorScrim
 import com.android.launcher3.touch.SwipeDetector
 import com.android.launcher3.util.TouchController
 
@@ -69,7 +68,7 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
         setWillNotDraw(false)
         mInsets = Rect()
 
-        openCloseAnimator = LauncherAnimUtils.ofPropertyValuesHolder(this)
+        openCloseAnimator = ObjectAnimator.ofPropertyValuesHolder(this)
         openCloseAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 mSwipeDetector.finishedScrolling()
@@ -139,7 +138,7 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
 
     override fun onDragStart(start: Boolean) {}
 
-    override fun onDrag(displacement: Float, velocity: Float): Boolean {
+    override fun onDrag(displacement: Float): Boolean {
         val range = content.height.toFloat()
         val bounded = Utilities.boundToRange(displacement, 0f, range)
         translationShift = bounded / range
@@ -162,7 +161,7 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
     }
 
     fun close(animate: Boolean) {
-        handleClose(animate and !Utilities.isPowerSaverPreventingAnimation(context))
+        handleClose(animate and Utilities.areAnimationsEnabled(context))
         isOpen = false
     }
 

@@ -26,8 +26,8 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Environment
-import android.support.v4.content.FileProvider
 import android.util.Log
+import androidx.core.content.FileProvider
 import ch.deletescape.lawnchair.LawnchairLauncher
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherFiles
@@ -82,7 +82,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
 
     private inline fun readZip(body: (ZipInputStream) -> Unit) {
         try {
-            val pfd = context.contentResolver.openFileDescriptor(uri, "r")
+            val pfd = context.contentResolver.openFileDescriptor(uri, "r")!!
             val inStream = FileInputStream(pfd.fileDescriptor)
             val zipIs = ZipInputStream(inStream)
             try {
@@ -106,7 +106,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
             val dir = contextWrapper.cacheDir.parent
             val settingsFile = File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml")
 
-            val pfd = context.contentResolver.openFileDescriptor(uri, "r")
+            val pfd = context.contentResolver.openFileDescriptor(uri, "r")!!
             val inStream = FileInputStream(pfd.fileDescriptor)
             val zipIs = ZipInputStream(inStream)
             val data = ByteArray(BUFFER)
@@ -322,7 +322,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
 
             val devOptionsEnabled = prefs.developerOptionsEnabled
             prepareConfig(context)
-            val pfd = context.contentResolver.openFileDescriptor(location, "w")
+            val pfd = context.contentResolver.openFileDescriptor(location, "w")!!
             val outStream = FileOutputStream(pfd.fileDescriptor)
             val out = ZipOutputStream(BufferedOutputStream(outStream))
             val data = ByteArray(BUFFER)

@@ -16,8 +16,6 @@
 package com.android.launcher3.allapps.search;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -32,6 +30,7 @@ import android.widget.TextView.OnEditorActionListener;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
 
@@ -123,7 +122,8 @@ public class AllAppsSearchBarController
         }
 
         return mLauncher.startActivitySafely(v,
-                PackageManagerHelper.getMarketSearchIntent(mLauncher, query), null);
+                PackageManagerHelper.getMarketSearchIntent(mLauncher, query), null,
+                AppLaunchTracker.CONTAINER_SEARCH);
     }
 
     @Override

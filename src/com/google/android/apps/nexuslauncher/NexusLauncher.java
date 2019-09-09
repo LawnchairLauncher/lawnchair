@@ -5,11 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.graphics.ColorUtils;
 import android.view.View;
+import androidx.core.graphics.ColorUtils;
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 import com.android.launcher3.*;
-import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
@@ -127,11 +126,11 @@ public class NexusLauncher {
 
             getUpdateReceiver().onCreate();
 
-            PredictionUiStateManager predictionUiStateManager = PredictionUiStateManager.getInstance(mLauncher);
-            predictionUiStateManager.setTargetAppsView(mLauncher.getAppsView());
-            if (FeatureFlags.REFLECTION_FORCE_OVERVIEW_MODE) {
-                predictionUiStateManager.switchClient(Client.OVERVIEW);
-            }
+            // PredictionUiStateManager predictionUiStateManager = PredictionUiStateManager.getInstance(mLauncher);
+            // predictionUiStateManager.setTargetAppsView(mLauncher.getAppsView());
+            // if (FeatureFlags.REFLECTION_FORCE_OVERVIEW_MODE) {
+            //     predictionUiStateManager.switchClient(Client.OVERVIEW);
+            // }
         }
 
         public void onDestroy() {
@@ -167,7 +166,7 @@ public class NexusLauncher {
 
             getUpdateReceiver().onDestroy();
 
-            PredictionUiStateManager.getInstance(mLauncher).setTargetAppsView(null);
+            // PredictionUiStateManager.getInstance(mLauncher).setTargetAppsView(null);
         }
 
         public void onDetachedFromWindow() {
@@ -181,7 +180,7 @@ public class NexusLauncher {
         }
 
         public void onLauncherProviderChange() {
-            ReflectionClient.getInstance(mLauncher).onProviderChanged();
+            // ReflectionClient.getInstance(mLauncher).onProviderChanged();
         }
 
         public void onPause() {
@@ -203,10 +202,6 @@ public class NexusLauncher {
             }
 
             mClient.onResume();
-
-            for (SmartspaceView smartspace : mSmartspaceViews) {
-                smartspace.onResume();
-            }
 
             Handler handler = mLauncher.getDragLayer().getHandler();
             if (handler != null) {
@@ -307,12 +302,12 @@ public class NexusLauncher {
 
         private void updatePredictionsIfResumed() {
             if (mLauncher.hasBeenResumed()) {
-                ReflectionClient.getInstance(mLauncher).updatePredictionsNow(
-                        FeatureFlags.REFLECTION_FORCE_OVERVIEW_MODE ? Client.OVERVIEW.id : Client.HOME.id);
-                handler.post(() -> {
-                    mLauncher.getUserEventDispatcher().updatePredictions();
-                    mLauncher.getUserEventDispatcher().updateActions();
-                });
+                // ReflectionClient.getInstance(mLauncher).updatePredictionsNow(
+                //         FeatureFlags.REFLECTION_FORCE_OVERVIEW_MODE ? Client.OVERVIEW.id : Client.HOME.id);
+                // handler.post(() -> {
+                //     mLauncher.getUserEventDispatcher().updatePredictions();
+                //     mLauncher.getUserEventDispatcher().updateActions();
+                // });
             }
         }
 

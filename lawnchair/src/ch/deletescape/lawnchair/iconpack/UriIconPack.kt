@@ -19,6 +19,7 @@ package ch.deletescape.lawnchair.iconpack
 
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.ShortcutInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -30,7 +31,6 @@ import ch.deletescape.lawnchair.adaptive.AdaptiveIconGenerator
 import com.android.launcher3.FastBitmapDrawable
 import com.android.launcher3.ItemInfo
 import com.android.launcher3.Utilities
-import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
 import java.io.FileDescriptor
 
@@ -66,7 +66,7 @@ class UriIconPack(context: Context) : IconPack(context, "lawnchairUriPack") {
         return getUriEntry(entry)?.drawable ?: super.getIcon(entry, iconDpi)
     }
 
-    override fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
+    override fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
         throw NotImplementedError()
     }
 
@@ -112,7 +112,7 @@ class UriIconPack(context: Context) : IconPack(context, "lawnchairUriPack") {
         }
 
         private fun loadBitmap(): Bitmap {
-            val parcelFileDescriptor: ParcelFileDescriptor = context.contentResolver.openFileDescriptor(uri, "r")
+            val parcelFileDescriptor: ParcelFileDescriptor = context.contentResolver.openFileDescriptor(uri, "r")!!
             val fileDescriptor: FileDescriptor = parcelFileDescriptor.fileDescriptor
             val image: Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor)
             parcelFileDescriptor.close()

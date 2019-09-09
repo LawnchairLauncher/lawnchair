@@ -16,19 +16,21 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.UNDO;
+
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
-import ch.deletescape.lawnchair.views.Snackbar;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.folder.Folder;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.views.Snackbar;
 
 public class DeleteDropTarget extends ButtonDropTarget {
 
@@ -63,8 +65,12 @@ public class DeleteDropTarget extends ButtonDropTarget {
      */
     @Override
     public boolean supportsAccessibilityDrop(ItemInfo info, View view) {
-        return (info instanceof ShortcutInfo)
-                || (info instanceof LauncherAppWidgetInfo)
+        if (info instanceof WorkspaceItemInfo) {
+            // Support the action unless the item is in a context menu.
+            return info.screenId >= 0;
+        }
+
+        return (info instanceof LauncherAppWidgetInfo)
                 || (info instanceof FolderInfo);
     }
 
@@ -83,11 +89,16 @@ public class DeleteDropTarget extends ButtonDropTarget {
      */
     private void setTextBasedOnDragSource(ItemInfo item) {
         if (!TextUtils.isEmpty(mText)) {
-            mText = getResources().getString(item.id != ItemInfo.NO_ID
+            mText = getResources().getString(canRemove(item)
                     ? R.string.remove_drop_target_label
                     : android.R.string.cancel);
+            setContentDescription(mText);
             requestLayout();
         }
+    }
+
+    private boolean canRemove(ItemInfo item) {
+        return item.id != ItemInfo.NO_ID;
     }
 
     /**
@@ -99,17 +110,26 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     @Override
+    public void onDrop(DragObject d, DragOptions options) {
+        if (canRemove(d.dragInfo)) {
+            mLauncher.getModelWriter().prepareToUndoDelete();
+        }
+        super.onDrop(d, options);
+    }
+
+    @Override
     public void completeDrop(DragObject d) {
         ItemInfo item = d.dragInfo;
-        if ((d.dragSource instanceof Workspace) || (d.dragSource instanceof Folder)) {
-            mLauncher.getModelWriter().prepareToUndo();
-
+        if (canRemove(item)) {
+            int itemPage = mLauncher.getWorkspace().getCurrentPage();
             onAccessibilityDrop(null, item);
-
-            int currentPage = this.mLauncher.getWorkspace().getCurrentPage();
+            ModelWriter modelWriter = mLauncher.getModelWriter();
+            Runnable onUndoClicked = () -> {
+                modelWriter.abortDelete(itemPage);
+                mLauncher.getUserEventDispatcher().logActionOnControl(TAP, UNDO);
+            };
             Snackbar.show(mLauncher, R.string.item_removed, R.string.undo,
-                    () -> mLauncher.getModelWriter().commitDelete(),
-                    () -> mLauncher.getModelWriter().undoDelete(currentPage));
+                    modelWriter::commitDelete, onUndoClicked);
         }
     }
 

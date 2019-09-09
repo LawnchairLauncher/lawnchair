@@ -18,13 +18,13 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.os.Bundle
-import android.support.annotation.Keep
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.annotation.Keep
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.groups.LegacyDrawerTabsAdapter
 import ch.deletescape.lawnchair.tintDrawable

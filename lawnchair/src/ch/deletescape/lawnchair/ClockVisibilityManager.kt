@@ -154,6 +154,6 @@ class ClockVisibilityManager(private val context: Context) {
 
         private const val DEFAULT_BLACKLIST = "rotate,headset"
 
-        val isSupported = Utilities.ATLEAST_NOUGAT
+        val isSupported = true
     }
 }

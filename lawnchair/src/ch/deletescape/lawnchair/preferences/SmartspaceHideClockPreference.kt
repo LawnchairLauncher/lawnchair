@@ -20,9 +20,9 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
-import android.support.v7.preference.Preference
 import android.util.AttributeSet
 import android.widget.Toast
+import androidx.preference.Preference
 import ch.deletescape.lawnchair.ClockVisibilityManager
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R

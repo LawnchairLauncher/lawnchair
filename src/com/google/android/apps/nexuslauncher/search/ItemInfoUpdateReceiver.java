@@ -2,18 +2,10 @@ package com.google.android.apps.nexuslauncher.search;
 
 import android.content.SharedPreferences;
 
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.IconCache;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherCallbacks;
-import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsRecyclerView;
-import com.android.launcher3.allapps.AlphabeticalAppsList;
-import com.android.launcher3.util.ComponentKeyMapper;
-
-import java.util.Iterator;
+import com.android.launcher3.icons.IconCache;
 
 public class ItemInfoUpdateReceiver implements IconCache.ItemInfoUpdateReceiver, SharedPreferences.OnSharedPreferenceChangeListener {
     private final LauncherCallbacks mCallbacks;

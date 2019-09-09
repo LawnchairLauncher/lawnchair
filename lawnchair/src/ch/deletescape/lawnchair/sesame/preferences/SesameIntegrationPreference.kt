@@ -18,10 +18,8 @@
 package ch.deletescape.lawnchair.sesame.preferences
 
 import android.content.Context
-import android.os.Parcelable
-import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
-import android.widget.Toast
+import androidx.preference.PreferenceViewHolder
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.preferences.ResumablePreference
 import ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat

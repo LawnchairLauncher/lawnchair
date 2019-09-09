@@ -23,17 +23,15 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import ch.deletescape.lawnchair.forEachChild
 import ch.deletescape.lawnchair.forEachChildReversed
-import com.android.launcher3.AbstractFloatingView
+import ch.deletescape.lawnchair.graphics.ViewScrim
 import com.android.launcher3.InsettableFrameLayout
 import com.android.launcher3.Utilities
-import com.android.launcher3.graphics.ViewScrim
 import com.android.launcher3.util.TouchController
 
 class SettingsDragLayer(context: Context, attrs: AttributeSet?) : InsettableFrameLayout(context, attrs) {
 
-    private val mTmpXY = IntArray(2)
+    private val mTmpXY = FloatArray(2)
     private val mHitRect = Rect()
 
     private var activeController: TouchController? = null
@@ -85,21 +83,21 @@ class SettingsDragLayer(context: Context, attrs: AttributeSet?) : InsettableFram
     }
 
     fun getDescendantRectRelativeToSelf(descendant: View, r: Rect): Float {
-        mTmpXY[0] = 0
-        mTmpXY[1] = 0
+        mTmpXY[0] = 0f
+        mTmpXY[1] = 0f
         val scale = getDescendantCoordRelativeToSelf(descendant, mTmpXY)
 
-        r.set(mTmpXY[0], mTmpXY[1],
+        r.set(mTmpXY[0].toInt(), mTmpXY[1].toInt(),
                 (mTmpXY[0] + scale * descendant.measuredWidth).toInt(),
                 (mTmpXY[1] + scale * descendant.measuredHeight).toInt())
         return scale
     }
 
-    private fun getDescendantCoordRelativeToSelf(descendant: View, coord: IntArray): Float {
+    private fun getDescendantCoordRelativeToSelf(descendant: View, coord: FloatArray): Float {
         return getDescendantCoordRelativeToSelf(descendant, coord, false)
     }
 
-    private fun getDescendantCoordRelativeToSelf(descendant: View, coord: IntArray,
+    private fun getDescendantCoordRelativeToSelf(descendant: View, coord: FloatArray,
                                                  includeRootScroll: Boolean): Float {
         return Utilities.getDescendantCoordRelativeToAncestor(descendant, this,
                 coord, includeRootScroll)

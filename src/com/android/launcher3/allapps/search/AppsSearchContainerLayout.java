@@ -19,7 +19,9 @@ import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.getSize;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
-import static com.android.launcher3.graphics.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
+import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
+import static com.android.launcher3.Utilities.prefixTextWithIcon;
+import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +35,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
+import android.view.animation.Interpolator;
 
 import ch.deletescape.lawnchair.allapps.FuzzyAppSearchAlgorithm;
 import com.android.launcher3.DeviceProfile;
@@ -40,10 +43,12 @@ import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
+import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.util.ComponentKey;
 
@@ -88,14 +93,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         mFixedTranslationY = getTranslationY();
         mMarginTopAdjusting = mFixedTranslationY - getPaddingTop();
 
-        // Update the hint to contain the icon.
-        // Prefix the original hint with two spaces. The first space gets replaced by the icon
-        // using span. The second space is used for a singe space character between the hint
-        // and the icon.
-        SpannableString spanned = new SpannableString("  " + getHint());
-        spanned.setSpan(new TintedDrawableSpan(getContext(), R.drawable.ic_allapps_search),
-                0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-        setHint(spanned);
+        setHint(prefixTextWithIcon(getContext(), R.drawable.ic_allapps_search, getHint()));
     }
 
     @Override
@@ -222,18 +220,27 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
         mlp.topMargin = Math.round(Math.max(-mFixedTranslationY, insets.top - mMarginTopAdjusting));
         requestLayout();
+    }
 
-        DeviceProfile dp = mLauncher.getDeviceProfile();
-        if (dp.isVerticalBarLayout()) {
-            mLauncher.getAllAppsController().setScrollRangeDelta(0);
+    @Override
+    public float getScrollRangeDelta(Rect insets) {
+        if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+            return 0;
         } else {
-            mLauncher.getAllAppsController().setScrollRangeDelta(
-                    insets.bottom + mlp.topMargin + mFixedTranslationY);
+            int topMargin = Math.round(Math.max(
+                    -mFixedTranslationY, insets.top - mMarginTopAdjusting));
+           return insets.bottom + topMargin + mFixedTranslationY;
         }
     }
 
     @Override
     public void startSearch() {
 
+    }
+
+    @Override
+    public void setContentVisibility(int visibleElements, PropertySetter setter,
+            Interpolator interpolator) {
+        setter.setViewAlpha(this, (visibleElements & ALL_APPS_HEADER) != 0 ? 1 : 0, interpolator);
     }
 }

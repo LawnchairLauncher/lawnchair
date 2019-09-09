@@ -20,27 +20,21 @@ import android.content.pm.LauncherActivityInfo;
 
 import android.graphics.Color;
 import android.os.UserHandle;
-import android.support.v4.graphics.ColorUtils;
-import android.text.TextUtils;
+import androidx.core.graphics.ColorUtils;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.allapps.AppColorComparator;
-import ch.deletescape.lawnchair.globalsearch.SearchProvider;
-import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
-import ch.deletescape.lawnchair.globalsearch.providers.web.WebSearchProvider;
 import ch.deletescape.lawnchair.groups.DrawerFolderInfo;
 import ch.deletescape.lawnchair.groups.DrawerFolderItem;
-import ch.deletescape.lawnchair.groups.DrawerFolders;
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.FolderInfo;
-import com.android.launcher3.IconCache;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.badge.FolderBadgeInfo;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LabelComparator;
@@ -384,6 +378,11 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     }
 
     private void refreshRecyclerView() {
+        if (TestProtocol.sDebugTracing) {
+            android.util.Log.d(TestProtocol.NO_START_TAG,
+                    "refreshRecyclerView @ " + android.util.Log.getStackTraceString(
+                            new Throwable()));
+        }
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }

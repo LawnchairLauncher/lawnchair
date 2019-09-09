@@ -20,12 +20,13 @@ package ch.deletescape.lawnchair.gestures.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.MenuItem
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.preferences.AppsAdapterWithShortcuts
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.R
+import com.android.launcher3.shortcuts.ShortcutKey
 
 class SelectAppActivity : SettingsBaseActivity(), AppsAdapterWithShortcuts.Callback {
 
@@ -62,7 +63,7 @@ class SelectAppActivity : SettingsBaseActivity(), AppsAdapterWithShortcuts.Callb
         setResult(Activity.RESULT_OK, Intent().apply {
             putExtra("type", "shortcut")
             putExtra("appName", shortcut.label)
-            putExtra("intent", shortcut.info.makeIntent().toUri(0))
+            putExtra("intent", ShortcutKey.makeIntent(shortcut.info).toUri(0))
             putExtra("user", shortcut.info.userHandle)
             putExtra("packageName", shortcut.info.`package`)
             putExtra("id", shortcut.info.id)

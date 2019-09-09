@@ -16,7 +16,7 @@
   ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
@@ -40,4 +40,4 @@
         android:icon="@drawable/ic_edit_no_shadow"
         android:persistent="true"
         android:title="@string/action_preferences" />
-</android.support.v7.preference.PreferenceScreen>
+</androidx.preference.PreferenceScreen>

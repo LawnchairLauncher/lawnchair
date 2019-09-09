@@ -18,9 +18,9 @@
 package ch.deletescape.lawnchair.settings.ui.controllers
 
 import android.content.Context
-import android.support.annotation.Keep
-import android.support.v7.preference.Preference
 import android.widget.Toast
+import androidx.annotation.Keep
+import androidx.preference.Preference
 import ch.deletescape.lawnchair.lawnchairApp
 import ch.deletescape.lawnchair.settings.ui.PreferenceController
 import com.android.launcher3.R

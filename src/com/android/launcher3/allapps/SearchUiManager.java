@@ -15,7 +15,11 @@
  */
 package com.android.launcher3.allapps;
 
+import android.graphics.Rect;
 import android.view.KeyEvent;
+import android.view.animation.Interpolator;
+
+import com.android.launcher3.anim.PropertySetter;
 
 /**
  * Interface for controlling the Apps search UI.
@@ -39,4 +43,15 @@ public interface SearchUiManager {
     void preDispatchKeyEvent(KeyEvent keyEvent);
 
     void startSearch();
+
+    /**
+     * Returns the vertical shift for the all-apps view, so that it aligns with the hotseat.
+     */
+    float getScrollRangeDelta(Rect insets);
+
+    /**
+     * Called as part of state transition to update the content UI
+     */
+    void setContentVisibility(int visibleElements, PropertySetter setter,
+            Interpolator interpolator);
 }

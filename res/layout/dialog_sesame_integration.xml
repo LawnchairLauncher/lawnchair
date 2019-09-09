@@ -77,7 +77,7 @@
 
     </LinearLayout>
 
-        <android.support.v7.widget.ButtonBarLayout
+        <androidx.appcompat.widget.ButtonBarLayout
             android:id="@+id/buttonPanel"
             style="?attr/buttonBarStyle"
             android:layout_width="match_parent"
@@ -101,6 +101,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/allow"/>
-        </android.support.v7.widget.ButtonBarLayout>
+        </androidx.appcompat.widget.ButtonBarLayout>
 
 </ch.deletescape.lawnchair.sesame.views.LCDialogLinearLayout>

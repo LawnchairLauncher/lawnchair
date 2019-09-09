@@ -19,13 +19,12 @@ package ch.deletescape.lawnchair.flowerpot
 
 import android.content.Context
 import android.content.Intent
-import android.os.Process
+import android.content.pm.ShortcutInfo
 import android.os.UserHandle
 import ch.deletescape.lawnchair.flowerpot.rules.CodeRule
 import ch.deletescape.lawnchair.flowerpot.rules.Rule
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
-import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageUserKey
 
@@ -116,7 +115,7 @@ class FlowerpotApps(private val context: Context, private val pot: Flowerpot) : 
         packageNames.forEach { onPackageAdded(it, user) }
     }
 
-    override fun onShortcutsChanged(packageName: String?, shortcuts: MutableList<ShortcutInfoCompat>?, user: UserHandle?) {
+    override fun onShortcutsChanged(packageName: String?, shortcuts: MutableList<ShortcutInfo>?, user: UserHandle?) {
 
     }
 }

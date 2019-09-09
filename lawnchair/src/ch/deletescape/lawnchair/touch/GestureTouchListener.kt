@@ -27,6 +27,7 @@ import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.views.OptionsPopupView
 
+// TODO: make com.android.launcher3.touch.WorkspaceTouchListener extends this
 open class GestureTouchListener(context: Context) : View.OnTouchListener {
 
     private val launcher = LawnchairLauncher.getLauncher(context)

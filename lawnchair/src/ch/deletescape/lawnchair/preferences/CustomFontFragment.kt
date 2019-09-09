@@ -20,15 +20,15 @@ package ch.deletescape.lawnchair.preferences
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.annotation.Keep
-import android.support.v4.app.Fragment
-import android.support.v4.provider.FontRequest
-import android.support.v4.provider.FontsContractCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.Keep
+import androidx.core.provider.FontRequest
+import androidx.core.provider.FontsContractCompat
+import androidx.fragment.app.Fragment
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.uiWorkerHandler
 import com.android.launcher3.R
@@ -63,7 +63,8 @@ class CustomFontFragment : Fragment() {
                 R.array.com_google_android_gms_fonts_certs)
 
         // retrieve font in the background
-        FontsContractCompat.requestFont(context, request, object : FontsContractCompat.FontRequestCallback() {
+        FontsContractCompat
+                .requestFont(context, request, object : FontsContractCompat.FontRequestCallback() {
             override fun onTypefaceRetrieved(typeface: Typeface) {
                 super.onTypefaceRetrieved(typeface)
 

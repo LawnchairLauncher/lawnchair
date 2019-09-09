@@ -34,7 +34,7 @@ public class TintedDrawableSpan extends DynamicDrawableSpan {
 
     public TintedDrawableSpan(Context context, int resourceId) {
         super(ALIGN_BOTTOM);
-        mDrawable = context.getDrawable(resourceId);
+        mDrawable = context.getDrawable(resourceId).mutate();
         mOldTint = 0;
         mDrawable.setTint(0);
     }
@@ -43,11 +43,7 @@ public class TintedDrawableSpan extends DynamicDrawableSpan {
     public int getSize(Paint paint, CharSequence text, int start, int end, FontMetricsInt fm) {
         fm = fm == null ? paint.getFontMetricsInt() : fm;
         int iconSize = fm.bottom - fm.top;
-        if (Utilities.ATLEAST_NOUGAT) {
-            mDrawable.setBounds(0, 0, iconSize, iconSize);
-        } else {
-            mDrawable.setBounds(0, -iconSize, iconSize, 0);
-        }
+        mDrawable.setBounds(0, 0, iconSize, iconSize);
         return super.getSize(paint, text, start, end, fm);
     }
 
