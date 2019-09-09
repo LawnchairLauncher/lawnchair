@@ -322,8 +322,8 @@
     <string name="app_actions_pref_title">Acties</string>
     <string name="app_actions_pref_title_in_search">Actie-suggesties</string>
     <string name="app_actions_pref_desc">Snelkoppelingen naar vaak geopende schermen</string>
-    <string name="app_actions_reset_pref_title">Verborgen acties opnieuw instellen</string>
-    <string name="app_actions_reset_pref_summary">Herstelt acties die verborgen waren door ze te verslepen naar de \'Niet weergeven\'-knop</string>
+    <string name="app_actions_reset_pref_title">Verborgen acties herstellen</string>
+    <string name="app_actions_reset_pref_summary">Herstelt acties die eerder verborgen waren door ze naar \"niet weergeven\" te slepen</string>
     <string name="change_default_home">Als startpagina instellen</string>
     <string name="recent_task_option_popup_window">Dialoogscherm</string>
     <string name="feed_theme_pref_title">Achtergrondkleur</string>
@@ -513,11 +513,11 @@
         <item>Geniet van je dag!</item>
     </string-array>
     <string-array name="greetings_evening">
-        <item>Goedenacht!</item>
-        <item>Slaap lekker!</item>
+        <item>Hoe was je dag?</item>
+        <item>Wat heb je gedaan vandaag?</item>
     </string-array>
     <string-array name="greetings_night">
-        <item>Goede nacht!</item>
+        <item>Goedenacht!</item>
         <item>Slaap lekker!</item>
         <item>Tot morgen!</item>
         <item>Droom zacht!</item>
@@ -544,7 +544,7 @@
     <string name="lawnchair_settings">Lawnchair Instellingen</string>
     <string name="customnavbar_install">Tik om aangepaste navigatiebalk te installeren</string>
     <string name="customnavbar_back_hiding">Terugknop verbergen</string>
-    <string name="customnavbar_back_hiding_desc">Terugknop verbergen indien niet nodig</string>
+    <string name="customnavbar_back_hiding_desc">Terugknop verbergen als deze niet nodig is</string>
     <string name="icon_shape_top_left">Linksboven</string>
     <string name="icon_shape_top_right">Rechtsboven</string>
     <string name="icon_shape_bottom_left">Linksonder</string>
