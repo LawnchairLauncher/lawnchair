@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2019 The Android Open Source Project
  *
@@ -82,7 +83,8 @@ public class AssistantTouchConsumer extends DelegateInputConsumer {
     private int mDirection;
     private ActivityControlHelper mActivityControlHelper;
 
-    private final float mDistThreshold;
+    private final float mDragDistThreshold;
+    private final float mFlingDistThreshold;
     private final long mTimeThreshold;
     private final int mAngleThreshold;
     private final float mSquaredSlop;
@@ -97,7 +99,8 @@ public class AssistantTouchConsumer extends DelegateInputConsumer {
         final Resources res = context.getResources();
         mContext = context;
         mSysUiProxy = systemUiProxy;
-        mDistThreshold = res.getDimension(R.dimen.gestures_assistant_drag_threshold);
+        mDragDistThreshold = res.getDimension(R.dimen.gestures_assistant_drag_threshold);
+        mFlingDistThreshold = res.getDimension(R.dimen.gestures_assistant_fling_threshold);
         mTimeThreshold = res.getInteger(R.integer.assistant_gesture_min_time_threshold);
         mAngleThreshold = res.getInteger(R.integer.assistant_gesture_corner_deg_threshold);
 
@@ -117,8 +120,6 @@ public class AssistantTouchConsumer extends DelegateInputConsumer {
     @Override
     public void onMotionEvent(MotionEvent ev) {
         // TODO add logging
-        mGestureDetector.onTouchEvent(ev);
-
         switch (ev.getActionMasked()) {
             case ACTION_DOWN: {
                 mActivePointerId = ev.getPointerId(0);
@@ -213,6 +214,8 @@ public class AssistantTouchConsumer extends DelegateInputConsumer {
                 break;
         }
 
+        mGestureDetector.onTouchEvent(ev);
+
         if (mState != STATE_ACTIVE) {
             mDelegate.onMotionEvent(ev);
         }
@@ -220,9 +223,9 @@ public class AssistantTouchConsumer extends DelegateInputConsumer {
 
     private void updateAssistantProgress() {
         if (!mLaunchedAssistant) {
-            mLastProgress = Math.min(mDistance * 1f / mDistThreshold, 1) * mTimeFraction;
+            mLastProgress = Math.min(mDistance * 1f / mDragDistThreshold, 1) * mTimeFraction;
             try {
-                if (mDistance >= mDistThreshold && mTimeFraction >= 1) {
+                if (mDistance >= mDragDistThreshold && mTimeFraction >= 1) {
                     mSysUiProxy.onAssistantGestureCompletion(0);
                     startAssistantInternal(SWIPE);
 
@@ -271,7 +274,9 @@ public class AssistantTouchConsumer extends DelegateInputConsumer {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             if (isValidAssistantGestureAngle(velocityX, -velocityY)
-                && !mLaunchedAssistant && mState != STATE_DELEGATE_ACTIVE) {
+                && mDistance >= mFlingDistThreshold
+                && !mLaunchedAssistant
+                && mState != STATE_DELEGATE_ACTIVE) {
                 mLastProgress = 1;
                 try {
                     mSysUiProxy.onAssistantGestureCompletion(
