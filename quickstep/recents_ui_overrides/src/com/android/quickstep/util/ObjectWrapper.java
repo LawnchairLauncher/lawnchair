@@ -13,21 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.android.quickstep.util;
 
-package com.android.launcher3.tapl;
-
-import androidx.test.uiautomator.UiObject2;
+import android.os.Binder;
+import android.os.IBinder;
 
 /**
- * Widget in workspace or a widget list.
+ * Utility class to pass non-parcealable objects within same process using parcealable payload.
+ *
+ * It wraps the object in a binder as binders are singleton within a process
  */
-public final class Widget extends Launchable {
-    Widget(LauncherInstrumentation launcher, UiObject2 icon) {
-        super(launcher, icon);
+public class ObjectWrapper<T> extends Binder {
+
+    private final T mObject;
+
+    public ObjectWrapper(T object) {
+        mObject = object;
     }
 
-    @Override
-    protected String getLongPressIndicator() {
-        return "drop_target_bar";
+    public T get() {
+        return mObject;
+    }
+
+    public static IBinder wrap(Object obj) {
+        return new ObjectWrapper<>(obj);
     }
 }

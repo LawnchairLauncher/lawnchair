@@ -51,7 +51,6 @@ import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.LayoutUtils;
-import com.android.systemui.shared.system.QuickStepContract;
 
 /**
  * Touch controller for handling various state transitions in portrait UI.
@@ -63,7 +62,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     /**
      * The progress at which all apps content will be fully visible when swiping up from overview.
      */
-    private static final float ALL_APPS_CONTENT_FADE_THRESHOLD = 0.08f;
+    protected static final float ALL_APPS_CONTENT_FADE_THRESHOLD = 0.08f;
 
     /**
      * The progress at which recents will begin fading out when swiping up from overview.
@@ -296,9 +295,13 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
      * @return true if the event is over the hotseat
      */
     static boolean isTouchOverHotseat(Launcher launcher, MotionEvent ev) {
+        return (ev.getY() >= getHotseatTop(launcher));
+    }
+
+    public static int getHotseatTop(Launcher launcher) {
         DeviceProfile dp = launcher.getDeviceProfile();
         int hotseatHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
-        return (ev.getY() >= (launcher.getDragLayer().getHeight() - hotseatHeight));
+        return launcher.getDragLayer().getHeight() - hotseatHeight;
     }
 
     private static class InterpolatorWrapper implements Interpolator {

@@ -16,6 +16,12 @@
 
 package com.android.launcher3.tapl;
 
+import static org.junit.Assert.fail;
+
+import android.graphics.Point;
+
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
@@ -74,5 +80,28 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
     @Override
     protected LauncherInstrumentation.ContainerType getContainerType() {
         return LauncherInstrumentation.ContainerType.WIDGETS;
+    }
+
+    public Widget getWidget(String label) {
+        final int margin = ResourceUtils.getNavbarSize(
+                ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, mLauncher.getResources()) + 1;
+        final UiObject2 widgetsContainer = verifyActiveContainer();
+        widgetsContainer.setGestureMargins(0, 0, 0, margin);
+
+        final Point displaySize = mLauncher.getRealDisplaySize();
+
+        int i = 0;
+        final BySelector selector = By.
+                clazz("com.android.launcher3.widget.WidgetCell").
+                hasDescendant(By.text(label));
+
+        for (; ; ) {
+            final UiObject2 widget = mLauncher.tryWaitForLauncherObject(selector, 300);
+            if (widget != null && widget.getVisibleBounds().bottom <= displaySize.y - margin) {
+                return new Widget(mLauncher, widget);
+            }
+            if (++i > 40) fail("Too many attempts");
+            widgetsContainer.scroll(Direction.DOWN, 1f);
+        }
     }
 }

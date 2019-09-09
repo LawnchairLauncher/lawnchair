@@ -74,6 +74,9 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
     private int mMidAlpha;
     private float mMidProgress;
 
+    // The progress at which the drag handle starts moving up with the shelf.
+    private float mDragHandleProgress;
+
     private Interpolator mBeforeMidProgressColorInterpolator = ACCEL;
     private Interpolator mAfterMidProgressColorInterpolator = ACCEL;
 
@@ -95,7 +98,7 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
 
     public ShelfScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mMaxScrimAlpha = Math.round(OVERVIEW.getWorkspaceScrimAlpha(mLauncher) * 255);
+        mMaxScrimAlpha = Math.round(OVERVIEW.getOverviewScrimAlpha(mLauncher) * 255);
 
         mEndAlpha = Color.alpha(mEndScrim);
         mRadius = BOTTOM_CORNER_RADIUS_RATIO * Themes.getDialogCornerRadius(context);
@@ -150,15 +153,16 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
 
             if ((OVERVIEW.getVisibleElements(mLauncher) & ALL_APPS_HEADER_EXTRA) == 0) {
                 mMidProgress = 1;
+                mDragHandleProgress = 1;
                 mMidAlpha = 0;
             } else {
                 mMidAlpha = Themes.getAttrInteger(getContext(), R.attr.allAppsInterimScrimAlpha);
+                mMidProgress =  OVERVIEW.getVerticalProgress(mLauncher);
                 Rect hotseatPadding = dp.getHotseatLayoutPadding();
                 int hotseatSize = dp.hotseatBarSizePx + dp.getInsets().bottom
                         - hotseatPadding.bottom - hotseatPadding.top;
-                float arrowTop = Math.min(hotseatSize, OverviewState.getDefaultSwipeHeight(dp));
-                mMidProgress =  1 - (arrowTop / mShiftRange);
-
+                float dragHandleTop = Math.min(hotseatSize, OverviewState.getDefaultSwipeHeight(dp));
+                mDragHandleProgress =  1 - (dragHandleTop / mShiftRange);
             }
             mTopOffset = dp.getInsets().top - mShelfOffset;
             mShelfTopAtThreshold = mShiftRange * SCRIM_CATCHUP_THRESHOLD + mTopOffset;
@@ -199,8 +203,6 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
                     mProgress, mMidProgress, 1, mMidAlpha, 0, mBeforeMidProgressColorInterpolator));
             mShelfColor = setColorAlphaBound(mEndScrim, alpha);
         } else {
-            mDragHandleOffset += mShiftRange * (mMidProgress - mProgress);
-
             // Note that these ranges and interpolators are inverted because progress goes 1 to 0.
             int alpha = Math.round(
                     Utilities.mapToRange(mProgress, (float) 0, mMidProgress, (float) mEndAlpha,
@@ -211,6 +213,10 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
                     Utilities.mapToRange(mProgress, (float) 0, mMidProgress, mMaxScrimAlpha,
                             (float) 0, LINEAR));
             mRemainingScreenColor = setColorAlphaBound(mScrimColor, remainingScrimAlpha);
+        }
+
+        if (mProgress < mDragHandleProgress) {
+            mDragHandleOffset += mShiftRange * (mDragHandleProgress - mProgress);
         }
     }
 

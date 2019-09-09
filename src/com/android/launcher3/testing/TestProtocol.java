@@ -66,16 +66,17 @@ public final class TestProtocol {
             "all-apps-to-overview-swipe-height";
     public static final String REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT =
             "home-to-all-apps-swipe-height";
+    public static final String REQUEST_HOTSEAT_TOP = "hotseat-top";
+    public static final String REQUEST_IS_LAUNCHER_INITIALIZED = "is-launcher-initialized";
     public static final String REQUEST_FREEZE_APP_LIST = "freeze-app-list";
     public static final String REQUEST_UNFREEZE_APP_LIST = "unfreeze-app-list";
     public static final String REQUEST_APP_LIST_FREEZE_FLAGS = "app-list-freeze-flags";
+    public static final String REQUEST_OVERVIEW_LEFT_GESTURE_MARGIN = "overview-left-margin";
+    public static final String REQUEST_OVERVIEW_RIGHT_GESTURE_MARGIN = "overview-right-margin";
 
     public static boolean sDebugTracing = false;
     public static final String REQUEST_ENABLE_DEBUG_TRACING = "enable-debug-tracing";
     public static final String REQUEST_DISABLE_DEBUG_TRACING = "disable-debug-tracing";
-    public static final String NO_ALLAPPS_EVENT_TAG = "b/133867119";
-    public static final String NO_DRAG_TAG = "b/133009122";
-    public static final String NO_START_TAG = "b/132900132";
-    public static final String NO_START_TASK_TAG = "b/133765434";
-    public static final String NO_OVERVIEW_EVENT_TAG = "b/134532571";
+
+    public static final String NO_BACKGROUND_TO_OVERVIEW_TAG = "b/138251824";
 }

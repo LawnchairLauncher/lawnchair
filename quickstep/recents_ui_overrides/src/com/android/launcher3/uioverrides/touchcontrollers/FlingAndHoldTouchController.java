@@ -23,13 +23,17 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
 import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
 import static com.android.launcher3.LauncherStateManager.ATOMIC_OVERVIEW_PEEK_COMPONENT;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_HEADER_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_SCALE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_TRANSLATE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_SCALE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_TRANSLATE;
+import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
@@ -43,6 +47,7 @@ import android.view.ViewConfiguration;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.util.MotionPauseDetector;
@@ -102,6 +107,9 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
                 mPeekAnim.start();
                 recentsView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+
+                mLauncher.getDragLayer().getScrim().animateToSysuiMultiplier(isPaused ? 0 : 1,
+                        peekDuration, 0);
             });
         }
     }
@@ -120,6 +128,13 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
             LauncherState toState) {
         if (fromState == NORMAL && toState == ALL_APPS) {
             AnimatorSetBuilder builder = new AnimatorSetBuilder();
+            // Fade in prediction icons quickly, then rest of all apps after reaching overview.
+            float progressToReachOverview = NORMAL.getVerticalProgress(mLauncher)
+                    - OVERVIEW.getVerticalProgress(mLauncher);
+            builder.setInterpolator(ANIM_ALL_APPS_HEADER_FADE, Interpolators.clampToProgress(ACCEL,
+                    0, ALL_APPS_CONTENT_FADE_THRESHOLD));
+            builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(LINEAR,
+                    progressToReachOverview, 1));
 
             // Get workspace out of the way quickly, to prepare for potential pause.
             builder.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL_3);
@@ -165,6 +180,21 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
             super.onDragEnd(velocity, fling);
         }
         mMotionPauseDetector.clear();
+    }
+
+    @Override
+    protected void goToTargetState(LauncherState targetState, int logAction) {
+        if (mPeekAnim != null && mPeekAnim.isStarted()) {
+            // Don't jump to the target state until overview is no longer peeking.
+            mPeekAnim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    FlingAndHoldTouchController.super.goToTargetState(targetState, logAction);
+                }
+            });
+        } else {
+            super.goToTargetState(targetState, logAction);
+        }
     }
 
     @Override

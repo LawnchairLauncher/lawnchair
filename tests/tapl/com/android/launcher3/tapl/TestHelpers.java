@@ -26,7 +26,11 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.os.DropBoxManager;
 
+import org.junit.Assert;
+
+import java.util.Date;
 import java.util.List;
 
 public class TestHelpers {
@@ -80,5 +84,71 @@ public class TestHelpers {
             return ComponentName.unflattenFromString(res.getString(id)).getPackageName();
         }
         return "com.android.systemui";
+    }
+
+    private static String truncateCrash(String text, int maxLines) {
+        String[] lines = text.split("\\r?\\n");
+        StringBuilder ret = new StringBuilder();
+        for (int i = 0; i < maxLines && i < lines.length; i++) {
+            ret.append(lines[i]);
+            ret.append('\n');
+        }
+        if (lines.length > maxLines) {
+            ret.append("... ");
+            ret.append(lines.length - maxLines);
+            ret.append(" more lines truncated ...\n");
+        }
+        return ret.toString();
+    }
+
+    private static String checkCrash(Context context, String label) {
+        DropBoxManager dropbox = (DropBoxManager) context.getSystemService(Context.DROPBOX_SERVICE);
+        Assert.assertNotNull("Unable access the DropBoxManager service", dropbox);
+
+        long timestamp = System.currentTimeMillis() - 5 * 60000;
+        DropBoxManager.Entry entry;
+        StringBuilder errorDetails = new StringBuilder();
+        while (null != (entry = dropbox.getNextEntry(label, timestamp))) {
+            if (errorDetails.length() != 0) errorDetails.append("------------------------------");
+            timestamp = entry.getTimeMillis();
+            errorDetails.append(new Date(timestamp));
+            errorDetails.append(": ");
+            errorDetails.append(entry.getTag());
+            errorDetails.append(": ");
+            final String dropboxSnippet = entry.getText(4096);
+            if (dropboxSnippet != null) errorDetails.append(truncateCrash(dropboxSnippet, 40));
+            errorDetails.append("    ...\n");
+            entry.close();
+        }
+        return errorDetails.length() != 0 ? errorDetails.toString() : null;
+    }
+
+    public static String getSystemHealthMessage(Context context) {
+        try {
+            StringBuilder errors = new StringBuilder();
+
+            final String[] labels = {
+                    "system_app_anr",
+                    "system_app_crash",
+                    "system_app_native_crash",
+                    "system_app_wtf",
+                    "system_server_anr",
+                    "system_server_crash",
+                    "system_server_native_crash",
+                    "system_server_watchdog",
+            };
+
+            for (String label : labels) {
+                final String crash = checkCrash(context, label);
+                if (crash != null) errors.append(crash);
+            }
+
+            return errors.length() != 0
+                    ? "Current time: " + new Date(System.currentTimeMillis()) + "\n" + errors
+                    : null;
+        } catch (Exception e) {
+            return "Failed to get system health diags, maybe build your test via .bp instead of "
+                    + ".mk? " + android.util.Log.getStackTraceString(e);
+        }
     }
 }

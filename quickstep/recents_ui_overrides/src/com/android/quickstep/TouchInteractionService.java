@@ -31,18 +31,22 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_H
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NAV_BAR_HIDDEN;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_ASSISTANT;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
+import android.app.TaskInfo;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.Region;
@@ -65,6 +69,7 @@ import android.view.WindowManager;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.UiThread;
+import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.MainThreadExecutor;
@@ -74,6 +79,9 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.logging.EventLogArray;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.model.AppLaunchTracker;
+import com.android.launcher3.provider.RestoreDbTask;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -96,8 +104,10 @@ import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
+import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.SystemGestureExclusionListenerCompat;
 
+import com.android.systemui.shared.system.TaskInfoCompat;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -119,10 +129,6 @@ class ArgList extends LinkedList<String> {
     public String nextArg() {
         return pollFirst().toLowerCase();
     }
-
-    public String nextArgExact() {
-        return pollFirst();
-    }
 }
 
 /**
@@ -141,6 +147,11 @@ public class TouchInteractionService extends Service implements
 
     private static final String TAG = "TouchInteractionService";
 
+    private static final String KEY_BACK_NOTIFICATION_COUNT = "backNotificationCount";
+    private static final String NOTIFY_ACTION_BACK = "com.android.quickstep.action.BACK_GESTURE";
+    private static final int MAX_BACK_NOTIFICATION_COUNT = 3;
+    private int mBackGestureNotificationCounter = -1;
+
     private final IBinder mMyBinder = new IOverviewProxy.Stub() {
 
         public void onActiveNavBarRegionChanges(Region region) {
@@ -152,6 +163,8 @@ public class TouchInteractionService extends Service implements
                     .asInterface(bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
             MAIN_THREAD_EXECUTOR.execute(TouchInteractionService.this::initInputMonitor);
             MAIN_THREAD_EXECUTOR.execute(TouchInteractionService.this::onSystemUiProxySet);
+            MAIN_THREAD_EXECUTOR.execute(() -> preloadOverview(true /* fromInit */));
+            sIsInitialized = true;
         }
 
         @Override
@@ -199,6 +212,10 @@ public class TouchInteractionService extends Service implements
                     mOverviewComponentObserver.getActivityControlHelper();
             UserEventDispatcher.newInstance(getBaseContext()).logActionBack(completed, downX, downY,
                     isButton, gestureSwipeLeft, activityControl.getContainerType());
+
+            if (completed && !isButton && shouldNotifyBackGesture()) {
+                BACKGROUND_EXECUTOR.execute(TouchInteractionService.this::tryNotifyBackGesture);
+            }
         }
 
         public void onSystemUiStateChanged(int stateFlags) {
@@ -225,10 +242,15 @@ public class TouchInteractionService extends Service implements
     };
 
     private static boolean sConnected = false;
+    private static boolean sIsInitialized = false;
     private static final SwipeSharedState sSwipeSharedState = new SwipeSharedState();
 
     public static boolean isConnected() {
         return sConnected;
+    }
+
+    public static boolean isInitialized() {
+        return sIsInitialized;
     }
 
     public static SwipeSharedState getSwipeSharedState() {
@@ -237,6 +259,11 @@ public class TouchInteractionService extends Service implements
 
     private final InputConsumer mResetGestureInputConsumer =
             new ResetGestureInputConsumer(sSwipeSharedState);
+
+    private final BaseSwipeUpHandler.Factory mWindowTreansformFactory =
+            this::createWindowTransformSwipeHandler;
+    private final BaseSwipeUpHandler.Factory mFallbackNoButtonFactory =
+            this::createFallbackNoButtonSwipeHandler;
 
     private ActivityManagerWrapper mAM;
     private RecentsModel mRecentsModel;
@@ -319,6 +346,9 @@ public class TouchInteractionService extends Service implements
         if (mInputEventReceiver != null) {
             mInputEventReceiver.dispose();
             mInputEventReceiver = null;
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "disposeEventHandlers");
+            }
         }
         if (mInputMonitorCompat != null) {
             mInputMonitorCompat.dispose();
@@ -327,16 +357,25 @@ public class TouchInteractionService extends Service implements
     }
 
     private void initInputMonitor() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "initInputMonitor 1");
+        }
         if (!mMode.hasGestures || mISystemUiProxy == null) {
             return;
         }
         disposeEventHandlers();
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "initInputMonitor 2");
+        }
 
         try {
             mInputMonitorCompat = InputMonitorCompat.fromBundle(mISystemUiProxy
                     .monitorGestureInput("swipe-up", mDefaultDisplayId), KEY_EXTRA_INPUT_MONITOR);
             mInputEventReceiver = mInputMonitorCompat.getInputReceiver(Looper.getMainLooper(),
                     mMainChoreographer, this::onInputEvent);
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "initInputMonitor 3");
+            }
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to create input monitor", e);
         }
@@ -394,6 +433,9 @@ public class TouchInteractionService extends Service implements
 
     @Override
     public void onNavigationModeChanged(Mode newMode) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "onNavigationModeChanged " + newMode);
+        }
         if (mMode.hasGestures != newMode.hasGestures) {
             if (newMode.hasGestures) {
                 getSystemService(DisplayManager.class).registerDisplayListener(
@@ -448,6 +490,8 @@ public class TouchInteractionService extends Service implements
 
         // Temporarily disable model preload
         // new ModelPreload().start(this);
+        mBackGestureNotificationCounter = Math.max(0, Utilities.getDevicePrefs(this)
+                .getInt(KEY_BACK_NOTIFICATION_COUNT, MAX_BACK_NOTIFICATION_COUNT));
 
         Utilities.unregisterReceiverSafely(this, mUserUnlockedReceiver);
     }
@@ -478,6 +522,7 @@ public class TouchInteractionService extends Service implements
 
     @Override
     public void onDestroy() {
+        sIsInitialized = false;
         if (mIsUserUnlocked) {
             mInputConsumer.unregisterInputConsumer();
             mOverviewComponentObserver.onDestroy();
@@ -502,6 +547,9 @@ public class TouchInteractionService extends Service implements
     }
 
     private void onInputEvent(InputEvent ev) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "onInputEvent " + ev);
+        }
         if (!(ev instanceof MotionEvent)) {
             Log.e(TAG, "Unknown event " + ev);
             return;
@@ -534,6 +582,7 @@ public class TouchInteractionService extends Service implements
     private boolean validSystemUiFlags() {
         return (mSystemUiStateFlags & SYSUI_STATE_NAV_BAR_HIDDEN) == 0
                 && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0
+                && (mSystemUiStateFlags & SYSUI_STATE_QUICK_SETTINGS_EXPANDED) == 0
                 && ((mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED) == 0
                         || (mSystemUiStateFlags & SYSUI_STATE_OVERVIEW_DISABLED) == 0);
     }
@@ -553,7 +602,7 @@ public class TouchInteractionService extends Service implements
             if (isInValidSystemUiState) {
                 // This handles apps launched in direct boot mode (e.g. dialer) as well as apps
                 // launched while device is locked even after exiting direct boot mode (e.g. camera).
-                return createDeviceLockedInputConsumer(mAM.getRunningTask(0));
+                return createDeviceLockedInputConsumer(mAM.getRunningTask(ACTIVITY_TYPE_ASSISTANT));
             } else {
                 return mResetGestureInputConsumer;
             }
@@ -591,7 +640,7 @@ public class TouchInteractionService extends Service implements
     }
 
     private InputConsumer newBaseConsumer(boolean useSharedState, MotionEvent event) {
-        final RunningTaskInfo runningTaskInfo = mAM.getRunningTask(0);
+        RunningTaskInfo runningTaskInfo = mAM.getRunningTask(0);
         if (!useSharedState) {
             sSwipeSharedState.clearAllState(false /* finishAnimation */);
         }
@@ -603,6 +652,19 @@ public class TouchInteractionService extends Service implements
         final ActivityControlHelper activityControl =
                 mOverviewComponentObserver.getActivityControlHelper();
 
+        boolean forceOverviewInputConsumer = false;
+        if (isExcludedAssistant(runningTaskInfo)) {
+            // In the case where we are in the excluded assistant state, ignore it and treat the
+            // running activity as the task behind the assistant
+            runningTaskInfo = mAM.getRunningTask(ACTIVITY_TYPE_ASSISTANT);
+            if (!ActivityManagerWrapper.isHomeTask(runningTaskInfo)) {
+                final ComponentName homeComponent =
+                    mOverviewComponentObserver.getHomeIntent().getComponent();
+                forceOverviewInputConsumer =
+                    runningTaskInfo.baseIntent.getComponent().equals(homeComponent);
+            }
+        }
+
         if (runningTaskInfo == null && !sSwipeSharedState.goingToLauncher
                 && !sSwipeSharedState.recentsAnimationFinishInterrupted) {
             return mResetGestureInputConsumer;
@@ -612,20 +674,23 @@ public class TouchInteractionService extends Service implements
             RunningTaskInfo info = new ActivityManager.RunningTaskInfo();
             info.id = sSwipeSharedState.nextRunningTaskId;
             return createOtherActivityInputConsumer(event, info);
-        } else if (sSwipeSharedState.goingToLauncher || activityControl.isResumed()) {
+        } else if (sSwipeSharedState.goingToLauncher || activityControl.isResumed()
+                || forceOverviewInputConsumer) {
             return createOverviewInputConsumer(event);
         } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() && activityControl.isInLiveTileMode()) {
             return createOverviewInputConsumer(event);
         } else if (mGestureBlockingActivity != null && runningTaskInfo != null
                 && mGestureBlockingActivity.equals(runningTaskInfo.topActivity)) {
             return mResetGestureInputConsumer;
-        } else if (mMode == Mode.NO_BUTTON && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
-            return new FallbackNoButtonInputConsumer(this, activityControl,
-                    mInputMonitorCompat, sSwipeSharedState, mSwipeTouchRegion,
-                    mOverviewComponentObserver, disableHorizontalSwipe(event), runningTaskInfo);
         } else {
             return createOtherActivityInputConsumer(event, runningTaskInfo);
         }
+    }
+
+    private boolean isExcludedAssistant(TaskInfo info) {
+        return info != null
+                && TaskInfoCompat.getActivityType(info) == ACTIVITY_TYPE_ASSISTANT
+                && (info.baseIntent.getFlags() & Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) != 0;
     }
 
     private boolean disableHorizontalSwipe(MotionEvent event) {
@@ -635,17 +700,25 @@ public class TouchInteractionService extends Service implements
                 && exclusionRegion.contains((int) event.getX(), (int) event.getY());
     }
 
-    private OtherActivityInputConsumer createOtherActivityInputConsumer(MotionEvent event,
+    private InputConsumer createOtherActivityInputConsumer(MotionEvent event,
             RunningTaskInfo runningTaskInfo) {
-        final ActivityControlHelper activityControl =
-                mOverviewComponentObserver.getActivityControlHelper();
-        boolean shouldDefer = activityControl.deferStartingActivity(mActiveNavBarRegion, event);
 
-        return new OtherActivityInputConsumer(this, runningTaskInfo, mRecentsModel,
-                mOverviewComponentObserver.getOverviewIntent(), activityControl,
-                shouldDefer, mOverviewCallbacks, mInputConsumer, this::onConsumerInactive,
+        final boolean shouldDefer;
+        final BaseSwipeUpHandler.Factory factory;
+
+        if (mMode == Mode.NO_BUTTON && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
+            shouldDefer = !sSwipeSharedState.recentsAnimationFinishInterrupted;
+            factory = mFallbackNoButtonFactory;
+        } else {
+            shouldDefer = mOverviewComponentObserver.getActivityControlHelper()
+                    .deferStartingActivity(mActiveNavBarRegion, event);
+            factory = mWindowTreansformFactory;
+        }
+
+        return new OtherActivityInputConsumer(this, runningTaskInfo,
+                shouldDefer, mOverviewCallbacks, this::onConsumerInactive,
                 sSwipeSharedState, mInputMonitorCompat, mSwipeTouchRegion,
-                disableHorizontalSwipe(event));
+                disableHorizontalSwipe(event), factory);
     }
 
     private InputConsumer createDeviceLockedInputConsumer(RunningTaskInfo taskInfo) {
@@ -669,7 +742,7 @@ public class TouchInteractionService extends Service implements
             return new OverviewInputConsumer(activity, mInputMonitorCompat,
                     false /* startingInActivityBounds */);
         } else {
-            return new OverviewWithoutFocusInputConsumer(this, mInputMonitorCompat,
+            return new OverviewWithoutFocusInputConsumer(activity, mInputMonitorCompat,
                     disableHorizontalSwipe(event));
         }
     }
@@ -682,6 +755,60 @@ public class TouchInteractionService extends Service implements
             mConsumer = mResetGestureInputConsumer;
             mUncheckedConsumer = mConsumer;
         }
+    }
+
+    private void preloadOverview(boolean fromInit) {
+        if (!mIsUserUnlocked) {
+            return;
+        }
+        if (!mMode.hasGestures && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
+            // Prevent the overview from being started before the real home on first boot.
+            return;
+        }
+
+        if (RestoreDbTask.isPending(this)) {
+            // Preloading while a restore is pending may cause launcher to start the restore
+            // too early.
+            return;
+        }
+
+        final ActivityControlHelper<BaseDraggingActivity> activityControl =
+                mOverviewComponentObserver.getActivityControlHelper();
+        if (activityControl.getCreatedActivity() == null) {
+            // Make sure that UI states will be initialized.
+            activityControl.createActivityInitListener((activity, wasVisible) -> {
+                AppLaunchTracker.INSTANCE.get(activity);
+                return false;
+            }).register();
+        } else if (fromInit) {
+            // The activity has been created before the initialization of overview service. It is
+            // usually happens when booting or launcher is the top activity, so we should already
+            // have the latest state.
+            return;
+        }
+
+        // Pass null animation handler to indicate this start is preload.
+        startRecentsActivityAsync(mOverviewComponentObserver.getOverviewIntentIgnoreSysUiState(), null);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        if (!mIsUserUnlocked) {
+            return;
+        }
+        final ActivityControlHelper activityControl =
+                mOverviewComponentObserver.getActivityControlHelper();
+        final BaseDraggingActivity activity = activityControl.getCreatedActivity();
+        if (activity == null || activity.isStarted()) {
+            // We only care about the existing background activity.
+            return;
+        }
+        if (mOverviewComponentObserver.canHandleConfigChanges(activity.getComponentName(),
+                activity.getResources().getConfiguration().diff(newConfig))) {
+            return;
+        }
+
+        preloadOverview(false /* fromInit */);
     }
 
     @Override
@@ -708,8 +835,9 @@ public class TouchInteractionService extends Service implements
             pw.println("  assistantAvailable=" + mAssistantAvailable);
             pw.println("  assistantDisabled="
                     + QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags));
-            pw.println("  resumed="
-                    + mOverviewComponentObserver.getActivityControlHelper().isResumed());
+            boolean resumed = mOverviewComponentObserver != null
+                    && mOverviewComponentObserver.getActivityControlHelper().isResumed();
+            pw.println("  resumed=" + resumed);
             pw.println("  useSharedState=" + mConsumer.useSharedSwipeState());
             if (mConsumer.useSharedSwipeState()) {
                 sSwipeSharedState.dump("    ", pw);
@@ -738,5 +866,38 @@ public class TouchInteractionService extends Service implements
                 TOUCH_INTERACTION_LOG.clear();
                 break;
         }
+    }
+
+    private BaseSwipeUpHandler createWindowTransformSwipeHandler(RunningTaskInfo runningTask,
+            long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
+        return  new WindowTransformSwipeHandler(runningTask, this, touchTimeMs,
+                mOverviewComponentObserver, continuingLastGesture, mInputConsumer, mRecentsModel);
+    }
+
+    private BaseSwipeUpHandler createFallbackNoButtonSwipeHandler(RunningTaskInfo runningTask,
+            long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
+        return new FallbackNoButtonInputConsumer(this, mOverviewComponentObserver, runningTask,
+                mRecentsModel, mInputConsumer, isLikelyToStartNewTask, continuingLastGesture);
+    }
+
+    protected boolean shouldNotifyBackGesture() {
+        return mBackGestureNotificationCounter > 0 &&
+                mGestureBlockingActivity != null;
+    }
+
+    @WorkerThread
+    protected void tryNotifyBackGesture() {
+        if (shouldNotifyBackGesture()) {
+            mBackGestureNotificationCounter--;
+            Utilities.getDevicePrefs(this).edit()
+                    .putInt(KEY_BACK_NOTIFICATION_COUNT, mBackGestureNotificationCounter).apply();
+            sendBroadcast(new Intent(NOTIFY_ACTION_BACK).setPackage(
+                    mGestureBlockingActivity.getPackageName()));
+        }
+    }
+
+    public static void startRecentsActivityAsync(Intent intent, RecentsAnimationListener listener) {
+        BACKGROUND_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
+                .startRecentsActivity(intent, null, listener, null, null));
     }
 }

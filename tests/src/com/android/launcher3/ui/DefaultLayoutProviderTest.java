@@ -72,7 +72,7 @@ public class DefaultLayoutProviderTest extends AbstractLauncherUiTest {
         writeLayout(new LauncherLayoutBuilder().atHotseat(0).putApp(SETTINGS_APP, SETTINGS_APP));
 
         // Launch the home activity
-        mActivityMonitor.startLauncher();
+        mDevice.pressHome();
         waitForModelLoaded();
 
         mLauncher.getWorkspace().getHotseatAppIcon(getSettingsApp().getLabel().toString());
@@ -88,7 +88,7 @@ public class DefaultLayoutProviderTest extends AbstractLauncherUiTest {
                         info.getComponent().getClassName(), 2, 2));
 
         // Launch the home activity
-        mActivityMonitor.startLauncher();
+        mDevice.pressHome();
         waitForModelLoaded();
 
         // Verify widget present
@@ -105,7 +105,7 @@ public class DefaultLayoutProviderTest extends AbstractLauncherUiTest {
                 .build());
 
         // Launch the home activity
-        mActivityMonitor.startLauncher();
+        mDevice.pressHome();
         waitForModelLoaded();
 
         mLauncher.getWorkspace().getHotseatFolder("Folder: Copy");

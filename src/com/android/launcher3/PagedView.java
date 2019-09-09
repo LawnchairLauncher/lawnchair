@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.Utilities.shouldDisableGestures;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isObservedEventType;
 import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
@@ -48,6 +47,7 @@ import android.view.animation.Interpolator;
 import android.widget.ScrollView;
 
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.touch.OverScroll;
@@ -368,6 +368,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
      */
     protected void onPageEndTransition() {
         mWasInOverscroll = false;
+        AccessibilityManagerCompat.sendScrollFinishedEventToTest(getContext());
     }
 
     protected int getUnboundedScrollX() {
@@ -847,7 +848,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
          */
 
         // Skip touch handling if there are no pages to swipe
-        if (getChildCount() <= 0 || shouldDisableGestures(ev)) return false;
+        if (getChildCount() <= 0) return false;
 
         acquireVelocityTrackerAndAddMovement(ev);
 
@@ -1095,7 +1096,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         // Skip touch handling if there are no pages to swipe
-        if (getChildCount() <= 0 || shouldDisableGestures(ev)) return false;
+        if (getChildCount() <= 0) return false;
 
         acquireVelocityTrackerAndAddMovement(ev);
 

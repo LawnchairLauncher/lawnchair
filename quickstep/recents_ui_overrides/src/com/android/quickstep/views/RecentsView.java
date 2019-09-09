@@ -37,6 +37,7 @@ import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.CLEAR_ALL_BUTTON;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
+import static com.android.quickstep.TouchInteractionService.BACKGROUND_EXECUTOR;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -72,6 +73,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ListView;
@@ -108,7 +110,6 @@ import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.LauncherEventUtil;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
@@ -226,7 +227,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 return;
             }
 
-            BackgroundExecutor.get().submit(() -> {
+            BACKGROUND_EXECUTOR.execute(() -> {
                 TaskView taskView = getTaskView(taskId);
                 if (taskView == null) {
                     return;
@@ -269,7 +270,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private int mTaskListChangeId = -1;
 
     // Only valid until the launcher state changes to NORMAL
-    private int mRunningTaskId = -1;
+    protected int mRunningTaskId = -1;
     private boolean mRunningTaskTileHidden;
     private Task mTmpRunningTask;
 
@@ -289,7 +290,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     @ViewDebug.ExportedProperty(category = "launcher")
     private float mContentAlpha = 1;
     @ViewDebug.ExportedProperty(category = "launcher")
-    private float mFullscreenProgress = 0;
+    protected float mFullscreenProgress = 0;
 
     // Keeps track of task id whose visual state should not be reset
     private int mIgnoreResetTaskId = -1;
@@ -527,7 +528,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return true;
     }
 
-    private void applyLoadPlan(ArrayList<Task> tasks) {
+    protected void applyLoadPlan(ArrayList<Task> tasks) {
         if (mPendingAnimation != null) {
             mPendingAnimation.addEndListener((onEndListener) -> applyLoadPlan(tasks));
             return;
@@ -599,6 +600,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             TaskView taskView = (TaskView) getChildAt(i);
             if (mIgnoreResetTaskId != taskView.getTask().key.id) {
                 taskView.resetVisualProperties();
+                taskView.setStableAlpha(mContentAlpha);
             }
         }
         if (mRunningTaskTileHidden) {
@@ -848,12 +850,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      * is called.  Also scrolls the view to this task.
      */
     public void showCurrentTask(int runningTaskId) {
-        if (getChildCount() == 0) {
+        if (getTaskView(runningTaskId) == null) {
+            boolean wasEmpty = getChildCount() == 0;
             // Add an empty view for now until the task plan is loaded and applied
             final TaskView taskView = mTaskViewPool.getView();
-            addView(taskView);
-            addView(mClearAllButton);
-
+            addView(taskView, 0);
+            if (wasEmpty) {
+                addView(mClearAllButton);
+            }
             // The temporary running task is only used for the duration between the start of the
             // gesture and the task list is loaded and applied
             mTmpRunningTask = new Task(new Task.TaskKey(runningTaskId, 0, new Intent(),
@@ -1687,6 +1691,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      * @return How many pixels the running task is offset on the x-axis due to the current scrollX.
      */
     public float getScrollOffset() {
+        if (getRunningTaskIndex() == -1) {
+            return 0;
+        }
         int startScroll = getScrollForPage(getRunningTaskIndex());
         int offsetX = startScroll - getScrollX();
         offsetX *= getScaleX();
@@ -1732,5 +1739,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             mOverlayEnabled = overlayEnabled;
             updateEnabledOverlays();
         }
+    }
+
+    public int getLeftGestureMargin() {
+        final WindowInsets insets = getRootWindowInsets();
+        return Math.max(insets.getSystemGestureInsets().left, insets.getSystemWindowInsetLeft());
+    }
+
+    public int getRightGestureMargin() {
+        final WindowInsets insets = getRootWindowInsets();
+        return Math.max(insets.getSystemGestureInsets().right, insets.getSystemWindowInsetRight());
     }
 }

@@ -54,12 +54,12 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                 "want to switch from background to overview")) {
             verifyActiveContainer();
             goToOverviewUnchecked(BACKGROUND_APP_STATE_ORDINAL);
-            return new BaseOverview(mLauncher);
+            return mLauncher.isFallbackOverview() ?
+                    new BaseOverview(mLauncher) : new Overview(mLauncher);
         }
     }
 
     protected void goToOverviewUnchecked(int expectedState) {
-        mLauncher.getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
         switch (mLauncher.getNavigationModel()) {
             case ZERO_BUTTON: {
                 final int centerX = mLauncher.getDevice().getDisplayWidth() / 2;
@@ -112,7 +112,6 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                 mLauncher.waitForSystemUiObject("recent_apps").click();
                 break;
         }
-        mLauncher.getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
     }
 
     protected String getSwipeHeightRequestName() {
