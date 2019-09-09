@@ -188,14 +188,6 @@ public abstract class AbstractLauncherUiTest {
         }
     }
 
-    protected void lockRotation(boolean naturalOrientation) throws RemoteException {
-        if (naturalOrientation) {
-            mDevice.setOrientationNatural();
-        } else {
-            mDevice.setOrientationRight();
-        }
-    }
-
     protected void clearLauncherData() throws IOException, InterruptedException {
         if (TestHelpers.isInLauncherProcess()) {
             LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
