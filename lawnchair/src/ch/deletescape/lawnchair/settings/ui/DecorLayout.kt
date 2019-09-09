@@ -213,12 +213,16 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
         }
 
         private fun computeClip() {
-            contentRect.set(
-                    selfRect.left + insetsRect.left,
-                    selfRect.top + insetsRect.top,
-                    selfRect.right - insetsRect.right,
-                    selfRect.bottom - insetsRect.bottom
-            )
+            if (Utilities.ATLEAST_OREO) {
+                contentRect.set(selfRect.left, selfRect.top + insetsRect.top, selfRect.right, selfRect.bottom)
+            } else {
+                contentRect.set(
+                        selfRect.left + insetsRect.left,
+                        selfRect.top + insetsRect.top,
+                        selfRect.right - insetsRect.right,
+                        selfRect.bottom - insetsRect.bottom
+                               )
+            }
 
             dividerPath.reset()
             when {
