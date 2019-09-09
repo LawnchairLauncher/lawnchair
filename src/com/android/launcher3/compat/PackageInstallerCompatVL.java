@@ -140,14 +140,15 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
      * Add a promise app icon to the workspace iff:
      * - The settings for it are enabled
      * - The user installed the app
-     * - There is a provided app icon (For apps with no launching activity, no icon is provided).
+     * - There is an app icon and label (For apps with no launching activity, no icon is provided).
      */
     private void tryQueuePromiseAppIcon(SessionInfo sessionInfo) {
         if (Utilities.ATLEAST_OREO && FeatureFlags.PROMISE_APPS_NEW_INSTALLS.get()
                 && SessionCommitReceiver.isEnabled(mAppContext)
-                && sessionInfo != null
+                && verify(sessionInfo) != null
                 && sessionInfo.getInstallReason() == PackageManager.INSTALL_REASON_USER
                 && sessionInfo.getAppIcon() != null
+                && !TextUtils.isEmpty(sessionInfo.getAppLabel())
                 && !mPromiseIconIds.contains(sessionInfo.getSessionId())) {
             SessionCommitReceiver.queuePromiseAppIconAddition(mAppContext, sessionInfo);
             mPromiseIconIds.add(sessionInfo.getSessionId());
