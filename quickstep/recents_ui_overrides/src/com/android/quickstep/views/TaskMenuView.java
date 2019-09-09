@@ -50,6 +50,7 @@ import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskSystemShortcut;
 import com.android.quickstep.TaskUtils;
+import com.android.quickstep.util.TaskCornerRadius;
 import com.android.quickstep.views.IconView.OnScaleUpdateListener;
 
 import java.util.List;
@@ -172,7 +173,7 @@ public class TaskMenuView extends AbstractFloatingView {
     }
 
     private void setBackgroundRadius() {
-        float radius = Utilities.getLawnchairPrefs(getContext()).getRecentsRadius();
+        float radius = TaskCornerRadius.get(getContext());
         GradientDrawable background = (GradientDrawable) ((LayerDrawable) getBackground()).getDrawable(1);
         background.setCornerRadii(new float[] {radius, radius, radius, radius, 0, 0, 0, 0});
     }
@@ -284,7 +285,7 @@ public class TaskMenuView extends AbstractFloatingView {
     }
 
     private RoundedRectRevealOutlineProvider createOpenCloseOutlineProvider() {
-        float radius = Themes.getDialogCornerRadius(getContext());
+        float radius = TaskCornerRadius.get(getContext());
         Rect fromRect = new Rect(0, 0, getWidth(), 0);
         Rect toRect = new Rect(0, 0, getWidth(), getHeight());
         return new RoundedRectRevealOutlineProvider(radius, radius, fromRect, toRect);
