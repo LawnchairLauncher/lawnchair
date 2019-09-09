@@ -957,8 +957,8 @@ public final class LauncherInstrumentation {
         getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
     }
 
-    public long getAllocatedMemory() {
-        return getTestInfo(TestProtocol.REQUEST_ALLOCATED_MEMORY).
-                getLong(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    public int getTotalPssKb() {
+        return getTestInfo(TestProtocol.REQUEST_TOTAL_PSS_KB).
+                getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 }

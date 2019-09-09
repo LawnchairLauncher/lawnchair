@@ -19,6 +19,7 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Debug;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -114,10 +115,10 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 break;
             }
 
-            case TestProtocol.REQUEST_ALLOCATED_MEMORY: {
-                final Runtime runtime = Runtime.getRuntime();
-                response.putLong(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                        runtime.totalMemory() - runtime.freeMemory());
+            case TestProtocol.REQUEST_TOTAL_PSS_KB: {
+                Debug.MemoryInfo mem = new Debug.MemoryInfo();
+                Debug.getMemoryInfo(mem);
+                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, mem.getTotalPss());
                 break;
             }
         }
