@@ -30,6 +30,8 @@ import android.view.ActionMode;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.model.AppLaunchTracker;
@@ -38,8 +40,6 @@ import com.android.launcher3.uioverrides.DisplayRotationListener;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
-
-import androidx.annotation.Nullable;
 
 /**
  * Extension of BaseActivity allowing support for drag-n-drop
@@ -241,14 +241,14 @@ public abstract class BaseDraggingActivity extends BaseActivity
     protected void onDeviceProfileInitiated() {
         if (mDeviceProfile.isVerticalBarLayout()) {
             mRotationListener.enable();
-            mDeviceProfile.updateIsSeascape(getWindowManager());
+            mDeviceProfile.updateIsSeascape(this);
         } else {
             mRotationListener.disable();
         }
     }
 
     private void onDeviceRotationChanged() {
-        if (mDeviceProfile.updateIsSeascape(getWindowManager())) {
+        if (mDeviceProfile.updateIsSeascape(this)) {
             reapplyUi();
         }
     }
