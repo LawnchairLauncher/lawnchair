@@ -33,7 +33,7 @@
         android:text="@string/remove_drop_target_label" />
 
     <!-- Uninstall target -->
-    <com.google.android.apps.nexuslauncher.allapps.NexusSecondaryDropTarget
+    <com.android.launcher3.SecondaryDropTarget
         android:id="@+id/uninstall_target_text"
         style="@style/DropTargetButton"
         android:layout_width="wrap_content"
