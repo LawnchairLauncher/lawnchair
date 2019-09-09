@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.popup;
 
+import ch.deletescape.lawnchair.popup.LawnchairShortcut;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -47,7 +48,7 @@ public class SystemShortcutFactory implements ResourceBasedOverride {
 
     public @NonNull List<SystemShortcut> getEnabledShortcuts(Launcher launcher, ItemInfo info) {
         List<SystemShortcut> systemShortcuts = new ArrayList<>();
-        for (SystemShortcut systemShortcut : mAllShortcuts) {
+        for (SystemShortcut systemShortcut : LawnchairShortcut.Companion.getInstance(launcher).getEnabledShortcuts()) {
             if (systemShortcut.getOnClickListener(launcher, info) != null) {
                 systemShortcuts.add(systemShortcut);
             }
