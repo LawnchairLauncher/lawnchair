@@ -73,7 +73,7 @@ public final class TestProtocol {
     public static final String REQUEST_APP_LIST_FREEZE_FLAGS = "app-list-freeze-flags";
     public static final String REQUEST_OVERVIEW_LEFT_GESTURE_MARGIN = "overview-left-margin";
     public static final String REQUEST_OVERVIEW_RIGHT_GESTURE_MARGIN = "overview-right-margin";
-    public static final String REQUEST_ALLOCATED_MEMORY = "allocated-memory";
+    public static final String REQUEST_TOTAL_PSS_KB = "total_pss";
 
     public static boolean sDebugTracing = false;
     public static final String REQUEST_ENABLE_DEBUG_TRACING = "enable-debug-tracing";
