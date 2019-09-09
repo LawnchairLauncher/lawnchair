@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 import static android.view.MotionEvent.ACTION_DOWN;
+
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
 import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_HINTS_IN_OVERVIEW;
@@ -51,8 +52,6 @@ import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.Region;
-import android.hardware.display.DisplayManager;
-import android.hardware.display.DisplayManager.DisplayListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -62,14 +61,14 @@ import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Choreographer;
-import android.view.Display;
 import android.view.InputEvent;
 import android.view.MotionEvent;
 import android.view.Surface;
-import android.view.WindowManager;
+
 import androidx.annotation.BinderThread;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
+
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
@@ -80,6 +79,7 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.util.DefaultDisplay;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
@@ -132,7 +132,7 @@ class ArgList extends LinkedList<String> {
  */
 @TargetApi(Build.VERSION_CODES.Q)
 public class TouchInteractionService extends Service implements
-        NavigationModeChangeListener, DisplayListener {
+        NavigationModeChangeListener, DefaultDisplay.DisplayInfoChangeListener {
 
     /**
      * NOTE: This value should be kept same as
@@ -323,8 +323,7 @@ public class TouchInteractionService extends Service implements
             registerReceiver(mUserUnlockedReceiver, new IntentFilter(Intent.ACTION_USER_UNLOCKED));
         }
 
-        mDefaultDisplayId = getSystemService(WindowManager.class).getDefaultDisplay()
-                .getDisplayId();
+        mDefaultDisplayId = DefaultDisplay.INSTANCE.get(this).getInfo().id;
         String blockingActivity = getString(R.string.gesture_blocking_activity);
         mGestureBlockingActivity = TextUtils.isEmpty(blockingActivity) ? null :
                 ComponentName.unflattenFromString(blockingActivity);
@@ -391,9 +390,8 @@ public class TouchInteractionService extends Service implements
             return;
         }
 
-        Display defaultDisplay = getSystemService(WindowManager.class).getDefaultDisplay();
-        Point realSize = new Point();
-        defaultDisplay.getRealSize(realSize);
+        DefaultDisplay.Info displayInfo = DefaultDisplay.INSTANCE.get(this).getInfo();
+        Point realSize = new Point(displayInfo.realSize);
         mSwipeTouchRegion.set(0, 0, realSize.x, realSize.y);
         if (mMode == Mode.NO_BUTTON) {
             int touchHeight = getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
@@ -415,7 +413,7 @@ public class TouchInteractionService extends Service implements
         } else {
             mAssistantLeftRegion.setEmpty();
             mAssistantRightRegion.setEmpty();
-            switch (defaultDisplay.getRotation()) {
+            switch (displayInfo.rotation) {
                 case Surface.ROTATION_90:
                     mSwipeTouchRegion.left = mSwipeTouchRegion.right
                             - getNavbarSize(ResourceUtils.NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE);
@@ -438,10 +436,9 @@ public class TouchInteractionService extends Service implements
         }
         if (mMode.hasGestures != newMode.hasGestures) {
             if (newMode.hasGestures) {
-                getSystemService(DisplayManager.class).registerDisplayListener(
-                        this, MAIN_EXECUTOR.getHandler());
+                DefaultDisplay.INSTANCE.get(this).addChangeListener(this);
             } else {
-                getSystemService(DisplayManager.class).unregisterDisplayListener(this);
+                DefaultDisplay.INSTANCE.get(this).removeChangeListener(this);
             }
         }
         mMode = newMode;
@@ -457,14 +454,8 @@ public class TouchInteractionService extends Service implements
     }
 
     @Override
-    public void onDisplayAdded(int i) { }
-
-    @Override
-    public void onDisplayRemoved(int i) { }
-
-    @Override
-    public void onDisplayChanged(int displayId) {
-        if (displayId != mDefaultDisplayId) {
+    public void onDisplayInfoChanged(DefaultDisplay.Info info, int flags) {
+        if (info.id != mDefaultDisplayId) {
             return;
         }
 
@@ -529,7 +520,7 @@ public class TouchInteractionService extends Service implements
         }
         disposeEventHandlers();
         if (mMode.hasGestures) {
-            getSystemService(DisplayManager.class).unregisterDisplayListener(this);
+            DefaultDisplay.INSTANCE.get(this).removeChangeListener(this);
         }
 
         sConnected = false;

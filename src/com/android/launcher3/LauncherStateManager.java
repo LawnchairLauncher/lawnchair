@@ -136,7 +136,7 @@ public class LauncherStateManager {
     }
 
     public void dump(String prefix, PrintWriter writer) {
-        writer.println(prefix + "LauncherState");
+        writer.println(prefix + "LauncherState:");
         writer.println(prefix + "\tmLastStableState:" + mLastStableState);
         writer.println(prefix + "\tmCurrentStableState:" + mCurrentStableState);
         writer.println(prefix + "\tmState:" + mState);
@@ -418,7 +418,7 @@ public class LauncherStateManager {
                     " @ " + Log.getStackTraceString(new Throwable()));
         }
         mState.onStateEnabled(mLauncher);
-        mLauncher.onStateSet(mState);
+        mLauncher.onStateSetStart(mState);
 
         if (state.disablePageClipping) {
             // Only disable clipping if needed, otherwise leave it as previous value.
@@ -444,8 +444,7 @@ public class LauncherStateManager {
         }
 
         state.onStateTransitionEnd(mLauncher);
-        mLauncher.getWorkspace().setClipChildren(!state.disablePageClipping);
-        mLauncher.finishAutoCancelActionMode();
+        mLauncher.onStateSetEnd(state);
 
         if (state == NORMAL) {
             setRestState(null);

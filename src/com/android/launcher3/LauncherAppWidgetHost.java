@@ -105,6 +105,10 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         super.stopListening();
     }
 
+    public boolean isListening() {
+        return (mFlags & FLAG_LISTENING) != 0;
+    }
+
     /**
      * Updates the resumed state of the host.
      * When a host is not resumed, it defers calls to startListening until host is resumed again.
