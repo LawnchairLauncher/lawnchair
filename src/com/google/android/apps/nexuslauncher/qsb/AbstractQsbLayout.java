@@ -41,7 +41,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import ch.deletescape.lawnchair.folder.FolderShape;
 import ch.deletescape.lawnchair.globalsearch.SearchProvider;
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
 import com.android.launcher3.DeviceProfile;
@@ -52,6 +51,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.graphics.NinePatchDrawHelper;
 import com.android.launcher3.icons.ShadowGenerator.Builder;
 import com.android.launcher3.util.Themes;
@@ -397,7 +397,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         builder.keyShadowAlpha = builder.ambientShadowAlpha;
         Bitmap pill;
         if (mRadius < 0) {
-            TypedValue edgeRadius = FolderShape.sInstance.mAttrs.get(R.attr.qsbEdgeRadius);
+            TypedValue edgeRadius = IconShape.getShape().getAttrValue(R.attr.qsbEdgeRadius);
             if (edgeRadius != null) {
                 pill = builder.createPill(i2, dC,
                         edgeRadius.getDimension(getResources().getDisplayMetrics()));
@@ -526,7 +526,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         if (radius > 0f) {
             return radius;
         }
-        TypedValue edgeRadius = FolderShape.sInstance.mAttrs.get(R.attr.qsbEdgeRadius);
+        TypedValue edgeRadius = IconShape.getShape().getAttrValue(R.attr.qsbEdgeRadius);
         if (edgeRadius != null) {
             return edgeRadius.getDimension(context.getResources().getDisplayMetrics());
         } else {

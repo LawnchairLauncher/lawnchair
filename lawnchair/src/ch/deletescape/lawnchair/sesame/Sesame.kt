@@ -23,7 +23,6 @@ import android.os.Bundle
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.dpToPx
-import ch.deletescape.lawnchair.folder.FolderShape
 import ch.deletescape.lawnchair.globalsearch.providers.SesameSearchProvider
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.util.diff.diff

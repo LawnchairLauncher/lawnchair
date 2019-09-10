@@ -27,7 +27,6 @@ import android.os.Handler
 import android.text.TextUtils
 import androidx.annotation.Keep
 import androidx.core.graphics.PathParser
-import ch.deletescape.lawnchair.folder.FolderShape
 import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.runOnMainThread
@@ -35,7 +34,9 @@ import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.Utilities
+import com.android.launcher3.graphics.IconShape as LauncherIconShape
 import com.android.launcher3.graphics.IconShapeOverride
+import com.android.launcher3.icons.GraphicsUtils
 import java.lang.RuntimeException
 
 class IconShapeManager(private val context: Context) {
@@ -81,13 +82,13 @@ class IconShapeManager(private val context: Context) {
     }
 
     private fun findNearestShape(comparePath: Path): IconShape {
-        val clip = Region(0, 0, 100, 100)
-        val systemRegion = Region().apply {
+        val size = 200
+        val clip = Region(0, 0, size, size)
+        val iconR = Region().apply {
             setPath(comparePath, clip)
         }
-        val pathRegion = Region()
-        val path = Path()
-        val rect = Rect()
+        val shapePath = Path()
+        val shapeR = Region()
         return listOf(
                 IconShape.Circle,
                 IconShape.Square,
@@ -95,18 +96,12 @@ class IconShapeManager(private val context: Context) {
                 IconShape.Squircle,
                 IconShape.Teardrop,
                 IconShape.Cylinder).minBy {
-            path.reset()
-            it.addShape(path, 0f, 0f, 50f)
-            pathRegion.setPath(path, clip)
-            pathRegion.op(systemRegion, Region.Op.XOR)
+            shapePath.reset()
+            it.addShape(shapePath, 0f, 0f, size / 2f)
+            shapeR.setPath(shapePath, clip)
+            shapeR.op(iconR, Region.Op.XOR)
 
-            var difference = 0
-            val iter = RegionIterator(pathRegion)
-            while (iter.next(rect)) {
-                difference += rect.width() * rect.height()
-            }
-
-            difference
+            GraphicsUtils.getArea(shapeR)
         }!!
     }
 
@@ -116,7 +111,7 @@ class IconShapeManager(private val context: Context) {
 
             runOnMainThread {
                 AdaptiveIconCompat.resetMask()
-                FolderShape.init(context)
+                LauncherIconShape.init(context)
                 context.lawnchairPrefs.recreate()
             }
         }

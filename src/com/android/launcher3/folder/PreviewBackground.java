@@ -39,7 +39,6 @@ import android.graphics.Shader;
 import android.util.Property;
 import android.view.View;
 
-import ch.deletescape.lawnchair.folder.FolderShape;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
