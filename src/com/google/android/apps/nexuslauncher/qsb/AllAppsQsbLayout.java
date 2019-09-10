@@ -459,7 +459,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
             Interpolator interpolator) {
         LawnchairPreferences prefs = Utilities.getLawnchairPrefs(getContext());
         boolean hotseatQsbEnabled = prefs.getDockSearchBar();
-        boolean drawerQsbEnabled = true;
+        boolean drawerQsbEnabled = prefs.getAllAppsSearch();
         boolean hotseatQsbVisible = (visibleElements & HOTSEAT_SEARCH_BOX) != 0;
         boolean drawerQsbVisible = (visibleElements & ALL_APPS_HEADER) != 0;
         boolean qsbVisible = (hotseatQsbEnabled && hotseatQsbVisible) || (drawerQsbEnabled && drawerQsbVisible);
