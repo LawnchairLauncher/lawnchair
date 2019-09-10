@@ -41,6 +41,7 @@ import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.views.OptionsPopupView
 import com.android.launcher3.widget.WidgetsFullSheet
+import com.android.quickstep.SysUINavigationMode
 import ninja.sesame.lib.bridge.v1.SesameFrontend
 import org.json.JSONObject
 
@@ -48,9 +49,17 @@ import org.json.JSONObject
 open class OpenDrawerGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config),
         VerticalSwipeGestureHandler, StateChangeGestureHandler {
 
-    override val displayName: String = context.getString(R.string.action_open_drawer)
+    override val displayName: String get() = context.getString(getNameRes())
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.mipmap.ic_allapps_adaptive) }
     override val requiresForeground = true
+
+    private fun getNameRes(): Int {
+        if (SysUINavigationMode.INSTANCE.get(context).mode == SysUINavigationMode.Mode.NO_BUTTON) {
+            return R.string.action_open_drawer_or_recents
+        } else {
+            return R.string.action_open_drawer
+        }
+    }
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         controller.launcher.stateManager.goToState(LauncherState.ALL_APPS, true, getOnCompleteRunnable(controller))

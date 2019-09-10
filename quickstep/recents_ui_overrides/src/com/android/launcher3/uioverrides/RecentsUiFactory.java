@@ -24,6 +24,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.view.Gravity;
 
+import ch.deletescape.lawnchair.gestures.VerticalSwipeGestureController;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -144,8 +145,10 @@ public abstract class RecentsUiFactory {
         if (mode == NO_BUTTON) {
             list.add(new QuickSwitchTouchController(launcher));
             list.add(new NavBarToHomeTouchController(launcher));
+            list.add(new VerticalSwipeGestureController(launcher));
             list.add(new FlingAndHoldTouchController(launcher));
         } else {
+            list.add(new VerticalSwipeGestureController(launcher));
             if (launcher.getDeviceProfile().isVerticalBarLayout()) {
                 list.add(new OverviewToAllAppsTouchController(launcher));
                 list.add(new LandscapeEdgeSwipeController(launcher));
