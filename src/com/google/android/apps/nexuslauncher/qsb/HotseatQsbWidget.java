@@ -92,8 +92,8 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     @Override
     public void onColorChange(@NotNull ResolveInfo resolveInfo) {
         if (resolveInfo.getKey().equals(Resolvers.HOTSEAT_QSB_BG)) {
-            ay(resolveInfo.getColor());
-            az(ColorUtils.setAlphaComponent(Dc, Ds.micOpacity()));
+            setAllAppsBgColor(resolveInfo.getColor());
+            az(ColorUtils.setAlphaComponent(mAllAppsBgColor, Ds.micOpacity()));
         }
     }
 
@@ -159,8 +159,8 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         } else {
             colorRes = mIsGoogleColored ? R.color.qsb_background_hotseat_white : R.color.qsb_background_hotseat_default;
         }
-        ay(getResources().getColor(colorRes));
-        az(ColorUtils.setAlphaComponent(Dc, Ds.micOpacity()));*/
+        setAllAppsBgColor(getResources().getColor(colorRes));
+        az(ColorUtils.setAlphaComponent(mAllAppsBgColor, Ds.micOpacity()));*/
     }
 
     public boolean isGoogleColored() {

@@ -30,14 +30,12 @@ import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
-import com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader;
 import com.google.android.apps.nexuslauncher.search.AppSearchProvider;
 import com.google.android.apps.nexuslauncher.search.nano.SearchProto.a_search;
 import com.google.android.apps.nexuslauncher.search.nano.SearchProto.b_search;
 import com.google.android.apps.nexuslauncher.search.nano.SearchProto.c_search;
 import com.google.android.apps.nexuslauncher.search.nano.SearchProto.d_search;
 
-import com.google.android.apps.nexuslauncher.util.ComponentKeyMapper;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,7 +131,7 @@ public class ConfigBuilder {
         final RemoteViews remoteViews = new RemoteViews(mActivity.getPackageName(), R.layout.apps_search_qsb_template);
 
         final int effectiveHeight = mQsbLayout.getHeight() - mQsbLayout.getPaddingTop() - mQsbLayout.getPaddingBottom() + 20;
-        final Bitmap mShadowBitmap = mQsbLayout.mShadowBitmap;
+        final Bitmap mShadowBitmap = mQsbLayout.mAllAppsShadowBitmap;
         if(mShadowBitmap != null) {
             final int internalWidth = (mShadowBitmap.getWidth() - effectiveHeight) / 2;
             final int verticalPadding = (mQsbLayout.getHeight() - mShadowBitmap.getHeight()) / 2;
