@@ -23,6 +23,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
 import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
 import static com.android.launcher3.LauncherStateManager.ATOMIC_OVERVIEW_PEEK_COMPONENT;
+import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_SCALE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_TRANSLATE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS;
@@ -42,6 +43,7 @@ import android.view.ViewConfiguration;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.quickstep.OverviewInteractionState;
@@ -63,11 +65,18 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
 
     private AnimatorSet mPeekAnim;
 
+    private boolean mFromNavBar;
+    private boolean mGoingHome;
+    private boolean mAnimatingToHome;
+    private final float mPullbackDistance;
+    private float mProgressMultiplier;
+
     public FlingAndHoldTouchController(Launcher l) {
         super(l, false /* allowDragToOverview */);
         mMotionPauseDetector = new MotionPauseDetector(l);
         mMotionPauseMinDisplacement = ViewConfiguration.get(l).getScaledTouchSlop();
         mMotionPauseMaxDisplacement = getShiftRange() * MAX_DISPLACEMENT_PERCENT;
+        mPullbackDistance = mLauncher.getResources().getDimension(R.dimen.home_pullback_distance);
     }
 
     @Override
@@ -76,10 +85,18 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
     }
 
     @Override
+    protected boolean canInterceptTouch(MotionEvent ev) {
+        mFromNavBar = (ev.getEdgeFlags() & EDGE_NAV_BAR) != 0;
+        mGoingHome = false;
+        return super.canInterceptTouch(ev);
+    }
+
+    @Override
     public void onDragStart(boolean start) {
         mMotionPauseDetector.clear();
 
         super.onDragStart(start);
+        mGoingHome = mFromNavBar && mStartState == NORMAL;
 
         if (handlingOverviewAnim()) {
             mMotionPauseDetector.setOnMotionPauseListener(isPaused -> {
@@ -161,7 +178,21 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
                 }
             });
             overviewAnim.start();
-        } else {
+        } else if (mGoingHome && Float.compare(Math.signum(velocity), Math.signum(mProgressMultiplier)) == 0) {
+            mAnimatingToHome = true;
+            AnimatorSetBuilder builder = new AnimatorSetBuilder();
+            AnimatorSet homeAnim = mLauncher.getStateManager().createAtomicAnimation(
+                    NORMAL, NORMAL, builder, ANIM_ALL, ATOMIC_DURATION);
+            homeAnim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    onSwipeInteractionCompleted(NORMAL, Touch.SWIPE);
+                    mAnimatingToHome = false;
+                }
+            });
+            homeAnim.start();
+            mLauncher.getWorkspace().snapToPage(0);
+        } else if (!mAnimatingToHome) {
             super.onDragEnd(velocity, fling);
         }
         mMotionPauseDetector.clear();
@@ -174,5 +205,20 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
             // as that will cause a jump after our atomic animation.
             builder.addFlag(AnimatorSetBuilder.FLAG_DONT_ANIMATE_OVERVIEW);
         }
+    }
+
+    @Override
+    protected float initCurrentAnimation(int animComponents) {
+        return mProgressMultiplier = super.initCurrentAnimation(animComponents);
+    }
+
+    @Override
+    protected void updateProgress(float fraction) {
+        if (mGoingHome) {
+            float scale = mPullbackDistance * -mProgressMultiplier;
+            fraction = DEACCEL_3.getInterpolation(fraction);
+            fraction *= scale;
+        }
+        super.updateProgress(fraction);
     }
 }
