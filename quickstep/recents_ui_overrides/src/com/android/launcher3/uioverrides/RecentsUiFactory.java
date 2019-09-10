@@ -56,8 +56,17 @@ import java.util.ArrayList;
 public abstract class RecentsUiFactory {
 
     public static final boolean GO_LOW_RAM_RECENTS_ENABLED = false;
-    private static final AsyncCommand SET_SHELF_HEIGHT_CMD = (visible, height) ->
+    private static final AsyncCommand SET_SHELF_HEIGHT_CMD = RecentsUiFactory::setShelfHeight;
+
+    private static boolean DISALLOW_SET_SHELF_HEIGHT;
+    private static void setShelfHeight(int visible, int height) {
+        if (DISALLOW_SET_SHELF_HEIGHT) return;
+        try {
             WindowManagerWrapper.getInstance().setShelfHeight(visible != 0, height);
+        } catch (SecurityException e) {
+            DISALLOW_SET_SHELF_HEIGHT = true;
+        }
+    }
 
     public static RotationMode ROTATION_LANDSCAPE = new RotationMode(-90) {
         @Override
