@@ -79,8 +79,8 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
             Rect homeContentInsets, Rect minimizedHomeBounds) {
         mController = controller;
         SwipeAnimationTargetSet targetSet = new SwipeAnimationTargetSet(controller, appTargets,
-                homeContentInsets, minimizedHomeBounds, mShouldMinimizeSplitScreen,
-                mOnFinishListener);
+                wallpaperTargets, homeContentInsets, minimizedHomeBounds,
+                mShouldMinimizeSplitScreen, mOnFinishListener);
 
         if (mCancelled) {
             targetSet.cancelAnimation();

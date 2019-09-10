@@ -202,17 +202,19 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                     true /* startAtFrontOfQueue */) {
 
                 @Override
-                public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
-                        AnimationResult result) {
+                public void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
+                        RemoteAnimationTargetCompat[] wallpaperTargets, AnimationResult result) {
                     AnimatorSet anim = new AnimatorSet();
 
                     boolean launcherClosing =
-                            launcherIsATargetWithMode(targetCompats, MODE_CLOSING);
+                            launcherIsATargetWithMode(appTargets, MODE_CLOSING);
 
-                    if (isLaunchingFromRecents(v, targetCompats)) {
-                        composeRecentsLaunchAnimator(anim, v, targetCompats, launcherClosing);
+                    if (isLaunchingFromRecents(v, appTargets)) {
+                        composeRecentsLaunchAnimator(anim, v, appTargets, wallpaperTargets,
+                                launcherClosing);
                     } else {
-                        composeIconLaunchAnimator(anim, v, targetCompats, launcherClosing);
+                        composeIconLaunchAnimator(anim, v, appTargets, wallpaperTargets,
+                                launcherClosing);
                     }
 
                     if (launcherClosing) {
@@ -255,36 +257,39 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
      *
      * @param anim the animator set to add to
      * @param v the launching view
-     * @param targets the apps that are opening/closing
+     * @param appTargets the apps that are opening/closing
      * @param launcherClosing true if the launcher app is closing
      */
     protected abstract void composeRecentsLaunchAnimator(@NonNull AnimatorSet anim, @NonNull View v,
-            @NonNull RemoteAnimationTargetCompat[] targets, boolean launcherClosing);
+            @NonNull RemoteAnimationTargetCompat[] appTargets,
+            @NonNull RemoteAnimationTargetCompat[] wallpaperTargets, boolean launcherClosing);
 
     /**
      * Compose the animations for a launch from the app icon.
      *
      * @param anim the animation to add to
      * @param v the launching view with the icon
-     * @param targets the list of opening/closing apps
+     * @param appTargets the list of opening/closing apps
      * @param launcherClosing true if launcher is closing
      */
     private void composeIconLaunchAnimator(@NonNull AnimatorSet anim, @NonNull View v,
-            @NonNull RemoteAnimationTargetCompat[] targets, boolean launcherClosing) {
+            @NonNull RemoteAnimationTargetCompat[] appTargets,
+            @NonNull RemoteAnimationTargetCompat[] wallpaperTargets,
+            boolean launcherClosing) {
         // Set the state animation first so that any state listeners are called
         // before our internal listeners.
         mLauncher.getStateManager().setCurrentAnimation(anim);
 
-        Rect windowTargetBounds = getWindowTargetBounds(targets);
+        Rect windowTargetBounds = getWindowTargetBounds(appTargets);
         boolean isAllOpeningTargetTrs = true;
-        for (int i = 0; i < targets.length; i++) {
-            RemoteAnimationTargetCompat target = targets[i];
+        for (int i = 0; i < appTargets.length; i++) {
+            RemoteAnimationTargetCompat target = appTargets[i];
             if (target.mode == MODE_OPENING) {
                 isAllOpeningTargetTrs &= target.isTranslucent;
             }
             if (!isAllOpeningTargetTrs) break;
         }
-        anim.play(getOpeningWindowAnimators(v, targets, windowTargetBounds,
+        anim.play(getOpeningWindowAnimators(v, appTargets, wallpaperTargets, windowTargetBounds,
                 !isAllOpeningTargetTrs));
         if (launcherClosing) {
             Pair<AnimatorSet, Runnable> launcherContentAnimator =
@@ -305,10 +310,10 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
      * In multiwindow mode, we need to get the final size of the opening app window target to help
      * figure out where the floating view should animate to.
      */
-    private Rect getWindowTargetBounds(RemoteAnimationTargetCompat[] targets) {
+    private Rect getWindowTargetBounds(RemoteAnimationTargetCompat[] appTargets) {
         Rect bounds = new Rect(0, 0, mDeviceProfile.widthPx, mDeviceProfile.heightPx);
         if (mLauncher.isInMultiWindowMode()) {
-            for (RemoteAnimationTargetCompat target : targets) {
+            for (RemoteAnimationTargetCompat target : appTargets) {
                 if (target.mode == MODE_OPENING) {
                     bounds.set(target.sourceContainerBounds);
                     bounds.offsetTo(target.position.x, target.position.y);
@@ -418,7 +423,9 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     /**
      * @return Animator that controls the window of the opening targets.
      */
-    private ValueAnimator getOpeningWindowAnimators(View v, RemoteAnimationTargetCompat[] targets,
+    private ValueAnimator getOpeningWindowAnimators(View v,
+            RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets,
             Rect windowTargetBounds, boolean toggleVisibility) {
         RectF bounds = new RectF();
         FloatingIconView floatingView = FloatingIconView.getFloatingIconView(mLauncher, v,
@@ -426,8 +433,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         Rect crop = new Rect();
         Matrix matrix = new Matrix();
 
-        RemoteAnimationTargetSet openingTargets = new RemoteAnimationTargetSet(targets,
-                MODE_OPENING);
+        RemoteAnimationTargetSet openingTargets = new RemoteAnimationTargetSet(appTargets,
+                wallpaperTargets, MODE_OPENING);
         SyncRtSurfaceTransactionApplierCompat surfaceApplier =
                 new SyncRtSurfaceTransactionApplierCompat(floatingView);
         openingTargets.addDependentTransactionApplier(surfaceApplier);
@@ -551,9 +558,9 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
 
                 float croppedHeight = (windowTargetBounds.height() - crop.height()) * scale;
                 float croppedWidth = (windowTargetBounds.width() - crop.width()) * scale;
-                SurfaceParams[] params = new SurfaceParams[targets.length];
-                for (int i = targets.length - 1; i >= 0; i--) {
-                    RemoteAnimationTargetCompat target = targets[i];
+                SurfaceParams[] params = new SurfaceParams[appTargets.length];
+                for (int i = appTargets.length - 1; i >= 0; i--) {
+                    RemoteAnimationTargetCompat target = appTargets[i];
                     Rect targetCrop;
                     final float alpha;
                     final float cornerRadius;
@@ -619,7 +626,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     /**
      * Animator that controls the transformations of the windows when unlocking the device.
      */
-    private Animator getUnlockWindowAnimator(RemoteAnimationTargetCompat[] targets) {
+    private Animator getUnlockWindowAnimator(RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets) {
         SyncRtSurfaceTransactionApplierCompat surfaceApplier =
                 new SyncRtSurfaceTransactionApplierCompat(mDragLayer);
         ValueAnimator unlockAnimator = ValueAnimator.ofFloat(0, 1);
@@ -629,9 +637,9 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         unlockAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                SurfaceParams[] params = new SurfaceParams[targets.length];
-                for (int i = targets.length - 1; i >= 0; i--) {
-                    RemoteAnimationTargetCompat target = targets[i];
+                SurfaceParams[] params = new SurfaceParams[appTargets.length];
+                for (int i = appTargets.length - 1; i >= 0; i--) {
+                    RemoteAnimationTargetCompat target = appTargets[i];
                     params[i] = new SurfaceParams(target.leash, 1f, null,
                             target.sourceContainerBounds,
                             RemoteAnimationProvider.getLayer(target, MODE_OPENING), cornerRadius);
@@ -645,7 +653,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     /**
      * Animator that controls the transformations of the windows the targets that are closing.
      */
-    private Animator getClosingWindowAnimators(RemoteAnimationTargetCompat[] targets) {
+    private Animator getClosingWindowAnimators(RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets) {
         SyncRtSurfaceTransactionApplierCompat surfaceApplier =
                 new SyncRtSurfaceTransactionApplierCompat(mDragLayer);
         Matrix matrix = new Matrix();
@@ -661,9 +670,9 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
 
             @Override
             public void onUpdate(float percent) {
-                SurfaceParams[] params = new SurfaceParams[targets.length];
-                for (int i = targets.length - 1; i >= 0; i--) {
-                    RemoteAnimationTargetCompat target = targets[i];
+                SurfaceParams[] params = new SurfaceParams[appTargets.length];
+                for (int i = appTargets.length - 1; i >= 0; i--) {
+                    RemoteAnimationTargetCompat target = appTargets[i];
                     final float alpha;
                     final float cornerRadius;
                     if (target.mode == MODE_CLOSING) {
@@ -764,11 +773,12 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         }
 
         @Override
-        public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
+        public void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
+                RemoteAnimationTargetCompat[] wallpaperTargets,
                 LauncherAnimationRunner.AnimationResult result) {
             if (mLauncher.isDestroyed()) {
                 AnimatorSet anim = new AnimatorSet();
-                anim.play(getClosingWindowAnimators(targetCompats));
+                anim.play(getClosingWindowAnimators(appTargets, wallpaperTargets));
                 result.setAnimation(anim, mLauncher.getApplicationContext());
                 return;
             }
@@ -777,7 +787,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 // If launcher is not resumed, wait until new async-frame after resume
                 mLauncher.addOnResumeCallback(() ->
                         postAsyncCallback(mHandler, () ->
-                                onCreateAnimation(targetCompats, result)));
+                                onCreateAnimation(appTargets, wallpaperTargets, result)));
                 return;
             }
 
@@ -789,14 +799,14 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             AnimatorSet anim = null;
             RemoteAnimationProvider provider = mRemoteAnimationProvider;
             if (provider != null) {
-                anim = provider.createWindowAnimation(targetCompats);
+                anim = provider.createWindowAnimation(appTargets, wallpaperTargets);
             }
 
             if (anim == null) {
                 anim = new AnimatorSet();
                 anim.play(mFromUnlock
-                        ? getUnlockWindowAnimator(targetCompats)
-                        : getClosingWindowAnimators(targetCompats));
+                        ? getUnlockWindowAnimator(appTargets, wallpaperTargets)
+                        : getClosingWindowAnimators(appTargets, wallpaperTargets));
 
                 // Normally, we run the launcher content animation when we are transitioning
                 // home, but if home is already visible, then we don't want to animate the
@@ -806,7 +816,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 // targets list because it is already visible). In that case, we force
                 // invisibility on touch down, and only reset it after the animation to home
                 // is initialized.
-                if (launcherIsATargetWithMode(targetCompats, MODE_OPENING)
+                if (launcherIsATargetWithMode(appTargets, MODE_OPENING)
                         || mLauncher.isForceInvisible()) {
                     // Only register the content animation for cancellation when state changes
                     mLauncher.getStateManager().setCurrentAnimation(anim);

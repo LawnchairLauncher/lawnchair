@@ -16,12 +16,10 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
-import static com.android.launcher3.QuickstepAppTransitionManagerImpl
-        .STATUS_BAR_TRANSITION_DURATION;
-import static com.android.launcher3.QuickstepAppTransitionManagerImpl
-        .STATUS_BAR_TRANSITION_PRE_DELAY;
-import static com.android.quickstep.TaskViewUtils.getRecentsWindowAnimator;
+import static com.android.launcher3.QuickstepAppTransitionManagerImpl.STATUS_BAR_TRANSITION_DURATION;
+import static com.android.launcher3.QuickstepAppTransitionManagerImpl.STATUS_BAR_TRANSITION_PRE_DELAY;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
+import static com.android.quickstep.TaskViewUtils.getRecentsWindowAnimator;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.animation.Animator;
@@ -152,9 +150,10 @@ public final class RecentsActivity extends BaseRecentsActivity {
                 true /* startAtFrontOfQueue */) {
 
             @Override
-            public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
-                    AnimationResult result) {
-                AnimatorSet anim = composeRecentsLaunchAnimator(taskView, targetCompats);
+            public void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
+                    RemoteAnimationTargetCompat[] wallpaperTargets, AnimationResult result) {
+                AnimatorSet anim = composeRecentsLaunchAnimator(taskView, appTargets,
+                        wallpaperTargets);
                 anim.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -174,12 +173,13 @@ public final class RecentsActivity extends BaseRecentsActivity {
      * Composes the animations for a launch from the recents list if possible.
      */
     private AnimatorSet composeRecentsLaunchAnimator(TaskView taskView,
-            RemoteAnimationTargetCompat[] targets) {
+            RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets) {
         AnimatorSet target = new AnimatorSet();
-        boolean activityClosing = taskIsATargetWithMode(targets, getTaskId(), MODE_CLOSING);
+        boolean activityClosing = taskIsATargetWithMode(appTargets, getTaskId(), MODE_CLOSING);
         ClipAnimationHelper helper = new ClipAnimationHelper(this);
-        target.play(getRecentsWindowAnimator(taskView, !activityClosing, targets, helper)
-                .setDuration(RECENTS_LAUNCH_DURATION));
+        target.play(getRecentsWindowAnimator(taskView, !activityClosing, appTargets,
+                wallpaperTargets, helper).setDuration(RECENTS_LAUNCH_DURATION));
 
         // Found a visible recents task that matches the opening app, lets launch the app from there
         if (activityClosing) {

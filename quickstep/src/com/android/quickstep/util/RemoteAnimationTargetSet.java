@@ -32,10 +32,12 @@ public class RemoteAnimationTargetSet {
 
     public final RemoteAnimationTargetCompat[] unfilteredApps;
     public final RemoteAnimationTargetCompat[] apps;
+    public final RemoteAnimationTargetCompat[] wallpapers;
     public final int targetMode;
     public final boolean hasRecents;
 
-    public RemoteAnimationTargetSet(RemoteAnimationTargetCompat[] apps, int targetMode) {
+    public RemoteAnimationTargetSet(RemoteAnimationTargetCompat[] apps,
+            RemoteAnimationTargetCompat[] wallpapers, int targetMode) {
         ArrayList<RemoteAnimationTargetCompat> filteredApps = new ArrayList<>();
         boolean hasRecents = false;
         if (apps != null) {
@@ -51,6 +53,7 @@ public class RemoteAnimationTargetSet {
 
         this.unfilteredApps = apps;
         this.apps = filteredApps.toArray(new RemoteAnimationTargetCompat[filteredApps.size()]);
+        this.wallpapers = wallpapers;
         this.targetMode = targetMode;
         this.hasRecents = hasRecents;
     }

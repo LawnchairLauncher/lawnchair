@@ -41,10 +41,10 @@ public class SwipeAnimationTargetSet extends RemoteAnimationTargetSet {
     public final Rect minimizedHomeBounds;
 
     public SwipeAnimationTargetSet(RecentsAnimationControllerCompat controller,
-            RemoteAnimationTargetCompat[] targets, Rect homeContentInsets,
-            Rect minimizedHomeBounds, boolean shouldMinimizeSplitScreen,
+            RemoteAnimationTargetCompat[] apps, RemoteAnimationTargetCompat[] wallpapers,
+            Rect homeContentInsets, Rect minimizedHomeBounds, boolean shouldMinimizeSplitScreen,
             Consumer<SwipeAnimationTargetSet> onFinishListener) {
-        super(targets, MODE_CLOSING);
+        super(apps, wallpapers, MODE_CLOSING);
         this.controller = controller;
         this.homeContentInsets = homeContentInsets;
         this.minimizedHomeBounds = minimizedHomeBounds;
@@ -62,8 +62,8 @@ public class SwipeAnimationTargetSet extends RemoteAnimationTargetSet {
      */
     public SwipeAnimationTargetSet cloneWithoutTargets() {
         return new SwipeAnimationTargetSet(controller, new RemoteAnimationTargetCompat[0],
-                homeContentInsets, minimizedHomeBounds, mShouldMinimizeSplitScreen,
-                mOnFinishListener);
+                new RemoteAnimationTargetCompat[0], homeContentInsets, minimizedHomeBounds,
+                mShouldMinimizeSplitScreen, mOnFinishListener);
     }
 
     public void finishController(boolean toRecents, Runnable callback, boolean sendUserLeaveHint) {

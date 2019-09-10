@@ -40,7 +40,9 @@ public final class GoLauncherAppTransitionManagerImpl extends QuickstepAppTransi
 
     @Override
     protected void composeRecentsLaunchAnimator(AnimatorSet anim, View v,
-            RemoteAnimationTargetCompat[] targets, boolean launcherClosing) {
+            RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets,
+            boolean launcherClosing) {
         // Stubbed. Recents launch animation will come from the recents view itself and will not
         // use remote animations.
     }
@@ -74,21 +76,23 @@ public final class GoLauncherAppTransitionManagerImpl extends QuickstepAppTransi
         }
 
         @Override
-        public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
+        public void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
+                RemoteAnimationTargetCompat[] wallpaperTargets,
                 AnimationResult result) {
             boolean isGoingToRecents =
-                    taskIsATargetWithMode(targetCompats, mLauncher.getTaskId(), MODE_OPENING)
+                    taskIsATargetWithMode(appTargets, mLauncher.getTaskId(), MODE_OPENING)
                     && (mLauncher.getStateManager().getState() == LauncherState.OVERVIEW);
             if (isGoingToRecents) {
                 IconRecentsView recentsView = mLauncher.getOverviewPanel();
                 if (!recentsView.isReadyForRemoteAnim()) {
                     recentsView.setOnReadyForRemoteAnimCallback(() ->
-                        postAsyncCallback(mHandler, () -> onCreateAnimation(targetCompats, result))
+                        postAsyncCallback(mHandler, () -> onCreateAnimation(appTargets,
+                                wallpaperTargets, result))
                     );
                     return;
                 }
             }
-            super.onCreateAnimation(targetCompats, result);
+            super.onCreateAnimation(appTargets, wallpaperTargets, result);
         }
     }
 }
