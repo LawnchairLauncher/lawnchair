@@ -18,9 +18,11 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.DrawableWrapper;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
+import androidx.annotation.Nullable;
 import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 
 /**
@@ -217,7 +219,7 @@ public class BaseIconFactory implements AutoCloseable {
             dr.setBounds(0, 0, 1, 1);
             boolean[] outShape = new boolean[1];
             scale = getNormalizer().getScale(icon, outIconBounds, dr.getIconMask(), outShape);
-            if (!outShape[0] && false /* TODO: (icon instanceof NonAdaptiveIconDrawable) */) {
+            if (!outShape[0] && (icon instanceof NonAdaptiveIconDrawable)) {
                 FixedScaleDrawable fsd = ((FixedScaleDrawable) dr.getForeground());
                 fsd.setDrawable(icon);
                 fsd.setScale(scale);
@@ -346,6 +348,13 @@ public class BaseIconFactory implements AutoCloseable {
         @Override
         public int getIntrinsicWidth() {
             return getBitmap().getWidth();
+        }
+    }
+
+    public static class NonAdaptiveIconDrawable extends DrawableWrapper {
+
+        public NonAdaptiveIconDrawable(@Nullable Drawable dr) {
+            super(dr);
         }
     }
 }

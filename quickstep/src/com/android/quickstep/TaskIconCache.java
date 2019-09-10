@@ -27,6 +27,7 @@ import android.os.Looper;
 import android.util.LruCache;
 import android.view.accessibility.AccessibilityManager;
 
+import ch.deletescape.lawnchair.LawnchairIconLoader;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -75,7 +76,7 @@ public class TaskIconCache {
         mIconCache = new TaskKeyLruCache<>(cacheSize, mClearActivityInfoOnEviction);
         mContentDescriptionCache = new TaskKeyLruCache<>(cacheSize, mClearActivityInfoOnEviction);
         mActivityInfoCache = new LruCache<>(cacheSize);
-        mIconLoader = new NormalizedIconLoader(context, mIconCache, mActivityInfoCache,
+        mIconLoader = new LawnchairIconLoader(context, mIconCache, mActivityInfoCache,
                 true /* disableColorExtraction */);
     }
 

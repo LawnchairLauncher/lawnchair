@@ -41,7 +41,7 @@ import com.android.systemui.shared.recents.model.TaskKeyLruCache;
 public class NormalizedIconLoader extends IconLoader {
 
     private final SparseArray<BitmapInfo> mDefaultIcons = new SparseArray<>();
-    private final DrawableFactory mDrawableFactory;
+    protected final DrawableFactory mDrawableFactory;
     private final boolean mDisableColorExtraction;
 
     public NormalizedIconLoader(Context context, TaskKeyLruCache<Drawable> iconCache,
@@ -72,7 +72,7 @@ public class NormalizedIconLoader extends IconLoader {
                 false));
     }
 
-    private BitmapInfo getBitmapInfo(Drawable drawable, int userId,
+    protected BitmapInfo getBitmapInfo(Drawable drawable, int userId,
             int primaryColor, boolean isInstantApp) {
         try (LauncherIcons la = LauncherIcons.obtain(mContext)) {
             if (mDisableColorExtraction) {

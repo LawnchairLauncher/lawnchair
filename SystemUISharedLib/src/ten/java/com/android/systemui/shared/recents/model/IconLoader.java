@@ -102,7 +102,7 @@ public abstract class IconLoader {
         return null;
     }
 
-    private Drawable createNewIconForTask(Task.TaskKey taskKey,
+    protected Drawable createNewIconForTask(Task.TaskKey taskKey,
             ActivityManager.TaskDescription desc, boolean returnDefault) {
         int userId = taskKey.userId;
         Bitmap tdIcon = desc.getInMemoryIcon();
