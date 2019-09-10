@@ -11,19 +11,17 @@ import ch.deletescape.lawnchair.getColorEngineAccent
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.search.SearchIndex
 import com.android.launcher3.Utilities
-import com.android.quickstep.OverviewInteractionState
+import com.android.quickstep.SysUINavigationMode
 
 class SwipeUpSwitchPreference(context: Context, attrs: AttributeSet? = null) : StyledSwitchPreferenceCompat(context, attrs) {
 
-    /* TODO: implement this for P
-    private val secureOverrideMode = OverviewInteractionState.isSwipeUpSettingsAvailable()
     private val hasWriteSecurePermission = Utilities.hasWriteSecureSettingsPermission(context)
 
     init {
-        if (secureOverrideMode && !hasWriteSecurePermission) {
+        if (!hasWriteSecurePermission) {
             isEnabled = false
         }
-        isChecked = OverviewInteractionState.INSTANCE.get(context).isSwipeUpGestureEnabled
+        isChecked = SysUINavigationMode.INSTANCE.get(context).mode.hasGestures
     }
 
     override fun onSetInitialValue(restoreValue: Boolean, defaultValue: Any?) {
@@ -35,7 +33,7 @@ class SwipeUpSwitchPreference(context: Context, attrs: AttributeSet? = null) : S
     }
 
     override fun persistBoolean(value: Boolean): Boolean {
-        if (hasWriteSecurePermission && secureOverrideMode) {
+        if (hasWriteSecurePermission) {
             try {
                 return Settings.Secure.putInt(context.contentResolver, securePrefName, if (value) 1 else 0)
             } catch (ignored: Exception) {
@@ -46,13 +44,12 @@ class SwipeUpSwitchPreference(context: Context, attrs: AttributeSet? = null) : S
 
     class SwipeUpSwitchSlice(context: Context, attrs: AttributeSet) : SwitchSlice(context, attrs) {
 
-        private val secureOverrideMode = OverviewInteractionState.isSwipeUpSettingsAvailable()
         private val hasWriteSecurePermission = Utilities.hasWriteSecureSettingsPermission(context)
 
         override fun createSliceView(): View {
             return Switch(context).apply {
                 applyColor(context.getColorEngineAccent())
-                isChecked = OverviewInteractionState.INSTANCE.get(context).isSwipeUpGestureEnabled
+                isChecked = SysUINavigationMode.INSTANCE.get(context).mode.hasGestures
                 setOnCheckedChangeListener { _, isChecked ->
                     persistBoolean(isChecked)
                 }
@@ -60,7 +57,7 @@ class SwipeUpSwitchPreference(context: Context, attrs: AttributeSet? = null) : S
         }
 
         private fun persistBoolean(value: Boolean): Boolean {
-            if (hasWriteSecurePermission && secureOverrideMode) {
+            if (hasWriteSecurePermission) {
                 try {
                     return Settings.Secure.putInt(context.contentResolver, securePrefName, if (value) 1 else 0)
                 } catch (ignored: Exception) {
@@ -79,6 +76,4 @@ class SwipeUpSwitchPreference(context: Context, attrs: AttributeSet? = null) : S
         @JvmStatic
         val sliceProvider = SearchIndex.SliceProvider.fromLambda(::SwipeUpSwitchSlice)
     }
-
-     */
 }

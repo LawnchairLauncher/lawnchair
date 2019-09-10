@@ -734,4 +734,5 @@
     <string name="pref_hide_statusbar_clock">Hide statusbar clock</string>
     <string name="root_access_required">Root access required</string>
     <string name="smartspace_setup_text">Tap to set-up</string>
+    <string name="full_gesture_mode_title">Full gesture mode</string>
 </resources>

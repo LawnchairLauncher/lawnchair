@@ -24,6 +24,8 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.util.Log;
 
+import ch.deletescape.lawnchair.util.NavigationModeCompat;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MainThreadInitializedObject;
 
 import java.util.ArrayList;
@@ -73,21 +75,30 @@ public class SysUINavigationMode {
         mContext.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Mode oldMode = mMode;
-                initializeMode();
-                if (mMode != oldMode) {
-                    dispatchModeChange();
-                }
+                reinitializeMode();
             }
         }, getPackageFilter("android", ACTION_OVERLAY_CHANGED));
+        NavigationModeCompat.Companion.getInstance(context).setListener(this::reinitializeMode);
+    }
+
+    private void reinitializeMode() {
+        Mode oldMode = mMode;
+        initializeMode();
+        if (mMode != oldMode) {
+            dispatchModeChange();
+        }
     }
 
     private void initializeMode() {
-        int modeInt = getSystemIntegerRes(mContext, NAV_BAR_INTERACTION_MODE_RES_NAME);
-        for(Mode m : Mode.values()) {
-            if (m.resValue == modeInt) {
-                mMode = m;
+        if (Utilities.ATLEAST_Q) {
+            int modeInt = getSystemIntegerRes(mContext, NAV_BAR_INTERACTION_MODE_RES_NAME);
+            for (Mode m : Mode.values()) {
+                if (m.resValue == modeInt) {
+                    mMode = m;
+                }
             }
+        } else {
+            mMode = NavigationModeCompat.Companion.getInstance(mContext).getCurrentMode();
         }
     }
 

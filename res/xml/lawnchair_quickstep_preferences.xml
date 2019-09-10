@@ -10,6 +10,13 @@
 
     <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
         android:defaultValue="false"
+        android:key="pref_fullGestureMode"
+        android:persistent="true"
+        android:title="@string/full_gesture_mode_title"
+        android:dependency="pref_swipe_up_to_switch_apps_enabled" />
+
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        android:defaultValue="false"
         android:key="pref_swipe_left_to_go_back"
         android:persistent="true"
         android:title="@string/swipe_left_to_go_back_title" />

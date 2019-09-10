@@ -45,6 +45,7 @@ public class OverviewInteractionState {
 
     private static final int MSG_SET_PROXY = 200;
     private static final int MSG_SET_BACK_BUTTON_ALPHA = 201;
+    private static final int MSG_SET_INTERACTION_STATE = 202;
 
     private final Context mContext;
     private final Handler mUiHandler;
@@ -106,9 +107,14 @@ public class OverviewInteractionState {
         switch (msg.what) {
             case MSG_SET_PROXY:
                 mISystemUiProxy = (ISystemUiProxy) msg.obj;
+            case MSG_SET_INTERACTION_STATE:
                 if (!Utilities.ATLEAST_Q && mISystemUiProxy != null) {
                     try {
-                        mISystemUiProxy.setInteractionState(2);
+                        if (SysUINavigationMode.INSTANCE.get(mContext).getMode().hasGestures) {
+                            mISystemUiProxy.setInteractionState(2);
+                        } else {
+                            mISystemUiProxy.setInteractionState(7);
+                        }
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
@@ -135,6 +141,7 @@ public class OverviewInteractionState {
 
     private void onNavigationModeChanged(SysUINavigationMode.Mode mode) {
         resetHomeBounceSeenOnQuickstepEnabledFirstTime();
+        mBgHandler.obtainMessage(MSG_SET_INTERACTION_STATE).sendToTarget();
     }
 
     private void resetHomeBounceSeenOnQuickstepEnabledFirstTime() {
