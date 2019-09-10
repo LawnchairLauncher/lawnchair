@@ -299,6 +299,7 @@
     <string name="theme_dark_theme_mode">काला थीम</string>
     <string name="theme_dark_theme_mode_on">चालू</string>
     <string name="theme_dark_theme_mode_off">बंद</string>
+    <string name="theme_dark_theme_mode_follow_daylight">दिन के उजाले अनुसार पालन करें</string>
     <string name="theme_use_black">शुद्ध काला उपयोग करे</string>
     <string name="theme_use_dark_text">काले अक्षर का उपयोग करे</string>
     <string name="pref_qsb_color">रंग</string>
@@ -320,6 +321,8 @@
     <string name="app_actions_pref_title">ऐक्शन</string>
     <string name="app_actions_pref_title_in_search">एक्शन सुझाव</string>
     <string name="app_actions_pref_desc">अनेक बार खोली गई स्क्रीन्स के लिए शॉर्टकट्स</string>
+    <string name="app_actions_reset_pref_title">छिपे हुए आईकोनों को रीसेट करें</string>
+    <string name="app_actions_reset_pref_summary">उन कार्रवाइयों को रीसेट करें जो पहले उन्हें \"शो न करें\" बटन पर खींचकर छिपाए गए थे</string>
     <string name="change_default_home">होम स्क्रीन सेट करें</string>
     <string name="recent_task_option_popup_window">डायलॉग विंडो</string>
     <string name="feed_theme_pref_title">पृष्ठभूमि का रंग</string>
@@ -343,6 +346,7 @@
     <string name="selected_count">%1$d चयनित</string>
     <string name="tab_manage_apps">एप्लिकेशन प्रबंधित करें</string>
     <string name="tab_bottom_sheet_save">सेव करें</string>
+    <string name="tab_hide_from_main">मुख्य टैब से छिपाएं</string>
     <string name="tab_color">टैब का रंग</string>
     <string name="delete">हटाएं</string>
     <string name="none">कुछ नहीं</string>
@@ -362,6 +366,7 @@
     <string name="pref_sesame_show_shortcuts">एप्लिकेशन शॉर्टकट</string>
     <string name="pref_sesame_show_shortcuts_summary">आइकन के बुलबुलों में सेसमि शॉर्टकट दिखाएं</string>
     <string name="allow">अनुमति दें</string>
+    <string name="deny">मना</string>
     <string name="sesame_enable_integration_title">इंटीग्रेशन चालू करें</string>
     <string name="sesame_enable_integration_description"><![CDATA[यह लांचर और सेसामि के नीचे डाटा इंटेग्रेट करता है। आप इसे सेटिंग्स में चेंज कर सकते है]]></string>
     <string name="sesame_version">इंटीग्रेशन का वर्जन</string>
@@ -410,6 +415,9 @@
     <string name="about_app_description">एक अनुकूलन पिक्सल लॉन्चर विकल्प</string>
     <string name="about_bio_paphonb">एक 18 साल का विद्यार्थी, एंड्रॉयड डेवलपर और Lawnchair लॉन्चर का एक ऊपरी डेवलपर्स</string>
     <string name="dock_scale">डॉक की लंबाई</string>
+    <string name="adaptify_pack_title">आइकन पैक के लिए अनुकूली आईकनें बनाएं</string>
+    <string name="adaptify_pack_summary">आइकन पैक से आइकन के लिए अनुकूली चिह्न बनाएं</string>
+    <string name="pref_sesame_sync_look_and_feel">दिखावा और लगना शेयर करें</string>
     <string name="icon_text_scale_pref_title">अक्षरों का साइज</string>
     <string name="text_color">अक्षरों का रंग</string>
     <string name="lock_desktop">डेस्कटॉप बंद करे</string>
