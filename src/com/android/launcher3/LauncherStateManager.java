@@ -227,6 +227,10 @@ public class LauncherStateManager {
 
     private void goToState(LauncherState state, boolean animated, long delay,
             final Runnable onCompleteRunnable) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.ALL_APPS_UPON_RECENTS, "goToState: " + state + " @ " +
+                    Log.getStackTraceString(new Throwable()));
+        }
         animated &= Utilities.areAnimationsEnabled(mLauncher);
         if (mLauncher.isInState(state)) {
             if (mConfig.mCurrentAnimation == null) {
@@ -426,6 +430,9 @@ public class LauncherStateManager {
         if (state != mCurrentStableState) {
             mLastStableState = state.getHistoryForState(mCurrentStableState);
             mCurrentStableState = state;
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.ALL_APPS_UPON_RECENTS, "onStateTransitionEnd: " + state);
+            }
         }
 
         state.onStateTransitionEnd(mLauncher);
