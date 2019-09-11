@@ -29,7 +29,7 @@ import android.os.Handler;
 import android.util.SparseArray;
 import android.widget.Toast;
 
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.widget.DeferredAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
@@ -71,7 +71,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
 
     @Override
     public void startListening() {
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             return;
         }
         mFlags |= FLAG_LISTENING;
@@ -98,7 +98,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
 
     @Override
     public void stopListening() {
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             return;
         }
         mFlags &= ~FLAG_LISTENING;
@@ -157,7 +157,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
 
     @Override
     public int allocateAppWidgetId() {
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             return AppWidgetManager.INVALID_APPWIDGET_ID;
         }
 
@@ -242,7 +242,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     public void startBindFlow(BaseActivity activity,
             int appWidgetId, AppWidgetProviderInfo info, int requestCode) {
 
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             sendActionCancelled(activity, requestCode);
             return;
         }
@@ -258,7 +258,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
 
 
     public void startConfigActivity(BaseActivity activity, int widgetId, int requestCode) {
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             sendActionCancelled(activity, requestCode);
             return;
         }

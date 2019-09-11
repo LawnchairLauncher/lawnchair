@@ -44,7 +44,6 @@ import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.TaskOverlayFactory;
@@ -308,8 +307,7 @@ public class TaskThumbnailView extends View {
                 final Configuration configuration =
                         getContext().getResources().getConfiguration();
                 // Rotate the screenshot if not in multi-window mode
-                isRotated = FeatureFlags.OVERVIEW_USE_SCREENSHOT_ORIENTATION &&
-                        configuration.orientation != mThumbnailData.orientation &&
+                isRotated = configuration.orientation != mThumbnailData.orientation &&
                         !mActivity.isInMultiWindowMode() &&
                         mThumbnailData.windowingMode == WINDOWING_MODE_FULLSCREEN;
                 // Scale the screenshot to always fit the width of the card.

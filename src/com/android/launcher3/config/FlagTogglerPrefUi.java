@@ -26,13 +26,13 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags.BaseTogglableFlag;
+import com.android.launcher3.uioverrides.TogglableFlag;
 
 import androidx.preference.PreferenceDataStore;
 import androidx.preference.PreferenceFragment;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.SwitchPreference;
-import com.android.launcher3.config.BaseFlags.BaseTogglableFlag;
-import com.android.launcher3.uioverrides.TogglableFlag;
 
 /**
  * Dev-build only UI allowing developers to toggle flag settings. See {@link FeatureFlags}.

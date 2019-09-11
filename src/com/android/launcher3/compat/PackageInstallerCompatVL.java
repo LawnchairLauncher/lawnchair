@@ -16,6 +16,7 @@
 
 package com.android.launcher3.compat;
 
+import static com.android.launcher3.Utilities.getPrefs;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.content.Context;
@@ -28,12 +29,12 @@ import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.PackageUserKey;
@@ -43,8 +44,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import static com.android.launcher3.Utilities.getPrefs;
 
 public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
@@ -160,7 +159,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         @Override
         public void onCreated(int sessionId) {
             SessionInfo sessionInfo = pushSessionDisplayToLauncher(sessionId);
-            if (FeatureFlags.LAUNCHER3_PROMISE_APPS_IN_ALL_APPS && sessionInfo != null) {
+            if (FeatureFlags.PROMISE_APPS_IN_ALL_APPS.get() && sessionInfo != null) {
                 LauncherAppState app = LauncherAppState.getInstanceNoCreate();
                 if (app != null) {
                     app.getModel().onInstallSessionCreated(

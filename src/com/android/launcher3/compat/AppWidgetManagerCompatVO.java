@@ -21,7 +21,7 @@ import android.content.Context;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.Collections;
@@ -35,7 +35,7 @@ class AppWidgetManagerCompatVO extends AppWidgetManagerCompatVL {
 
     @Override
     public List<AppWidgetProviderInfo> getAllProviders(@Nullable PackageUserKey packageUser) {
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             return Collections.emptyList();
         }
         if (packageUser == null) {

@@ -569,7 +569,7 @@ public class LoaderTask implements Runnable {
                             break;
 
                         case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                            if (FeatureFlags.GO_DISABLE_WIDGETS) {
+                            if (WidgetsModel.GO_DISABLE_WIDGETS) {
                                 c.markDeleted("Only legacy shortcuts can have null package");
                                 continue;
                             }
@@ -830,7 +830,7 @@ public class LoaderTask implements Runnable {
             allActivityList.addAll(apps);
         }
 
-        if (FeatureFlags.LAUNCHER3_PROMISE_APPS_IN_ALL_APPS) {
+        if (FeatureFlags.PROMISE_APPS_IN_ALL_APPS.get()) {
             // get all active sessions and add them to the all apps list
             for (PackageInstaller.SessionInfo info :
                     mPackageInstaller.getAllVerifiedSessions()) {

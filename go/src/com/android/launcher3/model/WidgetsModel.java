@@ -37,6 +37,10 @@ import androidx.annotation.Nullable;
  * <p> The widgets and shortcuts are organized using package name as its index.
  */
 public class WidgetsModel {
+
+    // True is the widget support is disabled.
+    public static final boolean GO_DISABLE_WIDGETS = false;
+
     private static final ArrayList<WidgetListRowEntry> EMPTY_WIDGET_LIST = new ArrayList<>();
 
     /**

@@ -84,8 +84,7 @@ LOCAL_STATIC_ANDROID_LIBRARIES := \
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
     $(call all-java-files-under, src_shortcuts_overrides) \
-    $(call all-java-files-under, src_ui_overrides) \
-    $(call all-java-files-under, src_flags)
+    $(call all-java-files-under, src_ui_overrides)
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 # Proguard is disable for testing. Derivarive prjects to keep proguard enabled
@@ -163,7 +162,6 @@ LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
     $(call all-java-files-under, quickstep/src) \
     $(call all-java-files-under, quickstep/recents_ui_overrides/src) \
-    $(call all-java-files-under, src_flags) \
     $(call all-java-files-under, src_shortcuts_overrides)
 
 LOCAL_RESOURCE_DIR := \

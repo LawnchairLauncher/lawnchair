@@ -28,7 +28,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.custom.CustomAppWidgetProviderInfo;
@@ -51,7 +51,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     @Override
     public List<AppWidgetProviderInfo> getAllProviders(@Nullable PackageUserKey packageUser) {
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             return Collections.emptyList();
         }
         if (packageUser == null) {
@@ -82,7 +82,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     @Override
     public boolean bindAppWidgetIdIfAllowed(int appWidgetId, AppWidgetProviderInfo info,
             Bundle options) {
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             return false;
         }
         if (appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID) {
@@ -94,7 +94,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     @Override
     public LauncherAppWidgetProviderInfo findProvider(ComponentName provider, UserHandle user) {
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             return null;
         }
         for (AppWidgetProviderInfo info :
@@ -117,7 +117,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     @Override
     public HashMap<ComponentKey, AppWidgetProviderInfo> getAllProvidersMap() {
         HashMap<ComponentKey, AppWidgetProviderInfo> result = new HashMap<>();
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             return result;
         }
         for (UserHandle user : mUserManager.getUserProfiles()) {

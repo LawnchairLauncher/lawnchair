@@ -19,7 +19,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.shortcuts.ShortcutKey;
 
 public class ShortcutUtil {
@@ -44,7 +44,7 @@ public class ShortcutUtil {
   private static boolean isActive(ItemInfo info) {
     boolean isLoading = info instanceof WorkspaceItemInfo
         && ((WorkspaceItemInfo) info).hasPromiseIconUi();
-    return !isLoading && !info.isDisabled() && !FeatureFlags.GO_DISABLE_WIDGETS;
+    return !isLoading && !info.isDisabled() && !WidgetsModel.GO_DISABLE_WIDGETS;
   }
 
   private static boolean isApp(ItemInfo info) {

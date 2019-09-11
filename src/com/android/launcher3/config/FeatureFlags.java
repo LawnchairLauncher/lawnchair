@@ -25,6 +25,7 @@ import androidx.annotation.GuardedBy;
 import androidx.annotation.Keep;
 import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.TogglableFlag;
 
@@ -39,7 +40,7 @@ import java.util.TreeMap;
  * <p>All the flags should be defined here with appropriate default values.
  */
 @Keep
-public abstract class BaseFlags {
+public final class FeatureFlags {
 
     private static final Object sLock = new Object();
     @GuardedBy("sLock")
@@ -47,46 +48,47 @@ public abstract class BaseFlags {
 
     static final String FLAGS_PREF_NAME = "featureFlags";
 
-    BaseFlags() {
-        throw new UnsupportedOperationException("Don't instantiate BaseFlags");
-    }
+    private FeatureFlags() { }
 
     public static boolean showFlagTogglerUi(Context context) {
         return Utilities.IS_DEBUG_DEVICE && Utilities.isDevelopersOptionsEnabled(context);
     }
 
-    public static final boolean IS_DOGFOOD_BUILD = false;
+    public static final boolean IS_DOGFOOD_BUILD = BuildConfig.DEBUG;
 
+    /**
+     * Enable moving the QSB on the 0th screen of the workspace. This is not a configuration feature
+     * and should be modified at a project level.
+     */
+    public static final boolean QSB_ON_FIRST_SCREEN = true;
+
+
+    /**
+     * Feature flag to handle define config changes dynamically instead of killing the process.
+     *
+     *
+     * To add a new flag that can be toggled through the flags UI:
+     *
+     * 1. Declare a new ToggleableFlag below. Give it a unique key (e.g. "QSB_ON_FIRST_SCREEN"),
+     *    and set a default value for the flag. This will be the default value on Debug builds.
+     *
+     * 2. Add your flag to mTogglableFlags.
+     *
+     * 3. Create a getter method (an 'is' method) for the flag by copying an existing one.
+     *
+     * 4. Create a getter method with the same name in the release flags copy of FeatureFlags.java.
+     *    This should returns a constant (true/false). This will be the value of the flag used on
+     *    release builds.
+     */
     // When enabled the promise icon is visible in all apps while installation an app.
-    public static final boolean LAUNCHER3_PROMISE_APPS_IN_ALL_APPS = false;
+    public static final TogglableFlag PROMISE_APPS_IN_ALL_APPS = new TogglableFlag(
+            "PROMISE_APPS_IN_ALL_APPS", false, "Add promise icon in all-apps");
 
     // When enabled a promise icon is added to the home screen when install session is active.
     public static final TogglableFlag PROMISE_APPS_NEW_INSTALLS =
             new TogglableFlag("PROMISE_APPS_NEW_INSTALLS", true,
                     "Adds a promise icon to the home screen for new install sessions.");
 
-    // Enable moving the QSB on the 0th screen of the workspace
-    public static final boolean QSB_ON_FIRST_SCREEN = true;
-
-    public static final TogglableFlag EXAMPLE_FLAG = new TogglableFlag("EXAMPLE_FLAG", true,
-            "An example flag that doesn't do anything. Useful for testing");
-
-    //Feature flag to enable pulling down navigation shade from workspace.
-    public static final boolean PULL_DOWN_STATUS_BAR = true;
-
-    // Features to control Launcher3Go behavior
-    public static final boolean GO_DISABLE_WIDGETS = false;
-
-    // When enabled shows a work profile tab in all apps
-    public static final boolean ALL_APPS_TABS_ENABLED = true;
-
-    // When true, overview shows screenshots in the orientation they were taken rather than
-    // trying to make them fit the orientation the device is in.
-    public static final boolean OVERVIEW_USE_SCREENSHOT_ORIENTATION = true;
-
-    /**
-     * Feature flag to handle define config changes dynamically instead of killing the process.
-     */
     public static final TogglableFlag APPLY_CONFIG_AT_RUNTIME = new TogglableFlag(
             "APPLY_CONFIG_AT_RUNTIME", true, "Apply display changes dynamically");
 
@@ -130,13 +132,13 @@ public abstract class BaseFlags {
     static List<TogglableFlag> getTogglableFlags() {
         // By Java Language Spec 12.4.2
         // https://docs.oracle.com/javase/specs/jls/se7/html/jls-12.html#jls-12.4.2, the
-        // TogglableFlag instances on BaseFlags will be created before those on the FeatureFlags
+        // TogglableFlag instances on FeatureFlags will be created before those on the FeatureFlags
         // subclass. This code handles flags that are redeclared in FeatureFlags, ensuring the
         // FeatureFlags one takes priority.
         SortedMap<String, TogglableFlag> flagsByKey = new TreeMap<>();
         synchronized (sLock) {
             for (TogglableFlag flag : sFlags) {
-                flagsByKey.put(((BaseTogglableFlag) flag).getKey(), flag);
+                flagsByKey.put(flag.getKey(), flag);
             }
         }
         return new ArrayList<>(flagsByKey.values());

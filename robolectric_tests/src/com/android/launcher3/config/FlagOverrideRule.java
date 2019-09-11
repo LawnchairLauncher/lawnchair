@@ -1,8 +1,9 @@
 package com.android.launcher3.config;
 
 
-import com.android.launcher3.config.BaseFlags.BaseTogglableFlag;
+import com.android.launcher3.config.FeatureFlags.BaseTogglableFlag;
 import com.android.launcher3.uioverrides.TogglableFlag;
+
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
