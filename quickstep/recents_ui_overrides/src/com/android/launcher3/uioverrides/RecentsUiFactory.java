@@ -22,13 +22,14 @@ import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.RemoteException;
+import android.util.Log;
 import android.view.Gravity;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.StateHandler;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.RotationMode;
@@ -37,18 +38,19 @@ import com.android.launcher3.uioverrides.touchcontrollers.LandscapeEdgeSwipeCont
 import com.android.launcher3.uioverrides.touchcontrollers.NavBarToHomeTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.OverviewToAllAppsTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
-import com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.QuickSwitchTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TransposedQuickSwitchTouchController;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
+import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.views.RecentsView;
-import com.android.systemui.shared.system.WindowManagerWrapper;
+import com.android.systemui.shared.recents.ISystemUiProxy;
 
 import java.util.ArrayList;
 
@@ -58,8 +60,20 @@ import java.util.ArrayList;
 public abstract class RecentsUiFactory {
 
     public static final boolean GO_LOW_RAM_RECENTS_ENABLED = false;
-    private static final AsyncCommand SET_SHELF_HEIGHT_CMD = (visible, height) ->
-            WindowManagerWrapper.getInstance().setShelfHeight(visible != 0, height);
+
+    private static final String TAG = RecentsUiFactory.class.getSimpleName();
+
+    private static AsyncCommand newSetShelfHeightCmd(Context context) {
+        return (visible, height) -> {
+            ISystemUiProxy sysUiProxy = RecentsModel.INSTANCE.get(context).getSystemUiProxy();
+            if (sysUiProxy == null) return;
+            try {
+                sysUiProxy.setShelfHeight(visible != 0, height);
+            } catch (RemoteException e) {
+                Log.e(TAG, "Error setShelfHeight", e);
+            }
+        };
+    }
 
     public static RotationMode ROTATION_LANDSCAPE = new RotationMode(-90) {
         @Override
@@ -200,7 +214,7 @@ public abstract class RecentsUiFactory {
         DeviceProfile profile = launcher.getDeviceProfile();
         boolean visible = (state == NORMAL || state == OVERVIEW) && launcher.isUserActive()
                 && !profile.isVerticalBarLayout();
-        UiThreadHelper.runAsyncCommand(launcher, SET_SHELF_HEIGHT_CMD,
+        UiThreadHelper.runAsyncCommand(launcher, newSetShelfHeightCmd(launcher),
                 visible ? 1 : 0, profile.hotseatBarSizePx);
 
         if (state == NORMAL) {
