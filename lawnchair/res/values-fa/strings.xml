@@ -421,7 +421,6 @@
     <string name="pref_center_wallpaper_summary">حالت چرخش پس زمینه را غیر فعال خواهد کرد</string>
     <string name="pref_icon_popup_menu">آیتم‌ها در منوی پاپ آپ</string>
     <string name="pref_appcategorization_enable_title">طبقه بندی برنامه‌ها</string>
-    <string name="pref_appcategorization_enable_summary">20</string>
     <string name="pref_appcategorization_style_text">سبک</string>
     <string name="pref_app_groups_create">ايجاد كردن</string>
     <string name="pref_appcategorization_folders_title">پوشه ها</string>
@@ -430,7 +429,6 @@
     <string name="pref_appcategorization_tabs_summary">گردش میان مجموعه‌ها.</string>
     <string name="default_folder_name">پوشه جدید</string>
     <string name="drawer_folders">پوشه ها</string>
-    <string name="category_business_and_productivity">22</string>
     <string name="category_communication">ارتباط</string>
     <string name="category_entertainment">سرگرمی</string>
     <string name="category_food_and_drink">غذا و نوشیدنی</string>
@@ -443,7 +441,6 @@
     <string name="category_personalization">شخصی سازی</string>
     <string name="category_photography">عکاسی</string>
     <string name="category_tools">کاربردی</string>
-    <string name="category_travel_and_navigation">poriy</string>
     <string name="lock_desktop">دسکتاپ را قفل کن</string>
     <string name="reset_custom_icons">آیکون‌های دلخواه را به حالت اصلی برگردان</string>
     <string name="reset_custom_icons_confirmation">از این‌که تمامی آیکون‌ها را به حالت اصلی برگردانید مطمئن هستید؟ این تغییر غیر قابل بازگشت است.</string>
@@ -472,7 +469,6 @@
     <string name="animation_type_scale_up">به بالا</string>
     <string name="animation_type_blink">چشمک زدن</string>
     <string name="animation_type_fade">محو شدن</string>
-    <string name="permission_iplocate">Tehran </string>
     <string name="pref_appcategorization_flowerpot_title">دسته بندی</string>
     <string name="pref_appcategorization_flowerpot_summary">برنامه‌ها به صورت اتوماتیک انتخاب کردند بر اساس اطلاعات قبلی گرفته از شما</string>
     <string name="select_tab_type">نوع سربرگ</string>
