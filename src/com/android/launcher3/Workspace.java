@@ -2802,6 +2802,23 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     /**
+     * Removed widget from workspace by appWidgetId
+     * @param appWidgetId
+     */
+    public void removeWidget(int appWidgetId) {
+        mapOverItems((info, view) -> {
+            if (info instanceof LauncherAppWidgetInfo) {
+                LauncherAppWidgetInfo appWidgetInfo = (LauncherAppWidgetInfo) info;
+                if (appWidgetInfo.appWidgetId == appWidgetId) {
+                    mLauncher.removeItem(view, appWidgetInfo, true);
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
+
+    /**
      * Removes all folder listeners
      */
     public void removeFolderListeners() {

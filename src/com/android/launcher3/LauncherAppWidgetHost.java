@@ -35,6 +35,7 @@ import com.android.launcher3.widget.DeferredAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 import java.util.ArrayList;
+import java.util.function.IntConsumer;
 
 
 /**
@@ -56,9 +57,17 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     private final Context mContext;
     private int mFlags = FLAG_RESUMED;
 
+    private IntConsumer mAppWidgetRemovedCallback = null;
+
     public LauncherAppWidgetHost(Context context) {
+        this(context, null);
+    }
+
+    public LauncherAppWidgetHost(Context context,
+            IntConsumer appWidgetRemovedCallback) {
         super(context, APPWIDGET_HOST_ID);
         mContext = context;
+        mAppWidgetRemovedCallback = appWidgetRemovedCallback;
     }
 
     @Override
@@ -211,7 +220,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
                 }
                 view.setAppWidget(appWidgetId, appWidget);
                 view.switchToErrorView();
-                return  view;
+                return view;
             }
         }
     }
@@ -227,6 +236,15 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         // The super method updates the dimensions of the providerInfo. Update the
         // launcher spans accordingly.
         info.initSpans(mContext);
+    }
+
+    //TODO: make this override when SDK is updated
+    //@Override
+    protected void onAppWidgetRemoved(int appWidgetId) {
+        if (mAppWidgetRemovedCallback == null) {
+            return;
+        }
+        mAppWidgetRemovedCallback.accept(appWidgetId);
     }
 
     @Override
