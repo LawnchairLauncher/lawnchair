@@ -18,7 +18,6 @@ package com.android.launcher3.model;
 import android.content.ComponentName;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.os.Process;
 
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
@@ -56,7 +55,7 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
                 ApplicationInfo ai = app.getContext()
                         .getPackageManager().getApplicationInfo(mInstallInfo.packageName, 0);
                 if (InstantAppResolver.newInstance(app.getContext()).isInstantApp(ai)) {
-                    app.getModel().onPackageAdded(ai.packageName, Process.myUserHandle());
+                    app.getModel().onPackageAdded(ai.packageName, mInstallInfo.user);
                 }
             } catch (PackageManager.NameNotFoundException e) {
                 // Ignore

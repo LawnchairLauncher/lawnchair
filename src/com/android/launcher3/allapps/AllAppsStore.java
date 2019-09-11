@@ -39,10 +39,8 @@ public class AllAppsStore {
 
     // Defer updates flag used to defer all apps updates to the next draw.
     public static final int DEFER_UPDATES_NEXT_DRAW = 1 << 0;
-    // Defer updates flag used to defer all apps updates while the user interacts with all apps.
-    public static final int DEFER_UPDATES_USER_INTERACTION = 1 << 1;
     // Defer updates flag used to defer all apps updates by a test's request.
-    public static final int DEFER_UPDATES_TEST = 1 << 2;
+    public static final int DEFER_UPDATES_TEST = 1 << 1;
 
     private PackageUserKey mTempKey = new PackageUserKey(null, null);
     private final HashMap<ComponentKey, AppInfo> mComponentToAppMap = new HashMap<>();
