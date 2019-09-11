@@ -27,6 +27,7 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
+import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.logging.LoggerUtils.newTarget;
@@ -79,6 +80,7 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
@@ -115,6 +117,7 @@ import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.UiFactory;
+import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -148,6 +151,12 @@ import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetListRowEntry;
 import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
+import com.android.systemui.plugins.OverlayPlugin;
+import com.android.systemui.plugins.PluginListener;
+import com.android.systemui.plugins.shared.LauncherExterns;
+import com.android.systemui.plugins.shared.LauncherOverlayManager;
+import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay;
+import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlayCallbacks;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -157,16 +166,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Predicate;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
+import java.util.function.Supplier;
 
 /**
  * Default launcher application.
  */
 public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         Callbacks, LauncherProviderChangeListener, UserEventDelegate,
-        InvariantDeviceProfile.OnIDPChangeListener {
+        InvariantDeviceProfile.OnIDPChangeListener, PluginListener<OverlayPlugin> {
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
@@ -295,6 +302,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private DeviceProfile mStableDeviceProfile;
     private RotationMode mRotationMode = RotationMode.NORMAL;
 
+    protected LauncherOverlayManager mOverlayManager;
+    // If true, overlay callbacks are deferred
+    private boolean mDeferOverlayCallbacks;
+    private final Runnable mDeferredOverlayCallbacks = this::checkIfOverlayStillDeferred;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         RaceConditionTracker.onEvent(ON_CREATE_EVT, ENTER);
@@ -391,6 +403,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
         }
+        mOverlayManager = getDefaultOverlay();
+        PluginManagerWrapper.INSTANCE.get(this).addPluginListener(this,
+                OverlayPlugin.class, false /* allowedMultiple */);
+
         mRotationHelper.initialize();
 
         TraceHelper.endSection("Launcher-onCreate");
@@ -414,6 +430,38 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 }
             }
         });
+    }
+
+    protected LauncherOverlayManager getDefaultOverlay() {
+        return new LauncherOverlayManager() { };
+    }
+
+    @Override
+    public void onPluginConnected(OverlayPlugin overlayManager, Context context) {
+        switchOverlay(() -> overlayManager.createOverlayManager(this, this));
+    }
+
+    @Override
+    public void onPluginDisconnected(OverlayPlugin plugin) {
+        switchOverlay(this::getDefaultOverlay);
+    }
+
+    private void switchOverlay(Supplier<LauncherOverlayManager> overlaySupplier) {
+        if (mOverlayManager != null) {
+            mOverlayManager.onActivityDestroyed(this);
+        }
+        mOverlayManager = overlaySupplier.get();
+        if (getRootView().isAttachedToWindow()) {
+            mOverlayManager.onAttachedToWindow();
+        }
+        mDeferOverlayCallbacks = true;
+        checkIfOverlayStillDeferred();
+    }
+
+    @Override
+    protected void dispatchDeviceProfileChanged() {
+        super.dispatchDeviceProfileChanged();
+        mOverlayManager.onDeviceProvideChanged();
     }
 
     @Override
@@ -572,6 +620,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     /**
      * Call this after onCreate to set or clear overlay.
      */
+    @Override
     public void setLauncherOverlay(LauncherOverlay overlay) {
         if (overlay != null) {
             overlay.setOverlayCallbacks(new LauncherOverlayCallbacksImpl());
@@ -579,16 +628,14 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mWorkspace.setLauncherOverlay(overlay);
     }
 
+    @Override
+    public void runOnOverlayHidden(Runnable runnable) {
+        getWorkspace().runOnOverlayHidden(runnable);
+    }
+
     public boolean setLauncherCallbacks(LauncherCallbacks callbacks) {
         mLauncherCallbacks = callbacks;
         return true;
-    }
-
-    @Override
-    public void onLauncherProviderChanged() {
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onLauncherProviderChange();
-        }
     }
 
     public boolean isDraggingEnabled() {
@@ -789,9 +836,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             final int requestCode, final int resultCode, final Intent data) {
         mPendingActivityRequestCode = -1;
         handleActivityResult(requestCode, resultCode, data);
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onActivityResult(requestCode, resultCode, data);
-        }
     }
 
     @Override
@@ -817,10 +861,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 Toast.makeText(this, getString(R.string.msg_no_phone_permission,
                         getString(R.string.derived_app_name)), Toast.LENGTH_SHORT).show();
             }
-        }
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onRequestPermissionsResult(requestCode, permissions,
-                    grantResults);
         }
     }
 
@@ -880,9 +920,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     protected void onStop() {
         super.onStop();
 
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onStop();
+        if (mDeferOverlayCallbacks) {
+            checkIfOverlayStillDeferred();
+        } else {
+            mOverlayManager.onActivityStopped(this);
         }
+
         logStopAndResume(Action.Command.STOP);
 
         mAppWidgetHost.setListenIfResumed(false);
@@ -900,9 +943,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     protected void onStart() {
         RaceConditionTracker.onEvent(ON_START_EVT, ENTER);
         super.onStart();
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onStart();
+        if (!mDeferOverlayCallbacks) {
+            mOverlayManager.onActivityStarted(this);
         }
+
         mAppWidgetHost.setListenIfResumed(true);
         RaceConditionTracker.onEvent(ON_START_EVT, EXIT);
     }
@@ -944,15 +988,50 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         } else {
             getUserEventDispatcher().logActionCommand(command, containerType, -1);
         }
+    }
 
+    private void scheduleDeferredCheck() {
+        mHandler.removeCallbacks(mDeferredOverlayCallbacks);
+        postAsyncCallback(mHandler, mDeferredOverlayCallbacks);
+    }
+
+    private void checkIfOverlayStillDeferred() {
+        if (!mDeferOverlayCallbacks) {
+            return;
+        }
+        if (isStarted() && (!hasBeenResumed() || mStateManager.getState().disableInteraction)) {
+            return;
+        }
+        mDeferOverlayCallbacks = false;
+
+        // Move the client to the correct state. Calling the same method twice is no-op.
+        if (isStarted()) {
+            mOverlayManager.onActivityStarted(this);
+        }
+        if (hasBeenResumed()) {
+            mOverlayManager.onActivityResumed(this);
+        } else {
+            mOverlayManager.onActivityPaused(this);
+        }
+        if (!isStarted()) {
+            mOverlayManager.onActivityStopped(this);
+        }
+    }
+
+    public void deferOverlayCallbacksUntilNextResumeOrStop() {
+        mDeferOverlayCallbacks = true;
+    }
+
+    public LauncherOverlayManager getOverlayManager() {
+        return mOverlayManager;
     }
 
     public void onStateSetStart(LauncherState state) {
         if (mDeferredResumePending) {
             handleDeferredResume();
         }
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onStateChanged();
+        if (mDeferOverlayCallbacks) {
+            scheduleDeferredCheck();
         }
     }
 
@@ -981,8 +1060,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             resumeCallbacks.clear();
         }
 
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onResume();
+        if (mDeferOverlayCallbacks) {
+            scheduleDeferredCheck();
+        } else {
+            mOverlayManager.onActivityResumed(this);
         }
 
         TraceHelper.endSection("ON_RESUME");
@@ -998,8 +1079,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mDragController.cancelDrag();
         mDragController.resetLastGestureUpTime();
         mDropTargetBar.animateToVisibility(false);
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onPause();
+
+        if (!mDeferOverlayCallbacks) {
+            mOverlayManager.onActivityPaused(this);
         }
     }
 
@@ -1013,35 +1095,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         mStateManager.onWindowFocusChanged();
-    }
-
-    public interface LauncherOverlay {
-
-        /**
-         * Touch interaction leading to overscroll has begun
-         */
-        void onScrollInteractionBegin();
-
-        /**
-         * Touch interaction related to overscroll has ended
-         */
-        void onScrollInteractionEnd();
-
-        /**
-         * Scroll progress, between 0 and 100, when the user scrolls beyond the leftmost
-         * screen (or in the case of RTL, the rightmost screen).
-         */
-        void onScrollChange(float progress, boolean rtl);
-
-        /**
-         * Called when the launcher is ready to use the overlay
-         * @param callbacks A set of callbacks provided by Launcher in relation to the overlay
-         */
-        void setOverlayCallbacks(LauncherOverlayCallbacks callbacks);
-    }
-
-    public interface LauncherOverlayCallbacks {
-        void onScrollChanged(float progress);
     }
 
     class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks {
@@ -1301,19 +1354,14 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onAttachedToWindow();
-        }
+        mOverlayManager.onAttachedToWindow();
     }
 
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onDetachedFromWindow();
-        }
+        mOverlayManager.onDetachedFromWindow();
+        closeContextMenu();
     }
 
     public AllAppsTransitionController getAllAppsController() {
@@ -1362,8 +1410,14 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return mModelWriter;
     }
 
+    @Override
     public SharedPreferences getSharedPrefs() {
         return mSharedPrefs;
+    }
+
+    @Override
+    public SharedPreferences getDevicePrefs() {
+        return Utilities.getDevicePrefs(this);
     }
 
     public int getOrientation() {
@@ -1422,6 +1476,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             if (mLauncherCallbacks != null) {
                 mLauncherCallbacks.onHomeIntent(internalStateHandled);
             }
+            mOverlayManager.hideOverlay(isStarted() && !isForceInvisible());
         }
 
         TraceHelper.endSection("NEW_INTENT");
@@ -1467,10 +1522,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
 
         super.onSaveInstanceState(outState);
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onSaveInstanceState(outState);
-        }
+        mOverlayManager.onActivitySaveInstanceState(this, outState);
     }
 
     @Override
@@ -1479,6 +1531,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         unregisterReceiver(mScreenOffReceiver);
         mWorkspace.removeFolderListeners();
+        PluginManagerWrapper.INSTANCE.get(this).removePluginListener(this);
 
         if (mCancelTouchController != null) {
             mCancelTouchController.run();
@@ -1503,9 +1556,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         TextKeyListener.getInstance().release();
         clearPendingBinds();
         LauncherAppState.getIDP(this).removeOnChangeListener(this);
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onDestroy();
-        }
+
+        mOverlayManager.onActivityDestroyed(this);
     }
 
     public LauncherAccessibilityDelegate getAccessibilityDelegate() {
@@ -1751,9 +1803,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (finishAutoCancelActionMode()) {
             return;
         }
-        if (mLauncherCallbacks != null && mLauncherCallbacks.handleBackPressed()) {
-            return;
-        }
 
         if (mDragController.isDragging()) {
             mDragController.cancelDrag();
@@ -1877,9 +1926,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
             // This clears all widget bitmaps from the widget tray
             // TODO(hyunyoungs)
-        }
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onTrimMemory(level);
         }
         UiFactory.onTrimMemory(this, level);
     }
@@ -2500,6 +2546,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.dump(prefix, fd, writer, args);
         }
+        mOverlayManager.dump(prefix, writer);
     }
 
     @Override

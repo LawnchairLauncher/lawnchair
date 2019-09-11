@@ -60,7 +60,6 @@ import android.view.ViewTreeObserver;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
-import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.LauncherAppWidgetHost.ProviderChangedListener;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
@@ -101,6 +100,7 @@ import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
+import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -965,6 +965,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         onOverlayScrollChanged(0);
     }
 
+    public boolean hasOverlay() {
+        return mLauncherOverlay != null;
+    }
 
     private boolean isScrollingOverlay() {
         return mLauncherOverlay != null &&

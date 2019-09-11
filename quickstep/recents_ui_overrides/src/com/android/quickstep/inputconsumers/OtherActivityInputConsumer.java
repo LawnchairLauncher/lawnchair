@@ -22,6 +22,7 @@ import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
+
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
@@ -44,14 +45,16 @@ import android.os.Looper;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
+
 import androidx.annotation.UiThread;
+
 import com.android.launcher3.R;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RaceConditionTracker;
 import com.android.launcher3.util.TraceHelper;
+import com.android.quickstep.ActivityControlHelper;
 import com.android.quickstep.BaseSwipeUpHandler;
 import com.android.quickstep.BaseSwipeUpHandler.Factory;
-import com.android.quickstep.OverviewCallbacks;
 import com.android.quickstep.SwipeSharedState;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -61,6 +64,7 @@ import com.android.quickstep.util.NavBarPosition;
 import com.android.quickstep.util.RecentsAnimationListenerSet;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
+
 import java.util.function.Consumer;
 
 /**
@@ -77,11 +81,11 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
     private final CachedEventDispatcher mRecentsViewDispatcher = new CachedEventDispatcher();
     private final RunningTaskInfo mRunningTask;
-    private final OverviewCallbacks mOverviewCallbacks;
     private final SwipeSharedState mSwipeSharedState;
     private final InputMonitorCompat mInputMonitorCompat;
     private final SysUINavigationMode.Mode mMode;
     private final RectF mSwipeTouchRegion;
+    private final ActivityControlHelper mActivityControlHelper;
 
     private final BaseSwipeUpHandler.Factory mHandlerFactory;
 
@@ -121,10 +125,10 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private int mLogId;
 
     public OtherActivityInputConsumer(Context base, RunningTaskInfo runningTaskInfo,
-            boolean isDeferredDownTarget, OverviewCallbacks overviewCallbacks,
-            Consumer<OtherActivityInputConsumer> onCompleteCallback,
+            boolean isDeferredDownTarget, Consumer<OtherActivityInputConsumer> onCompleteCallback,
             SwipeSharedState swipeSharedState, InputMonitorCompat inputMonitorCompat,
             RectF swipeTouchRegion, boolean disableHorizontalSwipe,
+            ActivityControlHelper activityControlHelper,
             Factory handlerFactory, int logId) {
         super(base);
         mLogId = logId;
@@ -134,6 +138,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mMode = SysUINavigationMode.getMode(base);
         mSwipeTouchRegion = swipeTouchRegion;
         mHandlerFactory = handlerFactory;
+        mActivityControlHelper = activityControlHelper;
 
         mMotionPauseDetector = new MotionPauseDetector(base);
         mMotionPauseMinDisplacement = base.getResources().getDimension(
@@ -144,7 +149,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
         boolean continuingPreviousGesture = swipeSharedState.getActiveListener() != null;
         mIsDeferredDownTarget = !continuingPreviousGesture && isDeferredDownTarget;
-        mOverviewCallbacks = overviewCallbacks;
         mSwipeSharedState = swipeSharedState;
 
         mNavBarPosition = new NavBarPosition(base);
@@ -313,7 +317,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         }
         mInputMonitorCompat.pilferPointers();
 
-        mOverviewCallbacks.closeAllWindows();
+        mActivityControlHelper.closeOverlay();
         ActivityManagerWrapper.getInstance().closeSystemWindows(
                 CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
 

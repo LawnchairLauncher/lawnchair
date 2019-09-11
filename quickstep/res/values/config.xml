@@ -16,8 +16,6 @@
 <resources>
     <string name="task_overlay_factory_class" translatable="false"></string>
 
-    <string name="overview_callbacks_class" translatable="false"></string>
-
     <!-- Activity which blocks home gesture -->
     <string name="gesture_blocking_activity" translatable="false"></string>
 

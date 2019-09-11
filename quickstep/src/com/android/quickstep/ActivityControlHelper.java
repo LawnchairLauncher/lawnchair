@@ -97,6 +97,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     void onLaunchTaskSuccess(T activity);
 
+    default void closeOverlay() { }
+
     interface ActivityInitListener {
 
         void register();

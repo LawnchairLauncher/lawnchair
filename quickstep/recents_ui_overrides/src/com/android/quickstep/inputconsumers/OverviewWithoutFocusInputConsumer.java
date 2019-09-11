@@ -34,10 +34,9 @@ import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogUtils;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.quickstep.OverviewCallbacks;
+import com.android.quickstep.ActivityControlHelper;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
@@ -50,16 +49,17 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer {
     private final float mSquaredTouchSlop;
     private final Context mContext;
     private final NavBarPosition mNavBarPosition;
+    private final ActivityControlHelper mActivityControlHelper;
 
     private boolean mInterceptedTouch;
     private VelocityTracker mVelocityTracker;
 
-
     public OverviewWithoutFocusInputConsumer(Context context, InputMonitorCompat inputMonitor,
-            boolean disableHorizontalSwipe) {
+            ActivityControlHelper activityControlHelper, boolean disableHorizontalSwipe) {
         mInputMonitor = inputMonitor;
         mDisableHorizontalSwipe = disableHorizontalSwipe;
         mContext = context;
+        mActivityControlHelper = activityControlHelper;
         mSquaredTouchSlop = Utilities.squaredTouchSlop(context);
         mNavBarPosition = new NavBarPosition(context);
 
@@ -148,7 +148,7 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer {
         }
 
         if (triggerQuickstep) {
-            OverviewCallbacks.get(mContext).closeAllWindows();
+            mActivityControlHelper.closeOverlay();
             ActivityManagerWrapper.getInstance()
                     .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
             TOUCH_INTERACTION_LOG.addLog("startQuickstep");
