@@ -732,7 +732,7 @@ public final class Utilities {
         int[] array = new int[tokenizer.countTokens()];
         int count = 0;
         while (tokenizer.hasMoreTokens()) {
-            array[count] = Integer.parseInt(tokenizer.nextToken().trim());
+            array[count] = Integer.parseInt(tokenizer.nextToken());
             count++;
         }
         return array;
