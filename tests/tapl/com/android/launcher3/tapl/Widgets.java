@@ -77,7 +77,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
         return LauncherInstrumentation.ContainerType.WIDGETS;
     }
 
-    public Widget getWidget(String label) {
+    public Widget getWidget(String labelText) {
         final int margin = ResourceUtils.getNavbarSize(
                 ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, mLauncher.getResources()) + 1;
         final UiObject2 widgetsContainer = verifyActiveContainer();
@@ -86,17 +86,24 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
         final Point displaySize = mLauncher.getRealDisplaySize();
 
         int i = 0;
-        final BySelector selector = By.
-                clazz("com.android.launcher3.widget.WidgetCell").
-                hasDescendant(By.text(label));
+        final BySelector selector = By.clazz("android.widget.TextView").text(labelText);
 
         for (; ; ) {
-            final UiObject2 widget = mLauncher.tryWaitForLauncherObject(selector, 300);
-            if (widget != null && widget.getVisibleBounds().bottom <= displaySize.y - margin) {
-                return new Widget(mLauncher, widget);
+            final UiObject2 label = mLauncher.tryWaitForLauncherObject(selector, 300);
+            if (label != null) {
+                final UiObject2 widget = label.getParent().getParent();
+                mLauncher.assertEquals(
+                        "View is not WidgetCell",
+                        "com.android.launcher3.widget.WidgetCell",
+                        widget.getClassName());
+
+                if (widget.getVisibleBounds().bottom <= displaySize.y - margin) {
+                    return new Widget(mLauncher, widget);
+                }
             }
+
             if (++i > 40) fail("Too many attempts");
-            mLauncher.scroll(widgetsContainer, Direction.DOWN, 1f, MARGINS, 50);
+            mLauncher.scroll(widgetsContainer, Direction.DOWN, 0.8f, MARGINS, 50);
         }
     }
 }
