@@ -147,6 +147,8 @@ public abstract class BaseFlags {
 
     public static abstract class BaseTogglableFlag {
         private final String key;
+        // should be value that is hardcoded in client side.
+        // Comparatively, getDefaultValue() can be overridden.
         private final boolean defaultValue;
         private final String description;
         private boolean currentValue;
@@ -156,8 +158,9 @@ public abstract class BaseFlags {
                 boolean defaultValue,
                 String description) {
             this.key = checkNotNull(key);
-            this.currentValue = this.defaultValue = getInitialValue(defaultValue);
+            this.currentValue = this.defaultValue = defaultValue;
             this.description = checkNotNull(description);
+
             synchronized (sLock) {
                 sFlags.add((TogglableFlag)this);
             }
@@ -173,16 +176,18 @@ public abstract class BaseFlags {
             return key;
         }
 
-        void initialize(Context context) {
-            currentValue = getFromStorage(context, defaultValue);
+        protected void initialize(Context context) {
+            currentValue = getFromStorage(context, getDefaultValue());
         }
 
-        protected abstract boolean getInitialValue(boolean value);
+        protected abstract boolean getOverridenDefaultValue(boolean value);
+
+        protected abstract void addChangeListener(Context context, Runnable r);
 
         public void updateStorage(Context context, boolean value) {
             SharedPreferences.Editor editor = context.getSharedPreferences(FLAGS_PREF_NAME,
                     Context.MODE_PRIVATE).edit();
-            if (value == defaultValue) {
+            if (value == getDefaultValue()) {
                 editor.remove(key).apply();
             } else {
                 editor.putBoolean(key, value).apply();
@@ -191,11 +196,11 @@ public abstract class BaseFlags {
 
         boolean getFromStorage(Context context, boolean defaultValue) {
             return context.getSharedPreferences(FLAGS_PREF_NAME, Context.MODE_PRIVATE)
-                    .getBoolean(key, defaultValue);
+                    .getBoolean(key, getDefaultValue());
         }
 
         boolean getDefaultValue() {
-            return defaultValue;
+            return getOverridenDefaultValue(defaultValue);
         }
 
         /** Returns the value of the flag at process start, including any overrides present. */
@@ -212,6 +217,8 @@ public abstract class BaseFlags {
             return "TogglableFlag{"
                     + "key=" + key + ", "
                     + "defaultValue=" + defaultValue + ", "
+                    + "overriddenDefaultValue=" + getOverridenDefaultValue(defaultValue) + ", "
+                    + "currentValue=" + currentValue + ", "
                     + "description=" + description
                     + "}";
         }
@@ -224,7 +231,7 @@ public abstract class BaseFlags {
             if (o instanceof TogglableFlag) {
                 BaseTogglableFlag that = (BaseTogglableFlag) o;
                 return (this.key.equals(that.getKey()))
-                        && (this.defaultValue == that.getDefaultValue())
+                        && (this.getDefaultValue() == that.getDefaultValue())
                         && (this.description.equals(that.getDescription()));
             }
             return false;
@@ -236,7 +243,7 @@ public abstract class BaseFlags {
             h$ *= 1000003;
             h$ ^= key.hashCode();
             h$ *= 1000003;
-            h$ ^= defaultValue ? 1231 : 1237;
+            h$ ^= getDefaultValue() ? 1231 : 1237;
             h$ *= 1000003;
             h$ ^= description.hashCode();
             return h$;
