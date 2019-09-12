@@ -23,37 +23,57 @@ import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.shortcuts.ShortcutKey;
 
 public class ShortcutUtil {
-  public static boolean supportsShortcuts(ItemInfo info) {
-    return isActive(info) && (isApp(info) || isPinnedShortcut(info));
-  }
+    /**
+     * Returns true when we should show shortcut menu for the item.
+     */
+    public static boolean supportsShortcuts(ItemInfo info) {
+        return isActive(info) && (isApp(info) || isPinnedShortcut(info));
+    }
 
-  public static boolean supportsDeepShortcuts(ItemInfo info) {
-    return isActive(info) && isApp(info);
-  }
+    /**
+     * Returns true when we should show depp shortcuts in shortcut menu for the item.
+     */
+    public static boolean supportsDeepShortcuts(ItemInfo info) {
+        return isActive(info) && isApp(info);
+    }
 
-  public static String getShortcutIdIfPinnedShortcut(ItemInfo info) {
-    return isActive(info) && isPinnedShortcut(info) ?
-        ShortcutKey.fromItemInfo(info).getId() : null;
-  }
+    /**
+     * Returns the shortcut id if the item is a pinned shortcut.
+     */
+    public static String getShortcutIdIfPinnedShortcut(ItemInfo info) {
+        return isActive(info) && isPinnedShortcut(info)
+                ? ShortcutKey.fromItemInfo(info).getId() : null;
+    }
 
-  public static String[] getPersonKeysIfPinnedShortcut(ItemInfo info) {
-    return isActive(info) && isPinnedShortcut(info) ?
-        ((WorkspaceItemInfo) info).getPersonKeys() : Utilities.EMPTY_STRING_ARRAY;
-  }
+    /**
+     * Returns the person keys associated with the item. (Has no function right now.)
+     */
+    public static String[] getPersonKeysIfPinnedShortcut(ItemInfo info) {
+        return isActive(info) && isPinnedShortcut(info)
+                ? ((WorkspaceItemInfo) info).getPersonKeys() : Utilities.EMPTY_STRING_ARRAY;
+    }
 
-  private static boolean isActive(ItemInfo info) {
-    boolean isLoading = info instanceof WorkspaceItemInfo
-        && ((WorkspaceItemInfo) info).hasPromiseIconUi();
-    return !isLoading && !info.isDisabled() && !WidgetsModel.GO_DISABLE_WIDGETS;
-  }
+    /**
+     * Returns true if the item is a deep shortcut.
+     */
+    public static boolean isDeepShortcut(ItemInfo info) {
+        return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
+                && info instanceof WorkspaceItemInfo;
+    }
 
-  private static boolean isApp(ItemInfo info) {
-    return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
-  }
+    private static boolean isActive(ItemInfo info) {
+        boolean isLoading = info instanceof WorkspaceItemInfo
+                && ((WorkspaceItemInfo) info).hasPromiseIconUi();
+        return !isLoading && !info.isDisabled() && !WidgetsModel.GO_DISABLE_WIDGETS;
+    }
 
-  private static boolean isPinnedShortcut(ItemInfo info) {
-    return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
-        && info.container != ItemInfo.NO_ID
-        && info instanceof WorkspaceItemInfo;
-  }
+    private static boolean isApp(ItemInfo info) {
+        return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+    }
+
+    private static boolean isPinnedShortcut(ItemInfo info) {
+        return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
+                && info.container != ItemInfo.NO_ID
+                && info instanceof WorkspaceItemInfo;
+    }
 }
