@@ -227,10 +227,10 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         // Launch the task user scrolled to (mRecentsView.getNextPage()).
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             // We finish recents animation inside launchTask() when live tile is enabled.
-            mRecentsView.getTaskViewAt(mRecentsView.getNextPage()).launchTask(false /* animate */,
+            mRecentsView.getNextPageTaskView().launchTask(false /* animate */,
                     true /* freezeTaskList */);
         } else {
-            int taskId = mRecentsView.getTaskViewAt(mRecentsView.getNextPage()).getTask().key.id;
+            int taskId = mRecentsView.getNextPageTaskView().getTask().key.id;
             mFinishingRecentsAnimationForNewTaskId = taskId;
             mRecentsAnimationWrapper.finish(true /* toRecents */, () -> {
                 if (!mCanceled) {
