@@ -24,7 +24,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
         switch (method) {
             case TestProtocol.REQUEST_HOME_TO_OVERVIEW_SWIPE_HEIGHT: {
                 final float swipeHeight =
-                        OverviewState.getDefaultSwipeHeight(mDeviceProfile);
+                        OverviewState.getDefaultSwipeHeight(mContext, mDeviceProfile);
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, (int) swipeHeight);
                 return response;
             }

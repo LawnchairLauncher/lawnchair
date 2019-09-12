@@ -153,13 +153,13 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
     }
 
     protected void handleClose(boolean animate, long defaultDuration) {
-        if (mIsOpen && !animate) {
+        if (!mIsOpen) {
+            return;
+        }
+        if (!animate) {
             mOpenCloseAnimator.cancel();
             setTranslationShift(TRANSLATION_SHIFT_CLOSED);
             onCloseComplete();
-            return;
-        }
-        if (!mIsOpen) {
             return;
         }
         mOpenCloseAnimator.setValues(
