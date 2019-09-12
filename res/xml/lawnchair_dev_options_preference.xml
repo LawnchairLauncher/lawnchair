@@ -87,6 +87,11 @@
         app:controllerClass=".LeakCanaryController" />
 
     <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        android:key="pref_watchHeapLimit"
+        android:title="Watch heap limit"
+        android:defaultValue="false" />
+
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
         android:key="pref_debugDisplayState"
         android:title="Debug information overlay"
         android:summary="Display informations such as the current Launcher State"/>

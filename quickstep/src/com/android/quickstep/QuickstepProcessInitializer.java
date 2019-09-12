@@ -36,7 +36,7 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
 
     @Override
     protected void init(Context context) {
-        if (Utilities.IS_DEBUG_DEVICE) {
+        if (Utilities.getLawnchairPrefs(context).getWatchHeapLimit()) {
             try {
                 // Trigger a heap dump if the PSS reaches beyond the target heap limit
                 final ActivityManager am = context.getSystemService(ActivityManager.class);
