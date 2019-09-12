@@ -317,6 +317,7 @@
     <string name="app_actions_pref_title">Действия</string>
     <string name="app_actions_pref_title_in_search">Предложения за действия</string>
     <string name="app_actions_pref_desc">Преки пътища към често използвани екрани</string>
+    <string name="app_actions_reset_pref_title">Нулиране на скритите действия</string>
     <string name="change_default_home">Задай като Начален екран</string>
     <string name="recent_task_option_popup_window">Диалогов прозорец</string>
     <string name="feed_theme_pref_title">Цвят на фона</string>
@@ -509,6 +510,13 @@
         <item>Лека нощ!</item>
         <item>Лека нощ!</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>Лека нощ!</item>
+        <item>Лека нощ!</item>
+        <item>До утре!</item>
+        <item>Сладки сънища!</item>
+        <item>Не стой до късно</item>
+    </string-array>
     <string name="onbording_settings_title">Настройте %s</string>
     <string name="onbording_settings_summary">Задръжте на началния екран</string>
     <string name="onboarding_swipe_up">Плъзнете нагоре, за да видите всичките си приложения</string>
@@ -527,4 +535,6 @@
     <string name="pref_weather_icon_pack">Икони за времето</string>
     <string name="weather_icon_packs_not_supported">Не се поддържа от текущия Ви източник на време</string>
     <string name="lawnchair_settings">Настройки на Lawnchair</string>
+    <string name="root_access_required">Необходим е Root достъп</string>
+    <string name="smartspace_setup_text">Докоснете, за да настроите</string>
 </resources>
