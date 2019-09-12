@@ -210,12 +210,12 @@ android {
 
         pie {
             dimension "quickstepTarget"
-            manifestPlaceholders = [ quickstepTarget: 28]
+            manifestPlaceholders = [ quickstepTarget: 28, quickstepDirectBootAware: false ]
         }
 
         ten {
             dimension "quickstepTarget"
-            manifestPlaceholders = [ quickstepTarget: 29]
+            manifestPlaceholders = [ quickstepTarget: 29, quickstepDirectBootAware: true ]
         }
     }
 
