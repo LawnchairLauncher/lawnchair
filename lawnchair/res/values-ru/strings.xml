@@ -525,7 +525,7 @@
     <string-array name="greetings_night">
         <item>Спокойной ночи!</item>
         <item>Хорошо выспись!</item>
-        <item>Увидимся позже!</item>
+        <item>Увидимся завтра!</item>
         <item>Сладких снов!</item>
         <item>Не засиживайся слишком долго</item>
     </string-array>
@@ -541,7 +541,7 @@
     <string name="web_search_yandex">Яндекс (веб)</string>
     <string name="web_search_naver">Naver (веб)</string>
     <string name="web_search_baidu">Baidu (веб)</string>
-    <string name="icon_shape_override_miui_explaination">В связи с ограничением в MIUI, ваша форма иконок может не изменится и остаться квадратной.\nНе сообщайте про это как ошибку.</string>
+    <string name="icon_shape_override_miui_explaination">В связи с ограничением в MIUI, ваша форма иконок может не изменится и остаться квадратной.\nНе сообщайте про это как об ошибке.</string>
     <string name="button_organize_screens">Настроить страницы</string>
     <string name="weather_icons_default">По умолчанию</string>
     <string name="pref_weather_icon_pack">Иконки погоды</string>
