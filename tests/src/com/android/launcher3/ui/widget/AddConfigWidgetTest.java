@@ -70,14 +70,14 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
-    @Ignore
+    @org.junit.Ignore
     public void testWidgetConfig() throws Throwable {
         runTest(true);
     }
 
     @Test
     @PortraitLandscape
-    @Ignore
+    @org.junit.Ignore
     public void testConfigCancelled() throws Throwable {
         runTest(false);
     }
