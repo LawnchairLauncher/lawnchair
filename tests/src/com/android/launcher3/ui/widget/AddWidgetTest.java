@@ -26,6 +26,7 @@ import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.rule.ShellCommandRule;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +42,7 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
+    @Ignore
     public void testDragIcon() throws Throwable {
         clearHomescreen();
         mDevice.pressHome();
