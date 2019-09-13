@@ -368,7 +368,7 @@ public final class LauncherInstrumentation {
         }
     }
 
-    private void assertEquals(String message, String expected, String actual) {
+    void assertEquals(String message, String expected, String actual) {
         if (!TextUtils.equals(expected, actual)) {
             fail(message + " expected: '" + expected + "' but was: '" + actual + "'");
         }
