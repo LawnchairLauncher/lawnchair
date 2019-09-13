@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 
 import static java.lang.System.exit;
 
-import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -112,6 +111,7 @@ public abstract class AbstractLauncherUiTest {
                             launcher ->
                                     checkLauncherIntegrity(launcher, containerType)));
         }
+        mLauncher.enableDebugTracing();
     }
 
     protected final LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
@@ -187,14 +187,6 @@ public abstract class AbstractLauncherUiTest {
         }
     }
 
-    protected void lockRotation(boolean naturalOrientation) throws RemoteException {
-        if (naturalOrientation) {
-            mDevice.setOrientationNatural();
-        } else {
-            mDevice.setOrientationRight();
-        }
-    }
-
     protected void clearLauncherData() throws IOException, InterruptedException {
         if (TestHelpers.isInLauncherProcess()) {
             LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
@@ -202,6 +194,7 @@ public abstract class AbstractLauncherUiTest {
             resetLoaderState();
         } else {
             clearPackageData(mDevice.getLauncherPackageName());
+            mLauncher.enableDebugTracing();
         }
     }
 
@@ -275,10 +268,30 @@ public abstract class AbstractLauncherUiTest {
 
     // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide
     // flakiness.
+    protected <T> T getOnceNotNull(String message, Function<Launcher, T> f) {
+        return getOnceNotNull(message, f, DEFAULT_ACTIVITY_TIMEOUT);
+    }
+
+    // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide
+    // flakiness.
     protected void waitForLauncherCondition(
             String message, Function<Launcher, Boolean> condition, long timeout) {
         if (!TestHelpers.isInLauncherProcess()) return;
         Wait.atMost(message, () -> getFromLauncher(condition), timeout);
+    }
+
+    // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide
+    // flakiness.
+    protected <T> T getOnceNotNull(String message, Function<Launcher, T> f, long timeout) {
+        if (!TestHelpers.isInLauncherProcess()) return null;
+
+        final Object[] output = new Object[1];
+        Wait.atMost(message, () -> {
+            final Object fromLauncher = getFromLauncher(f);
+            output[0] = fromLauncher;
+            return fromLauncher != null;
+        }, timeout);
+        return (T) output[0];
     }
 
     // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide

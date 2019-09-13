@@ -69,6 +69,7 @@
     <!-- Distance from the vertical edges of the screen in which assist gestures are recognized -->
     <dimen name="gestures_assistant_width">48dp</dimen>
     <dimen name="gestures_assistant_drag_threshold">55dp</dimen>
+    <dimen name="gestures_assistant_fling_threshold">55dp</dimen>
 
     <!-- Distance to move elements when swiping up to go home from launcher -->
     <dimen name="home_pullback_distance">28dp</dimen>
