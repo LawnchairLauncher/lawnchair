@@ -187,7 +187,7 @@ public class LauncherModel extends BroadcastReceiver
                                 && user.equals(info.user)
                                 && info.getIntent() != null
                                 && TextUtils.equals(packageName, info.getIntent().getPackage())) {
-                            removedIds.put(info.id, false /* unused value */);
+                            removedIds.put(info.id, true /* remove */);
                         }
                     }
                 }
