@@ -368,7 +368,7 @@ public final class LauncherInstrumentation {
         }
     }
 
-    private void assertEquals(String message, String expected, String actual) {
+    void assertEquals(String message, String expected, String actual) {
         if (!TextUtils.equals(expected, actual)) {
             fail(message + " expected: '" + expected + "' but was: '" + actual + "'");
         }
@@ -763,8 +763,7 @@ public final class LauncherInstrumentation {
         final Bundle parcel = (Bundle) executeAndWaitForEvent(
                 () -> linearGesture(startX, startY, endX, endY, steps),
                 event -> TestProtocol.SWITCHED_TO_STATE_MESSAGE.equals(event.getClassName()),
-                "Swipe failed to receive an event for the swipe end: " + startX + ", " + startY
-                        + ", " + endX + ", " + endY);
+                "Swipe failed to receive an event for the swipe end");
         assertEquals("Swipe switched launcher to a wrong state;",
                 TestProtocol.stateOrdinalToString(expectedState),
                 TestProtocol.stateOrdinalToString(parcel.getInt(TestProtocol.STATE_FIELD)));
@@ -958,8 +957,8 @@ public final class LauncherInstrumentation {
         getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
     }
 
-    public long getAllocatedMemory() {
-        return getTestInfo(TestProtocol.REQUEST_ALLOCATED_MEMORY).
-                getLong(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    public int getTotalPssKb() {
+        return getTestInfo(TestProtocol.REQUEST_TOTAL_PSS_KB).
+                getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 }

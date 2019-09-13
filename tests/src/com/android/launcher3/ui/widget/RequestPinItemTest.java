@@ -128,8 +128,6 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         if (!Utilities.ATLEAST_OREO) {
             return;
         }
-        lockRotation(true);
-
         clearHomescreen();
         mDevice.pressHome();
 

@@ -29,6 +29,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Property;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,6 +42,7 @@ import android.widget.FrameLayout;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.TouchController;
@@ -261,6 +263,10 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
             }
             case ACTION_CANCEL:
             case ACTION_UP:
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.NO_DRAG_TO_WORKSPACE,
+                            "BaseDragLayer.ACTION_UP/CANCEL " + ev);
+                }
                 mTouchDispatchState &= ~TOUCH_DISPATCHING_GESTURE;
                 mTouchDispatchState &= ~TOUCH_DISPATCHING_VIEW;
                 break;
