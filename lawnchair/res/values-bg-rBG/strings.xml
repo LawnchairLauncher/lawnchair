@@ -318,6 +318,7 @@
     <string name="app_actions_pref_title_in_search">Предложения за действия</string>
     <string name="app_actions_pref_desc">Преки пътища към често използвани екрани</string>
     <string name="app_actions_reset_pref_title">Нулиране на скритите действия</string>
+    <string name="app_actions_reset_pref_summary">Нулира действията, които преди са били скрити чрез влачене към бутона \"Не показвай\"</string>
     <string name="change_default_home">Задай като Начален екран</string>
     <string name="recent_task_option_popup_window">Диалогов прозорец</string>
     <string name="feed_theme_pref_title">Цвят на фона</string>
@@ -535,6 +536,18 @@
     <string name="pref_weather_icon_pack">Икони за времето</string>
     <string name="weather_icon_packs_not_supported">Не се поддържа от текущия Ви източник на време</string>
     <string name="lawnchair_settings">Настройки на Lawnchair</string>
+    <string name="customnavbar_install">Натиснете, за да инсталирате Custom Navigation Bar</string>
+    <string name="customnavbar_back_hiding">Скриване на бутона \"Назад\"</string>
+    <string name="customnavbar_back_hiding_desc">Скриване на бутона \"Назад\", когато не е необходим</string>
+    <string name="icon_shape_top_left">Горен ляв ъгъл</string>
+    <string name="icon_shape_top_right">Горен десен ъгъл</string>
+    <string name="icon_shape_bottom_left">Долен ляв ъгъл</string>
+    <string name="icon_shape_bottom_right">Долен десен ъгъл</string>
+    <string name="icon_shape_corner_round">Закръглено</string>
+    <string name="icon_shape_corner_squircle">Закръглен квадрат</string>
+    <string name="icon_shape_corner_cut">Отрязано</string>
+    <string name="smartspace_add_to_home">Добавяне към началния екран</string>
+    <string name="pref_hide_statusbar_clock">Скриване на часовника в лентата на състоянието</string>
     <string name="root_access_required">Необходим е Root достъп</string>
     <string name="smartspace_setup_text">Докоснете, за да настроите</string>
 </resources>
