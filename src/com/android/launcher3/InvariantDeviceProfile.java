@@ -118,6 +118,7 @@ public class InvariantDeviceProfile {
     public int iconBitmapSize;
     public int fillResIconDpi;
     public float iconTextSize;
+    public float allAppsIconTextSize;
 
     private SparseArray<TypedValue> mExtraAttrs;
 
@@ -231,11 +232,25 @@ public class InvariantDeviceProfile {
                     .putString(KEY_IDP_GRID_NAME, closestProfile.name).apply();
         }
 
-        iconSize = interpolatedDisplayOption.iconSize;
+        iconSize = interpolatedDisplayOption.iconSize * prefs.getDesktopIconScale();
+        if (prefs.getDockIconScale() > 0) {
+            hotseatIconSize = interpolatedDisplayOption.iconSize * prefs.getDockIconScale();
+        } else {
+            hotseatIconSize = iconSize;
+        }
+        allAppsIconSize = interpolatedDisplayOption.iconSize * prefs.getDrawerIconScale();
         iconShapePath = getIconShapePath(context);
-        landscapeIconSize = interpolatedDisplayOption.landscapeIconSize;
-        iconBitmapSize = ResourceUtils.pxFromDp(iconSize, dm);
+        landscapeIconSize = interpolatedDisplayOption.landscapeIconSize  * prefs.getDesktopIconScale();
+        if (prefs.getDockIconScale() > 0) {
+            landscapeHotseatIconSize = interpolatedDisplayOption.landscapeIconSize * prefs.getDockIconScale();
+        } else {
+            landscapeHotseatIconSize = landscapeIconSize;
+        }
+        landscapeAllAppsIconSize = interpolatedDisplayOption.landscapeIconSize  * prefs.getDrawerIconScale();
+        iconBitmapSize = ResourceUtils.pxFromDp(max(iconSize, max(hotseatIconSize, allAppsIconSize)), dm);
         iconTextSize = interpolatedDisplayOption.iconTextSize * prefs.getDesktopTextScale();
+        allAppsIconTextSize =  interpolatedDisplayOption.iconTextSize * prefs.getDrawerTextScale();
+
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         // If the partner customization apk contains any grid overrides, apply them

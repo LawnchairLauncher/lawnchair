@@ -220,7 +220,7 @@ public class CellLayout extends ViewGroup implements Transposable {
         mFixedCellWidth = mFixedCellHeight = -1;
 
         // TODO: implement this
-        mDockIconSize = grid.iconSizePx;
+        mDockIconSize = grid.hotseatIconSizePx;
         mDockIconTextSize = grid.iconTextSizePx;
 
         mCountX = grid.inv.numColumns;

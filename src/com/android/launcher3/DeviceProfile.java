@@ -101,6 +101,7 @@ public class DeviceProfile {
     public int folderChildDrawablePaddingPx;
 
     // Hotseat
+    public int hotseatIconSizePx;
     public int hotseatCellHeightPx;
     // In portrait: size = height, in landscape: size = width
     public int hotseatBarSizePx;
@@ -206,7 +207,7 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding);
         // Add a bit of space between nav bar and hotseat in vertical bar layout.
         hotseatBarSidePaddingStartPx = isVerticalBarLayout() ? verticalDragHandleSizePx : 0;
-        hotseatBarSizePx = ResourceUtils.pxFromDp(inv.iconSize, dm) + (isVerticalBarLayout()
+        hotseatBarSizePx = ResourceUtils.pxFromDp(inv.hotseatIconSize, dm) + (isVerticalBarLayout()
                 ? (hotseatBarSidePaddingStartPx + hotseatBarSidePaddingEndPx)
                 : (res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_extra_vertical_size)
                         + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx));
@@ -330,8 +331,9 @@ public class DeviceProfile {
         cellWidthPx = iconSizePx + iconDrawablePaddingPx;
 
         // All apps
-        allAppsIconTextSizePx = iconTextSizePx;
-        allAppsIconSizePx = iconSizePx;
+        invIconSizePx = isVerticalLayout ? inv.landscapeAllAppsIconSize : inv.allAppsIconSize;
+        allAppsIconSizePx = Math.max(1, (int) (ResourceUtils.pxFromDp(invIconSizePx, dm) * scale));
+        allAppsIconTextSizePx = (int) (Utilities.pxFromSp(inv.allAppsIconTextSize, dm) * scale);
         allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
         allAppsCellHeightPx = getCellSize().y;
 
@@ -341,11 +343,13 @@ public class DeviceProfile {
         }
 
         // Hotseat
+        invIconSizePx = isVerticalLayout ? inv.landscapeHotseatIconSize : inv.hotseatIconSize;
+        hotseatIconSizePx = Math.max(1, (int) (ResourceUtils.pxFromDp(invIconSizePx, dm) * scale));
         if (isVerticalLayout) {
-            hotseatBarSizePx = iconSizePx + hotseatBarSidePaddingStartPx
+            hotseatBarSizePx = hotseatIconSizePx + hotseatBarSidePaddingStartPx
                     + hotseatBarSidePaddingEndPx;
         }
-        hotseatCellHeightPx = iconSizePx;
+        hotseatCellHeightPx = hotseatIconSizePx;
 
         if (!isVerticalLayout) {
             int expectedWorkspaceHeight = availableHeightPx - hotseatBarSizePx

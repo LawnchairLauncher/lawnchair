@@ -141,7 +141,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val homeMultilineLabel by BooleanPref("pref_homeIconLabelsInTwoLines", false, recreate)
     val homeLabelRows get() = if(homeMultilineLabel) 2 else 1
     val allowOverlap by BooleanPref(SettingsActivity.ALLOW_OVERLAP_PREF, false, reloadAll)
-    val desktopTextScale by FloatPref("pref_iconTextScaleSB", 1f, reloadAll)
+    val desktopIconScale by FloatPref("pref_iconSize", 1f)
+    val desktopTextScale by FloatPref("pref_iconTextScaleSB", 1f)
     val centerWallpaper by BooleanPref("pref_centerWallpaper")
     val lockDesktop by BooleanPref("pref_lockDesktop", false, reloadAll)
     val usePopupMenuView by BooleanPref("pref_desktopUsePopupMenuView", true, doNothing)
@@ -186,6 +187,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val dockGridSize by dockGridSizeDelegate
     val twoRowDock by BooleanPref("pref_twoRowDock", false, restart)
     val dockRowsCount get() = if (twoRowDock) 2 else 1
+    val dockIconScale by FloatPref("pref_hotseatIconSize", 1f)
     var dockScale by FloatPref("pref_dockScale", -1f, recreate)
     val hideDockLabels by BooleanPref("pref_hideDockLabels", true, restart)
     val dockTextScale by FloatPref("pref_dockTextScale", -1f, restart)
@@ -218,7 +220,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val currentTabsModel get() = appGroupsManager.getEnabledModel() as? DrawerTabs ?: appGroupsManager.drawerTabs
     val showActions by BooleanPref("pref_show_suggested_actions", true, doNothing)
     val sortDrawerByColors by BooleanPref("pref_allAppsColorSorted", false, reloadAll)
-    val drawerTextScale by FloatPref("pref_allAppsIconTextScale", 1f, recreate)
+    val drawerTextScale by FloatPref("pref_allAppsIconTextScale", 1f)
+    val drawerIconScale by FloatPref("pref_allAppsIconSize", 1f)
     val searchHiddenApps by BooleanPref(DefaultAppSearchAlgorithm.SEARCH_HIDDEN_APPS, false)
 
     // Dev
@@ -974,7 +977,11 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
         @JvmStatic
         val DEVICE_PROFILE_PREFS = arrayOf(
-                "pref_iconTextScaleSB"
+                "pref_iconTextScaleSB",
+                "pref_iconSize",
+                "pref_hotseatIconSize",
+                "pref_allAppsIconSize",
+                "pref_allAppsIconTextScale"
                                           )
 
         fun getInstance(context: Context): LawnchairPreferences {
