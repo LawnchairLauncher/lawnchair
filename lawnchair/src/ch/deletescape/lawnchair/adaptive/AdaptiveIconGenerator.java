@@ -30,6 +30,7 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.SparseIntArray;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.graphics.ColorUtils;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
@@ -59,6 +60,7 @@ public class AdaptiveIconGenerator {
 
     private Context context;
     private Drawable icon;
+    private Drawable roundIcon;
 
     private final boolean extractColor;
     private final boolean treatWhite;
@@ -80,9 +82,10 @@ public class AdaptiveIconGenerator {
 
     private AdaptiveIconCompat tmp;
 
-    public AdaptiveIconGenerator(Context context, @NonNull Drawable icon) {
+    public AdaptiveIconGenerator(Context context, @NonNull Drawable icon, @Nullable Drawable roundIcon) {
         this.context = context;
         this.icon = AdaptiveIconCompat.wrap(icon);
+        this.roundIcon = AdaptiveIconCompat.wrapNullable(roundIcon);
         LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
         shouldWrap = prefs.getEnableLegacyTreatment();
         extractColor = shouldWrap && prefs.getColorizedLegacyTreatment();
@@ -92,12 +95,15 @@ public class AdaptiveIconGenerator {
     private void loop() {
         if (Utilities.ATLEAST_OREO && shouldWrap) {
             Drawable extractee = icon;
-            if (icon instanceof AdaptiveIconCompat) {
+            if (roundIcon != null && roundIcon instanceof AdaptiveIconCompat) {
+                extractee = roundIcon;
+            }
+            if (extractee instanceof AdaptiveIconCompat) {
                 if (!treatWhite) {
                     onExitLoop();
                     return;
                 }
-                AdaptiveIconCompat aid = (AdaptiveIconCompat) icon;
+                AdaptiveIconCompat aid = (AdaptiveIconCompat) extractee;
                 // we still check this separately as this is the only information we need from the background
                 if (!ColorExtractor.isSingleColor(aid.getBackground(), Color.WHITE)) {
                     onExitLoop();

@@ -85,12 +85,15 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
         val info = key.getLauncherActivityInfo(context) ?: return null
         val component = key.componentName
-        val originalIcon = info.getIcon(iconDpi).apply { mutate() }
+        var originalIcon = info.getIcon(iconDpi).apply { mutate() }
+        getLegacyIcon(component, iconDpi)?.let {
+            originalIcon = it.apply { mutate() }
+        }
         var roundIcon: Drawable? = null
         getRoundIcon(component, iconDpi)?.let {
             roundIcon = it.apply { mutate() }
         }
-        val gen = AdaptiveIconGenerator(context, roundIcon ?: originalIcon)
+        val gen = AdaptiveIconGenerator(context, originalIcon, roundIcon)
         return gen.result
     }
 
@@ -111,13 +114,16 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         }
         val component = key.componentName
         val packageName = component.packageName
-        val originalIcon = info.getIcon(iconDpi).apply { mutate() }
+        var originalIcon = info.getIcon(iconDpi).apply { mutate() }
+        getLegacyIcon(component, iconDpi)?.let {
+            originalIcon = it.apply { mutate() }
+        }
         if (iconProvider == null || (DynamicIconProvider.GOOGLE_CALENDAR != packageName && DynamicClock.DESK_CLOCK != component)) {
             var roundIcon: Drawable? = null
             getRoundIcon(component, iconDpi)?.let {
                 roundIcon = it.apply { mutate() }
             }
-            val gen = AdaptiveIconGenerator(context, roundIcon ?: originalIcon)
+            val gen = AdaptiveIconGenerator(context, originalIcon, roundIcon)
             return gen.result
         }
         return iconProvider.getDynamicIcon(info, iconDpi, flattenDrawable)
@@ -127,7 +133,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         ensureInitialLoadComplete()
 
         val drawable = DeepShortcutManager.getInstance(context).getShortcutIconDrawable(shortcutInfo, iconDpi)
-        val gen = AdaptiveIconGenerator(context, drawable)
+        val gen = AdaptiveIconGenerator(context, drawable, null)
         return gen.result
     }
 
@@ -174,6 +180,53 @@ class DefaultPack(context: Context) : IconPack(context, "") {
                                 elementTags.containsKey("name") &&
                                 elementTags["name"] == component.className) {
                             appIcon = elementTags["roundIcon"]
+                            break
+                        }
+                    }
+                    elementTags.clear()
+                }
+            }
+            parseXml.close()
+
+            if (appIcon != null) {
+                val resId = Utilities.parseResourceIdentifier(resourcesForApplication, appIcon, component.packageName)
+                return resourcesForApplication.getDrawableForDensity(resId, iconDpi)
+            }
+        } catch (ex: PackageManager.NameNotFoundException) {
+            ex.printStackTrace()
+        } catch (ex: Resources.NotFoundException) {
+            ex.printStackTrace()
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+        } catch (ex: XmlPullParserException) {
+            ex.printStackTrace()
+        }
+
+        return null
+    }
+
+    private fun getLegacyIcon(component: ComponentName, iconDpi: Int): Drawable? {
+        var appIcon: String? = null
+        val elementTags = HashMap<String, String>()
+
+        try {
+            val resourcesForApplication = context.packageManager.getResourcesForApplication(component.packageName)
+            val assets = resourcesForApplication.assets
+
+            val parseXml = assets.openXmlResourceParser("AndroidManifest.xml")
+            while (parseXml.next() != XmlPullParser.END_DOCUMENT) {
+                if (parseXml.eventType == XmlPullParser.START_TAG) {
+                    val name = parseXml.name
+                    for (i in 0 until parseXml.attributeCount) {
+                        elementTags[parseXml.getAttributeName(i)] = parseXml.getAttributeValue(i)
+                    }
+                    if (elementTags.containsKey("icon")) {
+                        if (name == "application") {
+                            appIcon = elementTags["icon"]
+                        } else if ((name == "activity" || name == "activity-alias") &&
+                                elementTags.containsKey("name") &&
+                                elementTags["name"] == component.className) {
+                            appIcon = elementTags["icon"]
                             break
                         }
                     }

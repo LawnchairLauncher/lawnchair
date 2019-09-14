@@ -77,7 +77,7 @@ class UriIconPack(context: Context) : IconPack(context, "lawnchairUriPack") {
         val icon = entry?.drawable
         if (icon != null) {
             return if (Utilities.ATLEAST_OREO && entry.adaptive) {
-                AdaptiveIconGenerator(context, icon).result
+                AdaptiveIconGenerator(context, icon, null).result
             } else icon
         }
         return null
