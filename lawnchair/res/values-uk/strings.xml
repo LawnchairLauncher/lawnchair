@@ -17,7 +17,7 @@
     <string name="icon_pack">Набір значків</string>
     <string name="home_widget">Віджет на головному екрані</string>
     <string name="title_show_google_app">%1$s зліва</string>
-    <string name="msg_minus_one_on_left">Стрічка новин зліва на робочому столі</string>
+    <string name="msg_minus_one_on_left">Стрічка новин зліва робочого столу</string>
     <string name="about">Про додаток</string>
     <string name="google_app">Додаток Google</string>
     <string name="about_app_version">Версія</string>
