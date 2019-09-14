@@ -81,12 +81,40 @@ abstract class IconCornerShape {
         }
     }
 
+    class LightSquircle : BaseBezierPath() {
+
+        override val controlDistance = .1f
+
+        override fun toString(): String {
+            return "lightsquircle"
+        }
+    }
+
+
     class Squircle : BaseBezierPath() {
 
         override val controlDistance = .2f
 
         override fun toString(): String {
             return "squircle"
+        }
+    }
+
+    class StrongSquircle : BaseBezierPath() {
+
+        override val controlDistance = .3f
+
+        override fun toString(): String {
+            return "strongsquircle"
+        }
+    }
+
+    class UltraSquircle : BaseBezierPath() {
+
+        override val controlDistance = .37f
+
+        override fun toString(): String {
+            return "ultrasquircle"
         }
     }
 
@@ -154,13 +182,19 @@ abstract class IconCornerShape {
     companion object {
 
         val cut = Cut()
+        val lightsquircle = LightSquircle()
         val squircle = Squircle()
+        val strongsquircle = StrongSquircle()
+        val ultrasquircle = UltraSquircle()
         val arc = Arc()
 
         fun fromString(value: String): IconCornerShape {
             return when (value) {
                 "cut" -> cut
+                "lightsquircle" -> lightsquircle
                 "cubic", "squircle" -> squircle
+                "strongsquircle" -> strongsquircle
+                "ultrasquircle" -> ultrasquircle
                 "arc" -> arc
                 else -> error("invalid corner shape $value")
             }

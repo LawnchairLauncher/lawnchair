@@ -727,7 +727,10 @@
     <string name="icon_shape_bottom_left">Bottom left</string>
     <string name="icon_shape_bottom_right">Bottom right</string>
     <string name="icon_shape_corner_round">Round</string>
+    <string name="icon_shape_corner_lightsquircle">Light Squircle</string>
     <string name="icon_shape_corner_squircle">Squircle</string>
+    <string name="icon_shape_corner_strongsquircle">Strong Squircle</string>
+    <string name="icon_shape_corner_ultrasquircle">Ultra Squircle</string>
     <string name="icon_shape_corner_cut">Cut</string>
 
     <string name="smartspace_add_to_home">Add to homescreen</string>

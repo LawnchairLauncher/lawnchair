@@ -124,8 +124,20 @@ class IconShapeCornerRow(context: Context, attrs: AttributeSet?) :
                                 "text" to context.getString(R.string.icon_shape_corner_round)
                              ),
                         mapOf(
+                                "value" to "lightsquircle",
+                                "text" to context.getString(R.string.icon_shape_corner_lightsquircle)
+                             ),
+                        mapOf(
                                 "value" to "squircle",
                                 "text" to context.getString(R.string.icon_shape_corner_squircle)
+                             ),
+                        mapOf(
+                                "value" to "strongsquircle",
+                                "text" to context.getString(R.string.icon_shape_corner_strongsquircle)
+                             ),
+                        mapOf(
+                                "value" to "ultrasquircle",
+                                "text" to context.getString(R.string.icon_shape_corner_ultrasquircle)
                              ),
                         mapOf(
                                 "value" to "cut",
