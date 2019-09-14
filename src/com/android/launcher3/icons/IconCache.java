@@ -42,6 +42,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
 import com.android.launcher3.icons.cache.BaseIconCache;
 import com.android.launcher3.icons.cache.CachingLogic;
@@ -237,7 +238,8 @@ public class IconCache extends BaseIconCache {
 
     @Override
     protected String getIconSystemState(String packageName) {
-        return mIconProvider.getSystemStateForPackage(mSystemState, packageName);
+        return mIconProvider.getSystemStateForPackage(mSystemState, packageName)
+                + ",flags_asi:" + FeatureFlags.APP_SEARCH_IMPROVEMENTS.get();
     }
 
     public static abstract class IconLoadRequest extends HandlerRunnable {

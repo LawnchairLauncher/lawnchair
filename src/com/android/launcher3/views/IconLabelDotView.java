@@ -13,23 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.android.launcher3.views;
 
-package com.android.launcher3.uioverrides;
-
-import android.content.Context;
-import com.android.launcher3.config.BaseFlags.BaseTogglableFlag;
-
-public class TogglableFlag extends BaseTogglableFlag {
-
-    public TogglableFlag(String key, boolean defaultValue, String description) {
-        super(key, defaultValue, description);
-    }
-
-    @Override
-    public boolean getOverridenDefaultValue(boolean value) {
-        return value;
-    }
-
-    @Override
-    public void addChangeListener(Context context, Runnable r) { }
+/**
+ * A view that has an icon, label, and notification dot.
+ */
+public interface IconLabelDotView {
+    void setIconVisible(boolean visible);
+    void setForceHideDot(boolean hide);
 }

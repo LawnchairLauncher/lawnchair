@@ -18,15 +18,10 @@ package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
 import static com.android.quickstep.TaskViewUtils.getRecentsWindowAnimator;
-
-import static androidx.dynamicanimation.animation.DynamicAnimation.MIN_VISIBLE_CHANGE_PIXELS;
-import static androidx.dynamicanimation.animation.SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY;
-import static androidx.dynamicanimation.animation.SpringForce.STIFFNESS_MEDIUM;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -35,17 +30,16 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.anim.SpringObjectAnimator;
+import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * A {@link QuickstepAppTransitionManagerImpl} that also implements recents transitions from
@@ -156,8 +150,11 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
                 return ObjectAnimator.ofFloat(mLauncher.getOverviewPanel(),
                         RecentsView.CONTENT_ALPHA, values);
             case INDEX_RECENTS_TRANSLATE_X_ANIM:
-                return new SpringObjectAnimator<>(mLauncher.getOverviewPanel(),
-                        VIEW_TRANSLATE_X, MIN_VISIBLE_CHANGE_PIXELS, 0.8f, 250, values);
+                return new SpringAnimationBuilder<>(mLauncher.getOverviewPanel(), VIEW_TRANSLATE_X)
+                        .setDampingRatio(0.8f)
+                        .setStiffness(250)
+                        .setValues(values)
+                        .build(mLauncher);
             default:
                 return super.createStateElementAnimation(index, values);
         }

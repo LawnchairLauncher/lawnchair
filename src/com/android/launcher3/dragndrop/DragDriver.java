@@ -61,6 +61,9 @@ public abstract class DragDriver {
                 mEventListener.onDriverDragEnd(ev.getX(), ev.getY());
                 break;
             case MotionEvent.ACTION_CANCEL:
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.NO_DRAG_TO_WORKSPACE, "DragDriver.ACTION_CANCEL");
+                }
                 mEventListener.onDriverDragCancel();
                 break;
         }
