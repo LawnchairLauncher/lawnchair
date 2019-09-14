@@ -127,7 +127,7 @@ public class AdaptiveIconGenerator {
             RectF bounds = new RectF();
 
             initTmpIfNeeded();
-            scale = normalizer.getScale(extractee, bounds, tmp.getIconMask(), outShape);
+            scale = normalizer.getScale(extractee, bounds, tmp.getIconMask(), outShape, MIN_VISIBLE_ALPHA);
             matchesMaskShape = outShape[0];
 
             if (extractee instanceof ColorDrawable) {
@@ -147,7 +147,6 @@ public class AdaptiveIconGenerator {
             if (!isSquareish) {
                 isFullBleed = false;
                 fullBleedChecked = true;
-            } else {
             }
 
             final Bitmap bitmap = Utilities.drawableToBitmap(extractee);
