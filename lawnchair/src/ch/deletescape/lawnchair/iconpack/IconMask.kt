@@ -57,7 +57,7 @@ class IconMask {
         val canvas = Canvas(bitmap)
 
         // Draw the app icon
-        var bb = baseIcon.toBitmap()!!
+        var bb = baseIcon.toBitmap(false)!!
         if (!bb.isMutable) bb = bb.copy(bb.config, true)
         matrix.setScale((size * scale) / bb.width, (size * scale) / bb.height)
         matrix.postTranslate((size / 2) * (1 - scale), (size / 2) * (1 - scale))
