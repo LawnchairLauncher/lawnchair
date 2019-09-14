@@ -43,6 +43,7 @@ import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.IntArray;
@@ -188,6 +189,7 @@ public class InvariantDeviceProfile {
     }
 
     private String initGrid(Context context, String gridName) {
+        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();
@@ -233,7 +235,7 @@ public class InvariantDeviceProfile {
         iconShapePath = getIconShapePath(context);
         landscapeIconSize = interpolatedDisplayOption.landscapeIconSize;
         iconBitmapSize = ResourceUtils.pxFromDp(iconSize, dm);
-        iconTextSize = interpolatedDisplayOption.iconTextSize;
+        iconTextSize = interpolatedDisplayOption.iconTextSize * prefs.getDesktopTextScale();
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         // If the partner customization apk contains any grid overrides, apply them

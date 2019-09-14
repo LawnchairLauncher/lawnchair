@@ -29,15 +29,20 @@ import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.LawnchairPreferences.OnPreferenceChangeListener;
 import com.android.launcher3.MainThreadExecutor;
 
+import com.android.launcher3.Utilities;
 import java.util.function.Consumer;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * {@link BroadcastReceiver} which watches configuration changes and
  * notifies the callback in case changes which affect the device profile occur.
  */
-public class ConfigMonitor extends BroadcastReceiver implements DisplayListener {
+public class ConfigMonitor extends BroadcastReceiver implements DisplayListener,
+        OnPreferenceChangeListener {
 
     private static final String TAG = "ConfigMonitor";
 
@@ -79,6 +84,8 @@ public class ConfigMonitor extends BroadcastReceiver implements DisplayListener 
         // Listen for display manager change
         mContext.getSystemService(DisplayManager.class)
                 .registerDisplayListener(this, new Handler(UiThreadHelper.getBackgroundLooper()));
+
+        Utilities.getLawnchairPrefs(context).addOnDeviceProfilePreferenceChangeListener(this);
     }
 
     @Override
@@ -134,8 +141,17 @@ public class ConfigMonitor extends BroadcastReceiver implements DisplayListener 
         try {
             mContext.unregisterReceiver(this);
             mContext.getSystemService(DisplayManager.class).unregisterDisplayListener(this);
+            Utilities.getLawnchairPrefs(mContext).removeOnDeviceProfilePreferenceChangeListener(this);
         } catch (Exception e) {
             Log.e(TAG, "Failed to unregister config monitor", e);
+        }
+    }
+
+    @Override
+    public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs,
+            boolean force) {
+        if(!force) {
+            notifyChange();
         }
     }
 }

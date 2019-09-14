@@ -371,6 +371,14 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         keys.forEach { addOnPreferenceChangeListener(it, listener) }
     }
 
+    fun addOnDeviceProfilePreferenceChangeListener(listener: OnPreferenceChangeListener) {
+        addOnPreferenceChangeListener(listener, *DEVICE_PROFILE_PREFS)
+    }
+
+    fun removeOnDeviceProfilePreferenceChangeListener(listener: OnPreferenceChangeListener) {
+        removeOnPreferenceChangeListener(listener, *DEVICE_PROFILE_PREFS)
+    }
+
     fun addOnPreferenceChangeListener(key: String, listener: OnPreferenceChangeListener) {
         if (onChangeListeners[key] == null) {
             onChangeListeners[key] = HashSet()
@@ -963,6 +971,11 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
         const val CURRENT_VERSION = 200
         const val VERSION_KEY = "config_version"
+
+        @JvmStatic
+        val DEVICE_PROFILE_PREFS = arrayOf(
+                "pref_iconTextScaleSB"
+                                          )
 
         fun getInstance(context: Context): LawnchairPreferences {
             if (INSTANCE == null) {
