@@ -27,21 +27,6 @@ class GridSize2D(
         targetObject: Any,
         onChangeListener: () -> Unit) : GridSize(prefs, rowsKey, targetObject, onChangeListener) {
 
-    var numColumns by JavaField<Int>(targetObject, columnsKey)
     val numColumnsOriginal by JavaField<Int>(targetObject, "${columnsKey}Original")
-
-    var numColumnsPref by prefs.IntPref("pref_$columnsKey", 0, onChange)
-
-    init {
-        applyNumColumns()
-    }
-
-    override fun applyCustomization() {
-        super.applyCustomization()
-        applyNumColumns()
-    }
-
-    private fun applyNumColumns() {
-        numColumns = fromPref(numColumnsPref, numColumnsOriginal)
-    }
+    var numColumns by prefs.IntPref("pref_$columnsKey", numColumnsOriginal, onChangeListener)
 }

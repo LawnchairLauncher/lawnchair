@@ -183,8 +183,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val dockShowPageIndicator by BooleanPref("pref_hotseatShowPageIndicator", true, { onChangeCallback?.updatePageIndicator() })
     val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
     val dockHide get() = dockStyles.currentStyle.hide
-    private val dockGridSizeDelegate = ResettableLazy { GridSize(this, "numHotseatIcons", LauncherAppState.getIDP(context), restart) }
+    private val dockGridSizeDelegate = ResettableLazy { GridSize(this, "numHotseatIcons", LauncherAppState.getIDP(context), doNothing) }
     val dockGridSize by dockGridSizeDelegate
+    val numDockIcons by IntPref("pref_numHotseatIcons", -1)
     val twoRowDock by BooleanPref("pref_twoRowDock", false, restart)
     val dockRowsCount get() = if (twoRowDock) 2 else 1
     val dockIconScale by FloatPref("pref_hotseatIconSize", 1f)
@@ -981,7 +982,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
                 "pref_iconSize",
                 "pref_hotseatIconSize",
                 "pref_allAppsIconSize",
-                "pref_allAppsIconTextScale"
+                "pref_allAppsIconTextScale",
+                "pref_numHotseatIcons"
                                           )
 
         fun getInstance(context: Context): LawnchairPreferences {

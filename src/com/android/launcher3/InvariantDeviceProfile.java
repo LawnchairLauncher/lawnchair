@@ -219,8 +219,11 @@ public class InvariantDeviceProfile {
         numColsDrawer = numColumns;
         numColsDrawerOriginal = numColumns;
         numPredictions = numPredictionsOriginal = numColumns;
-        numHotseatIcons = closestProfile.numHotseatIcons;
-        numHotseatIconsOriginal = numHotseatIcons;
+        numHotseatIconsOriginal = closestProfile.numHotseatIcons;
+        numHotseatIcons = prefs.getNumDockIcons();
+        if (numHotseatIcons <= 0) {
+            numHotseatIcons = numHotseatIconsOriginal;
+        }
         defaultLayoutId = closestProfile.defaultLayoutId;
         demoModeLayoutId = closestProfile.demoModeLayoutId;
         numFolderRows = closestProfile.numFolderRows;
@@ -340,7 +343,10 @@ public class InvariantDeviceProfile {
             changeFlags |= CHANGE_FLAG_GRID;
         }
 
-        if (iconSize != oldProfile.iconSize || iconBitmapSize != oldProfile.iconBitmapSize ||
+        if (iconSize != oldProfile.iconSize
+                || allAppsIconSize != oldProfile.allAppsIconSize
+                || hotseatIconSize != oldProfile.hotseatIconSize
+                || iconBitmapSize != oldProfile.iconBitmapSize ||
                 !iconShapePath.equals(oldProfile.iconShapePath)) {
             changeFlags |= CHANGE_FLAG_ICON_PARAMS;
         }

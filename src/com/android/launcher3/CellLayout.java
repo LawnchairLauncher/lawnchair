@@ -597,6 +597,7 @@ public class CellLayout extends ViewGroup implements Transposable {
         if (child instanceof BubbleTextView) {
             BubbleTextView bubbleChild = (BubbleTextView) child;
             if (isHotseat()) {
+                // TODO: Change these at runtime if required
                 bubbleChild.setTextVisibility(!mPrefs.getHideDockLabels());
                 bubbleChild.setIconSize(mDockIconSize);
                 bubbleChild.setLineCount(mPrefs.getDockLabelRows());

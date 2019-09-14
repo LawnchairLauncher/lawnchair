@@ -31,11 +31,11 @@ abstract class SingleDimensionGridSizePreference(context: Context, attrs: Attrib
     }
 
     fun getSize(): Int {
-        return gridSize.fromPref(gridSize.numRows, defaultSize)
+        return gridSize.numRows
     }
 
     fun setSize(rows: Int) {
-        gridSize.numRowsPref = gridSize.toPref(rows, defaultSize)
+        gridSize.numRows = rows
         updateSummary()
     }
 

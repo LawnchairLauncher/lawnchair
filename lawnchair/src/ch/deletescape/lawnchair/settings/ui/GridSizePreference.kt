@@ -33,14 +33,14 @@ class GridSizePreference(context: Context, attrs: AttributeSet?) : DialogPrefere
     }
 
     fun getSize(): Pair<Int, Int> {
-        val rows = gridSize.fromPref(gridSize.numRows, defaultSize.first)
-        val columns = gridSize.fromPref(gridSize.numColumns, defaultSize.second)
+        val rows = gridSize.numRows
+        val columns = gridSize.numColumns
         return Pair(rows, columns)
     }
 
     fun setSize(rows: Int, columns: Int) {
-        gridSize.numRowsPref = gridSize.toPref(rows, defaultSize.first)
-        gridSize.numColumnsPref = gridSize.toPref(columns, defaultSize.second)
+        gridSize.numRows = rows
+        gridSize.numColumns = columns
         updateSummary()
     }
 
