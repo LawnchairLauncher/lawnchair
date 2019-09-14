@@ -142,8 +142,11 @@ public class FastBitmapDrawable extends Drawable {
 
     @Override
     public void setAlpha(int alpha) {
-        mAlpha = alpha;
-        mPaint.setAlpha(alpha);
+        if (mAlpha != alpha) {
+            mAlpha = alpha;
+            mPaint.setAlpha(alpha);
+            invalidateSelf();
+        }
     }
 
     @Override

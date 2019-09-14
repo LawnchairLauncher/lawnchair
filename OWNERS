@@ -10,3 +10,6 @@ mrcasey@google.com
 sunnygoyal@google.com
 twickham@google.com
 winsonc@google.com
+
+per-file FeatureFlags.java = sunnygoyal@google.com, adamcohen@google.com
+per-file BaseFlags.java = sunnygoyal@google.com, adamcohen@google.com

@@ -173,12 +173,6 @@ public class RestoreDbTask {
         values.put(Favorites.PROFILE_ID, newProfileId);
         db.update(Favorites.TABLE_NAME, values, "profileId = ?",
                 new String[]{Long.toString(oldProfileId)});
-
-        // Change default value of the column.
-        db.execSQL("ALTER TABLE favorites RENAME TO favorites_old;");
-        Favorites.addTableToDb(db, newProfileId, false);
-        db.execSQL("INSERT INTO favorites SELECT * FROM favorites_old;");
-        dropTable(db, "favorites_old");
     }
 
 

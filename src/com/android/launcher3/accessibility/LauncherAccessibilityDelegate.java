@@ -1,5 +1,7 @@
 package com.android.launcher3.accessibility;
 
+import static android.view.accessibility.AccessibilityNodeInfo.ACTION_LONG_CLICK;
+
 import static com.android.launcher3.LauncherState.NORMAL;
 
 import android.app.AlertDialog;
@@ -30,14 +32,14 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
+import com.android.launcher3.keyboard.CustomActionsPopup;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.popup.PopupContainerWithArrow;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.ShortcutUtil;
@@ -164,6 +166,13 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     }
 
     public boolean performAction(final View host, final ItemInfo item, int action) {
+        if (action == ACTION_LONG_CLICK && ShortcutUtil.isDeepShortcut(item)) {
+            CustomActionsPopup popup = new CustomActionsPopup(mLauncher, host);
+            if (popup.canShow()) {
+                popup.show();
+                return true;
+            }
+        }
         if (action == MOVE) {
             beginAccessibleDrag(host, item);
         } else if (action == ADD_TO_WORKSPACE) {

@@ -18,7 +18,6 @@ package com.android.launcher3.views;
 import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.Utilities.getBadge;
 import static com.android.launcher3.Utilities.getFullDrawable;
-import static com.android.launcher3.Utilities.isRtl;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
@@ -564,11 +563,6 @@ public class FloatingIconView extends View implements
      */
     private void checkIconResult(View originalView, boolean isOpening) {
         CancellationSignal cancellationSignal = new CancellationSignal();
-        if (!isOpening) {
-            // Hide immediately since the floating view starts at a different location.
-            originalView.setVisibility(INVISIBLE);
-            cancellationSignal.setOnCancelListener(() -> originalView.setVisibility(VISIBLE));
-        }
 
         if (mIconLoadResult == null) {
             Log.w(TAG, "No icon load result found in checkIconResult");
@@ -580,7 +574,7 @@ public class FloatingIconView extends View implements
                 setIcon(originalView, mIconLoadResult.drawable, mIconLoadResult.badge,
                         mIconLoadResult.iconOffset);
                 if (isOpening) {
-                    originalView.setVisibility(INVISIBLE);
+                    hideOriginalView(originalView);
                 }
             } else {
                 mIconLoadResult.onIconLoaded = () -> {
@@ -591,12 +585,23 @@ public class FloatingIconView extends View implements
                     setIcon(originalView, mIconLoadResult.drawable, mIconLoadResult.badge,
                             mIconLoadResult.iconOffset);
 
-                    // Delay swapping views until the icon is loaded to prevent a flash.
                     setVisibility(VISIBLE);
-                    originalView.setVisibility(INVISIBLE);
+                    if (isOpening) {
+                        // Delay swapping views until the icon is loaded to prevent a flash.
+                        hideOriginalView(originalView);
+                    }
                 };
                 mLoadIconSignal = cancellationSignal;
             }
+        }
+    }
+
+    private void hideOriginalView(View originalView) {
+        if (originalView instanceof BubbleTextView) {
+            ((BubbleTextView) originalView).setIconVisible(false);
+            ((BubbleTextView) originalView).setForceHideDot(true);
+        } else {
+            originalView.setVisibility(INVISIBLE);
         }
     }
 
@@ -716,7 +721,7 @@ public class FloatingIconView extends View implements
      */
     @UiThread
     public static IconLoadResult fetchIcon(Launcher l, View v, ItemInfo info, boolean isOpening) {
-        IconLoadResult result = new IconLoadResult();
+        IconLoadResult result = new IconLoadResult(info);
         new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(() -> {
             RectF position = new RectF();
             getLocationBoundsForView(l, v, isOpening, position);
@@ -745,10 +750,13 @@ public class FloatingIconView extends View implements
 
         // Get the drawable on the background thread
         boolean shouldLoadIcon = originalView.getTag() instanceof ItemInfo && hideOriginal;
-        view.mIconLoadResult = sIconLoadResult;
-        if (shouldLoadIcon && view.mIconLoadResult == null) {
-            view.mIconLoadResult = fetchIcon(launcher, originalView,
-                    (ItemInfo) originalView.getTag(), isOpening);
+        if (shouldLoadIcon) {
+            if (sIconLoadResult != null && sIconLoadResult.itemInfo == originalView.getTag()) {
+                view.mIconLoadResult = sIconLoadResult;
+            } else {
+                view.mIconLoadResult = fetchIcon(launcher, originalView,
+                        (ItemInfo) originalView.getTag(), isOpening);
+            }
         }
         sIconLoadResult = null;
 
@@ -776,7 +784,12 @@ public class FloatingIconView extends View implements
 
             if (hideOriginal) {
                 if (isOpening) {
-                    originalView.setVisibility(VISIBLE);
+                    if (originalView instanceof BubbleTextView) {
+                        ((BubbleTextView) originalView).setIconVisible(true);
+                        ((BubbleTextView) originalView).setForceHideDot(false);
+                    } else {
+                        originalView.setVisibility(VISIBLE);
+                    }
                     view.finish(dragLayer);
                 } else {
                     view.mFadeAnimatorSet = view.createFadeAnimation(originalView, dragLayer);
@@ -804,38 +817,33 @@ public class FloatingIconView extends View implements
             }
         });
 
-        if (mBadge != null && !(mOriginalIcon instanceof FolderIcon)) {
+        if (mBadge != null) {
             ObjectAnimator badgeFade = ObjectAnimator.ofInt(mBadge, DRAWABLE_ALPHA, 255);
             badgeFade.addUpdateListener(valueAnimator -> invalidate());
             fade.play(badgeFade);
         }
 
-        if (originalView instanceof BubbleTextView) {
-            BubbleTextView btv = (BubbleTextView) originalView;
-            btv.forceHideDot(true);
+        if (originalView instanceof IconLabelDotView) {
+            IconLabelDotView view = (IconLabelDotView) originalView;
             fade.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    btv.forceHideDot(false);
+                    view.setIconVisible(true);
+                    view.setForceHideDot(false);
                 }
             });
         }
 
-        if (originalView instanceof FolderIcon) {
-            FolderIcon folderIcon = (FolderIcon) originalView;
-            folderIcon.setBackgroundVisible(false);
-            folderIcon.getFolderName().setTextVisibility(false);
-            fade.play(folderIcon.getFolderName().createTextAlphaAnimator(true));
+        if (originalView instanceof BubbleTextView) {
+            BubbleTextView btv = (BubbleTextView) originalView;
             fade.addListener(new AnimatorListenerAdapter() {
                 @Override
-                public void onAnimationEnd(Animator animation) {
-                    folderIcon.setBackgroundVisible(true);
-                    if (folderIcon.hasDot()) {
-                        folderIcon.animateDotScale(0, 1f);
-                    }
+                public void onAnimationStart(Animator animation) {
+                    btv.setIconVisible(true);
                 }
             });
-        } else {
+            fade.play(ObjectAnimator.ofInt(btv.getIcon(), DRAWABLE_ALPHA, 0, 255));
+        } else if (!(originalView instanceof FolderIcon)) {
             fade.play(ObjectAnimator.ofFloat(originalView, ALPHA, 0f, 1f));
         }
 
@@ -890,10 +898,15 @@ public class FloatingIconView extends View implements
     }
 
     private static class IconLoadResult {
+        final ItemInfo itemInfo;
         Drawable drawable;
         Drawable badge;
         int iconOffset;
         Runnable onIconLoaded;
         boolean isIconLoaded;
+
+        public IconLoadResult(ItemInfo itemInfo) {
+            this.itemInfo = itemInfo;
+        }
     }
 }
