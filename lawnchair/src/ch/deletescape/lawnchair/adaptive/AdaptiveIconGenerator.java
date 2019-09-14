@@ -36,6 +36,7 @@ import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.icons.ColorExtractor;
 import com.android.launcher3.icons.FixedScaleDrawable;
 import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.icons.LauncherIcons;
@@ -97,11 +98,11 @@ public class AdaptiveIconGenerator {
                     return;
                 }
                 AdaptiveIconCompat aid = (AdaptiveIconCompat) icon;
-                // we still check this seperately as this is the only information we need from the background
-                // if (!ColorExtractor.isSingleColor(aid.getBackground(), Color.WHITE)) {
-                //     onExitLoop();
-                //     return;
-                // }
+                // we still check this separately as this is the only information we need from the background
+                if (!ColorExtractor.isSingleColor(aid.getBackground(), Color.WHITE)) {
+                    onExitLoop();
+                    return;
+                }
                 isBackgroundWhite = true;
                 extractee = aid.getForeground();
             }
@@ -140,6 +141,7 @@ public class AdaptiveIconGenerator {
             if (!isSquareish) {
                 isFullBleed = false;
                 fullBleedChecked = true;
+            } else {
             }
 
             final Bitmap bitmap = Utilities.drawableToBitmap(extractee);
@@ -200,7 +202,7 @@ public class AdaptiveIconGenerator {
                     continue;
                 }
                 // Reduce color complexity.
-                int rgb = pixel; //ColorExtractor.posterize(pixel);
+                int rgb = ColorExtractor.posterize(pixel);
                 if (rgb < 0) {
                     // Defensively avoid array bounds violations.
                     continue;
@@ -307,11 +309,9 @@ public class AdaptiveIconGenerator {
     }
 
     public Drawable getResult() {
-        /*
         if (!ranLoop) {
             loop();
         }
-         */
-        return icon;
+        return result;
     }
 }
