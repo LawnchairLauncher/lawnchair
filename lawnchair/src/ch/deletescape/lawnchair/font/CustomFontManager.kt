@@ -55,7 +55,7 @@ class CustomFontManager(private val context: Context) {
 
     private val workspaceFont = FontPref("pref_font_workspace", launcherCondensed)
     private val folderFont = workspaceFont
-    private val smartspaceTextFont = FontPref("pref_font_smartspaceText", uiMedium)
+    private val smartspaceTextFont = FontPref("pref_font_smartspaceText", uiRegular)
 
     private val deepShortcutFont = FontPref("pref_font_deepShortcut", launcherRegular)
     private val systemShortcutFont = deepShortcutFont
