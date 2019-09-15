@@ -42,7 +42,6 @@ import com.android.launcher3.icons.FixedScaleDrawable;
 import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.icons.LauncherIcons;
 
-// TODO: fix this
 // TODO: Make this thing async somehow (maybe using some drawable wrappers?)
 public class AdaptiveIconGenerator {
 
@@ -254,6 +253,15 @@ public class AdaptiveIconGenerator {
             boolean veryLight = lightness > .75 && singleColor;
             // Apply light background to mostly dark icons
             boolean veryDark = lightness < .35 && singleColor;
+
+            // Generate pleasant pastel colors for saturated icons
+            if (hsl[1] > .5f && lightness > .2) {
+                hsl[1] = 1f;
+                hsl[2] = .875f;
+                backgroundColor = ColorUtils.HSLToColor(hsl);
+                onExitLoop();
+                return;
+            }
 
             // Adjust color to reach suitable contrast depending on the relationship between the colors
             final int opaqueSize = size - transparentScore;
