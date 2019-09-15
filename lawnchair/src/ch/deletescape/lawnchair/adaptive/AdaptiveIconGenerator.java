@@ -274,6 +274,12 @@ public class AdaptiveIconGenerator {
 
     private Drawable genResult() {
         if (!Utilities.ATLEAST_OREO || !shouldWrap) {
+            if (roundIcon != null) {
+                if (icon instanceof AdaptiveIconCompat) {
+                    return icon;
+                }
+                return roundIcon;
+            }
             return icon;
         }
         if (icon instanceof AdaptiveIconCompat) {
