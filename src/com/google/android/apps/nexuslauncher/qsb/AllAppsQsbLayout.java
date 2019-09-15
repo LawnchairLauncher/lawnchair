@@ -1,5 +1,6 @@
 package com.google.android.apps.nexuslauncher.qsb;
 
+import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
 import static com.android.launcher3.LauncherState.HOTSEAT_SEARCH_BOX;
@@ -23,6 +24,7 @@ import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.colors.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
 import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
 import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
 import ch.deletescape.lawnchair.globalsearch.SearchProvider;
@@ -30,7 +32,10 @@ import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
 import ch.deletescape.lawnchair.globalsearch.providers.AppSearchSearchProvider;
 import ch.deletescape.lawnchair.globalsearch.providers.web.WebSearchProvider;
 import com.android.launcher3.BaseRecyclerView;
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
@@ -42,7 +47,7 @@ import com.google.android.apps.nexuslauncher.search.SearchThread;
 import org.jetbrains.annotations.NotNull;
 
 public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager, o,
-        ColorEngine.OnColorChangeListener {
+        OnColorChangeListener, OnIDPChangeListener {
 
     private final k Ds;
     private final int Dt;
@@ -123,6 +128,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         super.onAttachedToWindow();
         ColorEngine.getInstance(getContext()).addColorChangeListeners(this,
                 Resolvers.HOTSEAT_QSB_BG, Resolvers.ALLAPPS_QSB_BG);
+        LauncherAppState.getIDP(getContext()).addOnChangeListener(this);
         dN();
         Ds.a(this);
     }
@@ -135,6 +141,14 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
             az(mAllAppsBgColor);
         } else if (resolveInfo.getKey().equals(Resolvers.HOTSEAT_QSB_BG)) {
             setHotseatBgColor(resolveInfo.getColor());
+        }
+    }
+
+    @Override
+    public void onIdpChanged(int changeFlags, InvariantDeviceProfile profile) {
+        if ((changeFlags & CHANGE_FLAG_ICON_PARAMS) != 0) {
+            mAllAppsShadowBitmap = mHotseatShadowBitmap = mBubbleShadowBitmap = mClearBitmap = null;
+            dH();
         }
     }
 
@@ -174,6 +188,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     protected void onDetachedFromWindow() {
         ColorEngine.getInstance(getContext()).removeColorChangeListeners(this,
                 Resolvers.HOTSEAT_QSB_BG, Resolvers.ALLAPPS_QSB_BG);
+        LauncherAppState.getIDP(getContext()).removeOnChangeListener(this);
         super.onDetachedFromWindow();
         Ds.b(this);
     }

@@ -44,6 +44,7 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.adaptive.IconShapeManager;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.IntArray;
@@ -182,6 +183,10 @@ public class InvariantDeviceProfile {
      * Retrieve system defined or RRO overriden icon shape.
      */
     private static String getIconShapePath(Context context) {
+        return IconShapeManager.Companion.getInstance(context).getIconShape().getHashString();
+    }
+
+    public static String getSystemIconShapePath(Context context) {
         if (CONFIG_ICON_MASK_RES_ID == 0) {
             Log.e(TAG, "Icon mask res identifier failed to retrieve.");
             return "";

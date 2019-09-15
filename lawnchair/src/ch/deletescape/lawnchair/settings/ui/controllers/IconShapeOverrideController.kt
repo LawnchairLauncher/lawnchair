@@ -20,10 +20,10 @@ package ch.deletescape.lawnchair.settings.ui.controllers
 import android.content.Context
 import androidx.annotation.Keep
 import ch.deletescape.lawnchair.settings.ui.PreferenceController
-import com.android.launcher3.graphics.IconShapeOverride
+import com.android.launcher3.Utilities
 
 @Keep
 class IconShapeOverrideController(context: Context) : PreferenceController(context) {
 
-    override val isVisible = IconShapeOverride.isSupported(context)
+    override val isVisible = Utilities.ATLEAST_OREO
 }

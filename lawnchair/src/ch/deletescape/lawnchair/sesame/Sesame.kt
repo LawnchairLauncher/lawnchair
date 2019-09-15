@@ -29,7 +29,6 @@ import ch.deletescape.lawnchair.util.diff.diff
 import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
-import com.android.launcher3.graphics.IconShapeOverride
 import com.google.android.apps.nexuslauncher.qsb.AbstractQsbLayout
 import ninja.sesame.lib.bridge.v1.SesameFrontend
 import ninja.sesame.lib.bridge.v1_1.LookFeelKeys
@@ -56,7 +55,7 @@ object Sesame : ColorEngine.OnColorChangeListener, LawnchairPreferences.OnPrefer
             ColorEngine.Resolvers.HOTSEAT_QSB_BG
     )
     private val syncedPrefs = arrayOf(
-            IconShapeOverride.KEY_PREFERENCE,
+            "pref_iconShape",
             "opa_enabled",
             "opa_assistant",
             "pref_searchbarRadius"
@@ -107,7 +106,7 @@ object Sesame : ColorEngine.OnColorChangeListener, LawnchairPreferences.OnPrefer
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
         when (key) {
-            IconShapeOverride.KEY_PREFERENCE -> {
+            "pref_iconShape" -> {
                 LookAndFeel[LookFeelKeys.SEARCH_CORNER_RADIUS] = AbstractQsbLayout.getCornerRadius(context, dpToPx(24f)).roundToInt()
             }
             "pref_searchbarRadius" -> {

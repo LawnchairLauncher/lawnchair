@@ -23,19 +23,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.AdaptiveIconDrawable
-import android.os.Handler
 import android.text.TextUtils
 import androidx.annotation.Keep
 import androidx.core.graphics.PathParser
 import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat
 import ch.deletescape.lawnchair.lawnchairPrefs
-import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
-import com.android.launcher3.LauncherAppState
-import com.android.launcher3.LauncherModel
+import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
-import com.android.launcher3.graphics.IconShape as LauncherIconShape
-import com.android.launcher3.graphics.IconShapeOverride
 import com.android.launcher3.icons.GraphicsUtils
 import java.lang.RuntimeException
 
@@ -43,7 +38,7 @@ class IconShapeManager(private val context: Context) {
 
     private val systemIconShape = getSystemShape()
     var iconShape by context.lawnchairPrefs.StringBasedPref(
-            "pref_iconShape", systemIconShape, ::onShapeChanged,
+            "pref_iconShape", systemIconShape, AdaptiveIconCompat::onShapeChanged,
             {
                 IconShape.fromString(it) ?: systemIconShape
             }, IconShape::toString) { /* no dispose */ }
@@ -55,15 +50,26 @@ class IconShapeManager(private val context: Context) {
     @SuppressLint("RestrictedApi")
     private fun migratePref() {
         // Migrate from old path-based override
-        val override = IconShapeOverride.getAppliedValue(context)
+        val override = getLegacyValue()
         if (!TextUtils.isEmpty(override)) {
             try {
                 iconShape = findNearestShape(PathParser.createPathFromPathData(override))
-                Utilities.getPrefs(context).edit().remove(IconShapeOverride.KEY_PREFERENCE).apply()
+                Utilities.getPrefs(context).edit().remove(KEY_LEGACY_PREFERENCE).apply()
             } catch (e: RuntimeException) {
                 // Just ignore the error
             }
         }
+    }
+
+    fun getLegacyValue(): String {
+        val devValue = Utilities.getDevicePrefs(context).getString(KEY_LEGACY_PREFERENCE, "")
+        if (!TextUtils.isEmpty(devValue)) {
+            // Migrate to general preferences to back up shape overrides
+            Utilities.getPrefs(context).edit().putString(KEY_LEGACY_PREFERENCE, devValue).apply()
+            Utilities.getDevicePrefs(context).edit().remove(KEY_LEGACY_PREFERENCE).apply()
+        }
+
+        return Utilities.getPrefs(context).getString(KEY_LEGACY_PREFERENCE, "")!!
     }
 
     private fun getSystemShape(): IconShape {
@@ -78,6 +84,10 @@ class IconShapeManager(private val context: Context) {
             }
 
             override fun toString() = ""
+
+            override fun getHashString(): String {
+                return InvariantDeviceProfile.getSystemIconShapePath(context)
+            }
         }
     }
 
@@ -105,22 +115,13 @@ class IconShapeManager(private val context: Context) {
         }!!
     }
 
-    private fun onShapeChanged() {
-        Handler(LauncherModel.getWorkerLooper()).post {
-            LauncherAppState.getInstance(context).reloadIconCache()
-
-            runOnMainThread {
-                AdaptiveIconCompat.resetMask()
-                LauncherIconShape.init(context)
-                context.lawnchairPrefs.recreate()
-            }
-        }
-    }
-
     companion object : LawnchairSingletonHolder<IconShapeManager>(::IconShapeManager) {
+
+        private const val KEY_LEGACY_PREFERENCE = "pref_override_icon_shape"
 
         @Keep
         @JvmStatic
+        @Suppress("unused") /** Used in AdaptiveIconCompat to get the mask path **/
         fun getAdaptiveIconMaskPath() = dangerousGetInstance()!!.iconShape.getMaskPath()
     }
 }

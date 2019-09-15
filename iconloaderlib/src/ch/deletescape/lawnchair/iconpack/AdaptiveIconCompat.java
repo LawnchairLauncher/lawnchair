@@ -879,10 +879,6 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
         return this;
     }
 
-    public boolean isMaskValid() {
-        return sMask != null && mMaskId == sMask.hashCode();
-    }
-
     protected static @NonNull TypedArray obtainAttributes(@NonNull Resources res,
             @Nullable Theme theme, @NonNull AttributeSet set, @NonNull int[] attrs) {
         if (theme == null) {
@@ -1127,7 +1123,7 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
         }
     }
 
-    public static void resetMask() {
+    public static void onShapeChanged() {
         sMask = null;
     }
 }

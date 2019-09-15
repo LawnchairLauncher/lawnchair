@@ -843,7 +843,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String) {
         onChangeMap[key]?.invoke()
-        onChangeListeners[key]?.forEach { it.onValueChanged(key, this, false) }
+        onChangeListeners[key]?.toSet()?.forEach { it.onValueChanged(key, this, false) }
     }
 
     fun registerCallback(callback: LawnchairPreferencesChangeCallback) {
@@ -978,6 +978,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
         @JvmStatic
         val DEVICE_PROFILE_PREFS = arrayOf(
+                "pref_iconShape",
                 "pref_iconTextScaleSB",
                 "pref_iconSize",
                 "pref_hotseatIconSize",
