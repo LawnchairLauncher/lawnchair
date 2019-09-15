@@ -27,6 +27,10 @@
         android:key="prefCat_desktopIcons"
         android:title="@string/pref_category_icons">
 
+        <ch.deletescape.lawnchair.preferences.PreviewPreference
+            android:key="pref_desktopIcons_preview"
+            app:previewLayout="@layout/desktop_icons_preview" />
+
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="false"
             android:disableDependentsState="true"

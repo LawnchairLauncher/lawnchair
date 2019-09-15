@@ -28,6 +28,7 @@
         android:title="@string/general_pref_title"
         android:key="desktop"
         app:content="@xml/lawnchair_desktop_preferences"
+        app:hasPreview="true"
         android:layout="@layout/home_preference" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
