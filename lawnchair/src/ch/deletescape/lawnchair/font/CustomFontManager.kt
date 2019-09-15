@@ -53,7 +53,7 @@ class CustomFontManager(private val context: Context) {
     var enableGlobalFont by prefs.BooleanPref("enable_global_font", false, prefs.recreate)
     private val globalFont = FontPref("pref_font_global", launcherRegular)
 
-    private val workspaceFont = FontPref("pref_font_workspace", launcherCondensed)
+    private val workspaceFont = FontPref("pref_font_workspace", launcherRegular)
     private val folderFont = workspaceFont
     private val smartspaceTextFont = FontPref("pref_font_smartspaceText", uiRegular)
 
@@ -61,7 +61,7 @@ class CustomFontManager(private val context: Context) {
     private val systemShortcutFont = deepShortcutFont
     private val taskOptionFont = deepShortcutFont
 
-    private val allAppsFont = FontPref("pref_font_allApps", launcherCondensed)
+    private val allAppsFont = FontPref("pref_font_allApps", launcherRegular)
     private val drawerFolderFont = allAppsFont
     private val actionFont = FontPref("pref_font_drawerAppActions", launcherCondensed)
     private val drawerTab = FontPref("pref_font_drawerTab", uiMedium)
