@@ -32,6 +32,7 @@ import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
 import ch.deletescape.lawnchair.globalsearch.providers.AppSearchSearchProvider;
 import ch.deletescape.lawnchair.globalsearch.providers.web.WebSearchProvider;
 import com.android.launcher3.BaseRecyclerView;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener;
 import com.android.launcher3.Launcher;
@@ -107,7 +108,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
                     delta += Dy;
                 }
             } else {
-                delta -= mActivity.getResources().getDimensionPixelSize(R.dimen.vertical_drag_handle_size);
+                delta -= getLauncher().getResources().getDimensionPixelSize(R.dimen.vertical_drag_handle_size);
             }
             return Math.round(delta);
         }
@@ -194,12 +195,12 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     protected final int aA(int i) {
-        if (this.mActivity.getDeviceProfile().isVerticalBarLayout()) {
+        if (mActivity.getDeviceProfile().isVerticalBarLayout()) {
             return (i - this.mAppsView.getActiveRecyclerView().getPaddingLeft()) - this.mAppsView
                     .getActiveRecyclerView().getPaddingRight();
         }
-        View view = this.mActivity.getHotseat();
-        return (i - view.getPaddingLeft()) - view.getPaddingRight();
+        Rect padding = mActivity.getDeviceProfile().getHotseatLayoutPadding();
+        return (i - padding.left) - padding.right;
     }
 
     public final void initialize(AllAppsContainerView allAppsContainerView) {
@@ -255,13 +256,13 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     private void startDrawerSearch(String str, int i) {
         SearchProviderController controller = SearchProviderController.Companion
-                .getInstance(mActivity);
+                .getInstance(getContext());
         SearchProvider provider = controller.getSearchProvider();
         if (shouldUseFallbackSearch(provider)) {
             searchFallback(str);
         } else if (controller.isGoogle()) {
             final ConfigBuilder f = new ConfigBuilder(this, true);
-            if (!mActivity.getGoogleNow().startSearch(f.build(), f.getExtras())) {
+            if (!getLauncher().getGoogleNow().startSearch(f.build(), f.getExtras())) {
                 searchFallback(str);
                 if (mFallback != null) {
                     mFallback.setHint(null);
@@ -269,7 +270,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
             }
         } else {
             provider.startSearch(intent -> {
-                mActivity.startActivity(intent);
+                getLauncher().startActivity(intent);
                 return null;
             });
         }
@@ -277,12 +278,12 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     private void startHotseatSearch() {
         SearchProviderController controller = SearchProviderController.Companion
-                .getInstance(mActivity);
+                .getInstance(getContext());
         if (controller.isGoogle()) {
             startGoogleSearch();
         } else {
             controller.getSearchProvider().startSearch(intent -> {
-                mActivity.openQsb();
+                getLauncher().openQsb();
                 getContext().startActivity(intent, ActivityOptionsCompat
                         .makeClipRevealAnimation(this, 0, 0, getWidth(), getHeight()).toBundle());
                 return null;
@@ -292,12 +293,12 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     private void startGoogleSearch() {
         final ConfigBuilder f = new ConfigBuilder(this, false);
-        if (!forceFallbackSearch() && mActivity.getGoogleNow()
+        if (!forceFallbackSearch() && getLauncher().getGoogleNow()
                 .startSearch(f.build(), f.getExtras())) {
             SharedPreferences devicePrefs = Utilities.getDevicePrefs(getContext());
             devicePrefs.edit().putInt("key_hotseat_qsb_tap_count",
                     devicePrefs.getInt("key_hotseat_qsb_tap_count", 0) + 1).apply();
-            mActivity.playQsbAnimation();
+            getLauncher().playQsbAnimation();
         } else {
             getContext().sendOrderedBroadcast(getSearchIntent(), null,
                     new BroadcastReceiver() {
@@ -307,7 +308,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
                                 fallbackSearch(
                                         "com.google.android.googlequicksearchbox.TEXT_ASSIST");
                             } else {
-                                mActivity.playQsbAnimation();
+                                getLauncher().playQsbAnimation();
                             }
                         }
                     }, null, 0, null, null);
@@ -330,7 +331,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     private boolean shouldUseFallbackSearch() {
         SearchProviderController controller = SearchProviderController.Companion
-                .getInstance(mActivity);
+                .getInstance(getContext());
         SearchProvider provider = controller.getSearchProvider();
         return shouldUseFallbackSearch(provider);
     }
@@ -360,7 +361,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     private void ensureFallbackView() {
         if (mFallback == null) {
             setOnClickListener(null);
-            mFallback = (FallbackAppsSearchView) this.mActivity.getLayoutInflater()
+            mFallback = (FallbackAppsSearchView) getLauncher().getLayoutInflater()
                     .inflate(R.layout.all_apps_google_search_fallback, this, false);
             AllAppsContainerView allAppsContainerView = this.mAppsView;
             mFallback.DJ = this;

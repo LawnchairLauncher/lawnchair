@@ -41,6 +41,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import ch.deletescape.lawnchair.colors.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
 import ch.deletescape.lawnchair.globalsearch.SearchProvider;
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
 import com.android.launcher3.DeviceProfile;
@@ -56,6 +58,7 @@ import com.android.launcher3.graphics.NinePatchDrawHelper;
 import com.android.launcher3.icons.ShadowGenerator.Builder;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TransformingTouchDelegate;
+import com.android.launcher3.views.ActivityContext;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
 public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedPreferenceChangeListener,
@@ -67,7 +70,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     protected final Paint CV;
     protected final NinePatchDrawHelper mShadowHelper;
     protected final NinePatchDrawHelper mClearShadowHelper;
-    protected final NexusLauncherActivity mActivity;
+    protected final ActivityContext mActivity;
     protected final int CY;
     protected final int CZ;
     protected final int Da;
@@ -135,8 +138,8 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         this.mClearShadowHelper = new NinePatchDrawHelper();
         this.mClearShadowHelper.paint.setXfermode(new PorterDuffXfermode(Mode.DST_OUT));
         this.Di = 0;
-        this.mActivity = (NexusLauncherActivity) Launcher.getLauncher(context);
-        this.Do = Themes.getAttrBoolean(this.mActivity, R.attr.isWorkspaceDarkText);
+        this.mActivity = ActivityContext.lookupContext(context);
+        this.Do = Themes.getAttrBoolean(context, R.attr.isWorkspaceDarkText);
         setOnLongClickListener(this);
         this.Dk = getResources().getDimensionPixelSize(R.dimen.qsb_doodle_tap_target_logo_width);
         this.Da = getResources().getDimensionPixelSize(R.dimen.qsb_mic_width);
@@ -149,6 +152,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         this.Dn = new TransformingTouchDelegate(this);
         setTouchDelegate(this.Dn);
         this.CV.setColor(Color.WHITE);
+        mHotseatBgColor = ColorEngine.getInstance(context).resolveColor(Resolvers.HOTSEAT_QSB_BG).getColor();
     }
 
     protected void onAttachedToWindow() {
@@ -196,7 +200,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
 
     protected void onLayout(boolean z, int i, int i2, int i3, int i4) {
         super.onLayout(z, i, i2, i3, i4);
-        this.mMicIconView.getHitRect(CS);
+        //this.mMicIconView.getHitRect(CS);
         if (this.mIsRtl) {
             CS.left -= this.Dl;
         } else {
@@ -247,7 +251,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     protected void onMeasure(int i, int i2) {
-        DeviceProfile deviceProfile = this.mActivity.getDeviceProfile();
+        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         int aA = aA(MeasureSpec.getSize(i));
         int i3 = aA / deviceProfile.inv.numHotseatIcons;
         int round = round(0.92f * ((float) deviceProfile.iconSizePx));
@@ -388,9 +392,9 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         Builder builder = new Builder(i);
         builder.shadowBlur = f;
         builder.keyShadowDistance = f2;
-        if (Do && this instanceof HotseatQsbWidget) {
-            builder.ambientShadowAlpha *= 2;
-        }
+        // if (Do && this instanceof HotseatQsbWidget) {
+        //     builder.ambientShadowAlpha *= 2;
+        // }
         if (!withShadow) {
             builder.ambientShadowAlpha = 0;
         }
@@ -540,7 +544,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
 
     public void onClick(View view) {
         SearchProviderController controller = SearchProviderController.Companion
-                .getInstance(mActivity);
+                .getInstance(getContext());
         SearchProvider provider = controller.getSearchProvider();
         if (view == mMicIconView) {
             if (controller.isGoogle()) {
@@ -696,6 +700,10 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
 
     public boolean useTwoBubbles() {
         return mMicIconView.getVisibility() == View.VISIBLE && Utilities
-                .getLawnchairPrefs(mActivity).getDualBubbleSearch();
+                .getLawnchairPrefs(getContext()).getDualBubbleSearch();
+    }
+
+    protected NexusLauncherActivity getLauncher() {
+        return (NexusLauncherActivity) mActivity;
     }
 }

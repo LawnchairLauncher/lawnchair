@@ -53,7 +53,7 @@ public class ConfigBuilder {
         mBundle = new Bundle();
         mNano = new c_search();
         mQsbLayout = qsbLayout;
-        mActivity = qsbLayout.mActivity;
+        mActivity = qsbLayout.getLauncher();
         mIsAllApps = isAllApps;
         mUserManager = UserManagerCompat.getInstance(mActivity);
     }

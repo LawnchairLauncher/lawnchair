@@ -42,6 +42,7 @@ import android.view.ViewGroup;
 import android.widget.TextClock;
 
 import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
+import ch.deletescape.lawnchair.preferences.SmartspaceAddToHomePreference;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
@@ -260,7 +261,7 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
             }
 
             // Add first page QSB
-            if (FeatureFlags.QSB_ON_FIRST_SCREEN) {
+            if (SmartspaceAddToHomePreference.showSmartspaceInPreview(mContext)) {
                 View qsb = mHomeElementInflater.inflate(
                         R.layout.search_container_workspace, mWorkspace, false);
                 CellLayout.LayoutParams lp =

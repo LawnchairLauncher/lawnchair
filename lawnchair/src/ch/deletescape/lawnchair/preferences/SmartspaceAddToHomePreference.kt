@@ -35,8 +35,7 @@ class SmartspaceAddToHomePreference(context: Context, attrs: AttributeSet?) :
         ControlledPreference by ControlledPreference.Delegate(context, attrs) {
 
     override fun onResume() {
-        isVisible = LauncherAppState.getInstance(context).model
-                .loadedWidgets?.any { it.isCustomWidget } != true
+        isVisible = hasSmartspaceWidget(context) != true
     }
 
     override fun onClick() {
@@ -54,6 +53,18 @@ class SmartspaceAddToHomePreference(context: Context, attrs: AttributeSet?) :
         override fun init(launcher: Launcher, alreadyOnHome: Boolean): Boolean {
             WidgetsFullSheet.show(launcher, true)
             return true
+        }
+    }
+
+    companion object {
+
+        fun hasSmartspaceWidget(context: Context): Boolean? {
+            return LauncherAppState.getInstance(context).model.loadedWidgets?.any { it.isCustomWidget }
+        }
+
+        @JvmStatic
+        fun showSmartspaceInPreview(context: Context): Boolean {
+            return hasSmartspaceWidget(context) != false
         }
     }
 }
