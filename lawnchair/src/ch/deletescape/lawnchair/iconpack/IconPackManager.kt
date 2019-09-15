@@ -178,7 +178,6 @@ class IconPackManager(private val context: Context) {
     }
 
     fun onPacksUpdated() {
-        context.lawnchairPrefs.reloadIcons()
         runOnMainThread { listeners.forEach { it.invoke() } }
     }
 

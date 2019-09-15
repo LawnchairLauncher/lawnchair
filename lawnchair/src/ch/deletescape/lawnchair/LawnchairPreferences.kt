@@ -93,7 +93,6 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val resetAllApps = { onChangeCallback?.resetAllApps() ?: Unit }
     private val updateSmartspace = { updateSmartspace() }
     private val updateWeatherData = { onChangeCallback?.updateWeatherData() ?: Unit }
-    private val reloadIcons = { reloadIcons() }
     private val reloadIconPacks = { IconPackManager.getInstance(context).packList.reloadPacks() }
     private val reloadDockStyle = {
         // TODO: implement this
@@ -121,12 +120,12 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         override fun unflattenValue(value: String) = value
     }
     var launcherTheme by StringIntPref("pref_launcherTheme", 1) { ThemeManager.getInstance(context).updateTheme() }
-    val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", lawnchairConfig.enableLegacyTreatment, reloadIcons)
-    val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds", lawnchairConfig.enableColorizedLegacyTreatment, reloadIcons)
-    val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", lawnchairConfig.enableWhiteOnlyTreatment, reloadIcons)
+    val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", lawnchairConfig.enableLegacyTreatment)
+    val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds", lawnchairConfig.enableColorizedLegacyTreatment)
+    val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", lawnchairConfig.enableWhiteOnlyTreatment)
     val hideStatusBar by BooleanPref("pref_hideStatusBar", lawnchairConfig.hideStatusBar, doNothing)
-    val iconPackMasking by BooleanPref("pref_iconPackMasking", true, reloadIcons)
-    val adaptifyIconPacks by BooleanPref("pref_generateAdaptiveForIconPack", false, reloadIcons)
+    val iconPackMasking by BooleanPref("pref_iconPackMasking", true)
+    val adaptifyIconPacks by BooleanPref("pref_generateAdaptiveForIconPack", false)
     var showVoiceSearchIcon by BooleanPref("opa_enabled")
     var showAssistantIcon by BooleanPref("opa_assistant")
     val displayNotificationCount by BooleanPref("pref_displayNotificationCount", false, reloadAll)
@@ -362,13 +361,6 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     private fun updateSmartspace() {
         onChangeCallback?.updateSmartspace()
-    }
-
-    fun reloadIcons() {
-        LauncherAppState.getInstance(context).reloadIconCache()
-        runOnMainThread {
-            onChangeCallback?.recreate()
-        }
     }
 
     fun addOnPreferenceChangeListener(listener: OnPreferenceChangeListener, vararg keys: String) {
@@ -976,9 +968,17 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         const val CURRENT_VERSION = 200
         const val VERSION_KEY = "config_version"
 
-        @JvmStatic
-        val DEVICE_PROFILE_PREFS = arrayOf(
+        private val ICON_CUSTOMIZATIONS_PREFS = arrayOf(
                 "pref_iconShape",
+                "pref_iconPacks",
+                "pref_enableLegacyTreatment",
+                "pref_colorizeGeneratedBackgrounds",
+                "pref_enableWhiteOnlyTreatment",
+                "pref_iconPackMasking",
+                "pref_generateAdaptiveForIconPack"
+                                      )
+
+        private val DEVICE_PROFILE_PREFS = ICON_CUSTOMIZATIONS_PREFS + arrayOf(
                 "pref_iconTextScaleSB",
                 "pref_iconSize",
                 "pref_hotseatIconSize",
