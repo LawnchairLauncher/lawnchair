@@ -38,6 +38,7 @@ import ch.deletescape.lawnchair.sesame.Sesame
 import ch.deletescape.lawnchair.settings.GridSize
 import ch.deletescape.lawnchair.settings.GridSize2D
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
+import ch.deletescape.lawnchair.settings.ui.preview.CustomGridProvider
 import ch.deletescape.lawnchair.smartspace.*
 import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.util.Temperature
@@ -132,8 +133,6 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     // Desktop
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
-    private var gridSizeDelegate = ResettableLazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), restart) }
-    val gridSize by gridSizeDelegate
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
     val showTopShadow by BooleanPref("pref_showTopShadow", true, recreate) // TODO: update the scrim instead of doing this
     var autoAddInstalled by BooleanPref("pref_add_icon_to_home", true, doNothing)
@@ -978,14 +977,15 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
                 "pref_generateAdaptiveForIconPack"
                                       )
 
-        private val DEVICE_PROFILE_PREFS = ICON_CUSTOMIZATIONS_PREFS + arrayOf(
+        private val DEVICE_PROFILE_PREFS = ICON_CUSTOMIZATIONS_PREFS + CustomGridProvider.GRID_CUSTOMIZATIONS_PREFS +
+                                           arrayOf(
                 "pref_iconTextScaleSB",
                 "pref_iconSize",
                 "pref_hotseatIconSize",
                 "pref_allAppsIconSize",
                 "pref_allAppsIconTextScale",
                 "pref_numHotseatIcons"
-                                          )
+                                                  )
 
         fun getInstance(context: Context): LawnchairPreferences {
             if (INSTANCE == null) {
@@ -1013,7 +1013,6 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
             INSTANCE?.apply {
                 onChangeListeners.clear()
                 onChangeCallback = null
-                gridSizeDelegate.resetValue()
                 dockGridSizeDelegate.resetValue()
                 drawerGridSizeDelegate.resetValue()
                 predictionGridSizeDelegate.resetValue()

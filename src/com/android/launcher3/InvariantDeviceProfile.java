@@ -43,8 +43,10 @@ import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.adaptive.IconShapeManager;
+import ch.deletescape.lawnchair.settings.ui.preview.CustomGridProvider;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.IntArray;
@@ -180,6 +182,13 @@ public class InvariantDeviceProfile {
     }
 
     /**
+     * Used to preview grid customizations
+     */
+    public InvariantDeviceProfile(Context context, GridCustomizer customizer) {
+        initGrid(context, null, customizer);
+    }
+
+    /**
      * Retrieve system defined or RRO overriden icon shape.
      */
     private static String getIconShapePath(Context context) {
@@ -195,6 +204,10 @@ public class InvariantDeviceProfile {
     }
 
     private String initGrid(Context context, String gridName) {
+        return initGrid(context, gridName, null);
+    }
+
+    private String initGrid(Context context, String gridName, @Nullable GridCustomizer customizer) {
         LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
@@ -216,19 +229,22 @@ public class InvariantDeviceProfile {
         DisplayOption interpolatedDisplayOption =
                 invDistWeightedInterpolate(minWidthDps,  minHeightDps, allOptions);
 
-        GridOption closestProfile = allOptions.get(0).grid;
-        numRows = closestProfile.numRows;
-        numRowsOriginal = numRows;
-        numColumns = closestProfile.numColumns;
-        numColumnsOriginal = numColumns;
-        numColsDrawer = numColumns;
-        numColsDrawerOriginal = numColumns;
-        numPredictions = numPredictionsOriginal = numColumns;
-        numHotseatIconsOriginal = closestProfile.numHotseatIcons;
-        numHotseatIcons = prefs.getNumDockIcons();
-        if (numHotseatIcons <= 0) {
-            numHotseatIcons = numHotseatIconsOriginal;
+        GridOption originalProfile = allOptions.get(0).grid;
+        if (customizer == null) {
+            customizer = CustomGridProvider.Companion.getInstance(context);
         }
+        GridOverrides overrides = new GridOverrides(originalProfile);
+        customizer.customizeGrid(overrides);
+        GridOption closestProfile = new GridOption(overrides);
+        numRows = closestProfile.numRows;
+        numRowsOriginal = originalProfile.numRows;
+        numColumns = closestProfile.numColumns;
+        numColumnsOriginal = originalProfile.numColumns;
+        numColsDrawer = numColumns;
+        numColsDrawerOriginal = originalProfile.numColumns;
+        numPredictions = numPredictionsOriginal = numColumns;
+        numHotseatIcons = closestProfile.numHotseatIcons;
+        numHotseatIconsOriginal = originalProfile.numHotseatIcons;
         defaultLayoutId = closestProfile.defaultLayoutId;
         demoModeLayoutId = closestProfile.demoModeLayoutId;
         numFolderRows = closestProfile.numFolderRows;
@@ -569,6 +585,42 @@ public class InvariantDeviceProfile {
             extraAttrs = Themes.createValueMap(context, attrs,
                     IntArray.wrap(R.styleable.GridDisplayOption));
         }
+
+        private GridOption(GridOverrides override) {
+            GridOption option = override.originalGrid;
+
+            name = option.name;
+            numRows = override.numRows;
+            numColumns = override.numColumns;
+
+            defaultLayoutId = option.defaultLayoutId;
+            demoModeLayoutId = option.demoModeLayoutId;
+            numHotseatIcons = option.numHotseatIcons;
+            numFolderRows = option.numFolderRows;
+            numFolderColumns = option.numFolderColumns;
+
+            extraAttrs = option.extraAttrs;
+        }
+    }
+
+    public static final class GridOverrides {
+
+        public int numRows;
+        public int numColumns;
+
+        private GridOption originalGrid;
+
+        private GridOverrides(GridOption option) {
+            numRows = option.numRows;
+            numColumns = option.numColumns;
+
+            originalGrid = option;
+        }
+    }
+
+    public interface GridCustomizer {
+
+        void customizeGrid(@NonNull GridOverrides grid);
     }
 
     private static final class DisplayOption {

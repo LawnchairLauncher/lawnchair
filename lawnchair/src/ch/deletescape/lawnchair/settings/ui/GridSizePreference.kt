@@ -20,27 +20,29 @@ package ch.deletescape.lawnchair.settings.ui
 import android.content.Context
 import android.util.AttributeSet
 import androidx.preference.DialogPreference
+import ch.deletescape.lawnchair.settings.ui.preview.CustomGridProvider
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
 class GridSizePreference(context: Context, attrs: AttributeSet?) : DialogPreference(context, attrs) {
 
-    val gridSize = Utilities.getLawnchairPrefs(context).gridSize
-    val defaultSize by lazy { Pair(gridSize.numRowsOriginal, gridSize.numColumnsOriginal) }
+    private val customGrid = CustomGridProvider.getInstance(context)
+    private val idp = LauncherAppState.getIDP(context)
 
     init {
         updateSummary()
     }
 
     fun getSize(): Pair<Int, Int> {
-        val rows = gridSize.numRows
-        val columns = gridSize.numColumns
+        val rows = getValue(customGrid.numRows, idp.numRowsOriginal)
+        val columns = getValue(customGrid.numColumns, idp.numColumnsOriginal)
         return Pair(rows, columns)
     }
 
     fun setSize(rows: Int, columns: Int) {
-        gridSize.numRows = rows
-        gridSize.numColumns = columns
+        customGrid.numRows = rows
+        customGrid.numColumns = columns
         updateSummary()
     }
 
@@ -50,4 +52,8 @@ class GridSizePreference(context: Context, attrs: AttributeSet?) : DialogPrefere
     }
 
     override fun getDialogLayoutResource() = R.layout.pref_dialog_grid_size
+
+    private fun getValue(value: Int, default: Int): Int {
+        return if (value > 0) value else default
+    }
 }
