@@ -120,7 +120,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
         override fun unflattenValue(value: String) = value
     }
-    var launcherTheme by StringIntPref("pref_launcherTheme", 1) { ThemeManager.getInstance(context).updateTheme() }
+    var launcherTheme by StringIntPref("pref_launcherTheme", ThemeManager.getDefaultTheme()) { ThemeManager.getInstance(context).updateTheme() }
     val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", lawnchairConfig.enableLegacyTreatment)
     val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds", lawnchairConfig.enableColorizedLegacyTreatment)
     val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", lawnchairConfig.enableWhiteOnlyTreatment)

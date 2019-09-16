@@ -26,6 +26,7 @@ import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.util.TypedValue;
 
+import ch.deletescape.lawnchair.theme.ThemeOverride.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
@@ -38,25 +39,7 @@ import ch.deletescape.lawnchair.colors.ColorEngine;
 public class Themes {
 
     public static int getActivityThemeRes(Context context) {
-        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(context);
-        boolean darkTheme;
-        if (Utilities.ATLEAST_Q) {
-            Configuration configuration = context.getResources().getConfiguration();
-            int nightMode = configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK;
-            darkTheme = nightMode == Configuration.UI_MODE_NIGHT_YES;
-        } else {
-            darkTheme = wallpaperColorInfo.isDark();
-        }
-
-        if (darkTheme) {
-            return wallpaperColorInfo.supportsDarkText() ?
-                    R.style.AppTheme_Dark_DarkText : wallpaperColorInfo.isMainColorDark() ?
-                            R.style.AppTheme_Dark_DarkMainColor : R.style.AppTheme_Dark;
-        } else {
-            return wallpaperColorInfo.supportsDarkText() ?
-                    R.style.AppTheme_DarkText : wallpaperColorInfo.isMainColorDark() ?
-                            R.style.AppTheme_DarkMainColor : R.style.AppTheme;
-        }
+        return new Launcher().getTheme(context);
     }
 
     public static String getDefaultBodyFont(Context context) {

@@ -31,6 +31,7 @@ import ch.deletescape.lawnchair.util.extensions.d
 import ch.deletescape.lawnchair.util.hasFlag
 import ch.deletescape.lawnchair.util.removeFlag
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.uioverrides.WallpaperColorInfo
 
 /*
@@ -171,10 +172,13 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, 
             else -> false
         }
 
+        val darkMainColor = wallpaperColorInfo.isMainColorDark
+
         var newFlags = 0
         if (supportsDarkText) newFlags = newFlags or THEME_DARK_TEXT
         if (isDark) newFlags = newFlags or THEME_DARK
         if (isBlack) newFlags = newFlags or THEME_USE_BLACK
+        if (darkMainColor) newFlags = newFlags or THEME_DARK_MAIN_COLOR
         if (newFlags == themeFlags) return
         themeFlags = newFlags
         reloadActivities()
@@ -231,12 +235,13 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, 
 
     companion object : SingletonHolder<ThemeManager, Context>(ensureOnMainThread(useApplicationContext(::ThemeManager))) {
 
-        const val THEME_FOLLOW_WALLPAPER = 1         // 000001 = 1
-        const val THEME_DARK_TEXT = 1 shl 1          // 000010 = 2
-        const val THEME_DARK = 1 shl 2               // 000100 = 4
-        const val THEME_USE_BLACK = 1 shl 3          // 001000 = 8
-        const val THEME_FOLLOW_NIGHT_MODE = 1 shl 4  // 010000 = 16
-        const val THEME_FOLLOW_DAYLIGHT = 1 shl 5    // 100000 = 32
+        const val THEME_FOLLOW_WALLPAPER = 1         // 0000001 = 1
+        const val THEME_DARK_TEXT = 1 shl 1          // 0000010 = 2
+        const val THEME_DARK = 1 shl 2               // 0000100 = 4
+        const val THEME_USE_BLACK = 1 shl 3          // 0001000 = 8
+        const val THEME_FOLLOW_NIGHT_MODE = 1 shl 4  // 0010000 = 16
+        const val THEME_FOLLOW_DAYLIGHT = 1 shl 5    // 0100000 = 32
+        const val THEME_DARK_MAIN_COLOR = 1 shl 6    // 1000000 = 64
 
         const val THEME_AUTO_MASK = THEME_FOLLOW_WALLPAPER or THEME_FOLLOW_NIGHT_MODE or THEME_FOLLOW_DAYLIGHT
         const val THEME_DARK_MASK = THEME_DARK or THEME_AUTO_MASK
@@ -244,5 +249,14 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, 
         fun isDarkText(flags: Int) = (flags and THEME_DARK_TEXT) != 0
         fun isDark(flags: Int) = (flags and THEME_DARK) != 0
         fun isBlack(flags: Int) = (flags and THEME_USE_BLACK) != 0
+        fun isDarkMainColor(flags: Int) = (flags and THEME_DARK_MAIN_COLOR) != 0
+
+        fun getDefaultTheme(): Int {
+            return if (Utilities.ATLEAST_Q) {
+                THEME_FOLLOW_NIGHT_MODE
+            } else {
+                THEME_FOLLOW_WALLPAPER
+            }
+        }
     }
 }
