@@ -26,6 +26,7 @@ import android.util.DisplayMetrics;
 import android.view.Surface;
 import android.view.WindowManager;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.IconShape;
@@ -133,9 +134,13 @@ public class DeviceProfile {
     // Notification dots
     public DotRenderer mDotRenderer;
 
+    private LawnchairPreferences prefs;
+
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
             Point minSize, Point maxSize,
             int width, int height, boolean isLandscape, boolean isMultiWindowMode) {
+
+        prefs = Utilities.getLawnchairPrefs(context);
 
         this.inv = inv;
         this.isLandscape = isLandscape;
@@ -334,8 +339,10 @@ public class DeviceProfile {
         invIconSizePx = isVerticalLayout ? inv.landscapeAllAppsIconSize : inv.allAppsIconSize;
         allAppsIconSizePx = Math.max(1, (int) (ResourceUtils.pxFromDp(invIconSizePx, dm) * scale));
         allAppsIconTextSizePx = (int) (Utilities.pxFromSp(inv.allAppsIconTextSize, dm) * scale);
-        allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
-        allAppsCellHeightPx = getCellSize().y;
+        allAppsIconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
+        int minAllAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx
+                + Utilities.calculateTextHeight(allAppsIconTextSizePx);
+        allAppsCellHeightPx = Math.max(minAllAppsCellHeightPx, (int) (getCellSizeOriginal().y * prefs.getDrawerPaddingScale()));
 
         if (isVerticalLayout) {
             // Always hide the Workspace text with vertical bar layout.
@@ -432,6 +439,19 @@ public class DeviceProfile {
                 - cellLayoutPaddingLeftRightPx * 2, inv.numColumns);
         result.y = calculateCellHeight(availableHeightPx - padding.y
                 - cellLayoutBottomPaddingPx, inv.numRows);
+        return result;
+    }
+
+    // TODO: adapt this logic for the drawer to get actual row x col selection for drawer?
+    public Point getCellSizeOriginal() {
+        Point result = new Point();
+        // Since we are only concerned with the overall padding, layout direction does
+        // not matter.
+        Point padding = getTotalWorkspacePadding();
+        result.x = calculateCellWidth(availableWidthPx - padding.x
+                - cellLayoutPaddingLeftRightPx * 2, inv.numColumnsOriginal);
+        result.y = calculateCellHeight(availableHeightPx - padding.y
+                - cellLayoutBottomPaddingPx, inv.numRowsOriginal);
         return result;
     }
 

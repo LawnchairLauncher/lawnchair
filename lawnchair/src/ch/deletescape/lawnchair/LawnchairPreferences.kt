@@ -973,8 +973,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
                 "pref_colorizeGeneratedBackgrounds",
                 "pref_enableWhiteOnlyTreatment",
                 "pref_iconPackMasking",
-                "pref_generateAdaptiveForIconPack"
-                                      )
+                "pref_generateAdaptiveForIconPack",
+                "pref_allAppsPaddingScale")
 
         private val DEVICE_PROFILE_PREFS = ICON_CUSTOMIZATIONS_PREFS + CustomGridProvider.GRID_CUSTOMIZATIONS_PREFS +
                                            arrayOf(
@@ -982,9 +982,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
                 "pref_iconSize",
                 "pref_hotseatIconSize",
                 "pref_allAppsIconSize",
-                "pref_allAppsIconTextScale",
-                "pref_numHotseatIcons"
-                                                  )
+                "pref_allAppsIconTextScale")
 
         fun getInstance(context: Context): LawnchairPreferences {
             if (INSTANCE == null) {
