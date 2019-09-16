@@ -77,6 +77,7 @@ public class AdaptiveIconGenerator {
     private float aHeight;
     private int width;
     private float aWidth;
+    private Drawable extractee;
     private Drawable result;
 
     private AdaptiveIconCompat tmp;
@@ -93,7 +94,7 @@ public class AdaptiveIconGenerator {
 
     private void loop() {
         if (Utilities.ATLEAST_OREO && shouldWrap) {
-            Drawable extractee = icon;
+            extractee = icon;
             if (roundIcon != null && roundIcon instanceof AdaptiveIconCompat) {
                 extractee = roundIcon;
             }
@@ -283,26 +284,27 @@ public class AdaptiveIconGenerator {
     private Drawable genResult() {
         if (!Utilities.ATLEAST_OREO || !shouldWrap) {
             if (roundIcon != null) {
-                if (icon instanceof AdaptiveIconCompat) {
+                if (icon instanceof AdaptiveIconCompat &&
+                        !(roundIcon instanceof AdaptiveIconCompat)) {
                     return icon;
                 }
                 return roundIcon;
             }
             return icon;
         }
-        if (icon instanceof AdaptiveIconCompat) {
+        if (extractee instanceof AdaptiveIconCompat) {
             if (!treatWhite || !isBackgroundWhite) {
-                return icon;
+                return extractee;
             }
-            if (((AdaptiveIconCompat) icon).getBackground() instanceof ColorDrawable) {
-                AdaptiveIconCompat mutIcon = (AdaptiveIconCompat) icon.mutate();
+            if (((AdaptiveIconCompat) extractee).getBackground() instanceof ColorDrawable) {
+                AdaptiveIconCompat mutIcon = (AdaptiveIconCompat) extractee.mutate();
                 ((ColorDrawable) mutIcon.getBackground()).setColor(backgroundColor);
                 return mutIcon;
             }
-            return new AdaptiveIconCompat(new ColorDrawable(backgroundColor), ((AdaptiveIconCompat) icon).getForeground());
+            return new AdaptiveIconCompat(new ColorDrawable(backgroundColor), ((AdaptiveIconCompat) extractee).getForeground());
         }
         initTmpIfNeeded();
-        ((FixedScaleDrawable) tmp.getForeground()).setDrawable(icon);
+        ((FixedScaleDrawable) tmp.getForeground()).setDrawable(extractee);
         if (matchesMaskShape || isFullBleed || noMixinNeeded) {
             float scale;
             if (noMixinNeeded) {
