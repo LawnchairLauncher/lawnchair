@@ -77,7 +77,6 @@ public class AdaptiveIconGenerator {
     private float aHeight;
     private int width;
     private float aWidth;
-    private Drawable extractee;
     private Drawable result;
 
     private AdaptiveIconCompat tmp;
@@ -94,10 +93,10 @@ public class AdaptiveIconGenerator {
 
     private void loop() {
         if (Utilities.ATLEAST_OREO && shouldWrap) {
-            extractee = icon;
             if (roundIcon != null && roundIcon instanceof AdaptiveIconCompat) {
-                extractee = roundIcon;
+                icon = roundIcon;
             }
+            Drawable extractee = icon;
             if (extractee instanceof AdaptiveIconCompat) {
                 if (!treatWhite) {
                     onExitLoop();
@@ -292,19 +291,19 @@ public class AdaptiveIconGenerator {
             }
             return icon;
         }
-        if (extractee instanceof AdaptiveIconCompat) {
+        if (icon instanceof AdaptiveIconCompat) {
             if (!treatWhite || !isBackgroundWhite) {
-                return extractee;
+                return icon;
             }
-            if (((AdaptiveIconCompat) extractee).getBackground() instanceof ColorDrawable) {
-                AdaptiveIconCompat mutIcon = (AdaptiveIconCompat) extractee.mutate();
+            if (((AdaptiveIconCompat) icon).getBackground() instanceof ColorDrawable) {
+                AdaptiveIconCompat mutIcon = (AdaptiveIconCompat) icon.mutate();
                 ((ColorDrawable) mutIcon.getBackground()).setColor(backgroundColor);
                 return mutIcon;
             }
-            return new AdaptiveIconCompat(new ColorDrawable(backgroundColor), ((AdaptiveIconCompat) extractee).getForeground());
+            return new AdaptiveIconCompat(new ColorDrawable(backgroundColor), ((AdaptiveIconCompat) icon).getForeground());
         }
         initTmpIfNeeded();
-        ((FixedScaleDrawable) tmp.getForeground()).setDrawable(extractee);
+        ((FixedScaleDrawable) tmp.getForeground()).setDrawable(icon);
         if (matchesMaskShape || isFullBleed || noMixinNeeded) {
             float scale;
             if (noMixinNeeded) {
