@@ -15,15 +15,12 @@
  */
 package com.android.launcher3.views;
 
-import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_FLAVOR;
 import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_OFFSET;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -32,6 +29,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.Toast;
 import androidx.annotation.VisibleForTesting;
+import ch.deletescape.lawnchair.util.WallpaperActivityInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
@@ -41,7 +39,6 @@ import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
-import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.widget.WidgetsFullSheet;
 import java.util.ArrayList;
 import java.util.List;
@@ -160,9 +157,11 @@ public class OptionsPopupView extends ArrowPopup
         RectF target = new RectF(x - halfSize, y - halfSize, x + halfSize, y + halfSize);
 
         ArrayList<OptionItem> options = new ArrayList<>();
-        int resString = Utilities.existsStyleWallpapers(launcher) ?
+        WallpaperActivityInfo info = WallpaperActivityInfo.resolve(launcher);
+        boolean isStylesWallpapers = info != null && info.isStylesWallpapers();
+        int resString = isStylesWallpapers ?
                 R.string.styles_wallpaper_button_text : R.string.wallpaper_button_text;
-        int resDrawable = Utilities.existsStyleWallpapers(launcher) ?
+        int resDrawable = isStylesWallpapers ?
                 R.drawable.ic_palette : R.drawable.ic_wallpaper;
         options.add(new OptionItem(resString, resDrawable,
                 ControlType.WALLPAPER_BUTTON, OptionsPopupView::startWallpaperPicker));
@@ -220,16 +219,9 @@ public class OptionsPopupView extends ArrowPopup
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .putExtra(EXTRA_WALLPAPER_OFFSET,
                         launcher.getWorkspace().getWallpaperOffsetForCenterPage());
-        if (!Utilities.existsStyleWallpapers(launcher)) {
-            intent.putExtra(EXTRA_WALLPAPER_FLAVOR, "wallpaper_only");
-        } else {
-            intent.putExtra(EXTRA_WALLPAPER_FLAVOR, "focus_wallpaper");
-        }
-        String pickerPackage = launcher.getString(R.string.wallpaper_picker_package);
-        PackageManager pm = v.getContext().getPackageManager();
-        if (!TextUtils.isEmpty(pickerPackage) && PackageManagerHelper
-                .isAppEnabled(pm, pickerPackage, 0)) {
-            intent.setPackage(pickerPackage);
+        WallpaperActivityInfo info = WallpaperActivityInfo.resolve(launcher);
+        if (info != null) {
+            info.addToIntent(intent);
         }
         return launcher.startActivitySafely(v, intent, null, null);
     }
