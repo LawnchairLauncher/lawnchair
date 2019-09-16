@@ -35,7 +35,7 @@ abstract class SingleDimensionGridSizePreference(context: Context, attrs: Attrib
     }
 
     fun setSize(rows: Int) {
-        gridSize.numRows = rows
+        gridSize.numRows = if (rows > 0) rows else defaultSize
         updateSummary()
     }
 
