@@ -40,6 +40,10 @@ class CustomGridProvider(private val context: Context) : InvariantDeviceProfile.
     // Dock
     var numHotseatIcons by prefs.IntPref(KEY_NUM_HOTSEAT_ICONS, -1)
 
+    // Drawer
+    var numColsDrawer by prefs.IntPref(KEY_NUM_COLS_DRAWER, -1)
+    var numPredictions by prefs.IntPref(KEY_NUM_HOTSEAT_ICONS, -1)
+
     override fun customizeGrid(grid: InvariantDeviceProfile.GridOverrides) {
         // Desktop
         if (numRows > 0) {
@@ -52,6 +56,14 @@ class CustomGridProvider(private val context: Context) : InvariantDeviceProfile.
         // Dock
         if (numHotseatIcons > 0) {
             grid.numHotseatIcons = numHotseatIcons
+        }
+
+        // Drawer
+        if (numColsDrawer > 0) {
+            grid.numColsDrawer = numColsDrawer
+        }
+        if (numPredictions > 0) {
+            grid.numPredictions = numPredictions
         }
     }
 
@@ -71,10 +83,14 @@ class CustomGridProvider(private val context: Context) : InvariantDeviceProfile.
 
         private const val KEY_NUM_HOTSEAT_ICONS = "pref_numHotseatIcons"
 
+        private const val KEY_NUM_COLS_DRAWER = "pref_numColsDrawer"
+        private const val KEY_NUM_PREDICTIONS = "pref_numPredictions"
+
         val GRID_CUSTOMIZATIONS_PREFS = arrayOf(
                 KEY_NUM_ROWS,
                 KEY_NUM_COLUMNS,
-                KEY_NUM_HOTSEAT_ICONS
-                                                     )
+                KEY_NUM_HOTSEAT_ICONS,
+                KEY_NUM_COLS_DRAWER,
+                KEY_NUM_PREDICTIONS)
     }
 }

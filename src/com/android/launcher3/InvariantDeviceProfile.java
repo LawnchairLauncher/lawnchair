@@ -240,9 +240,10 @@ public class InvariantDeviceProfile {
         numRowsOriginal = originalProfile.numRows;
         numColumns = closestProfile.numColumns;
         numColumnsOriginal = originalProfile.numColumns;
-        numColsDrawer = numColumns;
-        numColsDrawerOriginal = originalProfile.numColumns;
-        numPredictions = numPredictionsOriginal = numColumns;
+        numColsDrawer = closestProfile.numColsDrawer;
+        numColsDrawerOriginal = originalProfile.numColsDrawer;
+        numPredictions = closestProfile.numPredictions;
+        numPredictionsOriginal = originalProfile.numPredictions;
         numHotseatIcons = closestProfile.numHotseatIcons;
         numHotseatIconsOriginal = originalProfile.numHotseatIcons;
         defaultLayoutId = closestProfile.defaultLayoutId;
@@ -552,6 +553,8 @@ public class InvariantDeviceProfile {
         public final String name;
         public final int numRows;
         public final int numColumns;
+        public final int numColsDrawer;
+        public final int numPredictions;
 
         private final int numFolderRows;
         private final int numFolderColumns;
@@ -569,6 +572,8 @@ public class InvariantDeviceProfile {
             name = a.getString(R.styleable.GridDisplayOption_name);
             numRows = a.getInt(R.styleable.GridDisplayOption_numRows, 0);
             numColumns = a.getInt(R.styleable.GridDisplayOption_numColumns, 0);
+            numColsDrawer = numColumns;
+            numPredictions = numColsDrawer;
 
             defaultLayoutId = a.getResourceId(
                     R.styleable.GridDisplayOption_defaultLayoutId, 0);
@@ -593,6 +598,8 @@ public class InvariantDeviceProfile {
             numRows = override.numRows;
             numColumns = override.numColumns;
             numHotseatIcons = override.numHotseatIcons;
+            numColsDrawer = override.numColsDrawer;
+            numPredictions = override.numPredictions;
 
             defaultLayoutId = option.defaultLayoutId;
             demoModeLayoutId = option.demoModeLayoutId;
@@ -608,6 +615,8 @@ public class InvariantDeviceProfile {
         public int numRows;
         public int numColumns;
         public int numHotseatIcons;
+        public int numColsDrawer;
+        public int numPredictions;
 
         private GridOption originalGrid;
 
@@ -615,6 +624,8 @@ public class InvariantDeviceProfile {
             numRows = option.numRows;
             numColumns = option.numColumns;
             numHotseatIcons = option.numHotseatIcons;
+            numColsDrawer = option.numColsDrawer;
+            numPredictions = option.numPredictions;
 
             originalGrid = option;
         }
