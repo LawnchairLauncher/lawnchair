@@ -40,15 +40,18 @@ import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.ItemInfoMatcher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Class for handling model updates.
@@ -262,9 +265,12 @@ public class ModelWriter {
     /**
      * Removes the specified items from the database
      */
-    public void deleteItemsFromDatabase(final Iterable<? extends ItemInfo> items) {
+    public void deleteItemsFromDatabase(final Collection<? extends ItemInfo> items) {
         ModelVerifier verifier = new ModelVerifier();
-
+        FileLog.d(TAG, "removing items from db " + items.stream().map(
+                (item) -> item.getTargetComponent() == null ? ""
+                        : item.getTargetComponent().getPackageName()).collect(
+                Collectors.joining(",")), new Exception());
         enqueueDeleteRunnable(() -> {
             for (ItemInfo item : items) {
                 final Uri uri = Favorites.getContentUri(item.id);
