@@ -130,6 +130,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     var showVoiceSearchIcon by BooleanPref("opa_enabled")
     var showAssistantIcon by BooleanPref("opa_assistant")
     val displayNotificationCount by BooleanPref("pref_displayNotificationCount", false, reloadAll)
+    val forceShapeless by BooleanPref("pref_forceShapeless", false)
 
     // Desktop
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
@@ -969,6 +970,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         private val ICON_CUSTOMIZATIONS_PREFS = arrayOf(
                 "pref_iconShape",
                 "pref_iconPacks",
+                "pref_forceShapeless",
                 "pref_enableLegacyTreatment",
                 "pref_colorizeGeneratedBackgrounds",
                 "pref_enableWhiteOnlyTreatment",

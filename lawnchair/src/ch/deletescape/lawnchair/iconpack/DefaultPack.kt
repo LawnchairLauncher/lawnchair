@@ -25,9 +25,12 @@ import android.content.pm.ShortcutInfo
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.text.TextUtils
 import ch.deletescape.lawnchair.adaptive.AdaptiveIconGenerator
 import ch.deletescape.lawnchair.getLauncherActivityInfo
+import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.util.overrideSdk
 import com.android.launcher3.*
 import com.android.launcher3.Utilities.makeComponentKey
 import com.android.launcher3.compat.LauncherAppsCompat
@@ -42,6 +45,7 @@ import java.io.IOException
 
 class DefaultPack(context: Context) : IconPack(context, "") {
 
+    private val prefs = context.lawnchairPrefs
     val dynamicClockDrawer by lazy { DynamicClock(context) }
     private val appMap = HashMap<ComponentKey, Entry>().apply {
         val launcherApps = LauncherAppsCompat.getInstance(context)
@@ -86,12 +90,14 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         val info = key.getLauncherActivityInfo(context) ?: return null
         val component = key.componentName
         var originalIcon = info.getIcon(iconDpi).apply { mutate() }
-        getLegacyIcon(component, iconDpi)?.let {
+        getLegacyIcon(component, iconDpi, prefs.forceShapeless)?.let {
             originalIcon = it.apply { mutate() }
         }
         var roundIcon: Drawable? = null
-        getRoundIcon(component, iconDpi)?.let {
-            roundIcon = it.apply { mutate() }
+        if (!prefs.forceShapeless) {
+            getRoundIcon(component, iconDpi)?.let {
+                roundIcon = it.apply { mutate() }
+            }
         }
         val gen = AdaptiveIconGenerator(context, originalIcon, roundIcon)
         return gen.result
@@ -115,13 +121,15 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         val component = key.componentName
         val packageName = component.packageName
         var originalIcon = info.getIcon(iconDpi).apply { mutate() }
-        getLegacyIcon(component, iconDpi)?.let {
+        getLegacyIcon(component, iconDpi, prefs.forceShapeless)?.let {
             originalIcon = it.apply { mutate() }
         }
         if (iconProvider == null || (DynamicIconProvider.GOOGLE_CALENDAR != packageName && DynamicClock.DESK_CLOCK != component)) {
             var roundIcon: Drawable? = null
-            getRoundIcon(component, iconDpi)?.let {
-                roundIcon = it.apply { mutate() }
+            if (!prefs.forceShapeless) {
+                getRoundIcon(component, iconDpi)?.let {
+                    roundIcon = it.apply { mutate() }
+                }
             }
             val gen = AdaptiveIconGenerator(context, originalIcon, roundIcon)
             return gen.result
@@ -205,7 +213,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         return null
     }
 
-    private fun getLegacyIcon(component: ComponentName, iconDpi: Int): Drawable? {
+    private fun getLegacyIcon(component: ComponentName, iconDpi: Int, loadShapeless: Boolean): Drawable? {
         var appIcon: String? = null
         val elementTags = HashMap<String, String>()
 
@@ -237,6 +245,9 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
             if (appIcon != null) {
                 val resId = Utilities.parseResourceIdentifier(resourcesForApplication, appIcon, component.packageName)
+                if (loadShapeless) {
+                    return resourcesForApplication.overrideSdk(Build.VERSION_CODES.M) { getDrawable(resId) }
+                }
                 return resourcesForApplication.getDrawableForDensity(resId, iconDpi)
             }
         } catch (ex: PackageManager.NameNotFoundException) {

@@ -33,8 +33,13 @@
             android:title="@string/reset_custom_icons" />
 
         <ch.deletescape.lawnchair.preferences.AdvancedPreferencesGroup
-            app:topic="@string/adaptive_icon"
-            app:controllerClass=".IconShapeOverrideController">
+            app:topic="@string/adaptive_icon">
+            <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+                android:key="pref_forceShapeless"
+                android:persistent="true"
+                android:summary="@string/pref_force_shapeless_summary"
+                android:title="@string/pref_force_shapeless_summary"/>
+
             <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
                 android:defaultValue="@bool/config_enable_legacy_treatment"
                 android:key="pref_enableLegacyTreatment"

@@ -740,4 +740,7 @@
     <string name="full_gesture_mode_title">Full gesture mode</string>
     <string name="action_open_drawer_or_recents">Open recents/app drawer</string>
     <string name="action_open_recents">Open recents</string>
+
+    <string name="pref_force_shapeless_summary">Attempts to load non-adaptive icons for all apps</string>
+    <string name="pref_force_shapeless">Force shapeless icons</string>
 </resources>
