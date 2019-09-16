@@ -17,7 +17,6 @@ package com.android.launcher3.icons.cache;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.PackageInfo;
 import android.os.LocaleList;
 import android.os.UserHandle;
 
@@ -41,12 +40,5 @@ public interface CachingLogic<T> {
     @Nullable
     default String getKeywords(T object, LocaleList localeList) {
         return null;
-    }
-
-    /**
-     * Returns the timestamp the entry was last updated in cache.
-     */
-    default long getLastUpdatedTime(T object, PackageInfo info) {
-        return info.lastUpdateTime;
     }
 }
