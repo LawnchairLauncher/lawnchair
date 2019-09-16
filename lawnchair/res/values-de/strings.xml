@@ -323,6 +323,8 @@
     <string name="app_actions_pref_title">Aktionen</string>
     <string name="app_actions_pref_title_in_search">Vorgeschlagene Aktionen</string>
     <string name="app_actions_pref_desc">Verknüpfungen zu häufig verwendeten Aktivitäten</string>
+    <string name="app_actions_reset_pref_title">Versteckte Aktionen zurücksetzen</string>
+    <string name="app_actions_reset_pref_summary">Aktionen, die vorher versteckt wurden, werden zurückgesetzt</string>
     <string name="change_default_home">Als Startbildschirm festlegen</string>
     <string name="recent_task_option_popup_window">Dialogfenster</string>
     <string name="feed_theme_pref_title">Hintergrundfarbe</string>
@@ -541,13 +543,18 @@
     <string name="pref_weather_icon_pack">Wetter-Icons</string>
     <string name="weather_icon_packs_not_supported">Deine aktuelle Wetter-Quelle unterstützt das leider nicht.</string>
     <string name="lawnchair_settings">Lawnchair-Einstellungen</string>
+    <string name="customnavbar_install">Tippen zur Installation einer angepassten Navigationsleiste</string>
+    <string name="customnavbar_back_hiding">Verstecke Zurück-Button</string>
+    <string name="customnavbar_back_hiding_desc">Zurück-Button wird ausgeblendet, wenn er nicht gebraucht wird</string>
     <string name="icon_shape_top_left">Oben links</string>
     <string name="icon_shape_top_right">Oben rechts</string>
     <string name="icon_shape_bottom_left">Unten links</string>
     <string name="icon_shape_bottom_right">Unten rechts</string>
     <string name="icon_shape_corner_round">Rund</string>
     <string name="icon_shape_corner_squircle">Squircle</string>
+    <string name="icon_shape_corner_cut">Ausschneiden</string>
     <string name="smartspace_add_to_home">Zum Startbildschirm hinzufügen</string>
+    <string name="pref_hide_statusbar_clock">Verstecke Statusleisten-Uhr</string>
     <string name="root_access_required">Root-Zugriff erforderlich</string>
     <string name="smartspace_setup_text">Zum Einrichten tippen</string>
 </resources>
