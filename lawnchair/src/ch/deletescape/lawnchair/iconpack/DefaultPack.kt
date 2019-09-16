@@ -27,9 +27,12 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.text.TextUtils
+import android.util.Log
 import ch.deletescape.lawnchair.adaptive.AdaptiveIconGenerator
 import ch.deletescape.lawnchair.getLauncherActivityInfo
 import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.util.ApkAssets
+import ch.deletescape.lawnchair.util.extensions.e
 import ch.deletescape.lawnchair.util.overrideSdk
 import com.android.launcher3.*
 import com.android.launcher3.Utilities.makeComponentKey
@@ -42,6 +45,8 @@ import com.google.android.apps.nexuslauncher.clock.DynamicClock
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
+import java.lang.Exception
+import java.util.zip.ZipFile
 
 class DefaultPack(context: Context) : IconPack(context, "") {
 
@@ -172,9 +177,17 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
         try {
             val resourcesForApplication = context.packageManager.getResourcesForApplication(component.packageName)
-            val assets = resourcesForApplication.assets
+            val info = context.packageManager.getApplicationInfo(component.packageName, PackageManager.GET_SHARED_LIBRARY_FILES or PackageManager.GET_META_DATA)
 
-            val parseXml = assets.openXmlResourceParser("AndroidManifest.xml")
+            val parseXml = try {
+                // For apps which are installed as Split APKs the asset instance we can get via PM won't hold the right Manifest for us.
+                ApkAssets(info.publicSourceDir).openXml("AndroidManifest.xml")
+            } catch (ex: Exception) {
+                ex.e()
+                val assets = resourcesForApplication.assets
+                assets.openXmlResourceParser("AndroidManifest.xml")
+            }
+
             while (parseXml.next() != XmlPullParser.END_DOCUMENT) {
                 if (parseXml.eventType == XmlPullParser.START_TAG) {
                     val name = parseXml.name
@@ -219,9 +232,17 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
         try {
             val resourcesForApplication = context.packageManager.getResourcesForApplication(component.packageName)
-            val assets = resourcesForApplication.assets
+            val info = context.packageManager.getApplicationInfo(component.packageName, PackageManager.GET_SHARED_LIBRARY_FILES or PackageManager.GET_META_DATA)
 
-            val parseXml = assets.openXmlResourceParser("AndroidManifest.xml")
+            val parseXml = try {
+                // For apps which are installed as Split APKs the asset instance we can get via PM won't hold the right Manifest for us.
+                ApkAssets(info.publicSourceDir).openXml("AndroidManifest.xml")
+            } catch (ex: Exception) {
+                ex.e()
+                val assets = resourcesForApplication.assets
+                assets.openXmlResourceParser("AndroidManifest.xml")
+            }
+
             while (parseXml.next() != XmlPullParser.END_DOCUMENT) {
                 if (parseXml.eventType == XmlPullParser.START_TAG) {
                     val name = parseXml.name
