@@ -44,8 +44,11 @@ class CustomGridProvider(private val context: Context) : InvariantDeviceProfile.
         }
     }
 
-    fun renderPreview(customizer: InvariantDeviceProfile.GridCustomizer): Future<Bitmap> {
-        val idp = InvariantDeviceProfile(context, customizer)
+    fun renderPreview(customizer: InvariantDeviceProfile.GridCustomizer? = null): Future<Bitmap> {
+        val idp = InvariantDeviceProfile(context) { grid ->
+            customizeGrid(grid)
+            customizer?.customizeGrid(grid)
+        }
         val executor = LooperExecutor(UiThreadHelper.getBackgroundLooper())
         return executor.submit(LauncherPreviewRenderer(context, idp))
     }

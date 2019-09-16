@@ -184,7 +184,7 @@ public class InvariantDeviceProfile {
     /**
      * Used to preview grid customizations
      */
-    public InvariantDeviceProfile(Context context, GridCustomizer customizer) {
+    public InvariantDeviceProfile(Context context, @NonNull GridCustomizer customizer) {
         initGrid(context, null, customizer);
     }
 

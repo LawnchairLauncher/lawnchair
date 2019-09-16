@@ -6,7 +6,13 @@
         android:key="prefCat_desktopLayout"
         android:title="@string/pref_category_layout">
 
+        <!-- TODO: remove this
         <ch.deletescape.lawnchair.settings.ui.GridSizePreference
+            android:key="pref_desktop_grid_size"
+            android:title="@string/grid_size" />
+        -->
+
+        <ch.deletescape.lawnchair.settings.ui.DesktopGridSizePreference
             android:key="pref_desktop_grid_size"
             android:title="@string/grid_size" />
 
