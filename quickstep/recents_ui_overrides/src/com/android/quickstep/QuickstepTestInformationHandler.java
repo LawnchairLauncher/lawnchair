@@ -16,7 +16,9 @@ import java.util.concurrent.ExecutionException;
 
 public class QuickstepTestInformationHandler extends TestInformationHandler {
 
+    private final Context mContext;
     public QuickstepTestInformationHandler(Context context) {
+        mContext = context;
     }
 
     @Override
@@ -54,7 +56,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
             case TestProtocol.REQUEST_OVERVIEW_LEFT_GESTURE_MARGIN: {
                 try {
                     final int leftMargin = MAIN_EXECUTOR.submit(() ->
-                            mLauncher.<RecentsView>getOverviewPanel().getLeftGestureMargin()).get();
+                            getRecentsView().getLeftGestureMargin()).get();
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, leftMargin);
                 } catch (ExecutionException e) {
                     e.printStackTrace();
@@ -67,8 +69,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
             case TestProtocol.REQUEST_OVERVIEW_RIGHT_GESTURE_MARGIN: {
                 try {
                     final int rightMargin = MAIN_EXECUTOR.submit(() ->
-                            mLauncher.<RecentsView>getOverviewPanel().getRightGestureMargin()).
-                            get();
+                            getRecentsView().getRightGestureMargin()).get();
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, rightMargin);
                 } catch (ExecutionException e) {
                     e.printStackTrace();
@@ -80,5 +81,14 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
         }
 
         return super.call(method);
+    }
+
+    private RecentsView getRecentsView() {
+        OverviewComponentObserver observer = new OverviewComponentObserver(mContext);
+        try {
+            return observer.getActivityControlHelper().getCreatedActivity().getOverviewPanel();
+        } finally {
+            observer.onDestroy();
+        }
     }
 }

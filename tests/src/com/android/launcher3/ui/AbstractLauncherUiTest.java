@@ -345,14 +345,14 @@ public abstract class AbstractLauncherUiTest {
         }
     }
 
-    protected void startAppFast(String packageName) {
+    public static void startAppFast(String packageName) {
         startIntent(
                 getInstrumentation().getContext().getPackageManager().getLaunchIntentForPackage(
                         packageName),
                 By.pkg(packageName).depth(0));
     }
 
-    protected void startTestActivity(int activityNumber) {
+    public static void startTestActivity(int activityNumber) {
         final String packageName = getAppPackageName();
         final Intent intent = getInstrumentation().getContext().getPackageManager().
                 getLaunchIntentForPackage(packageName);
@@ -361,12 +361,13 @@ public abstract class AbstractLauncherUiTest {
         startIntent(intent, By.pkg(packageName).text("TestActivity" + activityNumber));
     }
 
-    private void startIntent(Intent intent, BySelector selector) {
+    private static void startIntent(Intent intent, BySelector selector) {
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         getInstrumentation().getTargetContext().startActivity(intent);
         assertTrue("App didn't start: " + selector,
-                mDevice.wait(Until.hasObject(selector), DEFAULT_UI_TIMEOUT));
+                UiDevice.getInstance(getInstrumentation())
+                        .wait(Until.hasObject(selector), DEFAULT_UI_TIMEOUT));
     }
 
     public static ActivityInfo resolveSystemAppInfo(String category) {

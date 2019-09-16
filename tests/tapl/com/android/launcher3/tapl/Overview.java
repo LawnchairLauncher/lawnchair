@@ -67,4 +67,13 @@ public final class Overview extends BaseOverview {
             }
         }
     }
+
+    @Override
+    public void dismissAllTasks() {
+        super.dismissAllTasks();
+        try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                "dismissed all tasks")) {
+            new Workspace(mLauncher);
+        }
+    }
 }

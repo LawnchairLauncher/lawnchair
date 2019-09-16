@@ -725,7 +725,7 @@ public final class LauncherInstrumentation {
 
     @NonNull
     UiObject2 waitForFallbackLauncherObject(String resName) {
-        return waitForObjectBySelector(getFallbackLauncherObjectSelector(resName));
+        return waitForObjectBySelector(getOverviewObjectSelector(resName));
     }
 
     private UiObject2 waitForObjectBySelector(BySelector selector) {
@@ -742,7 +742,7 @@ public final class LauncherInstrumentation {
         return By.res(getLauncherPackageName(), resName);
     }
 
-    BySelector getFallbackLauncherObjectSelector(String resName) {
+    BySelector getOverviewObjectSelector(String resName) {
         return By.res(getOverviewPackageName(), resName);
     }
 
