@@ -15,14 +15,10 @@ MAPPINGS_OUT_DIR=$OUT_DIR/mappings
 mkdir -p $APKS_OUT_DIR
 mkdir -p $MAPPINGS_OUT_DIR
 
-echo "Building for Pie target"
-bash ./gradlew $BUILD_COMMAND_PIE
+echo "Building for both targets"
+bash ./gradlew $BUILD_COMMAND_PIE $BUILD_COMMAND_TEN
 
-mv build/outputs/apk/*/*/*.apk $APKS_OUT_DIR/Lawnchair-pie.apk
-mv build/outputs/mapping/*/*/mapping.txt $MAPPINGS_OUT_DIR/mapping-pie.txt
-
-echo "Building for 10 target"
-bash ./gradlew $BUILD_COMMAND_TEN
-
-mv build/outputs/apk/*/*/*.apk $APKS_OUT_DIR/Lawnchair-10.apk
-mv build/outputs/mapping/*/*/mapping.txt $MAPPINGS_OUT_DIR/mapping-ten.txt
+mv build/outputs/apk/*/*/*pie*.apk $APKS_OUT_DIR/Lawnchair-pie.apk
+mv build/outputs/apk/*/*/*ten*.apk $APKS_OUT_DIR/Lawnchair-10.apk
+# TODO: copy the mapping file once we enable ProGuard
+#mv build/outputs/mapping/*/*/mapping.txt $MAPPINGS_OUT_DIR/mapping-pie.txt
