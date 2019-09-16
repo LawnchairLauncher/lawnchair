@@ -40,6 +40,7 @@ public class MainThreadInitializedObject<T> {
         if (mValue == null) {
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 mValue = mProvider.get(context.getApplicationContext());
+                onPostInit(context);
             } else {
                 try {
                     return new MainThreadExecutor().submit(() -> get(context)).get();
@@ -50,6 +51,8 @@ public class MainThreadInitializedObject<T> {
         }
         return mValue;
     }
+
+    protected void onPostInit(Context context) { }
 
     public T getNoCreate() {
         return mValue;

@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.util.Log;
+import ch.deletescape.lawnchair.LawnchairAppKt;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
@@ -43,7 +44,13 @@ public class LauncherAppState {
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     private static final MainThreadInitializedObject<LauncherAppState> INSTANCE =
-            new MainThreadInitializedObject<>((c) -> new LauncherAppState(c));
+            new MainThreadInitializedObject<LauncherAppState>(LauncherAppState::new) {
+                @Override
+                protected void onPostInit(Context context) {
+                    super.onPostInit(context);
+                    LawnchairAppKt.getLawnchairApp(context).onLauncherAppStateCreated();
+                }
+            };
 
     private final Context mContext;
     private final LauncherModel mModel;
