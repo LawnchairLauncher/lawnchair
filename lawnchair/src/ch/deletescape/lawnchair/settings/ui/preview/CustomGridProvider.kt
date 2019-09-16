@@ -32,15 +32,26 @@ import java.util.concurrent.Future
 class CustomGridProvider(private val context: Context) : InvariantDeviceProfile.GridCustomizer {
 
     private val prefs = context.lawnchairPrefs
+
+    // Desktop
     var numRows by prefs.IntPref(KEY_NUM_ROWS, -1)
     var numColumns by prefs.IntPref(KEY_NUM_COLUMNS, -1)
 
+    // Dock
+    var numHotseatIcons by prefs.IntPref(KEY_NUM_HOTSEAT_ICONS, -1)
+
     override fun customizeGrid(grid: InvariantDeviceProfile.GridOverrides) {
+        // Desktop
         if (numRows > 0) {
             grid.numRows = numRows
         }
         if (numColumns > 0) {
             grid.numColumns = numColumns
+        }
+
+        // Dock
+        if (numHotseatIcons > 0) {
+            grid.numHotseatIcons = numHotseatIcons
         }
     }
 
@@ -58,9 +69,12 @@ class CustomGridProvider(private val context: Context) : InvariantDeviceProfile.
         private const val KEY_NUM_ROWS = "pref_numRows"
         private const val KEY_NUM_COLUMNS = "pref_numColumns"
 
+        private const val KEY_NUM_HOTSEAT_ICONS = "pref_numHotseatIcons"
+
         val GRID_CUSTOMIZATIONS_PREFS = arrayOf(
                 KEY_NUM_ROWS,
-                KEY_NUM_COLUMNS
+                KEY_NUM_COLUMNS,
+                KEY_NUM_HOTSEAT_ICONS
                                                      )
     }
 }

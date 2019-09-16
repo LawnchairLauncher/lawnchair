@@ -19,7 +19,6 @@
 
 package ch.deletescape.lawnchair.settings.ui
 
-import android.graphics.Point
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -43,10 +42,12 @@ class DesktopGridSizeFragment : Fragment(), SettingsActivity.PreviewFragment {
         return CustomGridView(inflater.context, null).apply {
             val idp = LauncherAppState.getIDP(context)
             gridCustomizer = InvariantDeviceProfile.GridCustomizer { grid ->
-                grid.numRows = currentSize.y
-                grid.numColumns = currentSize.x
+                grid.numRows = currentValues.height
+                grid.numColumns = currentValues.width
+                grid.numHotseatIcons = currentValues.numHotseat
             }
-            setInitialSize(Point(idp.numColumns, idp.numRows))
+            setInitialValues(
+                    CustomGridView.Values(idp.numRows, idp.numColumns, idp.numHotseatIcons))
         }
     }
 
@@ -58,12 +59,13 @@ class DesktopGridSizeFragment : Fragment(), SettingsActivity.PreviewFragment {
     override fun onPause() {
         super.onPause()
         val idp = LauncherAppState.getIDP(context)
-        val oldSize = Point(idp.numColumns, idp.numRows)
-        val newSize = customGridView.currentSize
-        if (oldSize != newSize) {
+        val oldValues = CustomGridView.Values(idp.numRows, idp.numColumns, idp.numHotseatIcons)
+        val newValues = customGridView.currentValues
+        if (oldValues != newValues) {
             val provider = CustomGridProvider.getInstance(context!!)
-            provider.numRows = newSize.y
-            provider.numColumns = newSize.x
+            provider.numRows = newValues.height
+            provider.numColumns = newValues.width
+            provider.numHotseatIcons = newValues.numHotseat
         }
     }
 
@@ -75,7 +77,7 @@ class DesktopGridSizeFragment : Fragment(), SettingsActivity.PreviewFragment {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_reset_grid_size) {
             val idp = LauncherAppState.getIDP(context)
-            customGridView.setSize(Point(idp.numColumnsOriginal, idp.numRowsOriginal))
+            customGridView.setValues(CustomGridView.Values(idp.numRowsOriginal, idp.numColumnsOriginal, idp.numHotseatIconsOriginal))
         }
         return super.onOptionsItemSelected(item)
     }

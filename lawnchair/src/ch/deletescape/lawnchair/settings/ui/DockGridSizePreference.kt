@@ -19,7 +19,37 @@ package ch.deletescape.lawnchair.settings.ui
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.preference.Preference
+import ch.deletescape.lawnchair.preferences.ResumablePreference
+import ch.deletescape.lawnchair.settings.ui.preview.CustomGridProvider
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
-class DockGridSizePreference(context: Context, attrs: AttributeSet?) : SingleDimensionGridSizePreference(context, attrs, Utilities.getLawnchairPrefs(context).dockGridSize)
+class DockGridSizePreference(context: Context, attrs: AttributeSet?) :
+        Preference(context, attrs), ResumablePreference {
+
+    private val customGrid = CustomGridProvider.getInstance(context)
+    private val idp = LauncherAppState.getIDP(context)
+
+    init {
+        fragment = DesktopGridSizeFragment::class.java.name
+    }
+
+    fun getSize(): Int {
+        return getValue(customGrid.numHotseatIcons, idp.numHotseatIconsOriginal)
+    }
+
+    private fun updateSummary() {
+        val value = getSize()
+        summary = "$value"
+    }
+
+    override fun onResume() {
+        updateSummary()
+    }
+
+    private fun getValue(value: Int, default: Int): Int {
+        return if (value > 0) value else default
+    }
+}

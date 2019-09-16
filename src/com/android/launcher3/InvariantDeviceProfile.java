@@ -592,10 +592,10 @@ public class InvariantDeviceProfile {
             name = option.name;
             numRows = override.numRows;
             numColumns = override.numColumns;
+            numHotseatIcons = override.numHotseatIcons;
 
             defaultLayoutId = option.defaultLayoutId;
             demoModeLayoutId = option.demoModeLayoutId;
-            numHotseatIcons = option.numHotseatIcons;
             numFolderRows = option.numFolderRows;
             numFolderColumns = option.numFolderColumns;
 
@@ -607,12 +607,14 @@ public class InvariantDeviceProfile {
 
         public int numRows;
         public int numColumns;
+        public int numHotseatIcons;
 
         private GridOption originalGrid;
 
         private GridOverrides(GridOption option) {
             numRows = option.numRows;
             numColumns = option.numColumns;
+            numHotseatIcons = option.numHotseatIcons;
 
             originalGrid = option;
         }

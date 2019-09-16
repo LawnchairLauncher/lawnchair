@@ -183,7 +183,6 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val dockHide get() = dockStyles.currentStyle.hide
     private val dockGridSizeDelegate = ResettableLazy { GridSize(this, "numHotseatIcons", LauncherAppState.getIDP(context), doNothing) }
     val dockGridSize by dockGridSizeDelegate
-    val numDockIcons by IntPref("pref_numHotseatIcons", -1)
     val twoRowDock by BooleanPref("pref_twoRowDock", false, restart)
     val dockRowsCount get() = if (twoRowDock) 2 else 1
     val dockIconScale by FloatPref("pref_hotseatIconSize", 1f)

@@ -146,4 +146,59 @@
                 android:layout_alignParentEnd="true" />
         </RelativeLayout>
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:gravity="center_vertical"
+        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+        android:background="?android:attr/activatedBackgroundIndicator"
+        android:baselineAligned="false">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/numHotseatTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="@string/num_hotseat_icons_pref_title"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal" />
+
+            <TextView
+                android:id="@+id/numHotseatSummary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/numHotseatTitle"
+                android:layout_alignStart="@id/numHotseatTitle"
+                android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+                android:textColor="?android:attr/textColorSecondary"
+                android:maxLines="10"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/numHotseatValue"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:layout_below="@id/numHotseatSummary"
+                android:gravity="center|end"
+                tools:text="5"/>
+
+            <SeekBar
+                android:id="@+id/numHotseatSeekbar"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/numHotseatSummary"
+                android:layout_toEndOf="@id/numHotseatValue"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+    </LinearLayout>
 </LinearLayout>
