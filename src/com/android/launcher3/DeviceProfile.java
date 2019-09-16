@@ -307,11 +307,16 @@ public class DeviceProfile {
         updateAvailableFolderCellDimensions(dm, res);
     }
 
+    /**
+     * Updating the iconSize affects many aspects of the launcher layout, such as: iconSizePx,
+     * iconTextSizePx, iconDrawablePaddingPx, cellWidth/Height, allApps* variants,
+     * hotseat sizes, workspaceSpringLoadedShrinkFactor, folderIconSizePx, and folderIconOffsetYPx.
+     */
     private void updateIconSize(float scale, Resources res, DisplayMetrics dm) {
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
-        float invIconSizePx = isVerticalLayout ? inv.landscapeIconSize : inv.iconSize;
-        iconSizePx = Math.max(1, (int) (ResourceUtils.pxFromDp(invIconSizePx, dm) * scale));
+        float invIconSizeDp = isVerticalLayout ? inv.landscapeIconSize : inv.iconSize;
+        iconSizePx = Math.max(1, (int) (ResourceUtils.pxFromDp(invIconSizeDp, dm) * scale));
         iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
         iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
 
@@ -329,12 +334,19 @@ public class DeviceProfile {
         cellWidthPx = iconSizePx + iconDrawablePaddingPx;
 
         // All apps
-        allAppsIconTextSizePx = iconTextSizePx;
-        allAppsIconSizePx = iconSizePx;
-        allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
-        allAppsCellHeightPx = getCellSize().y;
+        if (allAppsHasDifferentNumColumns()) {
+            allAppsIconSizePx = ResourceUtils.pxFromDp(inv.allAppsIconSize, dm);
+            allAppsIconTextSizePx = Utilities.pxFromSp(inv.allAppsIconTextSize, dm);
+            allAppsCellHeightPx = getCellSize(inv.numAllAppsColumns, inv.numAllAppsColumns).y;
+            allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
+        } else {
+            allAppsIconSizePx = iconSizePx;
+            allAppsIconTextSizePx = iconTextSizePx;
+            allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
+            allAppsCellHeightPx = getCellSize().y;
+        }
 
-        if (isVerticalLayout) {
+        if (isVerticalBarLayout()) {
             // Always hide the Workspace text with vertical bar layout.
             adjustToHideWorkspaceLabels();
         }
@@ -419,14 +431,18 @@ public class DeviceProfile {
     }
 
     public Point getCellSize() {
+        return getCellSize(inv.numColumns, inv.numRows);
+    }
+
+    private Point getCellSize(int numColumns, int numRows) {
         Point result = new Point();
         // Since we are only concerned with the overall padding, layout direction does
         // not matter.
         Point padding = getTotalWorkspacePadding();
         result.x = calculateCellWidth(availableWidthPx - padding.x
-                - cellLayoutPaddingLeftRightPx * 2, inv.numColumns);
+                - cellLayoutPaddingLeftRightPx * 2, numColumns);
         result.y = calculateCellHeight(availableHeightPx - padding.y
-                - cellLayoutBottomPaddingPx, inv.numRows);
+                - cellLayoutBottomPaddingPx, numRows);
         return result;
     }
 
@@ -539,6 +555,13 @@ public class DeviceProfile {
      */
     public boolean isVerticalBarLayout() {
         return isLandscape && transposeLayoutWithOrientation;
+    }
+
+    /**
+     * Returns true when the number of workspace columns and all apps columns differs.
+     */
+    private boolean allAppsHasDifferentNumColumns() {
+        return inv.numAllAppsColumns != inv.numColumns;
     }
 
     /**
