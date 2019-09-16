@@ -200,7 +200,7 @@ public class AdaptiveIconGenerator {
                     if (transparentScore > maxTransparent) {
                         isFullBleed = false;
                         fullBleedChecked = true;
-                        if (!extractColor) {
+                        if (!extractColor && transparentScore > noMixinScore) {
                             break;
                         }
                     }
