@@ -140,7 +140,7 @@ public class PredictionAppTracker extends AppLaunchTracker
                 destroy();
 
                 // Initialize the clients
-                int count = InvariantDeviceProfile.INSTANCE.get(mContext).numColumns;
+                int count = InvariantDeviceProfile.INSTANCE.get(mContext).numAllAppsColumns;
                 mHomeAppPredictor = createPredictor(Client.HOME, count);
                 mRecentsOverviewPredictor = createPredictor(Client.OVERVIEW, count);
                 return true;

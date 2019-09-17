@@ -19,6 +19,7 @@ package com.android.launcher3;
 import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.settings.SettingsActivity.GRID_OPTIONS_PREFERENCE_KEY;
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 
 import android.annotation.TargetApi;
@@ -102,6 +103,8 @@ public class InvariantDeviceProfile {
     public int iconBitmapSize;
     public int fillResIconDpi;
     public float iconTextSize;
+    public float allAppsIconSize;
+    public float allAppsIconTextSize;
 
     private SparseArray<TypedValue> mExtraAttrs;
 
@@ -109,6 +112,11 @@ public class InvariantDeviceProfile {
      * Number of icons inside the hotseat area.
      */
     public int numHotseatIcons;
+
+    /**
+     * Number of columns in the all apps list.
+     */
+    public int numAllAppsColumns;
 
     public int defaultLayoutId;
     int demoModeLayoutId;
@@ -136,6 +144,9 @@ public class InvariantDeviceProfile {
         landscapeIconSize = p.landscapeIconSize;
         iconTextSize = p.iconTextSize;
         numHotseatIcons = p.numHotseatIcons;
+        numAllAppsColumns = p.numAllAppsColumns;
+        allAppsIconSize = p.allAppsIconSize;
+        allAppsIconTextSize = p.allAppsIconTextSize;
         defaultLayoutId = p.defaultLayoutId;
         demoModeLayoutId = p.demoModeLayoutId;
         mExtraAttrs = p.mExtraAttrs;
@@ -144,7 +155,10 @@ public class InvariantDeviceProfile {
 
     @TargetApi(23)
     private InvariantDeviceProfile(Context context) {
-        initGrid(context, Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null));
+        String gridName = Utilities.getPrefs(context).getBoolean(GRID_OPTIONS_PREFERENCE_KEY, false)
+                ? Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null)
+                : null;
+        initGrid(context, gridName);
         mConfigMonitor = new ConfigMonitor(context,
                 APPLY_CONFIG_AT_RUNTIME.get() ? this::onConfigChanged : this::killProcess);
         mOverlayMonitor = new OverlayMonitor(context);
@@ -198,6 +212,8 @@ public class InvariantDeviceProfile {
         demoModeLayoutId = closestProfile.demoModeLayoutId;
         numFolderRows = closestProfile.numFolderRows;
         numFolderColumns = closestProfile.numFolderColumns;
+        numAllAppsColumns = closestProfile.numAllAppsColumns;
+
         mExtraAttrs = closestProfile.extraAttrs;
 
         if (!closestProfile.name.equals(gridName)) {
@@ -211,6 +227,14 @@ public class InvariantDeviceProfile {
         iconBitmapSize = ResourceUtils.pxFromDp(iconSize, displayInfo.metrics);
         iconTextSize = interpolatedDisplayOption.iconTextSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
+
+        if (Utilities.getPrefs(context).getBoolean(GRID_OPTIONS_PREFERENCE_KEY, false)) {
+            allAppsIconSize = interpolatedDisplayOption.allAppsIconSize;
+            allAppsIconTextSize = interpolatedDisplayOption.allAppsIconTextSize;
+        } else {
+            allAppsIconSize = iconSize;
+            allAppsIconTextSize = iconTextSize;
+        }
 
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
@@ -285,9 +309,10 @@ public class InvariantDeviceProfile {
         InvariantDeviceProfile oldProfile = new InvariantDeviceProfile(this);
 
         // Re-init grid
-        // TODO(b/131867841): We pass in null here so that we can calculate the closest profile
-        // without the bias of the grid name.
-        initGrid(context, null);
+        String gridName = Utilities.getPrefs(context).getBoolean(GRID_OPTIONS_PREFERENCE_KEY, false)
+                ? Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null)
+                : null;
+        initGrid(context, gridName);
 
         int changeFlags = 0;
         if (numRows != oldProfile.numRows ||
@@ -489,6 +514,8 @@ public class InvariantDeviceProfile {
 
         private final int numHotseatIcons;
 
+        private final int numAllAppsColumns;
+
         private final int defaultLayoutId;
         private final int demoModeLayoutId;
 
@@ -511,6 +538,9 @@ public class InvariantDeviceProfile {
                     R.styleable.GridDisplayOption_numFolderRows, numRows);
             numFolderColumns = a.getInt(
                     R.styleable.GridDisplayOption_numFolderColumns, numColumns);
+            numAllAppsColumns = a.getInt(
+                    R.styleable.GridDisplayOption_numAllAppsColumns, numColumns);
+
             a.recycle();
 
             extraAttrs = Themes.createValueMap(context, attrs,
@@ -527,8 +557,10 @@ public class InvariantDeviceProfile {
         private final boolean canBeDefault;
 
         private float iconSize;
-        private float landscapeIconSize;
         private float iconTextSize;
+        private float landscapeIconSize;
+        private float allAppsIconSize;
+        private float allAppsIconTextSize;
 
         DisplayOption(GridOption grid, Context context, AttributeSet attrs) {
             this.grid = grid;
@@ -546,6 +578,11 @@ public class InvariantDeviceProfile {
             landscapeIconSize = a.getFloat(R.styleable.ProfileDisplayOption_landscapeIconSize,
                     iconSize);
             iconTextSize = a.getFloat(R.styleable.ProfileDisplayOption_iconTextSize, 0);
+
+            allAppsIconSize = a.getFloat(R.styleable.ProfileDisplayOption_allAppsIconSize,
+                    iconSize);
+            allAppsIconTextSize = a.getFloat(R.styleable.ProfileDisplayOption_allAppsIconTextSize,
+                    iconTextSize);
             a.recycle();
         }
 
@@ -560,14 +597,18 @@ public class InvariantDeviceProfile {
         private DisplayOption multiply(float w) {
             iconSize *= w;
             landscapeIconSize *= w;
+            allAppsIconSize *= w;
             iconTextSize *= w;
+            allAppsIconTextSize *= w;
             return this;
         }
 
         private DisplayOption add(DisplayOption p) {
             iconSize += p.iconSize;
             landscapeIconSize += p.landscapeIconSize;
+            allAppsIconSize += p.allAppsIconSize;
             iconTextSize += p.iconTextSize;
+            allAppsIconTextSize += p.allAppsIconTextSize;
             return this;
         }
     }
