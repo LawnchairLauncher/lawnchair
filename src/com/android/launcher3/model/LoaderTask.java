@@ -19,7 +19,6 @@ package com.android.launcher3.model;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
-import static com.android.launcher3.compat.PackageInstallerCompat.getUserHandle;
 import static com.android.launcher3.model.LoaderResults.filterCurrentWorkspaceItems;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.PackageManagerHelper.isSystemApp;
@@ -401,7 +400,9 @@ public class LoaderTask implements Runnable {
                             boolean validTarget = TextUtils.isEmpty(targetPkg) ||
                                     mLauncherApps.isPackageEnabledForProfile(targetPkg, c.user);
 
-                            if (cn != null && validTarget) {
+                            // If it's a deep shortcut, we'll use pinned shortcuts to restore it
+                            if (cn != null && validTarget && c.itemType
+                                    != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                                 // If the apk is present and the shortcut points to a specific
                                 // component.
 
