@@ -65,6 +65,9 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     private final boolean mLowPerformanceMode;
 
+    private final int mTopAdjusting;
+    private final int mVerticalOffset;
+
     public AllAppsQsbLayout(Context context) {
         this(context, null);
     }
@@ -84,6 +87,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         prefs = LawnchairPreferences.Companion.getInstanceNoCreate();
 
         mLowPerformanceMode = prefs.getLowPerformanceMode();
+        mTopAdjusting = getResources().getDimensionPixelSize(R.dimen.qsb_margin_top_adjusting);
+        mVerticalOffset = getResources().getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset);
     }
 
     protected void onFinishInflate() {
@@ -93,25 +98,10 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     @Override
     public float getScrollRangeDelta(Rect insets) {
-        if (mActivity.getDeviceProfile().isVerticalBarLayout()) {
-            return 0;
-        } else {
-            float delta = HotseatQsbWidget.getBottomMargin(mActivity) + Dy;
-            LawnchairPreferences prefs = LawnchairPreferences.Companion.getInstance(getContext());
-            if (!prefs.getDockHide()) {
-                MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
-                delta += mlp.height + getTopMargin(insets);
-                if (!prefs.getDockSearchBar()) {
-                    delta -= mlp.height;
-                    delta -= mlp.topMargin;
-                    delta -= mlp.bottomMargin;
-                    delta += Dy;
-                }
-            } else {
-                delta -= getLauncher().getResources().getDimensionPixelSize(R.dimen.vertical_drag_handle_size);
-            }
-            return Math.round(delta);
-        }
+        DeviceProfile wallpaperDeviceProfile = mActivity.getWallpaperDeviceProfile();
+        int i = (wallpaperDeviceProfile.hotseatBarSizePx - wallpaperDeviceProfile.hotseatCellHeightPx) - getLayoutParams().height;
+        int i2 = insets.bottom;
+        return (float) (((getLayoutParams().height + Math.max(-mVerticalOffset, insets.top - mTopAdjusting)) + mVerticalOffset) + (i2 + ((int) (((float) (i - i2)) * 0.45f))));
     }
 
     public void setInsets(Rect rect) {

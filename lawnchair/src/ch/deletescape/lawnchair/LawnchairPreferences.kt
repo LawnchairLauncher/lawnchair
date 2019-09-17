@@ -173,7 +173,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     // Dock
     val dockStyles = DockStyle.StyleManager(this, reloadDockStyle, resetAllApps)
     val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", true, doNothing)
-    var dockSearchBarPref by BooleanPref("pref_dockSearchBar", true, recreate)
+    var dockSearchBarPref by BooleanPref("pref_dockSearchBar", true)
     inline val dockSearchBar get() = !dockHide && dockSearchBarPref
     val dockRadius get() = dockStyles.currentStyle.radius
     val dockShadow get() = dockStyles.currentStyle.enableShadow
@@ -984,7 +984,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
                 "pref_iconSize",
                 "pref_hotseatIconSize",
                 "pref_allAppsIconSize",
-                "pref_allAppsIconTextScale")
+                "pref_allAppsIconTextScale",
+                "pref_dockSearchBar")
 
         fun getInstance(context: Context): LawnchairPreferences {
             if (INSTANCE == null) {

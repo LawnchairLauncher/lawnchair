@@ -203,18 +203,37 @@ public class DeviceProfile {
 
         workspaceCellPaddingXPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_padding_x);
 
+        int hotseatTopPaddingRes;
+        int hotseatBottomNonTallPaddingRes;
+        int hotseatBottomPaddingRes;
+        int hotseatSidePaddingRes;
+        int hotseatExtraVerticalSizeRes;
+        if (prefs.getDockSearchBar()) {
+            hotseatTopPaddingRes = R.dimen.dynamic_grid_hotseat_top_padding;
+            hotseatBottomNonTallPaddingRes = R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding;
+            hotseatBottomPaddingRes = R.dimen.dynamic_grid_hotseat_bottom_padding;
+            hotseatSidePaddingRes = R.dimen.dynamic_grid_hotseat_side_padding;
+            hotseatExtraVerticalSizeRes = R.dimen.dynamic_grid_hotseat_extra_vertical_size;
+        } else {
+            hotseatTopPaddingRes = R.dimen.noqsb_hotseat_top_padding;
+            hotseatBottomNonTallPaddingRes = R.dimen.noqsb_hotseat_bottom_non_tall_padding;
+            hotseatBottomPaddingRes = R.dimen.noqsb_hotseat_bottom_padding;
+            hotseatSidePaddingRes = R.dimen.noqsb_hotseat_side_padding;
+            hotseatExtraVerticalSizeRes = R.dimen.noqsb_hotseat_extra_vertical_size;
+        }
+
         hotseatBarTopPaddingPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
+                res.getDimensionPixelSize(hotseatTopPaddingRes);
         hotseatBarBottomPaddingPx = (isTallDevice ? 0
-                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding))
-                + res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_padding);
+                : res.getDimensionPixelSize(hotseatBottomNonTallPaddingRes))
+                + res.getDimensionPixelSize(hotseatBottomPaddingRes);
         hotseatBarSidePaddingEndPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding);
+                res.getDimensionPixelSize(hotseatSidePaddingRes);
         // Add a bit of space between nav bar and hotseat in vertical bar layout.
         hotseatBarSidePaddingStartPx = isVerticalBarLayout() ? verticalDragHandleSizePx : 0;
         hotseatBarSizePx = ResourceUtils.pxFromDp(inv.hotseatIconSize, dm) + (isVerticalBarLayout()
                 ? (hotseatBarSidePaddingStartPx + hotseatBarSidePaddingEndPx)
-                : (res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_extra_vertical_size)
+                : (res.getDimensionPixelSize(hotseatExtraVerticalSizeRes)
                         + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx));
 
         // Calculate all of the remaining variables.
