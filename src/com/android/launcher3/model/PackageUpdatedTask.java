@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.model;
 
+import static com.android.launcher3.WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -52,8 +54,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-
-import static com.android.launcher3.WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON;
 
 /**
  * Handles updates due to changes in package manager (app installed/updated/removed)
@@ -132,6 +132,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 break;
             case OP_REMOVE: {
                 for (int i = 0; i < N; i++) {
+                    FileLog.d(TAG, "Removing app icon" + packages[i]);
                     iconCache.removeIconsForPkg(packages[i], mUser);
                 }
                 // Fall through

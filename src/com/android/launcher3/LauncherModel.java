@@ -38,6 +38,7 @@ import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BaseModelUpdateTask;
@@ -177,6 +178,7 @@ public class LauncherModel extends BroadcastReceiver
 
     public void onPackagesRemoved(UserHandle user, String... packages) {
         int op = PackageUpdatedTask.OP_REMOVE;
+        FileLog.d(TAG, "package removed received " + String.join("," + packages));
         enqueueModelUpdateTask(new PackageUpdatedTask(op, user, packages));
     }
 
@@ -232,7 +234,6 @@ public class LauncherModel extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent) {
         if (DEBUG_RECEIVER) Log.d(TAG, "onReceive intent=" + intent);
-
         final String action = intent.getAction();
         if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
             // If we have changed locale we need to clear out the labels in all apps/workspace.
