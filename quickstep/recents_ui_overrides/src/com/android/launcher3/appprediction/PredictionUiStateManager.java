@@ -24,7 +24,6 @@ import android.app.prediction.AppPredictor;
 import android.app.prediction.AppTarget;
 import android.content.ComponentName;
 import android.content.Context;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -32,6 +31,8 @@ import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore.OnUpdateListener;
@@ -58,7 +59,7 @@ import java.util.List;
  * 4) Maintains the current active client id (for the predictions) and all updates are performed on
  * that client id.
  */
-public class PredictionUiStateManager implements OnGlobalLayoutListener, ItemInfoUpdateReceiver,
+public class PredictionUiStateManager implements StateListener, ItemInfoUpdateReceiver,
         OnIDPChangeListener, OnUpdateListener {
 
     public static final String LAST_PREDICTION_ENABLED_STATE = "last_prediction_enabled_state";
@@ -153,7 +154,10 @@ public class PredictionUiStateManager implements OnGlobalLayoutListener, ItemInf
     public void reapplyItemInfo(ItemInfoWithIcon info) { }
 
     @Override
-    public void onGlobalLayout() {
+    public void onStateTransitionStart(LauncherState toState) { }
+
+    @Override
+    public void onStateTransitionComplete(LauncherState state) {
         if (mAppsView == null) {
             return;
         }
@@ -162,7 +166,8 @@ public class PredictionUiStateManager implements OnGlobalLayoutListener, ItemInf
             mPendingState = null;
         }
         if (mPendingState == null) {
-            mAppsView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            Launcher.getLauncher(mAppsView.getContext()).getStateManager()
+                    .removeStateListener(this);
         }
     }
 
@@ -170,9 +175,8 @@ public class PredictionUiStateManager implements OnGlobalLayoutListener, ItemInf
         boolean registerListener = mPendingState == null;
         mPendingState = state;
         if (registerListener) {
-            // OnGlobalLayoutListener is called whenever a view in the view tree changes
-            // visibility. Add a listener and wait until appsView is invisible again.
-            mAppsView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+            // Add a listener and wait until appsView is invisible again.
+            Launcher.getLauncher(mAppsView.getContext()).getStateManager().addStateListener(this);
         }
     }
 
