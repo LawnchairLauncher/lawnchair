@@ -19,6 +19,7 @@ package com.android.launcher3.model;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
+import static com.android.launcher3.compat.PackageInstallerCompat.getUserHandle;
 import static com.android.launcher3.model.LoaderResults.filterCurrentWorkspaceItems;
 
 import android.appwidget.AppWidgetProviderInfo;
@@ -72,6 +73,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.TraceHelper;
 
 import java.util.ArrayList;
@@ -281,8 +283,9 @@ public class LoaderTask implements Runnable {
         synchronized (mBgDataModel) {
             mBgDataModel.clear();
 
-            final HashMap<String, SessionInfo> installingPkgs =
+            final HashMap<PackageUserKey, SessionInfo> installingPkgs =
                     mPackageInstaller.updateAndGetActiveSessionCache();
+            final PackageUserKey tempPackageKey = new PackageUserKey(null, null);
             mFirstScreenBroadcast = new FirstScreenBroadcast(installingPkgs);
 
             Map<ShortcutKey, ShortcutInfo> shortcutKeyToPinnedShortcuts = new HashMap<>();
@@ -419,9 +422,10 @@ public class LoaderTask implements Runnable {
                                     // installed later.
                                     FileLog.d(TAG, "package not yet restored: " + targetPkg);
 
+                                    tempPackageKey.update(targetPkg, c.user);
                                     if (c.hasRestoreFlag(WorkspaceItemInfo.FLAG_RESTORE_STARTED)) {
                                         // Restore has started once.
-                                    } else if (installingPkgs.containsKey(targetPkg)) {
+                                    } else if (installingPkgs.containsKey(tempPackageKey)) {
                                         // App restore has started. Update the flag
                                         c.restoreFlag |= WorkspaceItemInfo.FLAG_RESTORE_STARTED;
                                         c.updater().put(LauncherSettings.Favorites.RESTORED,

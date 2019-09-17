@@ -31,7 +31,7 @@ public class PackageUserKey {
         update(packageName, user);
     }
 
-    private void update(String packageName, UserHandle user) {
+    public void update(String packageName, UserHandle user) {
         mPackageName = packageName;
         mUser = user;
         mHashCode = Arrays.hashCode(new Object[] {packageName, user});
