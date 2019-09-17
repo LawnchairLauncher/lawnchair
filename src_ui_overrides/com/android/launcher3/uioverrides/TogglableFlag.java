@@ -16,6 +16,8 @@
 
 package com.android.launcher3.uioverrides;
 
+import android.content.Context;
+
 import com.android.launcher3.config.FeatureFlags.BaseTogglableFlag;
 
 public class TogglableFlag extends BaseTogglableFlag {
@@ -25,7 +27,10 @@ public class TogglableFlag extends BaseTogglableFlag {
     }
 
     @Override
-    public boolean getInitialValue(boolean value) {
+    public boolean getOverridenDefaultValue(boolean value) {
         return value;
     }
+
+    @Override
+    public void addChangeListener(Context context, Runnable r) { }
 }
