@@ -380,13 +380,19 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         }
     }
 
-    protected void onLayout(boolean z, int i, int i2, int i3, int i4) {
-        super.onLayout(z, i, i2, i3, i4);
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
         View view = (View) getParent();
         setTranslationX((float) ((view.getPaddingLeft() + (
-                (((view.getWidth() - view.getPaddingLeft()) - view.getPaddingRight()) - (i3 - i))
-                        / 2)) - i));
-        offsetTopAndBottom((int) Dy);
+                (((view.getWidth() - view.getPaddingLeft()) - view.getPaddingRight()) - (right - left))
+                        / 2)) - left));
+        int containerTopMargin = 0;
+        if (!prefs.getAllAppsSearch()) {
+            MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
+            containerTopMargin = -(mlp.topMargin + mlp.height);
+        }
+        offsetTopAndBottom((int) Dy - containerTopMargin);
     }
 
     public void draw(Canvas canvas) {
