@@ -63,10 +63,10 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     /**
      * Dismissed all tasks by scrolling to Clear-all button and pressing it.
      */
-    public Workspace dismissAllTasks() {
+    public void dismissAllTasks() {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "dismissing all tasks")) {
-            final BySelector clearAllSelector = mLauncher.getLauncherObjectSelector("clear_all");
+            final BySelector clearAllSelector = mLauncher.getOverviewObjectSelector("clear_all");
             for (int i = 0;
                     i < FLINGS_FOR_DISMISS_LIMIT
                             && !verifyActiveContainer().hasObject(clearAllSelector);
@@ -75,10 +75,6 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
             }
 
             mLauncher.waitForObjectInContainer(verifyActiveContainer(), clearAllSelector).click();
-            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
-                    "dismissed all tasks")) {
-                return new Workspace(mLauncher);
-            }
         }
     }
 
@@ -109,7 +105,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                 "want to get current task")) {
             verifyActiveContainer();
             final List<UiObject2> taskViews = mLauncher.getDevice().findObjects(
-                    mLauncher.getLauncherObjectSelector("snapshot"));
+                    mLauncher.getOverviewObjectSelector("snapshot"));
             mLauncher.assertNotEquals("Unable to find a task", 0, taskViews.size());
 
             // taskViews contains up to 3 task views: the 'main' (having the widest visible
