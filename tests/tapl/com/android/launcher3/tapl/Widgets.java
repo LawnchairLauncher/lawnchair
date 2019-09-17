@@ -103,7 +103,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
             }
 
             if (++i > 40) fail("Too many attempts");
-            mLauncher.scroll(widgetsContainer, Direction.DOWN, 0.8f, MARGINS, 50);
+            mLauncher.scroll(widgetsContainer, Direction.DOWN, 0.7f, MARGINS, 50);
         }
     }
 }
