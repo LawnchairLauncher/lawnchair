@@ -267,6 +267,10 @@ public abstract class BaseIconCache {
             entry = new CacheEntry();
             cachingLogic.loadIcon(mContext, object, entry);
         }
+        // Icon can't be loaded from cachingLogic, which implies alternative icon was loaded
+        // (e.g. fallback icon, default icon). So we drop here since there's no point in caching
+        // an empty entry.
+        if (entry.icon == null) return;
         entry.title = cachingLogic.getLabel(object);
         entry.contentDescription = mPackageManager.getUserBadgedLabel(entry.title, user);
         mCache.put(key, entry);
