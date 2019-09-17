@@ -139,6 +139,8 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
      * - The settings for it are enabled
      * - The user installed the app
      * - There is an app icon and label (For apps with no launching activity, no icon is provided).
+     * - The app is not already installed
+     * - A promise icon for the session has not already been created
      */
     private void tryQueuePromiseAppIcon(SessionInfo sessionInfo) {
         if (Utilities.ATLEAST_OREO && FeatureFlags.PROMISE_APPS_NEW_INSTALLS.get()
@@ -147,7 +149,9 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
                 && sessionInfo.getInstallReason() == PackageManager.INSTALL_REASON_USER
                 && sessionInfo.getAppIcon() != null
                 && !TextUtils.isEmpty(sessionInfo.getAppLabel())
-                && !mPromiseIconIds.contains(sessionInfo.getSessionId())) {
+                && !mPromiseIconIds.contains(sessionInfo.getSessionId())
+                && mLauncherApps.getApplicationInfo(sessionInfo.getAppPackageName(), 0,
+                        getUserHandle(sessionInfo)) == null) {
             SessionCommitReceiver.queuePromiseAppIconAddition(mAppContext, sessionInfo);
             mPromiseIconIds.add(sessionInfo.getSessionId());
             updatePromiseIconPrefs();
@@ -182,12 +186,14 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
                 sendUpdate(PackageInstallInfo.fromState(success ? STATUS_INSTALLED : STATUS_FAILED,
                         packageName, key.mUser));
 
-                if (!success && FeatureFlags.PROMISE_APPS_NEW_INSTALLS.get()) {
+                if (!success && FeatureFlags.PROMISE_APPS_NEW_INSTALLS.get()
+                        && mPromiseIconIds.contains(sessionId)) {
                     LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
                     if (appState != null) {
-                        LauncherModel model = appState.getModel();
-                        model.onPackageRemoved(packageName, key.mUser);
+                        appState.getModel().onSessionFailure(packageName, key.mUser);
                     }
+                    // If it is successful, the id is removed in the the package added flow.
+                    removePromiseIconId(sessionId);
                 }
             }
         }
