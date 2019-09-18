@@ -64,4 +64,9 @@ public class ShortcutCachingLogic implements CachingLogic<ShortcutInfo> {
         if (shortcutInfo == null) return info.lastUpdateTime;
         return Math.max(shortcutInfo.getLastChangedTimestamp(), info.lastUpdateTime);
     }
+
+    @Override
+    public boolean addToMemCache() {
+        return false;
+    }
 }

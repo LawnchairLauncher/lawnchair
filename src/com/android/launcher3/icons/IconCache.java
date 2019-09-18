@@ -77,7 +77,7 @@ public class IconCache extends BaseIconCache {
     public IconCache(Context context, InvariantDeviceProfile inv) {
         super(context, LauncherFiles.APP_ICONS_DB, MODEL_EXECUTOR.getLooper(),
                 inv.fillResIconDpi, inv.iconBitmapSize, true /* inMemoryCache */);
-        mComponentWithLabelCachingLogic = new ComponentCachingLogic(context);
+        mComponentWithLabelCachingLogic = new ComponentCachingLogic(context, false);
         mLauncherActivityInfoCachingLogic = LauncherActivityCachingLogic.newInstance(context);
         mShortcutCachingLogic = new ShortcutCachingLogic();
         mLauncherApps = LauncherAppsCompat.getInstance(mContext);
@@ -206,7 +206,7 @@ public class IconCache extends BaseIconCache {
     public synchronized String getTitleNoCache(ComponentWithLabel info) {
         CacheEntry entry = cacheLocked(info.getComponent(), info.getUser(), () -> info,
                 mComponentWithLabelCachingLogic, false /* usePackageIcon */,
-                true /* useLowResIcon */, false /* addToMemCache */);
+                true /* useLowResIcon */);
         return Utilities.trim(entry.title);
     }
 

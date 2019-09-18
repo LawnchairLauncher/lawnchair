@@ -242,8 +242,8 @@ public class LoaderTask implements Runnable {
 
             verifyNotStopped();
             TraceHelper.partitionSection(TAG, "step 4.3: save widgets in icon cache");
-            updateHandler.updateIcons(allWidgetsList, new ComponentCachingLogic(mApp.getContext()),
-                    mApp.getModel()::onWidgetLabelsUpdated);
+            updateHandler.updateIcons(allWidgetsList, new ComponentCachingLogic(
+                    mApp.getContext(), true), mApp.getModel()::onWidgetLabelsUpdated);
 
             verifyNotStopped();
             TraceHelper.partitionSection(TAG, "step 5: Finish icon cache update");
