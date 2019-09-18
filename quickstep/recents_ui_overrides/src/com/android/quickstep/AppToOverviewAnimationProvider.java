@@ -102,6 +102,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
         anim.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationSuccess(Animator animator) {
+                mHelper.onSwipeUpToRecentsComplete(mActivity);
                 if (mRecentsView != null) {
                     mRecentsView.animateUpRunningTaskIconScale();
                 }
