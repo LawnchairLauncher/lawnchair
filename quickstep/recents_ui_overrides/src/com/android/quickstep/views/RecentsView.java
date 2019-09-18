@@ -959,6 +959,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     }
 
+    public boolean isTaskIconScaledDown(TaskView taskView) {
+        return mRunningTaskIconScaledDown && getRunningTaskView() == taskView;
+    }
+
     private void applyRunningTaskIconScale() {
         TaskView firstTask = getRunningTaskView();
         if (firstTask != null) {
