@@ -62,6 +62,7 @@ import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.launcher3.util.rule.LauncherActivityRule;
 import com.android.launcher3.util.rule.ShellCommandRule;
+import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.After;
 import org.junit.Before;
@@ -157,7 +158,8 @@ public abstract class AbstractLauncherUiTest {
 
     @Rule
     public TestRule mOrderSensitiveRules = RuleChain.
-            outerRule(mActivityMonitor).
+            outerRule(new TestStabilityRule()).
+            around(mActivityMonitor).
             around(getRulesInsideActivityMonitor());
 
     public UiDevice getDevice() {
