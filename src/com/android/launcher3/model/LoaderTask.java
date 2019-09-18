@@ -540,7 +540,8 @@ public class LoaderTask implements Runnable {
                                 }
 
                                 if (c.restoreFlag != 0 && !TextUtils.isEmpty(targetPkg)) {
-                                    SessionInfo si = installingPkgs.get(targetPkg);
+                                    tempPackageKey.update(targetPkg, c.user);
+                                    SessionInfo si = installingPkgs.get(tempPackageKey);
                                     if (si == null) {
                                         info.status &= ~WorkspaceItemInfo.FLAG_INSTALL_SESSION_ACTIVE;
                                     } else {
@@ -634,8 +635,10 @@ public class LoaderTask implements Runnable {
                                     appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
                                             component);
                                     appWidgetInfo.restoreStatus = c.restoreFlag;
+
+                                    tempPackageKey.update(component.getPackageName(), c.user);
                                     SessionInfo si =
-                                            installingPkgs.get(component.getPackageName());
+                                            installingPkgs.get(tempPackageKey);
                                     Integer installProgress = si == null
                                             ? null
                                             : (int) (si.getProgress() * 100);
