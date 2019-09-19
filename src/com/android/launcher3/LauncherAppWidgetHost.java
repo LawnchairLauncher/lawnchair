@@ -238,9 +238,12 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         info.initSpans(mContext);
     }
 
-    //TODO: make this override when SDK is updated
-    //@Override
-    protected void onAppWidgetRemoved(int appWidgetId) {
+    /**
+     * Called on an appWidget is removed for a widgetId
+     * @param appWidgetId
+     * TODO: make this override when SDK is updated
+     */
+    public void onAppWidgetRemoved(int appWidgetId) {
         if (mAppWidgetRemovedCallback == null) {
             return;
         }
