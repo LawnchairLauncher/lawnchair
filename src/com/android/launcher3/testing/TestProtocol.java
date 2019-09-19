@@ -66,6 +66,8 @@ public final class TestProtocol {
             "all-apps-to-overview-swipe-height";
     public static final String REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT =
             "home-to-all-apps-swipe-height";
+    public static final String REQUEST_DOES_WORKSPACE_HAVE_SECOND_PAGE =
+            "does-workspace-have-second-page";
     public static final String REQUEST_HOTSEAT_TOP = "hotseat-top";
     public static final String REQUEST_IS_LAUNCHER_INITIALIZED = "is-launcher-initialized";
     public static final String REQUEST_FREEZE_APP_LIST = "freeze-app-list";
