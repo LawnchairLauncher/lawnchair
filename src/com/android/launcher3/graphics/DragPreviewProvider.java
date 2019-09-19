@@ -16,6 +16,8 @@
 
 package com.android.launcher3.graphics;
 
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
@@ -25,7 +27,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
 import android.view.View;
 
 import com.android.launcher3.BubbleTextView;
@@ -35,7 +36,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.icons.BitmapRenderer;
-import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
 
@@ -157,7 +157,7 @@ public class DragPreviewProvider {
         }
 
         mOutlineGeneratorCallback = new OutlineGeneratorCallback(preview);
-        new Handler(UiThreadHelper.getBackgroundLooper()).post(mOutlineGeneratorCallback);
+        UI_HELPER_EXECUTOR.post(mOutlineGeneratorCallback);
     }
 
     protected static Rect getDrawableBounds(Drawable d) {

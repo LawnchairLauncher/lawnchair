@@ -725,7 +725,7 @@ public final class LauncherInstrumentation {
 
     @NonNull
     UiObject2 waitForFallbackLauncherObject(String resName) {
-        return waitForObjectBySelector(getFallbackLauncherObjectSelector(resName));
+        return waitForObjectBySelector(getOverviewObjectSelector(resName));
     }
 
     private UiObject2 waitForObjectBySelector(BySelector selector) {
@@ -742,7 +742,7 @@ public final class LauncherInstrumentation {
         return By.res(getLauncherPackageName(), resName);
     }
 
-    BySelector getFallbackLauncherObjectSelector(String resName) {
+    BySelector getOverviewObjectSelector(String resName) {
         return By.res(getOverviewPackageName(), resName);
     }
 
@@ -960,5 +960,13 @@ public final class LauncherInstrumentation {
     public int getTotalPssKb() {
         return getTestInfo(TestProtocol.REQUEST_TOTAL_PSS_KB).
                 getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    public void produceJavaLeak() {
+        getTestInfo(TestProtocol.REQUEST_JAVA_LEAK);
+    }
+
+    public void produceNativeLeak() {
+        getTestInfo(TestProtocol.REQUEST_NATIVE_LEAK);
     }
 }

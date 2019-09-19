@@ -28,17 +28,15 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.StateHandler;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.uioverrides.touchcontrollers.FlingAndHoldTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.LandscapeEdgeSwipeController;
 import com.android.launcher3.uioverrides.touchcontrollers.NavBarToHomeTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.OverviewToAllAppsTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
-import com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.QuickSwitchTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TransposedQuickSwitchTouchController;
 import com.android.launcher3.util.TouchController;
@@ -164,8 +162,7 @@ public abstract class RecentsUiFactory {
             }
         }
 
-        if (FeatureFlags.PULL_DOWN_STATUS_BAR
-                && !launcher.getDeviceProfile().isMultiWindowMode) {
+        if (!launcher.getDeviceProfile().isMultiWindowMode) {
             list.add(new StatusBarTouchController(launcher));
         }
 

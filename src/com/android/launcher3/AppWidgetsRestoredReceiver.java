@@ -1,5 +1,7 @@
 package com.android.launcher3;
 
+import static android.os.Process.myUserHandle;
+
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -12,14 +14,12 @@ import android.util.Log;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.LoaderTask;
+import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.util.ContentWriter;
 
 import androidx.annotation.WorkerThread;
-
-import static android.os.Process.myUserHandle;
 
 public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
 
@@ -50,7 +50,7 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
     @WorkerThread
     public static void restoreAppWidgetIds(Context context, int[] oldWidgetIds, int[] newWidgetIds) {
         AppWidgetHost appWidgetHost = new LauncherAppWidgetHost(context);
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             Log.e(TAG, "Skipping widget ID remap as widgets not supported");
             appWidgetHost.deleteHost();
             return;

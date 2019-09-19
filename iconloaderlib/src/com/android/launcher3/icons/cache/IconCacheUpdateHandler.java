@@ -171,8 +171,9 @@ public class IconCacheUpdateHandler {
                 long updateTime = c.getLong(indexLastUpdate);
                 int version = c.getInt(indexVersion);
                 T app = componentMap.remove(component);
-                if (version == info.versionCode && updateTime == info.lastUpdateTime &&
-                        TextUtils.equals(c.getString(systemStateIndex),
+                if (version == info.versionCode
+                        && updateTime == cachingLogic.getLastUpdatedTime(app, info)
+                        && TextUtils.equals(c.getString(systemStateIndex),
                                 mIconCache.getIconSystemState(info.packageName))) {
 
                     if (mFilterMode == MODE_CLEAR_VALID_ITEMS) {
@@ -230,7 +231,6 @@ public class IconCacheUpdateHandler {
             mIconCache.mIconDb.delete(queryBuilder.toString(), null);
         }
     }
-
 
     /**
      * A runnable that updates invalid icons and adds missing icons in the DB for the provided

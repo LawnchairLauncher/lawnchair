@@ -27,6 +27,7 @@ import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
+import static com.android.quickstep.TouchInteractionService.INTENT_EXTRA_LOG_TRACE_ID;
 import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 import static com.android.quickstep.TouchInteractionService.startRecentsActivityAsync;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
@@ -35,6 +36,7 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Build;
@@ -44,12 +46,15 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
+import androidx.annotation.UiThread;
+
 import com.android.launcher3.R;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RaceConditionTracker;
 import com.android.launcher3.util.TraceHelper;
+import com.android.quickstep.ActivityControlHelper;
 import com.android.quickstep.BaseSwipeUpHandler;
-import com.android.quickstep.OverviewCallbacks;
+import com.android.quickstep.BaseSwipeUpHandler.Factory;
 import com.android.quickstep.SwipeSharedState;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -61,8 +66,6 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 import java.util.function.Consumer;
-
-import androidx.annotation.UiThread;
 
 /**
  * Input consumer for handling events originating from an activity other than Launcher
@@ -78,11 +81,11 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
     private final CachedEventDispatcher mRecentsViewDispatcher = new CachedEventDispatcher();
     private final RunningTaskInfo mRunningTask;
-    private final OverviewCallbacks mOverviewCallbacks;
     private final SwipeSharedState mSwipeSharedState;
     private final InputMonitorCompat mInputMonitorCompat;
     private final SysUINavigationMode.Mode mMode;
     private final RectF mSwipeTouchRegion;
+    private final ActivityControlHelper mActivityControlHelper;
 
     private final BaseSwipeUpHandler.Factory mHandlerFactory;
 
@@ -119,20 +122,23 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         ActivityManagerWrapper.getInstance().cancelRecentsAnimation(
                 true /* restoreHomeStackPosition */);
     };
+    private int mLogId;
 
     public OtherActivityInputConsumer(Context base, RunningTaskInfo runningTaskInfo,
-            boolean isDeferredDownTarget, OverviewCallbacks overviewCallbacks,
-            Consumer<OtherActivityInputConsumer> onCompleteCallback,
+            boolean isDeferredDownTarget, Consumer<OtherActivityInputConsumer> onCompleteCallback,
             SwipeSharedState swipeSharedState, InputMonitorCompat inputMonitorCompat,
             RectF swipeTouchRegion, boolean disableHorizontalSwipe,
-            BaseSwipeUpHandler.Factory handlerFactory) {
+            ActivityControlHelper activityControlHelper,
+            Factory handlerFactory, int logId) {
         super(base);
+        mLogId = logId;
 
         mMainThreadHandler = new Handler(Looper.getMainLooper());
         mRunningTask = runningTaskInfo;
         mMode = SysUINavigationMode.getMode(base);
         mSwipeTouchRegion = swipeTouchRegion;
         mHandlerFactory = handlerFactory;
+        mActivityControlHelper = activityControlHelper;
 
         mMotionPauseDetector = new MotionPauseDetector(base);
         mMotionPauseMinDisplacement = base.getResources().getDimension(
@@ -143,7 +149,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
         boolean continuingPreviousGesture = swipeSharedState.getActiveListener() != null;
         mIsDeferredDownTarget = !continuingPreviousGesture && isDeferredDownTarget;
-        mOverviewCallbacks = overviewCallbacks;
         mSwipeSharedState = swipeSharedState;
 
         mNavBarPosition = new NavBarPosition(base);
@@ -312,7 +317,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         }
         mInputMonitorCompat.pilferPointers();
 
-        mOverviewCallbacks.closeAllWindows();
+        mActivityControlHelper.closeOverlay();
         ActivityManagerWrapper.getInstance().closeSystemWindows(
                 CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
 
@@ -341,7 +346,9 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             RecentsAnimationListenerSet newListenerSet =
                     mSwipeSharedState.newRecentsAnimationListenerSet();
             newListenerSet.addListener(handler);
-            startRecentsActivityAsync(handler.getLaunchIntent(), newListenerSet);
+            Intent intent = handler.getLaunchIntent();
+            intent.putExtra(INTENT_EXTRA_LOG_TRACE_ID, mLogId);
+            startRecentsActivityAsync(intent, newListenerSet);
         }
     }
 

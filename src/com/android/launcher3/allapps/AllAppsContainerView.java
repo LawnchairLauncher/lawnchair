@@ -26,7 +26,6 @@ import android.os.Process;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -45,11 +44,10 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -163,16 +161,14 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     private void onAppsUpdated() {
-        if (FeatureFlags.ALL_APPS_TABS_ENABLED) {
-            boolean hasWorkApps = false;
-            for (AppInfo app : mAllAppsStore.getApps()) {
-                if (mWorkMatcher.matches(app, null)) {
-                    hasWorkApps = true;
-                    break;
-                }
+        boolean hasWorkApps = false;
+        for (AppInfo app : mAllAppsStore.getApps()) {
+            if (mWorkMatcher.matches(app, null)) {
+                hasWorkApps = true;
+                break;
             }
-            rebindAdapters(hasWorkApps);
         }
+        rebindAdapters(hasWorkApps);
     }
 
     /**
@@ -312,6 +308,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                 + grid.cellLayoutPaddingLeftRightPx;
 
         for (int i = 0; i < mAH.length; i++) {
+            mAH[i].adapter.setAppsPerRow(grid.inv.numAllAppsColumns);
             mAH[i].padding.bottom = insets.bottom;
             mAH[i].padding.left = mAH[i].padding.right = leftRightPadding;
             mAH[i].applyPadding();

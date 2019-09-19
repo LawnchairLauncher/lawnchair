@@ -15,7 +15,12 @@
  */
 package com.android.launcher3.testing;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static android.graphics.Bitmap.Config.ARGB_8888;
+
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Debug;
 
@@ -24,11 +29,11 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.util.ResourceBasedOverride;
 
+import java.util.LinkedList;
 import java.util.concurrent.ExecutionException;
 
 public class TestInformationHandler implements ResourceBasedOverride {
@@ -42,6 +47,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
     protected DeviceProfile mDeviceProfile;
     protected LauncherAppState mLauncherAppState;
     protected Launcher mLauncher;
+    private static LinkedList mLeaks;
 
     public void init(Context context) {
         mContext = context;
@@ -89,20 +95,20 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 break;
 
             case TestProtocol.REQUEST_FREEZE_APP_LIST:
-                new MainThreadExecutor().execute(() ->
+                MAIN_EXECUTOR.execute(() ->
                         mLauncher.getAppsView().getAppsStore().enableDeferUpdates(
                                 AllAppsStore.DEFER_UPDATES_TEST));
                 break;
 
             case TestProtocol.REQUEST_UNFREEZE_APP_LIST:
-                new MainThreadExecutor().execute(() ->
+                MAIN_EXECUTOR.execute(() ->
                         mLauncher.getAppsView().getAppsStore().disableDeferUpdates(
                                 AllAppsStore.DEFER_UPDATES_TEST));
                 break;
 
             case TestProtocol.REQUEST_APP_LIST_FREEZE_FLAGS: {
                 try {
-                    final int deferUpdatesFlags = new MainThreadExecutor().submit(() ->
+                    final int deferUpdatesFlags = MAIN_EXECUTOR.submit(() ->
                             mLauncher.getAppsView().getAppsStore().getDeferUpdatesFlags()).get();
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
                             deferUpdatesFlags);
@@ -118,6 +124,29 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 Debug.MemoryInfo mem = new Debug.MemoryInfo();
                 Debug.getMemoryInfo(mem);
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, mem.getTotalPss());
+                break;
+            }
+
+            case TestProtocol.REQUEST_JAVA_LEAK: {
+                if (mLeaks == null) mLeaks = new LinkedList();
+
+                // Allocate and dirty the memory.
+                final int leakSize = 1024 * 1024;
+                final byte[] bytes = new byte[leakSize];
+                for (int i = 0; i < leakSize; i += 239) {
+                    bytes[i] = (byte) (i % 256);
+                }
+                mLeaks.add(bytes);
+                break;
+            }
+
+            case TestProtocol.REQUEST_NATIVE_LEAK: {
+                if (mLeaks == null) mLeaks = new LinkedList();
+
+                // Allocate and dirty a bitmap.
+                final Bitmap bitmap = Bitmap.createBitmap(512, 512, ARGB_8888);
+                bitmap.eraseColor(Color.RED);
+                mLeaks.add(bitmap);
                 break;
             }
         }

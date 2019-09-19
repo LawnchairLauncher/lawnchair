@@ -6,7 +6,6 @@ import android.service.notification.StatusBarNotification;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
 
 import java.util.Arrays;
 
@@ -31,7 +30,7 @@ public class PackageUserKey {
         update(packageName, user);
     }
 
-    private void update(String packageName, UserHandle user) {
+    public void update(String packageName, UserHandle user) {
         mPackageName = packageName;
         mUser = user;
         mHashCode = Arrays.hashCode(new Object[] {packageName, user});

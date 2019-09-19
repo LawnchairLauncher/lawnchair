@@ -37,7 +37,7 @@ import androidx.annotation.VisibleForTesting;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
@@ -158,7 +158,7 @@ public class OptionsPopupView extends ArrowPopup
                 R.drawable.ic_palette : R.drawable.ic_wallpaper;
         options.add(new OptionItem(resString, resDrawable,
                 ControlType.WALLPAPER_BUTTON, OptionsPopupView::startWallpaperPicker));
-        if (!FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (!WidgetsModel.GO_DISABLE_WIDGETS) {
             options.add(new OptionItem(R.string.widget_button_text, R.drawable.ic_widget,
                     ControlType.WIDGETS_BUTTON, OptionsPopupView::onWidgetsClicked));
         }

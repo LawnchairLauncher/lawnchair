@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Nisësi3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Puna"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Aplikacioni nuk është i instaluar."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Aplikacioni nuk mundësohet"</string>
@@ -41,8 +40,8 @@
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Kërko për më shumë aplikacione"</string>
     <string name="label_application" msgid="8531721983832654978">"Aplikacioni"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Njoftimet"</string>
-    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Prek dhe mbaj prekur për të zgjedhur një shkurtore."</string>
-    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Prek dy herë dhe mbaj prekur për të zgjedhur një shkurtore ose për të përdorur veprimet e personalizuara."</string>
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Prek dhe mbaj të shtypur për të zgjedhur një shkurtore."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Prek dy herë dhe mbaj të shtypur për të zgjedhur një shkurtore ose për të përdorur veprimet e personalizuara."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Nuk ka më hapësirë në këtë ekran bazë."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Nuk ka më hapësirë në tabakanë \"Të preferuarat\""</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Lista e aplikacioneve"</string>

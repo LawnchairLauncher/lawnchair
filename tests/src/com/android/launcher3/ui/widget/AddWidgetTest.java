@@ -46,6 +46,7 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
+    @org.junit.Ignore
     public void testDragIcon() throws Throwable {
         clearHomescreen();
         mDevice.pressHome();

@@ -1,14 +1,14 @@
 package com.android.launcher3.config;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import com.android.launcher3.config.FlagOverrideRule.FlagOverride;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Sample Robolectric test that demonstrates flag-overriding.
@@ -24,13 +24,12 @@ public class FlagOverrideSampleTest {
     @FlagOverride(key = "EXAMPLE_FLAG", value = true)
     @Test
     public void withFlagOn() {
-        assertTrue(FeatureFlags.EXAMPLE_FLAG.get());
+        assertTrue(FeatureFlags.FAKE_LANDSCAPE_UI.get());
     }
-
 
     @FlagOverride(key = "EXAMPLE_FLAG", value = false)
     @Test
     public void withFlagOff() {
-        assertFalse(FeatureFlags.EXAMPLE_FLAG.get());
+        assertFalse(FeatureFlags.FAKE_LANDSCAPE_UI.get());
     }
 }

@@ -22,11 +22,18 @@ import static androidx.test.InstrumentationRegistry.getInstrumentation;
 import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
 import static com.android.launcher3.tapl.TestHelpers.getHomeIntentInPackage;
 import static com.android.launcher3.tapl.TestHelpers.getLauncherInMyProcess;
+import static com.android.launcher3.ui.AbstractLauncherUiTest.DEFAULT_UI_TIMEOUT;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.resolveSystemApp;
+import static com.android.launcher3.ui.AbstractLauncherUiTest.startAppFast;
+import static com.android.launcher3.ui.AbstractLauncherUiTest.startTestActivity;
+import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.rule.ShellCommandRule.disableHeadsUpNotification;
 import static com.android.launcher3.util.rule.ShellCommandRule.getLauncherCommand;
-import static com.android.quickstep.NavigationModeSwitchRule.Mode.THREE_BUTTON;
+import static com.android.quickstep.NavigationModeSwitchRule.Mode.ZERO_BUTTON;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.app.Instrumentation;
@@ -41,10 +48,16 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.Until;
 
+import com.android.launcher3.Utilities;
+import com.android.launcher3.tapl.BaseOverview;
 import com.android.launcher3.tapl.LauncherInstrumentation;
+import com.android.launcher3.tapl.OverviewTask;
+import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.util.rule.FailureWatcher;
+import com.android.launcher3.util.rule.SimpleActivityRule;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
+import com.android.quickstep.views.RecentsView;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -53,11 +66,11 @@ import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
 
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-/**
- * TODO: Fix fallback when quickstep is enabled
- */
 public class FallbackRecentsTest {
 
     private final UiDevice mDevice;
@@ -73,6 +86,11 @@ public class FallbackRecentsTest {
     @Rule
     public final TestRule mOrderSensitiveRules;
 
+    @Rule
+    public final SimpleActivityRule<RecentsActivity> mActivityMonitor =
+            new SimpleActivityRule(RecentsActivity.class);
+
+
     public FallbackRecentsTest() throws RemoteException {
         Instrumentation instrumentation = getInstrumentation();
         Context context = instrumentation.getContext();
@@ -80,9 +98,12 @@ public class FallbackRecentsTest {
         mDevice.setOrientationNatural();
         mLauncher = new LauncherInstrumentation(instrumentation);
 
-        mOrderSensitiveRules = RuleChain.
-                outerRule(new NavigationModeSwitchRule(mLauncher)).
-                around(new FailureWatcher(mDevice));
+        if (TestHelpers.isInLauncherProcess()) {
+            Utilities.enableRunningInTestHarnessForTests();
+        }
+
+        mOrderSensitiveRules = RuleChain.outerRule(new NavigationModeSwitchRule(mLauncher))
+                        .around(new FailureWatcher(mDevice));
 
         mOtherLauncherActivity = context.getPackageManager().queryIntentActivities(
                 getHomeIntentInPackage(context),
@@ -105,7 +126,7 @@ public class FallbackRecentsTest {
         };
     }
 
-    @NavigationModeSwitch(mode = THREE_BUTTON)
+    @NavigationModeSwitch
     @Test
     public void goToOverviewFromHome() {
         mDevice.pressHome();
@@ -115,7 +136,7 @@ public class FallbackRecentsTest {
         mLauncher.getBackground().switchToOverview();
     }
 
-    @NavigationModeSwitch(mode = THREE_BUTTON)
+    @NavigationModeSwitch
     @Test
     public void goToOverviewFromApp() {
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
@@ -123,15 +144,77 @@ public class FallbackRecentsTest {
         mLauncher.getBackground().switchToOverview();
     }
 
-    private void startAppFast(String packageName) {
-        final Instrumentation instrumentation = getInstrumentation();
-        final Intent intent = instrumentation.getContext().getPackageManager().
-                getLaunchIntentForPackage(packageName);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        instrumentation.getTargetContext().startActivity(intent);
-        assertTrue(packageName + " didn't start",
-                mDevice.wait(Until.hasObject(By.pkg(packageName).depth(0)), WAIT_TIME_MS));
+    protected void executeOnRecents(Consumer<RecentsActivity> f) throws Exception {
+        getFromRecents(r -> {
+            f.accept(r);
+            return null;
+        });
     }
 
+    protected <T> T getFromRecents(Function<RecentsActivity, T> f) throws Exception {
+        if (!TestHelpers.isInLauncherProcess()) return null;
+        return MAIN_EXECUTOR.submit(() -> f.apply(mActivityMonitor.getActivity())).get();
+    }
+
+    private BaseOverview pressHomeAndGoToOverview() {
+        mDevice.pressHome();
+        return mLauncher.getBackground().switchToOverview();
+    }
+
+    // TODO: Enable all modes after b/141184247 is fixed
+    @NavigationModeSwitch(mode = ZERO_BUTTON)
+    @Test
+    public void testOverview() throws Exception {
+        startAppFast(getAppPackageName());
+        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
+        startTestActivity(2);
+
+        BaseOverview overview = mLauncher.getBackground().switchToOverview();
+        executeOnRecents(
+                recents -> assertTrue("Don't have at least 3 tasks", getTaskCount(recents) >= 3));
+
+        // Test flinging forward and backward.
+        overview.flingForward();
+        final Integer currentTaskAfterFlingForward = getFromRecents(this::getCurrentOverviewPage);
+        executeOnRecents(recents -> assertTrue("Current task in Overview is still 0",
+                currentTaskAfterFlingForward > 0));
+
+        overview.flingBackward();
+        executeOnRecents(recents -> assertTrue("Flinging back in Overview did nothing",
+                getCurrentOverviewPage(recents) < currentTaskAfterFlingForward));
+
+        // Test opening a task.
+        overview = pressHomeAndGoToOverview();
+
+        OverviewTask task = overview.getCurrentTask();
+        assertNotNull("overview.getCurrentTask() returned null (1)", task);
+        assertNotNull("OverviewTask.open returned null", task.open());
+        assertTrue("Test activity didn't open from Overview", mDevice.wait(Until.hasObject(
+                By.pkg(getAppPackageName()).text("TestActivity2")),
+                DEFAULT_UI_TIMEOUT));
+
+
+        // Test dismissing a task.
+        overview = pressHomeAndGoToOverview();
+        final Integer numTasks = getFromRecents(this::getTaskCount);
+        task = overview.getCurrentTask();
+        assertNotNull("overview.getCurrentTask() returned null (2)", task);
+        task.dismiss();
+        executeOnRecents(
+                recents -> assertEquals("Dismissing a task didn't remove 1 task from Overview",
+                        numTasks - 1, getTaskCount(recents)));
+
+        // Test dismissing all tasks.
+        pressHomeAndGoToOverview().dismissAllTasks();
+        assertTrue("Fallback Launcher not visible", mDevice.wait(Until.hasObject(By.pkg(
+                mOtherLauncherActivity.packageName)), WAIT_TIME_MS));
+    }
+
+    private int getCurrentOverviewPage(RecentsActivity recents) {
+        return recents.<RecentsView>getOverviewPanel().getCurrentPage();
+    }
+
+    private int getTaskCount(RecentsActivity recents) {
+        return recents.<RecentsView>getOverviewPanel().getTaskViewCount();
+    }
 }

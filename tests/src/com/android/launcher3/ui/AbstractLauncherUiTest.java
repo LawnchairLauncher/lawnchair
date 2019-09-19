@@ -19,6 +19,7 @@ import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
 import static com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import static org.junit.Assert.assertTrue;
 
@@ -29,6 +30,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Process;
@@ -47,7 +49,6 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.model.AppLaunchTracker;
@@ -55,11 +56,13 @@ import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.launcher3.util.rule.LauncherActivityRule;
 import com.android.launcher3.util.rule.ShellCommandRule;
+import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.After;
 import org.junit.Before;
@@ -89,7 +92,7 @@ public abstract class AbstractLauncherUiTest {
     public static final long DEFAULT_UI_TIMEOUT = 60000; // b/136278866
     private static final String TAG = "AbstractLauncherUiTest";
 
-    protected MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
+    protected LooperExecutor mMainThreadExecutor = MAIN_EXECUTOR;
     protected final UiDevice mDevice = UiDevice.getInstance(getInstrumentation());
     protected final LauncherInstrumentation mLauncher =
             new LauncherInstrumentation(getInstrumentation());
@@ -155,7 +158,8 @@ public abstract class AbstractLauncherUiTest {
 
     @Rule
     public TestRule mOrderSensitiveRules = RuleChain.
-            outerRule(mActivityMonitor).
+            outerRule(new TestStabilityRule()).
+            around(mActivityMonitor).
             around(getRulesInsideActivityMonitor());
 
     public UiDevice getDevice() {
@@ -343,14 +347,14 @@ public abstract class AbstractLauncherUiTest {
         }
     }
 
-    protected void startAppFast(String packageName) {
+    public static void startAppFast(String packageName) {
         startIntent(
                 getInstrumentation().getContext().getPackageManager().getLaunchIntentForPackage(
                         packageName),
                 By.pkg(packageName).depth(0));
     }
 
-    protected void startTestActivity(int activityNumber) {
+    public static void startTestActivity(int activityNumber) {
         final String packageName = getAppPackageName();
         final Intent intent = getInstrumentation().getContext().getPackageManager().
                 getLaunchIntentForPackage(packageName);
@@ -359,19 +363,25 @@ public abstract class AbstractLauncherUiTest {
         startIntent(intent, By.pkg(packageName).text("TestActivity" + activityNumber));
     }
 
-    private void startIntent(Intent intent, BySelector selector) {
+    private static void startIntent(Intent intent, BySelector selector) {
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         getInstrumentation().getTargetContext().startActivity(intent);
         assertTrue("App didn't start: " + selector,
-                mDevice.wait(Until.hasObject(selector), DEFAULT_UI_TIMEOUT));
+                UiDevice.getInstance(getInstrumentation())
+                        .wait(Until.hasObject(selector), DEFAULT_UI_TIMEOUT));
     }
 
-    public static String resolveSystemApp(String category) {
+    public static ActivityInfo resolveSystemAppInfo(String category) {
         return getInstrumentation().getContext().getPackageManager().resolveActivity(
                 new Intent(Intent.ACTION_MAIN).addCategory(category),
                 PackageManager.MATCH_SYSTEM_ONLY).
-                activityInfo.packageName;
+                activityInfo;
+    }
+
+
+    public static String resolveSystemApp(String category) {
+        return resolveSystemAppInfo(category).packageName;
     }
 
     protected void closeLauncherActivity() {

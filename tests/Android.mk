@@ -27,16 +27,17 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
 
 ifneq (,$(wildcard frameworks/base))
 else
-    LOCAL_STATIC_JAVA_LIBRARIES += libSharedSystemUI
+    LOCAL_STATIC_JAVA_LIBRARIES += SystemUISharedLib
 
     LOCAL_SRC_FILES := $(call all-java-files-under, tapl) \
+        ../quickstep/src/com/android/launcher3/uioverrides/DejankBinderTracker.java \
         ../src/com/android/launcher3/ResourceUtils.java \
         ../src/com/android/launcher3/util/SecureSettingsObserver.java \
         ../src/com/android/launcher3/testing/TestProtocol.java
 endif
 
 LOCAL_MODULE := ub-launcher-aosp-tapl
-LOCAL_SDK_VERSION := current
+LOCAL_SDK_VERSION := system_current
 
 include $(BUILD_STATIC_JAVA_LIBRARY)
 

@@ -22,7 +22,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
@@ -39,6 +38,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.util.Executors;
 import com.android.launcher3.compat.PackageInstallerCompat;
 
 import java.util.List;
@@ -133,7 +133,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
             // grid.
             prefs.edit().putBoolean(ADD_ICON_PREFERENCE_KEY, true).apply();
         } else if (!prefs.contains(ADD_ICON_PREFERENCE_INITIALIZED_KEY)) {
-            new PrefInitTask(context).executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
+            new PrefInitTask(context).executeOnExecutor(Executors.THREAD_POOL_EXECUTOR);
         }
     }
 

@@ -890,23 +890,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 mTotalMotionX = 0;
                 mActivePointerId = ev.getPointerId(0);
 
-                /*
-                 * If being flinged and user touches the screen, initiate drag;
-                 * otherwise don't.  mScroller.isFinished should be false when
-                 * being flinged.
-                 */
-                final int xDist = Math.abs(mScroller.getFinalPos() - mScroller.getCurrPos());
-                final boolean finishedScrolling = (mScroller.isFinished() || xDist < mTouchSlop / 3);
-
-                if (finishedScrolling) {
-                    mIsBeingDragged = false;
-                    if (!mScroller.isFinished() && !mFreeScroll) {
-                        setCurrentPage(getNextPage());
-                        pageEndTransition();
-                    }
-                } else {
-                    mIsBeingDragged = true;
-                }
+                updateIsBeingDraggedOnTouchDown();
 
                 break;
             }
@@ -927,6 +911,25 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
          * drag mode.
          */
         return mIsBeingDragged;
+    }
+
+    /**
+     * If being flinged and user touches the screen, initiate drag; otherwise don't.
+     */
+    private void updateIsBeingDraggedOnTouchDown() {
+        // mScroller.isFinished should be false when being flinged.
+        final int xDist = Math.abs(mScroller.getFinalPos() - mScroller.getCurrPos());
+        final boolean finishedScrolling = (mScroller.isFinished() || xDist < mTouchSlop / 3);
+
+        if (finishedScrolling) {
+            mIsBeingDragged = false;
+            if (!mScroller.isFinished() && !mFreeScroll) {
+                setCurrentPage(getNextPage());
+                pageEndTransition();
+            }
+        } else {
+            mIsBeingDragged = true;
+        }
     }
 
     public boolean isHandlingTouch() {
@@ -1104,6 +1107,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
         switch (action & MotionEvent.ACTION_MASK) {
         case MotionEvent.ACTION_DOWN:
+            updateIsBeingDraggedOnTouchDown();
+
             /*
              * If being flinged and user touches, stop the fling. isFinished
              * will be false if being flinged.
@@ -1289,6 +1294,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if ((event.getSource() & InputDevice.SOURCE_CLASS_POINTER) != 0) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_SCROLL: {
+                    Launcher launcher = Launcher.getLauncher(getContext());
+                    if (launcher != null) {
+                        AbstractFloatingView.closeAllOpenViews(launcher);
+                    }
                     // Handle mouse (or ext. device) by shifting the page depending on the scroll
                     final float vscroll;
                     final float hscroll;
@@ -1298,6 +1307,9 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                     } else {
                         vscroll = -event.getAxisValue(MotionEvent.AXIS_VSCROLL);
                         hscroll = event.getAxisValue(MotionEvent.AXIS_HSCROLL);
+                    }
+                    if (Math.abs(vscroll) > Math.abs(hscroll) && !isVerticalScrollable()) {
+                        return true;
                     }
                     if (hscroll != 0 || vscroll != 0) {
                         boolean isForwardScroll = mIsRtl ? (hscroll < 0 || vscroll < 0)
@@ -1313,6 +1325,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             }
         }
         return super.onGenericMotionEvent(event);
+    }
+
+    protected boolean isVerticalScrollable() {
+        return true;
     }
 
     private void acquireVelocityTrackerAndAddMovement(MotionEvent ev) {

@@ -42,6 +42,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.Launcher;
@@ -179,6 +180,11 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
         } else {
             super.onDragEnd(velocity, fling);
         }
+
+        View searchView = mLauncher.getAppsView().getSearchView();
+        if (searchView instanceof FeedbackHandler) {
+            ((FeedbackHandler) searchView).resetFeedback();
+        }
         mMotionPauseDetector.clear();
     }
 
@@ -205,4 +211,16 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
             builder.addFlag(AnimatorSetBuilder.FLAG_DONT_ANIMATE_OVERVIEW);
         }
     }
+
+    /**
+     * Interface for views with feedback animation requiring reset
+     */
+    public interface FeedbackHandler {
+
+        /**
+         * reset searchWidget feedback
+         */
+        void resetFeedback();
+    }
+
 }

@@ -50,7 +50,6 @@ import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.shared.system.QuickStepContract;
 
 /**
  * Handles quick switching to a recent task from the home screen.

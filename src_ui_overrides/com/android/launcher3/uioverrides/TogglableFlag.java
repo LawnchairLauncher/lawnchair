@@ -17,7 +17,8 @@
 package com.android.launcher3.uioverrides;
 
 import android.content.Context;
-import com.android.launcher3.config.BaseFlags.BaseTogglableFlag;
+
+import com.android.launcher3.config.FeatureFlags.BaseTogglableFlag;
 
 public class TogglableFlag extends BaseTogglableFlag {
 

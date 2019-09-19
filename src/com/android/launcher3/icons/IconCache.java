@@ -16,6 +16,9 @@
 
 package com.android.launcher3.icons;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -23,6 +26,7 @@ import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Process;
@@ -36,8 +40,6 @@ import com.android.launcher3.IconProvider;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherFiles;
-import com.android.launcher3.LauncherModel;
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -48,6 +50,7 @@ import com.android.launcher3.icons.cache.BaseIconCache;
 import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.Preconditions;
 
@@ -60,10 +63,9 @@ public class IconCache extends BaseIconCache {
 
     private static final String TAG = "Launcher.IconCache";
 
-    private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
-
     private final CachingLogic<ComponentWithLabel> mComponentWithLabelCachingLogic;
     private final CachingLogic<LauncherActivityInfo> mLauncherActivityInfoCachingLogic;
+    private final CachingLogic<ShortcutInfo> mShortcutCachingLogic;
 
     private final LauncherAppsCompat mLauncherApps;
     private final UserManagerCompat mUserManager;
@@ -73,10 +75,11 @@ public class IconCache extends BaseIconCache {
     private int mPendingIconRequestCount = 0;
 
     public IconCache(Context context, InvariantDeviceProfile inv) {
-        super(context, LauncherFiles.APP_ICONS_DB, LauncherModel.getWorkerLooper(),
+        super(context, LauncherFiles.APP_ICONS_DB, MODEL_EXECUTOR.getLooper(),
                 inv.fillResIconDpi, inv.iconBitmapSize, true /* inMemoryCache */);
         mComponentWithLabelCachingLogic = new ComponentCachingLogic(context);
         mLauncherActivityInfoCachingLogic = LauncherActivityCachingLogic.newInstance(context);
+        mShortcutCachingLogic = new ShortcutCachingLogic();
         mLauncherApps = LauncherAppsCompat.getInstance(mContext);
         mUserManager = UserManagerCompat.getInstance(mContext);
         mInstantAppResolver = InstantAppResolver.newInstance(mContext);
@@ -124,7 +127,7 @@ public class IconCache extends BaseIconCache {
             final ItemInfoWithIcon info) {
         Preconditions.assertUIThread();
         if (mPendingIconRequestCount <= 0) {
-            LauncherModel.setWorkerPriority(Process.THREAD_PRIORITY_FOREGROUND);
+            MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
         }
         mPendingIconRequestCount ++;
 
@@ -136,7 +139,7 @@ public class IconCache extends BaseIconCache {
                 } else if (info instanceof PackageItemInfo) {
                     getTitleAndIconForApp((PackageItemInfo) info, false);
                 }
-                mMainThreadExecutor.execute(() -> {
+                MAIN_EXECUTOR.execute(() -> {
                     caller.reapplyItemInfo(info);
                     onEnd();
                 });
@@ -149,7 +152,7 @@ public class IconCache extends BaseIconCache {
     private void onIconRequestEnd() {
         mPendingIconRequestCount --;
         if (mPendingIconRequestCount <= 0) {
-            LauncherModel.setWorkerPriority(Process.THREAD_PRIORITY_BACKGROUND);
+            MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
         }
     }
 
@@ -172,6 +175,14 @@ public class IconCache extends BaseIconCache {
             LauncherActivityInfo activityInfo, boolean useLowResIcon) {
         // If we already have activity info, no need to use package icon
         getTitleAndIcon(info, () -> activityInfo, false, useLowResIcon);
+    }
+
+    /**
+     * Fill in info with the icon and label for deep shortcut.
+     */
+    public synchronized CacheEntry getDeepShortcutTitleAndIcon(ShortcutInfo info) {
+        return cacheLocked(ShortcutKey.fromInfo(info).componentName, info.getUserHandle(),
+                () -> info, mShortcutCachingLogic, false, false);
     }
 
     /**

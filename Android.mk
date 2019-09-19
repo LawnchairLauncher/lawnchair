@@ -23,12 +23,7 @@ include $(CLEAR_VARS)
 LOCAL_USE_AAPT2 := true
 LOCAL_AAPT2_ONLY := true
 LOCAL_MODULE_TAGS := optional
-
-ifneq (,$(wildcard frameworks/base))
-    LOCAL_STATIC_JAVA_LIBRARIES:= PluginCoreLib
-else
-    LOCAL_STATIC_JAVA_LIBRARIES:= libPluginCore
-endif
+LOCAL_STATIC_JAVA_LIBRARIES:= PluginCoreLib
 
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src_plugins)
@@ -89,8 +84,7 @@ LOCAL_STATIC_ANDROID_LIBRARIES := \
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
     $(call all-java-files-under, src_shortcuts_overrides) \
-    $(call all-java-files-under, src_ui_overrides) \
-    $(call all-java-files-under, src_flags)
+    $(call all-java-files-under, src_ui_overrides)
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 # Proguard is disable for testing. Derivarive prjects to keep proguard enabled
@@ -151,11 +145,10 @@ LOCAL_USE_AAPT2 := true
 LOCAL_AAPT2_ONLY := true
 LOCAL_MODULE_TAGS := optional
 
+LOCAL_STATIC_JAVA_LIBRARIES := SystemUISharedLib launcherprotosnano
 ifneq (,$(wildcard frameworks/base))
-  LOCAL_STATIC_JAVA_LIBRARIES := SystemUISharedLib launcherprotosnano
   LOCAL_PRIVATE_PLATFORM_APIS := true
 else
-  LOCAL_STATIC_JAVA_LIBRARIES := libSharedSystemUI libLauncherProtos
   LOCAL_SDK_VERSION := system_current
   LOCAL_MIN_SDK_VERSION := 26
 endif
@@ -169,7 +162,6 @@ LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
     $(call all-java-files-under, quickstep/src) \
     $(call all-java-files-under, quickstep/recents_ui_overrides/src) \
-    $(call all-java-files-under, src_flags) \
     $(call all-java-files-under, src_shortcuts_overrides)
 
 LOCAL_RESOURCE_DIR := \
@@ -224,11 +216,10 @@ include $(CLEAR_VARS)
 LOCAL_USE_AAPT2 := true
 LOCAL_MODULE_TAGS := optional
 
+LOCAL_STATIC_JAVA_LIBRARIES := SystemUISharedLib launcherprotosnano
 ifneq (,$(wildcard frameworks/base))
-  LOCAL_STATIC_JAVA_LIBRARIES := SystemUISharedLib launcherprotosnano
   LOCAL_PRIVATE_PLATFORM_APIS := true
 else
-  LOCAL_STATIC_JAVA_LIBRARIES := libSharedSystemUI libLauncherProtos
   LOCAL_SDK_VERSION := system_current
   LOCAL_MIN_SDK_VERSION := 26
 endif
@@ -271,11 +262,10 @@ include $(CLEAR_VARS)
 LOCAL_USE_AAPT2 := true
 LOCAL_MODULE_TAGS := optional
 
+LOCAL_STATIC_JAVA_LIBRARIES := SystemUISharedLib launcherprotosnano
 ifneq (,$(wildcard frameworks/base))
-  LOCAL_STATIC_JAVA_LIBRARIES := SystemUISharedLib launcherprotosnano
   LOCAL_PRIVATE_PLATFORM_APIS := true
 else
-  LOCAL_STATIC_JAVA_LIBRARIES := libSharedSystemUI libLauncherProtos
   LOCAL_SDK_VERSION := system_current
   LOCAL_MIN_SDK_VERSION := 26
 endif
