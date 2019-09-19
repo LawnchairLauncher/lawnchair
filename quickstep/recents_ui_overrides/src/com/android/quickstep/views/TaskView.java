@@ -53,6 +53,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -390,6 +391,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mIconView.setDrawable(icon);
             mIconView.setOnClickListener(v -> showTaskMenu(Touch.TAP));
             mIconView.setOnLongClickListener(v -> {
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.WELLBEING_NO_TASK_MENU, "setOnLongClickListener");
+                }
                 requestDisallowInterceptTouchEvent(true);
                 return showTaskMenu(Touch.LONGPRESS);
             });
