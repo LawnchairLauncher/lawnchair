@@ -131,8 +131,8 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
             case ACTION_POINTER_DOWN: {
                 if (mState != STATE_ACTIVE) {
                     mState = STATE_DELEGATE_ACTIVE;
-                    break;
                 }
+                break;
             }
             case ACTION_POINTER_UP: {
                 int ptrIdx = ev.getActionIndex();
