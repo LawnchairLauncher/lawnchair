@@ -73,8 +73,12 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name="com.android.launcher3.testcomponent.ListViewService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
         <provider
-            android:name="com.android.launcher3.testcomponent.TestCommandReceiver"
+            android:name="com.android.launcher3.testcomponent.TestCommandProvider"
             android:authorities="${packageName}.commands"
             android:exported="true"/>
 
