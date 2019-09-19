@@ -36,6 +36,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.uioverrides.DejankBinderTracker;
 import com.android.launcher3.uioverrides.DisplayRotationListener;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -65,7 +66,8 @@ public abstract class BaseDraggingActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mIsSafeModeEnabled = getPackageManager().isSafeMode();
+        mIsSafeModeEnabled = DejankBinderTracker.whitelistIpcs(() ->
+                getPackageManager().isSafeMode());
         mRotationListener = new DisplayRotationListener(this, this::onDeviceRotationChanged);
 
         // Update theme
