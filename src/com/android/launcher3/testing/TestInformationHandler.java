@@ -15,8 +15,9 @@
  */
 package com.android.launcher3.testing;
 
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static android.graphics.Bitmap.Config.ARGB_8888;
+
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -110,6 +111,21 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 try {
                     final int deferUpdatesFlags = MAIN_EXECUTOR.submit(() ->
                             mLauncher.getAppsView().getAppsStore().getDeferUpdatesFlags()).get();
+                    response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                            deferUpdatesFlags);
+                } catch (ExecutionException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            }
+
+            case TestProtocol.REQUEST_APPS_LIST_SCROLL_Y: {
+                try {
+                    final int deferUpdatesFlags = MAIN_EXECUTOR.submit(() ->
+                            mLauncher.getAppsView().getActiveRecyclerView().getCurrentScrollY())
+                            .get();
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
                             deferUpdatesFlags);
                 } catch (ExecutionException e) {

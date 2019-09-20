@@ -30,7 +30,6 @@ import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.rule.ShellCommandRule.disableHeadsUpNotification;
 import static com.android.launcher3.util.rule.ShellCommandRule.getLauncherCommand;
-import static com.android.quickstep.NavigationModeSwitchRule.Mode.ZERO_BUTTON;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -89,7 +88,6 @@ public class FallbackRecentsTest {
     @Rule
     public final SimpleActivityRule<RecentsActivity> mActivityMonitor =
             new SimpleActivityRule(RecentsActivity.class);
-
 
     public FallbackRecentsTest() throws RemoteException {
         Instrumentation instrumentation = getInstrumentation();
@@ -161,8 +159,7 @@ public class FallbackRecentsTest {
         return mLauncher.getBackground().switchToOverview();
     }
 
-    // TODO: Enable all modes after b/141184247 is fixed
-    @NavigationModeSwitch(mode = ZERO_BUTTON)
+    @NavigationModeSwitch
     @Test
     public void testOverview() throws Exception {
         startAppFast(getAppPackageName());
