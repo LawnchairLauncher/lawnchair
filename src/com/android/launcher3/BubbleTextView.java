@@ -133,6 +133,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mDisableRelayout = false;
 
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private final boolean mIgnorePaddingTouch;
+
     private IconLoadRequest mIconLoadRequest;
 
     public BubbleTextView(Context context) {
@@ -159,19 +162,25 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
             defaultIconSize = grid.iconSizePx;
+            mIgnorePaddingTouch = true;
         } else if (display == DISPLAY_ALL_APPS) {
             DeviceProfile grid = mActivity.getDeviceProfile();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
+            mIgnorePaddingTouch = true;
         } else if (display == DISPLAY_FOLDER) {
             DeviceProfile grid = mActivity.getDeviceProfile();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.folderChildTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
             defaultIconSize = grid.folderChildIconSizePx;
+            mIgnorePaddingTouch = true;
         } else {
+            // widget_selection or shortcut_popup
             defaultIconSize = mActivity.getDeviceProfile().iconSizePx;
+            mIgnorePaddingTouch = false;
         }
+
         mCenterVertically = a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
 
         mIconSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconSizeOverride,
@@ -319,6 +328,15 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        // ignore events if they happen in padding area
+        if (event.getAction() == MotionEvent.ACTION_DOWN && mIgnorePaddingTouch
+                && (event.getY() < getPaddingTop()
+                || event.getX() < getPaddingLeft()
+                || event.getY() > getHeight() - getPaddingBottom()
+                || event.getX() > getWidth() - getPaddingRight())) {
+            return false;
+        }
+
         // Call the superclass onTouchEvent first, because sometimes it changes the state to
         // isPressed() on an ACTION_UP
         boolean result = super.onTouchEvent(event);
