@@ -65,7 +65,7 @@
             </intent-filter>
             <meta-data
                 android:name="com.android.launcher3.grid.control"
-                android:value="${packageName}.grid_control" />
+                android:value="${packageName}.custom_grid_control" />
         </activity>
 
     </application>

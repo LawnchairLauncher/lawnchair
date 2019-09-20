@@ -400,6 +400,11 @@
             android:exported="false"
             android:name="ch.deletescape.lawnchair.bugreport.DogbinUploadService"
             android:process=":bugReport" />
+
+        <provider
+            android:name="ch.deletescape.lawnchair.settings.ui.preview.GridOptionsProvider"
+            android:authorities="${packageName}.custom_grid_control"
+            android:exported="true" />
     </application>
 
 </manifest>
