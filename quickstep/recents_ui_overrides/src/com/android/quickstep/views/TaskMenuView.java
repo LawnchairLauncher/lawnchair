@@ -26,6 +26,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -40,6 +41,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.TaskOverlayFactory;
@@ -159,6 +161,9 @@ public class TaskMenuView extends AbstractFloatingView {
     }
 
     public static TaskMenuView showForTask(TaskView taskView) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.WELLBEING_NO_TASK_MENU, "showForTask");
+        }
         BaseDraggingActivity activity = BaseDraggingActivity.fromContext(taskView.getContext());
         final TaskMenuView taskMenuView = (TaskMenuView) activity.getLayoutInflater().inflate(
                         R.layout.task_menu, activity.getDragLayer(), false);
@@ -166,8 +171,14 @@ public class TaskMenuView extends AbstractFloatingView {
     }
 
     private boolean populateAndShowForTask(TaskView taskView) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.WELLBEING_NO_TASK_MENU, "populateAndShowForTask1");
+        }
         if (isAttachedToWindow()) {
             return false;
+        }
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.WELLBEING_NO_TASK_MENU, "populateAndShowForTask2");
         }
         mActivity.getDragLayer().addView(this);
         mTaskView = taskView;
