@@ -154,7 +154,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         String fragmentName = getIntent().getStringExtra(EXTRA_FRAGMENT);
         int content = getIntent().getIntExtra(SubSettingsFragment.CONTENT_RES_ID, 0);
         isSubSettings = content != 0 || fragmentName != null || forceSubSettings;
-        hasPreview = getIntent().getBooleanExtra(SubSettingsFragment.HAS_PREVIEW, false);
+        hasPreview = false;
 
         boolean showSearch = shouldShowSearch();
 

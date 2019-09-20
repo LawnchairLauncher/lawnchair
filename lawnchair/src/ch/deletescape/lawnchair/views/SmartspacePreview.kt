@@ -19,10 +19,12 @@ package ch.deletescape.lawnchair.views
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import ch.deletescape.lawnchair.LawnchairPreferences
+import ch.deletescape.lawnchair.theme.ThemeOverride
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.widget.custom.CustomWidgetParser
@@ -38,6 +40,7 @@ class SmartspacePreview(context: Context, attrs: AttributeSet?) :
             "pref_smartspace_time_24_h", "pref_smartspace_date", "pref_use_pill_qsb")
     private val needsReinflate = setOf("pref_use_pill_qsb")
     private var currentView: SmartspaceView? = null
+    private val themedContext = ContextThemeWrapper(context, ThemeOverride.Launcher().getTheme(context))
 
     override val provider = CustomWidgetParser.getCustomWidgets(context)[0]!!
 
@@ -68,7 +71,7 @@ class SmartspacePreview(context: Context, attrs: AttributeSet?) :
     }
 
     private fun inflateView(layout: Int): View {
-        val view = LayoutInflater.from(context).inflate(layout, this, false)
+        val view = LayoutInflater.from(themedContext).inflate(layout, this, false)
         view.layoutParams.height = resources.getDimensionPixelSize(R.dimen.smartspace_preview_height)
         currentView = view as? SmartspaceView
         return view
