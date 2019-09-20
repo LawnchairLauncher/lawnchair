@@ -273,7 +273,7 @@ public abstract class BaseIconCache {
         if (entry.icon == null) return;
         entry.title = cachingLogic.getLabel(object);
         entry.contentDescription = mPackageManager.getUserBadgedLabel(entry.title, user);
-        mCache.put(key, entry);
+        if (cachingLogic.addToMemCache()) mCache.put(key, entry);
 
         ContentValues values = newContentValues(entry, entry.title.toString(),
                 componentName.getPackageName(), cachingLogic.getKeywords(object, mLocaleList));
@@ -312,20 +312,12 @@ public abstract class BaseIconCache {
             @NonNull ComponentName componentName, @NonNull UserHandle user,
             @NonNull Supplier<T> infoProvider, @NonNull CachingLogic<T> cachingLogic,
             boolean usePackageIcon, boolean useLowResIcon) {
-        return cacheLocked(componentName, user, infoProvider, cachingLogic, usePackageIcon,
-                useLowResIcon, true);
-    }
-
-    protected <T> CacheEntry cacheLocked(
-            @NonNull ComponentName componentName, @NonNull UserHandle user,
-            @NonNull Supplier<T> infoProvider, @NonNull CachingLogic<T> cachingLogic,
-            boolean usePackageIcon, boolean useLowResIcon, boolean addToMemCache) {
         assertWorkerThread();
         ComponentKey cacheKey = new ComponentKey(componentName, user);
         CacheEntry entry = mCache.get(cacheKey);
         if (entry == null || (entry.isLowRes() && !useLowResIcon)) {
             entry = new CacheEntry();
-            if (addToMemCache) {
+            if (cachingLogic.addToMemCache()) {
                 mCache.put(cacheKey, entry);
             }
 
