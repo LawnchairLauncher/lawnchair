@@ -57,6 +57,9 @@ import android.os.Looper;
 import android.util.Pair;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.Interpolators;
@@ -79,9 +82,6 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.WindowManagerWrapper;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * {@link LauncherAppTransitionManager} with Quickstep-specific app transitions for launching from
@@ -766,6 +766,13 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         @Override
         public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
                 LauncherAnimationRunner.AnimationResult result) {
+            if (mLauncher.isDestroyed()) {
+                AnimatorSet anim = new AnimatorSet();
+                anim.play(getClosingWindowAnimators(targetCompats));
+                result.setAnimation(anim, mLauncher.getApplicationContext());
+                return;
+            }
+
             if (!mLauncher.hasBeenResumed()) {
                 // If launcher is not resumed, wait until new async-frame after resume
                 mLauncher.addOnResumeCallback(() ->
