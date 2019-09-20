@@ -380,6 +380,10 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
             TaskView runningTaskView = recentsView.getRunningTaskView();
             if (runningTaskView == null) {
                 runningTaskView = recentsView.getCurrentPageTaskView();
+                if (runningTaskView == null) {
+                    // There are no task views in LockTask mode when Overview is enabled.
+                    return;
+                }
             }
             TimeInterpolator oldInterpolator = translateY.getInterpolator();
             Rect fallbackInsets = launcher.getDeviceProfile().getInsets();
