@@ -132,6 +132,10 @@ class LawnchairSmartspaceController(val context: Context) {
         listeners.forEach { it.onDataUpdated(weatherData, cardData) }
     }
 
+    fun requestUpdate(listener: Listener) {
+        listener.onDataUpdated(weatherData, cardData)
+    }
+
     fun addListener(listener: Listener) {
         listeners.add(listener)
         listener.onDataUpdated(weatherData, cardData)

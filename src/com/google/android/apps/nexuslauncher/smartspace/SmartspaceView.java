@@ -434,6 +434,8 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         dr.setContentDescription("");
         if (isAttachedToWindow() && mController != null)
             mController.addListener(this);
+        else if (mController != null)
+            mController.requestUpdate(this);
     }
 
     protected void onLayout(final boolean b, final int n, final int n2, final int n3, final int n4) {
