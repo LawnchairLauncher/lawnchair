@@ -21,7 +21,6 @@ import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
 
 import android.content.ComponentName;
-import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -71,10 +70,6 @@ public class LauncherAppState {
     }
 
     private LauncherAppState(Context context) {
-        if (getLocalProvider(context) == null) {
-            throw new RuntimeException(
-                    "Initializing LauncherAppState in the absence of LauncherProvider");
-        }
         Log.v(Launcher.TAG, "LauncherAppState initiated");
         Preconditions.assertUIThread();
         mContext = context;
@@ -99,7 +94,10 @@ public class LauncherAppState {
         if (FeatureFlags.IS_DOGFOOD_BUILD) {
             filter.addAction(ACTION_FORCE_ROLOAD);
         }
+        // TODO: remove listener on terminate
         FeatureFlags.APP_SEARCH_IMPROVEMENTS.addChangeListener(context, mModel::forceReload);
+        CustomWidgetManager.INSTANCE.get(mContext)
+                .setWidgetRefreshCallback(mModel::refreshAndBindWidgetsAndShortcuts);
 
         mContext.registerReceiver(mModel, filter);
         UserManagerCompat.getInstance(mContext).enableAndResetCache();
@@ -149,16 +147,15 @@ public class LauncherAppState {
         final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(mContext);
         launcherApps.removeOnAppsChangedCallback(mModel);
         mInstallSessionTracker.unregister();
+        CustomWidgetManager.INSTANCE.get(mContext).setWidgetRefreshCallback(null);
+
         if (mNotificationDotsObserver != null) {
             mNotificationDotsObserver.unregister();
         }
     }
 
     LauncherModel setLauncher(Launcher launcher) {
-        getLocalProvider(mContext).setLauncherProviderChangeListener(launcher);
         mModel.initialize(launcher);
-        CustomWidgetManager.INSTANCE.get(launcher)
-                .setWidgetRefreshCallback(mModel::refreshAndBindWidgetsAndShortcuts);
         return mModel;
     }
 
@@ -183,12 +180,5 @@ public class LauncherAppState {
      */
     public static InvariantDeviceProfile getIDP(Context context) {
         return InvariantDeviceProfile.INSTANCE.get(context);
-    }
-
-    private static LauncherProvider getLocalProvider(Context context) {
-        try (ContentProviderClient cl = context.getContentResolver()
-                .acquireContentProviderClient(LauncherProvider.AUTHORITY)) {
-            return (LauncherProvider) cl.getLocalContentProvider();
-        }
     }
 }

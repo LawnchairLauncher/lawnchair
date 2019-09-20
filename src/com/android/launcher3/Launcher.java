@@ -173,7 +173,7 @@ import java.util.function.Supplier;
  * Default launcher application.
  */
 public class Launcher extends BaseDraggingActivity implements LauncherExterns,
-        Callbacks, LauncherProviderChangeListener, UserEventDelegate,
+        Callbacks, UserEventDelegate,
         InvariantDeviceProfile.OnIDPChangeListener, PluginListener<OverlayPlugin> {
     public static final String TAG = "Launcher";
 
@@ -612,13 +612,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     public <T extends View> T findViewById(int id) {
         return mLauncherView.findViewById(id);
-    }
-
-    @Override
-    public void onAppWidgetHostReset() {
-        if (mAppWidgetHost != null) {
-            mAppWidgetHost.startListening();
-        }
     }
 
     private LauncherCallbacks mLauncherCallbacks;
