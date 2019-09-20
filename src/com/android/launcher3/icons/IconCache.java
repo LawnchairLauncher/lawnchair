@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ShortcutInfo;
@@ -52,6 +53,7 @@ import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.InstantAppResolver;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
 
 import java.util.function.Supplier;
@@ -245,6 +247,10 @@ public class IconCache extends BaseIconCache {
 
     public Drawable getFullResIcon(LauncherActivityInfo info, boolean flattenDrawable) {
         return mIconProvider.getIcon(info, mIconDpi, flattenDrawable);
+    }
+
+    public void updateSessionCache(PackageUserKey key, PackageInstaller.SessionInfo info) {
+        cachePackageInstallInfo(key.mPackageName, key.mUser, info.getAppIcon(), info.getAppLabel());
     }
 
     @Override

@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.pm.PackageInstallerCompat.getUserHandle;
+
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -38,12 +40,10 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.pm.PackageInstallerCompat;
 import com.android.launcher3.util.Executors;
-import com.android.launcher3.compat.PackageInstallerCompat;
 
 import java.util.List;
-
-import static com.android.launcher3.compat.PackageInstallerCompat.getUserHandle;
 
 /**
  * BroadcastReceiver to handle session commit intent.

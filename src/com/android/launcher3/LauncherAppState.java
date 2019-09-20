@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
 
 import android.content.ComponentName;
@@ -28,12 +29,13 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.notification.NotificationListener;
+import com.android.launcher3.pm.InstallSessionTracker;
+import com.android.launcher3.pm.PackageInstallerCompat;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SecureSettingsObserver;
@@ -53,6 +55,8 @@ public class LauncherAppState {
     private final WidgetPreviewLoader mWidgetCache;
     private final InvariantDeviceProfile mInvariantDeviceProfile;
     private final SecureSettingsObserver mNotificationDotsObserver;
+
+    private final InstallSessionTracker mInstallSessionTracker;
 
     public static LauncherAppState getInstance(final Context context) {
         return INSTANCE.get(context);
@@ -102,6 +106,9 @@ public class LauncherAppState {
         mInvariantDeviceProfile.addOnChangeListener(this::onIdpChanged);
         new Handler().post( () -> mInvariantDeviceProfile.verifyConfigChangedInBackground(context));
 
+        mInstallSessionTracker = PackageInstallerCompat.getInstance(context)
+                .registerInstallTracker(mModel, MODEL_EXECUTOR);
+
         if (!mContext.getResources().getBoolean(R.bool.notification_dots_enabled)) {
             mNotificationDotsObserver = null;
         } else {
@@ -141,7 +148,7 @@ public class LauncherAppState {
         mContext.unregisterReceiver(mModel);
         final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(mContext);
         launcherApps.removeOnAppsChangedCallback(mModel);
-        PackageInstallerCompat.getInstance(mContext).onStop();
+        mInstallSessionTracker.unregister();
         if (mNotificationDotsObserver != null) {
             mNotificationDotsObserver.unregister();
         }

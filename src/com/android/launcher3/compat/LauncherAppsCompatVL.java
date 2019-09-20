@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
-import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
@@ -33,6 +32,9 @@ import android.os.UserHandle;
 import android.util.ArrayMap;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.compat.ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVL;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.PackageUserKey;
@@ -40,9 +42,6 @@ import com.android.launcher3.util.PackageUserKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
@@ -206,11 +205,6 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
             }
         }
         return result;
-    }
-
-    @Override
-    public List<PackageInstaller.SessionInfo> getAllPackageInstallerSessions() {
-        return mContext.getPackageManager().getPackageInstaller().getAllSessions();
     }
 }
 

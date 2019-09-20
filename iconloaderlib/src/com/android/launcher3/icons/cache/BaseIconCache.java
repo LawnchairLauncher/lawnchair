@@ -374,7 +374,7 @@ public abstract class BaseIconCache {
      * Adds a default package entry in the cache. This entry is not persisted and will be removed
      * when the cache is flushed.
      */
-    public synchronized void cachePackageInstallInfo(String packageName, UserHandle user,
+    protected synchronized void cachePackageInstallInfo(String packageName, UserHandle user,
             Bitmap icon, CharSequence title) {
         removeFromMemCacheLocked(packageName, user);
 
