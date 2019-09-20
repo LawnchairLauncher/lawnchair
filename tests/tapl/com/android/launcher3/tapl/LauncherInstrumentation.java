@@ -512,15 +512,6 @@ public final class LauncherInstrumentation {
         }
     }
 
-    Bundle getAnswerFromLauncher(UiObject2 view, String requestTag) {
-        // Send a fake set-text request to Launcher to initiate a response with requested data.
-        final String responseTag = requestTag + TestProtocol.RESPONSE_MESSAGE_POSTFIX;
-        return (Bundle) executeAndWaitForEvent(
-                () -> view.setText(requestTag),
-                event -> responseTag.equals(event.getClassName()),
-                "Launcher didn't respond to request: " + requestTag);
-    }
-
     /**
      * Presses nav bar home button.
      *

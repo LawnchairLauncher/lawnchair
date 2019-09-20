@@ -104,7 +104,12 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                     startY = endY = mLauncher.getDevice().getDisplayHeight() / 2;
                 }
 
-                mLauncher.swipeToState(startX, startY, endX, endY, 10, expectedState);
+                if (mLauncher.isFallbackOverview()) {
+                    mLauncher.linearGesture(startX, startY, endX, endY, 10);
+                    new BaseOverview(mLauncher);
+                } else {
+                    mLauncher.swipeToState(startX, startY, endX, endY, 10, expectedState);
+                }
                 break;
             }
 
