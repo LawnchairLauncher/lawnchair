@@ -74,6 +74,7 @@ public final class TestProtocol {
     public static final String REQUEST_TOTAL_PSS_KB = "total_pss";
     public static final String REQUEST_JAVA_LEAK = "java-leak";
     public static final String REQUEST_NATIVE_LEAK = "native-leak";
+    public static final String REQUEST_VIEW_LEAK = "view-leak";
 
     public static boolean sDebugTracing = false;
     public static final String REQUEST_ENABLE_DEBUG_TRACING = "enable-debug-tracing";

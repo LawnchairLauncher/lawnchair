@@ -24,6 +24,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Debug;
+import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -165,6 +166,13 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 final Bitmap bitmap = Bitmap.createBitmap(512, 512, ARGB_8888);
                 bitmap.eraseColor(Color.RED);
                 mLeaks.add(bitmap);
+                break;
+            }
+
+            case TestProtocol.REQUEST_VIEW_LEAK: {
+                if (mLeaks == null) mLeaks = new LinkedList();
+
+                mLeaks.add(new View(mContext));
                 break;
             }
         }

@@ -1001,4 +1001,8 @@ public final class LauncherInstrumentation {
     public void produceNativeLeak() {
         getTestInfo(TestProtocol.REQUEST_NATIVE_LEAK);
     }
+
+    public void produceViewLeak() {
+        getTestInfo(TestProtocol.REQUEST_VIEW_LEAK);
+    }
 }
