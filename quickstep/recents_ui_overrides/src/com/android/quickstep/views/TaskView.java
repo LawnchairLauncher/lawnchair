@@ -28,7 +28,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.res.Resources;
@@ -54,7 +53,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -818,8 +816,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                     / (getWidth() + currentInsetsLeft + currentInsetsRight));
         }
 
-        // Some of the items in here are dependent on the current fullscreen params
-        setIconScaleAndDim(progress, true /* invert */);
+        if (!getRecentsView().isTaskIconScaledDown(this)) {
+            // Some of the items in here are dependent on the current fullscreen params, but don't
+            // update them if the icon is supposed to be scaled down.
+            setIconScaleAndDim(progress, true /* invert */);
+        }
 
         thumbnail.setFullscreenParams(mCurrentFullscreenParams);
         mOutlineProvider.setFullscreenParams(mCurrentFullscreenParams);
