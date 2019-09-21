@@ -44,6 +44,7 @@ import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.ContentWriter;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
@@ -54,7 +55,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * Tests for bind widget flow.
@@ -326,9 +329,12 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         int count = 0;
         String pkg = invalidPackage;
 
-        Set<String> activePackage = getOnUiThread(() ->
-                PackageInstallerCompat.getInstance(mTargetContext)
-                        .updateAndGetActiveSessionCache().keySet());
+        Set<String> activePackage = getOnUiThread(() -> {
+            Set<String> packages = new HashSet<>();
+            PackageInstallerCompat.getInstance(mTargetContext).updateAndGetActiveSessionCache()
+                    .keySet().forEach(packageUserKey -> packages.add(packageUserKey.mPackageName));
+            return packages;
+        });
         while(true) {
             try {
                 mTargetContext.getPackageManager().getPackageInfo(
