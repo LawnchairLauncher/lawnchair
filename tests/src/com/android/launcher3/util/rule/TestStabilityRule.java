@@ -37,11 +37,11 @@ public class TestStabilityRule implements TestRule {
     private static final String TAG = "TestStabilityRule";
     private static final Pattern LAUNCHER_BUILD =
             Pattern.compile("^("
-                    + "(?<androidStudio>BuildFromAndroidStudio)|"
-                    + "(?<commandLine>[0-9]+-eng\\.[a-z]+\\.[0-9]+\\.[0-9]+)|"
-                    + "(?<presubmit>[0-9]+-P[0-9]+)|"
-                    + "(?<postsubmit>[0-9]+-[0-9]+|"
-                    + "(?<platform>[0-9]+))"
+                    + "(?<local>(BuildFromAndroidStudio|"
+                    + "([0-9]+|[A-Z])-eng\\.[a-z]+\\.[0-9]+\\.[0-9]+))|"
+                    + "(?<presubmit>([0-9]+|[A-Z])-P[0-9]+)|"
+                    + "(?<postsubmit>([0-9]+|[A-Z])+-[0-9]+|"
+                    + "(?<platform>([0-9]+|[A-Z])+))"
                     + ")$");
     private static final Pattern PLATFORM_BUILD =
             Pattern.compile("^("
@@ -80,8 +80,7 @@ public class TestStabilityRule implements TestRule {
 
                     if (!launcherBuildMatcher.find()) {
                         Log.e(TAG, "Match not found");
-                    } else if (launcherBuildMatcher.group("androidStudio") != null
-                            || launcherBuildMatcher.group("commandLine") != null) {
+                    } else if (launcherBuildMatcher.group("local") != null) {
                         launcherLocalBuild = true;
                     } else if (launcherBuildMatcher.group("presubmit") != null) {
                         launcherUnbundledPresubmit = true;
