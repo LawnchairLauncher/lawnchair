@@ -106,11 +106,11 @@ public class TestHelpers {
         return ret.toString();
     }
 
-    private static String checkCrash(Context context, String label) {
+    private static String checkCrash(Context context, String label, long startTime) {
         DropBoxManager dropbox = (DropBoxManager) context.getSystemService(Context.DROPBOX_SERVICE);
         Assert.assertNotNull("Unable access the DropBoxManager service", dropbox);
 
-        long timestamp = System.currentTimeMillis() - 5 * 60000;
+        long timestamp = startTime;
         DropBoxManager.Entry entry;
         StringBuilder errorDetails = new StringBuilder();
         while (null != (entry = dropbox.getNextEntry(label, timestamp))) {
@@ -128,7 +128,7 @@ public class TestHelpers {
         return errorDetails.length() != 0 ? errorDetails.toString() : null;
     }
 
-    public static String getSystemHealthMessage(Context context) {
+    public static String getSystemHealthMessage(Context context, long startTime) {
         try {
             StringBuilder errors = new StringBuilder();
 
@@ -144,7 +144,7 @@ public class TestHelpers {
             };
 
             for (String label : labels) {
-                final String crash = checkCrash(context, label);
+                final String crash = checkCrash(context, label, startTime);
                 if (crash != null) errors.append(crash);
             }
 
