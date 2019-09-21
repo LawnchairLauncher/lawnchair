@@ -105,8 +105,9 @@ public abstract class AbstractLauncherUiTest {
         }
         if (TestHelpers.isInLauncherProcess()) {
             Utilities.enableRunningInTestHarnessForTests();
-            mLauncher.setSystemHealthSupplier(() -> TestCommandReceiver.callCommand(
-                    TestCommandReceiver.GET_SYSTEM_HEALTH_MESSAGE).getString("result"));
+            mLauncher.setSystemHealthSupplier(startTime -> TestCommandReceiver.callCommand(
+                    TestCommandReceiver.GET_SYSTEM_HEALTH_MESSAGE, startTime.toString()).
+                    getString("result"));
             mLauncher.setOnSettledStateAction(
                     containerType -> executeOnLauncher(
                             launcher ->

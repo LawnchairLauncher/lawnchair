@@ -73,7 +73,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 /**
  * The main tapl object. The only object that can be explicitly constructed by the using code. It
@@ -84,6 +84,7 @@ public final class LauncherInstrumentation {
     private static final String TAG = "Tapl";
     private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 20;
     private static final int GESTURE_STEP_MS = 16;
+    private static long START_TIME = System.currentTimeMillis();
 
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
@@ -134,7 +135,7 @@ public final class LauncherInstrumentation {
     private int mExpectedRotation = Surface.ROTATION_0;
     private final Uri mTestProviderUri;
     private final Deque<String> mDiagnosticContext = new LinkedList<>();
-    private Supplier<String> mSystemHealthSupplier;
+    private Function<Long, String> mSystemHealthSupplier;
 
     private Consumer<ContainerType> mOnSettledStateAction;
 
@@ -296,7 +297,7 @@ public final class LauncherInstrumentation {
         return "Background";
     }
 
-    public void setSystemHealthSupplier(Supplier<String> supplier) {
+    public void setSystemHealthSupplier(Function<Long, String> supplier) {
         this.mSystemHealthSupplier = supplier;
     }
 
@@ -316,8 +317,8 @@ public final class LauncherInstrumentation {
         }
 
         return mSystemHealthSupplier != null
-                ? mSystemHealthSupplier.get()
-                : TestHelpers.getSystemHealthMessage(getContext());
+                ? mSystemHealthSupplier.apply(START_TIME)
+                : TestHelpers.getSystemHealthMessage(getContext(), START_TIME);
     }
 
     private void fail(String message) {
