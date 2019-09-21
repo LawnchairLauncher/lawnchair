@@ -6,11 +6,11 @@
     <string name="icu_abbrev_time">HH:mm</string>
     <string name="icu_abbrev_time_12h">hh:mm aa</string>
     <string name="icu_abbrev_date"> dd MMMM</string>
-    <string name="in_smartspace">Nel widget \'At a Glance\'</string>
+    <string name="in_smartspace">Nel widget \'A colpo d\'occhio\'</string>
     <string name="smartspace_time">Ora</string>
     <string name="smartspace_date">Data</string>
     <string name="customize">Personalizza</string>
-    <string name="smartspace_preferences_in_settings">Riepilogo</string>
+    <string name="smartspace_preferences_in_settings">A colpo d\'occhio</string>
     <string name="smartspace_preferences_in_settings_desc">Data, orario, sorgente meteo</string>
     <string name="search">Cerca</string>
     <string name="label_voice_search">Ricerca vocale</string>
