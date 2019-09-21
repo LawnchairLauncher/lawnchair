@@ -20,7 +20,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.uioverrides.touchcontrollers.LandscapeEdgeSwipeController;
 import com.android.launcher3.uioverrides.touchcontrollers.LandscapeStatesTouchController;
@@ -51,7 +50,7 @@ public abstract class RecentsUiFactory {
                     .getMode().hasGestures;
             list.add(new PortraitStatesTouchController(launcher, allowDragToOverview));
         }
-        if (FeatureFlags.PULL_DOWN_STATUS_BAR && Utilities.IS_DEBUG_DEVICE
+        if (Utilities.IS_DEBUG_DEVICE
                 && !launcher.getDeviceProfile().isMultiWindowMode
                 && !launcher.getDeviceProfile().isVerticalBarLayout()) {
             list.add(new StatusBarTouchController(launcher));

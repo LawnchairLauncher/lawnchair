@@ -66,6 +66,7 @@ import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
+import com.android.systemui.plugins.shared.LauncherOverlayManager;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.BiPredicate;
@@ -268,7 +269,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                         INDEX_RECENTS_FADE_ANIM, attached ? 1 : 0);
 
                 int runningTaskIndex = recentsView.getRunningTaskIndex();
-                if (runningTaskIndex == 0) {
+                if (runningTaskIndex == recentsView.getTaskViewStartIndex()) {
                     // If we are on the first task (we haven't quick switched), translate recents in
                     // from the side. Calculate the start translation based on current scale/scroll.
                     float currScale = recentsView.getScaleX();
@@ -351,8 +352,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     private void playScaleDownAnim(AnimatorSet anim, Launcher launcher, LauncherState fromState,
             LauncherState endState) {
         RecentsView recentsView = launcher.getOverviewPanel();
-        TaskView v = recentsView.getTaskViewAt(recentsView.getCurrentPage());
-        if (v == null) {
+        if (recentsView.getCurrentPageTaskView() == null) {
             return;
         }
 
@@ -380,7 +380,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
             // recents as a whole needs to translate further to keep up with the app window.
             TaskView runningTaskView = recentsView.getRunningTaskView();
             if (runningTaskView == null) {
-                runningTaskView = recentsView.getTaskViewAt(recentsView.getCurrentPage());
+                runningTaskView = recentsView.getCurrentPageTaskView();
             }
             TimeInterpolator oldInterpolator = translateY.getInterpolator();
             Rect fallbackInsets = launcher.getDeviceProfile().getInsets();
@@ -478,5 +478,19 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     @Override
     public void onLaunchTaskSuccess(Launcher launcher) {
         launcher.getStateManager().moveToRestState();
+    }
+
+    @Override
+    public void closeOverlay() {
+        Launcher launcher = getCreatedActivity();
+        if (launcher == null) {
+            return;
+        }
+        LauncherOverlayManager om = launcher.getOverlayManager();
+        if (!launcher.isStarted() || launcher.isForceInvisible()) {
+            om.hideOverlay(false /* animate */);
+        } else {
+            om.hideOverlay(150);
+        }
     }
 }

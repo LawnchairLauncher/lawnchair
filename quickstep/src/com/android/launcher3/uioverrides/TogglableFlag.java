@@ -18,7 +18,8 @@ package com.android.launcher3.uioverrides;
 
 import android.content.Context;
 import android.provider.DeviceConfig;
-import com.android.launcher3.config.BaseFlags.BaseTogglableFlag;
+
+import com.android.launcher3.config.FeatureFlags.BaseTogglableFlag;
 
 public class TogglableFlag extends BaseTogglableFlag {
     public static final String NAMESPACE_LAUNCHER = "launcher";
@@ -36,14 +37,14 @@ public class TogglableFlag extends BaseTogglableFlag {
     @Override
     public void addChangeListener(Context context, Runnable r) {
         DeviceConfig.addOnPropertiesChangedListener(
-            NAMESPACE_LAUNCHER,
-            context.getMainExecutor(),
-            (properties) -> {
-                if (!NAMESPACE_LAUNCHER.equals(properties.getNamespace())) {
-                    return;
-                }
-                initialize(context);
-                r.run();
-            });
+                NAMESPACE_LAUNCHER,
+                context.getMainExecutor(),
+                (properties) -> {
+                    if (!NAMESPACE_LAUNCHER.equals(properties.getNamespace())) {
+                        return;
+                    }
+                    initialize(context);
+                    r.run();
+                });
     }
 }

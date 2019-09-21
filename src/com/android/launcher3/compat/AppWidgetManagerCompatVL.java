@@ -24,20 +24,21 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
-import com.android.launcher3.widget.custom.CustomWidgetParser;
+import com.android.launcher3.widget.custom.CustomAppWidgetProviderInfo;
+import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import androidx.annotation.Nullable;
 
 class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
@@ -50,18 +51,15 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     @Override
     public List<AppWidgetProviderInfo> getAllProviders(@Nullable PackageUserKey packageUser) {
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             return Collections.emptyList();
         }
         if (packageUser == null) {
-            ArrayList<AppWidgetProviderInfo> providers = new ArrayList<AppWidgetProviderInfo>();
+            ArrayList<AppWidgetProviderInfo> providers = new ArrayList<>();
             for (UserHandle user : mUserManager.getUserProfiles()) {
                 providers.addAll(mAppWidgetManager.getInstalledProvidersForProfile(user));
             }
-
-            if (FeatureFlags.ENABLE_CUSTOM_WIDGETS) {
-                providers.addAll(CustomWidgetParser.getCustomWidgets(mContext));
-            }
+            providers.addAll(getCustomWidgets());
             return providers;
         }
         // Only get providers for the given package/user.
@@ -74,9 +72,9 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
             }
         }
 
-        if (FeatureFlags.ENABLE_CUSTOM_WIDGETS && Process.myUserHandle().equals(packageUser.mUser)
+        if (Process.myUserHandle().equals(packageUser.mUser)
                 && mContext.getPackageName().equals(packageUser.mPackageName)) {
-            providers.addAll(CustomWidgetParser.getCustomWidgets(mContext));
+            providers.addAll(getCustomWidgets());
         }
         return providers;
     }
@@ -84,12 +82,10 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     @Override
     public boolean bindAppWidgetIdIfAllowed(int appWidgetId, AppWidgetProviderInfo info,
             Bundle options) {
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             return false;
         }
-
-        if (FeatureFlags.ENABLE_CUSTOM_WIDGETS
-                && appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID) {
+        if (appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID) {
             return true;
         }
         return mAppWidgetManager.bindAppWidgetIdIfAllowed(
@@ -98,7 +94,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     @Override
     public LauncherAppWidgetProviderInfo findProvider(ComponentName provider, UserHandle user) {
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             return null;
         }
         for (AppWidgetProviderInfo info :
@@ -108,9 +104,8 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
             }
         }
 
-        if (FeatureFlags.ENABLE_CUSTOM_WIDGETS && Process.myUserHandle().equals(user)) {
-            for (LauncherAppWidgetProviderInfo info :
-                    CustomWidgetParser.getCustomWidgets(mContext)) {
+        if (Process.myUserHandle().equals(user)) {
+            for (LauncherAppWidgetProviderInfo info : getCustomWidgets()) {
                 if (info.provider.equals(provider)) {
                     return info;
                 }
@@ -122,7 +117,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     @Override
     public HashMap<ComponentKey, AppWidgetProviderInfo> getAllProvidersMap() {
         HashMap<ComponentKey, AppWidgetProviderInfo> result = new HashMap<>();
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             return result;
         }
         for (UserHandle user : mUserManager.getUserProfiles()) {
@@ -131,13 +126,13 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
                 result.put(new ComponentKey(info.provider, user), info);
             }
         }
-
-        if (FeatureFlags.ENABLE_CUSTOM_WIDGETS) {
-            for (LauncherAppWidgetProviderInfo info :
-                    CustomWidgetParser.getCustomWidgets(mContext)) {
-                result.put(new ComponentKey(info.provider, info.getProfile()), info);
-            }
+        for (LauncherAppWidgetProviderInfo info : getCustomWidgets()) {
+            result.put(new ComponentKey(info.provider, info.getProfile()), info);
         }
         return result;
+    }
+
+    List<CustomAppWidgetProviderInfo> getCustomWidgets() {
+        return CustomWidgetManager.INSTANCE.get(mContext).getCustomWidgets();
     }
 }

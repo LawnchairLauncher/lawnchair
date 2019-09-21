@@ -15,10 +15,13 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.quickstep.TouchInteractionService.MAIN_THREAD_EXECUTOR;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.graphics.Rect;
 import android.util.ArraySet;
+
+import androidx.annotation.BinderThread;
+import androidx.annotation.UiThread;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Preconditions;
@@ -30,8 +33,6 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.Set;
 import java.util.function.Consumer;
-
-import androidx.annotation.UiThread;
 
 /**
  * Wrapper around {@link RecentsAnimationListener} which delegates callbacks to multiple listeners
@@ -70,19 +71,21 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
         mListeners.remove(listener);
     }
 
-    @Override
+    // Called only in R+ platform
+    @BinderThread
     public final void onAnimationStart(RecentsAnimationControllerCompat controller,
-            RemoteAnimationTargetCompat[] targets, Rect homeContentInsets,
-            Rect minimizedHomeBounds) {
+            RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets,
+            Rect homeContentInsets, Rect minimizedHomeBounds) {
         mController = controller;
-        SwipeAnimationTargetSet targetSet = new SwipeAnimationTargetSet(controller, targets,
+        SwipeAnimationTargetSet targetSet = new SwipeAnimationTargetSet(controller, appTargets,
                 homeContentInsets, minimizedHomeBounds, mShouldMinimizeSplitScreen,
                 mOnFinishListener);
 
         if (mCancelled) {
             targetSet.cancelAnimation();
         } else {
-            Utilities.postAsyncCallback(MAIN_THREAD_EXECUTOR.getHandler(), () -> {
+            Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
                 for (SwipeAnimationListener listener : getListeners()) {
                     listener.onRecentsAnimationStart(targetSet);
                 }
@@ -90,16 +93,27 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
         }
     }
 
+    // Called only in Q platform
+    @BinderThread
+    @Deprecated
+    public final void onAnimationStart(RecentsAnimationControllerCompat controller,
+            RemoteAnimationTargetCompat[] appTargets, Rect homeContentInsets,
+            Rect minimizedHomeBounds) {
+        onAnimationStart(controller, appTargets, new RemoteAnimationTargetCompat[0],
+                homeContentInsets, minimizedHomeBounds);
+    }
+
+    @BinderThread
     @Override
     public final void onAnimationCanceled(ThumbnailData thumbnailData) {
-        Utilities.postAsyncCallback(MAIN_THREAD_EXECUTOR.getHandler(), () -> {
+        Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
             for (SwipeAnimationListener listener : getListeners()) {
                 listener.onRecentsAnimationCanceled();
             }
         });
         // TODO: handle the transition better instead of simply using a transition delay.
         if (thumbnailData != null) {
-            MAIN_THREAD_EXECUTOR.getHandler().postDelayed(() -> mController.cleanupScreenshot(),
+            MAIN_EXECUTOR.getHandler().postDelayed(() -> mController.cleanupScreenshot(),
                     TRANSITION_DELAY);
         }
     }

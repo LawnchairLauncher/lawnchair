@@ -1,9 +1,10 @@
 package com.android.quickstep;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
 import android.content.Context;
 import android.os.Bundle;
 
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.testing.TestInformationHandler;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.states.OverviewState;
@@ -15,7 +16,9 @@ import java.util.concurrent.ExecutionException;
 
 public class QuickstepTestInformationHandler extends TestInformationHandler {
 
+    private final Context mContext;
     public QuickstepTestInformationHandler(Context context) {
+        mContext = context;
     }
 
     @Override
@@ -52,8 +55,8 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
 
             case TestProtocol.REQUEST_OVERVIEW_LEFT_GESTURE_MARGIN: {
                 try {
-                    final int leftMargin = new MainThreadExecutor().submit(() ->
-                            mLauncher.<RecentsView>getOverviewPanel().getLeftGestureMargin()).get();
+                    final int leftMargin = MAIN_EXECUTOR.submit(() ->
+                            getRecentsView().getLeftGestureMargin()).get();
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, leftMargin);
                 } catch (ExecutionException e) {
                     e.printStackTrace();
@@ -65,9 +68,8 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
 
             case TestProtocol.REQUEST_OVERVIEW_RIGHT_GESTURE_MARGIN: {
                 try {
-                    final int rightMargin = new MainThreadExecutor().submit(() ->
-                            mLauncher.<RecentsView>getOverviewPanel().getRightGestureMargin()).
-                            get();
+                    final int rightMargin = MAIN_EXECUTOR.submit(() ->
+                            getRecentsView().getRightGestureMargin()).get();
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, rightMargin);
                 } catch (ExecutionException e) {
                     e.printStackTrace();
@@ -79,5 +81,14 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
         }
 
         return super.call(method);
+    }
+
+    private RecentsView getRecentsView() {
+        OverviewComponentObserver observer = new OverviewComponentObserver(mContext);
+        try {
+            return observer.getActivityControlHelper().getCreatedActivity().getOverviewPanel();
+        } finally {
+            observer.onDestroy();
+        }
     }
 }

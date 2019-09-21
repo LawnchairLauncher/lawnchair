@@ -19,7 +19,6 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TI
 import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -27,9 +26,8 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.quickstep.OverviewCallbacks;
+import com.android.quickstep.ActivityControlHelper;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
@@ -42,6 +40,7 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
         implements InputConsumer {
 
     private final T mActivity;
+    private final ActivityControlHelper<T> mActivityControlHelper;
     private final BaseDragLayer mTarget;
     private final InputMonitorCompat mInputMonitor;
 
@@ -53,10 +52,12 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
     private boolean mTargetHandledTouch;
 
     public OverviewInputConsumer(T activity, @Nullable InputMonitorCompat inputMonitor,
-            boolean startingInActivityBounds) {
+            boolean startingInActivityBounds,
+            ActivityControlHelper<T> activityControlHelper) {
         mActivity = activity;
         mInputMonitor = inputMonitor;
         mStartingInActivityBounds = startingInActivityBounds;
+        mActivityControlHelper = activityControlHelper;
 
         mTarget = activity.getDragLayer();
         if (startingInActivityBounds) {
@@ -98,7 +99,7 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
         if (!mTargetHandledTouch && handled) {
             mTargetHandledTouch = true;
             if (!mStartingInActivityBounds) {
-                OverviewCallbacks.get(mActivity).closeAllWindows();
+                mActivityControlHelper.closeOverlay();
                 ActivityManagerWrapper.getInstance()
                         .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
                 TOUCH_INTERACTION_LOG.addLog("startQuickstep");

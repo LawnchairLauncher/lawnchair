@@ -11,8 +11,6 @@ import android.os.UserHandle;
 import android.util.Log;
 
 import com.android.launcher3.AppFilter;
-import com.android.launcher3.icons.ComponentWithLabel;
-import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
@@ -22,6 +20,8 @@ import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.icons.ComponentWithLabel;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
@@ -45,6 +45,9 @@ import androidx.annotation.Nullable;
  * <p> The widgets and shortcuts are organized using package name as its index.
  */
 public class WidgetsModel {
+
+    // True is the widget support is disabled.
+    public static final boolean GO_DISABLE_WIDGETS = false;
 
     private static final String TAG = "WidgetsModel";
     private static final boolean DEBUG = false;

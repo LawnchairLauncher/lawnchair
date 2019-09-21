@@ -33,7 +33,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ProviderInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -50,7 +49,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
 import android.os.UserHandle;
-import android.os.UserManager;
 import android.provider.BaseColumns;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -70,6 +68,7 @@ import com.android.launcher3.util.IOUtils;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.NoLocaleSQLiteHelper;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Thunk;
 
@@ -77,7 +76,6 @@ import org.xmlpull.v1.XmlPullParser;
 
 import java.io.File;
 import java.io.FileDescriptor;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
@@ -225,7 +223,6 @@ public class LauncherProvider extends ContentProvider {
         mOpenHelper.onAddOrDeleteOp(db);
 
         uri = ContentUris.withAppendedId(uri, rowId);
-        notifyListeners();
         reloadLauncherIfExternal();
         return uri;
     }
@@ -285,7 +282,6 @@ public class LauncherProvider extends ContentProvider {
             t.commit();
         }
 
-        notifyListeners();
         reloadLauncherIfExternal();
         return values.length;
     }
@@ -331,7 +327,6 @@ public class LauncherProvider extends ContentProvider {
         int count = db.delete(args.table, args.where, args.args);
         if (count > 0) {
             mOpenHelper.onAddOrDeleteOp(db);
-            notifyListeners();
             reloadLauncherIfExternal();
         }
         return count;
@@ -345,8 +340,6 @@ public class LauncherProvider extends ContentProvider {
         addModifiedTime(values);
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count = db.update(args.table, values, args.where, args.args);
-        if (count > 0) notifyListeners();
-
         reloadLauncherIfExternal();
         return count;
     }
@@ -438,13 +431,6 @@ public class LauncherProvider extends ContentProvider {
             Log.e(TAG, ex.getMessage(), ex);
             return new IntArray();
         }
-    }
-
-    /**
-     * Overridden in tests
-     */
-    protected void notifyListeners() {
-        mListenerHandler.sendEmptyMessage(ChangeListenerWrapper.MSG_LAUNCHER_PROVIDER_CHANGED);
     }
 
     @Thunk static void addModifiedTime(ContentValues values) {
@@ -873,7 +859,7 @@ public class LauncherProvider extends ContentProvider {
                         continue;
                     }
 
-                    if (!Utilities.isLauncherAppTarget(intent)) {
+                    if (!PackageManagerHelper.isLauncherAppTarget(intent)) {
                         continue;
                     }
 
@@ -1044,7 +1030,6 @@ public class LauncherProvider extends ContentProvider {
 
     private static class ChangeListenerWrapper implements Handler.Callback {
 
-        private static final int MSG_LAUNCHER_PROVIDER_CHANGED = 1;
         private static final int MSG_APP_WIDGET_HOST_RESET = 2;
 
         private LauncherProviderChangeListener mListener;
@@ -1053,9 +1038,6 @@ public class LauncherProvider extends ContentProvider {
         public boolean handleMessage(Message msg) {
             if (mListener != null) {
                 switch (msg.what) {
-                    case MSG_LAUNCHER_PROVIDER_CHANGED:
-                        mListener.onLauncherProviderChanged();
-                        break;
                     case MSG_APP_WIDGET_HOST_RESET:
                         mListener.onAppWidgetHostReset();
                         break;

@@ -16,11 +16,13 @@
 package com.android.launcher3.logging;
 
 
+import android.util.Log;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 
 /**
  * A utility class to record and log events. Events are stored in a fixed size array and old logs
@@ -37,6 +39,7 @@ public class EventLogArray {
     private final String name;
     private final EventEntry[] logs;
     private int nextIndex;
+    private int mLogId;
 
     public EventLogArray(String name, int size) {
         this.name = name;
@@ -52,10 +55,6 @@ public class EventLogArray {
         addLog(TYPE_INTEGER, event, extras);
     }
 
-    public void addLog(String event, float extras) {
-        addLog(TYPE_FLOAT, event, extras);
-    }
-
     public void addLog(String event, boolean extras) {
         addLog(extras ? TYPE_BOOL_TRUE : TYPE_BOOL_FALSE, event, 0);
     }
@@ -65,7 +64,7 @@ public class EventLogArray {
         int last = (nextIndex + logs.length - 1) % logs.length;
         int secondLast = (nextIndex + logs.length - 2) % logs.length;
         if (isEntrySame(logs[last], type, event) && isEntrySame(logs[secondLast], type, event)) {
-            logs[last].update(type, event, extras);
+            logs[last].update(type, event, extras, mLogId);
             logs[secondLast].duplicateCount++;
             return;
         }
@@ -73,7 +72,7 @@ public class EventLogArray {
         if (logs[nextIndex] == null) {
             logs[nextIndex] = new EventEntry();
         }
-        logs[nextIndex].update(type, event, extras);
+        logs[nextIndex].update(type, event, extras, mLogId);
         nextIndex = (nextIndex + 1) % logs.length;
     }
 
@@ -113,8 +112,16 @@ public class EventLogArray {
             if (log.duplicateCount > 0) {
                 msg.append(" & ").append(log.duplicateCount).append(" similar events");
             }
+            msg.append(" traceId: ").append(log.traceId);
             writer.println(msg);
         }
+    }
+
+    /** Returns a 3 digit random number between 100-999 */
+    public int generateAndSetLogId() {
+        Random r = new Random();
+        mLogId = r.nextInt(900) + 100;
+        return mLogId;
     }
 
     private boolean isEntrySame(EventEntry entry, int type, String event) {
@@ -129,11 +136,13 @@ public class EventLogArray {
         private float extras;
         private long time;
         private int duplicateCount;
+        private int traceId;
 
-        public void update(int type, String event, float extras) {
+        public void update(int type, String event, float extras, int traceId) {
             this.type = type;
             this.event = event;
             this.extras = extras;
+            this.traceId = traceId;
             time = System.currentTimeMillis();
             duplicateCount = 0;
         }

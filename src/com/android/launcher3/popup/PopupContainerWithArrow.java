@@ -24,6 +24,7 @@ import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS_IF_NOTIFI
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
@@ -50,7 +51,6 @@ import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
@@ -166,7 +166,10 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     }
 
     public OnClickListener getItemClickListener() {
-        return ItemClickHandler.INSTANCE;
+        return (view) -> {
+            ItemClickHandler.INSTANCE.onClick(view);
+            close(true);
+        };
     }
 
     @Override
@@ -303,8 +306,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         setLayoutTransition(new LayoutTransition());
 
         // Load the shortcuts on a background thread and update the container as it animates.
-        final Looper workerLooper = LauncherModel.getWorkerLooper();
-        new Handler(workerLooper).postAtFrontOfQueue(PopupPopulator.createUpdateRunnable(
+        MODEL_EXECUTOR.getHandler().postAtFrontOfQueue(PopupPopulator.createUpdateRunnable(
                 mLauncher, originalItemInfo, new Handler(Looper.getMainLooper()),
                 this, mShortcuts, notificationKeys));
     }
@@ -565,9 +567,9 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
 
     @Override
     protected void closeComplete() {
-        super.closeComplete();
         mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());
         mOriginalIcon.setForceHideDot(false);
+        super.closeComplete();
     }
 
     @Override

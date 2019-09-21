@@ -16,23 +16,25 @@
 
 package com.android.launcher3.compat;
 
+import static com.android.launcher3.Utilities.getPrefs;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionCallback;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.PackageManager;
-import android.os.Handler;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
-import com.android.launcher3.SessionCommitReceiver;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
+import com.android.launcher3.SessionCommitReceiver;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.PackageUserKey;
@@ -43,8 +45,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.android.launcher3.Utilities.getPrefs;
-
 public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
     private static final boolean DEBUG = false;
@@ -53,7 +53,6 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
     @Thunk final PackageInstaller mInstaller;
     private final IconCache mCache;
-    private final Handler mWorker;
     private final Context mAppContext;
     private final HashMap<String,Boolean> mSessionVerifiedMap = new HashMap<>();
     private final LauncherAppsCompat mLauncherApps;
@@ -63,11 +62,10 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         mAppContext = context.getApplicationContext();
         mInstaller = context.getPackageManager().getPackageInstaller();
         mCache = LauncherAppState.getInstance(context).getIconCache();
-        mWorker = new Handler(LauncherModel.getWorkerLooper());
-        mInstaller.registerSessionCallback(mCallback, mWorker);
+        mInstaller.registerSessionCallback(mCallback, MODEL_EXECUTOR.getHandler());
         mLauncherApps = LauncherAppsCompat.getInstance(context);
-        mPromiseIconIds = IntSet.wrap(IntArray.wrap(Utilities.getIntArrayFromString(
-                getPrefs(context).getString(PROMISE_ICON_IDS, ""))));
+        mPromiseIconIds = IntSet.wrap(IntArray.fromConcatString(
+                getPrefs(context).getString(PROMISE_ICON_IDS, "")));
 
         cleanUpPromiseIconIds();
     }
@@ -90,12 +88,13 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     }
 
     @Override
-    public HashMap<String, SessionInfo> updateAndGetActiveSessionCache() {
-        HashMap<String, SessionInfo> activePackages = new HashMap<>();
+    public HashMap<PackageUserKey, SessionInfo> updateAndGetActiveSessionCache() {
+        HashMap<PackageUserKey, SessionInfo> activePackages = new HashMap<>();
         for (SessionInfo info : getAllVerifiedSessions()) {
             addSessionInfoToCache(info, getUserHandle(info));
             if (info.getAppPackageName() != null) {
-                activePackages.put(info.getAppPackageName(), info);
+                activePackages.put(new PackageUserKey(info.getAppPackageName(),
+                        getUserHandle(info)), info);
                 mActiveSessions.put(info.getSessionId(),
                         new PackageUserKey(info.getAppPackageName(), getUserHandle(info)));
             }
@@ -165,7 +164,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         @Override
         public void onCreated(int sessionId) {
             SessionInfo sessionInfo = pushSessionDisplayToLauncher(sessionId);
-            if (FeatureFlags.LAUNCHER3_PROMISE_APPS_IN_ALL_APPS && sessionInfo != null) {
+            if (FeatureFlags.PROMISE_APPS_IN_ALL_APPS.get() && sessionInfo != null) {
                 LauncherAppState app = LauncherAppState.getInstanceNoCreate();
                 if (app != null) {
                     app.getModel().onInstallSessionCreated(

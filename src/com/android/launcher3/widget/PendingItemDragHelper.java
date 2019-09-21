@@ -91,8 +91,8 @@ public class PendingItemDragHelper extends DragPreviewProvider {
                         createWidgetInfo.info, maxWidth, previewSizeBeforeScale);
             }
             if (preview == null) {
-                preview = app.getWidgetCache().generateWidgetPreview(
-                        launcher, createWidgetInfo.info, maxWidth, null, previewSizeBeforeScale);
+                preview = app.getWidgetCache().generateWidgetPreview(launcher,
+                        createWidgetInfo.info, maxWidth, null, previewSizeBeforeScale).first;
             }
 
             if (previewSizeBeforeScale[0] < previewBitmapWidth) {

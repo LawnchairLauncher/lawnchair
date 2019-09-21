@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"ဖွင့်တင်စက်၃"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"အလုပ်"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"အက်ပ်မထည့်သွင်းထားပါ"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"အက်ပ်လက်လှမ်း မမှီပါ"</string>

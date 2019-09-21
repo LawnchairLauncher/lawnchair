@@ -68,6 +68,7 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.uioverrides.DejankBinderTracker;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -423,9 +424,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private void initializeLauncherAnimationController() {
         buildAnimationController();
 
-        if (LatencyTrackerCompat.isEnabled(mContext)) {
-            LatencyTrackerCompat.logToggleRecents((int) (mLauncherFrameDrawnTime - mTouchTimeMs));
-        }
+        DejankBinderTracker.whitelistIpcs(() -> {
+            // Only used in debug builds
+            if (LatencyTrackerCompat.isEnabled(mContext)) {
+                LatencyTrackerCompat.logToggleRecents(
+                        (int) (mLauncherFrameDrawnTime - mTouchTimeMs));
+            }
+        });
 
         // This method is only called when STATE_GESTURE_STARTED is set, so we can enable the
         // high-res thumbnail loader here once we are sure that we will end up in an overview state
@@ -479,8 +484,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             recentsAttachedToAppWindow = mIsShelfPeeking || mIsLikelyToStartNewTask;
             if (animate) {
                 // Only animate if an adjacent task view is visible on screen.
-                TaskView adjacentTask1 = mRecentsView.getTaskViewAt(runningTaskIndex + 1);
-                TaskView adjacentTask2 = mRecentsView.getTaskViewAt(runningTaskIndex - 1);
+                TaskView adjacentTask1 = mRecentsView.getNextTaskView();
+                TaskView adjacentTask2 = mRecentsView.getPreviousTaskView();
                 float prevTranslationX = mRecentsView.getTranslationX();
                 mRecentsView.setTranslationX(0);
                 animate = (adjacentTask1 != null && adjacentTask1.getGlobalVisibleRect(TEMP_RECT))
@@ -590,8 +595,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
      */
     private void updateSysUiFlags(float windowProgress) {
         if (mRecentsView != null) {
-            TaskView centermostTask = mRecentsView.getTaskViewAt(mRecentsView
-                    .getPageNearestToCenterOfScreen());
+            TaskView centermostTask = mRecentsView.getTaskViewNearestToCenterOfScreen();
             int centermostTaskFlags = centermostTask == null ? 0
                     : centermostTask.getThumbnail().getSysUiStatusNavFlags();
             boolean useHomeScreenFlags = windowProgress > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD;
@@ -685,8 +689,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         }
 
         BaseDraggingActivity activity = mActivityControlHelper.getCreatedActivity();
-        return activity == null
-                ? InputConsumer.NO_OP : new OverviewInputConsumer(activity, null, true);
+        return activity == null ? InputConsumer.NO_OP
+                : new OverviewInputConsumer(activity, null, true, mActivityControlHelper);
     }
 
     private void endRunningWindowAnim(boolean cancel) {
