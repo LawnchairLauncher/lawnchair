@@ -82,7 +82,5 @@ public final class TestProtocol {
     public static final String NO_BACKGROUND_TO_OVERVIEW_TAG = "b/138251824";
     public static final String NO_DRAG_TO_WORKSPACE = "b/138729456";
     public static final String APP_NOT_DISABLED = "b/139891609";
-    public static final String ALL_APPS_UPON_RECENTS = "b/139941530";
-    public static final String STABLE_STATE_MISMATCH = "b/140311911";
     public static final String WELLBEING_NO_TASK_MENU = "b/141275518";
 }
