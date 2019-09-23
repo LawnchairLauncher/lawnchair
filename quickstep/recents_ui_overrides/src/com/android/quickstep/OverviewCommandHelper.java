@@ -164,9 +164,6 @@ public class OverviewCommandHelper {
 
         @Override
         public void run() {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.ALL_APPS_UPON_RECENTS, "RecentsActivityCommand.run");
-            }
             long elapsedTime = mCreateTime - mLastToggleTime;
             mLastToggleTime = mCreateTime;
 
