@@ -505,7 +505,7 @@
         <item>Have a great day!</item>
     </string-array>
     <string-array name="greetings_evening">
-        <item>Good night!</item>
+        <item>Good night?</item>
         <item>Sleep well!</item>
     </string-array>
     <string-array name="greetings_night">
