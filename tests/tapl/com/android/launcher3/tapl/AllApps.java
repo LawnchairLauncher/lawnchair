@@ -54,7 +54,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
     }
 
     private boolean hasClickableIcon(UiObject2 allAppsContainer, UiObject2 appListRecycler,
-            BySelector appIconSelector, int bottomOffset) {
+            BySelector appIconSelector, int displayBottom) {
         final UiObject2 icon = appListRecycler.findObject(appIconSelector);
         if (icon == null) {
             LauncherInstrumentation.log("hasClickableIcon: icon not visible");
@@ -66,7 +66,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
             LauncherInstrumentation.log("hasClickableIcon: icon center is under search box");
             return false;
         }
-        if (iconBounds.bottom > bottomOffset) {
+        if (iconBounds.bottom > displayBottom) {
             LauncherInstrumentation.log("hasClickableIcon: icon center bellow bottom offset");
             return false;
         }
@@ -97,7 +97,8 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
 
             int bottomGestureMargin = ResourceUtils.getNavbarSize(
                     ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, mLauncher.getResources()) + 1;
-            int bottomOffset = mLauncher.getDevice().getDisplayHeight() - bottomGestureMargin;
+            int deviceHeight = mLauncher.getDevice().getDisplayHeight();
+            int displayBottom = deviceHeight - bottomGestureMargin;
             allAppsContainer.setGestureMargins(
                     0,
                     getSearchBox(allAppsContainer).getVisibleBounds().bottom + 1,
@@ -105,13 +106,13 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                     bottomGestureMargin);
             final BySelector appIconSelector = AppIcon.getAppIconSelector(appName, mLauncher);
             if (!hasClickableIcon(allAppsContainer, appListRecycler, appIconSelector,
-                    bottomOffset)) {
+                    displayBottom)) {
                 scrollBackToBeginning();
                 int attempts = 0;
                 int scroll = getAllAppsScroll();
                 try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("scrolled")) {
                     while (!hasClickableIcon(allAppsContainer, appListRecycler, appIconSelector,
-                            bottomOffset)) {
+                            displayBottom)) {
                         mLauncher.scroll(allAppsContainer, Direction.DOWN, 0.8f, null, 50);
                         final int newScroll = getAllAppsScroll();
                         if (newScroll == scroll) break;
@@ -126,9 +127,11 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                 verifyActiveContainer();
             }
 
+            // Ignore bottom offset selection here as there might not be any scroll more scroll
+            // region available.
             mLauncher.assertTrue("Unable to scroll to a clickable icon: " + appName,
                     hasClickableIcon(allAppsContainer, appListRecycler, appIconSelector,
-                            bottomOffset));
+                            deviceHeight));
 
             final UiObject2 appIcon = mLauncher.waitForObjectInContainer(appListRecycler,
                     appIconSelector);
