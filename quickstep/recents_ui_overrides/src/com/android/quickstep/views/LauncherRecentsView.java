@@ -57,6 +57,8 @@ import com.android.quickstep.util.LayoutUtils;
 @TargetApi(Build.VERSION_CODES.O)
 public class LauncherRecentsView extends RecentsView<Launcher> implements StateListener {
 
+    private static final Rect sTempRect = new Rect();
+
     private final TransformParams mTransformParams = new TransformParams();
 
     public LauncherRecentsView(Context context) {
@@ -142,6 +144,25 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
     @Override
     protected void getTaskSize(DeviceProfile dp, Rect outRect) {
         LayoutUtils.calculateLauncherTaskSize(getContext(), dp, outRect);
+    }
+
+    /**
+     * @return The translationX to apply to this view so that the first task is just offscreen.
+     */
+    public float getOffscreenTranslationX(float recentsScale) {
+        float offscreenX = NORMAL.getOverviewScaleAndTranslation(mActivity).translationX;
+        // Offset since scale pushes tasks outwards.
+        getTaskSize(sTempRect);
+        int taskWidth = sTempRect.width();
+        offscreenX += taskWidth * (recentsScale - 1) / 2;
+        if (mRunningTaskTileHidden) {
+            // The first task is hidden, so offset by its width.
+            offscreenX -= (taskWidth + getPageSpacing()) * recentsScale;
+        }
+        if (isRtl()) {
+            offscreenX = -offscreenX;
+        }
+        return offscreenX;
     }
 
     @Override
