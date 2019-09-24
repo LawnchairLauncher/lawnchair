@@ -300,6 +300,8 @@ public class LauncherSettings {
 
         public static final String METHOD_REFRESH_BACKUP_TABLE = "refresh_backup_table";
 
+        public static final String METHOD_RESTORE_BACKUP_TABLE = "restore_backup_table";
+
         public static final String EXTRA_VALUE = "value";
 
         public static Bundle call(ContentResolver cr, String method) {

@@ -32,12 +32,15 @@ import android.util.SparseLongArray;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.AppWidgetsRestoredReceiver;
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherProvider.DatabaseHelper;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.model.GridBackupTable;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.LogConfig;
@@ -67,6 +70,7 @@ public class RestoreDbTask {
         SQLiteDatabase db = helper.getWritableDatabase();
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             RestoreDbTask task = new RestoreDbTask();
+            task.backupWorkspace(context, db);
             task.sanitizeDB(helper, db, backupManager);
             task.restoreAppWidgetIdsIfExists(context);
             t.commit();
@@ -74,6 +78,45 @@ public class RestoreDbTask {
         } catch (Exception e) {
             FileLog.e(TAG, "Failed to verify db", e);
             return false;
+        }
+    }
+
+    /**
+     * Restore the workspace if backup is available.
+     */
+    public static boolean restoreIfPossible(@NonNull Context context,
+            @NonNull DatabaseHelper helper, @NonNull BackupManager backupManager) {
+        final SQLiteDatabase db = helper.getWritableDatabase();
+        try (SQLiteTransaction t = new SQLiteTransaction(db)) {
+            RestoreDbTask task = new RestoreDbTask();
+            task.restoreWorkspace(context, db, helper, backupManager);
+            task.restoreAppWidgetIdsIfExists(context);
+            t.commit();
+            return true;
+        } catch (Exception e) {
+            FileLog.e(TAG, "Failed to restore db", e);
+            return false;
+        }
+    }
+
+    /**
+     * Backup the workspace so that if things go south in restore, we can recover these entries.
+     */
+    private void backupWorkspace(Context context, SQLiteDatabase db) throws Exception {
+        InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
+        new GridBackupTable(context, db, idp.numHotseatIcons, idp.numColumns, idp.numRows)
+                .doBackup(getDefaultProfileId(db), GridBackupTable.OPTION_REQUIRES_SANITIZATION);
+    }
+
+    private void restoreWorkspace(@NonNull Context context, @NonNull SQLiteDatabase db,
+            @NonNull DatabaseHelper helper, @NonNull BackupManager backupManager)
+            throws Exception {
+        final InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
+        GridBackupTable backupTable = new GridBackupTable(context, db,
+                idp.numHotseatIcons, idp.numColumns, idp.numRows);
+        if (backupTable.restoreFromRawBackupIfAvailable(getDefaultProfileId(db))) {
+            sanitizeDB(helper, db, backupManager);
+            LauncherAppState.getInstance(context).getModel().forceReload();
         }
     }
 
@@ -126,15 +169,16 @@ public class RestoreDbTask {
         db.update(Favorites.TABLE_NAME, values, null, null);
 
         // Mark widgets with appropriate restore flag.
-        values.put(Favorites.RESTORED,  LauncherAppWidgetInfo.FLAG_ID_NOT_VALID |
-                LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY |
-                LauncherAppWidgetInfo.FLAG_UI_NOT_READY |
-                (keepAllIcons ? LauncherAppWidgetInfo.FLAG_RESTORE_STARTED : 0));
+        values.put(Favorites.RESTORED,  LauncherAppWidgetInfo.FLAG_ID_NOT_VALID
+                | LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY
+                | LauncherAppWidgetInfo.FLAG_UI_NOT_READY
+                | (keepAllIcons ? LauncherAppWidgetInfo.FLAG_RESTORE_STARTED : 0));
         db.update(Favorites.TABLE_NAME, values, "itemType = ?",
                 new String[]{Integer.toString(Favorites.ITEM_TYPE_APPWIDGET)});
 
-        // Migrate ids. To avoid any overlap, we initially move conflicting ids to a temp location.
-        // Using Long.MIN_VALUE since profile ids can not be negative, so there will be no overlap.
+        // Migrate ids. To avoid any overlap, we initially move conflicting ids to a temp
+        // location. Using Long.MIN_VALUE since profile ids can not be negative, so there will
+        // be no overlap.
         final long tempLocationOffset = Long.MIN_VALUE;
         SparseLongArray tempMigratedIds = new SparseLongArray(profileMapping.size());
         int numTempMigrations = 0;
@@ -192,10 +236,10 @@ public class RestoreDbTask {
     private LongSparseArray<Long> getManagedProfileIds(SQLiteDatabase db, long defaultProfileId) {
         LongSparseArray<Long> ids = new LongSparseArray<>();
         try (Cursor c = db.rawQuery("SELECT profileId from favorites WHERE profileId != ? "
-                + "GROUP BY profileId", new String[] {Long.toString(defaultProfileId)})){
-                while (c.moveToNext()) {
-                    ids.put(c.getLong(c.getColumnIndex(Favorites.PROFILE_ID)), null);
-                }
+                + "GROUP BY profileId", new String[] {Long.toString(defaultProfileId)})) {
+            while (c.moveToNext()) {
+                ids.put(c.getLong(c.getColumnIndex(Favorites.PROFILE_ID)), null);
+            }
         }
         return ids;
     }
@@ -216,7 +260,7 @@ public class RestoreDbTask {
      * Returns the profile id used in the favorites table of the provided db.
      */
     protected long getDefaultProfileId(SQLiteDatabase db) throws Exception {
-        try (Cursor c = db.rawQuery("PRAGMA table_info (favorites)", null)){
+        try (Cursor c = db.rawQuery("PRAGMA table_info (favorites)", null)) {
             int nameIndex = c.getColumnIndex(INFO_COLUMN_NAME);
             while (c.moveToNext()) {
                 if (Favorites.PROFILE_ID.equals(c.getString(nameIndex))) {

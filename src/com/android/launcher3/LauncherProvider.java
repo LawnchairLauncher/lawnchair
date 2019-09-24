@@ -387,6 +387,11 @@ public class LauncherProvider extends ContentProvider {
                         tableExists(mOpenHelper.getReadableDatabase(), Favorites.BACKUP_TABLE_NAME);
                 return null;
             }
+            case LauncherSettings.Settings.METHOD_RESTORE_BACKUP_TABLE: {
+                RestoreDbTask.restoreIfPossible(
+                        getContext(), mOpenHelper, new BackupManager(getContext()));
+                return null;
+            }
         }
         return null;
     }
