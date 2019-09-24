@@ -122,6 +122,11 @@ public class FallbackRecentsTest {
                 }
             }
         };
+        if (TestHelpers.isInLauncherProcess()) {
+            mLauncher.setSystemHealthSupplier(startTime -> TestCommandReceiver.callCommand(
+                    TestCommandReceiver.GET_SYSTEM_HEALTH_MESSAGE, startTime.toString()).
+                    getString("result"));
+        }
     }
 
     @NavigationModeSwitch
