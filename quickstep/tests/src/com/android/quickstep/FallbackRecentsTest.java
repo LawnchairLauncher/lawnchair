@@ -53,6 +53,7 @@ import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.OverviewTask;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
+import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.launcher3.util.rule.SimpleActivityRule;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
@@ -147,16 +148,25 @@ public class FallbackRecentsTest {
         mLauncher.getBackground().switchToOverview();
     }
 
-    protected void executeOnRecents(Consumer<RecentsActivity> f) throws Exception {
+    protected void executeOnRecents(Consumer<RecentsActivity> f) {
         getFromRecents(r -> {
             f.accept(r);
-            return null;
+            return true;
         });
     }
 
-    protected <T> T getFromRecents(Function<RecentsActivity, T> f) throws Exception {
+    protected <T> T getFromRecents(Function<RecentsActivity, T> f) {
         if (!TestHelpers.isInLauncherProcess()) return null;
-        return MAIN_EXECUTOR.submit(() -> f.apply(mActivityMonitor.getActivity())).get();
+        Object[] result = new Object[1];
+        Wait.atMost("Failed to get from recents", () -> MAIN_EXECUTOR.submit(() -> {
+            RecentsActivity activity = mActivityMonitor.getActivity();
+            if (activity == null) {
+                return false;
+            }
+            result[0] = f.apply(activity);
+            return true;
+        }).get(), DEFAULT_UI_TIMEOUT);
+        return (T) result[0];
     }
 
     private BaseOverview pressHomeAndGoToOverview() {
@@ -166,7 +176,7 @@ public class FallbackRecentsTest {
 
     @NavigationModeSwitch
     @Test
-    public void testOverview() throws Exception {
+    public void testOverview() {
         startAppFast(getAppPackageName());
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
         startTestActivity(2);
