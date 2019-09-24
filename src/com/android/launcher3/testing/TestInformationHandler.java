@@ -15,8 +15,9 @@
  */
 package com.android.launcher3.testing;
 
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static android.graphics.Bitmap.Config.ARGB_8888;
+
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -78,6 +79,14 @@ public class TestInformationHandler implements ResourceBasedOverride {
                         - LauncherState.ALL_APPS.getVerticalProgress(mLauncher);
                 final float distance = mLauncher.getAllAppsController().getShiftRange() * progress;
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, (int) distance);
+                break;
+            }
+
+            case TestProtocol.REQUEST_DOES_WORKSPACE_HAVE_SECOND_PAGE: {
+                if (mLauncher == null) return null;
+
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        mLauncher.getWorkspace().getPageCount() > 1);
                 break;
             }
 
