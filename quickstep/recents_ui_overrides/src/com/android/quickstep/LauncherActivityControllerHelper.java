@@ -274,17 +274,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                     // from the side. Calculate the start translation based on current scale/scroll.
                     float currScale = recentsView.getScaleX();
                     float scrollOffsetX = recentsView.getScrollOffset();
-
-                    float offscreenX = NORMAL.getOverviewScaleAndTranslation(activity).translationX;
-                    // The first task is hidden, so offset by its width.
-                    int firstTaskWidth = recentsView.getTaskViewAt(0).getWidth();
-                    offscreenX -= (firstTaskWidth + recentsView.getPageSpacing()) * currScale;
-                    // Offset since scale pushes tasks outwards.
-                    offscreenX += firstTaskWidth * (currScale - 1) / 2;
-                    offscreenX = Math.max(0, offscreenX);
-                    if (recentsView.isRtl()) {
-                        offscreenX = -offscreenX;
-                    }
+                    float offscreenX = recentsView.getOffscreenTranslationX(currScale);
 
                     float fromTranslationX = attached ? offscreenX - scrollOffsetX : 0;
                     float toTranslationX = attached ? 0 : offscreenX - scrollOffsetX;

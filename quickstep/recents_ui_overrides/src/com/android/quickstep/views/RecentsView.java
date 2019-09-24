@@ -272,7 +272,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     // Only valid until the launcher state changes to NORMAL
     protected int mRunningTaskId = -1;
-    private boolean mRunningTaskTileHidden;
+    protected boolean mRunningTaskTileHidden;
     private Task mTmpRunningTask;
 
     private boolean mRunningTaskIconScaledDown = false;
