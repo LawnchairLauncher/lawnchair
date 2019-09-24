@@ -32,8 +32,9 @@ public class RemoteFadeOutAnimationListener implements AnimatorUpdateListener {
     private final RemoteAnimationTargetSet mTarget;
     private boolean mFirstFrame = true;
 
-    public RemoteFadeOutAnimationListener(RemoteAnimationTargetCompat[] targets) {
-        mTarget = new RemoteAnimationTargetSet(targets, MODE_CLOSING);
+    public RemoteFadeOutAnimationListener(RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets) {
+        mTarget = new RemoteAnimationTargetSet(appTargets, wallpaperTargets, MODE_CLOSING);
     }
 
     @Override

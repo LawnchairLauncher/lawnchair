@@ -49,7 +49,7 @@ public class LauncherInitListener extends InternalStateHandler implements Activi
             // Set a one-time animation provider. After the first call, this will get cleared.
             // TODO: Probably also check the intended target id.
             CancellationSignal cancellationSignal = new CancellationSignal();
-            appTransitionManager.setRemoteAnimationProvider((targets) -> {
+            appTransitionManager.setRemoteAnimationProvider((appTargets, wallpaperTargets) -> {
 
                 // On the first call clear the reference.
                 cancellationSignal.cancel();
@@ -57,7 +57,7 @@ public class LauncherInitListener extends InternalStateHandler implements Activi
                 mRemoteAnimationProvider = null;
 
                 if (provider != null && launcher.getStateManager().getState().overviewUi) {
-                    return provider.createWindowAnimation(targets);
+                    return provider.createWindowAnimation(appTargets, wallpaperTargets);
                 }
                 return null;
             }, cancellationSignal);

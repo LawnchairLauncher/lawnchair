@@ -90,11 +90,12 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
     /**
      * Create remote window animation from the currently running app to the overview panel.
      *
-     * @param targetCompats the target apps
+     * @param appTargets the target apps
      * @return animation from app to overview
      */
     @Override
-    public AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] targetCompats) {
+    public AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets) {
         if (mRecentsView != null) {
             mRecentsView.setRunningTaskIconScaledDown(true);
         }
@@ -114,8 +115,8 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
             return anim;
         }
 
-        RemoteAnimationTargetSet targetSet =
-                new RemoteAnimationTargetSet(targetCompats, MODE_CLOSING);
+        RemoteAnimationTargetSet targetSet = new RemoteAnimationTargetSet(appTargets,
+                wallpaperTargets, MODE_CLOSING);
 
         // Use the top closing app to determine the insets for the animation
         RemoteAnimationTargetCompat runningTaskTarget = targetSet.findTask(mTargetTaskId);
@@ -153,8 +154,8 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
 
         if (targetSet.isAnimatingHome()) {
             // If we are animating home, fade in the opening targets
-            RemoteAnimationTargetSet openingSet =
-                    new RemoteAnimationTargetSet(targetCompats, MODE_OPENING);
+            RemoteAnimationTargetSet openingSet = new RemoteAnimationTargetSet(appTargets,
+                    wallpaperTargets, MODE_OPENING);
 
             TransactionCompat transaction = new TransactionCompat();
             valueAnimator.addUpdateListener((v) -> {

@@ -30,6 +30,9 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.SpringAnimationBuilder;
@@ -37,9 +40,6 @@ import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * A {@link QuickstepAppTransitionManagerImpl} that also implements recents transitions from
@@ -64,15 +64,16 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
 
     @Override
     protected void composeRecentsLaunchAnimator(@NonNull AnimatorSet anim, @NonNull View v,
-            @NonNull RemoteAnimationTargetCompat[] targets, boolean launcherClosing) {
+            @NonNull RemoteAnimationTargetCompat[] appTargets,
+            @NonNull RemoteAnimationTargetCompat[] wallpaperTargets, boolean launcherClosing) {
         RecentsView recentsView = mLauncher.getOverviewPanel();
         boolean skipLauncherChanges = !launcherClosing;
 
-        TaskView taskView = findTaskViewToLaunch(mLauncher, v, targets);
+        TaskView taskView = findTaskViewToLaunch(mLauncher, v, appTargets);
 
         ClipAnimationHelper helper = new ClipAnimationHelper(mLauncher);
-        anim.play(getRecentsWindowAnimator(taskView, skipLauncherChanges, targets, helper)
-                .setDuration(RECENTS_LAUNCH_DURATION));
+        anim.play(getRecentsWindowAnimator(taskView, skipLauncherChanges, appTargets,
+                wallpaperTargets, helper).setDuration(RECENTS_LAUNCH_DURATION));
 
         Animator childStateAnimation = null;
         // Found a visible recents task that matches the opening app, lets launch the app from there

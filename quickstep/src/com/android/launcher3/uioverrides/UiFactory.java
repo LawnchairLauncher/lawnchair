@@ -165,13 +165,14 @@ public class UiFactory extends RecentsUiFactory {
             CancellationSignal cancellationSignal) {
         QuickstepAppTransitionManagerImpl appTransitionManager =
                 (QuickstepAppTransitionManagerImpl) launcher.getAppTransitionManager();
-        appTransitionManager.setRemoteAnimationProvider((targets) -> {
+        appTransitionManager.setRemoteAnimationProvider((appTargets, wallpaperTargets) -> {
 
             // On the first call clear the reference.
             cancellationSignal.cancel();
 
             ValueAnimator fadeAnimation = ValueAnimator.ofFloat(1, 0);
-            fadeAnimation.addUpdateListener(new RemoteFadeOutAnimationListener(targets));
+            fadeAnimation.addUpdateListener(new RemoteFadeOutAnimationListener(appTargets,
+                    wallpaperTargets));
             AnimatorSet anim = new AnimatorSet();
             anim.play(fadeAnimation);
             return anim;

@@ -209,7 +209,8 @@ public class OverviewCommandHelper {
             return mAnimationProvider.onActivityReady(activity, wasVisible);
         }
 
-        private AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] targetCompats) {
+        private AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] appTargets,
+                RemoteAnimationTargetCompat[] wallpaperTargets) {
             if (LatencyTrackerCompat.isEnabled(mContext)) {
                 LatencyTrackerCompat.logToggleRecents(
                         (int) (SystemClock.uptimeMillis() - mToggleClickedTime));
@@ -217,7 +218,8 @@ public class OverviewCommandHelper {
 
             mListener.unregister();
 
-            AnimatorSet animatorSet = mAnimationProvider.createWindowAnimation(targetCompats);
+            AnimatorSet animatorSet = mAnimationProvider.createWindowAnimation(appTargets,
+                    wallpaperTargets);
             animatorSet.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {

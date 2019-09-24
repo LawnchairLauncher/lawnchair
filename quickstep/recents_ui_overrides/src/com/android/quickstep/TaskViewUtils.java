@@ -111,14 +111,15 @@ public final class TaskViewUtils {
      * animation.
      */
     public static ValueAnimator getRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
-            RemoteAnimationTargetCompat[] targets, final ClipAnimationHelper inOutHelper) {
+            RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets, final ClipAnimationHelper inOutHelper) {
         SyncRtSurfaceTransactionApplierCompat applier =
                 new SyncRtSurfaceTransactionApplierCompat(v);
         ClipAnimationHelper.TransformParams params = new ClipAnimationHelper.TransformParams()
                 .setSyncTransactionApplier(applier);
 
         final RemoteAnimationTargetSet targetSet =
-                new RemoteAnimationTargetSet(targets, MODE_OPENING);
+                new RemoteAnimationTargetSet(appTargets, wallpaperTargets, MODE_OPENING);
         targetSet.addDependentTransactionApplier(applier);
 
         final RecentsView recentsView = v.getRecentsView();
