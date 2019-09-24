@@ -15,15 +15,12 @@
  */
 package com.android.quickstep;
 
-import static android.os.VibrationEffect.EFFECT_CLICK;
-import static android.os.VibrationEffect.createPredefined;
-
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 
 import android.animation.Animator;
@@ -38,9 +35,6 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
-import android.provider.Settings;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -55,6 +49,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.graphics.RotationMode;
+import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.BaseActivityInterface.HomeAnimationFactory;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -106,8 +101,6 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected final AppWindowAnimationHelper mAppWindowAnimationHelper;
     protected final TransformParams mTransformParams = new TransformParams();
 
-    private final Vibrator mVibrator;
-
     // Shift in the range of [0, 1].
     // 0 => preview snapShot is completely visible, and hotseat is completely translated down
     // 1 => preview snapShot is completely aligned with the recents view and hotseat is completely
@@ -151,25 +144,12 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
         mAppWindowAnimationHelper = new AppWindowAnimationHelper(context);
         mPageSpacing = context.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
-        mVibrator = context.getSystemService(Vibrator.class);
         initTransitionEndpoints(InvariantDeviceProfile.INSTANCE.get(mContext)
                 .getDeviceProfile(mContext));
     }
 
     protected void performHapticFeedback() {
-        if (!mVibrator.hasVibrator()) {
-            return;
-        }
-        if (Settings.System.getInt(
-                mContext.getContentResolver(), Settings.System.HAPTIC_FEEDBACK_ENABLED, 0) == 0) {
-            return;
-        }
-
-        VibrationEffect effect = createPredefined(EFFECT_CLICK);
-        if (effect == null) {
-            return;
-        }
-        UI_HELPER_EXECUTOR.execute(() -> mVibrator.vibrate(effect));
+        VibratorWrapper.INSTANCE.get(mContext).vibrate(OVERVIEW_HAPTIC);
     }
 
     public Consumer<MotionEvent> getRecentsViewDispatcher(RotationMode rotationMode) {
