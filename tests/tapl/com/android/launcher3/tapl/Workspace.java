@@ -22,6 +22,7 @@ import static junit.framework.TestCase.assertTrue;
 
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -125,7 +126,7 @@ public final class Workspace extends Home {
      */
     public void ensureWorkspaceIsScrollable() {
         final UiObject2 workspace = verifyActiveContainer();
-        if (!isWorkspaceScrollable(workspace)) {
+        if (!isWorkspaceScrollable()) {
             try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                     "dragging icon to a second page of workspace to make it scrollable")) {
                 dragIconToWorkspace(
@@ -137,12 +138,12 @@ public final class Workspace extends Home {
                 verifyActiveContainer();
             }
         }
-        assertTrue("Home screen workspace didn't become scrollable",
-                isWorkspaceScrollable(workspace));
+        assertTrue("Home screen workspace didn't become scrollable", isWorkspaceScrollable());
     }
 
-    private boolean isWorkspaceScrollable(UiObject2 workspace) {
-        return workspace.isScrollable();
+    private boolean isWorkspaceScrollable() {
+        Bundle result = mLauncher.getTestInfo(TestProtocol.REQUEST_DOES_WORKSPACE_HAVE_SECOND_PAGE);
+        return result.getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, false);
     }
 
     @NonNull

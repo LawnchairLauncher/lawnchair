@@ -82,6 +82,14 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 break;
             }
 
+            case TestProtocol.REQUEST_DOES_WORKSPACE_HAVE_SECOND_PAGE: {
+                if (mLauncher == null) return null;
+
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        mLauncher.getWorkspace().getPageCount() > 1);
+                break;
+            }
+
             case TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED: {
                 response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, true);
                 break;

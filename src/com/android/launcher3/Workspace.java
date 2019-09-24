@@ -1038,6 +1038,13 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     @Override
+    protected boolean onOverscroll(int amount) {
+        // Enforce overscroll on -1 direction
+        if ((amount > 0 && !mIsRtl) || (amount < 0 && mIsRtl)) return false;
+        return super.onOverscroll(amount);
+    }
+
+    @Override
     protected boolean shouldFlingForVelocity(int velocityX) {
         // When the overlay is moving, the fling or settle transition is controlled by the overlay.
         return Float.compare(Math.abs(mOverlayTranslation), 0) == 0 &&
