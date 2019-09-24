@@ -55,6 +55,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import static com.android.launcher3.WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON;
+import static com.android.launcher3.WorkspaceItemInfo.FLAG_RESTORED_ICON;
+
 /**
  * Handles updates due to changes in package manager (app installed/updated/removed)
  * or when a user availability changes.
@@ -221,7 +224,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                     isTargetValid = LauncherAppsCompat.getInstance(context)
                                             .isActivityEnabledForProfile(cn, mUser);
                                 }
-                                if (si.hasStatusFlag(FLAG_AUTOINSTALL_ICON)) {
+                                if (si.hasStatusFlag(FLAG_RESTORED_ICON | FLAG_AUTOINSTALL_ICON)) {
                                     if (updateWorkspaceItemIntent(context, si, packageName)) {
                                         infoUpdated = true;
                                     } else if (si.hasPromiseIconUi()) {
