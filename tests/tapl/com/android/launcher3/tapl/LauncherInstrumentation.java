@@ -37,7 +37,6 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.SystemClock;
@@ -237,10 +236,6 @@ public final class LauncherInstrumentation {
             return NavigationModel.THREE_BUTTON;
         }
         return null;
-    }
-
-    public static boolean isAvd() {
-        return Build.MODEL.contains("Cuttlefish");
     }
 
     static void log(String message) {
