@@ -38,8 +38,6 @@ import com.android.launcher3.testing.TestProtocol;
  * Operations on the workspace screen.
  */
 public final class Workspace extends Home {
-    private static final float FLING_SPEED =
-            LauncherInstrumentation.isAvd() ? 1500.0F : 3500.0F;
     private static final int DRAG_DURACTION = 2000;
     private static final int FLING_STEPS = 10;
     private final UiObject2 mHotseat;
