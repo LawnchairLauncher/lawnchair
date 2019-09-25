@@ -7,7 +7,6 @@ import com.android.launcher3.uioverrides.TogglableFlag;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-import org.robolectric.RuntimeEnvironment;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -15,6 +14,10 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Test rule that makes overriding flags in Robolectric tests easier. This rule clears all flags
@@ -52,68 +55,48 @@ public final class FlagOverrideRule implements TestRule {
         boolean value();
     }
 
-    private boolean ruleInProgress;
-
     @Override
     public Statement apply(Statement base, Description description) {
-        return new Statement() {
-            @Override
-            public void evaluate() throws Throwable {
-                FeatureFlags.initialize(RuntimeEnvironment.application.getApplicationContext());
-                ruleInProgress = true;
-                try {
-                    clearOverrides();
-                    applyAnnotationOverrides(description);
-                    base.evaluate();
-                } finally {
-                    ruleInProgress = false;
-                    clearOverrides();
+        return new MyStatement(base, description);
+    }
+
+    private class MyStatement extends Statement {
+
+        private final Statement mBase;
+        private final Description mDescription;
+
+
+        MyStatement(Statement base, Description description) {
+            mBase = base;
+            mDescription = description;
+        }
+
+        @Override
+        public void evaluate() throws Throwable {
+            Map<String, BaseTogglableFlag> allFlags = FeatureFlags.getTogglableFlags().stream()
+                    .collect(Collectors.toMap(TogglableFlag::getKey, Function.identity()));
+
+            HashMap<BaseTogglableFlag, Boolean> changedValues = new HashMap<>();
+            FlagOverride[] overrides = new FlagOverride[0];
+            try {
+                for (Annotation annotation : mDescription.getAnnotations()) {
+                    if (annotation.annotationType() == FlagOverride.class) {
+                        overrides = new FlagOverride[] { (FlagOverride) annotation };
+                    } else if (annotation.annotationType() == FlagOverrides.class) {
+                        // Note: this branch is hit if the annotation is repeated
+                        overrides = ((FlagOverrides) annotation).value();
+                    }
                 }
-            }
-        };
-    }
-
-    private void override(BaseTogglableFlag flag, boolean newValue) {
-        if (!ruleInProgress) {
-            throw new IllegalStateException(
-                    "Rule isn't in progress. Did you remember to mark it with @Rule?");
-        }
-        flag.setForTests(newValue);
-    }
-
-    private void applyAnnotationOverrides(Description description) {
-        for (Annotation annotation : description.getAnnotations()) {
-            if (annotation.annotationType() == FlagOverride.class) {
-                applyAnnotation((FlagOverride) annotation);
-            } else if (annotation.annotationType() == FlagOverrides.class) {
-                // Note: this branch is hit if the annotation is repeated
-                for (FlagOverride flagOverride : ((FlagOverrides) annotation).value()) {
-                    applyAnnotation(flagOverride);
+                for (FlagOverride override : overrides) {
+                    BaseTogglableFlag flag = allFlags.get(override.key());
+                    changedValues.put(flag, flag.get());
+                    flag.setForTests(override.value());
                 }
+                mBase.evaluate();
+            } finally {
+                // Clear the values
+                changedValues.forEach(BaseTogglableFlag::setForTests);
             }
-        }
-    }
-
-    private void applyAnnotation(FlagOverride flagOverride) {
-        boolean found = false;
-        for (TogglableFlag flag : FeatureFlags.getTogglableFlags()) {
-            if (flag.getKey().equals(flagOverride.key())) {
-                override(flag, flagOverride.value());
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            throw new IllegalStateException("Flag " + flagOverride.key() + " not found");
-        }
-    }
-
-    /**
-     * Resets all flags to their default values.
-     */
-    private void clearOverrides() {
-        for (BaseTogglableFlag flag : FeatureFlags.getTogglableFlags()) {
-            flag.setForTests(flag.getDefaultValue());
         }
     }
 }
