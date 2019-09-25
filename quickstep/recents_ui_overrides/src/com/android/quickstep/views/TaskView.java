@@ -391,9 +391,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mIconView.setDrawable(icon);
             mIconView.setOnClickListener(v -> showTaskMenu(Touch.TAP));
             mIconView.setOnLongClickListener(v -> {
-                if (TestProtocol.sDebugTracing) {
-                    Log.d(TestProtocol.WELLBEING_NO_TASK_MENU, "setOnLongClickListener");
-                }
                 requestDisallowInterceptTouchEvent(true);
                 return showTaskMenu(Touch.LONGPRESS);
             });

@@ -161,9 +161,6 @@ public class TaskMenuView extends AbstractFloatingView {
     }
 
     public static TaskMenuView showForTask(TaskView taskView) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.WELLBEING_NO_TASK_MENU, "showForTask");
-        }
         BaseDraggingActivity activity = BaseDraggingActivity.fromContext(taskView.getContext());
         final TaskMenuView taskMenuView = (TaskMenuView) activity.getLayoutInflater().inflate(
                         R.layout.task_menu, activity.getDragLayer(), false);
@@ -171,14 +168,8 @@ public class TaskMenuView extends AbstractFloatingView {
     }
 
     private boolean populateAndShowForTask(TaskView taskView) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.WELLBEING_NO_TASK_MENU, "populateAndShowForTask1");
-        }
         if (isAttachedToWindow()) {
             return false;
-        }
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.WELLBEING_NO_TASK_MENU, "populateAndShowForTask2");
         }
         mActivity.getDragLayer().addView(this);
         mTaskView = taskView;
