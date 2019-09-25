@@ -845,10 +845,6 @@ public final class LauncherInstrumentation {
         mDevice.waitForIdle();
     }
 
-    float getDisplayDensity() {
-        return mInstrumentation.getTargetContext().getResources().getDisplayMetrics().density;
-    }
-
     int getTouchSlop() {
         return ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
