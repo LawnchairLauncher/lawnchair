@@ -23,11 +23,11 @@ import android.content.SharedPreferences;
 
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Keep;
-
 import androidx.annotation.VisibleForTesting;
-import com.android.launcher3.Utilities;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.TogglableFlag;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
@@ -73,9 +73,6 @@ public abstract class BaseFlags {
 
     //Feature flag to enable pulling down navigation shade from workspace.
     public static final boolean PULL_DOWN_STATUS_BAR = true;
-
-    // When true, custom widgets are loaded using CustomWidgetParser.
-    public static final boolean ENABLE_CUSTOM_WIDGETS = false;
 
     // Features to control Launcher3Go behavior
     public static final boolean GO_DISABLE_WIDGETS = false;
