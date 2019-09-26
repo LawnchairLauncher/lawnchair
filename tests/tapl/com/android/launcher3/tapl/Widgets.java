@@ -16,8 +16,6 @@
 
 package com.android.launcher3.tapl;
 
-import static org.junit.Assert.fail;
-
 import android.graphics.Point;
 import android.graphics.Rect;
 
@@ -28,11 +26,13 @@ import androidx.test.uiautomator.UiObject2;
 
 import com.android.launcher3.ResourceUtils;
 
+import java.util.Collection;
+import java.util.Collections;
+
 /**
  * All widgets container.
  */
 public final class Widgets extends LauncherInstrumentation.VisibleContainer {
-    private static final Rect MARGINS = new Rect(100, 100, 100, 100);
     private static final int FLING_STEPS = 10;
 
     Widgets(LauncherInstrumentation launcher) {
@@ -48,17 +48,27 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 "want to fling forward in widgets")) {
             LauncherInstrumentation.log("Widgets.flingForward enter");
             final UiObject2 widgetsContainer = verifyActiveContainer();
-            final int margin = widgetsContainer.getVisibleBounds().bottom -
-                    mLauncher.getRealDisplaySize().y +
-                    ResourceUtils.getNavbarSize(
-                            ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, mLauncher.getResources());
             mLauncher.scroll(
-                    widgetsContainer, Direction.DOWN, 1f, new Rect(0, 0, 0, margin), FLING_STEPS);
+                    widgetsContainer,
+                    Direction.DOWN,
+                    1f,
+                    new Rect(0, 0, 0, getBottomGestureMargin(widgetsContainer)),
+                    FLING_STEPS);
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("flung forward")) {
                 verifyActiveContainer();
             }
             LauncherInstrumentation.log("Widgets.flingForward exit");
         }
+    }
+
+    private int getBottomGestureMargin(UiObject2 widgetsContainer) {
+        return widgetsContainer.getVisibleBounds().bottom - mLauncher.getRealDisplaySize().y +
+                getBottomGestureSize();
+    }
+
+    private int getBottomGestureSize() {
+        return ResourceUtils.getNavbarSize(
+                ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, mLauncher.getResources()) + 1;
     }
 
     /**
@@ -88,32 +98,48 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
     }
 
     public Widget getWidget(String labelText) {
-        final int margin = ResourceUtils.getNavbarSize(
-                ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, mLauncher.getResources()) + 1;
         final UiObject2 widgetsContainer = verifyActiveContainer();
-        widgetsContainer.setGestureMargins(0, 0, 0, margin);
-
         final Point displaySize = mLauncher.getRealDisplaySize();
+        final BySelector labelSelector = By.clazz("android.widget.TextView").text(labelText);
 
         int i = 0;
-        final BySelector selector = By.clazz("android.widget.TextView").text(labelText);
-
         for (; ; ) {
-            final UiObject2 label = mLauncher.tryWaitForLauncherObject(selector, 300);
-            if (label != null) {
+            final Collection<UiObject2> cells = mLauncher.getObjectsInContainer(
+                    widgetsContainer, "widgets_cell_list_container");
+            mLauncher.assertTrue("Widgets doesn't have 2 rows", cells.size() >= 2);
+            for (UiObject2 cell : cells) {
+                final UiObject2 label = cell.findObject(labelSelector);
+                if (label == null) continue;
+
                 final UiObject2 widget = label.getParent().getParent();
                 mLauncher.assertEquals(
                         "View is not WidgetCell",
                         "com.android.launcher3.widget.WidgetCell",
                         widget.getClassName());
 
-                if (widget.getVisibleBounds().bottom <= displaySize.y - margin) {
+                if (widget.getVisibleBounds().bottom <= displaySize.y - getBottomGestureSize()) {
                     return new Widget(mLauncher, widget);
                 }
             }
 
-            if (++i > 40) fail("Too many attempts");
-            mLauncher.scroll(widgetsContainer, Direction.DOWN, 0.7f, MARGINS, 50);
+            mLauncher.assertTrue("Too many attempts", ++i <= 40);
+            final UiObject2 lowestCell = Collections.max(cells, (c1, c2) ->
+                    Integer.compare(c1.getVisibleBounds().top, c2.getVisibleBounds().top));
+
+            final int gestureStart = lowestCell.getVisibleBounds().top + mLauncher.getTouchSlop();
+            final int distance = gestureStart - widgetsContainer.getVisibleBounds().top;
+            final int bottomMargin = widgetsContainer.getVisibleBounds().height() - distance;
+
+            mLauncher.scroll(
+                    widgetsContainer,
+                    Direction.DOWN,
+                    1f,
+                    new Rect(
+                            0,
+                            0,
+                            0,
+                            Math.max(bottomMargin, getBottomGestureMargin(widgetsContainer))),
+                    150);
         }
     }
 }
