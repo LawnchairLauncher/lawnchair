@@ -59,6 +59,7 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
+import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.systemui.shared.system.QuickStepContract;
 
@@ -67,6 +68,8 @@ import org.junit.Assert;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -754,6 +757,36 @@ public final class LauncherInstrumentation {
         assertEquals("Swipe switched launcher to a wrong state;",
                 TestProtocol.stateOrdinalToString(expectedState),
                 TestProtocol.stateOrdinalToString(parcel.getInt(TestProtocol.STATE_FIELD)));
+    }
+
+    int getBottomGestureSize() {
+        return ResourceUtils.getNavbarSize(
+                ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, getResources()) + 1;
+    }
+
+    int getBottomGestureMargin(UiObject2 container) {
+        return container.getVisibleBounds().bottom - getRealDisplaySize().y
+                + getBottomGestureSize();
+    }
+
+    void scrollToLastVisibleRow(UiObject2 container, Collection<UiObject2> items, int topPadding) {
+        final UiObject2 lowestItem = Collections.max(items, (i1, i2) ->
+                Integer.compare(i1.getVisibleBounds().top, i2.getVisibleBounds().top));
+
+        final int gestureStart = lowestItem.getVisibleBounds().top + getTouchSlop();
+        final int distance = gestureStart - container.getVisibleBounds().top - topPadding;
+        final int bottomMargin = container.getVisibleBounds().height() - distance;
+
+        scroll(
+                container,
+                Direction.DOWN,
+                1f,
+                new Rect(
+                        0,
+                        0,
+                        0,
+                        Math.max(bottomMargin, getBottomGestureMargin(container))),
+                150);
     }
 
     void scroll(UiObject2 container, Direction direction, float percent, Rect margins, int steps) {
