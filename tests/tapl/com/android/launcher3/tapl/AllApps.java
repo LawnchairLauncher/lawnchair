@@ -94,6 +94,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
             final UiObject2 allAppsContainer = verifyActiveContainer();
             final UiObject2 appListRecycler = mLauncher.waitForObjectInContainer(allAppsContainer,
                     "apps_list_view");
+            final UiObject2 searchBox = getSearchBox(allAppsContainer);
 
             int bottomGestureMargin = ResourceUtils.getNavbarSize(
                     ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, mLauncher.getResources()) + 1;
@@ -113,7 +114,11 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                 try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("scrolled")) {
                     while (!hasClickableIcon(allAppsContainer, appListRecycler, appIconSelector,
                             displayBottom)) {
-                        mLauncher.scroll(allAppsContainer, Direction.DOWN, 0.8f, null, 50);
+                        mLauncher.scrollToLastVisibleRow(
+                                allAppsContainer,
+                                mLauncher.getObjectsInContainer(allAppsContainer, "icon"),
+                                searchBox.getVisibleBounds().bottom
+                                        - allAppsContainer.getVisibleBounds().top);
                         final int newScroll = getAllAppsScroll();
                         if (newScroll == scroll) break;
 
