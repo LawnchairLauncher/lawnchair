@@ -44,7 +44,7 @@ public class LauncherAppState {
     public static final String ACTION_FORCE_ROLOAD = "force-reload-launcher";
 
     // We do not need any synchronization for this variable as its only written on UI thread.
-    private static final MainThreadInitializedObject<LauncherAppState> INSTANCE =
+    public static final MainThreadInitializedObject<LauncherAppState> INSTANCE =
             new MainThreadInitializedObject<>(LauncherAppState::new);
 
     private final Context mContext;

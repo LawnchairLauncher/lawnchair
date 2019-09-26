@@ -238,14 +238,7 @@ public final class FeatureFlags {
 
         @Override
         public int hashCode() {
-            int h$ = 1;
-            h$ *= 1000003;
-            h$ ^= key.hashCode();
-            h$ *= 1000003;
-            h$ ^= getDefaultValue() ? 1231 : 1237;
-            h$ *= 1000003;
-            h$ ^= description.hashCode();
-            return h$;
+            return key.hashCode();
         }
     }
 }
