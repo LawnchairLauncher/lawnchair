@@ -64,7 +64,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 "want to fling backwards in widgets")) {
             LauncherInstrumentation.log("Widgets.flingBackward enter");
             final UiObject2 widgetsContainer = verifyActiveContainer();
-            mLauncher.scroll(widgetsContainer, Direction.UP, 1f, MARGINS, FLING_STEPS);
+            mLauncher.scroll(widgetsContainer, Direction.UP, 1f, null, FLING_STEPS);
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("flung back")) {
                 verifyActiveContainer();
             }
