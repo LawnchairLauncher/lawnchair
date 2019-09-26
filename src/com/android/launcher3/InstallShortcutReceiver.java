@@ -620,6 +620,11 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     }
 
     private static WorkspaceItemInfo createWorkspaceItemInfo(Intent data, LauncherAppState app) {
+        if (data == null) {
+            Log.e(TAG, "Can't construct WorkspaceItemInfo with null data");
+            return null;
+        }
+
         Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
         String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
         Parcelable bitmap = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
