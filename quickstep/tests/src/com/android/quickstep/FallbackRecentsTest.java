@@ -79,7 +79,7 @@ public class FallbackRecentsTest {
         Context context = instrumentation.getContext();
         mDevice = UiDevice.getInstance(instrumentation);
         mDevice.setOrientationNatural();
-        mLauncher = new LauncherInstrumentation(instrumentation);
+        mLauncher = new LauncherInstrumentation();
 
         mOrderSensitiveRules = RuleChain.
                 outerRule(new NavigationModeSwitchRule(mLauncher)).
