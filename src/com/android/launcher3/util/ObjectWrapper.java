@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.quickstep.util;
+package com.android.launcher3.util;
 
 import android.os.Binder;
 import android.os.IBinder;

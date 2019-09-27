@@ -17,12 +17,10 @@ package com.android.quickstep;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.os.Build;
-import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -34,7 +32,7 @@ import androidx.annotation.UiThread;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.quickstep.util.RemoteAnimationProvider;
+import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -98,16 +96,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
     void onLaunchTaskSuccess(T activity);
 
     default void closeOverlay() { }
-
-    interface ActivityInitListener {
-
-        void register();
-
-        void unregister();
-
-        void registerAndStartActivity(Intent intent, RemoteAnimationProvider animProvider,
-                Context context, Handler handler, long duration);
-    }
 
     interface AnimationFactory {
 
