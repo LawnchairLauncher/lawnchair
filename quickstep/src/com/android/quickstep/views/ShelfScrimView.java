@@ -161,7 +161,7 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
                 mMidProgress =  OVERVIEW.getVerticalProgress(mLauncher);
                 Rect hotseatPadding = dp.getHotseatLayoutPadding();
                 int hotseatSize = dp.hotseatBarSizePx + dp.getInsets().bottom
-                        - hotseatPadding.bottom - hotseatPadding.top;
+                        + hotseatPadding.bottom + hotseatPadding.top;
                 float dragHandleTop =
                         Math.min(hotseatSize, OverviewState.getDefaultSwipeHeight(context, dp));
                 mDragHandleProgress =  1 - (dragHandleTop / mShiftRange);
