@@ -98,8 +98,7 @@ public abstract class AbstractLauncherUiTest {
 
     protected LooperExecutor mMainThreadExecutor = MAIN_EXECUTOR;
     protected final UiDevice mDevice = UiDevice.getInstance(getInstrumentation());
-    protected final LauncherInstrumentation mLauncher =
-            new LauncherInstrumentation(getInstrumentation());
+    protected final LauncherInstrumentation mLauncher = new LauncherInstrumentation();
     protected Context mTargetContext;
     protected String mTargetPackage;
 
