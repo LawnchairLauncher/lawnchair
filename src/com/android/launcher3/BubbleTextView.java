@@ -104,6 +104,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private Drawable mIcon;
     private final boolean mCenterVertically;
 
+    private final int mDisplay;
+
     private final CheckLongPressHelper mLongPressHelper;
     private final StylusEventHelper mStylusEventHelper;
     private final float mSlop;
@@ -155,21 +157,21 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                 R.styleable.BubbleTextView, defStyle, 0);
         mLayoutHorizontal = a.getBoolean(R.styleable.BubbleTextView_layoutHorizontal, false);
 
-        int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
+        mDisplay = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
         final int defaultIconSize;
-        if (display == DISPLAY_WORKSPACE) {
+        if (mDisplay == DISPLAY_WORKSPACE) {
             DeviceProfile grid = mActivity.getWallpaperDeviceProfile();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
             defaultIconSize = grid.iconSizePx;
             mIgnorePaddingTouch = true;
-        } else if (display == DISPLAY_ALL_APPS) {
+        } else if (mDisplay == DISPLAY_ALL_APPS) {
             DeviceProfile grid = mActivity.getDeviceProfile();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
             mIgnorePaddingTouch = true;
-        } else if (display == DISPLAY_FOLDER) {
+        } else if (mDisplay == DISPLAY_FOLDER) {
             DeviceProfile grid = mActivity.getDeviceProfile();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.folderChildTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
@@ -582,7 +584,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             mDotInfo = mActivity.getDotInfoForItem(itemInfo);
             boolean isDotted = mDotInfo != null;
             float newDotScale = isDotted ? 1f : 0;
-            mDotRenderer = mActivity.getDeviceProfile().mDotRenderer;
+            if (mDisplay == DISPLAY_ALL_APPS) {
+                mDotRenderer = mActivity.getDeviceProfile().mDotRendererAllApps;
+            } else {
+                mDotRenderer = mActivity.getDeviceProfile().mDotRendererWorkSpace;
+            }
             if (wasDotted || isDotted) {
                 // Animate when a dot is first added or when it is removed.
                 if (animate && (wasDotted ^ isDotted) && isShown()) {
