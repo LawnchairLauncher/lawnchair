@@ -129,7 +129,8 @@ public class DeviceProfile {
     private boolean mIsSeascape;
 
     // Notification dots
-    public DotRenderer mDotRenderer;
+    public DotRenderer mDotRendererWorkSpace;
+    public DotRenderer mDotRendererAllApps;
 
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
             Point minSize, Point maxSize,
@@ -230,8 +231,11 @@ public class DeviceProfile {
         updateWorkspacePadding();
 
         // This is done last, after iconSizePx is calculated above.
-        mDotRenderer = new DotRenderer(iconSizePx, IconShape.getShapePath(),
+        mDotRendererWorkSpace = new DotRenderer(iconSizePx, IconShape.getShapePath(),
                 IconShape.DEFAULT_PATH_SIZE);
+        mDotRendererAllApps = iconSizePx == allAppsIconSizePx ? mDotRendererWorkSpace :
+                new DotRenderer(allAppsIconSizePx, IconShape.getShapePath(),
+                        IconShape.DEFAULT_PATH_SIZE);
     }
 
     public DeviceProfile copy(Context context) {
