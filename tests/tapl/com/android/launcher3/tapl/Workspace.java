@@ -181,7 +181,7 @@ public final class Workspace extends Home {
      */
     public void flingForward() {
         final UiObject2 workspace = verifyActiveContainer();
-        mLauncher.scroll(workspace, Direction.RIGHT, 1f,
+        mLauncher.scroll(workspace, Direction.RIGHT,
                 new Rect(0, 0, mLauncher.getEdgeSensitivityWidth(), 0),
                 FLING_STEPS);
         verifyActiveContainer();
@@ -193,7 +193,7 @@ public final class Workspace extends Home {
      */
     public void flingBackward() {
         final UiObject2 workspace = verifyActiveContainer();
-        mLauncher.scroll(workspace, Direction.LEFT, 1f,
+        mLauncher.scroll(workspace, Direction.LEFT,
                 new Rect(mLauncher.getEdgeSensitivityWidth(), 0, 0, 0),
                 FLING_STEPS);
         verifyActiveContainer();

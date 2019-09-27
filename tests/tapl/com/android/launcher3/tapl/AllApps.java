@@ -163,7 +163,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                         "Exceeded max scroll attempts: " + MAX_SCROLL_ATTEMPTS,
                         ++attempts <= MAX_SCROLL_ATTEMPTS);
 
-                mLauncher.scroll(allAppsContainer, Direction.UP, 1, margins, 50);
+                mLauncher.scroll(allAppsContainer, Direction.UP, margins, 50);
             }
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("scrolled up")) {
@@ -191,7 +191,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
             final UiObject2 allAppsContainer = verifyActiveContainer();
             // Start the gesture in the center to avoid starting at elements near the top.
             mLauncher.scroll(
-                    allAppsContainer, Direction.DOWN, 1, new Rect(0, 0, 0, mHeight / 2), 10);
+                    allAppsContainer, Direction.DOWN, new Rect(0, 0, 0, mHeight / 2), 10);
             verifyActiveContainer();
         }
     }
@@ -205,7 +205,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
             final UiObject2 allAppsContainer = verifyActiveContainer();
             // Start the gesture in the center, for symmetry with forward.
             mLauncher.scroll(
-                    allAppsContainer, Direction.UP, 1, new Rect(0, mHeight / 2, 0, 0), 10);
+                    allAppsContainer, Direction.UP, new Rect(0, mHeight / 2, 0, 0), 10);
             verifyActiveContainer();
         }
     }
