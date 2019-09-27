@@ -789,7 +789,6 @@ public final class LauncherInstrumentation {
         scroll(
                 container,
                 Direction.DOWN,
-                1f,
                 new Rect(
                         0,
                         0,
@@ -798,7 +797,7 @@ public final class LauncherInstrumentation {
                 150);
     }
 
-    void scroll(UiObject2 container, Direction direction, float percent, Rect margins, int steps) {
+    void scroll(UiObject2 container, Direction direction, Rect margins, int steps) {
         final Rect rect = container.getVisibleBounds();
         if (margins != null) {
             rect.left += margins.left;
@@ -816,7 +815,7 @@ public final class LauncherInstrumentation {
             case UP: {
                 startX = endX = rect.centerX();
                 final int vertCenter = rect.centerY();
-                final float halfGestureHeight = rect.height() * percent / 2.0f;
+                final float halfGestureHeight = rect.height() / 2.0f;
                 startY = (int) (vertCenter - halfGestureHeight) + 1;
                 endY = (int) (vertCenter + halfGestureHeight);
             }
@@ -824,7 +823,7 @@ public final class LauncherInstrumentation {
             case DOWN: {
                 startX = endX = rect.centerX();
                 final int vertCenter = rect.centerY();
-                final float halfGestureHeight = rect.height() * percent / 2.0f;
+                final float halfGestureHeight = rect.height() / 2.0f;
                 startY = (int) (vertCenter + halfGestureHeight) - 1;
                 endY = (int) (vertCenter - halfGestureHeight);
             }
@@ -832,7 +831,7 @@ public final class LauncherInstrumentation {
             case LEFT: {
                 startY = endY = rect.centerY();
                 final int horizCenter = rect.centerX();
-                final float halfGestureWidth = rect.width() * percent / 2.0f;
+                final float halfGestureWidth = rect.width() / 2.0f;
                 startX = (int) (horizCenter - halfGestureWidth) + 1;
                 endX = (int) (horizCenter + halfGestureWidth);
             }
@@ -840,7 +839,7 @@ public final class LauncherInstrumentation {
             case RIGHT: {
                 startY = endY = rect.centerY();
                 final int horizCenter = rect.centerX();
-                final float halfGestureWidth = rect.width() * percent / 2.0f;
+                final float halfGestureWidth = rect.width() / 2.0f;
                 startX = (int) (horizCenter + halfGestureWidth) - 1;
                 endX = (int) (horizCenter - halfGestureWidth);
             }
