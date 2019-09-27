@@ -51,6 +51,7 @@ import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Configurator;
@@ -144,6 +145,15 @@ public final class LauncherInstrumentation {
     /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
      */
+    public LauncherInstrumentation() {
+        this(InstrumentationRegistry.getInstrumentation());
+    }
+
+    /**
+     * Constructs the root of TAPL hierarchy. You get all other objects from it.
+     * Deprecated: use the constructor without parameters instead.
+     */
+    @Deprecated
     public LauncherInstrumentation(Instrumentation instrumentation) {
         mInstrumentation = instrumentation;
         mDevice = UiDevice.getInstance(instrumentation);
