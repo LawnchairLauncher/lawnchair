@@ -136,7 +136,6 @@ public class TestHelpers {
                     "system_app_anr",
                     "system_app_crash",
                     "system_app_native_crash",
-                    "system_app_wtf",
                     "system_server_anr",
                     "system_server_crash",
                     "system_server_native_crash",
