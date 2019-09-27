@@ -48,6 +48,7 @@ import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.TouchInteractionService;
+import com.android.quickstep.util.SharedApiCompat;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 
@@ -67,7 +68,7 @@ public abstract class RecentsUiFactory {
             ISystemUiProxy sysUiProxy = RecentsModel.INSTANCE.get(context).getSystemUiProxy();
             if (sysUiProxy == null) return;
             try {
-                sysUiProxy.setShelfHeight(visible != 0, height);
+                SharedApiCompat.setShelfHeight(sysUiProxy, visible != 0, height);
             } catch (RemoteException e) {
                 Log.e(TAG, "Error setShelfHeight", e);
             }
