@@ -27,6 +27,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
@@ -82,7 +83,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
             }
 
             case TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED: {
-                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, true);
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, isLauncherInitialized());
                 break;
             }
 
@@ -151,5 +152,10 @@ public class TestInformationHandler implements ResourceBasedOverride {
             }
         }
         return response;
+    }
+
+    protected boolean isLauncherInitialized() {
+        final LauncherModel model = LauncherAppState.getInstance(mContext).getModel();
+        return model.getCallback() == null || model.isModelLoaded();
     }
 }
