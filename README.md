@@ -25,6 +25,14 @@ from the "Build Variants" menu in Android Studio / IntelliJ. Our team is usually
 If you're redistributing Lawnchair, please avoid using the package name `ch.deletescape.lawnchair.plah` and `ch.deletescape.lawnchair.ci`
 as that will prevents users from updating to the official builds.
 
+-- Note to self --
+I spent a lot of time trying to figure out how to compile Lawnchair apk, and following are some points to keep in mind when trying to compile the source.
+ * Try to stay away from Android Studio if possible.
+ * Make sure java platform is set to java8. (Extra stress on this point)
+ * Try cleaning the gradle directory before compiling if possible.
+ * Command to compile apk is - `./gradlew assembleQuickstepLawnchairDevOptimized`
+ * Build might take like 10-20 mins
+
 ## Translations
 
 Wanna help us by translating Lawnchair to your own language? Just take a look at [our Crowdin page](https://translate.lawnchair.app/).
