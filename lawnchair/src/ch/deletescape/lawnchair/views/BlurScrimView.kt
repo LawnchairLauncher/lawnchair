@@ -32,16 +32,18 @@ import ch.deletescape.lawnchair.dpToPx
 import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.states.HomeState
+import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherState
+import com.android.launcher3.LauncherState.BACKGROUND_APP
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.anim.Interpolators
-import com.android.launcher3.anim.Interpolators.ACCEL
-import com.android.launcher3.anim.Interpolators.ACCEL_2
+import com.android.launcher3.anim.Interpolators.*
 import com.android.launcher3.graphics.NinePatchDrawHelper
 import com.android.launcher3.icons.ShadowGenerator
 import com.android.launcher3.util.Themes
+import com.android.quickstep.SysUINavigationMode
 import com.android.quickstep.views.ShelfScrimView
 import com.google.android.apps.nexuslauncher.qsb.AbstractQsbLayout
 
@@ -389,14 +391,28 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         mDragHandleOffset = Math.max(0f, mDragHandleBounds.top + mDragHandleSize - mShelfTop)
 
         if (!useFlatColor) {
-            mShelfColor = getColorForProgress(mProgress)
+            if (mProgress >= 1 && mSysUINavigationMode == SysUINavigationMode.Mode.NO_BUTTON
+                && mLauncher.stateManager.state == BACKGROUND_APP) {
+                mShelfColor = ColorUtils.setAlphaComponent(allAppsBackground, mMidAlpha)
+            } else {
+                mShelfColor = getColorForProgress(mProgress)
+            }
         }
     }
 
     private fun getColorForProgress(progress: Float): Int {
+        val interpolatedProgress: Float = when {
+            progress >= 1 -> progress
+            progress >= mMidProgress -> Utilities.mapToRange(
+                    progress, mMidProgress, 1f, mMidProgress, 1f,
+                    mBeforeMidProgressColorInterpolator)
+            else -> Utilities.mapToRange(
+                    progress, 0f, mMidProgress, 0f, mMidProgress,
+                    mAfterMidProgressColorInterpolator)
+        }
         colorRanges.forEach {
-            if (mProgress in it) {
-                return it.getColor(progress)
+            if (interpolatedProgress in it) {
+                return it.getColor(interpolatedProgress)
             }
         }
         return 0
@@ -460,7 +476,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         fun getColor(progress: Float): Int {
             if (start == Float.NEGATIVE_INFINITY) return endColor
             if (end == Float.POSITIVE_INFINITY) return startColor
-            val amount = Utilities.mapToRange(progress, start, end, 0f, 1f, ACCEL)
+            val amount = Utilities.mapToRange(progress, start, end, 0f, 1f, LINEAR)
             return ColorUtils.blendARGB(startColor, endColor, amount)
         }
 

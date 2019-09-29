@@ -75,8 +75,8 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
     protected int mMidAlpha;
     protected float mMidProgress;
 
-    private Interpolator mBeforeMidProgressColorInterpolator = ACCEL;
-    private Interpolator mAfterMidProgressColorInterpolator = ACCEL;
+    protected Interpolator mBeforeMidProgressColorInterpolator = ACCEL;
+    protected Interpolator mAfterMidProgressColorInterpolator = ACCEL;
 
     private float mShiftRange;
 
@@ -93,7 +93,7 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
     private boolean mRemainingScreenPathValid = false;
 
     protected final LawnchairPreferences prefs;
-    private Mode mSysUINavigationMode;
+    protected Mode mSysUINavigationMode;
 
     public ShelfScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
