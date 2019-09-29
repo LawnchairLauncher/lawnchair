@@ -28,6 +28,7 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.runOnThread
+import ch.deletescape.lawnchair.theme.ThemeOverride
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.views.ActivityContext
@@ -114,7 +115,8 @@ class DesktopIconsPreview(context: Context, attrs: AttributeSet?) :
 
     override fun getHotseat() = null
 
-    private class PreviewContext(base: Context) : ContextThemeWrapper(base, R.style.AppTheme), ActivityContext {
+    private class PreviewContext(base: Context) : ContextThemeWrapper(
+            base, ThemeOverride.Launcher().getTheme(base)), ActivityContext {
 
         val idp = LauncherAppState.getIDP(this)!!
         val dp get() = idp.getDeviceProfile(this)!!
