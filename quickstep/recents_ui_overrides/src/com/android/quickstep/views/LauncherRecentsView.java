@@ -48,8 +48,8 @@ import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
 import com.android.launcher3.uioverrides.DejankBinderTracker;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.util.ClipAnimationHelper;
-import com.android.quickstep.util.ClipAnimationHelper.TransformParams;
+import com.android.quickstep.util.AppWindowAnimationHelper;
+import com.android.quickstep.util.AppWindowAnimationHelper.TransformParams;
 import com.android.quickstep.util.LayoutUtils;
 
 /**
@@ -120,7 +120,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
      */
     @Override
     public AnimatorSet createAdjacentPageAnimForTaskLaunch(TaskView tv,
-            ClipAnimationHelper helper) {
+            AppWindowAnimationHelper helper) {
         AnimatorSet anim = super.createAdjacentPageAnimForTaskLaunch(tv, helper);
 
         if (!SysUINavigationMode.getMode(mActivity).hasGestures) {
@@ -178,7 +178,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
                 mTransformParams.setProgress(1 - progress)
                         .setSyncTransactionApplier(mSyncTransactionApplier)
                         .setForLiveTile(true);
-                mClipAnimationHelper.applyTransform(mTransformParams);
+                mAppWindowAnimationHelper.applyTransform(mTransformParams);
             } else {
                 redrawLiveTile(true);
             }
@@ -211,17 +211,17 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
 
     @Override
     public void redrawLiveTile(boolean mightNeedToRefill) {
-        ClipAnimationHelper.TransformParams transformParams = getLiveTileParams(mightNeedToRefill);
+        AppWindowAnimationHelper.TransformParams transformParams = getLiveTileParams(mightNeedToRefill);
         if (transformParams != null) {
-            mClipAnimationHelper.applyTransform(transformParams);
+            mAppWindowAnimationHelper.applyTransform(transformParams);
         }
     }
 
     @Override
-    public ClipAnimationHelper.TransformParams getLiveTileParams(
+    public AppWindowAnimationHelper.TransformParams getLiveTileParams(
             boolean mightNeedToRefill) {
         if (!mEnableDrawingLiveTile || mRecentsAnimationWrapper == null
-                || mClipAnimationHelper == null) {
+                || mAppWindowAnimationHelper == null) {
             return null;
         }
         TaskView taskView = getRunningTaskView();

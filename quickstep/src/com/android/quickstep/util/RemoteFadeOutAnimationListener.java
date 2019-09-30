@@ -29,12 +29,12 @@ import com.android.systemui.shared.system.TransactionCompat;
  */
 public class RemoteFadeOutAnimationListener implements AnimatorUpdateListener {
 
-    private final RemoteAnimationTargetSet mTarget;
+    private final RemoteAnimationTargets mTarget;
     private boolean mFirstFrame = true;
 
     public RemoteFadeOutAnimationListener(RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets) {
-        mTarget = new RemoteAnimationTargetSet(appTargets, wallpaperTargets, MODE_CLOSING);
+        mTarget = new RemoteAnimationTargets(appTargets, wallpaperTargets, MODE_CLOSING);
     }
 
     @Override

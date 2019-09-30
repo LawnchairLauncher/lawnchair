@@ -84,7 +84,7 @@ import com.android.launcher3.util.DefaultDisplay;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
-import com.android.quickstep.inputconsumers.AssistantTouchConsumer;
+import com.android.quickstep.inputconsumers.AssistantInputConsumer;
 import com.android.quickstep.inputconsumers.DeviceLockedInputConsumer;
 import com.android.quickstep.inputconsumers.FallbackNoButtonInputConsumer;
 import com.android.quickstep.inputconsumers.InputConsumer;
@@ -563,7 +563,7 @@ public class TouchInteractionService extends Service implements
                 // not interrupt it. QuickSwitch assumes that interruption can only happen if the
                 // next gesture is also quick switch.
                 mUncheckedConsumer =
-                        new AssistantTouchConsumer(this, mISystemUiProxy,
+                        new AssistantInputConsumer(this, mISystemUiProxy,
                                 mOverviewComponentObserver.getActivityControlHelper(),
                                 InputConsumer.NO_OP, mInputMonitorCompat);
             } else {
@@ -613,7 +613,7 @@ public class TouchInteractionService extends Service implements
             final ActivityControlHelper activityControl =
                     mOverviewComponentObserver.getActivityControlHelper();
             if (canTriggerAssistantAction(event)) {
-                base = new AssistantTouchConsumer(this, mISystemUiProxy, activityControl, base,
+                base = new AssistantInputConsumer(this, mISystemUiProxy, activityControl, base,
                         mInputMonitorCompat);
             }
 

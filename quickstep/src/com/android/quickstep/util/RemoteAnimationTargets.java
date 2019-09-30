@@ -25,7 +25,7 @@ import java.util.Queue;
 /**
  * Holds a collection of RemoteAnimationTargets, filtered by different properties.
  */
-public class RemoteAnimationTargetSet {
+public class RemoteAnimationTargets {
 
     private final Queue<SyncRtSurfaceTransactionApplierCompat> mDependentTransactionAppliers =
             new ArrayDeque<>(1);
@@ -36,7 +36,7 @@ public class RemoteAnimationTargetSet {
     public final int targetMode;
     public final boolean hasRecents;
 
-    public RemoteAnimationTargetSet(RemoteAnimationTargetCompat[] apps,
+    public RemoteAnimationTargets(RemoteAnimationTargetCompat[] apps,
             RemoteAnimationTargetCompat[] wallpapers, int targetMode) {
         ArrayList<RemoteAnimationTargetCompat> filteredApps = new ArrayList<>();
         boolean hasRecents = false;

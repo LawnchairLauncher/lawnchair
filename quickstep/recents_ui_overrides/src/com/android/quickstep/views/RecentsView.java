@@ -107,7 +107,7 @@ import com.android.quickstep.RecentsModel.TaskThumbnailChangeListener;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.ViewUtils;
-import com.android.quickstep.util.ClipAnimationHelper;
+import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -156,7 +156,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             };
 
     protected RecentsAnimationWrapper mRecentsAnimationWrapper;
-    protected ClipAnimationHelper mClipAnimationHelper;
+    protected AppWindowAnimationHelper mAppWindowAnimationHelper;
     protected SyncRtSurfaceTransactionApplierCompat mSyncTransactionApplier;
     protected int mTaskWidth;
     protected int mTaskHeight;
@@ -176,7 +176,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private final ClearAllButton mClearAllButton;
     private final Rect mClearAllButtonDeadZoneRect = new Rect();
     private final Rect mTaskViewDeadZoneRect = new Rect();
-    protected final ClipAnimationHelper mTempClipAnimationHelper;
+    protected final AppWindowAnimationHelper mTempAppWindowAnimationHelper;
 
     private final ScrollState mScrollState = new ScrollState();
     // Keeps track of the previously known visible tasks for purposes of loading/unloading task data
@@ -327,7 +327,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mActivity = (T) BaseActivity.fromContext(context);
         mModel = RecentsModel.INSTANCE.get(context);
         mIdp = InvariantDeviceProfile.INSTANCE.get(context);
-        mTempClipAnimationHelper = new ClipAnimationHelper(context);
+        mTempAppWindowAnimationHelper = new AppWindowAnimationHelper(context);
 
         mClearAllButton = (ClearAllButton) LayoutInflater.from(context)
                 .inflate(R.layout.overview_clear_all_button, this, false);
@@ -808,7 +808,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mTaskListChangeId = -1;
 
         mRecentsAnimationWrapper = null;
-        mClipAnimationHelper = null;
+        mAppWindowAnimationHelper = null;
 
         unloadVisibleTaskData();
         setCurrentPage(0);
@@ -1519,14 +1519,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      * to the right.
      */
     public AnimatorSet createAdjacentPageAnimForTaskLaunch(
-            TaskView tv, ClipAnimationHelper clipAnimationHelper) {
+            TaskView tv, AppWindowAnimationHelper appWindowAnimationHelper) {
         AnimatorSet anim = new AnimatorSet();
 
         int taskIndex = indexOfChild(tv);
         int centerTaskIndex = getCurrentPage();
         boolean launchingCenterTask = taskIndex == centerTaskIndex;
 
-        LauncherState.ScaleAndTranslation toScaleAndTranslation = clipAnimationHelper
+        LauncherState.ScaleAndTranslation toScaleAndTranslation = appWindowAnimationHelper
                 .getScaleAndTranslation();
         float toScale = toScaleAndTranslation.scale;
         float toTranslationY = toScaleAndTranslation.translationY;
@@ -1586,10 +1586,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             }
         });
 
-        ClipAnimationHelper clipAnimationHelper = new ClipAnimationHelper(mActivity);
-        clipAnimationHelper.fromTaskThumbnailView(tv.getThumbnail(), this);
-        clipAnimationHelper.prepareAnimation(mActivity.getDeviceProfile(), true /* isOpening */);
-        AnimatorSet anim = createAdjacentPageAnimForTaskLaunch(tv, clipAnimationHelper);
+        AppWindowAnimationHelper appWindowAnimationHelper = new AppWindowAnimationHelper(mActivity);
+        appWindowAnimationHelper.fromTaskThumbnailView(tv.getThumbnail(), this);
+        appWindowAnimationHelper.prepareAnimation(mActivity.getDeviceProfile(), true /* isOpening */);
+        AnimatorSet anim = createAdjacentPageAnimForTaskLaunch(tv, appWindowAnimationHelper);
         anim.play(progressAnim);
         anim.setDuration(duration);
 
@@ -1696,8 +1696,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mRecentsAnimationWrapper = recentsAnimationWrapper;
     }
 
-    public void setClipAnimationHelper(ClipAnimationHelper clipAnimationHelper) {
-        mClipAnimationHelper = clipAnimationHelper;
+    public void setAppWindowAnimationHelper(AppWindowAnimationHelper appWindowAnimationHelper) {
+        mAppWindowAnimationHelper = appWindowAnimationHelper;
     }
 
     public void setLiveTileOverlay(LiveTileOverlay liveTileOverlay) {
@@ -1805,15 +1805,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     }
 
-    public ClipAnimationHelper getClipAnimationHelper() {
-        return mClipAnimationHelper;
+    public AppWindowAnimationHelper getClipAnimationHelper() {
+        return mAppWindowAnimationHelper;
     }
 
-    public ClipAnimationHelper getTempClipAnimationHelper() {
-        return mTempClipAnimationHelper;
+    public AppWindowAnimationHelper getTempAppWindowAnimationHelper() {
+        return mTempAppWindowAnimationHelper;
     }
 
-    public ClipAnimationHelper.TransformParams getLiveTileParams(
+    public AppWindowAnimationHelper.TransformParams getLiveTileParams(
             boolean mightNeedToRefill) {
         return null;
     }

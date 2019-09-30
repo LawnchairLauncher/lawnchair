@@ -79,9 +79,9 @@ import com.android.quickstep.ActivityControlHelper.HomeAnimationFactory;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.inputconsumers.InputConsumer;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
-import com.android.quickstep.util.ClipAnimationHelper.TargetAlphaProvider;
+import com.android.quickstep.util.AppWindowAnimationHelper.TargetAlphaProvider;
 import com.android.quickstep.util.RectFSpringAnim;
-import com.android.quickstep.util.SwipeAnimationTargetSet;
+import com.android.quickstep.util.RecentsAnimationTargets;
 import com.android.quickstep.views.LiveTileOverlay;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -547,7 +547,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     @Override
     public void updateFinalShift() {
 
-        SwipeAnimationTargetSet controller = mRecentsAnimationWrapper.getController();
+        RecentsAnimationTargets controller = mRecentsAnimationWrapper.getController();
         if (controller != null) {
             applyTransformUnchecked();
             updateSysUiFlags(mCurrentShift.value);
@@ -555,8 +555,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             if (mRecentsAnimationWrapper.getController() != null) {
-                mLiveTileOverlay.update(mClipAnimationHelper.getCurrentRectWithInsets(),
-                        mClipAnimationHelper.getCurrentCornerRadius());
+                mLiveTileOverlay.update(mAppWindowAnimationHelper.getCurrentRectWithInsets(),
+                        mAppWindowAnimationHelper.getCurrentCornerRadius());
             }
         }
 
@@ -605,7 +605,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     @Override
-    public void onRecentsAnimationStart(SwipeAnimationTargetSet targetSet) {
+    public void onRecentsAnimationStart(RecentsAnimationTargets targetSet) {
         super.onRecentsAnimationStart(targetSet);
         TOUCH_INTERACTION_LOG.addLog("startRecentsAnimationCallback", targetSet.apps.length);
         setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
@@ -886,7 +886,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                     @NonNull
                     @Override
                     public RectF getWindowTargetRect() {
-                        RectF fallbackTarget = new RectF(mClipAnimationHelper.getTargetRect());
+                        RectF fallbackTarget = new RectF(mAppWindowAnimationHelper.getTargetRect());
                         Utilities.scaleRectFAboutCenter(fallbackTarget, 0.25f);
                         return fallbackTarget;
                     }
@@ -1108,7 +1108,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void switchToScreenshot() {
-        SwipeAnimationTargetSet controller = mRecentsAnimationWrapper.getController();
+        RecentsAnimationTargets controller = mRecentsAnimationWrapper.getController();
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             if (controller != null) {
                 // Update the screenshot of the task
@@ -1191,7 +1191,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void setTargetAlphaProvider(TargetAlphaProvider provider) {
-        mClipAnimationHelper.setTaskAlphaCallback(provider);
+        mAppWindowAnimationHelper.setTaskAlphaCallback(provider);
         updateFinalShift();
     }
 

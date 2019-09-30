@@ -49,7 +49,7 @@ import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SwipeSharedState;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.util.RectFSpringAnim;
-import com.android.quickstep.util.SwipeAnimationTargetSet;
+import com.android.quickstep.util.RecentsAnimationTargets;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -127,9 +127,9 @@ public class FallbackNoButtonInputConsumer extends
         mSwipeUpOverHome = mRunningOverHome && !mInQuickSwitchMode;
 
         if (mSwipeUpOverHome) {
-            mClipAnimationHelper.setBaseAlphaCallback((t, a) -> 1 - mLauncherAlpha.value);
+            mAppWindowAnimationHelper.setBaseAlphaCallback((t, a) -> 1 - mLauncherAlpha.value);
         } else {
-            mClipAnimationHelper.setBaseAlphaCallback((t, a) -> mLauncherAlpha.value);
+            mAppWindowAnimationHelper.setBaseAlphaCallback((t, a) -> mLauncherAlpha.value);
         }
 
         initStateCallbacks();
@@ -414,12 +414,12 @@ public class FallbackNoButtonInputConsumer extends
     }
 
     @Override
-    public void onRecentsAnimationStart(SwipeAnimationTargetSet targetSet) {
+    public void onRecentsAnimationStart(RecentsAnimationTargets targetSet) {
         super.onRecentsAnimationStart(targetSet);
         mRecentsAnimationWrapper.enableInputConsumer();
 
         if (mRunningOverHome) {
-            mClipAnimationHelper.prepareAnimation(mDp, true);
+            mAppWindowAnimationHelper.prepareAnimation(mDp, true);
         }
         applyTransformUnchecked();
 

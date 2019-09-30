@@ -61,12 +61,12 @@ import com.android.quickstep.ActivityControlHelper.HomeAnimationFactory;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.inputconsumers.InputConsumer;
 import com.android.quickstep.util.ActivityInitListener;
-import com.android.quickstep.util.ClipAnimationHelper;
-import com.android.quickstep.util.ClipAnimationHelper.TransformParams;
+import com.android.quickstep.util.AppWindowAnimationHelper;
+import com.android.quickstep.util.AppWindowAnimationHelper.TransformParams;
 import com.android.quickstep.util.RectFSpringAnim;
-import com.android.quickstep.util.RemoteAnimationTargetSet;
-import com.android.quickstep.util.SwipeAnimationTargetSet;
-import com.android.quickstep.util.SwipeAnimationTargetSet.SwipeAnimationListener;
+import com.android.quickstep.util.RemoteAnimationTargets;
+import com.android.quickstep.util.RecentsAnimationTargets;
+import com.android.quickstep.util.RecentsAnimationCallbacks.RecentsAnimationListener;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.InputConsumerController;
@@ -80,7 +80,7 @@ import java.util.function.Consumer;
  */
 @TargetApi(Build.VERSION_CODES.Q)
 public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q extends RecentsView>
-        implements SwipeAnimationListener {
+        implements RecentsAnimationListener {
 
     private static final String TAG = "BaseSwipeUpHandler";
     protected static final Rect TEMP_RECT = new Rect();
@@ -102,7 +102,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected final RecentsModel mRecentsModel;
     protected final int mRunningTaskId;
 
-    protected final ClipAnimationHelper mClipAnimationHelper;
+    protected final AppWindowAnimationHelper mAppWindowAnimationHelper;
     protected final TransformParams mTransformParams = new TransformParams();
 
     private final Vibrator mVibrator;
@@ -144,7 +144,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
                 this::createNewInputProxyHandler);
         mMode = SysUINavigationMode.getMode(context);
 
-        mClipAnimationHelper = new ClipAnimationHelper(context);
+        mAppWindowAnimationHelper = new AppWindowAnimationHelper(context);
         mPageSpacing = context.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
         mVibrator = context.getSystemService(Vibrator.class);
         initTransitionEndpoints(InvariantDeviceProfile.INSTANCE.get(mContext)
@@ -220,7 +220,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             }
         });
         mRecentsView.setRecentsAnimationWrapper(mRecentsAnimationWrapper);
-        mRecentsView.setClipAnimationHelper(mClipAnimationHelper);
+        mRecentsView.setAppWindowAnimationHelper(mAppWindowAnimationHelper);
     }
 
     protected void startNewTask(int successStateFlag, Consumer<Boolean> resultCallback) {
@@ -257,7 +257,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     }
 
     @Override
-    public void onRecentsAnimationStart(SwipeAnimationTargetSet targetSet) {
+    public void onRecentsAnimationStart(RecentsAnimationTargets targetSet) {
         DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(mContext).getDeviceProfile(mContext);
         final Rect overviewStackBounds;
         RemoteAnimationTargetCompat runningTaskTarget = targetSet.findTask(mRunningTaskId);
@@ -275,10 +275,10 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         dp.updateInsets(targetSet.homeContentInsets);
         dp.updateIsSeascape(mContext);
         if (runningTaskTarget != null) {
-            mClipAnimationHelper.updateSource(overviewStackBounds, runningTaskTarget);
+            mAppWindowAnimationHelper.updateSource(overviewStackBounds, runningTaskTarget);
         }
 
-        mClipAnimationHelper.prepareAnimation(dp, false /* isOpening */);
+        mAppWindowAnimationHelper.prepareAnimation(dp, false /* isOpening */);
         initTransitionEndpoints(dp);
 
         mRecentsAnimationWrapper.setController(targetSet);
@@ -306,9 +306,9 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             // screen of the launcher window may be stale (position is not updated until first
             // traversal after the window is resized).  We only do this for non-multiwindow because
             // we otherwise use the minimized home bounds provided by the system.
-            mClipAnimationHelper.updateHomeBounds(getStackBounds(dp));
+            mAppWindowAnimationHelper.updateHomeBounds(getStackBounds(dp));
         }
-        mClipAnimationHelper.updateTargetRect(TEMP_RECT);
+        mAppWindowAnimationHelper.updateTargetRect(TEMP_RECT);
         if (mMode == Mode.NO_BUTTON) {
             // We can drag all the way to the top of the screen.
             mDragLengthFactor = (float) dp.heightPx / mTransitionDragLength;
@@ -366,13 +366,13 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         float shift = mCurrentShift.value;
         float offsetX = mRecentsView == null ? 0 : mRecentsView.getScrollOffset();
         float offsetScale = getTaskCurveScaleForOffsetX(offsetX,
-                mClipAnimationHelper.getTargetRect().width());
+        mAppWindowAnimationHelper.getTargetRect().width());
         mTransformParams.setProgress(shift)
                 .setOffsetX(offsetX)
                 .setOffsetScale(offsetScale)
                 .setTargetSet(mRecentsAnimationWrapper.targetSet)
                 .setLauncherOnTop(true);
-        mClipAnimationHelper.applyTransform(mTransformParams);
+        mAppWindowAnimationHelper.applyTransform(mTransformParams);
     }
 
     private float getTaskCurveScaleForOffsetX(float offsetX, float taskWidth) {
@@ -388,9 +388,9 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
      */
     protected RectFSpringAnim createWindowAnimationToHome(float startProgress,
             HomeAnimationFactory homeAnimationFactory) {
-        final RemoteAnimationTargetSet targetSet = mRecentsAnimationWrapper.targetSet;
+        final RemoteAnimationTargets targetSet = mRecentsAnimationWrapper.targetSet;
         final RectF startRect = new RectF(
-                mClipAnimationHelper.applyTransform(
+                mAppWindowAnimationHelper.applyTransform(
                         mTransformParams.setProgress(startProgress)
                                 .setTargetSet(targetSet)
                                 .setLauncherOnTop(false)));
@@ -409,7 +409,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
         // End on a "round-enough" radius so that the shape reveal doesn't have to do too much
         // rounding at the end of the animation.
-        float startRadius = mClipAnimationHelper.getCurrentCornerRadius();
+        float startRadius = mAppWindowAnimationHelper.getCurrentCornerRadius();
         float endRadius = startRect.width() / 6f;
         // We want the window alpha to be 0 once this threshold is met, so that the
         // FolderIconView can be seen morphing into the icon shape.
@@ -440,11 +440,11 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
                     mTransformParams.setCornerRadius(endRadius * progress + startRadius
                             * (1f - progress));
                 }
-                mClipAnimationHelper.applyTransform(mTransformParams);
+                mAppWindowAnimationHelper.applyTransform(mTransformParams);
 
                 if (isFloatingIconView) {
                     ((FloatingIconView) floatingView).update(currentRect, 1f, progress,
-                            windowAlphaThreshold, mClipAnimationHelper.getCurrentCornerRadius(),
+                            windowAlphaThreshold, mAppWindowAnimationHelper.getCurrentCornerRadius(),
                             false);
                 }
             }

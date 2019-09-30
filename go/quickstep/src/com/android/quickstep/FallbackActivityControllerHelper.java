@@ -27,7 +27,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.util.ActivityInitListener;
-import com.android.quickstep.util.RemoteAnimationTargetSet;
+import com.android.quickstep.util.RemoteAnimationTargets;
 import com.android.quickstep.views.IconRecentsView;
 
 import java.util.function.BiPredicate;
@@ -59,7 +59,7 @@ public final class FallbackActivityControllerHelper extends
             boolean isAnimatingToRecents = false;
 
             @Override
-            public void onRemoteAnimationReceived(RemoteAnimationTargetSet targets) {
+            public void onRemoteAnimationReceived(RemoteAnimationTargets targets) {
                 isAnimatingToRecents = targets != null && targets.isAnimatingHome();
                 if (!isAnimatingToRecents) {
                     rv.setAlpha(1);

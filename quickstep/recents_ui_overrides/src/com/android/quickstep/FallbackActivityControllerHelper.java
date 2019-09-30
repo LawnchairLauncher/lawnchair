@@ -37,7 +37,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.LayoutUtils;
-import com.android.quickstep.util.RemoteAnimationTargetSet;
+import com.android.quickstep.util.RemoteAnimationTargets;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -138,7 +138,7 @@ public final class FallbackActivityControllerHelper implements
             boolean isAnimatingToRecents = false;
 
             @Override
-            public void onRemoteAnimationReceived(RemoteAnimationTargetSet targets) {
+            public void onRemoteAnimationReceived(RemoteAnimationTargets targets) {
                 isAnimatingToRecents = targets != null && targets.isAnimatingHome();
                 if (!isAnimatingToRecents) {
                     rv.setContentAlpha(1);

@@ -29,7 +29,7 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.inputconsumers.InputConsumer;
-import com.android.quickstep.util.SwipeAnimationTargetSet;
+import com.android.quickstep.util.RecentsAnimationTargets;
 import com.android.systemui.shared.system.InputConsumerController;
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class RecentsAnimationWrapper {
     // than the state callbacks as these run on the current worker thread.
     private final ArrayList<Runnable> mCallbacks = new ArrayList<>();
 
-    public SwipeAnimationTargetSet targetSet;
+    public RecentsAnimationTargets targetSet;
 
     private boolean mWindowThresholdCrossed = false;
 
@@ -69,7 +69,7 @@ public class RecentsAnimationWrapper {
     }
 
     @UiThread
-    public synchronized void setController(SwipeAnimationTargetSet targetSet) {
+    public synchronized void setController(RecentsAnimationTargets targetSet) {
         Preconditions.assertUIThread();
         this.targetSet = targetSet;
 
@@ -127,7 +127,7 @@ public class RecentsAnimationWrapper {
 
     private void finishAndClear(boolean toRecents, Runnable onFinishComplete,
             boolean sendUserLeaveHint) {
-        SwipeAnimationTargetSet controller = targetSet;
+        RecentsAnimationTargets controller = targetSet;
         targetSet = null;
         disableInputProxy();
         if (controller != null) {
@@ -221,7 +221,7 @@ public class RecentsAnimationWrapper {
         }
     }
 
-    public SwipeAnimationTargetSet getController() {
+    public RecentsAnimationTargets getController() {
         return targetSet;
     }
 }

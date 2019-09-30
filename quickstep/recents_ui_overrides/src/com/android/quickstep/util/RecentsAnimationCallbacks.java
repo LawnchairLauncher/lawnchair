@@ -26,30 +26,29 @@ import androidx.annotation.UiThread;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.TouchInteractionService;
-import com.android.quickstep.util.SwipeAnimationTargetSet.SwipeAnimationListener;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
-import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.Set;
 import java.util.function.Consumer;
 
 /**
- * Wrapper around {@link RecentsAnimationListener} which delegates callbacks to multiple listeners
+ * Wrapper around {@link com.android.systemui.shared.system.RecentsAnimationListener} which delegates callbacks to multiple listeners
  * on the main thread
  */
-public class RecentsAnimationListenerSet implements RecentsAnimationListener {
+public class RecentsAnimationCallbacks implements
+        com.android.systemui.shared.system.RecentsAnimationListener {
 
-    private final Set<SwipeAnimationListener> mListeners = new ArraySet<>();
+    private final Set<RecentsAnimationListener> mListeners = new ArraySet<>();
     private final boolean mShouldMinimizeSplitScreen;
-    private final Consumer<SwipeAnimationTargetSet> mOnFinishListener;
+    private final Consumer<RecentsAnimationTargets> mOnFinishListener;
     private RecentsAnimationControllerCompat mController;
 
     private boolean mCancelled;
 
-    public RecentsAnimationListenerSet(boolean shouldMinimizeSplitScreen,
-            Consumer<SwipeAnimationTargetSet> onFinishListener) {
+    public RecentsAnimationCallbacks(boolean shouldMinimizeSplitScreen,
+            Consumer<RecentsAnimationTargets> onFinishListener) {
         mShouldMinimizeSplitScreen = shouldMinimizeSplitScreen;
         mOnFinishListener = onFinishListener;
         TouchInteractionService.getSwipeSharedState().setRecentsAnimationCanceledCallback(
@@ -57,13 +56,13 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
     }
 
     @UiThread
-    public void addListener(SwipeAnimationListener listener) {
+    public void addListener(RecentsAnimationListener listener) {
         Preconditions.assertUIThread();
         mListeners.add(listener);
     }
 
     @UiThread
-    public void removeListener(SwipeAnimationListener listener) {
+    public void removeListener(RecentsAnimationListener listener) {
         Preconditions.assertUIThread();
         mListeners.remove(listener);
     }
@@ -75,7 +74,7 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
             RemoteAnimationTargetCompat[] wallpaperTargets,
             Rect homeContentInsets, Rect minimizedHomeBounds) {
         mController = controller;
-        SwipeAnimationTargetSet targetSet = new SwipeAnimationTargetSet(controller, appTargets,
+        RecentsAnimationTargets targetSet = new RecentsAnimationTargets(controller, appTargets,
                 wallpaperTargets, homeContentInsets, minimizedHomeBounds,
                 mShouldMinimizeSplitScreen, mOnFinishListener);
 
@@ -83,7 +82,7 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
             targetSet.cancelAnimation();
         } else {
             Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
-                for (SwipeAnimationListener listener : getListeners()) {
+                for (RecentsAnimationListener listener : getListeners()) {
                     listener.onRecentsAnimationStart(targetSet);
                 }
             });
@@ -104,18 +103,31 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
     @Override
     public final void onAnimationCanceled(ThumbnailData thumbnailData) {
         Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
-            for (SwipeAnimationListener listener : getListeners()) {
+            for (RecentsAnimationListener listener : getListeners()) {
                 listener.onRecentsAnimationCanceled(thumbnailData);
             }
         });
     }
 
-    private SwipeAnimationListener[] getListeners() {
-        return mListeners.toArray(new SwipeAnimationListener[mListeners.size()]);
+    private RecentsAnimationListener[] getListeners() {
+        return mListeners.toArray(new RecentsAnimationListener[mListeners.size()]);
     }
 
     public void cancelListener() {
         mCancelled = true;
         onAnimationCanceled(null);
+    }
+
+    /**
+     * Listener for the recents animation callbacks.
+     */
+    public interface RecentsAnimationListener {
+        void onRecentsAnimationStart(RecentsAnimationTargets targetSet);
+
+        /**
+         * Callback from the system when the recents animation is canceled. {@param thumbnailData}
+         * is passed back for rendering screenshot to replace live tile.
+         */
+        void onRecentsAnimationCanceled(ThumbnailData thumbnailData);
     }
 }

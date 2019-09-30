@@ -30,9 +30,9 @@ import android.view.View;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.anim.AnimationSuccessListener;
-import com.android.quickstep.util.ClipAnimationHelper;
+import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.RemoteAnimationProvider;
-import com.android.quickstep.util.RemoteAnimationTargetSet;
+import com.android.quickstep.util.RemoteAnimationTargets;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
@@ -115,7 +115,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
             return anim;
         }
 
-        RemoteAnimationTargetSet targetSet = new RemoteAnimationTargetSet(appTargets,
+        RemoteAnimationTargets targetSet = new RemoteAnimationTargets(appTargets,
                 wallpaperTargets, MODE_CLOSING);
 
         // Use the top closing app to determine the insets for the animation
@@ -126,7 +126,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
             return anim;
         }
 
-        final ClipAnimationHelper clipHelper = new ClipAnimationHelper(mActivity);
+        final AppWindowAnimationHelper clipHelper = new AppWindowAnimationHelper(mActivity);
 
         // At this point, the activity is already started and laid-out. Get the home-bounds
         // relative to the screen using the rootView of the activity.
@@ -142,7 +142,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
         clipHelper.updateTargetRect(targetRect);
         clipHelper.prepareAnimation(mActivity.getDeviceProfile(), false /* isOpening */);
 
-        ClipAnimationHelper.TransformParams params = new ClipAnimationHelper.TransformParams()
+        AppWindowAnimationHelper.TransformParams params = new AppWindowAnimationHelper.TransformParams()
                 .setSyncTransactionApplier(new SyncRtSurfaceTransactionApplierCompat(rootView));
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
         valueAnimator.setDuration(RECENTS_LAUNCH_DURATION);
@@ -156,7 +156,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
 
         if (targetSet.isAnimatingHome()) {
             // If we are animating home, fade in the opening targets
-            RemoteAnimationTargetSet openingSet = new RemoteAnimationTargetSet(appTargets,
+            RemoteAnimationTargets openingSet = new RemoteAnimationTargets(appTargets,
                     wallpaperTargets, MODE_OPENING);
 
             TransactionCompat transaction = new TransactionCompat();

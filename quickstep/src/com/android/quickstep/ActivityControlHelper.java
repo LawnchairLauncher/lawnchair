@@ -33,7 +33,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.quickstep.util.ActivityInitListener;
-import com.android.quickstep.util.RemoteAnimationTargetSet;
+import com.android.quickstep.util.RemoteAnimationTargets;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -112,7 +112,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             public final boolean shouldPreformHaptic;
         }
 
-        default void onRemoteAnimationReceived(RemoteAnimationTargetSet targets) { }
+        default void onRemoteAnimationReceived(RemoteAnimationTargets targets) { }
 
         void createActivityController(long transitionLength);
 

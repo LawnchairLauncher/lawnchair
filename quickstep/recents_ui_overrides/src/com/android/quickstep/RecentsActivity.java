@@ -42,7 +42,7 @@ import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsRootView;
-import com.android.quickstep.util.ClipAnimationHelper;
+import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
@@ -177,7 +177,7 @@ public final class RecentsActivity extends BaseRecentsActivity {
             RemoteAnimationTargetCompat[] wallpaperTargets) {
         AnimatorSet target = new AnimatorSet();
         boolean activityClosing = taskIsATargetWithMode(appTargets, getTaskId(), MODE_CLOSING);
-        ClipAnimationHelper helper = new ClipAnimationHelper(this);
+        AppWindowAnimationHelper helper = new AppWindowAnimationHelper(this);
         target.play(getRecentsWindowAnimator(taskView, !activityClosing, appTargets,
                 wallpaperTargets, helper).setDuration(RECENTS_LAUNCH_DURATION));
 

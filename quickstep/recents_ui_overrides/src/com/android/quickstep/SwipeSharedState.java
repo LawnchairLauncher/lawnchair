@@ -22,9 +22,10 @@ import android.util.Log;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Preconditions;
-import com.android.quickstep.util.RecentsAnimationListenerSet;
-import com.android.quickstep.util.SwipeAnimationTargetSet;
-import com.android.quickstep.util.SwipeAnimationTargetSet.SwipeAnimationListener;
+import com.android.quickstep.util.RecentsAnimationCallbacks;
+import com.android.quickstep.util.RecentsAnimationTargets;
+import com.android.quickstep.util.RecentsAnimationCallbacks.RecentsAnimationListener;
+
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
 import java.io.PrintWriter;
@@ -32,12 +33,14 @@ import java.io.PrintWriter;
 /**
  * Utility class used to store state information shared across multiple transitions.
  */
-public class SwipeSharedState implements SwipeAnimationListener {
+public class SwipeSharedState implements RecentsAnimationListener {
 
     private OverviewComponentObserver mOverviewComponentObserver;
 
-    private RecentsAnimationListenerSet mRecentsAnimationListener;
-    private SwipeAnimationTargetSet mLastAnimationTarget;
+    private RecentsAnimationCallbacks mRecentsAnimationListener;
+    private RecentsAnimationTargets mLastAnimationTarget;
+
+    // TODO: Remove
     private Runnable mRecentsAnimationCanceledCallback;
 
     private boolean mLastAnimationCancelled = false;
@@ -54,7 +57,7 @@ public class SwipeSharedState implements SwipeAnimationListener {
     }
 
     @Override
-    public final void onRecentsAnimationStart(SwipeAnimationTargetSet targetSet) {
+    public final void onRecentsAnimationStart(RecentsAnimationTargets targetSet) {
         mLastAnimationTarget = targetSet;
 
         mLastAnimationCancelled = false;
@@ -113,13 +116,13 @@ public class SwipeSharedState implements SwipeAnimationListener {
         mLastAnimationRunning = false;
     }
 
-    private void onSwipeAnimationFinished(SwipeAnimationTargetSet targetSet) {
+    private void onSwipeAnimationFinished(RecentsAnimationTargets targetSet) {
         if (mLastAnimationTarget == targetSet) {
             mLastAnimationRunning = false;
         }
     }
 
-    public RecentsAnimationListenerSet newRecentsAnimationListenerSet() {
+    public RecentsAnimationCallbacks newRecentsAnimationListenerSet() {
         Preconditions.assertUIThread();
 
         if (mLastAnimationRunning) {
@@ -134,17 +137,17 @@ public class SwipeSharedState implements SwipeAnimationListener {
         clearListenerState(false /* finishAnimation */);
         boolean shouldMinimiseSplitScreen = mOverviewComponentObserver == null ? false
                 : mOverviewComponentObserver.getActivityControlHelper().shouldMinimizeSplitScreen();
-        mRecentsAnimationListener = new RecentsAnimationListenerSet(
+        mRecentsAnimationListener = new RecentsAnimationCallbacks(
                 shouldMinimiseSplitScreen, this::onSwipeAnimationFinished);
         mRecentsAnimationListener.addListener(this);
         return mRecentsAnimationListener;
     }
 
-    public RecentsAnimationListenerSet getActiveListener() {
+    public RecentsAnimationCallbacks getActiveListener() {
         return mRecentsAnimationListener;
     }
 
-    public void applyActiveRecentsAnimationState(SwipeAnimationListener listener) {
+    public void applyActiveRecentsAnimationState(RecentsAnimationListener listener) {
         if (mLastAnimationTarget != null) {
             listener.onRecentsAnimationStart(mLastAnimationTarget);
         } else if (mLastAnimationCancelled) {

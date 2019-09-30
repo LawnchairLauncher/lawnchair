@@ -61,7 +61,7 @@ import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.NavBarPosition;
-import com.android.quickstep.util.RecentsAnimationListenerSet;
+import com.android.quickstep.util.RecentsAnimationCallbacks;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
@@ -329,7 +329,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             long touchTimeMs, boolean isLikelyToStartNewTask) {
         TOUCH_INTERACTION_LOG.addLog("startRecentsAnimation");
 
-        RecentsAnimationListenerSet listenerSet = mSwipeSharedState.getActiveListener();
+        RecentsAnimationCallbacks listenerSet = mSwipeSharedState.getActiveListener();
         final BaseSwipeUpHandler handler = mHandlerFactory.newHandler(mRunningTask, touchTimeMs,
                 listenerSet != null, isLikelyToStartNewTask);
 
@@ -343,7 +343,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             mSwipeSharedState.applyActiveRecentsAnimationState(handler);
             notifyGestureStarted();
         } else {
-            RecentsAnimationListenerSet newListenerSet =
+            RecentsAnimationCallbacks newListenerSet =
                     mSwipeSharedState.newRecentsAnimationListenerSet();
             newListenerSet.addListener(handler);
             Intent intent = handler.getLaunchIntent();
@@ -416,7 +416,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private void removeListener() {
-        RecentsAnimationListenerSet listenerSet = mSwipeSharedState.getActiveListener();
+        RecentsAnimationCallbacks listenerSet = mSwipeSharedState.getActiveListener();
         if (listenerSet != null) {
             listenerSet.removeListener(mInteractionHandler);
         }
