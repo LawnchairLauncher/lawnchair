@@ -1708,11 +1708,4 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         mTmpIntPair[1] = rightChild;
         return mTmpIntPair;
     }
-
-    /**
-     * Returns true if overscroll is allowed, otherwise false.
-     */
-    public boolean allowOverScroll() {
-        return mAllowOverScroll;
-    }
 }
