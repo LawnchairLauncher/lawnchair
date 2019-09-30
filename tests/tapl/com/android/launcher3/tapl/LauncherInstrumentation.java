@@ -541,7 +541,7 @@ public final class LauncherInstrumentation {
                         displaySize.x / 2, displaySize.y - 1,
                         displaySize.x / 2, 0,
                         ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
-                assertTrue("Context menu is still visible afterswiping up to home",
+                assertTrue("Context menu is still visible after swiping up to home",
                         !hasLauncherObject("deep_shortcuts_container"));
             }
             if (hasLauncherObject(WORKSPACE_RES_ID)) {
