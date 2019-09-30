@@ -323,8 +323,8 @@
     <string name="app_actions_pref_title">Acciones</string>
     <string name="app_actions_pref_title_in_search">Sugerencias de acciones</string>
     <string name="app_actions_pref_desc">Accesos directos a pantallas frecuentemente abiertas</string>
-    <string name="app_actions_reset_pref_title">Restaurar acciones ocultas</string>
-    <string name="app_actions_reset_pref_summary">Restaurar acciones que han sido ocultadas arrastrándolas al botón \"no mostrar\"</string>
+    <string name="app_actions_reset_pref_title">Restaurar las acciones ocultas</string>
+    <string name="app_actions_reset_pref_summary">Restaurar las acciones que han sido ocultadas utilizando la opción de \"No mostrar\"</string>
     <string name="change_default_home">Establecer como pantalla principal</string>
     <string name="recent_task_option_popup_window">Ventana de diálogo</string>
     <string name="feed_theme_pref_title">Color de fondo</string>
