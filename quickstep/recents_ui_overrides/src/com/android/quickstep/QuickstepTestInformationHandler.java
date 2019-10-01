@@ -39,12 +39,6 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 return response;
             }
 
-            case TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED: {
-                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                        TouchInteractionService.isInitialized());
-                return response;
-            }
-
             case TestProtocol.REQUEST_HOTSEAT_TOP: {
                 if (mLauncher == null) return null;
 
@@ -90,5 +84,10 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
         } finally {
             observer.onDestroy();
         }
+    }
+
+    @Override
+    protected boolean isLauncherInitialized() {
+        return super.isLauncherInitialized() && TouchInteractionService.isInitialized();
     }
 }
