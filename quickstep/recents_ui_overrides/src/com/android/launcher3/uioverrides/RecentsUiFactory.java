@@ -23,8 +23,6 @@ import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.os.RemoteException;
-import android.util.Log;
 import android.view.Gravity;
 
 import com.android.launcher3.DeviceProfile;
@@ -45,13 +43,11 @@ import com.android.launcher3.uioverrides.touchcontrollers.TransposedQuickSwitchT
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
-import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.TouchInteractionService;
-import com.android.quickstep.util.SharedApiCompat;
+import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.views.RecentsView;
-import com.android.systemui.shared.recents.ISystemUiProxy;
 
 import java.util.ArrayList;
 
@@ -60,21 +56,16 @@ import java.util.ArrayList;
  */
 public abstract class RecentsUiFactory {
 
-    public static final boolean GO_LOW_RAM_RECENTS_ENABLED = false;
-
     private static final String TAG = RecentsUiFactory.class.getSimpleName();
 
-    private static AsyncCommand newSetShelfHeightCmd(Context context) {
-        return (visible, height) -> {
-            ISystemUiProxy sysUiProxy = RecentsModel.INSTANCE.get(context).getSystemUiProxy();
-            if (sysUiProxy == null) return;
-            try {
-                SharedApiCompat.setShelfHeight(sysUiProxy, visible != 0, height);
-            } catch (RemoteException e) {
-                Log.e(TAG, "Error setShelfHeight", e);
-            }
-        };
-    }
+    public static final boolean GO_LOW_RAM_RECENTS_ENABLED = false;
+
+    /**
+     * Reusable command for applying the shelf height on the background thread.
+     */
+    public static final AsyncCommand SET_SHELF_HEIGHT = (context, visible, height) -> {
+        SystemUiProxy.INSTANCE.get(context).setShelfHeight(visible, (int) height);
+    };
 
     public static RotationMode ROTATION_LANDSCAPE = new RotationMode(-90) {
         @Override
@@ -218,9 +209,8 @@ public abstract class RecentsUiFactory {
         DeviceProfile profile = launcher.getDeviceProfile();
         boolean visible = (state == NORMAL || state == OVERVIEW) && launcher.isUserActive()
                 && !profile.isVerticalBarLayout();
-        UiThreadHelper.runAsyncCommand(launcher, newSetShelfHeightCmd(launcher),
-                visible ? 1 : 0, profile.hotseatBarSizePx);
-
+        UiThreadHelper.runAsyncCommand(launcher, SET_SHELF_HEIGHT, visible,
+                profile.hotseatBarSizePx);
         if (state == NORMAL) {
             launcher.<RecentsView>getOverviewPanel().setSwipeDownShouldLaunchApp(false);
         }

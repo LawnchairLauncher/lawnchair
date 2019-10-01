@@ -21,8 +21,6 @@ import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.ACTION_CANCEL;
 
 import android.graphics.PointF;
-import android.os.RemoteException;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
@@ -37,9 +35,8 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.TouchController;
-import com.android.quickstep.RecentsModel;
-import com.android.systemui.shared.recents.ISystemUiProxy;
 
+import com.android.quickstep.SystemUiProxy;
 import java.io.PrintWriter;
 
 /**
@@ -62,9 +59,9 @@ public class StatusBarTouchController implements TouchController {
      */
     private static final int FLAG_SLIPPERY = 0x20000000;
 
-    protected final Launcher mLauncher;
+    private final Launcher mLauncher;
+    private final SystemUiProxy mSystemUiProxy;
     private final float mTouchSlop;
-    private ISystemUiProxy mSysUiProxy;
     private int mLastAction;
     private final SparseArray<PointF> mDownEvents;
 
@@ -73,6 +70,7 @@ public class StatusBarTouchController implements TouchController {
 
     public StatusBarTouchController(Launcher l) {
         mLauncher = l;
+        mSystemUiProxy = SystemUiProxy.INSTANCE.get(mLauncher);
         // Guard against TAPs by increasing the touch slop.
         mTouchSlop = 2 * ViewConfiguration.get(l).getScaledTouchSlop();
         mDownEvents = new SparseArray<>();
@@ -82,17 +80,14 @@ public class StatusBarTouchController implements TouchController {
     public void dump(String prefix, PrintWriter writer) {
         writer.println(prefix + "mCanIntercept:" + mCanIntercept);
         writer.println(prefix + "mLastAction:" + MotionEvent.actionToString(mLastAction));
-        writer.println(prefix + "mSysUiProxy available:" + (mSysUiProxy != null));
+        writer.println(prefix + "mSysUiProxy available:"
+                + SystemUiProxy.INSTANCE.get(mLauncher).isActive());
     }
 
     private void dispatchTouchEvent(MotionEvent ev) {
-        try {
-            if (mSysUiProxy != null) {
-                mLastAction = ev.getActionMasked();
-                mSysUiProxy.onStatusBarMotionEvent(ev);
-            }
-        } catch (RemoteException e) {
-            Log.e(TAG, "Remote exception on sysUiProxy.", e);
+        if (mSystemUiProxy.isActive()) {
+            mLastAction = ev.getActionMasked();
+            mSystemUiProxy.onStatusBarMotionEvent(ev);
         }
     }
 
@@ -170,7 +165,6 @@ public class StatusBarTouchController implements TouchController {
                 return false;
             }
         }
-        mSysUiProxy = RecentsModel.INSTANCE.get(mLauncher).getSystemUiProxy();
-        return mSysUiProxy != null;
+        return SystemUiProxy.INSTANCE.get(mLauncher).isActive();
     }
 }

@@ -28,7 +28,6 @@ import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
-import android.os.RemoteException;
 
 import androidx.annotation.Nullable;
 
@@ -36,13 +35,12 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.quickstep.SystemUiProxy;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.quickstep.RecentsModel;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.utilities.RectFEvaluator;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
@@ -337,14 +335,10 @@ public class AppWindowAnimationHelper {
     }
 
     private void updateStackBoundsToMultiWindowTaskSize(BaseDraggingActivity activity) {
-        ISystemUiProxy sysUiProxy = RecentsModel.INSTANCE.get(activity).getSystemUiProxy();
-        if (sysUiProxy != null) {
-            try {
-                mSourceStackBounds.set(sysUiProxy.getNonMinimizedSplitScreenSecondaryBounds());
-                return;
-            } catch (RemoteException e) {
-                // Use half screen size
-            }
+        SystemUiProxy proxy = SystemUiProxy.INSTANCE.get(activity);
+        if (proxy.isActive()) {
+            mSourceStackBounds.set(proxy.getNonMinimizedSplitScreenSecondaryBounds());
+            return;
         }
 
         // Assume that the task size is half screen size (minus the insets and the divider size)

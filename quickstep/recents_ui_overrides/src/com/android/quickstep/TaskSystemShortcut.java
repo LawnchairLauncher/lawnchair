@@ -28,9 +28,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.RemoteException;
 import android.os.UserHandle;
-import android.util.Log;
 import android.view.View;
 
 import com.android.launcher3.BaseDraggingActivity;
@@ -44,7 +42,6 @@ import com.android.launcher3.util.InstantAppResolver;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecCompat;
 import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecsFuture;
@@ -240,13 +237,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
 
         @Override
         protected boolean onActivityStarted(BaseDraggingActivity activity) {
-            ISystemUiProxy sysUiProxy = RecentsModel.INSTANCE.get(activity).getSystemUiProxy();
-            try {
-                sysUiProxy.onSplitScreenInvoked();
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed to notify SysUI of split screen: ", e);
-                return false;
-            }
+            SystemUiProxy.INSTANCE.get(activity).onSplitScreenInvoked();
             activity.getUserEventDispatcher().logActionOnControl(TAP,
                     LauncherLogProto.ControlType.SPLIT_SCREEN_TARGET);
             return true;
@@ -293,8 +284,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         @Override
         public View.OnClickListener getOnClickListener(
                 BaseDraggingActivity activity, TaskView taskView) {
-            ISystemUiProxy sysUiProxy = RecentsModel.INSTANCE.get(activity).getSystemUiProxy();
-            if (sysUiProxy == null) {
+            if (!SystemUiProxy.INSTANCE.get(activity).isActive()) {
                 return null;
             }
             if (!ActivityManagerWrapper.getInstance().isScreenPinningEnabled()) {
@@ -307,11 +297,8 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
             return view -> {
                 Consumer<Boolean> resultCallback = success -> {
                     if (success) {
-                        try {
-                            sysUiProxy.startScreenPinning(taskView.getTask().key.id);
-                        } catch (RemoteException e) {
-                            Log.w(TAG, "Failed to start screen pinning: ", e);
-                        }
+                        SystemUiProxy.INSTANCE.get(activity).startScreenPinning(
+                                taskView.getTask().key.id);
                     } else {
                         taskView.notifyTaskLaunchFailed(TAG);
                     }

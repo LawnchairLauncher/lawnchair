@@ -42,7 +42,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
-import android.os.RemoteException;
 import android.util.Log;
 import android.view.Choreographer;
 import android.view.InputEvent;
@@ -122,10 +121,11 @@ public class TouchInteractionService extends Service implements
     private final IBinder mMyBinder = new IOverviewProxy.Stub() {
 
         public void onInitialize(Bundle bundle) {
-            mISystemUiProxy = ISystemUiProxy.Stub
-                    .asInterface(bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
+            ISystemUiProxy proxy = ISystemUiProxy.Stub.asInterface(
+                    bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
+            MAIN_EXECUTOR.execute(() -> SystemUiProxy.INSTANCE.get(TouchInteractionService.this)
+                    .setProxy(proxy));
             MAIN_EXECUTOR.execute(TouchInteractionService.this::initInputMonitor);
-            MAIN_EXECUTOR.execute(TouchInteractionService.this::onSystemUiProxySet);
             MAIN_EXECUTOR.execute(() -> preloadOverview(true /* fromInit */));
             sIsInitialized = true;
         }
@@ -235,7 +235,6 @@ public class TouchInteractionService extends Service implements
 
     private ActivityManagerWrapper mAM;
     private RecentsModel mRecentsModel;
-    private ISystemUiProxy mISystemUiProxy;
     private OverviewCommandHelper mOverviewCommandHelper;
     private OverviewComponentObserver mOverviewComponentObserver;
     private OverviewInteractionState mOverviewInteractionState;
@@ -284,24 +283,20 @@ public class TouchInteractionService extends Service implements
             Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "initInputMonitor 1");
         }
         disposeEventHandlers();
-        if (!mMode.hasGestures || mISystemUiProxy == null) {
+        if (!mMode.hasGestures || !SystemUiProxy.INSTANCE.get(this).isActive()) {
             return;
         }
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "initInputMonitor 2");
         }
 
-        try {
-            mInputMonitorCompat = InputMonitorCompat.fromBundle(mISystemUiProxy
-                    .monitorGestureInput("swipe-up", mDeviceState.getDisplayId()),
-                    KEY_EXTRA_INPUT_MONITOR);
-            mInputEventReceiver = mInputMonitorCompat.getInputReceiver(Looper.getMainLooper(),
-                    mMainChoreographer, this::onInputEvent);
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "initInputMonitor 3");
-            }
-        } catch (RemoteException e) {
-            Log.e(TAG, "Unable to create input monitor", e);
+        Bundle bundle = SystemUiProxy.INSTANCE.get(this).monitorGestureInput("swipe-up",
+                mDeviceState.getDisplayId());
+        mInputMonitorCompat = InputMonitorCompat.fromBundle(bundle, KEY_EXTRA_INPUT_MONITOR);
+        mInputEventReceiver = mInputMonitorCompat.getInputReceiver(Looper.getMainLooper(),
+                mMainChoreographer, this::onInputEvent);
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "initInputMonitor 3");
         }
 
         mDeviceState.updateGestureTouchRegions();
@@ -326,7 +321,6 @@ public class TouchInteractionService extends Service implements
 
         sSwipeSharedState.setOverviewComponentObserver(mOverviewComponentObserver);
         mInputConsumer.registerInputConsumer();
-        onSystemUiProxySet();
         onSystemUiFlagsChanged();
         onAssistantVisibilityChanged();
 
@@ -334,14 +328,6 @@ public class TouchInteractionService extends Service implements
         // new ModelPreload().start(this);
         mBackGestureNotificationCounter = Math.max(0, Utilities.getDevicePrefs(this)
                 .getInt(KEY_BACK_NOTIFICATION_COUNT, MAX_BACK_NOTIFICATION_COUNT));
-    }
-
-    @UiThread
-    private void onSystemUiProxySet() {
-        if (mDeviceState.isUserUnlocked()) {
-            mRecentsModel.setSystemUiProxy(mISystemUiProxy);
-            mOverviewInteractionState.setSystemUiProxy(mISystemUiProxy);
-        }
     }
 
     @UiThread
@@ -368,8 +354,9 @@ public class TouchInteractionService extends Service implements
             mOverviewComponentObserver.onDestroy();
         }
         disposeEventHandlers();
-        SysUINavigationMode.INSTANCE.get(this).removeModeChangeListener(this);
         mDeviceState.destroy();
+        SysUINavigationMode.INSTANCE.get(this).removeModeChangeListener(this);
+        SystemUiProxy.INSTANCE.get(this).setProxy(null);
 
         sConnected = false;
         super.onDestroy();
@@ -408,7 +395,7 @@ public class TouchInteractionService extends Service implements
                 // not interrupt it. QuickSwitch assumes that interruption can only happen if the
                 // next gesture is also quick switch.
                 mUncheckedConsumer =
-                        new AssistantInputConsumer(this, mISystemUiProxy,
+                        new AssistantInputConsumer(this,
                                 mOverviewComponentObserver.getActivityControlHelper(),
                                 InputConsumer.NO_OP, mInputMonitorCompat);
             } else {
@@ -442,8 +429,7 @@ public class TouchInteractionService extends Service implements
             final ActivityControlHelper activityControl =
                     mOverviewComponentObserver.getActivityControlHelper();
             if (mDeviceState.canTriggerAssistantAction(event)) {
-                base = new AssistantInputConsumer(this, mISystemUiProxy, activityControl, base,
-                        mInputMonitorCompat);
+                base = new AssistantInputConsumer(this, activityControl, base, mInputMonitorCompat);
             }
 
             if (FeatureFlags.ENABLE_QUICK_CAPTURE_GESTURE.get()) {
@@ -456,11 +442,11 @@ public class TouchInteractionService extends Service implements
             if (mDeviceState.isScreenPinningActive()) {
                 // Note: we only allow accessibility to wrap this, and it replaces the previous
                 // base input consumer (which should be NO_OP anyway since topTaskLocked == true).
-                base = new ScreenPinnedInputConsumer(this, mISystemUiProxy, activityControl);
+                base = new ScreenPinnedInputConsumer(this, activityControl);
             }
 
             if (mDeviceState.isAccessibilityMenuAvailable()) {
-                base = new AccessibilityInputConsumer(this, mDeviceState, mISystemUiProxy, base,
+                base = new AccessibilityInputConsumer(this, mDeviceState, base,
                         mInputMonitorCompat);
             }
         } else {

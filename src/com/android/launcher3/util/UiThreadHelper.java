@@ -52,15 +52,19 @@ public class UiThreadHelper {
                 .sendToTarget();
     }
 
-    public static void runAsyncCommand(Context context, AsyncCommand command, int arg1, int arg2) {
-        Message.obtain(getHandler(context), MSG_RUN_COMMAND, arg1, arg2, command).sendToTarget();
+    public static void runAsyncCommand(Context context, AsyncCommand command, boolean arg1,
+            float arg2) {
+        Message.obtain(getHandler(context), MSG_RUN_COMMAND, arg1 ? 1 : 0,
+                Float.floatToIntBits(arg2), command).sendToTarget();
     }
 
     private static class UiCallbacks implements Handler.Callback {
 
+        private final Context mContext;
         private final InputMethodManager mIMM;
 
         UiCallbacks(Context context) {
+            mContext = context;
             mIMM = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         }
 
@@ -74,7 +78,8 @@ public class UiThreadHelper {
                     ((Activity) message.obj).setRequestedOrientation(message.arg1);
                     return true;
                 case MSG_RUN_COMMAND:
-                    ((AsyncCommand) message.obj).execute(message.arg1, message.arg2);
+                    ((AsyncCommand) message.obj).execute(mContext, message.arg1 == 1,
+                            Float.intBitsToFloat(message.arg2));
                     return true;
             }
             return false;
@@ -82,7 +87,6 @@ public class UiThreadHelper {
     }
 
     public interface AsyncCommand {
-
-        void execute(int arg1, int arg2);
+        void execute(Context proxy, boolean state, float value);
     }
 }

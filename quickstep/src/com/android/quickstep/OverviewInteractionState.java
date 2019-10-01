@@ -20,15 +20,12 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.os.RemoteException;
-import android.util.Log;
 
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.util.MainThreadInitializedObject;
-import com.android.systemui.shared.recents.ISystemUiProxy;
 
 /**
  * Sets alpha for the back button
@@ -43,7 +40,6 @@ public class OverviewInteractionState {
     public static final MainThreadInitializedObject<OverviewInteractionState> INSTANCE =
             new MainThreadInitializedObject<>(OverviewInteractionState::new);
 
-    private static final int MSG_SET_PROXY = 200;
     private static final int MSG_SET_BACK_BUTTON_ALPHA = 201;
 
     private final Context mContext;
@@ -51,7 +47,6 @@ public class OverviewInteractionState {
     private final Handler mBgHandler;
 
     // These are updated on the background thread
-    private ISystemUiProxy mISystemUiProxy;
     private float mBackButtonAlpha = 1;
 
     private int mSystemUiStateFlags;
@@ -82,10 +77,6 @@ public class OverviewInteractionState {
                 .sendToTarget();
     }
 
-    public void setSystemUiProxy(ISystemUiProxy proxy) {
-        mBgHandler.obtainMessage(MSG_SET_PROXY, proxy).sendToTarget();
-    }
-
     // TODO(141886704): See if we can remove this
     public void setSystemUiStateFlags(int stateFlags) {
         mSystemUiStateFlags = stateFlags;
@@ -105,9 +96,6 @@ public class OverviewInteractionState {
 
     private boolean handleBgMessage(Message msg) {
         switch (msg.what) {
-            case MSG_SET_PROXY:
-                mISystemUiProxy = (ISystemUiProxy) msg.obj;
-                break;
             case MSG_SET_BACK_BUTTON_ALPHA:
                 applyBackButtonAlpha((float) msg.obj, msg.arg1 == 1);
                 return true;
@@ -117,14 +105,7 @@ public class OverviewInteractionState {
 
     @WorkerThread
     private void applyBackButtonAlpha(float alpha, boolean animate) {
-        if (mISystemUiProxy == null) {
-            return;
-        }
-        try {
-            mISystemUiProxy.setBackButtonAlpha(alpha, animate);
-        } catch (RemoteException e) {
-            Log.w(TAG, "Unable to update overview back button alpha", e);
-        }
+        SystemUiProxy.INSTANCE.get(mContext).setBackButtonAlpha(alpha, animate);
     }
 
     private void onNavigationModeChanged(SysUINavigationMode.Mode mode) {

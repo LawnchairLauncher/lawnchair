@@ -36,6 +36,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.DefaultDisplay;
 import com.android.quickstep.RecentsAnimationDeviceState;
+import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 
@@ -56,7 +57,7 @@ public class TouchInteractionService extends Service {
         public void onInitialize(Bundle bundle) throws RemoteException {
             ISystemUiProxy iSystemUiProxy = ISystemUiProxy.Stub
                     .asInterface(bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
-            mRecentsModel.setSystemUiProxy(iSystemUiProxy);
+            SystemUiProxy.INSTANCE.get(TouchInteractionService.this).setProxy(iSystemUiProxy);
         }
 
         @Override
@@ -120,7 +121,7 @@ public class TouchInteractionService extends Service {
         public void onMotionEvent(MotionEvent ev) { }
 
         public void onBind(ISystemUiProxy iSystemUiProxy) {
-            mRecentsModel.setSystemUiProxy(iSystemUiProxy);
+            SystemUiProxy.INSTANCE.get(TouchInteractionService.this).setProxy(iSystemUiProxy);
         }
     };
 
