@@ -21,7 +21,6 @@ package ch.deletescape.lawnchair.settings.ui.preview
 
 import android.content.Context
 import android.os.Handler
-import android.os.Process
 import android.util.AttributeSet
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
@@ -30,10 +29,8 @@ import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.runOnThread
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import com.android.launcher3.*
-import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.views.ActivityContext
 import com.android.launcher3.views.BaseDragLayer
-import com.google.android.apps.nexuslauncher.CustomAppFilter
 import kotlinx.android.synthetic.lawnchair.desktop_icons_preview.view.*
 
 class DesktopIconsPreview(context: Context, attrs: AttributeSet?) :
@@ -41,13 +38,7 @@ class DesktopIconsPreview(context: Context, attrs: AttributeSet?) :
         InvariantDeviceProfile.OnIDPChangeListener {
 
     private val previewContext = this.context as PreviewContext
-    private val appFilter = CustomAppFilter(context)
-    private val previewApps = LauncherAppsCompat.getInstance(context)
-            .getActivityList(null, Process.myUserHandle())
-            .filter { appFilter.shouldShowApp(it.componentName, it.user) }
-            .shuffled()
-            .take(20)
-            .map { AppInfo(it, Process.myUserHandle(), false) }
+    private val previewApps = IconPreviewUtils.getPreviewAppInfos(context)
     private var iconsLoaded = false
 
     private val idp = previewContext.idp

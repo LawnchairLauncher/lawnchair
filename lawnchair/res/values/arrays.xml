@@ -66,4 +66,13 @@
         <item>0</item>  <!-- 00 -->
         <item>2</item>  <!-- 10 -->
     </string-array>
+
+    <array name="icon_shape_preview_packages">
+        <item>com.google.android.gm</item>
+        <item>com.google.android.googlequicksearchbox</item>
+        <item>com.google.android.apps.photos</item>
+        <item>com.google.android.apps.docs</item>
+        <item>com.google.android.youtube</item>
+        <item>com.android.vending</item>
+    </array>
 </resources>
