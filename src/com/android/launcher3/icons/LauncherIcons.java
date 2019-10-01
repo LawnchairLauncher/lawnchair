@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Process;
 
 import androidx.annotation.Nullable;
@@ -32,8 +33,8 @@ import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.IconShape;
-import com.android.launcher3.icons.cache.BaseIconCache;
 import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.Themes;
 
 import java.util.function.Supplier;
@@ -125,12 +126,13 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
 
     public BitmapInfo createShortcutIcon(ShortcutInfo shortcutInfo,
             boolean badged, @Nullable Supplier<ItemInfoWithIcon> fallbackIconProvider) {
+        Drawable unbadgedDrawable = DeepShortcutManager.getInstance(mContext)
+                .getShortcutIconDrawable(shortcutInfo, mFillResIconDpi);
         IconCache cache = LauncherAppState.getInstance(mContext).getIconCache();
-        BaseIconCache.CacheEntry entry = cache.getDeepShortcutTitleAndIcon(shortcutInfo);
 
         final Bitmap unbadgedBitmap;
-        if (entry.icon != null) {
-            unbadgedBitmap = entry.icon;
+        if (unbadgedDrawable != null) {
+            unbadgedBitmap = createScaledBitmapWithoutShadow(unbadgedDrawable, 0);
         } else {
             if (fallbackIconProvider != null) {
                 // Fallback icons are already badged and with appropriate shadow
