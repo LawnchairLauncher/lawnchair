@@ -22,7 +22,6 @@ import static android.content.Intent.ACTION_PACKAGE_REMOVED;
 
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 import static com.android.systemui.shared.system.PackageManagerWrapper.ACTION_PREFERRED_ACTIVITY_CHANGED;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -57,6 +56,7 @@ public final class OverviewComponentObserver {
         }
     };
     private final Context mContext;
+    private final RecentsAnimationDeviceState mDeviceState;
     private final Intent mCurrentHomeIntent;
     private final Intent mMyHomeIntent;
     private final Intent mFallbackIntent;
@@ -64,12 +64,13 @@ public final class OverviewComponentObserver {
     private String mUpdateRegisteredPackage;
     private ActivityControlHelper mActivityControlHelper;
     private Intent mOverviewIntent;
-    private int mSystemUiStateFlags;
     private boolean mIsHomeAndOverviewSame;
     private boolean mIsDefaultHome;
+    private boolean mIsHomeDisabled;
 
-    public OverviewComponentObserver(Context context) {
+    public OverviewComponentObserver(Context context, RecentsAnimationDeviceState deviceState) {
         mContext = context;
+        mDeviceState = deviceState;
 
         mCurrentHomeIntent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_HOME)
@@ -98,11 +99,8 @@ public final class OverviewComponentObserver {
         updateOverviewTargets();
     }
 
-    public void onSystemUiStateChanged(int stateFlags) {
-        boolean homeDisabledChanged = (mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED)
-                != (stateFlags & SYSUI_STATE_HOME_DISABLED);
-        mSystemUiStateFlags = stateFlags;
-        if (homeDisabledChanged) {
+    public void onSystemUiStateChanged() {
+        if (mDeviceState.isHomeDisabled() != mIsHomeDisabled) {
             updateOverviewTargets();
         }
     }
@@ -115,6 +113,7 @@ public final class OverviewComponentObserver {
         ComponentName defaultHome = PackageManagerWrapper.getInstance()
                 .getHomeActivities(new ArrayList<>());
 
+        mIsHomeDisabled = mDeviceState.isHomeDisabled();
         mIsDefaultHome = Objects.equals(mMyHomeIntent.getComponent(), defaultHome);
 
         // Set assistant visibility to 0 from launcher's perspective, ensures any elements that
@@ -124,8 +123,7 @@ public final class OverviewComponentObserver {
             mActivityControlHelper.onAssistantVisibilityChanged(0.f);
         }
 
-        if ((mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED) == 0
-                && (defaultHome == null || mIsDefaultHome)) {
+        if (!mDeviceState.isHomeDisabled() && (defaultHome == null || mIsDefaultHome)) {
             // User default home is same as out home app. Use Overview integrated in Launcher.
             mActivityControlHelper = new LauncherActivityControllerHelper();
             mIsHomeAndOverviewSame = true;

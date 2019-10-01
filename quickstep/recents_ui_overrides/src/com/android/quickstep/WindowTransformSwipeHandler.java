@@ -35,7 +35,6 @@ import static com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget
 import static com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget.NEW_TASK;
 import static com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget.RECENTS;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -198,6 +197,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
      */
     private static final int LOG_NO_OP_PAGE_INDEX = -1;
 
+    private RecentsAnimationDeviceState mDeviceState;
+
     private GestureEndTarget mGestureEndTarget;
     // Either RectFSpringAnim (if animating home) or ObjectAnimator (from mCurrentShift) otherwise
     private RunningWindowAnim mRunningWindowAnim;
@@ -229,11 +230,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private final long mTouchTimeMs;
     private long mLauncherFrameDrawnTime;
 
-    public WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context,
-            long touchTimeMs, OverviewComponentObserver overviewComponentObserver,
-            boolean continuingLastGesture,
+    public WindowTransformSwipeHandler(RecentsAnimationDeviceState deviceState,
+            RunningTaskInfo runningTaskInfo, Context context, long touchTimeMs,
+            OverviewComponentObserver overviewComponentObserver, boolean continuingLastGesture,
             InputConsumerController inputConsumer, RecentsModel recentsModel) {
         super(context, overviewComponentObserver, recentsModel, inputConsumer, runningTaskInfo.id);
+        mDeviceState = deviceState;
         mTouchTimeMs = touchTimeMs;
         mContinuingLastGesture = continuingLastGesture;
         initStateCallbacks();
@@ -755,9 +757,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             }
         }
 
-        int stateFlags = OverviewInteractionState.INSTANCE.get(mActivity).getSystemUiStateFlags();
-        if ((stateFlags & SYSUI_STATE_OVERVIEW_DISABLED) != 0
-                && (endTarget == RECENTS || endTarget == LAST_TASK)) {
+        if (mDeviceState.isOverviewDisabled() && (endTarget == RECENTS || endTarget == LAST_TASK)) {
             return LAST_TASK;
         }
         return endTarget;

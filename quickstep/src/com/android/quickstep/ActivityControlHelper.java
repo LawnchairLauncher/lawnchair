@@ -19,7 +19,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Region;
 import android.os.Build;
 import android.view.MotionEvent;
 import android.view.View;
@@ -81,7 +80,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     boolean shouldMinimizeSplitScreen();
 
-    default boolean deferStartingActivity(Region activeNavBarRegion, MotionEvent ev) {
+    default boolean deferStartingActivity(RecentsAnimationDeviceState deviceState, MotionEvent ev) {
         return true;
     }
 

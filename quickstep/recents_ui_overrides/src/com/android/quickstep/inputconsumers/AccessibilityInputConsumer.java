@@ -23,7 +23,6 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
 import android.content.Context;
-import android.graphics.RectF;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.Display;
@@ -32,12 +31,13 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.R;
+import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 /**
- * Touch consumer for two finger swipe actions for accessibility actions
+ * Input consumer for two finger swipe actions for accessibility actions
  */
 public class AccessibilityInputConsumer extends DelegateInputConsumer {
 
@@ -46,8 +46,7 @@ public class AccessibilityInputConsumer extends DelegateInputConsumer {
     private final ISystemUiProxy mSystemUiProxy;
     private final VelocityTracker mVelocityTracker;
     private final MotionPauseDetector mMotionPauseDetector;
-    private final boolean mAllowLongClick;
-    private final RectF mSwipeTouchRegion;
+    private final RecentsAnimationDeviceState mDeviceState;
 
     private final float mMinGestureDistance;
     private final float mMinFlingVelocity;
@@ -56,19 +55,17 @@ public class AccessibilityInputConsumer extends DelegateInputConsumer {
     private float mDownY;
     private float mTotalY;
 
-    public AccessibilityInputConsumer(Context context, ISystemUiProxy systemUiProxy,
-            boolean allowLongClick, InputConsumer delegate, InputMonitorCompat inputMonitor,
-            RectF swipeTouchRegion) {
+    public AccessibilityInputConsumer(Context context, RecentsAnimationDeviceState deviceState,
+            ISystemUiProxy systemUiProxy, InputConsumer delegate, InputMonitorCompat inputMonitor) {
         super(delegate, inputMonitor);
         mSystemUiProxy = systemUiProxy;
         mVelocityTracker = VelocityTracker.obtain();
         mMinGestureDistance = context.getResources()
                 .getDimension(R.dimen.accessibility_gesture_min_swipe_distance);
         mMinFlingVelocity = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
-        mSwipeTouchRegion = swipeTouchRegion;
+        mDeviceState = deviceState;
 
         mMotionPauseDetector = new MotionPauseDetector(context);
-        mAllowLongClick = allowLongClick;
     }
 
     @Override
@@ -103,7 +100,7 @@ public class AccessibilityInputConsumer extends DelegateInputConsumer {
             case ACTION_POINTER_DOWN: {
                 if (mState == STATE_INACTIVE) {
                     int pointerIndex = ev.getActionIndex();
-                    if (mSwipeTouchRegion.contains(ev.getX(pointerIndex), ev.getY(pointerIndex))
+                    if (mDeviceState.isInSwipeUpTouchRegion(ev, pointerIndex)
                             && mDelegate.allowInterceptByParent()) {
                         setActive(ev);
 
@@ -116,7 +113,7 @@ public class AccessibilityInputConsumer extends DelegateInputConsumer {
                 break;
             }
             case ACTION_MOVE: {
-                if (mState == STATE_ACTIVE && mAllowLongClick) {
+                if (mState == STATE_ACTIVE && mDeviceState.isAccessibilityMenuShortcutAvailable()) {
                     int pointerIndex = ev.findPointerIndex(mActivePointerId);
                     if (pointerIndex == -1) {
                         break;
@@ -130,7 +127,8 @@ public class AccessibilityInputConsumer extends DelegateInputConsumer {
             case ACTION_UP:
                 if (mState == STATE_ACTIVE) {
                     try {
-                        if (mAllowLongClick && mMotionPauseDetector.isPaused()) {
+                        if (mDeviceState.isAccessibilityMenuShortcutAvailable()
+                                && mMotionPauseDetector.isPaused()) {
                             mSystemUiProxy.notifyAccessibilityButtonLongClicked();
                         } else {
                             mTotalY += (ev.getY() - mDownY);

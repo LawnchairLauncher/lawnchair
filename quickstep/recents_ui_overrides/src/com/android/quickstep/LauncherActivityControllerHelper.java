@@ -38,7 +38,6 @@ import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Region;
 import android.os.UserHandle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -441,8 +440,8 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     }
 
     @Override
-    public boolean deferStartingActivity(Region activeNavBarRegion, MotionEvent ev) {
-        return activeNavBarRegion.contains((int) ev.getX(), (int) ev.getY());
+    public boolean deferStartingActivity(RecentsAnimationDeviceState deviceState, MotionEvent ev) {
+        return deviceState.isInDeferredGestureRegion(ev);
     }
 
     @Override

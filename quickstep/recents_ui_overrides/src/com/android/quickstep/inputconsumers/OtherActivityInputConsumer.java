@@ -38,7 +38,6 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.PointF;
-import android.graphics.RectF;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -55,6 +54,7 @@ import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.ActivityControlHelper;
 import com.android.quickstep.BaseSwipeUpHandler;
 import com.android.quickstep.BaseSwipeUpHandler.Factory;
+import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.SwipeSharedState;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -79,12 +79,12 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     // TODO: Move to quickstep contract
     public static final float QUICKSTEP_TOUCH_SLOP_RATIO = 3;
 
+    private final RecentsAnimationDeviceState mDeviceState;
     private final CachedEventDispatcher mRecentsViewDispatcher = new CachedEventDispatcher();
     private final RunningTaskInfo mRunningTask;
     private final SwipeSharedState mSwipeSharedState;
     private final InputMonitorCompat mInputMonitorCompat;
     private final SysUINavigationMode.Mode mMode;
-    private final RectF mSwipeTouchRegion;
     private final ActivityControlHelper mActivityControlHelper;
 
     private final BaseSwipeUpHandler.Factory mHandlerFactory;
@@ -124,19 +124,19 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     };
     private int mLogId;
 
-    public OtherActivityInputConsumer(Context base, RunningTaskInfo runningTaskInfo,
-            boolean isDeferredDownTarget, Consumer<OtherActivityInputConsumer> onCompleteCallback,
+    public OtherActivityInputConsumer(Context base, RecentsAnimationDeviceState deviceState,
+            RunningTaskInfo runningTaskInfo, boolean isDeferredDownTarget,
+            Consumer<OtherActivityInputConsumer> onCompleteCallback,
             SwipeSharedState swipeSharedState, InputMonitorCompat inputMonitorCompat,
-            RectF swipeTouchRegion, boolean disableHorizontalSwipe,
-            ActivityControlHelper activityControlHelper,
+            boolean disableHorizontalSwipe, ActivityControlHelper activityControlHelper,
             Factory handlerFactory, int logId) {
         super(base);
         mLogId = logId;
 
+        mDeviceState = deviceState;
         mMainThreadHandler = new Handler(Looper.getMainLooper());
         mRunningTask = runningTaskInfo;
         mMode = SysUINavigationMode.getMode(base);
-        mSwipeTouchRegion = swipeTouchRegion;
         mHandlerFactory = handlerFactory;
         mActivityControlHelper = activityControlHelper;
 
@@ -217,7 +217,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 if (!mPassedPilferInputSlop) {
                     // Cancel interaction in case of multi-touch interaction
                     int ptrIdx = ev.getActionIndex();
-                    if (!mSwipeTouchRegion.contains(ev.getX(ptrIdx), ev.getY(ptrIdx))) {
+                    if (!mDeviceState.isInSwipeUpTouchRegion(ev, ptrIdx)) {
                         forceCancelGesture(ev);
                     }
                 }

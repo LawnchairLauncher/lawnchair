@@ -32,7 +32,6 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
@@ -42,6 +41,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DefaultDisplay;
 import com.android.quickstep.LockScreenRecentsActivity;
 import com.android.quickstep.MultiStateCallback;
+import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.SwipeSharedState;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.RecentsAnimationCallbacks;
@@ -73,6 +73,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
             getFlagForIndex(1, "STATE_HANDLER_INVALIDATED");
 
     private final Context mContext;
+    private final RecentsAnimationDeviceState mDeviceState;
     private final float mTouchSlopSquared;
     private final SwipeSharedState mSwipeSharedState;
     private final InputMonitorCompat mInputMonitorCompat;
@@ -83,7 +84,6 @@ public class DeviceLockedInputConsumer implements InputConsumer,
     private final AppWindowAnimationHelper.TransformParams mTransformParams;
     private final Point mDisplaySize;
     private final MultiStateCallback mStateCallback;
-    private final RectF mSwipeTouchRegion;
     public final int mRunningTaskId;
 
     private VelocityTracker mVelocityTracker;
@@ -93,17 +93,17 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     private RecentsAnimationTargets mTargetSet;
 
-    public DeviceLockedInputConsumer(Context context, SwipeSharedState swipeSharedState,
-            InputMonitorCompat inputMonitorCompat, RectF swipeTouchRegion, int runningTaskId,
-            int logId) {
+    public DeviceLockedInputConsumer(Context context, RecentsAnimationDeviceState deviceState,
+            SwipeSharedState swipeSharedState, InputMonitorCompat inputMonitorCompat,
+            int runningTaskId, int logId) {
         mContext = context;
+        mDeviceState = deviceState;
         mTouchSlopSquared = squaredTouchSlop(context);
         mSwipeSharedState = swipeSharedState;
         mAppWindowAnimationHelper = new AppWindowAnimationHelper(context);
         mLogId = logId;
         mTransformParams = new AppWindowAnimationHelper.TransformParams();
         mInputMonitorCompat = inputMonitorCompat;
-        mSwipeTouchRegion = swipeTouchRegion;
         mRunningTaskId = runningTaskId;
 
         // Do not use DeviceProfile as the user data might be locked
@@ -139,7 +139,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                 if (!mThresholdCrossed) {
                     // Cancel interaction in case of multi-touch interaction
                     int ptrIdx = ev.getActionIndex();
-                    if (!mSwipeTouchRegion.contains(ev.getX(ptrIdx), ev.getY(ptrIdx))) {
+                    if (!mDeviceState.isInSwipeUpTouchRegion(ev, ptrIdx)) {
                         int action = ev.getAction();
                         ev.setAction(ACTION_CANCEL);
                         finishTouchTracking(ev);
