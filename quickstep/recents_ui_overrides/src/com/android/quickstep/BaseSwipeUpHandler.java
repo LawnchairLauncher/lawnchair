@@ -25,7 +25,6 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TI
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
-import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 
 import android.animation.Animator;
 import android.annotation.TargetApi;
@@ -60,6 +59,7 @@ import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.ActivityControlHelper.HomeAnimationFactory;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.inputconsumers.InputConsumer;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.AppWindowAnimationHelper.TransformParams;
@@ -253,7 +253,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
                 mFinishingRecentsAnimationForNewTaskId = -1;
             });
         }
-        TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", true);
+        ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", true);
     }
 
     @Override

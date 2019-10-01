@@ -16,7 +16,6 @@
 package com.android.quickstep.inputconsumers;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.view.KeyEvent;
@@ -28,6 +27,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.ActivityControlHelper;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
@@ -102,7 +102,7 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
                 mActivityControlHelper.closeOverlay();
                 ActivityManagerWrapper.getInstance()
                         .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-                TOUCH_INTERACTION_LOG.addLog("startQuickstep");
+                ActiveGestureLog.INSTANCE.addLog("startQuickstep");
             }
             if (mInputMonitor != null) {
                 mInputMonitor.pilferPointers();

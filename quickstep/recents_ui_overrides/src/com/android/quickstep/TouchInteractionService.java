@@ -54,7 +54,6 @@ import androidx.annotation.WorkerThread;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.logging.EventLogArray;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.provider.RestoreDbTask;
@@ -73,6 +72,7 @@ import com.android.quickstep.inputconsumers.OverviewWithoutFocusInputConsumer;
 import com.android.quickstep.inputconsumers.QuickCaptureTouchConsumer;
 import com.android.quickstep.inputconsumers.ResetGestureInputConsumer;
 import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -111,16 +111,6 @@ class ArgList extends LinkedList<String> {
 @TargetApi(Build.VERSION_CODES.Q)
 public class TouchInteractionService extends Service implements
         NavigationModeChangeListener {
-
-    /**
-     * NOTE: This value should be kept same as
-     * ActivityTaskManagerService#INTENT_EXTRA_LOG_TRACE_ID in platform
-     */
-    public static final String INTENT_EXTRA_LOG_TRACE_ID = "INTENT_EXTRA_LOG_TRACE_ID";
-
-
-    public static final EventLogArray TOUCH_INTERACTION_LOG =
-            new EventLogArray("touch_interaction_log", 40);
 
     private static final String TAG = "TouchInteractionService";
 
@@ -403,14 +393,14 @@ public class TouchInteractionService extends Service implements
 
         MotionEvent event = (MotionEvent) ev;
         if (event.getAction() == ACTION_DOWN) {
-            mLogId = TOUCH_INTERACTION_LOG.generateAndSetLogId();
+            mLogId = ActiveGestureLog.INSTANCE.generateAndSetLogId();
             sSwipeSharedState.setLogTraceId(mLogId);
 
             if (mDeviceState.isInSwipeUpTouchRegion(event)) {
                 boolean useSharedState = mConsumer.useSharedSwipeState();
                 mConsumer.onConsumerAboutToBeSwitched();
                 mConsumer = newConsumer(useSharedState, event);
-                TOUCH_INTERACTION_LOG.addLog("setInputConsumer", mConsumer.getType());
+                ActiveGestureLog.INSTANCE.addLog("setInputConsumer", mConsumer.getType());
                 mUncheckedConsumer = mConsumer;
             } else if (mDeviceState.isUserUnlocked() && mMode == Mode.NO_BUTTON
                     && mDeviceState.canTriggerAssistantAction(event)) {
@@ -426,7 +416,7 @@ public class TouchInteractionService extends Service implements
             }
         }
 
-        TOUCH_INTERACTION_LOG.addLog("onMotionEvent", event.getActionMasked());
+        ActiveGestureLog.INSTANCE.addLog("onMotionEvent", event.getActionMasked());
         mUncheckedConsumer.onMotionEvent(event);
         DejankBinderTracker.disallowBinderTrackingInTests();
     }
@@ -683,8 +673,7 @@ public class TouchInteractionService extends Service implements
             pw.println("  ENABLE_QUICKSTEP_LIVE_TILE=" + ENABLE_QUICKSTEP_LIVE_TILE.get());
             pw.println("  ENABLE_HINTS_IN_OVERVIEW=" + ENABLE_HINTS_IN_OVERVIEW.get());
             pw.println("  FAKE_LANDSCAPE_UI=" + FAKE_LANDSCAPE_UI.get());
-            TOUCH_INTERACTION_LOG.dump("", pw);
-
+            ActiveGestureLog.INSTANCE.dump("", pw);
         }
     }
 
@@ -696,7 +685,7 @@ public class TouchInteractionService extends Service implements
     private void onCommand(PrintWriter pw, ArgList args) {
         switch (args.nextArg()) {
             case "clear-touch-log":
-                TOUCH_INTERACTION_LOG.clear();
+                ActiveGestureLog.INSTANCE.clear();
                 break;
         }
     }

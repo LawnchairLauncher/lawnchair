@@ -29,7 +29,6 @@ import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState.HIDE;
 import static com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState.PEEK;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
-import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 import static com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget.HOME;
 import static com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget.LAST_TASK;
 import static com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget.NEW_TASK;
@@ -78,6 +77,7 @@ import com.android.quickstep.ActivityControlHelper.HomeAnimationFactory;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.inputconsumers.InputConsumer;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AppWindowAnimationHelper.TargetAlphaProvider;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.RecentsAnimationTargets;
@@ -609,7 +609,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     @Override
     public void onRecentsAnimationStart(RecentsAnimationTargets targetSet) {
         super.onRecentsAnimationStart(targetSet);
-        TOUCH_INTERACTION_LOG.addLog("startRecentsAnimationCallback", targetSet.apps.length);
+        ActiveGestureLog.INSTANCE.addLog("startRecentsAnimationCallback", targetSet.apps.length);
         setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
 
         mPassedOverviewThreshold = false;
@@ -620,7 +620,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         mRecentsAnimationWrapper.setController(null);
         mActivityInitListener.unregister();
         setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);
-        TOUCH_INTERACTION_LOG.addLog("cancelRecentsAnimation");
+        ActiveGestureLog.INSTANCE.addLog("cancelRecentsAnimation");
     }
 
     @Override
@@ -1019,7 +1019,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     @UiThread
     private void resumeLastTask() {
         mRecentsAnimationWrapper.finish(false /* toRecents */, null);
-        TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", false);
+        ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", false);
         doLogGesture(LAST_TASK);
         reset();
     }
@@ -1164,7 +1164,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                         () -> setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
             }
         }
-        TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", true);
+        ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", true);
     }
 
     private void finishCurrentTransitionToHome() {
@@ -1173,7 +1173,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                     () -> setStateOnUiThread(STATE_CURRENT_TASK_FINISHED),
                     true /* sendUserLeaveHint */);
         }
-        TOUCH_INTERACTION_LOG.addLog("finishRecentsAnimation", true);
+        ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", true);
         doLogGesture(HOME);
     }
 

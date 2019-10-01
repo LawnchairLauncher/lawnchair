@@ -22,9 +22,9 @@ import static android.view.MotionEvent.ACTION_UP;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
-import static com.android.quickstep.TouchInteractionService.INTENT_EXTRA_LOG_TRACE_ID;
 import static com.android.quickstep.TouchInteractionService.startRecentsActivityAsync;
 import static com.android.quickstep.WindowTransformSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
+import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 
 import android.content.ComponentName;
 import android.content.Context;

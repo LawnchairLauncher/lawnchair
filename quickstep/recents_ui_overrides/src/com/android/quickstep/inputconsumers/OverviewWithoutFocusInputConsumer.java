@@ -21,7 +21,6 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Utilities.squaredHypot;
-import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.content.Context;
@@ -37,6 +36,7 @@ import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.quickstep.ActivityControlHelper;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
@@ -151,7 +151,7 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer {
             mActivityControlHelper.closeOverlay();
             ActivityManagerWrapper.getInstance()
                     .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-            TOUCH_INTERACTION_LOG.addLog("startQuickstep");
+            ActiveGestureLog.INSTANCE.addLog("startQuickstep");
             BaseActivity activity = BaseDraggingActivity.fromContext(mContext);
             int pageIndex = -1; // This number doesn't reflect workspace page index.
                                 // It only indicates that launcher client screen was shown.

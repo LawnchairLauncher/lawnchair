@@ -27,9 +27,8 @@ import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
-import static com.android.quickstep.TouchInteractionService.INTENT_EXTRA_LOG_TRACE_ID;
-import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 import static com.android.quickstep.TouchInteractionService.startRecentsActivityAsync;
+import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.annotation.TargetApi;
@@ -58,6 +57,7 @@ import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.SwipeSharedState;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.NavBarPosition;
@@ -311,7 +311,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private void notifyGestureStarted() {
-        TOUCH_INTERACTION_LOG.addLog("startQuickstep");
+        ActiveGestureLog.INSTANCE.addLog("startQuickstep");
         if (mInteractionHandler == null) {
             return;
         }
@@ -327,7 +327,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
     private void startTouchTrackingForWindowAnimation(
             long touchTimeMs, boolean isLikelyToStartNewTask) {
-        TOUCH_INTERACTION_LOG.addLog("startRecentsAnimation");
+        ActiveGestureLog.INSTANCE.addLog("startRecentsAnimation");
 
         RecentsAnimationCallbacks listenerSet = mSwipeSharedState.getActiveListener();
         final BaseSwipeUpHandler handler = mHandlerFactory.newHandler(mRunningTask, touchTimeMs,
