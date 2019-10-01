@@ -35,6 +35,7 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.fallback.FallbackRecentsView;
+import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.RecentsView;
@@ -177,13 +178,13 @@ public final class FallbackActivityControllerHelper implements
     @Override
     public ActivityInitListener createActivityInitListener(
             BiPredicate<RecentsActivity, Boolean> onInitListener) {
-        return new RecentsActivityTracker(onInitListener);
+        return new ActivityInitListener(onInitListener, RecentsActivity.ACTIVITY_TRACKER);
     }
 
     @Nullable
     @Override
     public RecentsActivity getCreatedActivity() {
-        return RecentsActivityTracker.getCurrentActivity();
+        return BaseRecentsActivity.ACTIVITY_TRACKER.getCreatedActivity();
     }
 
     @Nullable

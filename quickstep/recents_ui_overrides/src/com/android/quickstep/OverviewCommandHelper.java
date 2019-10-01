@@ -25,14 +25,12 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
+import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;

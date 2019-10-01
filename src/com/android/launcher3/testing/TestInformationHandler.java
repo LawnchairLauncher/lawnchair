@@ -56,8 +56,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
         mDeviceProfile = InvariantDeviceProfile.INSTANCE.
                 get(context).getDeviceProfile(context);
         mLauncherAppState = LauncherAppState.getInstanceNoCreate();
-        mLauncher = mLauncherAppState != null ?
-                (Launcher) mLauncherAppState.getModel().getCallback() : null;
+        mLauncher = Launcher.ACTIVITY_TRACKER.getCreatedActivity();
     }
 
     public Bundle call(String method) {

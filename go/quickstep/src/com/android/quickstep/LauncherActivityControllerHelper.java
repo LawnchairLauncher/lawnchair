@@ -55,7 +55,7 @@ public final class LauncherActivityControllerHelper extends GoActivityControlHel
     }
 
     @Override
-    public ActivityInitListener createActivityInitListener(
+    public LauncherInitListener createActivityInitListener(
             BiPredicate<Launcher, Boolean> onInitListener) {
         return new LauncherInitListener(onInitListener);
     }

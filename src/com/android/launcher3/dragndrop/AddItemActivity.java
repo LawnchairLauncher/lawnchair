@@ -45,6 +45,7 @@ import android.view.View.OnTouchListener;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetHost;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
@@ -176,7 +177,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
                         .setPackage(getPackageName())
                         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 
-        listener.initWhenReady();
+        Launcher.ACTIVITY_TRACKER.schedule(listener);
         startActivity(homeIntent,
                 ActivityOptions.makeCustomAnimation(this, 0, android.R.anim.fade_out).toBundle());
         mFinishOnPause = true;

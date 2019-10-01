@@ -113,7 +113,6 @@ import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.qsb.QsbContainerView;
-import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.DejankBinderTracker;
@@ -124,6 +123,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ActivityResultInfo;
+import com.android.launcher3.util.ActivityTracker;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -176,6 +176,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         Callbacks, LauncherProviderChangeListener, UserEventDelegate,
         InvariantDeviceProfile.OnIDPChangeListener, PluginListener<OverlayPlugin> {
     public static final String TAG = "Launcher";
+
+    public static final ActivityTracker<Launcher> ACTIVITY_TRACKER = new ActivityTracker<>();
+
     static final boolean LOGD = false;
 
     static final boolean DEBUG_STRICT_MODE = false;
@@ -359,7 +362,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
 
-        boolean internalStateHandled = InternalStateHandler.handleCreate(this, getIntent());
+        boolean internalStateHandled = ACTIVITY_TRACKER.handleCreate(this);
         if (internalStateHandled) {
             if (savedInstanceState != null) {
                 // InternalStateHandler has already set the appropriate state.
@@ -1444,8 +1447,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         boolean shouldMoveToDefaultScreen = alreadyOnHome && isInState(NORMAL)
                 && AbstractFloatingView.getTopOpenView(this) == null;
         boolean isActionMain = Intent.ACTION_MAIN.equals(intent.getAction());
-        boolean internalStateHandled = InternalStateHandler
-                .handleNewIntent(this, intent, isStarted());
+        boolean internalStateHandled = ACTIVITY_TRACKER.handleNewIntent(this, intent);
 
         if (isActionMain) {
             if (!internalStateHandled) {
@@ -1535,6 +1537,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     public void onDestroy() {
         super.onDestroy();
+        ACTIVITY_TRACKER.onActivityDestroyed(this);
 
         unregisterReceiver(mScreenOffReceiver);
         mWorkspace.removeFolderListeners();

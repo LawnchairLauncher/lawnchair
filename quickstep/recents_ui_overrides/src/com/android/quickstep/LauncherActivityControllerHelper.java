@@ -50,7 +50,6 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListenerEx;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
@@ -61,6 +60,7 @@ import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.SysUINavigationMode.Mode;
+import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.views.LauncherRecentsView;
@@ -404,11 +404,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     @Nullable
     @Override
     public Launcher getCreatedActivity() {
-        LauncherAppState app = LauncherAppState.getInstanceNoCreate();
-        if (app == null) {
-            return null;
-        }
-        return (Launcher) app.getModel().getCallback();
+        return Launcher.ACTIVITY_TRACKER.getCreatedActivity();
     }
 
     @Nullable

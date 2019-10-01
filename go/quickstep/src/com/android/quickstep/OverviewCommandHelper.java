@@ -27,8 +27,8 @@ import android.view.ViewConfiguration;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.AppToOverviewAnimationProvider.AppToOverviewAnimationListener;
+import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.views.IconRecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
@@ -104,7 +104,7 @@ public class OverviewCommandHelper {
 
         private final long mToggleClickedTime = SystemClock.uptimeMillis();
         private boolean mUserEventLogged;
-        private ActivityInitListener mListener;
+        private ActivityInitListener<T> mListener;
 
         public RecentsActivityCommand() {
             mHelper = mOverviewComponentObserver.getActivityControlHelper();
