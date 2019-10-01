@@ -46,6 +46,11 @@ public class SystemUiProxy implements ISystemUiProxy {
     // Used to dedupe calls to SystemUI
     private int mLastShelfHeight;
     private boolean mLastShelfVisible;
+    private float mLastBackButtonAlpha;
+    private boolean mLastBackButtonAnimate;
+
+    // TODO(141886704): Find a way to remove this
+    private int mLastSystemUiStateFlags;
 
     public SystemUiProxy(Context context) {
         // Do nothing
@@ -61,6 +66,16 @@ public class SystemUiProxy implements ISystemUiProxy {
         unlinkToDeath();
         mSystemUiProxy = proxy;
         linkToDeath();
+    }
+
+    // TODO(141886704): Find a way to remove this
+    public void setLastSystemUiStateFlags(int stateFlags) {
+        mLastSystemUiStateFlags = stateFlags;
+    }
+
+    // TODO(141886704): Find a way to remove this
+    public int getLastSystemUiStateFlags() {
+        return mLastSystemUiStateFlags;
     }
 
     public boolean isActive() {
@@ -134,13 +149,21 @@ public class SystemUiProxy implements ISystemUiProxy {
 
     @Override
     public void setBackButtonAlpha(float alpha, boolean animate) {
-        if (mSystemUiProxy != null) {
+        boolean changed = Float.compare(alpha, mLastBackButtonAlpha) != 0
+                || animate != mLastBackButtonAnimate;
+        if (mSystemUiProxy != null && changed) {
+            mLastBackButtonAlpha = alpha;
+            mLastBackButtonAnimate = animate;
             try {
                 mSystemUiProxy.setBackButtonAlpha(alpha, animate);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call setBackButtonAlpha", e);
             }
         }
+    }
+
+    public float getLastBackButtonAlpha() {
+        return mLastBackButtonAlpha;
     }
 
     @Override

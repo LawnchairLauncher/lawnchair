@@ -40,13 +40,13 @@ import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 /**
- * Touch consumer for handling events to launch quick capture from launcher
+ * Input consumer for handling events to launch quick capture from launcher
  * @param <T> Draggable activity subclass used by RecentsView
  */
-public class QuickCaptureTouchConsumer<T extends BaseDraggingActivity>
+public class QuickCaptureInputConsumer<T extends BaseDraggingActivity>
         extends DelegateInputConsumer {
 
-    private static final String TAG = "QuickCaptureTouchConsumer";
+    private static final String TAG = "QuickCaptureInputConsumer";
 
     private static final String QUICK_CAPTURE_PACKAGE = "com.google.auxe.compose";
     private static final String QUICK_CAPTURE_PACKAGE_DEV = "com.google.auxe.compose.debug";
@@ -72,7 +72,7 @@ public class QuickCaptureTouchConsumer<T extends BaseDraggingActivity>
 
     private RecentsView mRecentsView;
 
-    public QuickCaptureTouchConsumer(Context context, InputConsumer delegate,
+    public QuickCaptureInputConsumer(Context context, InputConsumer delegate,
             InputMonitorCompat inputMonitor, ActivityControlHelper<T> activityControlHelper) {
         super(delegate, inputMonitor);
         mContext = context;

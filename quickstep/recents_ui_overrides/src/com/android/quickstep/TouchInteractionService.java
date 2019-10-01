@@ -36,6 +36,7 @@ import android.app.Service;
 import android.app.TaskInfo;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Region;
 import android.os.Build;
@@ -52,6 +53,7 @@ import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
@@ -68,7 +70,7 @@ import com.android.quickstep.inputconsumers.InputConsumer;
 import com.android.quickstep.inputconsumers.OtherActivityInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewWithoutFocusInputConsumer;
-import com.android.quickstep.inputconsumers.QuickCaptureTouchConsumer;
+import com.android.quickstep.inputconsumers.QuickCaptureInputConsumer;
 import com.android.quickstep.inputconsumers.ResetGestureInputConsumer;
 import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
@@ -115,6 +117,7 @@ public class TouchInteractionService extends Service implements
 
     private static final String KEY_BACK_NOTIFICATION_COUNT = "backNotificationCount";
     private static final String NOTIFY_ACTION_BACK = "com.android.quickstep.action.BACK_GESTURE";
+    private static final String HAS_ENABLED_QUICKSTEP_ONCE = "launcher.has_enabled_quickstep_once";
     private static final int MAX_BACK_NOTIFICATION_COUNT = 3;
     private int mBackGestureNotificationCounter = -1;
 
@@ -237,7 +240,6 @@ public class TouchInteractionService extends Service implements
     private RecentsModel mRecentsModel;
     private OverviewCommandHelper mOverviewCommandHelper;
     private OverviewComponentObserver mOverviewComponentObserver;
-    private OverviewInteractionState mOverviewInteractionState;
     private InputConsumerController mInputConsumer;
     private RecentsAnimationDeviceState mDeviceState;
 
@@ -309,14 +311,13 @@ public class TouchInteractionService extends Service implements
         }
         mMode = newMode;
         initInputMonitor();
+        resetHomeBounceSeenOnQuickstepEnabledFirstTime();
     }
 
     public void onUserUnlocked() {
         mRecentsModel = RecentsModel.INSTANCE.get(this);
         mOverviewComponentObserver = new OverviewComponentObserver(this, mDeviceState);
-
         mOverviewCommandHelper = new OverviewCommandHelper(this, mOverviewComponentObserver);
-        mOverviewInteractionState = OverviewInteractionState.INSTANCE.get(this);
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
 
         sSwipeSharedState.setOverviewComponentObserver(mOverviewComponentObserver);
@@ -328,12 +329,31 @@ public class TouchInteractionService extends Service implements
         // new ModelPreload().start(this);
         mBackGestureNotificationCounter = Math.max(0, Utilities.getDevicePrefs(this)
                 .getInt(KEY_BACK_NOTIFICATION_COUNT, MAX_BACK_NOTIFICATION_COUNT));
+        resetHomeBounceSeenOnQuickstepEnabledFirstTime();
+    }
+
+    private void resetHomeBounceSeenOnQuickstepEnabledFirstTime() {
+        if (!mDeviceState.isUserUnlocked() || !mMode.hasGestures) {
+            // Skip if not yet unlocked (can't read user shared prefs) or if the current navigation
+            // mode doesn't have gestures
+            return;
+        }
+
+        // Reset home bounce seen on quick step enabled for first time
+        SharedPreferences sharedPrefs = Utilities.getPrefs(this);
+        if (!sharedPrefs.getBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)) {
+            sharedPrefs.edit()
+                    .putBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)
+                    .putBoolean(DiscoveryBounce.HOME_BOUNCE_SEEN, false)
+                    .apply();
+        }
     }
 
     @UiThread
     private void onSystemUiFlagsChanged() {
         if (mDeviceState.isUserUnlocked()) {
-            mOverviewInteractionState.setSystemUiStateFlags(mDeviceState.getSystemUiStateFlags());
+            SystemUiProxy.INSTANCE.get(this).setLastSystemUiStateFlags(
+                    mDeviceState.getSystemUiStateFlags());
             mOverviewComponentObserver.onSystemUiStateChanged();
         }
     }
@@ -434,10 +454,9 @@ public class TouchInteractionService extends Service implements
 
             if (FeatureFlags.ENABLE_QUICK_CAPTURE_GESTURE.get()) {
                 // Put the Compose gesture as higher priority than the Assistant or base gestures
-                base = new QuickCaptureTouchConsumer(this, base,
-                    mInputMonitorCompat, mOverviewComponentObserver.getActivityControlHelper());
+                base = new QuickCaptureInputConsumer(this, base, mInputMonitorCompat,
+                        activityControl);
             }
-
 
             if (mDeviceState.isScreenPinningActive()) {
                 // Note: we only allow accessibility to wrap this, and it replaces the previous

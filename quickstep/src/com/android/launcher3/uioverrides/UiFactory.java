@@ -51,11 +51,12 @@ import com.android.launcher3.QuickstepAppTransitionManagerImpl;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.proxy.ProxyActivityStarter;
 import com.android.launcher3.proxy.StartActivityParams;
-import com.android.quickstep.OverviewInteractionState;
+import com.android.launcher3.util.UiThreadHelper;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
+import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.systemui.shared.system.ActivityCompat;
 
@@ -64,6 +65,15 @@ import java.io.PrintWriter;
 import java.util.zip.Deflater;
 
 public class UiFactory extends RecentsUiFactory {
+
+    /**
+     * Reusable command for applying the back button alpha on the background thread.
+     */
+    public static final UiThreadHelper.AsyncCommand SET_BACK_BUTTON_ALPHA =
+            (context, arg1, arg2) -> {
+        SystemUiProxy.INSTANCE.get(context).setBackButtonAlpha(Float.intBitsToFloat(arg1),
+                arg2 != 0);
+    };
 
     public static Runnable enableLiveUIChanges(Launcher launcher) {
         NavigationModeChangeListener listener = m -> {
@@ -88,7 +98,9 @@ public class UiFactory extends RecentsUiFactory {
      * Sets the back button visibility based on the current state/window focus.
      */
     public static void onLauncherStateOrFocusChanged(Launcher launcher) {
-        boolean shouldBackButtonBeHidden = launcher != null
+        Mode mode = SysUINavigationMode.getMode(launcher);
+        boolean shouldBackButtonBeHidden = mode.hasGestures
+                && launcher != null
                 && launcher.getStateManager().getState().hideBackButton
                 && launcher.hasWindowFocus();
         if (shouldBackButtonBeHidden) {
@@ -96,8 +108,8 @@ public class UiFactory extends RecentsUiFactory {
             shouldBackButtonBeHidden = AbstractFloatingView.getTopOpenViewWithType(launcher,
                     TYPE_ALL & ~TYPE_HIDE_BACK_BUTTON) == null;
         }
-        OverviewInteractionState.INSTANCE.get(launcher)
-                .setBackButtonAlpha(shouldBackButtonBeHidden ? 0 : 1, true /* animate */);
+        UiThreadHelper.setBackButtonAlphaAsync(launcher, UiFactory.SET_BACK_BUTTON_ALPHA,
+                shouldBackButtonBeHidden ? 0f : 1f, true /* animate */);
         if (launcher != null && launcher.getDragLayer() != null) {
             launcher.getRootView().setDisallowBackGesture(shouldBackButtonBeHidden);
         }

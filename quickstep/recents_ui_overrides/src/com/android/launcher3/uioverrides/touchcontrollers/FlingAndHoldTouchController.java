@@ -50,7 +50,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.quickstep.OverviewInteractionState;
+import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.views.RecentsView;
 
@@ -120,7 +120,7 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
      * having it as part of the existing animation to the target state.
      */
     private boolean handlingOverviewAnim() {
-        int stateFlags = OverviewInteractionState.INSTANCE.get(mLauncher).getSystemUiStateFlags();
+        int stateFlags = SystemUiProxy.INSTANCE.get(mLauncher).getLastSystemUiStateFlags();
         return mStartState == NORMAL && (stateFlags & SYSUI_STATE_OVERVIEW_DISABLED) == 0;
     }
 

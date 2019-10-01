@@ -63,8 +63,8 @@ public abstract class RecentsUiFactory {
     /**
      * Reusable command for applying the shelf height on the background thread.
      */
-    public static final AsyncCommand SET_SHELF_HEIGHT = (context, visible, height) -> {
-        SystemUiProxy.INSTANCE.get(context).setShelfHeight(visible, (int) height);
+    public static final AsyncCommand SET_SHELF_HEIGHT = (context, arg1, arg2) -> {
+        SystemUiProxy.INSTANCE.get(context).setShelfHeight(arg1 != 0, arg2);
     };
 
     public static RotationMode ROTATION_LANDSCAPE = new RotationMode(-90) {
@@ -209,7 +209,7 @@ public abstract class RecentsUiFactory {
         DeviceProfile profile = launcher.getDeviceProfile();
         boolean visible = (state == NORMAL || state == OVERVIEW) && launcher.isUserActive()
                 && !profile.isVerticalBarLayout();
-        UiThreadHelper.runAsyncCommand(launcher, SET_SHELF_HEIGHT, visible,
+        UiThreadHelper.runAsyncCommand(launcher, SET_SHELF_HEIGHT, visible ? 1 : 0,
                 profile.hotseatBarSizePx);
         if (state == NORMAL) {
             launcher.<RecentsView>getOverviewPanel().setSwipeDownShouldLaunchApp(false);
