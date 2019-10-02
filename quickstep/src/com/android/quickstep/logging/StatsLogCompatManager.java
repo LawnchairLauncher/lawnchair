@@ -29,12 +29,16 @@ import android.content.Intent;
 import android.stats.launcher.nano.Launcher;
 import android.stats.launcher.nano.LauncherExtension;
 import android.stats.launcher.nano.LauncherTarget;
+import android.util.Log;
 import android.view.View;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.util.ComponentKey;
 import com.android.systemui.shared.system.StatsLogCompat;
 import com.google.protobuf.nano.MessageNano;
@@ -50,6 +54,8 @@ import com.google.protobuf.nano.MessageNano;
 public class StatsLogCompatManager extends StatsLogManager {
 
     private static final int SUPPORTED_TARGET_DEPTH = 2;
+    private static final String TAG = "StatsLogCompatManager";
+    private static final boolean DEBUG = false;
 
     public StatsLogCompatManager(Context context) { }
 
@@ -59,6 +65,9 @@ public class StatsLogCompatManager extends StatsLogManager {
         ext.srcTarget = new LauncherTarget[SUPPORTED_TARGET_DEPTH];
         int srcState = mStateProvider.getCurrentState();
         fillInLauncherExtension(v, ext);
+        if (ext.srcTarget[0] != null) {
+            ext.srcTarget[0].item = LauncherTarget.APP_ICON;
+        }
         StatsLogCompat.write(LAUNCH_APP, srcState, BACKGROUND /* dstState */,
                 MessageNano.toByteArray(ext), true);
     }
@@ -95,28 +104,132 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     public static boolean fillInLauncherExtension(View v, LauncherExtension extension) {
+        if (DEBUG) {
+            Log.d(TAG, "fillInLauncherExtension");
+        }
+
         StatsLogUtils.LogContainerProvider provider = StatsLogUtils.getLaunchProviderRecursive(v);
         if (v == null || !(v.getTag() instanceof ItemInfo) || provider == null) {
+            if (DEBUG) {
+                Log.d(TAG, "View or provider is null, or view doesn't have an ItemInfo tag.");
+            }
+
             return false;
         }
         ItemInfo itemInfo = (ItemInfo) v.getTag();
         Target child = new Target();
         Target parent = new Target();
         provider.fillInLogContainerData(v, itemInfo, child, parent);
+        extension.srcTarget[0] = new LauncherTarget();
+        extension.srcTarget[1] = new LauncherTarget();
         copy(child, extension.srcTarget[0]);
         copy(parent, extension.srcTarget[1]);
         return true;
     }
 
     public static boolean fillInLauncherExtensionWithPageId(LauncherExtension ext, int pageId) {
+        if (DEBUG) {
+            Log.d(TAG, "fillInLauncherExtensionWithPageId, pageId = " + pageId);
+        }
+
         Target target = new Target();
         target.pageIndex = pageId;
+        ext.srcTarget[0] = new LauncherTarget();
         copy(target, ext.srcTarget[0]);
         return true;
     }
 
     private static void copy(Target src, LauncherTarget dst) {
-        // fill in
+        if (DEBUG) {
+            Log.d(TAG, "copy target information from clearcut Target to LauncherTarget.");
+        }
+
+        // Fill in type
+        switch (src.type) {
+            case Target.Type.ITEM:
+                dst.type = LauncherTarget.ITEM_TYPE;
+                break;
+            case Target.Type.CONTROL:
+                dst.type = LauncherTarget.CONTROL_TYPE;
+                break;
+            case Target.Type.CONTAINER:
+                dst.type = LauncherTarget.CONTAINER_TYPE;
+                break;
+            default:
+                dst.type = LauncherTarget.NONE;
+                break;
+        }
+
+        // Fill in item
+        switch (src.itemType) {
+            case ItemType.APP_ICON:
+                dst.item = LauncherTarget.APP_ICON;
+                break;
+            case ItemType.SHORTCUT:
+                dst.item = LauncherTarget.SHORTCUT;
+                break;
+            case ItemType.WIDGET:
+                dst.item = LauncherTarget.WIDGET;
+                break;
+            case ItemType.FOLDER_ICON:
+                dst.item = LauncherTarget.FOLDER_ICON;
+                break;
+            case ItemType.DEEPSHORTCUT:
+                dst.item = LauncherTarget.DEEPSHORTCUT;
+                break;
+            case ItemType.SEARCHBOX:
+                dst.item = LauncherTarget.SEARCHBOX;
+                break;
+            case ItemType.EDITTEXT:
+                dst.item = LauncherTarget.EDITTEXT;
+                break;
+            case ItemType.NOTIFICATION:
+                dst.item = LauncherTarget.NOTIFICATION;
+                break;
+            case ItemType.TASK:
+                dst.item = LauncherTarget.TASK;
+                break;
+            default:
+                dst.item = LauncherTarget.DEFAULT_ITEM;
+                break;
+        }
+
+        // Fill in container
+        switch (src.containerType) {
+            case ContainerType.HOTSEAT:
+                dst.container = LauncherTarget.HOTSEAT;
+                break;
+            case ContainerType.FOLDER:
+                dst.container = LauncherTarget.FOLDER;
+                break;
+            case ContainerType.PREDICTION:
+                dst.container = LauncherTarget.PREDICTION;
+                break;
+            case ContainerType.SEARCHRESULT:
+                dst.container = LauncherTarget.SEARCHRESULT;
+                break;
+            default:
+                dst.container = LauncherTarget.DEFAULT_CONTAINER;
+                break;
+        }
+
+        // Fill in control
+        switch (src.controlType) {
+            case ControlType.UNINSTALL_TARGET:
+                dst.control = LauncherTarget.UNINSTALL;
+                break;
+            case ControlType.REMOVE_TARGET:
+                dst.control = LauncherTarget.REMOVE;
+                break;
+            default:
+                dst.control = LauncherTarget.DEFAULT_CONTROL;
+                break;
+        }
+
+        // Fill in other fields
+        dst.pageId = src.pageIndex;
+        dst.gridX = src.gridX;
+        dst.gridY = src.gridY;
     }
 
     @Override
