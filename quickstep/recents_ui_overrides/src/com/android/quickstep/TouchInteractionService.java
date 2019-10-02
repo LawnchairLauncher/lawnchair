@@ -414,10 +414,9 @@ public class TouchInteractionService extends Service implements
                 // Do not change mConsumer as if there is an ongoing QuickSwitch gesture, we should
                 // not interrupt it. QuickSwitch assumes that interruption can only happen if the
                 // next gesture is also quick switch.
-                mUncheckedConsumer =
-                        new AssistantInputConsumer(this,
-                                mOverviewComponentObserver.getActivityControlHelper(),
-                                InputConsumer.NO_OP, mInputMonitorCompat);
+                mUncheckedConsumer = new AssistantInputConsumer(this,
+                        mOverviewComponentObserver.getActivityControlHelper(),
+                        InputConsumer.NO_OP, mInputMonitorCompat);
             } else {
                 mUncheckedConsumer = InputConsumer.NO_OP;
             }

@@ -15,17 +15,11 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.graphics.Rect;
 
-import com.android.systemui.shared.recents.model.ThumbnailData;
-import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-
-import java.util.function.Consumer;
 
 /**
  * Extension of {@link RemoteAnimationTargets} with additional information about swipe
@@ -33,23 +27,15 @@ import java.util.function.Consumer;
  */
 public class RecentsAnimationTargets extends RemoteAnimationTargets {
 
-    private final boolean mShouldMinimizeSplitScreen;
-    private final Consumer<RecentsAnimationTargets> mOnFinishListener;
-
-    public final RecentsAnimationControllerCompat controller;
     public final Rect homeContentInsets;
     public final Rect minimizedHomeBounds;
 
-    public RecentsAnimationTargets(RecentsAnimationControllerCompat controller,
-            RemoteAnimationTargetCompat[] apps, RemoteAnimationTargetCompat[] wallpapers,
-            Rect homeContentInsets, Rect minimizedHomeBounds, boolean shouldMinimizeSplitScreen,
-            Consumer<RecentsAnimationTargets> onFinishListener) {
+    public RecentsAnimationTargets(RemoteAnimationTargetCompat[] apps,
+            RemoteAnimationTargetCompat[] wallpapers, Rect homeContentInsets,
+            Rect minimizedHomeBounds) {
         super(apps, wallpapers, MODE_CLOSING);
-        this.controller = controller;
         this.homeContentInsets = homeContentInsets;
         this.minimizedHomeBounds = minimizedHomeBounds;
-        this.mShouldMinimizeSplitScreen = shouldMinimizeSplitScreen;
-        this.mOnFinishListener = onFinishListener;
     }
 
     public boolean hasTargets() {
@@ -61,52 +47,7 @@ public class RecentsAnimationTargets extends RemoteAnimationTargets {
      * the actual recents animation has finished.
      */
     public RecentsAnimationTargets cloneWithoutTargets() {
-        return new RecentsAnimationTargets(controller, new RemoteAnimationTargetCompat[0],
-                new RemoteAnimationTargetCompat[0], homeContentInsets, minimizedHomeBounds,
-                mShouldMinimizeSplitScreen, mOnFinishListener);
-    }
-
-    public void finishController(boolean toRecents, Runnable callback, boolean sendUserLeaveHint) {
-        mOnFinishListener.accept(this);
-        UI_HELPER_EXECUTOR.execute(() -> {
-            controller.setInputConsumerEnabled(false);
-            controller.finish(toRecents, sendUserLeaveHint);
-
-            if (callback != null) {
-                MAIN_EXECUTOR.execute(callback);
-            }
-        });
-    }
-
-    public void enableInputConsumer() {
-        UI_HELPER_EXECUTOR.submit(() -> {
-            controller.hideCurrentInputMethod();
-            controller.setInputConsumerEnabled(true);
-        });
-    }
-
-    public void setWindowThresholdCrossed(boolean thresholdCrossed) {
-        UI_HELPER_EXECUTOR.execute(() -> {
-            controller.setAnimationTargetsBehindSystemBars(!thresholdCrossed);
-            if (mShouldMinimizeSplitScreen && thresholdCrossed) {
-                // NOTE: As a workaround for conflicting animations (Launcher animating the task
-                // leash, and SystemUI resizing the docked stack, which resizes the task), we
-                // currently only set the minimized mode, and not the inverse.
-                // TODO: Synchronize the minimize animation with the launcher animation
-                controller.setSplitScreenMinimized(thresholdCrossed);
-            }
-        });
-    }
-
-    public ThumbnailData screenshotTask(int taskId) {
-        return controller != null ? controller.screenshotTask(taskId) : null;
-    }
-
-    public void cancelAnimation() {
-        finishController(false /* toRecents */, null, false /* sendUserLeaveHint */);
-    }
-
-    public void finishAnimation() {
-        finishController(true /* toRecents */, null, false /* sendUserLeaveHint */);
+        return new RecentsAnimationTargets(new RemoteAnimationTargetCompat[0],
+                new RemoteAnimationTargetCompat[0], homeContentInsets, minimizedHomeBounds);
     }
 }

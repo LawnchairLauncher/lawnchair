@@ -42,6 +42,7 @@ import com.android.launcher3.util.DefaultDisplay;
 import com.android.quickstep.LockScreenRecentsActivity;
 import com.android.quickstep.MultiStateCallback;
 import com.android.quickstep.RecentsAnimationDeviceState;
+import com.android.quickstep.RecentsAnimationWrapper;
 import com.android.quickstep.SwipeSharedState;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.RecentsAnimationCallbacks;
@@ -91,7 +92,8 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     private boolean mThresholdCrossed = false;
 
-    private RecentsAnimationTargets mTargetSet;
+    private RecentsAnimationWrapper mRecentsAnimationController;
+    private RecentsAnimationTargets mRecentsAnimationTargets;
 
     public DeviceLockedInputConsumer(Context context, RecentsAnimationDeviceState deviceState,
             SwipeSharedState swipeSharedState, InputMonitorCompat inputMonitorCompat,
@@ -216,8 +218,10 @@ public class DeviceLockedInputConsumer implements InputConsumer,
     }
 
     @Override
-    public void onRecentsAnimationStart(RecentsAnimationTargets targetSet) {
-        mTargetSet = targetSet;
+    public void onRecentsAnimationStart(RecentsAnimationWrapper controller,
+            RecentsAnimationTargets targetSet) {
+        mRecentsAnimationController = controller;
+        mRecentsAnimationTargets = targetSet;
 
         Rect displaySize = new Rect(0, 0, mDisplaySize.x, mDisplaySize.y);
         RemoteAnimationTargetCompat targetCompat = targetSet.findTask(mRunningTaskId);
@@ -227,7 +231,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
         Utilities.scaleRectAboutCenter(displaySize, SCALE_DOWN);
         displaySize.offsetTo(displaySize.left, 0);
-        mTransformParams.setTargetSet(mTargetSet)
+        mTransformParams.setTargetSet(mRecentsAnimationTargets)
                 .setLauncherOnTop(true);
         mAppWindowAnimationHelper.updateTargetRect(displaySize);
         mAppWindowAnimationHelper.applyTransform(mTransformParams);
@@ -237,12 +241,13 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     @Override
     public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
-        mTargetSet = null;
+        mRecentsAnimationController = null;
+        mRecentsAnimationTargets = null;
     }
 
     private void endRemoteAnimation() {
-        if (mTargetSet != null) {
-            mTargetSet.finishController(
+        if (mRecentsAnimationController != null) {
+            mRecentsAnimationController.finishController(
                     false /* toRecents */, null /* callback */, false /* sendUserLeaveHint */);
         }
     }

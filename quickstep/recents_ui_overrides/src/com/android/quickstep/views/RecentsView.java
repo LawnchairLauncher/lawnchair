@@ -108,6 +108,7 @@ import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.ViewUtils;
 import com.android.quickstep.util.AppWindowAnimationHelper;
+import com.android.quickstep.util.RecentsAnimationTargets;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -156,6 +157,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             };
 
     protected RecentsAnimationWrapper mRecentsAnimationWrapper;
+    protected RecentsAnimationTargets mRecentsAnimationTargets;
     protected AppWindowAnimationHelper mAppWindowAnimationHelper;
     protected SyncRtSurfaceTransactionApplierCompat mSyncTransactionApplier;
     protected int mTaskWidth;
@@ -808,6 +810,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mTaskListChangeId = -1;
 
         mRecentsAnimationWrapper = null;
+        mRecentsAnimationTargets = null;
         mAppWindowAnimationHelper = null;
 
         unloadVisibleTaskData();
@@ -1692,10 +1695,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     public void redrawLiveTile(boolean mightNeedToRefill) { }
 
-    public void setRecentsAnimationWrapper(RecentsAnimationWrapper recentsAnimationWrapper) {
+    // TODO: To be removed in a follow up CL
+    public void setRecentsAnimationTargets(RecentsAnimationWrapper recentsAnimationWrapper,
+            RecentsAnimationTargets recentsAnimationTargets) {
         mRecentsAnimationWrapper = recentsAnimationWrapper;
+        mRecentsAnimationTargets = recentsAnimationTargets;
     }
 
+    // TODO: To be removed in a follow up CL
     public void setAppWindowAnimationHelper(AppWindowAnimationHelper appWindowAnimationHelper) {
         mAppWindowAnimationHelper = appWindowAnimationHelper;
     }

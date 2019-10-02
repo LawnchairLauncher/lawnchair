@@ -45,6 +45,7 @@ import com.android.quickstep.BaseSwipeUpHandler;
 import com.android.quickstep.MultiStateCallback;
 import com.android.quickstep.OverviewComponentObserver;
 import com.android.quickstep.RecentsActivity;
+import com.android.quickstep.RecentsAnimationWrapper;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SwipeSharedState;
 import com.android.quickstep.fallback.FallbackRecentsView;
@@ -157,7 +158,7 @@ public class FallbackNoButtonInputConsumer extends
     }
 
     private void onLauncherAlphaChanged() {
-        if (mRecentsAnimationWrapper.targetSet != null && mEndTarget == null) {
+        if (mRecentsAnimationTargets != null && mEndTarget == null) {
             applyTransformUnchecked();
         }
     }
@@ -231,9 +232,11 @@ public class FallbackNoButtonInputConsumer extends
     @Override
     public void updateFinalShift() {
         mTransformParams.setProgress(mCurrentShift.value);
-        mRecentsAnimationWrapper.setWindowThresholdCrossed(!mInQuickSwitchMode
-                && (mCurrentShift.value > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD));
-        if (mRecentsAnimationWrapper.targetSet != null) {
+        if (mRecentsAnimationWrapper != null) {
+            mRecentsAnimationWrapper.setWindowThresholdCrossed(!mInQuickSwitchMode
+                    && (mCurrentShift.value > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD));
+        }
+        if (mRecentsAnimationTargets != null) {
             applyTransformUnchecked();
         }
     }
@@ -333,8 +336,7 @@ public class FallbackNoButtonInputConsumer extends
                     break;
                 }
 
-                ThumbnailData thumbnail =
-                        mRecentsAnimationWrapper.targetSet.controller.screenshotTask(mRunningTaskId);
+                ThumbnailData thumbnail = mRecentsAnimationWrapper.screenshotTask(mRunningTaskId);
                 mRecentsAnimationWrapper.setDeferCancelUntilNextTransition(true /* defer */,
                         false /* screenshot */);
 
@@ -348,7 +350,7 @@ public class FallbackNoButtonInputConsumer extends
                 Intent intent = new Intent(mOverviewComponentObserver.getOverviewIntent())
                         .putExtras(extras);
                 mContext.startActivity(intent, options.toBundle());
-                mRecentsAnimationWrapper.targetSet.controller.cleanupScreenshot();
+                mRecentsAnimationWrapper.cleanupScreenshot();
                 break;
             }
             case NEW_TASK: {
@@ -364,7 +366,7 @@ public class FallbackNoButtonInputConsumer extends
         if (mInQuickSwitchMode) {
             // Recalculate the end target, some views might have been initialized after
             // gesture has ended.
-            if (mRecentsView == null || !mRecentsAnimationWrapper.hasTargets()) {
+            if (mRecentsView == null || !hasTargets()) {
                 mEndTarget = LAST_TASK;
             } else {
                 final int runningTaskIndex = mRecentsView.getRunningTaskIndex();
@@ -414,8 +416,9 @@ public class FallbackNoButtonInputConsumer extends
     }
 
     @Override
-    public void onRecentsAnimationStart(RecentsAnimationTargets targetSet) {
-        super.onRecentsAnimationStart(targetSet);
+    public void onRecentsAnimationStart(RecentsAnimationWrapper controller,
+            RecentsAnimationTargets targetSet) {
+        super.onRecentsAnimationStart(controller, targetSet);
         mRecentsAnimationWrapper.enableInputConsumer();
 
         if (mRunningOverHome) {
@@ -428,7 +431,7 @@ public class FallbackNoButtonInputConsumer extends
 
     @Override
     public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
-        mRecentsAnimationWrapper.setController(null);
+        mRecentsView.setRecentsAnimationTargets(null, null);
         setStateOnUiThread(STATE_HANDLER_INVALIDATED);
     }
 

@@ -221,7 +221,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
     public AppWindowAnimationHelper.TransformParams getLiveTileParams(
             boolean mightNeedToRefill) {
         if (!mEnableDrawingLiveTile || mRecentsAnimationWrapper == null
-                || mAppWindowAnimationHelper == null) {
+                || mRecentsAnimationTargets == null || mAppWindowAnimationHelper == null) {
             return null;
         }
         TaskView taskView = getRunningTaskView();
@@ -245,7 +245,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
             mTransformParams.setProgress(1f)
                     .setCurrentRectAndTargetAlpha(mTempRectF, taskView.getAlpha())
                     .setSyncTransactionApplier(mSyncTransactionApplier)
-                    .setTargetSet(mRecentsAnimationWrapper.targetSet)
+                    .setTargetSet(mRecentsAnimationTargets)
                     .setLauncherOnTop(true);
         }
         return mTransformParams;

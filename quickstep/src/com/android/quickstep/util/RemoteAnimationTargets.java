@@ -86,6 +86,9 @@ public class RemoteAnimationTargets {
             for (RemoteAnimationTargetCompat target : unfilteredApps) {
                 target.release();
             }
+            for (RemoteAnimationTargetCompat target : wallpapers) {
+                target.release();
+            }
         } else {
             applier.addAfterApplyCallback(this::release);
         }

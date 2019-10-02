@@ -38,10 +38,8 @@ public class SwipeSharedState implements RecentsAnimationListener {
     private OverviewComponentObserver mOverviewComponentObserver;
 
     private RecentsAnimationCallbacks mRecentsAnimationListener;
+    private RecentsAnimationWrapper mLastRecentsAnimationController;
     private RecentsAnimationTargets mLastAnimationTarget;
-
-    // TODO: Remove
-    private Runnable mRecentsAnimationCanceledCallback;
 
     private boolean mLastAnimationCancelled = false;
     private boolean mLastAnimationRunning = false;
@@ -57,11 +55,33 @@ public class SwipeSharedState implements RecentsAnimationListener {
     }
 
     @Override
-    public final void onRecentsAnimationStart(RecentsAnimationTargets targetSet) {
+    public final void onRecentsAnimationStart(RecentsAnimationWrapper controller,
+            RecentsAnimationTargets targetSet) {
+        mLastRecentsAnimationController = controller;
         mLastAnimationTarget = targetSet;
 
         mLastAnimationCancelled = false;
         mLastAnimationRunning = true;
+    }
+
+    @Override
+    public final void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
+        if (thumbnailData != null) {
+            mOverviewComponentObserver.getActivityControlHelper().switchToScreenshot(thumbnailData,
+                    () -> {
+                        mLastRecentsAnimationController.cleanupScreenshot();
+                        clearAnimationState();
+                    });
+        } else {
+            clearAnimationState();
+        }
+    }
+
+    @Override
+    public final void onRecentsAnimationFinished(RecentsAnimationWrapper controller) {
+        if (mLastRecentsAnimationController == controller) {
+            mLastAnimationRunning = false;
+        }
     }
 
     private void clearAnimationTarget() {
@@ -71,42 +91,23 @@ public class SwipeSharedState implements RecentsAnimationListener {
         }
     }
 
-    @Override
-    public final void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
-        if (thumbnailData != null) {
-            mOverviewComponentObserver.getActivityControlHelper().switchToScreenshot(thumbnailData,
-                    () -> {
-                        if (mRecentsAnimationCanceledCallback != null) {
-                            mRecentsAnimationCanceledCallback.run();
-                        }
-                        clearAnimationState();
-                    });
-        } else {
-            clearAnimationState();
-        }
-    }
-
-    public void setRecentsAnimationCanceledCallback(Runnable callback) {
-        mRecentsAnimationCanceledCallback = callback;
-    }
-
     private void clearAnimationState() {
         clearAnimationTarget();
 
         mLastAnimationCancelled = true;
         mLastAnimationRunning = false;
-        mRecentsAnimationCanceledCallback = null;
     }
 
     private void clearListenerState(boolean finishAnimation) {
         if (mRecentsAnimationListener != null) {
             mRecentsAnimationListener.removeListener(this);
-            mRecentsAnimationListener.cancelListener();
-            if (mLastAnimationRunning && mLastAnimationTarget != null) {
+            mRecentsAnimationListener.notifyAnimationCanceled();
+            if (mLastAnimationRunning && mLastRecentsAnimationController != null) {
                 Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(),
                         finishAnimation
-                                ? mLastAnimationTarget::finishAnimation
-                                : mLastAnimationTarget::cancelAnimation);
+                                ? mLastRecentsAnimationController::finishAnimationToHome
+                                : mLastRecentsAnimationController::finishAnimationToApp);
+                mLastRecentsAnimationController = null;
                 mLastAnimationTarget = null;
             }
         }
@@ -114,12 +115,6 @@ public class SwipeSharedState implements RecentsAnimationListener {
         clearAnimationTarget();
         mLastAnimationCancelled = false;
         mLastAnimationRunning = false;
-    }
-
-    private void onSwipeAnimationFinished(RecentsAnimationTargets targetSet) {
-        if (mLastAnimationTarget == targetSet) {
-            mLastAnimationRunning = false;
-        }
     }
 
     public RecentsAnimationCallbacks newRecentsAnimationListenerSet() {
@@ -137,8 +132,7 @@ public class SwipeSharedState implements RecentsAnimationListener {
         clearListenerState(false /* finishAnimation */);
         boolean shouldMinimiseSplitScreen = mOverviewComponentObserver == null ? false
                 : mOverviewComponentObserver.getActivityControlHelper().shouldMinimizeSplitScreen();
-        mRecentsAnimationListener = new RecentsAnimationCallbacks(
-                shouldMinimiseSplitScreen, this::onSwipeAnimationFinished);
+        mRecentsAnimationListener = new RecentsAnimationCallbacks(shouldMinimiseSplitScreen);
         mRecentsAnimationListener.addListener(this);
         return mRecentsAnimationListener;
     }
@@ -148,8 +142,9 @@ public class SwipeSharedState implements RecentsAnimationListener {
     }
 
     public void applyActiveRecentsAnimationState(RecentsAnimationListener listener) {
-        if (mLastAnimationTarget != null) {
-            listener.onRecentsAnimationStart(mLastAnimationTarget);
+        if (mLastRecentsAnimationController != null) {
+            listener.onRecentsAnimationStart(mLastRecentsAnimationController,
+                    mLastAnimationTarget);
         } else if (mLastAnimationCancelled) {
             listener.onRecentsAnimationCanceled(null);
         }
