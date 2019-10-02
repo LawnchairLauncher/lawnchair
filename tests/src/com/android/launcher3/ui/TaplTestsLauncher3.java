@@ -342,6 +342,15 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         }
     }
 
+    @Test
+    public void testDragShortcutWidget() {
+        mLauncher.getWorkspace().openAllWidgets()
+                .getWidget("com.android.launcher3.testcomponent.ShortcutWidgetConfigActivity")
+                .dragToWorkspace();
+        mLauncher.getWorkspace().getWorkspaceAppIcon("Shortcut")
+                .launch(getAppPackageName());
+    }
+
     public static String getAppPackageName() {
         return getInstrumentation().getContext().getPackageName();
     }
