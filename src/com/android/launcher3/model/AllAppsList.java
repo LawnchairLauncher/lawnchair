@@ -23,6 +23,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.os.LocaleList;
 import android.os.Process;
 import android.os.UserHandle;
@@ -35,11 +36,11 @@ import com.android.launcher3.AppFilter;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SafeCloseable;
 
 import java.util.ArrayList;
@@ -110,8 +111,8 @@ public class AllAppsList {
     }
 
     public void addPromiseApp(Context context, PackageInstallInfo installInfo) {
-        ApplicationInfo applicationInfo = LauncherAppsCompat.getInstance(context)
-                .getApplicationInfo(installInfo.packageName, 0, installInfo.user);
+        ApplicationInfo applicationInfo = new PackageManagerHelper(context)
+                .getApplicationInfo(installInfo.packageName, installInfo.user, 0);
         // only if not yet installed
         if (applicationInfo == null) {
             PromiseAppInfo info = new PromiseAppInfo(installInfo);
@@ -162,11 +163,8 @@ public class AllAppsList {
      * Add the icons for the supplied apk called packageName.
      */
     public void addPackage(Context context, String packageName, UserHandle user) {
-        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-        final List<LauncherActivityInfo> matches = launcherApps.getActivityList(packageName,
-                user);
-
-        for (LauncherActivityInfo info : matches) {
+        for (LauncherActivityInfo info : context.getSystemService(LauncherApps.class)
+                .getActivityList(packageName, user)) {
             add(new AppInfo(context, info, user), info);
         }
     }
@@ -212,9 +210,8 @@ public class AllAppsList {
      * Add and remove icons for this package which has been updated.
      */
     public void updatePackage(Context context, String packageName, UserHandle user) {
-        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-        final List<LauncherActivityInfo> matches = launcherApps.getActivityList(packageName,
-                user);
+        final List<LauncherActivityInfo> matches = context.getSystemService(LauncherApps.class)
+                .getActivityList(packageName, user);
         if (matches.size() > 0) {
             // Find disabled/removed activities and remove them from data and add them
             // to the removed list.

@@ -24,11 +24,10 @@ import android.content.ComponentName;
 import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.pm.LauncherApps;
 import android.os.Handler;
 import android.util.Log;
 
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
@@ -39,6 +38,7 @@ import com.android.launcher3.pm.PackageInstallerCompat;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SecureSettingsObserver;
+import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 public class LauncherAppState {
@@ -57,6 +57,7 @@ public class LauncherAppState {
     private final SecureSettingsObserver mNotificationDotsObserver;
 
     private final InstallSessionTracker mInstallSessionTracker;
+    private final SimpleBroadcastReceiver mModelChangeReceiver;
 
     public static LauncherAppState getInstance(final Context context) {
         return INSTANCE.get(context);
@@ -84,24 +85,20 @@ public class LauncherAppState {
         mWidgetCache = new WidgetPreviewLoader(mContext, mIconCache);
         mModel = new LauncherModel(this, mIconCache, AppFilter.newInstance(mContext));
 
-        LauncherAppsCompat.getInstance(mContext).addOnAppsChangedCallback(mModel);
+        mModelChangeReceiver = new SimpleBroadcastReceiver(mModel::onBroadcastIntent);
 
-        // Register intent receivers
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_LOCALE_CHANGED);
-        // For handling managed profiles
-        filter.addAction(Intent.ACTION_MANAGED_PROFILE_ADDED);
-        filter.addAction(Intent.ACTION_MANAGED_PROFILE_REMOVED);
-        filter.addAction(Intent.ACTION_MANAGED_PROFILE_AVAILABLE);
-        filter.addAction(Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE);
-        filter.addAction(Intent.ACTION_MANAGED_PROFILE_UNLOCKED);
-
+        mContext.getSystemService(LauncherApps.class).registerCallback(mModel);
+        mModelChangeReceiver.register(mContext, Intent.ACTION_LOCALE_CHANGED,
+                Intent.ACTION_MANAGED_PROFILE_ADDED,
+                Intent.ACTION_MANAGED_PROFILE_REMOVED,
+                Intent.ACTION_MANAGED_PROFILE_AVAILABLE,
+                Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE,
+                Intent.ACTION_MANAGED_PROFILE_UNLOCKED);
         if (FeatureFlags.IS_DOGFOOD_BUILD) {
-            filter.addAction(ACTION_FORCE_ROLOAD);
+            mModelChangeReceiver.register(mContext, ACTION_FORCE_ROLOAD);
         }
         FeatureFlags.APP_SEARCH_IMPROVEMENTS.addChangeListener(context, mModel::forceReload);
 
-        mContext.registerReceiver(mModel, filter);
         UserManagerCompat.getInstance(mContext).enableAndResetCache();
         mInvariantDeviceProfile.addOnChangeListener(this::onIdpChanged);
         new Handler().post( () -> mInvariantDeviceProfile.verifyConfigChangedInBackground(context));
@@ -145,9 +142,8 @@ public class LauncherAppState {
      * Call from Application.onTerminate(), which is not guaranteed to ever be called.
      */
     public void onTerminate() {
-        mContext.unregisterReceiver(mModel);
-        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(mContext);
-        launcherApps.removeOnAppsChangedCallback(mModel);
+        mContext.unregisterReceiver(mModelChangeReceiver);
+        mContext.getSystemService(LauncherApps.class).unregisterCallback(mModel);
         mInstallSessionTracker.unregister();
         if (mNotificationDotsObserver != null) {
             mNotificationDotsObserver.unregister();
