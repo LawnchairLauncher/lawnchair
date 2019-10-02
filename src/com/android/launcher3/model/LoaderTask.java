@@ -53,7 +53,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
@@ -65,6 +64,8 @@ import com.android.launcher3.icons.LauncherActivityCachingLogic;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.cache.IconCacheUpdateHandler;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.pm.PackageInstallInfo;
+import com.android.launcher3.pm.PackageInstallerCompat;
 import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
@@ -286,7 +287,9 @@ public class LoaderTask implements Runnable {
             mBgDataModel.clear();
 
             final HashMap<PackageUserKey, SessionInfo> installingPkgs =
-                    mPackageInstaller.updateAndGetActiveSessionCache();
+                    mPackageInstaller.getActiveSessions();
+            installingPkgs.forEach(mApp.getIconCache()::updateSessionCache);
+
             final PackageUserKey tempPackageKey = new PackageUserKey(null, null);
             mFirstScreenBroadcast = new FirstScreenBroadcast(installingPkgs);
 
@@ -844,7 +847,7 @@ public class LoaderTask implements Runnable {
             for (PackageInstaller.SessionInfo info :
                     mPackageInstaller.getAllVerifiedSessions()) {
                 mBgAllAppsList.addPromiseApp(mApp.getContext(),
-                        PackageInstallerCompat.PackageInstallInfo.fromInstallingState(info));
+                        PackageInstallInfo.fromInstallingState(info));
             }
         }
 

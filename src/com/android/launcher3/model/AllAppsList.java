@@ -28,14 +28,16 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.PackageInstallerCompat;
-import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.SafeCloseable;
@@ -45,9 +47,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 
 /**
@@ -110,8 +109,7 @@ public class AllAppsList {
         mDataChanged = true;
     }
 
-    public void addPromiseApp(Context context,
-                              PackageInstallerCompat.PackageInstallInfo installInfo) {
+    public void addPromiseApp(Context context, PackageInstallInfo installInfo) {
         ApplicationInfo applicationInfo = LauncherAppsCompat.getInstance(context)
                 .getApplicationInfo(installInfo.packageName, 0, installInfo.user);
         // only if not yet installed
@@ -134,10 +132,10 @@ public class AllAppsList {
                     && appInfo.user.equals(user)
                     && appInfo instanceof PromiseAppInfo) {
                 final PromiseAppInfo promiseAppInfo = (PromiseAppInfo) appInfo;
-                if (installInfo.state == PackageInstallerCompat.STATUS_INSTALLING) {
+                if (installInfo.state == PackageInstallInfo.STATUS_INSTALLING) {
                     promiseAppInfo.level = installInfo.progress;
                     return promiseAppInfo;
-                } else if (installInfo.state == PackageInstallerCompat.STATUS_FAILED) {
+                } else if (installInfo.state == PackageInstallInfo.STATUS_FAILED) {
                     removeApp(i);
                 }
             }
