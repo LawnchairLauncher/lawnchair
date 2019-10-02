@@ -69,7 +69,6 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     public static final int FLAG_ACTIVITY_PAUSED = 1;
     public static final int FLAG_LOADER_RUNNING = 2;
     public static final int FLAG_DRAG_AND_DROP = 4;
-    public static final int FLAG_BULK_ADD = 4;
 
     // Determines whether to defer installing shortcuts immediately until
     // processAllPendingInstalls() is called.
@@ -110,8 +109,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
     @WorkerThread
     private static void flushQueueInBackground(Context context) {
-        LauncherModel model = LauncherAppState.getInstance(context).getModel();
-        if (model.getCallback() == null) {
+        if (Launcher.ACTIVITY_TRACKER.getCreatedActivity() == null) {
             // Launcher not loaded
             return;
         }
@@ -146,7 +144,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
         prefs.edit().remove(APPS_PENDING_INSTALL).apply();
         if (!installQueue.isEmpty()) {
-            model.addAndBindAddedWorkspaceItems(installQueue);
+            LauncherAppState.getInstance(context).getModel()
+                    .addAndBindAddedWorkspaceItems(installQueue);
         }
     }
 

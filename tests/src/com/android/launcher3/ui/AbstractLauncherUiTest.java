@@ -48,7 +48,6 @@ import androidx.test.uiautomator.Until;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
@@ -183,7 +182,7 @@ public abstract class AbstractLauncherUiTest {
     public void verifyLauncherState() {
         try {
             // Limits UI tests affecting tests running after them.
-            waitForModelLoaded();
+            mLauncher.waitForLauncherInitialized();
         } catch (Throwable t) {
             Log.e(TAG,
                     "Couldn't deinit after a test, exiting tests, see logs for failures that "
@@ -222,14 +221,7 @@ public abstract class AbstractLauncherUiTest {
         } catch (Throwable t) {
             throw new IllegalArgumentException(t);
         }
-        waitForModelLoaded();
-    }
-
-    protected void waitForModelLoaded() {
-        waitForLauncherCondition("Launcher model didn't load", launcher -> {
-            final LauncherModel model = LauncherAppState.getInstance(mTargetContext).getModel();
-            return model.getCallback() == null || model.isModelLoaded();
-        });
+        mLauncher.waitForLauncherInitialized();
     }
 
     /**
@@ -258,7 +250,7 @@ public abstract class AbstractLauncherUiTest {
 
         // Launch the home activity
         mDevice.pressHome();
-        waitForModelLoaded();
+        mLauncher.waitForLauncherInitialized();
     }
 
     /**
