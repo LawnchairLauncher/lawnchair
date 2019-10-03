@@ -27,7 +27,11 @@ import com.android.launcher3.R;
 
 import java.util.UUID;
 
-public class ShortcutWidgetConfigActivity extends BaseTestingActivity {
+/**
+ * A custom shortcut is a 1x1 widget that launches a specific intent when user tap on it.
+ * Custom shortcuts are replaced by deep shortcuts after api 25.
+ */
+public class CustomShortcutConfigActivity extends BaseTestingActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
