@@ -558,7 +558,7 @@ public final class LauncherInstrumentation {
             if (hasLauncherObject(WORKSPACE_RES_ID)) {
                 log(action = "already at home");
             } else {
-                log(action = "swiping up to home");
+                log(action = "swiping up to home from " + getVisibleStateMessage());
                 final int finalState = mDevice.hasObject(By.pkg(getLauncherPackageName()))
                         ? NORMAL_STATE_ORDINAL : BACKGROUND_APP_STATE_ORDINAL;
 
