@@ -220,7 +220,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
     @Override
     public AppWindowAnimationHelper.TransformParams getLiveTileParams(
             boolean mightNeedToRefill) {
-        if (!mEnableDrawingLiveTile || mRecentsAnimationWrapper == null
+        if (!mEnableDrawingLiveTile || mRecentsAnimationController == null
                 || mRecentsAnimationTargets == null || mAppWindowAnimationHelper == null) {
             return null;
         }

@@ -42,15 +42,16 @@ import com.android.launcher3.util.ObjectWrapper;
 import com.android.quickstep.ActivityControlHelper.HomeAnimationFactory;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.BaseSwipeUpHandler;
+import com.android.quickstep.InputConsumer;
 import com.android.quickstep.MultiStateCallback;
 import com.android.quickstep.OverviewComponentObserver;
 import com.android.quickstep.RecentsActivity;
-import com.android.quickstep.RecentsAnimationWrapper;
+import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SwipeSharedState;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.util.RectFSpringAnim;
-import com.android.quickstep.util.RecentsAnimationTargets;
+import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -232,8 +233,8 @@ public class FallbackNoButtonInputConsumer extends
     @Override
     public void updateFinalShift() {
         mTransformParams.setProgress(mCurrentShift.value);
-        if (mRecentsAnimationWrapper != null) {
-            mRecentsAnimationWrapper.setWindowThresholdCrossed(!mInQuickSwitchMode
+        if (mRecentsAnimationController != null) {
+            mRecentsAnimationController.setWindowThresholdCrossed(!mInQuickSwitchMode
                     && (mCurrentShift.value > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD));
         }
         if (mRecentsAnimationTargets != null) {
@@ -319,25 +320,25 @@ public class FallbackNoButtonInputConsumer extends
         switch (mEndTarget) {
             case HOME: {
                 if (mSwipeUpOverHome) {
-                    mRecentsAnimationWrapper.finish(false, null, false);
+                    mRecentsAnimationController.finish(false, null, false);
                     // Send a home intent to clear the task stack
                     mContext.startActivity(mOverviewComponentObserver.getHomeIntent());
                 } else {
-                    mRecentsAnimationWrapper.finish(true, null, true);
+                    mRecentsAnimationController.finish(true, null, true);
                 }
                 break;
             }
             case LAST_TASK:
-                mRecentsAnimationWrapper.finish(false, null, false);
+                mRecentsAnimationController.finish(false, null, false);
                 break;
             case RECENTS: {
                 if (mSwipeUpOverHome) {
-                    mRecentsAnimationWrapper.finish(true, null, true);
+                    mRecentsAnimationController.finish(true, null, true);
                     break;
                 }
 
-                ThumbnailData thumbnail = mRecentsAnimationWrapper.screenshotTask(mRunningTaskId);
-                mRecentsAnimationWrapper.setDeferCancelUntilNextTransition(true /* defer */,
+                ThumbnailData thumbnail = mRecentsAnimationController.screenshotTask(mRunningTaskId);
+                mRecentsAnimationController.setDeferCancelUntilNextTransition(true /* defer */,
                         false /* screenshot */);
 
                 ActivityOptions options = ActivityOptions.makeCustomAnimation(mContext, 0, 0);
@@ -350,7 +351,7 @@ public class FallbackNoButtonInputConsumer extends
                 Intent intent = new Intent(mOverviewComponentObserver.getOverviewIntent())
                         .putExtras(extras);
                 mContext.startActivity(intent, options.toBundle());
-                mRecentsAnimationWrapper.cleanupScreenshot();
+                mRecentsAnimationController.cleanupScreenshot();
                 break;
             }
             case NEW_TASK: {
@@ -416,10 +417,10 @@ public class FallbackNoButtonInputConsumer extends
     }
 
     @Override
-    public void onRecentsAnimationStart(RecentsAnimationWrapper controller,
-            RecentsAnimationTargets targetSet) {
-        super.onRecentsAnimationStart(controller, targetSet);
-        mRecentsAnimationWrapper.enableInputConsumer();
+    public void onRecentsAnimationStart(RecentsAnimationController controller,
+            RecentsAnimationTargets targets) {
+        super.onRecentsAnimationStart(controller, targets);
+        mRecentsAnimationController.enableInputConsumer();
 
         if (mRunningOverHome) {
             mAppWindowAnimationHelper.prepareAnimation(mDp, true);

@@ -39,15 +39,15 @@ import android.view.ViewConfiguration;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DefaultDisplay;
+import com.android.quickstep.InputConsumer;
 import com.android.quickstep.LockScreenRecentsActivity;
 import com.android.quickstep.MultiStateCallback;
+import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationDeviceState;
-import com.android.quickstep.RecentsAnimationWrapper;
 import com.android.quickstep.SwipeSharedState;
+import com.android.quickstep.RecentsAnimationCallbacks;
+import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.util.AppWindowAnimationHelper;
-import com.android.quickstep.util.RecentsAnimationCallbacks;
-import com.android.quickstep.util.RecentsAnimationTargets;
-
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -92,7 +92,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     private boolean mThresholdCrossed = false;
 
-    private RecentsAnimationWrapper mRecentsAnimationController;
+    private RecentsAnimationController mRecentsAnimationController;
     private RecentsAnimationTargets mRecentsAnimationTargets;
 
     public DeviceLockedInputConsumer(Context context, RecentsAnimationDeviceState deviceState,
@@ -204,9 +204,8 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     private void startRecentsTransition() {
         mThresholdCrossed = true;
-        RecentsAnimationCallbacks newListenerSet =
-                mSwipeSharedState.newRecentsAnimationListenerSet();
-        newListenerSet.addListener(this);
+        RecentsAnimationCallbacks callbacks = mSwipeSharedState.newRecentsAnimationCallbacks();
+        callbacks.addListener(this);
         Intent intent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_DEFAULT)
                 .setComponent(new ComponentName(mContext, LockScreenRecentsActivity.class))
@@ -214,17 +213,17 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                 .putExtra(INTENT_EXTRA_LOG_TRACE_ID, mLogId);
 
         mInputMonitorCompat.pilferPointers();
-        startRecentsActivityAsync(intent, newListenerSet);
+        startRecentsActivityAsync(intent, callbacks);
     }
 
     @Override
-    public void onRecentsAnimationStart(RecentsAnimationWrapper controller,
-            RecentsAnimationTargets targetSet) {
+    public void onRecentsAnimationStart(RecentsAnimationController controller,
+            RecentsAnimationTargets targets) {
         mRecentsAnimationController = controller;
-        mRecentsAnimationTargets = targetSet;
+        mRecentsAnimationTargets = targets;
 
         Rect displaySize = new Rect(0, 0, mDisplaySize.x, mDisplaySize.y);
-        RemoteAnimationTargetCompat targetCompat = targetSet.findTask(mRunningTaskId);
+        RemoteAnimationTargetCompat targetCompat = targets.findTask(mRunningTaskId);
         if (targetCompat != null) {
             mAppWindowAnimationHelper.updateSource(displaySize, targetCompat);
         }

@@ -27,6 +27,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.ActivityControlHelper;
+import com.android.quickstep.InputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;

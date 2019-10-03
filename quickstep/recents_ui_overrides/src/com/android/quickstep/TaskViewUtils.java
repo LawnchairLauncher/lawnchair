@@ -33,7 +33,6 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Utilities;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.MultiValueUpdateListener;
-import com.android.quickstep.util.RemoteAnimationTargets;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
@@ -121,13 +120,13 @@ public final class TaskViewUtils {
             RemoteAnimationTargetCompat[] wallpaperTargets, final AppWindowAnimationHelper inOutHelper) {
         SyncRtSurfaceTransactionApplierCompat applier =
                 new SyncRtSurfaceTransactionApplierCompat(v);
-        final RemoteAnimationTargets targetSet =
+        final RemoteAnimationTargets targets =
                 new RemoteAnimationTargets(appTargets, wallpaperTargets, MODE_OPENING);
-        targetSet.addDependentTransactionApplier(applier);
+        targets.addDependentTransactionApplier(applier);
         AppWindowAnimationHelper.TransformParams params =
                 new AppWindowAnimationHelper.TransformParams()
                     .setSyncTransactionApplier(applier)
-                    .setTargetSet(targetSet)
+                    .setTargetSet(targets)
                     .setLauncherOnTop(true);
 
         final RecentsView recentsView = v.getRecentsView();
@@ -149,7 +148,7 @@ public final class TaskViewUtils {
                         BaseActivity.fromContext(v.getContext()).getDeviceProfile(),
                         true /* isOpening */);
                 inOutHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(),
-                        targetSet.apps.length == 0 ? null : targetSet.apps[0]);
+                        targets.apps.length == 0 ? null : targets.apps[0]);
 
                 mThumbnailRect = new RectF(inOutHelper.getTargetRect());
                 mThumbnailRect.offset(-v.getTranslationX(), -v.getTranslationY());
@@ -203,7 +202,7 @@ public final class TaskViewUtils {
         appAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                targetSet.release();
+                targets.release();
             }
         });
         return appAnimator;

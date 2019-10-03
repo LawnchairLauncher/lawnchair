@@ -53,6 +53,7 @@ import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.ActivityControlHelper;
 import com.android.quickstep.BaseSwipeUpHandler;
 import com.android.quickstep.BaseSwipeUpHandler.Factory;
+import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.SwipeSharedState;
 import com.android.quickstep.SysUINavigationMode;
@@ -61,7 +62,7 @@ import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.NavBarPosition;
-import com.android.quickstep.util.RecentsAnimationCallbacks;
+import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
@@ -343,12 +344,11 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             mSwipeSharedState.applyActiveRecentsAnimationState(handler);
             notifyGestureStarted();
         } else {
-            RecentsAnimationCallbacks newListenerSet =
-                    mSwipeSharedState.newRecentsAnimationListenerSet();
-            newListenerSet.addListener(handler);
+            RecentsAnimationCallbacks callbacks = mSwipeSharedState.newRecentsAnimationCallbacks();
+            callbacks.addListener(handler);
             Intent intent = handler.getLaunchIntent();
             intent.putExtra(INTENT_EXTRA_LOG_TRACE_ID, mLogId);
-            startRecentsActivityAsync(intent, newListenerSet);
+            startRecentsActivityAsync(intent, callbacks);
         }
     }
 

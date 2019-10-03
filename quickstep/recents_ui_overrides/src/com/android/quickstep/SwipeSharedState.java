@@ -22,9 +22,7 @@ import android.util.Log;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Preconditions;
-import com.android.quickstep.util.RecentsAnimationCallbacks;
-import com.android.quickstep.util.RecentsAnimationTargets;
-import com.android.quickstep.util.RecentsAnimationCallbacks.RecentsAnimationListener;
+import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
 
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
@@ -38,7 +36,7 @@ public class SwipeSharedState implements RecentsAnimationListener {
     private OverviewComponentObserver mOverviewComponentObserver;
 
     private RecentsAnimationCallbacks mRecentsAnimationListener;
-    private RecentsAnimationWrapper mLastRecentsAnimationController;
+    private RecentsAnimationController mLastRecentsAnimationController;
     private RecentsAnimationTargets mLastAnimationTarget;
 
     private boolean mLastAnimationCancelled = false;
@@ -55,10 +53,10 @@ public class SwipeSharedState implements RecentsAnimationListener {
     }
 
     @Override
-    public final void onRecentsAnimationStart(RecentsAnimationWrapper controller,
-            RecentsAnimationTargets targetSet) {
+    public final void onRecentsAnimationStart(RecentsAnimationController controller,
+            RecentsAnimationTargets targets) {
         mLastRecentsAnimationController = controller;
-        mLastAnimationTarget = targetSet;
+        mLastAnimationTarget = targets;
 
         mLastAnimationCancelled = false;
         mLastAnimationRunning = true;
@@ -78,7 +76,7 @@ public class SwipeSharedState implements RecentsAnimationListener {
     }
 
     @Override
-    public final void onRecentsAnimationFinished(RecentsAnimationWrapper controller) {
+    public final void onRecentsAnimationFinished(RecentsAnimationController controller) {
         if (mLastRecentsAnimationController == controller) {
             mLastAnimationRunning = false;
         }
@@ -117,7 +115,7 @@ public class SwipeSharedState implements RecentsAnimationListener {
         mLastAnimationRunning = false;
     }
 
-    public RecentsAnimationCallbacks newRecentsAnimationListenerSet() {
+    public RecentsAnimationCallbacks newRecentsAnimationCallbacks() {
         Preconditions.assertUIThread();
 
         if (mLastAnimationRunning) {

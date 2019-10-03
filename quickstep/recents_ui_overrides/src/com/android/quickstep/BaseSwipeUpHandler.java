@@ -58,14 +58,12 @@ import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.ActivityControlHelper.HomeAnimationFactory;
 import com.android.quickstep.SysUINavigationMode.Mode;
-import com.android.quickstep.inputconsumers.InputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.AppWindowAnimationHelper.TransformParams;
 import com.android.quickstep.util.RectFSpringAnim;
-import com.android.quickstep.util.RecentsAnimationTargets;
-import com.android.quickstep.util.RecentsAnimationCallbacks.RecentsAnimationListener;
+import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -118,7 +116,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected final ActivityInitListener mActivityInitListener;
     protected final InputConsumerController mInputConsumer;
 
-    protected RecentsAnimationWrapper mRecentsAnimationWrapper;
+    protected RecentsAnimationController mRecentsAnimationController;
     protected RecentsAnimationTargets mRecentsAnimationTargets;
 
     // Callbacks to be made once the recents animation starts
@@ -227,7 +225,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         });
         mRecentsView.setAppWindowAnimationHelper(mAppWindowAnimationHelper);
         runOnRecentsAnimationStart(() ->
-                mRecentsView.setRecentsAnimationTargets(mRecentsAnimationWrapper,
+                mRecentsView.setRecentsAnimationTargets(mRecentsAnimationController,
                         mRecentsAnimationTargets));
     }
 
@@ -240,7 +238,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         } else {
             int taskId = mRecentsView.getNextPageTaskView().getTask().key.id;
             mFinishingRecentsAnimationForNewTaskId = taskId;
-            mRecentsAnimationWrapper.finish(true /* toRecents */, () -> {
+            mRecentsAnimationController.finish(true /* toRecents */, () -> {
                 if (!mCanceled) {
                     TaskView nextTask = mRecentsView.getTaskView(taskId);
                     if (nextTask != null) {
@@ -284,17 +282,17 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     }
 
     @Override
-    public void onRecentsAnimationStart(RecentsAnimationWrapper recentsAnimationController,
-            RecentsAnimationTargets targetSet) {
-        mRecentsAnimationWrapper = recentsAnimationController;
-        mRecentsAnimationTargets = targetSet;
+    public void onRecentsAnimationStart(RecentsAnimationController recentsAnimationController,
+            RecentsAnimationTargets targets) {
+        mRecentsAnimationController = recentsAnimationController;
+        mRecentsAnimationTargets = targets;
         DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(mContext).getDeviceProfile(mContext);
         final Rect overviewStackBounds;
-        RemoteAnimationTargetCompat runningTaskTarget = targetSet.findTask(mRunningTaskId);
+        RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(mRunningTaskId);
 
-        if (targetSet.minimizedHomeBounds != null && runningTaskTarget != null) {
+        if (targets.minimizedHomeBounds != null && runningTaskTarget != null) {
             overviewStackBounds = mActivityControlHelper
-                    .getOverviewWindowBounds(targetSet.minimizedHomeBounds, runningTaskTarget);
+                    .getOverviewWindowBounds(targets.minimizedHomeBounds, runningTaskTarget);
             dp = dp.getMultiWindowProfile(mContext, new Point(
                     overviewStackBounds.width(), overviewStackBounds.height()));
         } else {
@@ -302,7 +300,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             dp = dp.copy(mContext);
             overviewStackBounds = getStackBounds(dp);
         }
-        dp.updateInsets(targetSet.homeContentInsets);
+        dp.updateInsets(targets.homeContentInsets);
         dp.updateIsSeascape(mContext);
         if (runningTaskTarget != null) {
             mAppWindowAnimationHelper.updateSource(overviewStackBounds, runningTaskTarget);
@@ -322,13 +320,13 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
     @Override
     public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
-        mRecentsAnimationWrapper = null;
+        mRecentsAnimationController = null;
         mRecentsAnimationTargets = null;
     }
 
     @Override
-    public void onRecentsAnimationFinished(RecentsAnimationWrapper controller) {
-        mRecentsAnimationWrapper = null;
+    public void onRecentsAnimationFinished(RecentsAnimationController controller) {
+        mRecentsAnimationController = null;
         mRecentsAnimationTargets = null;
     }
 

@@ -32,7 +32,6 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.quickstep.util.ActivityInitListener;
-import com.android.quickstep.util.RemoteAnimationTargets;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 

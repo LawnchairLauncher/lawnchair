@@ -27,7 +27,6 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.util.ActivityInitListener;
-import com.android.quickstep.util.RemoteAnimationTargets;
 import com.android.quickstep.views.IconRecentsView;
 
 import java.util.function.BiPredicate;

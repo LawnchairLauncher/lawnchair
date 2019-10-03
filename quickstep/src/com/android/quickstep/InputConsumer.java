@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.quickstep.inputconsumers;
+package com.android.quickstep;
 
 import android.annotation.TargetApi;
 import android.os.Build;

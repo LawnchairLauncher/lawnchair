@@ -32,7 +32,6 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.RemoteAnimationProvider;
-import com.android.quickstep.util.RemoteAnimationTargets;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
@@ -115,11 +114,11 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
             return anim;
         }
 
-        RemoteAnimationTargets targetSet = new RemoteAnimationTargets(appTargets,
+        RemoteAnimationTargets targets = new RemoteAnimationTargets(appTargets,
                 wallpaperTargets, MODE_CLOSING);
 
         // Use the top closing app to determine the insets for the animation
-        RemoteAnimationTargetCompat runningTaskTarget = targetSet.findTask(mTargetTaskId);
+        RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(mTargetTaskId);
         if (runningTaskTarget == null) {
             Log.e(TAG, "No closing app");
             anim.play(ValueAnimator.ofInt(0, 1).setDuration(RECENTS_LAUNCH_DURATION));
@@ -149,12 +148,12 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
         valueAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
         valueAnimator.addUpdateListener((v) -> {
             params.setProgress((float) v.getAnimatedValue())
-                    .setTargetSet(targetSet)
+                    .setTargetSet(targets)
                     .setLauncherOnTop(true);
             clipHelper.applyTransform(params);
         });
 
-        if (targetSet.isAnimatingHome()) {
+        if (targets.isAnimatingHome()) {
             // If we are animating home, fade in the opening targets
             RemoteAnimationTargets openingSet = new RemoteAnimationTargets(appTargets,
                     wallpaperTargets, MODE_OPENING);

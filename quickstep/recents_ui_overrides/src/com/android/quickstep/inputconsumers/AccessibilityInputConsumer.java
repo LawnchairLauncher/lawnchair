@@ -29,6 +29,7 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.R;
+import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.SystemUiProxy;

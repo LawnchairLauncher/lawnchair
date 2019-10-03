@@ -37,7 +37,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.LayoutUtils;
-import com.android.quickstep.util.RemoteAnimationTargets;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 

@@ -40,26 +40,28 @@ import com.android.systemui.shared.system.LatencyTrackerCompat;
 public class OverviewCommandHelper {
 
     private final Context mContext;
-    private final ActivityManagerWrapper mAM;
+    private final RecentsAnimationDeviceState mDeviceState;
     private final RecentsModel mRecentsModel;
     private final OverviewComponentObserver mOverviewComponentObserver;
 
     private long mLastToggleTime;
 
-    public OverviewCommandHelper(Context context, OverviewComponentObserver observer) {
+    public OverviewCommandHelper(Context context, RecentsAnimationDeviceState deviceState,
+            OverviewComponentObserver observer) {
         mContext = context;
-        mAM = ActivityManagerWrapper.getInstance();
+        mDeviceState = deviceState;
         mRecentsModel = RecentsModel.INSTANCE.get(mContext);
         mOverviewComponentObserver = observer;
     }
 
     public void onOverviewToggle() {
         // If currently screen pinning, do not enter overview
-        if (mAM.isScreenPinningActive()) {
+        if (mDeviceState.isScreenPinningActive()) {
             return;
         }
 
-        mAM.closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
+        ActivityManagerWrapper.getInstance()
+                .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
         MAIN_EXECUTOR.execute(new RecentsActivityCommand<>());
     }
 

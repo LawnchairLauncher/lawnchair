@@ -36,6 +36,7 @@ import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.quickstep.ActivityControlHelper;
+import com.android.quickstep.InputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;

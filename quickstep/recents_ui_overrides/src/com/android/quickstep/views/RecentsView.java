@@ -101,14 +101,14 @@ import com.android.launcher3.util.OverScroller;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.ViewPool;
-import com.android.quickstep.RecentsAnimationWrapper;
+import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RecentsModel.TaskThumbnailChangeListener;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.ViewUtils;
 import com.android.quickstep.util.AppWindowAnimationHelper;
-import com.android.quickstep.util.RecentsAnimationTargets;
+import com.android.quickstep.RecentsAnimationTargets;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -156,7 +156,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 }
             };
 
-    protected RecentsAnimationWrapper mRecentsAnimationWrapper;
+    protected RecentsAnimationController mRecentsAnimationController;
     protected RecentsAnimationTargets mRecentsAnimationTargets;
     protected AppWindowAnimationHelper mAppWindowAnimationHelper;
     protected SyncRtSurfaceTransactionApplierCompat mSyncTransactionApplier;
@@ -809,7 +809,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mIgnoreResetTaskId = -1;
         mTaskListChangeId = -1;
 
-        mRecentsAnimationWrapper = null;
+        mRecentsAnimationController = null;
         mRecentsAnimationTargets = null;
         mAppWindowAnimationHelper = null;
 
@@ -1696,9 +1696,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public void redrawLiveTile(boolean mightNeedToRefill) { }
 
     // TODO: To be removed in a follow up CL
-    public void setRecentsAnimationTargets(RecentsAnimationWrapper recentsAnimationWrapper,
+    public void setRecentsAnimationTargets(RecentsAnimationController recentsAnimationController,
             RecentsAnimationTargets recentsAnimationTargets) {
-        mRecentsAnimationWrapper = recentsAnimationWrapper;
+        mRecentsAnimationController = recentsAnimationController;
         mRecentsAnimationTargets = recentsAnimationTargets;
     }
 
@@ -1718,14 +1718,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public void finishRecentsAnimation(boolean toRecents, Runnable onFinishComplete) {
-        if (mRecentsAnimationWrapper == null) {
+        if (mRecentsAnimationController == null) {
             if (onFinishComplete != null) {
                 onFinishComplete.run();
             }
             return;
         }
 
-        mRecentsAnimationWrapper.finish(toRecents, onFinishComplete);
+        mRecentsAnimationController.finish(toRecents, onFinishComplete);
     }
 
     public void setDisallowScrollToClearAll(boolean disallowScrollToClearAll) {

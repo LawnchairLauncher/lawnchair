@@ -27,6 +27,7 @@ import android.os.Build;
 import android.os.SystemClock;
 import android.view.ViewConfiguration;
 
+import androidx.annotation.BinderThread;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -44,37 +45,43 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 public class OverviewCommandHelper {
 
     private final Context mContext;
-    private final ActivityManagerWrapper mAM;
+    private final RecentsAnimationDeviceState mDeviceState;
     private final RecentsModel mRecentsModel;
     private final OverviewComponentObserver mOverviewComponentObserver;
 
     private long mLastToggleTime;
 
-    public OverviewCommandHelper(Context context, OverviewComponentObserver observer) {
+    public OverviewCommandHelper(Context context, RecentsAnimationDeviceState deviceState,
+            OverviewComponentObserver observer) {
         mContext = context;
-        mAM = ActivityManagerWrapper.getInstance();
+        mDeviceState = deviceState;
         mRecentsModel = RecentsModel.INSTANCE.get(mContext);
         mOverviewComponentObserver = observer;
     }
 
+    @BinderThread
     public void onOverviewToggle() {
         // If currently screen pinning, do not enter overview
-        if (mAM.isScreenPinningActive()) {
+        if (mDeviceState.isScreenPinningActive()) {
             return;
         }
 
-        mAM.closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
+        ActivityManagerWrapper.getInstance()
+                .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
         MAIN_EXECUTOR.execute(new RecentsActivityCommand<>());
     }
 
+    @BinderThread
     public void onOverviewShown(boolean triggeredFromAltTab) {
         MAIN_EXECUTOR.execute(new ShowRecentsCommand(triggeredFromAltTab));
     }
 
+    @BinderThread
     public void onOverviewHidden() {
         MAIN_EXECUTOR.execute(new HideRecentsCommand());
     }
 
+    @BinderThread
     public void onTip(int actionType, int viewType) {
         MAIN_EXECUTOR.execute(() ->
                 UserEventDispatcher.newInstance(mContext).logActionTip(actionType, viewType));

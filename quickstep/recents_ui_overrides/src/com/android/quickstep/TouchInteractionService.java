@@ -48,6 +48,7 @@ import android.view.Choreographer;
 import android.view.InputEvent;
 import android.view.MotionEvent;
 
+import androidx.annotation.BinderThread;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
@@ -66,7 +67,6 @@ import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
 import com.android.quickstep.inputconsumers.AssistantInputConsumer;
 import com.android.quickstep.inputconsumers.DeviceLockedInputConsumer;
 import com.android.quickstep.inputconsumers.FallbackNoButtonInputConsumer;
-import com.android.quickstep.inputconsumers.InputConsumer;
 import com.android.quickstep.inputconsumers.OtherActivityInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewWithoutFocusInputConsumer;
@@ -123,6 +123,7 @@ public class TouchInteractionService extends Service implements
 
     private final IBinder mMyBinder = new IOverviewProxy.Stub() {
 
+        @BinderThread
         public void onInitialize(Bundle bundle) {
             ISystemUiProxy proxy = ISystemUiProxy.Stub.asInterface(
                     bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
@@ -133,16 +134,19 @@ public class TouchInteractionService extends Service implements
             sIsInitialized = true;
         }
 
+        @BinderThread
         @Override
         public void onOverviewToggle() {
             mOverviewCommandHelper.onOverviewToggle();
         }
 
+        @BinderThread
         @Override
         public void onOverviewShown(boolean triggeredFromAltTab) {
             mOverviewCommandHelper.onOverviewShown(triggeredFromAltTab);
         }
 
+        @BinderThread
         @Override
         public void onOverviewHidden(boolean triggeredFromAltTab, boolean triggeredFromHomeKey) {
             if (triggeredFromAltTab && !triggeredFromHomeKey) {
@@ -151,23 +155,27 @@ public class TouchInteractionService extends Service implements
             }
         }
 
+        @BinderThread
         @Override
         public void onTip(int actionType, int viewType) {
             mOverviewCommandHelper.onTip(actionType, viewType);
         }
 
+        @BinderThread
         @Override
         public void onAssistantAvailable(boolean available) {
             MAIN_EXECUTOR.execute(() -> mDeviceState.setAssistantAvailable(available));
             MAIN_EXECUTOR.execute(TouchInteractionService.this::onAssistantVisibilityChanged);
         }
 
+        @BinderThread
         @Override
         public void onAssistantVisibilityChanged(float visibility) {
             MAIN_EXECUTOR.execute(() -> mDeviceState.setAssistantVisibility(visibility));
             MAIN_EXECUTOR.execute(TouchInteractionService.this::onAssistantVisibilityChanged);
         }
 
+        @BinderThread
         public void onBackAction(boolean completed, int downX, int downY, boolean isButton,
                 boolean gestureSwipeLeft) {
             if (mOverviewComponentObserver == null) {
@@ -184,11 +192,13 @@ public class TouchInteractionService extends Service implements
             }
         }
 
+        @BinderThread
         public void onSystemUiStateChanged(int stateFlags) {
             MAIN_EXECUTOR.execute(() -> mDeviceState.setSystemUiFlags(stateFlags));
             MAIN_EXECUTOR.execute(TouchInteractionService.this::onSystemUiFlagsChanged);
         }
 
+        @BinderThread
         public void onActiveNavBarRegionChanges(Region region) {
             MAIN_EXECUTOR.execute(() -> mDeviceState.setDeferredGestureRegion(region));
         }
@@ -314,10 +324,12 @@ public class TouchInteractionService extends Service implements
         resetHomeBounceSeenOnQuickstepEnabledFirstTime();
     }
 
+    @UiThread
     public void onUserUnlocked() {
         mRecentsModel = RecentsModel.INSTANCE.get(this);
         mOverviewComponentObserver = new OverviewComponentObserver(this, mDeviceState);
-        mOverviewCommandHelper = new OverviewCommandHelper(this, mOverviewComponentObserver);
+        mOverviewCommandHelper = new OverviewCommandHelper(this, mDeviceState,
+                mOverviewComponentObserver);
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
 
         sSwipeSharedState.setOverviewComponentObserver(mOverviewComponentObserver);

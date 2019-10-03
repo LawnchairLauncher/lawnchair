@@ -49,6 +49,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.quickstep.ActivityControlHelper;
+import com.android.quickstep.InputConsumer;
 import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.system.InputMonitorCompat;
 

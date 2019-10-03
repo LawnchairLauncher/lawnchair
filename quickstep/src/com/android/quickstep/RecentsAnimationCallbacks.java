@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.quickstep.util;
+package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
@@ -25,8 +25,6 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Preconditions;
-import com.android.quickstep.TouchInteractionService;
-import com.android.quickstep.RecentsAnimationWrapper;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -44,7 +42,7 @@ public class RecentsAnimationCallbacks implements
     private final boolean mShouldMinimizeSplitScreen;
 
     // TODO(141886704): Remove these references when they are no longer needed
-    private RecentsAnimationWrapper mController;
+    private RecentsAnimationController mController;
 
     private boolean mCancelled;
 
@@ -85,10 +83,10 @@ public class RecentsAnimationCallbacks implements
             RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets,
             Rect homeContentInsets, Rect minimizedHomeBounds) {
-        RecentsAnimationTargets targetSet = new RecentsAnimationTargets(appTargets,
+        RecentsAnimationTargets targets = new RecentsAnimationTargets(appTargets,
                 wallpaperTargets, homeContentInsets, minimizedHomeBounds);
-        mController = new RecentsAnimationWrapper(animationController, mShouldMinimizeSplitScreen,
-                this::onAnimationFinished);
+        mController = new RecentsAnimationController(animationController,
+                mShouldMinimizeSplitScreen, this::onAnimationFinished);
 
         if (mCancelled) {
             Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(),
@@ -96,7 +94,7 @@ public class RecentsAnimationCallbacks implements
         } else {
             Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
                 for (RecentsAnimationListener listener : getListeners()) {
-                    listener.onRecentsAnimationStart(mController, targetSet);
+                    listener.onRecentsAnimationStart(mController, targets);
                 }
             });
         }
@@ -112,7 +110,7 @@ public class RecentsAnimationCallbacks implements
         });
     }
 
-    private final void onAnimationFinished(RecentsAnimationWrapper controller) {
+    private final void onAnimationFinished(RecentsAnimationController controller) {
         Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
             for (RecentsAnimationListener listener : getListeners()) {
                 listener.onRecentsAnimationFinished(controller);
@@ -128,7 +126,7 @@ public class RecentsAnimationCallbacks implements
      * Listener for the recents animation callbacks.
      */
     public interface RecentsAnimationListener {
-        default void onRecentsAnimationStart(RecentsAnimationWrapper controller,
+        default void onRecentsAnimationStart(RecentsAnimationController controller,
                 RecentsAnimationTargets targetSet) {}
 
         /**
@@ -137,6 +135,6 @@ public class RecentsAnimationCallbacks implements
          */
         default void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {}
 
-        default void onRecentsAnimationFinished(RecentsAnimationWrapper controller) {}
+        default void onRecentsAnimationFinished(RecentsAnimationController controller) {}
     }
 }

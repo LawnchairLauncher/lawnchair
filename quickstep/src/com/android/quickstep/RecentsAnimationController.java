@@ -30,12 +30,8 @@ import android.view.MotionEvent;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.util.Preconditions;
-import com.android.quickstep.inputconsumers.InputConsumer;
-import com.android.quickstep.util.RecentsAnimationCallbacks;
-import com.android.quickstep.util.RecentsAnimationTargets;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InputConsumerController;
-
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 
 import java.util.function.Consumer;
@@ -44,12 +40,12 @@ import java.util.function.Supplier;
 /**
  * Wrapper around RecentsAnimationController to help with some synchronization
  */
-public class RecentsAnimationWrapper {
+public class RecentsAnimationController {
 
-    private static final String TAG = "RecentsAnimationWrapper";
+    private static final String TAG = "RecentsAnimationController";
 
     private final RecentsAnimationControllerCompat mController;
-    private final Consumer<RecentsAnimationWrapper> mOnFinishedListener;
+    private final Consumer<RecentsAnimationController> mOnFinishedListener;
     private final boolean mShouldMinimizeSplitScreen;
 
     private boolean mWindowThresholdCrossed = false;
@@ -60,9 +56,9 @@ public class RecentsAnimationWrapper {
     private boolean mTouchInProgress;
     private boolean mFinishPending;
 
-    public RecentsAnimationWrapper(RecentsAnimationControllerCompat controller,
+    public RecentsAnimationController(RecentsAnimationControllerCompat controller,
             boolean shouldMinimizeSplitScreen,
-            Consumer<RecentsAnimationWrapper> onFinishedListener) {
+            Consumer<RecentsAnimationController> onFinishedListener) {
         mController = controller;
         mOnFinishedListener = onFinishedListener;
         mShouldMinimizeSplitScreen = shouldMinimizeSplitScreen;

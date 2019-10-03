@@ -148,7 +148,7 @@ public class TouchInteractionService extends Service {
     public void onUserUnlocked() {
         mRecentsModel = RecentsModel.INSTANCE.get(this);
         mOverviewComponentObserver = new OverviewComponentObserver(this, mDeviceState);
-        mOverviewCommandHelper = new OverviewCommandHelper(this,
+        mOverviewCommandHelper = new OverviewCommandHelper(this, mDeviceState,
                 mOverviewComponentObserver);
     }
 
