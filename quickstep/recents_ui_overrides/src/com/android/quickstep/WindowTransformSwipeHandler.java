@@ -45,7 +45,6 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Build;
@@ -90,12 +89,10 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.WindowCallbacksCompat;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
-        extends BaseSwipeUpHandler<T, RecentsView>
-        implements OnApplyWindowInsetsListener {
+        extends BaseSwipeUpHandler<T, RecentsView> implements OnApplyWindowInsetsListener {
     private static final String TAG = WindowTransformSwipeHandler.class.getSimpleName();
 
     private static final String[] STATE_NAMES = DEBUG_STATES ? new String[16] : null;
@@ -1007,6 +1004,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         }
     }
 
+    public boolean isCanceled() {
+        return mCanceled;
+    }
+
     @UiThread
     private void resumeLastTask() {
         mRecentsAnimationWrapper.finish(false /* toRecents */, null);
@@ -1099,14 +1100,21 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void switchToScreenshot() {
+        SwipeAnimationTargetSet controller = mRecentsAnimationWrapper.getController();
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            if (controller != null) {
+                // Update the screenshot of the task
+                if (mTaskSnapshot == null) {
+                    mTaskSnapshot = controller.screenshotTask(mRunningTaskId);
+                }
+                mRecentsView.updateThumbnail(mRunningTaskId, mTaskSnapshot, false /* refreshNow */);
+            }
             setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
         } else if (!mRecentsAnimationWrapper.hasTargets()) {
             // If there are no targets, then we don't need to capture anything
             setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
         } else {
             boolean finishTransitionPosted = false;
-            SwipeAnimationTargetSet controller = mRecentsAnimationWrapper.getController();
             if (controller != null) {
                 // Update the screenshot of the task
                 if (mTaskSnapshot == null) {
@@ -1123,34 +1131,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 if (taskView != null && !mCanceled) {
                     // Defer finishing the animation until the next launcher frame with the
                     // new thumbnail
-                    finishTransitionPosted = new WindowCallbacksCompat(taskView) {
-
-                        // The number of frames to defer until we actually finish the animation
-                        private int mDeferFrameCount = 2;
-
-                        @Override
-                        public void onPostDraw(Canvas canvas) {
-                            // If we were cancelled after this was attached, do not update
-                            // the state.
-                            if (mCanceled) {
-                                detach();
-                                return;
-                            }
-
-                            if (mDeferFrameCount > 0) {
-                                mDeferFrameCount--;
-                                // Workaround, detach and reattach to invalidate the root node for
-                                // another draw
-                                detach();
-                                attach();
-                                taskView.invalidate();
-                                return;
-                            }
-
-                            setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
-                            detach();
-                        }
-                    }.attach();
+                    finishTransitionPosted = ViewUtils.postDraw(taskView,
+                            () -> setStateOnUiThread(STATE_SCREENSHOT_CAPTURED), this::isCanceled);
                 }
             }
             if (!finishTransitionPosted) {

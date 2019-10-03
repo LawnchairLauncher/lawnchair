@@ -78,7 +78,12 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
 
     @Override
     public void startHome() {
-        mActivity.getStateManager().goToState(NORMAL);
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            switchToScreenshot(() -> finishRecentsAnimation(true /* toRecents */,
+                    () -> mActivity.getStateManager().goToState(NORMAL)));
+        } else {
+            mActivity.getStateManager().goToState(NORMAL);
+        }
     }
 
     @Override
