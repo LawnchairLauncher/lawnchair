@@ -261,6 +261,16 @@
         </activity>
 
         <activity
+            android:label="@string/restore_backup_file"
+            android:name="ch.deletescape.lawnchair.backup.RestoreBackupFileActivity"
+            android:theme="@style/SettingsTheme.V2">
+            <intent-filter>
+                <action android:name="com.android.launcher3.RESTORE_CUSTOM"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:label="@string/pref_integrations"
             android:name="ch.deletescape.lawnchair.settings.ui.SettingsIntegrationActivity"
             android:parentActivityName="ch.deletescape.lawnchair.settings.ui.SettingsActivity"

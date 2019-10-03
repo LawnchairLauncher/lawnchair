@@ -8,10 +8,8 @@
       </value>
     </option>
     <option name="LINE_SEPARATOR" value="&#10;" />
-    <option name="RIGHT_MARGIN" value="100" />
     <option name="SOFT_MARGINS" value="80,100" />
     <AndroidXmlCodeStyleSettings>
-      <option name="USE_CUSTOM_SETTINGS" value="true" />
       <option name="LAYOUT_SETTINGS">
         <value>
           <option name="INSERT_BLANK_LINE_BEFORE_TAG" value="false" />
@@ -25,9 +23,6 @@
       <option name="INSERT_INNER_CLASS_IMPORTS" value="true" />
       <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="999" />
       <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="999" />
-      <option name="PACKAGES_TO_USE_IMPORT_ON_DEMAND">
-        <value />
-      </option>
       <option name="IMPORT_LAYOUT_TABLE">
         <value>
           <package name="" withSubpackages="true" static="true" />
@@ -69,7 +64,6 @@
       <option name="INDENT_CHAINED_CALLS" value="false" />
     </TypeScriptCodeStyleSettings>
     <XML>
-      <option name="XML_ALIGN_ATTRIBUTES" value="false" />
       <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
     </XML>
     <codeStyleSettings language="CSS">
