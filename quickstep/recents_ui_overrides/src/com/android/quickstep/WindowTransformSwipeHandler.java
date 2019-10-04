@@ -922,7 +922,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             windowAnim.addListener(new AnimationSuccessListener() {
                 @Override
                 public void onAnimationSuccess(Animator animator) {
-                    setStateOnUiThread(target.endState);
+                    if (target == NEW_TASK && mRecentsView != null
+                            && mRecentsView.getNextPage() == mRecentsView.getRunningTaskIndex()) {
+                        // We are about to launch the current running task, so use LAST_TASK state
+                        // instead of NEW_TASK. This could happen, for example, if our scroll is
+                        // aborted after we determined the target to be NEW_TASK.
+                        setStateOnUiThread(LAST_TASK.endState);
+                    } else {
+                        setStateOnUiThread(target.endState);
+                    }
                 }
             });
             windowAnim.start();
