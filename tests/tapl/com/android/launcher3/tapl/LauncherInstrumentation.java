@@ -543,6 +543,9 @@ public final class LauncherInstrumentation {
         // accessibility events prior to pressing Home.
         final String action;
         if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
+            final String anomaly = getAnomalyMessage();
+            if (anomaly != null) fail("Can't swipe up to Home: " + anomaly);
+
             final Point displaySize = getRealDisplaySize();
 
             if (hasLauncherObject("deep_shortcuts_container")) {
