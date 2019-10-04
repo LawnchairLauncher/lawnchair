@@ -36,7 +36,9 @@ import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.util.ResourceBasedOverride;
 
 import java.util.LinkedList;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class TestInformationHandler implements ResourceBasedOverride {
 
@@ -137,6 +139,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
             }
 
             case TestProtocol.REQUEST_TOTAL_PSS_KB: {
+                runGcAndFinalizersSync();
                 Debug.MemoryInfo mem = new Debug.MemoryInfo();
                 Debug.getMemoryInfo(mem);
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, mem.getTotalPss());
@@ -172,5 +175,30 @@ public class TestInformationHandler implements ResourceBasedOverride {
     protected boolean isLauncherInitialized() {
         final LauncherModel model = LauncherAppState.getInstance(mContext).getModel();
         return model.getCallback() == null || model.isModelLoaded();
+    }
+
+    private static void runGcAndFinalizersSync() {
+        Runtime.getRuntime().gc();
+        Runtime.getRuntime().runFinalization();
+
+        final CountDownLatch fence = new CountDownLatch(1);
+        new Object() {
+            @Override
+            protected void finalize() throws Throwable {
+                try {
+                    fence.countDown();
+                } finally {
+                    super.finalize();
+                }
+            }
+        };
+        try {
+            do {
+                Runtime.getRuntime().gc();
+                Runtime.getRuntime().runFinalization();
+            } while (!fence.await(100, TimeUnit.MILLISECONDS));
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }
