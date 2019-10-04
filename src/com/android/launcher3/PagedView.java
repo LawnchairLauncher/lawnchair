@@ -1088,7 +1088,9 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (mFreeScroll) {
             setCurrentPage(getNextPage());
         } else if (wasFreeScroll) {
-            snapToPage(getNextPage());
+            if (getScrollForPage(getNextPage()) != getScrollX()) {
+                snapToPage(getNextPage());
+            }
         }
     }
 
