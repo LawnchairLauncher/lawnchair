@@ -75,6 +75,7 @@ import com.android.quickstep.inputconsumers.OverviewInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AppWindowAnimationHelper.TargetAlphaProvider;
 import com.android.quickstep.util.RectFSpringAnim;
+import com.android.quickstep.util.SharedApiCompat;
 import com.android.quickstep.util.ShelfPeekAnim;
 import com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState;
 import com.android.quickstep.views.LiveTileOverlay;
@@ -1144,6 +1145,8 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         final int runningTaskId = mGestureState.getRunningTaskId();
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             if (mRecentsAnimationController != null) {
+                SharedApiCompat.setWillFinishToHome(mRecentsAnimationController.getController(),
+                        true /* willFinishToHome */);
                 // Update the screenshot of the task
                 if (mTaskSnapshot == null) {
                     mTaskSnapshot = mRecentsAnimationController.screenshotTask(runningTaskId);

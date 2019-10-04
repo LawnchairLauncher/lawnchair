@@ -18,6 +18,7 @@ package com.android.quickstep;
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
+
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
@@ -183,6 +184,11 @@ public class RecentsAnimationController {
         mInputProxySupplier = inputProxySupplier;
         mInputConsumerController = inputConsumerController;
         mInputConsumerController.setInputListener(this::onInputConsumerEvent);
+    }
+
+    /** @return wrapper controller. */
+    public RecentsAnimationControllerCompat getController() {
+        return mController;
     }
 
     private void disableInputProxy() {
