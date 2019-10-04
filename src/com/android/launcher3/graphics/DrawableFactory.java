@@ -80,26 +80,25 @@ public class DrawableFactory implements ResourceBasedOverride {
      * Returns a drawable that can be used as a badge for the user or null.
      */
     @UiThread
-    public Drawable getBadgeForUser(UserHandle user, Context context) {
+    public Drawable getBadgeForUser(UserHandle user, Context context, int badgeSize) {
         if (mMyUser.equals(user)) {
             return null;
         }
 
-        Bitmap badgeBitmap = getUserBadge(user, context);
+        Bitmap badgeBitmap = getUserBadge(user, context, badgeSize);
         FastBitmapDrawable d = new FastBitmapDrawable(badgeBitmap);
         d.setFilterBitmap(true);
         d.setBounds(0, 0, badgeBitmap.getWidth(), badgeBitmap.getHeight());
         return d;
     }
 
-    protected synchronized Bitmap getUserBadge(UserHandle user, Context context) {
+    protected synchronized Bitmap getUserBadge(UserHandle user, Context context, int badgeSize) {
         Bitmap badgeBitmap = mUserBadges.get(user);
         if (badgeBitmap != null) {
             return badgeBitmap;
         }
 
         final Resources res = context.getApplicationContext().getResources();
-        int badgeSize = res.getDimensionPixelSize(R.dimen.profile_badge_size);
         badgeBitmap = Bitmap.createBitmap(badgeSize, badgeSize, Bitmap.Config.ARGB_8888);
 
         Drawable drawable = context.getPackageManager().getUserBadgedDrawableForDensity(

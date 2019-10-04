@@ -584,7 +584,7 @@ public final class Utilities {
             LauncherIcons li = LauncherIcons.obtain(appState.getContext());
             Bitmap badge = li.getShortcutInfoBadge(si, appState.getIconCache()).iconBitmap;
             li.recycle();
-            float badgeSize = launcher.getResources().getDimension(R.dimen.profile_badge_size);
+            float badgeSize = iconSize * LauncherIcons.getBadgeSizeForIconSize(iconSize);
             float insetFraction = (iconSize - badgeSize) / iconSize;
             return new InsetDrawable(new FastBitmapDrawable(badge),
                     insetFraction, insetFraction, 0, 0);
