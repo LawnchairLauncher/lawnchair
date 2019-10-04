@@ -41,13 +41,4 @@ public class RecentsAnimationTargets extends RemoteAnimationTargets {
     public boolean hasTargets() {
         return unfilteredApps.length != 0;
     }
-
-    /**
-     * Clones the target set without any actual targets. Used only when continuing a gesture after
-     * the actual recents animation has finished.
-     */
-    public RecentsAnimationTargets cloneWithoutTargets() {
-        return new RecentsAnimationTargets(new RemoteAnimationTargetCompat[0],
-                new RemoteAnimationTargetCompat[0], homeContentInsets, minimizedHomeBounds);
-    }
 }

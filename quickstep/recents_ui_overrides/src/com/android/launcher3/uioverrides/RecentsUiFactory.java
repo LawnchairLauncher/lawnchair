@@ -18,7 +18,6 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import android.content.Context;
@@ -45,7 +44,6 @@ import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
-import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.views.RecentsView;
 
@@ -186,17 +184,6 @@ public abstract class RecentsUiFactory {
      */
     public static StateHandler createRecentsViewStateController(Launcher launcher) {
         return new RecentsViewStateController(launcher);
-    }
-
-    /** Clears the swipe shared state for the current swipe gesture. */
-    public static void clearSwipeSharedState(Launcher launcher, boolean finishAnimation) {
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            launcher.<RecentsView>getOverviewPanel().switchToScreenshot(
-                    () -> TouchInteractionService.getSwipeSharedState().clearAllState(
-                            finishAnimation));
-        } else {
-            TouchInteractionService.getSwipeSharedState().clearAllState(finishAnimation);
-        }
     }
 
     /**

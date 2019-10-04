@@ -1,0 +1,173 @@
+/*
+ * Copyright (C) 2019 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.android.quickstep;
+
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+
+import android.content.Intent;
+import android.util.Log;
+
+import androidx.annotation.UiThread;
+
+import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
+
+public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAnimationListener {
+
+    private RecentsAnimationController mController;
+    private RecentsAnimationCallbacks mCallbacks;
+    private RecentsAnimationTargets mTargets;
+    // Temporary until we can hook into gesture state events
+    private GestureState mLastGestureState;
+    private ThumbnailData mCanceledThumbnail;
+
+    /**
+     * Preloads the recents animation.
+     */
+    public void preloadRecentsAnimation(Intent intent) {
+        // Pass null animation handler to indicate this start is for preloading
+        UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
+                .startRecentsActivity(intent, null, null, null, null));
+    }
+
+    /**
+     * Starts a new recents animation for the activity with the given {@param intent}.
+     */
+    @UiThread
+    public RecentsAnimationCallbacks startRecentsAnimation(GestureState gestureState,
+            Intent intent, RecentsAnimationCallbacks.RecentsAnimationListener listener) {
+        // Notify if recents animation is still running
+        if (mController != null) {
+            String msg = "New recents animation started before old animation completed";
+            if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                throw new IllegalArgumentException(msg);
+            } else {
+                Log.e("TaskAnimationManager", msg, new Exception());
+            }
+        }
+        // But force-finish it anyways
+        finishRunningRecentsAnimation(false /* toHome */);
+
+        final BaseActivityInterface activityInterface = gestureState.getActivityInterface();
+        mLastGestureState = gestureState;
+        mCallbacks = new RecentsAnimationCallbacks(activityInterface.shouldMinimizeSplitScreen());
+        mCallbacks.addListener(new RecentsAnimationCallbacks.RecentsAnimationListener() {
+            @Override
+            public void onRecentsAnimationStart(RecentsAnimationController controller,
+                    RecentsAnimationTargets targets) {
+                mController = controller;
+                mTargets = targets;
+            }
+
+            @Override
+            public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
+                if (thumbnailData != null) {
+                    // If a screenshot is provided, switch to the screenshot before cleaning up
+                    activityInterface.switchRunningTaskViewToScreenshot(thumbnailData,
+                            () -> cleanUpRecentsAnimation());
+                } else {
+                    cleanUpRecentsAnimation();
+                }
+            }
+
+            @Override
+            public void onRecentsAnimationFinished(RecentsAnimationController controller) {
+                cleanUpRecentsAnimation();
+            }
+        });
+        mCallbacks.addListener(gestureState);
+        mCallbacks.addListener(listener);
+        UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
+                .startRecentsActivity(intent, null, mCallbacks, null, null));
+        return mCallbacks;
+    }
+
+    /**
+     * Continues the existing running recents animation for a new gesture.
+     */
+    public RecentsAnimationCallbacks continueRecentsAnimation(GestureState gestureState) {
+        mCallbacks.removeListener(mLastGestureState);
+        mLastGestureState = gestureState;
+        mCallbacks.addListener(gestureState);
+        return mCallbacks;
+    }
+
+    /**
+     * Finishes the running recents animation.
+     */
+    public void finishRunningRecentsAnimation(boolean toHome) {
+        if (mController != null) {
+            mCallbacks.notifyAnimationCanceled();
+            Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), toHome
+                    ? mController::finishAnimationToHome
+                    : mController::finishAnimationToApp);
+            cleanUpRecentsAnimation();
+        }
+    }
+
+    /**
+     * Used to notify a listener of the current recents animation state (used if the listener was
+     * not yet added to the callbacks at the point that the listener callbacks would have been
+     * made).
+     */
+    public void notifyRecentsAnimationState(
+            RecentsAnimationCallbacks.RecentsAnimationListener listener) {
+        if (isRecentsAnimationRunning()) {
+            listener.onRecentsAnimationStart(mController, mTargets);
+        }
+        // TODO: Do we actually need to report canceled/finished?
+    }
+
+    /**
+     * @return whether there is a recents animation running.
+     */
+    public boolean isRecentsAnimationRunning() {
+        return mController != null;
+    }
+
+    /**
+     * Cleans up the recents animation entirely.
+     */
+    private void cleanUpRecentsAnimation() {
+        // Clean up the screenshot if necessary
+        if (mController != null && mCanceledThumbnail != null) {
+            mController.cleanupScreenshot();
+        }
+
+        // Release all the target leashes
+        if (mTargets != null) {
+            mTargets.release();
+        }
+
+        // Remove gesture state from callbacks
+        if (mCallbacks != null && mLastGestureState != null) {
+            mCallbacks.removeListener(mLastGestureState);
+        }
+
+        mController = null;
+        mCallbacks = null;
+        mTargets = null;
+        mCanceledThumbnail = null;
+        mLastGestureState = null;
+    }
+
+    public void dump() {
+        // TODO
+    }
+}

@@ -15,138 +15,18 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-
-import android.util.Log;
-
-import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.util.Preconditions;
-import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
-
-import com.android.systemui.shared.recents.model.ThumbnailData;
-
 import java.io.PrintWriter;
 
 /**
  * Utility class used to store state information shared across multiple transitions.
  */
-public class SwipeSharedState implements RecentsAnimationListener {
-
-    private OverviewComponentObserver mOverviewComponentObserver;
-
-    private RecentsAnimationCallbacks mRecentsAnimationListener;
-    private RecentsAnimationController mLastRecentsAnimationController;
-    private RecentsAnimationTargets mLastAnimationTarget;
-
-    private boolean mLastAnimationCancelled = false;
-    private boolean mLastAnimationRunning = false;
+public class SwipeSharedState {
 
     public boolean canGestureBeContinued;
     public boolean goingToLauncher;
     public boolean recentsAnimationFinishInterrupted;
     public int nextRunningTaskId = -1;
     private int mLogId;
-
-    public void setOverviewComponentObserver(OverviewComponentObserver observer) {
-        mOverviewComponentObserver = observer;
-    }
-
-    @Override
-    public final void onRecentsAnimationStart(RecentsAnimationController controller,
-            RecentsAnimationTargets targets) {
-        mLastRecentsAnimationController = controller;
-        mLastAnimationTarget = targets;
-
-        mLastAnimationCancelled = false;
-        mLastAnimationRunning = true;
-    }
-
-    @Override
-    public final void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
-        if (thumbnailData != null) {
-            mOverviewComponentObserver.getActivityInterface().switchToScreenshot(thumbnailData,
-                    () -> {
-                        mLastRecentsAnimationController.cleanupScreenshot();
-                        clearAnimationState();
-                    });
-        } else {
-            clearAnimationState();
-        }
-    }
-
-    @Override
-    public final void onRecentsAnimationFinished(RecentsAnimationController controller) {
-        if (mLastRecentsAnimationController == controller) {
-            mLastAnimationRunning = false;
-        }
-    }
-
-    private void clearAnimationTarget() {
-        if (mLastAnimationTarget != null) {
-            mLastAnimationTarget.release();
-            mLastAnimationTarget = null;
-        }
-    }
-
-    private void clearAnimationState() {
-        clearAnimationTarget();
-
-        mLastAnimationCancelled = true;
-        mLastAnimationRunning = false;
-    }
-
-    private void clearListenerState(boolean finishAnimation) {
-        if (mRecentsAnimationListener != null) {
-            mRecentsAnimationListener.removeListener(this);
-            mRecentsAnimationListener.notifyAnimationCanceled();
-            if (mLastAnimationRunning && mLastRecentsAnimationController != null) {
-                Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(),
-                        finishAnimation
-                                ? mLastRecentsAnimationController::finishAnimationToHome
-                                : mLastRecentsAnimationController::finishAnimationToApp);
-                mLastRecentsAnimationController = null;
-                mLastAnimationTarget = null;
-            }
-        }
-        mRecentsAnimationListener = null;
-        clearAnimationTarget();
-        mLastAnimationCancelled = false;
-        mLastAnimationRunning = false;
-    }
-
-    public RecentsAnimationCallbacks newRecentsAnimationCallbacks() {
-        Preconditions.assertUIThread();
-
-        if (mLastAnimationRunning) {
-            String msg = "New animation started before completing old animation";
-            if (FeatureFlags.IS_DOGFOOD_BUILD) {
-                throw new IllegalArgumentException(msg);
-            } else {
-                Log.e("SwipeSharedState", msg, new Exception());
-            }
-        }
-
-        clearListenerState(false /* finishAnimation */);
-        boolean shouldMinimiseSplitScreen = mOverviewComponentObserver == null ? false
-                : mOverviewComponentObserver.getActivityInterface().shouldMinimizeSplitScreen();
-        mRecentsAnimationListener = new RecentsAnimationCallbacks(shouldMinimiseSplitScreen);
-        mRecentsAnimationListener.addListener(this);
-        return mRecentsAnimationListener;
-    }
-
-    public RecentsAnimationCallbacks getActiveListener() {
-        return mRecentsAnimationListener;
-    }
-
-    public void applyActiveRecentsAnimationState(RecentsAnimationListener listener) {
-        if (mLastRecentsAnimationController != null) {
-            listener.onRecentsAnimationStart(mLastRecentsAnimationController,
-                    mLastAnimationTarget);
-        } else if (mLastAnimationCancelled) {
-            listener.onRecentsAnimationCanceled(null);
-        }
-    }
 
     /**
      * Called when a recents animation has finished, but was interrupted before the next task was
@@ -156,11 +36,9 @@ public class SwipeSharedState implements RecentsAnimationListener {
     public void setRecentsAnimationFinishInterrupted(int runningTaskId) {
         recentsAnimationFinishInterrupted = true;
         nextRunningTaskId = runningTaskId;
-        mLastAnimationTarget = mLastAnimationTarget.cloneWithoutTargets();
     }
 
-    public void clearAllState(boolean finishAnimation) {
-        clearListenerState(finishAnimation);
+    public void clearAllState() {
         canGestureBeContinued = false;
         recentsAnimationFinishInterrupted = false;
         nextRunningTaskId = -1;
@@ -172,8 +50,6 @@ public class SwipeSharedState implements RecentsAnimationListener {
         pw.println(prefix + "canGestureBeContinued=" + canGestureBeContinued);
         pw.println(prefix + "recentsAnimationFinishInterrupted=" + recentsAnimationFinishInterrupted);
         pw.println(prefix + "nextRunningTaskId=" + nextRunningTaskId);
-        pw.println(prefix + "lastAnimationCancelled=" + mLastAnimationCancelled);
-        pw.println(prefix + "lastAnimationRunning=" + mLastAnimationRunning);
         pw.println(prefix + "logTraceId=" + mLogId);
     }
 

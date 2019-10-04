@@ -22,7 +22,6 @@ import static android.view.MotionEvent.ACTION_UP;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
-import static com.android.quickstep.TouchInteractionService.startRecentsActivityAsync;
 import static com.android.quickstep.WindowTransformSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 
@@ -48,6 +47,7 @@ import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.SwipeSharedState;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationTargets;
+import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InputMonitorCompat;
@@ -76,6 +76,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     private final Context mContext;
     private final RecentsAnimationDeviceState mDeviceState;
+    private final TaskAnimationManager mTaskAnimationManager;
     private final GestureState mGestureState;
     private final float mTouchSlopSquared;
     private final SwipeSharedState mSwipeSharedState;
@@ -98,10 +99,12 @@ public class DeviceLockedInputConsumer implements InputConsumer,
     private RecentsAnimationTargets mRecentsAnimationTargets;
 
     public DeviceLockedInputConsumer(Context context, RecentsAnimationDeviceState deviceState,
-            GestureState gestureState, SwipeSharedState swipeSharedState,
-            InputMonitorCompat inputMonitorCompat, int runningTaskId, int logId) {
+            TaskAnimationManager taskAnimationManager, GestureState gestureState,
+            SwipeSharedState swipeSharedState, InputMonitorCompat inputMonitorCompat,
+            int runningTaskId, int logId) {
         mContext = context;
         mDeviceState = deviceState;
+        mTaskAnimationManager = taskAnimationManager;
         mGestureState = gestureState;
         mTouchSlopSquared = squaredTouchSlop(context);
         mSwipeSharedState = swipeSharedState;
@@ -207,16 +210,14 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     private void startRecentsTransition() {
         mThresholdCrossed = true;
-        RecentsAnimationCallbacks callbacks = mSwipeSharedState.newRecentsAnimationCallbacks();
-        callbacks.addListener(this);
+        mInputMonitorCompat.pilferPointers();
+
         Intent intent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_DEFAULT)
                 .setComponent(new ComponentName(mContext, LockScreenRecentsActivity.class))
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .putExtra(INTENT_EXTRA_LOG_TRACE_ID, mLogId);
-
-        mInputMonitorCompat.pilferPointers();
-        startRecentsActivityAsync(intent, callbacks);
+        mTaskAnimationManager.startRecentsAnimation(mGestureState, intent, this);
     }
 
     @Override

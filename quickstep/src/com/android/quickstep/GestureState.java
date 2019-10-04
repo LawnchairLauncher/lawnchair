@@ -16,12 +16,13 @@
 package com.android.quickstep;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.systemui.shared.recents.model.ThumbnailData;
 
 /**
  * Manages the state for an active system gesture, listens for events from the system and Launcher,
  * and fires events when the states change.
  */
-public class GestureState {
+public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationListener {
 
     // Needed to interact with the current activity
     private BaseActivityInterface mActivityInterface;
@@ -32,5 +33,21 @@ public class GestureState {
 
     public <T extends BaseDraggingActivity> BaseActivityInterface<T> getActivityInterface() {
         return mActivityInterface;
+    }
+
+    @Override
+    public void onRecentsAnimationStart(RecentsAnimationController controller,
+            RecentsAnimationTargets targets) {
+        // To be implemented
+    }
+
+    @Override
+    public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
+        // To be implemented
+    }
+
+    @Override
+    public void onRecentsAnimationFinished(RecentsAnimationController controller) {
+        // To be implemented
     }
 }

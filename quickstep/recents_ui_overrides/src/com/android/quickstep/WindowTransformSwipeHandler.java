@@ -192,6 +192,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private static final int LOG_NO_OP_PAGE_INDEX = -1;
 
     private final RecentsAnimationDeviceState mDeviceState;
+    private final TaskAnimationManager mTaskAnimationManager;
     private final GestureState mGestureState;
 
     private GestureEndTarget mGestureEndTarget;
@@ -225,13 +226,17 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private final long mTouchTimeMs;
     private long mLauncherFrameDrawnTime;
 
+    private final Runnable mOnDeferredActivityLaunch = this::onDeferredActivityLaunch;
+
     public WindowTransformSwipeHandler(Context context, RecentsAnimationDeviceState deviceState,
-            GestureState gestureState, RunningTaskInfo runningTaskInfo, long touchTimeMs,
+            TaskAnimationManager taskAnimationManager, GestureState gestureState,
+            RunningTaskInfo runningTaskInfo, long touchTimeMs,
             OverviewComponentObserver overviewComponentObserver, boolean continuingLastGesture,
             InputConsumerController inputConsumer, RecentsModel recentsModel) {
         super(context, gestureState, overviewComponentObserver, recentsModel, inputConsumer,
                 runningTaskInfo.id);
         mDeviceState = deviceState;
+        mTaskAnimationManager = taskAnimationManager;
         mGestureState = gestureState;
         mTouchTimeMs = touchTimeMs;
         mContinuingLastGesture = continuingLastGesture;
@@ -401,7 +406,24 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         // that time by a previous window transition.
         setupRecentsViewUi();
 
+        // For the duration of the gesture, in cases where an activity is launched while the
+        // activity is not yet resumed, finish the animation to ensure we get resumed
+        mGestureState.getActivityInterface().setOnDeferredActivityLaunchCallback(
+                mOnDeferredActivityLaunch);
+
         notifyGestureStartedAsync();
+    }
+
+    private void onDeferredActivityLaunch() {
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            mOverviewComponentObserver.getActivityInterface().switchRunningTaskViewToScreenshot(
+                    null, () -> {
+                        mTaskAnimationManager.finishRunningRecentsAnimation(true /* toHome */);
+                        TouchInteractionService.getSwipeSharedState().clearAllState();
+                    });
+        } else {
+            mTaskAnimationManager.finishRunningRecentsAnimation(true /* toHome */);
+        }
     }
 
     private void setupRecentsViewUi() {
@@ -1091,6 +1113,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
         mRecentsView.onGestureAnimationEnd();
 
+        // Reset the callback for deferred activity launches
+        mActivityInterface.setOnDeferredActivityLaunchCallback(null);
         mActivity.getRootView().setOnApplyWindowInsetsListener(null);
         removeLiveTileOverlay();
     }

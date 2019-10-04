@@ -60,6 +60,11 @@ public interface BaseActivityInterface<T extends BaseDraggingActivity> {
 
     ActivityInitListener createActivityInitListener(BiPredicate<T, Boolean> onInitListener);
 
+    /**
+     * Sets a callback to be run when an activity launch happens while launcher is not yet resumed.
+     */
+    default void setOnDeferredActivityLaunchCallback(Runnable r) {}
+
     @Nullable
     T getCreatedActivity();
 
@@ -96,7 +101,8 @@ public interface BaseActivityInterface<T extends BaseDraggingActivity> {
 
     default void closeOverlay() { }
 
-    default void switchToScreenshot(ThumbnailData thumbnailData, Runnable runnable) {}
+    default void switchRunningTaskViewToScreenshot(ThumbnailData thumbnailData,
+            Runnable runnable) {}
 
     interface AnimationFactory {
 

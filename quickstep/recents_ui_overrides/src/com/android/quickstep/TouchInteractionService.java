@@ -250,10 +250,7 @@ public class TouchInteractionService extends Service implements
         return sSwipeSharedState;
     }
 
-    private final InputConsumer mResetGestureInputConsumer =
-            new ResetGestureInputConsumer(sSwipeSharedState);
-
-    private final BaseSwipeUpHandler.Factory mWindowTreansformFactory =
+    private final BaseSwipeUpHandler.Factory mWindowTransformFactory =
             this::createWindowTransformSwipeHandler;
     private final BaseSwipeUpHandler.Factory mFallbackNoButtonFactory =
             this::createFallbackNoButtonSwipeHandler;
@@ -264,10 +261,12 @@ public class TouchInteractionService extends Service implements
     private OverviewComponentObserver mOverviewComponentObserver;
     private InputConsumerController mInputConsumer;
     private RecentsAnimationDeviceState mDeviceState;
+    private TaskAnimationManager mTaskAnimationManager;
 
     private InputConsumer mUncheckedConsumer = InputConsumer.NO_OP;
     private InputConsumer mConsumer = InputConsumer.NO_OP;
     private Choreographer mMainChoreographer;
+    private InputConsumer mResetGestureInputConsumer;
 
     private InputMonitorCompat mInputMonitorCompat;
     private InputEventReceiver mInputEventReceiver;
@@ -338,13 +337,13 @@ public class TouchInteractionService extends Service implements
 
     @UiThread
     public void onUserUnlocked() {
+        mTaskAnimationManager = new TaskAnimationManager();
         mRecentsModel = RecentsModel.INSTANCE.get(this);
         mOverviewComponentObserver = new OverviewComponentObserver(this, mDeviceState);
         mOverviewCommandHelper = new OverviewCommandHelper(this, mDeviceState,
                 mOverviewComponentObserver);
+        mResetGestureInputConsumer = new ResetGestureInputConsumer(mTaskAnimationManager);
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
-
-        sSwipeSharedState.setOverviewComponentObserver(mOverviewComponentObserver);
         mInputConsumer.registerInputConsumer();
         onSystemUiFlagsChanged();
         onAssistantVisibilityChanged();
@@ -354,6 +353,18 @@ public class TouchInteractionService extends Service implements
         mBackGestureNotificationCounter = Math.max(0, Utilities.getDevicePrefs(this)
                 .getInt(KEY_BACK_NOTIFICATION_COUNT, MAX_BACK_NOTIFICATION_COUNT));
         resetHomeBounceSeenOnQuickstepEnabledFirstTime();
+    }
+
+    private void onDeferredActivityLaunch() {
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            mOverviewComponentObserver.getActivityInterface().switchRunningTaskViewToScreenshot(
+                    null, () -> {
+                        mTaskAnimationManager.finishRunningRecentsAnimation(true /* toHome */);
+                        sSwipeSharedState.clearAllState();
+                    });
+        } else {
+            mTaskAnimationManager.finishRunningRecentsAnimation(true /* toHome */);
+        }
     }
 
     private void resetHomeBounceSeenOnQuickstepEnabledFirstTime() {
@@ -509,7 +520,8 @@ public class TouchInteractionService extends Service implements
         RunningTaskInfo runningTaskInfo = TraceHelper.whitelistIpcs("getRunningTask.0",
                 () -> mAM.getRunningTask(0));
         if (!useSharedState) {
-            sSwipeSharedState.clearAllState(false /* finishAnimation */);
+            mTaskAnimationManager.finishRunningRecentsAnimation(false /* toHome */);
+            sSwipeSharedState.clearAllState();
         }
         if (mDeviceState.isKeyguardShowingOccluded()) {
             // This handles apps showing over the lockscreen (e.g. camera)
@@ -572,20 +584,20 @@ public class TouchInteractionService extends Service implements
         } else {
             shouldDefer = gestureState.getActivityInterface().deferStartingActivity(mDeviceState,
                     event);
-            factory = mWindowTreansformFactory;
+            factory = mWindowTransformFactory;
         }
 
         final boolean disableHorizontalSwipe = mDeviceState.isInExclusionRegion(event);
-        return new OtherActivityInputConsumer(this, mDeviceState, gestureState, runningTaskInfo,
-                shouldDefer, this::onConsumerInactive, sSwipeSharedState, mInputMonitorCompat,
-                disableHorizontalSwipe, factory, mLogId);
+        return new OtherActivityInputConsumer(this, mDeviceState, mTaskAnimationManager,
+                gestureState, runningTaskInfo, shouldDefer, this::onConsumerInactive,
+                sSwipeSharedState, mInputMonitorCompat, disableHorizontalSwipe, factory, mLogId);
     }
 
     private InputConsumer createDeviceLockedInputConsumer(GestureState gestureState,
             RunningTaskInfo taskInfo) {
         if (mMode == Mode.NO_BUTTON && taskInfo != null) {
-            return new DeviceLockedInputConsumer(this, mDeviceState, gestureState,
-                    sSwipeSharedState, mInputMonitorCompat, taskInfo.taskId, mLogId);
+            return new DeviceLockedInputConsumer(this, mDeviceState, mTaskAnimationManager,
+                    gestureState, sSwipeSharedState, mInputMonitorCompat, taskInfo.taskId, mLogId);
         } else {
             return mResetGestureInputConsumer;
         }
@@ -647,9 +659,8 @@ public class TouchInteractionService extends Service implements
             return;
         }
 
-        // Pass null animation handler to indicate this start is preload.
-        startRecentsActivityAsync(mOverviewComponentObserver.getOverviewIntentIgnoreSysUiState(),
-                null);
+        mTaskAnimationManager.preloadRecentsAnimation(
+                mOverviewComponentObserver.getOverviewIntentIgnoreSysUiState());
     }
 
     @Override
@@ -725,9 +736,9 @@ public class TouchInteractionService extends Service implements
     private BaseSwipeUpHandler createWindowTransformSwipeHandler(GestureState gestureState,
             RunningTaskInfo runningTask, long touchTimeMs, boolean continuingLastGesture,
             boolean isLikelyToStartNewTask) {
-        return  new WindowTransformSwipeHandler(this, mDeviceState, gestureState, runningTask,
-                touchTimeMs, mOverviewComponentObserver, continuingLastGesture, mInputConsumer,
-                mRecentsModel);
+        return  new WindowTransformSwipeHandler(this, mDeviceState, mTaskAnimationManager,
+                gestureState, runningTask, touchTimeMs, mOverviewComponentObserver,
+                continuingLastGesture, mInputConsumer, mRecentsModel);
     }
 
     private BaseSwipeUpHandler createFallbackNoButtonSwipeHandler(GestureState gestureState,

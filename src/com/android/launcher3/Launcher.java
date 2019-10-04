@@ -267,6 +267,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     private ArrayList<OnResumeCallback> mOnResumeCallbacks = new ArrayList<>();
 
+    // Used to notify when an activity launch has been deferred because launcher is not yet resumed
+    // TODO: See if we can remove this later
+    private Runnable mOnDeferredActivityLaunchCallback;
+
     private ViewOnDrawExecutor mPendingExecutor;
 
     private LauncherModel mModel;
@@ -1886,7 +1890,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             // recents animation into launcher. Defer launching the activity until Launcher is
             // next resumed.
             addOnResumeCallback(() -> startActivitySafely(v, intent, item, sourceContainer));
-            UiFactory.clearSwipeSharedState(this, true /* finishAnimation */);
+            if (mOnDeferredActivityLaunchCallback != null) {
+                mOnDeferredActivityLaunchCallback.run();
+                mOnDeferredActivityLaunchCallback = null;
+            }
             return true;
         }
 
@@ -1945,6 +1952,14 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public void addOnResumeCallback(OnResumeCallback callback) {
         mOnResumeCallbacks.add(callback);
+    }
+
+    /**
+     * Persistant callback which notifies when an activity launch is deferred because the activity
+     * was not yet resumed.
+     */
+    public void setOnDeferredActivityLaunchCallback(Runnable callback) {
+        mOnDeferredActivityLaunchCallback = callback;
     }
 
     /**

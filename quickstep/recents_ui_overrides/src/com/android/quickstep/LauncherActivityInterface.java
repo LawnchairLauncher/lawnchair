@@ -493,22 +493,21 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
     }
 
     @Override
-    public void switchToScreenshot(ThumbnailData thumbnailData, Runnable runnable) {
+    public void switchRunningTaskViewToScreenshot(ThumbnailData thumbnailData,
+            Runnable onFinishRunnable) {
         Launcher launcher = getCreatedActivity();
         RecentsView recentsView = launcher.getOverviewPanel();
         if (recentsView == null) {
-            if (runnable != null) {
-                runnable.run();
+            if (onFinishRunnable != null) {
+                onFinishRunnable.run();
             }
             return;
         }
-        TaskView taskView = recentsView.getRunningTaskView();
-        if (taskView != null) {
-            taskView.setShowScreenshot(true);
-            taskView.getThumbnail().setThumbnail(taskView.getTask(), thumbnailData);
-            ViewUtils.postDraw(taskView, runnable);
-        } else if (runnable != null) {
-            runnable.run();
-        }
+        recentsView.switchToScreenshot(thumbnailData, onFinishRunnable);
+    }
+
+    @Override
+    public void setOnDeferredActivityLaunchCallback(Runnable r) {
+        getCreatedActivity().setOnDeferredActivityLaunchCallback(r);
     }
 }

@@ -1851,20 +1851,20 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return Math.max(insets.getSystemGestureInsets().right, insets.getSystemWindowInsetRight());
     }
 
-
     /** If it's in the live tile mode, switch the running task into screenshot mode. */
-    public void switchToScreenshot(Runnable onFinishRunnable) {
+    public void switchToScreenshot(ThumbnailData thumbnailData, Runnable onFinishRunnable) {
         TaskView taskView = getRunningTaskView();
-        if (taskView == null) {
-            if (onFinishRunnable != null) {
-                onFinishRunnable.run();
+        if (taskView != null) {
+            taskView.setShowScreenshot(true);
+            if (thumbnailData != null) {
+                taskView.getThumbnail().setThumbnail(taskView.getTask(), thumbnailData);
+            } else {
+                taskView.getThumbnail().refresh();
             }
-            return;
+            ViewUtils.postDraw(taskView, onFinishRunnable);
+        } else {
+            onFinishRunnable.run();
         }
-
-        taskView.setShowScreenshot(true);
-        taskView.getThumbnail().refresh();
-        ViewUtils.postDraw(taskView, onFinishRunnable);
     }
 
     @Override

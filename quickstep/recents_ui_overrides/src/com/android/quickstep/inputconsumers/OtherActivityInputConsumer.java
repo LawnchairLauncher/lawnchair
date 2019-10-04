@@ -26,7 +26,6 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.util.TraceHelper.FLAG_CHECK_FOR_RACE_CONDITIONS;
-import static com.android.quickstep.TouchInteractionService.startRecentsActivityAsync;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
@@ -58,6 +57,7 @@ import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.SwipeSharedState;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
+import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
@@ -80,7 +80,9 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     public static final float QUICKSTEP_TOUCH_SLOP_RATIO = 3;
 
     private final RecentsAnimationDeviceState mDeviceState;
+    private final TaskAnimationManager mTaskAnimationManager;
     private final GestureState mGestureState;
+    private RecentsAnimationCallbacks mActiveCallbacks;
     private final CachedEventDispatcher mRecentsViewDispatcher = new CachedEventDispatcher();
     private final RunningTaskInfo mRunningTask;
     private final SwipeSharedState mSwipeSharedState;
@@ -95,6 +97,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private final Consumer<OtherActivityInputConsumer> mOnCompleteCallback;
     private final MotionPauseDetector mMotionPauseDetector;
     private final float mMotionPauseMinDisplacement;
+
     private VelocityTracker mVelocityTracker;
 
     private BaseSwipeUpHandler mInteractionHandler;
@@ -126,13 +129,15 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private int mLogId;
 
     public OtherActivityInputConsumer(Context base, RecentsAnimationDeviceState deviceState,
-            GestureState gestureState, RunningTaskInfo runningTaskInfo,
-            boolean isDeferredDownTarget, Consumer<OtherActivityInputConsumer> onCompleteCallback,
+            TaskAnimationManager taskAnimationManager, GestureState gestureState,
+            RunningTaskInfo runningTaskInfo, boolean isDeferredDownTarget,
+            Consumer<OtherActivityInputConsumer> onCompleteCallback,
             SwipeSharedState swipeSharedState, InputMonitorCompat inputMonitorCompat,
             boolean disableHorizontalSwipe, Factory handlerFactory, int logId) {
         super(base);
         mLogId = logId;
         mDeviceState = deviceState;
+        mTaskAnimationManager = taskAnimationManager;
         mGestureState = gestureState;
         mMainThreadHandler = new Handler(Looper.getMainLooper());
         mRunningTask = runningTaskInfo;
@@ -147,7 +152,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mVelocityTracker = VelocityTracker.obtain();
         mInputMonitorCompat = inputMonitorCompat;
 
-        boolean continuingPreviousGesture = swipeSharedState.getActiveListener() != null;
+        boolean continuingPreviousGesture = mTaskAnimationManager.isRecentsAnimationRunning();
         mIsDeferredDownTarget = !continuingPreviousGesture && isDeferredDownTarget;
         mSwipeSharedState = swipeSharedState;
 
@@ -329,25 +334,22 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             long touchTimeMs, boolean isLikelyToStartNewTask) {
         ActiveGestureLog.INSTANCE.addLog("startRecentsAnimation");
 
-        RecentsAnimationCallbacks listenerSet = mSwipeSharedState.getActiveListener();
-        final BaseSwipeUpHandler handler = mHandlerFactory.newHandler(mGestureState, mRunningTask,
-                touchTimeMs, listenerSet != null, isLikelyToStartNewTask);
+        mInteractionHandler = mHandlerFactory.newHandler(mGestureState, mRunningTask, touchTimeMs,
+                mTaskAnimationManager.isRecentsAnimationRunning(), isLikelyToStartNewTask);
+        mInteractionHandler.setGestureEndCallback(this::onInteractionGestureFinished);
+        mMotionPauseDetector.setOnMotionPauseListener(mInteractionHandler::onMotionPauseChanged);
+        mInteractionHandler.initWhenReady();
 
-        mInteractionHandler = handler;
-        handler.setGestureEndCallback(this::onInteractionGestureFinished);
-        mMotionPauseDetector.setOnMotionPauseListener(handler::onMotionPauseChanged);
-        handler.initWhenReady();
-
-        if (listenerSet != null) {
-            listenerSet.addListener(handler);
-            mSwipeSharedState.applyActiveRecentsAnimationState(handler);
+        if (mTaskAnimationManager.isRecentsAnimationRunning()) {
+            mActiveCallbacks = mTaskAnimationManager.continueRecentsAnimation(mGestureState);
+            mActiveCallbacks.addListener(mInteractionHandler);
+            mTaskAnimationManager.notifyRecentsAnimationState(mInteractionHandler);
             notifyGestureStarted();
         } else {
-            RecentsAnimationCallbacks callbacks = mSwipeSharedState.newRecentsAnimationCallbacks();
-            callbacks.addListener(handler);
-            Intent intent = handler.getLaunchIntent();
+            Intent intent = mInteractionHandler.getLaunchIntent();
             intent.putExtra(INTENT_EXTRA_LOG_TRACE_ID, mLogId);
-            startRecentsActivityAsync(intent, callbacks);
+            mActiveCallbacks = mTaskAnimationManager.startRecentsAnimation(mGestureState, intent,
+                    mInteractionHandler);
         }
     }
 
@@ -415,9 +417,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private void removeListener() {
-        RecentsAnimationCallbacks listenerSet = mSwipeSharedState.getActiveListener();
-        if (listenerSet != null) {
-            listenerSet.removeListener(mInteractionHandler);
+        if (mActiveCallbacks != null) {
+            mActiveCallbacks.removeListener(mInteractionHandler);
         }
     }
 
