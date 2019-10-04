@@ -111,6 +111,7 @@ public class DeviceProfile {
 
     // All apps
     public int allAppsCellHeightPx;
+    public int allAppsCellWidthPx;
     public int allAppsIconSizePx;
     public int allAppsIconDrawablePaddingPx;
     public float allAppsIconTextSizePx;
@@ -349,6 +350,7 @@ public class DeviceProfile {
             allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
             allAppsCellHeightPx = getCellSize().y;
         }
+        allAppsCellWidthPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
 
         if (isVerticalBarLayout()) {
             // Always hide the Workspace text with vertical bar layout.

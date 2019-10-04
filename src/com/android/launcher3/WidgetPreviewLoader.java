@@ -467,7 +467,7 @@ public class WidgetPreviewLoader {
 
     private Bitmap generateShortcutPreview(BaseActivity launcher, ShortcutConfigActivityInfo info,
             int maxWidth, int maxHeight, Bitmap preview) {
-        int iconSize = launcher.getDeviceProfile().iconSizePx;
+        int iconSize = launcher.getDeviceProfile().allAppsIconSizePx;
         int padding = launcher.getResources()
                 .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
 
