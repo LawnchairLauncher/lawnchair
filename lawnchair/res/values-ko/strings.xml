@@ -317,6 +317,8 @@
     <string name="app_actions_pref_title">액션</string>
     <string name="app_actions_pref_title_in_search">액션 추천</string>
     <string name="app_actions_pref_desc">자주 사용하는 액션 바로가기</string>
+    <string name="app_actions_reset_pref_title">[숨겨진 동작] 재설정</string>
+    <string name="app_actions_reset_pref_summary">이전에 숨겨져 있던 작업을 \'표시하지 않음\'버튼으로 옮겨서 재설정</string>
     <string name="change_default_home">홈 화면으로 설정</string>
     <string name="recent_task_option_popup_window">대화창</string>
     <string name="feed_theme_pref_title">배경색</string>
@@ -533,5 +535,17 @@
     <string name="weather_icon_packs_not_supported">현재 날씨 제공자에서 지원되지 않습니다</string>
     <string name="lawnchair_settings">Lawnchair 설정</string>
     <string name="customnavbar_install">사용자 지정 내비게이션 바를 설치하려면 클릭하세요</string>
+    <string name="customnavbar_back_hiding">\'뒤로 가기\'버튼 숨김</string>
+    <string name="customnavbar_back_hiding_desc">\'뒤로 가기\' 버튼이 필요 없을때 숨겨집니다.</string>
+    <string name="icon_shape_top_left">좌측 상단</string>
+    <string name="icon_shape_top_right">우측 상단</string>
+    <string name="icon_shape_bottom_left">좌측 하단</string>
+    <string name="icon_shape_bottom_right">우측 하단</string>
+    <string name="icon_shape_corner_round">원형</string>
+    <string name="icon_shape_corner_squircle">모서리가 둥근 사각형</string>
+    <string name="icon_shape_corner_cut">자르기</string>
     <string name="smartspace_add_to_home">홈화면에 추가하기</string>
+    <string name="pref_hide_statusbar_clock">상태 표시줄 시계 숨기기</string>
+    <string name="root_access_required">루트 권한이 필요함</string>
+    <string name="smartspace_setup_text">눌러서 설정</string>
 </resources>
